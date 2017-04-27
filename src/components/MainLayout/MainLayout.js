@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './MainLayout.css';
 import Header from './Header';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd'
+import { Link } from 'dva/router'
+
 const {	SubMenu } = Menu
 const { Content, Sider } = Layout
 
@@ -29,7 +31,7 @@ function MainLayout({ children, location }) {
 	    <Menu.Item><span><Icon type="user" />时间轴管理</span></Menu.Item>
 
 	    <SubMenu key="sub2" title={<span><Icon type="laptop" />会员管理</span>}>
-	      <Menu.Item key="5">投资人</Menu.Item>
+	      <Menu.Item key="5"><Link to="/users">投资人</Link></Menu.Item>
 	      <Menu.Item key="6">项目方</Menu.Item>
 	      <Menu.Item key="7">交易师</Menu.Item>
 	    </SubMenu>
