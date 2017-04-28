@@ -1,5 +1,6 @@
 import { Form, Icon, Input, Button, Checkbox } from 'antd'
 import fetch from 'dva/fetch'
+import { connect } from 'dva'
 
 const FormItem = Form.Item;
 
@@ -17,10 +18,26 @@ const loginFormButton = {
 
 class Login extends React.Component {
   handleSubmit = (e) => {
+    console.log("YXM", this.props)
     e.preventDefault();
+
+    var react = this
+
     this.props.form.validateFields((err, values) => {
       if (!err) {
 	console.log('Received values of form: ', values);
+
+
+	react.props.dispatch({ 
+	  type: 'currentUser/login',
+	  payload: {
+	    username: 'wjk@126.com',
+	    password: 'Aa1123456'
+	  }
+	})
+
+	return
+
 	const param = Object.assign({}, values, {
 	  datasource: 1
 	})
@@ -36,9 +53,12 @@ class Login extends React.Component {
 	}) 
 	  .then(function(json) {
 	    console.log(json)
-	  })
-      }
-    });
+	    if (json.code === 1000) {
+	      react.props.history.push("/")
+	  }
+      })
+    };
+    })
   }
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -77,4 +97,4 @@ class Login extends React.Component {
 }
 
 
-export default Form.create()(Login)
+export default connect()(Form.create()(Login))
