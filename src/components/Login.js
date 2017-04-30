@@ -18,54 +18,49 @@ const loginFormButton = {
 
 class Login extends React.Component {
   handleSubmit = (e) => {
-    console.log("YXM", this.props)
     e.preventDefault();
 
     var react = this
 
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-	console.log('Received values of form: ', values);
+		this.props.form.validateFields((err, values) => {
+			if (!err) {
+				console.log('Received values of form: ', values);
 
+				this.props.dispatch({
+					type: 'currentUser/login',
+					payload: values
+				})
 
-	react.props.dispatch({ 
-	  type: 'currentUser/login',
-	  payload: {
-	    username: 'wjk@126.com',
-	    password: 'Aa1123456'
-	  }
-	})
+				return
 
-	return
-
-	const param = Object.assign({}, values, {
-	  datasource: 1
-	})
-	fetch('http://192.168.1.201:8000/user/login/', {
-	  method: "POST",
-	  body: JSON.stringify(param),
-	  headers: {
-	    "Content-Type": "application/json",
-	    "clienttype": "3"
-	  },
-	}).then(function(response) {
-	  return response.json()
-	}) 
-	  .then(function(json) {
-	    console.log(json)
-	    if (json.code === 1000) {
-	      react.props.history.push("/")
-	  }
-      })
-    };
-    })
+				const param = Object.assign({}, values, {
+					datasource: 1
+				})
+				fetch('http://192.168.1.201:8000/user/login/', {
+					method: "POST",
+					body: JSON.stringify(param),
+					headers: {
+						"Content-Type": "application/json",
+						"clienttype": "3"
+					},
+				}).then(function (response) {
+					return response.json()
+				})
+					.then(function (json) {
+						console.log(json)
+						if (json.code === 1000) {
+							react.props.history.push("/")
+						}
+					})
+			};
+		})
   }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSubmit} style={loginFormStyle}>
 	<FormItem>
-	  {getFieldDecorator('account', {
+	  {getFieldDecorator('username', {
 	    rules: [{ required: true, message: 'Please input your username!' }],
 	  })(
 	    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />

@@ -1,5 +1,6 @@
 import dva from 'dva'
 import * as accountService from '../services/account'
+import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'currentUser',
@@ -7,22 +8,21 @@ export default {
     token: null,
   },  
   reducers: {
-    save(state, { payload: { data: token } }) {
+    save(state,  { token } ) {
       return { ...state, token }
     },
   },
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
-      console.log('YXM login', payload)
-      const { data, headers } = yield call(accountService.login, { username, password })
+      const { data } = yield call(accountService.login, { username, password })
+      if (!data.success) return
+      const token = data.result.access_token
+      if (!token) return
       yield put({
-	type: 'save',
-	payload: {
-	  data,
-	  total: parseInt(headers['x-total-count'], 10),
-	  page: parseInt(page, 10),
-	},
-      }); 
+        type: 'save',
+        token
+      })
+      yield put(routerRedux.push('/'))
     }
   }
 }
