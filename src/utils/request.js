@@ -1,5 +1,13 @@
 import fetch from 'dva/fetch';
 
+class ApiError extends Error {
+  constructor(code, message) {
+    super(message)
+    this.name = 'ApiError'
+    this.toString = () => `name: ApiError, code: ${code}, message: ${message}`
+  }
+}
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -13,7 +21,7 @@ function checkStatus(response) {
 function parseErrorMessage(data) {
   const { code, errormsg } = data
   if (code !== 1000) {
-    throw new Error(`code: ${code}, message: ${errormsg}`)
+    throw new ApiError(code, errormsg)
   }
   return  data 
 }
