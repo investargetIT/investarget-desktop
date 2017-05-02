@@ -6,7 +6,41 @@ import styles from './Users.css';
 import { PAGE_SIZE } from '../../constants';
 import UserModal from './UserModal';
 
-function Users({ dispatch, list: dataSource, loading, total, page: current }) {
+import TransactionPhaseCheckbox from '../TransactionPhaseCheckbox'
+import TagCheckbox from '../TagCheckbox'
+import CurrencyCheckbox from '../CurrencyCheckbox'
+import AuditRadio from '../AuditRadio'
+
+function Users({ dispatch, list: dataSource, loading, total, page: current, transactionPhases, tags, currencies, audit }) {
+
+  function transactonPhaseHandler(transactionPhases) {
+    dispatch({
+      type: 'users/transactionPhase',
+      payload: transactionPhases
+    })
+  }
+
+  function tagHandler(tags) {
+    dispatch({
+      type: 'users/tag',
+      payload: tags
+    })
+  }
+
+  function auditHandler(audit) {
+    dispatch({
+      type: 'users/audit',
+      payload: audit
+    })
+  }
+
+  function currencyHandler(currencies) {
+    dispatch({
+      type: 'users/currency',
+      payload: currencies
+    })
+  }
+
   function deleteHandler(id) {
     dispatch({
       type: 'users/remove',
@@ -56,14 +90,14 @@ function Users({ dispatch, list: dataSource, loading, total, page: current }) {
       title: 'Operation',
       key: 'operation',
       render: (text, record) => (
-	<span className={styles.operation}>
-	  <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
-	    <a>Edit</a>
-	  </UserModal>
-	  <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-	    <a href="">Delete</a>
-	  </Popconfirm>
-	</span>
+        <span className={styles.operation}>
+          <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
+            <a>Edit</a>
+          </UserModal>
+          <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+            <a href="">Delete</a>
+          </Popconfirm>
+        </span>
       ),
     },
   ];
@@ -71,33 +105,43 @@ function Users({ dispatch, list: dataSource, loading, total, page: current }) {
   return (
     <div className={styles.normal}>
       <div>
-	<div className={styles.create}>
-	  <UserModal record={{}} onOk={createHandler}>
-	    <Button type="primary">Create User</Button>
-	  </UserModal>
-	</div>
-	<Table
-	  columns={columns}
-	  dataSource={dataSource}
-	  loading={loading}
-	  rowKey={record => record.id}
-	  pagination={false}
-	/>
-	<Pagination
-	  className="ant-table-pagination"
-	  total={total}
-	  current={current}
-	  pageSize={PAGE_SIZE}
-	  onChange={pageChangeHandler}
-	/>
+        {/*自定义的组件提供 style 属性*/}
+        <TransactionPhaseCheckbox style={{ marginBottom: '10px' }} value={transactionPhases} onChange={transactonPhaseHandler} />
+        <TagCheckbox style={{ marginBottom: '10px' }} value={tags} onChange={tagHandler} />
+        <CurrencyCheckbox style={{ marginBottom: '10px' }} value={currencies} onChange={currencyHandler} />
+        <AuditRadio style={{ marginBottom: '10px' }} value={audit} onChange={auditHandler} />
+
+        <div className={styles.create}>
+          <UserModal record={{}} onOk={createHandler}>
+            <Button type="primary">Create User</Button>
+          </UserModal>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          loading={loading}
+          rowKey={record => record.id}
+          pagination={false}
+        />
+        <Pagination
+          className="ant-table-pagination"
+          total={total}
+          current={current}
+          pageSize={PAGE_SIZE}
+          onChange={pageChangeHandler}
+        />
       </div>
     </div>
   );
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.users;
+  const { transactionPhases, tags, currencies, audit, list, total, page } = state.users;
   return {
+    transactionPhases,
+    tags,
+    currencies,
+    audit,
     loading: state.loading.effects['users/fetch'],
     list,
     total,
