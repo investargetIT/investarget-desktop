@@ -15,12 +15,10 @@ export default {
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
       const { data } = yield call(accountService.login, { username, password })
-      if (!data.success) return
-      const token = data.result.access_token
-      if (!token) return
+      const { token, user_info: userInfo } = data
       yield put({
-        type: 'save',
-        token
+	type: 'save',
+	token
       })
       yield put(routerRedux.push('/'))
     }

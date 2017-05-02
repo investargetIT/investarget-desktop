@@ -3,17 +3,18 @@ import request from '../utils/request';
 export function login(values) {
 
   console.log('YXM account service', values)
-    const param = {
-      mobileOrEmailAddress: values.username,
-      password: values.password,
-      app: 3
-    }
-  return request('https://api.investarget.com/api/account', {
+  const param = {
+    account: values.username,
+    password: values.password,
+    datasource: 1
+  }
+  return request('http://192.168.1.201:8000/user/login/', {
     method: 'POST',
     body: JSON.stringify(param),
     headers: {
-	    "Content-Type": "application/json",
-	  },
+      "Content-Type": "application/json",
+      "clienttype": "3"
+    },
   }); 
 }
 

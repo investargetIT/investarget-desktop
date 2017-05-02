@@ -17,44 +17,22 @@ const loginFormButton = {
 }
 
 class Login extends React.Component {
+  
   handleSubmit = (e) => {
     e.preventDefault();
 
-    var react = this
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+	console.log('Received values of form: ', values)
 
-		this.props.form.validateFields((err, values) => {
-			if (!err) {
-				console.log('Received values of form: ', values);
-
-				this.props.dispatch({
-					type: 'currentUser/login',
-					payload: values
-				})
-
-				return
-
-				const param = Object.assign({}, values, {
-					datasource: 1
-				})
-				fetch('http://192.168.1.201:8000/user/login/', {
-					method: "POST",
-					body: JSON.stringify(param),
-					headers: {
-						"Content-Type": "application/json",
-						"clienttype": "3"
-					},
-				}).then(function (response) {
-					return response.json()
-				})
-					.then(function (json) {
-						console.log(json)
-						if (json.code === 1000) {
-							react.props.history.push("/")
-						}
-					})
-			};
-		})
+	this.props.dispatch({
+	  type: 'currentUser/login',
+	  payload: values
+	})
+      }
+    })
   }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -81,7 +59,7 @@ class Login extends React.Component {
 	    <Checkbox>Remember me</Checkbox>
 	  )}
 	  <a style={loginFormForgot} href="">Forgot password</a>
-	  <Button type="primary" htmlType="submit" style={loginFormButton}>
+	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
 	    Log in
 	  </Button>
 	  Or <a href="">register now!</a>
@@ -91,5 +69,8 @@ class Login extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return { loading: state.loading.models.currentUser }
+}
 
-export default connect()(Form.create()(Login))
+export default connect(mapStateToProps)(Form.create()(Login))

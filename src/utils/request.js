@@ -10,6 +10,14 @@ function checkStatus(response) {
   throw error;
 }
 
+function parseErrorMessage(data) {
+  const { code, errormsg } = data
+  if (code !== 1000) {
+    throw new Error(`code: ${code}, message: ${errormsg}`)
+  }
+  return  data 
+}
+
 /**
  *  * Requests a URL, returning a promise.
  *   *
@@ -18,20 +26,15 @@ function checkStatus(response) {
  *      * @return {object}           An object containing either "data" or "err"
  *       */
 export default async function request(url, options) {
+  
   const response = await fetch(url, options);
 
   checkStatus(response);
 
   const data = await response.json();
 
-  const ret = {
-    data,
-    headers: {},
-  };
+  parseErrorMessage(data)
 
-  if (response.headers.get('x-total-count')) {
-    ret.headers['x-total-count'] = response.headers.get('x-total-count');
-  }
+  return { data: data.result }
 
-  return ret;
 }

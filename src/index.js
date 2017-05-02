@@ -13,6 +13,9 @@ const app = dva({
       { name: 'antd', id: 2 },
     ],
   },
+  onError(e, dispatch) {
+    console.log(e.message)
+  },
 });
 
 // 2. Plugins
