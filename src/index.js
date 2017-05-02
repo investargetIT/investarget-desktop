@@ -6,6 +6,9 @@ import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
 
+const userStr = localStorage.getItem('user_info')
+const user = userStr ? JSON.parse(userStr) : null
+
 // 1. Initialize
 const app = dva({
   initialState: {
@@ -13,6 +16,7 @@ const app = dva({
       { name: 'dva', id: 1 },
       { name: 'antd', id: 2 },
     ],
+    currentUser: user,
   },
   onError(e, dispatch) {
     console.debug(e.toString())

@@ -1,6 +1,7 @@
 import { Form, Icon, Input, Button, Checkbox } from 'antd'
 import fetch from 'dva/fetch'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 
 const FormItem = Form.Item;
 
@@ -17,7 +18,13 @@ const loginFormButton = {
 }
 
 class Login extends React.Component {
-  
+
+  componentDidMount() {
+    if (this.props.currentUser) {
+      this.props.dispatch(routerRedux.replace('/'))
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
 
@@ -70,7 +77,11 @@ class Login extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { loading: state.loading.models.currentUser }
+  const { currentUser } = state
+  return { 
+    loading: state.loading.models.currentUser,
+    currentUser
+  }
 }
 
 export default connect(mapStateToProps)(Form.create()(Login))

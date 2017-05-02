@@ -4,21 +4,21 @@ import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'currentUser',
-  state: {
-    token: null,
-  },  
+  state: null, 
   reducers: {
-    save(state,  { token } ) {
-      return { ...state, token }
+    save(state,  { userInfo } ) {
+      return { ...state, ...userInfo }
     },
   },
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
       const { data } = yield call(accountService.login, { username, password })
-      const { token, user_info: userInfo } = data
+      const { token, user_info } = data
+      const userInfo = { ...user_info, token }
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
 	type: 'save',
-	token
+	userInfo
       })
       yield put(routerRedux.push('/'))
     }
