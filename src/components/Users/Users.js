@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, defineMessages } from 'react-intl'
 import { connect } from 'dva';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { routerRedux } from 'dva/router';
@@ -10,6 +11,15 @@ import TransactionPhaseCheckbox from '../TransactionPhaseCheckbox'
 import TagCheckbox from '../TagCheckbox'
 import CurrencyCheckbox from '../CurrencyCheckbox'
 import AuditRadio from '../AuditRadio'
+
+
+const messages = defineMessages({
+  tag: {
+    id: 'Common.tag',
+    defaultMessage: '我是描述'
+  }
+})
+
 
 function Users({ dispatch, list: dataSource, loading, total, page: current, transactionPhases, tags, currencies, audit }) {
 
@@ -105,6 +115,8 @@ function Users({ dispatch, list: dataSource, loading, total, page: current, tran
   return (
     <div className={styles.normal}>
       <div>
+        <FormattedMessage {...messages.tag} />
+        <br />
         {/*自定义的组件提供 style 属性*/}
         <TransactionPhaseCheckbox style={{ marginBottom: '10px' }} value={transactionPhases} onChange={transactonPhaseHandler} />
         <TagCheckbox style={{ marginBottom: '10px' }} value={tags} onChange={tagHandler} />

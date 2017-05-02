@@ -1,17 +1,19 @@
 {
-  "entry": "src/index.js",
+  "entry": ["src/index.js", "src/entry/zh-Hans-CN.js", "src/entry/en-US.js"],
   "env": {
     "development": {
       "extraBabelPlugins": [
         "dva-hmr",
         "transform-runtime",
-       ["import", { "libraryName": "antd", "style": "css" }]
+       ["import", { "libraryName": "antd", "style": "css" }],
+       ["react-intl", { "messagesDir": "./i18n-messages" }]
       ]
     },
     "production": {
       "extraBabelPlugins": [
         "transform-runtime",
-       ["import", { "libraryName": "antd", "style": "css" }]
+       ["import", { "libraryName": "antd", "style": "css" }],
+       ["react-intl", { "messagesDir": "./i18n-messages" }]
       ]
     }
   },

@@ -1,3 +1,6 @@
+import ReactDOM from 'react-dom'
+import { addLocaleData, IntlProvider } from 'react-intl'
+import { LocaleProvider } from 'antd'
 import dva from 'dva';
 import './index.css';
 import createLoading from 'dva-loading';
@@ -28,4 +31,17 @@ app.model(require('./models/CurrentUser'))
 app.router(require('./router'));
 
 // 5. Start
-app.start('#root');
+const App = app.start();
+
+// 6. Intl
+const appLocale = window.appLocale
+addLocaleData(appLocale.data)
+
+ReactDOM.render(
+  (<LocaleProvider locale={appLocale.antd}>
+    <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
+      <App />
+    </IntlProvider>
+  </LocaleProvider>),
+  document.getElementById('root')
+)
