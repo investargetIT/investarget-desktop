@@ -9,6 +9,9 @@ export default {
     save(state,  { userInfo } ) {
       return { ...state, ...userInfo }
     },
+    delete() {
+      return null
+    },
   },
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
@@ -20,7 +23,12 @@ export default {
 	type: 'save',
 	userInfo
       })
-      yield put(routerRedux.push('/'))
+      yield put(routerRedux.replace('/'))
+    },
+    *logout({}, { call, put }) {
+      localStorage.removeItem('user_info')
+      yield put({ type: 'delete' })
+      yield put(routerRedux.replace('/login'))
     }
   }
 }
