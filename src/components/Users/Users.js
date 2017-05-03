@@ -1,27 +1,46 @@
 import React from 'react';
-import { FormattedMessage, defineMessages } from 'react-intl'
+import { injectIntl, intlShape, FormattedMessage, defineMessages, formatMessage } from 'react-intl'
 import { connect } from 'dva';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { routerRedux } from 'dva/router';
 import styles from './Users.css';
 import { PAGE_SIZE } from '../../constants';
 import UserModal from './UserModal';
+import { Checkbox, Radio } from 'antd'
+const CheckboxGroup = Checkbox.Group
+const RadioGroup = Radio.Group
 
-import TransactionPhaseCheckbox from '../TransactionPhaseCheckbox'
-import TagCheckbox from '../TagCheckbox'
-import CurrencyCheckbox from '../CurrencyCheckbox'
-import AuditRadio from '../AuditRadio'
+import { configMessages } from '../../utils/util'
+const messages = defineMessages(
+  configMessages(
+    [
+      'user.tag',
+      'user.dollar',
+      'user.rmb',
+      'user.dollar_rmb',
+      'user.audit_status',
+      'user.under_approval',
+      'user.recevied_approval',
+      'user.reject_approval'
+    ]
+  )
+)
 
 
-const messages = defineMessages({
-  tag: {
-    id: 'Common.tag',
-    defaultMessage: '我是描述'
-  }
-})
+function Users({ intl, dispatch, list: dataSource, loading, total, page: current, transactionPhases, tags, currencies, audit }) {
 
-
-function Users({ dispatch, list: dataSource, loading, total, page: current, transactionPhases, tags, currencies, audit }) {
+  const transactionPhaseOptions = [] // TODO
+  const tagOptions = [] // TODO
+  const currencyOptions = [
+    { label: intl.formatMessage(messages.dollar), value: 0 },
+    { label: intl.formatMessage(messages.rmb), value: 1 },
+    { label: intl.formatMessage(messages.dollar_rmb), value: 2 },
+  ]
+  const auditOptions = [
+    { label: intl.formatMessage(messages.under_approval), value: 0 },
+    { label: intl.formatMessage(messages.recevied_approval), value: 1 },
+    { label: intl.formatMessage(messages.reject_approval), value: 2 },
+  ]
 
   function transactonPhaseHandler(transactionPhases) {
     dispatch({
@@ -37,7 +56,8 @@ function Users({ dispatch, list: dataSource, loading, total, page: current, tran
     })
   }
 
-  function auditHandler(audit) {
+  function auditHandler(e) {
+    const audit = e.target.value
     dispatch({
       type: 'users/audit',
       payload: audit
@@ -115,13 +135,13 @@ function Users({ dispatch, list: dataSource, loading, total, page: current, tran
   return (
     <div className={styles.normal}>
       <div>
-        <FormattedMessage {...messages.tag} />
-        <br />
-        {/*自定义的组件提供 style 属性*/}
-        <TransactionPhaseCheckbox style={{ marginBottom: '10px' }} value={transactionPhases} onChange={transactonPhaseHandler} />
-        <TagCheckbox style={{ marginBottom: '10px' }} value={tags} onChange={tagHandler} />
-        <CurrencyCheckbox style={{ marginBottom: '10px' }} value={currencies} onChange={currencyHandler} />
-        <AuditRadio style={{ marginBottom: '10px' }} value={audit} onChange={auditHandler} />
+
+        <CheckboxGroup options={transactionPhaseOptions} value={transactionPhases} onChange={transactonPhaseHandler} />
+        <CheckboxGroup options={tagOptions} value={tags} onChange={tagHandler} />
+        <CheckboxGroup options={currencyOptions} value={currencies} onChange={currencyHandler} />
+        <RadioGroup options={auditOptions} value={audit} onChange={auditHandler} />
+
+
 
         <div className={styles.create}>
           <UserModal record={{}} onOk={createHandler}>
@@ -161,4 +181,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Users);
+Users.propTypes = {
+  intl: intlShape.isRequired
+}
+
+export default connect(mapStateToProps)(injectIntl(Users));
