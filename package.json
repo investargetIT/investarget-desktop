@@ -10,8 +10,7 @@
   "scripts": {
     "start": "roadhog server",
     "build": "roadhog build",
-    "lint": "eslint --ext .js src test",
-    "trans": "atool-l10n"
+    "lint": "eslint --ext .js src test"
   },
   "engines": {
     "install-node": "6.9.2"
@@ -27,7 +26,6 @@
     "react-intl": "^2.2.3"
   },
   "devDependencies": {
-    "atool-l10n": "^0.2.2",
     "babel-eslint": "^7.1.1",
     "babel-plugin-dva-hmr": "^0.3.2",
     "babel-plugin-react-intl": "^2.3.1",

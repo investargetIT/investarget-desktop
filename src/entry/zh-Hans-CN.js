@@ -1,4 +1,4 @@
-import '../index.html';
+import '../../public/index.html';
 import appLocaleData from 'react-intl/locale-data/zh';
 import zhMessages from '../../locales/zh.json';
 
