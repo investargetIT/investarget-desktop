@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
 import ProductList from '../components/ProductList';
+import MainLayout from '../components/MainLayout/MainLayout'
 
-const Products = ({ dispatch, products }) => {
+const Products = ({ dispatch, products, location }) => {
   function handleDelete(id) {
     dispatch({
       type: 'products/delete',
@@ -10,10 +11,12 @@ const Products = ({ dispatch, products }) => {
     });
   }
   return (
+    <MainLayout location={location}>
     <div>
       <h2>List of Products</h2>
       <ProductList onDelete={handleDelete} products={products} />
     </div>
+  </MainLayout>
   );
 };
 

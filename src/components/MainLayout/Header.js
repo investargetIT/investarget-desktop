@@ -31,6 +31,10 @@ function Header({ dispatch, location }) {
 	<Link to="/page-you-dont-know"><Icon type="frown-circle" />404</Link>
       </Menu.Item>
 
+      <Menu.Item key="/products">
+	<Link to="/products">Products</Link>
+      </Menu.Item>
+
       <Menu.Item key="/logout">Logout</Menu.Item>
 
     </Menu>
