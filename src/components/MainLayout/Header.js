@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
+import { FormattedMessage } from 'react-intl'
 
 function Header({ dispatch, location }) {
 
@@ -27,7 +28,7 @@ function Header({ dispatch, location }) {
       onClick={handleMenuClicked}>
 
       <Menu.Item key="/">
-	<Link to="/"><Icon type="home" />Home</Link>
+	<Link to="/"><Icon type="home" /><FormattedMessage id="header.home" /></Link>
       </Menu.Item>
 
       <Menu.Item key="/users">
@@ -42,7 +43,7 @@ function Header({ dispatch, location }) {
 	<Link to="/products">Products</Link>
       </Menu.Item>
 
-      <Menu.Item key="/logout">Logout</Menu.Item>
+      <Menu.Item key="/logout"><FormattedMessage id="header.out" /></Menu.Item>
 
       <Menu.Item key="lang">{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
 
