@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { LocaleProvider } from 'antd'
 import dva from 'dva';
+import { browserHistory } from 'dva/router';
 import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
@@ -11,6 +12,7 @@ const user = userStr ? JSON.parse(userStr) : null
 
 // 1. Initialize
 const app = dva({
+  history: browserHistory,
   initialState: {
     products: [
       { name: 'dva', id: 1 },
@@ -36,15 +38,16 @@ app.model(require('./models/products'));
 app.model(require("./models/users"));
 app.model(require('./models/CurrentUser'))
 
+// 6. Intl
+const appLocale = window.appLocale
+addLocaleData(appLocale.data)
+app.lang = appLocale.lang
+
 // 4. Router
 app.router(require('./router'));
 
 // 5. Start
 const App = app.start();
-
-// 6. Intl
-const appLocale = window.appLocale
-addLocaleData(appLocale.data)
 
 ReactDOM.render(
   (<LocaleProvider locale={appLocale.antd}>
