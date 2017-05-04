@@ -5,14 +5,13 @@ import Products from './routes/Products'
 import Users from "./routes/Users.js";
 import Login from './components/Login.js'
 
-function RouterConfig({ history, app }) {
-  const baseUrl = app.lang ? ('/' + app.lang) : ''
+function RouterConfig({ history }) {
   return (
     <Router history={history}>
-      <Route path={ baseUrl + "/" } component={IndexPage} />
-      <Route path={ baseUrl + "/products" } component={Products} />
-      <Route path={ baseUrl + "/users" } component={Users} />
-      <Route path={ baseUrl + "/login" } component={Login} />
+      <Route path="/" component={IndexPage} />
+      <Route path="/products" component={Products} />
+      <Route path="/users" component={Users} />
+      <Route path="/login" component={Login} />
     </Router>
   );
 }
