@@ -41,7 +41,7 @@ class MainLayout extends React.Component {
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.timeline_manage" /></span></Menu.Item>
 
 	      <SubMenu key="sub2" title={<span><Icon type="laptop" /><FormattedMessage id="menu.user_management" /></span>}>
-		<Menu.Item key="5"><Link to="/users"><FormattedMessage id="menu.investor" /></Link></Menu.Item>
+		<Menu.Item key="5"><Link to="/app/investor/list"><FormattedMessage id="menu.investor" /></Link></Menu.Item>
 		<Menu.Item key="6"><FormattedMessage id="menu.supplier" /></Menu.Item>
 		<Menu.Item key="7"><FormattedMessage id="menu.transaction" /></Menu.Item>
 	      </SubMenu>

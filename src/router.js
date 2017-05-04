@@ -4,6 +4,7 @@ import IndexPage from './routes/IndexPage';
 import Products from './routes/Products'
 import Users from "./routes/Users.js";
 import Login from './components/Login.js'
+import InvestorList from "./routes/InvestorList.js";
 
 function RouterConfig({ history }) {
   return (
@@ -12,6 +13,7 @@ function RouterConfig({ history }) {
       <Route path="/products" component={Products} />
       <Route path="/users" component={Users} />
       <Route path="/login" component={Login} />
+      <Route path="/app/investor/list" component={InvestorList} />
     </Router>
   );
 }
