@@ -6,10 +6,17 @@ import { connect } from 'dva'
 function Header({ dispatch, location }) {
 
   function handleMenuClicked(param) {
-    if (param.key === "/logout") {
 
-      dispatch({ type: 'currentUser/logout' })
+    switch (param.key) {
+      case "/logout":
+	dispatch({ type: 'currentUser/logout' })
+	break
+      case "lang":
+	const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
+	window.location.href = url
+	break
     }
+
   }
 
   return (
@@ -36,6 +43,8 @@ function Header({ dispatch, location }) {
       </Menu.Item>
 
       <Menu.Item key="/logout">Logout</Menu.Item>
+
+      <Menu.Item key="lang">{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
 
     </Menu>
   );
