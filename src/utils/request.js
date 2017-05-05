@@ -1,5 +1,8 @@
 import fetch from 'dva/fetch';
 
+//const baseUrl = "http://192.168.1.201:8000"
+const baseUrl = "/api"
+
 class ApiError extends Error {
   constructor(code, message) {
     super(message)
@@ -34,8 +37,8 @@ function parseErrorMessage(data) {
  *      * @return {object}           An object containing either "data" or "err"
  *       */
 export default async function request(url, options) {
-  
-  const response = await fetch(url, options);
+
+  const response = await fetch(baseUrl + url, options);
 
   checkStatus(response);
 

@@ -174,7 +174,7 @@ function mapStateToProps(state) {
     tags,
     currencies,
     audit,
-    loading: state.loading.effects['users/fetch'],
+    loading: state.loading.effects['users/get'],
     list,
     total,
     page,

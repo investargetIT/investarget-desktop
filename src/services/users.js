@@ -5,6 +5,19 @@ export function fetch({ page }) {
   return request(`/api/users?_page=${page}&_limit=${PAGE_SIZE}`);
 }
 
+
+export function get() {
+const userStr = localStorage.getItem('user_info')
+const user = userStr ? JSON.parse(userStr) : null
+
+  return request('/user/', {
+    headers: {
+      "token": user.token,
+      "Accept": 'application/json'
+    }
+  })
+}
+
 export function remove(id) {
   return request(`/api/users/${id}`, {
     method: 'DELETE',

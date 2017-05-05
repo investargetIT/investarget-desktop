@@ -57,12 +57,16 @@ export default {
       const page = yield select(state => state.users.page);
       yield put({ type: 'fetch', payload: { page } });
     },
+    *get({}, { call, put }) {
+      const { data } = yield call(usersService.get)
+      yield put({ type: 'save', payload: { data } })
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === '/users') {
-          dispatch({ type: 'fetch', payload: query });
+          dispatch({ type: 'get', payload: query });
         }
       });
     },
