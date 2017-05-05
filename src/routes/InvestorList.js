@@ -3,7 +3,7 @@ import styles from './InvestorList.css';
 import InvestorListComponent from '../components/InvestorList/InvestorList';
 import MainLayout from '../components/MainLayout/MainLayout';
 
-function InvestorList() {
+function InvestorList({ location }) {
   return (
     <MainLayout location={location}>
       <div className={styles.normal}>
