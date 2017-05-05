@@ -3,6 +3,7 @@ import fetch from 'dva/fetch'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { injectIntl } from 'react-intl'
+import { t } from '../utils/util'
 
 const FormItem = Form.Item;
 
@@ -19,8 +20,6 @@ const loginFormButton = {
 }
 
 class Login extends React.Component {
-
-  t = id => this.props.intl.formatMessage({ id: id })
 
   componentDidMount() {
     if (this.props.currentUser) {
@@ -51,14 +50,14 @@ class Login extends React.Component {
 	  {getFieldDecorator('username', {
 	    rules: [{ required: true, message: 'Please input your username!' }],
 	  })(
-	    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder={this.t("login.account")} />
+	    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder={t(this, "login.account")} />
 	  )}
 	</FormItem>
 	<FormItem>
 	  {getFieldDecorator('password', {
 	    rules: [{ required: true, message: 'Please input your Password!' }],
 	  })(
-	    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder={this.t("login.password")} />
+	    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder={t(this, "login.password")} />
 	  )}
 	</FormItem>
 	<FormItem>
@@ -66,13 +65,13 @@ class Login extends React.Component {
 	    valuePropName: 'checked',
 	    initialValue: true,
 	  })(
-	    <Checkbox>{this.t("login.Remember_User")}</Checkbox>
+	    <Checkbox>{t(this, "login.Remember_User")}</Checkbox>
 	  )}
-	  <a style={loginFormForgot} href="">{this.t("login.forget_password")}</a>
+	  <a style={loginFormForgot} href="">{t(this, "login.forget_password")}</a>
 	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
-	    {this.t("header.login")}
+	    {t(this, "header.login")}
 	  </Button>
-	  Or <a href="">{this.t("login.register")}</a>
+	  Or <a href="">{t(this, "login.register")}</a>
 	</FormItem>
       </Form>
     );

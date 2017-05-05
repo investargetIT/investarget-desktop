@@ -18,4 +18,8 @@ function shorten(key) {
   return segs[segs.length - 1]
 }
 
-export { configMessages }
+function t(obj, id) {
+  return obj.props.intl.formatMessage({ id: id })
+}
+
+export { configMessages, t }
