@@ -50,6 +50,7 @@
     "register": "Sign Up",
     "forget_password": "Forget Password?",
     "input_warning": "phone number or email",
+    "account_warning": "Please input account",
     "password_warning": "Please input password",
     "Remember_User":"Remember Me",
   	"failed_type1": "Your account has not been approved, please wait for approval after the login",

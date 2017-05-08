@@ -50,6 +50,7 @@
         "register": "立即注册",
         "forget_password": "忘记密码？",
         "input_warning": "请输入手机号或者邮箱",
+	"account_warning": "请输入账号",
         "password_warning": "请输入密码",
         "Remember_User":"记住用户名",
         "failed_type1": "您的账号未通过审核，请等待审核通过后再登录",
