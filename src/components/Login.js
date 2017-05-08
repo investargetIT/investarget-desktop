@@ -1,14 +1,20 @@
 import { Form, Icon, Input, Button, Checkbox } from 'antd'
 import fetch from 'dva/fetch'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
+import { routerRedux, Link } from 'dva/router'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
 
 const FormItem = Form.Item;
 
-const loginFormStyle = {
-  maxWidth: '300px'
+const loginContainerStyle = {
+  maxWidth: '400px',
+  margin: '200px auto'
+}
+
+const loginTitleStyle = {
+  textAlign: 'center',
+  lineHeight: 4
 }
 
 const loginFormForgot = {
@@ -45,7 +51,9 @@ class Login extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSubmit} style={loginFormStyle}>
+      <div style={loginContainerStyle}>
+	<h2 style={loginTitleStyle}>{t(this, "header.login")}</h2>
+      <Form onSubmit={this.handleSubmit}>
 	<FormItem>
 	  {getFieldDecorator('username', {
 	    rules: [{ required: true, message: t(this, 'login.account_warning') }],
@@ -71,9 +79,10 @@ class Login extends React.Component {
 	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
 	    {t(this, "header.login")}
 	  </Button>
-	  Or <a href="">{t(this, "login.register")}</a>
+	  Or <Link to="/register">{t(this, "login.register")}</Link>
 	</FormItem>
       </Form>
+    </div>
     );
   }
 }

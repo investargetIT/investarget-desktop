@@ -37,3 +37,11 @@ export function create(values) {
     body: JSON.stringify(values),
   });
 }
+
+export function getOrg(keywords) {
+  return request('/org/', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+}

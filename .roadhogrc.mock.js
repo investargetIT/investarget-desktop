@@ -85,5 +85,20 @@ export default {
 	}
       ]
     })
-  }
-};
+  },
+  'GET /api/org': (req, res) => {
+    console.log('GET /api/org/')
+    res.json({
+      code: 1000,
+      errormsg: null,
+      result: [
+	{
+	  value: '组织机构1'
+	},
+	{
+	  value: '组织机构2'
+	}
+      ]
+    })
+  },
+}
