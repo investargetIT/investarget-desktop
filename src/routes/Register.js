@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
 import { getOrg } from '../services/users'
 import MainLayout from '../components/MainLayout/MainLayout'
+import { connect } from 'dva'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -82,6 +83,10 @@ class Register extends React.Component {
     } else {
       callback()
     }
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getTags' })
   }
 
   render() {
@@ -183,8 +188,7 @@ class Register extends React.Component {
             rules: [{ required: true, message: 'Please choose your favorite tags!' }],
           })(
             <Select mode="multiple" placeholder="Please select">
-              <Option key="1">大数据</Option>
-              <Option key="2">人工智能</Option>
+              { this.props.tags.map(t => <Option key={t.id}>{t.tagName}</Option>) }
             </Select>
           )}
         </FormItem>
@@ -234,5 +238,9 @@ class Register extends React.Component {
   }
 
 }
+function mapStateToProps(state) {
+  const { tags } = state.app
+  return { tags }
+}
 
-export default Form.create()(injectIntl(Register))
+export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))

@@ -1,5 +1,9 @@
 import request from '../utils/request';
 
-export async function query() {
-  return request('/api/users');
+export function getTags() {
+  return request('/source/tags', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
 }
