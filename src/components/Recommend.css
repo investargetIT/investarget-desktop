@@ -1,3 +1,43 @@
+.user {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  padding: 16px;
+  float: left;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
+.userHead {
+  width: 80px;
+  height: 80px;
+}
+.userName {
+  font-size: 16px;
+}
+.userTitle {
+  font-size: 12px;
+}
+.userCover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.5);
+}
+.userCoverWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.userCoverIcon {
+  font-size: 60px;
+  color: #fff;
+}
+
+
 .container {
   width: 800px;
   height: 600px;

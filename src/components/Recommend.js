@@ -5,8 +5,33 @@ import styles from './Recommend.css'
 
 
 
-function RecommendUsers({ users, onMouseEnter }) {
+function RecommendUsers({ users, selectedUsers, onUserToggle }) {
+  return (
+    <div className="clearfix" className={styles.container}>
+      {
+        users.map(item => {
 
+          const isSelected = selectedUsers.includes(item.id)
+          const userCoverStyle = isSelected ? { display: 'block' } : { display : 'none' }
+
+          return (
+            <div key={item.id} className={styles.user} onClick={()=>{onUserToggle(item.id)}}>
+              <div>
+                <img className={styles.userHead} src={item.headimg} alt="avatar" />
+                <p className={styles.userName}>{item.name}</p>
+                <p className={styles.userTitle}>{item.title}</p>
+              </div>
+              <div className={styles.userCover} style={userCoverStyle}>
+                <div className={styles.userCoverWrap}>
+                  <Icon type="check" className={styles.userCoverIcon} />
+                </div>
+              </div>
+            </div>
+          )
+        })
+      }
+    </div>
+  )
 }
 
 function RecommendProjects({ projects, selectedProjects, onProjectToggle }) {
