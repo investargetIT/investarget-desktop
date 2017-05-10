@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
+import MainLayout from './MainLayout/MainLayout'
 
 const FormItem = Form.Item;
 
@@ -51,6 +52,7 @@ class Login extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
+      <MainLayout location={this.props.location}>
       <div style={loginContainerStyle}>
 	<h2 style={loginTitleStyle}>{t(this, "header.login")}</h2>
       <Form onSubmit={this.handleSubmit}>
@@ -83,6 +85,7 @@ class Login extends React.Component {
 	</FormItem>
       </Form>
     </div>
+  </MainLayout>
     );
   }
 }

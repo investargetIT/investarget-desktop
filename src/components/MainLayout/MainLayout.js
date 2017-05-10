@@ -12,29 +12,27 @@ const { Content, Sider } = Layout
 class MainLayout extends React.Component {
 
   componentDidMount() {
-    if (!this.props.currentUser) {
-      this.props.dispatch(routerRedux.replace('/login'))
-    }
+    //if (!this.props.currentUser) {
+      //this.props.dispatch(routerRedux.replace('/login'))
+    //}
   }
 
   render () {
-    return (
-      <Layout>
+    const content = <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
+	      {this.props.children}
+	    </Content>
 
-	<Header location={this.props.location} />
-
-	<Layout>
+    const sideBarAndContent = <Layout>
 
 	  <Sider width={200} style={{ background: '#fff' }}>
 	    <Menu
-	      mode="inline"
-	      defaultSelectedKeys={['1']}
-	      defaultOpenKeys={['sub1']}
-	      style={{ height: '100%' }}
+              mode="inline"
+              selectedKeys={[this.props.location.pathname]}
+              style={{ height: '100%' }}
 	    >
 	      <SubMenu key="sub1" title={<span><Icon type="user" /><FormattedMessage id="menu.project_management" /></span>}>
-		<Menu.Item key="1"><FormattedMessage id="menu.upload_project" /></Menu.Item>
-		<Menu.Item key="2"><FormattedMessage id="menu.platform_projects" /></Menu.Item>
+                <Menu.Item key="/app/products"><Link to="/app/products"><FormattedMessage id="menu.upload_project" /></Link></Menu.Item>
+                <Menu.Item key="/app/users"><Link to="/app/users"><FormattedMessage id="menu.platform_projects" /></Link></Menu.Item>
 	      </SubMenu>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.institution" /></span></Menu.Item>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.email_manage" /></span></Menu.Item>
@@ -64,12 +62,17 @@ class MainLayout extends React.Component {
 	      <Breadcrumb.Item>List</Breadcrumb.Item>
 	      <Breadcrumb.Item>App</Breadcrumb.Item>
 	    </Breadcrumb>
-	    <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
-	      {this.props.children}
-	    </Content>
-	  </Layout>
+            {content} 
+      </Layout>
 
 	</Layout>
+
+    return (
+      <Layout>
+
+	<Header location={this.props.location} />
+
+        { this.props.currentUser ? sideBarAndContent : content }
 
       </Layout>
     );

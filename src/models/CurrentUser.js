@@ -23,12 +23,12 @@ export default {
 	type: 'save',
 	userInfo
       })
-      yield put(routerRedux.replace('/'))
+      yield put(routerRedux.replace('/app'))
     },
     *logout({}, { call, put }) {
       localStorage.removeItem('user_info')
       yield put({ type: 'delete' })
-      yield put(routerRedux.replace('/login'))
+      yield put(routerRedux.replace('/'))
     }
   }
 }

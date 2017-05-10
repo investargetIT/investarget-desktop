@@ -3,6 +3,7 @@ import { Form, Radio, Button, Select, Input, Row, Col, Checkbox } from 'antd'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
 import { getOrg } from '../services/users'
+import MainLayout from '../components/MainLayout/MainLayout'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -98,6 +99,7 @@ class Register extends React.Component {
     const options = this.state.org.map(d => <Option key={d.value}>{d.value}</Option>)
 
     return (
+      <MainLayout location={this.props.location}>
       <Form onSubmit={this.handleSubmit}>
 
         <FormItem {...formItemLayout} label="Role">
@@ -227,6 +229,7 @@ class Register extends React.Component {
         </FormItem>
 
       </Form>
+    </MainLayout>
     );
   }
 
