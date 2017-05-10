@@ -80,7 +80,7 @@ function Users({ intl, dispatch, list: dataSource, loading, total, page: current
 
   function pageChangeHandler(page) {
     dispatch(routerRedux.push({
-      pathname: '/users',
+      pathname: '/app/users',
       query: { page },
     }));
   }

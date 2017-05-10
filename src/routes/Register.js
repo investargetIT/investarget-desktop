@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Radio, Button, Select, Input, Row, Col, Checkbox } from 'antd'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
-import { getOrg } from '../services/users'
+import { getOrg } from '../api'
 import MainLayout from '../components/MainLayout/MainLayout'
 import { connect } from 'dva'
 

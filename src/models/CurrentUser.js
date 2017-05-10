@@ -1,5 +1,5 @@
 import dva from 'dva'
-import * as accountService from '../services/account'
+import * as api from '../api'
 import { routerRedux } from 'dva/router'
 
 export default {
@@ -15,7 +15,7 @@ export default {
   },
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
-      const { data } = yield call(accountService.login, { username, password })
+      const { data } = yield call(api.login, { username, password })
       const { token, user_info } = data
       const userInfo = { ...user_info, token }
       localStorage.setItem('user_info', JSON.stringify(userInfo))

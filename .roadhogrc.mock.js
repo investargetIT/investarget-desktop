@@ -27,7 +27,7 @@ export default {
     })
   },
   'GET /api/user/': (req, res) => {
-    console.log('GET /api/user/')
+    console.log(`${req.method} ${req.url}`)
     res.json({
       code: 1000,
       errormsg: null,

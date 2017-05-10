@@ -1,4 +1,4 @@
-import * as usersService from '../services/users';
+import * as api from '../api';
 
 
 export default {
@@ -57,9 +57,15 @@ export default {
       const page = yield select(state => state.users.page);
       yield put({ type: 'fetch', payload: { page } });
     },
-    *get({}, { call, put }) {
-      const { data } = yield call(usersService.get)
-      yield put({ type: 'save', payload: { data } })
+    *get({ payload: { page = 1 } }, { call, put }) {
+      const { data } = yield call(api.get, { page })
+      yield put({ type: 'save', 
+        payload: {
+          data,
+          total: data.length,
+          page: parseInt(page, 10),
+        }
+      })
     },
   },
   subscriptions: {

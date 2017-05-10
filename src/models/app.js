@@ -1,4 +1,4 @@
-import * as api from '../services/example'
+import * as api from '../api'
 
 export default {
   namespace: 'app',

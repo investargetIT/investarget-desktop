@@ -1,6 +1,6 @@
 import request from './utils/request'
 import qs from 'qs'
-
+import { PAGE_SIZE } from './constants'
 
 /**
  * dataroom
@@ -11,6 +11,13 @@ import qs from 'qs'
  * org
  */
 
+export function getOrg(keywords) {
+  return request('/org/', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+}
 
 /**
  * proj
@@ -26,6 +33,13 @@ import qs from 'qs'
  * source
  */
 
+export function getTags() {
+  return request('/source/tags', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+}
 
 /**
  * timeline
@@ -41,6 +55,34 @@ export function getUser(token, param) {
     headers: {
       'token': token,
       'Accept': 'application/json'
+    }
+  })
+}
+
+export function login(values) {
+  const param = {
+    account: values.username,
+    password: values.password,
+    datasource: 1
+  }
+  return request('/user/login/', {
+    method: 'POST',
+    body: JSON.stringify(param),
+    headers: {
+      "Content-Type": "application/json",
+      "clienttype": "3"
+    },
+  })
+}
+
+export function get({ page }) {
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  return request(`/user/?_page=${page}&_limit=${PAGE_SIZE}`, {
+    headers: {
+      "token": user.token,
+      "Accept": 'application/json'
     }
   })
 }
