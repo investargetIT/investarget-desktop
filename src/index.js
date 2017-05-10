@@ -43,6 +43,8 @@ app.use(createLoading({
 // 3. Model
 // app.model(require('./models/example'));
 app.model(require('./models/products'));
+app.model(require("./models/recommendProjects"));
+app.model(require("./models/recommendFriends"));
 app.model(require("./models/investorList"));
 app.model(require("./models/app"));
 app.model(require("./models/users"));

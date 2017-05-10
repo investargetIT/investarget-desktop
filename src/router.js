@@ -8,6 +8,10 @@ import InvestorList from "./routes/InvestorList.js";
 import Register from './routes/Register'
 import Home from './routes/Home'
 
+import RecommendFriends from "./routes/RecommendFriends.js";
+
+import RecommendProjects from "./routes/RecommendProjects.js";
+
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
@@ -18,8 +22,10 @@ function RouterConfig({ history }) {
       <Route path="/app/products" component={Products} />
       <Route path="/app/users" component={Users} />
       <Route path="/app/investor/list" component={InvestorList} />
+      <Route path="/recommend_friends" component={RecommendFriends} />
+      <Route path="/recommend_projects" component={RecommendProjects} />
     </Router>
-  )
+  );
 }
 
 export default RouterConfig;

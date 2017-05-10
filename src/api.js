@@ -23,6 +23,14 @@ export function getOrg(keywords) {
  * proj
  */
 
+export function getProj(token, param) {
+  return request('/proj/?' + qs.stringify(param), {
+    headers: {
+      'token': token,
+      'Accept': 'application/json'
+    }
+  })
+}
 
 /**
  * service
