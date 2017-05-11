@@ -42,7 +42,15 @@ export function getProj(token, param) {
  */
 
 export function getTags() {
-  return request('/source/tags', {
+  return request('/source/tag', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+}
+
+export function getCountries() {
+  return request('/source/country', {
     headers: {
       "Accept": "application/json"
     }

@@ -87,17 +87,23 @@ class Register extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getTags' })
+    this.props.dispatch({ type: 'app/getCountries' })
   }
 
   render() {
-
-    const { getFieldDecorator } = this.props.form;
+    const selectStylse = {
+      width: '28px',
+      height: '18px',
+      marginTop: '4px',
+      display: 'block'
+    }
+        const { getFieldDecorator } = this.props.form;
 
     const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '86',
+      initialValue: '4',
     })(
       <Select style={selectStyle}>
-        <Option value="86">+86</Option>
+        {this.props.countries.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={selectStylse} /></Option>)}
       </Select>
     );
 
@@ -188,7 +194,7 @@ class Register extends React.Component {
             rules: [{ required: true, message: 'Please choose your favorite tags!' }],
           })(
             <Select mode="multiple" placeholder="Please select">
-              { this.props.tags.map(t => <Option key={t.id}>{t.tagName}</Option>) }
+              { this.props.tags.map(t => <Option key={t.id}>{t.name}</Option>) }
             </Select>
           )}
         </FormItem>
@@ -239,8 +245,8 @@ class Register extends React.Component {
 
 }
 function mapStateToProps(state) {
-  const { tags } = state.app
-  return { tags }
+  const { tags, countries } = state.app
+  return { tags, countries }
 }
 
 export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))
