@@ -15,10 +15,15 @@ html, body, :global(#root) {
 }
 
 
+:global(.transitionWrapper) {
+    position: relative;
+    height: 100%;
+}
 
 :global(.transitionWrapper-enter) {
     left: 100%;
-    transition: left 500ms ease-in;
+    transition: left 500ms ease;
+    z-index: 1;
 }
 
 :global(.transitionWrapper-enter.transitionWrapper-enter-active) {
@@ -27,15 +32,12 @@ html, body, :global(#root) {
 
 :global(.transitionWrapper-leave) {
     left: 0;
-    transition: left 300ms ease-out;
+    transition: left 300ms ease;
+    z-index: 2;
 }
 
 :global(.transitionWrapper-leave.transitionWrapper-leave-active) {
     left: -100%;
-}
-
-:global(.transitionWrapper) {
-    position: relative;
 }
 
 
@@ -43,18 +45,6 @@ html, body, :global(#root) {
     transition: none;
 }
 
-:global(.transitionWrapper-enter.transitionWrapper-enter-active.disabled) {
-    opacity: 1;
-}
-
 :global(.transitionWrapper-leave.disabled) {
     transition: none;
-}
-
-:global(.transitionWrapper-leave.transitionWrapper-leave-active.disabled) {
-    opacity: 1;
-}
-
-:global(.transitionWrapper.disabled) {
-    position: relative;
 }

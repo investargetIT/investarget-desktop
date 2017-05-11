@@ -26,7 +26,7 @@ function Container(props) {
         transitionLeaveTimeout={300}>
         <div key={props.location.pathname}
               className={ isPathAllowed.test(props.location.pathname) ? '' : 'disabled' }
-              style={{position:"absolute", width: "100%"}}>
+              style={{position:"absolute", width: "100%", height: "100%", overflow: "scroll", opacity: 1, backgroundColor: '#fff'}}>
             {
                 props.children
             }
