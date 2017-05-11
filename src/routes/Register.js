@@ -62,10 +62,13 @@ class Register extends React.Component {
   }
 
   handleOrgChange = value => {
-    if (this.state.org.map(i => i.value).includes(value)) {
+    if (value.length < 2 || this.state.org.map(i => i.name).includes(value)) {
       return
     }
-    getOrg(value).then(data => this.setState({ org: data.data }))
+    
+    getOrg(value).then(data => {
+      this.setState({ org: data.data })
+    })
   }
 
   checkPassword = (rule, value, callback) => {
@@ -108,7 +111,7 @@ class Register extends React.Component {
       </Select>
     );
 
-    const options = this.state.org.map(d => <Option key={d.value}>{d.value}</Option>)
+    const options = this.state.org.map(d => <Option key={d.name}>{d.name}</Option>)
 
     return (
       <MainLayout location={this.props.location}>

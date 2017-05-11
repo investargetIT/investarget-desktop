@@ -1,7 +1,7 @@
 import fetch from 'dva/fetch';
 
-//const baseUrl = "http://192.168.1.201:8000"
-const baseUrl = "/api"
+const baseUrl = "http://192.168.1.201:8000"
+//const baseUrl = "/api"
 
 class ApiError extends Error {
   constructor(code, message) {

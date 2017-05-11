@@ -12,7 +12,7 @@ import { PAGE_SIZE } from './constants'
  */
 
 export function getOrg(keywords) {
-  return request('/org/', {
+  return request('/org/?search=' + keywords, {
     headers: {
       "Accept": "application/json"
     }
