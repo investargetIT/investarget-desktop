@@ -11,6 +11,9 @@ export default {
     setProjects(state, { payload: projects }) {
       return { ...state, projects }
     },
+    clearSelected(state) {
+      return { ...state, selectedProjects: [] }
+    },
     toggleProject(state, { payload: project }) {
       var selectedProjects = state.selectedProjects.slice()
       var index = selectedProjects.indexOf(project)
@@ -31,9 +34,20 @@ export default {
       yield put({ type: 'setProjects', payload: projects })
     },
 
-    *addProjects({}, {put}) {
-      // TODO 收藏项目
-      yield put(routerRedux.push('/app'))
+    *addProjects({}, {put, call, select}) {
+      const { token, id } = yield select(state => state.currentUser)
+      const { selectedProjects } = yield select(state => state.recommendProjects)
+      try {
+        // 调用批量收藏接口
+        yield call(api.favoriteProj, token, { favoritetype: 4, user: id, projs: selectedProjects })
+      } catch (e) {
+        // TODO 错误处理
+        console.error(e)
+      } finally {
+        yield put({ type: 'setProjects', payload: [] })
+        yield put({ type: 'clearSelected' })
+        // yield put(routerRedux.push('/app'))
+      }
     },
 
     *skipProjects({}, {put}) {

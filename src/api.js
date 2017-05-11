@@ -32,6 +32,18 @@ export function getProj(token, param) {
   })
 }
 
+export function favoriteProj(token, param) {
+  console.log('POST /proj/favorite')
+  return request('/proj/favorite/', {
+    method: 'POST',
+    body: JSON.stringify(param),
+    headers: {
+      'token': token,
+      'Content-Type': 'application/json',
+    }
+  })
+}
+
 /**
  * service
  */
@@ -108,6 +120,17 @@ export function get({ page }) {
     headers: {
       "token": user.token,
       "Accept": 'application/json'
+    }
+  })
+}
+
+export function addFriend(token, param) {
+  return request('/user/friend/', {
+    method: 'POST',
+    body: JSON.stringify(param),
+    headers: {
+      "token": token,
+      "Content-Type": "application/json",
     }
   })
 }
