@@ -57,6 +57,15 @@ export function getCountries() {
   })
 }
 
+export function getTitles() {
+  return request('/source/title', {
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+}
+
+
 /**
  * timeline
  */

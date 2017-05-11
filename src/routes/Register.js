@@ -88,6 +88,7 @@ class Register extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getTags' })
     this.props.dispatch({ type: 'app/getCountries' })
+    this.props.dispatch({ type: 'app/getTitles' })
   }
 
   render() {
@@ -183,8 +184,7 @@ class Register extends React.Component {
             rules: [{ required: true, message: 'Please choose your title!' }],
           })(
             <Select placeholder="Please select">
-              <Option value="manager">董事长</Option>
-              <Option value="CEO">总裁</Option>
+              {this.props.titles.map(t => <Option key={t.id} value={t.id + ''}>{t.name}</Option>)}
             </Select>
           )}
         </FormItem>
@@ -245,8 +245,8 @@ class Register extends React.Component {
 
 }
 function mapStateToProps(state) {
-  const { tags, countries } = state.app
-  return { tags, countries }
+  const { tags, countries, titles } = state.app
+  return { tags, countries, titles }
 }
 
 export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))

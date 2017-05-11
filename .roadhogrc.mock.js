@@ -144,6 +144,17 @@ export default {
       ]
     })
   },
+  'GET /api/source/title': (req, res) => {
+    console.log('GET /api/source/title')
+    res.json({
+      code: 1000,
+      errormsg: null,
+      result: [
+        {"name":"董事长","id":33},
+        {"name":"总经理","id":34},
+      ]
+    })
+  },
   'GET /api/source/country': (req, res) => {
     console.log('GET /api/source/country')
     res.json({
