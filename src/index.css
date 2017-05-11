@@ -13,3 +13,48 @@ html, body, :global(#root) {
   font-size: 0;
   height: 0;
 }
+
+
+
+:global(.transitionWrapper-enter) {
+    left: 100%;
+    transition: left 500ms ease-in;
+}
+
+:global(.transitionWrapper-enter.transitionWrapper-enter-active) {
+    left: 0;
+}
+
+:global(.transitionWrapper-leave) {
+    left: 0;
+    transition: left 300ms ease-out;
+}
+
+:global(.transitionWrapper-leave.transitionWrapper-leave-active) {
+    left: -100%;
+}
+
+:global(.transitionWrapper) {
+    position: relative;
+}
+
+
+:global(.transitionWrapper-enter.disabled) {
+    transition: none;
+}
+
+:global(.transitionWrapper-enter.transitionWrapper-enter-active.disabled) {
+    opacity: 1;
+}
+
+:global(.transitionWrapper-leave.disabled) {
+    transition: none;
+}
+
+:global(.transitionWrapper-leave.transitionWrapper-leave-active.disabled) {
+    opacity: 1;
+}
+
+:global(.transitionWrapper.disabled) {
+    position: relative;
+}
