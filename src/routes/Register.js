@@ -195,7 +195,7 @@ class Register extends React.Component {
     return (
       <div style={containerStyle}>
         <div style={wrapperStyle} className="clearfix">
-          <div style={itemStyle}>
+          <div style={this.props.currentUser ? Object.assign({},itemStyle,{opacity: 0}) : itemStyle}>
           <MainLayout location={this.props.location}>
             <Form onSubmit={this.handleSubmit}>
 
@@ -352,10 +352,12 @@ class Register extends React.Component {
 
 }
 function mapStateToProps(state) {
+  const { currentUser } = state
   const { tags, countries, titles, registerStep } = state.app
   const { friends, selectedFriends } = state.recommendFriends
   const { projects, selectedProjects } = state.recommendProjects
   return {
+    currentUser,
     tags, countries, titles,
     registerStep,
     loading: (state.loading.effects['currentUser/register'] || state.loading.effects['currentUser/login']),
