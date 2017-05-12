@@ -16,7 +16,7 @@
     "install-node": "6.9.2"
   },
   "dependencies": {
-    "antd": "^2.9.3",
+    "antd": "^2.10.0",
     "babel-plugin-import": "^1.1.1",
     "babel-runtime": "^6.9.2",
     "dva": "^1.2.1",

@@ -181,8 +181,4 @@ function mapStateToProps(state) {
   };
 }
 
-Users.propTypes = {
-  intl: intlShape.isRequired
-}
-
 export default connect(mapStateToProps)(injectIntl(Users));

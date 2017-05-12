@@ -18,7 +18,7 @@ function IndexPage({ location }) {
   );
 }
 
-IndexPage.propTypes = {
-};
+//IndexPage.propTypes = {
+//};
 
 export default connect()(IndexPage);

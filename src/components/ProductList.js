@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Table, Popconfirm, Button } from 'antd';
 
 const ProductList = ({ onDelete, products }) => {
@@ -23,9 +23,5 @@ const ProductList = ({ onDelete, products }) => {
   );
 };
 
-ProductList.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  products: PropTypes.array.isRequired,
-};
 
 export default ProductList;
