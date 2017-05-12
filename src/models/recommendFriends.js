@@ -1,5 +1,6 @@
 import * as api from '../api'
 import { routerRedux } from 'dva/router'
+import { delay } from 'dva/saga'
 
 export default {
   namespace: 'recommendFriends',
@@ -30,7 +31,7 @@ export default {
     *refreshFriends({}, {call, put, select}) {
       const { id, token } = yield select(state => state.currentUser)
       const result = yield call(api.getUser, token, { id })
-      const friends = result.data.filter(item => item.id != id)
+      const friends = result.data.data.filter(item => item.id != id)
       yield put({ type: 'setFriends', payload: friends })
     },
 
@@ -39,23 +40,23 @@ export default {
       const { selectedFriends } = yield select(state => state.recommendFriends)
 
       try {
-        // TODO 等 API 支持批量添加好友后，此处代码再修改
-        for (let i=0, len=selectedFriends.length; i<len; i++) {
-          let friend = selectedFriends[i].toString()
-          yield call(api.addFriend, token, { user: id, friend: friend })
-        }
+        yield call(api.addFriend, token, { user: id, friend: selectedFriends })
       } catch (e) {
         // TODO 错误处理
         console.error(e)
       } finally {
+        yield put(routerRedux.push('/recommend_projects'))
+        yield call(delay, 500)
         yield put({ type: 'setFriends', payload: [] })
         yield put({ type: 'clearSelected' })
-        yield put(routerRedux.push('/recommend_projects'))
       }
     },
 
-    *skipFriends({}, {put}) {
+    *skipFriends({}, {call, put}) {
       yield put(routerRedux.push('/recommend_projects'))
+      yield call(delay, 500)
+      yield put({ type: 'setFriends', payload: [] })
+      yield put({ type: 'clearSelected' })
     }
   },
   subscriptions: {

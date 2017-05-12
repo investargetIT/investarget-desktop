@@ -1,5 +1,6 @@
 import * as api from '../api'
 import { routerRedux } from 'dva/router'
+import { delay } from 'dva/saga'
 
 export default {
   namespace: 'recommendProjects',
@@ -30,28 +31,31 @@ export default {
     *refreshProjects({}, {call, put, select}) {
       const { token } = yield select(state => state.currentUser)
       const result = yield call(api.getProj, token, {})
-      const projects = result.data
+      const projects = result.data.data
       yield put({ type: 'setProjects', payload: projects })
     },
 
-    *addProjects({}, {put, call, select}) {
+    *addProjects({}, {call, put, select}) {
       const { token, id } = yield select(state => state.currentUser)
       const { selectedProjects } = yield select(state => state.recommendProjects)
       try {
-        // 调用批量收藏接口
         yield call(api.favoriteProj, token, { favoritetype: 4, user: id, projs: selectedProjects })
       } catch (e) {
         // TODO 错误处理
         console.error(e)
       } finally {
+        yield put(routerRedux.push('/app'))
+        yield call(delay, 500)
         yield put({ type: 'setProjects', payload: [] })
         yield put({ type: 'clearSelected' })
-        // yield put(routerRedux.push('/app'))
       }
     },
 
-    *skipProjects({}, {put}) {
+    *skipProjects({}, {call, put}) {
       yield put(routerRedux.push('/app'))
+      yield call(delay, 500)
+      yield put({ type: 'setProjects', payload: [] })
+      yield put({ type: 'clearSelected' })
     }
   },
   subscriptions: {
