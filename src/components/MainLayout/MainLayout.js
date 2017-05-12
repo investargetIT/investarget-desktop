@@ -11,10 +11,30 @@ const { Content, Sider } = Layout
 
 class MainLayout extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.handleSelect = this.handleSelect.bind(this)
+    this.handleOpenChange = this.handleOpenChange.bind(this)
+  }
+
   componentDidMount() {
     //if (!this.props.currentUser) {
       //this.props.dispatch(routerRedux.replace('/login'))
     //}
+  }
+
+  handleSelect({item, key, selectedKeys}) {
+    this.props.dispatch({
+      type: 'app/menuSelect',
+      payload: selectedKeys
+    })
+  }
+
+  handleOpenChange(openKeys) {
+    this.props.dispatch({
+      type: 'app/menuOpen',
+      payload: openKeys
+    })
   }
 
   render () {
@@ -26,31 +46,34 @@ class MainLayout extends React.Component {
 
 	  <Sider width={200} style={{ background: '#fff' }}>
 	    <Menu
-              mode="inline"
-              selectedKeys={[this.props.location.pathname]}
-              style={{ height: '100%' }}
+        mode="inline"
+        selectedKeys={this.props.selectedKeys}
+        onSelect={this.handleSelect}
+        openKeys={this.props.openKeys}
+        onOpenChange={this.handleOpenChange}
+        style={{ height: '100%' }}
 	    >
 	      <SubMenu key="sub1" title={<span><Icon type="user" /><FormattedMessage id="menu.project_management" /></span>}>
-                <Menu.Item key="/app/products"><Link to="/app/products"><FormattedMessage id="menu.upload_project" /></Link></Menu.Item>
-                <Menu.Item key="/app/users"><Link to="/app/users"><FormattedMessage id="menu.platform_projects" /></Link></Menu.Item>
+          <Menu.Item key="/app/products"><Link to="/app/products"><FormattedMessage id="menu.upload_project" /></Link></Menu.Item>
+          <Menu.Item key="/app/users"><Link to="/app/users"><FormattedMessage id="menu.platform_projects" /></Link></Menu.Item>
 	      </SubMenu>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.institution" /></span></Menu.Item>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.email_manage" /></span></Menu.Item>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.timeline_manage" /></span></Menu.Item>
 
 	      <SubMenu key="sub2" title={<span><Icon type="laptop" /><FormattedMessage id="menu.user_management" /></span>}>
-		<Menu.Item key="5"><Link to="/app/investor/list"><FormattedMessage id="menu.investor" /></Link></Menu.Item>
-		<Menu.Item key="6"><FormattedMessage id="menu.supplier" /></Menu.Item>
-		<Menu.Item key="7"><FormattedMessage id="menu.transaction" /></Menu.Item>
+          <Menu.Item key="/app/investor/list"><Link to="/app/investor/list"><FormattedMessage id="menu.investor" /></Link></Menu.Item>
+          <Menu.Item key="6"><FormattedMessage id="menu.supplier" /></Menu.Item>
+          <Menu.Item key="7"><FormattedMessage id="menu.transaction" /></Menu.Item>
 	      </SubMenu>
 
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.dataroom" /></span></Menu.Item>
 	      <SubMenu key="sub3" title={<span><Icon type="notification" /><FormattedMessage id="menu.inbox" /></span>}>
-		<Menu.Item key="12"><FormattedMessage id="menu.reminder" /></Menu.Item>
+          <Menu.Item key="12"><FormattedMessage id="menu.reminder" /></Menu.Item>
 	      </SubMenu>
 	      <SubMenu title={<span><Icon type="user" /><FormattedMessage id="menu.user_center" /></span>}>
-		<Menu.Item><FormattedMessage id="menu.change_password" /></Menu.Item>
-		<Menu.Item><FormattedMessage id="menu.profile" /></Menu.Item>
+          <Menu.Item><FormattedMessage id="menu.change_password" /></Menu.Item>
+          <Menu.Item><FormattedMessage id="menu.profile" /></Menu.Item>
 	      </SubMenu>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.log" /></span></Menu.Item>
 	    </Menu>
@@ -62,7 +85,7 @@ class MainLayout extends React.Component {
 	      <Breadcrumb.Item>List</Breadcrumb.Item>
 	      <Breadcrumb.Item>App</Breadcrumb.Item>
 	    </Breadcrumb>
-            {content} 
+            {content}
       </Layout>
 
 	</Layout>
@@ -81,7 +104,8 @@ class MainLayout extends React.Component {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  return { currentUser }
+  const { selectedKeys, openKeys } = state.app
+  return { currentUser, selectedKeys, openKeys }
 }
 
 export default connect(mapStateToProps)(MainLayout)
