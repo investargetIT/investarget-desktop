@@ -31,14 +31,18 @@ export default {
       yield put(routerRedux.replace('/'))
     },
     *register({ payload: user }, { call, put }) {
-      const { data } = yield call(api.register, user)
+      yield call(api.register, user)
+
+      const { data } = yield call(api.login, { username: user.email, password: user.password })
+      const { token, user_info } = data
+      const userInfo = { ...user_info, token }
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
-        type: 'login',
-        payload: {
-          username: user.email,
-          password: user.password
-        }
+        type: 'save',
+        userInfo
       })
+
+      yield put(routerRedux.replace('/recommend_friends'))
     },
   }
 }
