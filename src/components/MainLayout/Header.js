@@ -1,8 +1,10 @@
 import React from 'react';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Modal } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { FormattedMessage } from 'react-intl'
+
+const confirm = Modal.confirm
 
 function Header({ dispatch, location, currentUser }) {
 
@@ -10,7 +12,12 @@ function Header({ dispatch, location, currentUser }) {
 
     switch (param.key) {
       case "/logout":
-	dispatch({ type: 'currentUser/logout' })
+        confirm({
+          title: 'Are you sure to logout?',
+          onOk() {
+            dispatch({ type: 'currentUser/logout' })
+          },
+        })
 	break
       case "lang":
 	const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
