@@ -4,13 +4,13 @@ import { connect } from 'dva';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { routerRedux } from 'dva/router';
 import styles from './Users.css';
-import { PAGE_SIZE } from '../../constants';
+import { PAGE_SIZE } from '../constants';
 import UserModal from './UserModal';
 import { Checkbox, Radio } from 'antd'
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 
-import { configMessages } from '../../utils/util'
+import { configMessages } from '../utils/util'
 const messages = defineMessages(
   configMessages(
     [

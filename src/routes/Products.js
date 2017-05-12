@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import ProductList from '../components/ProductList';
-import MainLayout from '../components/MainLayout/MainLayout'
+import MainLayout from '../components/MainLayout'
 
 const Products = ({ dispatch, products, location }) => {
   function handleDelete(id) {

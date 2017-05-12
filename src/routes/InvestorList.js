@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './InvestorList.css';
-import InvestorListComponent from '../components/InvestorList/InvestorList';
-import MainLayout from '../components/MainLayout/MainLayout';
+import InvestorListComponent from '../components/InvestorList';
+import MainLayout from '../components/MainLayout';
 
 function InvestorList({ location }) {
   return (

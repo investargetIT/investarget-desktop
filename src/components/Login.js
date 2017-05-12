@@ -4,7 +4,7 @@ import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
-import MainLayout from './MainLayout/MainLayout'
+import MainLayout from './MainLayout'
 
 const FormItem = Form.Item;
 

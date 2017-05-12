@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './InvestorList.css';
 import { Checkbox, Radio, Select, Button, Input, Row, Col } from 'antd'
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -127,7 +126,7 @@ function InvestorList({ intl, dispatch, transactionPhases, transactionPhaseOptio
   }
 
   return (
-    <div className={styles.normal}>
+    <div>
       <Row gutter={16} style={{marginBottom: '16px'}}>
         <Col span={4} >
           <FormattedMessage id="user.investment_rounds" />

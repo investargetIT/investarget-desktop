@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
 import styles from './Users.css';
-import UserComponent from '../components/Users/Users';
-import MainLayout from '../components/MainLayout/MainLayout';
+import UserComponent from '../components/Users';
+import MainLayout from '../components/MainLayout';
 
 function Users({location}) {
   return (

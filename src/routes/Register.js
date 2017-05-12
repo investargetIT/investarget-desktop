@@ -3,10 +3,10 @@ import { Form, Radio, Button, Select, Input, Row, Col, Checkbox } from 'antd'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
 import { getOrg } from '../api'
-import MainLayout from '../components/MainLayout/MainLayout'
+import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
-import RecommendFriendsComponent from '../components/RecommendFriends/RecommendFriends'
-import RecommendProjectsComponent from '../components/RecommendProjects/RecommendProjects'
+import RecommendFriendsComponent from '../components/RecommendFriends'
+import RecommendProjectsComponent from '../components/RecommendProjects'
 
 
 const FormItem = Form.Item
