@@ -21,19 +21,19 @@ function Header({ dispatch, location, currentUser }) {
   }
 
   const login = (
-    <Menu.Item key="/login">
+    <Menu.Item key="/login" style={{float: 'right'}}>
       <Link to="/login"><FormattedMessage id="header.login" /></Link>
     </Menu.Item>
   )
 
   const logout = (
-    <Menu.Item key="/logout">
+    <Menu.Item key="/logout" style={{float: 'right'}}>
       <FormattedMessage id="header.out" />
     </Menu.Item>
   )
 
   const register = (
-    <Menu.Item key="/register">
+    <Menu.Item key="/register" style={{float: 'right'}}>
       <Link to="/register"><FormattedMessage id="header.sign_up" /></Link>
     </Menu.Item>
   )
@@ -49,15 +49,11 @@ function Header({ dispatch, location, currentUser }) {
         <Link to={ currentUser ? "/app" : "/" }><Icon type="home" /><FormattedMessage id="header.home" /></Link>
       </Menu.Item>
 
-      <Menu.Item key="/404">
-	<Link to="/page-you-dont-know"><Icon type="frown-circle" />404</Link>
-      </Menu.Item>
-      
+      <Menu.Item key="lang" style={{float: 'right'}}>{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
+
       { currentUser ? logout : login }
 
       { currentUser ? null : register }
-
-      <Menu.Item key="lang">{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
 
     </Menu>
   );
