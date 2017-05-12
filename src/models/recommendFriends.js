@@ -38,6 +38,7 @@ export default {
     *addFriends({}, {call, put, select}) {
       const { id, token } = yield select(state => state.currentUser)
       const { selectedFriends } = yield select(state => state.recommendFriends)
+      const { registerStep } = yield select(state => state.app)
 
       try {
         yield call(api.addFriend, token, { user: id, friend: selectedFriends })
@@ -45,27 +46,14 @@ export default {
         // TODO 错误处理
         console.error(e)
       } finally {
-        yield put(routerRedux.push('/recommend_projects'))
-        yield call(delay, 500)
-        yield put({ type: 'setFriends', payload: [] })
-        yield put({ type: 'clearSelected' })
+        yield put({ type: 'app/registerStepForward', payload: registerStep })
       }
     },
 
-    *skipFriends({}, {call, put}) {
-      yield put(routerRedux.push('/recommend_projects'))
-      yield call(delay, 500)
-      yield put({ type: 'setFriends', payload: [] })
-      yield put({ type: 'clearSelected' })
+    *skipFriends({}, {call, put, select}) {
+      const { registerStep } = yield select(state => state.app)
+      yield put({ type: 'app/registerStepForward', payload: registerStep })
     }
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname, query }) => {
-        if (pathname === '/recommend_friends') {
-          dispatch({ type: 'refreshFriends' });
-        }
-      })
-    }
-  },
+  subscriptions: {}
 };

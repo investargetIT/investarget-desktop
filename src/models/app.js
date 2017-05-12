@@ -5,6 +5,7 @@ export default {
   state: {
     selectedKeys: [],
     openKeys: [],
+    registerStep: 1,
     tags: [],
     countries: [],
     titles: [],
@@ -27,8 +28,19 @@ export default {
     saveTitles(state, { payload: titles }) {
       return { ...state, titles }
     },
+    setRegisterStep(state, { payload: registerStep }) {
+      return { ...state, registerStep }
+    }
   },
   effects: {
+    *registerStepForward({payload: step}, { call, put }) {
+      if (step == 1) {
+        yield put({ type: 'recommendFriends/refreshFriends' })
+      } else if (step == 2) {
+        yield put({ type: 'recommendProjects/refreshProjects' })
+      }
+      yield put({ type: 'setRegisterStep', payload: step + 1 })
+    },
     *requestTags({}, { call, put }) {
       const { data } = yield call(api.getTags)
       yield put({ type: 'saveTags', payload: data })

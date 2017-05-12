@@ -35,7 +35,7 @@ export default {
       yield put({ type: 'setProjects', payload: projects })
     },
 
-    *addProjects({}, {call, put, select}) {
+    *addProjects({dispatch}, {call, put, select}) {
       const { token, id } = yield select(state => state.currentUser)
       const { selectedProjects } = yield select(state => state.recommendProjects)
       try {
@@ -45,17 +45,11 @@ export default {
         console.error(e)
       } finally {
         yield put(routerRedux.push('/app'))
-        yield call(delay, 500)
-        yield put({ type: 'setProjects', payload: [] })
-        yield put({ type: 'clearSelected' })
       }
     },
 
-    *skipProjects({}, {call, put}) {
+    *skipProjects({dispatch}, {call, put}) {
       yield put(routerRedux.push('/app'))
-      yield call(delay, 500)
-      yield put({ type: 'setProjects', payload: [] })
-      yield put({ type: 'clearSelected' })
     }
   },
   subscriptions: {

@@ -3,48 +3,13 @@ html, body, :global(#root) {
   height: 100%;
 }
 
-.clearfix:before, .clearfix:after {
+:global(.clearfix:before), :global(.clearfix:after) {
   content: " ";
   display: table;
 }
-.clearfix:after {
+:global(.clearfix:after) {
   clear: both;
   visibility: hidden;
   font-size: 0;
   height: 0;
-}
-
-
-:global(.transitionWrapper) {
-    position: relative;
-    height: 100%;
-}
-
-:global(.transitionWrapper-enter) {
-    left: 100%;
-    transition: left 500ms ease;
-    z-index: 1;
-}
-
-:global(.transitionWrapper-enter.transitionWrapper-enter-active) {
-    left: 0;
-}
-
-:global(.transitionWrapper-leave) {
-    left: 0;
-    transition: left 300ms ease;
-    z-index: 2;
-}
-
-:global(.transitionWrapper-leave.transitionWrapper-leave-active) {
-    left: -100%;
-}
-
-
-:global(.transitionWrapper-enter.disabled) {
-    transition: none;
-}
-
-:global(.transitionWrapper-leave.disabled) {
-    transition: none;
 }
