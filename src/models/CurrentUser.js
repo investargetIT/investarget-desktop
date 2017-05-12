@@ -29,7 +29,17 @@ export default {
       localStorage.removeItem('user_info')
       yield put({ type: 'delete' })
       yield put(routerRedux.replace('/'))
-    }
+    },
+    *register({ payload: user }, { call, put }) {
+      const { data } = yield call(api.register, user)
+      yield put({
+        type: 'login',
+        payload: {
+          username: user.email,
+          password: user.password
+        }
+      })
+    },
   }
 }
 

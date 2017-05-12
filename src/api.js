@@ -116,7 +116,7 @@ export function get({ page }) {
   const userStr = localStorage.getItem('user_info')
   const user = userStr ? JSON.parse(userStr) : null
 
-  return request(`/user/?_page=${page}&_limit=${PAGE_SIZE}`, {
+  return request(`/user/?page_index=${page}&page_size=${PAGE_SIZE}`, {
     headers: {
       "token": user.token,
       "Accept": 'application/json'
@@ -132,5 +132,37 @@ export function addFriend(token, param) {
       "token": token,
       "Content-Type": "application/json",
     }
+  })
+}
+
+export function deleteUser(id) {
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  return request('/user/', {
+    method: 'DELETE',
+    body: JSON.stringify({ users: [id] }),
+    headers: {
+      "token": user.token,
+      "Content-Type": "application/json",
+    }
+  })
+}
+
+export function register(user) {
+  const datasource = 1
+  const mobilecode = '375104'
+  const mobilecodetoken = '4871ace7028c4dc76c260adff9386e4f'
+  const mobile = '18004092637'
+  const groups = '1'
+  const nameC = user.name
+  const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC}
+  return request('/user/register/', {
+    method: 'POST',
+    body: JSON.stringify(param),
+    headers: {
+      "Content-Type": "application/json",
+      "clienttype": "3"
+    },
   })
 }

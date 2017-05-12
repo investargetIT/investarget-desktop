@@ -57,6 +57,10 @@ class Register extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values)
+        this.props.dispatch({
+          type: 'currentUser/register',
+          payload: values
+        })
       }
     })
   }
@@ -67,7 +71,7 @@ class Register extends React.Component {
     }
     
     getOrg(value).then(data => {
-      this.setState({ org: data.data })
+      this.setState({ org: data.data.data })
     })
   }
 
@@ -130,7 +134,7 @@ class Register extends React.Component {
         </FormItem>
 
         <FormItem {...formItemLayout} label="Phone Number">
-          {getFieldDecorator('phone', {
+          {getFieldDecorator('mobile', {
             rules: [{ required: true, message: 'Please input your phone number!' }],
           })(
             <Input addonBefore={prefixSelector} />
@@ -238,7 +242,7 @@ class Register extends React.Component {
         </FormItem>
 
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit" size="large">Register</Button>
+          <Button type="primary" htmlType="submit" size="large" loading={this.props.loading}>Register</Button>
         </FormItem>
 
       </Form>
@@ -249,7 +253,7 @@ class Register extends React.Component {
 }
 function mapStateToProps(state) {
   const { tags, countries, titles } = state.app
-  return { tags, countries, titles }
+  return { tags, countries, titles, loading: (state.loading.effects['currentUser/register'] || state.loading.effects['currentUser/login']) }
 }
 
 export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))

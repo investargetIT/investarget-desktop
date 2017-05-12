@@ -61,8 +61,8 @@ export default {
       const { data } = yield call(api.get, { page })
       yield put({ type: 'save', 
         payload: {
-          data,
-          total: data.length,
+          data: data.data,
+          total: data.count,
           page: parseInt(page, 10),
         }
       })
