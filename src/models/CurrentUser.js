@@ -20,8 +20,8 @@ export default {
       const userInfo = { ...user_info, token }
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
-	type: 'save',
-	userInfo
+        type: 'save',
+        userInfo
       })
       yield put(routerRedux.replace('/app'))
     },

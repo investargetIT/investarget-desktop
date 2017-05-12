@@ -33,7 +33,8 @@ export default {
     }
   },
   effects: {
-    *registerStepForward({payload: step}, { call, put }) {
+    *registerStepForward({}, { call, put, select }) {
+      const { registerStep: step } = yield select(state => state.app)
       if (step == 1) {
         yield put({ type: 'recommendFriends/refreshFriends' })
       } else if (step == 2) {

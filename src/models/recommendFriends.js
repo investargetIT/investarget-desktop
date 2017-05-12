@@ -35,10 +35,9 @@ export default {
       yield put({ type: 'setFriends', payload: friends })
     },
 
-    *addFriends({}, {call, put, select}) {
+    *addFriends({}, {call, put}) {
       const { id, token } = yield select(state => state.currentUser)
       const { selectedFriends } = yield select(state => state.recommendFriends)
-      const { registerStep } = yield select(state => state.app)
 
       try {
         yield call(api.addFriend, token, { user: id, friend: selectedFriends })
@@ -46,13 +45,12 @@ export default {
         // TODO 错误处理
         console.error(e)
       } finally {
-        yield put({ type: 'app/registerStepForward', payload: registerStep })
+        yield put({ type: 'app/registerStepForward' })
       }
     },
 
-    *skipFriends({}, {call, put, select}) {
-      const { registerStep } = yield select(state => state.app)
-      yield put({ type: 'app/registerStepForward', payload: registerStep })
+    *skipFriends({}, {call, put}) {
+      yield put({ type: 'app/registerStepForward' })
     }
   },
   subscriptions: {}
