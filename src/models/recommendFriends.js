@@ -35,7 +35,7 @@ export default {
       yield put({ type: 'setFriends', payload: friends })
     },
 
-    *addFriends({}, {call, put}) {
+    *addFriends({}, {call, put, select}) {
       const { id, token } = yield select(state => state.currentUser)
       const { selectedFriends } = yield select(state => state.recommendFriends)
 
