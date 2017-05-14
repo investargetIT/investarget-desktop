@@ -2,6 +2,34 @@ import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
 
+function r(url, method, body) {
+
+  const options = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "clienttype": "3"
+    }
+  }
+
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  if (user) {
+    options.headers["token"] = user.token
+  }
+
+  if (method) {
+    options["method"] = method
+  }
+
+  if (body) {
+    options["body"] = JSON.stringify(body)
+  }
+
+  return request(url, options)
+}
+
 /**
  * dataroom
  */
@@ -12,11 +40,7 @@ import { PAGE_SIZE } from './constants'
  */
 
 export function getOrg(keywords) {
-  return request('/org/?search=' + keywords, {
-    headers: {
-      "Accept": "application/json"
-    }
-  })
+  return r('/org/?search=' + keywords)
 }
 
 /**
@@ -24,24 +48,12 @@ export function getOrg(keywords) {
  */
 
 export function getProj(token, param) {
-  return request('/proj/?' + qs.stringify(param), {
-    headers: {
-      'token': token,
-      'Accept': 'application/json'
-    }
-  })
+  return r('/proj/?' + qs.stringify(param))
 }
 
 export function favoriteProj(token, param) {
   console.log('POST /proj/favorite')
-  return request('/proj/favorite/', {
-    method: 'POST',
-    body: JSON.stringify(param),
-    headers: {
-      'token': token,
-      'Content-Type': 'application/json',
-    }
-  })
+  return r('/proj/favorite/', 'POST', param)
 }
 
 /**
@@ -54,27 +66,15 @@ export function favoriteProj(token, param) {
  */
 
 export function getTags() {
-  return request('/source/tag', {
-    headers: {
-      "Accept": "application/json"
-    }
-  })
+  return r('/source/tag')
 }
 
 export function getCountries() {
-  return request('/source/country', {
-    headers: {
-      "Accept": "application/json"
-    }
-  })
+  return r('/source/country')
 }
 
 export function getTitles() {
-  return request('/source/title', {
-    headers: {
-      "Accept": "application/json"
-    }
-  })
+  return r('/source/title')
 }
 
 
@@ -88,12 +88,7 @@ export function getTitles() {
  */
 
 export function getUser(token, param) {
-  return request('/user/?' + qs.stringify(param), {
-    headers: {
-      'token': token,
-      'Accept': 'application/json'
-    }
-  })
+  return r('/user/?' + qs.stringify(param))
 }
 
 export function login(values) {
@@ -102,51 +97,19 @@ export function login(values) {
     password: values.password,
     datasource: 1
   }
-  return request('/user/login/', {
-    method: 'POST',
-    body: JSON.stringify(param),
-    headers: {
-      "Content-Type": "application/json",
-      "clienttype": "3"
-    },
-  })
+  return r('/user/login/', 'POST', param)
 }
 
 export function get({ page }) {
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
-
-  return request(`/user/?page_index=${page}&page_size=${PAGE_SIZE}`, {
-    headers: {
-      "token": user.token,
-      "Accept": 'application/json'
-    }
-  })
+  return r(`/user/?page_index=${page}&page_size=${PAGE_SIZE}`)
 }
 
 export function addFriend(token, param) {
-  return request('/user/friend/', {
-    method: 'POST',
-    body: JSON.stringify(param),
-    headers: {
-      "token": token,
-      "Content-Type": "application/json",
-    }
-  })
+  return r('/user/friend/', 'POST', param)
 }
 
 export function deleteUser(id) {
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
-
-  return request('/user/', {
-    method: 'DELETE',
-    body: JSON.stringify({ users: [id] }),
-    headers: {
-      "token": user.token,
-      "Content-Type": "application/json",
-    }
-  })
+  return r('/user/', 'DELETE', { users: [id] })
 }
 
 export function register(user) {
@@ -157,12 +120,5 @@ export function register(user) {
   const groups = '1'
   const nameC = user.name
   const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC}
-  return request('/user/register/', {
-    method: 'POST',
-    body: JSON.stringify(param),
-    headers: {
-      "Content-Type": "application/json",
-      "clienttype": "3"
-    },
-  })
+  return r('/user/register/', 'POST', param)
 }
