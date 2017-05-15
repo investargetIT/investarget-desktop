@@ -77,6 +77,9 @@ export function getTitles() {
   return r('/source/title')
 }
 
+export function getIndustries() {
+  return r('/source/industry')
+}
 
 /**
  * timeline

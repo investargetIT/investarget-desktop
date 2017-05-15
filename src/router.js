@@ -8,6 +8,9 @@ import Register from './routes/Register'
 import Home from './routes/Home'
 
 
+import AddOrganization from "./routes/AddOrganization.js";
+
+
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
@@ -17,6 +20,7 @@ function RouterConfig({ history }) {
       <Route path="/app" component={IndexPage} />
       <Route path="/app/products" component={Products} />
       <Route path="/app/investor/list" component={InvestorList} />
+      <Route path="/app/organization/add" component={AddOrganization} />
     </Router>
   );
 }
