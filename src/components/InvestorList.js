@@ -1,14 +1,17 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Checkbox, Radio, Select, Button, Input, Row, Col } from 'antd'
+import { Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm } from 'antd'
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 const Option = Select.Option
 
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
+import { PAGE_SIZE } from '../constants'
+import { routerRedux } from 'dva/router'
+import styles from './Users.css';
+import UserModal from './UserModal';
 
-
-function InvestorList({ intl, dispatch, transactionPhases, transactionPhaseOptions, tags, tagOptions, currencies, audit, areas, areaOptions, name, phone, email, organization, transaction, searchType, loading }) {
+function InvestorList({ list: dataSource, total, page: current, intl, dispatch, transactionPhases, transactionPhaseOptions, tags, tagOptions, currencies, audit, areas, areaOptions, name, phone, email, organization, transaction, searchType, loading }) {
   const currencyOptions = [
     { label: intl.formatMessage({ id: 'user.dollar' }), value: 0 },
     { label: intl.formatMessage({ id: 'user.rmb' }), value: 1 },
@@ -125,6 +128,67 @@ function InvestorList({ intl, dispatch, transactionPhases, transactionPhaseOptio
     })
   }
 
+  function createHandler(values) {
+    dispatch({
+      type: 'users/create',
+      payload: values,
+    });
+  }
+
+  function deleteHandler(id) {
+    dispatch({
+      type: 'users/remove',
+      payload: id,
+    });
+  }
+
+  function pageChangeHandler(page) {
+    dispatch(routerRedux.push({
+      pathname: '/app/investor/list',
+      query: { page },
+    }));
+  }
+
+  function editHandler(id, values) {
+    dispatch({
+      type: 'users/patch',
+      payload: { id, values },
+    });
+  }
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: text => <a href="">{text}</a>,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Website',
+      dataIndex: 'website',
+      key: 'website',
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      render: (text, record) => (
+        <span className={styles.operation}>
+          <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
+            <a>Edit</a>
+          </UserModal>
+          <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+            <a href="">Delete</a>
+          </Popconfirm>
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div>
       <Row gutter={16} style={{marginBottom: '16px'}}>
@@ -201,6 +265,26 @@ function InvestorList({ intl, dispatch, transactionPhases, transactionPhaseOptio
         <Button type="primary" icon="search" onClick={searchHandler}></Button>
       </div>
 
+      <div className={styles.create}>
+        <UserModal record={{}} onOk={createHandler}>
+          <Button type="primary">Create User</Button>
+        </UserModal>
+      </div>
+
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        rowKey={record => record.id}
+        pagination={false} />
+
+      <Pagination
+        className="ant-table-pagination"
+        total={total}
+        current={current}
+        pageSize={PAGE_SIZE}
+        onChange={pageChangeHandler} />
+
     </div>
   );
 }
@@ -211,6 +295,7 @@ function mapStateToProps(state) {
   transactionPhaseOptions = transactionPhaseOptions.map(item => ({ label: item.name, value: item.id }))
   tagOptions = tagOptions.map(item => ({ label: item.tagName, value: item.id }))
   areaOptions = areaOptions.map(item => ({ label: item.areaName, value: item.id }))
+  const { list, total, page } = state.users
   return {
     transactionPhaseOptions,
     transactionPhases,
@@ -222,7 +307,10 @@ function mapStateToProps(state) {
     areas,
     name, phone, email, organization, transaction,
     searchType,
-    loading: state.loading.effects['investorList/fetch'],
+    loading: state.loading.effects['users/get'],
+    list,
+    total,
+    page
   }
 }
 

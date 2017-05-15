@@ -71,7 +71,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/app/users') {
+        if (pathname === '/app/investor/list') {
           dispatch({ type: 'get', payload: query });
         }
       });

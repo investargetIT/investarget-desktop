@@ -55,7 +55,7 @@ class MainLayout extends React.Component {
 	    >
 	      <SubMenu key="sub1" title={<span><Icon type="user" /><FormattedMessage id="menu.project_management" /></span>}>
           <Menu.Item key="/app/products"><Link to="/app/products"><FormattedMessage id="menu.upload_project" /></Link></Menu.Item>
-          <Menu.Item key="/app/users"><Link to="/app/users"><FormattedMessage id="menu.platform_projects" /></Link></Menu.Item>
+          <Menu.Item key="/app/users"><FormattedMessage id="menu.platform_projects" /></Menu.Item>
 	      </SubMenu>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.institution" /></span></Menu.Item>
 	      <Menu.Item><span><Icon type="user" /><FormattedMessage id="menu.email_manage" /></span></Menu.Item>
