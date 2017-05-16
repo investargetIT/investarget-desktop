@@ -5,7 +5,7 @@ const FormItem = Form.Item
 const Option = Select.Option
 const RadioGroup = Radio.Group
 
-function AddOrganization({ form, industryOptions }) {
+function AddOrganization({ form, industryOptions, goBack }) {
 
   const { getFieldDecorator } = form
   const formItemLayout = {
@@ -224,7 +224,7 @@ function AddOrganization({ form, industryOptions }) {
             getFieldDecorator('transactionPhases', {
               rules: [{ required: true, message: 'Please input' }]
             })(
-              <Select multiple>
+              <Select mode="multiple">
                 {
                   transactionPhaseOptions.map(item =>
                     <Option key={item.value.toString()} value={item.value.toString()}>{item.label}</Option>
@@ -322,7 +322,7 @@ function AddOrganization({ form, industryOptions }) {
           {
             <div style={{ textAlign: 'center' }}>
               <Button type="primary" htmlType="submit" size="large" style={{margin: '0 8px'}}>提交</Button>
-              <Button size="large" style={{margin: '0 8px'}}>返回</Button>
+              <Button size="large" style={{margin: '0 8px'}} onClick={goBack}>返回</Button>
             </div>
           }
         </FormItem>

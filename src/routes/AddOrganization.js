@@ -4,29 +4,23 @@ import MainLayout from '../components/MainLayout';
 import AddOrganizationComponent from '../components/AddOrganization'
 
 
-class AddOrganization extends React.Component {
-  constructor(props) {
-    super(props)
+function AddOrganization({ dispatch, industryOptions}) {
+
+  function goBack() {
+    dispatch({
+      type: 'addOrganization/goBack'
+    })
   }
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getIndustries' })
-  }
-
-  render() {
-    return (
-      <MainLayout location={location}>
-        <AddOrganizationComponent
-          industryOptions={this.props.industryOptions}
-        />
-      </MainLayout>
-    )
-  }
+  return (
+    <MainLayout location={location}>
+      <AddOrganizationComponent
+        industryOptions={industryOptions}
+        goBack={goBack}
+      />
+    </MainLayout>
+  )
 }
-
-
-
-
 
 
 function mapStateToProps(state) {
