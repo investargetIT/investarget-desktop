@@ -1,5 +1,10 @@
 import * as api from '../api'
 
+const routeNeedsTag = [
+  "/register",
+  "/app/investor/list"
+]
+
 export default {
   namespace: 'app',
   state: {
@@ -77,6 +82,11 @@ export default {
           payload: selectedKeys
         })
         // TODO 设置 selectedKeys 的同时设置 openKeys
+
+        if (routeNeedsTag.includes(pathname)) {
+          dispatch({ type: 'getTags' })
+        }
+
       })
     }
   },

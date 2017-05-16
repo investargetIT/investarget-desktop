@@ -145,7 +145,6 @@ class Register extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getTags' })
     this.props.dispatch({ type: 'app/getCountries' })
     this.props.dispatch({ type: 'app/getTitles' })
   }

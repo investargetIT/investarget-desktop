@@ -53,6 +53,11 @@ export default {
     },
     clearValue(state) {
       return { ...state, name: null, phone: null, email: null, orgnization: null, transaction: null }
+    },
+    filterOnChange(state, { payload: { type, value } }) {
+      return Object.assign({}, state, {
+        [type]: value
+      })
     }
   },
   effects: {

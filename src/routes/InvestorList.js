@@ -10,6 +10,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { PAGE_SIZE } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
+import { TransactionPhaseFilter, TagFilter, InvestorListFilter } from '../components/Filter'
 
 const createStyle = {
   marginBottom: '1.5em'
@@ -19,7 +20,7 @@ const operationStyle = {
   margin: '0 .5em'
 }
 
-function InvestorList({ location, list: dataSource, total, page: current, intl, dispatch, transactionPhases, transactionPhaseOptions, tags, tagOptions, currencies, audit, areas, areaOptions, name, phone, email, organization, transaction, searchType, loading }) {
+function InvestorList({ filter, location, list: dataSource, total, page: current, intl, dispatch, transactionPhases, transactionPhaseOptions, tags, tagOptions, currencies, audit, areas, areaOptions, name, phone, email, organization, transaction, searchType, loading }) {
   const currencyOptions = [
     { label: intl.formatMessage({ id: 'user.dollar' }), value: 0 },
     { label: intl.formatMessage({ id: 'user.rmb' }), value: 1 },
@@ -197,28 +198,27 @@ function InvestorList({ location, list: dataSource, total, page: current, intl, 
       ),
     },
   ];
+
+  function filterOnChange(type, value) {
+    dispatch({
+      type: 'investorList/filterOnChange',
+      payload: {
+        type,
+        value
+      }
+    })
+  }
+
   return (
     <MainLayout location={location}>
       <div>
 
         <div>
-          <Row gutter={16} style={{marginBottom: '16px'}}>
-            <Col span={4} >
-              <FormattedMessage id="user.investment_rounds" />
-            </Col>
-            <Col span={20} >
-              <CheckboxGroup options={transactionPhaseOptions} value={transactionPhases} onChange={transactonPhaseHandler} />
-            </Col>
-          </Row>
-          <Row gutter={16} style={{marginBottom: '16px'}}>
-            <Col span={4} >
-              <FormattedMessage id="user.tag" />
-            </Col>
-            <Col span={20} >
-              <CheckboxGroup options={tagOptions} value={tags} onChange={tagHandler} />
-            </Col>
-          </Row>
-          <Row gutter={16} style={{marginBottom: '16px'}}>
+
+
+          <InvestorListFilter value={filter} onChange={filterOnChange} />
+
+              <Row gutter={16} style={{marginBottom: '16px'}}>
             <Col span={4} >
               <FormattedMessage id="user.currency" />
             </Col>
@@ -304,6 +304,7 @@ function InvestorList({ location, list: dataSource, total, page: current, intl, 
 }
 
 function mapStateToProps(state) {
+  const filter = state.investorList
   const { transactionPhases, tags, currencies, audit, areas, searchType, name, phone, email, organization, transaction } = state.investorList
   var { transactionPhases: transactionPhaseOptions, tags: tagOptions, areas: areaOptions } = state.app
   transactionPhaseOptions = transactionPhaseOptions.map(item => ({ label: item.name, value: item.id }))
@@ -311,6 +312,7 @@ function mapStateToProps(state) {
   areaOptions = areaOptions.map(item => ({ label: item.areaName, value: item.id }))
   const { list, total, page } = state.users
   return {
+    filter,
     transactionPhaseOptions,
     transactionPhases,
     tagOptions,

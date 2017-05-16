@@ -19,7 +19,8 @@ function shorten(key) {
 }
 
 function t(obj, id) {
-  return obj.props.intl.formatMessage({ id: id })
+  const props = obj.props || obj
+  return props.intl.formatMessage({ id: id })
 }
 
 export { configMessages, t }
