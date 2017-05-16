@@ -2,8 +2,11 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import { connect } from 'dva'
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import { Checkbox, Select } from 'antd'
+import { Checkbox, Select, Radio } from 'antd'
+import TabCheckbox from './TabCheckbox'
 import { t } from '../utils/util'
+
+const RadioGroup = Radio.Group
 
 function BasicContainer(props) {
   return (
@@ -25,7 +28,7 @@ function TransactionPhaseFilter(props) {
 
 function mapStateToProps(state) {
   var { transactionPhases: transactionPhaseOptions } = state.app
-  transactionPhaseOptions = transactionPhaseOptions.map(item => ({ label: item.name, value: item.id })) 
+  transactionPhaseOptions = transactionPhaseOptions.map(item => ({ label: item.name, value: item.id }))
   return { transactionPhaseOptions }
 }
 
@@ -97,6 +100,82 @@ function mapStateToPropsForAreaFilter(state) {
 
 AreaFilter = connect(mapStateToPropsForAreaFilter)(injectIntl(AreaFilter))
 
+function OverseaFilter(props) {
+  function handleChange(e) {
+    const value = e.target.value
+    props.onChange(value)
+  }
+  return (
+    <BasicContainer label="是否投资海外">
+      <RadioGroup value={props.value} onChange={handleChange}>
+        <Radio value={true}>是</Radio>
+        <Radio value={false}>否</Radio>
+      </RadioGroup>
+    </BasicContainer>
+  )
+}
+
+
+function IndustryFilter(props) {
+  return (
+    <BasicContainer label="行业">
+      <TabCheckbox options={props.industryOptions} value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function mapStateToPropsForIndustryFilter(state) {
+  const { industries } = state.app
+
+  let pIndustries = industries.filter(item => item.id == item.pIndustryId)
+  pIndustries.forEach(item => {
+    let pIndustryId = item.id
+    let subIndustries = industries.filter(item => item.pIndustryId == pIndustryId && item.id != pIndustryId)
+    item.children = subIndustries
+  })
+  const industryOptions = pIndustries.map(item => {
+    return {
+      label: item.industryName,
+      value: item.id,
+      children: item.children.map(item => {
+        return {
+          label: item.industryName,
+          value: item.id
+        }
+      })
+    }
+  })
+
+  return { industryOptions }
+}
+
+IndustryFilter = connect(mapStateToPropsForIndustryFilter)(injectIntl(IndustryFilter))
+
+
+function OrganizationTypeFilter(props) {
+  return (
+    <BasicContainer label="机构类型">
+      <Checkbox.Group options={props.options} value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function mapStateToPropsForOrganizationTypeFilter(state) {
+  const { organizationTypes } = state.app
+  const options = organizationTypes.map(item => {
+    return {
+      label: item.name,
+      value: item.id
+    }
+  })
+  return { options }
+}
+
+OrganizationTypeFilter = connect(mapStateToPropsForOrganizationTypeFilter)(injectIntl(OrganizationTypeFilter))
+
+
+
+
 function InvestorListFilter(props) {
   return (
     <div>
@@ -109,6 +188,20 @@ function InvestorListFilter(props) {
   )
 }
 
+function OrganizationListFilter(props) {
+  return (
+    <div>
+      <OverseaFilter value={props.value.isOversea} onChange={props.onChange.bind(this, 'isOversea')} />
+      <CurrencyFilter currency={props.value.currency} currencyHandler={props.onChange.bind(this, 'currency')} />
+      <TransactionPhaseFilter transactionPhases={props.value.transactionPhases} transactonPhaseHandler={props.onChange.bind(this, 'transactionPhases')} />
+      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
+      <TagFilter tags={props.value.tags} tagHandler={props.onChange.bind(this, 'tags')} />
+      <OrganizationTypeFilter value={props.value.organizationTypes} onChange={props.onChange.bind(this, 'organizationTypes')} />
+    </div>
+  )
+}
+
 module.exports = {
   InvestorListFilter,
+  OrganizationListFilter,
 }

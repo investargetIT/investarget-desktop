@@ -2,7 +2,8 @@ import * as api from '../api'
 
 const routeNeedsTag = [
   "/register",
-  "/app/investor/list"
+  "/app/investor/list",
+  "/app/organization/list",
 ]
 
 export default {

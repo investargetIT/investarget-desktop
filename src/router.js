@@ -11,6 +11,9 @@ import Home from './routes/Home'
 import AddOrganization from "./routes/AddOrganization.js";
 
 
+import OrganizationList from "./routes/OrganizationList.js";
+
+
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
@@ -21,6 +24,7 @@ function RouterConfig({ history }) {
       <Route path="/app/products" component={Products} />
       <Route path="/app/investor/list" component={InvestorList} />
       <Route path="/app/organization/add" component={AddOrganization} />
+      <Route path="/app/organization/list" component={OrganizationList} />
     </Router>
   );
 }
