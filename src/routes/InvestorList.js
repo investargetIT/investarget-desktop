@@ -10,7 +10,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { PAGE_SIZE } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
-import { TransactionPhaseFilter, TagFilter, InvestorListFilter } from '../components/Filter'
+import { InvestorListFilter } from '../components/Filter'
 
 const createStyle = {
   marginBottom: '1.5em'
@@ -21,53 +21,7 @@ const operationStyle = {
 }
 
 function InvestorList({ filter, location, list: dataSource, total, page: current, intl, dispatch, transactionPhases, transactionPhaseOptions, tags, tagOptions, currencies, audit, areas, areaOptions, name, phone, email, organization, transaction, searchType, loading }) {
-  const currencyOptions = [
-    { label: intl.formatMessage({ id: 'user.dollar' }), value: 0 },
-    { label: intl.formatMessage({ id: 'user.rmb' }), value: 1 },
-    { label: intl.formatMessage({ id: 'user.dollar_rmb' }), value: 2 },
-  ]
-  const auditOptions = [
-    { label: intl.formatMessage({ id: 'user.under_approval' }), value: 0 },
-    { label: intl.formatMessage({ id: 'user.recevied_approval' }), value: 1 },
-    { label: intl.formatMessage({ id: 'user.reject_approval' }), value: 2 },
-  ]
-
-  function transactonPhaseHandler(transactionPhases) {
-    dispatch({
-      type: 'investorList/transactionPhase',
-      payload: transactionPhases
-    })
-  }
-
-  function tagHandler(tags) {
-    dispatch({
-      type: 'investorList/tag',
-      payload: tags
-    })
-  }
-
-  function currencyHandler(currencies) {
-    dispatch({
-      type: 'investorList/currency',
-      payload: currencies
-    })
-  }
-
-  function auditHandler(e) {
-    const audit = e.target.value
-    dispatch({
-      type: 'investorList/audit',
-      payload: audit
-    })
-  }
-
-  function areaHandler(areas) {
-    areas = areas.map(item => parseInt(item, 10))
-    dispatch({
-      type: 'investorList/area',
-      payload: areas
-    })
-  }
+    
 
   function filterHandler() {
     dispatch({
@@ -217,43 +171,6 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
 
 
           <InvestorListFilter value={filter} onChange={filterOnChange} />
-
-              <Row gutter={16} style={{marginBottom: '16px'}}>
-            <Col span={4} >
-              <FormattedMessage id="user.currency" />
-            </Col>
-            <Col span={20} >
-              <CheckboxGroup options={currencyOptions} value={currencies} onChange={currencyHandler} />
-            </Col>
-          </Row>
-          <Row gutter={16} style={{marginBottom: '16px'}}>
-            <Col span={4} >
-              <FormattedMessage id="user.audit_status" />
-            </Col>
-            <Col span={20} >
-              <RadioGroup options={auditOptions} value={audit} onChange={auditHandler} />
-            </Col>
-          </Row>
-          <Row gutter={16} style={{marginBottom: '16px'}}>
-            <Col span={4} >
-              <FormattedMessage id="user.area" />
-            </Col>
-            <Col span={20} >
-              <Select
-                style={{ width: '100%' }}
-                mode = "multiple"
-                allowClear
-                optionFilterProp="children"
-                onChange={areaHandler}
-                value = {areas.map(item=>item.toString())}
-                tokenSeparators={[',']}
-              >
-                { areaOptions.map(item => (
-                  <Option key={item.value.toString()} value={item.value.toString()}>{ item.label }</Option>
-                )) }
-              </Select>
-            </Col>
-          </Row>
 
           <div style={{marginBottom: '16px'}}>
             <Button type="primary" icon="search" onClick={filterHandler}><FormattedMessage id="common.filter" /></Button>

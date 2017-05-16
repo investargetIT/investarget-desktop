@@ -15,21 +15,6 @@ export default {
     searchType: 'name',
   },
   reducers: {
-    transactionPhase(state, { payload: transactionPhases }) {
-      return { ...state, transactionPhases }
-    },
-    tag(state, { payload: tags }) {
-      return { ...state, tags }
-    },
-    currency(state, { payload: currencies }) {
-      return { ...state, currencies }
-    },
-    audit(state, { payload: audit }) {
-      return { ...state, audit }
-    },
-    area(state, { payload: areas }) {
-      return { ...state, areas }
-    },
     resetFilter(state) {
       return { ...state, transactionPhases: [], tags: [], currencies: [], audit: null, areas: [] }
     },
