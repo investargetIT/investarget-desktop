@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLayout from '../components/MainLayout';
+import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva';
 import { Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm } from 'antd'
 const CheckboxGroup = Checkbox.Group
@@ -116,7 +116,7 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
   }
 
   return (
-    <MainLayout location={location}>
+    <LeftRightLayout location={location}>
 
       <InvestorListFilter value={filter} onChange={filterOnChange} />
 
@@ -147,7 +147,7 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
         pageSize={PAGE_SIZE}
         onChange={pageChangeHandler} />
 
-    </MainLayout>
+    </LeftRightLayout>
   )
 }
 

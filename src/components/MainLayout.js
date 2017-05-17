@@ -93,7 +93,7 @@ class MainLayout extends React.Component {
     return (
       <Layout>
 
-	<Header location={this.props.location} />
+	<Header mode={this.props.currentUser ? "dark" : "light"} location={this.props.location} />
 
         { this.props.currentUser ? sideBarAndContent : content }
 

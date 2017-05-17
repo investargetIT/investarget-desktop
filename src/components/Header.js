@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl'
 
 const confirm = Modal.confirm
 
-function Header({ dispatch, location, currentUser }) {
+function Header({ dispatch, location, currentUser, mode }) {
 
   function handleMenuClicked(param) {
 
@@ -49,7 +49,7 @@ function Header({ dispatch, location, currentUser }) {
     <Menu
       selectedKeys={[location.pathname]}
       mode="horizontal"
-      theme={ currentUser ? "dark" : "light" }
+      theme={mode}
       onClick={handleMenuClicked}>
 
       <Menu.Item key="/">
