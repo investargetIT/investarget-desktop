@@ -118,19 +118,15 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
   return (
     <LeftRightLayout location={location}>
 
-      <InvestorListFilter value={filter} onChange={filterOnChange} />
-
-      <div style={{marginBottom: '16px'}}>
-        <Button type="primary" icon="search" onClick={filterHandler}><FormattedMessage id="common.filter" /></Button>
-        <Button onClick={resetHandler}><FormattedMessage id="common.reset" /></Button>
-      </div>
-
-      <Search onSearch={searchHandler} />
+      <InvestorListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
 
       <div style={createStyle}>
         <UserModal record={{}} onOk={createHandler}>
           <Button type="primary">Create User</Button>
         </UserModal>
+        <div style={{ float: 'right' }}>
+          <Search onSearch={searchHandler} />
+        </div>
       </div>
 
       <Table

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Button } from 'antd'
 import { connect } from 'dva'
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { Checkbox, Select, Radio } from 'antd'
@@ -16,6 +16,14 @@ function BasicContainer(props) {
   )
 }
 
+function FilterOperation(props) {
+  return (
+    <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+      <Button type="primary" icon="search" onClick={props.onSearch}><FormattedMessage id="common.filter" /></Button>
+      <Button style={{ marginLeft: 10 }} onClick={props.onReset}><FormattedMessage id="common.reset" /></Button>
+    </div>
+  )
+}
 
 function TransactionPhaseFilter(props) {
   return (
@@ -38,7 +46,9 @@ TransactionPhaseFilter = connect(mapStateToPropsForTransactionPhase)(injectIntl(
 function TagFilter(props) {
   return (
     <BasicContainer label={ props.intl.formatMessage({id: 'filter.tag'}) }>
-      <Checkbox.Group options={props.tagOptions} value={props.value} onChange={props.onChange} />
+      <div style={{ lineHeight: 2 }}>
+        <Checkbox.Group options={props.tagOptions} value={props.value} onChange={props.onChange} />
+      </div>
     </BasicContainer>
   )
 }
@@ -200,6 +210,7 @@ function InvestorListFilter(props) {
       <CurrencyFilter value={props.value.currency} onChange={props.onChange.bind(this, 'currency')} />
       <AuditFilter value={props.value.audit} onChange={props.onChange.bind(this, 'audit')} />
       <AreaFilter value={props.value.areas.map(item=>item.toString())} onChange={props.onChange.bind(this, 'areas')} />
+      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
 }
