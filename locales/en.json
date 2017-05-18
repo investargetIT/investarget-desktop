@@ -778,5 +778,43 @@
     "required": "All the * are required",
     "show_size": "Show Records",
     "jump_page": "Jump to"
+  },
+
+  "organization": {
+    "org_list": "Organization List",
+    "new_org": "New Organization",
+    "name": "Name",
+    "cn_name": "Chinese Name",
+    "en_name": "English Name",
+    "org_type": "Organization Type",
+    "currency": "Currenncy",
+    "industry": "Industry",
+    "transaction_range": "Transaction Range",
+    "fund_size": "Fund Size",
+    "decision_cycle": "Decision Cycle (day)",
+    "company_email": "Email",
+    "company_website": "Website",
+    "telephone": "Telephone",
+    "wechat": "Wechat",
+    "transaction_phase": "Transaction Phase",
+    "audit_status": "Audit Status",
+    "stock_code": "Stock Code",
+    "invest_oversea_project": "Invest Oversea Project",
+    "address": "Address",
+    "description": "Description",
+    "typical_case": "Typical Case",
+    "partner_or_investment_committee_member": "Partner/Board Member",
+    "decision_process": "Decision Process"
+  },
+
+  "filter": {
+    "invest_oversea": "Invest Oversea",
+    "currency": "Currency",
+    "investment_rounds": "Investment Rounds",
+    "industry": "Industry",
+    "tag": "Tag",
+    "org_type": "Organization Type",
+    "audit_status": "Audit Status",
+    "area": "Area"
   }
 }

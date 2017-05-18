@@ -774,5 +774,45 @@
         "required": "所有*为必填项",
         "show_size": "显示条数",
         "jump_page": "跳转至"
+    },
+
+
+    "organization": {
+      "org_list": "机构列表",
+      "new_org": "新增机构",
+      "name": "名称",
+      "cn_name": "中文名称",
+      "en_name": "英文名称",
+      "org_type": "机构类型",
+      "currency": "货币类型",
+      "industry": "行业",
+      "transaction_range": "交易范围",
+      "fund_size": "基金规模",
+      "decision_cycle": "决策周期",
+      "company_email": "公司邮箱",
+      "company_website": "公司官网",
+      "telephone": "电话",
+      "wechat": "微信",
+      "transaction_phase": "轮次",
+      "audit_status": "审核状态",
+      "stock_code": "股票代码",
+      "invest_oversea_project": "是否投海外项目",
+      "address": "地址",
+      "description": "描述",
+      "typical_case": "典型投资案例",
+      "partner_or_investment_committee_member": "合伙人/投委会成员",
+      "decision_process": "决策流程"
+    },
+
+
+    "filter": {
+      "invest_oversea": "投海外项目",
+      "currency": "货币",
+      "investment_rounds": "轮次",
+      "industry": "行业",
+      "tag": "标签",
+      "org_type": "机构类型",
+      "audit_status": "审核状态",
+      "area": "地区"
     }
 }
