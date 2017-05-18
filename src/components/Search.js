@@ -9,30 +9,40 @@ class Search extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      key: null
+      key: props.keys[0] && props.keys[0].value
     }
+    this.onKeyChange = this.onKeyChange.bind(this)
   }
 
-  onChange(value) {
+  onKeyChange(value) {
     this.setState({ key: value })
   }
 
+  onValueChange(key, e) {
+    const value = e.target.value
+    if (this.props.onChange) {
+      this.props.onChange(key, value)
+    }
+  }
+
   render() {
+    const defaultSearchKey = this.props.keys[0] && this.props.keys[0].value
     const selectBefore = (
-      <Select defaultValue="name" style={{ width: 80 }} onChange={this.onChange.bind(this)}>
-        <Option value="name"><FormattedMessage id="user.name" /></Option>
-        <Option value="phone"><FormattedMessage id="user.phone" /></Option>
-        <Option value="email"><FormattedMessage id="user.email" /></Option>
-        <Option value="organization"><FormattedMessage id="user.organization" /></Option>
-        <Option value="transaction"><FormattedMessage id="user.transaction" /></Option>
+      <Select defaultValue={defaultSearchKey} style={{ minWidth: 80 }} onChange={this.onKeyChange}>
+        {
+          this.props.keys.map(item =>
+            <Option key={item.value} value={item.value}>{item.label}</Option>
+          )
+        }
       </Select>
     )
 
     return (
-      <Input.Search 
-        style={{ width: 200 }} 
+      <Input.Search
+        style={{ width: 200 }}
         placeholder=""
         addonBefore={selectBefore}
+        onChange={this.onValueChange.bind(this, this.state.key)}
         onSearch={this.props.onSearch.bind(this, this.state.key)} />
     )
   }

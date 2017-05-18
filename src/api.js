@@ -1,6 +1,8 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
+import { qsArrayToString } from './utils/util'
+import _ from 'lodash'
 
 function r(url, method, body) {
 
@@ -40,6 +42,11 @@ function r(url, method, body) {
  */
 
 export function getOrg(param) {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/org/?' + qs.stringify(param))
 }
 

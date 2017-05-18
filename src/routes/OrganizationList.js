@@ -1,10 +1,11 @@
 import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
+import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Icon, Table } from 'antd'
+import { Icon, Table, Button, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { OrganizationListFilter } from '../components/Filter'
+import Search from '../components/Search'
 
 
 const styles = {
@@ -18,7 +19,7 @@ const styles = {
 }
 
 
-function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries, filter, data, loading }) {
+function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries, filter, total, page, pageSize, data, loading }) {
 
   const { formatMessage } = intl
 
@@ -73,7 +74,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
       industry: item.industry && item.industry.industryName,
       currency: item.currency,
       decision_cycle: item.decisionCycle,
-      transaction_phase: item.transactionPhases.map(item => item.name).join(' '),
+      transaction_phase: item.transactionPhases && item.transactionPhases.map(item => item.name).join(' '),
       stock_code: item.stockCode,
 
     }
@@ -90,6 +91,53 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
     })
   }
 
+  function filtHandler() {
+    dispatch({
+      type: 'organizationList/get'
+    })
+  }
+
+  function resetHandler() {
+    dispatch({
+      type: 'organizationList/reset'
+    })
+  }
+
+
+  function onShowSizeChange(current, pageSize) {
+    dispatch({
+      type: 'organizationList/changePageSize',
+      payload: pageSize
+    })
+  }
+  function onPageChange(page, pageSize) {
+    dispatch({
+      type: 'organizationList/changePage',
+      payload: page
+    })
+  }
+
+  const searchKeys = [
+    { value: 'name', label: <FormattedMessage id="organization.name" /> },
+    { value: 'stockCode', label: <FormattedMessage id="organization.stock_code" /> }
+  ]
+
+  function searchOnChange(key, value) {
+    if (key == 'stockCode') {
+      value = parseInt(value, 10)
+    }
+    dispatch({
+      type: 'organizationList/searchChange',
+      payload: { key, value }
+    })
+  }
+
+  function onSearch(key, value) {
+    dispatch({
+      type: 'organizationList/get',
+    })
+  }
+
   return (
     <MainLayout location={location}>
       <div>
@@ -102,7 +150,24 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
           </span>
         </div>
         <OrganizationListFilter value={filter} onChange={filterOnChange} />
-        <Table columns={columns} dataSource={dataSource} loading={loading} />
+        <div style={{marginBottom: '16px'}}>
+          <Button type="primary" icon="search" onClick={filtHandler}><FormattedMessage id="common.filter" /></Button>
+          <Button onClick={resetHandler}><FormattedMessage id="common.reset" /></Button>
+        </div>
+        <div style={{marginBottom: '16px'}}>
+          <Search keys={searchKeys} onChange={searchOnChange} onSearch={onSearch}/>
+        </div>
+        <Table columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
+        <Pagination
+          className="ant-table-pagination"
+          total={total}
+          current={page}
+          pageSize={pageSize}
+          onChange={onPageChange}
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+          showQuickJumper
+        />
       </div>
     </MainLayout>
   )
@@ -112,11 +177,14 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
 
 function mapStateToProps(state) {
 
-  const { isOversea, currency, transactionPhases, industries, tags, organizationTypes, data } = state.organizationList
+  const { isOversea, currency, transactionPhases, industries, tags, organizationTypes, data, page, total, pageSize } = state.organizationList
 
   const filter = { isOversea, currency, transactionPhases, industries, tags, organizationTypes }
 
   return {
+    total,
+    page,
+    pageSize,
     filter,
     data,
     loading: state.loading.effects['organizationList/get'],

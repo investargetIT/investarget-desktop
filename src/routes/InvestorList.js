@@ -24,7 +24,6 @@ const operationStyle = {
 }
 
 function InvestorList({ selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
-    
 
   function filterHandler() {
     dispatch({
@@ -153,17 +152,32 @@ function InvestorList({ selectedRowKeys, filter, location, list: dataSource, tot
     })
   }
 
+  const searchKeys = [
+    { value: 'name', label: <FormattedMessage id="user.name" /> },
+    { value: 'phone', label: <FormattedMessage id="user.phone" /> },
+    { value: 'email', label: <FormattedMessage id="user.email" /> },
+    { value: 'organization', label: <FormattedMessage id="user.organization" /> },
+    { value: 'transaction', label: <FormattedMessage id="user.transaction" /> },
+  ]
+
   return (
     <LeftRightLayout location={location}>
 
       <InvestorListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
+
+      <div style={{marginBottom: '16px'}}>
+        <Button type="primary" icon="search" onClick={filterHandler}><FormattedMessage id="common.filter" /></Button>
+        <Button onClick={resetHandler}><FormattedMessage id="common.reset" /></Button>
+      </div>
+
+      <Search keys={searchKeys} onSearch={searchHandler} />
 
       <div style={createStyle}>
         <UserModal record={{}} onOk={createHandler}>
           <Button type="primary">Create User</Button>
         </UserModal>
         <div style={{ float: 'right' }}>
-          <Search onSearch={searchHandler} />
+          <Search keys={searchKeys} onSearch={searchHandler} />
         </div>
       </div>
 
