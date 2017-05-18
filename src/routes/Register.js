@@ -81,7 +81,7 @@ class Register extends React.Component {
       return
     }
 
-    getOrg(value).then(data => {
+    getOrg({search: value}).then(data => {
       this.setState({ org: data.data.data })
     })
   }

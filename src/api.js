@@ -39,8 +39,8 @@ function r(url, method, body) {
  * org
  */
 
-export function getOrg(keywords) {
-  return r('/org/?search=' + keywords)
+export function getOrg(param) {
+  return r('/org/?' + qs.stringify(param))
 }
 
 /**
