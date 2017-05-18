@@ -13,6 +13,7 @@ export default {
     orgnization: null,
     transaction: null,
     searchType: 'name',
+    selectedRowKeys: []
   },
   reducers: {
     resetFilter(state) {
@@ -43,7 +44,10 @@ export default {
       return Object.assign({}, state, {
         [type]: value
       })
-    }
+    },
+    onSelectedRowKeysChanged(state, { payload: selectedRowKeys }) {
+      return { ...state, selectedRowKeys }
+    },
   },
   effects: {
     filter() {

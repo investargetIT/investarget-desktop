@@ -48,8 +48,23 @@ export default {
               name: "还脱",
               org_users: [8, 10]
             },
-            tags: [],
-            title: "董事长"
+            tags: [
+              { id: 0, name: 'TMT' },
+              { id: 1, name: '人工智能' },
+            ],
+            title: {
+              id: 1,
+              name: "董事长",
+            },
+            userstatus: {
+              id: 1,
+              name: "审核通过"
+            },
+            trader_relation: {
+              traderuser: {
+                name: '交易师'
+              }
+            },
           },
           {
             company: '多维海滩2',
@@ -65,8 +80,18 @@ export default {
               name: "还脱",
               org_users: [8, 10]
             },
-            tags: [],
-            title: "董事长"
+            tags: [
+              { id: 2, name: 'VR' },
+              { id: 3, name: 'AR' },
+            ],
+            title: {
+              id: 1,
+              name: "董事长",
+            },
+            userstatus: {
+              id: 1,
+              name: "审核通过"
+            },
           },
           {
             company: '多维海滩',
@@ -83,7 +108,14 @@ export default {
               org_users: [8, 10]
             },
             tags: [],
-            title: "董事长"
+            title: {
+              id: 1,
+              name: "董事长",
+            },
+            userstatus: {
+              id: 1,
+              name: "审核通过"
+            },
           }
         ]
       }

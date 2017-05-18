@@ -1,7 +1,7 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva';
-import { Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm } from 'antd'
+import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu } from 'antd'
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 const Option = Select.Option
@@ -18,10 +18,12 @@ const createStyle = {
 }
 
 const operationStyle = {
-  margin: '0 .5em'
+  margin: '0 .5em',
+  fontSize: '14px',
+  color: 'gray'
 }
 
-function InvestorList({ filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
+function InvestorList({ selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
     
 
   function filterHandler() {
@@ -74,37 +76,65 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
 
   const columns = [
     {
-      title: 'Name',
+      title: '姓名',
       dataIndex: 'name',
       key: 'name',
       render: text => <a href="">{text}</a>,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: '所属机构',
+      dataIndex: 'org.name',
+      key: 'org'
     },
     {
-      title: 'Website',
-      dataIndex: 'website',
-      key: 'website',
+      title: '职位',
+      dataIndex: 'title.name',
+      key: 'title'
     },
     {
-      title: 'Operation',
+      title: '标签',
+      dataIndex: 'tags',
+      key: 'tags',
+      render: tags => tags.map(t => t.name).join(' ')
+    },
+    {
+      title: '交易师',
+      dataIndex: 'trader_relation.traderuser.name',
+    },
+    {
+      title: '审核状态',
+      dataIndex: 'userstatus.name',
+    },
+    {
+      title: '资料完整度',
+      render: percent => <Progress percent={30} strokeWidth={5} />
+    },
+    {
+      title: '操作',
       key: 'operation',
       render: (text, record) => (
         <span>
+          <Dropdown overlay={menu}>
+            <a style={operationStyle} href="#"><Icon style={{ color: '#157915' }} type="setting" /></a>
+          </Dropdown>
           <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
-            <a style={operationStyle}>Edit</a>
+            <a style={operationStyle}><Icon style={{ color: '#10458F' }} type="edit" /></a>
           </UserModal>
           <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-            <a style={operationStyle} href="">Delete</a>
+            <a style={operationStyle} href=""><Icon style={{ color: '#F37676' }} type="delete" /></a>
           </Popconfirm>
         </span>
       ),
     },
   ];
 
+  const menu = (
+    <Menu>
+      <Menu.Item>待审核</Menu.Item>
+      <Menu.Item>审核通过</Menu.Item>
+      <Menu.Item>审核退回</Menu.Item>
+    </Menu>
+  )
   function filterOnChange(type, value) {
     dispatch({
       type: 'investorList/filterOnChange',
@@ -112,6 +142,14 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
         type,
         value
       }
+    })
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: selectedRowKeys => dispatch({
+      type: "investorList/onSelectedRowKeysChanged",
+      payload: selectedRowKeys
     })
   }
 
@@ -130,6 +168,7 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
       </div>
 
       <Table
+        rowSelection={rowSelection}
         columns={columns}
         dataSource={dataSource}
         loading={loading}
@@ -149,9 +188,11 @@ function InvestorList({ filter, location, list: dataSource, total, page: current
 
 function mapStateToProps(state) {
   const filter = state.investorList
+  const { selectedRowKeys } = filter
   const { list, total, page } = state.users
   return {
     filter,
+    selectedRowKeys,
     loading: state.loading.effects['users/get'],
     list,
     total,
