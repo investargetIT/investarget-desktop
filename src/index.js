@@ -22,10 +22,6 @@ const basename = lang ? ('/' + lang) : ''
 const app = dva({
   history: useRouterHistory(createHistory)({ basename: basename }),
   initialState: {
-    products: [
-      { name: 'dva', id: 1 },
-      { name: 'antd', id: 2 },
-    ],
     currentUser: user,
   },
   onError(e, dispatch) {
@@ -41,7 +37,6 @@ app.use(createLoading({
 }));
 
 // 3. Model
-app.model(require('./models/products'));
 app.model(require("./models/organizationList"));
 app.model(require("./models/addOrganization"));
 app.model(require("./models/recommendProjects"));
