@@ -129,6 +129,7 @@ export function register(user) {
   const mobile = '18004092637'
   const groups = '1'
   const nameC = user.name
-  const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC}
+  const orgname = user.organization
+  const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC, orgname}
   return r('/user/register/', 'POST', param)
 }

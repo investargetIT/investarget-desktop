@@ -149,11 +149,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
             </Link>
           </span>
         </div>
-        <OrganizationListFilter value={filter} onChange={filterOnChange} />
-        <div style={{marginBottom: '16px'}}>
-          <Button type="primary" icon="search" onClick={filtHandler}><FormattedMessage id="common.filter" /></Button>
-          <Button onClick={resetHandler}><FormattedMessage id="common.reset" /></Button>
-        </div>
+        <OrganizationListFilter value={filter} onChange={filterOnChange} onSearch={filtHandler} onReset={resetHandler} />
         <div style={{marginBottom: '16px'}}>
           <Search keys={searchKeys} onChange={searchOnChange} onSearch={onSearch}/>
         </div>

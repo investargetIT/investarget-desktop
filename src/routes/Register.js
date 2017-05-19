@@ -78,19 +78,18 @@ class Register extends React.Component {
 
   handleOrgChange = value => {
 
-    if (value === '' || value == undefined) {
+    if (value === '') {
       this.setState({ org: [] })
       return
-    } else if (isNaN(value) && value.length < 2) { // 字符串，长度小于 2
+    } else if (value.length < 2) {
       this.setState({ org: [] })
       return
-    } else if (!isNaN(value) && this.state.org.map(i => i.value).includes(value)) { // 数字 id，在 org 列表中
-      this.setState({ org: [] })
+    } else if (this.state.org.map(i => i.name).includes(value)) {
       return
     }
 
     getOrg({search: value}).then(data => {
-      const org = data.data.map(item => {
+      const org = data.data.data.map(item => {
         return { id: item.id, name: item.name }
       })
       this.setState({ org: org })
@@ -268,7 +267,7 @@ class Register extends React.Component {
                   rules: [{ required: true, message: 'Please input your organization!' }],
                 })(
                   <Select mode="combobox" allowClear onChange={this.handleOrgChange} optionFilterProp="children" optionLabelProp="children">
-                    {this.state.org.map(d => <Option key={d.id} value={d.id + ''}>{d.name}</Option>)}
+                    {this.state.org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option>)}
                   </Select>
                 )}
               </FormItem>

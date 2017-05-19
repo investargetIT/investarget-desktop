@@ -1,5 +1,5 @@
 import React from 'react';
-import LeftRightLayout from '../components/LeftRightLayout'
+import MainLayout from '../components/MainLayout'
 import { connect } from 'dva';
 import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu } from 'antd'
 const CheckboxGroup = Checkbox.Group
@@ -161,16 +161,9 @@ function InvestorList({ selectedRowKeys, filter, location, list: dataSource, tot
   ]
 
   return (
-    <LeftRightLayout location={location}>
+    <MainLayout location={location}>
 
       <InvestorListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
-
-      <div style={{marginBottom: '16px'}}>
-        <Button type="primary" icon="search" onClick={filterHandler}><FormattedMessage id="common.filter" /></Button>
-        <Button onClick={resetHandler}><FormattedMessage id="common.reset" /></Button>
-      </div>
-
-      <Search keys={searchKeys} onSearch={searchHandler} />
 
       <div style={createStyle}>
         <UserModal record={{}} onOk={createHandler}>
@@ -196,7 +189,7 @@ function InvestorList({ selectedRowKeys, filter, location, list: dataSource, tot
         pageSize={PAGE_SIZE}
         onChange={pageChangeHandler} />
 
-    </LeftRightLayout>
+    </MainLayout>
   )
 }
 

@@ -224,6 +224,7 @@ function OrganizationListFilter(props) {
       <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
       <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
       <OrganizationTypeFilter value={props.value.organizationTypes} onChange={props.onChange.bind(this, 'organizationTypes')} />
+      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
 }
