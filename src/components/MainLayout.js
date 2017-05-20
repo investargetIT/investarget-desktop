@@ -11,18 +11,6 @@ const { Content, Sider } = Layout
 
 class MainLayout extends React.Component {
 
-  state = {
-    collapsed: false,
-    mode: 'inline'
-  }
-
-  onCollapse = (collapsed) => {
-    this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical': 'inline'
-    })
-  }
-
   render () {
 
     const content = (
@@ -34,8 +22,8 @@ class MainLayout extends React.Component {
     const sideBarAndContent = (
       <Layout>
 
-        <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
-          <SiderMenu mode={this.state.mode} collapsed={this.state.collapsed} theme="light" style={{ height: '100%' }} />
+        <Sider trigger={null} collapsible collapsed={this.props.collapsed}>
+          <SiderMenu mode={this.props.collapsed ? 'vertical': 'inline'} collapsed={this.props.collapsed} theme="light" style={{ height: '100%' }} />
         </Sider>
 
         <Layout style={{ padding: '0 24px 24px' }}>
@@ -67,7 +55,8 @@ class MainLayout extends React.Component {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  return { currentUser }
+  const { collapsed } = state.app
+  return { currentUser, collapsed }
 }
 
 export default connect(mapStateToProps)(MainLayout)

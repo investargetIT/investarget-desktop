@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl'
 
 const confirm = Modal.confirm
 
-function Header({ dispatch, location, currentUser, mode }) {
+function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
   function handleMenuClicked(param) {
 
@@ -18,11 +18,17 @@ function Header({ dispatch, location, currentUser, mode }) {
             dispatch({ type: 'currentUser/logout' })
           },
         })
-	break
+        break
       case "lang":
-	const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
-	window.location.href = url
-	break
+        const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
+        window.location.href = url
+        break
+      case "toggle_menu":
+        dispatch({
+          type: 'app/toggleMenu',
+          payload: !collapsed
+        })
+        break
     }
 
   }
@@ -56,6 +62,10 @@ function Header({ dispatch, location, currentUser, mode }) {
         <Link to={ currentUser ? "/app" : "/" }><Icon type="home" /><FormattedMessage id="header.home" /></Link>
       </Menu.Item>
 
+      <Menu.Item key="toggle_menu">
+        <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
+      </Menu.Item>
+
       <Menu.Item key="lang" style={{float: 'right'}}>{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
 
       { currentUser ? logout : login }
@@ -68,7 +78,8 @@ function Header({ dispatch, location, currentUser, mode }) {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  return { currentUser }
+  const { collapsed } = state.app
+  return { currentUser, collapsed }
 }
 
 export default connect(mapStateToProps)(Header)

@@ -10,18 +10,6 @@ const { Content, Sider } = Layout
 
 class LeftRightLayout extends React.Component {
 
-  state = {
-    collapsed: false,
-    mode: 'inline'
-  }
-
-  onCollapse = (collapsed) => {
-    this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical': 'inline'
-    })
-  }
-
   render () {
 
     const content = (
@@ -33,14 +21,16 @@ class LeftRightLayout extends React.Component {
     const sideBarAndContent = (
       <Layout>
 
-        <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
+        <Sider trigger={null} collapsible collapsed={this.props.collapsed}>
           <div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} /> 
-          <SiderMenu mode={this.state.mode} collapsed={this.state.collapsed} theme="dark" />
+          <SiderMenu mode={this.props.collapsed ? 'vertical': 'inline'} collapsed={this.props.collapsed} theme="dark" />
         </Sider>
 
         <Layout>
 
-          <Layout.Header style={{ background: '#fff', padding: 0 }}><Header mode="light" location={this.props.location} /></Layout.Header>
+          {/*<Layout.Header style={{ background: '#fff', padding: 0 }}>*/}
+            <Header mode="light" location={this.props.location} />
+          {/*</Layout.Header>*/}
 
           <Content style={{ margin: '0 16px' }}>
 
@@ -70,7 +60,8 @@ class LeftRightLayout extends React.Component {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  return { currentUser }
+  const { collapsed } = state.app
+  return { currentUser, collapsed }
 }
 
 export default connect(mapStateToProps)(LeftRightLayout)

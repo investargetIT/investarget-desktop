@@ -9,6 +9,7 @@ const routeNeedsTag = [
 export default {
   namespace: 'app',
   state: {
+    collapsed: false,
     selectedKeys: [],
     openKeys: [],
     registerStep: 1,
@@ -48,6 +49,9 @@ export default {
     },
     setRegisterStep(state, { payload: registerStep }) {
       return { ...state, registerStep }
+    },
+    toggleMenu(state, { payload: collapsed }) {
+      return { ...state, collapsed }
     }
   },
   effects: {
