@@ -152,19 +152,19 @@ function IndustryFilter(props) {
 function mapStateToPropsForIndustry(state) {
   const { industries } = state.app
 
-  let pIndustries = industries.filter(item => item.id == item.pIndustryId)
+  let pIndustries = industries.filter(item => item.id == item.Pindustry)
   pIndustries.forEach(item => {
-    let pIndustryId = item.id
-    let subIndustries = industries.filter(item => item.pIndustryId == pIndustryId && item.id != pIndustryId)
+    let Pindustry = item.id
+    let subIndustries = industries.filter(item => item.Pindustry == Pindustry && item.id != Pindustry)
     item.children = subIndustries
   })
   const industryOptions = pIndustries.map(item => {
     return {
-      label: item.industryName,
+      label: item.industry,
       value: item.id,
       children: item.children.map(item => {
         return {
-          label: item.industryName,
+          label: item.industry,
           value: item.id
         }
       })
