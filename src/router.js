@@ -2,7 +2,7 @@ import React from 'react'
 import { Router, Route } from 'dva/router'
 import IndexPage from './routes/IndexPage'
 import Login from './components/Login.js'
-import InvestorList from "./routes/InvestorList.js"
+import UserList from "./routes/UserList.js"
 import Register from './routes/Register'
 import Home from './routes/Home'
 import AddOrganization from "./routes/AddOrganization.js"
@@ -16,7 +16,7 @@ function RouterConfig({ history }) {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/app" component={IndexPage} />
-      <Route path={URI_6} component={InvestorList} />
+      <Route path={URI_6} component={UserList} />
       <Route path="/app/organization/add" component={AddOrganization} />
       <Route path={URI_3} component={OrganizationList} />
     </Router>

@@ -202,7 +202,7 @@ OrganizationTypeFilter = connect(mapStateToPropsForOrganizationType)(injectIntl(
 
 
 
-function InvestorListFilter(props) {
+function UserListFilter(props) {
   return (
     <div>
       <TransactionPhaseFilter value={props.value.transactionPhases} onChange={props.onChange.bind(this, 'transactionPhases')} />
@@ -238,6 +238,6 @@ module.exports = {
   mapStateToPropsForIndustry,
   mapStateToPropsForOrganizationType,
 
-  InvestorListFilter,
+  UserListFilter,
   OrganizationListFilter,
 }

@@ -10,7 +10,7 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { PAGE_SIZE, URI_6 } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
-import { InvestorListFilter } from '../components/Filter'
+import { UserListFilter } from '../components/Filter'
 import Search from '../components/Search'
 
 const createStyle = {
@@ -23,7 +23,7 @@ const operationStyle = {
   color: 'gray'
 }
 
-function InvestorList({ selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
+function UserList({ selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
 
   function filterHandler() {
     dispatch({
@@ -163,7 +163,7 @@ function InvestorList({ selectedRowKeys, filter, location, list: dataSource, tot
   return (
     <LeftRightLayout location={location}>
 
-      <InvestorListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
+      <UserListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
 
       <div style={createStyle}>
         <UserModal record={{}} onOk={createHandler}>
@@ -207,4 +207,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(injectIntl(InvestorList))
+export default connect(mapStateToProps)(injectIntl(UserList))

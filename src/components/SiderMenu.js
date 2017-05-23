@@ -29,7 +29,13 @@ class SiderMenu extends React.Component {
     const iconImgStyle = this.props.collapsed ? { width: 20, height: 20,  margin: '11px 6px' } : { width: 16, height: 16, marginRight: 8, verticalAlign: 'middle' }
 
     return (
-      <Menu theme={this.props.theme} mode={this.props.mode} selectedKeys={this.props.selectedKeys} onSelect={this.handleSelect.bind(this)} onOpenChange={this.handleOpenChange.bind(this)} style={this.props.style}>
+      <Menu
+        theme={this.props.theme}
+        mode={this.props.mode}
+        selectedKeys={this.props.selectedKeys}
+        onSelect={this.handleSelect.bind(this)}
+        onOpenChange={this.handleOpenChange.bind(this)} style={this.props.style}>
+
         {
           this.props.menulist.filter(f => !f.parentmenu).map(m => {
             const subMenu = this.props.menulist.filter(f => f.parentmenu === m.id)
@@ -51,6 +57,7 @@ class SiderMenu extends React.Component {
             }
           })
         }
+
       </Menu>
     )
   }
