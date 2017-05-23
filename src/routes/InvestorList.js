@@ -7,7 +7,7 @@ const RadioGroup = Radio.Group
 const Option = Select.Option
 
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import { PAGE_SIZE } from '../constants'
+import { PAGE_SIZE, URI_6 } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
 import { InvestorListFilter } from '../components/Filter'
@@ -60,7 +60,7 @@ function InvestorList({ selectedRowKeys, filter, location, list: dataSource, tot
 
   function pageChangeHandler(page) {
     dispatch(routerRedux.push({
-      pathname: '/app/investor/list',
+      pathname: URI_6,
       query: { page },
     }));
   }

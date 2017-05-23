@@ -1,10 +1,7 @@
 import * as api from '../api'
+import { URI_6, URI_3 } from '../constants'
 
-const routeNeedsTag = [
-  "/register",
-  "/app/investor/list",
-  "/app/organization/list",
-]
+const routeNeedsTag = ["/register", URI_3, URI_6]
 
 export default {
   namespace: 'app',

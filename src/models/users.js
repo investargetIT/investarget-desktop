@@ -1,5 +1,5 @@
-import * as api from '../api';
-
+import * as api from '../api'
+import { URI_6 } from '../constants'
 
 export default {
   namespace: 'users',
@@ -71,7 +71,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === '/app/investor/list') {
+        if (pathname === URI_6) {
           dispatch({ type: 'get', payload: query });
         }
       });
