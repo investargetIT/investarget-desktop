@@ -51,6 +51,10 @@ export function getOrg(param) {
   return r('/org/?' + qs.stringify(param))
 }
 
+export function addOrg(param) {
+  return r('/org/?', 'POST', param)
+}
+
 /**
  * proj
  */
@@ -60,7 +64,6 @@ export function getProj(token, param) {
 }
 
 export function favoriteProj(token, param) {
-  console.log('POST /proj/favorite')
   return r('/proj/favorite/', 'POST', param)
 }
 
@@ -68,6 +71,9 @@ export function favoriteProj(token, param) {
  * service
  */
 
+export function getExchangeRate(param) {
+  return r('/service/currencyrate?' + qs.stringify(param))
+}
 
 /**
  * source

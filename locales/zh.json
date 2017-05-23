@@ -771,8 +771,6 @@
     "show_size": "显示条数",
     "jump_page": "跳转至"
   },
-
-
   "organization": {
     "org_list": "机构列表",
     "new_org": "新增机构",
@@ -782,9 +780,10 @@
     "org_type": "机构类型",
     "currency": "货币类型",
     "industry": "行业",
-    "transaction_range": "交易范围",
+    "transaction_amount_from": "交易范围起",
+    "transaction_amount_to": "交易范围至",
     "fund_size": "基金规模",
-    "decision_cycle": "决策周期",
+    "decision_cycle": "决策周期（天）",
     "company_email": "公司邮箱",
     "company_website": "公司官网",
     "telephone": "电话",
@@ -799,8 +798,6 @@
     "partner_or_investment_committee_member": "合伙人/投委会成员",
     "decision_process": "决策流程"
   },
-
-
   "filter": {
     "invest_oversea": "投海外项目",
     "currency": "货币",

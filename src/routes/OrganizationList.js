@@ -70,7 +70,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
   const dataSource = data.map(item => {
     return {
       key: item.id,
-      name: intl.locale === 'en-US' ? item.nameEn : item.name,
+      name: item.name,
       industry: item.industry && item.industry.industryName,
       currency: item.currency,
       decision_cycle: item.decisionCycle,
