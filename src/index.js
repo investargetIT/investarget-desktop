@@ -16,6 +16,7 @@ const user = userStr ? JSON.parse(userStr) : null
 const appLocale = window.appLocale
 addLocaleData(appLocale.data)
 const lang = appLocale.lang
+window.LANG = lang || 'cn'
 const basename = lang ? ('/' + lang) : ''
 
 // 1. Initialize

@@ -1,4 +1,5 @@
 import zhMessages from '../../locales/zh_flat.js'
+import { SOURCE } from '../constants'
 
 function configMessages(keys) {
   var result = {}
@@ -23,4 +24,19 @@ function t(obj, id) {
   return props.intl.formatMessage({ id: id })
 }
 
-export { configMessages, t }
+function getConstant(key, lang) {
+  var data = SOURCE[key]
+  return data.map(item => {
+    let id = item.id
+    let name
+    if (item.lang == 'en') {
+      name = item.nameE
+    } else {
+      name = item.nameC
+    }
+    return { id, name }
+  })
+}
+
+
+export { configMessages, t, getConstant }
