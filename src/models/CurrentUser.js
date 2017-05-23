@@ -16,8 +16,8 @@ export default {
   effects: {
     *login({ payload: { username, password } }, { call, put }) {
       const { data } = yield call(api.login, { username, password })
-      const { token, user_info } = data
-      const userInfo = { ...user_info, token }
+      const { token, user_info, menulist, permissions } = data
+      const userInfo = { ...user_info, token, menulist, permissions }
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',
