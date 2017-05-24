@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'dva';
 import styles from './MainLayout.css';
 import Header from './Header';
-import { Layout, Breadcrumb } from 'antd'
+import { Layout, Breadcrumb, Icon } from 'antd'
 import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
+import { Link } from 'dva/router'
 
 const { Content, Sider } = Layout
 
@@ -41,7 +42,18 @@ class LeftRightLayout extends React.Component {
             </Breadcrumb>
 
             <div style={{ padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
+
+              <div style={{ fontSize: '16px', marginBottom: '24px' }}>
+                <span>{this.props.title}</span>
+                <span style={{ float: 'right' }}>
+                  <Link to={this.props.action.link}>
+                    <Icon type="plus" />{this.props.action.name}
+                  </Link>
+                </span>
+              </div>
+
               {this.props.children}
+
             </div>
 
           </Content>

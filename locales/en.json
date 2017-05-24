@@ -18,6 +18,8 @@
     "home": "Home",
     "out": "Logout"
   },
+  "create_user": "Create User",
+  "user_list": "User List",
   "action": "Operation",
   "trader_relation": "Trader",
   "userstatus": "Status",

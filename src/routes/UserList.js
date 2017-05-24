@@ -2,17 +2,17 @@ import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva';
 import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu } from 'antd'
-const CheckboxGroup = Checkbox.Group
-const RadioGroup = Radio.Group
-const Option = Select.Option
-
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { PAGE_SIZE, URI_6 } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
 import { UserListFilter } from '../components/Filter'
 import Search from '../components/Search'
-import { dataToColumn } from '../utils/util'
+import { dataToColumn, i18n } from '../utils/util'
+
+const CheckboxGroup = Checkbox.Group
+const RadioGroup = Radio.Group
+const Option = Select.Option
 
 const createStyle = {
   marginBottom: '1.5em'
@@ -111,9 +111,16 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
   ]
 
   return (
-    <LeftRightLayout location={location}>
+    <LeftRightLayout
+      location={location}
+      title={i18n("user_list")}
+      action={{ name: i18n("create_user"), link: "/app/user/create" }}>
 
-      <UserListFilter value={filter} onChange={filterOnChange} onSearch={filterHandler} onReset={resetHandler} />
+      <UserListFilter
+        value={filter}
+        onChange={filterOnChange}
+        onSearch={filterHandler}
+        onReset={resetHandler} />
 
       <div style={createStyle}>
         <UserModal record={{}} onOk={createHandler}>

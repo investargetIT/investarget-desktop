@@ -19,7 +19,7 @@ const styles = {
 }
 
 
-function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries, filter, total, page, pageSize, data, loading }) {
+function OrganizationList({ history, dispatch, intl, industryOptions, selectedIndustries, filter, total, page, pageSize, data, loading }) {
 
   const { formatMessage } = intl
 
