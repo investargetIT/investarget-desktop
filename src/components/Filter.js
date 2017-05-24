@@ -19,8 +19,8 @@ function BasicContainer(props) {
 function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-      <Button type="primary" icon="search" onClick={props.onSearch}><FormattedMessage id="common.filter" /></Button>
-      <Button style={{ marginLeft: 10 }} onClick={props.onReset}><FormattedMessage id="common.reset" /></Button>
+      <Button type="primary" icon="search" onClick={props.onSearch}><FormattedMessage id="filterr" /></Button>
+      <Button style={{ marginLeft: 10 }} onClick={props.onReset}><FormattedMessage id="reset" /></Button>
     </div>
   )
 }

@@ -18,45 +18,45 @@ function dataToColumn(data, getHandler, editHandler, deleteHandler) {
 
   const allColumns = [
     {
-      title: '姓名',
+      title: i18n("username"),
       dataIndex: 'username',
       key: 'username'
     },
     {
-      title: '所属机构',
+      title: i18n("org"),
       dataIndex: 'org.name',
       key: 'org'
     },
     {
-      title: '职位',
+      title: i18n("position"),
       dataIndex: 'title.name',
       key: 'title'
     },
     {
-      title: '标签',
+      title: i18n("tag"),
       dataIndex: 'tags',
       key: 'tags',
       render: tags => tags.map(t => t.name).join(' ')
     },
     {
-      title: '交易师',
+      title: i18n("trader_relation"),
       dataIndex: 'trader_relation.traderuser.name',
       key: 'trader_relation',
     },
     {
-      title: '审核状态',
+      title: i18n("userstatus"),
       dataIndex: 'userstatus.name',
       key: 'userstatus',
     },
     {
-      title: '操作',
+      title: i18n("action"),
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button disabled={!record.action.get} size="small" onClick={getHandler.bind(null, record.id)}>查看</Button>&nbsp;
-          <Button disabled={!record.action.change} size="small" onClick={editHandler.bind(null, record.id)}>修改</Button>&nbsp;
+          <Button disabled={!record.action.get} size="small" onClick={getHandler.bind(null, record.id)}>{i18n("view")}</Button>&nbsp;
+          <Button disabled={!record.action.change} size="small" onClick={editHandler.bind(null, record.id)}>{i18n("edit")}</Button>&nbsp;
           <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-            <Button type="danger" disabled={!record.action.delete} size="small">删除</Button>
+            <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
           </Popconfirm>
         </span>
       ),

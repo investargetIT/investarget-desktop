@@ -18,6 +18,14 @@
     "home": "首页",
     "out": "退出"
   },
+  "edit": "修改",
+  "trader_relation": "交易师",
+  "userstatus": "审核状态",
+  "action": "操作",
+  "org": "机构",
+  "username": "姓名",
+  "position": "职位",
+  "tag": "标签",
   "project_management": "项目管理",
   "upload_project": "发布项目",
   "platform_projects": "平台项目",
@@ -693,7 +701,6 @@
     "is_read": "是否已读",
     "view_list": "查看列表"
   },
-  "common": {
     "prompt": "提示",
     "confirm": "确定",
     "email_exit": "邮箱已存在",
@@ -726,7 +733,7 @@
     "edit": "编辑",
     "none": "暂无",
     "filters": "已选条件",
-    "filter": "筛选",
+    "filterr": "筛选",
     "reset": "重置所有",
     "no_result": "没有相关记录",
     "status": "状态",
@@ -769,8 +776,7 @@
     "next": "下一步",
     "required": "所有*为必填项",
     "show_size": "显示条数",
-    "jump_page": "跳转至"
-  },
+    "jump_page": "跳转至",
   "organization": {
     "org_list": "机构列表",
     "new_org": "新增机构",

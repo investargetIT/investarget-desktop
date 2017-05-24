@@ -53,7 +53,7 @@ export default {
       yield put({ type: 'setRegisterStep', payload: step + 1 })
     },
     *requestSource({ payload: sourceType }, { call, put }) {
-      const { data } = yield call(api.getSource, sourceType, {lang: window.LANG})
+      const { data } = yield call(api.getSource, sourceType)
       yield put({ type: 'saveSource', payload: { sourceType, data } })
     },
     *getSource({ payload: sourceType }, { put, select }) {

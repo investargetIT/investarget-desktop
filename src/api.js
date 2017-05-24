@@ -30,7 +30,9 @@ function r(url, method, body) {
     options["body"] = JSON.stringify(body)
   }
 
-  return request(url, options)
+  const lang = url.split('?').length > 1 ? `&lang=${window.LANG}` : `?lang=${window.LANG}`
+
+  return request(url + lang, options)
 }
 
 /**
@@ -79,8 +81,8 @@ export function getExchangeRate(param) {
  * source
  */
 
-export function getSource(sourceType, param) {
-  return r(`/source/${sourceType}?` + qs.stringify(param))
+export function getSource(sourceType) {
+  return r(`/source/${sourceType}`)
 }
 
 /**

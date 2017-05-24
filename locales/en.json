@@ -18,6 +18,13 @@
     "home": "Home",
     "out": "Logout"
   },
+  "action": "Operation",
+  "trader_relation": "Trader",
+  "userstatus": "Status",
+  "tag": "Tag",
+  "position": "Position",
+  "org": "Institution",
+  "username": "Full Name",
   "project_management": "Project Management",
   "upload_project": "Upload Project",
   "platform_projects": "Platform Projects",
@@ -697,7 +704,6 @@
     "is_read": "Is Read",
     "view_list": "View List"
   },
-  "common": {
     "prompt": "Prompting",
     "confirm": "Confirm",
     "email_exit": "Email has exist",
@@ -725,12 +731,12 @@
     "add": "Add",
     "remark_length": "Remark length can not over 2000 characters",
     "detail": "Detail",
-    "view": "view",
+    "view": "View",
     "delete": "Delete",
     "edit": "Edit",
     "none": "None",
     "filters": "Filters",
-    "filter": "Filter",
+    "filterr": "Filter",
     "reset": "Reset",
     "no_result": "There is no result",
     "status": "Status",
@@ -773,8 +779,7 @@
     "next": "Next",
     "required": "All the * are required",
     "show_size": "Show Records",
-    "jump_page": "Jump to"
-  },
+    "jump_page": "Jump to",
 
   "organization": {
     "org_list": "Organization List",
