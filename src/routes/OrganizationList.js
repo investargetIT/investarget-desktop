@@ -31,12 +31,12 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
     },
     {
       title: formatMessage({id: 'organization.industry'}),
-      dataIndex: 'industry',
+      dataIndex: 'industry.industry',
       key: 'industry',
     },
     {
       title: formatMessage({id: 'organization.currency'}),
-      dataIndex: 'currency',
+      dataIndex: 'currency.currency',
       key: 'currency',
     },
     {
@@ -48,7 +48,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
       title: formatMessage({id: 'organization.transaction_phase'}),
       dataIndex: 'orgtransactionphase',
       key: 'orgtransactionphase',
-      render: phases => phases.join(' ')
+      render: phases => phases.map(p => p.name).join(' ')
     },
     {
       title: formatMessage({id: 'organization.stock_code'}),

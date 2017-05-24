@@ -44,7 +44,7 @@ export default async function request(url, options) {
 
   const data = await response.json();
   
-  console.log(data)
+  console.log(baseUrl + url, data)
 
   parseErrorMessage(data)
 
