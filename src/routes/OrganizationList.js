@@ -41,18 +41,19 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
     },
     {
       title: formatMessage({id: 'organization.decision_cycle'}),
-      dataIndex: 'decision_cycle',
-      key: 'decision_cycle',
+      dataIndex: 'decisionCycle',
+      key: 'decisionCycle',
     },
     {
       title: formatMessage({id: 'organization.transaction_phase'}),
-      dataIndex: 'transaction_phase',
-      key: 'transaction_phase',
+      dataIndex: 'orgtransactionphase',
+      key: 'orgtransactionphase',
+      render: phases => phases.join(' ')
     },
     {
       title: formatMessage({id: 'organization.stock_code'}),
-      dataIndex: 'stock_code',
-      key: 'stock_code',
+      dataIndex: 'orgcode',
+      key: 'orgcode',
     },
     {
       title: formatMessage({id: 'action'}),
@@ -65,21 +66,6 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
       )
     },
   ]
-
-
-  const dataSource = data.map(item => {
-    return {
-      key: item.id,
-      name: item.name,
-      industry: item.industry && item.industry.industryName,
-      currency: item.currency,
-      decision_cycle: item.decisionCycle,
-      transaction_phase: item.transactionPhases && item.transactionPhases.map(item => item.name).join(' '),
-      stock_code: item.stockCode,
-
-    }
-  })
-
 
   function filterOnChange(type, value) {
     dispatch({
@@ -153,7 +139,12 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
         <div style={{marginBottom: '16px'}}>
           <Search keys={searchKeys} onChange={searchOnChange} onSearch={onSearch}/>
         </div>
-        <Table columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey={record=>record.id}
+          loading={loading}
+          pagination={false} />
         <Pagination
           className="ant-table-pagination"
           total={total}
