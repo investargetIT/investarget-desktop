@@ -52,11 +52,22 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
     });
   }
 
-  function deleteHandler(id) {
-    dispatch({
-      type: 'users/remove',
-      payload: id,
-    });
+  function operationHandler(action, id) {
+    console.log(action, id)
+    switch (action) {
+      case 'delete':
+        dispatch({
+          type: 'users/remove',
+          payload: id,
+        })
+        break
+      case 'edit':
+        dispatch({
+          type: 'users/patch',
+          payload: { id, values },
+        })
+        break
+    }
   }
 
   function pageChangeHandler(page) {
@@ -64,13 +75,6 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
       pathname: URI_6,
       query: { page },
     }));
-  }
-
-  function editHandler(id, values) {
-    dispatch({
-      type: 'users/patch',
-      payload: { id, values },
-    });
   }
 
   const menu = (
@@ -122,7 +126,7 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
 
       <Table
         rowSelection={rowSelection}
-        columns={dataToColumn(dataSource, createHandler, editHandler, deleteHandler)}
+        columns={dataToColumn(dataSource, operationHandler)}
         dataSource={dataSource}
         loading={loading}
         rowKey={record => record.id}

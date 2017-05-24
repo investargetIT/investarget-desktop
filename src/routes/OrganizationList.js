@@ -6,7 +6,7 @@ import { Icon, Table, Button, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { OrganizationListFilter } from '../components/Filter'
 import Search from '../components/Search'
-
+import { dataToColumn } from '../utils/util'
 
 const styles = {
   title: {
@@ -22,50 +22,6 @@ const styles = {
 function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries, filter, total, page, pageSize, data, loading }) {
 
   const { formatMessage } = intl
-
-  const columns = [
-    {
-      title: formatMessage({id: 'organization.name'}),
-      dataIndex: 'orgname',
-      key: 'name',
-    },
-    {
-      title: formatMessage({id: 'organization.industry'}),
-      dataIndex: 'industry.industry',
-      key: 'industry',
-    },
-    {
-      title: formatMessage({id: 'organization.currency'}),
-      dataIndex: 'currency.currency',
-      key: 'currency',
-    },
-    {
-      title: formatMessage({id: 'organization.decision_cycle'}),
-      dataIndex: 'decisionCycle',
-      key: 'decisionCycle',
-    },
-    {
-      title: formatMessage({id: 'organization.transaction_phase'}),
-      dataIndex: 'orgtransactionphase',
-      key: 'orgtransactionphase',
-      render: phases => phases.map(p => p.name).join(' ')
-    },
-    {
-      title: formatMessage({id: 'organization.stock_code'}),
-      dataIndex: 'orgcode',
-      key: 'orgcode',
-    },
-    {
-      title: formatMessage({id: 'action'}),
-      key: 'operation',
-      render: (text, record) => (
-        <span>
-          <a>修改</a>&nbsp;
-          <a>删除</a>
-        </span>
-      )
-    },
-  ]
 
   function filterOnChange(type, value) {
     dispatch({
@@ -124,6 +80,10 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
     })
   }
 
+  function operationHandler(action, id) {
+    console.log(action, id)
+  }
+
   return (
     <MainLayout location={location}>
       <div>
@@ -140,7 +100,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
           <Search keys={searchKeys} onChange={searchOnChange} onSearch={onSearch}/>
         </div>
         <Table
-          columns={columns}
+          columns={dataToColumn(data, operationHandler)}
           dataSource={data}
           rowKey={record=>record.id}
           loading={loading}
