@@ -12,6 +12,7 @@ import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
 import { UserListFilter } from '../components/Filter'
 import Search from '../components/Search'
+import { dataToColumn } from '../utils/util'
 
 const createStyle = {
   marginBottom: '1.5em'
@@ -72,61 +73,6 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
     });
   }
 
-
-  const columns = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-      render: text => <a href="">{text}</a>,
-    },
-    {
-      title: '所属机构',
-      dataIndex: 'org.name',
-      key: 'org'
-    },
-    {
-      title: '职位',
-      dataIndex: 'title.name',
-      key: 'title'
-    },
-    {
-      title: '标签',
-      dataIndex: 'tags',
-      key: 'tags',
-      render: tags => tags.map(t => t.name).join(' ')
-    },
-    {
-      title: '交易师',
-      dataIndex: 'trader_relation.traderuser.name',
-    },
-    {
-      title: '审核状态',
-      dataIndex: 'userstatus.name',
-    },
-    {
-      title: '资料完整度',
-      render: percent => <Progress percent={30} strokeWidth={5} />
-    },
-    {
-      title: '操作',
-      key: 'operation',
-      render: (text, record) => (
-        <span>
-          <Dropdown overlay={menu}>
-            <a style={operationStyle} href="#"><Icon style={{ color: '#157915' }} type="setting" /></a>
-          </Dropdown>
-          <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
-            <a style={operationStyle}><Icon style={{ color: '#10458F' }} type="edit" /></a>
-          </UserModal>
-          <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-            <a style={operationStyle} href=""><Icon style={{ color: '#F37676' }} type="delete" /></a>
-          </Popconfirm>
-        </span>
-      ),
-    },
-  ];
-
   const menu = (
     <Menu>
       <Menu.Item>待审核</Menu.Item>
@@ -176,7 +122,7 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
 
       <Table
         rowSelection={rowSelection}
-        columns={columns}
+        columns={dataToColumn(dataSource, createHandler, editHandler, deleteHandler)}
         dataSource={dataSource}
         loading={loading}
         rowKey={record => record.id}
