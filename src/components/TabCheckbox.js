@@ -116,7 +116,7 @@ class TabCheckbox extends React.Component {
               onChange={this.handleCheckAllChange}
               checked={isAllChecked}
             >
-              {this.props.intl.formatMessage({id: 'common.all'})}
+              {this.props.intl.formatMessage({id: 'all'})}
             </Checkbox>
             {
               subOptions.map(item => {

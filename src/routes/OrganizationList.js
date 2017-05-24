@@ -26,7 +26,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
   const columns = [
     {
       title: formatMessage({id: 'organization.name'}),
-      dataIndex: 'name',
+      dataIndex: 'orgname',
       key: 'name',
     },
     {
@@ -55,7 +55,7 @@ function OrganizationList({ dispatch, intl, industryOptions, selectedIndustries,
       key: 'stock_code',
     },
     {
-      title: formatMessage({id: 'common.operation'}),
+      title: formatMessage({id: 'action'}),
       key: 'operation',
       render: (text, record) => (
         <span>

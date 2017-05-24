@@ -127,8 +127,8 @@ function OverseaFilter(props) {
     props.onChange(value)
   }
   const overseaOptions = [
-    { label: formatMessage({id: 'common.yes'}), value: true },
-    { label: formatMessage({id: 'common.no'}), value: false }
+    { label: formatMessage({id: 'yes'}), value: true },
+    { label: formatMessage({id: 'no'}), value: false }
   ]
   return (
     <BasicContainer label={formatMessage({id: 'filter.invest_oversea'})}>
