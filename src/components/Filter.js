@@ -54,7 +54,7 @@ function TagFilter(props) {
 }
 
 function mapStateToPropsForTag(state) {
-  var { tags: tagOptions } = state.app
+  var { tag: tagOptions } = state.app
   tagOptions = tagOptions.map(item => ({ label: item.name, value: item.id }))
   return { tagOptions }
 }
@@ -72,8 +72,8 @@ function CurrencyFilter(props) {
 }
 
 function mapStateToPropsForCurrency(state) {
-  var { currency: currencyOptions } = state.app
-  currencyOptions = currencyOptions.map(item => ({ label: item.name, value: item.id }))
+  var { currencyType: currencyOptions } = state.app
+  currencyOptions = currencyOptions.map(item => ({ label: item.currency, value: item.id }))
   return { currencyOptions }
 }
 
@@ -110,8 +110,8 @@ function AreaFilter(props) {
 }
 
 function mapStateToPropsForArea(state) {
-  var { areas: areaOptions } = state.app
-  areaOptions = areaOptions.map(item => ({ label: item.areaName, value: item.id }))
+  var { orgarea: areaOptions } = state.app
+  areaOptions = areaOptions.map(item => ({ label: item.name, value: item.id }))
   return { areaOptions }
 }
 
@@ -150,7 +150,7 @@ function IndustryFilter(props) {
 }
 
 function mapStateToPropsForIndustry(state) {
-  const { industries } = state.app
+  const { industry: industries } = state.app
 
   let pIndustries = industries.filter(item => item.id == item.Pindustry)
   pIndustries.forEach(item => {
@@ -187,7 +187,7 @@ function OrganizationTypeFilter(props) {
 }
 
 function mapStateToPropsForOrganizationType(state) {
-  const { organizationTypes } = state.app
+  const { orgtype: organizationTypes } = state.app
   const organizationTypeOptions = organizationTypes.map(item => {
     return {
       label: item.name,

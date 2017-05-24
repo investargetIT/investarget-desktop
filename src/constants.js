@@ -29,16 +29,3 @@ export const KEY_TO_URI = {
   "profile": URI_10,
   "reminder": URI_11
 }
-
-export const SOURCE = {
-  "currency": [
-    { "id": 1, "nameE": "CNY", "nameC": "人民币" },
-    { "id": 2, "nameE": "USD", "nameC": "美元" },
-    { "id": 3, "nameE": "CNY&USD", "nameC": "人民币和美元" }
-  ],
-  "audit": [
-    { "id": 1, "nameE": "under_approval", "nameC": "待审核" },
-    { "id": 2, "nameE": "recevied_approval", "nameC": "审核通过" },
-    { "id": 3, "nameE": "reject_approval", "nameC": "审核退回" }
-  ]
-}

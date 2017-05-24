@@ -79,20 +79,8 @@ export function getExchangeRate(param) {
  * source
  */
 
-export function getTags() {
-  return r('/source/tag')
-}
-
-export function getCountries() {
-  return r('/source/country')
-}
-
-export function getTitles() {
-  return r('/source/title')
-}
-
-export function getIndustries() {
-  return r('/source/industry')
+export function getSource(sourceType, param) {
+  return r(`/source/${sourceType}?` + qs.stringify(param))
 }
 
 /**

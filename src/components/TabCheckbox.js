@@ -1,5 +1,6 @@
 import React from 'react'
 import { Checkbox } from 'antd'
+import { injectIntl, intlShape } from 'react-intl'
 
 const styles = {
   container: {},
@@ -115,7 +116,7 @@ class TabCheckbox extends React.Component {
               onChange={this.handleCheckAllChange}
               checked={isAllChecked}
             >
-              全选
+              {this.props.intl.formatMessage({id: 'common.all'})}
             </Checkbox>
             {
               subOptions.map(item => {
@@ -132,4 +133,8 @@ class TabCheckbox extends React.Component {
   }
 }
 
-export default TabCheckbox
+TabCheckbox.propTypes = {
+  intl: intlShape.isRequired
+}
+
+export default injectIntl(TabCheckbox)
