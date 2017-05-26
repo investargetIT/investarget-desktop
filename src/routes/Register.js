@@ -195,7 +195,7 @@ class Register extends React.Component {
       initialValue: '4',
     })(
       <Select style={selectStyle}>
-        {this.props.countries.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={selectStylse} /></Option>)}
+        {this.props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={selectStylse} /></Option>)}
       </Select>
     );
 
@@ -213,8 +213,8 @@ class Register extends React.Component {
                 })(
 
                   <RadioGroup onChange={this.onChange}>
-                    <Radio value={1}>{t(this, "menu.investor")}</Radio>
-                    <Radio value={2}>{t(this, "menu.transaction")}</Radio>
+                    <Radio value={1}>{t(this, "investor")}</Radio>
+                    <Radio value={2}>{t(this, "transaction")}</Radio>
                   </RadioGroup>
                 )}
               </FormItem>
@@ -277,7 +277,7 @@ class Register extends React.Component {
                   rules: [{ required: true, message: 'Please choose your title!' }],
                 })(
                   <Select placeholder="Please select">
-                    {this.props.titles.map(t => <Option key={t.id} value={t.id + ''}>{t.name}</Option>)}
+                    {this.props.title.map(t => <Option key={t.id} value={t.id + ''}>{t.name}</Option>)}
                   </Select>
                 )}
               </FormItem>
@@ -287,7 +287,7 @@ class Register extends React.Component {
                   rules: [{ required: true, message: 'Please choose your favorite tags!' }],
                 })(
                   <Select mode="multiple" placeholder="Please select">
-                    { this.props.tags.map(t => <Option key={t.id}>{t.name}</Option>) }
+                    { this.props.tag.map(t => <Option key={t.id}>{t.name}</Option>) }
                   </Select>
                 )}
               </FormItem>
@@ -361,12 +361,12 @@ class Register extends React.Component {
 }
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { tags, countries, titles, registerStep } = state.app
+  const { tag, country, title, registerStep } = state.app
   const { friends, selectedFriends } = state.recommendFriends
   const { projects, selectedProjects } = state.recommendProjects
   return {
     currentUser,
-    tags, countries, titles,
+    tag, country, title,
     registerStep,
     loading: (state.loading.effects['currentUser/register'] || state.loading.effects['currentUser/login']),
     friends, selectedFriends,

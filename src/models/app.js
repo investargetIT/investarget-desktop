@@ -3,7 +3,7 @@ import { URI_6, URI_3 } from '../constants'
 import { i18n } from '../utils/util'
 
 const resourceMap = {
-  '/register': ['tag'],
+  '/register': ['tag', 'country', 'title'],
   [URI_3]: ['currencyType', 'transactionPhases', 'industry', 'tag', 'orgtype'],
   [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea']
 }

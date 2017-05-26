@@ -40,8 +40,8 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
   }
 
   const overseaOptions = [
-    { value: true, label: intl.formatMessage({id: 'common.yes'}) },
-    { value: false, label: intl.formatMessage({id: 'common.no'})}
+    { value: true, label: intl.formatMessage({id: 'yes'}) },
+    { value: false, label: intl.formatMessage({id: 'no'})}
   ]
 
   const CNYFormatter = value => '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
@@ -441,10 +441,10 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
             {
               <div style={{ textAlign: 'center' }}>
                 <Button type="primary" htmlType="submit" size="large" style={{margin: '0 8px'}}>
-                  {formatMessage({id: 'common.submit'})}
+                  {formatMessage({id: 'submit'})}
                 </Button>
                 <Button size="large" style={{margin: '0 8px'}} onClick={goBack}>
-                  {formatMessage({id: 'common.back'})}
+                  {formatMessage({id: 'back'})}
                 </Button>
               </div>
             }

@@ -2,27 +2,150 @@ export default {
   'POST /api/user/login/': (req, res) => {
     console.log('POST /api/user/login/')
     res.json({
-      code: 1000,
-      errormsg: null,
-      result: {
-        token: '00185b5e45edb2e97e61d9d5d129f70814c1ccfbaaa33aef',
-        user_info: {
-          company: '多维海滩',
-          email: 'wjk@126.com',
-          groups: [],
-          id: 8,
-          investor_relations: [],
-          mobile: '18637760716',
-          name: '无均可',
-          org: {
-            auditStatu: 1,
-            id: 1,
-            name: "还脱",
-            org_users: [8, 10]
+      "errormsg": null,
+      "code": 1000,
+      "result": {
+        "user_info": {
+          "username": null,
+          "tags": [],
+          "mobile": "18637760716",
+          "title": null,
+          "userstatus": {
+            "is_deleted": false,
+            "id": 2,
+            "name": "审核通过"
           },
-          tags: [],
-          title: "董事长"
-        }
+          "investor_relation": null,
+          "id": 8,
+          "groups": [{
+            "id": 1,
+            "name": "投资人"
+          }],
+          "trader_relation": null,
+          "org": {
+            "orgname": "海图",
+            "id": 1
+          },
+          "email": "wjk1397@126.com"
+        },
+        "token": "afd9a708d5e7da1878d510d5d13736a2963f4f78bc0a4c70",
+        "menulist": [{
+          "index": 1,
+          "parentmenu": null,
+          "namekey": "project_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 1
+        }, {
+          "index": 2,
+          "parentmenu": 1,
+          "namekey": "platform_projects",
+          "icon_active": null,
+          "icon_normal": "",
+          "id": 10
+        }, {
+          "index": 3,
+          "parentmenu": 1,
+          "namekey": "my_projects",
+          "icon_active": null,
+          "icon_normal": "",
+          "id": 11
+        }, {
+          "index": 4,
+          "parentmenu": null,
+          "namekey": "institution_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 2
+        }, {
+          "index": 5,
+          "parentmenu": null,
+          "namekey": "email_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 3
+        }, {
+          "index": 6,
+          "parentmenu": null,
+          "namekey": "user_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 5
+        }, {
+          "index": 7,
+          "parentmenu": null,
+          "namekey": "myinvestor",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 12
+        }, {
+          "index": 8,
+          "parentmenu": null,
+          "namekey": "mytrader",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 13
+        }, {
+          "index": 9,
+          "parentmenu": null,
+          "namekey": "timeline_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 4
+        }, {
+          "index": 10,
+          "parentmenu": null,
+          "namekey": "dataroom_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 6
+        }, {
+          "index": 11,
+          "parentmenu": null,
+          "namekey": "inbox_management",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 7
+        }, {
+          "index": 12,
+          "parentmenu": 7,
+          "namekey": "reminder",
+          "icon_active": null,
+          "icon_normal": "",
+          "id": 16
+        }, {
+          "index": 13,
+          "parentmenu": null,
+          "namekey": "user_center",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 8
+        }, {
+          "index": 14,
+          "parentmenu": 8,
+          "namekey": "change_password",
+          "icon_active": null,
+          "icon_normal": "",
+          "id": 14
+        }, {
+          "index": 15,
+          "parentmenu": 8,
+          "namekey": "profile",
+          "icon_active": null,
+          "icon_normal": "",
+          "id": 15
+        }, {
+          "index": 16,
+          "parentmenu": null,
+          "namekey": "log",
+          "icon_active": null,
+          "icon_normal": "https://o79atf82v.qnssl.com/1024icon.png",
+          "id": 9
+        }],
+        "permissions": ["proj.change_finance", "proj.admin_getfavorite", "auth.add_permission", "guardian.change_userobjectpermission", "timeline.change_timelinetransationstatu", "usersys.as_adminuser", "usersys.change_mytoken", "org.add_organization", "usersys.user_changeuserrelation", "sourcetype.change_webmenu", "org.add_orgremarks", "sourcetype.delete_datasource", "usersys.user_changeuser", "msg.delete_message", "timeline.user_addline", "usersys.admin_changefriend", "org.delete_orgtransactionphase", "admin.change_logentry", "proj.change_sharetoken", "sourcetype.delete_country", "timeline.admin_deletelineremark", "sourcetype.delete_titletype", "contenttypes.delete_contenttype", "dataroom.user_changedataroom", "proj.delete_sharetoken", "usersys.delete_userfriendship", "dataroom.admin_adddataroom", "usersys.admin_deletefriend", "dataroom.user_adddataroom", "proj.user_changeproj", "sourcetype.add_clienttype", "guardian.change_groupobjectpermission", "proj.delete_project", "org.delete_organization", "proj.delete_favoriteproject", "timeline.user_getlineremark", "org.user_addorg", "sessions.change_session", "usersys.delete_usertags", "org.user_getorgremark", "guardian.delete_userobjectpermission", "timeline.admin_changelineremark", "sourcetype.change_clienttype", "usersys.admin_getuserrelation", "dataroom.user_getdataroom", "APIlog.delete_viewprojlog", "proj.admin_changeproj", "proj.user_getfavorite", "proj.delete_projectindustries", "timeline.add_timelineremark", "proj.user_addproj", "sourcetype.add_auditstatus", "contenttypes.change_contenttype", "activity.delete_activity", "sourcetype.add_orgarea", "sourcetype.change_favoritetype", "proj.admin_deleteproj", "auth.change_permission", 
+          "timeline.user_changeline", "org.user_deleteorg", "sourcetype.delete_transactionphases", "proj.delete_projecttransactiontype", "sourcetype.delete_continent", "APIlog.add_userviewprojlog", "sourcetype.add_school", "sourcetype.delete_messagetype", "sourcetype.delete_specialty", "usersys.admin_adduser", "dataroom.add_dataroomdirectoryorfile", "sourcetype.add_tag", "usersys.user_deleteuserrelation", "sourcetype.delete_projectstatus", "sourcetype.add_industry", "APIlog.change_apilog", "usersys.change_myuser", "org.admin_deleteorgremark", "dataroom.change_publicdirectorytemplate", "timeline.delete_timeline", "timeline.add_timeline", "sourcetype.add_favoritetype", "sourcetype.change_messagetype", "auth.delete_permission", "timeline.admin_addline", "proj.add_projecttags", "proj.add_project", "org.user_changeorgremark", "dataroom.add_dataroom", "timeline.admin_addlineremark", "proj.change_projecttransactiontype", "timeline.user_deleteline", "sourcetype.add_transactiontype", "auth.change_group", "sourcetype.add_titletype", "guardian.add_groupobjectpermission", "sourcetype.change_industry", "proj.add_projecttransactiontype", "auth.delete_group", "sourcetype.add_orgtype", "usersys.add_userfriendship", "timeline.admin_getlineremark", "usersys.user_getuser", "org.admin_getorg", "proj.admin_addfavorite", "sourcetype.add_projectstatus", "proj.change_project", "org.user_getorg", "sourcetype.add_messagetype", "usersys.user_adduser", "proj.change_projecttags", "sourcetype.delete_favoritetype", "usersys.admin_getfriend", "dataroom.delete_publicdirectorytemplate", "proj.change_projectindustries", "sourcetype.delete_orgarea", "third.change_mobileauthcode", "sourcetype.change_orgtype", "org.admin_changeorgremark", "third.delete_mobileauthcode", "timeline.change_timeline", "sessions.delete_session", "sourcetype.add_webmenu", 
+          "admin.delete_logentry", "sourcetype.change_country", "auth.add_group", "sourcetype.delete_orgtype", "timeline.admin_changeline", "org.user_changeorg", "activity.change_activity", "dataroom.change_dataroomdirectoryorfile", "org.admin_addorgremark", "dataroom.admin_changedataroom", "sourcetype.delete_school", "usersys.change_usertags", "admin.add_logentry", "sourcetype.delete_transactiontype", "APIlog.add_loginlog", "org.user_deleteorgremark", "msg.change_message", "usersys.admin_adduserrelation", "timeline.delete_timelineremark", "third.add_mobileauthcode", "sourcetype.delete_auditstatus", "timeline.delete_timelinetransationstatu", "timeline.user_addlineremark", "sourcetype.add_datasource", "timeline.change_timelineremark", "proj.add_finance", "timeline.admin_deleteline", "org.delete_orgremarks", "proj.change_favoriteproject", "usersys.admin_deleteuserrelation", "dataroom.change_dataroom", "usersys.admin_deleteuser", "sourcetype.add_transactionstatus", "org.admin_changeorg", "proj.user_addfavorite", "usersys.user_getuserrelation", "sourcetype.delete_industry", "guardian.add_userobjectpermission", "sourcetype.add_currencytype", "sourcetype.change_orgarea", "sourcetype.change_continent", "APIlog.delete_apilog", "activity.add_activity", "proj.add_sharetoken", "timeline.user_changelineremark", "proj.admin_getproj", "proj.add_projectindustries", "sourcetype.change_specialty", "usersys.delete_userrelation", "proj.user_getproj", "APIlog.add_viewprojlog", "usersys.add_myuser", "usersys.user_deleteuser", "APIlog.add_apilog", "dataroom.add_publicdirectorytemplate", "dataroom.admin_deletedataroom", "guardian.delete_groupobjectpermission", "sourcetype.change_transactionstatus", "sourcetype.delete_currencytype", "org.change_organization", "sourcetype.change_transactiontype", "sessions.add_session", "usersys.add_userrelation", 
+          "APIlog.change_viewprojlog", "dataroom.delete_dataroom", "dataroom.admin_closedataroom", "org.change_orgtransactionphase", "sourcetype.delete_tag", "proj.shareproj", "sourcetype.add_specialty", "msg.add_message", "sourcetype.change_auditstatus", "usersys.change_userfriendship", "APIlog.change_userviewprojlog", "APIlog.change_loginlog", "proj.user_deleteproj", "proj.add_favoriteproject", "dataroom.delete_dataroomdirectoryorfile", "sourcetype.change_school", "org.admin_addorg", "sourcetype.add_continent", "org.change_orgremarks", "sourcetype.delete_clienttype", "proj.admin_addproj", "sourcetype.add_country", "dataroom.user_closedataroom", "org.admin_deleteorg", "usersys.admin_changeuserrelation", "usersys.add_mytoken", "usersys.user_adduserrelation", "org.add_orgtransactionphase", "proj.admin_deletefavorite", "sourcetype.delete_transactionstatus", "sourcetype.change_projectstatus", "contenttypes.add_contenttype", "usersys.as_investoruser", "usersys.admin_addfriend", "usersys.admin_getuser", "usersys.change_userrelation", "timeline.add_timelinetransationstatu", "dataroom.user_deletedataroom", "sourcetype.change_currencytype", "usersys.as_traderuser", "sourcetype.delete_webmenu", "proj.delete_projecttags", "usersys.delete_mytoken", "dataroom.admin_getdataroom", "sourcetype.change_titletype", "org.admin_getorgremark", "usersys.admin_changeuser", "sourcetype.change_transactionphases", "timeline.user_deletelineremark", "sourcetype.change_datasource", "org.user_addorgremark", "APIlog.delete_userviewprojlog", "APIlog.delete_loginlog", "proj.delete_finance", "sourcetype.change_tag", "usersys.user_addfriend", "usersys.add_usertags", "timeline.admin_getline", "usersys.delete_myuser", "sourcetype.add_transactionphases"]
       }
     })
   },
