@@ -7,7 +7,7 @@ import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
-
+import { Email, FullName } from '../components/Form'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -242,25 +242,9 @@ class Register extends React.Component {
                 </Row>
               </FormItem>
 
-              <FormItem {...formItemLayout} label="E-mail" hasFeedback>
-                {getFieldDecorator('email', {
-                  rules: [{
-                    type: 'email', message: 'The input is not valid E-mail!',
-                  }, {
-                    required: true, message: 'Please input your E-mail!',
-                  }],
-                })(
-                  <Input />
-                )}
-              </FormItem>
+              <Email decorator={getFieldDecorator} />
 
-              <FormItem {...formItemLayout} label="Name" extra="Make sure type real name." hasFeedback>
-                {getFieldDecorator('name', {
-                  rules: [{ required: true, message: 'Please input your name!', whitespace: true }],
-                })(
-                  <Input />
-                )}
-              </FormItem>
+              <FullName decorator={getFieldDecorator} />
 
               <FormItem {...formItemLayout} label="Organization" hasFeedback>
                 {getFieldDecorator('organization', {
