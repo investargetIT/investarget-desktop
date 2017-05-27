@@ -924,5 +924,11 @@ export default {
       }
     )
   },
+  'GET /api/service/currencyrate': (req, res) => {
+    console.log(`${req.method} ${req.url}`)
+    res.json(
+      {"errormsg":null,"code":1000,"result":{"status":"ALREADY","scur":"CNY","update":"2017-05-27 10:26:58","tcur":"USD","ratenm":"人民币/美元","rate":"0.145934"}}
+    )
+  },
 
 }

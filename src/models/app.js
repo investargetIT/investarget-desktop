@@ -5,7 +5,8 @@ import { i18n } from '../utils/util'
 const resourceMap = {
   '/register': ['tag', 'country', 'title'],
   [URI_3]: ['currencyType', 'transactionPhases', 'industry', 'tag', 'orgtype'],
-  [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea']
+  [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea'],
+  '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases']
 }
 
 export default {

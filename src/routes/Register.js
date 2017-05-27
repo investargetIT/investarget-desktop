@@ -90,7 +90,7 @@ class Register extends React.Component {
 
     getOrg({search: value}).then(data => {
       const org = data.data.data.map(item => {
-        return { id: item.id, name: item.name }
+        return { id: item.id, name: item.orgname }
       })
       this.setState({ org: org })
     })
