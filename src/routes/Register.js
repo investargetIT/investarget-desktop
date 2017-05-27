@@ -7,8 +7,8 @@ import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
-import { Email, FullName, Password, ConfirmPassword } from '../components/Form'
 import PropTypes from 'prop-types'
+import { Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -254,25 +254,9 @@ class Register extends React.Component {
                 )}
               </FormItem>
 
-              <FormItem {...formItemLayout} label="Title" hasFeedback>
-                {getFieldDecorator('Title', {
-                  rules: [{ required: true, message: 'Please choose your title!' }],
-                })(
-                  <Select placeholder="Please select">
-                    {this.props.title.map(t => <Option key={t.id} value={t.id + ''}>{t.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
+              <Position form={this.props.form} title={this.props.title} />
 
-              <FormItem {...formItemLayout} label="Tags" hasFeedback>
-                {getFieldDecorator('tags', {
-                  rules: [{ required: true, message: 'Please choose your favorite tags!' }],
-                })(
-                  <Select mode="multiple" placeholder="Please select">
-                    { this.props.tag.map(t => <Option key={t.id}>{t.name}</Option>) }
-                  </Select>
-                )}
-              </FormItem>
+              <Tags form={this.props.form} tag={this.props.tag} />
 
               <Password />
 

@@ -1,9 +1,10 @@
 import React from 'react'
-import { Form, Input } from 'antd'
+import { Form, Input, Select } from 'antd'
 import { i18n } from '../utils/util'
 import PropTypes from 'prop-types'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 const formItemLayout = {
   labelCol: {
@@ -58,10 +59,43 @@ ConfirmPassword.contextTypes = {
   form: PropTypes.object
 }
 
+function SelectFormItem(props, context) {
+  return (
+    <FormItem {...formItemLayout} label={props.label}>
+      {context.form.getFieldDecorator(props.name, {
+        rules: [{
+          required: props.required, message: 'The input can not be empty!',
+        }],
+      })(
+        <Select mode={props.mode} placeholder={props.placeholder}>
+          {props.children}
+        </Select>
+      )}
+    </FormItem>
+  )
+}
+
+SelectFormItem.contextTypes = {
+  form: PropTypes.object
+}
+
+const Position = props => (
+  <SelectFormItem label={i18n("position")} name="position" placeholder="Please select your position" required>
+    { props.title.map(t => <Option key={t.id} value={t.id + ''}>{t.name}</Option>) }
+  </SelectFormItem>
+)
+
+const Tags = props => (
+  <SelectFormItem label={i18n("tag")} name="tags" placeholder="Please choose your favorite tags" required mode="multiple">
+    { props.tag.map(t => <Option key={t.id}>{t.name}</Option>) }
+  </SelectFormItem>
+)
 
 module.exports = {
   Email,
   FullName,
   Password,
-  ConfirmPassword
+  ConfirmPassword,
+  Position,
+  Tags,
 }
