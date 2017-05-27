@@ -18,6 +18,9 @@
     "home": "Home",
     "out": "Logout"
   },
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "email": "E-mail",
   "create_user": "Create User",
   "user_list": "User List",
   "action": "Operation",

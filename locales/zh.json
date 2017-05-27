@@ -18,6 +18,9 @@
     "home": "首页",
     "out": "退出"
   },
+  "password": "密码",
+  "confirm_password": "确认密码",
+  "email": "邮箱",
   "create_user": "新增用户",
   "user_list": "用户列表",
   "edit": "修改",

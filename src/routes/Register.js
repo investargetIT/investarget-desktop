@@ -7,7 +7,7 @@ import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
-import { Email, FullName } from '../components/Form'
+import { Email, FullName, Password, ConfirmPassword } from '../components/Form'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -94,15 +94,6 @@ class Register extends React.Component {
       })
       this.setState({ org: org })
     })
-  }
-
-  checkPassword = (rule, value, callback) => {
-    const form = this.props.form
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
   }
 
   checkAgreement = (rule, value, callback) => {
@@ -242,9 +233,9 @@ class Register extends React.Component {
                 </Row>
               </FormItem>
 
-              <Email decorator={getFieldDecorator} />
+              <Email form={this.props.form} />
 
-              <FullName decorator={getFieldDecorator} />
+              <FullName form={this.props.form} />
 
               <FormItem {...formItemLayout} label="Organization" hasFeedback>
                 {getFieldDecorator('organization', {
@@ -276,29 +267,9 @@ class Register extends React.Component {
                 )}
               </FormItem>
 
-              <FormItem {...formItemLayout} label="Password" hasFeedback>
-                {getFieldDecorator('password', {
-                  rules: [{
-                    required: true, message: 'Please input your password!',
-                  }, {
-                    validator: this.checkConfirm,
-                  }],
-                })(
-                  <Input type="password" />
-                )}
-              </FormItem>
+              <Password form={this.props.form} />
 
-              <FormItem {...formItemLayout} label="Confirm Password" hasFeedback>
-                {getFieldDecorator('confirm', {
-                  rules: [{
-                    required: true, message: 'Please confirm your password!',
-                  }, {
-                    validator: this.checkPassword,
-                  }],
-                })(
-                  <Input type="password" onBlur={this.handleConfirmBlur} />
-                )}
-              </FormItem>
+              <ConfirmPassword form={this.props.form} />
 
               <FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
                 {getFieldDecorator('agreement', {
