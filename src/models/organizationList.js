@@ -3,77 +3,133 @@ import * as api from '../api'
 export default {
   namespace: 'organizationList',
   state: {
-    isOversea: null,
-    currency: [],
-    transactionPhases: [],
-    industries: [],
-    tags: [],
-    organizationTypes: [],
-
-    name: null,
-    stockCode: null,
-
+    filter: {
+      isOversea: null,
+      currency: [],
+      transactionPhases: [],
+      industries: [],
+      tags: [],
+      organizationTypes: [],
+    },
+    search: {
+      name: null,
+      stockCode: null,
+    },
+    page_index: 1,
+    page_size: 10,
     total: 0,
-    page: 1,
-    pageSize: 10,
-    data: [],
+    list: [],
   },
   reducers: {
-    filterOnChange(state, { payload: { type, value } }) {
-      return { ...state, [type]: value }
+    changeFilter(state, { payload: { key, value } }) {
+      let filter = Object.assign({}, state.filter)
+      filter[key] = value
+      return { ...state, filter }
     },
     resetFilter(state) {
-      return { ...state, isOversea: null, currency: [], transactionPhases: [], industries: [], tags: [], organizationTypes: []}
+      let filter = Object.assign({}, state.filter)
+      for (let _key in filter) {
+        if (Array.isArray(filter[_key])) {
+          filter[_key] = []
+        } else {
+          filter[_key] = null
+        }
+      }
+      return { ...state, filter}
     },
-    searchChange(state, { payload: { key, value } }) {
-      return { ...state, [key]: value }
+    changeSearch(state, { payload: { key, value } }) {
+      let search = Object.assign({}, state.search)
+      for (let _key in search) {
+        search[_key] = null
+      }
+      search[key] = value
+      return { ...state, search }
     },
-    page(state, { payload: page }) {
+    setPage(state, { payload: page }) {
       return { ...state, page }
     },
-    pageSize(state, { payload: pageSize }) {
+    setPageSize(state, { payload: pageSize }) {
       return { ...state, pageSize }
     },
-    save(state, { payload: { total, data } }) {
-      return { ...state, total, data }
+    save(state, { payload: { total, list } }) {
+      return { ...state, total, list }
+    },
+    setParam(state, { payload: param }) {
+      return { ...state, param }
     },
   },
   effects: {
-    *get({}, { call, put, select }) {
-      const { page, pageSize, isOversea, currency, transactionPhases, industries, tags, organizationTypes, name, stockCode } = yield select(state => state.organizationList)
-      const param = {
-        page_index: page,
-        page_size: pageSize,
-
-        currencys: currency,
-        industrys: industries,
-        orgtransactionphases: transactionPhases,
-        tags: tags,
-        orgtypes: organizationTypes,
-
-        orgcode: stockCode,
-      }
-
-      if (window.appLocale.locale == 'en-US') {
-        param.nameE = name
-      } else {
-        param.nameC = name
-      }
-
+    *get({ payload: param }, { call, put, select }) {
+      const { page_index, page_size } = yield select(state => state.organizationList)
+      // param = Object.assign({}, param, {
+      //   page_index: page_index,
+      //   page_size: page_size
+      // })
+      console.log(param)
       const result = yield call(api.getOrg, param)
-      yield put({ type: 'save', payload: { total: result.data.count, data: result.data.data } })
+      yield put({ type: 'save', payload: { total: result.data.count, list: result.data.data } })
+    },
+    *filt({}, { select, put }) {
+      const { filter } = yield select(state => state.organizationList)
+      let param = {}
+      for (let _key in filter) {
+        let _value = filter[_key]
+        if (Array.isArray(_value)) {
+          if (_value.length > 0) {
+            param[_key] = _value.join(',')
+          }
+        } else {
+          if (_value != null) {
+            param[_key] = _value
+          }
+        }
+      }
+
+      yield put({ type: 'get', payload: param })
+    },
+    *search({}, { select, put }) {
+      const { filter, search } = yield select(state => state.organizationList)
+      let param = {}
+      for (let _key in filter) {
+        let _value = filter[_key]
+        if (Array.isArray(_value)) {
+          if (_value.length > 0) {
+            param[_key] = _value.join(',')
+          }
+        } else {
+          if (_value != null) {
+            param[_key] = _value
+          }
+        }
+      }
+      for (let _key in search) {
+        if (search[_key] != null) {
+          param[_key] = search[_key]
+        }
+      }
+      // name 特殊处理
+      if (param.name != null) {
+        if (window.LANG == 'en') {
+          param.nameE = param.name
+        } else {
+          param.nameC = param.name
+        }
+        delete param.name
+      }
+
+      yield put({ type: 'get', payload: param })
     },
     *reset({}, { put }) {
       yield put({ type: 'resetFilter' })
-      yield put({ type: 'get' })
+      yield put({ type: 'get', payload: {} })
     },
     *changePage({ payload: page }, { put }) {
-      yield put({ type: 'page', payload: page })
-      yield put({ type: 'get' })
+      yield put({ type: 'setPage', payload: page })
+      yield put({ type: 'get', payload: {} })
     },
     *changePageSize({ payload: pageSize }, { put }) {
-      yield put({ type: 'pageSize', payload: pageSize })
-      yield put({ type: 'get' })
+      yield put({ type: 'setPageSize', payload: pageSize })
+      yield put({ type: 'get', payload: {} })
     }
   },
   subscriptions: {

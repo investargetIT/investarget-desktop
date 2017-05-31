@@ -19,15 +19,15 @@ const styles = {
 }
 
 
-function OrganizationList({ location, dispatch, intl, industryOptions, selectedIndustries, filter, total, page, pageSize, data, loading }) {
+function OrganizationList({ location, dispatch, intl, filter, search, page, pageSize, total, list, loading }) {
 
   const { formatMessage } = intl
 
-  function filterOnChange(type, value) {
+  function onFilterChange(key, value) {
     dispatch({
-      type: 'organizationList/filterOnChange',
+      type: 'organizationList/changeFilter',
       payload: {
-        type,
+        key,
         value
       }
     })
@@ -35,7 +35,7 @@ function OrganizationList({ location, dispatch, intl, industryOptions, selectedI
 
   function filtHandler() {
     dispatch({
-      type: 'organizationList/get'
+      type: 'organizationList/filt'
     })
   }
 
@@ -64,19 +64,16 @@ function OrganizationList({ location, dispatch, intl, industryOptions, selectedI
     { value: 'stockCode', label: <FormattedMessage id="organization.stock_code" /> }
   ]
 
-  function searchOnChange(key, value) {
-    if (key == 'stockCode') {
-      value = parseInt(value, 10)
-    }
+  function onSearchChange(key, value) {
     dispatch({
-      type: 'organizationList/searchChange',
+      type: 'organizationList/changeSearch',
       payload: { key, value }
     })
   }
 
   function onSearch(key, value) {
     dispatch({
-      type: 'organizationList/get',
+      type: 'organizationList/search',
     })
   }
 
@@ -95,13 +92,13 @@ function OrganizationList({ location, dispatch, intl, industryOptions, selectedI
             </Link>
           </span>
         </div>
-        <OrganizationListFilter value={filter} onChange={filterOnChange} onSearch={filtHandler} onReset={resetHandler} />
+        <OrganizationListFilter value={filter} onChange={onFilterChange} onSearch={filtHandler} onReset={resetHandler} />
         <div style={{marginBottom: '16px'}}>
-          <Search keys={searchKeys} onChange={searchOnChange} onSearch={onSearch}/>
+          <Search keys={searchKeys} onChange={onSearchChange} onSearch={onSearch}/>
         </div>
         <Table
-          columns={dataToColumn(data, operationHandler)}
-          dataSource={data}
+          columns={dataToColumn(list, operationHandler)}
+          dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
           pagination={false} />
@@ -124,16 +121,10 @@ function OrganizationList({ location, dispatch, intl, industryOptions, selectedI
 
 function mapStateToProps(state) {
 
-  const { isOversea, currency, transactionPhases, industries, tags, organizationTypes, data, page, total, pageSize } = state.organizationList
-
-  const filter = { isOversea, currency, transactionPhases, industries, tags, organizationTypes }
+  const { filter, search, page_index, page_size, total, list } = state.organizationList
 
   return {
-    total,
-    page,
-    pageSize,
-    filter,
-    data,
+    filter, search, page: page_index, pageSize: page_size, total, list,
     loading: state.loading.effects['organizationList/get'],
   }
 }
