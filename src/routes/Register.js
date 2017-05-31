@@ -8,7 +8,7 @@ import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
-import { Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
+import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -36,10 +36,6 @@ const tailFormItemLayout = {
       offset: 6,
     },
   },
-}
-
-const selectStyle = {
-  width: '60px'
 }
 
 class Register extends React.Component {
@@ -181,103 +177,29 @@ class Register extends React.Component {
       overflow: 'auto',
     }
 
-    const selectStylse = {
-      width: '28px',
-      height: '18px',
-      marginTop: '4px',
-      display: 'block'
-    }
-        const { getFieldDecorator } = this.props.form;
-
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '4',
-    })(
-      <Select style={selectStyle}>
-        {this.props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={selectStylse} /></Option>)}
-      </Select>
-    );
-
+    const { getFieldDecorator } = this.props.form;
 
     return (
       <div style={containerStyle}>
         <div style={wrapperStyle} className="clearfix">
           <div style={this.props.currentUser ? Object.assign({},itemStyle,{opacity: 0}) : itemStyle}>
-          <MainLayout location={this.props.location}>
-            <Form onSubmit={this.handleSubmit}>
+            <MainLayout location={this.props.location}>
 
-              <FormItem {...formItemLayout} label="Role">
-                {getFieldDecorator('role', {
-                  rules: [{ required: true, message: 'Please choose your role!' }],
-                })(
+              <Form onSubmit={this.handleSubmit}>
+                <Role />
+                <Mobile country={this.props.country} />
+                <Code />
+                <Email />
+                <FullName />
+                <Org org={this.state.org} onChange={this.handleOrgChange} />
+                <Position title={this.props.title} />
+                <Tags tag={this.props.tag} />
+                <Password />
+                <ConfirmPassword />
+                <Agreement />
+                <Submit loading={this.props.loading} /> 
+              </Form>
 
-                  <RadioGroup onChange={this.onChange}>
-                    <Radio value={1}>{t(this, "investor")}</Radio>
-                    <Radio value={2}>{t(this, "transaction")}</Radio>
-                  </RadioGroup>
-                )}
-              </FormItem>
-
-              <FormItem {...formItemLayout} label="Phone Number">
-                {getFieldDecorator('mobile', {
-                  rules: [{ required: true, message: 'Please input your phone number!' }],
-                })(
-                  <Input addonBefore={prefixSelector} />
-                )}
-              </FormItem>
-
-              <FormItem {...formItemLayout} label="Captcha">
-                <Row gutter={8}>
-                  <Col span={12}>
-                    {getFieldDecorator('captcha', {
-                      rules: [{ required: true, message: 'Please input the captcha you got!' }],
-                    })(
-                      <Input size="large" />
-                    )}
-                  </Col>
-                  <Col span={12}>
-                    <Button size="large">Get captcha</Button>
-                  </Col>
-                </Row>
-              </FormItem>
-
-              <Email />
-
-              <FullName />
-
-              <FormItem {...formItemLayout} label="Organization" hasFeedback>
-                {getFieldDecorator('organization', {
-                  rules: [{ required: true, message: 'Please input your organization!' }],
-                })(
-                  <Select mode="combobox" allowClear onChange={this.handleOrgChange} optionFilterProp="children" optionLabelProp="children">
-                    {this.state.org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option>)}
-                  </Select>
-                )}
-              </FormItem>
-
-              <Position form={this.props.form} title={this.props.title} />
-
-              <Tags form={this.props.form} tag={this.props.tag} />
-
-              <Password />
-
-              <ConfirmPassword />
-
-              <FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
-                {getFieldDecorator('agreement', {
-                  valuePropName: 'checked',
-                  rules: [
-                    { validator: this.checkAgreement },
-                  ]
-                })(
-                  <Checkbox>I have read the <a href="">agreement</a></Checkbox>
-                )}
-              </FormItem>
-
-              <FormItem {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit" size="large" loading={this.props.loading}>Register</Button>
-              </FormItem>
-
-            </Form>
           </MainLayout>
           </div>
           <div style={itemStyle}>
