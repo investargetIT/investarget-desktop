@@ -8,6 +8,7 @@ import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
 import { Email, FullName, Password, ConfirmPassword } from '../components/Form'
+import PropTypes from 'prop-types'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -54,6 +55,12 @@ class Register extends React.Component {
     this.onProjectToggle = this.onProjectToggle.bind(this)
     this.onProjectsSkip = this.onProjectsSkip.bind(this)
     this.onProjectsSubmit = this.onProjectsSubmit.bind(this)
+  }
+
+  getChildContext() {
+    return {
+      form: this.props.form
+    }
   }
 
   onChange = (e) => {
@@ -233,9 +240,9 @@ class Register extends React.Component {
                 </Row>
               </FormItem>
 
-              <Email form={this.props.form} />
+              <Email />
 
-              <FullName form={this.props.form} />
+              <FullName />
 
               <FormItem {...formItemLayout} label="Organization" hasFeedback>
                 {getFieldDecorator('organization', {
@@ -267,9 +274,9 @@ class Register extends React.Component {
                 )}
               </FormItem>
 
-              <Password form={this.props.form} />
+              <Password />
 
-              <ConfirmPassword form={this.props.form} />
+              <ConfirmPassword />
 
               <FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
                 {getFieldDecorator('agreement', {
@@ -327,6 +334,9 @@ function mapStateToProps(state) {
     friends, selectedFriends,
     projects, selectedProjects
   }
+}
+Register.childContextTypes = {
+  form: PropTypes.object
 }
 
 export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))

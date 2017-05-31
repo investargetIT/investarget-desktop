@@ -1,24 +1,25 @@
 import React from 'react'
 import { Form, Input } from 'antd'
 import { i18n } from '../utils/util'
+import PropTypes from 'prop-types'
 
 const FormItem = Form.Item
 
-const formItemLayout = { 
+const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 6 },
-  },  
+  },
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 14 },
-  },  
+  },
 }
 
-function InputFormItem(props) {
+function InputFormItem(props, context) {
   return (
     <FormItem {...formItemLayout} label={props.label}>
-      {props.form.getFieldDecorator(props.name, {
+      {context.form.getFieldDecorator(props.name, {
         rules: [{
           type: props.valueType, message: 'The input is not valid!',
         }, {
@@ -30,17 +31,20 @@ function InputFormItem(props) {
     </FormItem>
   )
 }
+InputFormItem.contextTypes = {
+  form: PropTypes.object
+}
 
-const Email = props => <InputFormItem label={i18n("email")} form={props.form} name="email" valueType="email" required />
+const Email = () => <InputFormItem label={i18n("email")} name="email" valueType="email" required />
 
-const FullName = props => <InputFormItem label={i18n("username")} form={props.form} name="username" required />
+const FullName = () => <InputFormItem label={i18n("username")} name="username" required />
 
-const Password = props => <InputFormItem label={i18n("password")} form={props.form} name="password" required type="password" />
+const Password = () => <InputFormItem label={i18n("password")} name="password" required type="password" />
 
-const ConfirmPassword = props => {
+const ConfirmPassword = (props, context) => {
 
   function validator(rule, value, callback) {
-    const password = props.form.getFieldValue('password')
+    const password = context.form.getFieldValue('password')
     if (value && password && value !== password) {
       callback('Two passwords that you enter is inconsistent!')
     } else {
@@ -48,8 +52,12 @@ const ConfirmPassword = props => {
     }
   }
 
-  return <InputFormItem label={i18n("confirm_password")} form={props.form} name="confirm" required type="password" validator={validator} />
+  return <InputFormItem label={i18n("confirm_password")} name="confirm" required type="password" validator={validator} />
 }
+ConfirmPassword.contextTypes = {
+  form: PropTypes.object
+}
+
 
 module.exports = {
   Email,
