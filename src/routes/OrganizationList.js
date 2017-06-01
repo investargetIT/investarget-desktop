@@ -5,7 +5,7 @@ import { Link } from 'dva/router'
 import { Icon, Table, Button, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { OrganizationListFilter } from '../components/Filter'
-import Search from '../components/Search'
+import { OrganizationListSearch } from '../components/Search'
 import { dataToColumn } from '../utils/util'
 
 const styles = {
@@ -59,11 +59,6 @@ function OrganizationList({ location, dispatch, intl, filter, search, page, page
     })
   }
 
-  const searchKeys = [
-    { value: 'name', label: <FormattedMessage id="organization.name" /> },
-    { value: 'stockCode', label: <FormattedMessage id="organization.stock_code" /> }
-  ]
-
   function onSearchChange(key, value) {
     dispatch({
       type: 'organizationList/changeSearch',
@@ -94,7 +89,7 @@ function OrganizationList({ location, dispatch, intl, filter, search, page, page
         </div>
         <OrganizationListFilter value={filter} onChange={onFilterChange} onSearch={filtHandler} onReset={resetHandler} />
         <div style={{marginBottom: '16px'}}>
-          <Search keys={searchKeys} onChange={onSearchChange} onSearch={onSearch}/>
+          <OrganizationListSearch onChange={onSearchChange} onSearch={onSearch} />
         </div>
         <Table
           columns={dataToColumn(list, operationHandler)}
@@ -121,10 +116,10 @@ function OrganizationList({ location, dispatch, intl, filter, search, page, page
 
 function mapStateToProps(state) {
 
-  const { filter, search, page_index, page_size, total, list } = state.organizationList
+  const { filter, search, page, pageSize, total, list } = state.organizationList
 
   return {
-    filter, search, page: page_index, pageSize: page_size, total, list,
+    filter, search, page, pageSize, total, list,
     loading: state.loading.effects['organizationList/get'],
   }
 }

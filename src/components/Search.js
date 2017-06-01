@@ -48,5 +48,13 @@ class Search extends React.Component {
   }
 }
 
-export default Search
+function OrganizationListSearch({ onChange, onSearch }) {
+  const searchKeys = [
+    { value: 'name', label: <FormattedMessage id="organization.name" /> },
+    { value: 'stockCode', label: <FormattedMessage id="organization.stock_code" /> }
+  ]
+  return <Search keys={searchKeys} onChange={onChange} onSearch={onSearch} />
+}
 
+export { OrganizationListSearch }
+export default Search
