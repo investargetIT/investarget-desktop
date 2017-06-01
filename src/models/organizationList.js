@@ -53,8 +53,8 @@ export default {
   },
   effects: {
     *get({}, { call, put, select }) {
-      const { filter, search, page_index, page_size } = yield select(state => state.organizationList)
-      let param = { ...filter, ...search, page_index: page_index, page_size: page_size }
+      const { filter, search, page, pageSize } = yield select(state => state.organizationList)
+      let param = { ...filter, ...search, page_index: page, page_size: pageSize }
       for (let _key in param) {
         let _value = filter[_key]
         if (Array.isArray(_value)) {
