@@ -114,7 +114,7 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
     <LeftRightLayout
       location={location}
       title={i18n("user_list")}
-      action={{ name: i18n("create_user"), link: "/app/user/create" }}>
+      action={{ name: i18n("create_user"), link: "/app/user/add" }}>
 
       <UserListFilter
         value={filter}

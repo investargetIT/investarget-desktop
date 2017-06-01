@@ -187,13 +187,13 @@ class Register extends React.Component {
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
-                <Mobile country={this.props.country} />
+                <Mobile required country={this.props.country} />
                 <Code />
                 <Email />
                 <FullName />
-                <Org org={this.state.org} onChange={this.handleOrgChange} />
+                <Org required org={this.state.org} onChange={this.handleOrgChange} />
                 <Position title={this.props.title} />
-                <Tags tag={this.props.tag} />
+                <Tags required tag={this.props.tag} />
                 <Password />
                 <ConfirmPassword />
                 <Agreement />

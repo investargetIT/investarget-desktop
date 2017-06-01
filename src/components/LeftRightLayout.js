@@ -45,11 +45,7 @@ class LeftRightLayout extends React.Component {
 
               <div style={{ fontSize: '16px', marginBottom: '24px' }}>
                 <span>{this.props.title}</span>
-                <span style={{ float: 'right' }}>
-                  <Link to={this.props.action.link}>
-                    <Icon type="plus" />{this.props.action.name}
-                  </Link>
-                </span>
+                {this.props.action ? <span style={{ float: 'right' }}><Link to={this.props.action.link}><Icon type="plus" />{this.props.action.name}</Link></span>: null}
               </div>
 
               {this.props.children}

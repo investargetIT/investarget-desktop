@@ -6,7 +6,8 @@ const resourceMap = {
   '/register': ['tag', 'country', 'title'],
   [URI_3]: ['currencyType', 'transactionPhases', 'industry', 'tag', 'orgtype'],
   [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea'],
-  '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases']
+  '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
+  '/app/user/add': ['title', 'tag', 'country'],
 }
 
 export default {
@@ -20,7 +21,7 @@ export default {
     country: [],
     title: [],
     currencyType: [],
-    audit: [{id: 1, name: i18n('user.under_approval')}, {id: 2, name: i18n('user.recevied_approval')}, {id: 3, name: i18n('user.reject_approval')}],
+    audit: [{id: 1, name: i18n('under_approval')}, {id: 2, name: i18n('recevied_approval')}, {id: 3, name: i18n('reject_approval')}],
     industry: [],
     transactionPhases:  [],
     orgarea: [],
