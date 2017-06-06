@@ -784,8 +784,7 @@
     "required": "All the * are required",
     "show_size": "Show Records",
     "jump_page": "Jump to",
-
-  "organization": {
+"organization": {
     "org_list": "Organization List",
     "new_org": "New Organization",
     "name": "Name",
@@ -811,7 +810,7 @@
     "typical_case": "Typical Case",
     "partner_or_investment_committee_member": "Partner/Board Member",
     "decision_process": "Decision Process"
-  },
+},
 
   "filter": {
     "invest_oversea": "Invest Oversea",

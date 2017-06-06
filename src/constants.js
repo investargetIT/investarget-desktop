@@ -7,7 +7,7 @@ export const URI_4 = "/app/email/list"
 export const URI_5 = "/app/timeline/list"
 export const URI_6 = "/app/user/list"
 export const URI_7 = "/app/dataroom/list"
-export const URI_8 = "/app/inboxt/list"
+export const URI_8 = "/app/inbox/list"
 export const URI_9 = "/app/modify_password"
 export const URI_10 = "/app/personal_info"
 export const URI_11 = "/app/log/list"
@@ -21,11 +21,11 @@ export const KEY_TO_URI = {
   "timeline_management": URI_5,
   "user_management": URI_6,
   "dataroom_management": URI_7,
-  "inbox_management": URI_8,
+  "reminder": URI_8,
   "my_projects": URI_2,
   "myinvestor": URI_12,
   "mytrader": URI_13,
   "change_password": URI_9,
   "profile": URI_10,
-  "reminder": URI_11
+  "log": URI_11
 }

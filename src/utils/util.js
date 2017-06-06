@@ -23,9 +23,19 @@ function dataToColumn(data, operationHandler) {
       key: 'username'
     },
     {
+      title: "操作者",
+      dataIndex: 'operator',
+      key: 'operator'
+    },
+    {
       title: i18n('organization.name'),
       dataIndex: 'orgname',
       key: 'orgname',
+    },
+    {
+      title: "时间",
+      dataIndex: 'time',
+      key: 'time'
     },
     {
       title: i18n("org"),
@@ -33,9 +43,19 @@ function dataToColumn(data, operationHandler) {
       key: 'org'
     },
     {
+      title: "操作对象",
+      dataIndex: 'target',
+      key: 'target'
+    },
+    {
       title: i18n('organization.industry'),
       dataIndex: 'industry.industry',
       key: 'industry',
+    },
+    {
+      title: "操作",
+      dataIndex: 'operate',
+      key: 'operate'
     },
     {
       title: i18n("position"),
@@ -43,9 +63,19 @@ function dataToColumn(data, operationHandler) {
       key: 'title'
     },
     {
+      title: '操作前',
+      dataIndex: 'before_operate',
+      key: 'before_operate'
+    },
+    {
       title: i18n('organization.currency'),
       dataIndex: 'currency.currency',
       key: 'currency',
+    },
+    {
+      title: "操作后",
+      dataIndex: 'after_operate',
+      key: 'after_operate'
     },
     {
       title: i18n("tag"),
@@ -83,14 +113,14 @@ function dataToColumn(data, operationHandler) {
       title: i18n("action"),
       key: 'action',
       render: (text, record) => (
-        <span>
-          <Button disabled={!record.action.get} size="small" onClick={operationHandler.bind(null, 'get', record.id)}>{i18n("view")}</Button>&nbsp;
-          <Button disabled={!record.action.change} size="small" onClick={operationHandler.bind(null, 'edit', record.id)}>{i18n("edit")}</Button>&nbsp;
-          <Popconfirm title="Confirm to delete?" onConfirm={operationHandler.bind(null, 'delete', record.id)}>
-            <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
-          </Popconfirm>
-        </span>
-      ),
+            <span>
+              <Button disabled={!record.action.get} size="small" onClick={operationHandler.bind(null, 'get', record.id)}>{i18n("view")}</Button>&nbsp;
+              <Button disabled={!record.action.change} size="small" onClick={operationHandler.bind(null, 'edit', record.id)}>{i18n("edit")}</Button>&nbsp;
+              <Popconfirm title="Confirm to delete?" onConfirm={operationHandler.bind(null, 'delete', record.id)}>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              </Popconfirm>
+            </span>
+      )
     },
   ]
 

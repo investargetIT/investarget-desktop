@@ -930,5 +930,53 @@ export default {
       {"errormsg":null,"code":1000,"result":{"status":"ALREADY","scur":"CNY","update":"2017-05-27 10:26:58","tcur":"USD","ratenm":"人民币/美元","rate":"0.145934"}}
     )
   },
+  'GET /api/log/api': (req, res) => {
+    console.log(`${req.method} ${req.url}`)
+    res.json({
+      "errormsg":null,
+      "code":1000,
+      "result":{
+        "count":18,
+        "data":[
+          {
+            "id":1,
+            "operator": "ChenXiao",
+            "time": "2017-05-18 11:52:32",
+            "target": "黄河",
+            "operate": "修改",
+            "before_operate": "操作前",
+            "after_operate": "操作后"
+          },
+          {
+            "id":2,
+            "operator": "ChenXiao",
+            "time": "2017-05-18 11:52:32",
+            "target": "黄河",
+            "operate": "修改",
+            "before_operate": "操作前",
+            "after_operate": "操作后"
+          },
+          {
+            "id":3,
+            "operator": "ChenXiao",
+            "time": "2017-05-18 11:52:32",
+            "target": "黄河",
+            "operate": "修改",
+            "before_operate": "操作前",
+            "after_operate": "操作后"
+          },
+          {
+            "id":4,
+            "operator": "ChenXiao",
+            "time": "2017-05-18 11:52:32",
+            "target": "黄河",
+            "operate": "修改",
+            "before_operate": "操作前",
+            "after_operate": "操作后"
+          }
+        ]
+      }
+    })
+  },
 
 }

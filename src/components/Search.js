@@ -56,5 +56,15 @@ function OrganizationListSearch({ onChange, onSearch }) {
   return <Search keys={searchKeys} onChange={onChange} onSearch={onSearch} />
 }
 
-export { OrganizationListSearch }
-export default Search
+function UserListSearch({ onChange, onSearch }) {
+  const searchKeys = [ 
+    { value: 'name', label: <FormattedMessage id="name" /> },
+    { value: 'phone', label: <FormattedMessage id="phone" /> },
+    { value: 'email', label: <FormattedMessage id="email" /> },
+    { value: 'organization', label: <FormattedMessage id="org" /> },
+    { value: 'transaction', label: <FormattedMessage id="transaction" /> },
+  ]
+  return <Search keys={searchKeys} onChange={onChange} onSearch={onSearch} />
+}
+
+export { OrganizationListSearch, UserListSearch }

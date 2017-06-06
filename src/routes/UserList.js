@@ -7,7 +7,7 @@ import { PAGE_SIZE, URI_6 } from '../constants'
 import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
 import { UserListFilter } from '../components/Filter'
-import Search from '../components/Search'
+import { UserListSearch } from '../components/Search'
 import { dataToColumn, i18n } from '../utils/util'
 
 const CheckboxGroup = Checkbox.Group
@@ -102,14 +102,6 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
     })
   }
 
-  const searchKeys = [
-    { value: 'name', label: <FormattedMessage id="user.name" /> },
-    { value: 'phone', label: <FormattedMessage id="user.phone" /> },
-    { value: 'email', label: <FormattedMessage id="user.email" /> },
-    { value: 'organization', label: <FormattedMessage id="user.organization" /> },
-    { value: 'transaction', label: <FormattedMessage id="user.transaction" /> },
-  ]
-
   return (
     <LeftRightLayout
       location={location}
@@ -127,7 +119,7 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
           <Button type="primary">Create User</Button>
         </UserModal>
         <div style={{ float: 'right' }}>
-          <Search keys={searchKeys} onSearch={searchHandler} />
+          <UserListSearch onSearch={searchHandler} />
         </div>
       </div>
 
@@ -143,8 +135,8 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
         className="ant-table-pagination"
         total={total}
         current={current}
-        pageSize={PAGE_SIZE}
-        onChange={pageChangeHandler} />
+        pageSize={10}
+        onChange={pageChangeHandler} showSizeChanger showQuickJumper />
 
     </LeftRightLayout>
   )

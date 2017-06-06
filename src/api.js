@@ -130,3 +130,8 @@ export function register(user) {
   const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC, orgname}
   return r('/user/register/', 'POST', param)
 }
+
+export function queryLogList(pageIndex, pageSize) {
+  return r(`/log/api?page_index=${pageIndex}&page_size=${PAGE_SIZE}`)
+}
+

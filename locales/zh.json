@@ -607,16 +607,14 @@
     "modify_falied": "密码修改失败，请联系管理员"
 
   },
-  "organization": {
-    "list": "机构列表",
-    "name": "名称",
-    "currency": "货币类型",
-    "cycle_day": "决策周期",
-    "investment_rounds": "轮次",
-    "add_organization": "新增机构",
-    "english_name": "英文名称",
-    "type": "机构类型"
-  },
+  "list": "机构列表",
+  "name": "名称",
+  "currency": "货币类型",
+  "cycle_day": "决策周期",
+  "investment_rounds": "轮次",
+  "add_organization": "新增机构",
+  "english_name": "英文名称",
+  "type": "机构类型",
   "log_list": "日志列表",
   "was_editor": "被修改者",
   "editor": "修改者",
