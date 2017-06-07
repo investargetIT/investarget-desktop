@@ -57,7 +57,7 @@ const Email = () => <BasicFormItem label={i18n("email")} name="email" valueType=
 
 const FullName = () => <BasicFormItem label={i18n("username")} name="username" required><Input /></BasicFormItem>
 
-const Password = () => <BasicFormItem label={i18n("password")} name="password" required><Input type="password" /></BasicFormItem>
+const Password = props => <BasicFormItem label={props.label || i18n("password")} name="password" required><Input type="password" /></BasicFormItem>
 
 const ConfirmPassword = (props, context) => {
 
@@ -70,11 +70,14 @@ const ConfirmPassword = (props, context) => {
     }
   }
 
-  return <BasicFormItem label={i18n("confirm_password")} name="confirm" required type="password" validator={validator}><Input type="password" /></BasicFormItem>
+  return <BasicFormItem label={i18n("confirm_password")} name="confirm" required validator={validator}><Input type="password" /></BasicFormItem>
 }
 ConfirmPassword.contextTypes = {
   form: PropTypes.object
 }
+
+const OldPassword = () => <BasicFormItem label={i18n("old_password")} name="old_password" required><Input type="password" /></BasicFormItem>
+
 
 const Position = props => (
   <BasicFormItem label={i18n("position")} name="position" required>
@@ -246,6 +249,7 @@ module.exports = {
   FullName,
   Password,
   ConfirmPassword,
+  OldPassword,
   Position,
   Tags,
   Org,
