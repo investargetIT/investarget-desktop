@@ -11,6 +11,7 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 import AddUser from './routes/AddUser.js'
 import LogList from './routes/LogList'
 import ModifyPwd from './routes/ModifyPwd'
+import BasicInfo from './routes/BasicInfo'
 
 function RouterConfig({ history }) {
   return (
@@ -25,6 +26,7 @@ function RouterConfig({ history }) {
       <Route path={URI_3} component={OrganizationList} />
       <Route path={URI_11} component={LogList} />
       <Route path={URI_9} component={ModifyPwd} />
+      <Route path={URI_10} component={BasicInfo} />
     </Router>
   )
 }

@@ -605,7 +605,7 @@
   "recevied_approval": "Received Approval",
   "reject_approval": "Reject Approval",
   "change_transaction": "Change Transaction",
-  "modify": "Modify Profile",
+  "modify_profile": "Modify Profile",
   "photo": "Photo",
   "role": "Role",
   "old_password": "Old Password",

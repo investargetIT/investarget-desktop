@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { URI_6, URI_3 } from '../constants'
+import { URI_6, URI_3, URI_10 } from '../constants'
 import { i18n } from '../utils/util'
 
 const resourceMap = {
@@ -8,6 +8,7 @@ const resourceMap = {
   [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea'],
   '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
   '/app/user/add': ['title', 'tag', 'country'],
+  [URI_10]: ['tag'],
 }
 
 export default {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Cascader, Checkbox, Form, Input, Select, Row, Col, Button, Radio } from 'antd'
+import { Icon, Upload, Cascader, Checkbox, Form, Input, Select, Row, Col, Button, Radio } from 'antd'
 import { i18n } from '../utils/util'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
@@ -55,7 +55,7 @@ BasicFormItem.contextTypes = {
 
 const Email = () => <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input /></BasicFormItem>
 
-const FullName = () => <BasicFormItem label={i18n("username")} name="username" required><Input /></BasicFormItem>
+const FullName = props => <BasicFormItem label={i18n("username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
 
 const Password = props => <BasicFormItem label={props.label || i18n("password")} name="password" required><Input type="password" /></BasicFormItem>
 
@@ -81,8 +81,8 @@ const OldPassword = () => <BasicFormItem label={i18n("old_password")} name="old_
 
 const Position = props => (
   <BasicFormItem label={i18n("position")} name="position" required>
-    <Select placeholder="Please select your position">
-      { props.title.map(t => <Option key={t.id} value={t.id + ''} title={t.name}>{t.name}</Option>) }
+    <Select placeholder="Please select your position" disabled={props.disabled}>
+      { props.title ? props.title.map(t => <Option key={t.id} value={t.id + ''} title={t.name}>{t.name}</Option>) : null }
     </Select>
   </BasicFormItem>
 )
@@ -90,15 +90,15 @@ const Position = props => (
 const Tags = props => (
   <BasicFormItem label={i18n("tag")} name="tags" required={props.required} valueType="array">
     <Select mode="multiple" placeholder="Please choose your favorite tags">
-      { props.tag.map(t => <Option key={t.id}>{t.name}</Option>) }
+      { props.tag ? props.tag.map(t => <Option key={t.id}>{t.name}</Option>) : null }
     </Select>
   </BasicFormItem>
 )
 
 const Org = props => (
   <BasicFormItem label={i18n("org")} name="organization" required={props.required} >
-    <Select mode="combobox" onChange={props.onChange}>
-      { props.org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> )}
+    <Select mode="combobox" onChange={props.onChange} disabled={props.disabled}>
+      { props.org ? props.org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
     </Select>
   </BasicFormItem>
 )
@@ -141,9 +141,9 @@ Mobile.contextTypes = {
   form: PropTypes.object
 }
 
-const Role = () => (
+const Role = props => (
   <BasicFormItem label={i18n("role")} name="role" required valueType="number">
-    <RadioGroup>
+    <RadioGroup disabled={props.disabled}>
       <Radio value={1}>{i18n("investor")}</Radio>
       <Radio value={2}>{i18n("transaction")}</Radio>
     </RadioGroup>
@@ -244,6 +244,33 @@ const Status = props => (
   </BasicFormItem>
 )
 
+const UploadAvatar = (props, context) => {
+  function normFile(e) {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  }
+  return (
+    <FormItem {...formItemLayout} label={i18n("photo")}>
+      <div className="dropbox">
+        {context.form.getFieldDecorator('dragger', {
+          valuePropName: 'fileList',
+          getValueFromEvent: normFile,
+        })(
+          <Upload name="files" action="/upload.do" style={{ display: 'block', border: '1px dashed #d9d9d9', borderRadius: 6, cursor: 'pointer', width: 150, height: 150 }}>
+            { false ? <img src="/images/defaultAvatar@2x.png" style={{ width: 150, height: 150 }} alt="" /> : null }
+            <Icon type="plus" style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
+          </Upload>
+        )}
+      </div>
+    </FormItem>
+  )
+}
+UploadAvatar.contextTypes = {
+  form: PropTypes.object
+}
 module.exports = {
   Email,
   FullName,
@@ -267,4 +294,5 @@ module.exports = {
   Trader,
   Leader,
   Status,
+  UploadAvatar,
 }
