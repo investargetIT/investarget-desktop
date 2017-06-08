@@ -135,3 +135,11 @@ export function queryLogList(pageIndex, pageSize) {
   return r(`/log/api?page_index=${pageIndex}&page_size=${PAGE_SIZE}`)
 }
 
+export function queryPermList() {
+  return r('/user/perm/')
+}
+
+export function queryUserGroup() {
+  return r('/user/group/')
+}
+
