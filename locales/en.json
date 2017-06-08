@@ -18,6 +18,7 @@
     "home": "Home",
     "out": "Logout"
   },
+  "permission_management": "Permission Management",
   "register": "Sign Up",
   "role": "Role",
   "mobile": "Mobile Phone",

@@ -13,6 +13,7 @@ export const URI_10 = "/app/personal_info"
 export const URI_11 = "/app/log/list"
 export const URI_12 = "/app/investor/my"
 export const URI_13 = "/app/trader/my"
+export const URI_14 = "/app/perm/list"
 
 export const KEY_TO_URI = {
   "platform_projects": URI_1,
@@ -27,5 +28,6 @@ export const KEY_TO_URI = {
   "mytrader": URI_13,
   "change_password": URI_9,
   "profile": URI_10,
-  "log": URI_11
+  "log": URI_11,
+  "permission_management": URI_14, 
 }

@@ -8,11 +8,12 @@ import Home from './routes/Home'
 import AddOrganization from "./routes/AddOrganization.js"
 import OrganizationList from "./routes/OrganizationList.js"
 import AddProject from './routes/AddProject'
-import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13 } from './constants'
+import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 import AddUser from './routes/AddUser.js'
 import LogList from './routes/LogList'
 import ModifyPwd from './routes/ModifyPwd'
 import BasicInfo from './routes/BasicInfo'
+import PermList from './routes/PermList'
 
 function RouterConfig({ history }) {
   return (
@@ -29,6 +30,7 @@ function RouterConfig({ history }) {
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/project/release" component={AddProject} />
+      <Route path={URI_14} component={PermList} />
     </Router>
   )
 }
