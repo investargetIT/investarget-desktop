@@ -1,8 +1,9 @@
 import React from 'react'
-import { Icon, Upload, Cascader, Checkbox, Form, Input, Select, Row, Col, Button, Radio } from 'antd'
+import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
 import { i18n } from '../utils/util'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import _ from 'lodash'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -19,17 +20,17 @@ const formItemLayout = {
   },
 }
 
-const tailFormItemLayout = { 
+const tailFormItemLayout = {
   wrapperCol: {
     xs: {
-      span: 24, 
+      span: 24,
       offset: 0,
-    },  
+    },
     sm: {
-      span: 14, 
+      span: 14,
       offset: 6,
-    },  
-  },  
+    },
+  },
 }
 
 function BasicFormItem(props, context) {
@@ -39,6 +40,9 @@ function BasicFormItem(props, context) {
     { required: props.required, message: 'The input can not be empty!'},
   ]
 
+  if (props.whitespace) {
+    rules.push({ whitespace: props.whitespace })
+  }
   if (props.validator) {
     rules.push({ validator: props.validator })
   }
@@ -126,7 +130,7 @@ Code.contextTypes = {
 const Mobile = (props, context) => {
   const prefixSelector = context.form.getFieldDecorator('prefix', {
     initialValue: '4',
-  })( 
+  })(
     <Select style={{ width: 60 }}>
       {props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} /></Option>)}
     </Select>
@@ -238,6 +242,118 @@ const Leader = props => (
   </BasicFormItem>
 )
 
+const IsHidden = () => (
+  <BasicFormItem label={i18n('is_hidden')} name="ishidden" valueType="boolean">
+    <RadioGroup>
+      <Radio value={false}>{i18n('no')}</Radio>
+      <Radio value={true}>{i18n('yes')}</Radio>
+    </RadioGroup>
+  </BasicFormItem>
+)
+
+const ProjectNameC = () => (<BasicFormItem label={i18n('project_titleC')} name="titleC" required><Input /></BasicFormItem>)
+
+const ProjectNameE = () => (<BasicFormItem label={i18n('project_titleE')} name="titleE" required><Input /></BasicFormItem>)
+
+const RealNameC = () => (<BasicFormItem label={i18n('real_nameC')} name="realNameC"><Input /></BasicFormItem>)
+
+const RealNameE = () => (<BasicFormItem label={i18n('real_nameE')} name="realNameE"><Input /></BasicFormItem>)
+
+
+class IndustryCascader extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.onChange = this.onChange.bind(this)
+  }
+
+  onChange(value) {
+    const onChange = this.props.onChange
+    if (onChange) {
+      onChange(value[1])
+    }
+  }
+
+  render() {
+    const industry = this.props.industry
+
+    // Cascader 组件的 value 格式转换
+    let pIndustries = industry.filter(item => item.id == item.Pindustry)
+    pIndustries.forEach(item => {
+      let Pindustry = item.id
+      let subIndustries = industry.filter(item => item.Pindustry == Pindustry && item.id != Pindustry)
+      item.children = subIndustries
+    })
+    const industryOptions = pIndustries.map(item => {
+      return {
+        label: item.industry,
+        value: item.id,
+        children: item.children.map(item => {
+          return {
+            label: item.industry,
+            value: item.id
+          }
+        })
+      }
+    })
+
+    const item = industry.filter(item => item.id == this.props.value)[0]
+    const value = item ? [item.Pindustry, item.id] : undefined
+
+    return (
+      <Cascader options={industryOptions} value={value} onChange={this.onChange} size="large" />
+    )
+  }
+}
+
+
+class CountryCascader extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.onChange = this.onChange.bind(this)
+  }
+
+  onChange(value) {
+    const onChange = this.props.onChange
+    if (onChange) {
+      onChange(value[1])
+    }
+  }
+
+  render() {
+    const continent = this.props.continent
+    const country = this.props.country
+
+    const countryOptions = continent.map(continent => {
+      return {
+        label: continent.continent,
+        value: continent.id,
+        children: country.filter(country => country.continent == continent.id)
+                         .map(country => ({ label: country.country, value: country.id }))
+      }
+    })
+
+    const item = country.filter(item => item.id == this.props.value)[0]
+    const value = item ? [item.continent, item.id] : undefined
+
+    return (
+      <Cascader options={countryOptions} value={value} onChange={this.onChange} size="large" />
+    )
+  }
+}
+
+const ProjectRole = () => (
+  <BasicFormItem label={i18n('role')} name="characterId" required valueType="string">
+    <Select>
+      <Option value="1">项目公司</Option>
+      <Option value="2">财务顾问</Option>
+      <Option value="3">投资者</Option>
+      <Option value="5">未披露</Option>
+    </Select>
+  </BasicFormItem>
+)
+
 const Status = props => (
   <BasicFormItem label={i18n("status")} name="status" required={false} valueType="number">
     <RadioGroup options={props.options} />
@@ -271,6 +387,153 @@ const UploadAvatar = (props, context) => {
 UploadAvatar.contextTypes = {
   form: PropTypes.object
 }
+
+const TrasactionType = ({ transactionType }) => {
+  return (
+    <BasicFormItem label={i18n('transaction_type')} name="transactionTypes" required valueType="string">
+      <Select>
+        {transactionType.map((item, index) =>
+          <Option key={index} value={String(item.id)}>{item.name}</Option>
+        )}
+      </Select>
+    </BasicFormItem>
+  )
+}
+
+const Year = ({ label, name, required }) => {
+  const currYear = new Date().getFullYear()
+  const options = _.range(currYear, currYear - 100).map(item => {
+    return { value: String(item), label: String(item) }
+  })
+  return (
+    <BasicFormItem label={label} name={name} required={required || false} valueType="string">
+      <Select>
+        {options.map((item, index) =>
+          <Option key={index} value={item.value}>{item.label}</Option>
+        )}
+      </Select>
+    </BasicFormItem>
+  )
+}
+
+
+const USDFormatter = function(value) {
+  if (isNaN(value)) {
+    return '$ '
+  } else{
+    return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+}
+const USDParser = function(value) {
+  value = value.replace(/\$\s?|(,*)/g, '')
+  return parseInt(value)
+}
+const CNYFormatter = function(value) {
+  if (isNaN(value)) {
+    return '￥ '
+  } else {
+    return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
+  }
+}
+const CNYParser = function(value) {
+  value = value.replace(/\￥\s?|(,*)/g, '')
+  return parseInt(value)
+}
+
+class CurrencyInput extends React.Component {
+
+  static formatterMap = {
+    '1': CNYFormatter,
+    '2': USDFormatter,
+    '3': CNYFormatter,
+  }
+  static parserMap = {
+    '1': CNYParser,
+    '2': USDParser,
+    '3': CNYParser,
+  }
+
+  render() {
+    const { currencyType, formatter, parser, ...restProps } = this.props
+    return (
+      <InputNumber
+        style={{width: '100%'}}
+        formatter={CurrencyInput.formatterMap[currencyType]}
+        parser={CurrencyInput.parserMap[currencyType]}
+        {...restProps}
+      />
+    )
+  }
+}
+
+const CurrencyTypeFormItem = ({ label, name, required, onChange, currencyType }, context) => {
+  const { getFieldDecorator } = context.form
+  return (
+    <FormItem {...formItemLayout} label={label}>
+      {
+        getFieldDecorator(name, {
+          rules: [{ required: required || false }, { type: 'string' }],
+          onChange: onChange,
+        })(
+          <Select>
+            {currencyType.map((item, index) =>
+              <Option key={index} value={String(item.id)}>{item.currency}</Option>
+            )}
+          </Select>
+        )
+      }
+    </FormItem>
+  )
+}
+CurrencyTypeFormItem.contextTypes = {
+  form: PropTypes.object
+}
+
+
+const CurrencyFormItem = ({ label, name, required, validator, currencyType, onChange }, context) => {
+  const { getFieldDecorator } = context.form
+
+  let rules = [{ type: 'number' }]
+  console.log('>>>', label, required)
+  if (required) { rules.push({ required }) }
+  console.log(rules)
+  if (validator) { rules.push({ validator }) }
+
+  return (
+    <FormItem {...formItemLayout} label={label} required={required}>
+      <Row>
+        <Col span={16}>
+          <FormItem>
+          {
+            getFieldDecorator(name, {
+              rules: rules,
+              onChange: onChange
+            })(
+              <CurrencyInput currencyType={currencyType || 2} />
+            )
+          }
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem>
+          {
+            getFieldDecorator(`${name}_USD`, {
+              rules: rules
+            })(
+              <CurrencyInput currencyType={2} disabled />
+            )
+          }
+          </FormItem>
+        </Col>
+      </Row>
+    </FormItem>
+  )
+}
+CurrencyFormItem.contextTypes = {
+  form: PropTypes.object
+}
+
+
 module.exports = {
   Email,
   FullName,
@@ -295,4 +558,18 @@ module.exports = {
   Leader,
   Status,
   UploadAvatar,
+  IsHidden,
+  ProjectNameC,
+  ProjectNameE,
+  RealNameC,
+  RealNameE,
+  IndustryCascader,
+  ProjectRole,
+  TrasactionType,
+  Year,
+  CountryCascader,
+  BasicFormItem,
+  CurrencyInput,
+  CurrencyTypeFormItem,
+  CurrencyFormItem,
 }

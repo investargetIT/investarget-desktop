@@ -46,6 +46,7 @@ app.model(require("./models/investorList"));
 app.model(require("./models/app"));
 app.model(require("./models/users"));
 app.model(require('./models/CurrentUser'))
+app.model(require('./models/addProject'))
 
 // 4. Router
 app.router(require('./router'));

@@ -1,6 +1,7 @@
 import zhMessages from '../../locales/zh_flat.js'
 import enMessages from '../../locales/en_flat.js'
 import { Popconfirm, Button } from 'antd'
+import * as api from '../api'
 
 function t(obj, id) {
   const props = obj.props || obj
@@ -127,4 +128,26 @@ function dataToColumn(data, operationHandler) {
   return allColumns.filter(f => Object.keys(data[0]).includes(f.key))
 }
 
-export { t, i18n, dataToColumn }
+
+var exchangeCache = {}
+function exchange(source) {
+  if (exchangeCache[source] != null) {
+    let rate = exchangeCache[source]
+    return new Promise(function(resolve, reject) {
+      resolve(rate)
+    })
+  } else {
+    let param = {
+      'tcur': 'USD',
+      'scur': source,
+    }
+    return api.getExchangeRate(param).then((result) => {
+      var rate = result.data.rate
+      exchangeCache[source] = rate
+      return rate
+    })
+  }
+
+}
+
+export { t, i18n, dataToColumn, exchange }

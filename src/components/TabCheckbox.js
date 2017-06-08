@@ -19,15 +19,32 @@ styles.activeTab = Object.assign({}, styles.tab, {
 
 
 class TabCheckbox extends React.Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired
+  }
+
+  static defaultProps = {
+    options: [],
+    defaultValue: [],
+    value: [],
+    onChange() {},
+  }
+
   constructor(props) {
     super(props)
     /**
-     * options: { label, value, children: { label, value } }
+     * options: [{ label, value, children: [{ label, value }] }]
      * value: []
      * onChange: Function
      */
+
+    const value = 'value' in props ? props.value : props.defaultValue
+    const currParentId = props.options.length > 0 ? props.options[0].value : null
+
     this.state = {
-      currParentId: props.options.length > 0 ? props.options[0].value : null,
+      value: value,
+      currParentId: currParentId
     }
 
     this.handleCheckAllChange = this.handleCheckAllChange.bind(this)
@@ -40,7 +57,7 @@ class TabCheckbox extends React.Component {
   }
 
   handleChange(id) {
-    let value = this.props.value.slice()
+    let value = this.state.value.slice()
     if (value.includes(id)) {
       let index = value.indexOf(id)
       value.splice(index, 1)
@@ -54,7 +71,7 @@ class TabCheckbox extends React.Component {
   handleCheckAllChange(e) {
     const checked = e.target.checked
     const subOptions = this.props.options.filter(item => item.value == this.state.currParentId)[0].children
-    let value = this.props.value.slice()
+    let value = this.state.value.slice()
     if (checked) {
       subOptions.forEach(item => {
         if (!value.includes(item.value)) {
@@ -74,9 +91,9 @@ class TabCheckbox extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.options.length) {
+    if ('value' in nextProps) {
       this.setState({
-        currParentId: nextProps.options[0].value
+        value: nextProps.value
       })
     }
   }
@@ -85,12 +102,9 @@ class TabCheckbox extends React.Component {
     const options = this.props.options
 
     if (options.length > 0) {
-
-      const value = this.props.value
-
       const subOptions = options.filter(item => item.value == this.state.currParentId)[0].children
 
-      const checkedSubOptions = subOptions.filter(item => value.includes(item.value))
+      const checkedSubOptions = subOptions.filter(item => this.state.value.includes(item.value))
       const isIndeterminate = !!checkedSubOptions.length && checkedSubOptions.length < subOptions.length
       const isAllChecked = checkedSubOptions.length == subOptions.length
 
@@ -102,7 +116,7 @@ class TabCheckbox extends React.Component {
               .map(item => {
                 const active = item.value == this.state.currParentId
                 const subOptions = options.filter(item2 => item2.value == item.value)[0].children
-                const checkedSubOptions = subOptions.filter(item => value.includes(item.value))
+                const checkedSubOptions = subOptions.filter(item => this.state.value.includes(item.value))
                 return <span key={item.value}
                             onClick={this.handleClick.bind(this, item.value)}
                             style={active ? styles.activeTab : styles.tab}
@@ -110,21 +124,25 @@ class TabCheckbox extends React.Component {
               })
             }
           </div>
-          <div style={styles.checkboxWrapper}>
-            <Checkbox
-              indeterminate={isIndeterminate}
-              onChange={this.handleCheckAllChange}
-              checked={isAllChecked}
-            >
-              {this.props.intl.formatMessage({id: 'all'})}
-            </Checkbox>
-            {
-              subOptions.map(item => {
-                const isChecked = this.props.value.includes(item.value)
-                return <Checkbox key={item.value} checked={isChecked} onChange={this.handleChange.bind(this, item.value)}>{item.label}</Checkbox>
-              })
-            }
-          </div>
+          {
+            subOptions.length > 0 ? (
+              <div style={styles.checkboxWrapper}>
+                <Checkbox
+                  indeterminate={isIndeterminate}
+                  onChange={this.handleCheckAllChange}
+                  checked={isAllChecked}
+                >
+                  {this.props.intl.formatMessage({id: 'all'})}
+                </Checkbox>
+                {
+                  subOptions.map(item => {
+                    const isChecked = this.state.value.includes(item.value)
+                    return <Checkbox key={item.value} checked={isChecked} onChange={this.handleChange.bind(this, item.value)}>{item.label}</Checkbox>
+                  })
+                }
+              </div>
+            ) : null
+          }
         </div>
       )
     } else {
@@ -133,8 +151,5 @@ class TabCheckbox extends React.Component {
   }
 }
 
-TabCheckbox.propTypes = {
-  intl: intlShape.isRequired
-}
 
 export default injectIntl(TabCheckbox)

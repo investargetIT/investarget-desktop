@@ -9,6 +9,7 @@ const resourceMap = {
   '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
   '/app/user/add': ['title', 'tag', 'country'],
   [URI_10]: ['tag'],
+  '/app/project/release': ['tag', 'industry', 'continent', 'country', 'transactionType', 'currencyType'],
 }
 
 export default {
@@ -19,12 +20,14 @@ export default {
     openKeys: [],
     registerStep: 1,
     tag: [],
+    continent: [],
     country: [],
     title: [],
     currencyType: [],
     audit: [{id: 1, name: i18n('under_approval')}, {id: 2, name: i18n('recevied_approval')}, {id: 3, name: i18n('reject_approval')}],
     industry: [],
     transactionPhases:  [],
+    transactionType: [],
     orgarea: [],
     orgtype: [],
   },
