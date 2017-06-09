@@ -143,3 +143,7 @@ export function queryUserGroup() {
   return r('/user/group/')
 }
 
+export function updateUserGroup(groupId, body) {
+  return r(`/user/group/${groupId}/`, 'PUT', body)
+}
+

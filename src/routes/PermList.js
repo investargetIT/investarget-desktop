@@ -2,7 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import { Button, Checkbox, Table } from 'antd'
-import { queryPermList, queryUserGroup } from '../api'
+import { queryPermList, queryUserGroup, updateUserGroup } from '../api'
 
 class PermList extends React.Component {
 
@@ -16,6 +16,7 @@ class PermList extends React.Component {
     }
 
     this.onChange = this.onChange.bind(this)
+    this.savePerm = this.savePerm.bind(this)
   }
 
   componentDidMount() {
@@ -40,6 +41,7 @@ class PermList extends React.Component {
     queryUserGroup().then(data => {
       const groups = data.data.data.map(item => {
         const obj = {}
+        obj["id"] = item.id
         obj["title"] = item.name
         obj["render"] = (text, record) => !record.children ? <Checkbox value={item.id + "-" + record.id} /> : null
         return obj
@@ -70,7 +72,28 @@ class PermList extends React.Component {
   }
 
   savePerm() {
-    console.log('save permission')
+    const formattedGroupPerms = this.state.value.reduce((acc, val) => {
+      const group = parseInt(val.split('-')[0], 10)
+      const perm = parseInt(val.split('-')[1], 10)
+      const index = acc.map(item => item.id).indexOf(group)
+      if (index > -1) {
+        acc[index]['permissions'].push(perm)
+      } else {
+        acc.push({ id: group, permissions: [perm] })
+      }
+      return acc
+    }, [])
+      .map(item => {
+        const obj = {}
+        obj["id"] = item.id
+        obj["permissions"] = item.permissions
+        obj["name"] = this.state.columns.filter(f => f.id === item.id)[0]["title"]
+        return obj
+      })
+    const allRequest = formattedGroupPerms.map(item => updateUserGroup(item.id, item))
+    Promise.all(allRequest)
+      .then(data => console.log(data))
+      .catch(error => console.error(error))
   }
 
   render() {
