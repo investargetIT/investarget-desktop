@@ -147,3 +147,15 @@ export function updateUserGroup(groupId, body) {
   return r(`/user/group/${groupId}/`, 'PUT', body)
 }
 
+export function deleteUserGroup(groupId) {
+  return r(`/user/group/${groupId}/`, 'DELETE')
+}
+
+export function createGroup(name) {
+  const body = {
+    name: name,
+    permissions: []
+  }
+  return r('/user/group/', 'POST', body)
+}
+

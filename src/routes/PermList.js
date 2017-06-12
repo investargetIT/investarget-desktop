@@ -2,7 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import { Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
-import { queryPermList, queryUserGroup, updateUserGroup } from '../api'
+import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 
 class EditableCell extends React.Component {
   state = {
@@ -77,7 +77,7 @@ class PermList extends React.Component {
         return (
           this.state.groups.length > 1 ?
           (
-            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(index)}>
+            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.id)}>
               <a href="#">Delete</a>
             </Popconfirm>
           ) : null
@@ -89,6 +89,7 @@ class PermList extends React.Component {
       data: [],
       value: [],
       groups: [],
+      newGroup: '',
     }
 
     this.onChange = this.onChange.bind(this)
@@ -97,6 +98,7 @@ class PermList extends React.Component {
     this.onCellChange = this.onCellChange.bind(this)
     this.convertPermsToFormatted = this.convertPermsToFormatted.bind(this)
     this.setUserGroup = this.setUserGroup.bind(this)
+    this.newGroupOnChange = this.newGroupOnChange.bind(this)
   }
 
   componentDidMount() {
@@ -142,10 +144,8 @@ class PermList extends React.Component {
     }
   }
 
-  onDelete(index) {
-    const dataSource = [...this.state.dataSource]
-    dataSource.splice(index, 1)
-    this.setState({ dataSource })
+  onDelete(groupId) {
+    deleteUserGroup(groupId).then(data => this.setUserGroup())
   }
 
   onChange(checkedValues, second) {
@@ -181,17 +181,16 @@ class PermList extends React.Component {
   }
 
   handleAdd() {
-    const { count, dataSource } = this.state
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 3,
-      address: `London, Park Lane no. ${count}`,
+    if (this.state.newGroup.length > 0) {
+      createGroup(this.state.newGroup).then(date => {
+        this.setUserGroup()
+        this.setState({ newGroup: '' })
+      })
     }
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
-    })
+  }
+
+  newGroupOnChange = e => {
+    this.setState({ newGroup: e.target.value})
   }
 
   render() {
@@ -216,7 +215,9 @@ class PermList extends React.Component {
         location={this.props.location}
         title={i18n("permission_management")}>
 
-        <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
+        <div style={{ width: 300, marginBottom: 10 }}>
+          <Input value={this.state.newGroup} addonAfter={<Icon type="plus" onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
+        </div>
 
         <Table
           dataSource={this.state.groups}
