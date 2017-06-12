@@ -95,6 +95,8 @@ class PermList extends React.Component {
     this.savePerm = this.savePerm.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
     this.onCellChange = this.onCellChange.bind(this)
+    this.convertPermsToFormatted = this.convertPermsToFormatted.bind(this)
+    this.setUserGroup = this.setUserGroup.bind(this)
   }
 
   componentDidMount() {
@@ -115,7 +117,10 @@ class PermList extends React.Component {
 
       this.setState({ data: formattedPerm })
     })
+    this.setUserGroup()
+  }
 
+  setUserGroup() {
     queryUserGroup().then(data => {
       const groupPerms = data.data.data.reduce((acc, val) => {
         const groupID = val.id
@@ -127,12 +132,13 @@ class PermList extends React.Component {
         groups: data.data.data
       })
     })
-
   }
 
   onCellChange(index, key) {
     return (value) => {
-      console.log(index, key, value)
+      const groupToBeUpdated = this.convertPermsToFormatted().filter(f => f.id === key)[0] || this.state.groups.filter(f => f.id === key)[0]
+      groupToBeUpdated.name = value
+      updateUserGroup(key, groupToBeUpdated).then(data => this.setUserGroup())
     }
   }
 
@@ -147,7 +153,14 @@ class PermList extends React.Component {
   }
 
   savePerm() {
-    const formattedGroupPerms = this.state.value.reduce((acc, val) => {
+    const allRequest = this.convertPermsToFormatted().map(item => updateUserGroup(item.id, item))
+    Promise.all(allRequest)
+      .then(data => console.log(data))
+      .catch(error => console.error(error))
+  }
+
+  convertPermsToFormatted() {
+    return this.state.value.reduce((acc, val) => {
       const group = parseInt(val.split('-')[0], 10)
       const perm = parseInt(val.split('-')[1], 10)
       const index = acc.map(item => item.id).indexOf(group)
@@ -165,10 +178,6 @@ class PermList extends React.Component {
         obj["name"] = this.state.groups.filter(f => f.id === item.id)[0]["name"]
         return obj
       })
-    const allRequest = formattedGroupPerms.map(item => updateUserGroup(item.id, item))
-    Promise.all(allRequest)
-      .then(data => console.log(data))
-      .catch(error => console.error(error))
   }
 
   handleAdd() {
