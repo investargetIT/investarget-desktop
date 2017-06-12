@@ -1,22 +1,100 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
-import { Button, Checkbox, Table } from 'antd'
+import { Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { queryPermList, queryUserGroup, updateUserGroup } from '../api'
+
+class EditableCell extends React.Component {
+  state = {
+    value: this.props.value,
+    editable: false,
+  }
+  handleChange = (e) => {
+    const value = e.target.value
+    this.setState({ value })
+  }
+  check = () => {
+    this.setState({ editable: false })
+    if (this.props.onChange) {
+      this.props.onChange(this.state.value)
+    }
+  }
+  edit = () => {
+    this.setState({ editable: true })
+  }
+  render() {
+    const { value, editable } = this.state
+    return (
+      <div style={{ position: 'relative' }}>
+        {
+          editable ?
+            <div style={{ paddingRight: 24 }}>
+              <Input
+                value={value}
+                onChange={this.handleChange}
+                onPressEnter={this.check}
+              />
+              <Icon
+                type="check"
+                className="editable-cell-icon-check"
+                onClick={this.check}
+              />
+            </div>
+            :
+            <div className="editable-cell-text-wrapper">
+              {value || ' '}
+              <Icon
+                type="edit"
+                className="editable-cell-icon"
+                onClick={this.edit}
+              />
+            </div>
+        }
+      </div>
+    )
+  }
+}
 
 class PermList extends React.Component {
 
   constructor(props) {
     super(props)
 
+    this.columns = [{
+      title: 'name',
+      dataIndex: 'name',
+      width: '30%',
+      render: (text, record, index) => (
+        <EditableCell
+          value={text}
+          onChange={this.onCellChange(index, record.id)}
+        />
+      ),
+    }, {
+      title: 'operation',
+      dataIndex: 'operation',
+      render: (text, record, index) => {
+        return (
+          this.state.groups.length > 1 ?
+          (
+            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(index)}>
+              <a href="#">Delete</a>
+            </Popconfirm>
+          ) : null
+        )
+      },
+    }]
+
     this.state = {
-      columns: [],
       data: [],
-      value: []
+      value: [],
+      groups: [],
     }
 
     this.onChange = this.onChange.bind(this)
     this.savePerm = this.savePerm.bind(this)
+    this.handleAdd = this.handleAdd.bind(this)
+    this.onCellChange = this.onCellChange.bind(this)
   }
 
   componentDidMount() {
@@ -39,21 +117,6 @@ class PermList extends React.Component {
     })
 
     queryUserGroup().then(data => {
-      const groups = data.data.data.map(item => {
-        const obj = {}
-        obj["id"] = item.id
-        obj["title"] = item.name
-        obj["render"] = (text, record) => !record.children ? <Checkbox value={item.id + "-" + record.id} /> : null
-        return obj
-      })
-      const firstColumn = [{
-        title: 'Permission',
-        dataIndex: 'name',
-        key: 'name',
-      }]
-
-      const columns = firstColumn.concat(groups)
-
       const groupPerms = data.data.data.reduce((acc, val) => {
         const groupID = val.id
         acc = acc.concat(val.permissions.map(item => groupID + "-" + item.id))
@@ -61,10 +124,22 @@ class PermList extends React.Component {
       }, [])
       this.setState({
         value: groupPerms,
-        columns: columns
+        groups: data.data.data
       })
     })
 
+  }
+
+  onCellChange(index, key) {
+    return (value) => {
+      console.log(index, key, value)
+    }
+  }
+
+  onDelete(index) {
+    const dataSource = [...this.state.dataSource]
+    dataSource.splice(index, 1)
+    this.setState({ dataSource })
   }
 
   onChange(checkedValues, second) {
@@ -87,7 +162,7 @@ class PermList extends React.Component {
         const obj = {}
         obj["id"] = item.id
         obj["permissions"] = item.permissions
-        obj["name"] = this.state.columns.filter(f => f.id === item.id)[0]["title"]
+        obj["name"] = this.state.groups.filter(f => f.id === item.id)[0]["name"]
         return obj
       })
     const allRequest = formattedGroupPerms.map(item => updateUserGroup(item.id, item))
@@ -96,11 +171,49 @@ class PermList extends React.Component {
       .catch(error => console.error(error))
   }
 
+  handleAdd() {
+    const { count, dataSource } = this.state
+    const newData = {
+      key: count,
+      name: `Edward King ${count}`,
+      age: 3,
+      address: `London, Park Lane no. ${count}`,
+    }
+    this.setState({
+      dataSource: [...dataSource, newData],
+      count: count + 1,
+    })
+  }
+
   render() {
+
+    const groups = this.state.groups.map(item => {
+      const obj = {}
+      obj["id"] = item.id
+      obj["title"] = item.name
+      obj["render"] = (text, record) => !record.children ? <Checkbox value={item.id + "-" + record.id} /> : null
+      return obj
+    })
+    const firstColumn = [{
+      title: 'Permission',
+      dataIndex: 'name',
+      key: 'name',
+    }]
+
+    const columns = firstColumn.concat(groups)
+
     return (
       <LeftRightLayout
         location={this.props.location}
         title={i18n("permission_management")}>
+
+        <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
+
+        <Table
+          dataSource={this.state.groups}
+          columns={this.columns}
+          rowKey={record => record.id}
+          pagination={false} />
 
         <Checkbox.Group
           value={this.state.value}
@@ -108,7 +221,7 @@ class PermList extends React.Component {
 
           <Table
             defaultExpandAllRows={true}
-            columns={this.state.columns}
+            columns={columns}
             dataSource={this.state.data}
             rowKey={record => record.id}
             pagination={false} />
