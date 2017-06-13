@@ -3,6 +3,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import { Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
+import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
 
 class EditableCell extends React.Component {
   state = {
@@ -109,10 +110,10 @@ class PermList extends React.Component {
           if(index > -1) {
             acc[index]["children"].push(value)
           } else {
-            acc.push({ id: value.content_type, name: 'aa' + value.content_type, children: [value] })
+            acc.push({ id: value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
           }
         } else {
-          acc.push({ id: value.content_type, name: 'aa' + value.content_type, children: [value] })
+          acc.push({ id: value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
         }
         return acc
       }, [])

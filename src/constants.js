@@ -31,3 +31,18 @@ export const KEY_TO_URI = {
   "log": URI_11,
   "permission_management": URI_14, 
 }
+
+export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
+  50: 'dataroom管理',
+  12: '机构管理',
+  11: '机构备注管理',
+  47: '用户项目管理',
+  19: '项目管理',
+  49: '分享项目管理',
+  40: '时间轴管理',
+  39: '时间轴备注管理',
+  9: '用户管理',
+  54: '好友管理管理',
+  7: '绑定管理管理'
+}
+
