@@ -159,3 +159,7 @@ export function createGroup(name) {
   return r('/user/group/', 'POST', body)
 }
 
+export function createUser(user) {
+  return r('/user/', 'POST', user)
+}
+

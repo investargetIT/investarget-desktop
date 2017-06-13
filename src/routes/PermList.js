@@ -72,14 +72,14 @@ class PermList extends React.Component {
         />
       ),
     }, {
-      title: 'operation',
+      title: i18n('operation'),
       dataIndex: 'operation',
       render: (text, record, index) => {
         return (
           this.state.groups.length > 1 ?
           (
             <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.id)}>
-              <a href="#">Delete</a>
+              <a>{i18n("delete")}</a>
             </Popconfirm>
           ) : null
         )
@@ -224,7 +224,9 @@ class PermList extends React.Component {
           dataSource={this.state.groups}
           columns={this.columns}
           rowKey={record => record.id}
-          pagination={false} />
+          pagination={false}
+          size="middle"
+          showHeader={false} />
 
         <Checkbox.Group
           value={this.state.value}

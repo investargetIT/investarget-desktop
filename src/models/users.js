@@ -1,5 +1,6 @@
 import * as api from '../api'
 import { URI_6 } from '../constants'
+import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'users',
@@ -50,8 +51,8 @@ export default {
       yield put({ type: 'reload' });
     },
     *create({ payload: values }, { call, put }) {
-      yield call(usersService.create, values);
-      yield put({ type: 'reload' });
+      yield call(api.createUser, values)
+      yield put(routerRedux.replace('/app/user/list'))
     },
     *reload(action, { put, select }) {
       const page = yield select(state => state.users.page);

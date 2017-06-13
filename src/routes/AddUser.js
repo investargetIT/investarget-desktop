@@ -5,7 +5,7 @@ import { Form } from 'antd'
 import { Status, Leader, Trader, Country, Area, Department, Wechat, EnglishFullName, Company, Role, Submit, FullName, Email, Position, Org, Mobile, Tags } from '../components/Form'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
-import { getOrg } from '../api'
+import { createUser, getOrg } from '../api'
 import { mapStateToPropsForAudit } from '../components/Filter'
 
 class AddUser extends React.Component {
@@ -40,13 +40,26 @@ class AddUser extends React.Component {
     })
   }
 
+  handleSubmit = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if(!err) {
+        console.log('Received values of form: ', values)
+        this.props.dispatch({
+          type: 'users/create',
+          payload: values
+        })
+      }   
+    })  
+  }
+
   render () {
     return (
       <LeftRightLayout
         location={this.props.location}
         title={i18n("create_user")}>
 
-        <Form>
+        <Form onSubmit={this.handleSubmit.bind(this)}>
           <Role />
           <FullName />
           <EnglishFullName />

@@ -7,6 +7,7 @@ class ApiError extends Error {
   constructor(code, message) {
     super(message)
     this.name = 'ApiError'
+    this.code = code
     this.toString = () => `name: ApiError, code: ${code}, message: ${message}`
   }
 }
