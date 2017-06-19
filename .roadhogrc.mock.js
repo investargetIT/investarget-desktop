@@ -320,6 +320,10 @@ export default {
       ]
     })
   },
+  'GET /api/source/continent': (req, res) => {
+    console.log('GET /api/source/continent')
+    res.json({"errormsg":null,"code":1000,"result":[{"is_deleted":false,"id":1,"continent":"北美洲"},{"is_deleted":false,"id":2,"continent":"南美洲"},{"is_deleted":false,"id":3,"continent":"欧洲"},{"is_deleted":false,"id":4,"continent":"亚洲"},{"is_deleted":false,"id":5,"continent":"非洲"},{"is_deleted":false,"id":6,"continent":"大洋洲"}]})
+  },
   'GET /api/source/country': (req, res) => {
     console.log('GET /api/source/country')
     res.json({
@@ -374,6 +378,10 @@ export default {
         {"id":11,"name":"兼并收购"}
       ]
     })
+  },
+  'GET /api/source/transactionType': (req, res) => {
+    console.log('GET /api/source/transactionType')
+    res.json({"errormsg":null,"code":1000,"result":[{"is_deleted":false,"id":1,"name":"兼并收购"},{"is_deleted":false,"id":2,"name":"股权融资"},{"is_deleted":false,"id":3,"name":"少数股权转让"},{"is_deleted":false,"id":4,"name":"合资合作"},{"is_deleted":false,"id":5,"name":"未知"}]})
   },
   'GET /api/source/currencyType': (req, res) => {
     console.log(`${req.method} ${req.url}`)
