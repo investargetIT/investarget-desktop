@@ -11,3 +11,8 @@ historyApiFallback: {
   ]
 },
 ```
+
+## 升级依赖：
+`antd` 2.10.0 升级到 2.11.0
+
+最新版本的 Upload 组件 onRemove 才支持返回一个 Promise 对象

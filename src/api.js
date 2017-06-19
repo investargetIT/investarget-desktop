@@ -69,6 +69,10 @@ export function favoriteProj(token, param) {
   return r('/proj/favorite/', 'POST', param)
 }
 
+export function createProj(param) {
+  return r('/proj/', 'POST', param)
+}
+
 /**
  * service
  */
