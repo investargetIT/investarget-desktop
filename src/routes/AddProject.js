@@ -59,9 +59,9 @@ const formItemLayout = {
     transition: 'all .3s',
   }
 
-  // currentUserId
-  const userInfo = JSON.parse(localStorage.user_info)
-  const currentUserId = userInfo.id
+// currentUserId
+const userInfo = localStorage.getItem('user_info')
+const currentUserId = userInfo ? JSON.parse(userInfo).id : null
 
 
 class AddProject extends React.Component {
