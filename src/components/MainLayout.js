@@ -14,7 +14,7 @@ class MainLayout extends React.Component {
   render () {
 
     const content = (
-      <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
+      <Content style={this.props.style || { background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
         {this.props.children}
       </Content>
     )

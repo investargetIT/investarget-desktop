@@ -1,24 +1,50 @@
-import React from 'react';
-import { connect } from 'dva';
-import styles from './IndexPage.css';
-import MainLayout from '../components/MainLayout';
+import React from 'react'
+import { connect } from 'dva'
+import MainLayout from '../components/MainLayout'
+import { Card, Col } from 'antd'
 
 function IndexPage({ location }) {
   return (
-    <MainLayout location={location}>
-      <div className={styles.normal}>
-	<h1 className={styles.title}>Yay! Welcome to dva!</h1>
-	<div className={styles.welcome} />
-	<ul className={styles.list}>
-	  <li>To get started, edit <code>src/index.js</code> and save to reload.</li>
-	  <li><a href="https://github.com/dvajs/dva-docs/blob/master/v1/en-us/getting-started.md">Getting Started</a></li>
-	</ul>
-      </div>
+    <MainLayout location={location} style={{}}>
+      <Col span={16}>
+        <Card title="Card title 1" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Catdd dsfdff</p>
+        </Card>
+        <Card title="Card title 2" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+        </Card>
+        <Card title="Card title 3" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+        </Card>
+      </Col>
+      <Col span={8}>
+        <Card title="Card title 4" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+        </Card>
+        <Card title="Card title 5" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+        </Card>
+        <Card title="Card title 6" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+          <p>Card content</p>
+        </Card>
+      </Col>
+
     </MainLayout>
-  );
+  )
 }
 
-//IndexPage.propTypes = {
-//};
-
-export default connect()(IndexPage);
+export default connect()(IndexPage)
