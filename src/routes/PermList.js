@@ -106,18 +106,18 @@ class PermList extends React.Component {
     queryPermList().then(data => {
       const formattedPerm = data.data.reduce((acc, value) => {
         if (acc.length > 0) {
-          let index = acc.map(item => item.id).indexOf(value.content_type)
+          let index = acc.map(item => item.id).indexOf('group-' + value.content_type)
           if(index > -1) {
             acc[index]["children"].push(value)
           } else {
-            acc.push({ id: value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
+            acc.push({ id: 'group-' + value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
           }
         } else {
-          acc.push({ id: value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
+          acc.push({ id: 'group-' + value.content_type, name: CONTENT_TYPE_ID_TO_PERM_GROUP[value.content_type], children: [value] })
         }
         return acc
       }, [])
-
+console.log('Yxxm', formattedPerm)
       this.setState({ data: formattedPerm })
     })
     this.setUserGroup()

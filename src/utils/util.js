@@ -150,4 +150,25 @@ function exchange(source) {
 
 }
 
-export { t, i18n, dataToColumn, exchange }
+function checkPerm(perm) {
+  const userInfoStr = localStorage.getItem('user_info')
+  if (!userInfoStr) {
+    return false
+  }
+  const permissions = JSON.parse(userInfoStr).permissions
+  if (permissions.includes(perm)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function isLogin() {
+  const userInfoStr = localStorage.getItem('user_info')
+  if (!userInfoStr) {
+    return false
+  } else {
+    return JSON.parse(userInfoStr)
+  }
+}
+export { t, i18n, dataToColumn, exchange, checkPerm, isLogin }

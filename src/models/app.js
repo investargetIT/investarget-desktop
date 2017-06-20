@@ -1,6 +1,7 @@
 import * as api from '../api'
 import { URI_6, URI_3, URI_10 } from '../constants'
-import { i18n } from '../utils/util'
+import { i18n, checkPerm, isLogin } from '../utils/util'
+import { routerRedux } from 'dva/router'
 
 const resourceMap = {
   '/register': ['tag', 'country', 'title'],
@@ -89,7 +90,15 @@ export default {
           dispatch({ type: 'getSourceList', payload: resourceList })
         }
 
+        if (pathname === '/app/user/add' && !checkPerm('usersys.admin_adduser')) {
+          history.replace('/app')
+        }
+
+        if (pathname === '/app' && !isLogin()) {
+          history.replace('/')
+        }
+
       })
     }
   },
-};
+}

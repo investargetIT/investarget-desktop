@@ -27,7 +27,14 @@ const app = dva({
   },
   onError(e, dispatch) {
     console.debug(e.toString())
-    message.error(e.message)
+    if (e.name === 'ApiError' && e.code === 2009) {
+      dispatch({
+        type: 'currentUser/logout'
+      })
+      message.error('权限校验失败，请重新登录')
+    } else {
+      message.error(e.message)
+    }
   },
 })
 

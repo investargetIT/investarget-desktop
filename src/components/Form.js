@@ -84,6 +84,8 @@ const Email = () => <BasicFormItem label={i18n("email")} name="email" valueType=
 
 const FullName = props => <BasicFormItem label={i18n("username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
 
+const ChineseFullName = props => <BasicFormItem label={i18n("username")} name="usernameC" required><Input /></BasicFormItem>
+
 const Password = props => <BasicFormItem label={props.label || i18n("password")} name="password" required><Input type="password" /></BasicFormItem>
 
 const ConfirmPassword = (props, context) => {
@@ -378,4 +380,5 @@ module.exports = {
   UploadAvatar,
   BasicFormItem,
   CurrencyFormItem,
+  ChineseFullName,
 }

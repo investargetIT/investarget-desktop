@@ -24,7 +24,7 @@ const operationStyle = {
   color: 'gray'
 }
 
-function UserList({ selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
+function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
 
   function filterHandler() {
     dispatch({
@@ -102,11 +102,13 @@ function UserList({ selectedRowKeys, filter, location, list: dataSource, total, 
     })
   }
 
+  const action = currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null
+
   return (
     <LeftRightLayout
       location={location}
       title={i18n("user_list")}
-      action={{ name: i18n("create_user"), link: "/app/user/add" }}>
+      action={action}>
 
       <UserListFilter
         value={filter}
@@ -146,13 +148,15 @@ function mapStateToProps(state) {
   const filter = state.investorList
   const { selectedRowKeys } = filter
   const { list, total, page } = state.users
+  const { currentUser } = state
   return {
     filter,
     selectedRowKeys,
     loading: state.loading.effects['users/get'],
     list,
     total,
-    page
+    page,
+    currentUser
   }
 }
 

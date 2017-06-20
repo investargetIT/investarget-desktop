@@ -2,7 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import { Form } from 'antd'
-import { Status, Leader, Trader, Country, Area, Department, Wechat, EnglishFullName, Company, Role, Submit, FullName, Email, Position, Org, Mobile, Tags } from '../components/Form'
+import { Status, Leader, Trader, Country, Area, Department, Wechat, EnglishFullName, Company, Role, Submit, ChineseFullName, Email, Position, Org, Mobile, Tags } from '../components/Form'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import { createUser, getOrg } from '../api'
@@ -61,7 +61,7 @@ class AddUser extends React.Component {
 
         <Form onSubmit={this.handleSubmit.bind(this)}>
           <Role />
-          <FullName />
+          <ChineseFullName />
           <EnglishFullName />
           <Email />
           <Mobile country={this.props.country} />
