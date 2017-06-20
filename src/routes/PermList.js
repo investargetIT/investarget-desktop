@@ -91,6 +91,7 @@ class PermList extends React.Component {
       value: [],
       groups: [],
       newGroup: '',
+      loading: false,
     }
 
     this.onChange = this.onChange.bind(this)
@@ -117,7 +118,6 @@ class PermList extends React.Component {
         }
         return acc
       }, [])
-console.log('Yxxm', formattedPerm)
       this.setState({ data: formattedPerm })
     })
     this.setUserGroup()
@@ -154,10 +154,17 @@ console.log('Yxxm', formattedPerm)
   }
 
   savePerm() {
+    this.setState({loading: true})
     const allRequest = this.convertPermsToFormatted().map(item => updateUserGroup(item.id, item))
     Promise.all(allRequest)
-      .then(data => console.log(data))
-      .catch(error => console.error(error))
+      .then(data => {
+        this.setState({loading: false})
+        console.log(data)
+      })
+      .catch(error => {
+        this.setState({loading: false})
+        console.error(error)
+      })
   }
 
   convertPermsToFormatted() {
@@ -237,7 +244,8 @@ console.log('Yxxm', formattedPerm)
             columns={columns}
             dataSource={this.state.data}
             rowKey={record => record.id}
-            pagination={false} />
+            pagination={false}
+            loading={this.state.loading} />
 
         </Checkbox.Group>
 

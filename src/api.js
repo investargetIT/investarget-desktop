@@ -136,7 +136,7 @@ export function register(user) {
 }
 
 export function queryLogList(pageIndex, pageSize) {
-  return r(`/log/api?page_index=${pageIndex}&page_size=${PAGE_SIZE}`)
+  return r(`/log/api?page_index=${pageIndex}&page_size=${pageSize}`)
 }
 
 export function queryPermList() {

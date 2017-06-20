@@ -25,8 +25,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: "操作者",
-      dataIndex: 'operator',
-      key: 'operator'
+      dataIndex: 'requestuser_name',
+      key: 'requestuser_name'
     },
     {
       title: i18n('organization.name'),
@@ -35,8 +35,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: "时间",
-      dataIndex: 'time',
-      key: 'time'
+      dataIndex: 'actiontime',
+      key: 'actiontime'
     },
     {
       title: i18n("org"),
@@ -45,8 +45,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: "操作对象",
-      dataIndex: 'target',
-      key: 'target'
+      dataIndex: 'model_name',
+      key: 'model_name'
     },
     {
       title: i18n('organization.industry'),
@@ -55,8 +55,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: "操作",
-      dataIndex: 'operate',
-      key: 'operate'
+      dataIndex: 'method',
+      key: 'method'
     },
     {
       title: i18n("position"),
@@ -65,8 +65,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: '操作前',
-      dataIndex: 'before_operate',
-      key: 'before_operate'
+      dataIndex: 'request_before',
+      key: 'request_before'
     },
     {
       title: i18n('organization.currency'),
@@ -75,8 +75,8 @@ function dataToColumn(data, operationHandler) {
     },
     {
       title: "操作后",
-      dataIndex: 'after_operate',
-      key: 'after_operate'
+      dataIndex: 'request_after',
+      key: 'request_after'
     },
     {
       title: i18n("tag"),
