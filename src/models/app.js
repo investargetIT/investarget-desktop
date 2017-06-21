@@ -10,7 +10,6 @@ const resourceMap = {
   '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
   '/app/user/add': ['title', 'tag', 'country'],
   [URI_10]: ['tag'],
-  '/app/project/release': ['tag', 'industry', 'continent', 'country', 'transactionType', 'currencyType'],
 }
 
 export default {
@@ -31,6 +30,7 @@ export default {
     transactionType: [],
     orgarea: [],
     orgtype: [],
+    character: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {

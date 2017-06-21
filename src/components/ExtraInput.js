@@ -76,7 +76,7 @@ function _withSelectOptions(Select, sourceType, mapStateToProps) {
     }
 
     componentDidMount() {
-      this.props.dispatch({ type: 'getSource', payload: sourceType })
+      this.props.dispatch({ type: 'app/getSource', payload: sourceType })
     }
 
     render() {
@@ -104,7 +104,7 @@ function _withSelectNumberOptions(Select, sourceType, mapStateToProps) {
     }
 
     componentDidMount() {
-      this.props.dispatch({ type: 'getSource', payload: sourceType })
+      this.props.dispatch({ type: 'app/getSource', payload: sourceType })
     }
 
     handleChange(value) {
@@ -144,7 +144,7 @@ function _withCascaderOptions(Select, sourceTypeList, mapStateToProps) {
     }
 
     componentDidMount() {
-      this.props.dispatch({ type: 'getSourceList', payload: sourceTypeList })
+      this.props.dispatch({ type: 'app/getSourceList', payload: sourceTypeList })
     }
 
     render() {
@@ -173,7 +173,11 @@ const SelectTag = _withSelectNumberOptions(Select, 'tag', function(state) {
  * SelectRole, TODO//后面改成网络请求
  */
 
-const SelectRole = withSelectNumberOptions(Select, [{value: 1, label: '项目公司'},{value: 2, label: '财务顾问'},{value: 3, label: '投资者'},{value: 5, label: '未披露'}])
+const SelectRole = _withSelectNumberOptions(Select, 'character', function(state) {
+  const { character } = state.app
+  const options = character ? character.map(item => ({value: item.id, label: item.character})) : []
+  return { options }
+})
 
 /**
  * SelectYear
@@ -216,7 +220,7 @@ class CascaderCountry extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'getSourceList', payload: ['continent', 'country'] })
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['continent', 'country'] })
   }
 
   handleChange(value) {
@@ -267,7 +271,34 @@ CascaderCountry = connect(
  * CascaderIndustry
  */
 
-const CascaderIndustry = _withCascaderOptions(Cascader, ['industry'], function(state) {
+
+class CascaderIndustry extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'industry' })
+  }
+
+  handleChange(value) {
+    if (this.props.onChange) {
+      this.props.onChange(value[1])
+    }
+  }
+
+  render() {
+    const { options, industry2pIndustry, children, dispatch, value:industryId, onChange, ...extraProps } = this.props
+    const pIndustryId = industry2pIndustry[industryId]
+    const value = [pIndustryId, industryId]
+    return (
+      <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
+    )
+  }
+}
+
+CascaderIndustry = connect(function (state) {
   const { industry } = state.app
   let pIndustries = industry.filter(item => item.id == item.Pindustry)
   pIndustries.forEach(item => {
@@ -287,9 +318,13 @@ const CascaderIndustry = _withCascaderOptions(Cascader, ['industry'], function(s
       })
     }
   })
-  return { options }
-})
+  let industry2pIndustry = {}
+  industry.forEach(item => {
+    industry2pIndustry[item.id] = item.Pindustry
+  })
 
+  return { options, industry2pIndustry }
+})(CascaderIndustry)
 
 
 /**

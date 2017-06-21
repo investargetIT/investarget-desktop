@@ -238,12 +238,12 @@ function AddProject({ form, intl }) {
                 <CascaderCountry size="large" />
               </BasicFormItem>
 
-              <BasicFormItem label="我的角色" name="characterId" required valueType="number">
+              <BasicFormItem label="我的角色" name="character" required valueType="number">
                 <SelectRole />
               </BasicFormItem>
 
-              <BasicFormItem label="交易类型" name="transactionType" required valueType="number">
-                <SelectTransactionType />
+              <BasicFormItem label="交易类型" name="transactionType" required valueType="array">
+                <SelectTransactionType mode="multiple" />
               </BasicFormItem>
 
             </Panel>
@@ -433,8 +433,9 @@ function AddProject({ form, intl }) {
 
             <Panel header="附件上传" key="5">
               <FormItem>
-                {getFieldDecorator('projectAttachment', {
+                {getFieldDecorator('projAttachment', {
                   rules: [{type: 'array'}],
+                  initialValue: [],
                 })(
                   <ProjectAttachments />
                 )}
@@ -491,7 +492,7 @@ function onValuesChange(props, values) {
   console.log(values)
 }
 
-function toFromData(data) {
+function toFormData(data) {
   function splitData(name, value) {
     var data = {}
     var keys = _.range(1, 1 + value.length)
@@ -554,7 +555,7 @@ function toData(formData) {
 function mapPropsToFields(props) {
   let data = localStorage.getItem('projectData')
   data = JSON.parse(data)
-  return toFromData(data)
+  return toFormData(data)
 }
 
 export default connect()(injectIntl(Form.create({mapPropsToFields, onValuesChange})(AddProject)))
