@@ -1,8 +1,29 @@
 import React from 'react'
 import { connect } from 'dva'
 import MainLayout from '../components/MainLayout'
-import { Icon, Card, Col, Popconfirm } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+
+function SelectedContent(props) {
+
+  const selectedStyle = {
+    display: props.selected ? 'block' : 'none',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    background: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 4,
+  }
+
+  return (
+    <div style={{ position: 'relative', margin: 10 }} onClick={props.onClick.bind(null, props.name)}>
+      {props.children}
+      <div style={selectedStyle}></div>
+    </div>
+  )
+}
 
 const data = [
   {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
@@ -76,10 +97,15 @@ class IndexPage extends React.Component {
     super(props)
 
     this.state = {
-      widgets: ['simple_line_chart', 'simple_bar_chart']
+      widgets: ['simple_line_chart', 'simple_bar_chart'],
+      selectedWidgets: [],
+      selectMode: false,
     }
 
     this.closeCard = this.closeCard.bind(this)
+    this.handleWidgetClicked = this.handleWidgetClicked.bind(this)
+    this.addWidgetButtonClicked = this.addWidgetButtonClicked.bind(this)
+    this.confirmAddWidgets = this.confirmAddWidgets.bind(this)
   }
 
   closeCard(widgetName) {
@@ -91,6 +117,29 @@ class IndexPage extends React.Component {
     }
   }
 
+  handleWidgetClicked(name) {
+    const index = this.state.selectedWidgets.indexOf(name)
+    const widgets = this.state.selectedWidgets.slice()
+    if (index > -1) {
+      widgets.splice(index, 1)
+    } else {
+      widgets.push(name)
+    }
+    this.setState({ selectedWidgets: widgets })
+  }
+
+  addWidgetButtonClicked() {
+    this.setState({selectMode: !this.state.selectMode})
+  }
+
+  confirmAddWidgets() {
+    this.setState({
+      selectMode: false,
+      widgets: this.state.widgets.concat(this.state.selectedWidgets),
+      selectedWidgets: []
+    })
+  }
+
   render() {
     return (
       <MainLayout location={location} style={{}}>
@@ -100,36 +149,96 @@ class IndexPage extends React.Component {
           { this.state.widgets.includes('simple_line_chart') ? <SimpleLineChart onClose={this.closeCard} /> : null }
           { this.state.widgets.includes('simple_bar_chart') ? <SimpleBarChart onClose={this.closeCard} /> : null }
 
+          { this.state.widgets.includes('card_title_3') ?
           <Card title="Card title 3" bordered={false} style={{ margin: '10px 0 0 10px' }}>
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
-          </Card>
+          </Card> : null }
 
         </Col>
 
         <Col span={8}>
 
-          <Card title="Card title 4" bordered={false} style={{ margin: '10px 0 0 10px' }}>
+          { this.state.widgets.includes('card_title_4') ?
+          <Card title="Card title 4" bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
+      <Popconfirm title="Confirm to delete?" onConfirm={this.closeCard.bind(null, 'card_title_4')}>
+        <Icon style={{ cursor: "pointer" }} type="close" />
+      </Popconfirm>
+          }>
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
-          </Card>
+          </Card> : null }
 
+          { this.state.widgets.includes('card_title_5') ?
           <Card title="Card title 5" bordered={false} style={{ margin: '10px 0 0 10px' }}>
             <p>Card content</p>
             <p>Card content</p>
-          </Card>
+          </Card> : null }
 
+          { this.state.widgets.includes('card_title_6') ?
           <Card title="Card title 6" bordered={false} style={{ margin: '10px 0 0 10px' }}>
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
+          </Card> : null }
+
+          <Card bordered={false} style={{ margin: '10px 0 0 10px' }}>
+            <Button onClick={this.addWidgetButtonClicked}>Add Widget</Button>
           </Card>
 
         </Col>
+
+        <div style={{ display: this.state.selectMode ? 'block': 'none', position: 'fixed', top: 0, bottom: 0, right: 0, width: 300,  background: '#CCC', overflow: 'auto' }}>
+
+          { !this.state.widgets.includes('simple_line_chart') ? <SimpleLineChart onClose={this.closeCard} /> : null }
+          { !this.state.widgets.includes('simple_bar_chart') ? <SimpleBarChart onClose={this.closeCard} /> : null }
+
+          { !this.state.widgets.includes('card_title_3') ?
+          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_3")}  name="card_title_3" onClick={this.handleWidgetClicked}>
+              <Card title="Card title 3" bordered={false}>
+            <p>Card content</p>
+            <p>Card content</p>
+            <p>Card content</p>
+        </Card></SelectedContent> : null }
+
+          { !this.state.widgets.includes('card_title_4') ?
+          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_4")}  name="card_title_4" onClick={this.handleWidgetClicked}>
+            <Card title="Card title 4" bordered={false}>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+            </Card>
+          </SelectedContent> : null }
+
+          { !this.state.widgets.includes('card_title_5') ?
+          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_5")}  name="card_title_5" onClick={this.handleWidgetClicked}>
+            <Card title="Card title 5" bordered={false}>
+              <p>Card content</p>
+              <p>Card content</p>
+            </Card>
+          </SelectedContent> : null }
+
+          { !this.state.widgets.includes('card_title_6') ?
+          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_6")}  name="card_title_6" onClick={this.handleWidgetClicked}>
+            <Card title="Card title 6" bordered={false}>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+            </Card>
+          </SelectedContent> : null }
+
+          <div style={{ margin: 10, textAlign: 'center' }}>
+            <Button type="primary" onClick={this.confirmAddWidgets}>确定</Button>
+            <Button style={{ marginLeft: 10 }} onClick={this.addWidgetButtonClicked}>取消</Button>
+          </div>
+
+        </div>
 
       </MainLayout>
     )
