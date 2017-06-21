@@ -171,4 +171,11 @@ function isLogin() {
     return JSON.parse(userInfoStr)
   }
 }
-export { t, i18n, dataToColumn, exchange, checkPerm, isLogin }
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
+}
+
+export { t, i18n, dataToColumn, exchange, checkPerm, isLogin, getRandomInt }

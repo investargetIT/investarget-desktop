@@ -1,8 +1,8 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { queryDataRoom } from '../api'
-import { Table } from 'antd'
-
+import { Input, Button, Table } from 'antd'
+import { getRandomInt } from '../utils/util'
 
 const data = [
   {
@@ -53,8 +53,20 @@ const data = [
 
 class DataRoomList extends React.Component {
 
-  state = {
-    parentId: 0
+  constructor(props) {
+
+    super(props)
+
+    this. state = {
+      data: data,
+      parentId: 0,
+      name: null,
+      id: null
+    }
+
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleCreateFolder = this.handleCreateFolder.bind(this)
+    this.handleConfirm = this.handleConfirm.bind(this)
   }
 
   componentDidMount() {
@@ -62,9 +74,54 @@ class DataRoomList extends React.Component {
   }
 
   folderClicked(id) {
-    const folder = data.filter(f => f.id === id)
+    const folder = this.state.data.filter(f => f.id === id)
     if ((folder.length > 0 && folder[0].isFolder) || id === 0) {
       this.setState({parentId: id})
+    }
+  }
+
+  handleNameChange(index, evt) {
+    const newData = this.state.data.slice()
+    newData[index].name = evt.target.value
+    this.setState({ data: newData })
+  }
+
+  current = []
+  parentFolderFunc (parentId) {
+    if (parentId === 0) return this.current
+    const parentFolder = this.state.data.filter(f => f.id === parentId)[0]
+    this.current.splice(0, 0, parentFolder)
+    return this.parentFolderFunc(parentFolder.parentId)
+  }
+
+  handleCreateFolder() {
+    const newData = this.state.data.slice()
+    newData.splice(0, 0, {
+      name: "新建文件夹",
+      isFolder: true,
+      date: '2015-04-15 13:30',
+      parentId: this.state.parentId
+    })
+    this.setState({ data: newData, name: "新建文件夹" })
+  }
+
+  handleConfirm(index) {
+    const value = this.state.data[index]
+    const name = value.name
+    if (!value.id) {
+      const newData = this.state.data.slice()
+      newData[index].id = getRandomInt(1, 100)
+      this.setState({ data: newData })
+    }
+  }
+
+  handleCancel(index) {
+    const value = this.state.data[index]
+    const name = value.name
+    if (!value.id) {
+      const newData = this.state.data.slice()
+      newData.splice(index, 1)
+      this.setState({ data: newData })
     }
   }
 
@@ -74,10 +131,15 @@ class DataRoomList extends React.Component {
       title: '文件名',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => (
+      render: (text, record, index) => (
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
-          <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
+          { record.id && record.id !== this.state.id ?
+              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
+              : (<span>
+          <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={text} onChange={this.handleNameChange.bind(this, index)} />
+          <Button onClick={this.handleConfirm.bind(this, index)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
+          <Button onClick={this.handleCancel.bind(this, index)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
         </div>
       ),
     }, {
@@ -90,15 +152,10 @@ class DataRoomList extends React.Component {
       key: 'date',
     }]
 
-    const parentFolderFunc = function (parentId) {
-      if (parentId === 0) return current
-      const parentFolder = data.filter(f => f.id === parentId)[0]
-      current.splice(0, 0, parentFolder)
-      return parentFolderFunc(parentFolder.parentId)
-    }
 
-    const currentFolder = data.filter(f => f.id === this.state.parentId)[0]
-    let current = []
+    this.current = []
+
+    const currentFolder = this.state.data.filter(f => f.id === this.state.parentId)[0]
     const base = this.state.parentId === 0 ? "全部文件" : (
       <span>
         <a onClick={this.folderClicked.bind(this, currentFolder.parentId)}>返回上一级</a>
@@ -111,23 +168,26 @@ class DataRoomList extends React.Component {
         location={this.props.location}
         title="DataRoomList">
 
-        <div style={{ marginBottom: 10 }}>
+        <Button type="primary">上传</Button>
+        <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
+
+        <div style={{ margin: '10px 0' }}>
           { base }
           {
-            parentFolderFunc(this.state.parentId)
+            this.parentFolderFunc(this.state.parentId)
               .map(
-                m => m.id !== this.state.parentId ?
-                <span key={m.id}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m.id)}>{m.name}</a></span>
+                (m, index) => m.id !== this.state.parentId ?
+                <span key={index}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m.id)}>{m.name}</a></span>
                 :
-                <span key={m.id}>&nbsp;>&nbsp;{m.name}</span>
+                <span key={index}>&nbsp;>&nbsp;{m.name}</span>
               )
           }
         </div>
 
         <Table
           columns={columns}
-          rowKey={record => record.id}
-          dataSource={data.filter(f => f.parentId === this.state.parentId)}
+          rowKey={(record, index) => index}
+          dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
           pagination={false} />
 
       </LeftRightLayout>
