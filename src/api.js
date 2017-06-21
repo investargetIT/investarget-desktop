@@ -167,3 +167,7 @@ export function createUser(user) {
   return r('/user/', 'POST', user)
 }
 
+export function queryDataRoom() {
+  return r('/dataroom/')
+}
+

@@ -14,6 +14,7 @@ import LogList from './routes/LogList'
 import ModifyPwd from './routes/ModifyPwd'
 import BasicInfo from './routes/BasicInfo'
 import PermList from './routes/PermList'
+import DataRoomList from './routes/DataRoomList'
 
 function RouterConfig({ history }) {
   return (
@@ -31,6 +32,7 @@ function RouterConfig({ history }) {
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/project/release" component={AddProject} />
       <Route path={URI_14} component={PermList} />
+      <Route path={URI_7} component={DataRoomList} />
     </Router>
   )
 }
