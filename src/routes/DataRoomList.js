@@ -1,10 +1,16 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { queryDataRoom } from '../api'
-import { Modal, Input, Button, Table } from 'antd'
+import { Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt } from '../utils/util'
 
 const confirm = Modal.confirm
+const TreeNode = Tree.TreeNode
+
+const actionName = {
+  'copy': '复制到',
+  'move': '移动到',
+}
 
 const data = [
   {
@@ -77,6 +83,8 @@ class DataRoomList extends React.Component {
       name: null,
       renameRows: [],
       selectedRows: [],
+      visible: false,
+      action: null
     }
 
     this.handleNameChange = this.handleNameChange.bind(this)
@@ -85,6 +93,10 @@ class DataRoomList extends React.Component {
     this.handleRename = this.handleRename.bind(this)
     this.deleteContent = this.deleteContent.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleCopy = this.handleCopy.bind(this)
+    this.handleMove = this.handleMove.bind(this)
+    this.handleOk = this.handleOk.bind(this)
+    this.handleCancelModal = this.handleCancelModal.bind(this)
   }
 
   componentDidMount() {
@@ -195,10 +207,8 @@ class DataRoomList extends React.Component {
     confirm({
       title: '确定删除吗？',
       onOk() {
-        console.log('ok')
         react.state.selectedRows.map(m => react.deleteContent(m.id))
         const deleteContents = react.contents.concat(react.state.selectedRows.map(m => m.id))
-        console.log('YXM', deleteContents)
         const newData = react.state.data.slice()
         deleteContents.map(d => {
           const index = newData.map(m => m.id).indexOf(d)
@@ -207,6 +217,22 @@ class DataRoomList extends React.Component {
         react.setState({ data: newData })
       }
     })
+  }
+
+  handleCopy() {
+    this.setState({ visible: true, action: 'copy' })
+  }
+
+  handleMove() {
+    this.setState({ visible: true, action: 'move' })
+  }
+
+  handleOk() {
+    this.setState({ visible: false })
+  }
+
+  handleCancelModal() {
+    this.setState({ visible: false })
   }
 
   render () {
@@ -219,7 +245,7 @@ class DataRoomList extends React.Component {
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
-              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text + record.id}</span>
+              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
           <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={record.rename} onChange={this.handleNameChange.bind(this, index)} />
           <Button onClick={this.handleConfirm.bind(this, index)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
@@ -249,6 +275,18 @@ class DataRoomList extends React.Component {
       </span>
     )
 
+    const tree = id => this.state.data.filter(f => f.isFolder && f.parentId === id).map(item => {
+      const children = this.state.data.filter(f => f.isFolder && f.parentId === item.id)
+      if (children.length > 0) {
+        return (
+          <TreeNode key={item.key} title={item.name}>
+            {tree(item.id)}
+          </TreeNode>
+        )
+      }
+      return <TreeNode key={item.key} title={item.name} />
+    })
+
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -258,6 +296,8 @@ class DataRoomList extends React.Component {
         <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
+        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
+        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleMove} style={{ marginLeft: 10 }}>移动到</Button> : null }
 
         <div style={{ margin: '10px 0' }}>
           { base }
@@ -278,6 +318,16 @@ class DataRoomList extends React.Component {
           rowSelection={this.rowSelection}
           dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
           pagination={false} />
+
+        <Modal
+          title={actionName[this.state.action]}
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancelModal}>
+
+          <Tree onSelect={this.onSelect}>{tree(0)}</Tree>
+
+        </Modal>
 
       </LeftRightLayout>
     )
