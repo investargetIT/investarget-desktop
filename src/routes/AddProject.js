@@ -11,6 +11,8 @@ import MainLayout from '../components/MainLayout'
 import {
   BasicFormItem,
   CurrencyFormItem,
+  IndustryDynamicFormItem,
+  FinanceDynamicFormItem,
 } from '../components/Form'
 import {
   SelectTag,
@@ -21,24 +23,16 @@ import {
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
+  InputPhoneNumber,
 } from '../components/ExtraInput'
 import ProjectAttachments from '../components/ProjectAttachments'
 import { Link } from 'dva/router'
 import styles from './AddProject.css'
 import * as api from '../api'
+import PropTypes from 'prop-types'
 
 
-let industryUuid = 1
-let financeUuid = 1
-
-
-function AddProject({ form, intl }) {
-
-  window.form = form
-
-  const { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue, validateFields } = form
-
-  const formItemLayout = {
+const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
       sm: { span: 6 },
@@ -65,71 +59,57 @@ function AddProject({ form, intl }) {
     transition: 'all .3s',
   }
 
-
   // currentUserId
   const userInfo = JSON.parse(localStorage.user_info)
   const currentUserId = userInfo.id
-  getFieldDecorator('supportUser', {
-    rules: [{required: true, type: 'number'}],
-    initialValue: currentUserId,
-  })
 
 
-  // Industry 多 field
-  const removeIndustry = (k) => {
-    const keys = getFieldValue('industriesKeys')
-    if (keys.length === 1) {
-      return
+class AddProject extends React.Component {
+
+  static propTypes = {
+    intl: intlShape.isRequired
+  }
+
+  static childContextTypes = {
+    form: PropTypes.object
+  }
+
+
+  constructor(props) {
+    super(props)
+    window.form = props.form
+    const { getFieldDecorator, getFieldValue, getFieldsValue, setFieldsValue, validateFields } = form
+
+    getFieldDecorator('supportUser', {
+      rules: [{required: true, type: 'number'}],
+      initialValue: currentUserId,
+    })
+
+  }
+
+  getChildContext() {
+    return { form: this.props.form }
+  }
+
+
+  phoneNumberValidator = (rule, value, callback) => {
+    console.log(rule, value, callback)
+    const isPhoneNumber = /([0-9]+)-([0-9]+)/
+    if (isPhoneNumber.test(value)) {
+      callback()
+    } else {
+      callback('Please input correct phone number')
     }
-    form.setFieldsValue({
-      industriesKeys: keys.filter(key => key !== k),
-    })
   }
-  const addIndustry = () => {
-    industryUuid += 1
-    const keys = getFieldValue('industriesKeys')
-    const nextKeys = keys.concat(industryUuid)
-    form.setFieldsValue({
-      industriesKeys: nextKeys,
-    })
-  }
-  getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
-  const industriesKeys = getFieldValue('industriesKeys')
-  industryUuid = industriesKeys[industriesKeys.length - 1]
 
-
-  // Finance 多 field
-  const removeFinance = (k) => {
-    const keys = getFieldValue('financeKeys')
-    if (keys.length === 1) {
-      return
-    }
-    form.setFieldsValue({
-      financeKeys: keys.filter(key => key !== k),
-    })
-  }
-  const addFinance = () => {
-    financeUuid += 1
-    const keys = getFieldValue('financeKeys')
-    const nextKeys = keys.concat(financeUuid)
-    form.setFieldsValue({
-      financeKeys: nextKeys,
-    })
-  }
-  getFieldDecorator('financeKeys', { rules: [{type: 'array'}], initialValue: [1] })
-  const financeKeys = getFieldValue('financeKeys')
-  financeUuid = financeKeys[financeKeys.length - 1]
 
   // 处理货币相关表单联动
-  const currencyMap = {
-    '1': 'CNY',
-    '2': 'USD',
-    '3': 'CNY',
-  }
-
-  function handleCurrencyTypeChange(currency) {
+  handleCurrencyTypeChange = (currency) => {
+    const { getFieldValue, setFieldsValue } = this.props.form
+    const currencyMap = {'1': 'CNY','2': 'USD','3': 'CNY'}
     exchange(currencyMap[Number(currency)]).then((rate) => {
-      const fields = ['financedAmount', 'companyValuation']
+      console.log(rate)
+      const fields = ['financeAmount', 'companyValuation']
       getFieldValue('financeKeys').forEach(key => {
         fields.push(`finance-${key}.revenue`)
         fields.push(`finance-${key}.netIncome`)
@@ -143,27 +123,16 @@ function AddProject({ form, intl }) {
     })
   }
 
-  function handleCurrencyValueChange(field, val) {
-    var currency = getFieldValue('currency') || 2
-    exchange(currencyMap[currency]).then((rate) => {
-      let value = getFieldValue(field)
-      setFieldsValue({
-        [field + '_USD']: value == undefined ? value : Math.round(value * rate),
-      })
-    })
-  }
-
-
   // TODO  保存项目可以做成存储在 localStorage, 再加一个按钮 重置
-  function saveProject() {
-    const values = getFieldsValue()
+  saveProject = () => {
+    const values = this.props.form.getFieldsValue()
     const data = toData(values)
     localStorage.setItem('projectData', JSON.stringify(data))
   }
 
-  function submitProject(e) {
+  submitProject = (e) => {
     e.preventDefault()
-    validateFields((err, values) => {
+    this.props.form.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
         api.createProj(param).then(result => {
@@ -176,8 +145,11 @@ function AddProject({ form, intl }) {
   }
 
 
+  render() {
+    const { getFieldDecorator, getFieldValue } = this.props.form
+
   return(
-    <MainLayout location={location}>
+    <MainLayout location={this.props.location}>
       <div>
         <Row>
           <Col span={24} offset={0}>
@@ -185,7 +157,7 @@ function AddProject({ form, intl }) {
           </Col>
         </Row>
 
-        <Form onSubmit={submitProject}>
+        <Form onSubmit={this.submitProject}>
           <Collapse defaultActiveKey={['1','2','3','4', '5']} style={{marginBottom: '48px'}}>
             <Panel header="基本信息" key="1">
 
@@ -205,34 +177,7 @@ function AddProject({ form, intl }) {
                 <SelectTag mode="multiple" />
               </BasicFormItem>
 
-            {industriesKeys.map((k, index) => {
-                return (
-                  <FormItem {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)} key={k} label={index === 0 ? '项目行业' : ''}>
-                    {
-                      getFieldDecorator(`industries-${k}`, {
-                        rules: [
-                          { type: 'array', message: 'The input is not valid!'},
-                          { required: true, message: 'The input can not be empty!'},
-                        ]
-                      })(
-                        <CascaderIndustry size="large" />
-                      )
-                    }
-                    <Icon
-                      type="minus-circle-o"
-                      disabled={industriesKeys.length === 1}
-                      onClick={() => removeIndustry(k)}
-                      className={styles['dynamic-delete-button']}
-                    />
-                  </FormItem>
-                )
-              })}
-              <FormItem {...formItemLayoutWithOutLabel}>
-                <Button type="dashed" onClick={addIndustry} style={{ width: '100%' }}>
-                  <Icon type="plus" />
-                  添加
-                </Button>
-              </FormItem>
+              <IndustryDynamicFormItem />
 
               <BasicFormItem label="国家" name="country" required valueType="number" initialValue={[1,5]}>
                 <CascaderCountry size="large" />
@@ -254,79 +199,51 @@ function AddProject({ form, intl }) {
                 <SelectYear />
               </BasicFormItem>
 
-              <BasicFormItem label="货币类型" name="currency" required valueType="number" onChang={handleCurrencyTypeChange}>
+              <BasicFormItem label="货币类型" name="currency" required valueType="number" onChange={this.handleCurrencyTypeChange}>
                 <SelectCurrencyType />
               </BasicFormItem>
 
-              <CurrencyFormItem label="拟交易规模" name="financedAmount" required onChange={handleCurrencyValueChange.bind(null, 'financedAmount')} currencyType={getFieldValue('currency')} />
+              <CurrencyFormItem label="拟交易规模" name="financeAmount" required />
 
-              <CurrencyFormItem label="公司估值" name="companyValuation" onChange={handleCurrencyValueChange.bind(null, 'companyValuation')} currencyType={getFieldValue('currency')} />
+              <CurrencyFormItem label="公司估值" name="companyValuation" />
 
               <BasicFormItem label="公开财务信息" name="financeIsPublic" valueType="boolean" valuePropName="checked">
                 <Switch checkedChildren={'ON'} unCheckedChildren={'OFF'} />
               </BasicFormItem>
 
-              <FormItem {...formItemLayout} className={styles['finance-head']} label="财务年度">
-                <div>
-                  <Icon type="plus" style={{fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'}} onClick={addFinance} />
-                  <span style={{float: 'right', cursor: 'pointer'}}>收缩</span>
-                </div>
-              </FormItem>
+              <FinanceDynamicFormItem>
+                <BasicFormItem label="年份" name="fYear" valueType="number" required>
+                  <SelectYear />
+                </BasicFormItem>
 
-              <div>
-              {
-                financeKeys.map((k, index) => {
-                  return (
-                    <div className={styles['finance-group']} key={k}>
-                      <Button className={styles['finance-delete-button']} disabled={financeKeys.length === 1} onClick={() => {removeFinance(k)}}>删除</Button>
-                      <BasicFormItem label="年份" name={`finance-${k}.fYear`} valueType="number" required>
-                        <SelectYear />
-                      </BasicFormItem>
+                <CurrencyFormItem label="营业收入" name="revenue" required />
 
-                      <CurrencyFormItem
-                        label="营业收入"
-                        name={`finance-${k}.revenue`}
-                        required
-                        onChange={handleCurrencyValueChange.bind(null, `finance-${k}.revenue`)}
-                        currencyType={getFieldValue('currency')}
-                      />
+                <CurrencyFormItem label="净利润" name="netIncome" required />
 
-                      <CurrencyFormItem
-                        label="净利润"
-                        name={`finance-${k}.netIncome`}
-                        required
-                        onChange={handleCurrencyValueChange.bind(null, `finance-${k}.netIncome`)}
-                        currencyType={getFieldValue('currency')}
-                      />
+                <BasicFormItem label="息税折旧摊销前利润" name="EBITDA" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
 
-                      <BasicFormItem label="息税折旧摊销前利润" name={`finance-${k}.EBITDA`} valueType="number" initialValue={1}>
-                        <InputNumber />
-                      </BasicFormItem>
+                <BasicFormItem label="毛利润" name="grossProfit" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
 
-                      <BasicFormItem label="毛利润" name={`finance-${k}.grossProfit`} valueType="number" initialValue={0}>
-                        <InputNumber />
-                      </BasicFormItem>
+                <BasicFormItem label="总资产" name="totalAsset" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
 
-                      <BasicFormItem label="总资产" name={`finance-${k}.totalAsset`} valueType="number" initialValue={0}>
-                        <InputNumber />
-                      </BasicFormItem>
+                <BasicFormItem label="净资产" name="stockholdersEquity" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
 
-                      <BasicFormItem label="净资产" name={`finance-${k}.stockholdersEquity`} valueType="number" initialValue={0}>
-                        <InputNumber />
-                      </BasicFormItem>
+                <BasicFormItem label="经营性现金流" name="operationalCashFlow" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
 
-                      <BasicFormItem label="经营性现金流" name={`finance-${k}.operationalCashFlow`} valueType="number" initialValue={0}>
-                        <InputNumber />
-                      </BasicFormItem>
-
-                      <BasicFormItem label="净现金流" name={`finance-${k}.grossMerchandiseValue`} valueType="number" initialValue={0}>
-                        <InputNumber />
-                      </BasicFormItem>
-                    </div>
-                  )
-                })
-              }
-              </div>
+                <BasicFormItem label="净现金流" name="grossMerchandiseValue" valueType="number" initialValue={0}>
+                  <InputNumber />
+                </BasicFormItem>
+              </FinanceDynamicFormItem>
 
             </Panel>
 
@@ -334,29 +251,7 @@ function AddProject({ form, intl }) {
 
               <BasicFormItem label="联系人" name="contactPerson" required whitespace><Input /></BasicFormItem>
 
-              <FormItem {...formItemLayout} label="联系号码" required>
-                <Row gutter={8}>
-                  <Col span={4}>
-                    <FormItem>
-                      {getFieldDecorator('areaCode', {
-                        rules: [{type: 'string', required: true, whitespace: true }],
-                        initialValue: '86',
-                      })(
-                        <Input prefix={<Icon type="plus" />} />
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={8}>
-                    <FormItem>
-                      {getFieldDecorator('phoneNumber', {
-                        rules: [{type: 'string', required: true, whitespace: true }]
-                      })(
-                        <Input />
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-              </FormItem>
+              <BasicFormItem label="联系号码" name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
 
               <BasicFormItem label="邮箱" name="email" required valueType="email">
                 <Input type="email" />
@@ -436,13 +331,9 @@ function AddProject({ form, intl }) {
                 {getFieldDecorator('projAttachment', {
                   rules: [{type: 'array'}],
                   initialValue: [],
-                })(
-                  <ProjectAttachments />
-                )}
+                })(<ProjectAttachments />)}
               </FormItem>
             </Panel>
-
-
 
           </Collapse>
 
@@ -472,7 +363,7 @@ function AddProject({ form, intl }) {
           </div>
 
           <div style={{textAlign: 'center'}}>
-            <Button type="primary" size="large" style={{margin: '0 8px'}} onClick={saveProject}>保存</Button>
+            <Button type="primary" size="large" style={{margin: '0 8px'}} onClick={this.saveProject}>保存</Button>
             <Button type="primary" htmlType="submit" size="large" style={{margin: '0 8px'}}>发布</Button>
           </div>
 
@@ -480,13 +371,11 @@ function AddProject({ form, intl }) {
       </div>
     </MainLayout>
   )
+  }
 }
 
 
 
-AddProject.propTypes = {
-  intl: intlShape.isRequired
-}
 
 function onValuesChange(props, values) {
   console.log(values)
@@ -517,10 +406,6 @@ function toFormData(data) {
       // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-2: {}
       let partData = splitData(prop, data[prop])
       _.assign(formData, partData)
-    } else if (prop == 'phoneNumber') {
-      let phoneArr = data['phoneNumber'].split('-')
-      formData['areaCode'] = {value: phoneArr[0]}
-      formData['phoneNumber'] = {value: phoneArr[1]}
     } else {
       formData[prop] = {value: data[prop]}
     }
@@ -546,8 +431,7 @@ function toData(formData) {
   ['industries', 'finance'].forEach(prop => {
     data[prop] = formData[prop + 'Keys'].map(key => formData[prop + '-' + key])
   })
-  // 合并自动 areaCode 和 phoneNumber
-  data['phoneNumber'] = formData['areaCode'] + '-' + formData['phoneNumber']
+
   return data
 }
 

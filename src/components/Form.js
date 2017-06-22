@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
-import { i18n } from '../utils/util'
+import { i18n, exchange } from '../utils/util'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
@@ -307,12 +307,24 @@ UploadAvatar.contextTypes = {
 
 
 
-const CurrencyFormItem = ({ label, name, required, validator, currencyType, onChange }, context) => {
-  const { getFieldDecorator } = context.form
+const CurrencyFormItem = ({ label, name, required, validator }, context) => {
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
+
+  function onChange(value) {
+    const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
+    const currency = getFieldValue('currency') || 2
+    exchange(currencyMap[currency]).then((rate) => {
+      setFieldsValue({
+        [name + '_USD']: value == undefined ? value : Math.round(value * rate),
+      })
+    })
+  }
 
   let rules = [{ type: 'number' }]
   if (required) { rules.push({ required }) }
   if (validator) { rules.push({ validator }) }
+
+  const currencyType = getFieldValue('currency')
 
   return (
     <FormItem {...formItemLayout} label={label} required={required}>
@@ -349,8 +361,151 @@ CurrencyFormItem.contextTypes = {
 }
 
 
+class IndustryDynamicFormItem extends React.Component {
+
+  static contextTypes = {
+    form: PropTypes.object
+  }
+
+  industryUuid = 1
 
 
+  constructor(props, context) {
+    super(props)
+
+    const { getFieldDecorator, getFieldValue } = context.form
+    getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
+    const industriesKeys = getFieldValue('industriesKeys')
+    this.industryUuid = industriesKeys[industriesKeys.length - 1]
+  }
+
+    // Industry 多 field
+  removeIndustry = (k) => {
+    const { getFieldValue, setFieldsValue } = this.context.form
+    const keys = getFieldValue('industriesKeys')
+    if (keys.length === 1) {
+      return
+    }
+    form.setFieldsValue({
+      industriesKeys: keys.filter(key => key !== k),
+    })
+  }
+  addIndustry = () => {
+    const { getFieldValue, setFieldsValue } = this.context.form
+    this.industryUuid += 1
+    const keys = getFieldValue('industriesKeys')
+    const nextKeys = keys.concat(this.industryUuid)
+    form.setFieldsValue({
+      industriesKeys: nextKeys,
+    })
+  }
+
+  render() {
+    const { getFieldValue, getFieldDecorator } = this.context.form
+    const industriesKeys = getFieldValue('industriesKeys')
+
+    return (
+      <div>
+        {industriesKeys.map((k, index) => {
+          return (
+            <FormItem {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)} key={k} label={index === 0 ? '项目行业' : ''}>
+              {
+                getFieldDecorator(`industries-${k}`, {
+                  rules: [
+                    { type: 'number', message: 'The input is not valid!'},
+                    { required: true, message: 'The input can not be empty!'},
+                  ]
+                })(
+                  <CascaderIndustry size="large" />
+                )
+              }
+              <Icon
+                type="minus-circle-o"
+                disabled={industriesKeys.length === 1}
+                onClick={() => this.removeIndustry(k)}
+                className={styles['dynamic-delete-button']}
+              />
+            </FormItem>
+          )
+        })}
+        <FormItem {...formItemLayoutWithOutLabel}>
+          <Button type="dashed" onClick={this.addIndustry} style={{ width: '100%' }}>
+            <Icon type="plus" />
+            添加
+          </Button>
+        </FormItem>
+      </div>
+    )
+  }
+}
+
+
+class FinanceDynamicFormItem extends React.Component {
+  static contextTypes = {
+    form: PropTypes.object
+  }
+
+  financeUuid = 1
+
+  constructor(props, context) {
+    super(props)
+
+    const { getFieldDecorator, getFieldValue } = context.form
+    getFieldDecorator('financeKeys', { rules: [{type: 'array'}], initialValue: [1] })
+    const financeKeys = getFieldValue('financeKeys')
+    this.financeUuid = financeKeys[financeKeys.length - 1]
+  }
+
+  removeFinance = (k) => {
+    const { getFieldValue, setFieldsValue } = this.context.form
+    const keys = getFieldValue('financeKeys')
+    if (keys.length === 1) {
+      return
+    }
+    form.setFieldsValue({
+      financeKeys: keys.filter(key => key !== k),
+    })
+  }
+
+  addFinance = () => {
+    const { getFieldValue, setFieldsValue } = this.context.form
+    this.financeUuid += 1
+    const keys = getFieldValue('financeKeys')
+    const nextKeys = keys.concat(this.financeUuid)
+    form.setFieldsValue({
+      financeKeys: nextKeys,
+    })
+  }
+
+  render() {
+    const { getFieldDecorator, getFieldValue } = this.context.form
+    const financeKeys = getFieldValue('financeKeys')
+
+    return (
+      <div>
+        <FormItem {...formItemLayout} className={styles['finance-head']} label="财务年度">
+          <div>
+            <Icon type="plus" style={{fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'}} onClick={this.addFinance} />
+            <span style={{float: 'right', cursor: 'pointer'}}>收缩</span>
+          </div>
+        </FormItem>
+
+        <div>
+          {financeKeys.map((k, index) => (
+            <div className={styles['finance-group']} key={k}>
+              <Button className={styles['finance-delete-button']} disabled={financeKeys.length === 1} onClick={() => {this.removeFinance(k)}}>删除</Button>
+              {
+                React.Children.map(this.props.children, (child) => {
+                  return React.cloneElement(child, { name: `finance-${k}.${child.props.name}` })
+                })
+              }
+            </div>)
+          )}
+        </div>
+      </div>
+    )
+  }
+}
 
 
 
@@ -381,4 +536,6 @@ module.exports = {
   BasicFormItem,
   CurrencyFormItem,
   ChineseFullName,
+  IndustryDynamicFormItem,
+  FinanceDynamicFormItem,
 }

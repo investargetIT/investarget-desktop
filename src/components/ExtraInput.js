@@ -379,8 +379,78 @@ class InputCurrency extends React.Component {
 }
 
 
+class InputPhoneNumber extends React.Component {
+  constructor(props) {
+    super(props)
+
+    if (this.props.value) {
+      let valArr = this.props.value.split('-')
+      this.state = { areaCode: valArr[0], phoneNumber: valArr[1] }
+    } else {
+      this.state = { areaCode: '', phoneNumber: '' }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value) {
+      let valArr = nextProps.value.split('-')
+      this.setState({ areaCode: valArr[0], phoneNumber: valArr[1] })
+    } else {
+      this.setState({ areaCode: '', phoneNumber: '' })
+    }
+  }
+
+  handleAreaChange = (e) => {
+    const areaCode = e.target.value
+    if (!('value' in this.props)) {
+      this.setState({ areaCode }, this.triggerChange)
+    } else {
+      this.triggerChange({
+        areaCode,
+        phoneNumber: this.state.phoneNumber
+      })
+    }
+  }
+
+  handlePhoneNumberChange = (e) => {
+    const phoneNumber = e.target.value
+    if (!('value' in this.props)) {
+      this.setState({ phoneNumber }, this.triggerChange)
+    } else {
+      this.triggerChange({
+        areaCode: this.state.areaCode,
+        phoneNumber
+      })
+    }
+  }
+
+  triggerChange = ({areaCode, phoneNumber}) => {
+    const onChange = this.props.onChange
+    if (onChange) {
+      onChange(areaCode + '-' + phoneNumber)
+    }
+  }
+
+  render() {
+    const InputGroup = Input.Group
+    return (
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '80px', flexShrink: 0, marginRight: '8px' }}>
+          <Input size="large" prefix={<Icon type="plus" />} value={this.state.areaCode} onChange={this.handleAreaChange} />
+        </div>
+        <div style={{ flexGrow: 1 }}>
+          <Input size="large" value={this.state.phoneNumber} onChange={this.handlePhoneNumberChange} />
+        </div>
+      </div>
+    )
+  }
+}
+
+
+
 export {
   InputCurrency,
+  InputPhoneNumber,
   SelectTag,
   SelectRole,
   SelectYear,
