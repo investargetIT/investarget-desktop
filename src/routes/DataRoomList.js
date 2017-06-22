@@ -8,6 +8,7 @@ const data = [
   {
     id: 1,
     name: 'Folder',
+    rename: 'Folder',
     isFolder: true,
     size: '',
     date: '2017-06-27 14:51',
@@ -15,6 +16,7 @@ const data = [
   }, {
     id: 2,
     name: 'Jim-Green.pdf',
+    rename: 'Jim-Green.pdf',
     isFolder: false,
     size: '42.2M',
     date: '2014-04-16 15:05',
@@ -22,6 +24,7 @@ const data = [
   }, {
     id: 3,
     name: 'Joe-Black.pdf',
+    rename: 'Joe-Black.pdf',
     isFolder: false,
     size: '32.1K',
     date: '2015-04-16 15:04',
@@ -29,6 +32,7 @@ const data = [
   }, {
     id: 4,
     name: 'Sub Folder',
+    rename: 'Sub Folder',
     isFolder: true,
     size: '',
     date: '2017-06-27 14:51',
@@ -36,6 +40,7 @@ const data = [
   }, {
     id: 5,
     name: 'Sub-Jim-Green.pdf',
+    rename: 'Sub-Jim-Green.pdf',
     isFolder: false,
     size: '42.2M',
     date: '2014-04-16 15:05',
@@ -43,6 +48,7 @@ const data = [
   }, {
     id: 6,
     name: 'Sub-Joe-Black.pdf',
+    rename: 'Sub-Joe-Black.pdf',
     isFolder: false,
     size: '32.1K',
     date: '2015-04-16 15:04',
@@ -61,12 +67,14 @@ class DataRoomList extends React.Component {
       data: data,
       parentId: 0,
       name: null,
-      id: null
+      renameRows: [],
+      selectedRows: [],
     }
 
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleCreateFolder = this.handleCreateFolder.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
+    this.handleRename = this.handleRename.bind(this)
   }
 
   componentDidMount() {
@@ -82,7 +90,7 @@ class DataRoomList extends React.Component {
 
   handleNameChange(index, evt) {
     const newData = this.state.data.slice()
-    newData[index].name = evt.target.value
+    newData[index].rename = evt.target.value
     this.setState({ data: newData })
   }
 
@@ -100,7 +108,8 @@ class DataRoomList extends React.Component {
       name: "新建文件夹",
       isFolder: true,
       date: '2015-04-15 13:30',
-      parentId: this.state.parentId
+      parentId: this.state.parentId,
+      rename: "新建文件夹",
     })
     this.setState({ data: newData, name: "新建文件夹" })
   }
@@ -111,7 +120,15 @@ class DataRoomList extends React.Component {
     if (!value.id) {
       const newData = this.state.data.slice()
       newData[index].id = getRandomInt(1, 100)
+      newData[index].name = newData[index].rename
       this.setState({ data: newData })
+    } else {
+      const newData = this.state.data.slice()
+      newData[index].name = newData[index].rename
+      const newRenameRows = this.state.renameRows.slice()
+      const rowIndex = newRenameRows.indexOf(value.id)
+      newRenameRows.splice(rowIndex, 1)
+      this.setState({ data: newData, renameRows: newRenameRows })
     }
   }
 
@@ -122,7 +139,30 @@ class DataRoomList extends React.Component {
       const newData = this.state.data.slice()
       newData.splice(index, 1)
       this.setState({ data: newData })
+    } else {
+      const newData = this.state.data.slice()
+      newData[index].rename = newData[index].name
+      const newRenameRows = this.state.renameRows.slice()
+      const rowIndex = newRenameRows.indexOf(value.id)
+      newRenameRows.splice(rowIndex, 1)
+      this.setState({ data: newData, renameRows: newRenameRows })
     }
+  }
+
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      this.setState({ selectedRows: selectedRows })
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User',    // Column configuration not to be checked
+    }),
+  }
+
+  handleRename() {
+    this.setState({
+      renameRows: this.state.selectedRows.map(m => m.id)
+    })
   }
 
   render () {
@@ -134,10 +174,10 @@ class DataRoomList extends React.Component {
       render: (text, record, index) => (
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
-          { record.id && record.id !== this.state.id ?
+          { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
-          <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={text} onChange={this.handleNameChange.bind(this, index)} />
+          <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={record.rename} onChange={this.handleNameChange.bind(this, index)} />
           <Button onClick={this.handleConfirm.bind(this, index)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
           <Button onClick={this.handleCancel.bind(this, index)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
         </div>
@@ -163,6 +203,7 @@ class DataRoomList extends React.Component {
         <a onClick={this.folderClicked.bind(this, 0)}>全部文件</a>
       </span>
     )
+
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -170,6 +211,7 @@ class DataRoomList extends React.Component {
 
         <Button type="primary">上传</Button>
         <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
+        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
 
         <div style={{ margin: '10px 0' }}>
           { base }
@@ -187,6 +229,7 @@ class DataRoomList extends React.Component {
         <Table
           columns={columns}
           rowKey={(record, index) => index}
+          rowSelection={this.rowSelection}
           dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
           pagination={false} />
 
