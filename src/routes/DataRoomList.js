@@ -9,6 +9,7 @@ const data = [
     id: 1,
     name: 'Folder',
     rename: 'Folder',
+    key: 1,
     isFolder: true,
     size: '',
     date: '2017-06-27 14:51',
@@ -17,6 +18,7 @@ const data = [
     id: 2,
     name: 'Jim-Green.pdf',
     rename: 'Jim-Green.pdf',
+    key: 2,
     isFolder: false,
     size: '42.2M',
     date: '2014-04-16 15:05',
@@ -25,6 +27,7 @@ const data = [
     id: 3,
     name: 'Joe-Black.pdf',
     rename: 'Joe-Black.pdf',
+    key: 3,
     isFolder: false,
     size: '32.1K',
     date: '2015-04-16 15:04',
@@ -33,6 +36,7 @@ const data = [
     id: 4,
     name: 'Sub Folder',
     rename: 'Sub Folder',
+    key: 4,
     isFolder: true,
     size: '',
     date: '2017-06-27 14:51',
@@ -41,6 +45,7 @@ const data = [
     id: 5,
     name: 'Sub-Jim-Green.pdf',
     rename: 'Sub-Jim-Green.pdf',
+    key: 5,
     isFolder: false,
     size: '42.2M',
     date: '2014-04-16 15:05',
@@ -49,6 +54,7 @@ const data = [
     id: 6,
     name: 'Sub-Joe-Black.pdf',
     rename: 'Sub-Joe-Black.pdf',
+    key: 6,
     isFolder: false,
     size: '32.1K',
     date: '2015-04-16 15:04',
@@ -104,12 +110,16 @@ class DataRoomList extends React.Component {
 
   handleCreateFolder() {
     const newData = this.state.data.slice()
+    const existKeyList = newData.map(m => m.key)
+    const maxKey = Math.max(...existKeyList)
+
     newData.splice(0, 0, {
       name: "新建文件夹",
       isFolder: true,
       date: '2015-04-15 13:30',
       parentId: this.state.parentId,
       rename: "新建文件夹",
+      key: maxKey + 1,
     })
     this.setState({ data: newData, name: "新建文件夹" })
   }
@@ -218,17 +228,17 @@ class DataRoomList extends React.Component {
           {
             this.parentFolderFunc(this.state.parentId)
               .map(
-                (m, index) => m.id !== this.state.parentId ?
-                <span key={index}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m.id)}>{m.name}</a></span>
+                m => m.id !== this.state.parentId ?
+                <span key={m.key}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m.id)}>{m.name}</a></span>
                 :
-                <span key={index}>&nbsp;>&nbsp;{m.name}</span>
+                <span key={m.key}>&nbsp;>&nbsp;{m.name}</span>
               )
           }
         </div>
 
         <Table
           columns={columns}
-          rowKey={(record, index) => index}
+          rowKey={record => record.key}
           rowSelection={this.rowSelection}
           dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
           pagination={false} />
