@@ -1,8 +1,10 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { queryDataRoom } from '../api'
-import { Input, Button, Table } from 'antd'
+import { Modal, Input, Button, Table } from 'antd'
 import { getRandomInt } from '../utils/util'
+
+const confirm = Modal.confirm
 
 const data = [
   {
@@ -81,6 +83,8 @@ class DataRoomList extends React.Component {
     this.handleCreateFolder = this.handleCreateFolder.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
     this.handleRename = this.handleRename.bind(this)
+    this.deleteContent = this.deleteContent.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentDidMount() {
@@ -108,6 +112,17 @@ class DataRoomList extends React.Component {
     return this.parentFolderFunc(parentFolder.parentId)
   }
 
+  contents = []
+  deleteContent(id) {
+    const subObjArr = this.state.data.filter(f => f.parentId === id)
+    if (subObjArr.length === 0) {
+      return this.contents
+    } else {
+      this.contents = this.contents.concat(subObjArr.map(m => m.id))
+      return subObjArr.map(m => this.deleteContent(m.id))
+    }
+  }
+
   handleCreateFolder() {
     const newData = this.state.data.slice()
     const existKeyList = newData.map(m => m.key)
@@ -129,7 +144,7 @@ class DataRoomList extends React.Component {
     const name = value.name
     if (!value.id) {
       const newData = this.state.data.slice()
-      newData[index].id = getRandomInt(1, 100)
+      newData[index].id = newData[index].key
       newData[index].name = newData[index].rename
       this.setState({ data: newData })
     } else {
@@ -175,6 +190,25 @@ class DataRoomList extends React.Component {
     })
   }
 
+  handleDelete() {
+    const react = this
+    confirm({
+      title: '确定删除吗？',
+      onOk() {
+        console.log('ok')
+        react.state.selectedRows.map(m => react.deleteContent(m.id))
+        const deleteContents = react.contents.concat(react.state.selectedRows.map(m => m.id))
+        console.log('YXM', deleteContents)
+        const newData = react.state.data.slice()
+        deleteContents.map(d => {
+          const index = newData.map(m => m.id).indexOf(d)
+          newData.splice(index, 1)
+        })
+        react.setState({ data: newData })
+      }
+    })
+  }
+
   render () {
     
     const columns = [{
@@ -185,7 +219,7 @@ class DataRoomList extends React.Component {
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
-              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
+              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text + record.id}</span>
               : (<span>
           <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={record.rename} onChange={this.handleNameChange.bind(this, index)} />
           <Button onClick={this.handleConfirm.bind(this, index)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
@@ -204,6 +238,7 @@ class DataRoomList extends React.Component {
 
 
     this.current = []
+    this.contents = []
 
     const currentFolder = this.state.data.filter(f => f.id === this.state.parentId)[0]
     const base = this.state.parentId === 0 ? "全部文件" : (
@@ -221,6 +256,7 @@ class DataRoomList extends React.Component {
 
         <Button type="primary">上传</Button>
         <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
+        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
 
         <div style={{ margin: '10px 0' }}>
