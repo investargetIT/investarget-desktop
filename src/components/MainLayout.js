@@ -6,6 +6,7 @@ import { Layout, Breadcrumb } from 'antd'
 import { routerRedux } from 'dva/router'
 import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
+import Chat from './Chat'
 
 const { Content, Sider } = Layout
 
@@ -43,11 +44,9 @@ class MainLayout extends React.Component {
 
     return (
       <Layout>
-
         <Header mode={this.props.currentUser ? "dark" : "light"} location={this.props.location} />
-
         { this.props.currentUser ? sideBarAndContent : content }
-
+        <Chat />
       </Layout>
     )
   }

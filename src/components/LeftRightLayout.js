@@ -6,6 +6,7 @@ import { Layout, Breadcrumb, Icon } from 'antd'
 import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
+import Chat from './Chat'
 
 const { Content, Sider } = Layout
 
@@ -61,7 +62,12 @@ class LeftRightLayout extends React.Component {
       </Layout>
     )
 
-    return <Layout>{ this.props.currentUser ? sideBarAndContent : content }</Layout>
+    return (
+      <Layout>
+        { this.props.currentUser ? sideBarAndContent : content }
+        <Chat />
+      </Layout>
+    )
   }
 
 }
