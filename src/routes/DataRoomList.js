@@ -1,7 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { queryDataRoom } from '../api'
-import { message, Tree, Modal, Input, Button, Table } from 'antd'
+import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt } from '../utils/util'
 
 const confirm = Modal.confirm
@@ -70,7 +70,6 @@ const data = [
   }
 ]
 
-
 class DataRoomList extends React.Component {
 
   constructor(props) {
@@ -84,7 +83,8 @@ class DataRoomList extends React.Component {
       renameRows: [],
       selectedRows: [],
       visible: false,
-      action: null
+      action: null,
+      uploading: false,
     }
 
     this.handleNameChange = this.handleNameChange.bind(this)
@@ -232,7 +232,10 @@ class DataRoomList extends React.Component {
           const index = newData.map(m => m.id).indexOf(d)
           newData.splice(index, 1)
         })
-        react.setState({ data: newData })
+        react.setState({
+          data: newData,
+          selectedRows: [],
+        })
       }
     })
   }
@@ -358,12 +361,54 @@ class DataRoomList extends React.Component {
       return <TreeNode key={item.key} title={item.name} />
     })
 
+    const react = this
+
+    const props = {
+      name: 'file',
+      action: '//jsonplaceholder.typicode.com/posts/',
+      headers: {
+        authorization: 'authorization-text',
+      },
+      showUploadList: false,
+      onChange(info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully`);
+
+          const newData = react.state.data.slice()
+          const existKeyList = newData.map(m => m.key)
+          const maxKey = Math.max(...existKeyList)
+
+          newData.push({
+            id: maxKey + 1,
+            name: info.file.name,
+            isFolder: false,
+            date: '2015-04-15 13:30',
+            parentId: react.state.parentId,
+            rename: info.file.name,
+            key: maxKey + 1,
+          })
+          react.setState({ data: newData, uploading: false })
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+          react.setState({ uploading: false })
+        } else if (info.file.status === 'uploading') {
+          react.setState({ uploading: true })
+        }
+      },
+    }
+
     return (
       <LeftRightLayout
         location={this.props.location}
         title="DataRoomList">
 
-        <Button type="primary">上传</Button>
+        <Upload {...props}>
+          <Button type="primary">上传</Button>
+        </Upload>
+
         <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
@@ -388,6 +433,7 @@ class DataRoomList extends React.Component {
           rowKey={record => record.key}
           rowSelection={rowSelection}
           dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
+          loading={this.state.uploading}
           pagination={false} />
 
         <Modal
