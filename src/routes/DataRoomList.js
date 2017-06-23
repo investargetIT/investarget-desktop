@@ -1,7 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { queryDataRoom } from '../api'
-import { Tree, Modal, Input, Button, Table } from 'antd'
+import { message, Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt } from '../utils/util'
 
 const confirm = Modal.confirm
@@ -97,6 +97,7 @@ class DataRoomList extends React.Component {
     this.handleMove = this.handleMove.bind(this)
     this.handleOk = this.handleOk.bind(this)
     this.handleCancelModal = this.handleCancelModal.bind(this)
+    this.onSelect = this.onSelect.bind(this)
   }
 
   componentDidMount() {
@@ -134,6 +135,33 @@ class DataRoomList extends React.Component {
       return subObjArr.map(m => this.deleteContent(m.id))
     }
   }
+
+  copyContents = []
+  data = []
+  copyContentsFunc(contentName, oldParentIds, targetId) {
+    let content = contentName.slice()
+    if (content.length === 0) return this.copyContents
+    const contentId = content.map(m => m.id)
+    oldParentIds.map(oldParentId => {
+      content.filter(f => f.parentId === oldParentId).map(m => {
+        const existKeyList = this.data.map(m => m.key)
+        const maxKey = Math.max(...existKeyList)
+        const id = maxKey + 1
+        const key = id
+        const parentId = targetId
+
+        const rootIndex = contentId.indexOf(m.id)
+        if(rootIndex > -1) {
+          content.splice(rootIndex, 1)
+        }
+        const newValue = {...m, id, key, parentId}
+        this.copyContents = this.copyContents.concat(newValue)
+        this.data = this.data.concat(newValue)
+        return this.copyContentsFunc(content, [m.id], id)
+      })
+    })
+  }
+
 
   handleCreateFolder() {
     const newData = this.state.data.slice()
@@ -186,16 +214,6 @@ class DataRoomList extends React.Component {
     }
   }
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      this.setState({ selectedRows: selectedRows })
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User',    // Column configuration not to be checked
-    }),
-  }
-
   handleRename() {
     this.setState({
       renameRows: this.state.selectedRows.map(m => m.id)
@@ -229,14 +247,65 @@ class DataRoomList extends React.Component {
 
   handleOk() {
     this.setState({ visible: false })
+    this.state.selectedRows.map(m => this.deleteContent(m.id))
+    const notAllowedKeys = this.contents.concat(this.state.selectedRows.map(m => m.id), this.state.parentId)
+
+    if (notAllowedKeys.includes(parseInt(this.selectedKeys[0], 10))) {
+      message.error("不能将文件复制或移动到自身及子目录下")
+      return
+    }
+
+    const targetId = parseInt(this.selectedKeys[0], 10)
+    let newData = this.state.data.slice()
+
+    if (this.state.action === "move") {
+      this.state.selectedRows.map(m => {
+        const index = newData.map(m => m.id).indexOf(m.id)
+        newData[index].parentId = targetId
+      })
+    } else if (this.state.action === "copy") {
+      const index = notAllowedKeys.indexOf(this.state.parentId)
+      if (index > -1) {
+        notAllowedKeys.splice(index, 1)
+      }
+      const contentsToCopy = notAllowedKeys.map(m => {
+        const result = newData.filter(f => f.id === m)
+        return result[0]
+      })
+      const parentIds = this.state.selectedRows.map(m => m.parentId)
+      const parentIdSet = new Set(parentIds)
+      this.copyContentsFunc(contentsToCopy, [...parentIdSet], targetId)
+      newData = newData.concat(this.copyContents)
+    }
+
+    this.setState({
+      selectedRows: [],
+      data: newData,
+    })
   }
 
   handleCancelModal() {
     this.setState({ visible: false })
   }
 
+  selectedKeys = []
+  onSelect(keys) {
+    this.selectedKeys = keys
+  }
+
   render () {
-    
+
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.setState({ selectedRows: selectedRowKeys.map(m => this.state.data.filter(f => f.id === m)[0]) })
+      },
+      selectedRowKeys: this.state.selectedRows.map(m => m.id),
+      getCheckboxProps: record => ({
+        disabled: record.name === 'Disabled User',    // Column configuration not to be checked
+      }),
+    }
+
     const columns = [{
       title: '文件名',
       dataIndex: 'name',
@@ -265,6 +334,8 @@ class DataRoomList extends React.Component {
 
     this.current = []
     this.contents = []
+    this.data = this.state.data
+    this.copyContents = []
 
     const currentFolder = this.state.data.filter(f => f.id === this.state.parentId)[0]
     const base = this.state.parentId === 0 ? "全部文件" : (
@@ -315,7 +386,7 @@ class DataRoomList extends React.Component {
         <Table
           columns={columns}
           rowKey={record => record.key}
-          rowSelection={this.rowSelection}
+          rowSelection={rowSelection}
           dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
           pagination={false} />
 
