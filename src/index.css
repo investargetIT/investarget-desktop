@@ -17,3 +17,28 @@ html, body, :global(#root) {
 :global(.ant-layout-sider-collapsed .ant-menu-submenu-vertical > .ant-menu-submenu-title:after) {
   display: none;
 }
+
+:global(.other-talk-bubble:before) {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 10px;
+  width: 0;
+  height: 0;
+
+  border-top: 4px solid transparent;
+  border-right: 6px solid white;
+  border-bottom: 4px solid transparent;
+}
+:global(.my-talk-bubble:after) {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 10px;
+  width: 0;
+  height: 0;
+
+  border-top: 4px solid transparent;
+  border-left: 6px solid rgb(162, 229, 99);
+  border-bottom: 4px solid transparent;
+}
