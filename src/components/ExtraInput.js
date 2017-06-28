@@ -7,13 +7,57 @@ import {
   Input,
   Icon,
   Button,
+  Checkbox,
+  Slider,
 } from 'antd'
 const Option = Select.Option
+const CheckboxGroup = Checkbox.Group
+import TabCheckbox from './TabCheckbox'
 import _ from 'lodash'
 
 
+function Select2 ({options, children, ...extraProps}) {
+  return (
+    <Select {...extraProps}>
+      {options && options.map((item, index) =>
+        <Option key={index} value={item.value}>{item.label}</Option>
+      )}
+    </Select>
+  )
+}
 
-function withSelectOptions(Select, options) {
+
+class SelectNumber extends React.Component {
+  constructor(props) {
+    super(props)
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(value) {
+    value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
+    if (this.props.onChange) {
+      this.props.onChange(value)
+    }
+  }
+
+  render() {
+    const {children, options, value, onChange, ...extraProps} = this.props
+    const _options = options.map(item => ({ label: item.label, value: String(item.value) }))
+    let _value
+    if (value == undefined) {
+      _value = value
+    } else {
+      _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
+    }
+
+    return (
+      <Select2 options={_options} value={_value} onChange={this.handleChange} {...extraProps} />
+    )
+  }
+}
+
+
+const withOptions = function(Component, options, mapStateToProps) {
   return class extends React.Component {
     constructor(props) {
       super(props)
@@ -23,122 +67,14 @@ function withSelectOptions(Select, options) {
       const Option = Select.Option
       const {children, ...extraProps} = this.props
       return (
-        <Select {...extraProps}>
-          {options && options.map((item, index) =>
-            <Option key={index} value={String(item.value)}>{item.label}</Option>
-          )}
-        </Select>
+        <Component options={options} {...extraProps} />
       )
     }
   }
 }
 
-
-function withSelectNumberOptions(Select, options) {
-  return class extends React.Component {
-    constructor(props) {
-      super(props)
-      this.handleChange = this.handleChange.bind(this)
-    }
-
-    handleChange(value) {
-      value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
-      if (this.props.onChange) {
-        this.props.onChange(value)
-      }
-    }
-
-    render() {
-      const Option = Select.Option
-      const {children, value, onChange, ...extraProps} = this.props
-      let _value
-      if (value == undefined) {
-        _value = value
-      } else {
-        _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
-      }
-      return (
-        <Select value={_value} onChange={this.handleChange} {...extraProps}>
-          {options && options.map((item, index) =>
-            <Option key={index} value={String(item.value)}>{item.label}</Option>
-          )}
-        </Select>
-      )
-    }
-  }
-}
-
-
-function _withSelectOptions(Select, sourceType, mapStateToProps) {
-  class WrappedSelect extends React.Component {
-    constructor(props) {
-      super(props)
-    }
-
-    componentDidMount() {
-      this.props.dispatch({ type: 'app/getSource', payload: sourceType })
-    }
-
-    render() {
-      const Option = Select.Option
-      const {options, children, dispatch, ...extraProps} = this.props // 剔除属性 options, children, dispatch
-      return (
-        <Select {...extraProps}>
-          {options.map((item, index) =>
-            <Option key={index} value={String(item.value)}>{item.label}</Option>
-          )}
-        </Select>
-      )
-    }
-  }
-
-  return connect(mapStateToProps)(WrappedSelect)
-}
-
-
-function _withSelectNumberOptions(Select, sourceType, mapStateToProps) {
-  class WrappedSelect extends React.Component {
-    constructor(props) {
-      super(props)
-      this.handleChange = this.handleChange.bind(this)
-    }
-
-    componentDidMount() {
-      this.props.dispatch({ type: 'app/getSource', payload: sourceType })
-    }
-
-    handleChange(value) {
-      value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
-      if (this.props.onChange) {
-        this.props.onChange(value)
-      }
-    }
-
-    render() {
-      const Option = Select.Option
-      const {options, children, dispatch, value, onChange, ...extraProps} = this.props // 剔除属性 options, children, dispatch
-      let _value
-      if (value == undefined) {
-        _value = value
-      } else {
-        _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
-      }
-      return (
-        <Select value={_value} onChange={this.handleChange} {...extraProps}>
-          {options.map((item, index) =>
-            <Option key={index} value={String(item.value)}>{item.label}</Option>
-          )}
-        </Select>
-      )
-    }
-  }
-
-  return connect(mapStateToProps)(WrappedSelect)
-}
-
-
-function _withCascaderOptions(Select, sourceTypeList, mapStateToProps) {
-  class WrappedCascader extends React.Component {
+const withOptionsAsync = function(Component, sourceTypeList, mapStateToProps) {
+  class WrappedComponent extends React.Component {
     constructor(props) {
       super(props)
     }
@@ -150,30 +86,34 @@ function _withCascaderOptions(Select, sourceTypeList, mapStateToProps) {
     render() {
       const {options, children, dispatch, ...extraProps} = this.props // 剔除属性 options, children, dispatch
       return (
-        <Cascader options={options} {...extraProps} />
+        <Component options={options} {...extraProps} />
       )
     }
   }
-  return connect(mapStateToProps)(WrappedCascader)
+  return connect(mapStateToProps)(WrappedComponent)
 }
 
 
+
+
+
+/************************************************************************************************/
 
 /**
  * SelectTag
  */
 
-const SelectTag = _withSelectNumberOptions(Select, 'tag', function(state) {
+const SelectTag = withOptionsAsync(SelectNumber, ['tag'], function(state) {
   const { tag } = state.app
   const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
   return { options }
 })
 
 /**
- * SelectRole, TODO//后面改成网络请求
+ * SelectRole
  */
 
-const SelectRole = _withSelectNumberOptions(Select, 'character', function(state) {
+const SelectRole = withOptionsAsync(SelectNumber, ['character'], function(state) {
   const { character } = state.app
   const options = character ? character.map(item => ({value: item.id, label: item.character})) : []
   return { options }
@@ -185,14 +125,14 @@ const SelectRole = _withSelectNumberOptions(Select, 'character', function(state)
 const currYear = new Date().getFullYear()
 const yearList = _.range(currYear, currYear - 100)
 const yearOptions = yearList.map(item => ({ value: item, label: String(item) }))
-const SelectYear = withSelectNumberOptions(Select, yearOptions)
+const SelectYear = withOptions(SelectNumber, yearOptions)
 
 
 /**
  * SelectTransactionType
  */
 
-const SelectTransactionType = _withSelectNumberOptions(Select, 'transactionType', function(state) {
+const SelectTransactionType = withOptionsAsync(SelectNumber, ['transactionType'], function(state) {
   const { transactionType } = state.app
   const options = transactionType ? transactionType.map(item => ({value: item.id, label: item.name})) : []
   return { options }
@@ -202,7 +142,7 @@ const SelectTransactionType = _withSelectNumberOptions(Select, 'transactionType'
  * SelectCurrencyType
  */
 
-const SelectCurrencyType = _withSelectNumberOptions(Select, 'currencyType', function(state) {
+const SelectCurrencyType = withOptionsAsync(SelectNumber, ['currencyType'], function(state) {
   const { currencyType } = state.app
   const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
   return { options }
@@ -246,8 +186,7 @@ class CascaderCountry extends React.Component {
 
 }
 
-CascaderCountry = connect(
-  function (state) {
+function mapStateToPropsCountry (state) {
   const { continent, country } = state.app
 
   let country2continent = {}
@@ -264,7 +203,9 @@ CascaderCountry = connect(
   })
 
   return { options, country2continent }
-})(CascaderCountry)
+}
+
+CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
 
 /**
@@ -298,7 +239,7 @@ class CascaderIndustry extends React.Component {
   }
 }
 
-CascaderIndustry = connect(function (state) {
+function mapStateToPropsIndustry (state) {
   const { industry } = state.app
   let pIndustries = industry.filter(item => item.id == item.Pindustry)
   pIndustries.forEach(item => {
@@ -324,7 +265,9 @@ CascaderIndustry = connect(function (state) {
   })
 
   return { options, industry2pIndustry }
-})(CascaderIndustry)
+}
+
+CascaderIndustry = connect(mapStateToPropsIndustry)(CascaderIndustry)
 
 
 /**
@@ -447,10 +390,68 @@ class InputPhoneNumber extends React.Component {
 }
 
 
+/**
+ * CheckboxTag
+ */
+
+const CheckboxTag = withOptionsAsync(CheckboxGroup, ['tag'], function(state) {
+  const {tag} = state.app
+  const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
+/**
+ * CheckboxProjStatus
+ */
+
+const CheckboxProjStatus = withOptions(CheckboxGroup, [
+  { label: '未发布', value: 1 },
+  { label: '内容完善', value: 2 },
+  { label: '内容校对', value: 3 },
+  { label: '终审发布', value: 4 },
+  { label: '交易中', value: 5 },
+  { label: '已完成', value: 6 },
+  { label: '已下架', value: 7 },
+])
+
+
+/**
+ * TabCheckboxCountry
+ */
+
+const TabCheckboxCountry = withOptionsAsync(TabCheckbox, ['continent', 'country'], mapStateToPropsCountry)
+
+
+/**
+ * TabCheckboxIndustry
+ */
+
+const TabCheckboxIndustry = withOptionsAsync(TabCheckbox, ['industry'], mapStateToPropsIndustry)
+
+
+/**
+ * Slider
+ */
+
+const SliderMoney = function(props) {
+  const { min, max, marks, range, ...extraProps } = props
+  const _marks = { [min]: min + '', [max]: max + '+' }
+  return (
+    <div style={{display: 'flex', alignItems: 'baseline'}}>
+      <Slider
+        {...extraProps}
+        range
+        min={min}
+        max={max}
+        marks={_marks}
+        style={{width: '400px'}} />
+      <span style={{marginLeft: '24px'}}>单位（百万美元）</span>
+    </div>
+  )
+}
+
 
 export {
-  InputCurrency,
-  InputPhoneNumber,
   SelectTag,
   SelectRole,
   SelectYear,
@@ -458,4 +459,11 @@ export {
   SelectCurrencyType,
   CascaderCountry,
   CascaderIndustry,
+  InputCurrency,
+  InputPhoneNumber,
+  CheckboxTag,
+  CheckboxProjStatus,
+  TabCheckboxCountry,
+  TabCheckboxIndustry,
+  SliderMoney,
 }

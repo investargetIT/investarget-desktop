@@ -43,7 +43,7 @@ class TabCheckbox extends React.Component {
     const currParentId = props.options.length > 0 ? props.options[0].value : null
 
     this.state = {
-      value: value,
+      value: value || [],
       currParentId: currParentId
     }
 
@@ -91,9 +91,15 @@ class TabCheckbox extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if ('value' in nextProps) {
+    if ('value' in nextProps && nextProps.value) {
       this.setState({
         value: nextProps.value
+      })
+    }
+
+    if (!this.state.currParentId && nextProps.options && nextProps.options.length > 0) {
+      this.setState({
+        currParentId: nextProps.options[0].value
       })
     }
   }
@@ -101,9 +107,9 @@ class TabCheckbox extends React.Component {
   render() {
     const options = this.props.options
 
-    if (options.length > 0) {
-      const subOptions = options.filter(item => item.value == this.state.currParentId)[0].children
+    if (options.length > 0 && this.state.currParentId) {
 
+      const subOptions = options.filter(item => item.value == this.state.currParentId)[0].children
       const checkedSubOptions = subOptions.filter(item => this.state.value.includes(item.value))
       const isIndeterminate = !!checkedSubOptions.length && checkedSubOptions.length < subOptions.length
       const isAllChecked = checkedSubOptions.length == subOptions.length
