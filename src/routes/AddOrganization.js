@@ -1,99 +1,92 @@
 import React from 'react'
-import { connect } from 'dva'
-import { Form, Input, InputNumber, Radio, Select, Cascader, Button, Row, Col } from 'antd'
+import { injectIntl, intlShape } from 'react-intl'
+import { i18n, exchange } from '../utils/util'
+import * as api from '../api'
+
+import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
 const FormItem = Form.Item
-const Option = Select.Option
-const RadioGroup = Radio.Group
 
 import MainLayout from '../components/MainLayout';
+
 import {
-  mapStateToPropsForOrganizationType,
-  mapStateToPropsForCurrency,
-  mapStateToPropsForAudit,
-  mapStateToPropsForTransactionPhase,
-  mapStateToPropsForIndustry,
-} from '../components/Filter'
-import { injectIntl, intlShape } from 'react-intl'
+  BasicFormItem,
+  CurrencyFormItem,
+} from '../components/Form'
+
+import {
+  SelectOrganizationType,
+  CascaderIndustry,
+  SelectTransactionPhase,
+  RadioTrueOrFalse,
+  RadioCurrencyType,
+  RadioAudit,
+} from '../components/ExtraInput'
 
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+}
 
-function AddOrganization({ dispatch, intl, form, organizationTypeOptions, currencyOptions, auditOptions, transactionPhaseOptions, industryOptions, exchangeRate }) {
 
-  const { formatMessage } = intl
+class AddOrganization extends React.Component {
 
-  const { getFieldDecorator, getFieldValue, setFieldsValue } = form
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 6 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 14 },
-    },
+  constructor(props) {
+    super(props)
+    console.log(props)
   }
 
-  function goBack() {
-    dispatch({
-      type: 'addOrganization/goBack'
-    })
+  goBack = () => {
+    this.props.history.goBack()
   }
 
-  const overseaOptions = [
-    { value: true, label: intl.formatMessage({id: 'yes'}) },
-    { value: false, label: intl.formatMessage({id: 'no'})}
-  ]
-
-  const CNYFormatter = value => '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
-  const CNYParser    = value => value.replace(/\￥\s?|(,*)/g, '')
-  const USDFormatter = value => '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  const USDParser    = value => value.replace(/\$\s?|(,*)/g, '')
-
-  function onSubmit(e) {
+  onSubmit = (e) => {
     e.preventDefault()
+    const { form, history } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         // 表单项类型转换
-        if (values.industry) {
-          values.industry = values.industry[values.industry.length - 1]
-        }
-        if (values.orgtype) {
-          values.orgtype = Number(values.orgtype)
-        }
-        if (values.orgtransactionphase) {
-          values.orgtransactionphase = values.orgtransactionphase.map(item => Number(item))
-        }
-        dispatch({
-          type: 'addOrganization/submit',
-          payload: values
+
+        api.addOrg(values).then((result) => {
+          history.goBack()
+        }, (error) => {
+
         })
       }
     })
   }
 
-  function handleCurrencyChange(e) {
-    const currency = e.target.value
-    const allRelatedFields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
-    const CNYTypes = [1,3]
-    const rate = CNYTypes.includes(currency) ? exchangeRate : 1
-    const values = {}
-    allRelatedFields.forEach(item => {
-      const val = getFieldValue(item)
-      if (val != undefined) {
-        values[item + '_USD'] = parseInt(val * rate, 10)
-      }
+  // 处理货币相关表单联动
+  handleCurrencyTypeChange = (e) => {
+    const currency = e.target.value;
+    const { getFieldValue, setFieldsValue } = this.props.form
+    const currencyMap = {'1': 'CNY','2': 'USD','3': 'CNY'}
+    exchange(currencyMap[String(currency)]).then((rate) => {
+      console.log(rate)
+      const fields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
+      const values = {}
+      fields.forEach(field => {
+        let value = getFieldValue(field)
+        values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
+      })
+      setFieldsValue(values)
     })
-    setFieldsValue(values)
   }
 
-  function handleCurrencyValueChange(fieldName, val) {
-    const currency = getFieldValue('currency')
-    const CNYTypes = [1,3]
-    const rate = CNYTypes.includes(currency) ? exchangeRate : 1
-    if (val != undefined) {
-      setFieldsValue({ [fieldName + '_USD']: parseInt(val * rate, 10) })
-    }
-  }
+  render() {
+
+
+  const { dispatch, intl, form } = this.props
+
+  const { formatMessage } = intl
+
+  const { getFieldDecorator, getFieldValue, setFieldsValue } = form
 
   return (
     <MainLayout location={location}>
@@ -105,227 +98,55 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
           </Col>
         </Row>
 
-        <Form onSubmit={onSubmit}>
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.cn_name'})}>
-            {
-              getFieldDecorator('nameC', {
-                rules: [{ required: true, whitespace: true }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+        <Form onSubmit={this.onSubmit}>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.en_name'})}>
-            {
-              getFieldDecorator('nameE', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.cn_name'})} name="orgnameC" required whitespace>
+            <Input />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.org_type'})}>
-            {
-              getFieldDecorator('orgtype', {
-                rules: [{ type: "string" }],
-              })(
-                <Select>
-                  {
-                    organizationTypeOptions.map(item =>
-                      <Option key={item.value.toString()} value={item.value.toString()}>{item.label}</Option>
-                    )
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.en_name'})} name="orgnameE" whitespace>
+            <Input />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.industry'})}>
-            {
-              getFieldDecorator('industry', {
-                rules: [{ type: "array" }]
-              })(
-                <Cascader options={industryOptions} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.org_type'})} name="orgtype" valueType="number">
+            <SelectOrganizationType />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.transaction_phase'})}>
-            {
-              getFieldDecorator('orgtransactionphase', {
-                rules: [{ type: "array" }]
-              })(
-                <Select mode="multiple" allowClear>
-                  {
-                    transactionPhaseOptions.map(item =>
-                      <Option key={item.value.toString()} value={item.value.toString()}>{item.label}</Option>
-                    )
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.industry'})} name="industry" valueType="number">
+            <CascaderIndustry />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.stock_code'})}>
-            {
-              getFieldDecorator('orgcode', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.transaction_phase'})} name="orgtransactionphase" valueType="array">
+            <SelectTransactionPhase mode="multiple" allowClear />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.invest_oversea_project'})}>
-            {
-              getFieldDecorator('investoverseasproject', {
-                rules: [{ type: "boolean" }],
-                initialValue: false
-              })(
-                <RadioGroup options={overseaOptions}></RadioGroup>
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.stock_code'})} name="orgcode">
+            <Input />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.currency'})}>
-            {
-              getFieldDecorator('currency', {
-                rules: [{ type: "number" }]
-              })(
-                <RadioGroup
-                  options={currencyOptions}
-                  onChange={handleCurrencyChange}
-                />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.invest_oversea_project'})} name="investoverseasproject" valueType="boolean" initialValue={false}>
+            <RadioTrueOrFalse />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.transaction_amount_from'})}>
-              <Row>
-                <Col span={12}>
-                  <FormItem>
-                    {
-                      getFieldDecorator('transactionAmountF', {
-                        rules: [{ type: "number" }]
-                      })(
-                        <InputNumber
-                          style={{width: '100%'}}
-                          formatter={[1,3].includes(getFieldValue('currency')) ? CNYFormatter : USDFormatter}
-                          parser={[1,3].includes(getFieldValue('currency')) ? CNYParser : USDParser}
-                          onChange={handleCurrencyValueChange.bind(null, 'transactionAmountF')} />
-                      )
-                    }
-                  </FormItem>
-                </Col>
-                <Col span={12}>
-                  <FormItem>
-                    {
-                      getFieldDecorator('transactionAmountF_USD', {
-                        rules: [{ type: "number" }]
-                      })(
-                        <InputNumber
-                          disabled
-                          style={{width: '100%'}}
-                          formatter={USDFormatter}
-                          parser={USDParser} />
-                      )
-                    }
-                  </FormItem>
-                </Col>
-              </Row>
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.currency'})} name="currency" valueType="number" onChange={this.handleCurrencyTypeChange}>
+            <RadioCurrencyType />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.transaction_amount_to'})}>
-            <Row>
-              <Col span={12}>
-                <FormItem>
-                  {
-                    getFieldDecorator('transactionAmountT', {
-                      rules: [{ type: "number" }]
-                    })(
-                      <InputNumber
-                        style={{width: '100%'}}
-                        formatter={[1,3].includes(getFieldValue('currency')) ? CNYFormatter : USDFormatter}
-                        parser={[1,3].includes(getFieldValue('currency')) ? CNYParser : USDParser}
-                        onChange={handleCurrencyValueChange.bind(null, 'transactionAmountT')} />
-                    )
-                  }
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                  <FormItem>
-                    {
-                      getFieldDecorator('transactionAmountT_USD', {
-                        rules: [{ type: "number" }]
-                      })(
-                        <InputNumber
-                          disabled
-                          style={{width: '100%'}}
-                          formatter={USDFormatter}
-                          parser={USDParser} />
-                      )
-                    }
-                  </FormItem>
-                </Col>
-            </Row>
-          </FormItem>
+          <CurrencyFormItem label={formatMessage({id: 'organization.transaction_amount_from'})} name="transactionAmountF" />
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.fund_size'})}>
-            <Row>
-              <Col span={12}>
-                <FormItem>
-                  {
-                    getFieldDecorator('fundSize', {
-                      rules: [{ type: "number"}]
-                    })(
-                      <InputNumber
-                        style={{width: '100%'}}
-                        formatter={[1,3].includes(getFieldValue('currency')) ? CNYFormatter : USDFormatter}
-                        parser={[1,3].includes(getFieldValue('currency')) ? CNYParser : USDParser}
-                        onChange={handleCurrencyValueChange.bind(null, 'fundSize')} />
-                    )
-                  }
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem>
-                  {
-                    getFieldDecorator('fundSize_USD', {
-                      rules: [{ type: "number"}]
-                    })(
-                      <InputNumber
-                        disabled
-                        style={{width: '100%'}}
-                        formatter={USDFormatter}
-                        parser={USDParser} />
-                    )
-                  }
-                </FormItem>
-              </Col>
-            </Row>
-          </FormItem>
+          <CurrencyFormItem label={formatMessage({id: 'organization.transaction_amount_to'})} name="transactionAmountT" />
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.company_email'})}>
-            {
-              getFieldDecorator('companyEmail', {
-                rules: [{ type: "email" }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <CurrencyFormItem label={formatMessage({id: 'organization.fund_size'})} name="fundSize" />
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.company_website'})}>
-            {
-              getFieldDecorator('webSite', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.company_email'})} name="companyEmail" valueType="email">
+            <Input type="email" />
+          </BasicFormItem>
+
+          <BasicFormItem label={formatMessage({id: 'organization.company_website'})} name="webSite">
+            <Input />
+          </BasicFormItem>
+
+
 
           <FormItem {...formItemLayout} label={formatMessage({id: 'organization.telephone'})}>
             <Row gutter={8}>
@@ -355,87 +176,38 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
             </Row>
           </FormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.wechat'})}>
-            {
-              getFieldDecorator('weChat', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.wechat'})} name="weChat">
+            <Input />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.address'})}>
-            {
-              getFieldDecorator('address', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.address'})} name="address">
+            <Input />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.description'})}>
-            {
-              getFieldDecorator('description', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input type="textarea" rows={4} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.description'})} name="description">
+            <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.typical_case'})}>
-            {
-              getFieldDecorator('typicalCase', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input type="textarea" rows={4} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.typical_case'})} name="typicalCase">
+            <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.partner_or_investment_committee_member'})}>
-            {
-              getFieldDecorator('partnerOrInvestmentCommiterMember', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input type="textarea" rows={4} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.partner_or_investment_committee_member'})} name="partnerOrInvestmentCommiterMember">
+            <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.decision_cycle'})}>
-            {
-              getFieldDecorator('decisionCycle', {
-                rules: [{ type: "number"}]
-              })(
-                <InputNumber
-                  style={{ width: '100%' }} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.decision_cycle'})} name="decisionCycle" valueType="number">
+            <InputNumber style={{ width: '100%' }} />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.decision_process'})}>
-            {
-              getFieldDecorator('decisionMakingProcess', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input type="textarea" rows={4} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.decision_process'})} name="decisionMakingProcess">
+            <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+          </BasicFormItem>
 
-          <FormItem {...formItemLayout} label={formatMessage({id: 'organization.audit_status'})}>
-            {
-              getFieldDecorator('orgstatus', {
-                rules: [{ type: "number" }],
-                initialValue: 1
-              })(
-                <RadioGroup options={auditOptions} />
-              )
-            }
-          </FormItem>
+          <BasicFormItem label={formatMessage({id: 'organization.audit_status'})} name="orgstatus" valueType="number" initialValue={1}>
+            <RadioAudit />
+          </BasicFormItem>
+
 
           <FormItem>
             {
@@ -443,7 +215,7 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
                 <Button type="primary" htmlType="submit" size="large" style={{margin: '0 8px'}}>
                   {formatMessage({id: 'submit'})}
                 </Button>
-                <Button size="large" style={{margin: '0 8px'}} onClick={goBack}>
+                <Button size="large" style={{margin: '0 8px'}} onClick={this.goBack}>
                   {formatMessage({id: 'back'})}
                 </Button>
               </div>
@@ -454,31 +226,18 @@ function AddOrganization({ dispatch, intl, form, organizationTypeOptions, curren
       </div>
     </MainLayout>
   )
-}
-
-
-function mapStateToProps(state) {
-  const { organizationTypeOptions } = mapStateToPropsForOrganizationType(state)
-  const { currencyOptions } = mapStateToPropsForCurrency(state)
-  const { auditOptions } = mapStateToPropsForAudit(state)
-  const { transactionPhaseOptions } = mapStateToPropsForTransactionPhase(state)
-  const { industryOptions } = mapStateToPropsForIndustry(state)
-
-  const { exchangeRate } = state.addOrganization
-
-  return {
-    organizationTypeOptions,
-    currencyOptions,
-    auditOptions,
-    transactionPhaseOptions,
-    industryOptions,
-    exchangeRate
   }
 }
+
+
 
 AddOrganization.propTypes = {
   intl: intlShape.isRequired
 }
 
+function onValuesChange(props, values) {
+  console.log('>>>', values)
+}
 
-export default connect(mapStateToProps)(injectIntl(Form.create()(AddOrganization)))
+
+export default injectIntl(Form.create({onValuesChange})(AddOrganization))

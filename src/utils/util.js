@@ -130,7 +130,12 @@ function dataToColumn(data, operationHandler) {
 
 
 var exchangeCache = {}
+var offlineRate = {
+  'USD': 1,
+  'CNY': 0.147,
+}
 function exchange(source) {
+  console.log(source)
   if (exchangeCache[source] != null) {
     let rate = exchangeCache[source]
     return new Promise(function(resolve, reject) {
@@ -145,6 +150,8 @@ function exchange(source) {
       var rate = result.data.rate
       exchangeCache[source] = rate
       return rate
+    }, (error) => {
+      return offlineRate[source]
     })
   }
 

@@ -9,9 +9,11 @@ import {
   Button,
   Checkbox,
   Slider,
+  Radio,
 } from 'antd'
 const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
+const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
 import _ from 'lodash'
 
@@ -27,33 +29,25 @@ function Select2 ({options, children, ...extraProps}) {
 }
 
 
-class SelectNumber extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-  }
+function SelectNumber(props) {
 
-  handleChange(value) {
+  function handleChange(value) {
     value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
-    if (this.props.onChange) {
-      this.props.onChange(value)
-    }
+    if (props.onChange) { props.onChange(value) }
   }
 
-  render() {
-    const {children, options, value, onChange, ...extraProps} = this.props
-    const _options = options.map(item => ({ label: item.label, value: String(item.value) }))
-    let _value
-    if (value == undefined) {
-      _value = value
-    } else {
-      _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
-    }
-
-    return (
-      <Select2 options={_options} value={_value} onChange={this.handleChange} {...extraProps} />
-    )
+  const {children, options, value, onChange, ...extraProps} = props
+  const _options = options.map(item => ({ label: item.label, value: String(item.value) }))
+  let _value
+  if (value == undefined) {
+    _value = value
+  } else {
+    _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
   }
+
+  return (
+    <Select2 options={_options} value={_value} onChange={handleChange} {...extraProps} />
+  )
 }
 
 
@@ -145,6 +139,26 @@ const SelectTransactionType = withOptionsAsync(SelectNumber, ['transactionType']
 const SelectCurrencyType = withOptionsAsync(SelectNumber, ['currencyType'], function(state) {
   const { currencyType } = state.app
   const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
+  return { options }
+})
+
+/**
+ * SelectOrganizationType
+ */
+
+const SelectOrganizationType = withOptionsAsync(SelectNumber, ['orgtype'], function(state) {
+  const { orgtype } = state.app
+  const options = orgtype ? orgtype.map(item =>({value: item.id, label: item.name})) : []
+  return { options }
+})
+
+/**
+ * SelectTransactionPhase
+ */
+
+const SelectTransactionPhase = withOptionsAsync(SelectNumber, ['transactionPhases'], function(state) {
+  const { transactionPhases } = state.app
+  const options = transactionPhases ? transactionPhases.map(item =>({value: item.id, label: item.name})) : []
   return { options }
 })
 
@@ -450,6 +464,35 @@ const SliderMoney = function(props) {
   )
 }
 
+/**
+ * RadioTrueOrFalse
+ */
+
+const RadioTrueOrFalse = withOptions(RadioGroup, [
+  { value: true, label: '是' },
+  { value: false, label: '否' },
+])
+
+/**
+ * RadioCurrencyType
+ */
+
+const RadioCurrencyType = withOptionsAsync(RadioGroup, ['currencyType'], function(state) {
+  const { currencyType } = state.app
+  const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
+  return { options }
+})
+
+/**
+ * RadioAudit
+ */
+
+const RadioAudit = withOptionsAsync(RadioGroup, ['audit'], function(state) {
+  const { audit } = state.app
+  const options = audit ? audit.map(item =>({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 
 export {
   SelectTag,
@@ -457,6 +500,8 @@ export {
   SelectYear,
   SelectTransactionType,
   SelectCurrencyType,
+  SelectOrganizationType,
+  SelectTransactionPhase,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
@@ -466,4 +511,7 @@ export {
   TabCheckboxCountry,
   TabCheckboxIndustry,
   SliderMoney,
+  RadioTrueOrFalse,
+  RadioCurrencyType,
+  RadioAudit,
 }
