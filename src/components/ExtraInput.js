@@ -28,6 +28,16 @@ function Select2 ({options, children, ...extraProps}) {
   )
 }
 
+function RadioGroup2 ({children, onChange, ...extraProps}) {
+  function handleChange(e) {
+    onChange(e.target.value)
+  }
+
+  return (
+    <RadioGroup {...extraProps} onChange={handleChange} />
+  )
+}
+
 
 function SelectNumber(props) {
 
@@ -162,6 +172,14 @@ const SelectTransactionPhase = withOptionsAsync(SelectNumber, ['transactionPhase
   return { options }
 })
 
+/**
+ * SelectOrganizatonArea
+ */
+const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], function(state) {
+  const { orgarea } = state.app
+  const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
 
 /**
  * CascaderCountry
@@ -428,6 +446,34 @@ const CheckboxProjStatus = withOptions(CheckboxGroup, [
   { label: '已下架', value: 7 },
 ])
 
+/**
+ * CheckboxCurrencyType
+ */
+
+const CheckboxCurrencyType = withOptionsAsync(CheckboxGroup, ['currencyType'], function(state) {
+  const { currencyType } = state.app
+  const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
+  return { options }
+})
+
+/**
+ * CheckboxTransactionPhase
+ */
+const CheckboxTransactionPhase = withOptionsAsync(CheckboxGroup, ['transactionPhases'], function(state) {
+  const { transactionPhases } = state.app
+  const options = transactionPhases ? transactionPhases.map(item =>({value: item.id, label: item.name})) : []
+  return { options }
+})
+
+/**
+ * CheckboxOrganizationType
+ */
+const CheckboxOrganizationType = withOptionsAsync(CheckboxGroup, ['orgtype'], function(state) {
+  const { orgtype } = state.app
+  const options = orgtype ? orgtype.map(item =>({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 
 /**
  * TabCheckboxCountry
@@ -468,7 +514,7 @@ const SliderMoney = function(props) {
  * RadioTrueOrFalse
  */
 
-const RadioTrueOrFalse = withOptions(RadioGroup, [
+const RadioTrueOrFalse = withOptions(RadioGroup2, [
   { value: true, label: '是' },
   { value: false, label: '否' },
 ])
@@ -477,7 +523,7 @@ const RadioTrueOrFalse = withOptions(RadioGroup, [
  * RadioCurrencyType
  */
 
-const RadioCurrencyType = withOptionsAsync(RadioGroup, ['currencyType'], function(state) {
+const RadioCurrencyType = withOptionsAsync(RadioGroup2, ['currencyType'], function(state) {
   const { currencyType } = state.app
   const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
   return { options }
@@ -487,7 +533,7 @@ const RadioCurrencyType = withOptionsAsync(RadioGroup, ['currencyType'], functio
  * RadioAudit
  */
 
-const RadioAudit = withOptionsAsync(RadioGroup, ['audit'], function(state) {
+const RadioAudit = withOptionsAsync(RadioGroup2, ['audit'], function(state) {
   const { audit } = state.app
   const options = audit ? audit.map(item =>({value: item.id, label: item.name})) : []
   return { options }
@@ -502,12 +548,16 @@ export {
   SelectCurrencyType,
   SelectOrganizationType,
   SelectTransactionPhase,
+  SelectOrganizatonArea,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
   InputPhoneNumber,
   CheckboxTag,
   CheckboxProjStatus,
+  CheckboxCurrencyType,
+  CheckboxTransactionPhase,
+  CheckboxOrganizationType,
   TabCheckboxCountry,
   TabCheckboxIndustry,
   SliderMoney,

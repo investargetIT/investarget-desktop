@@ -1,11 +1,24 @@
 import React from 'react'
-import { Row, Col, Button } from 'antd'
 import { connect } from 'dva'
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import { Checkbox, Select, Radio } from 'antd'
-import TabCheckbox from './TabCheckbox'
+import { i18n } from '../utils/util'
 
+import { Row, Col, Button, Checkbox, Select, Radio } from 'antd'
 const RadioGroup = Radio.Group
+
+import TabCheckbox from './TabCheckbox'
+import {
+  CheckboxTransactionPhase,
+  CheckboxCurrencyType,
+  RadioTrueOrFalse,
+  TabCheckboxIndustry,
+  CheckboxTag,
+  CheckboxOrganizationType,
+  RadioAudit,
+  SelectOrganizatonArea,
+} from './ExtraInput'
+
+
 
 function BasicContainer(props) {
   return (
@@ -25,180 +38,70 @@ function FilterOperation(props) {
   )
 }
 
+
 function TransactionPhaseFilter(props) {
   return (
-    <BasicContainer label={ props.intl.formatMessage({id: "filter.investment_rounds"}) }>
-      <Checkbox.Group options={props.transactionPhaseOptions} value={props.value} onChange={props.onChange} />
+    <BasicContainer label={ i18n("filter.investment_rounds") }>
+      <CheckboxTransactionPhase value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-function mapStateToPropsForTransactionPhase(state) {
-  var { transactionPhases: transactionPhaseOptions } = state.app
-  transactionPhaseOptions = transactionPhaseOptions.map(item => ({ label: item.name, value: item.id }))
-  return { transactionPhaseOptions }
-}
-
-TransactionPhaseFilter = connect(mapStateToPropsForTransactionPhase)(injectIntl(TransactionPhaseFilter))
-
-
 
 function TagFilter(props) {
   return (
-    <BasicContainer label={ props.intl.formatMessage({id: 'filter.tag'}) }>
-      <div style={{ lineHeight: 2 }}>
-        <Checkbox.Group options={props.tagOptions} value={props.value} onChange={props.onChange} />
-      </div>
+    <BasicContainer label={i18n('filter.tag')}>
+      <CheckboxTag value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-function mapStateToPropsForTag(state) {
-  var { tag: tagOptions } = state.app
-  tagOptions = tagOptions.map(item => ({ label: item.name, value: item.id }))
-  return { tagOptions }
-}
-
-TagFilter = connect(mapStateToPropsForTag)(injectIntl(TagFilter))
-
-
 
 function CurrencyFilter(props) {
   return (
-    <BasicContainer label={ props.intl.formatMessage({id: 'filter.currency'}) }>
-      <Checkbox.Group options={props.currencyOptions} value={props.value} onChange={props.onChange} />
+    <BasicContainer label={i18n('filter.currency')}>
+      <CheckboxCurrencyType value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
 
-function mapStateToPropsForCurrency(state) {
-  var { currencyType: currencyOptions } = state.app
-  currencyOptions = currencyOptions.map(item => ({ label: item.currency, value: item.id }))
-  return { currencyOptions }
-}
-
-CurrencyFilter = connect(mapStateToPropsForCurrency)(injectIntl(CurrencyFilter))
-
-
-
-function AuditFilter(props) {
+function UserAuditFilter(props) {
   return (
-    <BasicContainer label={ props.intl.formatMessage({id: 'filter.audit_status'}) }>
-      <Checkbox.Group options={props.auditOptions} value={props.value} onChange={props.onChange} />
+    <BasicContainer label={ i18n('filter.audit_status') }>
+      <RadioAudit value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
 
-function mapStateToPropsForAudit(state) {
-  var { audit: auditOptions } = state.app
-  auditOptions = auditOptions.map(item => ({ label: item.name, value: item.id }))
-  return { auditOptions }
-}
-
-AuditFilter = connect(mapStateToPropsForAudit)(injectIntl(AuditFilter))
-
-
-
-function AreaFilter(props) {
+function OrganizationAreaFilter(props) {
   return (
-    <BasicContainer label={ props.intl.formatMessage({id: 'filter.area'}) }>
-      <Select style={{ width: '100%' }} mode = "multiple" allowClear optionFilterProp="children" onChange={props.onChange} value = {props.value} tokenSeparators={[',']}>
-        { props.areaOptions.map(item => (<Select.Option key={item.value.toString()} value={item.value.toString()}>{ item.label }</Select.Option>)) }
-      </Select>
+    <BasicContainer label={i18n('filter.area')}>
+      <SelectOrganizatonArea style={{width: '400px'}} mode="multiple" allowClear optionFilterProp="children" tokenSeparators={[',']} value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-function mapStateToPropsForArea(state) {
-  var { orgarea: areaOptions } = state.app
-  areaOptions = areaOptions.map(item => ({ label: item.name, value: item.id }))
-  return { areaOptions }
-}
-
-AreaFilter = connect(mapStateToPropsForArea)(injectIntl(AreaFilter))
-
-
-
 
 function OverseaFilter(props) {
-  const formatMessage = props.intl.formatMessage
-  function handleChange(e) {
-    const value = e.target.value
-    props.onChange(value)
-  }
-  const overseaOptions = [
-    { label: formatMessage({id: 'yes'}), value: true },
-    { label: formatMessage({id: 'no'}), value: false }
-  ]
   return (
-    <BasicContainer label={formatMessage({id: 'filter.invest_oversea'})}>
-      <RadioGroup options={overseaOptions} value={props.value} onChange={handleChange} />
+    <BasicContainer label={i18n('filter.invest_oversea')}>
+      <RadioTrueOrFalse value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-OverseaFilter = injectIntl(OverseaFilter)
-
-
 
 function IndustryFilter(props) {
   return (
-    <BasicContainer label={props.intl.formatMessage({id: 'filter.industry'})}>
-      <TabCheckbox options={props.industryOptions} value={props.value} onChange={props.onChange} />
+    <BasicContainer label={i18n('filter.industry')}>
+      <TabCheckboxIndustry value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-function mapStateToPropsForIndustry(state) {
-  const { industry: industries } = state.app
-
-  let pIndustries = industries.filter(item => item.id == item.Pindustry)
-  pIndustries.forEach(item => {
-    let Pindustry = item.id
-    let subIndustries = industries.filter(item => item.Pindustry == Pindustry && item.id != Pindustry)
-    item.children = subIndustries
-  })
-  const industryOptions = pIndustries.map(item => {
-    return {
-      label: item.industry,
-      value: item.id,
-      children: item.children.map(item => {
-        return {
-          label: item.industry,
-          value: item.id
-        }
-      })
-    }
-  })
-
-  return { industryOptions }
-}
-
-IndustryFilter = connect(mapStateToPropsForIndustry)(injectIntl(IndustryFilter))
-
-
 
 function OrganizationTypeFilter(props) {
   return (
-    <BasicContainer label={props.intl.formatMessage({id: 'filter.org_type'})}>
-      <Checkbox.Group options={props.organizationTypeOptions} value={props.value} onChange={props.onChange} />
+    <BasicContainer label={i18n('filter.org_type')}>
+      <CheckboxOrganizationType value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
-
-function mapStateToPropsForOrganizationType(state) {
-  const { orgtype: organizationTypes } = state.app
-  const organizationTypeOptions = organizationTypes.map(item => {
-    return {
-      label: item.name,
-      value: item.id
-    }
-  })
-  return { organizationTypeOptions }
-}
-
-OrganizationTypeFilter = connect(mapStateToPropsForOrganizationType)(injectIntl(OrganizationTypeFilter))
-
 
 
 
@@ -208,8 +111,8 @@ function UserListFilter(props) {
       <TransactionPhaseFilter value={props.value.transactionPhases} onChange={props.onChange.bind(this, 'transactionPhases')} />
       <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
       <CurrencyFilter value={props.value.currency} onChange={props.onChange.bind(this, 'currency')} />
-      <AuditFilter value={props.value.audit} onChange={props.onChange.bind(this, 'audit')} />
-      <AreaFilter value={props.value.areas.map(item=>item.toString())} onChange={props.onChange.bind(this, 'areas')} />
+      <UserAuditFilter value={props.value.audit} onChange={props.onChange.bind(this, 'audit')} />
+      <OrganizationAreaFilter value={props.value.areas.map(item=>item.toString())} onChange={props.onChange.bind(this, 'areas')} />
       <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
@@ -229,14 +132,17 @@ function OrganizationListFilter(props) {
   )
 }
 
+
+
+///// used in AddUser.js TODO:// refractor
+function mapStateToPropsForAudit(state) {
+  var { audit: auditOptions } = state.app
+  auditOptions = auditOptions.map(item => ({ label: item.name, value: item.id }))
+  return { auditOptions }
+}
+
 module.exports = {
-  mapStateToPropsForTransactionPhase,
-  mapStateToPropsForTag,
-  mapStateToPropsForCurrency,
   mapStateToPropsForAudit,
-  mapStateToPropsForArea,
-  mapStateToPropsForIndustry,
-  mapStateToPropsForOrganizationType,
 
   UserListFilter,
   OrganizationListFilter,

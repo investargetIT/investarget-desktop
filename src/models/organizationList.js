@@ -1,5 +1,22 @@
 import * as api from '../api'
 
+const DEFAULT_VALUE = {
+  filter: {
+    isOversea: null,
+    currency: [],
+    transactionPhases: [],
+    industries: [],
+    tags: [],
+    organizationTypes: [],
+  },
+  search: {
+    name: null,
+    stockCode: null,
+  },
+  page_index: 1,
+  page_size: 10,
+}
+
 export default {
   namespace: 'organizationList',
   state: {
@@ -15,37 +32,34 @@ export default {
       name: null,
       stockCode: null,
     },
-    page: 1,
-    pageSize: 10,
+    page_size: 10,
+    page_index: 1,
+    _params: {},
     total: 0,
     list: [],
   },
   reducers: {
-    changeFilter(state, { payload: { key, value } }) {
-      let filter = Object.assign({}, state.filter)
-      filter[key] = value
+    setFilter(state, { payload: field }) {
+      const filter = { ...state.filter, ...field }
       return { ...state, filter }
     },
     resetFilter(state) {
-      let filter = Object.assign({}, state.filter)
-      for (let _key in filter) {
-        filter[_key] = Array.isArray(filter[_key]) ? [] : null
-      }
-      return { ...state, filter}
+      const filter = { ...DEFAULT_VALUE.filter }
+      return { ...state, filter }
     },
-    changeSearch(state, { payload: { key, value } }) {
-      let search = Object.assign({}, state.search)
-      for (let _key in search) {
-        search[_key] = null
-      }
-      search[key] = value
+    setSearch(state, { payload: field }) {
+      const search = { ...DEFAULT_VALUE.search, ...field }
       return { ...state, search }
     },
-    setPage(state, { payload: page }) {
-      return { ...state, page }
+    setField(state, { payload: field }) {
+      return { ...state, ...field }
     },
-    setPageSize(state, { payload: pageSize }) {
-      return { ...state, pageSize }
+    updateParams(state, { payload: params }) {
+      const _params = { ...state._params, ...params }
+      return { ...state, _params }
+    },
+    clearParams(state) {
+      return { ...state, _params: {} }
     },
     save(state, { payload: { total, list } }) {
       return { ...state, total, list }
@@ -53,43 +67,37 @@ export default {
   },
   effects: {
     *get({}, { call, put, select }) {
-      const { filter, search, page, pageSize } = yield select(state => state.organizationList)
-      let param = { ...filter, ...search, page_index: page, page_size: pageSize }
-      for (let _key in param) {
-        let _value = filter[_key]
-        if (Array.isArray(_value)) {
-          param[_key] = _value.join(',')
-        }
-      }
-      if (param.name != null) {
-        if (window.LANG == 'en') {
-          param.nameE = param.name
-        } else {
-          param.nameC = param.name
-        }
-        delete param.name
-      }
-      let result = yield call(api.getOrg, param)
+      const { _params, page_size, page_index } = yield select(state => state.organizationList)
+      let params = { ..._params, page_size, page_index }
+      console.log('>>>', params)
+      let result = yield call(api.getOrg, params)
       yield put({ type: 'save', payload: { total: result.data.count, list: result.data.data } })
     },
-    *filt({}, { select, put }) {
+    *filt({}, { call, put, select }) {
+      const { filter } = yield select(state => state.organizationList)
+      yield put({ type: 'updateParams', payload: { ...filter } })
       yield put({ type: 'get' })
     },
-    *search({}, { select, put }) {
+    *search({}, { call, put, select }) {
+      const { search } = yield select(state => state.organizationList)
+      yield put({ type: 'updateParams', payload: { ...search } })
       yield put({ type: 'get' })
     },
-    *reset({}, { put }) {
+    *reset({}, { call, put, select }) {
       yield put({ type: 'resetFilter' })
+      yield put({ type: 'clearParams' })
       yield put({ type: 'get' })
     },
-    *changePage({ payload: page }, { put }) {
-      yield put({ type: 'setPage', payload: page })
+    *changePage({ payload : page_index }, { call, put, select }) {
+      const { page_size } = yield select(state => state.organizationList)
+      yield put({ type: 'setField', payload: { page_index } })
       yield put({ type: 'get' })
     },
-    *changePageSize({ payload: pageSize }, { put }) {
-      yield put({ type: 'setPageSize', payload: pageSize })
+    *changePageSize({ payload: page_size }, { call, put, select }) {
+      yield put({ type: 'setField', payload: { page_size } })
+      yield put({ type: 'setField', payload: { page_index: 1 } })
       yield put({ type: 'get' })
-    }
+    },
   },
   subscriptions: {
     setup({dispatch, history}) {
