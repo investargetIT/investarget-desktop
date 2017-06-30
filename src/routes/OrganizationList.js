@@ -11,16 +11,7 @@ import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
 } from '../components/ExtraInput'
-
-const styles = {
-  title: {
-    fontSize: '16px',
-    marginBottom: '24px',
-  },
-  right: {
-    float: 'right',
-  }
-}
+import PageTitle from '../components/PageTitle'
 
 
 const columns = [
@@ -89,14 +80,7 @@ function OrganizationList(props) {
   return (
     <MainLayout location={location}>
       <div>
-        <div style={styles.title}>
-          <span>{intl.formatMessage({id: 'organization.org_list'})}</span>
-          <span style={styles.right}>
-            <Link to="/app/organization/add">
-              <Icon type="plus" />{intl.formatMessage({id: 'organization.new_org'})}
-            </Link>
-          </span>
-        </div>
+        <PageTitle title={i18n('organization.org_list')} actionLink="/app/organization/add" actionTitle={i18n('organization.new_org')} />
 
         <OrganizationListFilter value={filter} onChange={handleFilterChange} onSearch={handleFilt} onReset={handleReset} />
 

@@ -22,6 +22,8 @@ import {
   RadioAudit,
 } from '../components/ExtraInput'
 
+import PageTitle from '../components/PageTitle'
+
 
 const formItemLayout = {
   labelCol: {
@@ -91,6 +93,7 @@ class AddOrganization extends React.Component {
   return (
     <MainLayout location={location}>
       <div>
+        <PageTitle title="新增机构" />
 
         <Row>
           <Col span={24} offset={0}>
