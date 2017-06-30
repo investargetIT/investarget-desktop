@@ -15,6 +15,7 @@ import ModifyPwd from './routes/ModifyPwd'
 import BasicInfo from './routes/BasicInfo'
 import PermList from './routes/PermList'
 import DataRoomList from './routes/DataRoomList'
+import EditOrganization from './routes/EditOrganization'
 
 function RouterConfig({ history }) {
   return (
@@ -33,6 +34,7 @@ function RouterConfig({ history }) {
       <Route path="/app/project/release" component={AddProject} />
       <Route path={URI_14} component={PermList} />
       <Route path={URI_7} component={DataRoomList} />
+      <Route path="/app/organization/edit/:id" component={EditOrganization} />
     </Router>
   )
 }

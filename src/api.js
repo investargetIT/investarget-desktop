@@ -57,6 +57,25 @@ export function addOrg(param) {
   return r('/org/?', 'POST', param)
 }
 
+export function getOrgDetail(id) {
+  const options = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "clienttype": "3",
+      "source": 1
+    }
+  }
+
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  if (user) {
+    options.headers["token"] = user.token
+  }
+  return request('/org/' + id + '/', options)
+}
+
 /**
  * proj
  */
