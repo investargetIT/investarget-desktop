@@ -61,6 +61,10 @@ export function editOrg(id, param) {
   return r('/org/' + id + '/', 'PUT', param)
 }
 
+export function deleteOrg(id) {
+  return r('/org/' + id + '/', 'DELETE')
+}
+
 export function getOrgDetail(id, param) {
   const options = {
     headers: {

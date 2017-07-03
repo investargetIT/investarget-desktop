@@ -15,33 +15,7 @@ import {
 const Search = Input.Search
 
 
-const columns = [
-  { title: '名称', key: 'orgname', dataIndex: 'orgname' },
-  { title: '行业', key: 'industry', dataIndex: 'industry.industry' },
-  { title: '货币类型', key: 'currency', dataIndex: 'currency.currency' },
-  { title: '决策周期（天）', key: 'decisionCycle', dataIndex: 'decisionCycle' },
-  { title: '轮次', key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
-    let phases = record.orgtransactionphase || []
-    return phases.map(p => p.name).join(' ')
-  } },
-  { title: '股票代码', key: 'orgcode', dataIndex: 'orgcode' },
-  { title: '操作', key: 'action', render: (text, record) => (
-      <span>
-        <Link to={'/app/organization/' + record.id}>
-          <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
-        </Link>
-        &nbsp;
-        <Link to={'/app/organization/edit/' + record.id}>
-          <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
-        </Link>
-        &nbsp;
-        <Popconfirm title="Confirm to delete?">
-          <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
-        </Popconfirm>
-      </span>
-    )
-  },
-]
+
 
 
 
@@ -49,6 +23,38 @@ function OrganizationList(props) {
 
   const { location, dispatch, intl, total, list, loading, page_index, page_size, filter, search } = props
   const { formatMessage } = intl
+
+  const columns = [
+    { title: '名称', key: 'orgname', dataIndex: 'orgname' },
+    { title: '行业', key: 'industry', dataIndex: 'industry.industry' },
+    { title: '货币类型', key: 'currency', dataIndex: 'currency.currency' },
+    { title: '决策周期（天）', key: 'decisionCycle', dataIndex: 'decisionCycle' },
+    { title: '轮次', key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
+      let phases = record.orgtransactionphase || []
+      return phases.map(p => p.name).join(' ')
+    } },
+    { title: '股票代码', key: 'orgcode', dataIndex: 'orgcode' },
+    { title: '操作', key: 'action', render: (text, record) => (
+        <span>
+          <Link to={'/app/organization/' + record.id}>
+            <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
+          </Link>
+          &nbsp;
+          <Link to={'/app/organization/edit/' + record.id}>
+            <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+          </Link>
+          &nbsp;
+          <Popconfirm title="Confirm to delete?" onConfirm={handleDelete.bind(null, record.id)}>
+            <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+          </Popconfirm>
+        </span>
+      )
+    },
+  ]
+
+  function handleDelete(id) {
+    dispatch({ type: 'organizationList/delete', payload: id })
+  }
 
 
   function handleFilterChange(key, value) {

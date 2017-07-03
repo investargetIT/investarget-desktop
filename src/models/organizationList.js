@@ -56,6 +56,10 @@ export default {
     },
   },
   effects: {
+    *delete({ payload: id }, { call, put, select }) {
+      let result = yield call(api.deleteOrg, id)
+      yield put({ type: 'get' })
+    },
     *get({}, { call, put, select }) {
       const { _params, page_size, page_index } = yield select(state => state.organizationList)
       let params = { ..._params, page_size, page_index }
