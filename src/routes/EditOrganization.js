@@ -15,6 +15,9 @@ const formStyle = {
   border: '1px dashed #eee',
   borderRadius: '4px',
 }
+const actionStyle = {textAlign: 'center'}
+const actionBtnStyle = {margin: '0 16px'}
+
 
 function onFieldsChange(props, changedFiedls) {
   console.log(changedFiedls)
@@ -96,9 +99,9 @@ class EditOrganization extends React.Component {
             />
           </div>
 
-          <div style={{textAlign: 'center'}}>
-            <Button size="large" onClick={this.cancel} style={{margin: '0 16px'}}>取消</Button>
-            <Button type="primary" size="large" style={{margin: '0 16px'}} onClick={this.handleSubmit}>保存</Button>
+          <div style={actionStyle}>
+            <Button size="large" onClick={this.cancel} style={actionBtnStyle}>取消</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>保存</Button>
           </div>
         </div>
       </MainLayout>

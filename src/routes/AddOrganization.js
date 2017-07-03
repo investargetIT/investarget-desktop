@@ -15,6 +15,8 @@ const formStyle = {
   border: '1px dashed #eee',
   borderRadius: '4px',
 }
+const actionStyle = {textAlign: 'center'}
+const actionBtnStyle = {margin: '0 16px'}
 
 const AddOrganizationForm = Form.create()(OrganizationForm)
 
@@ -29,6 +31,10 @@ class AddOrganization extends React.Component {
     if (inst) {
       this.form = inst.props.form
     }
+  }
+
+  goBack = () => {
+    this.props.history.goBack()
   }
 
   handleSubmit = (e) => {
@@ -55,8 +61,9 @@ class AddOrganization extends React.Component {
             <AddOrganizationForm wrappedComponentRef={this.handleRef} />
           </div>
 
-          <div style={{textAlign: 'center'}}>
-            <Button type="primary" size="large" onClick={this.handleSubmit}>发布</Button>
+          <div style={actionStyle}>
+            <Button style={actionBtnStyle} size="large" onClick={this.goBack}>取消</Button>
+            <Button style={actionBtnStyle} type="primary" size="large" onClick={this.handleSubmit}>发布</Button>
           </div>
         </div>
       </MainLayout>
