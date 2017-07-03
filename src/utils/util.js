@@ -185,4 +185,13 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-export { t, i18n, dataToColumn, exchange, checkPerm, isLogin, getRandomInt }
+function formatMoney(value, currency) {
+  if (currency == 'CNY') {
+    return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
+  } else {
+    return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+}
+
+
+export { t, i18n, dataToColumn, exchange, checkPerm, isLogin, getRandomInt, formatMoney }

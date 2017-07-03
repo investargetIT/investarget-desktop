@@ -61,7 +61,7 @@ export function editOrg(id, param) {
   return r('/org/' + id + '/', 'PUT', param)
 }
 
-export function getOrgDetail(id) {
+export function getOrgDetail(id, param) {
   const options = {
     headers: {
       "Accept": "application/json",
@@ -77,7 +77,7 @@ export function getOrgDetail(id) {
   if (user) {
     options.headers["token"] = user.token
   }
-  return request('/org/' + id + '/', options)
+  return request('/org/' + id + '/?' + qs.stringify(param), options)
 }
 
 /**
