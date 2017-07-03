@@ -2,16 +2,17 @@ import React from 'react'
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Icon, Table, Button, Pagination, Popconfirm } from 'antd'
-import MainLayout from '../components/MainLayout'
-import { OrganizationListFilter, Filter, FilterItem } from '../components/Filter'
-import { OrganizationListSearch } from '../components/Search'
 import { i18n } from '../utils/util'
+
+import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import MainLayout from '../components/MainLayout'
+import PageTitle from '../components/PageTitle'
+import { OrganizationListFilter } from '../components/Filter'
 import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
 } from '../components/ExtraInput'
-import PageTitle from '../components/PageTitle'
+const Search = Input.Search
 
 
 const columns = [
@@ -26,7 +27,10 @@ const columns = [
   { title: '股票代码', key: 'orgcode', dataIndex: 'orgcode' },
   { title: '操作', key: 'action', render: (text, record) => (
       <span>
-        <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>&nbsp;
+        <Link to={'/app/organization/' + record.id}>
+          <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
+        </Link>
+        &nbsp;
         <Link to={'/app/organization/edit/' + record.id}>
           <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
         </Link>
@@ -37,11 +41,6 @@ const columns = [
       </span>
     )
   },
-]
-
-const searchOptions = [
-  { value: 'name', label: i18n('organization.name') },
-  { value: 'stockCode', label: i18n('organization.stock_code') },
 ]
 
 
@@ -64,11 +63,12 @@ function OrganizationList(props) {
     dispatch({ type: 'organizationList/reset' })
   }
 
-  function handleSearchChange(key, value) {
-    dispatch({ type: 'organizationList/setSearch', payload: { [key]: value } })
+  function handleSearchChange(e) {
+    const search = e.target.value
+    dispatch({ type: 'organizationList/setField', payload: { search } })
   }
 
-  function handleSearch() {
+  function handleSearch(search) {
     dispatch({ type: 'organizationList/search' })
   }
 
@@ -88,7 +88,7 @@ function OrganizationList(props) {
         <OrganizationListFilter value={filter} onChange={handleFilterChange} onSearch={handleFilt} onReset={handleReset} />
 
         <div style={{marginBottom: '16px'}}>
-          <OrganizationListSearch value={search} onChange={handleSearchChange} onSearch={handleSearch} />
+          <Search value={search} onChange={handleSearchChange} placeholder="输入机构名称或机构代码" style={{width: 200}} onSearch={handleSearch} />
         </div>
 
         <Table

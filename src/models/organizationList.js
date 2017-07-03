@@ -3,16 +3,13 @@ import * as api from '../api'
 const DEFAULT_VALUE = {
   filter: {
     isOversea: null,
-    currency: [],
-    transactionPhases: [],
-    industries: [],
+    currencys: [],
+    orgtransactionphases: [],
+    industrys: [],
     tags: [],
-    organizationTypes: [],
+    orgtypes: [],
   },
-  search: {
-    name: null,
-    stockCode: null,
-  },
+  search: null,
   page_index: 1,
   page_size: 10,
 }
@@ -22,16 +19,13 @@ export default {
   state: {
     filter: {
       isOversea: null,
-      currency: [],
-      transactionPhases: [],
-      industries: [],
+      currencys: [],
+      orgtransactionphases: [],
+      industrys: [],
       tags: [],
-      organizationTypes: [],
+      orgtypes: [],
     },
-    search: {
-      name: null,
-      stockCode: null,
-    },
+    search: null,
     page_size: 10,
     page_index: 1,
     _params: {},
@@ -46,10 +40,6 @@ export default {
     resetFilter(state) {
       const filter = { ...DEFAULT_VALUE.filter }
       return { ...state, filter }
-    },
-    setSearch(state, { payload: field }) {
-      const search = { ...DEFAULT_VALUE.search, ...field }
-      return { ...state, search }
     },
     setField(state, { payload: field }) {
       return { ...state, ...field }
@@ -75,16 +65,19 @@ export default {
     },
     *filt({}, { call, put, select }) {
       const { filter } = yield select(state => state.organizationList)
+      yield put({ type: 'setField', payload: { page_index: 1 } })
       yield put({ type: 'updateParams', payload: { ...filter } })
       yield put({ type: 'get' })
     },
     *search({}, { call, put, select }) {
       const { search } = yield select(state => state.organizationList)
-      yield put({ type: 'updateParams', payload: { ...search } })
+      yield put({ type: 'setField', payload: { page_index: 1 } })
+      yield put({ type: 'updateParams', payload: { search } })
       yield put({ type: 'get' })
     },
     *reset({}, { call, put, select }) {
       yield put({ type: 'resetFilter' })
+      yield put({ type: 'setField', payload: { page_index: 1 } })
       yield put({ type: 'clearParams' })
       yield put({ type: 'get' })
     },

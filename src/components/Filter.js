@@ -122,11 +122,11 @@ function OrganizationListFilter(props) {
   return (
     <div>
       <OverseaFilter value={props.value.isOversea} onChange={props.onChange.bind(this, 'isOversea')} />
-      <CurrencyFilter value={props.value.currency} onChange={props.onChange.bind(this, 'currency')} />
-      <TransactionPhaseFilter value={props.value.transactionPhases} onChange={props.onChange.bind(this, 'transactionPhases')} />
-      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
+      <CurrencyFilter value={props.value.currencys} onChange={props.onChange.bind(this, 'currencys')} />
+      <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={props.onChange.bind(this, 'orgtransactionphases')} />
+      <IndustryFilter value={props.value.industrys} onChange={props.onChange.bind(this, 'industrys')} />
       <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
-      <OrganizationTypeFilter value={props.value.organizationTypes} onChange={props.onChange.bind(this, 'organizationTypes')} />
+      <OrganizationTypeFilter value={props.value.orgtypes} onChange={props.onChange.bind(this, 'orgtypes')} />
       <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
