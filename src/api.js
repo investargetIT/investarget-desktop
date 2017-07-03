@@ -57,6 +57,10 @@ export function addOrg(param) {
   return r('/org/?', 'POST', param)
 }
 
+export function editOrg(id, param) {
+  return r('/org/' + id + '/', 'PUT', param)
+}
+
 export function getOrgDetail(id) {
   const options = {
     headers: {

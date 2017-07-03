@@ -39,11 +39,19 @@ class EditOrganization extends React.Component {
     this.props.history.goBack()
   }
 
+  handleRef = (inst) => {
+    if (inst) {
+      this.form = inst.props.form
+      window.form = this.form // debug
+    }
+  }
+
   handleSubmit = (e) => {
+    const id = this.props.params.id
     const { validateFieldsAndScroll } = this.form
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        api.addOrg(values).then((result) => {
+        api.editOrg(id, values).then((result) => {
           this.props.history.goBack()
         }, (error) => {
           console.error(error)
@@ -52,25 +60,17 @@ class EditOrganization extends React.Component {
     })
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-      window.form = this.form
-    }
-  }
-
   componentDidMount() {
     const id = this.props.params.id
     api.getOrgDetail(id).then(result => {
       // 数据转换
       let data = { ...result.data }
-      data.currency = data.orgtype && data.currency.id
-      data.industry = data.orgtype && data.industry.id
+      data.currency = data.currency && data.currency.id
+      data.industry = data.industry && data.industry.id
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.id) : []
-      if (data.orgtransactionphase.length) {
-        data.orgtransactionphase = [] // 临时消除一个脏数据 // TODO 修复脏数据
-      }
       data.orgtype = data.orgtype && data.orgtype.id
+      data.orgstatus = data.orgstatus && data.orgstatus.id
+
 
       for (let i in data) {
         data[i] = { 'value': data[i] }

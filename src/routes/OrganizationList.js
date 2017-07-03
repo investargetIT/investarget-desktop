@@ -28,8 +28,9 @@ const columns = [
       <span>
         <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>&nbsp;
         <Link to={'/app/organization/edit/' + record.id}>
-          <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>&nbsp;
+          <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
         </Link>
+        &nbsp;
         <Popconfirm title="Confirm to delete?">
           <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
         </Popconfirm>
