@@ -6,6 +6,7 @@ import { Form, Button } from 'antd'
 import MainLayout from '../components/MainLayout';
 import PageTitle from '../components/PageTitle'
 import OrganizationForm from '../components/OrganizationForm'
+import OrganizationRemarkList from '../components/OrganizationRemarkList'
 
 const formStyle = {
   overflow: 'auto',
@@ -50,7 +51,7 @@ class EditOrganization extends React.Component {
   }
 
   handleSubmit = (e) => {
-    const id = this.props.params.id
+    const id = Number(this.props.params.id)
     const { validateFieldsAndScroll } = this.form
     validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -64,7 +65,7 @@ class EditOrganization extends React.Component {
   }
 
   componentDidMount() {
-    const id = this.props.params.id
+    const id = Number(this.props.params.id)
     api.getOrgDetail(id).then(result => {
       // 数据转换
       let data = { ...result.data }
@@ -87,6 +88,7 @@ class EditOrganization extends React.Component {
   }
 
   render() {
+    const id = Number(this.props.params.id)
     return (
       <MainLayout location={this.props.location}>
         <div>
@@ -97,12 +99,14 @@ class EditOrganization extends React.Component {
               wrappedComponentRef={this.handleRef}
               data={this.state.data}
             />
+            <div style={actionStyle}>
+              <Button size="large" onClick={this.cancel} style={actionBtnStyle}>取消</Button>
+              <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>保存</Button>
+            </div>
           </div>
 
-          <div style={actionStyle}>
-            <Button size="large" onClick={this.cancel} style={actionBtnStyle}>取消</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>保存</Button>
-          </div>
+          <OrganizationRemarkList orgId={id} />
+
         </div>
       </MainLayout>
     )

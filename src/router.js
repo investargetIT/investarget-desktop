@@ -27,16 +27,16 @@ function RouterConfig({ history }) {
       <Route path="/app" component={IndexPage} />
       <Route path={URI_6} component={UserList} />
       <Route path="/app/user/add" component={AddUser} />
+      <Route path="/app/organization/list" component={OrganizationList} />
       <Route path="/app/organization/add" component={AddOrganization} />
-      <Route path={URI_3} component={OrganizationList} />
+      <Route path="/app/organization/edit/:id" component={EditOrganization} />
+      <Route path="/app/organization/:id" component={OrganizationDetail} />
       <Route path={URI_11} component={LogList} />
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/project/release" component={AddProject} />
       <Route path={URI_14} component={PermList} />
       <Route path={URI_7} component={DataRoomList} />
-      <Route path="/app/organization/edit/:id" component={EditOrganization} />
-      <Route path="/app/organization/:id" component={OrganizationDetail} />
     </Router>
   )
 }
