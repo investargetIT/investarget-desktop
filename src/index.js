@@ -55,6 +55,7 @@ app.model(require("./models/users"));
 app.model(require('./models/CurrentUser'))
 app.model(require('./models/addProject'))
 app.model(require('./models/projectList'))
+app.model(require('./models/favoriteProjectList'))
 
 // 4. Router
 app.router(require('./router'));

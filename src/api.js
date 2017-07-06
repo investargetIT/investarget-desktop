@@ -152,6 +152,15 @@ export function getProjDetail(id, param) {
 }
 
 /**
+ * Favorite Proj
+ */
+
+export function getFavoriteProj(param) {
+  return r('/proj/favorite/?' + qs.stringify(param))
+}
+
+
+/**
  * Proj finance
  */
 

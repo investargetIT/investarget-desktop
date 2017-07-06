@@ -19,6 +19,7 @@ import EditOrganization from './routes/EditOrganization'
 import OrganizationDetail from './routes/OrganizationDetail'
 import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
+import FavoriteProjectList from './routes/FavoriteProjectList'
 
 function RouterConfig({ history }) {
   return (
@@ -37,6 +38,9 @@ function RouterConfig({ history }) {
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/project/list" component={ProjectList} />
+      <Route path="/app/project/list/recommend" component={FavoriteProjectList} />
+      <Route path="/app/project/list/favor" component={FavoriteProjectList} />
+      <Route path="/app/project/list/interest" component={FavoriteProjectList} />
       <Route path="/app/project/add" component={AddProject} />
       <Route path="/app/project/edit/:id" component={EditProject} />
       <Route path={URI_14} component={PermList} />
