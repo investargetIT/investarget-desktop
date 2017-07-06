@@ -147,6 +147,10 @@ export function deleteProj(id) {
   return r('/proj/' + id + '/', 'DELETE')
 }
 
+export function getProjLangDetail(id) {
+  return r('/proj/' + id + '/')
+}
+
 export function getProjDetail(id, param) {
   return r2('/proj/' + id + '/?' + qs.stringify(param))
 }

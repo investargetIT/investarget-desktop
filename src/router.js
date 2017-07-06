@@ -20,6 +20,7 @@ import OrganizationDetail from './routes/OrganizationDetail'
 import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
 import FavoriteProjectList from './routes/FavoriteProjectList'
+import ProjectDetail from './routes/ProjectDetail'
 
 function RouterConfig({ history }) {
   return (
