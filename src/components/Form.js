@@ -4,7 +4,7 @@ import { i18n, exchange } from '../utils/util'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
-import styles from '../routes/AddProject.css'
+import styles from './ProjectForm.css'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -307,13 +307,13 @@ UploadAvatar.contextTypes = {
 
 
 
-const CurrencyFormItem = ({ label, name, required, validator }, context) => {
+const CurrencyFormItem = ({ label, name, required, validator, currencyType }, context) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
 
   function onChange(value) {
     const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
-    const currency = getFieldValue('currency') || 2
-    exchange(currencyMap[currency]).then((rate) => {
+    const currency = currencyType || 2
+    exchange(currencyMap[String(currency)]).then((rate) => {
       setFieldsValue({
         [name + '_USD']: value == undefined ? value : Math.round(value * rate),
       })
@@ -323,8 +323,6 @@ const CurrencyFormItem = ({ label, name, required, validator }, context) => {
   let rules = [{ type: 'number' }]
   if (required) { rules.push({ required }) }
   if (validator) { rules.push({ validator }) }
-
-  const currencyType = getFieldValue('currency')
 
   return (
     <FormItem {...formItemLayout} label={label} required={required}>
@@ -440,75 +438,6 @@ class IndustryDynamicFormItem extends React.Component {
 }
 
 
-class FinanceDynamicFormItem extends React.Component {
-  static contextTypes = {
-    form: PropTypes.object
-  }
-
-  financeUuid = 1
-
-  constructor(props, context) {
-    super(props)
-
-    const { getFieldDecorator, getFieldValue } = context.form
-    getFieldDecorator('financeKeys', { rules: [{type: 'array'}], initialValue: [1] })
-    const financeKeys = getFieldValue('financeKeys')
-    this.financeUuid = financeKeys[financeKeys.length - 1]
-  }
-
-  removeFinance = (k) => {
-    const { getFieldValue, setFieldsValue } = this.context.form
-    const keys = getFieldValue('financeKeys')
-    if (keys.length === 1) {
-      return
-    }
-    form.setFieldsValue({
-      financeKeys: keys.filter(key => key !== k),
-    })
-  }
-
-  addFinance = () => {
-    const { getFieldValue, setFieldsValue } = this.context.form
-    this.financeUuid += 1
-    const keys = getFieldValue('financeKeys')
-    const nextKeys = keys.concat(this.financeUuid)
-    form.setFieldsValue({
-      financeKeys: nextKeys,
-    })
-  }
-
-  render() {
-    const { getFieldDecorator, getFieldValue } = this.context.form
-    const financeKeys = getFieldValue('financeKeys')
-
-    return (
-      <div>
-        <FormItem {...formItemLayout} className={styles['finance-head']} label="财务年度">
-          <div>
-            <Icon type="plus" style={{fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'}} onClick={this.addFinance} />
-            <span style={{float: 'right', cursor: 'pointer'}}>收缩</span>
-          </div>
-        </FormItem>
-
-        <div>
-          {financeKeys.map((k, index) => (
-            <div className={styles['finance-group']} key={k}>
-              <Button className={styles['finance-delete-button']} disabled={financeKeys.length === 1} onClick={() => {this.removeFinance(k)}}>删除</Button>
-              {
-                React.Children.map(this.props.children, (child) => {
-                  return React.cloneElement(child, { name: `finance-${k}.${child.props.name}` })
-                })
-              }
-            </div>)
-          )}
-        </div>
-      </div>
-    )
-  }
-}
-
-
-
 module.exports = {
   Email,
   FullName,
@@ -537,5 +466,4 @@ module.exports = {
   CurrencyFormItem,
   ChineseFullName,
   IndustryDynamicFormItem,
-  FinanceDynamicFormItem,
 }

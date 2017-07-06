@@ -35,6 +35,35 @@ function r(url, method, body) {
   return request(url + lang, options)
 }
 
+function r2(url, method, body) {
+
+  const options = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "clienttype": "3",
+      "source": 1
+    }
+  }
+
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  if (user) {
+    options.headers["token"] = user.token
+  }
+
+  if (method) {
+    options["method"] = method
+  }
+
+  if (body) {
+    options["body"] = JSON.stringify(body)
+  }
+
+  return request(url, options)
+}
+
 /**
  * dataroom
  */
@@ -66,22 +95,27 @@ export function deleteOrg(id) {
 }
 
 export function getOrgDetail(id, param) {
-  const options = {
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "clienttype": "3",
-      "source": 1
-    }
-  }
+  return r2('/org/' + id + '/?' + qs.stringify(param))
+}
 
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
+export function getOrgRemark(param) {
+  return r('/org/remark/?' + qs.stringify(param))
+}
 
-  if (user) {
-    options.headers["token"] = user.token
-  }
-  return request('/org/' + id + '/?' + qs.stringify(param), options)
+export function getOrgRemarkDetail(id) {
+  return r('/org/remark/' + id + '/')
+}
+
+export function addOrgRemark(data) {
+  return r('/org/remark/', 'POST', data)
+}
+
+export function editOrgRemark(id, data) {
+  return r('/org/remark/' + id + '/', 'PUT', data)
+}
+
+export function deleteOrgRemark(id) {
+  return r('/org/remark/' + id + '/', 'DELETE')
 }
 
 /**
@@ -100,12 +134,68 @@ export function createProj(param) {
   return r('/proj/', 'POST', param)
 }
 
+export function editProj(id, param) {
+  return r('/proj/' + id + '/', 'PUT', param)
+}
+
+export function getProjDetail(id, param) {
+  return r2('/proj/' + id + '/?' + qs.stringify(param))
+}
+
+/**
+ * Proj finance
+ */
+
+export function getProjFinance(proj) {
+  return r('/proj/finance/?proj=' + proj)
+}
+
+export function addProjFinance(data) {
+  return r('/proj/finance/', 'POST', data)
+}
+
+export function editProjFinance(data) {
+  const _data = { 'finances': [data] }
+  return r('/proj/finance/', 'PUT', _data)
+}
+
+export function deleteProjFinance(id) {
+  const data = { 'finances': [id] }
+  return r('/proj/finance/', 'DELETE', data)
+}
+
+/**
+ * proj attachment
+ */
+
+export function getProjAttachment(proj) {
+  return r('/proj/attachment/?proj=' + proj)
+}
+
+export function addProjAttachment(data) {
+  return r('/proj/attachment/', 'POST', data)
+}
+
+export function editProjAttachment(data) {
+  return r('/proj/attachment/', 'PUT', data) // todo
+}
+
+export function deleteProjAttachment(id) {
+  const data = { attachment: [id] }
+  return r('/proj/attachment/', 'DELETE', data)
+}
+
 /**
  * service
  */
 
 export function getExchangeRate(param) {
   return r('/service/currencyrate?' + qs.stringify(param))
+}
+
+export function qiniuDelete(bucket, key) {
+  const param = { bucket, key }
+  return r('/service/qiniudelete', 'POST', param)
 }
 
 /**

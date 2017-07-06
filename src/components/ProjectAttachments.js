@@ -1,4 +1,6 @@
 import React from 'react'
+import _ from 'lodash'
+import * as api from '../api'
 import {
   Input,
   Button,
@@ -34,6 +36,8 @@ const mimeTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
 ]
+
+
 const fixedDirs = ['NDA', 'Teaser', 'Executive Summary', 'BP', 'Presetation', 'Brochure', 'Financials', 'FAQ', 'Cap Table']
 
 class ProjectAttachments extends React.Component {
@@ -43,150 +47,165 @@ class ProjectAttachments extends React.Component {
   constructor(props) {
     super(props)
 
-    let dirs = fixedDirs.slice()
-    let panes = dirs.map(item => ({ title: item, closable: false, key: item }))
-
-    let value = props.value || []
-    value.forEach(item => {
-      let dir = item.filetype
-      if (dirs.indexOf(dir) == -1) {
-        dirs.push(dir)
-        panes.push({ title: dir, closable: true, key: dir })
-      }
-    })
-    const fileList = value.map((item, index) => {
-      return { uid: ('' + index), name: item.filename, dir: item.filetype, status: 'done' }
-    })
-
     this.state = {
-      value: value,
+      fileList: [],
+      dirs: fixedDirs.slice(),
       activeDir: fixedDirs[0],
-      fileList: fileList,
-      panes: panes,
-      newTitle: '',
-    }
-
-    //
-    this.add = this.add.bind(this)
-    this.remove = this.remove.bind(this)
-    this.handleDirChange = this.handleDirChange.bind(this)
-    this.handleFileChange = this.handleFileChange.bind(this)
-    this.beforeUpload = this.beforeUpload.bind(this)
-    this.handleFileRemove = this.handleFileRemove.bind(this)
-
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // setState: props.value => state.panes, state.fileList
-    // value: [{bucket, key, filetype, filename}]
-    // panes: [{title, closable, key}]
-    // fileList: [{uid, name, status, response}]
-
-    const value = nextProps.value
-    this.setState({ value })
-
-    let dirs = fixedDirs.slice()
-    let panes = dirs.map(item => ({ title: item, closable: false, key: item }))
-    value.forEach(item => {
-      let dir = item.filetype
-      if (dirs.indexOf(dir) == -1) {
-        dirs.push(dir)
-        panes.push({ title: dir, closable: true, key: dir })
-      }
-    })
-
-    const fileList = value.map((item, index) => {
-      return { uid: ('' + index), name: item.filename, dir: item.filetype, status: 'done' }
-    })
-
-    this.setState({ panes, fileList })
-
-    // if (dirs.indexOf(this.state.activeDir) == -1) {
-    //   this.setState({ activeDir: dirs[0] })
-    // }
-  }
-
-  add() {
-    const newTitle = this.state.newTitle
-    const panes = this.state.panes.slice()
-    if (panes.map(item => item.title).indexOf(newTitle) == -1) {
-      panes.push({ title: newTitle, closable: true, key: newTitle })
-      this.setState({ panes, activeDir: newTitle, newTitle: '' })
+      newDir: '',
     }
   }
 
-  remove(targetKey) {
-    Modal.confirm({
-      title: '删除目录',
-      content: '该目录下的文件都将被删除',
-      onOk: () => { this.removeDir(targetKey) },
+
+  handleTabsEdit = (targetDir, action) => {
+    if (action == 'remove') {
+      Modal.confirm({
+        title: '删除目录',
+        content: '该目录下的文件都将被删除',
+        onOk: () => { this.removeDir(targetDir) },
+      })
+    }
+  }
+
+  addDir = () => {
+    const newDir = this.state.newDir
+    this.setState({
+      dirs: [ ...this.state.dirs, newDir ],
+      newDir: '',
+      activeDir: newDir,
     })
   }
 
-  removeDir(targetKey) {
+  removeDir = (targetDir) => {
+    // todo remove related files
 
-    let activeDir = this.state.activeDir;
-    let lastIndex;
-    this.state.panes.forEach((pane, i) => {
-      if (pane.key === targetKey) {
-        lastIndex = i - 1;
-      }
-    });
-    const panes = this.state.panes.filter(pane => pane.key !== targetKey);
-    this.setState({ panes })
+    const { activeDir, dirs } = this.state
+    const index = dirs.indexOf(targetDir)
+    this.setState({
+      dirs: [ ...dirs.slice(0, index), ...dirs.slice(index+1)],
+    })
 
-    if (lastIndex >= 0 && activeDir === targetKey) {
-      activeDir = panes[lastIndex].key
-      this.setState({ activeDir })
+    if (targetDir == activeDir) {
+      this.setState({ activeDir: dirs[index - 1] })
     }
-    // 删除目录下文件，onChange
-    let value = this.state.value.filter(item => item.filetype != targetKey)
-    if (this.props.onChange) {
-      this.props.onChange(value)
-    } else {
-      let fileList = this.state.fileList.filter(item => item.dir != targetKey)
-      this.setState({ value, fileList })
-    }
+
   }
 
-  handleDirChange(activeDir) {
-    this.setState({ activeDir })
-  }
-
-  handleFileChange({ file, fileList, event }) {
-    // 添加或删除文件, onChange
-    if (file.status == 'removed') {
-      let value = this.state.value.filter(item => item.filename != file.name || item.filetype != file.dir)
-      if (this.props.onChange) {
-        this.props.onChange(value)
-        return
-      } else {
-        this.setState({ value })
-      }
-    }
-
+  handleFileChange = ({ file, fileList, event }) => {
+    console.log('>>>', file, fileList, event);
     if (file.status == 'uploading') {
-      if (file.dir == undefined) {
-        file.dir = this.state.activeDir
-      }
+      this.handleFileUpload(file)
+    } else if (file.status == 'done') {
+      this.handleFileUploadDone(file)
+    } else if (file.status == 'error') {
+      this.handleFileUploadError(file)
+    } else if (file.status == 'removed') {
+      this.handleFileRemove(file)
     }
-
-    if (file.status == 'done') {
-      let value = this.state.value.slice()
-      const item = { bucket: 'file', key: file.response.key, filename: file.name, filetype: file.dir }
-      value.push(item)
-      if (this.props.onChange) {
-        this.props.onChange(value)
-        return
-      } else {
-        this.setState({ value })
-      }
-    }
-
-    this.setState({ fileList })
   }
 
-  handleFileRemove(file) {
+  handleFileUpload = (file) => {
+    if (!file.filetype) {
+      file.filetype = this.state.activeDir
+      file.filename = file.name
+      this.setState({ fileList: [ ...this.state.fileList, file] })
+    } else {
+      const index  = _.findIndex(this.state.fileList, function(item) {
+        return item.filetype == file.filetype && item.filename == file.filename
+      })
+      this.setState({
+        fileList: [ ...this.state.fileList.slice(0, index), file, ...this.state.fileList.slice(index+1) ]
+      })
+    }
+  }
+
+  handleFileUploadDone = (file) => {
+    file.bucket = 'file'
+    file.key = file.response.result.key
+    file.url = file.response.result.url
+    const index  = _.findIndex(this.state.fileList, function(item) {
+      return item.filetype == file.filetype && item.filename == file.filename
+    })
+    this.addAttachment(file).then(result => {
+      this.setState({
+        fileList: [ ...this.state.fileList.slice(0, index), file ,...this.state.fileList.slice(index+1) ]
+      })
+    }, error => {
+      file.status = 'error'
+      file.error = error
+      this.setState({
+        fileList: [ ...this.state.fileList.slice(0, index), file ,...this.state.fileList.slice(index+1) ]
+      })
+    })
+  }
+
+  handleFileUploadError = (file) => {
+    const index  = _.findIndex(this.state.fileList, function(item) {
+      return item.filetype == file.filetype && item.filename == file.filename
+    })
+    this.setState({
+      fileList: [ ...this.state.fileList.slice(0, index), file, ...this.state.fileList.slice(index+1) ]
+    })
+  }
+
+  handleFileRemove = (file) => {
+    this.removeAttachment(file).then(result => {
+      const index  = _.findIndex(this.state.fileList, function(item) {
+        return item.filetype == file.filetype && item.filename == file.filename
+      })
+      this.setState({
+        fileList: [ ...this.state.fileList.slice(0, index), ...this.state.fileList.slice(index+1) ]
+      })
+    }, error => {
+      message.error(error.message, 2)
+    })
+  }
+
+
+  getAttachment = () => {
+    const projId = this.props.projId
+    return api.getProjAttachment(projId).then(result => {
+      return result.data.data
+    })
+  }
+
+  addAttachment = (file) => {
+    const projId = this.props.projId
+    const data = {
+      proj: this.props.projId,
+      filetype: file.filetype,
+      bucket: file.bucket,
+      filename: file.filename,
+      key: file.key,
+    }
+    return api.addProjAttachment(data).then(result => {
+      console.log(result)
+    })
+  }
+
+  removeAttachment = (file) => {
+    const proj = file.proj
+    const bucket = file.bucket
+    const key = file.key
+    const id = file.id
+
+    if (bucket && key) {
+      if (id) {
+        // 删除已有附件
+        return api.deleteProjAttachment(id).then(result => {
+          return api.qiniuDelete(bucket, key)
+        })
+      } else {
+        // 上传完成，添加附件失败时，删除
+        return api.qiniuDelete(bucket, key)
+      }
+    } else {
+      // 上传过程中删除
+      return Promise.resolve()
+    }
+  }
+
+
+  handleFileRemoveConfirm = (file) => {
     return new Promise(function(resolve, reject) {
       Modal.confirm({
         title: '删除文件',
@@ -197,7 +216,7 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  beforeUpload(file) {
+  beforeUpload = (file) => {
     if (mimeTypes.indexOf(file.type) == -1) {
       message.warning('不支持的文件格式', 2)
       return false
@@ -206,7 +225,7 @@ class ProjectAttachments extends React.Component {
     const dir = this.state.activeDir // current dir
     for (let i = 0, len = this.state.fileList.length; i < len; i++) {
       let _file = this.state.fileList[i]
-      if (dir == _file.dir && file.name == _file.name) {
+      if (dir == _file.filetype && file.filename == _file.filename) {
         message.warning('不能上传同一文件', 2)
         return false
       }
@@ -214,27 +233,55 @@ class ProjectAttachments extends React.Component {
     return true
   }
 
+  componentDidMount() {
+    // test data
+    this.getAttachment().then(fileList => {
+      fileList.forEach((item, index) => {
+        item.uid = -(index + 1)
+        item.name = item.filename
+        item.status = 'done'
+      })
+      const otherDirs = []
+      fileList.forEach(item => {
+        if (!this.state.dirs.includes(item.filetype)) {
+          otherDirs.push(item.filetype)
+        }
+      })
+      this.setState({
+        fileList,
+        dirs: [ ...this.state.dirs, ...otherDirs ],
+      })
+    }, error => {
+      console.error(error)
+    })
+  }
+
   render() {
-    let targetFileList = this.state.fileList.filter(item => item.dir == this.state.activeDir)
+    const { fileList, dirs } = this.state
+
+    let panes = dirs.map(item => ({ title: item, key: item, closable: !fixedDirs.includes(item) }))
+    let targetFileList = fileList.filter(item => item.filetype == this.state.activeDir)
+
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
           <Input
-            value={this.state.newTitle}
-            onChange={(e) => {this.setState({ newTitle: e.target.value })}}
+            value={this.state.newDir}
+            onChange={(e) => {this.setState({ newDir: e.target.value })}}
             style={{width: 'auto', marginRight: '8px'}}
             placeholder="新建目录"
           />
-          <Button onClick={this.add} disabled={this.state.newTitle == ''}>ADD</Button>
+          <Button onClick={this.addDir} disabled={this.state.newDir == ''}>ADD</Button>
         </div>
+
         <Tabs
           hideAdd
           onChange={(activeKey) => {this.setState({activeDir: activeKey})}}
           activeKey={this.state.activeDir}
           type="editable-card"
-          onEdit={(targetKey, action) => {this[action](targetKey)}}
+          onEdit={this.handleTabsEdit}
         >
-          {this.state.panes.map(pane => <TabPane tab={pane.title} key={pane.key} closable={pane.closable}></TabPane>)}
+          {panes.map(pane => <TabPane tab={pane.title} key={pane.key} closable={pane.closable}></TabPane>)}
         </Tabs>
 
         <Dragger
@@ -243,7 +290,7 @@ class ProjectAttachments extends React.Component {
           beforeUpload={this.beforeUpload}
           fileList={targetFileList}
           onChange={this.handleFileChange}
-          onRemove={this.handleFileRemove}
+          onRemove={this.handleFileRemoveConfirm}
         >
           <p className="ant-upload-drag-icon">
             <Icon type="inbox" />
