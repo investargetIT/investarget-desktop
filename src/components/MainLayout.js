@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import styles from './MainLayout.css';
 import Header from './Header';
-import { Layout, Breadcrumb } from 'antd'
+import { Layout } from 'antd'
 import { routerRedux } from 'dva/router'
 import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
@@ -28,12 +28,6 @@ class MainLayout extends React.Component {
         </Sider>
 
         <Layout style={{ padding: '0 24px 24px' }}>
-
-          <Breadcrumb style={{ margin: '12px 0' }}>
-            <Breadcrumb.Item><FormattedMessage id="header.home" /></Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
 
           {content}
 
