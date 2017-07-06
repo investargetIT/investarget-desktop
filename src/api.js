@@ -122,7 +122,12 @@ export function deleteOrgRemark(id) {
  * proj
  */
 
-export function getProj(token, param) {
+export function getProj(param) {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/proj/?' + qs.stringify(param))
 }
 
@@ -136,6 +141,10 @@ export function createProj(param) {
 
 export function editProj(id, param) {
   return r('/proj/' + id + '/', 'PUT', param)
+}
+
+export function deleteProj(id) {
+  return r('/proj/' + id + '/', 'DELETE')
 }
 
 export function getProjDetail(id, param) {

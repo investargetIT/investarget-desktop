@@ -59,7 +59,7 @@ class ProjectBaseForm extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <Form>
-        <BasicFormItem label="是否隐藏" name="isHidden" valueType="boolean" initialValue={false}>
+        <BasicFormItem label="是否隐藏" name="isHidden" valueType="boolean">
           <RadioTrueOrFalse />
         </BasicFormItem>
 
@@ -77,7 +77,7 @@ class ProjectBaseForm extends React.Component {
 
         <IndustryDynamicFormItem />
 
-        <BasicFormItem label="国家" name="country" required valueType="number" initialValue={[1,5]}>
+        <BasicFormItem label="国家" name="country" required valueType="number">
           <CascaderCountry size="large" />
         </BasicFormItem>
 

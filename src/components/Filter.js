@@ -8,14 +8,17 @@ const RadioGroup = Radio.Group
 
 import TabCheckbox from './TabCheckbox'
 import {
+  RadioTrueOrFalse,
+  RadioAudit,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
-  RadioTrueOrFalse,
-  TabCheckboxIndustry,
   CheckboxTag,
   CheckboxOrganizationType,
-  RadioAudit,
+  CheckboxProjStatus,
   SelectOrganizatonArea,
+  SliderMoney,
+  TabCheckboxIndustry,
+  TabCheckboxCountry,
 } from './ExtraInput'
 
 
@@ -103,6 +106,42 @@ function OrganizationTypeFilter(props) {
   )
 }
 
+function CountryFilter(props) {
+  return (
+    <BasicContainer label="地区">
+      <TabCheckboxCountry value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function RevenueFilter(props) {
+  const value = props.value.map(item => parseInt(item / 1000000))
+  const onChange = (value) => { props.onChange(value.map(item => item * 1000000)) }
+  return (
+    <BasicContainer label="收入">
+      <SliderMoney min={0} max={500} value={value} onChange={onChange} />
+    </BasicContainer>
+  )
+}
+
+function ProfitFilter(props) {
+  const value = props.value.map(item => parseInt(item / 1000000))
+  const onChange = (value) => { props.onChange(value.map(item => item * 1000000)) }
+  return (
+    <BasicContainer label="利润">
+      <SliderMoney min={-200} max={200} value={value} onChange={onChange} />
+    </BasicContainer>
+  )
+}
+
+function ProjectStatusFilter(props) {
+  return (
+    <BasicContainer label="状态">
+      <CheckboxProjStatus value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
 
 
 function UserListFilter(props) {
@@ -124,9 +163,27 @@ function OrganizationListFilter(props) {
       <OverseaFilter value={props.value.isOversea} onChange={props.onChange.bind(this, 'isOversea')} />
       <CurrencyFilter value={props.value.currencys} onChange={props.onChange.bind(this, 'currencys')} />
       <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={props.onChange.bind(this, 'orgtransactionphases')} />
-      <IndustryFilter value={props.value.industrys} onChange={props.onChange.bind(this, 'industrys')} />
+      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
       <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
       <OrganizationTypeFilter value={props.value.orgtypes} onChange={props.onChange.bind(this, 'orgtypes')} />
+      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
+    </div>
+  )
+}
+
+function ProjectListFilter(props) {
+  return (
+    <div>
+      <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
+      <CountryFilter value={props.value.country} onChange={props.onChange.bind(this, 'country')} />
+      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
+      <RevenueFilter
+        value={[props.value.netIncome_USD_F, props.value.netIncome_USD_T]}
+        onChange={props.onChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
+      <ProfitFilter
+        value={[props.value.grossProfit_F, props.value.grossProfit_T]}
+        onChange={props.onChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
+      <ProjectStatusFilter value={props.value.projstatus} onChange={props.onChange.bind(this, 'projstatus')} />
       <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
@@ -146,4 +203,5 @@ module.exports = {
 
   UserListFilter,
   OrganizationListFilter,
+  ProjectListFilter,
 }

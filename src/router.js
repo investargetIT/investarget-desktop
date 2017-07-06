@@ -18,6 +18,7 @@ import DataRoomList from './routes/DataRoomList'
 import EditOrganization from './routes/EditOrganization'
 import OrganizationDetail from './routes/OrganizationDetail'
 import EditProject from './routes/EditProject'
+import ProjectList from './routes/ProjectList'
 
 function RouterConfig({ history }) {
   return (
@@ -35,6 +36,7 @@ function RouterConfig({ history }) {
       <Route path={URI_11} component={LogList} />
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
+      <Route path="/app/project/list" component={ProjectList} />
       <Route path="/app/project/add" component={AddProject} />
       <Route path="/app/project/edit/:id" component={EditProject} />
       <Route path={URI_14} component={PermList} />

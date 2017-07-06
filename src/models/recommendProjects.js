@@ -29,8 +29,7 @@ export default {
   },
   effects: {
     *refreshProjects({}, {call, put, select}) {
-      const { token } = yield select(state => state.currentUser)
-      const result = yield call(api.getProj, token, {})
+      const result = yield call(api.getProj, {})
       const projects = result.data.data
       yield put({ type: 'setProjects', payload: projects })
     },
