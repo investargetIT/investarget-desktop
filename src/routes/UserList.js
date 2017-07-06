@@ -8,7 +8,7 @@ import { routerRedux } from 'dva/router'
 import UserModal from '../components/UserModal';
 import { UserListFilter } from '../components/Filter'
 import { UserListSearch } from '../components/Search'
-import { dataToColumn, i18n } from '../utils/util'
+import { i18n } from '../utils/util'
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -102,6 +102,48 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
     })
   }
 
+  const columns = [
+    {
+      title: i18n("username"),
+      dataIndex: 'username',
+      key: 'username'
+    },
+    {
+      title: i18n("org"),
+      dataIndex: 'org.name',
+      key: 'org'
+    },
+    {
+      title: i18n("position"),
+      dataIndex: 'title.name',
+      key: 'title'
+    },
+    {
+      title: i18n("tag"),
+      dataIndex: 'tags',
+      key: 'tags',
+      render: tags => tags.map(t => t.name).join(' ')
+    },
+    {
+      title: i18n("trader_relation"),
+      dataIndex: 'trader_relation.traderuser.name',
+      key: 'trader_relation',
+    },
+    {
+      title: i18n("action"),
+      key: 'action',
+      render: (text, record) => (
+            <span>
+              <Button disabled={!record.action.get} size="small" onClick={operationHandler.bind(null, 'get', record.id)}>{i18n("view")}</Button>&nbsp;
+              <Button disabled={!record.action.change} size="small" onClick={operationHandler.bind(null, 'edit', record.id)}>{i18n("edit")}</Button>&nbsp;
+              <Popconfirm title="Confirm to delete?" onConfirm={operationHandler.bind(null, 'delete', record.id)}>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              </Popconfirm>
+            </span>
+      )
+    },
+  ]
+
   const action = currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null
 
   return (
@@ -127,7 +169,7 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
 
       <Table
         rowSelection={rowSelection}
-        columns={dataToColumn(dataSource, operationHandler)}
+        columns={columns}
         dataSource={dataSource}
         loading={loading}
         rowKey={record => record.id}

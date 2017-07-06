@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n, dataToColumn } from '../utils/util'
+import { i18n } from '../utils/util'
 import { UserListSearch } from '../components/Search'
 import { queryLogList } from '../api'
 import { Table, Pagination } from 'antd'
@@ -57,6 +57,40 @@ class LogList extends React.Component {
   }
 
   render () {
+
+    const columns = [
+      {
+        title: "操作者",
+        dataIndex: 'requestuser_name',
+        key: 'requestuser_name'
+      },
+      {
+        title: "时间",
+        dataIndex: 'actiontime',
+        key: 'actiontime'
+      },
+      {
+        title: "操作对象",
+        dataIndex: 'model_name',
+        key: 'model_name'
+      },
+      {
+        title: "操作",
+        dataIndex: 'method',
+        key: 'method'
+      },
+      {
+        title: '操作前',
+        dataIndex: 'request_before',
+        key: 'request_before'
+      },
+      {
+        title: "操作后",
+        dataIndex: 'request_after',
+        key: 'request_after'
+      },
+    ]
+
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -67,7 +101,7 @@ class LogList extends React.Component {
         </div>
 
         <Table
-          columns={dataToColumn(this.state.data)}
+          columns={columns}
           dataSource={this.state.data}
           loading={this.state.loading}
           rowKey={record => record.id}
