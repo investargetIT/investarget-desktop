@@ -237,7 +237,12 @@ export function getSource(sourceType) {
  * user
  */
 
-export function getUser(token, param) {
+export function getUser(param) {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/user/?' + qs.stringify(param))
 }
 

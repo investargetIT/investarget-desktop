@@ -29,8 +29,8 @@ export default {
   },
   effects: {
     *refreshFriends({}, {call, put, select}) {
-      const { id, token } = yield select(state => state.currentUser)
-      const result = yield call(api.getUser, token, { id })
+      const { id } = yield select(state => state.currentUser)
+      const result = yield call(api.getUser, { id })
       const friends = result.data.data.filter(item => item.id != id)
       yield put({ type: 'setFriends', payload: friends })
     },
