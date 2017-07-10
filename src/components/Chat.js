@@ -9,7 +9,7 @@ function SpeechOfMy(props) {
     <div style={{ overflow: 'auto' }}>
     <div style={{ float: 'right' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src="/images/default-avatar.png" /></div>
     <div className="my-talk-bubble" style={{ float: 'right', maxWidth: '75%', marginRight: 8, position: 'relative', border: `1px solid ${mySpeechBubbleColor}`, borderRadius: 4 }}>
-      <div style={{ padding: '6px 10px', background: mySpeechBubbleColor, lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.content}</div>
+      <div style={{ padding: '6px 10px', background: mySpeechBubbleColor, lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
     </div>
   </div>
   )
@@ -20,7 +20,7 @@ function SpeechOfOthers(props) {
     <div style={{ overflow: 'auto' }}>
       <div style={{ float: 'left' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src="/images/default-avatar.png" /></div>
       <div className="other-talk-bubble" style={{ float: 'left', maxWidth: '75%', marginLeft: 8, position: 'relative', border: '1px solid white', borderRadius: 4 }}>
-        <div style={{ padding: '6px 10px', background: 'white', lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.content}</div>
+        <div style={{ padding: '6px 10px', background: 'white', lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
       </div>
     </div>
   )
@@ -159,7 +159,103 @@ const contentContainerStyle = {
 }
 
 class Chat extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      inputValue: '',
+      messages: [
+        {
+          id: 1,
+          user: {
+            id: 1,
+            name: '小游侠',
+            photoUrl: '...',
+          },
+          time: '2017-07-10 17:50:38',
+          channelId: 1,
+          type: 'text',
+          content: '这是小游侠发送的文本内容'
+        },
+        {
+          id: 2,
+          user: {
+            id: 2,
+            name: '小懒猪',
+            photoUrl: '...',
+          },
+          time: '2017-07-10 17:50:48',
+          channelId: 1,
+          type: 'text',
+          content: '这是小懒猪发送的文本内容'
+        },
+        {
+          id: 3,
+          user: {
+            id: 1,
+            name: '小游侠',
+            photoUrl: '...',
+          },
+          time: '2017-07-10 17:50:58',
+          channelId: 1,
+          type: 'text',
+          content: '这是小游侠再一次发送的文本内容'
+        },
+        {
+          id: 4,
+          user: {
+            id: 2,
+            name: '小懒猪',
+            photoUrl: '...',
+          },
+          time: '2017-07-10 17:51:08',
+          channelId: 1,
+          type: 'text',
+          content: '这是小懒猪再一次发送的文本内容'
+        },
+      ]
+    }
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  handleInputChange(evt) {
+    if (evt.target.value.trim() !== "") {
+      this.setState({ inputValue: evt.target.value })
+    }
+  }
+
+  handleKeyPress(evt) {
+    const value = evt.target.value
+    const keyCode = evt.keyCode || evt.which
+    if (keyCode === 13) {
+      const existKey = this.state.messages.map(m => m.id)
+      this.setState({
+        messages: this.state.messages.concat({
+          id: Math.max(...existKey) + 1,
+          user: {
+            id: 1,
+            name: '小游侠',
+            photoUrl: '...'
+          },
+          time: '2017-07-10 17:58:08',
+          channelId: 1,
+          type: 'text',
+          content: value          
+        }),
+        inputValue: ''
+      })
+    }
+  }
+
   render () {
+
+    const messagesJSX = this.state.messages.filter(f => f.channelId === 1).map(m =>
+      <li key={m.id} style={{ marginTop: 20 }}>
+        {m.user.id === 1 ? <SpeechOfMy>{m.content}</SpeechOfMy> : <SpeechOfOthers>{m.content}</SpeechOfOthers>}
+      </li>
+    )
+
     return (
       <div style={mainContainerStyle}>
         <div style={leftContainerStyle}>
@@ -179,15 +275,15 @@ class Chat extends React.Component {
           </div>
           <div style={messageContainerStyle}>
             <ul>
-              <li style={{ marginTop: 20 }}><SpeechOfOthers content="今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的" /></li>
-              <li style={{ marginTop: 20 }}><SpeechOfOthers content="今天你好吗？" /></li>
-              <li style={{ marginTop: 20 }}><SpeechOfMy content="今天你好吗？" /></li>
-              <li style={{ marginTop: 20 }}><SpeechOfOthers content="今天你好吗？" /></li>
-              <li style={{ marginTop: 20 }}><SpeechOfMy content="今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的今天应该去验光的" /></li>
+              {messagesJSX}
             </ul>
-      </div>
+          </div>
           <div style={contentContainerStyle}>
-            <textarea style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0 }} />
+            <textarea
+              onChange={this.handleInputChange}
+              onKeyPress={this.handleKeyPress}
+              value={this.state.inputValue}
+              style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black' }} />
           </div>
         </div>
       </div>
