@@ -32,12 +32,6 @@ const contactAbstractFontSize = 12
 const nameAndAbstractGap = 10
 const contactAvatarSize = 40 
 
-const contactContainerStyle1 = {
-  height: contactContainerHeight,
-  //background: 'blue',
-  borderBottom: '1px solid rgb(239, 239, 239)'
-}
-
 const contactAvatarContainerStyle = {
   width: contactContainerHeight,
   height: '100%',
@@ -70,18 +64,24 @@ const contactAbstractStyle = {
 const contactRightContentStyle = {}
 
 function Contact(props) {
+  const contactContainerStyle1 = {
+    height: contactContainerHeight,
+    borderBottom: '1px solid rgb(239, 239, 239)',
+    cursor: 'pointer',
+    background: props.isActive ? 'rgb(226, 226, 226)' : 'inherit'
+  }
   return (
-    <div style={contactContainerStyle1}>
+    <div style={contactContainerStyle1} onClick={evt => props.onClick(props.channel)}>
       <div style={contactAvatarContainerStyle}>
         <img style={{ width: contactAvatarSize, height: contactAvatarSize, borderRadius: 2 }} src="/images/default-avatar.png" />
       </div>
       <div style={contactRightContainerStyle}>
         <div style={contactRightContentStyle}>
           <p style={contactNameAndDateContainerStyle}>
-            <span style={{ fontSize: contactLeftNameFontSize, color: 'black' }}>特工</span>
-            <span style={{ float: 'right', color: 'rgb(177, 177, 177)' }}>10:45 AM</span>
+            <span style={{ fontSize: contactLeftNameFontSize, color: 'black' }}>{props.name}</span>
+            <span style={{ width: 60, height: '100%', overflow: 'hidden', float: 'right', color: 'rgb(177, 177, 177)', textAlign: 'right' }}>{props.latestMessage ? props.latestMessage.time : ""}</span>
           </p>
-          <p style={contactAbstractStyle}>一点击就显示已停止工作</p>
+          <p style={contactAbstractStyle}>{props.latestMessage ? props.latestMessage.content : ""}</p>
         </div>
       </div>
     </div>
@@ -164,6 +164,27 @@ class Chat extends React.Component {
 
     this.state = {
       inputValue: '',
+      channel: {
+        id: 1,
+        imgUrl: '...',
+        name: '小懒猪',
+        latestMessage: {
+          content: '这是小懒猪再一次发送的文本内容',
+          time: '1:15 PM'
+        },
+        member: [
+          {
+            id: 1,
+            name: '小游侠',
+            photoUrl: '...'
+          },
+          {
+            id: 2,
+            name: '小懒猪',
+            photoUrl: '...'
+          }
+        ]
+      },
       messages: [
         {
           id: 1,
@@ -213,10 +234,76 @@ class Chat extends React.Component {
           type: 'text',
           content: '这是小懒猪再一次发送的文本内容'
         },
+      ],
+      channels: [
+        {
+          id: 1,
+          imgUrl: '...',
+          name: '小懒猪',
+          latestMessage: {
+            content: '这是小懒猪再一次发送的文本内容',
+            time: '1:15 PM'
+          },
+          member: [
+            {
+              id: 1,
+              name: '小游侠',
+              photoUrl: '...'
+            },
+            {
+              id: 2,
+              name: '小懒猪',
+              photoUrl: '...'
+            }
+          ]
+        },
+        {
+          id: 2,
+          imgUrl: '...',
+          name: '小兵张嘎',
+          latestMessage: {
+            content: '这是小兵小小兵再一次发送的文本内容',
+            time: '11:38 AM'
+          },
+          member: [
+            {
+              id: 1,
+              name: '小游侠',
+              photoUrl: '...'
+            },
+            {
+              id: 3,
+              name: '小兵张嘎',
+              photoUrl: '...'
+            }
+          ]
+        },
+        {
+          id: 3,
+          imgUrl: '...',
+          name: '小红',
+          latestMessage: {
+            content: '这是小红再一次发送的文本内容',
+            time: '7/9/17'
+          },
+          member: [
+            {
+              id: 1,
+              name: '小游侠',
+              photoUrl: '...'
+            },
+            {
+              id: 4,
+              name: '小红',
+              photoUrl: '...'
+            }
+          ]
+        },
       ]
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleKeyPress = this.handleKeyPress.bind(this)
+    this.handleChannelClicked = this.handleChannelClicked.bind(this)
   }
 
   componentDidUpdate() {
@@ -227,15 +314,13 @@ class Chat extends React.Component {
   }
 
   handleInputChange(evt) {
-    if (evt.target.value.trim() !== "") {
-      this.setState({ inputValue: evt.target.value })
-    }
+    this.setState({ inputValue: evt.target.value.trim() })
   }
 
   handleKeyPress(evt) {
     const value = evt.target.value
     const keyCode = evt.keyCode || evt.which
-    if (keyCode === 13) {
+    if (value !== "" && keyCode === 13) {
       const existKey = this.state.messages.map(m => m.id)
       this.setState({
         messages: this.state.messages.concat({
@@ -246,7 +331,7 @@ class Chat extends React.Component {
             photoUrl: '...'
           },
           time: '2017-07-10 17:58:08',
-          channelId: 1,
+          channelId: this.state.channel.id,
           type: 'text',
           content: value          
         }),
@@ -256,9 +341,22 @@ class Chat extends React.Component {
     }
   }
 
-  render () {
+  handleChannelClicked(channel) {
+    this.setState({ channel: channel })
+  }
 
-    const messagesJSX = this.state.messages.filter(f => f.channelId === 1).map(m =>
+  render () {
+    const contactJSX = this.state.channels.map(m =>
+      <Contact
+        key={m.id}
+        isActive={this.state.channel.id === m.id}
+        channel={m}
+        name={m.name}
+        latestMessage={m.latestMessage}
+        onClick={this.handleChannelClicked} />
+    )
+
+    const messagesJSX = this.state.messages.filter(f => f.channelId === this.state.channel.id).map(m =>
       <li key={m.id} style={{ marginTop: 20 }}>
         {m.user.id === 1 ? <SpeechOfMy>{m.content}</SpeechOfMy> : <SpeechOfOthers>{m.content}</SpeechOfOthers>}
       </li>
@@ -266,26 +364,27 @@ class Chat extends React.Component {
 
     return (
       <div style={mainContainerStyle}>
+
         <div style={leftContainerStyle}>
+
           <div style={searchContainerStyle}>
             <input style={searchInputStyle} type="text" placeholder="查找联系人或群" />
           </div>
-          <div style={contactContainerStyle}>
-            <Contact /><Contact /><Contact /><Contact /><Contact />
-            <Contact /><Contact /><Contact /><Contact /><Contact />
-            <Contact /><Contact /><Contact /><Contact /><Contact />
-            <Contact /><Contact /><Contact /><Contact /><Contact />
-          </div>
+
+          <div style={contactContainerStyle}>{contactJSX}</div>
+
         </div>
+
         <div style={rightContainerStyle}>
+
           <div style={titleContainerStyle}>
-            <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>程序亦非猿</span>
+            <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
           </div>
+
           <div ref="inputTextContent" style={messageContainerStyle}>
-            <ul>
-              {messagesJSX}
-            </ul>
+            <ul>{messagesJSX}</ul>
           </div>
+
           <div style={contentContainerStyle}>
             <textarea
               onChange={this.handleInputChange}
@@ -293,7 +392,9 @@ class Chat extends React.Component {
               value={this.state.inputValue}
               style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black' }} />
           </div>
+
         </div>
+        
       </div>
     )
   }
