@@ -219,6 +219,13 @@ class Chat extends React.Component {
     this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
+  componentDidUpdate() {
+    if (this.shouldScrollBottom) {
+      this.refs.inputTextContent.scrollTop = this.refs.inputTextContent.scrollHeight
+      this.shouldScrollBottom = false
+    }
+  }
+
   handleInputChange(evt) {
     if (evt.target.value.trim() !== "") {
       this.setState({ inputValue: evt.target.value })
@@ -245,6 +252,7 @@ class Chat extends React.Component {
         }),
         inputValue: ''
       })
+      this.shouldScrollBottom = true
     }
   }
 
@@ -273,7 +281,7 @@ class Chat extends React.Component {
           <div style={titleContainerStyle}>
             <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>程序亦非猿</span>
           </div>
-          <div style={messageContainerStyle}>
+          <div ref="inputTextContent" style={messageContainerStyle}>
             <ul>
               {messagesJSX}
             </ul>
