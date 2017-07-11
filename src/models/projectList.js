@@ -12,8 +12,8 @@ const DEFAULT_VALUE = {
     projstatus: [],
   },
   search: null,
-  page_index: 1,
-  page_size: 10,
+  page: 1,
+  pageSize: 10,
 }
 
 export default {
@@ -30,8 +30,8 @@ export default {
       projstatus: [],
     },
     search: null,
-    page_index: 1,
-    page_size: 10,
+    page: 1,
+    pageSize: 10,
     _params: {},
     total: 0,
     list: [],
@@ -65,7 +65,7 @@ export default {
       yield put({ type: 'get' })
     },
     *get({}, { call, put, select }) {
-      const { _params, page_size, page_index } = yield select(state => state.projectList)
+      const { _params, pageSize, page } = yield select(state => state.projectList)
       // _params 处理
       const defaultFilter = DEFAULT_VALUE.filter
       if (_params['netIncome_USD_F'] == defaultFilter['netIncome_USD_F'] &&
@@ -77,37 +77,37 @@ export default {
             _params['grossProfit_F'] = _params['grossProfit_T'] = null
       }
 
-      let params = { ..._params, page_size, page_index }
+      let params = { ..._params, page_size: pageSize, page_index: page }
       console.log('>>>', params)
       let result = yield call(api.getProj, params)
       yield put({ type: 'save', payload: { total: result.data.count, list: result.data.data } })
     },
     *filt({}, { call, put, select }) {
       const { filter } = yield select(state => state.projectList)
-      yield put({ type: 'setField', payload: { page_index: 1 } })
+      yield put({ type: 'setField', payload: { page: 1 } })
       yield put({ type: 'updateParams', payload: { ...filter } })
       yield put({ type: 'get' })
     },
     *search({}, { call, put, select }) {
       const { search } = yield select(state => state.projectList)
-      yield put({ type: 'setField', payload: { page_index: 1 } })
+      yield put({ type: 'setField', payload: { page: 1 } })
       yield put({ type: 'updateParams', payload: { search } })
       yield put({ type: 'get' })
     },
     *reset({}, { call, put, select }) {
       yield put({ type: 'resetFilter' })
-      yield put({ type: 'setField', payload: { page_index: 1 } })
+      yield put({ type: 'setField', payload: { page: 1 } })
       yield put({ type: 'clearParams' })
       yield put({ type: 'get' })
     },
-    *changePage({ payload : page_index }, { call, put, select }) {
-      const { page_size } = yield select(state => state.projectList)
-      yield put({ type: 'setField', payload: { page_index } })
+    *changePage({ payload : page }, { call, put, select }) {
+      const { pageSize } = yield select(state => state.projectList)
+      yield put({ type: 'setField', payload: { page } })
       yield put({ type: 'get' })
     },
-    *changePageSize({ payload: page_size }, { call, put, select }) {
-      yield put({ type: 'setField', payload: { page_size } })
-      yield put({ type: 'setField', payload: { page_index: 1 } })
+    *changePageSize({ payload: pageSize }, { call, put, select }) {
+      yield put({ type: 'setField', payload: { pageSize } })
+      yield put({ type: 'setField', payload: { page: 1 } })
       yield put({ type: 'get' })
     },
   },

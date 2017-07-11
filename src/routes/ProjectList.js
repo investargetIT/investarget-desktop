@@ -3,15 +3,18 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectListFilter } from '../components/Filter'
 import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
+  SelectProjectStatus,
 } from '../components/ExtraInput'
 const Search = Input.Search
+
+
 
 
 
@@ -20,6 +23,36 @@ const Search = Input.Search
 class ProjectList extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showModal: false,
+      projectId: null,
+      projectStatus: null,
+    }
+  }
+
+  showAuditModal = (id) => {
+    const project = this.props.list.filter(item => item.id == id)[0]
+    const status = project.projstatus.id
+    this.setState({ showModal: true, projectId: id, projectStatus: status })
+  }
+
+  handleProjectStatusChange = (value) => {
+    this.setState({ projectStatus: value })
+  }
+
+  handleOk = () => {
+    const { projectId, projectStatus } = this.state
+    api.editProj(projectId, { projstatus: projectStatus }).then(result => {
+      this.props.dispatch({ type: 'projectList/get' })
+      this.setState({ showModal: false, projectId: null, projectStatus: null })
+    }, error => {
+      this.setState({ showModal: false, projectId: null, projectStatus: null })
+      Modal.error({ title: '错误', content: error.message })
+    })
+  }
+
+  handleCancel = () => {
+    this.setState({ showModal: false, projectId: null, projectStatus: null })
   }
 
   handleDelete = (id) => {
@@ -63,7 +96,7 @@ class ProjectList extends React.Component {
   }
 
   render() {
-    const { location, total, list, loading, page_index, page_size, filter, search } = this.props
+    const { location, total, list, loading, page, pageSize, filter, search } = this.props
     const columns = [
       {
         title: '图片',
@@ -117,6 +150,7 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
+            <Button size="small" onClick={this.showAuditModal.bind(this, record.id)}>审核</Button>
             <Link to={'/app/project/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
@@ -153,13 +187,20 @@ class ProjectList extends React.Component {
         <Pagination
           className="ant-table-pagination"
           total={total}
-          current={page_index}
-          pageSize={page_size}
+          current={page}
+          pageSize={pageSize}
           onChange={this.handlePageChange}
           showSizeChanger
           onShowSizeChange={this.handleShowSizeChange}
           showQuickJumper
         />
+
+        <Modal title="修改项目状态" visible={this.state.showModal} onOk={this.handleOk} onCancel={this.handleCancel}>
+          <div style={{width: '60%', display: 'flex', alignItems: 'center', margin: '0 auto'}}>
+            <span style={{marginRight: '8px'}}>项目状态：</span>
+            <SelectProjectStatus style={{flexGrow: '1'}} value={this.state.projectStatus} onChange={this.handleProjectStatusChange} />
+          </div>
+        </Modal>
 
       </MainLayout>
     )

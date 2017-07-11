@@ -182,6 +182,17 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 })
 
 /**
+/**
+ * SelectProjectStatus
+ */
+const SelectProjectStatus = withOptionsAsync(SelectNumber, ['projstatus'], function(state) {
+  const { projstatus } = state.app
+  const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
+  return { options }
+})
+
+
+/**
  * CascaderCountry
  */
 
@@ -549,6 +560,7 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
+  SelectProjectStatus,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,

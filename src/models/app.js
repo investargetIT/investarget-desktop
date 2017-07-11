@@ -32,6 +32,7 @@ export default {
     orgtype: [],
     character: [],
     showChat: false,
+    projstatus: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
