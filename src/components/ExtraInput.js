@@ -447,15 +447,11 @@ const CheckboxTag = withOptionsAsync(CheckboxGroup, ['tag'], function(state) {
  * CheckboxProjStatus
  */
 
-const CheckboxProjStatus = withOptions(CheckboxGroup, [
-  { label: '未发布', value: 1 },
-  { label: '内容完善', value: 2 },
-  { label: '内容校对', value: 3 },
-  { label: '终审发布', value: 4 },
-  { label: '交易中', value: 5 },
-  { label: '已完成', value: 6 },
-  { label: '已下架', value: 7 },
-])
+const CheckboxProjStatus = withOptionsAsync(CheckboxGroup, ['projstatus'], function(state) {
+  const { projstatus } = state.app
+  const options = projstatus ? projstatus.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
 
 /**
  * CheckboxCurrencyType
