@@ -1,103 +1,66 @@
 import React from 'react';
-import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva';
-import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu } from 'antd'
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import { PAGE_SIZE, URI_6 } from '../constants'
-import { routerRedux } from 'dva/router'
-import UserModal from '../components/UserModal';
-import { UserListFilter } from '../components/Filter'
-import { UserListSearch } from '../components/Search'
+import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
+import * as api from '../api'
+
+
+import LeftRightLayout from '../components/LeftRightLayout'
+import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
+import { UserListFilter } from '../components/Filter'
+
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 const Option = Select.Option
+const Search = Input.Search
 
-const createStyle = {
-  marginBottom: '1.5em'
-}
 
-const operationStyle = {
-  margin: '0 .5em',
-  fontSize: '14px',
-  color: 'gray'
-}
 
-function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSource, total, page: current, intl, dispatch, loading }) {
+function UserList({ currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading }) {
 
-  function filterHandler() {
-    dispatch({
-      type: 'investorList/filter'
+  const handleFilterChange = (key, value) => {
+    dispatch({ type: 'userList/setFilter', payload: { [key]: value } })
+  }
+
+  const handleFilt = () => {
+    dispatch({ type: 'userList/filt' })
+  }
+
+  const handleReset = () => {
+    dispatch({ type: 'userList/reset' })
+  }
+
+  const handleSearchChange = (e) => {
+    const search = e.target.value
+    dispatch({ type: 'userList/setField', payload: { search } })
+  }
+
+  const handleSearch = (search) => {
+    dispatch({ type: 'userList/search' })
+  }
+
+  const handlePageChange = (page, pageSize) => {
+    dispatch({ type: 'userList/changePage', payload: page })
+  }
+
+  const handleShowSizeChange = (current, pageSize) => {
+    dispatch({ type: 'userList/changePageSize', payload: pageSize })
+  }
+
+  const handleDeleteUser = (id) => {
+    api.deleteUser(id).then(result => {
+      dispatch({ type: 'userList/get' })
+    }, error => {
+      Modal.error(error.message)
     })
   }
 
-  function resetHandler() {
-    dispatch({
-      type: 'investorList/resetFilter'
-    })
-  }
-
-  function searchHandler(e, a) {
-    console.log(e, a)
-    dispatch({
-      type: 'investorList/search'
-    })
-  }
-
-  function createHandler(values) {
-    dispatch({
-      type: 'users/create',
-      payload: values,
-    });
-  }
-
-  function operationHandler(action, id) {
-    console.log(action, id)
-    switch (action) {
-      case 'delete':
-        dispatch({
-          type: 'users/remove',
-          payload: id,
-        })
-        break
-      case 'edit':
-        dispatch({
-          type: 'users/patch',
-          payload: { id, values },
-        })
-        break
-    }
-  }
-
-  function pageChangeHandler(page) {
-    dispatch(routerRedux.push({
-      pathname: URI_6,
-      query: { page },
-    }));
-  }
-
-  const menu = (
-    <Menu>
-      <Menu.Item>待审核</Menu.Item>
-      <Menu.Item>审核通过</Menu.Item>
-      <Menu.Item>审核退回</Menu.Item>
-    </Menu>
-  )
-  function filterOnChange(type, value) {
-    dispatch({
-      type: 'investorList/filterOnChange',
-      payload: {
-        type,
-        value
-      }
-    })
-  }
 
   const rowSelection = {
     selectedRowKeys,
     onChange: selectedRowKeys => dispatch({
-      type: "investorList/onSelectedRowKeysChanged",
+      type: "userList/onSelectedRowKeysChanged",
       payload: selectedRowKeys
     })
   }
@@ -110,7 +73,7 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
     },
     {
       title: i18n("org"),
-      dataIndex: 'org.name',
+      dataIndex: 'org.orgname',
       key: 'org'
     },
     {
@@ -134,9 +97,15 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
       key: 'action',
       render: (text, record) => (
             <span>
-              <Button disabled={!record.action.get} size="small" onClick={operationHandler.bind(null, 'get', record.id)}>{i18n("view")}</Button>&nbsp;
-              <Button disabled={!record.action.change} size="small" onClick={operationHandler.bind(null, 'edit', record.id)}>{i18n("edit")}</Button>&nbsp;
-              <Popconfirm title="Confirm to delete?" onConfirm={operationHandler.bind(null, 'delete', record.id)}>
+              <Link to={'/app/user/' + record.id}>
+                <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>
+              </Link>
+              &nbsp;
+              <Link to={'/app/user/edit/' + record.id}>
+                <Button disabled={!record.action.change} size="small">{i18n("edit")}</Button>
+              </Link>
+              &nbsp;
+              <Popconfirm title="Confirm to delete?" onConfirm={handleDeleteUser.bind(null, record.id)}>
                 <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
               </Popconfirm>
             </span>
@@ -154,23 +123,18 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
 
       <UserListFilter
         value={filter}
-        onChange={filterOnChange}
-        onSearch={filterHandler}
-        onReset={resetHandler} />
+        onChange={handleFilterChange}
+        onSearch={handleFilt}
+        onReset={handleReset} />
 
-      <div style={createStyle}>
-        <UserModal record={{}} onOk={createHandler}>
-          <Button type="primary">Create User</Button>
-        </UserModal>
-        <div style={{ float: 'right' }}>
-          <UserListSearch onSearch={searchHandler} />
-        </div>
+      <div style={{marginBottom: '24px'}}>
+        <Search value={search} onChange={handleSearchChange} placeholder="搜索用户" style={{width: 200}} onSearch={handleSearch} />
       </div>
 
       <Table
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={list}
         loading={loading}
         rowKey={record => record.id}
         pagination={false} />
@@ -178,28 +142,31 @@ function UserList({ currentUser, selectedRowKeys, filter, location, list: dataSo
       <Pagination
         className="ant-table-pagination"
         total={total}
-        current={current}
-        pageSize={10}
-        onChange={pageChangeHandler} showSizeChanger showQuickJumper />
+        current={page}
+        pageSize={pageSize}
+        onChange={handlePageChange}
+        onShowSizeChange={handleShowSizeChange}
+        showSizeChanger
+        showQuickJumper />
 
     </LeftRightLayout>
   )
 }
 
 function mapStateToProps(state) {
-  const filter = state.investorList
-  const { selectedRowKeys } = filter
-  const { list, total, page } = state.users
+  const { filter, search, selectedRowKeys, list, total, page, pageSize } = state.userList
   const { currentUser } = state
   return {
     filter,
+    search,
     selectedRowKeys,
-    loading: state.loading.effects['users/get'],
     list,
     total,
     page,
-    currentUser
+    pageSize,
+    currentUser,
+    loading: state.loading.effects['userList/get'],
   }
 }
 
-export default connect(mapStateToProps)(injectIntl(UserList))
+export default connect(mapStateToProps)(UserList)
