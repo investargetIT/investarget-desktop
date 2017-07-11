@@ -1,12 +1,73 @@
 import React from 'react'
 import * as api from '../api'
+window.api = api
+import { formatMoney } from '../utils/util'
+
 
 import { Timeline, Icon, Tag } from 'antd'
 import MainLayout from '../components/MainLayout'
 
 
 
+function Field (props) {
+  return (
+    <div style={{display: 'flex'}}>
+      <span style={{width: '150px'}}>{props.label}</span>
+      <span>{props.value}</span>
+    </div>
+  )
+}
+
+
+class ProjectFinanceYear extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      finance: []
+    }
+  }
+
+  componentDidMount() {
+    const id = this.props.projId
+    api.getProjFinance(id).then(result => {
+      this.setState({ finance: result.data.data })
+    })
+  }
+
+  render() {
+    const { finance } = this.state
+    return finance.length > 0 ? (
+      <div>
+        <h2>财务年度</h2>
+        <div>
+          {
+            finance.map(item =>
+              <div key={item.fYear}>
+                <h3>财务年度 {item.fYear}</h3>
+                <div>
+                  <Field label="营收(美元)" value={item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'} />
+                  <Field label="净利润(美元)" value={item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} />
+                  <Field label="毛利润(美元)" value={item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} />
+                  <Field label="总资产(美元)" value={item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} />
+                  <Field label="净资产(美元)" value={item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} />
+                  <Field label="净现金流(美元)" value={item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} />
+                  <Field label="经营性现金流(美元)" value={item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} />
+                  <Field label="息税折旧摊销前利润(美元)" value={item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} />
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    ) : null
+  }
+
+}
+
+
+
 class ProjectDetail extends React.Component {
+
   constructor(props) {
     super(props)
 
@@ -24,93 +85,149 @@ class ProjectDetail extends React.Component {
   }
 
   render() {
+    const id = this.props.params.id
     const project = this.state.project
+
     return (
       <MainLayout location={this.props.location}>
         <h1>{project.projtitle}</h1>
 
         <div>
-          <span>发布时间2016-10-12{/* time */}</span>
-          <span>NO: P201610120002{/* NO. */}</span>
+          <span>发布时间 {project.createdtime && project.createdtime.substr(0,10)}</span>
         </div>
 
         <div>
           <h2>项目审核流程</h2>
-          <Timeline>
-            <Timeline.Item dot={<Icon type="clock-circle-o" style={{ fontSize: '16px' }} />} color="red">内容完善</Timeline.Item>
-            <Timeline.Item>内容校对</Timeline.Item>
-            <Timeline.Item>终审发布</Timeline.Item>
-            <Timeline.Item>交易中</Timeline.Item>
-            <Timeline.Item>已完成</Timeline.Item>
-            <Timeline.Item>已下架</Timeline.Item>
-          </Timeline>
+          <div>
+            <Tag color={project.projstatus && project.projstatus.id == 2 ? 'pink' : null}>内容完善</Tag>
+            <Tag color={project.projstatus && project.projstatus.id == 3 ? 'pink' : null}>内容校对</Tag>
+            <Tag color={project.projstatus && project.projstatus.id == 4 ? 'pink' : null}>终审发布</Tag>
+            <Tag color={project.projstatus && project.projstatus.id == 6 ? 'pink' : null}>交易中</Tag>
+            <Tag color={project.projstatus && project.projstatus.id == 7 ? 'pink' : null}>已完成</Tag>
+            <Tag color={project.projstatus && project.projstatus.id == 8 ? 'pink' : null}>已下架</Tag>
+          </div>
+        </div>
+
+        <div>
+          <img src={(project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl' } />
         </div>
 
         <div>
           <h2>项目简介</h2>
           <div>
-            <div>简介</div>
             <div>
-              <Tag color="orange">TMT</Tag>
-              <Tag color="orange">大数据</Tag>
+              {project.p_introducte}
             </div>
             <div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>项目地区:</span>
-                <span>美国</span>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>项目行业:</span>
-                <span>化学药与生物药</span>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>项目类型:</span>
-                <span>股权融资</span>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>我的角色:</span>
-                <span>财务顾问</span>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>拟交易规模:</span>
-                <span>$40,000,000</span>
-              </div>
-              <div style={{display: 'flex'}}>
-                <span style={{width: '150px'}}>公司估值:</span>
-                <span>$60,000,000</span>
-              </div>
+              {
+                project.tags && project.tags.map(item =>
+                  <Tag key={item.id} color="orange">{item.name}</Tag>
+                )
+              }
+            </div>
+            <div>
+              <Field label="项目地区:" value={project.country && project.country.country} />
+              <Field label="项目行业:" value={project.industries && project.industries[0] && project.industries[0].industry} />
+              <Field label="项目类型:" value={project.transactionType && project.transactionType[0] && project.transactionType[0].name} />
+              <Field label="我的角色:" value={project.character && project.character.character} />
+              <Field label="拟交易规模:" value={project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'} />
+              <Field label="公司估值:" value={project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'} />
             </div>
           </div>
         </div>
 
         <div>
-          <h2>项目详情</h2>
+          <h2>保密信息</h2>
           <div>
-            <div>
-              <h3>目标市场</h3>
-              <p>
-                缺氧是包括中风、心肌梗死、呼吸道疾病和癌症在内的许多疾病死亡的原因，对抗缺氧的安全有效的新方法将代表医学的重大突破
-                <br/><br/>这种新的缺氧治疗为肿瘤学、心血管、呼吸和神经退行性疾病这些尚有未满足的医疗需求的十亿级美元市场提供了大量机会
-                <br/><br/>缺氧有关的癌症耐药性：胶质母细胞瘤全球市场超过50亿美元，在美国有17万患者，在全球有37.5万名患者；胰腺癌全球市场超过10亿美元，美国有1.2万患者，全球有2.8万患者；转移性脑癌全球市场超过30亿美元，美国有4.5万患者，全球有10万名患者
-              </p>
-            </div>
-            <div>
-              <h3>核心产品</h3>
-              <p>
-                TSC的机制是基于最基本层面的物理化学法，可适用于所有病人；也不需要额外的检查（X光等）来确定病人是否适合用药
-                <br/><br/>在治疗癌症时，TSC作用于肿瘤缺氧的微环境，重新氧化组织，使肿瘤细胞更容易受到放射治疗和化疗的疗效
-                <br/><br/>结合一线放疗和化疗的新诊断出患有脑癌（“胶质母细胞瘤”或“GBM”）病人的1/2期TSC临床试验在2015年完成；这个试验提供了有效性和安全性延长总生存期且不增加毒性的证据；基于这些结果，公司预备phase 3的关键阶段试验以支持认证
-                <br/><br/>TSC被授予FDA治疗GBM的孤儿药认证
-                <br/><br/>TSC在预备胰腺癌的phase 2阶段，进行由世界级胰腺癌专家指导设计的临床试验
-                <br/><br/>TSC被授予FDA治疗转移性脑癌的孤儿药认证
-                <br/><br/>TSC已经获得FDA在一些癌症治疗方面的孤儿药认证，对其他的癌症也是可行的
-                <br/><br/>公司的TSC技术因为其新颖的安全氧化缺氧组织机制，可以治疗无数心血管、呼吸、神经退行性疾病及癌症，已有许多临床前数据支持，有合作协议之后这几类病症的phase 2可以迅速启动，包括慢性阻塞性肺病、肺气肿和急性呼吸窘迫(ARDS)，心血管/紧急情况（中风、心肌梗死、外周动脉疾病/危重肢体缺血和出血性休克）和神经退行性疾病（帕金森症和阿尔茨海默氏症）
-              </p>
-            </div>
+            <Field label="姓名：" value={project.contactPerson} />
+            <Field label="电话：" value={project.phoneNumber} />
+            <Field label="邮箱：" value={project.email} />
+            <Field label="上传者：" value={project.supportUser && project.supportUser.username} />
+            <Field label="负责人：" value={project.makeUser && project.makeUser.username} />
           </div>
         </div>
 
-        {/* TODO// 项目图片 */}
+        <ProjectFinanceYear projId={id} />
+
+        <div>
+          <h2>项目详情</h2>
+          <div>
+            {
+              project.targetMarket ? (
+                <div>
+                  <h3>目标市场</h3>
+                  <p>{project.targetMarket}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.productTechnology ? (
+                <div>
+                  <h3>核心产品</h3>
+                  <p>{project.productTechnology}</p>
+                </div>
+              ): null
+            }
+            {
+              project.businessModel ? (
+                <div>
+                  <h3>商业模式</h3>
+                  <p>{project.businessModel}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.brandChannel ? (
+                <div>
+                  <h3>品牌渠道</h3>
+                  <p>{project.brandChannel}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.managementTeam ? (
+                <div>
+                  <h3>管理团队</h3>
+                  <p>{project.managementTeam}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.Businesspartners ? (
+                <div>
+                  <h3>商业伙伴</h3>
+                  <p>{project.Businesspartners}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.useOfProceed ? (
+                <div>
+                  <h3>资金用途</h3>
+                  <p>{project.useOfProceed}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.financingHistory ? (
+                <div>
+                  <h3>融资历史</h3>
+                  <p>{project.financingHistory}</p>
+                </div>
+              ) : null
+            }
+            {
+              project.operationalData ? (
+                <div>
+                  <h3>经营数据</h3>
+                  <p>{project.operationalData}</p>
+                </div>
+              ) : null
+            }
+          </div>
+        </div>
+
+
         {/* TODO// 收藏/取消收藏 */}
         {/* TODO// 感兴趣的人 */}
         {/* TODO// 联系交易师 */}

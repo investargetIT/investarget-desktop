@@ -44,6 +44,7 @@ function RouterConfig({ history }) {
       <Route path="/app/project/list/interest" component={FavoriteProjectList} />
       <Route path="/app/project/add" component={AddProject} />
       <Route path="/app/project/edit/:id" component={EditProject} />
+      <Route path="/app/project/:id" component={ProjectDetail} />
       <Route path={URI_14} component={PermList} />
       <Route path={URI_7} component={DataRoomList} />
 
