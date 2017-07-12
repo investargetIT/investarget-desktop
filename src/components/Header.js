@@ -29,6 +29,12 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
           payload: !collapsed
         })
         break
+      case "chat":
+        dispatch({
+          type: 'app/toggleChat',
+          payload: true
+        })
+        break
     }
 
   }
@@ -71,6 +77,8 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
       { currentUser ? logout : login }
 
       { currentUser ? null : register }
+
+      <Menu.Item key="chat" style={{ float: 'right' }}>IM</Menu.Item>
 
     </Menu>
   );

@@ -31,6 +31,7 @@ export default {
     orgarea: [],
     orgtype: [],
     character: [],
+    showChat: false,
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -47,6 +48,9 @@ export default {
     },
     toggleMenu(state, { payload: collapsed }) {
       return { ...state, collapsed }
+    },
+    toggleChat(state, { payload: showChat }) {
+      return { ...state, showChat }
     }
   },
   effects: {

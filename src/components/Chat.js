@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 
 const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 //const mySpeechBubbleColor = 'lightBlue'
@@ -93,15 +94,7 @@ const mainContainerWidth = 700
 const topBarHeight = 48
 const rightContainerBackground = 'rgb(243, 243, 243)'
 const contactPercent = 0.35
-
-const mainContainerStyle = {
-  position: 'fixed',
-  right: 0,
-  bottom: 0,
-  width: mainContainerWidth,
-  height: mainContainerHeight,
-  boxShadow: '-3px -2px 8px -1px rgba(0, 0, 0, 0.2)',
-}
+const closeIconHeight = 20
 
 const leftContainerStyle = {
   width: contactPercent * 100 + '%',
@@ -154,7 +147,7 @@ const messageContainerStyle = {
 }
 
 const contentContainerStyle = {
-  height: '40%',
+  height: (1 - topBarHeight / mainContainerHeight - 0.6) * 100 + '%',
   background: 'red'
 }
 
@@ -304,6 +297,7 @@ class Chat extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleChannelClicked = this.handleChannelClicked.bind(this)
+    this.handleCloseChatDialog = this.handleCloseChatDialog.bind(this)
   }
 
   componentDidUpdate() {
@@ -345,7 +339,25 @@ class Chat extends React.Component {
     this.setState({ channel: channel })
   }
 
+  handleCloseChatDialog() {
+    this.props.dispatch({
+      type: 'app/toggleChat',
+      payload: false
+    })
+  }
+
   render () {
+    const mainContainerStyle = {
+      position: 'fixed',
+      left: (window.innerWidth - mainContainerWidth) / 2,
+      top: (window.innerHeight - mainContainerHeight) / 2,
+      width: mainContainerWidth,
+      height: mainContainerHeight,
+      boxShadow: '0 0 1em rgba(0, 0, 0, 0.2)',
+      zIndex: 99,
+      display: this.props.showChat ? 'block' : 'none'
+    }
+
     const contactJSX = this.state.channels.map(m =>
       <Contact
         key={m.id}
@@ -379,6 +391,7 @@ class Chat extends React.Component {
 
           <div style={titleContainerStyle}>
             <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
+            <img onClick={this.handleCloseChatDialog} style={{ cursor: 'pointer', float: 'right', width: closeIconHeight, marginTop: (topBarHeight - closeIconHeight) / 2 }} src="/images/ic_close_black_24px.svg" />
           </div>
 
           <div ref="inputTextContent" style={messageContainerStyle}>
@@ -390,7 +403,7 @@ class Chat extends React.Component {
               onChange={this.handleInputChange}
               onKeyPress={this.handleKeyPress}
               value={this.state.inputValue}
-              style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black' }} />
+              style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
           </div>
 
         </div>
@@ -400,4 +413,9 @@ class Chat extends React.Component {
   }
 }
 
-export default Chat
+function mapStateToProps(state) {
+  const { showChat } = state.app
+  return { showChat }
+}
+
+export default connect(mapStateToProps)(Chat)
