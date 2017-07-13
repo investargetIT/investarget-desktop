@@ -21,6 +21,7 @@ import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
 import FavoriteProjectList from './routes/FavoriteProjectList'
 import ProjectDetail from './routes/ProjectDetail'
+import EditUser from './routes/EditUser'
 
 function RouterConfig({ history }) {
   return (
@@ -47,6 +48,7 @@ function RouterConfig({ history }) {
       <Route path="/app/project/:id" component={ProjectDetail} />
       <Route path={URI_14} component={PermList} />
       <Route path={URI_7} component={DataRoomList} />
+      <Route path="/app/user/edit/:id" component={EditUser} />
 
     </Router>
   )

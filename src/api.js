@@ -94,6 +94,10 @@ export function deleteOrg(id) {
   return r('/org/' + id + '/', 'DELETE')
 }
 
+export function getOrgDetailLang(id, param) {
+  return r('/org/' + id + '/?' + qs.stringify(param))
+}
+
 export function getOrgDetail(id, param) {
   return r2('/org/' + id + '/?' + qs.stringify(param))
 }
@@ -244,6 +248,26 @@ export function getUser(param) {
     }
   })
   return r('/user/?' + qs.stringify(param))
+}
+
+export function addUser(param) {
+  return r('/user/', 'POST', param)
+}
+
+export function editUser(id, param) {
+  const data = {
+    'userlist': [id],
+    'userdata': param,
+  }
+  return r('/user/', 'PUT', data)
+}
+
+export function getUserBase(id) {
+  return r('/user/' + id + '/')
+}
+
+export function getUserDetail(id) {
+  return r2('/user/detail/' + id + '/')
 }
 
 export function login(values) {

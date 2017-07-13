@@ -183,11 +183,120 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 
 /**
 /**
+/**
+ * SelectExistOrganization
+ */
+class SelectExistOrganization extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      org: [],
+    }
+
+    if (props.value) {
+      this.getOrg(props.value)
+    }
+  }
+
+  getOrg = (id) => {
+    api.getOrgDetailLang(id).then(result => {
+      const org = result.data
+      this.setState({
+        org: [{ value: org.id, label: org.orgname }],
+      })
+    })
+  }
+
+  handleSearch = value => {
+    // 清空 value 和更新 org 同时进行
+    const isNumber = !Number.isNaN(parseInt(value))
+    if (!isNumber && value.length >= 2) {
+      this.props.onChange(undefined)
+      api.getOrg({search: value}).then(data => {
+        const org = data.data.data.map(item => {
+          return { value: item.id, label: item.orgname }
+        })
+        this.setState({ org })
+      })
+    }
+  }
+
+  handleChange = (value) => {
+    this.props.onChange(Number(value))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value && this.state.org.length == 0) {
+      this.getOrg(nextProps.value)
+    }
+  }
+
+  render() {
+    const { showSearh, value, onSearch, onChange, placeholder, children, optionLabelProp, ...extraProps } = this.props
+    const { org } = this.state
+    return (
+      <Select
+        showSearch
+        value={value && String(value)}
+        onSearch={this.handleSearch}
+        onChange={this.handleChange}
+        placeholder="输入至少2个字，查找机构"
+        optionFilterProp="children"
+        optionLabelProp="children"
+        {...extraProps}
+      >
+        { org ? org.map(d => <Option key={d.value} value={String(d.value)}>{d.label}</Option> ) : null }
+      </Select>
+    )
+  }
+}
+/**
+/**
  * SelectProjectStatus
  */
 const SelectProjectStatus = withOptionsAsync(SelectNumber, ['projstatus'], function(state) {
   const { projstatus } = state.app
   const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
+  return { options }
+})
+
+/**
+ * SelectUserGroup // 值要包装在数组中
+ */
+class SelectUserGroup extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      options: [],
+    }
+  }
+
+  handleChange = (value) => {
+    this.props.onChange([value])
+  }
+
+  componentDidMount() {
+    api.queryUserGroup().then(result => {
+      const groups = result.data.data
+      const options = groups.map(item => ({ label: item.name, value: item.id }))
+      this.setState({ options })
+    })
+  }
+
+  render() {
+    const { value, onChange, children, ...extraProps } = this.props
+    return (
+      <SelectNumber options={this.state.options} value={value && value[0]} onChange={this.handleChange} {...extraProps} />
+    )
+  }
+}
+
+/**
+ * SelectTitle
+ */
+const SelectTitle = withOptionsAsync(SelectNumber, ['title'], function(state) {
+  const { title } = state.app
+  const options = title ? title.map(item => ({ value: item.id, label: item.name })) : []
   return { options }
 })
 
@@ -556,7 +665,10 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
+  SelectExistOrganization,
   SelectProjectStatus,
+  SelectUserGroup,
+  SelectTitle,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
