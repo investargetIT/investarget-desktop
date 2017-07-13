@@ -308,13 +308,13 @@ class Chat extends React.Component {
   }
 
   handleInputChange(evt) {
-    this.setState({ inputValue: evt.target.value.trim() })
+    this.setState({ inputValue: evt.target.value.replace(/\n/, "") })
   }
 
   handleKeyPress(evt) {
     const value = evt.target.value
     const keyCode = evt.keyCode || evt.which
-    if (value !== "" && keyCode === 13) {
+    if (value.trim() !== "" && keyCode === 13) {
       const existKey = this.state.messages.map(m => m.id)
       this.setState({
         messages: this.state.messages.concat({

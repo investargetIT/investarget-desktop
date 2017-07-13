@@ -78,7 +78,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
       { currentUser ? null : register }
 
-      <Menu.Item key="chat" style={{ float: 'right' }}>IM</Menu.Item>
+      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}>IM</Menu.Item> : null }
 
     </Menu>
   );
