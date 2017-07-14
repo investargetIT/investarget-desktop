@@ -3,8 +3,8 @@ import * as api from '../api'
 export default {
   namespace: 'favoriteProjectList',
   state: {
-    page_index: 1,
-    page_size: 10,
+    page: 1,
+    pageSize: 10,
     total: 0,
     list: [],
   },
@@ -30,21 +30,21 @@ export default {
       yield put({ type: 'get' })
     },
     *get({ payload: _params }, { call, put, select }) {
-      const { page_size, page_index } = yield select(state => state.favoriteProjectList)
-      let params = { page_size, page_index }
+      const { pageSize, page } = yield select(state => state.favoriteProjectList)
+      let params = { page_size: pageSize, page_index: page }
       console.log('>>>', params)
       // let result = yield call(api.getFavoriteProj, params)
       let result = yield call(api.getProj, params)
       yield put({ type: 'save', payload: { total: result.data.count, list: result.data.data } })
     },
-    *changePage({ payload : page_index }, { call, put, select }) {
-      const { page_size } = yield select(state => state.favoriteProjectList)
-      yield put({ type: 'setField', payload: { page_index } })
+    *changePage({ payload : page }, { call, put, select }) {
+      const { pageSize } = yield select(state => state.favoriteProjectList)
+      yield put({ type: 'setField', payload: { page } })
       yield put({ type: 'get' })
     },
-    *changePageSize({ payload: page_size }, { call, put, select }) {
-      yield put({ type: 'setField', payload: { page_size } })
-      yield put({ type: 'setField', payload: { page_index: 1 } })
+    *changePageSize({ payload: pageSize }, { call, put, select }) {
+      yield put({ type: 'setField', payload: { pageSize } })
+      yield put({ type: 'setField', payload: { page: 1 } })
       yield put({ type: 'get' })
     },
   },

@@ -59,7 +59,7 @@ class OrganizationList extends React.Component {
   }
 
   render() {
-    const { location, total, list, loading, page_index, page_size, filter, search } = this.props
+    const { location, total, list, loading, page, pageSize, filter, search } = this.props
 
     const columns = [
       { title: '名称', key: 'orgname', dataIndex: 'orgname' },
@@ -110,8 +110,8 @@ class OrganizationList extends React.Component {
           <Pagination
             className="ant-table-pagination"
             total={total}
-            current={page_index}
-            pageSize={page_size}
+            current={page}
+            pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
             onShowSizeChange={this.handleShowSizeChange}
