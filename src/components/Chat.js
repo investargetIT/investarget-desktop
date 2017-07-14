@@ -8,7 +8,7 @@ const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 function SpeechOfMy(props) {
   return (
     <div style={{ overflow: 'auto' }}>
-    <div style={{ float: 'right' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src="/images/default-avatar.png" /></div>
+    <div style={{ float: 'right' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src={props.avatarUrl} /></div>
     <div className="my-talk-bubble" style={{ float: 'right', maxWidth: '75%', marginRight: 8, position: 'relative', border: `1px solid ${mySpeechBubbleColor}`, borderRadius: 4 }}>
       <div style={{ padding: '6px 10px', background: mySpeechBubbleColor, lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
     </div>
@@ -19,7 +19,7 @@ function SpeechOfMy(props) {
 function SpeechOfOthers(props) {
   return (
     <div style={{ overflow: 'auto' }}>
-      <div style={{ float: 'left' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src="/images/default-avatar.png" /></div>
+      <div style={{ float: 'left' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src={props.avatarUrl} /></div>
       <div className="other-talk-bubble" style={{ float: 'left', maxWidth: '75%', marginLeft: 8, position: 'relative', border: '1px solid white', borderRadius: 4 }}>
         <div style={{ padding: '6px 10px', background: 'white', lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
       </div>
@@ -74,7 +74,7 @@ function Contact(props) {
   return (
     <div style={contactContainerStyle1} onClick={evt => props.onClick(props.channel)}>
       <div style={contactAvatarContainerStyle}>
-        <img style={{ width: contactAvatarSize, height: contactAvatarSize, borderRadius: 2 }} src="/images/default-avatar.png" />
+        <img style={{ width: contactAvatarSize, height: contactAvatarSize, borderRadius: 2 }} src={props.imgUrl} />
       </div>
       <div style={contactRightContainerStyle}>
         <div style={contactRightContentStyle}>
@@ -160,9 +160,9 @@ class Chat extends React.Component {
       channel: {
         id: 1,
         imgUrl: '...',
-        name: '小懒猪',
+        name: '小型',
         latestMessage: {
-          content: '这是小懒猪再一次发送的文本内容',
+          content: '这是小型再一次发送的文本内容',
           time: '1:15 PM'
         },
         member: [
@@ -184,7 +184,7 @@ class Chat extends React.Component {
           user: {
             id: 1,
             name: '小游侠',
-            photoUrl: '...',
+            photoUrl: '/images/default-avatar.png',
           },
           time: '2017-07-10 17:50:38',
           channelId: 1,
@@ -195,20 +195,20 @@ class Chat extends React.Component {
           id: 2,
           user: {
             id: 2,
-            name: '小懒猪',
-            photoUrl: '...',
+            name: '小型',
+            photoUrl: '/images/avatar1.png',
           },
           time: '2017-07-10 17:50:48',
           channelId: 1,
           type: 'text',
-          content: '这是小懒猪发送的文本内容'
+          content: '这是小型发送的文本内容'
         },
         {
           id: 3,
           user: {
             id: 1,
             name: '小游侠',
-            photoUrl: '...',
+            photoUrl: '/images/default-avatar.png',
           },
           time: '2017-07-10 17:50:58',
           channelId: 1,
@@ -219,22 +219,22 @@ class Chat extends React.Component {
           id: 4,
           user: {
             id: 2,
-            name: '小懒猪',
-            photoUrl: '...',
+            name: '小型',
+            photoUrl: '/images/avatar1.png',
           },
           time: '2017-07-10 17:51:08',
           channelId: 1,
           type: 'text',
-          content: '这是小懒猪再一次发送的文本内容'
+          content: '这是小型再一次发送的文本内容'
         },
       ],
       channels: [
         {
           id: 1,
-          imgUrl: '...',
-          name: '小懒猪',
+          imgUrl: '/images/avatar1.png',
+          name: '小型',
           latestMessage: {
-            content: '这是小懒猪再一次发送的文本内容',
+            content: '这是小型再一次发送的文本内容',
             time: '1:15 PM'
           },
           member: [
@@ -252,8 +252,8 @@ class Chat extends React.Component {
         },
         {
           id: 2,
-          imgUrl: '...',
-          name: '小兵张嘎',
+          imgUrl: '/images/avatar3.png',
+          name: '小兵',
           latestMessage: {
             content: '这是小兵小小兵再一次发送的文本内容',
             time: '11:38 AM'
@@ -273,7 +273,7 @@ class Chat extends React.Component {
         },
         {
           id: 3,
-          imgUrl: '...',
+          imgUrl: '/images/avatar2.png',
           name: '小红',
           latestMessage: {
             content: '这是小红再一次发送的文本内容',
@@ -322,7 +322,7 @@ class Chat extends React.Component {
           user: {
             id: 1,
             name: '小游侠',
-            photoUrl: '...'
+            photoUrl: '/images/default-avatar.png'
           },
           time: '2017-07-10 17:58:08',
           channelId: this.state.channel.id,
@@ -363,6 +363,7 @@ class Chat extends React.Component {
         key={m.id}
         isActive={this.state.channel.id === m.id}
         channel={m}
+        imgUrl={m.imgUrl}
         name={m.name}
         latestMessage={m.latestMessage}
         onClick={this.handleChannelClicked} />
@@ -370,7 +371,9 @@ class Chat extends React.Component {
 
     const messagesJSX = this.state.messages.filter(f => f.channelId === this.state.channel.id).map(m =>
       <li key={m.id} style={{ marginTop: 20 }}>
-        {m.user.id === 1 ? <SpeechOfMy>{m.content}</SpeechOfMy> : <SpeechOfOthers>{m.content}</SpeechOfOthers>}
+        {m.user.id === 1 ?
+          <SpeechOfMy avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfMy>
+          : <SpeechOfOthers avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfOthers>}
       </li>
     )
 
