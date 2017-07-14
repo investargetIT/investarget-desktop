@@ -16,6 +16,7 @@ import {
   CheckboxOrganizationType,
   CheckboxProjStatus,
   SelectOrganizatonArea,
+  SelectTimelineStatus,
   SliderMoney,
   TabCheckboxIndustry,
   TabCheckboxCountry,
@@ -142,15 +143,23 @@ function ProjectStatusFilter(props) {
   )
 }
 
+function TimelineStatusFilter(props) {
+  return (
+    <BasicContainer label="状态">
+      <SelectTimelineStatus style={{width: '200px'}} value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
 
 
 function UserListFilter(props) {
   return (
     <div>
-      <TransactionPhaseFilter value={props.value.transactionPhases} onChange={props.onChange.bind(this, 'transactionPhases')} />
+      <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={props.onChange.bind(this, 'orgtransactionphases')} />
       <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
       <CurrencyFilter value={props.value.currency} onChange={props.onChange.bind(this, 'currency')} />
-      <UserAuditFilter value={props.value.audit} onChange={props.onChange.bind(this, 'audit')} />
+      <UserAuditFilter value={props.value.userstatus} onChange={props.onChange.bind(this, 'userstatus')} />
       <OrganizationAreaFilter value={props.value.areas.map(item=>item.toString())} onChange={props.onChange.bind(this, 'areas')} />
       <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
@@ -189,6 +198,15 @@ function ProjectListFilter(props) {
   )
 }
 
+function TimelineListFilter(props) {
+  return (
+    <div>
+      <TimelineStatusFilter value={props.value.status} onChange={props.onChange.bind(this, 'status')} />
+      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
+    </div>
+  )
+}
+
 
 
 ///// used in AddUser.js TODO:// refractor
@@ -204,4 +222,5 @@ module.exports = {
   UserListFilter,
   OrganizationListFilter,
   ProjectListFilter,
+  TimelineListFilter,
 }

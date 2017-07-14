@@ -16,6 +16,7 @@ const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
 import _ from 'lodash'
+import * as api from '../api'
 
 
 function Select2 ({options, children, ...extraProps}) {
@@ -182,7 +183,58 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 })
 
 /**
+ * SelectTimelineStatus
+ */
+const timelineStatusOptions = [{ label: '全部', value: 0 }, { label: '未结束', value: 1 }, { label: '已接受', value: 2 }]
+const SelectTimelineStatus = withOptions(SelectNumber, timelineStatusOptions)
+
 /**
+ * SelectOrganization
+ */
+class SelectOrganization extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      org: [],
+    }
+  }
+
+  handleOrgChange = value => {
+
+    if (value === '') {
+      this.setState({ org: [] })
+      return
+    } else if (value.length < 2) {
+      this.setState({ org: [] })
+      return
+    } else if (this.state.org.map(i => i.name).includes(value)) {
+      return
+    }
+
+    api.getOrg({search: value}).then(data => {
+      const org = data.data.data.map(item => {
+        return { id: item.id, name: item.orgname }
+      })
+      this.setState({ org: org })
+    })
+  }
+
+  onChange = (value) => {
+    this.props.onChange(value)
+    this.handleOrgChange(value)
+  }
+
+  render() {
+    const { org } = this.state
+    return (
+      <Select mode="combobox" value={this.props.value} onChange={this.onChange}>
+        { org ? org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
+      </Select>
+    )
+  }
+}
+
 /**
  * SelectExistOrganization
  */
@@ -250,7 +302,60 @@ class SelectExistOrganization extends React.Component {
     )
   }
 }
+
+
 /**
+ * SelectUser
+ */
+class SelectUser extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: [],
+    }
+  }
+
+  handleSearch = (value) => {
+    if (value == '') {
+      this.setState({ data: [] })
+      return
+    }
+    // TODO// api.getUser
+  }
+
+  render() {
+    return (
+      <Select
+        showSearch
+        optionFilterProp="children"
+        onSearch={this.handleSearch}
+        value={this.props.value}
+        onChange={this.props.onChange}
+      >
+        {this.state.data.map(d => <Option key={d.value}>{d.text}</Option>)}
+      </Select>
+    )
+  }
+}
+
+/**
+ * SelectTimelineProcess
+ */
+const timelineProcessOptions = [
+  { label: '获取项目概要', value: 0 },
+  { label: '签署保密协议', value: 1 },
+  { label: '获取投资备忘录', value: 2 },
+  { label: '进入一期资料库', value: 3 },
+  { label: '签署投资意向书/投资条款协议', value: 4 },
+  { label: '进入二期资料库', value: 5 },
+  { label: '进场尽职调查', value: 6 },
+  { label: '签署约束性报价书', value: 7 },
+  { label: '起草法律协议', value: 8 },
+  { label: '签署法律协议', value: 9 },
+  { label: '完成交割', value: 10 },
+]
+const SelectTimelineProcess = withOptions(SelectNumber, timelineProcessOptions)
+
 /**
  * SelectProjectStatus
  */
@@ -657,6 +762,8 @@ const RadioAudit = withOptionsAsync(RadioGroup2, ['audit'], function(state) {
 
 
 export {
+  SelectNumber,
+
   SelectTag,
   SelectRole,
   SelectYear,
@@ -665,7 +772,11 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
+  SelectTimelineStatus,
+  SelectOrganization,
   SelectExistOrganization,
+  SelectUser,
+  SelectTimelineProcess,
   SelectProjectStatus,
   SelectUserGroup,
   SelectTitle,

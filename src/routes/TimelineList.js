@@ -6,7 +6,7 @@ import { i18n } from '../utils/util'
 import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
+import { TimelineListFilter } from '../components/Filter'
 import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
@@ -14,68 +14,66 @@ import {
 const Search = Input.Search
 
 
-
-
-
-
-class DataRoomList extends React.Component {
-
+class TimelineList extends React.Component {
   constructor(props) {
     super(props)
   }
 
   handleDelete = (id) => {
-    this.props.dispatch({ type: 'dataRoomList/delete', payload: id })
+    this.props.dispatch({ type: 'timelineList/delete', payload: id })
   }
 
 
   handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'dataRoomList/setFilter', payload: { [key]: value } })
+    this.props.dispatch({ type: 'timelineList/setFilter', payload: { [key]: value } })
   }
 
   handleFilt = () => {
-    this.props.dispatch({ type: 'dataRoomList/filt' })
+    this.props.dispatch({ type: 'timelineList/filt' })
   }
 
   handleReset = () => {
-    this.props.dispatch({ type: 'dataRoomList/reset' })
+    this.props.dispatch({ type: 'timelineList/reset' })
   }
 
   handleSearchChange = (e) => {
     const search = e.target.value
-    this.props.dispatch({ type: 'dataRoomList/setField', payload: { search } })
+    this.props.dispatch({ type: 'timelineList/setField', payload: { search } })
   }
 
   handleSearch = (search) => {
-    this.props.dispatch({ type: 'dataRoomList/search' })
+    this.props.dispatch({ type: 'timelineList/search' })
   }
 
   handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'dataRoomList/changePage', payload: page })
+    this.props.dispatch({ type: 'timelineList/changePage', payload: page })
   }
 
   handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'dataRoomList/changePageSize', payload: pageSize })
+    this.props.dispatch({ type: 'timelineList/changePageSize', payload: pageSize })
   }
 
   render() {
+
     const { location, total, list, loading, page, pageSize, filter, search } = this.props
 
     const columns = [
       { title: '项目', key: '', dataIndex: '' },
       { title: '投资人', key: '', dataIndex: '' },
-      { title: '交易师', key: '', dataIndex: '' },
+      { title: '投资人所属机构', key: '', dataIndex: '' },
       { title: '项目方', key: '', dataIndex: '' },
-      { title: '创建时间', key: '', dataIndex: '' },
-      { title: '状态', key: '', dataIndex: '' },
+      { title: '交易师', key: '', dataIndex: '' },
+      { title: '剩余天数', key: '', dataIndex: '' },
+      { title: '当前状态', key: '', dataIndex: '' },
+      { title: '最新备注', key: '', dataIndex: '' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button size="small">关闭</Button>
-            <Link to={'/app/dataroom/detail'}>
+            <Button disabled={!record.action.close} size="small">关闭</Button>
+            <Link to={'/app/timeline/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <Link to="">
+            <Link to={'/app/timeline/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;
@@ -90,7 +88,9 @@ class DataRoomList extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title="Data Room" />
+          <PageTitle title="时间轴列表" />
+
+          <TimelineListFilter value={filter} onChange={this.handleFilterChange} onSearch={this.handleFilt} onReset={this.handleReset} />
 
           <div style={{marginBottom: '16px'}}>
             <Search value={search} onChange={this.handleSearchChange} style={{width: 200}} onSearch={this.handleSearch} />
@@ -118,11 +118,11 @@ class DataRoomList extends React.Component {
     )
   }
 
-}
 
+}
 
 function mapStateToProps(state) {
-  return { ...state.dataRoomList, loading: state.loading.effects['dataRoomList/get'] }
+  return { ...state.timelineList, loading: state.loading.effects['timelineList/get'] }
 }
 
-export default connect(mapStateToProps)(DataRoomList)
+export default connect(mapStateToProps)(TimelineList)

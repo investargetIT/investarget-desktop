@@ -169,7 +169,7 @@ class ProjectList extends React.Component {
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="平台项目" />
+        <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" />
         <ProjectListFilter value={filter} onChange={this.handleFilterChange} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{marginBottom: '16px'}}>

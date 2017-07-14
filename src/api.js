@@ -68,6 +68,14 @@ function r2(url, method, body) {
  * dataroom
  */
 
+export function getDataroom() {
+  return { count: 0, data: [] }
+}
+
+export function deleteDataroom() {
+
+}
+
 
 /**
  * org
@@ -167,6 +175,13 @@ export function getFavoriteProj(param) {
   return r('/proj/favorite/?' + qs.stringify(param))
 }
 
+export function projFavorite(param) {
+  return r('/proj/favorite/', 'POST', param)
+}
+
+export function projCancelFavorite(param) {
+  return r('/proj/favorite/', 'DELETE', param)
+}
 
 /**
  * Proj finance
@@ -236,6 +251,25 @@ export function getSource(sourceType) {
  * timeline
  */
 
+export function getTimeline() {
+
+}
+
+export function deleteTimeline() {
+
+}
+
+/**
+ * email
+ */
+
+export function getEmail() {
+
+}
+
+export function getEmailDetail() {
+
+}
 
 /**
  * user
@@ -339,3 +373,17 @@ export function queryDataRoom() {
   return r('/dataroom/')
 }
 
+/**
+ * User Relation
+ */
+export function getUserRelation(param) {
+  return r('/user/relationship/?' + qs.stringify(param))
+}
+
+export function addUserRelation(param) {
+  return r('/user/relationship/', 'POST', param)
+}
+
+export function deleteUserRelation(param) {
+  return r('/user/relationship/', 'DELETE', param)
+}

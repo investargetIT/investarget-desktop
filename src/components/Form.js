@@ -153,17 +153,47 @@ Code.contextTypes = {
 }
 
 const Mobile = (props, context) => {
-  const prefixSelector = context.form.getFieldDecorator('prefix', {
-    initialValue: '4',
-  })(
-    <Select style={{ width: 60 }}>
-      {props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} /></Option>)}
-    </Select>
-  )
-  return (
-    <BasicFormItem label={i18n("mobile")} name="mobile" required={props.required}>
-      <Input addonBefore={prefixSelector} />
-    </BasicFormItem>
+  const { getFieldDecorator } = context.form
+  // const prefixSelector = context.form.getFieldDecorator('prefix', {
+  //   initialValue: '4',
+  // })(
+  //   <Select style={{ width: 60 }}>
+  //     {props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} /></Option>)}
+  //   </Select>
+  // )
+  // return (
+  //   <BasicFormItem label={i18n("mobile")} name="mobile" required={props.required}>
+  //     <Input addonBefore={prefixSelector} />
+  //   </BasicFormItem>
+  // )
+  return(
+    <FormItem {...formItemLayout} label={i18n("mobile")}>
+      <Row gutter={8}>
+        <Col span={6}>
+          <FormItem>
+            {
+              getFieldDecorator('prefix', {
+                rules: [{ message: '' }],
+                initialValue: '86'
+              })(
+                <Input prefix="+" />
+              )
+            }
+          </FormItem>
+        </Col>
+        <Col span={18}>
+          <FormItem>
+            {
+              getFieldDecorator('mobile', {
+                rules: [{ message: 'Please input' }]
+              })(
+                <Input />
+              )
+            }
+          </FormItem>
+        </Col>
+      </Row>
+    </FormItem>
   )
 }
 Mobile.contextTypes = {

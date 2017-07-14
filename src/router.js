@@ -14,14 +14,22 @@ import LogList from './routes/LogList'
 import ModifyPwd from './routes/ModifyPwd'
 import BasicInfo from './routes/BasicInfo'
 import PermList from './routes/PermList'
-import DataRoomList from './routes/DataRoomList'
+import DataRoom from './routes/DataRoom'
 import EditOrganization from './routes/EditOrganization'
 import OrganizationDetail from './routes/OrganizationDetail'
 import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
 import FavoriteProjectList from './routes/FavoriteProjectList'
 import ProjectDetail from './routes/ProjectDetail'
+import TimelineList from './routes/TimelineList'
+import DataRoomList from './routes/DataRoomList'
+import EmailList from './routes/EmailList'
+import EmailDetail from './routes/EmailDetail'
 import EditUser from './routes/EditUser'
+import UserDetail from './routes/UserDetail'
+import EditTimeline from './routes/EditTimeline'
+import TimelineDetail from './routes/TimelineDetail'
+
 
 function RouterConfig({ history }) {
   return (
@@ -43,12 +51,20 @@ function RouterConfig({ history }) {
       <Route path="/app/projects/list/recommend" component={FavoriteProjectList} />
       <Route path="/app/projects/list/favor" component={FavoriteProjectList} />
       <Route path="/app/projects/list/interest" component={FavoriteProjectList} />
+      <Route path="/app/projects/my" component={ProjectList} />
       <Route path="/app/projects/add" component={AddProject} />
       <Route path="/app/projects/edit/:id" component={EditProject} />
       <Route path="/app/projects/:id" component={ProjectDetail} />
       <Route path={URI_14} component={PermList} />
-      <Route path={URI_7} component={DataRoomList} />
+      <Route path="/app/dataroom/list" component={DataRoomList} />
+      <Route path="/app/dataroom/detail" component={DataRoom} />
+      <Route path="/app/timeline/list" component={TimelineList} />
+      <Route path="/app/email/list" component={EmailList} />
+      <Route path="/app/email/detail" component={EmailDetail} />
       <Route path="/app/user/edit/:id" component={EditUser} />
+      <Route path="/app/user/:id" component={UserDetail} />
+      <Route path="/app/timeline/edit/:id" component={EditTimeline} />
+      <Route path="/app/timeline/:id" component={TimelineDetail} />
 
     </Router>
   )

@@ -8,6 +8,7 @@ import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
+import UserRelationModal from '../components/UserRelationModal'
 
 
 const CheckboxGroup = Checkbox.Group
@@ -18,6 +19,8 @@ const Search = Input.Search
 
 
 function UserList({ currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading }) {
+
+  let modal = null
 
   const handleFilterChange = (key, value) => {
     dispatch({ type: 'userList/setFilter', payload: { [key]: value } })
@@ -54,6 +57,12 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
     }, error => {
       Modal.error(error.message)
     })
+  }
+
+  const showModal = (id) => {
+    if (modal) {
+      modal.showModal(id)
+    }
   }
 
 
@@ -97,6 +106,8 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
       key: 'action',
       render: (text, record) => (
             <span>
+              <Button size="small" onClick={showModal.bind(null, record.id)}>交易师</Button>
+              &nbsp;
               <Link to={'/app/user/' + record.id}>
                 <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>
               </Link>
@@ -148,6 +159,8 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
         onShowSizeChange={handleShowSizeChange}
         showSizeChanger
         showQuickJumper />
+
+      <UserRelationModal ref={(inst) => { modal = inst; }} />
 
     </LeftRightLayout>
   )

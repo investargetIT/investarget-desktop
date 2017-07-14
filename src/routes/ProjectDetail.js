@@ -1,12 +1,13 @@
 import React from 'react'
 import * as api from '../api'
-window.api = api
 import { formatMoney } from '../utils/util'
 
-
-import { Timeline, Icon, Tag } from 'antd'
+import { Timeline, Icon, Tag, Button } from 'antd'
 import MainLayout from '../components/MainLayout'
 
+
+const userInfo = JSON.parse(localStorage.getItem('user_info'))
+const currentUserId = userInfo.id
 
 
 function Field (props) {
@@ -72,8 +73,37 @@ class ProjectDetail extends React.Component {
     super(props)
 
     this.state = {
-      project: {}
+      project: {},
+      isFavorite: false,
     }
+  }
+
+  favorProject = () => {
+    const id = this.props.params.id
+    const param = {
+      favoritetype: 4,
+      user: currentUserId,
+      proj: id,
+    }
+    api.projFavorite(param).then(result => {
+      this.setState({ isFavorite: true })
+    }, error => {
+
+    })
+  }
+
+  unfavorProject = () => {
+    const id = this.props.params.id
+    const param = {
+      favoritetype: 4,
+      user: currentUserId,
+      proj: id,
+    }
+    api.projCancelFavorite(param).then(result => {
+      this.setState({ isFavorite: false })
+    }, error => {
+
+    })
   }
 
   componentDidMount() {
@@ -81,6 +111,19 @@ class ProjectDetail extends React.Component {
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project })
+    })
+
+    const param = {
+      favoritetype: 4,
+      user: currentUserId,
+      proj: id
+    }
+    api.getFavoriteProj(param).then(result => {
+      const data = result.data.data
+      const isFavorite = data.length == 1
+      this.setState({ isFavorite })
+    }, error => {
+
     })
   }
 
@@ -227,7 +270,12 @@ class ProjectDetail extends React.Component {
           </div>
         </div>
 
-
+        <div>
+          {
+            this.state.isFavorite ? <Button onClick={this.unfavorProject}>取消收藏</Button>
+                                  : <Button onClick={this.favorProject}>加入收藏</Button>
+          }
+        </div>
         {/* TODO// 收藏/取消收藏 */}
         {/* TODO// 感兴趣的人 */}
         {/* TODO// 联系交易师 */}
