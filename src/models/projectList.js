@@ -114,7 +114,7 @@ export default {
   subscriptions: {
     setup({dispatch, history}) {
       return history.listen(({ pathname, query }) => {
-        if (pathname == '/app/project/list') {
+        if (pathname == '/app/projects/list') {
           dispatch({ type: 'get' })
         }
       })

@@ -151,11 +151,11 @@ class ProjectList extends React.Component {
         render: (text, record) => (
           <span>
             <Button size="small" onClick={this.showAuditModal.bind(this, record.id)}>审核</Button>
-            <Link to={'/app/project/' + record.id}>
+            <Link to={'/app/projects/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <Link to={'/app/project/edit/' + record.id}>
+            <Link to={'/app/projects/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;

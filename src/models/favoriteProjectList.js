@@ -51,12 +51,11 @@ export default {
   subscriptions: {
     setup({dispatch, history}) {
       return history.listen(({ pathname, query }) => {
-        console.log('>>>', pathname)
-        if (pathname == '/app/project/list/recommend') {
+        if (pathname == '/app/projects/list/recommend') {
           dispatch({ type: 'getRecommend' })
-        } else if (pathname == '/app/project/list/favor') {
+        } else if (pathname == '/app/projects/list/favor') {
           dispatch({ type: 'getFavor' })
-        } else if (pathname == '/app/project/list/interest') {
+        } else if (pathname == '/app/projects/list/interest') {
           dispatch({ type: 'getInterest' })
         }
       })
