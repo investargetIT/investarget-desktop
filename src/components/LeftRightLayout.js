@@ -15,7 +15,7 @@ class LeftRightLayout extends React.Component {
   render () {
 
     const content = (
-      <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
+      <Content style={this.props.style || { background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
         {this.props.children}
       </Content>
     )
@@ -34,14 +34,15 @@ class LeftRightLayout extends React.Component {
             <Header mode="light" location={this.props.location} />
           {/*</Layout.Header>*/}
 
-          <Content style={{ margin: '0 16px' }}>
+          <Content style={{ margin: '16px' }}>
 
-            <div style={{ padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
+            <div style={this.props.style || { padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
 
-              <div style={{ fontSize: '16px', marginBottom: '24px' }}>
-                <span>{this.props.title}</span>
-                {this.props.action ? <span style={{ float: 'right' }}><Link to={this.props.action.link}><Icon type="plus" />{this.props.action.name}</Link></span>: null}
-              </div>
+              { this.props.title ?
+                <div style={{ fontSize: '16px', marginBottom: '24px' }}>
+                  <span>{this.props.title}</span>
+                  {this.props.action ? <span style={{ float: 'right' }}><Link to={this.props.action.link}><Icon type="plus" />{this.props.action.name}</Link></span> : null}
+                </div> : null }
 
               {this.props.children}
 
