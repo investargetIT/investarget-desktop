@@ -14,7 +14,7 @@ import {
 } from '../components/ExtraInput'
 const Search = Input.Search
 
-
+import AuditProjectModal from '../components/AuditProjectModal'
 
 
 
@@ -23,36 +23,14 @@ const Search = Input.Search
 class ProjectList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      showModal: false,
-      projectId: null,
-      projectStatus: null,
-    }
   }
 
-  showAuditModal = (id) => {
-    const project = this.props.list.filter(item => item.id == id)[0]
-    const status = project.projstatus.id
-    this.setState({ showModal: true, projectId: id, projectStatus: status })
+  auditProject = (id, status) => {
+    this.auditProjectModal.setData(id, status)
   }
 
-  handleProjectStatusChange = (value) => {
-    this.setState({ projectStatus: value })
-  }
-
-  handleOk = () => {
-    const { projectId, projectStatus } = this.state
-    api.editProj(projectId, { projstatus: projectStatus }).then(result => {
-      this.props.dispatch({ type: 'projectList/get' })
-      this.setState({ showModal: false, projectId: null, projectStatus: null })
-    }, error => {
-      this.setState({ showModal: false, projectId: null, projectStatus: null })
-      Modal.error({ title: '错误', content: error.message })
-    })
-  }
-
-  handleCancel = () => {
-    this.setState({ showModal: false, projectId: null, projectStatus: null })
+  handleAfterAudit = () => {
+    this.props.dispatch({ type: 'projectList/get' })
   }
 
   handleDelete = (id) => {
@@ -150,7 +128,9 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button size="small" onClick={this.showAuditModal.bind(this, record.id)}>审核</Button>
+            <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>审核</Button>
+            &nbsp;
+            <Button size="small">时间轴</Button>
             <Link to={'/app/projects/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
@@ -195,12 +175,7 @@ class ProjectList extends React.Component {
           showQuickJumper
         />
 
-        <Modal title="修改项目状态" visible={this.state.showModal} onOk={this.handleOk} onCancel={this.handleCancel}>
-          <div style={{width: '60%', display: 'flex', alignItems: 'center', margin: '0 auto'}}>
-            <span style={{marginRight: '8px'}}>项目状态：</span>
-            <SelectProjectStatus style={{flexGrow: '1'}} value={this.state.projectStatus} onChange={this.handleProjectStatusChange} />
-          </div>
-        </Modal>
+        <AuditProjectModal afterAudit={this.handleAfterAudit} ref={inst => { this.auditProjectModal = inst }} />
 
       </MainLayout>
     )
