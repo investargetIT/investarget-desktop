@@ -81,7 +81,7 @@ class CommonList extends React.Component {
 
   render() {
 
-    const { columns, hasFilters, filterOptions, hasSearch } = this.props
+    const { hasFilters, filterOptions, hasSearch, columns, dataSource, rowKey, pagination, style, ...extraProps } = this.props
     const { loading, total, list, page, pageSize, filters, search } = this.state
 
     return (
@@ -119,6 +119,7 @@ class CommonList extends React.Component {
           loading={loading}
           pagination={false}
           style={tableStyle}
+          {...extraProps}
         />
         <Pagination
           total={total}
