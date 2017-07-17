@@ -135,6 +135,9 @@ class ProjectList extends React.Component {
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
+            <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
+              <Button size="small">创建DataRoom</Button>
+            </a>
             <Link to={'/app/projects/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>

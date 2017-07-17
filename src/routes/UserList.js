@@ -10,16 +10,45 @@ import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table
 import { UserListFilter } from '../components/Filter'
 import UserRelationModal from '../components/UserRelationModal'
 
-
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 const Option = Select.Option
 const Search = Input.Search
+const confirm = Modal.confirm
 
+class UserList extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      projectName: null
+    }
+  }
 
-function UserList({ currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading }) {
+  componentDidMount() {
+    const projectID = this.props.location.query.projectID 
+    if (projectID) {
+      api.getProjLangDetail(projectID)
+        .then(data => this.setState({ projectName: data.data.projtitle }))
+        .catch(error => console.error(error))
 
+      this.props.dispatch({ type: 'userList/updateParams', payload: { groups: 1 } })
+      this.props.dispatch({ type: 'userList/filt' })
+    }
+  }
+
+  handleConfirmCreateDataRoom(investorID) {
+    const investor = this.props.list.filter(f => f.id === investorID)[0]
+    confirm({
+      title: `你确定要为 ${investor.username} 和 ${investor.trader_relation.traderuser.username} 创建DataRoom吗？`,
+      onOk() {
+        console.log('OK')
+      }
+    })
+  }
+
+render () {
+const { currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading } = this.props
   let modal = null
 
   const handleFilterChange = (key, value) => {
@@ -128,28 +157,53 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
             </span>
       )
     },
+    {
+      title: i18n("action"),
+      key: 'create_dataroom',
+      render: (text, record) => <Button onClick={this.handleConfirmCreateDataRoom.bind(this, record.id)} disabled={!record.trader_relation} size="small">创建时间轴</Button>
+    }
   ]
 
-  const action = currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null
-
+  
+  let title, action, showFilter
+  if (location.pathname === "/app/dataroom/create") {
+    title = "create_dataroom"
+    showFilter = false
+    const index = columns.map(m => m.key).indexOf("action")
+    if (index > -1) {
+      columns.splice(index, 1)
+    }
+  } else if (location.pathname === "/app/user/list") {
+    title = "user_list"
+    showFilter = true
+    action = currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null
+    const index = columns.map(m => m.key).indexOf("create_dataroom")
+    if (index > -1) {
+      columns.splice(index, 1)
+    }
+  }
   return (
     <LeftRightLayout
       location={location}
-      title={i18n("user_list")}
+      title={i18n(title)}
       action={action}>
 
-      <UserListFilter
-        value={filter}
-        onChange={handleFilterChange}
-        onSearch={handleFilt}
-        onReset={handleReset} />
+      {showFilter ?
+        <UserListFilter
+          value={filter}
+          onChange={handleFilterChange}
+          onSearch={handleFilt}
+          onReset={handleReset} />
+        : null}
+
+      {this.state.projectName ? <div style={{ fontSize: 16, marginBottom: 24 }}>项目名称: {this.state.projectName}</div> : null}
 
       <div style={{marginBottom: '24px'}}>
         <Search value={search} onChange={handleSearchChange} placeholder="搜索用户" style={{width: 200}} onSearch={handleSearch} />
       </div>
 
       <Table
-        rowSelection={rowSelection}
+        rowSelection={this.state.projectName ? null : rowSelection}
         columns={columns}
         dataSource={list}
         loading={loading}
@@ -170,6 +224,7 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
 
     </LeftRightLayout>
   )
+}
 }
 
 function mapStateToProps(state) {

@@ -163,8 +163,8 @@ export function getProjLangDetail(id) {
   return r('/proj/' + id + '/')
 }
 
-export function getProjDetail(id, param) {
-  return r2('/proj/' + id + '/?' + qs.stringify(param))
+export function getProjDetail(id) {
+  return r2('/proj/' + id + '/')
 }
 
 /**
