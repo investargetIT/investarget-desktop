@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router'
+import _ from 'lodash'
 import { i18n } from '../utils/util'
 import * as api from '../api'
-
 
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
@@ -59,9 +59,9 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
     })
   }
 
-  const showModal = (id) => {
+  const showModal = (id, username) => {
     if (modal) {
-      modal.showModal(id)
+      modal.showModal(id, username)
     }
   }
 
@@ -98,7 +98,7 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
     },
     {
       title: i18n("trader_relation"),
-      dataIndex: 'trader_relation.traderuser.name',
+      dataIndex: 'trader_relation.traderuser.username',
       key: 'trader_relation',
     },
     {
@@ -106,7 +106,13 @@ function UserList({ currentUser, selectedRowKeys, filter, search, location, list
       key: 'action',
       render: (text, record) => (
             <span>
-              <Button size="small" onClick={showModal.bind(null, record.id)}>交易师</Button>
+              {
+                _.some(record.groups, function(group) {
+                  return group.id == 1 // 投资人
+                }) ? (
+                  <Button size="small" onClick={showModal.bind(null, record.id, record.username)}>交易师</Button>
+                ) : null
+              }
               &nbsp;
               <Link to={'/app/user/' + record.id}>
                 <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>

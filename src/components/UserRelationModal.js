@@ -1,8 +1,15 @@
 import React from 'react'
-import { Modal, Button, Icon } from 'antd'
+import { Modal, Button, Icon, Popconfirm } from 'antd'
 
 import * as api from '../api'
 import { SelectNumber, RadioTrueOrFalse } from './ExtraInput'
+
+
+const deleteIconStyle = {
+  marginLeft: '8px',
+  padding: '4px',
+  cursor: 'pointer',
+}
 
 
 class UserRelationModal extends React.Component {
@@ -16,14 +23,14 @@ class UserRelationModal extends React.Component {
       relationtype: false,
       data: [],
       options: [],
+      investorUsername: '',
     }
   }
 
-  showModal = (id) => {
+  showModal = (id, username) => {
     const investoruser = id
     if (investoruser) {
-      this.getUserRelation()
-      this.setState({ show: true, investoruser })
+      this.setState({ show: true, investoruser, investorUsername: username }, this.getUserRelation)
     }
   }
 
@@ -31,15 +38,8 @@ class UserRelationModal extends React.Component {
     this.setState({ show: false })
   }
 
-  deleteRelation = (index) => {
-    let param = this.state.data[index]
-    param = {
-      investoruser: param.investoruser.id,
-      relationtype: param.relationtype,
-      score: param.score,
-      traderuser: param.traderuser.id,
-    }
-    api.deleteRelation(param).then(result => {
+  deleteRelation = (id) => {
+    api.deleteUserRelation(id).then(result => {
       //
       this.getUserRelation()
     })
@@ -64,7 +64,6 @@ class UserRelationModal extends React.Component {
 
   getUserRelation = () => {
     const param = { investoruser: this.state.investoruser }
-    console.log('>>>', param)
     api.getUserRelation(param).then(result => {
       const data = result.data.data
       this.setState({ data })
@@ -83,15 +82,21 @@ class UserRelationModal extends React.Component {
   render() {
     return (
       <Modal visible={this.state.show} title="修改交易师" footer={null} onCancel={this.hideModal}>
-        <div>
+        <h3 style={{marginBottom: '16px'}}>{this.state.investorUsername}的交易师：</h3>
+        <div style={{marginBottom: '8px'}}>
           {
             this.state.data.map((item, index) =>
-              <span key={item.traderuser.id}>{item.traderuser.username}<Icon type="close" onClick={this.deleteRelation.bind(this, index)} /></span>
+              <p key={item.id}>
+                {item.traderuser.username}
+                <Popconfirm title="删除关联交易师" onConfirm={this.deleteRelation.bind(this, item.id)}>
+                  <Icon type="close" style={deleteIconStyle} />
+                </Popconfirm>
+              </p>
             )
           }
         </div>
         <div>
-          选择交易师：<SelectNumber options={this.state.options} value={this.state.traderuser} onChange={this.selectTrasaction} />
+          选择交易师：<SelectNumber options={this.state.options} value={this.state.traderuser} onChange={this.selectTrasaction} style={{width: '80px', marginRight: '8px'}} />
           强弱：<RadioTrueOrFalse value={this.state.relationtype} onChange={this.selectRelationType} />
           <Button onClick={this.addRelation}>新增</Button>
         </div>

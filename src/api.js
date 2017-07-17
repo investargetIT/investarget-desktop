@@ -384,6 +384,7 @@ export function addUserRelation(param) {
   return r('/user/relationship/', 'POST', param)
 }
 
-export function deleteUserRelation(param) {
+export function deleteUserRelation(id) {
+  const param = {'relationlist': [id]}
   return r('/user/relationship/', 'DELETE', param)
 }
