@@ -45,7 +45,6 @@ app.use(createLoading({
 }));
 
 // 3. Model
-app.model(require("./models/organizationList"));
 app.model(require("./models/addOrganization"));
 app.model(require("./models/recommendProjects"));
 app.model(require("./models/recommendFriends"));

@@ -1,6 +1,6 @@
 import zhMessages from '../../locales/zh_flat.js'
 import enMessages from '../../locales/en_flat.js'
-import { Popconfirm, Button } from 'antd'
+import { Popconfirm, Button, Modal } from 'antd'
 import * as api from '../api'
 window.api = api
 
@@ -79,5 +79,12 @@ function formatMoney(value, currency) {
   }
 }
 
+function showError(message) {
+  Modal.error({
+    title: '错误',
+    content: message,
+  })
+}
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney }
+
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError }

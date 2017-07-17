@@ -223,4 +223,12 @@ module.exports = {
   OrganizationListFilter,
   ProjectListFilter,
   TimelineListFilter,
+
+  //
+  OverseaFilter,
+  CurrencyFilter,
+  TransactionPhaseFilter,
+  IndustryFilter,
+  TagFilter,
+  OrganizationTypeFilter,
 }

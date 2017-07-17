@@ -1,20 +1,20 @@
 import React from 'react'
-import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, showError } from '../utils/util'
+import * as api from '../api'
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import { Button, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { OrganizationListFilter } from '../components/Filter'
+import CommonList from '../components/CommonList'
 import {
-  RadioTrueOrFalse,
-  CheckboxCurrencyType,
-} from '../components/ExtraInput'
-const Search = Input.Search
-
-
-
+  OverseaFilter,
+  CurrencyFilter,
+  TransactionPhaseFilter,
+  IndustryFilter,
+  TagFilter,
+  OrganizationTypeFilter,
+} from '../components/Filter'
 
 
 
@@ -24,42 +24,15 @@ class OrganizationList extends React.Component {
     super(props)
   }
 
-  handleDelete = (id) => {
-    this.props.dispatch({ type: 'organizationList/delete', payload: id })
-  }
-
-
-  handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'organizationList/setFilter', payload: { [key]: value } })
-  }
-
-  handleFilt = () => {
-    this.props.dispatch({ type: 'organizationList/filt' })
-  }
-
-  handleReset = () => {
-    this.props.dispatch({ type: 'organizationList/reset' })
-  }
-
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'organizationList/setField', payload: { search } })
-  }
-
-  handleSearch = (search) => {
-    this.props.dispatch({ type: 'organizationList/search' })
-  }
-
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'organizationList/changePage', payload: page })
-  }
-
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'organizationList/changePageSize', payload: pageSize })
+  deleteOrg = (id) => {
+    api.deleteOrg(id).then(result => {
+      this.orgList.getData()
+    }, error => {
+      showError(error.message)
+    })
   }
 
   render() {
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
 
     const columns = [
       { title: '名称', key: 'orgname', dataIndex: 'orgname' },
@@ -81,7 +54,7 @@ class OrganizationList extends React.Component {
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
+            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteOrg.bind(null, record.id)}>
               <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
             </Popconfirm>
           </span>
@@ -89,44 +62,26 @@ class OrganizationList extends React.Component {
       },
     ]
 
+    const filterOptions = [
+      { title: '是否投资海外', key: 'isOversea', component: OverseaFilter },
+      { title: '货币', key: 'currencys', component: CurrencyFilter },
+      { title: '轮次', key: 'orgtransactionphases', component: TransactionPhaseFilter },
+      { title: '行业', key: 'industries', component: IndustryFilter },
+      { title: '标签', key: 'tags', component: TagFilter },
+      { title: '机构类型', key: 'orgtypes', component: OrganizationTypeFilter },
+    ]
+
     return (
       <MainLayout location={location}>
         <div>
           <PageTitle title={i18n('organization.org_list')} actionLink="/app/organization/add" actionTitle={i18n('organization.new_org')} />
-
-          <OrganizationListFilter value={filter} onChange={this.handleFilterChange} onSearch={this.handleFilt} onReset={this.handleReset} />
-
-          <div style={{marginBottom: '16px'}}>
-            <Search value={search} onChange={this.handleSearchChange} placeholder="输入机构名称或机构代码" style={{width: 200}} onSearch={this.handleSearch} />
-          </div>
-
-          <Table
-            columns={columns}
-            dataSource={list}
-            rowKey={record=>record.id}
-            loading={loading}
-            pagination={false} />
-
-          <Pagination
-            className="ant-table-pagination"
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handleShowSizeChange}
-            showQuickJumper
-          />
+          <CommonList columns={columns} hasFilters={true} filterOptions={filterOptions} hasSearch={true} getData={api.getOrg} />
         </div>
       </MainLayout>
     )
+
   }
 
 }
 
-
-function mapStateToProps(state) {
-  return { ...state.organizationList, loading: state.loading.effects['organizationList/get'] }
-}
-
-export default connect(mapStateToProps)(OrganizationList)
+export default OrganizationList
