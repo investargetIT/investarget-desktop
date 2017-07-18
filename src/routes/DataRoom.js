@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { queryDataRoom } from '../api'
+import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt } from '../utils/util'
 
@@ -101,7 +101,7 @@ class DataRoomList extends React.Component {
   }
 
   componentDidMount() {
-    queryDataRoom()
+    getDataRoomFile(42)
   }
 
   folderClicked(id) {

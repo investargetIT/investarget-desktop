@@ -380,6 +380,10 @@ export function createDataRoom(body) {
   return r('/dataroom/', 'POST', body)
 }
 
+export function getDataRoomFile(dataRoomID) {
+  return r(`/dataroom/file/?dataroom=${dataRoomID}`)
+}
+
 /**
  * User Relation
  */

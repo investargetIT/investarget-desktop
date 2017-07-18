@@ -2,26 +2,49 @@ import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
-
 import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
 import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
 } from '../components/ExtraInput'
+import { queryDataRoom, getUserBase, getProjLangDetail } from '../api'
+
 const Search = Input.Search
-
-
-
-
-
 
 class DataRoomList extends React.Component {
 
   constructor(props) {
     super(props)
+     this.state = {
+       dataRoomList: []
+     }
+  }
+
+  componentDidMount() {
+    queryDataRoom().then(data => {
+      const dataRoomListRawData = data.data.data.filter(f => f.investor && f.trader)
+      dataRoomListRawData.map(m => {
+        const obj = {}
+        obj.id = m.id
+        obj.createdtime = m.createdtime
+        Promise.all([
+          getProjLangDetail(m.proj),
+          getUserBase(m.investor),
+          getUserBase(m.trader),
+        ]).then(data => {
+          obj.proj = data[0].data.projtitle
+          obj.user = data[0].data.supportUser.username
+          obj.investor = data[1].data.username
+          obj.trader = data[2].data.username
+          this.setState({
+            dataRoomList: this.state.dataRoomList.concat(obj)
+          })
+        })
+        return obj
+      })
+    })
   }
 
   handleDelete = (id) => {
@@ -62,25 +85,26 @@ class DataRoomList extends React.Component {
     const { location, total, list, loading, page, pageSize, filter, search } = this.props
 
     const columns = [
-      { title: '项目', key: '', dataIndex: '' },
-      { title: '投资人', key: '', dataIndex: '' },
-      { title: '交易师', key: '', dataIndex: '' },
-      { title: '项目方', key: '', dataIndex: '' },
-      { title: '创建时间', key: '', dataIndex: '' },
-      { title: '状态', key: '', dataIndex: '' },
+      { title: '项目', key: 'project', dataIndex: 'proj' },
+      { title: '投资人', key: 'investor', dataIndex: 'investor' },
+      { title: '交易师', key: 'trader', dataIndex: 'trader' },
+      { title: '项目方', key: 'user', dataIndex: 'user' },
+      { title: '创建时间', key: 'createdtime', dataIndex: 'createdtime' },
+      { title: '状态', key: 'isclose', render: record => record.isClose ? '已关闭' : '未关闭' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
             <Button size="small">关闭</Button>
+            &nbsp;
             <Link to={'/app/dataroom/detail'}>
-              <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
+              <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
             <Link to="">
-              <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              <Button size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>
           </span>
         )
@@ -98,7 +122,7 @@ class DataRoomList extends React.Component {
 
           <Table
             columns={columns}
-            dataSource={list}
+            dataSource={this.state.dataRoomList}
             rowKey={record=>record.id}
             loading={loading}
             pagination={false} />
