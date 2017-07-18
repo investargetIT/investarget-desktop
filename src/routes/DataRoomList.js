@@ -95,7 +95,7 @@ class DataRoomList extends React.Component {
           <span>
             <Button size="small">关闭</Button>
             &nbsp;
-            <Link to={'/app/dataroom/detail'}>
+            <Link to={'/app/dataroom/detail?id=' + record.id}>
               <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;

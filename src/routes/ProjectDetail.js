@@ -7,7 +7,7 @@ import MainLayout from '../components/MainLayout'
 
 
 const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const currentUserId = userInfo.id
+const currentUserId = userInfo ? userInfo.id : null
 
 
 function Field (props) {
