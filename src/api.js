@@ -369,8 +369,15 @@ export function createUser(user) {
   return r('/user/', 'POST', user)
 }
 
+/**
+ * dataroom
+ */
 export function queryDataRoom() {
   return r('/dataroom/')
+}
+
+export function createDataRoom(body) {
+  return r('/dataroom/', 'POST', body)
 }
 
 /**

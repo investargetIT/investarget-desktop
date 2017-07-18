@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Link } from 'dva/router'
+import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
 import { i18n } from '../utils/util'
 import * as api from '../api'
@@ -38,11 +38,20 @@ class UserList extends React.Component {
   }
 
   handleConfirmCreateDataRoom(investorID) {
+    const projectID = this.props.location.query.projectID
     const investor = this.props.list.filter(f => f.id === investorID)[0]
+    const react = this
     confirm({
       title: `你确定要为 ${investor.username} 和 ${investor.trader_relation.traderuser.username} 创建DataRoom吗？`,
       onOk() {
-        console.log('OK')
+        const body = {
+          proj: parseInt(projectID, 10),
+          isPublic: false,
+          investor: investorID,
+          trader: investor.trader_relation.traderuser.id
+        }
+        api.createDataRoom(body)
+          .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/list')))
       }
     })
   }
@@ -160,7 +169,7 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
     {
       title: i18n("action"),
       key: 'create_dataroom',
-      render: (text, record) => <Button onClick={this.handleConfirmCreateDataRoom.bind(this, record.id)} disabled={!record.trader_relation} size="small">创建时间轴</Button>
+      render: (text, record) => <Button onClick={this.handleConfirmCreateDataRoom.bind(this, record.id)} disabled={!record.trader_relation} size="small">创建</Button>
     }
   ]
 
