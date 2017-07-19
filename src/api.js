@@ -300,6 +300,10 @@ export function getUserBase(id) {
   return r('/user/' + id + '/')
 }
 
+export function getUserDetailLang(id) {
+  return r('/user/detail/' + id + '/')
+}
+
 export function getUserDetail(id) {
   return r2('/user/detail/' + id + '/')
 }
