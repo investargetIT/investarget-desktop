@@ -46,7 +46,9 @@ class Register extends React.Component {
       org: [],
       fetchSmsCodeValue: null,
       intervalId: null,
-      loading: false
+      loading: false,
+      areaCode: '86',
+      countryID: 42
     }
     this.onFriendToggle = this.onFriendToggle.bind(this)
     this.onFriendsSkip = this.onFriendsSkip.bind(this)
@@ -79,10 +81,10 @@ class Register extends React.Component {
     }
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        console.log('Received values of form: ', { ...values, smstoken })
+        const prefix = this.state.areaCode
         this.props.dispatch({
           type: 'currentUser/register',
-          payload: { ...values, smstoken }
+          payload: { ...values, smstoken, prefix }
         })
       }
     })
@@ -175,7 +177,22 @@ class Register extends React.Component {
     }
   }
 
-  handleFetchButtonClicked(mobile, areacode) {
+  findAreaCodeByCountryID(countryID) {
+    const country = this.props.country.filter(f => f.id === parseInt(countryID, 10))
+    return country.length > 0 ? country[0].areaCode : null
+  }
+
+  handleFetchButtonClicked() {
+    const areacode = this.state.areaCode
+    if (!areacode) {
+      message.error('请选择地区或直接填写地区代码')
+      return
+    }
+    const mobile = this.mobile
+    if (!mobile) {
+      message.error('手机号码不能为空')
+      return
+    }
     this.setState({ loading: true })
     const body = {
       mobile: mobile,
@@ -183,7 +200,7 @@ class Register extends React.Component {
     }
     sendSmsCode(body).then(data => {
       if (data.data.status !== 'success') {
-        throw new Error(data.data)
+        throw new Error(data.data.msg)
       }
       message.success('验证码已发送至您的手机，请注意查收')
       localStorage.setItem('smstoken', data.data.smstoken)
@@ -193,7 +210,34 @@ class Register extends React.Component {
         intervalId: intervalId,
         fetchSmsCodeValue: 60
       })
-    }).catch(error => console.error(error))
+    }).catch(error => {
+      message.error(error.message)
+      this.setState({
+        loading: false
+      })
+    })
+  }
+
+  handleCountryChange(countryID) {
+    const areaCode = this.findAreaCodeByCountryID(countryID)
+    this.setState({ 
+      areaCode: areaCode,
+      countryID: countryID
+    })
+  }
+
+  handleAreaCodeChange(evt) {
+    const areaCode = evt.target.value
+    const country = this.props.country.filter(f => f.areaCode === areaCode)
+    const countryID = country.length > 0 ? country[0].id : 'unknow'
+    this.setState({ 
+      areaCode: areaCode,
+      countryID: countryID
+    })
+  }
+
+  handleMobileChange(evt) {
+    this.mobile = evt.target.value
   }
 
   render() {
@@ -221,8 +265,6 @@ class Register extends React.Component {
     }
 
     const { getFieldDecorator } = this.props.form;
-    const mobile = this.props.form.getFieldValue('mobile')
-    const areacode = this.props.form.getFieldValue('prefix')
 
     return (
       <div style={containerStyle}>
@@ -232,11 +274,18 @@ class Register extends React.Component {
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
-                <Mobile required country={this.props.country} />
+                <Mobile
+                  required
+                  onSelectChange={this.handleCountryChange.bind(this)}
+                  country={this.props.country}
+                  onAreaCodeChange={this.handleAreaCodeChange.bind(this)}
+                  areaCode={this.state.areaCode}
+                  countryID={this.state.countryID}
+                  onMobileChange={this.handleMobileChange.bind(this)} />
                 <Code
                   loading={this.state.loading}
                   value={this.state.fetchSmsCodeValue ? `${this.state.fetchSmsCodeValue}秒后重新获取` : null}
-                  onFetchButtonClicked={this.handleFetchButtonClicked.bind(this, mobile, areacode)} />
+                  onFetchButtonClicked={this.handleFetchButtonClicked.bind(this)} />
                 <Email />
                 <FullName />
                 <Org required org={this.state.org} onChange={this.handleOrgChange} />

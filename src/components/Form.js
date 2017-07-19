@@ -46,7 +46,7 @@ function BasicFormItem(props, context) {
 
   const rules = [
     { type: props.valueType, message: 'The input is not valid!'},
-    { required: props.required, message: 'The input can not be empty!'},
+    { required: props.required, message: i18n('can_not_be_empty')},
   ]
 
   if (props.whitespace) {
@@ -138,7 +138,7 @@ const Code = (props, context) => (
       <Col span={12}>
         {context.form.getFieldDecorator("code", {
           rules: [{
-            required: true, message: 'The input can not be empty!',
+            required: true, message: i18n('can_not_be_empty'),
           }],
         })(<Input size="large" />)}
       </Col>
@@ -159,46 +159,19 @@ Code.contextTypes = {
 
 const Mobile = (props, context) => {
   const { getFieldDecorator } = context.form
-  // const prefixSelector = context.form.getFieldDecorator('prefix', {
-  //   initialValue: '4',
-  // })(
-  //   <Select style={{ width: 60 }}>
-  //     {props.country.map(c => <Option key={c.id} value={`${c.id}`}><img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} /></Option>)}
-  //   </Select>
-  // )
-  // return (
-  //   <BasicFormItem label={i18n("mobile")} name="mobile" required={props.required}>
-  //     <Input addonBefore={prefixSelector} />
-  //   </BasicFormItem>
-  // )
-  return(
-    <FormItem {...formItemLayout} label={i18n("mobile")}>
-      <Row gutter={8}>
-        <Col span={6}>
-          <FormItem>
-            {
-              getFieldDecorator('prefix', {
-                rules: [{ message: '' }],
-                initialValue: '86'
-              })(
-                <Input prefix="+" />
-              )
-            }
-          </FormItem>
-        </Col>
-        <Col span={18}>
-          <FormItem>
-            {
-              getFieldDecorator('mobile', {
-                rules: [{ message: 'Please input' }]
-              })(
-                <Input />
-              )
-            }
-          </FormItem>
-        </Col>
-      </Row>
-    </FormItem>
+
+  return (
+    <BasicFormItem label={i18n("mobile")} required={props.required} name="mobileInfo">
+      <Input.Group compact>
+        <Select style={{ width: 60 }} onChange={props.onSelectChange} value={props.countryID + ''}>
+          {props.country.map(c => <Option key={c.id} value={c.id + ''}>
+            <img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} />
+          </Option>)}
+        </Select>
+        <Input style={{ width: '10%' }} value={props.areaCode} onChange={props.onAreaCodeChange} />
+        <Input style={{ width: '30%' }} name="mobile" onChange={props.onMobileChange} />
+      </Input.Group>
+    </BasicFormItem>
   )
 }
 Mobile.contextTypes = {
@@ -217,7 +190,7 @@ const Role = props => (
 const Agreement = () => {
   function checkAgreement(rule, value, callback) {
     if (!value) {
-      callback('Please check agreement!')
+      callback(i18n('please_check_agreement'))
     } else {
       callback()
     }

@@ -18,6 +18,8 @@
     "home": "Home",
     "out": "Logout"
   },
+  "can_not_be_empty": "This field can not be empty!",
+  "please_check_agreement": "Please read and agree to term of use!",
   "permission_management": "Permission Management",
   "register": "Sign Up",
   "role": "Role",

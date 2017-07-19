@@ -18,6 +18,8 @@
     "home": "首页",
     "out": "退出"
   },
+  "can_not_be_empty": "该字段不能为空",
+  "please_check_agreement": "请阅读并接受相关规定",
   "permission_management": "权限管理",
   "register": "注册",
   "role": "角色",
