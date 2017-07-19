@@ -135,9 +135,15 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
       render: tags => tags.map(t => t.name).join(' ')
     },
     {
-      title: i18n("trader_relation"),
-      dataIndex: 'trader_relation.traderuser.username',
-      key: 'trader_relation',
+      title: i18n("role"),
+      dataIndex: 'groups',
+      key: 'role',
+      render: groups => groups.map(m => m.name).join(' ')
+    },
+    {
+      title: i18n("userstatus"),
+      dataIndex: 'userstatus.name',
+      key: 'userstatus'
     },
     {
       title: i18n("action"),

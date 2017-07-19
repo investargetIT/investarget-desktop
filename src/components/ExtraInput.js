@@ -315,13 +315,21 @@ class SelectUser extends React.Component {
     }
   }
 
-  handleSearch = (value) => {
-    if (value == '') {
-      this.setState({ data: [] })
-      return
-    }
-    // TODO// api.getUser
+  componentDidMount() {
+    api.getUser({ groups: [2] }).then(result => {
+      this.setState({
+        data: result.data.data
+      })
+    })
   }
+
+  // handleSearch = (value) => {
+  //   if (value == '') {
+  //     this.setState({ data: [] })
+  //     return
+  //   }
+  //   // TODO// api.getUser
+  // }
 
   render() {
     return (
@@ -332,7 +340,7 @@ class SelectUser extends React.Component {
         value={this.props.value}
         onChange={this.props.onChange}
       >
-        {this.state.data.map(d => <Option key={d.value}>{d.text}</Option>)}
+        {this.state.data.map(d => <Option key={d.id}>{d.username}</Option>)}
       </Select>
     )
   }

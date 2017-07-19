@@ -82,9 +82,10 @@ class Register extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         const prefix = this.state.areaCode
+        const mobile = this.mobile
         this.props.dispatch({
           type: 'currentUser/register',
-          payload: { ...values, smstoken, prefix }
+          payload: { ...values, smstoken, prefix, mobile }
         })
       }
     })

@@ -117,6 +117,10 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={1}>
           <RadioAudit />
         </BasicFormItem>
+        
+        <BasicFormItem label="强交易师" name="partner">
+          <SelectUser />
+        </BasicFormItem>
 
       </Form>
     )
