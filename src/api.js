@@ -143,7 +143,7 @@ export function getProj(param) {
   return r('/proj/?' + qs.stringify(param))
 }
 
-export function favoriteProj(token, param) {
+export function favoriteProj(param) {
   return r('/proj/favorite/', 'POST', param)
 }
 

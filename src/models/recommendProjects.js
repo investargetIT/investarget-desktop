@@ -29,16 +29,20 @@ export default {
   },
   effects: {
     *refreshProjects({}, {call, put, select}) {
-      const result = yield call(api.getProj, {})
+      const { tags } = yield select(state => state.currentUser)
+      const tagIds = tags ? tags.map(item => item.id) : []
+      const param = { tags: tagIds }
+      const result = yield call(api.getProj, param) //
       const projects = result.data.data
       yield put({ type: 'setProjects', payload: projects })
     },
 
     *addProjects({dispatch}, {call, put, select}) {
-      const { token, id } = yield select(state => state.currentUser)
+      const { id } = yield select(state => state.currentUser)
       const { selectedProjects } = yield select(state => state.recommendProjects)
       try {
-        yield call(api.favoriteProj, token, { favoritetype: 4, user: id, projs: selectedProjects })
+        let params = { favoritetype: 4, user: id, projs: selectedProjects }
+        yield call(api.favoriteProj, params)
       } catch (e) {
         // TODO 错误处理
         console.error(e)

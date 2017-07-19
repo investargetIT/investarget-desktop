@@ -3,6 +3,10 @@ import styles from './RecommendProjects.css';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { Card, Icon, Tag, Button } from 'antd'
 
+const tagStyle = {
+  marginBottom: '8px',
+}
+
 
 function RecommendProjects(props) {
 
@@ -20,14 +24,21 @@ function RecommendProjects(props) {
             const isSelected = props.selectedProjects.includes(item.id)
             const cardCoverStyle = isSelected ? { display: 'flex' } : { display : 'none' }
 
+
+            const country = item.country ? item.country.country : ''
+            const tags = item.tags || []
+
+
             return (
                 <Card key={item.id} className={styles.card} bordered={false} bodyStyle={cardBodyStyle} onClick={()=>{props.onProjectToggle(item.id)}}>
                   <div className={styles.cardContent} style={cardContentStyle}>
                     <div className={styles.cardDetail}>
-                      <h3 className={styles.cardTitle}>{item.title}</h3>
+                      <h3 className={styles.cardTitle}>{item.projtitle}</h3>
                       <div style={{textAlign: 'left'}}>
-                        <Tag color="pink">美国</Tag>
-                        <Tag color="red">TMT</Tag>
+                        <Tag color="pink" style={tagStyle}>{country}</Tag>
+                        {
+                          tags.map(tag => <Tag key={tag.id} color="red" style={tagStyle}>{tag.name}</Tag>)
+                        }
                       </div>
                     </div>
                   </div>

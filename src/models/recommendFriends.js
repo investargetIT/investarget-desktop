@@ -30,7 +30,11 @@ export default {
   effects: {
     *refreshFriends({}, {call, put, select}) {
       const { id } = yield select(state => state.currentUser)
-      const result = yield call(api.getUser, { id })
+      const params = {
+        org: 39, // 机构: 多维海拓
+        groups: [2], // 用户组：交易师
+      }
+      const result = yield call(api.getUser, params)
       const friends = result.data.data.filter(item => item.id != id)
       yield put({ type: 'setFriends', payload: friends })
     },
