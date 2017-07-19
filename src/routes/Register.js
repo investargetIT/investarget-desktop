@@ -1,8 +1,8 @@
 import React from 'react'
-import { Form, Radio, Button, Select, Input, Row, Col, Checkbox } from 'antd'
+import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message } from 'antd'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
-import { getOrg } from '../api'
+import { getOrg, sendSmsCode } from '../api'
 import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
@@ -44,6 +44,9 @@ class Register extends React.Component {
     this.state = {
       value: 1,
       org: [],
+      fetchSmsCodeValue: null,
+      intervalId: null,
+      loading: false
     }
     this.onFriendToggle = this.onFriendToggle.bind(this)
     this.onFriendsSkip = this.onFriendsSkip.bind(this)
@@ -51,6 +54,7 @@ class Register extends React.Component {
     this.onProjectToggle = this.onProjectToggle.bind(this)
     this.onProjectsSkip = this.onProjectsSkip.bind(this)
     this.onProjectsSubmit = this.onProjectsSubmit.bind(this)
+    this.timer = this.timer.bind(this)
   }
 
   getChildContext() {
@@ -68,12 +72,17 @@ class Register extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
+    const smstoken = localStorage.getItem('smstoken')
+    if (!smstoken) {
+      message.error('请先获取短信验证码')
+      return
+    }
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        console.log('Received values of form: ', values)
+        console.log('Received values of form: ', { ...values, smstoken })
         this.props.dispatch({
           type: 'currentUser/register',
-          payload: values
+          payload: { ...values, smstoken }
         })
       }
     })
@@ -153,6 +162,40 @@ class Register extends React.Component {
     this.props.dispatch({ type: 'app/getTitles' })
   }
 
+  timer() {
+    if (this.state.fetchSmsCodeValue > 0) {
+    this.setState({ fetchSmsCodeValue: this.state.fetchSmsCodeValue - 1 })
+    } else {
+      clearInterval(this.state.intervalId)
+      this.setState({
+        fetchSmsCodeValue: null,
+        loading: false,
+        intervalId: null
+      })
+    }
+  }
+
+  handleFetchButtonClicked(mobile, areacode) {
+    this.setState({ loading: true })
+    const body = {
+      mobile: mobile,
+      areacode: areacode
+    }
+    sendSmsCode(body).then(data => {
+      if (data.data.status !== 'success') {
+        throw new Error(data.data)
+      }
+      message.success('验证码已发送至您的手机，请注意查收')
+      localStorage.setItem('smstoken', data.data.smstoken)
+      const intervalId = setInterval(this.timer, 1000)
+      this.setState({
+        loading: false,
+        intervalId: intervalId,
+        fetchSmsCodeValue: 60
+      })
+    }).catch(error => console.error(error))
+  }
+
   render() {
     const containerStyle = {
       position: 'relative',
@@ -178,6 +221,8 @@ class Register extends React.Component {
     }
 
     const { getFieldDecorator } = this.props.form;
+    const mobile = this.props.form.getFieldValue('mobile')
+    const areacode = this.props.form.getFieldValue('prefix')
 
     return (
       <div style={containerStyle}>
@@ -188,7 +233,10 @@ class Register extends React.Component {
               <Form onSubmit={this.handleSubmit}>
                 <Role />
                 <Mobile required country={this.props.country} />
-                <Code />
+                <Code
+                  loading={this.state.loading}
+                  value={this.state.fetchSmsCodeValue ? `${this.state.fetchSmsCodeValue}秒后重新获取` : null}
+                  onFetchButtonClicked={this.handleFetchButtonClicked.bind(this, mobile, areacode)} />
                 <Email />
                 <FullName />
                 <Org required org={this.state.org} onChange={this.handleOrgChange} />

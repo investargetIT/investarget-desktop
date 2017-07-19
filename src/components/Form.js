@@ -143,7 +143,12 @@ const Code = (props, context) => (
         })(<Input size="large" />)}
       </Col>
       <Col span={12}>
-        <Button size="large">{i18n("fetch_code")}</Button>
+        <Button
+          loading={props.loading}
+          disabled={props.value ? true : false}
+          onClick={props.onFetchButtonClicked} size="large">
+          {props.loading ? "正在获取验证码" : props.value || i18n("fetch_code")}
+        </Button>
       </Col>
     </Row>
   </FormItem>

@@ -239,6 +239,10 @@ export function qiniuDelete(bucket, key) {
   return r('/service/qiniudelete', 'POST', param)
 }
 
+export function sendSmsCode(body) {
+  return r('/service/sms', 'POST', body)
+}
+
 /**
  * source
  */
@@ -330,12 +334,15 @@ export function deleteUser(id) {
 }
 
 export function register(user) {
-  const mobilecode = '375104'
-  const mobilecodetoken = '4871ace7028c4dc76c260adff9386e4f'
-  const mobile = '18004092637'
+  // const mobilecode = '375104'
+  const mobilecode = user.code
+  // const mobilecodetoken = '4871ace7028c4dc76c260adff9386e4f'
+  const mobilecodetoken = user.smstoken
+  // const mobile = '18004092637'
   const usernameC = user.username
   const orgname = user.organization
-  const param = {...user, mobilecode, mobile, mobilecodetoken, usernameC, orgname}
+  const mobileAreaCode = user.prefix
+  const param = {...user, mobilecode, mobilecodetoken, usernameC, orgname, mobileAreaCode}
   return r('/user/register/', 'POST', param)
 }
 
