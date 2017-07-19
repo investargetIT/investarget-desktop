@@ -34,8 +34,8 @@ export default {
       yield call(api.register, user)
 
       const { data } = yield call(api.login, { username: user.email, password: user.password })
-      const { token, user_info } = data
-      const userInfo = { ...user_info, token }
+      const { token, user_info, menulist, permissions } = data
+      const userInfo = { ...user_info, token, menulist, permissions }
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',

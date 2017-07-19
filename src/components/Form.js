@@ -109,7 +109,7 @@ const OldPassword = () => <BasicFormItem label={i18n("old_password")} name="old_
 
 
 const Position = props => (
-  <BasicFormItem label={i18n("position")} name="position" required>
+  <BasicFormItem label={i18n("position")} name="title" required>
     <Select placeholder="Please select your position" disabled={props.disabled}>
       { props.title ? props.title.map(t => <Option key={t.id} value={t.id + ''} title={t.name}>{t.name}</Option>) : null }
     </Select>
@@ -201,7 +201,7 @@ Mobile.contextTypes = {
 }
 
 const Role = props => (
-  <BasicFormItem label={i18n("role")} name="role" required valueType="number">
+  <BasicFormItem label={i18n("role")} name="groups" required valueType="number">
     <RadioGroup disabled={props.disabled}>
       <Radio value={1}>{i18n("investor")}</Radio>
       <Radio value={2}>{i18n("transaction")}</Radio>

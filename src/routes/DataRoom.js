@@ -71,13 +71,19 @@ class DataRoomList extends React.Component {
     // queryDataRoom().then(data => (this.props.location.query.id))
   }
 
+  handleCreateNewFolder(parentId, folderName) {
+    console.log(parentId, folderName)
+  }
+
   render () {
     return (
       <LeftRightLayout
         location={this.props.location}
         title="DataRoomList">
 
-        <FileMgmt data={data}/>
+        <FileMgmt
+          data={data}
+          onCreateNewFolder={this.handleCreateNewFolder} />
 
       </LeftRightLayout>
     )

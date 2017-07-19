@@ -330,14 +330,12 @@ export function deleteUser(id) {
 }
 
 export function register(user) {
-  const datasource = 1
   const mobilecode = '375104'
   const mobilecodetoken = '4871ace7028c4dc76c260adff9386e4f'
   const mobile = '18004092637'
-  const groups = '1'
-  const nameC = user.name
+  const usernameC = user.username
   const orgname = user.organization
-  const param = {...user, datasource, mobilecode, mobile, mobilecodetoken, groups, nameC, orgname}
+  const param = {...user, mobilecode, mobile, mobilecodetoken, usernameC, orgname}
   return r('/user/register/', 'POST', param)
 }
 
