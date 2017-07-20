@@ -30,7 +30,7 @@ import UserDetail from './routes/UserDetail'
 import EditTimeline from './routes/EditTimeline'
 import TimelineDetail from './routes/TimelineDetail'
 import InboxList from './routes/InboxList'
-
+import AddDataRoom from './routes/AddDataRoom'
 
 function RouterConfig({ history }) {
   return (
@@ -67,7 +67,7 @@ function RouterConfig({ history }) {
       <Route path="/app/timeline/edit/:id" component={EditTimeline} />
       <Route path="/app/timeline/:id" component={TimelineDetail} />
       <Route path={URI_8} component={InboxList} />
-      <Route path="/app/dataroom/create" component={UserList} />
+      <Route path="/app/dataroom/add" component={AddDataRoom} />
     </Router>
   )
 }

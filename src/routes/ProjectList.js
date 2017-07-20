@@ -135,7 +135,7 @@ class ProjectList extends React.Component {
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
+            <a target="_blank" href={'/app/dataroom/add?projectID=' + record.id}>
               <Button size="small" disabled={!this.props.permissions.includes('dataroom.user_adddataroom')}>创建DataRoom</Button>
             </a>
             <Link to={'/app/projects/edit/' + record.id}>
@@ -149,7 +149,7 @@ class ProjectList extends React.Component {
         )
       },
     ]
-    
+
     return (
       <MainLayout location={location}>
         <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" />

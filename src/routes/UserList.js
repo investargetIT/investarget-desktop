@@ -16,61 +16,9 @@ const Option = Select.Option
 const Search = Input.Search
 const confirm = Modal.confirm
 
-class UserList extends React.Component {
+function UserList(props) {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      projectName: null,
-      relation: []
-    }
-  }
-
-  componentDidMount() {
-    const projectID = this.props.location.query.projectID 
-    if (projectID) {
-      api.getProjLangDetail(projectID)
-        .then(data => this.setState({ projectName: data.data.projtitle }))
-        .catch(error => console.error(error))
-
-      this.props.dispatch({ type: 'userList/updateParams', payload: { groups: 1 } })
-      this.props.dispatch({ type: 'userList/filt' })
-
-      api.getUserRelation().then(data => this.setState({ relation: data.data.data }))
-    }
-  }
-
-  handleConfirmCreateDataRoom(investorID, traderID) {
-    const projectID = this.props.location.query.projectID
-    const relation = this.state.relation.filter(f => f.investoruser.id === investorID)[0]
-    const react = this
-    confirm({
-      title: `你确定要为 ${relation.investoruser.username} 和 ${relation.traderuser.username} 创建DataRoom吗？`,
-      onOk() {
-        const body = {
-          proj: parseInt(projectID, 10),
-          isPublic: false,
-          investor: investorID,
-          trader: traderID
-        }
-        api.createDataRoom(body).then(data =>
-          react.props.dispatch(routerRedux.replace('/app/dataroom/list'))
-        ).catch(e => {
-          if (e.name === 'ApiError' && e.code === 2009) {
-            message.error('权限校验失败，请重新登录')
-            react.props.dispatch({
-              type: 'currentUser/logout'
-            })
-          } else {
-            message.error(e.message)
-          }
-        })
-      }
-    })
-  }
-
-render () {
-const { currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading } = this.props
+  const { currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading } = props
   let modal = null
 
   const handleFilterChange = (key, value) => {
@@ -129,41 +77,36 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
   const columns = [
     {
       title: i18n("username"),
-      dataIndex: this.state.projectName ? 'investoruser.username' : 'username',
+      dataIndex: 'username',
       key: 'username'
     },
-    // {
-    //   title: i18n("org"),
-    //   dataIndex: 'org.orgname',
-    //   key: 'org'
-    // },
-    // {
-    //   title: i18n("position"),
-    //   dataIndex: 'title.name',
-    //   key: 'title'
-    // },
+    {
+      title: i18n("org"),
+      dataIndex: 'org.orgname',
+      key: 'org'
+    },
+    {
+      title: i18n("position"),
+      dataIndex: 'title.name',
+      key: 'title'
+    },
     {
       title: i18n("tag"),
-      dataIndex: this.state.projectName ? 'investoruser.tags' : 'tags',
+      dataIndex: 'tags',
       key: 'tags',
       render: tags => tags ? tags.map(t => t.name).join(' ') : null
     },
-    // {
-    //   title: i18n("trader_relation"),
-    //   dataIndex: 'trader_relation.traderuser.username',
-    //   key: 'trader_relation',
-    // },
-    // {
-    //   title: i18n("role"),
-    //   dataIndex: 'groups',
-    //   key: 'role',
-    //   render: groups => groups ? groups.map(m => m.name).join(' ') : null
-    // },
-    // {
-    //   title: i18n("userstatus"),
-    //   dataIndex: 'userstatus.name',
-    //   key: 'userstatus'
-    // },
+    {
+      title: i18n("role"),
+      dataIndex: 'groups',
+      key: 'role',
+      render: groups => groups ? groups.map(m => m.name).join(' ') : null
+    },
+    {
+      title: i18n("userstatus"),
+      dataIndex: 'userstatus.name',
+      key: 'userstatus'
+    },
     {
       title: i18n("action"),
       key: 'action',
@@ -190,57 +133,29 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
               </Popconfirm>
             </span>
       )
-    },
-    {
-      title: i18n("action"),
-      key: 'create_dataroom',
-      render: (text, record) => <Button size="small"
-        onClick={this.handleConfirmCreateDataRoom.bind(this, record.investoruser.id, record.traderuser.id)}>创建</Button>
     }
   ]
 
-  
-  let title, action, showFilter
-  if (location.pathname === "/app/dataroom/create") {
-    title = "create_dataroom"
-    showFilter = false
-    const index = columns.map(m => m.key).indexOf("action")
-    if (index > -1) {
-      columns.splice(index, 1)
-    }
-  } else if (location.pathname === "/app/user/list") {
-    title = "user_list"
-    showFilter = true
-    action = currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null
-    const index = columns.map(m => m.key).indexOf("create_dataroom")
-    if (index > -1) {
-      columns.splice(index, 1)
-    }
-  }
   return (
     <LeftRightLayout
       location={location}
-      title={i18n(title)}
-      action={action}>
+      title={i18n("user_list")}
+      action={currentUser.permissions.includes("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
 
-      {showFilter ?
         <UserListFilter
           value={filter}
           onChange={handleFilterChange}
           onSearch={handleFilt}
           onReset={handleReset} />
-        : null}
-
-      {this.state.projectName ? <div style={{ fontSize: 16, marginBottom: 24 }}>项目名称: {this.state.projectName}</div> : null}
 
       <div style={{marginBottom: '24px'}}>
         <Search value={search} onChange={handleSearchChange} placeholder="搜索用户" style={{width: 200}} onSearch={handleSearch} />
       </div>
 
       <Table
-        rowSelection={this.state.projectName ? null : rowSelection}
+        rowSelection={rowSelection}
         columns={columns}
-        dataSource={this.state.projectName ? this.state.relation : list}
+        dataSource={list}
         loading={loading}
         rowKey={record => record.id}
         pagination={false} />
@@ -260,7 +175,7 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
     </LeftRightLayout>
   )
 }
-}
+
 
 function mapStateToProps(state) {
   const { filter, search, selectedRowKeys, list, total, page, pageSize } = state.userList
