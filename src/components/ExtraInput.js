@@ -308,13 +308,9 @@ class SelectExistOrganization extends React.Component {
  * SelectUser
  */
 class SelectUser extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: [],
-    }
+  state = {
+    data: [],
   }
-
   componentDidMount() {
     api.getUser({ groups: [2] }).then(result => {
       this.setState({
@@ -322,24 +318,9 @@ class SelectUser extends React.Component {
       })
     })
   }
-
-  // handleSearch = (value) => {
-  //   if (value == '') {
-  //     this.setState({ data: [] })
-  //     return
-  //   }
-  //   // TODO// api.getUser
-  // }
-
   render() {
     return (
-      <Select
-        showSearch
-        optionFilterProp="children"
-        onSearch={this.handleSearch}
-        value={this.props.value}
-        onChange={this.props.onChange}
-      >
+      <Select mode={this.props.mode} showSearch optionFilterProp="children">
         {this.state.data.map(d => <Option key={d.id}>{d.username}</Option>)}
       </Select>
     )

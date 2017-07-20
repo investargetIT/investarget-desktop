@@ -2,11 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { i18n } from '../utils/util'
-
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
-
 
 function onValuesChange(props, values) {
   console.log(values)
@@ -74,7 +72,7 @@ class EditUser extends React.Component {
       mobileAreaCode: data.mobileAreaCode,
       title: data.title.id,
       wechat: data.wechat,
-      org: data.org.id,
+      org: data.org && data.org.id,
       tags: data.tags && data.tags.map(item => item.id),
       userstatus: data.userstatus.id,
       country: data.country && data.country.id,
@@ -106,6 +104,7 @@ class EditUser extends React.Component {
         title="修改用户">
 
         <EditUserForm wrappedComponentRef={this.handleRef} data={this.state.data} />
+
         <div style={{textAlign: 'center'}}>
           <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
         </div>
