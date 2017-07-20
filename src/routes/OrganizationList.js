@@ -6,7 +6,14 @@ import * as api from '../api'
 import { Button, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import CommonList from '../components/CommonList'
+
+import {
+  Filters,
+  Search,
+  Table,
+  Pagination,
+} from '../components/CommonList'
+
 import {
   OverseaFilter,
   CurrencyFilter,
@@ -16,20 +23,89 @@ import {
   OrganizationTypeFilter,
 } from '../components/Filter'
 
+const filterOptions = [
+  { title: '是否投资海外', key: 'isOversea', component: OverseaFilter },
+  { title: '货币', key: 'currencys', component: CurrencyFilter },
+  { title: '轮次', key: 'orgtransactionphases', component: TransactionPhaseFilter },
+  { title: '行业', key: 'industries', component: IndustryFilter },
+  { title: '标签', key: 'tags', component: TagFilter },
+  { title: '机构类型', key: 'orgtypes', component: OrganizationTypeFilter },
+]
 
 
 class OrganizationList extends React.Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      filters: {},
+      search: null,
+      current: 0,
+      pageSize: 10,
+      _param: {},
+      total: 0,
+      list: [],
+      loading: false,
+    }
+  }
+
+  handleFiltersChange = (filters) => {
+    this.setState({ filters })
+  }
+
+  handleFilt = () => {
+    let { _params, filters } = this.state
+    _params = { ..._params, ...filters }
+    this.setState({ _params, page: 1 }, this.getOrg)
+  }
+
+  handleReset = () => {
+    this.setState({ filters: {}, page: 1, _params: {} }, this.getOrg)
+  }
+
+  handleSearchChange = (search) => {
+    this.setState({ search })
+  }
+
+  handleSearch = () => {
+    let { _params, search } = this.state
+    _params = { ..._params, search }
+    this.setState({ _params, page: 1 }, this.getOrg)
+  }
+
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getOrg)
+  }
+
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getOrg)
+  }
+
+  getOrg = () => {
+    const { _params, page, pageSize } = this.state
+    const params = { ..._params, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.getOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
   }
 
   deleteOrg = (id) => {
+    this.setState({ loading: true })
     api.deleteOrg(id).then(result => {
-      this.orgList.getData()
+      this.getOrg()
     }, error => {
+      this.setState({ loading: false })
       showError(error.message)
     })
+  }
+
+  componentDidMount() {
+    this.getOrg()
   }
 
   render() {
@@ -62,20 +138,24 @@ class OrganizationList extends React.Component {
       },
     ]
 
-    const filterOptions = [
-      { title: '是否投资海外', key: 'isOversea', component: OverseaFilter },
-      { title: '货币', key: 'currencys', component: CurrencyFilter },
-      { title: '轮次', key: 'orgtransactionphases', component: TransactionPhaseFilter },
-      { title: '行业', key: 'industries', component: IndustryFilter },
-      { title: '标签', key: 'tags', component: TagFilter },
-      { title: '机构类型', key: 'orgtypes', component: OrganizationTypeFilter },
-    ]
+
+
+    const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title={i18n('organization.org_list')} actionLink="/app/organization/add" actionTitle={i18n('organization.new_org')} />
-          <CommonList columns={columns} hasFilters={true} filterOptions={filterOptions} hasSearch={true} getData={api.getOrg} />
+          <PageTitle
+            title={i18n('organization.org_list')}
+            actionLink="/app/organization/add"
+            actionTitle={i18n('organization.new_org')}
+          />
+          <div>
+            <Filters options={filterOptions} value={filters} onChange={this.handleFiltersChange} onFilt={this.handleFilt} onReset={this.handleReset} />
+            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+            <Table columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} />
+            <Pagination total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChange={this.handlePageSizeChange} />
+          </div>
         </div>
       </MainLayout>
     )
