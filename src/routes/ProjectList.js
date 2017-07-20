@@ -7,11 +7,6 @@ import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectListFilter } from '../components/Filter'
-import {
-  RadioTrueOrFalse,
-  CheckboxCurrencyType,
-  SelectProjectStatus,
-} from '../components/ExtraInput'
 const Search = Input.Search
 
 import AuditProjectModal from '../components/AuditProjectModal'
@@ -130,14 +125,18 @@ class ProjectList extends React.Component {
           <span>
             <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>审核</Button>
             &nbsp;
-            <Button size="small">时间轴</Button>
             <Link to={'/app/projects/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <a target="_blank" href={'/app/dataroom/add?projectID=' + record.id}>
-              <Button size="small" disabled={!this.props.permissions.includes('dataroom.user_adddataroom')}>创建DataRoom</Button>
+            <a href={"/app/timeline/add?projId=" + record.id} target="_blank">
+              <Button size="small">创建时间轴</Button>
             </a>
+            &nbsp;
+            <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
+              <Button size="small">创建DataRoom</Button>
+            </a>
+            &nbsp;
             <Link to={'/app/projects/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>
