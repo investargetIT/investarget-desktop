@@ -136,7 +136,7 @@ class ProjectList extends React.Component {
             </Link>
             &nbsp;
             <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
-              <Button size="small">创建DataRoom</Button>
+              <Button size="small" disabled={!this.props.permissions.includes('dataroom.user_adddataroom')}>创建DataRoom</Button>
             </a>
             <Link to={'/app/projects/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
@@ -149,7 +149,7 @@ class ProjectList extends React.Component {
         )
       },
     ]
-
+    
     return (
       <MainLayout location={location}>
         <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" />
@@ -187,7 +187,7 @@ class ProjectList extends React.Component {
 
 
 function mapStateToProps(state) {
-  return { ...state.projectList, loading: state.loading.effects['projectList/get'] }
+  return { ...state.projectList, loading: state.loading.effects['projectList/get'], permissions: state.currentUser.permissions }
 }
 
 export default connect(mapStateToProps)(ProjectList)

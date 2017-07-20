@@ -118,15 +118,17 @@ class UserForm extends React.Component {
           <RadioAudit />
         </BasicFormItem>
         
-        { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
+        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
         <BasicFormItem label="强交易师" name="major_trader">
           <SelectUser mode="single" />
-        </BasicFormItem> : null }
+        </BasicFormItem> 
+        : null }*/}
 
-        { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
+        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
         <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
           <SelectUser mode="multiple" />
-        </BasicFormItem> : null }
+        </BasicFormItem> 
+        : null }*/}
 
       </Form>
     )

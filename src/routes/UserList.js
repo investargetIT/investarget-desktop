@@ -6,7 +6,7 @@ import { i18n } from '../utils/util'
 import * as api from '../api'
 
 import LeftRightLayout from '../components/LeftRightLayout'
-import { Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
+import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import UserRelationModal from '../components/UserRelationModal'
 
@@ -21,7 +21,8 @@ class UserList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      projectName: null
+      projectName: null,
+      relation: []
     }
   }
 
@@ -34,24 +35,36 @@ class UserList extends React.Component {
 
       this.props.dispatch({ type: 'userList/updateParams', payload: { groups: 1 } })
       this.props.dispatch({ type: 'userList/filt' })
+
+      api.getUserRelation().then(data => this.setState({ relation: data.data.data }))
     }
   }
 
-  handleConfirmCreateDataRoom(investorID) {
+  handleConfirmCreateDataRoom(investorID, traderID) {
     const projectID = this.props.location.query.projectID
-    const investor = this.props.list.filter(f => f.id === investorID)[0]
+    const relation = this.state.relation.filter(f => f.investoruser.id === investorID)[0]
     const react = this
     confirm({
-      title: `你确定要为 ${investor.username} 和 ${investor.trader_relation.traderuser.username} 创建DataRoom吗？`,
+      title: `你确定要为 ${relation.investoruser.username} 和 ${relation.traderuser.username} 创建DataRoom吗？`,
       onOk() {
         const body = {
           proj: parseInt(projectID, 10),
           isPublic: false,
           investor: investorID,
-          trader: investor.trader_relation.traderuser.id
+          trader: traderID
         }
-        api.createDataRoom(body)
-          .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/list')))
+        api.createDataRoom(body).then(data =>
+          react.props.dispatch(routerRedux.replace('/app/dataroom/list'))
+        ).catch(e => {
+          if (e.name === 'ApiError' && e.code === 2009) {
+            message.error('权限校验失败，请重新登录')
+            react.props.dispatch({
+              type: 'currentUser/logout'
+            })
+          } else {
+            message.error(e.message)
+          }
+        })
       }
     })
   }
@@ -93,7 +106,8 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
     api.deleteUser(id).then(result => {
       dispatch({ type: 'userList/get' })
     }, error => {
-      Modal.error(error.message)
+      console.error(error)
+      message.error(error.message)
     })
   }
 
@@ -115,36 +129,41 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
   const columns = [
     {
       title: i18n("username"),
-      dataIndex: 'username',
+      dataIndex: this.state.projectName ? 'investoruser.username' : 'username',
       key: 'username'
     },
-    {
-      title: i18n("org"),
-      dataIndex: 'org.orgname',
-      key: 'org'
-    },
-    {
-      title: i18n("position"),
-      dataIndex: 'title.name',
-      key: 'title'
-    },
+    // {
+    //   title: i18n("org"),
+    //   dataIndex: 'org.orgname',
+    //   key: 'org'
+    // },
+    // {
+    //   title: i18n("position"),
+    //   dataIndex: 'title.name',
+    //   key: 'title'
+    // },
     {
       title: i18n("tag"),
-      dataIndex: 'tags',
+      dataIndex: this.state.projectName ? 'investoruser.tags' : 'tags',
       key: 'tags',
-      render: tags => tags.map(t => t.name).join(' ')
+      render: tags => tags ? tags.map(t => t.name).join(' ') : null
     },
-    {
-      title: i18n("role"),
-      dataIndex: 'groups',
-      key: 'role',
-      render: groups => groups.map(m => m.name).join(' ')
-    },
-    {
-      title: i18n("userstatus"),
-      dataIndex: 'userstatus.name',
-      key: 'userstatus'
-    },
+    // {
+    //   title: i18n("trader_relation"),
+    //   dataIndex: 'trader_relation.traderuser.username',
+    //   key: 'trader_relation',
+    // },
+    // {
+    //   title: i18n("role"),
+    //   dataIndex: 'groups',
+    //   key: 'role',
+    //   render: groups => groups ? groups.map(m => m.name).join(' ') : null
+    // },
+    // {
+    //   title: i18n("userstatus"),
+    //   dataIndex: 'userstatus.name',
+    //   key: 'userstatus'
+    // },
     {
       title: i18n("action"),
       key: 'action',
@@ -175,7 +194,8 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
     {
       title: i18n("action"),
       key: 'create_dataroom',
-      render: (text, record) => <Button onClick={this.handleConfirmCreateDataRoom.bind(this, record.id)} disabled={!record.trader_relation} size="small">创建</Button>
+      render: (text, record) => <Button size="small"
+        onClick={this.handleConfirmCreateDataRoom.bind(this, record.investoruser.id, record.traderuser.id)}>创建</Button>
     }
   ]
 
@@ -220,7 +240,7 @@ const { currentUser, selectedRowKeys, filter, search, location, list, total, pag
       <Table
         rowSelection={this.state.projectName ? null : rowSelection}
         columns={columns}
-        dataSource={list}
+        dataSource={this.state.projectName ? this.state.relation : list}
         loading={loading}
         rowKey={record => record.id}
         pagination={false} />

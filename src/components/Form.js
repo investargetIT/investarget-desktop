@@ -181,8 +181,8 @@ Mobile.contextTypes = {
 const Role = props => (
   <BasicFormItem label={i18n("role")} name="groups" required valueType="number">
     <RadioGroup disabled={props.disabled}>
-      <Radio value={1}>{i18n("investor")}</Radio>
-      <Radio value={2}>{i18n("transaction")}</Radio>
+      <Radio value={4}>{i18n("investor")}</Radio>
+      <Radio value={5}>{i18n("transaction")}</Radio>
     </RadioGroup>
   </BasicFormItem>
 )

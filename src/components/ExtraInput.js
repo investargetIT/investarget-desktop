@@ -320,7 +320,7 @@ class SelectUser extends React.Component {
   }
   render() {
     return (
-      <Select mode={this.props.mode} showSearch optionFilterProp="children">
+      <Select mode={this.props.mode} showSearch optionFilterProp="children" value={this.props.value} onChange={this.props.onChange}>
         {this.state.data.map(d => <Option key={d.id}>{d.username}</Option>)}
       </Select>
     )

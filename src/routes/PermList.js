@@ -1,7 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
-import { Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
+import { message, Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
 
@@ -160,10 +160,12 @@ class PermList extends React.Component {
       .then(data => {
         this.setState({loading: false})
         console.log(data)
+        message.success('权限保存成功')
       })
       .catch(error => {
         this.setState({loading: false})
         console.error(error)
+        message.error(error.message)
       })
   }
 

@@ -30,7 +30,7 @@ class EditUser extends React.Component {
       if(!err) {
         console.log('Received values of form: ', values)
         api.editUser(userId, values).then(result => {
-          //
+          this.props.history.replace("/app/user/list")
         }, error => {
 
         })
@@ -70,12 +70,14 @@ class EditUser extends React.Component {
       email: data.email,
       mobile: data.mobile,
       mobileAreaCode: data.mobileAreaCode,
-      title: data.title.id,
+      title: data.title ? data.title.id : null,
       wechat: data.wechat,
       org: data.org && data.org.id,
       tags: data.tags && data.tags.map(item => item.id),
       userstatus: data.userstatus.id,
       country: data.country && data.country.id,
+      major_trader: data.majorTraderID,
+      minor_traders: data.minorTraderIDArr,
     }
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
@@ -86,15 +88,27 @@ class EditUser extends React.Component {
 
   componentDidMount() {
     const userId = Number(this.props.params.id)
-    // TODO// getUserDetail
+    let userDetailInfo
     api.getUserDetail(userId).then(result => {
-      console.log(result.data)
-
-      const data = this.getData(result.data)
-      this.setState({ data })
-    }, error => {
-      Modal.error({ title: '错误', content: error.message })
-    })
+      userDetailInfo = result.data
+      if (result.data.groups.map(m => m.id).includes(1)) {
+        const param = { investoruser: userId }
+        return api.getUserRelation(param)
+      } else {
+        return Promise.resolve()
+      }
+    }).then(result => {
+      if (result) {
+        const majorTraderArr = result.data.data.filter(f => f.relationtype)
+        if (majorTraderArr.length > 0) {
+          const majorTraderID = majorTraderArr[0].traderuser.id + ""
+          userDetailInfo = { ...userDetailInfo, majorTraderID }
+        }
+        const minorTraderIDArr = result.data.data.filter( f => !f.relationtype).map(m => m.traderuser.id + "")
+        userDetailInfo = { ...userDetailInfo, minorTraderIDArr}
+      }
+      this.setState({ data: this.getData(userDetailInfo) })
+    }).catch(error => console.error(error))
   }
 
   render () {
