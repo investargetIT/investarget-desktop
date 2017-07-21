@@ -51,7 +51,7 @@ class UserInfo extends React.Component {
       const tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : ''
       const country = data.country ? data.country.country : ''
       const org = data.org ? data.org.orgname : ''
-      const mobile = (data.mobile && data.mobileAreaCode) ? (data.mobile + data.mobileAreaCode) : ''
+      const mobile = (data.mobile && data.mobileAreaCode) ? (`+${data.mobileAreaCode} ${data.mobile}`) : ''
       const wechat = data.wechat
       const email = data.email
       const userstatus = data.userstatus.name

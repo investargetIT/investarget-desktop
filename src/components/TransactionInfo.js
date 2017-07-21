@@ -104,6 +104,7 @@ class TransactionInfo extends React.Component {
 
     return list.length > 0 ?
       (<div>
+          <h3>交易师信息</h3>
           <Field title="姓名" value={SelectTransaction} />
           <Field title="公司" value={company} />
           <Field title="职位" value={title} />

@@ -36,8 +36,7 @@ class UserDetail extends React.Component {
           <Col span={12}>
             <UserInfo userId={userId} />
           </Col>
-          <Col span={12}>
-            <h3>交易师信息</h3>
+          <Col span={12}>            
             <TransactionInfo userId={userId} />
           </Col>
         </Row>
