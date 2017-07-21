@@ -3,34 +3,14 @@ import { Link } from 'dva/router'
 import { i18n, showError } from '../utils/util'
 import * as api from '../api'
 
-import { Button, Popconfirm, Modal } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
+import { OrganizationListFilter } from '../components/Filter'
+import { Search } from '../components/Search'
 
-import {
-  Filters,
-  Search,
-  Table,
-  Pagination,
-} from '../components/CommonList'
-
-import {
-  OverseaFilter,
-  CurrencyFilter,
-  TransactionPhaseFilter,
-  IndustryFilter,
-  TagFilter,
-  OrganizationTypeFilter,
-} from '../components/Filter'
-
-const filterOptions = [
-  { title: '是否投资海外', key: 'isOversea', component: OverseaFilter },
-  { title: '货币', key: 'currencys', component: CurrencyFilter },
-  { title: '轮次', key: 'orgtransactionphases', component: TransactionPhaseFilter },
-  { title: '行业', key: 'industries', component: IndustryFilter },
-  { title: '标签', key: 'tags', component: TagFilter },
-  { title: '机构类型', key: 'orgtypes', component: OrganizationTypeFilter },
-]
+const tableStyle = { marginBottom: '24px' }
+const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
 
 class OrganizationList extends React.Component {
@@ -138,8 +118,6 @@ class OrganizationList extends React.Component {
       },
     ]
 
-
-
     const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
@@ -151,10 +129,10 @@ class OrganizationList extends React.Component {
             actionTitle={i18n('organization.new_org')}
           />
           <div>
-            <Filters options={filterOptions} value={filters} onChange={this.handleFiltersChange} onFilt={this.handleFilt} onReset={this.handleReset} />
+            <OrganizationListFilter value={filters} onChange={this.handleFiltersChange} onSearch={this.handleFilt} onReset={this.handleReset} />
             <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
-            <Table columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} />
-            <Pagination total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChange={this.handlePageSizeChange} />
+            <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+            <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
         </div>
       </MainLayout>

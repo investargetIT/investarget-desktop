@@ -61,4 +61,18 @@ function UserListSearch({ onChange, onSearch }) {
   return <Search keys={searchKeys} onChange={onChange} onSearch={onSearch} />
 }
 
-export { UserListSearch }
+
+function _Search(props) {
+  const style = { marginBottom: '24px', width: '200px' }
+  function handleChange(e) {
+    props.onChange(e.target.value)
+  }
+  return (
+    <div style={style}>
+      <Input.Search value={props.value} onChange={handleChange} onSearch={props.onSearch} />
+    </div>
+  )
+}
+
+
+export { UserListSearch, _Search as Search }

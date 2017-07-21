@@ -167,14 +167,17 @@ function UserListFilter(props) {
 }
 
 function OrganizationListFilter(props) {
+  function handleChange(key, value) {
+    props.onChange({ ...props.value, [key]: value })
+  }
   return (
     <div>
-      <OverseaFilter value={props.value.isOversea} onChange={props.onChange.bind(this, 'isOversea')} />
-      <CurrencyFilter value={props.value.currencys} onChange={props.onChange.bind(this, 'currencys')} />
-      <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={props.onChange.bind(this, 'orgtransactionphases')} />
-      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
-      <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
-      <OrganizationTypeFilter value={props.value.orgtypes} onChange={props.onChange.bind(this, 'orgtypes')} />
+      <OverseaFilter value={props.value.isOversea} onChange={handleChange.bind(this, 'isOversea')} />
+      <CurrencyFilter value={props.value.currencys} onChange={handleChange.bind(this, 'currencys')} />
+      <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={handleChange.bind(this, 'orgtransactionphases')} />
+      <IndustryFilter value={props.value.industries} onChange={handleChange.bind(this, 'industries')} />
+      <TagFilter value={props.value.tags} onChange={handleChange.bind(this, 'tags')} />
+      <OrganizationTypeFilter value={props.value.orgtypes} onChange={handleChange.bind(this, 'orgtypes')} />
       <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
     </div>
   )
