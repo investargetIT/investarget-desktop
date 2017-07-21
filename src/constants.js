@@ -1,7 +1,7 @@
 export const PAGE_SIZE = 5
 
 export const URI_1 = "/app/projects/list"
-export const URI_2 = "/app/projects/interest"
+export const URI_2 = "/app/projects/list/interest"
 export const URI_3 = "/app/organization/list"
 export const URI_4 = "/app/email/list"
 export const URI_5 = "/app/timeline/list"
@@ -14,9 +14,9 @@ export const URI_11 = "/app/log/list"
 export const URI_12 = "/app/investor/my"
 export const URI_13 = "/app/trader/my"
 export const URI_14 = "/app/perm/list"
-export const URI_15 = "/app/projects/recommend"
+export const URI_15 = "/app/projects/list/recommend"
 export const URI_16 = "/app/projects/published"
-export const URI_17 = "/app/projects/favorite"
+export const URI_17 = "/app/projects/list/favor"
 
 export const KEY_TO_URI = {
   "platform_projects": URI_1,

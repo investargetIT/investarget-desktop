@@ -35,7 +35,7 @@ import AddTimeline from './routes/AddTimeline'
 import AddMarketPlace from './routes/AddMarketPlace'
 import EditMarketPlace from './routes/EditMarketPlace'
 import MarketPlaceDetail from './routes/MarketPlaceDetail'
-
+import MyInvestor from './routes/MyInvestor'
 
 function RouterConfig({ history }) {
   return (
@@ -77,7 +77,7 @@ function RouterConfig({ history }) {
       <Route path="/app/marketplace/add" component={AddMarketPlace} />
       <Route path="/app/marketplace/edit/:id" component={EditMarketPlace} />
       <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
-
+      <Route path={URI_12} component={MyInvestor} />
     </Router>
   )
 }
