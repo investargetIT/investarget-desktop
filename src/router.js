@@ -32,6 +32,9 @@ import TimelineDetail from './routes/TimelineDetail'
 import InboxList from './routes/InboxList'
 import AddDataRoom from './routes/AddDataRoom'
 import AddTimeline from './routes/AddTimeline'
+import AddMarketPlace from './routes/AddMarketPlace'
+import EditMarketPlace from './routes/EditMarketPlace'
+import MarketPlaceDetail from './routes/MarketPlaceDetail'
 
 
 function RouterConfig({ history }) {
@@ -71,6 +74,10 @@ function RouterConfig({ history }) {
       <Route path="/app/timeline/:id" component={TimelineDetail} />
       <Route path={URI_8} component={InboxList} />
       <Route path="/app/dataroom/add" component={AddDataRoom} />
+      <Route path="/app/marketplace/add" component={AddMarketPlace} />
+      <Route path="/app/marketplace/edit/:id" component={EditMarketPlace} />
+      <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
+
     </Router>
   )
 }

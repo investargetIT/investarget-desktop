@@ -1,27 +1,14 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { injectIntl, intlShape } from 'react-intl'
-import { connect } from 'dva'
+import { Form, Button, message } from 'antd'
+import MainLayout from '../components/MainLayout'
+import PageTitle from '../components/PageTitle'
+import MarketPlaceForm from '../components/MarketPlaceForm'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
 import { i18n } from '../utils/util'
 
-
-import { Form, Button, message } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
-import ProjectBaseForm from '../components/ProjectBaseForm'
-
-
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
-
-
-function onValuesChange(props, values) {
-  console.log(values)
-}
-const AddProjectForm = Form.create({onValuesChange})(ProjectBaseForm)
-
 
 function toData(formData) {
   var data = {}
@@ -31,12 +18,20 @@ function toData(formData) {
     }
   }
   data['industries'] = formData['industriesKeys'].map(key => formData['industries-' + key])
+  // 附件转换
+  data['linkpdfkey'] = data['attachment'].key
+  delete data['attachment']
+  data['ismarketplace'] = true
   return data
 }
 
+function onValuesChange(props, values) {
+  console.log(values)
+}
+const AddMarketPlaceForm = Form.create({ onValuesChange })(MarketPlaceForm)
 
-class AddProject extends React.Component {
 
+class AddMarketPlace extends React.Component {
   constructor(props) {
     super(props)
   }
@@ -45,15 +40,15 @@ class AddProject extends React.Component {
     this.props.router.goBack()
   }
 
-  addProject = () => {
+  addMarketPlace = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
         api.createProj(param).then(result => {
           this.props.router.goBack()
+        }, error => {
+          message.error(error.message)
         })
-      } else {
-        message.error(err.message)
       }
     })
   }
@@ -65,20 +60,19 @@ class AddProject extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="新增项目" actionTitle="新增 Market Place" actionLink="/app/marketplace/add" />
+        <PageTitle title="新增 Market Place" />
         <div>
-          <AddProjectForm wrappedComponentRef={this.handleRef} />
+          <AddMarketPlaceForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>取消</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>提交</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addMarketPlace}>提交</Button>
           </div>
         </div>
       </MainLayout>
     )
   }
-
 }
 
-export default withRouter(AddProject)
+export default withRouter(AddMarketPlace)

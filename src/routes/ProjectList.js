@@ -125,19 +125,27 @@ class ProjectList extends React.Component {
           <span>
             <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>审核</Button>
             &nbsp;
-            <Link to={'/app/projects/' + record.id}>
+            <Link to={ record.ismarketplace ? ('/app/marketplace/' + record.id) : ('/app/projects/' + record.id) }>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <a href={"/app/timeline/add?projId=" + record.id} target="_blank">
-              <Button size="small">创建时间轴</Button>
-            </a>
+            {
+              record.ismarketplace ? null : (
+                <a href={"/app/timeline/add?projId=" + record.id} target="_blank">
+                  <Button size="small">创建时间轴</Button>
+                </a>
+              )
+            }
             &nbsp;
-            <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
-              <Button size="small">创建DataRoom</Button>
-            </a>
+            {
+              record.ismarketplace ? null : (
+                <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
+                  <Button size="small">创建DataRoom</Button>
+                </a>
+              )
+            }
             &nbsp;
-            <Link to={'/app/projects/edit/' + record.id}>
+            <Link to={ record.ismarketplace ? ('/app/marketplace/edit/' + record.id) : ('/app/projects/edit/' + record.id) }>
               <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;

@@ -15,7 +15,7 @@ class SelectProjectStatus extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: 'projstatus' })
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['projstatus'] })
   }
 
   render() {

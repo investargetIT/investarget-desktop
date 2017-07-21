@@ -392,7 +392,7 @@ class IndustryDynamicFormItem extends React.Component {
     if (keys.length === 1) {
       return
     }
-    form.setFieldsValue({
+    this.context.form.setFieldsValue({
       industriesKeys: keys.filter(key => key !== k),
     })
   }
@@ -401,7 +401,7 @@ class IndustryDynamicFormItem extends React.Component {
     this.industryUuid += 1
     const keys = getFieldValue('industriesKeys')
     const nextKeys = keys.concat(this.industryUuid)
-    form.setFieldsValue({
+    this.context.form.setFieldsValue({
       industriesKeys: nextKeys,
     })
   }
