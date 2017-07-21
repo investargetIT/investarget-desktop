@@ -254,13 +254,25 @@ export function getSource(sourceType) {
 /**
  * timeline
  */
-
-export function getTimeline() {
-
+export function addTimeline(params) {
+  return r('/timeline/', 'POST', params)
 }
 
-export function deleteTimeline() {
+export function getTimeline(params) {
+  return r('/timeline/?' + qs.stringify(params))
+}
 
+export function getTimelineDetail(id) {
+  return r('/timeline/' + id + '/')
+}
+
+export function deleteTimeline(id) {
+  return r('/timeline/' + id + '/', 'DELETE')
+}
+
+export function closeTimeline(id, reason) {
+  const params = { isClose: true }
+  return r('/timeline/' + id + '/', 'PUT', params)
 }
 
 /**

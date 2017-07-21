@@ -31,6 +31,8 @@ import EditTimeline from './routes/EditTimeline'
 import TimelineDetail from './routes/TimelineDetail'
 import InboxList from './routes/InboxList'
 import AddDataRoom from './routes/AddDataRoom'
+import AddTimeline from './routes/AddTimeline'
+
 
 function RouterConfig({ history }) {
   return (
@@ -64,6 +66,7 @@ function RouterConfig({ history }) {
       <Route path="/app/email/detail" component={EmailDetail} />
       <Route path="/app/user/edit/:id" component={EditUser} />
       <Route path="/app/user/:id" component={UserDetail} />
+      <Route path="/app/timeline/add" component={AddTimeline} />
       <Route path="/app/timeline/edit/:id" component={EditTimeline} />
       <Route path="/app/timeline/:id" component={TimelineDetail} />
       <Route path={URI_8} component={InboxList} />

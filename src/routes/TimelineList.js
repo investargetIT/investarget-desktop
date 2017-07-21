@@ -1,128 +1,154 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, showError } from '../utils/util'
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { TimelineListFilter } from '../components/Filter'
-import {
-  RadioTrueOrFalse,
-  CheckboxCurrencyType,
-} from '../components/ExtraInput'
-const Search = Input.Search
+import { TimelineFilter } from '../components/Filter'
+import CloseTimelineModal from '../components/CloseTimelineModal'
+import { Search } from '../components/Search'
+
+const tableStyle = { marginBottom: '24px' }
+const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
 
 class TimelineList extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      filters: {},
+      search: null,
+      _params: {},
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      list: [],
+      loading: false,
+    }
   }
 
-  handleDelete = (id) => {
-    this.props.dispatch({ type: 'timelineList/delete', payload: id })
-  }
-
-
-  handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'timelineList/setFilter', payload: { [key]: value } })
+  handleFiltersChange = (filters) => {
+    this.setState({ filters })
   }
 
   handleFilt = () => {
-    this.props.dispatch({ type: 'timelineList/filt' })
+    let { _params, filters } = this.state
+    _params = { ..._params, ...filters }
+    this.setState({ _params, page: 1 }, this.getTimeline)
   }
 
   handleReset = () => {
-    this.props.dispatch({ type: 'timelineList/reset' })
+    this.setState({ filters: {}, page: 1, _params: {} }, this.getTimeline)
   }
 
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'timelineList/setField', payload: { search } })
+  handleSearchChange = (search) => {
+    this.setState({ search })
   }
 
-  handleSearch = (search) => {
-    this.props.dispatch({ type: 'timelineList/search' })
+  handleSearch = () => {
+    let { _params, search } = this.state
+    _params = { ..._params, search }
+    this.setState({ _params, page: 1 }, this.getTimeline)
   }
 
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'timelineList/changePage', payload: page })
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getTimeline)
   }
 
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'timelineList/changePageSize', payload: pageSize })
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getTimeline)
+  }
+
+  getTimeline = () => {
+    const { _params, page, pageSize } = this.state
+    const params = { ..._params, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.getTimeline(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
+  }
+
+  deleteTimeline = () => {
+    this.setState({ loading: true })
+    api.deleteTimeline(id).then(result => {
+      this.getTimeline()
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
+  }
+
+  closeTimeline = (id) => {
+    this.closeTimelineModal.closeTimeline(id)
+  }
+
+  componentDidMount() {
+    this.getTimeline()
   }
 
   render() {
 
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
+    const { location } = this.props
 
     const columns = [
-      { title: '项目', key: '', dataIndex: '' },
-      { title: '投资人', key: '', dataIndex: '' },
-      { title: '投资人所属机构', key: '', dataIndex: '' },
-      { title: '项目方', key: '', dataIndex: '' },
-      { title: '交易师', key: '', dataIndex: '' },
-      { title: '剩余天数', key: '', dataIndex: '' },
-      { title: '当前状态', key: '', dataIndex: '' },
-      { title: '最新备注', key: '', dataIndex: '' },
+      { title: '项目', key: 'proj', dataIndex: 'proj' },
+      { title: '投资人', key: 'investor', dataIndex: 'investor.username' },
+      { title: '投资人所属机构', key: 'org', dataIndex: 'investor.org.orgname' },
+      { title: '项目方', key: 'supportor', dataIndex: 'supportor.username' },
+      { title: '交易师', key: 'trader', dataIndex: 'trader.username' },
+      { title: '剩余天数', key: 'remainingAlertDay', render: (text, record) => {
+        const day = Number(record.transationStatu.remainingAlertDay)
+        return Math.ceil(day)
+      } },
+      { title: '当前状态', key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
+      { title: '最新备注', key: 'remark', dataIndex: '' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button disabled={!record.action.close} size="small">关闭</Button>
+            <Button size="small" onClick={this.closeTimeline.bind(this, record.id)}>关闭</Button>
+            &nbsp;
             <Link to={'/app/timeline/' + record.id}>
-              <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
+              <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
             <Link to={'/app/timeline/edit/' + record.id}>
-              <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              <Button size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteTimeline.bind(null, record.id)}>
+              <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>
           </span>
         )
       },
     ]
 
+    const { filters, search, total, list, loading, page, pageSize } = this.state
+
     return (
       <MainLayout location={location}>
         <div>
           <PageTitle title="时间轴列表" />
-
-          <TimelineListFilter value={filter} onChange={this.handleFilterChange} onSearch={this.handleFilt} onReset={this.handleReset} />
-
-          <div style={{marginBottom: '16px'}}>
-            <Search value={search} onChange={this.handleSearchChange} style={{width: 200}} onSearch={this.handleSearch} />
+          <div>
+            <TimelineFilter value={filters} onChange={this.handleFiltersChange} onSearch={this.handleFilt} onReset={this.handleReset} />
+            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+            <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+            <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
-
-          <Table
-            columns={columns}
-            dataSource={list}
-            rowKey={record=>record.id}
-            loading={loading}
-            pagination={false} />
-
-          <Pagination
-            className="ant-table-pagination"
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handleShowSizeChange}
-            showQuickJumper
-          />
         </div>
+
+         <CloseTimelineModal ref={ inst => this.closeTimelineModal = inst} />
+
       </MainLayout>
     )
   }
-
-
 }
 
-function mapStateToProps(state) {
-  return { ...state.timelineList, loading: state.loading.effects['timelineList/get'] }
-}
+export default TimelineList
 
-export default connect(mapStateToProps)(TimelineList)
+

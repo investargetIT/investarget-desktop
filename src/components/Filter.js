@@ -144,10 +144,48 @@ function ProjectStatusFilter(props) {
 }
 
 function TimelineStatusFilter(props) {
+
+  var value
+  if (props.value == null) {
+    value = '0'
+  } else if (props.value == false) {
+    value = '1'
+  } else {
+    value = '2'
+  }
+
+  const onChange = (value) => {
+    if (value == '0') {
+      value = null
+    } else if (value == '1') {
+      value = false
+    } else {
+      value = true
+    }
+    props.onChange(value)
+  }
+
+  const Option = Select.Option
   return (
     <BasicContainer label="状态">
-      <SelectTimelineStatus style={{width: '200px'}} value={props.value} onChange={props.onChange} />
+      <Select value={value} onChange={onChange}>
+        <Option value="0">全部</Option>
+        <Option value="1">未结束</Option>
+        <Option value="2">已结束</Option>
+      </Select>
     </BasicContainer>
+  )
+}
+
+function TimelineFilter(props) {
+  function handleChange(key, value) {
+    props.onChange({ ...props.value, [key]: value })
+  }
+  return (
+    <div>
+      <TimelineStatusFilter value={props.value.isClose} onChange={handleChange.bind(this, 'isClose')} />
+      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
+    </div>
   )
 }
 
@@ -201,14 +239,6 @@ function ProjectListFilter(props) {
   )
 }
 
-function TimelineListFilter(props) {
-  return (
-    <div>
-      <TimelineStatusFilter value={props.value.status} onChange={props.onChange.bind(this, 'status')} />
-      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
-    </div>
-  )
-}
 
 
 
@@ -225,13 +255,5 @@ module.exports = {
   UserListFilter,
   OrganizationListFilter,
   ProjectListFilter,
-  TimelineListFilter,
-
-  //
-  OverseaFilter,
-  CurrencyFilter,
-  TransactionPhaseFilter,
-  IndustryFilter,
-  TagFilter,
-  OrganizationTypeFilter,
+  TimelineFilter,
 }

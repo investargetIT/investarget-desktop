@@ -183,12 +183,6 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 })
 
 /**
- * SelectTimelineStatus
- */
-const timelineStatusOptions = [{ label: '全部', value: 0 }, { label: '未结束', value: 1 }, { label: '已接受', value: 2 }]
-const SelectTimelineStatus = withOptions(SelectNumber, timelineStatusOptions)
-
-/**
  * SelectOrganization
  */
 class SelectOrganization extends React.Component {
@@ -761,7 +755,6 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
-  SelectTimelineStatus,
   SelectOrganization,
   SelectExistOrganization,
   SelectUser,
