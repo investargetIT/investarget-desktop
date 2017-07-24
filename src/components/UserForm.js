@@ -22,7 +22,7 @@ import {
   SelectUser,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
-
+import { UploadImage } from './Upload'
 
 
 const formItemLayout = {
@@ -45,6 +45,11 @@ class UserForm extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const { getFieldDecorator } = this.props.form
+    getFieldDecorator('cardBucket', {
+      rules: [{required: true}], initialValue: 'image'
+    })
   }
 
   render() {
@@ -117,18 +122,22 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={1}>
           <RadioAudit />
         </BasicFormItem>
-        
-        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
+
+        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
         <BasicFormItem label="强交易师" name="major_trader">
           <SelectUser mode="single" />
-        </BasicFormItem> 
+        </BasicFormItem>
         : null }*/}
 
-        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ? 
+        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
         <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
           <SelectUser mode="multiple" />
-        </BasicFormItem> 
+        </BasicFormItem>
         : null }*/}
+
+        <BasicFormItem label="名片" name="cardKey">
+          <UploadImage />
+        </BasicFormItem>
 
       </Form>
     )

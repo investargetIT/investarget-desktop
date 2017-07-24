@@ -234,6 +234,11 @@ export function getExchangeRate(param) {
   return r('/service/currencyrate?' + qs.stringify(param))
 }
 
+export function downloadUrl(bucket, key) {
+  const params = { bucket, key }
+  return r('/service/downloadUrl', 'POST', params)
+}
+
 export function qiniuDelete(bucket, key) {
   const param = { bucket, key }
   return r('/service/qiniudelete', 'POST', param)
