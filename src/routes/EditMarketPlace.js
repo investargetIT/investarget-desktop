@@ -18,9 +18,6 @@ function toData(formData) {
     }
   }
   data['industries'] = formData['industriesKeys'].map(key => formData['industries-' + key])
-  // 附件转换
-  data['linkpdfkey'] = data['attachment'].key
-  delete data['attachment']
   data['ismarketplace'] = true
   return data
 }
@@ -38,8 +35,6 @@ function toFormData(data) {
       keys.forEach((key, index) => {
         formData['industries-' + key] = { 'value': value[index] }
       })
-    } else if (prop == 'attachment') {
-      formData[prop] = { 'value': { uid: -1, bucket: 'file', key: data.linkpdfkey, name: data.linkpdfkey, status: 'done' } }
     } else {
       formData[prop] = { 'value': data[prop] }
     }

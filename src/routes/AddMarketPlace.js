@@ -18,9 +18,6 @@ function toData(formData) {
     }
   }
   data['industries'] = formData['industriesKeys'].map(key => formData['industries-' + key])
-  // 附件转换
-  data['linkpdfkey'] = data['attachment'].key
-  delete data['attachment']
   data['ismarketplace'] = true
   return data
 }
