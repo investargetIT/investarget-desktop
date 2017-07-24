@@ -5,6 +5,7 @@ import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import TimelineForm from '../components/TimelineForm'
 
+import TimelineRemarkList from '../components/TimelineRemarkList'
 
 
 function onValuesChange(props, values) {
@@ -44,6 +45,7 @@ class EditTimeline extends React.Component {
   }
 
   render() {
+    const id = Number(this.props.params.id)
     return (
       <MainLayout location={location}>
         <PageTitle title="修改时间轴" />
@@ -54,6 +56,8 @@ class EditTimeline extends React.Component {
             <Button size="large" onClick={this.handleCancel}>返回</Button>
           </div>
         </div>
+
+        <TimelineRemarkList timelineId={id} />
       </MainLayout>
     )
   }

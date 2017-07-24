@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
+import TimelineRemarkList from '../components/TimelineRemarkList'
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -34,6 +34,7 @@ class TimelineDetail extends React.Component {
   }
 
   render() {
+    const id = Number(this.props.params.id)
     return (
       <MainLayout location={location}>
         <PageTitle title="查看时间轴" />
@@ -44,6 +45,8 @@ class TimelineDetail extends React.Component {
             <Field title="创建日期" value="" />
           </div>
         </div>
+
+        <TimelineRemarkList timelineId={id} readOnly />
       </MainLayout>
     )
   }

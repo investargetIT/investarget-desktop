@@ -276,6 +276,30 @@ export function closeTimeline(id, reason) {
 }
 
 /**
+ * timeline remark
+ */
+
+export function getTimelineRemark(param) {
+  return r('/timeline/remark/?' + qs.stringify(param))
+}
+
+export function getTimelineRemarkDetail(id) {
+  return r('/timeline/remark/' + id + '/')
+}
+
+export function addTimelineRemark(data) {
+  return r('/timeline/remark/', 'POST', data)
+}
+
+export function editTimelineRemark(id, data) {
+  return r('/timeline/remark/' + id + '/', 'PUT', data)
+}
+
+export function deleteTimelineRemark(id) {
+  return r('/timeline/remark/' + id + '/', 'DELETE')
+}
+
+/**
  * email
  */
 
