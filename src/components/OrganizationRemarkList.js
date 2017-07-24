@@ -1,7 +1,7 @@
 import React from 'react'
 import * as api from '../api'
 
-import RemarkList from './RemarkList'
+import RemarkList, {RemarkListReadOnly} from './RemarkList'
 
 
 function getCurrentUser() {
@@ -69,7 +69,10 @@ class OrganizationRemarkList extends React.Component {
   }
 
   render() {
-    return (
+    const readOnly = 'readOnly' in this.props
+    return readOnly ? (
+      <RemarkListReadOnly list={this.state.list} />
+    ) : (
       <RemarkList list={this.state.list} addRemark={this.addRemark} editRemark={this.editRemark} deleteRemark={this.deleteRemark} />
     )
   }

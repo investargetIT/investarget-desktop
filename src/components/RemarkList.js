@@ -131,4 +131,32 @@ class RemarkList extends React.Component {
   }
 }
 
+
+function RemarkListReadOnly(props) {
+  const { formatDate, formatTime } = props.intl
+  return (
+    <div>
+      <h3 style={remarkTitleStyle}>备注</h3>
+      <div>
+        {
+          props.list.map(item =>
+            <div key={item.id} style={remarkStyle}>
+              <p style={remarkTimeStyle}>
+                { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
+              </p>
+              <p style={remarkTextStyle}>{item.remark}</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  )
+}
+RemarkListReadOnly.propTypes = {
+  intl: intlShape.isRequired,
+}
+RemarkListReadOnly = injectIntl(RemarkListReadOnly)
+
+
+export { RemarkListReadOnly }
 export default injectIntl(RemarkList)

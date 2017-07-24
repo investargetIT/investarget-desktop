@@ -5,7 +5,10 @@ import { formatMoney } from '../utils/util'
 import { Row, Col } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
+import OrganizationRemarkList from '../components/OrganizationRemarkList'
 
+
+const detailStyle = { marginBottom: '24px' }
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -87,10 +90,11 @@ class OrganizationDetail extends React.Component {
   }
 
   render() {
+    const id = this.props.params.id
     return (
       <MainLayout location={this.props.location}>
         <PageTitle title="机构详情（投资人名单）" />
-        <div>
+        <div style={detailStyle}>
           <Field title="名称" value={this.state.orgname} />
           <Field title="机构类型" value={this.state.orgtype} />
           <Field title="货币类型" value={this.state.currency} />
@@ -113,6 +117,8 @@ class OrganizationDetail extends React.Component {
           <Field title="合伙人/投委会成员" value={this.state.partnerOrInvestmentCommiterMember} />
           <Field title="决策流程" value={this.state.decisionMakingProcess} />
         </div>
+
+        <OrganizationRemarkList orgId={id} readOnly />
       </MainLayout>
     )
   }
