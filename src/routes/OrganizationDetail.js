@@ -1,12 +1,88 @@
 import React from 'react'
 import * as api from '../api'
 import { formatMoney } from '../utils/util'
-
-import { Row, Col } from 'antd'
+import { Link } from 'dva/router'
+import { Row, Col, Popover, Button, Popconfirm } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import OrganizationRemarkList from '../components/OrganizationRemarkList'
 
+const dataForPositionWithUser = [
+  {
+    id: 1,
+    position: '总裁',
+    user: [
+      {
+        id: 9,
+        name: '马云',
+        avatar: '/images/avatar1.png',
+        trader: {
+          id: 104,
+          name: '夏琰'
+        }
+      }
+    ]
+  },
+  {
+    id: 2,
+    position: '副总裁',
+    user: [
+      {
+        id: 93,
+        name: '马云',
+        avatar: '/images/avatar5.png',
+        trader: {
+          id: 103,
+          name: '王克'
+        }
+      },
+      {
+        id: 8,
+        name: '马化腾',
+        avatar: '/images/avatar3.png',
+        trader: {
+          id: 92,
+          name: '张扬'
+        }
+      },
+      {
+        id: 108,
+        name: '张飞',
+        avatar: '/images/avatar4.png',
+        trader: {
+          id: 102,
+          name: '费力'
+        }
+      },
+    ]
+  },
+]
+
+const PositionWithUser = props => {
+  return (
+    <div>
+      <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
+      <div style={{ width: '80%', marginLeft: '20%' }}>
+        {props.user.map(m => <Link key={m.id} to={"/app/user/" + m.id}>
+          <Popover content={<div>
+            <p>交易师：<Link to={"/app/user/" + m.trader.id}>{m.trader.name}</Link></p>
+            <p style={{ textAlign: 'center', marginTop: 10 }}>
+              <Link to={"/app/user/edit/" + m.id}><Button>编辑</Button></Link>&nbsp;
+              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, m.id)}>
+                <Button type="danger">移除</Button>
+                </Popconfirm>
+            </p>
+          </div>} title={m.name}>
+            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.avatar} />
+          </Popover>
+        </Link>)}
+        <Link to="/app/user/add">
+          <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
+        </Link>
+      </div>
+    </div>
+  )
+}
 
 const detailStyle = { marginBottom: '24px' }
 
@@ -58,6 +134,7 @@ class OrganizationDetail extends React.Component {
       partnerOrInvestmentCommiterMember: null,
       decisionCycle: null,
       decisionMakingProcess: null,
+      data: dataForPositionWithUser
     }
   }
 
@@ -89,12 +166,27 @@ class OrganizationDetail extends React.Component {
     })
   }
 
+  onRemoveUserPosition(positionID, userID) {
+    const newData = this.state.data.slice()
+    .map(m => {
+      const user = m.user.slice()
+      return {...m, user}
+    })
+    const positionIndex = newData.map(m => m.id).indexOf(positionID)
+    const index = newData[positionIndex].user.map(m => m.id).indexOf(userID)
+    newData[positionIndex].user.splice(index, 1)
+    this.setState({
+      data: newData
+    })
+  }
+
   render() {
     const id = this.props.params.id
+
     return (
       <MainLayout location={this.props.location}>
         <PageTitle title="机构详情（投资人名单）" />
-        <div style={detailStyle}>
+        <div style={{ width: '50%', float: 'left' }}>
           <Field title="名称" value={this.state.orgname} />
           <Field title="机构类型" value={this.state.orgtype} />
           <Field title="货币类型" value={this.state.currency} />
@@ -116,9 +208,14 @@ class OrganizationDetail extends React.Component {
           <Field title="典型投资案例" value={this.state.typicalCase} />
           <Field title="合伙人/投委会成员" value={this.state.partnerOrInvestmentCommiterMember} />
           <Field title="决策流程" value={this.state.decisionMakingProcess} />
+          <OrganizationRemarkList orgId={id} readOnly />
         </div>
-
-        <OrganizationRemarkList orgId={id} readOnly />
+        
+        <div style={{ width: '50%', marginLeft: '50%' }}>
+          {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
+            <PositionWithUser id={m.id} position={m.position} user={m.user} onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} />
+          </div>)}
+        </div>
       </MainLayout>
     )
   }
