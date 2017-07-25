@@ -73,10 +73,10 @@ const PositionWithUser = props => {
                 </Popconfirm>
             </p>
           </div>} title={m.name}>
-            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.avatar} />
+            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.avatar || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        <Link to="/app/user/add">
+        <Link to="/app/organization/selectuser?orgID=39">
           <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
         </Link>
       </div>
@@ -134,13 +134,18 @@ class OrganizationDetail extends React.Component {
       partnerOrInvestmentCommiterMember: null,
       decisionCycle: null,
       decisionMakingProcess: null,
-      data: dataForPositionWithUser
+      data: []
     }
   }
 
   componentDidMount() {
-    const id = this.props.params.id
-    api.getOrgDetail(id, { lang: window.LANG }).then(result => {
+
+    let orgTitleTable
+    api.getSource('orgtitletable').then(data => {
+      orgTitleTable = data.data
+      const id = this.props.params.id
+      return api.getOrgDetail(id, { lang: window.LANG })
+    }).then(result => {
       let data = { ...result.data }
       data.currency = data.currency && data.currency.currency
       data.industry = data.industry && data.industry.industry
@@ -157,13 +162,42 @@ class OrganizationDetail extends React.Component {
       data.transactionAmountT_USD = data.transactionAmountT_USD ? formatMoney(data.transactionAmountT_USD, 'USD') : 'N/A'
       data.fundSize = data.fundSize ? formatMoney(data.fundSize, currency) : 'N/A'
       data.fundSize_USD = data.fundSize_USD ? formatMoney(data.fundSize_USD, 'USD') : 'N/A'
-
-
       console.log(data)
       this.setState(data)
-    }, error => {
-      console.error(error)
+
+      const orgTypeID = result.data.orgtype && result.data.orgtype.id
+      const orgStructure = orgTitleTable.filter(f => f.orgtype.id === orgTypeID)
+      if (orgStructure.length > 0) {
+        this.setState({
+          data: orgStructure.map(m => {
+            const id = m.title.id
+            const position = m.title.name
+            const user = []
+            return { ...m, position, user, id }
+          })
+        })
+        return api.getUser({ org: data.id, page_size: 1000 })
+      } else {
+        return Promise.resolve()
+      }
+    }).then(data => {
+      if (!data) return
+      const newData = this.state.data.slice()
+      data.data.data.map(m => {
+        const index = newData.map(m => m.id).indexOf(m.title && m.title.id)
+        if (index > -1) {
+          const name = m.username
+          const avatar = null
+          const trader = {
+            id: m.trader_relation && m.trader_relation.traderuser.id,
+            name: m.trader_relation && m.trader_relation.traderuser.username
+          }
+          newData[index].user.push({ ...m, name, avatar, trader })
+        }
+      })
+      this.setState({ data: newData })
     })
+    .catch(err => console.error(err))
   }
 
   onRemoveUserPosition(positionID, userID) {

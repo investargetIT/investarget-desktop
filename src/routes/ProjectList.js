@@ -147,7 +147,7 @@ class ProjectList extends React.Component {
             &nbsp;
             {
               record.ismarketplace ? null : (
-                <a target="_blank" href={'/app/dataroom/create?projectID=' + record.id}>
+                <a target="_blank" href={'/app/dataroom/add?projectID=' + record.id}>
                   <Button size="small">创建DataRoom</Button>
                 </a>
               )

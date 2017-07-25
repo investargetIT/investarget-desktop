@@ -37,7 +37,7 @@ import EditMarketPlace from './routes/EditMarketPlace'
 import MarketPlaceDetail from './routes/MarketPlaceDetail'
 import MyInvestor from './routes/MyInvestor'
 import RecommendProject from './routes/RecommendProject'
-
+import SelectUserToPosition from './routes/SelectUserToPosition'
 
 function RouterConfig({ history }) {
   return (
@@ -50,6 +50,7 @@ function RouterConfig({ history }) {
       <Route path="/app/user/add" component={AddUser} />
       <Route path="/app/organization/list" component={OrganizationList} />
       <Route path="/app/organization/add" component={AddOrganization} />
+      <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
       <Route path="/app/organization/edit/:id" component={EditOrganization} />
       <Route path="/app/organization/:id" component={OrganizationDetail} />
       <Route path={URI_11} component={LogList} />
