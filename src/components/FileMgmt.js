@@ -18,7 +18,7 @@ class FileMgmt extends React.Component {
 
     this.state = {
       data: props.data,
-      parentId: 0,
+      parentId: -999,
       name: null,
       renameRows: [],
       selectedRows: [],
@@ -44,8 +44,8 @@ class FileMgmt extends React.Component {
   }
 
   folderClicked(id) {
-    const folder = this.state.data.filter(f => f.id === id)
-    if ((folder.length > 0 && folder[0].isFolder) || id === 0) {
+    const folder = this.props.data.filter(f => f.id === id)
+    if ((folder.length > 0 && folder[0].isFolder) || id === -999) {
       this.setState({parentId: id})
     }
   }
@@ -58,8 +58,8 @@ class FileMgmt extends React.Component {
 
   current = []
   parentFolderFunc (parentId) {
-    if (parentId === 0) return this.current
-    const parentFolder = this.state.data.filter(f => f.id === parentId)[0]
+    if (parentId === -999) return this.current
+    const parentFolder = this.props.data.filter(f => f.id === parentId)[0]
     this.current.splice(0, 0, parentFolder)
     return this.parentFolderFunc(parentFolder.parentId)
   }
@@ -241,7 +241,7 @@ class FileMgmt extends React.Component {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        this.setState({ selectedRows: selectedRowKeys.map(m => this.state.data.filter(f => f.id === m)[0]) })
+        this.setState({ selectedRows: selectedRowKeys.map(m => this.props.data.filter(f => f.id === m)[0]) })
       },
       selectedRowKeys: this.state.selectedRows.map(m => m.id),
       getCheckboxProps: record => ({
@@ -277,20 +277,20 @@ class FileMgmt extends React.Component {
 
     this.current = []
     this.contents = []
-    this.data = this.state.data
+    this.data = this.props.data
     this.copyContents = []
 
-    const currentFolder = this.state.data.filter(f => f.id === this.state.parentId)[0]
-    const base = this.state.parentId === 0 ? "全部文件" : (
+    const currentFolder = this.props.data.filter(f => f.id === this.state.parentId)[0]
+    const base = this.state.parentId === -999 ? "全部文件" : (
       <span>
         <a onClick={this.folderClicked.bind(this, currentFolder.parentId)}>返回上一级</a>
         &nbsp;|&nbsp;
-        <a onClick={this.folderClicked.bind(this, 0)}>全部文件</a>
+        <a onClick={this.folderClicked.bind(this, -999)}>全部文件</a>
       </span>
     )
 
-    const tree = id => this.state.data.filter(f => f.isFolder && f.parentId === id).map(item => {
-      const children = this.state.data.filter(f => f.isFolder && f.parentId === item.id)
+    const tree = id => this.props.data.filter(f => f.isFolder && f.parentId === id).map(item => {
+      const children = this.props.data.filter(f => f.isFolder && f.parentId === item.id)
       if (children.length > 0) {
         return (
           <TreeNode key={item.key} title={item.name}>
@@ -317,7 +317,7 @@ class FileMgmt extends React.Component {
         if (info.file.status === 'done') {
           message.success(`${info.file.name} file uploaded successfully`);
 
-          const newData = react.state.data.slice()
+          const newData = react.props.data.slice()
           const existKeyList = newData.map(m => m.key)
           const maxKey = Math.max(...existKeyList)
 
@@ -370,7 +370,7 @@ class FileMgmt extends React.Component {
           columns={columns}
           rowKey={record => record.key}
           rowSelection={rowSelection}
-          dataSource={this.state.data.filter(f => f.parentId === this.state.parentId)}
+          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId)}
           loading={this.state.uploading}
           pagination={false} />
 

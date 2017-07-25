@@ -432,16 +432,20 @@ export function createUser(user) {
 /**
  * dataroom
  */
-export function queryDataRoom() {
-  return r('/dataroom/')
+export function queryDataRoom(param) {
+  return r('/dataroom/?' + qs.stringify(param))
 }
 
 export function createDataRoom(body) {
   return r('/dataroom/', 'POST', body)
 }
 
-export function getDataRoomFile(dataRoomID) {
-  return r(`/dataroom/file/?dataroom=${dataRoomID}`)
+export function getDataRoomFile(param) {
+  return r('/dataroom/file/?' + qs.stringify(param))
+}
+
+export function queryDataRoomDetail(id) {
+  return r('/dataroom/' + id)
 }
 
 /**

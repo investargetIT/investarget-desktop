@@ -1,74 +1,109 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
-
-const data = [
-  {
-    id: 1,
-    name: 'Folder',
-    rename: 'Folder',
-    key: 1,
-    isFolder: true,
-    size: '',
-    date: '2017-06-27 14:51',
-    parentId: 0
-  }, {
-    id: 2,
-    name: 'Jim-Green.pdf',
-    rename: 'Jim-Green.pdf',
-    key: 2,
-    isFolder: false,
-    size: '42.2M',
-    date: '2014-04-16 15:05',
-    parentId: 0
-  }, {
-    id: 3,
-    name: 'Joe-Black.pdf',
-    rename: 'Joe-Black.pdf',
-    key: 3,
-    isFolder: false,
-    size: '32.1K',
-    date: '2015-04-16 15:04',
-    parentId: 0
-  }, {
-    id: 4,
-    name: 'Sub Folder',
-    rename: 'Sub Folder',
-    key: 4,
-    isFolder: true,
-    size: '',
-    date: '2017-06-27 14:51',
-    parentId: 1
-  }, {
-    id: 5,
-    name: 'Sub-Jim-Green.pdf',
-    rename: 'Sub-Jim-Green.pdf',
-    key: 5,
-    isFolder: false,
-    size: '42.2M',
-    date: '2014-04-16 15:05',
-    parentId: 1
-  }, {
-    id: 6,
-    name: 'Sub-Joe-Black.pdf',
-    rename: 'Sub-Joe-Black.pdf',
-    key: 6,
-    isFolder: false,
-    size: '32.1K',
-    date: '2015-04-16 15:04',
-    parentId: 1
-  }
-]
+import { getDataRoomFile, queryDataRoom, queryDataRoomDetail } from '../api'
 
 class DataRoomList extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      title: '项目名称',
+      data: [
+        {
+          id: -3,
+          name: 'Investor Folder',
+          rename: 'Investor Folder',
+          key: -3,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        },
+        {
+          id: -2,
+          name: 'Project Owner Folder',
+          rename: 'Project Owner Folder',
+          key: -2,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        },
+        {
+          id: -1,
+          name: 'Public Folder',
+          rename: 'Public Folder',
+          key: -1,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        }
+      ]
+    }
   }
 
   componentDidMount() {
-    // queryDataRoom().then(data => (this.props.location.query.id))
+    queryDataRoomDetail(this.props.location.query.id).then(data => {
+      const project = data.data.proj
+      const investor = data.data.investor
+      const projectOwner = project.supportUser
+      const newData = this.state.data.slice()
+      newData[0].name = investor.username
+      newData[0].rename = investor.username
+      newData[1].name = projectOwner.username
+      newData[1].rename = projectOwner.username
+      this.setState({
+        title: project.projtitle,
+        data: newData
+      })
+
+      const queryDataRoomArr = [
+        // Public Folder
+        queryDataRoom({
+          proj: project.id,
+          isPublic: 1
+        }),
+        // Project Owner Folder
+        queryDataRoom({
+          proj: project.id,
+          user: projectOwner.id
+        }),
+      ]
+      return Promise.all(queryDataRoomArr)
+    }).then(data => {
+      const getDataRoomFileArr = [
+        getDataRoomFile({ dataroom: this.props.location.query.id }), // Investor Folder
+        getDataRoomFile({ dataroom: data[1].data.data[0].id}), // Project Owner Folder
+        getDataRoomFile({ dataroom: data[0].data.data[0].id}) // Public Folder
+      ]
+      return Promise.all(getDataRoomFileArr)
+    }).then(data => {
+      const formattedData = data.map((m, index) => m.data.data.map(item => {
+        let parent
+        switch (index) {
+          case 0:
+          parent = -3
+          break
+          case 1:
+          parent = -2
+          break
+          case 2:
+          parent = -1
+          break
+        }
+        const parentId = item.parent || parent
+        const name = item.filename
+        const rename = item.filename
+        const key = item.id
+        const isFolder = !item.isFile
+        const date = item.lastmodifytime
+        return { ...item, parentId, name, rename, key, isFolder, date }
+      })).reduce((acc, val) => acc.concat(val), [])
+      const newData = this.state.data.concat(formattedData)
+      this.setState({ data: newData })
+    }).catch(err => console.error(err))
   }
 
   handleCreateNewFolder(parentId, folderName) {
@@ -79,10 +114,10 @@ class DataRoomList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title="DataRoomList">
+        title={'项目名称：' + this.state.title}>
 
         <FileMgmt
-          data={data}
+          data={this.state.data}
           onCreateNewFolder={this.handleCreateNewFolder} />
 
       </LeftRightLayout>

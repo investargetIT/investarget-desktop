@@ -25,24 +25,8 @@ class DataRoomList extends React.Component {
   componentDidMount() {
     queryDataRoom().then(data => {
       const dataRoomListRawData = data.data.data.filter(f => f.investor && f.trader)
-      dataRoomListRawData.map(m => {
-        const obj = {}
-        obj.id = m.id
-        obj.createdtime = m.createdtime
-        Promise.all([
-          getProjLangDetail(m.proj),
-          getUserBase(m.investor),
-          getUserBase(m.trader),
-        ]).then(data => {
-          obj.proj = data[0].data.projtitle
-          obj.user = data[0].data.supportUser.username
-          obj.investor = data[1].data.username
-          obj.trader = data[2].data.username
-          this.setState({
-            dataRoomList: this.state.dataRoomList.concat(obj)
-          })
-        })
-        return obj
+      this.setState({
+        dataRoomList: dataRoomListRawData
       })
     })
   }
@@ -85,17 +69,17 @@ class DataRoomList extends React.Component {
     const { location, total, list, loading, page, pageSize, filter, search } = this.props
 
     const columns = [
-      { title: '项目', key: 'project', dataIndex: 'proj' },
-      { title: '投资人', key: 'investor', dataIndex: 'investor' },
-      { title: '交易师', key: 'trader', dataIndex: 'trader' },
-      { title: '项目方', key: 'user', dataIndex: 'user' },
+      { title: '项目', key: 'project', dataIndex: 'proj.projtitle' },
+      { title: '投资人', key: 'investor', dataIndex: 'investor.username' },
+      { title: '交易师', key: 'trader', dataIndex: 'trader.username' },
+      { title: '项目方', key: 'user', dataIndex: 'proj.supportUser.username' },
       { title: '创建时间', key: 'createdtime', dataIndex: 'createdtime' },
       { title: '状态', key: 'isclose', render: record => record.isClose ? '已关闭' : '未关闭' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
             <Button size="small">关闭</Button>
             &nbsp;
-            <Link to={'/app/dataroom/detail?id=' + record.id}>
+            <Link to={`/app/dataroom/detail?id=${record.id}&projectID=${record.proj.id}`}>
               <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
