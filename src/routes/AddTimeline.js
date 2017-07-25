@@ -1,5 +1,6 @@
 import React from 'react'
 import * as api from '../api'
+import { withRouter } from 'dva/router'
 
 import { Button } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -37,9 +38,11 @@ class AddTimeline extends React.Component {
     Promise.all(
       selectedUsers.map(item => {
         const params = {
-          'proj': projId,
-          'investor': item.investor,
-          'trader': item.trader,
+          timelinedata: {
+            'proj': projId,
+            'investor': item.investor,
+            'trader': item.trader,
+          }
         }
         return api.addTimeline(params)
       })
@@ -96,4 +99,4 @@ class AddTimeline extends React.Component {
   }
 }
 
-export default AddTimeline
+export default withRouter(AddTimeline)

@@ -263,6 +263,10 @@ export function addTimeline(params) {
   return r('/timeline/', 'POST', params)
 }
 
+export function editTimeline(id, params) {
+  return r('/timeline/' + id + '/', 'PUT', params)
+}
+
 export function getTimeline(params) {
   return r('/timeline/?' + qs.stringify(params))
 }
@@ -272,11 +276,17 @@ export function getTimelineDetail(id) {
 }
 
 export function deleteTimeline(id) {
-  return r('/timeline/' + id + '/', 'DELETE')
+  const params = { timelines: [id] }
+  return r('/timeline/', 'DELETE', params)
 }
 
 export function closeTimeline(id, reason) {
-  const params = { isClose: true }
+  const params = { timelinedata: { isClose: true } }
+  return r('/timeline/' + id + '/', 'PUT', params)
+}
+
+export function openTimeline(id) {
+  const params = { timelinedata: { isClose: false } }
   return r('/timeline/' + id + '/', 'PUT', params)
 }
 

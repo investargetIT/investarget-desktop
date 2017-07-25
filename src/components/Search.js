@@ -67,9 +67,10 @@ function _Search(props) {
   function handleChange(e) {
     props.onChange(e.target.value)
   }
+  const { value, onChange, onSearch, ...extraProps } = props
   return (
     <div style={style}>
-      <Input.Search value={props.value} onChange={handleChange} onSearch={props.onSearch} />
+      <Input.Search value={props.value} onChange={handleChange} onSearch={props.onSearch} {...extraProps} />
     </div>
   )
 }

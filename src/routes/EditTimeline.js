@@ -1,10 +1,11 @@
 import React from 'react'
-
+import { withRouter } from 'dva/router'
+import * as api from '../api'
+import { showError } from '../utils/util'
 import { Form, Button, InputNumber } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import TimelineForm from '../components/TimelineForm'
-
 import TimelineRemarkList from '../components/TimelineRemarkList'
 
 
@@ -17,6 +18,15 @@ function mapPropsToFields(props) {
 const EditTimelineForm = Form.create({ onValuesChange, mapPropsToFields })(TimelineForm)
 
 
+function toFormData(data) {
+  var formData = {}
+  for (let prop in data) {
+    formData[prop] = { 'value': data[prop] }
+  }
+  return formData
+}
+
+
 class EditTimeline extends React.Component {
   constructor(props) {
     super(props)
@@ -27,7 +37,21 @@ class EditTimeline extends React.Component {
   }
 
   handleSubmit = (e) => {
-
+    this.form.validateFieldsAndScroll((err, values) => {
+      if(!err) {
+        const { cycle, status, transaction } = values
+        const id = this.props.params.id
+        const params = {
+          timelinedata: { trader: transaction },
+          statusdata: { alertCycle: cycle, transationStatus: status },
+        }
+        api.editTimeline(id, params).then(result => {
+          this.props.router.goBack()
+        }, error => {
+          showError(error.message)
+        })
+      }
+    })
   }
 
   handleCancel = () => {
@@ -37,23 +61,50 @@ class EditTimeline extends React.Component {
   handleRef = (inst) => {
     if (inst) {
       this.form = inst.props.form
+      window.form = this.form
     }
   }
 
   componentDidMount() {
-    // TODO
+    const id = Number(this.props.params.id)
+    api.getTimelineDetail(id).then(result => {
+      const data = result.data
+      const investor = data.investor
+      const transaction = data.trader
+      const status = data.transationStatu.transationStatus.id
+      const cycle = data.transationStatu.alertCycle
+
+      api.getUserRelation({ investoruser: investor }).then(result => {
+        const data = result.data.data
+        const options = data.map(item => {
+          return { value: item.traderuser.id, label: item.traderuser.username }
+        })
+        this.setState({ transactionOptions: options })
+        this.setState({
+          data: { status, cycle, transaction }
+        })
+      }, error => {
+        showError(error.message)
+      })
+    }, error => {
+      showError(error.message)
+    })
+
+
   }
 
   render() {
     const id = Number(this.props.params.id)
+    const data = toFormData(this.state.data)
+
     return (
       <MainLayout location={location}>
         <PageTitle title="修改时间轴" />
         <div>
-          <EditTimelineForm wrappedComponentRef={this.handleRef} data={this.state.data} transactionOptions={this.state.transactionOptions} />
+          <EditTimelineForm wrappedComponentRef={this.handleRef} data={data} transactionOptions={this.state.transactionOptions} />
           <div style={{ textAlign: 'center' }}>
-            <Button type="primary" size="large" onClick={this.handleSubmit}>提交</Button>
-            <Button size="large" onClick={this.handleCancel}>返回</Button>
+            <Button style={{ margin: '0 8px' }} type="primary" size="large" onClick={this.handleSubmit}>提交</Button>
+            <Button style={{ margin: '0 8px' }} size="large" onClick={this.handleCancel}>返回</Button>
           </div>
         </div>
 
@@ -63,4 +114,4 @@ class EditTimeline extends React.Component {
   }
 }
 
-export default EditTimeline
+export default withRouter(EditTimeline)

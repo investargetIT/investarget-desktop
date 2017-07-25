@@ -40,25 +40,27 @@ function RadioGroup2 ({children, onChange, ...extraProps}) {
 }
 
 
-function SelectNumber(props) {
+class SelectNumber extends React.Component {
 
-  function handleChange(value) {
+  handleChange = (value) => {
     value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
-    if (props.onChange) { props.onChange(value) }
+    if (this.props.onChange) { this.props.onChange(value) }
   }
 
-  const {children, options, value, onChange, ...extraProps} = props
-  const _options = options.map(item => ({ label: item.label, value: String(item.value) }))
-  let _value
-  if (value == undefined) {
-    _value = value
-  } else {
-    _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
-  }
+  render() {
+    const {children, options, value, onChange, ...extraProps} = this.props
+    const _options = options.map(item => ({ label: item.label, value: String(item.value) }))
+    let _value
+    if (value == undefined) {
+      _value = value
+    } else {
+      _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
+    }
 
-  return (
-    <Select2 options={_options} value={_value} onChange={handleChange} {...extraProps} />
-  )
+    return (
+      <Select2 options={_options} value={_value} onChange={this.handleChange} {...extraProps} />
+    )
+  }
 }
 
 
@@ -325,17 +327,17 @@ class SelectUser extends React.Component {
  * SelectTimelineProcess
  */
 const timelineProcessOptions = [
-  { label: '获取项目概要', value: 0 },
-  { label: '签署保密协议', value: 1 },
-  { label: '获取投资备忘录', value: 2 },
-  { label: '进入一期资料库', value: 3 },
-  { label: '签署投资意向书/投资条款协议', value: 4 },
-  { label: '进入二期资料库', value: 5 },
-  { label: '进场尽职调查', value: 6 },
-  { label: '签署约束性报价书', value: 7 },
-  { label: '起草法律协议', value: 8 },
-  { label: '签署法律协议', value: 9 },
-  { label: '完成交割', value: 10 },
+  { label: '获取项目概要', value: 1 },
+  { label: '签署保密协议', value: 2 },
+  { label: '获取投资备忘录', value: 3 },
+  { label: '进入一期资料库', value: 4 },
+  { label: '签署投资意向书/投资条款协议', value: 5 },
+  { label: '进入二期资料库', value: 6 },
+  { label: '进场尽职调查', value: 7 },
+  { label: '签署约束性报价书', value: 8 },
+  { label: '起草法律协议', value: 9 },
+  { label: '签署法律协议', value: 10 },
+  { label: '完成交割', value: 11 },
 ]
 const SelectTimelineProcess = withOptions(SelectNumber, timelineProcessOptions)
 
