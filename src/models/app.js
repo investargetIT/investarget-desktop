@@ -28,6 +28,7 @@ export default {
     industry: [],
     transactionPhases:  [],
     transactionType: [],
+    transactionStatus: [],
     orgarea: [],
     orgtype: [],
     character: [],

@@ -324,22 +324,13 @@ class SelectUser extends React.Component {
 }
 
 /**
- * SelectTimelineProcess
+ * SelectTransactionStatus
  */
-const timelineProcessOptions = [
-  { label: '获取项目概要', value: 1 },
-  { label: '签署保密协议', value: 2 },
-  { label: '获取投资备忘录', value: 3 },
-  { label: '进入一期资料库', value: 4 },
-  { label: '签署投资意向书/投资条款协议', value: 5 },
-  { label: '进入二期资料库', value: 6 },
-  { label: '进场尽职调查', value: 7 },
-  { label: '签署约束性报价书', value: 8 },
-  { label: '起草法律协议', value: 9 },
-  { label: '签署法律协议', value: 10 },
-  { label: '完成交割', value: 11 },
-]
-const SelectTimelineProcess = withOptions(SelectNumber, timelineProcessOptions)
+const SelectTransactionStatus = withOptionsAsync(SelectNumber, ['transactionStatus'], function(state) {
+  const { transactionStatus } = state.app
+  const options = transactionStatus ? transactionStatus.map(item => ({ value: item.id, label: item.name })) : []
+  return { options }
+})
 
 /**
  * SelectProjectStatus
@@ -760,7 +751,7 @@ export {
   SelectOrganization,
   SelectExistOrganization,
   SelectUser,
-  SelectTimelineProcess,
+  SelectTransactionStatus,
   SelectProjectStatus,
   SelectUserGroup,
   SelectTitle,

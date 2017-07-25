@@ -108,18 +108,18 @@ class TimelineList extends React.Component {
       { title: '最新备注', key: 'remark', dataIndex: 'latestremark.remark' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button size="small" onClick={this.closeTimeline.bind(this, record.id)} disabled={record.isClose}>关闭</Button>
+            <Button size="small" onClick={this.closeTimeline.bind(this, record.id)} disabled={!record.action.change || record.isClose}>关闭</Button>
             &nbsp;
             <Link to={'/app/timeline/' + record.id}>
-              <Button size="small" >{i18n("view")}</Button>
+              <Button size="small" disabled={!record.action.get}>{i18n("view")}</Button>
             </Link>
             &nbsp;
             <Link to={'/app/timeline/edit/' + record.id}>
-              <Button size="small" disabled={record.isClose}>{i18n("edit")}</Button>
+              <Button size="small" disabled={!record.action.change || record.isClose}>{i18n("edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteTimeline.bind(null, record.id)}>
-              <Button type="danger" size="small">{i18n("delete")}</Button>
+              <Button type="danger" size="small" disabled={!record.action.delete}>{i18n("delete")}</Button>
             </Popconfirm>
           </span>
         )
@@ -134,7 +134,7 @@ class TimelineList extends React.Component {
           <PageTitle title="时间轴列表" />
           <div>
             <TimelineFilter value={filters} onChange={this.handleFiltersChange} onSearch={this.handleFilt} onReset={this.handleReset} />
-            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} placeholder="按项目、投资人、交易师搜索" />
+            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} placeholder="项目、投资人、交易师" />
             <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
