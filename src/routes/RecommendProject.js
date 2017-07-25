@@ -17,7 +17,7 @@ const columns = [
 
 const userInfo = JSON.parse(localStorage.getItem('user_info'))
 const userId = userInfo ? userInfo.id : null
-const groupId = userInfo ? userInfo.groups[0].id : null
+const groupId = userInfo && userInfo.groups.length > 0 ? userInfo.groups[0].id : null
 
 
 class RecommendProject extends React.Component {
