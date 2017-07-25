@@ -29,7 +29,7 @@ class EditUser extends React.Component {
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values)
-        api.editUser(userId, values).then(result => {
+        api.editUser([userId], values).then(result => {
           this.props.history.replace("/app/user/list")
         }, error => {
 

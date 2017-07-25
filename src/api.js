@@ -343,9 +343,9 @@ export function addUser(param) {
   return r('/user/', 'POST', param)
 }
 
-export function editUser(id, param) {
+export function editUser(idArr, param) {
   const data = {
-    'userlist': [id],
+    'userlist': idArr,
     'userdata': param,
   }
   return r('/user/', 'PUT', data)

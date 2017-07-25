@@ -47,10 +47,10 @@ class SelectUserToPosition extends React.Component {
   }
 
   getUser = () => {
-    const { selectedOrgs } = this.props.location.query.orgID
+    const selectedOrgs = this.props.location.query.orgID
     const { _params, page, pageSize, traderMap } = this.state
 
-    const params = { ..._params, page_index: page, page_size: pageSize, org: selectedOrgs, groups: [1] }
+    const params = { ..._params, page_index: page, page_size: pageSize, org: selectedOrgs }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -106,7 +106,11 @@ class SelectUserToPosition extends React.Component {
   }
 
   handleActionButtonClicked() {
-    console.log(this.state.selectedRowKeys)
+    api.editUser(
+      this.state.selectedRowKeys,
+      { title: this.props.location.query.titleID }
+    ).then(data => this.props.history.goBack())
+    .catch(err => console.error(err))
   }
 
   render() {

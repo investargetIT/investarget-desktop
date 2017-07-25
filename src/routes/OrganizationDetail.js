@@ -7,56 +7,22 @@ import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import OrganizationRemarkList from '../components/OrganizationRemarkList'
 
-const dataForPositionWithUser = [
-  {
-    id: 1,
-    position: '总裁',
-    user: [
-      {
-        id: 9,
-        name: '马云',
-        avatar: '/images/avatar1.png',
-        trader: {
-          id: 104,
-          name: '夏琰'
-        }
+const dataSample = [{
+  id: 1,
+  position: '总裁',
+  org: 1,
+  user: [
+    {
+      id: 9,
+      name: '马云',
+      avatar: '/images/avatar1.png',
+      trader: {
+        id: 104,
+        name: '夏琰'
       }
-    ]
-  },
-  {
-    id: 2,
-    position: '副总裁',
-    user: [
-      {
-        id: 93,
-        name: '马云',
-        avatar: '/images/avatar5.png',
-        trader: {
-          id: 103,
-          name: '王克'
-        }
-      },
-      {
-        id: 8,
-        name: '马化腾',
-        avatar: '/images/avatar3.png',
-        trader: {
-          id: 92,
-          name: '张扬'
-        }
-      },
-      {
-        id: 108,
-        name: '张飞',
-        avatar: '/images/avatar4.png',
-        trader: {
-          id: 102,
-          name: '费力'
-        }
-      },
-    ]
-  },
-]
+    }
+  ]
+}]
 
 const PositionWithUser = props => {
   return (
@@ -76,7 +42,7 @@ const PositionWithUser = props => {
             <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.avatar || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        <Link to="/app/organization/selectuser?orgID=39">
+        <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>
           <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
         </Link>
       </div>
@@ -172,8 +138,9 @@ class OrganizationDetail extends React.Component {
           data: orgStructure.map(m => {
             const id = m.title.id
             const position = m.title.name
+            const org = data.id
             const user = []
-            return { ...m, position, user, id }
+            return { ...m, position, user, id, org }
           })
         })
         return api.getUser({ org: data.id, page_size: 1000 })
@@ -212,6 +179,9 @@ class OrganizationDetail extends React.Component {
     this.setState({
       data: newData
     })
+    api.editUser([userID], { title: null })
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
   }
 
   render() {
@@ -247,7 +217,7 @@ class OrganizationDetail extends React.Component {
         
         <div style={{ width: '50%', marginLeft: '50%' }}>
           {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
-            <PositionWithUser id={m.id} position={m.position} user={m.user} onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} />
+            <PositionWithUser id={m.id} orgID={m.org} position={m.position} user={m.user} onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} />
           </div>)}
         </div>
       </MainLayout>
