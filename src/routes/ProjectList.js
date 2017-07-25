@@ -123,11 +123,19 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>审核</Button>
+            <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
             &nbsp;
             <Link to={ record.ismarketplace ? ('/app/marketplace/' + record.id) : ('/app/projects/' + record.id) }>
               <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
             </Link>
+            &nbsp;
+            {
+              record.ismarketplace ? null : (
+                <a href={"/app/projects/recommend/" + record.id} target="_blank">
+                  <Button size="small">推荐</Button>
+                </a>
+              )
+            }
             &nbsp;
             {
               record.ismarketplace ? null : (

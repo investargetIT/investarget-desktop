@@ -36,6 +36,8 @@ import AddMarketPlace from './routes/AddMarketPlace'
 import EditMarketPlace from './routes/EditMarketPlace'
 import MarketPlaceDetail from './routes/MarketPlaceDetail'
 import MyInvestor from './routes/MyInvestor'
+import RecommendProject from './routes/RecommendProject'
+
 
 function RouterConfig({ history }) {
   return (
@@ -60,6 +62,7 @@ function RouterConfig({ history }) {
       <Route path="/app/projects/my" component={ProjectList} />
       <Route path="/app/projects/add" component={AddProject} />
       <Route path="/app/projects/edit/:id" component={EditProject} />
+      <Route path="/app/projects/recommend/:id" component={RecommendProject} />
       <Route path="/app/projects/:id" component={ProjectDetail} />
       <Route path={URI_14} component={PermList} />
       <Route path="/app/dataroom/list" component={DataRoomList} />
