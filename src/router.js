@@ -22,6 +22,7 @@ import ProjectList from './routes/ProjectList'
 import ProjectListRecommend from './routes/ProjectListRecommend'
 import ProjectListFavor from './routes/ProjectListFavor'
 import ProjectListInterest from './routes/ProjectListInterest'
+import ProjectListPublished from './routes/ProjectListPublished'
 import ProjectDetail from './routes/ProjectDetail'
 import TimelineList from './routes/TimelineList'
 import DataRoomList from './routes/DataRoomList'
@@ -62,7 +63,7 @@ function RouterConfig({ history }) {
       <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
       <Route path="/app/projects/list/favor" component={ProjectListFavor} />
       <Route path="/app/projects/list/interest" component={ProjectListInterest} />
-      <Route path="/app/projects/my" component={ProjectList} />
+      <Route path="/app/projects/published" component={ProjectListPublished} />
       <Route path="/app/projects/add" component={AddProject} />
       <Route path="/app/projects/edit/:id" component={EditProject} />
       <Route path="/app/projects/recommend/:id" component={RecommendProject} />

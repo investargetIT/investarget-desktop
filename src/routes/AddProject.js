@@ -50,7 +50,7 @@ class AddProject extends React.Component {
       if (!err) {
         let param = toData(values)
         api.createProj(param).then(result => {
-          this.props.router.goBack()
+          this.props.router.replace('/app/projects/published')
         })
       } else {
         message.error(err.message)
