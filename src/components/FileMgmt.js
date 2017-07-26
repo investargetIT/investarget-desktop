@@ -28,7 +28,6 @@ class FileMgmt extends React.Component {
     }
 
     this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleCreateFolder = this.handleCreateFolder.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
     this.handleRename = this.handleRename.bind(this)
     this.deleteContent = this.deleteContent.bind(this)
@@ -50,10 +49,8 @@ class FileMgmt extends React.Component {
     }
   }
 
-  handleNameChange(index, evt) {
-    const newData = this.state.data.slice()
-    newData[index].rename = evt.target.value
-    this.setState({ data: newData })
+  handleNameChange(key, evt) {
+    
   }
 
   current = []
@@ -99,23 +96,6 @@ class FileMgmt extends React.Component {
         return this.copyContentsFunc(content, [m.id], id)
       })
     })
-  }
-
-
-  handleCreateFolder() {
-    const newData = this.state.data.slice()
-    const existKeyList = newData.map(m => m.key)
-    const maxKey = Math.max(...existKeyList)
-
-    newData.splice(0, 0, {
-      name: "新建文件夹",
-      isFolder: true,
-      date: '2015-04-15 13:30',
-      parentId: this.state.parentId,
-      rename: "新建文件夹",
-      key: maxKey + 1,
-    })
-    this.setState({ data: newData, name: "新建文件夹" })
   }
 
   handleConfirm(index) {
@@ -259,9 +239,12 @@ class FileMgmt extends React.Component {
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
-          <Input style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }} value={record.rename} onChange={this.handleNameChange.bind(this, index)} />
-          <Button onClick={this.handleConfirm.bind(this, index)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
-          <Button onClick={this.handleCancel.bind(this, index)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
+              <Input
+                style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }}
+                value={record.rename}
+                onChange={this.props.onNewFolderNameChange.bind(this, record.key)} />
+          <Button onClick={this.props.onConfirm.bind(this, record.key)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
+          <Button onClick={this.props.onCancel.bind(this, record.key)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
         </div>
       ),
     }, {
@@ -347,7 +330,7 @@ class FileMgmt extends React.Component {
           <Button type="primary">上传</Button>
         </Upload>
 
-        <Button onClick={this.handleCreateFolder} style={{ marginLeft: 10 }}>新建文件夹</Button>
+        <Button onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)} style={{ marginLeft: 10 }}>新建文件夹</Button>
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
@@ -380,7 +363,7 @@ class FileMgmt extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancelModal}>
 
-          <Tree onSelect={this.onSelect}>{tree(0)}</Tree>
+          <Tree onSelect={this.onSelect}>{tree(-999)}</Tree>
 
         </Modal>
 

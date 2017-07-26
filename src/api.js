@@ -448,6 +448,10 @@ export function queryDataRoomDetail(id) {
   return r('/dataroom/' + id)
 }
 
+export const addToDataRoom = body => r('/dataroom/file/', 'POST', body)
+export const deleteFromDataRoom = body => r('/dataroom/file/', 'DELETE', body)
+export const editInDataRoom = body => r('/dataroom/file/', 'PUT', body)
+
 /**
  * User Relation
  */

@@ -1,12 +1,13 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
-import { getDataRoomFile, queryDataRoom, queryDataRoomDetail } from '../api'
+import * as Api from '../api'
 
 class DataRoomList extends React.Component {
 
   constructor(props) {
     super(props)
+    this.dataRoomRelation = []
     this.state = {
       title: '项目名称',
       data: [
@@ -45,7 +46,7 @@ class DataRoomList extends React.Component {
   }
 
   componentDidMount() {
-    queryDataRoomDetail(this.props.location.query.id).then(data => {
+    Api.queryDataRoomDetail(this.props.location.query.id).then(data => {
       const project = data.data.proj
       const investor = data.data.investor
       const projectOwner = project.supportUser
@@ -61,22 +62,34 @@ class DataRoomList extends React.Component {
 
       const queryDataRoomArr = [
         // Public Folder
-        queryDataRoom({
+        Api.queryDataRoom({
           proj: project.id,
           isPublic: 1
         }),
         // Project Owner Folder
-        queryDataRoom({
+        Api.queryDataRoom({
           proj: project.id,
           user: projectOwner.id
         }),
       ]
       return Promise.all(queryDataRoomArr)
     }).then(data => {
+
+      this.dataRoomRelation[this.props.location.query.id] = -3
+      this.dataRoomRelation[data[1].data.data[0].id] = -2
+      this.dataRoomRelation[data[0].data.data[0].id] = -1
+      
+      const newData = this.state.data.slice()
+      newData[0]['dataroom'] = this.props.location.query.id
+      newData[1]['dataroom'] = data[1].data.data[0].id
+      newData[2]['dataroom'] = data[0].data.data[0].id
+
+      this.setState({ data: newData })
+
       const getDataRoomFileArr = [
-        getDataRoomFile({ dataroom: this.props.location.query.id }), // Investor Folder
-        getDataRoomFile({ dataroom: data[1].data.data[0].id}), // Project Owner Folder
-        getDataRoomFile({ dataroom: data[0].data.data[0].id}) // Public Folder
+        Api.getDataRoomFile({ dataroom: this.props.location.query.id }), // Investor Folder
+        Api.getDataRoomFile({ dataroom: data[1].data.data[0].id}), // Project Owner Folder
+        Api.getDataRoomFile({ dataroom: data[0].data.data[0].id}) // Public Folder
       ]
       return Promise.all(getDataRoomFileArr)
     }).then(data => {
@@ -106,8 +119,88 @@ class DataRoomList extends React.Component {
     }).catch(err => console.error(err))
   }
 
-  handleCreateNewFolder(parentId, folderName) {
-    console.log(parentId, folderName)
+  handleCreateNewFolder(parentId) {
+    const newData = this.state.data.slice()
+    const existKeyList = newData.map(m => m.key)
+    const maxKey = Math.max(...existKeyList)
+
+    newData.splice(0, 0, {
+      name: "新建文件夹",
+      isFolder: true,
+      parentId: parentId,
+      rename: "新建文件夹",
+      key: maxKey + 1,
+    })
+    this.setState({ data: newData, name: "新建文件夹" })
+  }
+
+  handleNewFolderNameChange(key, evt) {
+    const newData = this.state.data.slice()
+    const index = newData.map(m => m.key).indexOf(key)
+    if (index > -1) {
+      newData[index].rename = evt.target.value
+      this.setState({ data: newData })
+    }
+  }
+
+  handleConfirm(key) {
+    const newData = this.state.data.slice()
+    const index = newData.map(m => m.key).indexOf(key)
+    if (index < 0) return
+    const value = this.state.data[index]
+    if (!value.id) {
+      // Create new folder
+      const parentIndex = newData.map(m => m.id).indexOf(value.parentId)
+      if (parentIndex < 0) return
+      const dataroom = newData[parentIndex].dataroom
+      const body = {
+        dataroom: dataroom,
+        filename: value.rename,
+        isFile: false,
+        orderNO: 1,
+        parent: [-1, -2, -3].includes(value.parentId) ? null : value.parentId
+      }
+
+      newData.splice(index, 1)
+
+      Api.addToDataRoom(body).then(data => {
+        const item = data.data
+        const parentId = item.parent || this.dataRoomRelation[item.dataroom]
+        const name = item.filename
+        const rename = item.filename
+        const key = item.id
+        const isFolder = !item.isFile
+        const date = item.lastmodifytime
+        const newItem = { ...item, parentId, name, rename, key, isFolder, date }
+        newData.push(newItem)
+        this.setState({ data: newData })
+      })
+    } else {
+      const newData = this.state.data.slice()
+      newData[index].name = newData[index].rename
+      const newRenameRows = this.state.renameRows.slice()
+      const rowIndex = newRenameRows.indexOf(value.id)
+      newRenameRows.splice(rowIndex, 1)
+      this.setState({ data: newData, renameRows: newRenameRows })
+    }
+  }
+
+  handleCancel(key) {
+    const newData = this.state.data.slice()
+    const index = newData.map(m => m.key).indexOf(key)
+    if (index < 0) return
+    const value = newData[index]
+    const name = value.name
+    if (!value.id) {
+      newData.splice(index, 1)
+      this.setState({ data: newData })
+    } else {
+      // newData[index].rename = newData[index].name
+      // const newRenameRows = this.state.renameRows.slice()
+      // const rowIndex = newRenameRows.indexOf(value.id)
+      // newRenameRows.splice(rowIndex, 1)
+      // this.setState({ data: newData, renameRows: newRenameRows })
+    }
   }
 
   render () {
@@ -118,7 +211,10 @@ class DataRoomList extends React.Component {
 
         <FileMgmt
           data={this.state.data}
-          onCreateNewFolder={this.handleCreateNewFolder} />
+          onCreateNewFolder={this.handleCreateNewFolder.bind(this)} 
+          onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)} 
+          onConfirm={this.handleConfirm.bind(this)} 
+          onCancel={this.handleCancel.bind(this)} />
 
       </LeftRightLayout>
     )
