@@ -166,10 +166,13 @@ class FileMgmt extends React.Component {
     let newData = this.props.data.slice()
 
     if (this.state.action === "move") {
-      this.state.selectedRows.map(m => {
-        const index = newData.map(m => m.id).indexOf(m.id)
-        newData[index].parentId = targetId
-      })
+      // this.state.selectedRows.map(m => {
+      //   const index = newData.map(m => m.id).indexOf(m.id)
+      //   newData[index].parentId = targetId
+      // })
+
+      this.props.onMoveFiles(this.state.selectedRows, targetId)
+
     } else if (this.state.action === "copy") {
       const index = notAllowedKeys.indexOf(this.state.parentId)
       if (index > -1) {
@@ -203,7 +206,6 @@ class FileMgmt extends React.Component {
   }
 
   render () {
-
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);

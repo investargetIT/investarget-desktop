@@ -217,15 +217,15 @@ class DataRoomList extends React.Component {
     })
   }
 
-  handleCopyFiles(idArr, targetID) {
-    idArr.map(m => {
+  handleCopyFiles(files, targetID) {
+    files.map(m => {
       const body = {
         isShadow: true,
         shadowdirectory: m.id,
         dataroom: m.dataroom,
         filename: m.filename,
         isFile: m.isFile,
-        parent: targetID
+        parent: [-1, -2, -3].includes(targetID) ? null : targetID
       }
       Api.addToDataRoom(body).then(data => {
         const newData = this.state.data.slice()
@@ -240,8 +240,21 @@ class DataRoomList extends React.Component {
         newData.push(newItem)
         this.setState({ data: newData })
       })
+    }) 
+  }
+
+  handleOnMoveFiles(files, targetID) {
+    files.map(m => {
+      const body = {
+        fileid: m.id,
+        parent: [-1, -2, -3].includes(targetID) ? null : targetID
+      }
+      Api.editInDataRoom(body).then(data => {
+        const index = this.state.data.map(m => m.id).indexOf(m.id)
+        this.state.data[index].parentId = targetID
+        this.setState({ data: this.state.data })
+      })
     })
-    
   }
 
   render () {
@@ -257,7 +270,8 @@ class DataRoomList extends React.Component {
           onConfirm={this.handleConfirm.bind(this)} 
           onCancel={this.handleCancel.bind(this)} 
           onDeleteFiles={this.handleDeleteFiles.bind(this)} 
-          onCopyFiles={this.handleCopyFiles.bind(this)} />
+          onCopyFiles={this.handleCopyFiles.bind(this)} 
+          onMoveFiles={this.handleOnMoveFiles.bind(this)} />
 
       </LeftRightLayout>
     )
