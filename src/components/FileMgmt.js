@@ -98,40 +98,30 @@ class FileMgmt extends React.Component {
     })
   }
 
-  handleConfirm(index) {
-    const value = this.state.data[index]
-    const name = value.name
-    if (!value.id) {
-      const newData = this.state.data.slice()
-      newData[index].id = newData[index].key
-      newData[index].name = newData[index].rename
-      this.setState({ uploading: true, data: newData })
-      this.props.onCreateNewFolder(this.state.parentId, newData[index].rename)
-    } else {
-      const newData = this.state.data.slice()
-      newData[index].name = newData[index].rename
+  handleConfirm(key) {
+    const index = this.props.data.map(m => m.key).indexOf(key)
+    if (index < 0) return
+    const value = this.props.data[index]
+    if (value.id) {
       const newRenameRows = this.state.renameRows.slice()
       const rowIndex = newRenameRows.indexOf(value.id)
       newRenameRows.splice(rowIndex, 1)
-      this.setState({ data: newData, renameRows: newRenameRows })
+      this.setState({ renameRows: newRenameRows })
     }
+    this.props.onConfirm(key)
   }
 
-  handleCancel(index) {
-    const value = this.state.data[index]
-    const name = value.name
-    if (!value.id) {
-      const newData = this.state.data.slice()
-      newData.splice(index, 1)
-      this.setState({ data: newData })
-    } else {
-      const newData = this.state.data.slice()
-      newData[index].rename = newData[index].name
+  handleCancel(key) {
+    const index = this.props.data.map(m => m.key).indexOf(key)
+    if (index < 0) return
+    const value = this.props.data[index]
+    if (value.id) {
       const newRenameRows = this.state.renameRows.slice()
       const rowIndex = newRenameRows.indexOf(value.id)
       newRenameRows.splice(rowIndex, 1)
-      this.setState({ data: newData, renameRows: newRenameRows })
+      this.setState({ renameRows: newRenameRows })
     }
+    this.props.onCancel(key)
   }
 
   handleRename() {
@@ -237,8 +227,8 @@ class FileMgmt extends React.Component {
                 style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }}
                 value={record.rename}
                 onChange={this.props.onNewFolderNameChange.bind(this, record.key)} />
-          <Button onClick={this.props.onConfirm.bind(this, record.key)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
-          <Button onClick={this.props.onCancel.bind(this, record.key)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
+          <Button onClick={this.handleConfirm.bind(this, record.key)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
+          <Button onClick={this.handleCancel.bind(this, record.key)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
         </div>
       ),
     }, {

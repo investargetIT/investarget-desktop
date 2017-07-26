@@ -177,12 +177,14 @@ class DataRoomList extends React.Component {
       })
     } else {
       // Rename
-      const newData = this.state.data.slice()
-      newData[index].name = newData[index].rename
-      const newRenameRows = this.state.renameRows.slice()
-      const rowIndex = newRenameRows.indexOf(value.id)
-      newRenameRows.splice(rowIndex, 1)
-      this.setState({ data: newData, renameRows: newRenameRows })
+      const body = {
+        fileid: value.id,
+        filename: value.rename
+      }
+      Api.editInDataRoom(body).then(data => {
+        newData[index].name = newData[index].rename
+        this.setState({ data: newData })
+      })
     }
   }
 
@@ -196,11 +198,8 @@ class DataRoomList extends React.Component {
       newData.splice(index, 1)
       this.setState({ data: newData })
     } else {
-      // newData[index].rename = newData[index].name
-      // const newRenameRows = this.state.renameRows.slice()
-      // const rowIndex = newRenameRows.indexOf(value.id)
-      // newRenameRows.splice(rowIndex, 1)
-      // this.setState({ data: newData, renameRows: newRenameRows })
+      newData[index].rename = newData[index].name
+      this.setState({ data: newData })
     }
   }
 
