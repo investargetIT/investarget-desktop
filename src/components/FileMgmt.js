@@ -223,7 +223,7 @@ class FileMgmt extends React.Component {
       key: 'name',
       render: (text, record, index) => (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? !record.isShadow ? "/images/folder.png" : "/images/default-avatar.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
@@ -324,9 +324,9 @@ class FileMgmt extends React.Component {
           style={{ marginLeft: 10 }}>新建文件夹</Button>
 
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
-        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
-        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
-        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleMove} style={{ marginLeft: 10 }}>移动到</Button> : null }
+        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
+        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
+        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleMove} style={{ marginLeft: 10 }}>移动到</Button> : null }
 
         <div style={{ margin: '10px 0' }}>
           { base }
