@@ -223,7 +223,7 @@ class FileMgmt extends React.Component {
       key: 'name',
       render: (text, record, index) => (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? !record.isShadow ? "/images/folder.png" : "/images/default-avatar.png" : "/images/pdf.png" } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? !record.isShadow ? "/images/folder.png" : "/images/avatar1.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
@@ -276,10 +276,7 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: '//jsonplaceholder.typicode.com/posts/',
-      headers: {
-        authorization: 'authorization-text',
-      },
+      action: 'http://192.168.1.201:8000/service/qiniubigupload?bucket=file',
       showUploadList: false,
       onChange(info) {
         if (info.file.status !== 'uploading') {
@@ -287,6 +284,9 @@ class FileMgmt extends React.Component {
         }
         if (info.file.status === 'done') {
           message.success(`${info.file.name} file uploaded successfully`);
+
+          react.props.onUploadFile(info.file, react.state.parentId)
+          return
 
           const newData = react.props.data.slice()
           const existKeyList = newData.map(m => m.key)
@@ -306,7 +306,7 @@ class FileMgmt extends React.Component {
           message.error(`${info.file.name} file upload failed.`);
           react.setState({ uploading: false })
         } else if (info.file.status === 'uploading') {
-          react.setState({ uploading: true })
+          react.setState({ uploading: false })
         }
       },
     }
@@ -315,7 +315,7 @@ class FileMgmt extends React.Component {
       <div>
 
         <Upload {...props}>
-          <Button type="primary">上传</Button>
+          <Button disabled={this.state.parentId === -999} type="primary">上传</Button>
         </Upload>
 
         <Button
