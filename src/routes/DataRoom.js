@@ -176,6 +176,7 @@ class DataRoomList extends React.Component {
         this.setState({ data: newData })
       })
     } else {
+      // Rename
       const newData = this.state.data.slice()
       newData[index].name = newData[index].rename
       const newRenameRows = this.state.renameRows.slice()
@@ -203,6 +204,20 @@ class DataRoomList extends React.Component {
     }
   }
 
+  handleDeleteFiles(idArr) {
+    const body = {
+      filelist: idArr
+    }
+    Api.deleteFromDataRoom(body).then(data => {
+      const newData = this.state.data.slice()
+      idArr.map(d => {
+        const index = newData.map(m => m.id).indexOf(d)
+        newData.splice(index, 1)
+      })
+      this.setState({ data: newData })
+    })
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -214,7 +229,8 @@ class DataRoomList extends React.Component {
           onCreateNewFolder={this.handleCreateNewFolder.bind(this)} 
           onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)} 
           onConfirm={this.handleConfirm.bind(this)} 
-          onCancel={this.handleCancel.bind(this)} />
+          onCancel={this.handleCancel.bind(this)} 
+          onDeleteFiles={this.handleDeleteFiles.bind(this)} />
 
       </LeftRightLayout>
     )

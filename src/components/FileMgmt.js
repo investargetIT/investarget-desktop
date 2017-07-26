@@ -63,7 +63,7 @@ class FileMgmt extends React.Component {
 
   contents = []
   deleteContent(id) {
-    const subObjArr = this.state.data.filter(f => f.parentId === id)
+    const subObjArr = this.props.data.filter(f => f.parentId === id)
     if (subObjArr.length === 0) {
       return this.contents
     } else {
@@ -147,15 +147,9 @@ class FileMgmt extends React.Component {
       onOk() {
         react.state.selectedRows.map(m => react.deleteContent(m.id))
         const deleteContents = react.contents.concat(react.state.selectedRows.map(m => m.id))
-        const newData = react.state.data.slice()
-        deleteContents.map(d => {
-          const index = newData.map(m => m.id).indexOf(d)
-          newData.splice(index, 1)
-        })
-        react.setState({
-          data: newData,
-          selectedRows: [],
-        })
+        // Server is responsible for recrusive
+        react.props.onDeleteFiles(react.state.selectedRows.map(m => m.id))
+        react.setState({ selectedRows: [] })
       }
     })
   }
@@ -330,7 +324,11 @@ class FileMgmt extends React.Component {
           <Button type="primary">上传</Button>
         </Upload>
 
-        <Button onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)} style={{ marginLeft: 10 }}>新建文件夹</Button>
+        <Button
+          disabled={this.state.parentId === -999}
+          onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)} 
+          style={{ marginLeft: 10 }}>新建文件夹</Button>
+
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
