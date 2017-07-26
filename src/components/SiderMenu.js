@@ -34,6 +34,7 @@ class SiderMenu extends React.Component {
         mode={this.props.mode}
         selectedKeys={this.props.selectedKeys}
         onSelect={this.handleSelect.bind(this)}
+        openKeys={this.props.openKeys}
         onOpenChange={this.handleOpenChange.bind(this)} style={this.props.style}>
 
         {
