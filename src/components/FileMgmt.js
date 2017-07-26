@@ -163,7 +163,7 @@ class FileMgmt extends React.Component {
     }
 
     const targetId = parseInt(this.selectedKeys[0], 10)
-    let newData = this.state.data.slice()
+    let newData = this.props.data.slice()
 
     if (this.state.action === "move") {
       this.state.selectedRows.map(m => {
@@ -182,12 +182,14 @@ class FileMgmt extends React.Component {
       const parentIds = this.state.selectedRows.map(m => m.parentId)
       const parentIdSet = new Set(parentIds)
       this.copyContentsFunc(contentsToCopy, [...parentIdSet], targetId)
+
+      this.props.onCopyFiles(this.state.selectedRows, targetId)
+
       newData = newData.concat(this.copyContents)
     }
 
     this.setState({
       selectedRows: [],
-      data: newData,
     })
   }
 

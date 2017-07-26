@@ -217,6 +217,33 @@ class DataRoomList extends React.Component {
     })
   }
 
+  handleCopyFiles(idArr, targetID) {
+    idArr.map(m => {
+      const body = {
+        isShadow: true,
+        shadowdirectory: m.id,
+        dataroom: m.dataroom,
+        filename: m.filename,
+        isFile: m.isFile,
+        parent: targetID
+      }
+      Api.addToDataRoom(body).then(data => {
+        const newData = this.state.data.slice()
+        const item = data.data
+        const parentId = item.parent || this.dataRoomRelation[item.dataroom]
+        const name = item.filename
+        const rename = item.filename
+        const key = item.id
+        const isFolder = !item.isFile
+        const date = item.lastmodifytime
+        const newItem = { ...item, parentId, name, rename, key, isFolder, date }
+        newData.push(newItem)
+        this.setState({ data: newData })
+      })
+    })
+    
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -229,7 +256,8 @@ class DataRoomList extends React.Component {
           onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)} 
           onConfirm={this.handleConfirm.bind(this)} 
           onCancel={this.handleCancel.bind(this)} 
-          onDeleteFiles={this.handleDeleteFiles.bind(this)} />
+          onDeleteFiles={this.handleDeleteFiles.bind(this)} 
+          onCopyFiles={this.handleCopyFiles.bind(this)} />
 
       </LeftRightLayout>
     )
