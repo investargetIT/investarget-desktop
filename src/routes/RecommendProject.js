@@ -98,7 +98,7 @@ class RecommendProject extends React.Component {
         'user': id,
         'trader': userId,
       } : {
-        'favoriteProj': 2,
+        'favoritetype': 2,
         'projs': [projId],
         'user': id,
       }
