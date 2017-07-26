@@ -19,7 +19,9 @@ import EditOrganization from './routes/EditOrganization'
 import OrganizationDetail from './routes/OrganizationDetail'
 import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
-import FavoriteProjectList from './routes/FavoriteProjectList'
+import ProjectListRecommend from './routes/ProjectListRecommend'
+import ProjectListFavor from './routes/ProjectListFavor'
+import ProjectListInterest from './routes/ProjectListInterest'
 import ProjectDetail from './routes/ProjectDetail'
 import TimelineList from './routes/TimelineList'
 import DataRoomList from './routes/DataRoomList'
@@ -57,9 +59,9 @@ function RouterConfig({ history }) {
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/projects/list" component={ProjectList} />
-      <Route path="/app/projects/list/recommend" component={FavoriteProjectList} />
-      <Route path="/app/projects/list/favor" component={FavoriteProjectList} />
-      <Route path="/app/projects/list/interest" component={FavoriteProjectList} />
+      <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
+      <Route path="/app/projects/list/favor" component={ProjectListFavor} />
+      <Route path="/app/projects/list/interest" component={ProjectListInterest} />
       <Route path="/app/projects/my" component={ProjectList} />
       <Route path="/app/projects/add" component={AddProject} />
       <Route path="/app/projects/edit/:id" component={EditProject} />

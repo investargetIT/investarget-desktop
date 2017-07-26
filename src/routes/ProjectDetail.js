@@ -2,8 +2,9 @@ import React from 'react'
 import * as api from '../api'
 import { formatMoney } from '../utils/util'
 
-import { Timeline, Icon, Tag, Button } from 'antd'
+import { Timeline, Icon, Tag, Button, message } from 'antd'
 import MainLayout from '../components/MainLayout'
+import { SelectNumber } from '../components/ExtraInput'
 
 
 const userInfo = JSON.parse(localStorage.getItem('user_info'))
@@ -73,63 +74,98 @@ class ProjectDetail extends React.Component {
     super(props)
 
     this.state = {
+      id: Number(this.props.params.id),
       project: {},
       isFavorite: false,
+      favorId: null,
+      traderOptions: [],
+      trader: null,
     }
   }
 
-  favorProject = () => {
-    const id = this.props.params.id
+  getFavorProject = () => {
     const param = {
       favoritetype: 4,
       user: currentUserId,
-      proj: id,
+      proj: this.state.id,
+    }
+    api.getFavoriteProj(param).then(result => {
+      const data = result.data.data
+      const isFavorite = data.length == 1
+      const favorId = data[0] && data[0].id
+      this.setState({ isFavorite, favorId })
+    }, error => {
+      error.message(error.message, 2)
+    })
+  }
+
+  favorProject = () => {
+    const param = {
+      favoritetype: 4,
+      user: currentUserId,
+      projs: [this.state.id],
     }
     api.projFavorite(param).then(result => {
       this.setState({ isFavorite: true })
+      message.success('收藏成功', 2)
+      this.getFavorProject()
     }, error => {
-
+      message.error(error.message, 2)
     })
   }
 
   unfavorProject = () => {
-    const id = this.props.params.id
     const param = {
-      favoritetype: 4,
-      user: currentUserId,
-      proj: id,
+      favoriteids: [this.state.favorId],
     }
     api.projCancelFavorite(param).then(result => {
-      this.setState({ isFavorite: false })
+      this.setState({ isFavorite: false, favorId: null })
+      message.success('取消收藏成功', 2)
     }, error => {
+      message.error(error.message, 2)
+    })
+  }
 
+  handleTraderChange = (trader) => {
+    this.setState({ trader })
+  }
+
+  haveInterest = () => {
+    const { id, trader } = this.state
+    const params = {
+      favoritetype: 5,
+      projs: [id],
+      user: currentUserId,
+      trader: trader,
+    }
+    api.projFavorite(params).then(result => {
+      message.success('感兴趣成功', 2)
+    }, error => {
+      message.error(error.message, 2)
     })
   }
 
   componentDidMount() {
-    const id = this.props.params.id
+    const { id } = this.state
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project })
     })
 
-    const param = {
-      favoritetype: 4,
-      user: currentUserId,
-      proj: id
-    }
-    api.getFavoriteProj(param).then(result => {
-      const data = result.data.data
-      const isFavorite = data.length == 1
-      this.setState({ isFavorite })
-    }, error => {
+    this.getFavorProject()
 
+    // 获取投资人的交易师
+    api.getUserRelation({ investoruser: currentUserId }).then(result => {
+      const data = result.data.data
+      const relation = data.filter(item => item.relationtype)[0]
+      const trader = relation.traderuser.id
+      const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
+      this.setState({ traderOptions, trader })
     })
   }
 
   render() {
-    const id = this.props.params.id
-    const project = this.state.project
+    const { id, project, isFavorite, trader, traderOptions } = this.state
 
     return (
       <MainLayout location={this.props.location}>
@@ -272,11 +308,19 @@ class ProjectDetail extends React.Component {
 
         <div>
           {
-            this.state.isFavorite ? <Button onClick={this.unfavorProject}>取消收藏</Button>
+            isFavorite ? <Button onClick={this.unfavorProject}>取消收藏</Button>
                                   : <Button onClick={this.favorProject}>加入收藏</Button>
           }
         </div>
-        {/* TODO// 收藏/取消收藏 */}
+
+
+        <div>
+          <SelectNumber options={traderOptions} value={trader} onChange={this.handleTraderChange} />
+          <Button onClick={this.haveInterest}>感兴趣</Button>
+        </div>
+
+
+
         {/* TODO// 感兴趣的人 */}
         {/* TODO// 联系交易师 */}
         {/* TODO// 下载 Teaser */}
