@@ -1,70 +1,73 @@
 import React from 'react'
-import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, showError } from '../utils/util'
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import { Icon, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
-import {
-  RadioTrueOrFalse,
-  CheckboxCurrencyType,
-} from '../components/ExtraInput'
-const Search = Input.Search
-
-
-
-
+import { Search } from '../components/Search'
 
 
 class EmailList extends React.Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      search: null,
+      _param: {},
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      list: [],
+      loading: false,
+    }
   }
 
-  handleDelete = (id) => {
-    this.props.dispatch({ type: 'emailList/delete', payload: id })
+  handleSearchChange = (search) => {
+    this.setState({ search })
   }
 
-
-  handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'emailList/setFilter', payload: { [key]: value } })
+  handleSearch = () => {
+    let { _params, search } = this.state
+    _params = { ..._params, search }
+    this.setState({ _params, page: 1 }, this.getEmailList)
   }
 
-  handleFilt = () => {
-    this.props.dispatch({ type: 'emailList/filt' })
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getEmailList)
   }
 
-  handleReset = () => {
-    this.props.dispatch({ type: 'emailList/reset' })
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getEmailList)
   }
 
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'emailList/setField', payload: { search } })
+  getEmailList = () => {
+    const { _params, page, pageSize } = this.state
+    const params = { ..._params, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.getEmailList(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
   }
 
-  handleSearch = (search) => {
-    this.props.dispatch({ type: 'emailList/search' })
-  }
-
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'emailList/changePage', payload: page })
-  }
-
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'emailList/changePageSize', payload: pageSize })
+  componentDidMount() {
+    this.getEmailList()
   }
 
   render() {
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
+    const { location } = this.props
+    const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: '项目名称', key: '', dataIndex: '' },
-      { title: '邮箱', key: '', render: (text, record) => {
-        return <Link to="/app/email/detail"><Icon type="mail" style={{fontSize: '16px'}} /></Link>
+      { title: '项目名称', key: 'proj', render: (text, record) => {
+        return <Link target="_blank" to={'/app/projects/' + record.proj.id}>{record.proj.Title}</Link>
+      } },
+      { title: '邮箱', key: 'email', render: (text, record) => {
+        return <Link target="_blank" to={'/app/email/detail/' + record.proj.id}><Icon type="mail" style={{fontSize: '16px'}} /></Link>
       } },
     ]
 
@@ -91,19 +94,13 @@ class EmailList extends React.Component {
             pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
-            onShowSizeChange={this.handleShowSizeChange}
+            onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
           />
         </div>
       </MainLayout>
     )
   }
-
 }
 
-
-function mapStateToProps(state) {
-  return { ...state.emailList, loading: state.loading.effects['emailList/get'] }
-}
-
-export default connect(mapStateToProps)(EmailList)
+export default EmailList

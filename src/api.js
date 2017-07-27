@@ -326,12 +326,12 @@ export function deleteTimelineRemark(id) {
  * email
  */
 
-export function getEmail() {
-
+export function getEmailList() {
+  return r('/mongolog/email')
 }
 
-export function getEmailDetail() {
-
+export function getEmail(params) {
+  return r('/emailmanage/?' + qs.stringify(params))
 }
 
 /**

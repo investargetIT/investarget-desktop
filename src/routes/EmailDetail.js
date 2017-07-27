@@ -1,74 +1,89 @@
 import React from 'react'
-import { connect } from 'dva'
-import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, shwoError } from '../utils/util'
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm } from 'antd'
+import { Icon, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
-import {
-  RadioTrueOrFalse,
-  CheckboxCurrencyType,
-} from '../components/ExtraInput'
-const Search = Input.Search
-
-
-
-
+import { Search } from '../components/Search'
 
 
 class EmailDetail extends React.Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      search: null,
+      _param: {},
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      list: [],
+      loading: false,
+    }
   }
 
-  handleDelete = (id) => {
-    this.props.dispatch({ type: 'emailDetail/delete', payload: id })
+  handleSearchChange = (search) => {
+    this.setState({ search })
   }
 
-
-  handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'emailDetail/setFilter', payload: { [key]: value } })
+  handleSearch = () => {
+    let { _params, search } = this.state
+    _params = { ..._params, search }
+    this.setState({ _params, page: 1 }, this.getUserList)
   }
 
-  handleFilt = () => {
-    this.props.dispatch({ type: 'emailDetail/filt' })
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getUserList)
   }
 
-  handleReset = () => {
-    this.props.dispatch({ type: 'emailDetail/reset' })
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getUserList)
   }
 
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'emailDetail/setField', payload: { search } })
+  getUserList = () => {
+    const id = Number(this.props.params.id)
+    const { _params, page, pageSize } = this.state
+    const params = { ..._params, id, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.getEmail(params).then(result => {
+      const { count: total, data: list } = result.data
+      // 填充用户信息
+      const q = list.map(item => {
+        return api.getUserDetailLang(item.user).then(result => result.data)
+      })
+      Promise.all(q).then(results => {
+        results.forEach((data, index) => {
+          list[index].title = data.title
+          list[index].mobile = data.mobile
+        })
+        this.setState({ total, list, loading: false })
+      }, error => {
+        showError(error.message)
+      })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
   }
 
-  handleSearch = (search) => {
-    this.props.dispatch({ type: 'emailDetail/search' })
-  }
-
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'emailDetail/changePage', payload: page })
-  }
-
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'emailDetail/changePageSize', payload: pageSize })
+  componentDidMount() {
+    this.getUserList()
   }
 
   render() {
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
+    const { location } = this.props
+    const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: '姓名', key: '', dataIndex: '' },
-      { title: '公司', key: '', dataIndex: '' },
-      { title: '职位', key: '', dataIndex: '' },
-      { title: '行业', key: '', dataIndex: '' },
-      { title: '手机号码', key: '', dataIndex: '' },
-      { title: '邮箱', key: '', dataIndex: '' },
-      { title: '未读/已读', key: '', dataIndex: '' },
+      { title: '姓名', key: 'username', dataIndex: 'username' },
+      // { title: '公司', key: '', dataIndex: '' },
+      { title: '职位', key: 'title', dataIndex: 'title.name' },
+      // { title: '行业', key: '', dataIndex: '' },
+      { title: '手机号码', key: 'mobile', dataIndex: 'mobile' },
+      { title: '邮箱', key: 'userEmail', dataIndex: 'userEmail' },
+      { title: '未读/已读', key: 'isRead', render: (text, record) => {
+        return <Icon type={record.isRead ? 'check' : 'close'} />
+      } },
     ]
 
     return (
@@ -101,12 +116,6 @@ class EmailDetail extends React.Component {
       </MainLayout>
     )
   }
-
 }
 
-
-function mapStateToProps(state) {
-  return { ...state.emailDetail, loading: state.loading.effects['emailDetail/get'] }
-}
-
-export default connect(mapStateToProps)(EmailDetail)
+export default EmailDetail

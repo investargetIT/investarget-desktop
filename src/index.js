@@ -52,8 +52,6 @@ app.model(require("./models/app"))
 app.model(require('./models/CurrentUser'))
 app.model(require('./models/projectList'))
 app.model(require('./models/dataRoomList'))
-app.model(require('./models/emailList'))
-app.model(require('./models/emailDetail'))
 
 // 4. Router
 app.router(require('./router'));

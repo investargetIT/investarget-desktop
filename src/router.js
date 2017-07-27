@@ -73,7 +73,7 @@ function RouterConfig({ history }) {
       <Route path="/app/dataroom/detail" component={DataRoom} />
       <Route path="/app/timeline/list" component={TimelineList} />
       <Route path="/app/email/list" component={EmailList} />
-      <Route path="/app/email/detail" component={EmailDetail} />
+      <Route path="/app/email/detail/:id" component={EmailDetail} />
       <Route path="/app/user/edit/:id" component={EditUser} />
       <Route path="/app/user/:id" component={UserDetail} />
       <Route path="/app/timeline/add" component={AddTimeline} />

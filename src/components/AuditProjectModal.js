@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Modal, Select } from 'antd'
+import { Modal, Select, Checkbox } from 'antd'
 const Option = Select.Option
 
 
@@ -57,6 +57,7 @@ class AuditProjectModal extends React.Component {
       id: null,
       currentStatus: null,
       status: null,
+      sendEmail: false,
     }
   }
 
@@ -65,31 +66,44 @@ class AuditProjectModal extends React.Component {
   }
 
   handleOk = () => {
-    const { id, status } = this.state
-    api.editProj(id, { projstatus: status }).then(result => {
+    const { id, status, sendEmail } = this.state
+    api.editProj(id, { projstatus: status, isSendEmail: sendEmail }).then(result => {
       this.props.afterAudit()
-      this.setState({ visible: false, id: null, status: null })
+      this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
     }, error => {
-      this.setState({ visible: false, id: null, status: null })
+      this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
       Modal.error({ title: '错误', content: error.message })
     })
   }
 
   handleCancel = () => {
-    this.setState({ visible: false, id: null, status: null })
+    this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
   }
 
   handleStatusChange = (status) => {
     this.setState({ status })
   }
 
+  handleSendEmailChange = (e) => {
+    const sendEmail = e.target.checked
+    this.setState({ sendEmail })
+  }
+
   render() {
+    const { visible, currentStatus, status, sendEmail } = this.state
     return (
-      <Modal title="修改项目状态" visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title="修改项目状态" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <div style={{width: '60%', display: 'flex', alignItems: 'center', margin: '0 auto'}}>
           <span style={{marginRight: '8px'}}>项目状态：</span>
-          <SelectProjectStatus style={{flexGrow: '1'}} status={this.state.currentStatus} value={this.state.status} onChange={this.handleStatusChange} />
+          <SelectProjectStatus style={{flexGrow: '1'}} status={currentStatus} value={status} onChange={this.handleStatusChange} />
         </div>
+        {
+          (status == 4 || status == 6) ? (
+            <div style={{textAlign: 'center', marginTop: '16px'}}>
+              <Checkbox checked={sendEmail} onChange={this.handleSendEmailChange}>是否发送邮件</Checkbox>
+            </div>
+          ) : null
+        }
       </Modal>
     )
   }
