@@ -17,7 +17,7 @@ class MyInvestor extends React.Component {
     pageSize: 10,
     pageIndex: 1
   }
-
+  investorList = []
   componentDidMount() {
     this.setState({ loading: true })
     api.getUserRelation().then(data => {
@@ -26,6 +26,7 @@ class MyInvestor extends React.Component {
         loading: false,
         total: data.data.count
       })
+      this.investorList = data.data.data
     })
   }
 
@@ -34,7 +35,29 @@ class MyInvestor extends React.Component {
   }
 
   handleSearch(value) {
-    console.log(value)
+    
+    if (value.length === 0) {
+      this.setState({ list: this.investorList })
+      return
+    }
+
+    this.setState({ loading: true })
+    api.getUser({ search: value }).then(data => {
+      const searchResult = data.data.data.map(m => m.id)
+      const newList = []
+      this.investorList.map((m, index) => {
+        if (searchResult.includes(m.investoruser.id)) {
+          newList.push(m)
+        }
+      })
+      this.setState({
+        list: newList,
+        loading: false
+      })
+    }).catch(err => {
+      this.setState({ loading: false })
+      console.error(err)
+    })
   }
 
   handleDeleteUser(userID) {
@@ -55,33 +78,27 @@ class MyInvestor extends React.Component {
       dataIndex: 'investoruser.username',
       key: 'username'
     },
-    // {
-    //   title: i18n("org"),
-    //   dataIndex: 'org.orgname',
-    //   key: 'org'
-    // },
-    // {
-    //   title: i18n("position"),
-    //   dataIndex: 'title.name',
-    //   key: 'title'
-    // },
+    {
+      title: i18n("org"),
+      dataIndex: 'investoruser.org.orgname',
+      key: 'org'
+    },
+    {
+      title: i18n("position"),
+      dataIndex: 'investoruser.title.name',
+      key: 'title'
+    },
     {
       title: i18n("tag"),
       dataIndex: 'investoruser.tags',
       key: 'tags',
       render: tags => tags ? tags.map(t => t.name).join(' ') : null
     },
-    // {
-    //   title: i18n("role"),
-    //   dataIndex: 'groups',
-    //   key: 'role',
-    //   render: groups => groups ? groups.map(m => m.name).join(' ') : null
-    // },
-    // {
-    //   title: i18n("userstatus"),
-    //   dataIndex: 'userstatus.name',
-    //   key: 'userstatus'
-    // },
+    {
+      title: i18n("userstatus"),
+      dataIndex: 'investoruser.userstatus.name',
+      key: 'userstatus'
+    },
     {
       title: i18n("action"),
       key: 'action',
@@ -111,7 +128,7 @@ class MyInvestor extends React.Component {
 
         <Search
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
-          onSearch={this.handleSearch} />
+          onSearch={this.handleSearch.bind(this)} />
 
         <Table
           columns={this.columns}
