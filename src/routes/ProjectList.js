@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, getGroup } from '../utils/util'
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -11,8 +11,8 @@ const Search = Input.Search
 
 import AuditProjectModal from '../components/AuditProjectModal'
 
-
-
+const group = getGroup()
+const isInvestor = group == 1
 
 
 class ProjectList extends React.Component {
@@ -86,7 +86,13 @@ class ProjectList extends React.Component {
         title: '名称',
         key: 'title',
         render: (text, record) => {
-          return record.projtitle
+          if (record.action.get) {
+            return record.ismarketplace ?
+              <Link to={'/app/marketplace/' + record.id}>{record.projtitle}</Link> :
+              <Link to={'/app/projects/' + record.id}>{record.projtitle}</Link>
+          } else {
+            return record.projtitle
+          }
         }
       },
       {
@@ -97,7 +103,10 @@ class ProjectList extends React.Component {
           const countryName = country ? country.country : ''
           const imgUrl = country ? ('https://o79atf82v.qnssl.com/' + country.key) : ''
           return (
-            <span><img src={imgUrl} style={{width: '20px', height: '14px'}} />{countryName}</span>
+            <span style={{display: 'flex', alignItems: 'center'}}>
+              <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} />
+              <span>{countryName}</span>
+            </span>
           )
         }
       },
@@ -121,47 +130,45 @@ class ProjectList extends React.Component {
       {
         title: '操作',
         key: 'action',
-        render: (text, record) => (
-          <span>
-            <Button size="small" onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
-            &nbsp;
-            <Link to={ record.ismarketplace ? ('/app/marketplace/' + record.id) : ('/app/projects/' + record.id) }>
-              <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
-            </Link>
-            &nbsp;
-            {
-              record.ismarketplace ? null : (
-                <a href={"/app/projects/recommend/" + record.id} target="_blank">
-                  <Button size="small">推荐</Button>
-                </a>
-              )
-            }
-            &nbsp;
-            {
-              record.ismarketplace ? null : (
-                <a href={"/app/timeline/add?projId=" + record.id} target="_blank">
-                  <Button size="small">创建时间轴</Button>
-                </a>
-              )
-            }
-            &nbsp;
-            {
-              record.ismarketplace ? null : (
-                <a target="_blank" href={'/app/dataroom/add?projectID=' + record.id}>
-                  <Button size="small">创建DataRoom</Button>
-                </a>
-              )
-            }
-            &nbsp;
-            <Link to={ record.ismarketplace ? ('/app/marketplace/edit/' + record.id) : ('/app/projects/edit/' + record.id) }>
-              <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
-            </Link>
-            &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
-            </Popconfirm>
-          </span>
-        )
+        render: (text, record) => {
+          return record.ismarketplace ? (
+            <span>
+              <Button size="small" disabled={isInvestor} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              &nbsp;
+              <Link to={'/app/marketplace/edit/' + record.id}>
+                <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              </Link>
+              &nbsp;
+              <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              </Popconfirm>
+            </span>
+          ) : (
+            <span>
+              <Button size="small" disabled={isInvestor} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              &nbsp;
+              <Link href={"/app/projects/recommend/" + record.id} target="_blank">
+                <Button size="small" disabled={isInvestor}>推荐</Button>
+              </Link>
+              &nbsp;
+              <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
+                <Button size="small" disabled={isInvestor}>创建时间轴</Button>
+              </Link>
+              &nbsp;
+              <Link target="_blank" to={'/app/dataroom/add?projectID=' + record.id}>
+                <Button size="small" disabled={isInvestor}>创建DataRoom</Button>
+              </Link>
+              &nbsp;
+              <Link to={'/app/projects/edit/' + record.id}>
+                <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              </Link>
+              &nbsp;
+              <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              </Popconfirm>
+            </span>
+          )
+        }
       },
     ]
 

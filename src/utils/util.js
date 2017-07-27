@@ -86,5 +86,19 @@ function showError(message) {
   })
 }
 
+function hasPerm(name) {
+  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  if (!userInfo) return false
+  const perms = userInfo.permissions
+  return perms.includes(name)
+}
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError }
+function getGroup() {
+  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  if (!userInfo) return null
+  const group = userInfo.groups[0]
+  return group && group.id
+}
+window.getGroup = getGroup
+
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError, hasPerm, getGroup }
