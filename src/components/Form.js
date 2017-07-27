@@ -82,6 +82,8 @@ BasicFormItem.contextTypes = {
 
 const Email = () => <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input /></BasicFormItem>
 
+const Group = props => <BasicFormItem label={i18n("role")} name="readOnlyGroup" required><Input disabled={props.disabled} /></BasicFormItem>
+
 const FullName = props => <BasicFormItem label={i18n("username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
 
 const ChineseFullName = props => <BasicFormItem label={i18n("username")} name="usernameC" required><Input /></BasicFormItem>
@@ -474,4 +476,5 @@ module.exports = {
   CurrencyFormItem,
   ChineseFullName,
   IndustryDynamicFormItem,
+  Group
 }

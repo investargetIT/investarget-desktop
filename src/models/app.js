@@ -9,7 +9,7 @@ const resourceMap = {
   [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea'],
   '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
   '/app/user/add': ['title', 'tag', 'country'],
-  [URI_10]: ['tag'],
+  [URI_10]: ['tag', 'title'],
 }
 
 export default {
