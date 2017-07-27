@@ -24,7 +24,7 @@ class FileMgmt extends React.Component {
       selectedRows: [],
       visible: false,
       action: null,
-      uploading: false,
+      loading: false,
     }
 
     this.handleNameChange = this.handleNameChange.bind(this)
@@ -299,30 +299,14 @@ class FileMgmt extends React.Component {
           console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-
+          message.success(`${info.file.name} file uploaded successfully`)
+          react.setState({ loading: false })
           react.props.onUploadFile(info.file, react.state.parentId)
-          return
-
-          const newData = react.props.data.slice()
-          const existKeyList = newData.map(m => m.unique)
-          const maxKey = Math.max(...existKeyList)
-
-          newData.push({
-            id: maxKey + 1,
-            name: info.file.name,
-            isFolder: false,
-            date: '2015-04-15 13:30',
-            parentId: react.state.parentId,
-            rename: info.file.name,
-            unique: maxKey + 1,
-          })
-          react.setState({ data: newData, uploading: false })
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
-          react.setState({ uploading: false })
+          react.setState({ loading: false })
         } else if (info.file.status === 'uploading') {
-          react.setState({ uploading: false })
+          react.setState({ loading: true })
         }
       },
     }
@@ -362,7 +346,7 @@ class FileMgmt extends React.Component {
           rowKey={record => record.unique}
           rowSelection={rowSelection}
           dataSource={this.props.data.filter(f => f.parentId === this.state.parentId)}
-          loading={this.state.uploading}
+          loading={this.state.loading}
           pagination={false} />
 
         <Modal
