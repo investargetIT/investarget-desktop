@@ -42,14 +42,23 @@ class FileMgmt extends React.Component {
   componentDidMount() {
   }
 
-  folderClicked(id) {
-    const folder = this.props.data.filter(f => f.id === id)
-    if ((folder.length > 0 && folder[0].isFolder) || id === -999) {
-      this.setState({parentId: id})
+  folderClicked(file) {
+    if (!file) {
+      this.setState({ parentId: -999 })
+      return
+    }
+    if (file.isFolder) {
+      this.setState({ parentId: file.id })
+    } else {
+      const fileUrl = 'https://o7993llwa.qnssl.com/ebook_reading_1.pdf?e=1501123504&token=NJkzgfMrIi-wL_gJyeLfU4dSqXyk5eeGrI7COPPu:CBHngqvxb2n_-BvvXEHQajATXqE='
+      const watermark = "watermark"
+      const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl) +
+        '&watermark=' + encodeURIComponent(watermark)
+      window.open(url)
     }
   }
 
-  handleNameChange(key, evt) {
+  handleNameChange(unique, evt) {
     
   }
 
@@ -80,17 +89,17 @@ class FileMgmt extends React.Component {
     const contentId = content.map(m => m.id)
     oldParentIds.map(oldParentId => {
       content.filter(f => f.parentId === oldParentId).map(m => {
-        const existKeyList = this.data.map(m => m.key)
+        const existKeyList = this.data.map(m => m.unique)
         const maxKey = Math.max(...existKeyList)
         const id = maxKey + 1
-        const key = id
+        const unique = id
         const parentId = targetId
 
         const rootIndex = contentId.indexOf(m.id)
         if(rootIndex > -1) {
           content.splice(rootIndex, 1)
         }
-        const newValue = {...m, id, key, parentId}
+        const newValue = {...m, id, unique, parentId}
         this.copyContents = this.copyContents.concat(newValue)
         this.data = this.data.concat(newValue)
         return this.copyContentsFunc(content, [m.id], id)
@@ -98,8 +107,8 @@ class FileMgmt extends React.Component {
     })
   }
 
-  handleConfirm(key) {
-    const index = this.props.data.map(m => m.key).indexOf(key)
+  handleConfirm(unique) {
+    const index = this.props.data.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.props.data[index]
     if (value.id) {
@@ -108,11 +117,11 @@ class FileMgmt extends React.Component {
       newRenameRows.splice(rowIndex, 1)
       this.setState({ renameRows: newRenameRows })
     }
-    this.props.onConfirm(key)
+    this.props.onConfirm(unique)
   }
 
-  handleCancel(key) {
-    const index = this.props.data.map(m => m.key).indexOf(key)
+  handleCancel(unique) {
+    const index = this.props.data.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.props.data[index]
     if (value.id) {
@@ -121,7 +130,7 @@ class FileMgmt extends React.Component {
       newRenameRows.splice(rowIndex, 1)
       this.setState({ renameRows: newRenameRows })
     }
-    this.props.onCancel(key)
+    this.props.onCancel(unique)
   }
 
   handleRename() {
@@ -225,14 +234,14 @@ class FileMgmt extends React.Component {
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? !record.isShadow ? "/images/folder.png" : "/images/avatar1.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
-              <span onClick={this.folderClicked.bind(this, record.id)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
+              <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
               <Input
                 style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }}
                 value={record.rename}
-                onChange={this.props.onNewFolderNameChange.bind(this, record.key)} />
-          <Button onClick={this.handleConfirm.bind(this, record.key)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
-          <Button onClick={this.handleCancel.bind(this, record.key)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
+                onChange={this.props.onNewFolderNameChange.bind(this, record.unique)} />
+          <Button onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
+          <Button onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
         </div>
       ),
     }, {
@@ -252,11 +261,18 @@ class FileMgmt extends React.Component {
     this.copyContents = []
 
     const currentFolder = this.props.data.filter(f => f.id === this.state.parentId)[0]
+    let parentFolder = null
+    if (this.state.parentId !== -999) {
+      const parentFolderArr = this.props.data.filter(f => f.id === currentFolder.parentId)
+      if (parentFolderArr.length > 0) {
+        parentFolder = parentFolderArr[0]
+      }
+    }
     const base = this.state.parentId === -999 ? "全部文件" : (
       <span>
-        <a onClick={this.folderClicked.bind(this, currentFolder.parentId)}>返回上一级</a>
+        <a onClick={this.folderClicked.bind(this, parentFolder)}>返回上一级</a>
         &nbsp;|&nbsp;
-        <a onClick={this.folderClicked.bind(this, -999)}>全部文件</a>
+        <a onClick={this.folderClicked.bind(this, null)}>全部文件</a>
       </span>
     )
 
@@ -264,12 +280,12 @@ class FileMgmt extends React.Component {
       const children = this.props.data.filter(f => f.isFolder && f.parentId === item.id)
       if (children.length > 0) {
         return (
-          <TreeNode key={item.key} title={item.name}>
+          <TreeNode key={item.unique} title={item.name}>
             {tree(item.id)}
           </TreeNode>
         )
       }
-      return <TreeNode key={item.key} title={item.name} />
+      return <TreeNode key={item.unique} title={item.name} />
     })
 
     const react = this
@@ -289,7 +305,7 @@ class FileMgmt extends React.Component {
           return
 
           const newData = react.props.data.slice()
-          const existKeyList = newData.map(m => m.key)
+          const existKeyList = newData.map(m => m.unique)
           const maxKey = Math.max(...existKeyList)
 
           newData.push({
@@ -299,7 +315,7 @@ class FileMgmt extends React.Component {
             date: '2015-04-15 13:30',
             parentId: react.state.parentId,
             rename: info.file.name,
-            key: maxKey + 1,
+            unique: maxKey + 1,
           })
           react.setState({ data: newData, uploading: false })
         } else if (info.file.status === 'error') {
@@ -334,16 +350,16 @@ class FileMgmt extends React.Component {
             this.parentFolderFunc(this.state.parentId)
               .map(
                 m => m.id !== this.state.parentId ?
-                <span key={m.key}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m.id)}>{m.name}</a></span>
+                <span key={m.unique}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m)}>{m.name}</a></span>
                 :
-                <span key={m.key}>&nbsp;>&nbsp;{m.name}</span>
+                <span key={m.unique}>&nbsp;>&nbsp;{m.name}</span>
               )
           }
         </div>
 
         <Table
           columns={columns}
-          rowKey={record => record.key}
+          rowKey={record => record.unique}
           rowSelection={rowSelection}
           dataSource={this.props.data.filter(f => f.parentId === this.state.parentId)}
           loading={this.state.uploading}

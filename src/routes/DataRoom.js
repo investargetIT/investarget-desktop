@@ -15,7 +15,7 @@ class DataRoomList extends React.Component {
           id: -3,
           name: 'Investor Folder',
           rename: 'Investor Folder',
-          key: -3,
+          unique: -3,
           isFolder: true,
           size: null,
           date: null,
@@ -25,7 +25,7 @@ class DataRoomList extends React.Component {
           id: -2,
           name: 'Project Owner Folder',
           rename: 'Project Owner Folder',
-          key: -2,
+          unique: -2,
           isFolder: true,
           size: null,
           date: null,
@@ -35,7 +35,7 @@ class DataRoomList extends React.Component {
           id: -1,
           name: 'Public Folder',
           rename: 'Public Folder',
-          key: -1,
+          unique: -1,
           isFolder: true,
           size: null,
           date: null,
@@ -109,10 +109,10 @@ class DataRoomList extends React.Component {
         const parentId = item.parent || parent
         const name = item.filename
         const rename = item.filename
-        const key = item.id
+        const unique = item.id
         const isFolder = !item.isFile
         const date = item.lastmodifytime
-        return { ...item, parentId, name, rename, key, isFolder, date }
+        return { ...item, parentId, name, rename, unique, isFolder, date }
       })).reduce((acc, val) => acc.concat(val), [])
       const newData = this.state.data.concat(formattedData)
       this.setState({ data: newData })
@@ -121,7 +121,7 @@ class DataRoomList extends React.Component {
 
   handleCreateNewFolder(parentId) {
     const newData = this.state.data.slice()
-    const existKeyList = newData.map(m => m.key)
+    const existKeyList = newData.map(m => m.unique)
     const maxKey = Math.max(...existKeyList)
 
     newData.splice(0, 0, {
@@ -129,23 +129,23 @@ class DataRoomList extends React.Component {
       isFolder: true,
       parentId: parentId,
       rename: "新建文件夹",
-      key: maxKey + 1,
+      unique: maxKey + 1,
     })
     this.setState({ data: newData, name: "新建文件夹" })
   }
 
-  handleNewFolderNameChange(key, evt) {
+  handleNewFolderNameChange(unique, evt) {
     const newData = this.state.data.slice()
-    const index = newData.map(m => m.key).indexOf(key)
+    const index = newData.map(m => m.unique).indexOf(unique)
     if (index > -1) {
       newData[index].rename = evt.target.value
       this.setState({ data: newData })
     }
   }
 
-  handleConfirm(key) {
+  handleConfirm(unique) {
     const newData = this.state.data.slice()
-    const index = newData.map(m => m.key).indexOf(key)
+    const index = newData.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.state.data[index]
     if (!value.id) {
@@ -168,10 +168,10 @@ class DataRoomList extends React.Component {
         const parentId = item.parent || this.dataRoomRelation[item.dataroom]
         const name = item.filename
         const rename = item.filename
-        const key = item.id
+        const unique = item.id
         const isFolder = !item.isFile
         const date = item.lastmodifytime
-        const newItem = { ...item, parentId, name, rename, key, isFolder, date }
+        const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
       })
@@ -188,9 +188,9 @@ class DataRoomList extends React.Component {
     }
   }
 
-  handleCancel(key) {
+  handleCancel(unique) {
     const newData = this.state.data.slice()
-    const index = newData.map(m => m.key).indexOf(key)
+    const index = newData.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = newData[index]
     const name = value.name
@@ -233,10 +233,10 @@ class DataRoomList extends React.Component {
         const parentId = item.parent || this.dataRoomRelation[item.dataroom]
         const name = item.filename
         const rename = item.filename
-        const key = item.id
+        const unique = item.id
         const isFolder = !item.isFile
         const date = item.lastmodifytime
-        const newItem = { ...item, parentId, name, rename, key, isFolder, date }
+        const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
       })
@@ -264,7 +264,7 @@ class DataRoomList extends React.Component {
     const dataroom = newData[parentIndex].dataroom
     const body = {
       dataroom: dataroom,
-      filename: file.name,
+      filename: file.response.result.key,
       isFile: true,
       orderNO: 1,
       parent: [-1, -2, -3].includes(parentId) ? null : parentId,
@@ -277,10 +277,10 @@ class DataRoomList extends React.Component {
       const parentId = item.parent || this.dataRoomRelation[item.dataroom]
       const name = item.filename
       const rename = item.filename
-      const key = item.id
+      const unique = item.id
       const isFolder = !item.isFile
       const date = item.lastmodifytime
-      const newItem = { ...item, parentId, name, rename, key, isFolder, date }
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
       newData.push(newItem)
       this.setState({ data: newData })
     })
