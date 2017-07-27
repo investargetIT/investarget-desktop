@@ -15,27 +15,33 @@ class MarketPlaceDetail extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      marketPlace: null
+      linkpdfurl: null
     }
   }
 
   componentDidMount() {
     const id = Number(this.props.params.id)
     api.getProjDetail(id).then(result => {
-      const marketPlace = result.data
-      this.setState({ marketPlace })
+      const { linkpdfkey } = result.data
+
+      api.downloadUrl('file', linkpdfkey).then(result => {
+        const linkpdfurl = result.data
+        this.setState({ linkpdfurl })
+      }, error => {
+        showError(error.message)
+      })
     }, error => {
       showError(error.message)
     })
   }
 
   render() {
-    const { marketPlace } = this.state
+    const { linkpdfurl } = this.state
 
     let content = null
 
-    if (marketPlace) {
-      let fileUrl = marketPlace.linkpdfurl
+    if (linkpdfurl) {
+      let fileUrl = linkpdfurl
       let viewerUrl = 'http://192.168.1.115:4040/pdf_viewer.html'
       let watermark = 'deal@investarget.com'
       let url = viewerUrl + '?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(watermark);
