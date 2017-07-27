@@ -216,6 +216,60 @@ function UserListFilter(props) {
   )
 }
 
+class MyInvestorListFilter extends React.Component {
+
+  state = {
+    orgtransactionphases: [],
+    tags: [],
+    currency: [],
+    userstatus: null,
+    areas: []
+  }
+
+  onChange(key, value) {
+    this.setState({ [key]: value })
+  }
+
+  onReset() {
+    this.setState({
+      orgtransactionphases: [],
+      tags: [],
+      currency: [],
+      userstatus: null,
+      areas: []
+    })
+  }
+
+  onFilter() {
+    this.props.onFilter(Object.assign({}, this.state))
+  }
+
+  render() {
+    return (
+      <div>
+        <TransactionPhaseFilter
+          value={this.state.orgtransactionphases}
+          onChange={this.onChange.bind(this, 'orgtransactionphases')} />
+        <TagFilter
+          value={this.state.tags}
+          onChange={this.onChange.bind(this, 'tags')} />
+        <CurrencyFilter
+          value={this.state.currency}
+          onChange={this.onChange.bind(this, 'currency')} />
+        <UserAuditFilter
+          value={this.state.userstatus}
+          onChange={this.onChange.bind(this, 'userstatus')} />
+        <OrganizationAreaFilter
+          value={this.state.areas}
+          onChange={this.onChange.bind(this, 'areas')} />
+        <FilterOperation
+          onSearch={this.onFilter.bind(this)}
+          onReset={this.onReset.bind(this)} />
+      </div>
+    )
+  }
+}
+
 function OrganizationListFilter(props) {
   function handleChange(key, value) {
     props.onChange({ ...props.value, [key]: value })
@@ -263,7 +317,7 @@ function mapStateToPropsForAudit(state) {
 
 module.exports = {
   mapStateToPropsForAudit,
-
+  MyInvestorListFilter,
   UserListFilter,
   OrganizationListFilter,
   ProjectListFilter,

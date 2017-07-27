@@ -1,7 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
-import { UserListFilter } from '../components/Filter'
+import { MyInvestorListFilter } from '../components/Filter'
 import { Input, Table, Button, Popconfirm, Pagination } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -30,19 +30,27 @@ class MyInvestor extends React.Component {
     })
   }
 
-  handleFilterChange(key, value) {
-    console.log(key, value)
-  }
-
   handleSearch(value) {
-    
-    if (value.length === 0) {
-      this.setState({ list: this.investorList })
-      return
+
+    let params
+    if (typeof value === 'string') {
+      // Search
+      if (value.length === 0) {
+        this.setState({ list: this.investorList })
+        return
+      }
+      params = { search: value }
+    } else if (typeof value === 'object') {
+      // Filter
+      if (value.orgtransactionphases.length === 0 && value.tags.length === 0 && value.currency.length === 0 && !value.userstatus && value.areas.length === 0) {
+        this.setState({ list: this.investorList })
+        return
+      }
+      params = value
     }
 
     this.setState({ loading: true })
-    api.getUser({ search: value }).then(data => {
+    api.getUser(params).then(data => {
       const searchResult = data.data.data.map(m => m.id)
       const newList = []
       this.investorList.map((m, index) => {
@@ -124,7 +132,7 @@ class MyInvestor extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n("myinvestor")}>
 
-        <UserListFilter onChange={this.handleFilterChange} />
+        <MyInvestorListFilter onFilter={this.handleSearch.bind(this)} />
 
         <Search
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
