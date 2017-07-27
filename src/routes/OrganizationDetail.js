@@ -189,7 +189,7 @@ class OrganizationDetail extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="机构详情（投资人名单）" />
+        <PageTitle title={<span>机构详情（<Link to={'/app/user/list?org=' + id}>投资人名单</Link>）</span>} />
         <div style={{ width: '50%', float: 'left' }}>
           <Field title="名称" value={this.state.orgname} />
           <Field title="机构类型" value={this.state.orgtype} />
@@ -214,7 +214,7 @@ class OrganizationDetail extends React.Component {
           <Field title="决策流程" value={this.state.decisionMakingProcess} />
           <OrganizationRemarkList orgId={id} readOnly />
         </div>
-        
+
         <div style={{ width: '50%', marginLeft: '50%' }}>
           {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
             <PositionWithUser id={m.id} orgID={m.org} position={m.position} user={m.user} onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} />

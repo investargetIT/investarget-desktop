@@ -1,5 +1,7 @@
 import * as api from '../api'
 
+var orgId = null
+
 const DEFAULT_VALUE = {
   selectedRowKeys: [],
   filter: {
@@ -62,6 +64,9 @@ export default {
     *get({}, { call, put, select }) {
       const { _params, pageSize, page } = yield select(state => state.userList)
       let params = { ..._params, page_size: pageSize, page_index: page }
+      if (orgId) {
+        params['org'] = [orgId]
+      }
       console.log('>>>', params)
       let result = yield call(api.getUser, params)
       yield put({ type: 'save', payload: { total: result.data.count, list: result.data.data } })
@@ -99,6 +104,7 @@ export default {
     setup({dispatch, history}) {
       return history.listen(({ pathname, query }) => {
         if (pathname == '/app/user/list') {
+          orgId = query.org ? Number(query.org) : null
           dispatch({ type: 'get' })
         }
       })
