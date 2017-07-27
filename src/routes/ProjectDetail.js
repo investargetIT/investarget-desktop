@@ -158,7 +158,7 @@ class ProjectDetail extends React.Component {
     api.getUserRelation({ investoruser: currentUserId }).then(result => {
       const data = result.data.data
       const relation = data.filter(item => item.relationtype)[0]
-      const trader = relation.traderuser.id
+      const trader = relation && relation.traderuser.id
       const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
       this.setState({ traderOptions, trader })
     })

@@ -167,6 +167,14 @@ export function getProjDetail(id) {
   return r2('/proj/' + id + '/')
 }
 
+export function getShareToken(id) {
+  return r('/proj/share/' + id + '/')
+}
+
+export function getShareProj(token) {
+  return r(`/proj/shareproj/?token=${token}`)
+}
+
 /**
  * Favorite Proj
  */
