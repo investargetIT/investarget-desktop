@@ -437,6 +437,8 @@ export function createUser(user) {
   return r('/user/', 'POST', user)
 }
 
+export const modifyPassword = (id, oldpassword, newpassword) => r(`/user/password/${id}/`, 'PUT', {oldpassword, newpassword})
+
 /**
  * dataroom
  */

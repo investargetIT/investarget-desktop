@@ -1,8 +1,11 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
-import { Form } from 'antd'
+import { Form, message } from 'antd'
 import { Password, ConfirmPassword, OldPassword, Submit } from '../components/Form'
+import { modifyPassword } from '../api'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 
 function ModifyPwd(props) {
 
@@ -16,7 +19,12 @@ function ModifyPwd(props) {
     e.preventDefault()
     props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        console.log('Received values of form: ', values)
+        modifyPassword(props.currentUserID, values.old_password, values.password)
+        .then(data => {
+          message.success('密码修改成功')
+          props.dispatch(routerRedux.replace('/app'))
+        })
+        .catch(err => message.error(err.message))
       }
     })  
   }
@@ -37,4 +45,9 @@ function ModifyPwd(props) {
   )
 }
 
-export default Form.create()(ModifyPwd)
+function mapStateToProps(state) {
+  const currentUserID = state.currentUser.id
+  return { currentUserID }
+}
+
+export default connect(mapStateToProps)(Form.create()(ModifyPwd))
