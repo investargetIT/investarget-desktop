@@ -48,7 +48,6 @@ app.use(createLoading({
 // 3. Model
 app.model(require("./models/recommendProjects"))
 app.model(require("./models/recommendFriends"))
-app.model(require("./models/userList"))
 app.model(require('./models/CurrentUser'))
 app.model(require("./models/app"))
 app.model(require('./models/dataRoomList'))

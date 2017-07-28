@@ -206,23 +206,27 @@ function TimelineFilter(props) {
 
 
 function UserListFilter(props) {
+  function handleChange(key, value) {
+    const filters = { ...this.props.value, [key]: value }
+    this.props.onChange(filters)
+  }
   return (
     <div>
       <TransactionPhaseFilter
         value={props.value ? props.value.orgtransactionphases : null}
-        onChange={props.onChange.bind(this, 'orgtransactionphases')} />
+        onChange={handleChange.bind(this, 'orgtransactionphases')} />
       <TagFilter
         value={props.value ? props.value.tags : null}
-        onChange={props.onChange.bind(this, 'tags')} />
+        onChange={handleChange.bind(this, 'tags')} />
       <CurrencyFilter
         value={props.value ? props.value.currency : null}
-        onChange={props.onChange.bind(this, 'currency')} />
+        onChange={handleChange.bind(this, 'currency')} />
       <UserAuditFilter
         value={props.value ? props.value.userstatus : null}
-        onChange={props.onChange.bind(this, 'userstatus')} />
+        onChange={handleChange.bind(this, 'userstatus')} />
       <OrganizationAreaFilter
         value={props.value ? props.value.areas.map(item=>item.toString()) : []}
-        onChange={props.onChange.bind(this, 'areas')} />
+        onChange={handleChange.bind(this, 'areas')} />
       <FilterOperation
         onSearch={props.onSearch}
         onReset={props.onReset} />
