@@ -39,6 +39,7 @@ import AddMarketPlace from './routes/AddMarketPlace'
 import EditMarketPlace from './routes/EditMarketPlace'
 import MarketPlaceDetail from './routes/MarketPlaceDetail'
 import MyInvestor from './routes/MyInvestor'
+import MyTrader from './routes/MyTrader'
 import RecommendProject from './routes/RecommendProject'
 import SelectUserToPosition from './routes/SelectUserToPosition'
 
@@ -85,6 +86,7 @@ function RouterConfig({ history }) {
       <Route path="/app/marketplace/edit/:id" component={EditMarketPlace} />
       <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
       <Route path={URI_12} component={MyInvestor} />
+      <Route path={URI_13} component={MyTrader} />
     </Router>
   )
 }

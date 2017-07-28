@@ -3,12 +3,12 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import MyPartner from '../components/MyPartner'
 
-function MyInvestor(props) {
+function MyTrader(props) {
   return (
-    <LeftRightLayout location={props.location} title={i18n("myinvestor")}>
-      <MyPartner type="investor" />
+    <LeftRightLayout location={props.location} title={i18n("mytrader")}>
+      <MyPartner type="trader" />
     </LeftRightLayout>
   )
 }
 
-export default MyInvestor
+export default MyTrader
