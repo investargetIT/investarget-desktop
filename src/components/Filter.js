@@ -143,6 +143,20 @@ function ProjectStatusFilter(props) {
   )
 }
 
+function ProjectTypeFilter(props) {
+  function handleChange(e) {
+    props.onChange(e.target.value)
+  }
+  return (
+    <BasicContainer label="类型">
+      <RadioGroup value={props.value} onChange={handleChange}>
+        <Radio value={false}>独家项目</Radio>
+        <Radio value={true}>精品项目</Radio>
+      </RadioGroup>
+    </BasicContainer>
+  )
+}
+
 function TimelineStatusFilter(props) {
 
   var value
@@ -194,23 +208,23 @@ function TimelineFilter(props) {
 function UserListFilter(props) {
   return (
     <div>
-      <TransactionPhaseFilter 
-        value={props.value ? props.value.orgtransactionphases : null} 
+      <TransactionPhaseFilter
+        value={props.value ? props.value.orgtransactionphases : null}
         onChange={props.onChange.bind(this, 'orgtransactionphases')} />
-      <TagFilter 
-        value={props.value ? props.value.tags : null} 
+      <TagFilter
+        value={props.value ? props.value.tags : null}
         onChange={props.onChange.bind(this, 'tags')} />
-      <CurrencyFilter 
-        value={props.value ? props.value.currency : null} 
+      <CurrencyFilter
+        value={props.value ? props.value.currency : null}
         onChange={props.onChange.bind(this, 'currency')} />
-      <UserAuditFilter 
-        value={props.value ? props.value.userstatus : null} 
+      <UserAuditFilter
+        value={props.value ? props.value.userstatus : null}
         onChange={props.onChange.bind(this, 'userstatus')} />
-      <OrganizationAreaFilter 
-        value={props.value ? props.value.areas.map(item=>item.toString()) : []} 
+      <OrganizationAreaFilter
+        value={props.value ? props.value.areas.map(item=>item.toString()) : []}
         onChange={props.onChange.bind(this, 'areas')} />
-      <FilterOperation 
-        onSearch={props.onSearch} 
+      <FilterOperation
+        onSearch={props.onSearch}
         onReset={props.onReset} />
     </div>
   )
@@ -287,22 +301,82 @@ function OrganizationListFilter(props) {
   )
 }
 
-function ProjectListFilter(props) {
-  return (
-    <div>
-      <TagFilter value={props.value.tags} onChange={props.onChange.bind(this, 'tags')} />
-      <CountryFilter value={props.value.country} onChange={props.onChange.bind(this, 'country')} />
-      <IndustryFilter value={props.value.industries} onChange={props.onChange.bind(this, 'industries')} />
-      <RevenueFilter
-        value={[props.value.netIncome_USD_F, props.value.netIncome_USD_T]}
-        onChange={props.onChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
-      <ProfitFilter
-        value={[props.value.grossProfit_F, props.value.grossProfit_T]}
-        onChange={props.onChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
-      <ProjectStatusFilter value={props.value.projstatus} onChange={props.onChange.bind(this, 'projstatus')} />
-      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
-    </div>
-  )
+class ProjectListFilter extends React.Component {
+
+  static DefaultValue = {
+    netIncome_USD_F: 0,
+    netIncome_USD_T: 500000000,
+    grossProfit_F: -200000000,
+    grossProfit_T: 200000000,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      tags: [],
+      country: [],
+      industries: [],
+      netIncome_USD_F: 0,
+      netIncome_USD_T: 500000000,
+      grossProfit_F: -200000000,
+      grossProfit_T: 200000000,
+      projstatus: [],
+      ismarketplace: null,
+    }
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    var data = {}
+    for (let prop in this.state) {
+      let value = this.state[prop]
+      if (Array.isArray(value) && value.length > 0) {
+        data[prop] = value
+      } else if (typeof value == 'number' && value != ProjectListFilter.DefaultValue[prop]) {
+        data[prop] = value
+      } else if (typeof value == 'boolean') {
+        data[prop] = value
+      }
+    }
+    this.props.onSearch(data)
+  }
+
+  handleReset = () => {
+    this.setState({
+      tags: [],
+      country: [],
+      industries: [],
+      netIncome_USD_F: 0,
+      netIncome_USD_T: 500000000,
+      grossProfit_F: -200000000,
+      grossProfit_T: 200000000,
+      projstatus: [],
+      ismarketplace: null,
+    }, this.props.onReset)
+  }
+
+  render() {
+    const { tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
+    return (
+      <div>
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <CountryFilter value={country} onChange={this.handleChange.bind(this, 'country')} />
+        <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
+        <RevenueFilter
+          value={[netIncome_USD_F, netIncome_USD_T]}
+          onChange={this.handleChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
+        <ProfitFilter
+          value={[grossProfit_F, grossProfit_T]}
+          onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
+        <ProjectStatusFilter value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
+        <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
 }
 
 

@@ -1,13 +1,12 @@
 import React from 'react'
-import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, getGroup } from '../utils/util'
+import { i18n, showError, getGroup, hasPerm } from '../utils/util'
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectListFilter } from '../components/Filter'
-const Search = Input.Search
+import { Search2 } from '../components/Search'
 
 import AuditProjectModal from '../components/AuditProjectModal'
 
@@ -18,6 +17,52 @@ const isInvestor = group == 1
 class ProjectList extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      filters: null,
+      search: null,
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      list: [],
+      loading: false,
+    }
+  }
+
+  handleFiltersChange = (filters) => {
+    this.setState({ filters })
+  }
+
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getProject)
+  }
+
+  handleReset = () => {
+    this.setState({ filters: null, page: 1 }, this.getProject)
+  }
+
+  handleSearch = (search) => {
+    this.setState({ search, page: 1 }, this.getProject)
+  }
+
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getProject)
+  }
+
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getProject)
+  }
+
+  getProject = () => {
+    const { filters, search, page, pageSize } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.getProj(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
   }
 
   auditProject = (id, status) => {
@@ -25,51 +70,28 @@ class ProjectList extends React.Component {
   }
 
   handleAfterAudit = () => {
-    this.props.dispatch({ type: 'projectList/get' })
+    this.getProject()
   }
 
   handleDelete = (id) => {
-    this.props.dispatch({ type: 'projectList/delete', payload: id })
+    this.setState({ loading: true })
+    api.deleteProj(id).then(result => {
+      this.getProject()
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
   }
 
 
-  handleFilterChange = (key, value) => {
-    if (Array.isArray(key)) {
-      key.forEach((item, index) => {
-        this.props.dispatch({ type: 'projectList/setFilter', payload: { [item]: value[index] } })
-      })
-    } else {
-      this.props.dispatch({ type: 'projectList/setFilter', payload: { [key]: value } })
-    }
-  }
-
-  handleFilt = () => {
-    this.props.dispatch({ type: 'projectList/filt' })
-  }
-
-  handleReset = () => {
-    this.props.dispatch({ type: 'projectList/reset' })
-  }
-
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'projectList/setField', payload: { search } })
-  }
-
-  handleSearch = (search) => {
-    this.props.dispatch({ type: 'projectList/search' })
-  }
-
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'projectList/changePage', payload: page })
-  }
-
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'projectList/changePageSize', payload: pageSize })
+  componentDidMount() {
+    this.getProject()
   }
 
   render() {
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
+    const { location } = this.props
+    const { total, list, loading, page, pageSize, filters, search } = this.state
+
     const columns = [
       {
         title: '图片',
@@ -174,11 +196,16 @@ class ProjectList extends React.Component {
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" />
-        <ProjectListFilter value={filter} onChange={this.handleFilterChange} onSearch={this.handleFilt} onReset={this.handleReset} />
+        {
+          (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
+            <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" /> :
+            <PageTitle title="平台项目" />
+        }
 
-        <div style={{marginBottom: '16px'}}>
-          <Search value={search} onChange={this.handleSearchChange} placeholder="项目名称" style={{width: 200}} onSearch={this.handleSearch} />
+        <ProjectListFilter value={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+
+        <div style={{ marginBottom: '16px' }} className="clearfix">
+          <Search2 value={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
 
         <Table
@@ -189,16 +216,18 @@ class ProjectList extends React.Component {
           pagination={false}
         />
 
-        <Pagination
-          className="ant-table-pagination"
-          total={total}
-          current={page}
-          pageSize={pageSize}
-          onChange={this.handlePageChange}
-          showSizeChanger
-          onShowSizeChange={this.handleShowSizeChange}
-          showQuickJumper
-        />
+        <div style={{ margin: '16px 0' }} className="clearfix">
+          <Pagination
+            style={{ float: 'right' }}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+          />
+        </div>
 
         <AuditProjectModal afterAudit={this.handleAfterAudit} ref={inst => { this.auditProjectModal = inst }} />
 
@@ -208,8 +237,6 @@ class ProjectList extends React.Component {
 }
 
 
-function mapStateToProps(state) {
-  return { ...state.projectList, loading: state.loading.effects['projectList/get'], permissions: state.currentUser.permissions }
-}
 
-export default connect(mapStateToProps)(ProjectList)
+
+export default ProjectList

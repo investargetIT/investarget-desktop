@@ -75,5 +75,27 @@ function _Search(props) {
   )
 }
 
+class Search2 extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: null
+    }
+  }
 
-export { UserListSearch, _Search as Search }
+  handleChange = (e) => {
+    this.setState({ value: e.target.value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch(this.state.value)
+  }
+
+  render() {
+    const { value, onChange, onSearch, ...extraProps } = this.props
+    return <Input.Search value={this.state.value} onChange={this.handleChange} onSearch={this.handleSearch} {...extraProps} />
+  }
+}
+
+
+export { UserListSearch, _Search as Search, Search2 }
