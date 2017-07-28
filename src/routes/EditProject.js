@@ -105,6 +105,8 @@ class EditProject extends React.Component {
       data.supportUser = data.supportUser && data.supportUser.id
       data.tags = data.tags ? data.tags.map(item => item.id) : []
       data.transactionType = data.transactionType ? data.transactionType.map(item => item.id) : []
+      data.takeUser = data.takeUser ? data.takeUser.id : null
+      data.makeUser = data.makeUser ? data.makeUser.id : null
       this.setState({
         project: data
       })

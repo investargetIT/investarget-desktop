@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, intlShape } from 'react-intl'
-import { i18n, exchange } from '../utils/util'
+import { i18n, exchange, hasPerm } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 
@@ -29,6 +29,8 @@ import {
   InputPhoneNumber,
   RadioTrueOrFalse,
 } from '../components/ExtraInput'
+
+import SelectUserModal from '../components/SelectUserModal'
 
 
 class ProjectBaseForm extends React.Component {
@@ -143,6 +145,11 @@ class ProjectFinanceForm extends React.Component {
 }
 
 
+// currentUserId
+const userInfo = localStorage.getItem('user_info')
+const currentUserId = userInfo ? JSON.parse(userInfo).id : null
+
+
 class ProjectConnectForm extends React.Component {
 
   static childContextTypes = {
@@ -155,14 +162,15 @@ class ProjectConnectForm extends React.Component {
 
   constructor(props) {
     super(props)
-    // currentUserId
-    const userInfo = localStorage.getItem('user_info')
-    const currentUserId = userInfo ? JSON.parse(userInfo).id : null
+
     const { getFieldDecorator } = this.props.form
-    getFieldDecorator('supportUser', {
-      rules: [{required: true, type: 'number'}],
-      initialValue: currentUserId,
-    })
+    // 用户上传项目权限 -> supportUser 为当前用户，不可更改
+    if (hasPerm('proj.user_addproj')) {
+      getFieldDecorator('supportUser', {
+        rules: [{required: true, type: 'number'}],
+        initialValue: currentUserId,
+      })
+    }
   }
 
   phoneNumberValidator = (rule, value, callback) => {
@@ -186,9 +194,22 @@ class ProjectConnectForm extends React.Component {
           <Input type="email" />
         </BasicFormItem>
 
-        {/*<BasicFormItem label="上传者" name="supportUser" required initialValue={currentUserId}>
-          <Select />
-        </BasicFormItem>*/}
+        {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
+        {
+          hasPerm('proj.admin_addproj') ? (
+            <BasicFormItem label="上传者" name="supportUser" required valueType="number" initialValue={currentUserId}>
+              <SelectUserModal />
+            </BasicFormItem>
+          ) : null
+        }
+
+        <BasicFormItem label="承揽" name="takeUser" required valueType="number">
+          <SelectUserModal />
+        </BasicFormItem>
+
+        <BasicFormItem label="承做" name="makeUser" required valueType="number">
+          <SelectUserModal />
+        </BasicFormItem>
       </Form>
     )
   }
