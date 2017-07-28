@@ -1,6 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Pagination } from 'antd'
+import { getMsg, readMsg } from '../api'
 
 const leftContainerStyle = {
   width: '50%',
@@ -86,18 +87,64 @@ const data = [
   },
 ]
 
+const PAGE_SIZE = 10
+
 class InboxList extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = { 
       data: data,
-      currentId: 1
+      currentId: 1,
+      total: data.length,
+      pageIndex: this.props.location.query.page_index || 1
     }
+  }
+
+  componentDidMount() {
+    const param = {
+      page_index: this.state.pageIndex,
+      page_size: PAGE_SIZE
+    }
+    getMsg(param).then(data => {
+      const list = data.data.data.map(m => {
+        const title = m.messagetitle
+        const detail = m.content
+        return { ...m, title, detail }
+      })
+      this.setState({ data: list, total: data.data.count })
+    })
   }
 
   handleItemClicked(id) {
     this.setState({ currentId: id })
+    const index = this.state.data.map(m => m.id).indexOf(id)
+    const msg = this.state.data[index]
+    if (msg.isRead) return
+    readMsg(id).then(data => {
+      msg.isRead = true
+      this.setState({ data: this.state.data })
+    })
+  }
+
+  handlePageIndexChange(newIndex) {
+    const param = {
+      page_index: newIndex,
+      page_size: PAGE_SIZE
+    }
+    getMsg(param).then(data => {
+      const list = data.data.data.map(m => {
+        const title = m.messagetitle
+        const detail = m.content
+        return { ...m, title, detail }
+      })
+      history.pushState('', `?page_index=${newIndex}`)
+      this.setState({ 
+        data: list, 
+        total: data.data.count,
+        pageIndex: newIndex
+      })
+    }) 
   }
 
   render () {
@@ -111,14 +158,15 @@ class InboxList extends React.Component {
           <div style={headerStyle}>消息列表</div>
 
           <div><ul>
-            {this.state.data.map(m => <li onClick={this.handleItemClicked.bind(this, m.id)} key={m.id} style={m.id === this.state.currentId ? activeTitleStyle : titleStyle}>{m.title}</li>)}
+            {this.state.data.map(m => <li onClick={this.handleItemClicked.bind(this, m.id)} key={m.id} style={m.id === this.state.currentId ? activeTitleStyle : titleStyle}><p style={{ fontWeight: m.isRead ? 'normal' : 'bold' }}>{m.title}</p></li>)}
           </ul></div>
 
           <div style={{ padding: 20, textAlign: 'center' }}>
             <Pagination
-              total={100}
-              current={2}
-              pageSize={10} />
+              total={this.state.total}
+              current={this.state.pageIndex}
+              pageSize={PAGE_SIZE}
+              onChange={this.handlePageIndexChange} />
           </div>
 
         </div>

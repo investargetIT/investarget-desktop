@@ -477,3 +477,9 @@ export function deleteUserRelation(id) {
   const param = {'relationlist': [id]}
   return r('/user/relationship/', 'DELETE', param)
 }
+
+/**
+ * msg 
+ */
+export const getMsg = param => r('/msg/?' + qs.stringify(param))
+export const readMsg = id => r('/msg/' + id + '/', 'POST')
