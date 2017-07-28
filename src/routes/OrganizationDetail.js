@@ -33,13 +33,13 @@ const PositionWithUser = props => {
           <Popover content={<div>
             <p>交易师：<Link to={"/app/user/" + m.trader.id}>{m.trader.name}</Link></p>
             <p style={{ textAlign: 'center', marginTop: 10 }}>
-              <Link to={"/app/user/edit/" + m.id}><Button>编辑</Button></Link>&nbsp;
+              <Link to={"/app/user/edit/" + m.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>&nbsp;
               <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, m.id)}>
                 <Button type="danger">移除</Button>
                 </Popconfirm>
             </p>
           </div>} title={m.name}>
-            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.avatar || '/images/default-avatar.png'} />
+            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
         <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>
@@ -217,7 +217,13 @@ class OrganizationDetail extends React.Component {
 
         <div style={{ width: '50%', marginLeft: '50%' }}>
           {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
-            <PositionWithUser id={m.id} orgID={m.org} position={m.position} user={m.user} onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} />
+            <PositionWithUser
+              id={m.id}
+              orgID={m.org}
+              position={m.position}
+              user={m.user}
+              onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} 
+              pathname={this.props.location.pathname} />
           </div>)}
         </div>
       </MainLayout>

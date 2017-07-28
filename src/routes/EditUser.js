@@ -5,6 +5,7 @@ import { i18n } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
+import { routerRedux } from 'dva/router'
 
 function onValuesChange(props, values) {
   console.log(values)
@@ -30,7 +31,8 @@ class EditUser extends React.Component {
       if(!err) {
         console.log('Received values of form: ', values)
         api.editUser([userId], values).then(result => {
-          this.props.history.replace("/app/user/list")
+          let url = this.props.location.query.redirect || "/app/user/list"
+          this.props.dispatch(routerRedux.replace(url))
         }, error => {
 
         })
