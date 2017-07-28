@@ -131,8 +131,31 @@ const SelectRole = withOptionsAsync(SelectNumber, ['character'], function(state)
  */
 const currYear = new Date().getFullYear()
 const yearList = _.range(currYear, currYear - 100)
-const yearOptions = yearList.map(item => ({ value: item, label: String(item) }))
-const SelectYear = withOptions(SelectNumber, yearOptions)
+// const yearOptions = yearList.map(item => ({ value: item, label: String(item) }))
+// const SelectYear = withOptions(SelectNumber, yearOptions)
+
+class SelectYear extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  handleChange = (value) => {
+    this.props.onChange(value && Number(value))
+  }
+
+  render() {
+    const { value, onChange, disabled, disabledYears } = this.props
+    return (
+      <Select value={value && String(value)} onChange={this.handleChange} disabled={disabled}>
+        {
+          yearList.map(year =>
+            <Option key={year} disabled={disabledYears.includes(year)} value={String(year)}>{String(year)}</Option>
+          )
+        }
+      </Select>
+    )
+  }
+}
 
 
 /**

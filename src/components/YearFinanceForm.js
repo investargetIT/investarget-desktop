@@ -47,12 +47,12 @@ class YearFinanceForm extends React.Component {
 
   render() {
 
-    const { currencyType } = this.props
+    const { currencyType, mode, disabledYears } = this.props
 
     return (
       <Form>
         <BasicFormItem label="年份" name="fYear" valueType="number" required>
-          <SelectYear />
+          <SelectYear disabled={ mode == 'edit' } disabledYears={ mode == 'add' ? disabledYears : [] } />
         </BasicFormItem>
 
         <CurrencyFormItem label="营业收入" name="revenue" required currencyType={currencyType} />

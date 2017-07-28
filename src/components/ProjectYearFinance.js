@@ -143,7 +143,7 @@ class ProjectYearFinance extends React.Component {
   }
 
   render() {
-
+    const disabledYears = this.state.finance.map(item => item.fYear)
 
     return (
       <div>
@@ -177,11 +177,11 @@ class ProjectYearFinance extends React.Component {
         }
 
         <Modal title="新增财务年度" visible={this.state.showAddModal} onOk={this.handleConfirmAdd} onCancel={this.handleCancelAdd}>
-          <AddYearForm wrappedComponentRef={this.handleAddRef} currencyType={this.props.currencyType} />
+          <AddYearForm wrappedComponentRef={this.handleAddRef} currencyType={this.props.currencyType} mode="add" disabledYears={disabledYears} />
         </Modal>
 
         <Modal title="修改财务年度" visible={this.state.showEditModal} onOk={this.handleConfirmEdit} onCancel={this.handleCancelEdit}>
-          <EditYearForm wrappedComponentRef={this.handleEditRef} currencyType={this.props.currencyType} data={this.state.editData} />
+          <EditYearForm wrappedComponentRef={this.handleEditRef} currencyType={this.props.currencyType} data={this.state.editData} mode="edit" />
         </Modal>
 
       </div>
