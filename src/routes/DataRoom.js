@@ -2,6 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as Api from '../api'
+import { Modal } from 'antd'
 
 class DataRoomList extends React.Component {
 
@@ -80,7 +81,7 @@ class DataRoomList extends React.Component {
       this.dataRoomRelation[data[0].data.data[0].id] = -1
       
       const newData = this.state.data.slice()
-      newData[0]['dataroom'] = this.props.location.query.id
+      newData[0]['dataroom'] = parseInt(this.props.location.query.id, 10)
       newData[1]['dataroom'] = data[1].data.data[0].id
       newData[2]['dataroom'] = data[0].data.data[0].id
 
@@ -218,11 +219,19 @@ class DataRoomList extends React.Component {
   }
 
   handleCopyFiles(files, targetID) {
+    const targetFile = this.state.data.filter(f => f.id === targetID)[0]
+    if (files.map(m => m.dataroom).includes(targetFile.dataroom)) {
+      Modal.error({
+        title: '不能在同一个 data room 中进行复制操作',
+        content: '每个角色对应的目录为一个 data room，复制操作只有在跨 data room 的时候才允许执行 ',
+      })
+      return
+    }
     files.map(m => {
       const body = {
         isShadow: true,
         shadowdirectory: m.id,
-        dataroom: m.dataroom,
+        dataroom: targetFile.dataroom,
         filename: m.filename,
         isFile: m.isFile,
         parent: [-1, -2, -3].includes(targetID) ? null : targetID
