@@ -330,7 +330,13 @@ class ProjectListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    if (Array.isArray(key)) {
+      key.forEach((item, index) => {
+        this.setState({ [item]: value[index] })
+      })
+    } else {
+      this.setState({ [key]: value })
+    }
   }
 
   handleSearch = () => {
