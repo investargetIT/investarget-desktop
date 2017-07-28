@@ -89,10 +89,20 @@ class Search2 extends React.Component {
 
   handleSearch = () => {
     this.props.onSearch(this.state.value)
+    if (this.props.storeKey) {
+      localStorage.setItem(this.props.storeKey, this.state.value)
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.storeKey) {
+      let value = localStorage.getItem(this.props.storeKey)
+      this.setState({ value })
+    }
   }
 
   render() {
-    const { value, onChange, onSearch, ...extraProps } = this.props
+    const { storeKey, value, onChange, onSearch, ...extraProps } = this.props
     return <Input.Search value={this.state.value} onChange={this.handleChange} onSearch={this.handleSearch} {...extraProps} />
   }
 }

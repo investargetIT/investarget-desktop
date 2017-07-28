@@ -202,10 +202,10 @@ class ProjectList extends React.Component {
             <PageTitle title="平台项目" />
         }
 
-        <ProjectListFilter value={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <ProjectListFilter storeKey="ProjectList_Filters" value={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 value={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 storeKey="ProjectList_Search" value={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
 
         <Table

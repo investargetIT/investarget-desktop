@@ -342,6 +342,9 @@ class ProjectListFilter extends React.Component {
       }
     }
     this.props.onSearch(data)
+    if (this.props.storeKey) {
+      localStorage.setItem(this.props.storeKey, JSON.stringify(data))
+    }
   }
 
   handleReset = () => {
@@ -356,6 +359,16 @@ class ProjectListFilter extends React.Component {
       projstatus: [],
       ismarketplace: null,
     }, this.props.onReset)
+    if (this.props.storeKey) {
+      localStorage.setItem(this.props.storeKey, JSON.stringify({}))
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.storeKey) {
+      let data = JSON.parse(localStorage.getItem(this.props.storeKey))
+      this.setState({ ...data })
+    }
   }
 
   render() {
