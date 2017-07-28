@@ -6,53 +6,79 @@ import { Group, Org, FullName, Position, Tags, Submit, UploadAvatar } from '../c
 import { connect } from 'dva'
 import { editUser } from '../api'
 import { routerRedux } from 'dva/router'
+import PropTypes from 'prop-types'
 
-function BasicInfo(props) {
+class BasicInfo extends React.Component {
 
-  function getChildContext() {
+  state = {
+    avatarUrl: this.props.currentUser.photourl
+  }
+  getChildContext() {
     return {
-      form: props.form
+      form: this.props.form
     }   
   }
-  function handleSubmit(e) {
+  handleSubmit(e) {
     e.preventDefault()
-    props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         if (values.tags.length === 0) {
           message.error('请至少选择一个标签')
           return
         }
-        editUser([props.currentUser.id], {tags: values.tags}).then(data => {
+        editUser([this.props.currentUser.id], {tags: values.tags}).then(data => {
           const tags = data.data[0].tags
-          const userInfo = {...props.currentUser, tags}
+          const userInfo = {...this.props.currentUser, tags}
           localStorage.setItem('user_info', JSON.stringify(userInfo))
-          props.dispatch({
+          this.props.dispatch({
             type: 'currentUser/save',
             userInfo
           })
           message.success('个人信息修改成功')
-          props.dispatch(routerRedux.replace('/app'))
+          this.props.dispatch(routerRedux.replace('/app'))
         })
       }
     })
   }
+
+  handleUploaded(response) {
+    this.setState({ avatarUrl: response.url })
+    if (this.props.currentUser.photoKey) {
+      message.success('头像上传成功，但是由于缓存，更新图像需要时间，请耐心等待')
+      return
+    }
+    editUser([this.props.currentUser.id], { photoBucket: 'image', photoKey: response.key }).then(data => {
+      const photoKey = data.data[0].photoKey
+      const photourl = data.data[0].photourl
+      const photoBucket = data.data[0].photoBucket
+      const userInfo = { ...this.props.currentUser, photoKey, photourl, photoBucket }
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
+      this.props.dispatch({
+        type: 'currentUser/save',
+        userInfo
+      })
+    })
+  }
+
+  render() {
   return (
     <LeftRightLayout
-      location={props.location}
+      location={this.props.location}
       title={i18n("modify_profile")}>
 
-      <Form style={{ width: 500, margin: '0 auto' }} onSubmit={handleSubmit}>
-        <UploadAvatar />
+      <Form style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
+        <UploadAvatar photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />
         <Group disabled />
         <Org disabled />
         <FullName disabled />
-        <Position disabled title={props.title} />
-        <Tags tag={props.tag} />
+        <Position disabled title={this.props.title} />
+        <Tags tag={this.props.tag} />
         <Submit />
       </Form>
 
     </LeftRightLayout>
   )
+  }
 }
 
 function mapStateToProps(state) {
@@ -69,6 +95,10 @@ function mapPropsToFields(props) {
     title: { value: props.currentUser.title.id + ''},
     tags: { value: props.currentUser.tags.map(m => '' + m.id) },
   }
+}
+
+BasicInfo.childContextTypes = {
+  form: PropTypes.object
 }
 
 export default connect(mapStateToProps)(Form.create({mapPropsToFields})(BasicInfo))
