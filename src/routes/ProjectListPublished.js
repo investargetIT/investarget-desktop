@@ -38,6 +38,7 @@ class ProjectListPublished extends React.Component {
       const { count: total, data: list } = result.data
       this.setState({ loading: false, total, list })
     }, error => {
+      this.setState({ loading: false })
       showError(error.message)
     })
   }

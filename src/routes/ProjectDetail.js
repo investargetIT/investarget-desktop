@@ -316,13 +316,11 @@ class ProjectDetail extends React.Component {
 
         <div>
           <SelectNumber options={traderOptions} value={trader} onChange={this.handleTraderChange} />
-          <Button onClick={this.haveInterest}>感兴趣</Button>
+          <Button onClick={this.haveInterest} disabled={traderOptions.length == 0}>感兴趣</Button>
         </div>
 
 
 
-        {/* TODO// 感兴趣的人 */}
-        {/* TODO// 联系交易师 */}
         {/* TODO// 下载 Teaser */}
         {/* TODO// 公共 dataroom */}
         {/* TODO// 项目进程（时间轴） */}

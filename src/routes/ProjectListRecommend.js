@@ -18,12 +18,19 @@ class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      favoritetype: 3, // 1,2,3
+      type: null,
       page: 1,
       pageSize: 10,
       total: 0,
       list: [],
       loading: false,
+    }
+    if (IS_INVESTOR) {
+      this.state.type = 3
+    } else if (IS_INVESTOR) {
+      this.state.type = 4
+    } else {
+      this.state.type = 2
     }
   }
 
@@ -36,18 +43,36 @@ class ProjectListRecommend extends React.Component {
   }
 
   handleFavorChange = (e) => {
-    const favoritetype = e.target.value
-    this.setState({ favoritetype }, this.getProjectList)
+    const type = e.target.value
+    this.setState({ type }, this.getProjectList)
   }
 
   getProjectList = () => {
-    const { favoritetype, page, pageSize } = this.state
-    const params = { favoritetype, user: currentUser, page_index: page, page_size: pageSize }
+    const { type, page, pageSize } = this.state
+
+    var params = { page_index: page, page_size: pageSize }
+    if (type == 1) {
+      params['favoritetype'] = 1
+      params['user'] = currentUser
+    } else if (type == 2) {
+      params['favoritetype'] = 2
+      params['user'] = currentUser
+    } else if (type == 3) {
+      params['favoritetype'] = 3
+      params['user'] = currentUser
+    } else if (type == 4) {
+      params['favoritetype'] = 3
+      params['trader'] = currentUser
+    } else {
+      return
+    }
+
     this.setState({ loading: true })
     api.getFavoriteProj(params).then(result => {
       const { count: total, data: list } = result.data
       this.setState({ loading: false, total, list })
     }, error => {
+      this.setState({ loading: false })
       showError(error.message)
     })
   }
@@ -58,23 +83,25 @@ class ProjectListRecommend extends React.Component {
 
   render() {
     const { location } = this.props
-    const { favoritetype, page, pageSize, total, list, loading } = this.state
+    const { type, page, pageSize, total, list, loading } = this.state
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
+
     const map = {
       1: '系统推荐项目',
       2: '后台推荐项目',
       3: '交易师推荐项目',
+      4: '推荐给投资人的项目',
     }
-    const title = map[favoritetype]
 
     return (
       <MainLayout location={location}>
-        <PageTitle title={title} />
-          <div>
-            <RadioGroup onChange={this.handleFavorChange} value={favoritetype}>
+        <PageTitle title="推荐项目" />
+          <div style={{ marginBottom: '24px' }}>
+            <RadioGroup onChange={this.handleFavorChange} value={type}>
               <Radio value={1}>{map[1]}</Radio>
               <Radio value={2}>{map[2]}</Radio>
-              <Radio value={3}>{map[3]}</Radio>
+              { IS_INVESTOR ? <Radio value={3}>{map[3]}</Radio> : null }
+              { IS_TRADER ? <Radio value={4}>{map[4]}</Radio> : null }
             </RadioGroup>
           </div>
           <FavoriteProjectList {...props} />
@@ -82,7 +109,5 @@ class ProjectListRecommend extends React.Component {
     )
   }
 }
-
-
 
 export default ProjectListRecommend

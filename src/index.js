@@ -8,6 +8,7 @@ import { createHistory } from 'history'
 import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
+import { hasPerm } from './utils/util'
 
 const userStr = localStorage.getItem('user_info')
 const user = userStr ? JSON.parse(userStr) : null
@@ -54,6 +55,11 @@ app.model(require('./models/dataRoomList'))
 
 // 4. Router
 app.router(require('./router'));
+
+// getUserType
+window.IS_ADMIN = hasPerm('usersys.as_admin')
+window.IS_INVESTOR = hasPerm('usersys.as_investor')
+window.IS_TRADER = hasPerm('usersys.as_trader')
 
 // 5. Start
 const App = app.start();
