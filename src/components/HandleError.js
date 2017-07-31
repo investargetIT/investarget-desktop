@@ -41,6 +41,12 @@ class HandleError extends React.Component {
           },
         })
         break
+      case 2010:
+        Modal.error({
+          title: '无法完成相关操作',
+          content: msg,
+        })
+        break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`)
     }

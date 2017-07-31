@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'dva/router'
 import { i18n, showError } from '../utils/util'
 import * as api from '../api'
-
+import { connect } from 'dva'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -80,7 +80,10 @@ class OrganizationList extends React.Component {
       this.getOrg()
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -142,4 +145,4 @@ class OrganizationList extends React.Component {
 
 }
 
-export default OrganizationList
+export default connect()(OrganizationList)
