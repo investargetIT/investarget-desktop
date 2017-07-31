@@ -144,7 +144,7 @@ class SelectYear extends React.Component {
   }
 
   render() {
-    const { value, onChange, disabled, disabledYears } = this.props
+    const { value, onChange, disabled, disabledYears=[] } = this.props
     return (
       <Select value={value && String(value)} onChange={this.handleChange} disabled={disabled}>
         {
