@@ -4,7 +4,7 @@ import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
 import { i18n } from '../utils/util'
 import * as api from '../api'
-
+import { hasPerm } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
@@ -27,6 +27,10 @@ class AddDataRoom extends React.Component {
   }
 
   componentDidMount() {
+    if (!hasPerm('dataroom.admin_adddataroom') && !hasPerm('dataroom.user_adddataroom')) {
+      this.props.dispatch(routerRedux.replace('/403'))
+      return
+    }
     const projectID = this.props.location.query.projectID 
     if (projectID) {
       api.getProjLangDetail(projectID)
@@ -107,7 +111,7 @@ class AddDataRoom extends React.Component {
     }
   ]
   render () {
-    const { currentUser, selectedRowKeys, filter, search, location, list, total, page, pageSize, dispatch, loading } = this.props
+    const { currentUser, location, page, pageSize, dispatch, loading } = this.props
 
 
   
@@ -119,7 +123,6 @@ class AddDataRoom extends React.Component {
 
       <div style={{ marginBottom: '24px' }}>
         <Search
-          value={search}
           onChange={this.handleSearchChange.bind(this)}
           placeholder="搜索用户"
           style={{ width: 200 }}
@@ -135,9 +138,9 @@ class AddDataRoom extends React.Component {
 
       <Pagination
         className="ant-table-pagination"
-        total={total}
-        current={page}
-        pageSize={pageSize}
+        total={10}
+        current={1}
+        pageSize={10}
         onChange={this.handlePageChange.bind(this)}
         onShowSizeChange={this.handleShowSizeChange.bind(this)}
         showSizeChanger
@@ -148,20 +151,4 @@ class AddDataRoom extends React.Component {
 }
 }
 
-function mapStateToProps(state) {
-  const { filter, search, selectedRowKeys, list, total, page, pageSize } = state.userList
-  const { currentUser } = state
-  return {
-    filter,
-    search,
-    selectedRowKeys,
-    list,
-    total,
-    page,
-    pageSize,
-    currentUser,
-    loading: state.loading.effects['userList/get'],
-  }
-}
-
-export default connect(mapStateToProps)(AddDataRoom)
+export default connect()(AddDataRoom)

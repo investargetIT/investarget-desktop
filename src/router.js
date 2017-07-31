@@ -42,6 +42,7 @@ import MyInvestor from './routes/MyInvestor'
 import MyTrader from './routes/MyTrader'
 import RecommendProject from './routes/RecommendProject'
 import SelectUserToPosition from './routes/SelectUserToPosition'
+import AccessDenied from './routes/AccessDenied'
 
 function RouterConfig({ history }) {
   return (
@@ -50,6 +51,7 @@ function RouterConfig({ history }) {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/app" component={IndexPage} />
+      <Route path="/403" component={AccessDenied} />
       <Route path={URI_6} component={UserList} />
       <Route path="/app/user/add" component={AddUser} />
       <Route path="/app/organization/list" component={OrganizationList} />

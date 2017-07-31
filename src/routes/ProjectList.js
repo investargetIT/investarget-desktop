@@ -155,7 +155,7 @@ class ProjectList extends React.Component {
         render: (text, record) => {
           return record.ismarketplace ? (
             <span>
-              <Button size="small" disabled={isInvestor} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
               &nbsp;
               <Link to={'/app/marketplace/edit/' + record.id}>
                 <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
@@ -167,18 +167,18 @@ class ProjectList extends React.Component {
             </span>
           ) : (
             <span>
-              <Button size="small" disabled={isInvestor} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
               &nbsp;
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
                 <Button size="small" disabled={isInvestor}>推荐</Button>
               </Link>
               &nbsp;
               <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
-                <Button size="small" disabled={isInvestor}>创建时间轴</Button>
+                <Button size="small" disabled={!hasPerm('timeline.admin_addline') && !hasPerm('timeline.user_addline')}>创建时间轴</Button>
               </Link>
               &nbsp;
               <Link target="_blank" to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button size="small" disabled={isInvestor}>创建DataRoom</Button>
+                <Button size="small" disabled={!hasPerm('dataroom.admin_adddataroom') && !hasPerm('dataroom.user_adddataroom')}>创建DataRoom</Button>
               </Link>
               &nbsp;
               <Link to={'/app/projects/edit/' + record.id}>

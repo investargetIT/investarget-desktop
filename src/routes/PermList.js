@@ -4,6 +4,7 @@ import { i18n } from '../utils/util'
 import { message, Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
+import { connect } from 'dva'
 
 class EditableCell extends React.Component {
   state = {
@@ -119,7 +120,10 @@ class PermList extends React.Component {
         return acc
       }, [])
       this.setState({ data: formattedPerm })
-    })
+    }).catch(err => this.props.dispatch({
+      type: 'app/findError',
+      payload: err
+    }))
     this.setUserGroup()
   }
 
@@ -216,6 +220,7 @@ class PermList extends React.Component {
       title: 'Permission',
       dataIndex: 'name',
       key: 'name',
+      render: (text, record, index) => `${text}, key is ${record.codename}`,
     }]
 
     const columns = firstColumn.concat(groups)
@@ -261,4 +266,4 @@ class PermList extends React.Component {
 
 }
 
-export default PermList
+export default connect()(PermList)
