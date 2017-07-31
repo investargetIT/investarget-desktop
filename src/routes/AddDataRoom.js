@@ -38,7 +38,7 @@ class AddDataRoom extends React.Component {
 
   handleConfirmCreateDataRoom(investorID, traderID) {
     const projectID = this.props.location.query.projectID
-    const relation = this.state.relation.filter(f => f.investoruser.id === investorID)[0]
+    const relation = this.state.relation.filter(f => f.investoruser.id === investorID && f.traderuser.id === traderID)[0]
     const react = this
     confirm({
       title: `你确定要为 ${relation.investoruser.username} 和 ${relation.traderuser.username} 创建DataRoom吗？`,
