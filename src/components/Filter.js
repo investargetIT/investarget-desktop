@@ -204,35 +204,70 @@ function TimelineFilter(props) {
 }
 
 
-
-function UserListFilter(props) {
-  function handleChange(key, value) {
-    const filters = { ...this.props.value, [key]: value }
-    this.props.onChange(filters)
+class UserListFilter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      orgtransactionphases: [],
+      tags: [],
+      currency: [],
+      userstatus: null,
+      areas: [],
+    }
   }
-  return (
-    <div>
-      <TransactionPhaseFilter
-        value={props.value ? props.value.orgtransactionphases : null}
-        onChange={handleChange.bind(this, 'orgtransactionphases')} />
-      <TagFilter
-        value={props.value ? props.value.tags : null}
-        onChange={handleChange.bind(this, 'tags')} />
-      <CurrencyFilter
-        value={props.value ? props.value.currency : null}
-        onChange={handleChange.bind(this, 'currency')} />
-      <UserAuditFilter
-        value={props.value ? props.value.userstatus : null}
-        onChange={handleChange.bind(this, 'userstatus')} />
-      <OrganizationAreaFilter
-        value={props.value ? props.value.areas.map(item=>item.toString()) : []}
-        onChange={handleChange.bind(this, 'areas')} />
-      <FilterOperation
-        onSearch={props.onSearch}
-        onReset={props.onReset} />
-    </div>
-  )
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    const data = { ...this.state }
+    this.props.onSearch(data)
+    if (this.props.storeKey) {
+      localStorage.setItem(this.props.storeKey, JSON.stringify(data))
+    }
+  }
+
+  handleReset = () => {
+    this.setState({
+      orgtransactionphases: [],
+      tags: [],
+      currency: [],
+      userstatus: null,
+      areas: [],
+    }, this.props.onReset)
+    if (this.props.storeKey) {
+      localStorage.removeItem(this.props.storeKey)
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.storeKey) {
+      let data = localStorage.getItem(this.props.storeKey)
+      if (data) {
+        data = JSON.parse(data)
+        this.setState({ ...data })
+      }
+    }
+  }
+
+  render() {
+    const { orgtransactionphases, tags, currency, userstatus, areas } = this.state
+
+    return (
+      <div>
+        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
+        <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
+        <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+
 }
+
 
 class MyInvestorListFilter extends React.Component {
 
@@ -370,14 +405,17 @@ class ProjectListFilter extends React.Component {
       ismarketplace: null,
     }, this.props.onReset)
     if (this.props.storeKey) {
-      localStorage.setItem(this.props.storeKey, JSON.stringify({}))
+      localStorage.removeItem(this.props.storeKey)
     }
   }
 
   componentDidMount() {
     if (this.props.storeKey) {
-      let data = JSON.parse(localStorage.getItem(this.props.storeKey))
-      this.setState({ ...data })
+      let data = localStorage.getItem(this.props.storeKey)
+      if (data) {
+        data = JSON.parse(data)
+        this.setState({ ...data })
+      }
     }
   }
 

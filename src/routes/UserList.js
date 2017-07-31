@@ -15,7 +15,7 @@ const RadioGroup = Radio.Group
 const Option = Select.Option
 const confirm = Modal.confirm
 
-import { Search } from '../components/Search'
+import { Search2 } from '../components/Search'
 
 
 class UserList extends React.Component {
@@ -33,7 +33,6 @@ class UserList extends React.Component {
       search: null,
       current: 0,
       pageSize: 10,
-      _param: {},
       total: 0,
       list: [],
       loading: false,
@@ -41,34 +40,16 @@ class UserList extends React.Component {
     }
   }
 
-  handleFiltersChange = (filters) => {
-    this.setState({ filters })
-  }
-
-  handleFilt = () => {
-    let { _params, filters } = this.state
-    _params = { ..._params, ...filters }
-    this.setState({ _params, page: 1 }, this.getUser)
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getUser)
   }
 
   handleReset = () => {
-    this.setState({ filters: {
-      transactionPhases: [],
-      tags: [],
-      currencies: [],
-      audit: null,
-      areas: [],
-    }, page: 1, _params: {} }, this.getUser)
+    this.setState({ filters: {} }, this.getUser)
   }
 
-  handleSearchChange = (search) => {
-    this.setState({ search })
-  }
-
-  handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getUser)
+  handleSearch = (search) => {
+    this.setState({ search, page: 1 }, this.getUser)
   }
 
   handlePageChange = (page) => {
@@ -80,8 +61,8 @@ class UserList extends React.Component {
   }
 
   getUser = () => {
-    const { _params, page, pageSize } = this.state
-    const params = { ..._params, page_index: page, page_size: pageSize }
+    const { filters, search, page, pageSize } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -192,14 +173,10 @@ class UserList extends React.Component {
         title={i18n("user_list")}
         action={hasPerm("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
 
-          <UserListFilter
-            value={filters}
-            onChange={this.handleFiltersChange}
-            onSearch={this.handleFilt}
-            onReset={this.handleReset} />
+        <UserListFilter onSearch={this.handleFilt} onReset={this.handleReset} storeKey="UserList_Filters" />
 
         <div style={{marginBottom: '24px'}}>
-          <Search value={search} onChange={this.handleSearchChange} placeholder="搜索用户" style={{width: 200}} onSearch={this.handleSearch} />
+          <Search2 placeholder="搜索用户" style={{width: 200}} onSearch={this.handleSearch} storeKey="UserList_Search" />
         </div>
 
         <Table
