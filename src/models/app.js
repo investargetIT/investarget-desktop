@@ -34,6 +34,7 @@ export default {
     character: [],
     showChat: false,
     projstatus: [],
+    error: null,
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -53,6 +54,13 @@ export default {
     },
     toggleChat(state, { payload: showChat }) {
       return { ...state, showChat }
+    },
+    findError(state, { payload: error }) {
+      return { ...state, error }
+    },
+    dismissError(state) {
+      const error = null
+      return { ...state, error }
     }
   },
   effects: {

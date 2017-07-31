@@ -69,7 +69,10 @@ class UserList extends React.Component {
       this.setState({ total, list, loading: false })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -206,4 +209,4 @@ class UserList extends React.Component {
 
 }
 
-export default UserList
+export default connect()(UserList)

@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
 import Chat from './Chat'
+import HandleError from './HandleError'
 
 const { Content, Sider } = Layout
 
@@ -59,6 +60,7 @@ class LeftRightLayout extends React.Component {
 
     return (
       <Layout>
+        <HandleError />
         { this.props.currentUser ? sideBarAndContent : content }
         <Chat />
       </Layout>
