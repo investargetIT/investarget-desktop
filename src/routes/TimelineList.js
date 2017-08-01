@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n, showError, hasPerm, getCurrentUser } from '../utils/util'
 
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -59,6 +59,15 @@ class TimelineList extends React.Component {
   getTimeline = () => {
     const { filters, search, page, pageSize } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize }
+    // 用户查看自己的时间轴，管理员查看全部时间轴
+    if (!hasPerm('usersys.as_admin')) {
+      let userId = getCurrentUser()
+      if (hasPerm('usersys.as_investor')) {
+        params['investor'] = userId
+      } else if (hasPerm('usersys.as_trader')) {
+        params['trader'] = userId
+      }
+    }
     this.setState({ loading: true })
     api.getTimeline(params).then(result => {
       const { count: total, data: list } = result.data

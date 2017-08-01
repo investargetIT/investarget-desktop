@@ -101,4 +101,10 @@ function getGroup() {
 }
 window.getGroup = getGroup
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError, hasPerm, getGroup }
+function getCurrentUser() {
+  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  if (!userInfo) return null
+  return userInfo.id
+}
+
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError, hasPerm, getGroup, getCurrentUser }
