@@ -10,6 +10,7 @@ import TabCheckbox from './TabCheckbox'
 import {
   RadioTrueOrFalse,
   RadioAudit,
+  RadioRole,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
   CheckboxTag,
@@ -191,6 +192,48 @@ function TimelineStatusFilter(props) {
   )
 }
 
+class GroupFilter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      groups: [],
+    }
+  }
+
+  componentDidMount() {
+    api.queryUserGroup({ page_size: 100 }).then(result => {
+      const groups = result.data.data.map(item => {
+        return { value: item.id, label: item.name }
+      })
+      this.setState({ groups })
+    })
+  }
+
+  handleChange = (e) => {
+    this.props.onChange(e.target.value)
+  }
+
+  render() {
+    return (
+      <BasicContainer label="角色">
+         <RadioGroup value={this.props.value} onChange={this.handleChange}>
+          {
+            this.state.groups.map(item =>
+              <Radio key={item.value} value={item.value}>{item.label}</Radio>
+            )
+          }
+        </RadioGroup>
+      </BasicContainer>
+    )
+  }
+}
+
+
+
+/*******************************/
+
+
+
 class TimelineFilter extends React.Component {
 
   static defaultValue = {
@@ -230,6 +273,7 @@ class TimelineFilter extends React.Component {
 class UserListFilter extends React.Component {
 
   static defaultValue = {
+    groups: null,
     orgtransactionphases: [],
     tags: [],
     currency: [],
@@ -243,6 +287,9 @@ class UserListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
+    if (key == 'groups') {
+      this.setState({ ...UserListFilter.defaultValue })
+    }
     this.setState({ [key]: value })
   }
 
@@ -256,15 +303,36 @@ class UserListFilter extends React.Component {
   }
 
   render() {
-    const { orgtransactionphases, tags, currency, userstatus, areas } = this.state
+    const { groups, orgtransactionphases, tags, currency, userstatus, areas } = this.state
 
     return (
       <div>
-        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
-        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
-        <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
-        <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
-        <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
+        <GroupFilter value={groups} onChange={this.handleChange.bind(this, 'groups')} />
+        {
+          [null, 1].includes(groups) ? (
+            <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+          ) : null
+        }
+        {
+          [null, 1, 2].includes(groups) ? (
+            <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+          ) : null
+        }
+        {
+          [null, 1].includes(groups) ? (
+            <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
+          ) : null
+        }
+        {
+          [null, 1, 2].includes(groups) ? (
+            <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
+          ) : null
+        }
+        {
+          [null, 1].includes(groups) ? (
+            <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
+          ) : null
+        }
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
