@@ -40,7 +40,7 @@ class SelectUserTransaction extends React.Component {
 
 
 
-class SelectUser extends React.Component {
+class SelectInvestorAndTrader extends React.Component {
 
   constructor(props) {
     super(props)
@@ -87,7 +87,7 @@ class SelectUser extends React.Component {
       const _traderMap = {}
       investorList.forEach(item => {
         const investorId = item.id
-        const traderId = item.trader_relation.traderuser.id
+        const traderId = item.trader_relation && item.trader_relation.traderuser.id
         if (!traderMap[investorId]) {
           _traderMap[investorId] = traderId
         }
@@ -173,4 +173,4 @@ class SelectUser extends React.Component {
 
 }
 
-export default SelectUser
+export default SelectInvestorAndTrader

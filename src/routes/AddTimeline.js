@@ -6,7 +6,7 @@ import { Button } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import SelectOrganization from '../components/SelectOrganization'
-import SelectUser from '../components/SelectUser'
+import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
 import SelectInvestor from '../components/SelectInvestor'
 
 
@@ -91,7 +91,7 @@ class AddTimeline extends React.Component {
 
                 <div style={{padding: '16px'}}>
                   { current == 0 ? <SelectOrganization value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
-                  { current == 1 ? <SelectUser selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
+                  { current == 1 ? <SelectInvestorAndTrader selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
                 </div>
 
                 { current == 0 ? (
@@ -111,7 +111,7 @@ class AddTimeline extends React.Component {
           }
 
           {
-            hasPerm('usersys.as_trader') ? (
+            (!hasPerm('usersys.as_admin') && hasPerm('usersys.as_trader')) ? (
               <div>
                 <div style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
                   <p style={{fontSize: '13px'}}>选择用户</p>
