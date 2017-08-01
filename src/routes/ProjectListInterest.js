@@ -1,16 +1,11 @@
 import React from 'react'
-import { i18n, showError } from '../utils/util'
+import { i18n, showError, isLogin } from '../utils/util'
 
 import { Radio } from 'antd'
 const RadioGroup = Radio.Group
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import FavoriteProjectList from '../components/FavoriteProjectList'
-
-
-const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const currentUser = userInfo ? userInfo.id : null
-
 
 class ProjectListRecommend extends React.Component {
   constructor(props) {
@@ -49,10 +44,10 @@ class ProjectListRecommend extends React.Component {
     var params = { page_index: page, page_size: pageSize }
     if (type == 1) {
       params['favoritetype'] = 5
-      params['user'] = currentUser
+      params['user'] = isLogin().id
     } else if (type == 2) {
       params['favoritetype'] = 5
-      params['trader'] = currentUser
+      params['trader'] = idLogin().id
     } else {
       return
     }

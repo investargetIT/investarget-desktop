@@ -1,14 +1,9 @@
 import React from 'react'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n, showError, isLogin } from '../utils/util'
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-
-
-const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const currentUser = userInfo ? userInfo.id : null
-
 
 class ProjectListPublished extends React.Component {
   constructor(props) {
@@ -32,7 +27,7 @@ class ProjectListPublished extends React.Component {
 
   getProjectList = () => {
     const { page, pageSize } = this.state
-    const params = { supportUser: currentUser, page_index: page, page_size: pageSize }
+    const params = { supportUser: isLogin().id, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data

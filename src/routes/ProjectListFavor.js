@@ -1,13 +1,8 @@
 import React from 'react'
-import { i18n, showError } from '../utils/util'
-
+import { i18n, showError, isLogin } from '../utils/util'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import FavoriteProjectList from '../components/FavoriteProjectList'
-
-const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const currentUser = userInfo ? userInfo.id : null
-
 
 class ProjectListRecommend extends React.Component {
   constructor(props) {
@@ -32,7 +27,8 @@ class ProjectListRecommend extends React.Component {
 
   getProjectList = () => {
     const { favoritetype, page, pageSize } = this.state
-    const params = { favoritetype, user: currentUser, page_index: page, page_size: pageSize }
+    const user = isLogin().id
+    const params = { favoritetype, user, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getFavoriteProj(params).then(result => {
       const { count: total, data: list } = result.data
