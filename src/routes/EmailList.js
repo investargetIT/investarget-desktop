@@ -42,7 +42,7 @@ class EmailList extends React.Component {
 
   getEmailList = () => {
     const { search, page, pageSize } = this.state
-    const params = { search, page_index: page, page_size: pageSize }
+    const params = { title: search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getEmailList(params).then(result => {
       const { count: total, data: list } = result.data
