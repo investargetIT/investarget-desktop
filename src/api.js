@@ -424,6 +424,8 @@ export function createUser(user) {
 
 export const modifyPassword = (id, oldpassword, newpassword) => r(`/user/password/${id}/`, 'PUT', {oldpassword, newpassword})
 
+export const addUnreachUser = body => r('/user/unuser/', 'POST', body)
+
 /**
  * dataroom
  */

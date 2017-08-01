@@ -1,11 +1,12 @@
 import React from 'react'
 import * as api from '../api'
-import { formatMoney } from '../utils/util'
+import { formatMoney, i18n } from '../utils/util'
 import { Link } from 'dva/router'
-import { Row, Col, Popover, Button, Popconfirm } from 'antd'
+import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import OrganizationRemarkList from '../components/OrganizationRemarkList'
+import { BasicFormItem } from '../components/Form'
 
 const dataSample = [{
   id: 1,
@@ -42,9 +43,9 @@ const PositionWithUser = props => {
             <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>
-          <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
-        </Link>
+        <Popover content={<Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>选择投资人</Link>}>
+          <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)}style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
+          </Popover>
       </div>
     </div>
   )
@@ -100,7 +101,8 @@ class OrganizationDetail extends React.Component {
       partnerOrInvestmentCommiterMember: null,
       decisionCycle: null,
       decisionMakingProcess: null,
-      data: []
+      data: [],
+      visible: false,
     }
   }
 
@@ -184,6 +186,30 @@ class OrganizationDetail extends React.Component {
     .catch(err => console.error(err))
   }
 
+  handleAddUser(orgID, titleID) {
+    this.titleID = titleID
+    this.setState({
+      visible: true
+    })
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false
+    })
+  }
+
+  handleSubmit = e => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const title = this.titleID
+        const org = this.props.params.id
+        const body = { ... values, org, title }
+        api.addUnreachUser(body).then(data => this.setState({ visible: false }))
+      }
+    })
+  }
+
   render() {
     const id = this.props.params.id
 
@@ -223,12 +249,28 @@ class OrganizationDetail extends React.Component {
               position={m.position}
               user={m.user}
               onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} 
-              pathname={this.props.location.pathname} />
+              pathname={this.props.location.pathname} 
+              onAddButtonClicked={this.handleAddUser.bind(this)} />
           </div>)}
         </div>
+
+        <Modal
+          title="添加投资人"
+          visible={this.state.visible} 
+          onOk={this.handleSubmit}
+          onCancel={this.handleCancel}>
+
+          <Form>
+            <BasicFormItem label={i18n("username")} name="name" required><Input /></BasicFormItem>
+            <BasicFormItem label={i18n("email")} name="email"><Input /></BasicFormItem>
+            <BasicFormItem label={i18n("mobile")} name="mobile"><Input /></BasicFormItem>
+          </Form>
+
+        </Modal>
+
       </MainLayout>
     )
   }
 }
 
-export default OrganizationDetail
+export default Form.create()(OrganizationDetail)
