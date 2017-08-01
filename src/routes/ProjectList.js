@@ -10,9 +10,6 @@ import { Search2 } from '../components/Search'
 
 import AuditProjectModal from '../components/AuditProjectModal'
 
-const group = getGroup()
-const isInvestor = group == 1
-
 
 class ProjectList extends React.Component {
   constructor(props) {
@@ -202,15 +199,15 @@ class ProjectList extends React.Component {
               <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
               &nbsp;
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
-                <Button size="small" disabled={isInvestor}>推荐</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>推荐</Button>
               </Link>
               &nbsp;
               <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
-                <Button size="small" disabled={!hasPerm('timeline.admin_addline') && !hasPerm('timeline.user_addline')}>创建时间轴</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>创建时间轴</Button>
               </Link>
               &nbsp;
               <Link target="_blank" to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button size="small" disabled={!hasPerm('dataroom.admin_adddataroom') && !hasPerm('dataroom.user_adddataroom')}>创建DataRoom</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>创建DataRoom</Button>
               </Link>
               &nbsp;
               <Link to={'/app/projects/edit/' + record.id}>
