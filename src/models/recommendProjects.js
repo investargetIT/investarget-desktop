@@ -31,7 +31,7 @@ export default {
     *refreshProjects({}, {call, put, select}) {
       const { tags } = yield select(state => state.currentUser)
       const tagIds = tags ? tags.map(item => item.id) : []
-      const param = { tags: tagIds }
+      const param = { tags: tagIds, projstatus: [4] } // 显示终审发布的项目
       const result = yield call(api.getProj, param) //
       const projects = result.data.data
       yield put({ type: 'setProjects', payload: projects })
