@@ -43,6 +43,7 @@ import MyTrader from './routes/MyTrader'
 import RecommendProject from './routes/RecommendProject'
 import SelectUserToPosition from './routes/SelectUserToPosition'
 import AccessDenied from './routes/AccessDenied'
+import SelectTraderToRelation from './routes/SelectTraderToRelation'
 
 function RouterConfig({ history }) {
   return (
@@ -89,6 +90,7 @@ function RouterConfig({ history }) {
       <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
       <Route path={URI_12} component={MyInvestor} />
       <Route path={URI_13} component={MyTrader} />
+      <Route path="/app/trader/add" component={SelectTraderToRelation} />
     </Router>
   )
 }

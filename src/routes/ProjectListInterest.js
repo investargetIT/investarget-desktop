@@ -47,7 +47,7 @@ class ProjectListRecommend extends React.Component {
       params['user'] = isLogin().id
     } else if (type == 2) {
       params['favoritetype'] = 5
-      params['trader'] = idLogin().id
+      params['trader'] = isLogin().id
     } else {
       return
     }

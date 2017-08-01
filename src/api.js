@@ -400,9 +400,7 @@ export function queryPermList() {
   return r('/user/perm/')
 }
 
-export function queryUserGroup() {
-  return r('/user/group/')
-}
+export const queryUserGroup = param => r('/user/group/?' + qs.stringify(param))
 
 export function updateUserGroup(groupId, body) {
   return r(`/user/group/${groupId}/`, 'PUT', body)
@@ -464,6 +462,8 @@ export function deleteUserRelation(id) {
   const param = {'relationlist': [id]}
   return r('/user/relationship/', 'DELETE', param)
 }
+
+export const checkUserRelation = (investor, trader) => r('/user/checkrelation/', 'POST', { investor, trader })
 
 /**
  * msg

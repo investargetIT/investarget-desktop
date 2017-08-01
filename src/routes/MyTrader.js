@@ -5,7 +5,10 @@ import MyPartner from '../components/MyPartner'
 
 function MyTrader(props) {
   return (
-    <LeftRightLayout location={props.location} title={i18n("mytrader")}>
+    <LeftRightLayout
+      location={props.location}
+      title={i18n("mytrader")}
+      action={{ name: i18n("add_trader"), link: "/app/trader/add" }}>
       <MyPartner type="trader" />
     </LeftRightLayout>
   )
