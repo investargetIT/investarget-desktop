@@ -6,6 +6,7 @@ import { Input, Table, Button, Popconfirm, Pagination } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
 import { URI_12, URI_13 } from '../constants'
+import { connect } from 'dva'
 
 const Search = Input.Search
 
@@ -42,7 +43,10 @@ class MyPartner extends React.Component {
         total: investorList.length
       })
       this.investorList = investorList
-    })
+    }).catch(err => this.props.dispatch({
+      type: 'app/findError',
+      payload: err
+    }))
   }
 
   handleSearch(value) {
@@ -95,56 +99,56 @@ class MyPartner extends React.Component {
     console.log(pageSize)
   }
 
-  columns = [
-    {
-      title: i18n("username"),
-      dataIndex: 'username',
-      key: 'username'
-    },
-    {
-      title: i18n("org"),
-      dataIndex: 'org.orgname',
-      key: 'org'
-    },
-    {
-      title: i18n("position"),
-      dataIndex: 'title.name',
-      key: 'title'
-    },
-    {
-      title: i18n("tag"),
-      dataIndex: 'tags',
-      key: 'tags',
-      render: tags => tags ? tags.map(t => t.name).join(' ') : null
-    },
-    {
-      title: i18n("userstatus"),
-      dataIndex: 'userstatus.name',
-      key: 'userstatus'
-    },
-    {
-      title: i18n("action"),
-      key: 'action',
-      render: (text, record) => (
-        <span>
-          <Link to={'/app/user/' + record.id}>
-            <Button size="small">{i18n("view")}</Button>
-          </Link>
-          &nbsp;
-          <Link to={'/app/user/edit/' + record.id}>
-            <Button size="small">{i18n("edit")}</Button>
-          </Link>
-          &nbsp;
-          <Popconfirm title="Confirm to delete?" onConfirm={this.handleDeleteUser.bind(null, record.id)}>
-            <Button type="danger" size="small">{i18n("delete")}</Button>
-          </Popconfirm>
-        </span>
-      )
-    }
-  ]
-
-
   render() {
+    const columns = [
+      {
+        title: i18n("username"),
+        dataIndex: 'username',
+        key: 'username'
+      },
+      {
+        title: i18n("org"),
+        dataIndex: 'org.orgname',
+        key: 'org'
+      },
+      {
+        title: i18n("position"),
+        dataIndex: 'title.name',
+        key: 'title'
+      },
+      {
+        title: i18n("tag"),
+        dataIndex: 'tags',
+        key: 'tags',
+        render: tags => tags ? tags.map(t => t.name).join(' ') : null
+      }
+    ]
+    if (this.props.type === 'investor') {
+      columns.push({
+        title: i18n("userstatus"),
+        dataIndex: 'userstatus.name',
+        key: 'userstatus'
+      })
+      columns.push({
+        title: i18n("action"),
+        key: 'action',
+        render: (text, record) => (
+          <span>
+            <Link to={'/app/user/' + record.id}>
+              <Button size="small">{i18n("view")}</Button>
+            </Link>
+            &nbsp;
+          <Link to={'/app/user/edit/' + record.id}>
+              <Button size="small">{i18n("edit")}</Button>
+            </Link>
+            &nbsp;
+          <Popconfirm title="Confirm to delete?" onConfirm={this.handleDeleteUser.bind(null, record.id)}>
+              <Button type="danger" size="small">{i18n("delete")}</Button>
+            </Popconfirm>
+          </span>
+        )
+      })
+    }
     return (
       <div>
 
@@ -155,7 +159,7 @@ class MyPartner extends React.Component {
           onSearch={this.handleSearch.bind(this)} />
 
         <Table
-          columns={this.columns}
+          columns={columns}
           dataSource={this.state.list}
           loading={this.state.loading}
           rowKey={record => record.id}
@@ -176,4 +180,4 @@ class MyPartner extends React.Component {
   }
 }
 
-export default MyPartner
+export default connect()(MyPartner)
