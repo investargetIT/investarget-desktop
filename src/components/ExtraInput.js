@@ -266,6 +266,17 @@ class SelectExistOrganization extends React.Component {
 
     if (props.value) {
       this.getOrg(props.value)
+    } else {
+      api.getOrg().then(data => {
+        this.setState({
+          org: data.data.data.map(m => {
+            const obj = {}
+            obj.value = m.id
+            obj.label = m.orgname
+            return obj
+          })
+        })
+      })
     }
   }
 
@@ -308,7 +319,7 @@ class SelectExistOrganization extends React.Component {
     return (
       <Select
         showSearch
-        value={value && String(value)}
+        value={value ? String(value) : undefined}
         onSearch={this.handleSearch}
         onChange={this.handleChange}
         placeholder="输入至少2个字，查找机构"
