@@ -22,17 +22,18 @@ class UserList extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const filters = setting ? setting.filters : UserListFilter.defaultValue
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize: 10
+
     this.state = {
-      filters: {
-        transactionPhases: [],
-        tags: [],
-        currencies: [],
-        audit: null,
-        areas: [],
-      },
-      search: null,
-      current: 0,
-      pageSize: 10,
+      filters,
+      search,
+      page,
+      pageSize,
       total: 0,
       list: [],
       loading: false,
@@ -44,8 +45,8 @@ class UserList extends React.Component {
     this.setState({ filters, page: 1 }, this.getUser)
   }
 
-  handleReset = () => {
-    this.setState({ filters: {} }, this.getUser)
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getUser)
   }
 
   handleSearch = (search) => {
@@ -74,6 +75,7 @@ class UserList extends React.Component {
         payload: error
       })
     })
+    this.writeSetting()
   }
 
   deleteUser = (id) => {
@@ -92,6 +94,17 @@ class UserList extends React.Component {
 
   handleSelectChange = (selectedUsers) => {
     this.setState({ selectedUsers })
+  }
+
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state
+    const data = { filters, search, page, pageSize }
+    localStorage.setItem('UserList', JSON.stringify(data))
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('UserList')
+    return data ? JSON.parse(data) : null
   }
 
   componentDidMount() {
@@ -176,10 +189,10 @@ class UserList extends React.Component {
         title={i18n("user_list")}
         action={hasPerm("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
 
-        <UserListFilter onSearch={this.handleFilt} onReset={this.handleReset} storeKey="UserList_Filters" />
+        <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{marginBottom: '24px'}}>
-          <Search2 placeholder="搜索用户" style={{width: 200}} onSearch={this.handleSearch} storeKey="UserList_Search" />
+          <Search2 placeholder="搜索用户" style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
         </div>
 
         <Table

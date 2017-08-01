@@ -50,7 +50,6 @@ app.model(require("./models/recommendProjects"))
 app.model(require("./models/recommendFriends"))
 app.model(require('./models/CurrentUser'))
 app.model(require("./models/app"))
-app.model(require('./models/dataRoomList'))
 
 // 4. Router
 app.router(require('./router'));

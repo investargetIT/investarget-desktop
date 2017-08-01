@@ -8,49 +8,44 @@ import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { TimelineFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
-import { Search } from '../components/Search'
+import { Search2 } from '../components/Search'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
 
 class TimelineList extends React.Component {
+
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const filters = setting ? setting.filters : TimelineFilter.defaultValue
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize: 10
+
     this.state = {
-      filters: { isClose: false }, // 默认值
-      search: null,
-      _params: { isClose: false },
-      page: 1,
-      pageSize: 10,
+      filters,
+      search,
+      page,
+      pageSize,
       total: 0,
       list: [],
       loading: false,
     }
   }
 
-  handleFiltersChange = (filters) => {
-    this.setState({ filters })
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getTimeline)
   }
 
-  handleFilt = () => {
-    let { _params, filters } = this.state
-    _params = { ..._params, ...filters }
-    this.setState({ _params, page: 1 }, this.getTimeline)
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getTimeline)
   }
 
-  handleReset = () => {
-    this.setState({ filters: {}, page: 1, _params: {} }, this.getTimeline)
-  }
-
-  handleSearchChange = (search) => {
-    this.setState({ search })
-  }
-
-  handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getTimeline)
+  handleSearch = (search) => {
+    this.setState({ search, page: 1 }, this.getTimeline)
   }
 
   handlePageChange = (page) => {
@@ -62,8 +57,8 @@ class TimelineList extends React.Component {
   }
 
   getTimeline = () => {
-    const { _params, page, pageSize } = this.state
-    const params = { ..._params, page_index: page, page_size: pageSize }
+    const { filters, search, page, pageSize } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getTimeline(params).then(result => {
       const { count: total, data: list } = result.data
@@ -72,6 +67,7 @@ class TimelineList extends React.Component {
       this.setState({ loading: false })
       showError(error.message)
     })
+    this.writeSetting()
   }
 
   deleteTimeline = (id) => {
@@ -84,6 +80,17 @@ class TimelineList extends React.Component {
 
   closeTimeline = (id) => {
     this.closeTimelineModal.closeTimeline(id)
+  }
+
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state
+    const data = { filters, search, page, pageSize }
+    localStorage.setItem('TimelineList', JSON.stringify(data))
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('TimelineList')
+    return data ? JSON.parse(data) : null
   }
 
   componentDidMount() {
@@ -133,8 +140,10 @@ class TimelineList extends React.Component {
         <div>
           <PageTitle title="时间轴列表" />
           <div>
-            <TimelineFilter value={filters} onChange={this.handleFiltersChange} onSearch={this.handleFilt} onReset={this.handleReset} />
-            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} placeholder="项目、投资人、交易师" />
+            <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+            <div style={{ marginBottom: '24px' }}>
+              <Search2 style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} placeholder="项目、投资人、交易师" />
+            </div>
             <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>

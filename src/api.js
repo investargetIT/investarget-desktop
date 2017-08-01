@@ -65,19 +65,6 @@ function r2(url, method, body) {
 }
 
 /**
- * dataroom
- */
-
-export function getDataroom() {
-  return { count: 0, data: [] }
-}
-
-export function deleteDataroom() {
-
-}
-
-
-/**
  * org
  */
 
@@ -326,8 +313,8 @@ export function deleteTimelineRemark(id) {
  * email
  */
 
-export function getEmailList() {
-  return r('/mongolog/email')
+export function getEmailList(params) {
+  return r('/mongolog/email?' + qs.stringify(params))
 }
 
 export function getEmail(params) {
@@ -479,7 +466,7 @@ export function deleteUserRelation(id) {
 }
 
 /**
- * msg 
+ * msg
  */
 export const getMsg = param => r('/msg/?' + qs.stringify(param))
 export const readMsg = id => r('/msg/' + id + '/', 'POST')

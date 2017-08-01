@@ -4,32 +4,32 @@ import { i18n, shwoError } from '../utils/util'
 import { Icon, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { Search } from '../components/Search'
+import { Search2 } from '../components/Search'
 
 
 class EmailDetail extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize : 10
+
     this.state = {
-      search: null,
-      _param: {},
-      page: 1,
-      pageSize: 10,
+      search,
+      page,
+      pageSize,
       total: 0,
       list: [],
       loading: false,
     }
   }
 
-  handleSearchChange = (search) => {
-    this.setState({ search })
-  }
+  handleSearch = (search) => {
 
-  handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getUserList)
+    this.setState({ search, page: 1 }, this.getUserList)
   }
 
   handlePageChange = (page) => {
@@ -42,8 +42,8 @@ class EmailDetail extends React.Component {
 
   getUserList = () => {
     const id = Number(this.props.params.id)
-    const { _params, page, pageSize } = this.state
-    const params = { ..._params, id, page_index: page, page_size: pageSize }
+    const { search, page, pageSize } = this.state
+    const params = { search, id, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getEmail(params).then(result => {
       const { count: total, data: list } = result.data
@@ -64,6 +64,18 @@ class EmailDetail extends React.Component {
       this.setState({ loading: false })
       showError(error.message)
     })
+    this.writeSetting()
+  }
+
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state
+    const data = { filters, search, page, pageSize }
+    localStorage.setItem('EmailDetail', JSON.stringify(data))
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('EmailDetail')
+    return data ? JSON.parse(data) : null
   }
 
   componentDidMount() {
@@ -92,7 +104,7 @@ class EmailDetail extends React.Component {
           <PageTitle title="邮件管理" />
 
           <div style={{marginBottom: '16px'}}>
-            <Search value={search} onChange={this.handleSearchChange} placeholder="邮箱或电话" style={{width: 200}} onSearch={this.handleSearch} />
+            <Search2 placeholder="邮箱、电话" style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <Table

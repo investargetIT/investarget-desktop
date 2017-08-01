@@ -191,29 +191,15 @@ function TimelineStatusFilter(props) {
   )
 }
 
-function TimelineFilter(props) {
-  function handleChange(key, value) {
-    props.onChange({ ...props.value, [key]: value })
+class TimelineFilter extends React.Component {
+
+  static defaultValue = {
+    isClose: false,
   }
-  return (
-    <div>
-      <TimelineStatusFilter value={props.value.isClose} onChange={handleChange.bind(this, 'isClose')} />
-      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
-    </div>
-  )
-}
 
-
-class UserListFilter extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      orgtransactionphases: [],
-      tags: [],
-      currency: [],
-      userstatus: null,
-      areas: [],
-    }
+    this.state = props.defaultValue || TimelineFilter.defaultValue
   }
 
   handleChange = (key, value) => {
@@ -221,34 +207,52 @@ class UserListFilter extends React.Component {
   }
 
   handleSearch = () => {
-    const data = { ...this.state }
-    this.props.onSearch(data)
-    if (this.props.storeKey) {
-      localStorage.setItem(this.props.storeKey, JSON.stringify(data))
-    }
+    this.props.onSearch({ ...this.state })
   }
 
   handleReset = () => {
-    this.setState({
-      orgtransactionphases: [],
-      tags: [],
-      currency: [],
-      userstatus: null,
-      areas: [],
-    }, this.props.onReset)
-    if (this.props.storeKey) {
-      localStorage.removeItem(this.props.storeKey)
-    }
+    this.setState({ ...TimelineFilter.defaultValue })
+    this.props.onReset({ ...TimelineFilter.defaultValue })
   }
 
-  componentDidMount() {
-    if (this.props.storeKey) {
-      let data = localStorage.getItem(this.props.storeKey)
-      if (data) {
-        data = JSON.parse(data)
-        this.setState({ ...data })
-      }
-    }
+  render() {
+    const { isClose } = this.state
+    return (
+      <div>
+        <TimelineStatusFilter value={isClose} onChange={this.handleChange.bind(this, 'isClose')} />
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
+
+
+class UserListFilter extends React.Component {
+
+  static defaultValue = {
+    orgtransactionphases: [],
+    tags: [],
+    currency: [],
+    userstatus: null,
+    areas: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || UserListFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...UserListFilter.defaultValue })
+    this.props.onReset({ ...UserListFilter.defaultValue })
   }
 
   render() {
@@ -323,45 +327,69 @@ class MyInvestorListFilter extends React.Component {
   }
 }
 
-function OrganizationListFilter(props) {
-  function handleChange(key, value) {
-    props.onChange({ ...props.value, [key]: value })
-  }
-  return (
-    <div>
-      <OverseaFilter value={props.value.isOversea} onChange={handleChange.bind(this, 'isOversea')} />
-      <CurrencyFilter value={props.value.currencys} onChange={handleChange.bind(this, 'currencys')} />
-      <TransactionPhaseFilter value={props.value.orgtransactionphases} onChange={handleChange.bind(this, 'orgtransactionphases')} />
-      <IndustryFilter value={props.value.industries} onChange={handleChange.bind(this, 'industries')} />
-      <TagFilter value={props.value.tags} onChange={handleChange.bind(this, 'tags')} />
-      <OrganizationTypeFilter value={props.value.orgtypes} onChange={handleChange.bind(this, 'orgtypes')} />
-      <FilterOperation onSearch={props.onSearch} onReset={props.onReset} />
-    </div>
-  )
-}
+class OrganizationListFilter extends React.Component {
 
-class ProjectListFilter extends React.Component {
-
-  static DefaultValue = {
-    netIncome_USD_F: 0,
-    netIncome_USD_T: 500000000,
-    grossProfit_F: -200000000,
-    grossProfit_T: 200000000,
+  static defaultValue = {
+    isOversea: null,
+    currencys: [],
+    orgtransactionphases: [],
+    industries: [],
+    tags: [],
+    orgtypes: [],
   }
 
   constructor(props) {
     super(props)
-    this.state = {
-      tags: [],
-      country: [],
-      industries: [],
-      netIncome_USD_F: 0,
-      netIncome_USD_T: 500000000,
-      grossProfit_F: -200000000,
-      grossProfit_T: 200000000,
-      projstatus: [],
-      ismarketplace: null,
-    }
+    this.state = props.defaultValue || OrganizationListFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrganizationListFilter.defaultValue })
+    this.props.onSearch({ ...OrganizationListFilter.defaultValue })
+  }
+
+  render() {
+    const { isOversea, currencys, orgtransactionphases, industries, tags, orgtypes } = this.state
+    return (
+      <div>
+        <OverseaFilter value={isOversea} onChange={this.handleChange.bind(this, 'isOversea')} />
+        <CurrencyFilter value={currencys} onChange={this.handleChange.bind(this, 'currencys')} />
+        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+
+}
+
+class ProjectListFilter extends React.Component {
+
+  static defaultValue = {
+    tags: [],
+    country: [],
+    industries: [],
+    netIncome_USD_F: 0,
+    netIncome_USD_T: 500000000,
+    grossProfit_F: -200000000,
+    grossProfit_T: 200000000,
+    projstatus: [],
+    ismarketplace: null,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || ProjectListFilter.defaultValue
   }
 
   handleChange = (key, value) => {
@@ -375,48 +403,12 @@ class ProjectListFilter extends React.Component {
   }
 
   handleSearch = () => {
-    var data = {}
-    for (let prop in this.state) {
-      let value = this.state[prop]
-      if (Array.isArray(value) && value.length > 0) {
-        data[prop] = value
-      } else if (typeof value == 'number' && value != ProjectListFilter.DefaultValue[prop]) {
-        data[prop] = value
-      } else if (typeof value == 'boolean') {
-        data[prop] = value
-      }
-    }
-    this.props.onSearch(data)
-    if (this.props.storeKey) {
-      localStorage.setItem(this.props.storeKey, JSON.stringify(data))
-    }
+    this.props.onSearch({ ...this.state })
   }
 
   handleReset = () => {
-    this.setState({
-      tags: [],
-      country: [],
-      industries: [],
-      netIncome_USD_F: 0,
-      netIncome_USD_T: 500000000,
-      grossProfit_F: -200000000,
-      grossProfit_T: 200000000,
-      projstatus: [],
-      ismarketplace: null,
-    }, this.props.onReset)
-    if (this.props.storeKey) {
-      localStorage.removeItem(this.props.storeKey)
-    }
-  }
-
-  componentDidMount() {
-    if (this.props.storeKey) {
-      let data = localStorage.getItem(this.props.storeKey)
-      if (data) {
-        data = JSON.parse(data)
-        this.setState({ ...data })
-      }
-    }
+    this.setState({ ...ProjectListFilter.defaultValue })
+    this.props.onReset({ ...ProjectListFilter.defaultValue })
   }
 
   render() {

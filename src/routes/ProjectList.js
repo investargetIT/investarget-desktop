@@ -17,27 +17,30 @@ const isInvestor = group == 1
 class ProjectList extends React.Component {
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const filters = setting ? setting.filters : ProjectListFilter.defaultValue
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize: 10
+
     this.state = {
-      filters: null,
-      search: null,
-      page: 1,
-      pageSize: 10,
+      filters,
+      search,
+      page,
+      pageSize,
       total: 0,
       list: [],
       loading: false,
     }
   }
 
-  handleFiltersChange = (filters) => {
-    this.setState({ filters })
-  }
-
   handleFilt = (filters) => {
     this.setState({ filters, page: 1 }, this.getProject)
   }
 
-  handleReset = () => {
-    this.setState({ filters: null, page: 1 }, this.getProject)
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getProject)
   }
 
   handleSearch = (search) => {
@@ -52,9 +55,27 @@ class ProjectList extends React.Component {
     this.setState({ pageSize, page: 1 }, this.getProject)
   }
 
+  // 特殊处理
+  handleFinancialFilter = (filters) => {
+    var data = { ...filters }
+    if (data['netIncome_USD_F'] == ProjectListFilter.defaultValue['netIncome_USD_F'] &&
+        data['netIncome_USD_T'] == ProjectListFilter.defaultValue['netIncome_USD_T'] )
+    {
+      delete data['netIncome_USD_F']
+      delete data['netIncome_USD_T']
+    }
+    if (data['grossProfit_F'] == ProjectListFilter.defaultValue['grossProfit_F'] &&
+        data['grossProfit_T'] == ProjectListFilter.defaultValue['grossProfit_T'] )
+    {
+      delete data['grossProfit_F']
+      delete data['grossProfit_T']
+    }
+    return data
+  }
+
   getProject = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    const params = { ...this.handleFinancialFilter(filters), search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
@@ -63,6 +84,7 @@ class ProjectList extends React.Component {
       this.setState({ loading: false })
       showError(error.message)
     })
+    this.writeSetting()
   }
 
   auditProject = (id, status) => {
@@ -83,6 +105,16 @@ class ProjectList extends React.Component {
     })
   }
 
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state
+    const data = { filters, search, page, pageSize }
+    localStorage.setItem('ProjectList', JSON.stringify(data))
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('ProjectList')
+    return data ? JSON.parse(data) : null
+  }
 
   componentDidMount() {
     this.getProject()
@@ -202,10 +234,10 @@ class ProjectList extends React.Component {
             <PageTitle title="平台项目" />
         }
 
-        <ProjectListFilter storeKey="ProjectList_Filters" value={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 storeKey="ProjectList_Search" value={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 defaultValue={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
 
         <Table

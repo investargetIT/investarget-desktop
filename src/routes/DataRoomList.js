@@ -10,63 +10,80 @@ import {
   CheckboxCurrencyType,
 } from '../components/ExtraInput'
 import { queryDataRoom, getUserBase, getProjLangDetail } from '../api'
+import * as api from '../api'
+import { Search2 } from '../components/Search'
 
-const Search = Input.Search
 
 class DataRoomList extends React.Component {
 
   constructor(props) {
     super(props)
-     this.state = {
-       dataRoomList: []
-     }
-  }
 
-  componentDidMount() {
-    queryDataRoom().then(data => {
-      const dataRoomListRawData = data.data.data.filter(f => f.investor && f.trader)
-      this.setState({
-        dataRoomList: dataRoomListRawData
-      })
-    })
-  }
+    const setting = this.readSetting()
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize: 10
 
-  handleDelete = (id) => {
-    this.props.dispatch({ type: 'dataRoomList/delete', payload: id })
-  }
-
-
-  handleFilterChange = (key, value) => {
-    this.props.dispatch({ type: 'dataRoomList/setFilter', payload: { [key]: value } })
-  }
-
-  handleFilt = () => {
-    this.props.dispatch({ type: 'dataRoomList/filt' })
-  }
-
-  handleReset = () => {
-    this.props.dispatch({ type: 'dataRoomList/reset' })
-  }
-
-  handleSearchChange = (e) => {
-    const search = e.target.value
-    this.props.dispatch({ type: 'dataRoomList/setField', payload: { search } })
+    this.state = {
+      search,
+      page,
+      pageSize,
+      total: 0,
+      list: [],
+      loading: false,
+    }
   }
 
   handleSearch = (search) => {
-    this.props.dispatch({ type: 'dataRoomList/search' })
+    this.setState({ search, page: 1 }, this.getDataRoomList)
   }
 
-  handlePageChange = (page, pageSize) => {
-    this.props.dispatch({ type: 'dataRoomList/changePage', payload: page })
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getDataRoomList)
   }
 
-  handleShowSizeChange = (current, pageSize) => {
-    this.props.dispatch({ type: 'dataRoomList/changePageSize', payload: pageSize })
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getDataRoomList)
+  }
+
+  getDataRoomList = () => {
+    const { search, page, pageSize } = this.state
+    const params = { search, page_index: page, page_size: pageSize }
+    this.setState({ loading: true })
+    api.queryDataRoom(params).then(result => {
+      const { count: total, data: _list } = result.data
+      const list = _list.filter(f => f.investor && f.trader)
+      console.log(list)
+      this.setState({ loading: false, total, list })
+    }, error => {
+      this.setState({ loading: false })
+      showError(error.message)
+    })
+    this.writeSetting()
+  }
+
+  deleteDataRoom = (id) => {
+    // TODO
+  }
+
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state
+    const data = { filters, search, page, pageSize }
+    localStorage.setItem('DataRooomList', JSON.stringify(data))
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('DataRooomList')
+    return data ? JSON.parse(data) : null
+  }
+
+  componentDidMount() {
+    this.getDataRoomList()
   }
 
   render() {
-    const { location, total, list, loading, page, pageSize, filter, search } = this.props
+    const { location } = this.props
+    const { total, list, loading, search, page, pageSize } = this.state
 
     const columns = [
       { title: '项目', key: 'project', dataIndex: 'proj.projtitle' },
@@ -87,7 +104,7 @@ class DataRoomList extends React.Component {
               <Button size="small" >{i18n("edit")}</Button>
             </Link>
             &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
+            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteDataRoom.bind(this, record.id)}>
               <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>
           </span>
@@ -101,12 +118,12 @@ class DataRoomList extends React.Component {
           <PageTitle title="Data Room" />
 
           <div style={{marginBottom: '16px'}}>
-            <Search value={search} onChange={this.handleSearchChange} style={{width: 200}} onSearch={this.handleSearch} />
+            <Search2 style={{width: 200}} placeholder="" defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <Table
             columns={columns}
-            dataSource={this.state.dataRoomList}
+            dataSource={list}
             rowKey={record=>record.id}
             loading={loading}
             pagination={false} />
@@ -118,7 +135,7 @@ class DataRoomList extends React.Component {
             pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
-            onShowSizeChange={this.handleShowSizeChange}
+            onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
           />
         </div>
@@ -128,9 +145,4 @@ class DataRoomList extends React.Component {
 
 }
 
-
-function mapStateToProps(state) {
-  return { ...state.dataRoomList, loading: state.loading.effects['dataRoomList/get'] }
-}
-
-export default connect(mapStateToProps)(DataRoomList)
+export default DataRoomList
