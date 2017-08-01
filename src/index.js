@@ -54,11 +54,6 @@ app.model(require("./models/app"))
 // 4. Router
 app.router(require('./router'));
 
-// getUserType
-window.IS_ADMIN = hasPerm('usersys.as_admin')
-window.IS_INVESTOR = hasPerm('usersys.as_investor')
-window.IS_TRADER = hasPerm('usersys.as_trader')
-
 // 5. Start
 const App = app.start();
 

@@ -25,9 +25,9 @@ class ProjectListRecommend extends React.Component {
       list: [],
       loading: false,
     }
-    if (IS_INVESTOR) {
+    if (hasPerm('usersys.as_investor')) {
       this.state.type = 3
-    } else if (IS_INVESTOR) {
+    } else if (hasPerm('usersys.as_trader')) {
       this.state.type = 4
     } else {
       this.state.type = 2
@@ -100,8 +100,8 @@ class ProjectListRecommend extends React.Component {
             <RadioGroup onChange={this.handleFavorChange} value={type}>
               <Radio value={1}>{map[1]}</Radio>
               <Radio value={2}>{map[2]}</Radio>
-              { IS_INVESTOR ? <Radio value={3}>{map[3]}</Radio> : null }
-              { IS_TRADER ? <Radio value={4}>{map[4]}</Radio> : null }
+              { hasPerm('usersys.as_investor') ? <Radio value={3}>{map[3]}</Radio> : null }
+              { hasPerm('usersys.as_trader') ? <Radio value={4}>{map[4]}</Radio> : null }
             </RadioGroup>
           </div>
           <FavoriteProjectList {...props} />
