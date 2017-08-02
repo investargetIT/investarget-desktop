@@ -123,4 +123,4 @@ class EditTimeline extends React.Component {
   }
 }
 
-export default connect(withRouter(EditTimeline))
+export default connect()(withRouter(EditTimeline))
