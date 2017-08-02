@@ -248,6 +248,11 @@ export function sendSmsCode(body) {
  */
 
 export function getSource(sourceType) {
+  if (sourceType === 'continent') {
+    return r('/source/country?level=1')
+  } else if (sourceType === 'country') {
+    return r('/source/country?level=2')
+  }
   return r(`/source/${sourceType}`)
 }
 

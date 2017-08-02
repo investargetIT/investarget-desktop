@@ -489,16 +489,18 @@ class CascaderCountry extends React.Component {
 
 function mapStateToPropsCountry (state) {
   const { continent, country } = state.app
-
   let country2continent = {}
   country.forEach(item => {
-    country2continent[item.id] = item.continent
+    const index = continent.map(m => m.id).indexOf(item.parent)
+    if (index > -1) {
+      country2continent[item.id] = continent[index].country
+    }
   })
   const options = continent.map(continent => {
     return {
-      label: continent.continent,
+      label: continent.country,
       value: continent.id,
-      children: country.filter(country => country.continent == continent.id)
+      children: country.filter(country => country.parent == continent.id)
                         .map(country => ({ label: country.country, value: country.id }))
     }
   })
