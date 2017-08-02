@@ -63,7 +63,7 @@ class UserList extends React.Component {
 
   getUser = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -76,6 +76,11 @@ class UserList extends React.Component {
       })
     })
     this.writeSetting()
+  }
+
+  handleSortChange = value => {
+    this.sort = value === 'asc' ? true : false
+    this.getUser()
   }
 
   deleteUser = (id) => {
@@ -194,8 +199,18 @@ class UserList extends React.Component {
 
         <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-        <div style={{marginBottom: '24px'}}>
-          <Search2 placeholder="搜索用户" style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
+        <div style={{ overflow: 'auto' }}>
+          <div style={{ marginBottom: '24px', float: 'left' }}>
+            <Search2 placeholder="搜索用户" style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} />
+          </div>
+
+          <div style={{ float: 'right' }}>
+            按创建时间&nbsp;
+                <Select defaultValue="desc" onChange={this.handleSortChange}>
+              <Option value="asc">正序</Option>
+              <Option value="desc">倒序</Option>
+            </Select>
+          </div>
         </div>
 
         <Table

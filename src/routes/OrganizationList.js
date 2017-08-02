@@ -3,11 +3,13 @@ import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { OrganizationListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
+
+const Option = Select.Option
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -57,7 +59,7 @@ class OrganizationList extends React.Component {
 
   getOrg = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
     this.setState({ loading: true })
     api.getOrg(params).then(result => {
       const { count: total, data: list } = result.data
@@ -70,6 +72,11 @@ class OrganizationList extends React.Component {
       })
     })
     this.writeSetting()
+  }
+
+  handleSortChange = value => {
+    this.sort = value === 'asc' ? true : false
+    this.getOrg()
   }
 
   deleteOrg = (id) => {
@@ -142,9 +149,21 @@ class OrganizationList extends React.Component {
           />
           <div>
             <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-            <div style={{ marginBottom: '16px' }}>
-              <Search2 style={{ width: 200 }} placeholder="机构名、股票代码" defaultValue={search} onSearch={this.handleSearch} />
+
+            <div style={{ overflow: 'auto' }}>
+              <div style={{ marginBottom: '16px', float: 'left' }}>
+                <Search2 style={{ width: 200 }} placeholder="机构名、股票代码" defaultValue={search} onSearch={this.handleSearch} />
+              </div>
+
+              <div style={{ float: 'right' }}>
+                按创建时间&nbsp;
+                <Select defaultValue="desc" onChange={this.handleSortChange}>
+                  <Option value="asc">正序</Option>
+                  <Option value="desc">倒序</Option>
+                </Select>
+              </div>
             </div>
+
             <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
