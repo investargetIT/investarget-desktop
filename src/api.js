@@ -458,9 +458,7 @@ export const editInDataRoom = body => r('/dataroom/file/', 'PUT', body)
 /**
  * User Relation
  */
-export function getUserRelation(param) {
-  return r('/user/relationship/?' + qs.stringify(param))
-}
+export const getUserRelation = param => r('/user/relationship/?' + qs.stringify(param))
 
 export function addUserRelation(param) {
   return r('/user/relationship/', 'POST', param)
