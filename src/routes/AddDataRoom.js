@@ -2,9 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
-import { i18n } from '../utils/util'
 import * as api from '../api'
-import { hasPerm } from '../utils/util'
+import { hasPerm, i18n, isLogin } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
@@ -54,7 +53,7 @@ class AddDataRoom extends React.Component {
             proj: parseInt(projectID, 10),
             isPublic: false,
             investor: m.investor,
-            trader: m.trader
+            trader: m.trader || isLogin().id
           }
           return api.createDataRoom(body)
         }))

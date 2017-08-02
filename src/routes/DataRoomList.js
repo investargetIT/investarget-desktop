@@ -51,9 +51,7 @@ class DataRoomList extends React.Component {
     const params = { search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.queryDataRoom(params).then(result => {
-      const { count: total, data: _list } = result.data
-      const list = _list.filter(f => f.investor && f.trader)
-      console.log(list)
+      const { count: total, data: list } = result.data
       this.setState({ loading: false, total, list })
     }, error => {
       this.setState({ loading: false })
