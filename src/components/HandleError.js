@@ -1,6 +1,7 @@
 import React from 'react'
 import { message, Modal } from 'antd'
 import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 
 class HandleError extends React.Component {
 
@@ -48,14 +49,7 @@ class HandleError extends React.Component {
         })
         break
       case 2009:
-        Modal.error({
-          title: '权限校验失败，请重新登录',
-          onOk() {
-            dispatch({
-              type: 'currentUser/logout'
-            })
-          }
-        })
+        react.props.dispatch(routerRedux.replace('/403'))
         break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)

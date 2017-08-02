@@ -121,7 +121,7 @@ class DataRoomList extends React.Component {
     }).catch(err => {
       this.props.dispatch({
         type: 'app/findError',
-        payload: error
+        payload: err
       })
     })
   }

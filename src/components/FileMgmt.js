@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
-import { getRandomInt } from '../utils/util'
+import { getRandomInt, formatBytes } from '../utils/util'
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -248,6 +248,7 @@ class FileMgmt extends React.Component {
       title: '大小',
       dataIndex: 'size',
       key: 'size',
+      render: text => text && formatBytes(text),
     }, {
       title: '修改日期',
       dataIndex: 'date',
