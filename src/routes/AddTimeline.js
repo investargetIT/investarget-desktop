@@ -1,8 +1,9 @@
 import React from 'react'
 import * as api from '../api'
+import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import { getCurrentUser } from '../utils/util'
-import { Button } from 'antd'
+import { Button, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import SelectOrganization from '../components/SelectOrganization'
@@ -22,6 +23,7 @@ class AddTimeline extends React.Component {
       current: 0,
       selectedOrgs: [],
       selectedUsers: [], // 数组项的结构 {investor: ##, trader: ##}
+      loading: false,
     }
   }
 
@@ -37,7 +39,16 @@ class AddTimeline extends React.Component {
   }
 
   handleCreate = () => {
+    Modal.confirm({
+      title: '确认',
+      content: '你确定为这些交易师或投资人创建时间轴吗？',
+      onOk: this.createTimeline,
+    })
+  }
+
+  createTimeline = () => {
     const { projId, selectedUsers } = this.state
+    this.setState({ loading: true })
     Promise.all(
       selectedUsers.map(item => {
         const params = {
@@ -50,7 +61,20 @@ class AddTimeline extends React.Component {
         return api.addTimeline(params)
       })
     ).then(results => {
-      this.props.router.replace('/app/timeline/list')
+      this.setState({ loading: false }, () => {
+        Modal.success({
+          title: '提示',
+          content: '创建时间轴成功',
+          onOk: () => { this.props.router.replace('/app/timeline/list') }
+        })
+      })
+    }, error => {
+      this.setState({ loading: false }, () => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error,
+        })
+      })
     })
   }
 
@@ -66,11 +90,16 @@ class AddTimeline extends React.Component {
     api.getProjLangDetail(this.state.projId).then(result => {
       const projTitle = result.data.projtitle
       this.setState({ projTitle })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      })
     })
   }
 
   render() {
-    const { projTitle, current, selectedOrgs, selectedUsers } = this.state
+    const { projTitle, current, selectedOrgs, selectedUsers, loading } = this.state
     const userId = getCurrentUser()
 
     return (
@@ -103,7 +132,7 @@ class AddTimeline extends React.Component {
                 { current == 1 ? (
                   <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
                     <Button onClick={ this.handleBack}>返回</Button>
-                    <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleCreate}>创建</Button>
+                    <Button disabled={selectedUsers.length == 0} loading={loading} type="primary" onClick={this.handleCreate}>创建</Button>
                   </div>
                 ) : null }
               </div>
@@ -120,7 +149,7 @@ class AddTimeline extends React.Component {
                   <SelectInvestor traderId={userId} value={selectedUsers} onChange={this.handleSelectUser} />
                 </div>
                 <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
-                  <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleCreate}>创建</Button>
+                  <Button disabled={selectedUsers.length == 0} loading={loading} type="primary" onClick={this.handleCreate}>创建</Button>
                 </div>
               </div>
             ) : null
@@ -132,4 +161,4 @@ class AddTimeline extends React.Component {
   }
 }
 
-export default withRouter(AddTimeline)
+export default connect()(withRouter(AddTimeline))
