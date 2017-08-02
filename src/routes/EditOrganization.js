@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
 import * as api from '../api'
 
@@ -58,7 +59,10 @@ class EditOrganization extends React.Component {
         api.editOrg(id, values).then((result) => {
           this.props.history.goBack()
         }, (error) => {
-          console.error(error)
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -83,7 +87,10 @@ class EditOrganization extends React.Component {
       console.log(data)
       this.setState({ data })
     }, error => {
-      console.error(error)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -113,4 +120,4 @@ class EditOrganization extends React.Component {
   }
 }
 
-export default EditOrganization
+export default connect()(EditOrganization)

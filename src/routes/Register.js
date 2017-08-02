@@ -108,6 +108,11 @@ class Register extends React.Component {
         return { id: item.id, name: item.orgname }
       })
       this.setState({ org: org })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -216,12 +221,16 @@ class Register extends React.Component {
       this.setState({
         loading: false
       })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
   handleCountryChange(countryID) {
     const areaCode = this.findAreaCodeByCountryID(countryID)
-    this.setState({ 
+    this.setState({
       areaCode: areaCode,
       countryID: countryID
     })
@@ -231,7 +240,7 @@ class Register extends React.Component {
     const areaCode = evt.target.value
     const country = this.props.country.filter(f => f.areaCode === areaCode)
     const countryID = country.length > 0 ? country[0].id : 'unknow'
-    this.setState({ 
+    this.setState({
       areaCode: areaCode,
       countryID: countryID
     })
@@ -295,7 +304,7 @@ class Register extends React.Component {
                 <Password />
                 <ConfirmPassword />
                 <Agreement />
-                <Submit loading={this.props.loading} /> 
+                <Submit loading={this.props.loading} />
               </Form>
 
           </MainLayout>

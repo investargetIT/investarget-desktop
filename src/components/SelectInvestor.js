@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { Search2 } from './Search'
@@ -42,6 +43,11 @@ class SelectInvestor extends React.Component {
       const { count: total, data } = result.data
       const list = data.map(item => item.investoruser)
       this.setState({ loading: false, total, list })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -81,4 +87,4 @@ class SelectInvestor extends React.Component {
   }
 }
 
-export default SelectInvestor
+export default connect()(SelectInvestor)

@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Form, Icon, Row, Col, Tabs, Button, Modal, Popconfirm, message } from 'antd'
 import * as api from '../api'
 import YearFinanceForm from './YearFinanceForm'
@@ -91,6 +92,11 @@ class ProjectYearFinance extends React.Component {
           this.setState({ showAddModal: false })
           this.addForm.resetFields()
           this.getFinance()
+        }, error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -112,7 +118,10 @@ class ProjectYearFinance extends React.Component {
           this.setState({ showEditModal: false, editId: null, editData: {} })
           this.getFinance()
         }, error => {
-          message.error(error.message)
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -126,7 +135,10 @@ class ProjectYearFinance extends React.Component {
     api.deleteProjFinance(id).then(result => {
       this.getFinance()
     }, error => {
-      message.error(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -135,6 +147,11 @@ class ProjectYearFinance extends React.Component {
     api.getProjFinance(id).then(result => {
       console.log(result.data)
       this.setState({ finance: result.data.data })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -190,4 +207,4 @@ class ProjectYearFinance extends React.Component {
 }
 
 
-export default ProjectYearFinance
+export default connect()(ProjectYearFinance)

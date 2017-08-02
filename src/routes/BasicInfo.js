@@ -16,7 +16,7 @@ class BasicInfo extends React.Component {
   getChildContext() {
     return {
       form: this.props.form
-    }   
+    }
   }
   handleSubmit(e) {
     e.preventDefault()
@@ -36,6 +36,11 @@ class BasicInfo extends React.Component {
           })
           message.success('个人信息修改成功')
           this.props.dispatch(routerRedux.replace('/app'))
+        }, error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -56,6 +61,11 @@ class BasicInfo extends React.Component {
       this.props.dispatch({
         type: 'currentUser/save',
         userInfo
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
       })
     })
   }

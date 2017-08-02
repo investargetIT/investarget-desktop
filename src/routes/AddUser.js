@@ -24,7 +24,10 @@ class AddUser extends React.Component {
         api.addUser(values).then(result => {
           // TODO// redirect to list ?
         }, error => {
-          Modal.error({ title: '错误', content: error.message })
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })

@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { i18n, shwoError } from '../utils/util'
 
 import { Icon, Table, Pagination } from 'antd'
@@ -58,11 +59,17 @@ class EmailDetail extends React.Component {
         })
         this.setState({ total, list, loading: false })
       }, error => {
-        showError(error.message)
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
     this.writeSetting()
   }
@@ -130,4 +137,4 @@ class EmailDetail extends React.Component {
   }
 }
 
-export default EmailDetail
+export default connect()(EmailDetail)

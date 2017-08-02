@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Modal, Button, Icon, Popconfirm } from 'antd'
 
 import * as api from '../api'
@@ -42,6 +43,11 @@ class UserRelationModal extends React.Component {
     api.deleteUserRelation(id).then(result => {
       //
       this.getUserRelation()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -51,6 +57,11 @@ class UserRelationModal extends React.Component {
     api.addUserRelation(param).then(result => {
       //
       this.getUserRelation()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -67,6 +78,11 @@ class UserRelationModal extends React.Component {
     api.getUserRelation(param).then(result => {
       const data = result.data.data
       this.setState({ data })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -76,6 +92,11 @@ class UserRelationModal extends React.Component {
       const transactions = result.data.data
       const options = transactions.map(item => ({ value: item.id, label: item.username }))
       this.setState({ options })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -87,7 +108,7 @@ class UserRelationModal extends React.Component {
           {
             this.state.data.map((item, index) =>
               <p key={item.id}>
-                {item.traderuser.username}
+                <span style={{ color: item.relationtype ? 'red' : 'rgba(0,0,0,.65)' }}>{item.traderuser.username}</span>
                 <Popconfirm title="删除关联交易师" onConfirm={this.deleteRelation.bind(this, item.id)}>
                   <Icon type="close" style={deleteIconStyle} />
                 </Popconfirm>
@@ -106,4 +127,4 @@ class UserRelationModal extends React.Component {
 }
 
 
-export default UserRelationModal
+export default connect()(UserRelationModal)

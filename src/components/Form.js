@@ -287,13 +287,13 @@ const Status = props => (
 
 const UploadAvatar = (props, context) => {
 
-  const uploadStyle = { 
-    display: 'block', 
-    border: '1px dashed #d9d9d9', 
-    borderRadius: 6, 
-    cursor: 'pointer', 
-    width: 150, 
-    height: 150 
+  const uploadStyle = {
+    display: 'block',
+    border: '1px dashed #d9d9d9',
+    borderRadius: 6,
+    cursor: 'pointer',
+    width: 150,
+    height: 150
   }
 
   function normFile(e) {
@@ -319,11 +319,11 @@ const UploadAvatar = (props, context) => {
           getValueFromEvent: normFile,
         })(
           <Upload
-          name="avatar" 
+          name="avatar"
           action={props.photoKey ? "http://192.168.1.201:8000/service/qiniucoverupload?bucket=image&key=" + props.photoKey : "http://192.168.1.201:8000/service/qiniubigupload?bucket=image"}
           onChange={handleChange}
           style={uploadStyle}>
-            { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, height: 150 }} alt="" /> :  
+            { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, height: 150 }} alt="" /> :
             <Icon type="plus" style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
             }
           </Upload>
@@ -340,7 +340,7 @@ UploadAvatar.contextTypes = {
 
 
 
-const CurrencyFormItem = ({ label, name, required, validator, currencyType }, context) => {
+let CurrencyFormItem = ({ label, name, required, validator, currencyType }, context) => {
   const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
 
   function onChange(value) {
@@ -349,6 +349,11 @@ const CurrencyFormItem = ({ label, name, required, validator, currencyType }, co
     exchange(currencyMap[String(currency)]).then((rate) => {
       setFieldsValue({
         [name + '_USD']: value == undefined ? value : Math.round(value * rate),
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
       })
     })
   }
@@ -390,6 +395,7 @@ const CurrencyFormItem = ({ label, name, required, validator, currencyType }, co
 CurrencyFormItem.contextTypes = {
   form: PropTypes.object
 }
+CurrencyFormItem = connect()(CurrencyFormItem)
 
 
 class IndustryDynamicFormItem extends React.Component {

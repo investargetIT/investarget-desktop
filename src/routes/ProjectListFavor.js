@@ -1,5 +1,6 @@
 import React from 'react'
-import { i18n, showError, isLogin } from '../utils/util'
+import { connect } from 'dva'
+import { i18n, isLogin } from '../utils/util'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import FavoriteProjectList from '../components/FavoriteProjectList'
@@ -35,7 +36,10 @@ class ProjectListRecommend extends React.Component {
       this.setState({ loading: false, total, list })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -59,4 +63,4 @@ class ProjectListRecommend extends React.Component {
 
 
 
-export default ProjectListRecommend
+export default connect()(ProjectListRecommend)

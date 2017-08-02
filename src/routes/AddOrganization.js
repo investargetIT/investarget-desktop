@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
 import * as api from '../api'
 
@@ -44,7 +45,10 @@ class AddOrganization extends React.Component {
         api.addOrg(values).then((result) => {
           this.props.history.goBack()
         }, (error) => {
-          console.error(error)
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -71,4 +75,4 @@ class AddOrganization extends React.Component {
   }
 }
 
-export default AddOrganization
+export default connect()(AddOrganization)

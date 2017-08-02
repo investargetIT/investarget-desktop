@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Input, Table, Pagination, Button, message } from 'antd'
 import { Search } from '../components/Search'
 import MainLayout from '../components/MainLayout'
@@ -64,6 +65,11 @@ class RecommendProject extends React.Component {
     api.getProjLangDetail(projId).then(result => {
       const projTitle = result.data.projtitle
       this.setState({ projTitle })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -76,6 +82,11 @@ class RecommendProject extends React.Component {
         const data = result.data.data
         const list = data.map(item => item.investoruser)
         this.setState({ loading: false, total, list })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     } else if (groupId == 3) {
       this.setState({ loading: true })
@@ -83,6 +94,11 @@ class RecommendProject extends React.Component {
         const total = result.data.count
         const list = result.data.data
         this.setState({ loading: false, total, list })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }
   }
@@ -106,6 +122,11 @@ class RecommendProject extends React.Component {
     })
     Promise.all(q).then(results => {
       message.success('推荐成功', 2)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -158,4 +179,4 @@ class RecommendProject extends React.Component {
 }
 
 
-export default RecommendProject
+export default connect()(RecommendProject)

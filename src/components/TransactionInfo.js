@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'dva'
 import { Row, Col, Select } from 'antd'
 const Option = Select.Option
 
@@ -64,6 +64,11 @@ class TransactionInfo extends React.Component {
         this.getTransactionInfo(traderId)
         this.setState({ score: data.score })
       }
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -83,6 +88,11 @@ class TransactionInfo extends React.Component {
         title, tags, country, org, mobile, wechat, email
       })
 
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -118,4 +128,4 @@ class TransactionInfo extends React.Component {
   }
 }
 
-export default TransactionInfo
+export default connect()(TransactionInfo)

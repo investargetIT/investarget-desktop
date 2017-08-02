@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Pagination } from 'antd'
 import { getMsg, readMsg } from '../api'
@@ -93,7 +94,7 @@ class InboxList extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = { 
+    this.state = {
       data: data,
       currentId: 1,
       total: data.length,
@@ -124,6 +125,11 @@ class InboxList extends React.Component {
     readMsg(id).then(data => {
       msg.isRead = true
       this.setState({ data: this.state.data })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -139,22 +145,27 @@ class InboxList extends React.Component {
         return { ...m, title, detail }
       })
       history.pushState('', `?page_index=${newIndex}`)
-      this.setState({ 
-        data: list, 
+      this.setState({
+        data: list,
         total: data.data.count,
         pageIndex: newIndex
       })
-    }) 
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   render () {
     return (
-      <LeftRightLayout 
-        style={{ background: 'white', overflow: 'auto' }} 
+      <LeftRightLayout
+        style={{ background: 'white', overflow: 'auto' }}
         location={this.props.location}>
 
         <div style={leftContainerStyle}>
-          
+
           <div style={headerStyle}>消息列表</div>
 
           <div><ul>
@@ -172,7 +183,7 @@ class InboxList extends React.Component {
         </div>
 
         <div style={rightContainerStyle}>
-          
+
           <div style={headerStyle}>消息详情</div>
 
           <div style={{ padding: '30px 14px', fontSize: 13, lineHeight: 1.8 }}>
@@ -187,4 +198,4 @@ class InboxList extends React.Component {
   }
 }
 
-export default InboxList
+export default connect()(InboxList)

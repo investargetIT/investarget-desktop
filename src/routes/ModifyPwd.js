@@ -24,9 +24,14 @@ function ModifyPwd(props) {
           message.success('密码修改成功')
           props.dispatch(routerRedux.replace('/app'))
         })
-        .catch(err => message.error(err.message))
+        .catch(err => {
+          props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
+        })
       }
-    })  
+    })
   }
 
   return (

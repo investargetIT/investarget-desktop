@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import * as api from '../api'
 
 import RemarkList, {RemarkListReadOnly} from './RemarkList'
@@ -35,6 +36,11 @@ class TimelineRemarkList extends React.Component {
         return a < b
       })
       this.setState({ list })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -45,6 +51,11 @@ class TimelineRemarkList extends React.Component {
     }
     return api.addTimelineRemark(data).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -55,12 +66,22 @@ class TimelineRemarkList extends React.Component {
     }
     return api.editTimelineRemark(id, data).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
   deleteRemark = (id) => {
     return api.deleteTimelineRemark(id).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -78,4 +99,4 @@ class TimelineRemarkList extends React.Component {
   }
 }
 
-export default TimelineRemarkList
+export default connect()(TimelineRemarkList)

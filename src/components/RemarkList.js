@@ -61,7 +61,10 @@ class RemarkList extends React.Component {
       this.setState({ showAdd: false, remark: '' })
     }, error => {
       this.setState({ showAdd: false, remark: '' })
-      Modal.error({ title: '错误', content: error.message })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -81,7 +84,10 @@ class RemarkList extends React.Component {
       this.setState({ showEdit: false, remark: '', editId: null })
     }, error => {
       this.setState({ showEdit: false, remark: '', editId: null })
-      Modal.error({ title: '错误', content: error.message })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -93,7 +99,10 @@ class RemarkList extends React.Component {
     this.props.deleteRemark(id).then(result => {
       //
     }, error => {
-      Modal.error({ title: '错误', content: error.message })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 

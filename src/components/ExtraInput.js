@@ -236,6 +236,11 @@ class SelectOrganization extends React.Component {
         return { id: item.id, name: item.orgname }
       })
       this.setState({ org: org })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -253,6 +258,7 @@ class SelectOrganization extends React.Component {
     )
   }
 }
+SelectOrganization = connect()(SelectOrganization)
 
 /**
  * SelectExistOrganization
@@ -276,6 +282,11 @@ class SelectExistOrganization extends React.Component {
             return obj
           })
         })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }
   }
@@ -285,6 +296,11 @@ class SelectExistOrganization extends React.Component {
       const org = result.data
       this.setState({
         org: [{ value: org.id, label: org.orgname }],
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
       })
     })
   }
@@ -299,6 +315,11 @@ class SelectExistOrganization extends React.Component {
           return { value: item.id, label: item.orgname }
         })
         this.setState({ org })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }
   }
@@ -332,6 +353,7 @@ class SelectExistOrganization extends React.Component {
     )
   }
 }
+SelectExistOrganization = connect()(SelectExistOrganization)
 
 
 /**
@@ -346,6 +368,11 @@ class SelectUser extends React.Component {
       this.setState({
         data: result.data.data
       })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
   render() {
@@ -356,6 +383,7 @@ class SelectUser extends React.Component {
     )
   }
 }
+SelectUser = connect()(SelectUser)
 
 /**
  * SelectTransactionStatus
@@ -395,6 +423,11 @@ class SelectUserGroup extends React.Component {
       const groups = result.data.data
       const options = groups.map(item => ({ label: item.name, value: item.id }))
       this.setState({ options })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -405,6 +438,7 @@ class SelectUserGroup extends React.Component {
     )
   }
 }
+SelectUserGroup = connect()(SelectUserGroup)
 
 /**
  * SelectTitle

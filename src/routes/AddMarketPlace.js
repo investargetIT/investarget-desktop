@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Form, Button, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -44,7 +45,10 @@ class AddMarketPlace extends React.Component {
         api.createProj(param).then(result => {
           this.props.router.goBack()
         }, error => {
-          message.error(error.message)
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -72,4 +76,4 @@ class AddMarketPlace extends React.Component {
   }
 }
 
-export default withRouter(AddMarketPlace)
+export default connect()(withRouter(AddMarketPlace))

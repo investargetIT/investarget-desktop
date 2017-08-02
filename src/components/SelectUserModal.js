@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Table, Pagination, Button, Input, Modal } from 'antd'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 
 // import { UserListFilter } from './Filter'
 import { Search } from './Search'
@@ -64,7 +65,10 @@ class SelectUser extends React.Component {
       this.setState({ loading: false, total, list })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -205,6 +209,11 @@ class SelectUserModal extends React.Component {
     api.getUserDetailLang(userId).then(result => {
       const user = result.data
       this.setState({ user })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -253,4 +262,4 @@ class SelectUserModal extends React.Component {
 }
 
 
-export default SelectUserModal
+export default connect()(SelectUserModal)

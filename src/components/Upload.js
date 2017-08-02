@@ -1,6 +1,6 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Upload, Button, Icon, Modal, message } from 'antd'
-import { showError } from '../utils/util'
 
 const fileExtensions = [
   '.pdf',
@@ -98,7 +98,10 @@ class UploadFile extends React.Component {
     this.removeAttachment(file).then(result => {
       this.setState({ fileList: [] }, this.onChange)
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -163,6 +166,7 @@ class UploadFile extends React.Component {
   }
 }
 
+UploadFile = connect()(UploadFile)
 
 
 const buttonStyle = {
@@ -199,6 +203,11 @@ class UploadImage extends React.Component {
       api.downloadUrl(file.bucket, file.key).then(result => {
         file['url'] = result.data
         this.state = { fileList: [file] }
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     } else {
       this.state = { fileList: [] }
@@ -258,7 +267,10 @@ class UploadImage extends React.Component {
     this.removeAttachment(file).then(result => {
       this.setState({ fileList: [] }, this.onChange)
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -295,6 +307,11 @@ class UploadImage extends React.Component {
       api.downloadUrl(file.bucket, file.key).then(result => {
         file['url'] = result.data
         this.setState({ fileList: [file] })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     } else {
       this.setState({ fileList: [] })
@@ -326,5 +343,7 @@ class UploadImage extends React.Component {
     )
   }
 }
+
+UploadImage = connect()(UploadImage)
 
 export { UploadFile, UploadImage }

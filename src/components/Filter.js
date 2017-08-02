@@ -206,6 +206,11 @@ class GroupFilter extends React.Component {
         return { value: item.id, label: item.name }
       })
       this.setState({ groups })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -227,7 +232,7 @@ class GroupFilter extends React.Component {
     )
   }
 }
-
+GroupFilter = connect()(GroupFilter)
 
 
 /*******************************/

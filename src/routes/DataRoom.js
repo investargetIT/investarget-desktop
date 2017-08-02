@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as Api from '../api'
@@ -79,7 +80,7 @@ class DataRoomList extends React.Component {
       this.dataRoomRelation[this.props.location.query.id] = -3
       this.dataRoomRelation[data[1].data.data[0].id] = -2
       this.dataRoomRelation[data[0].data.data[0].id] = -1
-      
+
       const newData = this.state.data.slice()
       newData[0]['dataroom'] = parseInt(this.props.location.query.id, 10)
       newData[1]['dataroom'] = data[1].data.data[0].id
@@ -117,7 +118,12 @@ class DataRoomList extends React.Component {
       })).reduce((acc, val) => acc.concat(val), [])
       const newData = this.state.data.concat(formattedData)
       this.setState({ data: newData })
-    }).catch(err => console.error(err))
+    }).catch(err => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   handleCreateNewFolder(parentId) {
@@ -175,6 +181,11 @@ class DataRoomList extends React.Component {
         const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     } else {
       // Rename
@@ -185,6 +196,11 @@ class DataRoomList extends React.Component {
       Api.editInDataRoom(body).then(data => {
         newData[index].name = newData[index].rename
         this.setState({ data: newData })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }
   }
@@ -215,6 +231,11 @@ class DataRoomList extends React.Component {
         newData.splice(index, 1)
       })
       this.setState({ data: newData })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -248,8 +269,13 @@ class DataRoomList extends React.Component {
         const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
-    }) 
+    })
   }
 
   handleOnMoveFiles(files, targetID) {
@@ -262,6 +288,11 @@ class DataRoomList extends React.Component {
         const index = this.state.data.map(m => m.id).indexOf(m.id)
         this.state.data[index].parentId = targetID
         this.setState({ data: this.state.data })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     })
   }
@@ -292,6 +323,11 @@ class DataRoomList extends React.Component {
       const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
       newData.push(newItem)
       this.setState({ data: newData })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -303,13 +339,13 @@ class DataRoomList extends React.Component {
 
         <FileMgmt
           data={this.state.data}
-          onCreateNewFolder={this.handleCreateNewFolder.bind(this)} 
-          onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)} 
-          onConfirm={this.handleConfirm.bind(this)} 
-          onCancel={this.handleCancel.bind(this)} 
-          onDeleteFiles={this.handleDeleteFiles.bind(this)} 
-          onCopyFiles={this.handleCopyFiles.bind(this)} 
-          onMoveFiles={this.handleOnMoveFiles.bind(this)} 
+          onCreateNewFolder={this.handleCreateNewFolder.bind(this)}
+          onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)}
+          onConfirm={this.handleConfirm.bind(this)}
+          onCancel={this.handleCancel.bind(this)}
+          onDeleteFiles={this.handleDeleteFiles.bind(this)}
+          onCopyFiles={this.handleCopyFiles.bind(this)}
+          onMoveFiles={this.handleOnMoveFiles.bind(this)}
           onUploadFile={this.handleUploadFile.bind(this)} />
 
       </LeftRightLayout>
@@ -317,4 +353,4 @@ class DataRoomList extends React.Component {
   }
 }
 
-export default DataRoomList
+export default connect()(DataRoomList)

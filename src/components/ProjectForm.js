@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
 import { i18n, exchange, hasPerm } from '../utils/util'
 import * as api from '../api'
@@ -115,6 +116,11 @@ class ProjectFinanceForm extends React.Component {
         values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
       })
       setFieldsValue(values)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -143,6 +149,8 @@ class ProjectFinanceForm extends React.Component {
     )
   }
 }
+
+ProjectFinanceForm = connect()(ProjectFinanceForm)
 
 
 // currentUserId

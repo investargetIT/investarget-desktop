@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 import { connect } from 'dva'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
@@ -64,7 +64,10 @@ class OrganizationList extends React.Component {
       this.setState({ total, list, loading: false })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
     this.writeSetting()
   }

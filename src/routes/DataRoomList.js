@@ -57,10 +57,14 @@ class DataRoomList extends React.Component {
       this.setState({ loading: false, total, list })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
     this.writeSetting()
   }
+
 
   deleteDataRoom = (id) => {
     // TODO
@@ -145,4 +149,4 @@ class DataRoomList extends React.Component {
 
 }
 
-export default DataRoomList
+export default connect()(DataRoomList)

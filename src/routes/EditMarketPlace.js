@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Form, Button, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -79,7 +80,10 @@ class EditMarketPlace extends React.Component {
         marketPlace: data
       })
     }, error => {
-      message.error(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -92,7 +96,10 @@ class EditMarketPlace extends React.Component {
           message.success('Market Place 已更新')
           this.props.router.goBack()
         }, error => {
-          message.error(error.message)
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -127,4 +134,4 @@ class EditMarketPlace extends React.Component {
   }
 }
 
-export default withRouter(EditMarketPlace)
+export default connect()(withRouter(EditMarketPlace))

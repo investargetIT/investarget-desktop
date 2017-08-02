@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney } from '../utils/util'
 
@@ -33,6 +34,11 @@ class ProjectFinanceYear extends React.Component {
     const id = this.props.projId
     api.getProjFinance(id).then(result => {
       this.setState({ finance: result.data.data })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -65,7 +71,7 @@ class ProjectFinanceYear extends React.Component {
   }
 
 }
-
+ProjectFinanceYear = connect()(ProjectFinanceYear)
 
 
 class ProjectDetail extends React.Component {
@@ -95,7 +101,10 @@ class ProjectDetail extends React.Component {
       const favorId = data[0] && data[0].id
       this.setState({ isFavorite, favorId })
     }, error => {
-      error.message(error.message, 2)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -110,7 +119,10 @@ class ProjectDetail extends React.Component {
       message.success('收藏成功', 2)
       this.getFavorProject()
     }, error => {
-      message.error(error.message, 2)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -122,7 +134,10 @@ class ProjectDetail extends React.Component {
       this.setState({ isFavorite: false, favorId: null })
       message.success('取消收藏成功', 2)
     }, error => {
-      message.error(error.message, 2)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -141,7 +156,10 @@ class ProjectDetail extends React.Component {
     api.projFavorite(params).then(result => {
       message.success('感兴趣成功', 2)
     }, error => {
-      message.error(error.message, 2)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -150,6 +168,11 @@ class ProjectDetail extends React.Component {
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
 
     this.getFavorProject()
@@ -161,6 +184,11 @@ class ProjectDetail extends React.Component {
       const trader = relation && relation.traderuser.id
       const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
       this.setState({ traderOptions, trader })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -332,4 +360,4 @@ class ProjectDetail extends React.Component {
 }
 
 
-export default ProjectDetail
+export default connect()(ProjectDetail)

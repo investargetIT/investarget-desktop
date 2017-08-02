@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
 import { i18n, exchange } from '../utils/util'
 
@@ -63,6 +64,11 @@ class OrganizationForm extends React.Component {
         values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
       })
       setFieldsValue(values)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -183,4 +189,4 @@ class OrganizationForm extends React.Component {
   }
 }
 
-export default injectIntl(OrganizationForm)
+export default connect()(injectIntl(OrganizationForm))

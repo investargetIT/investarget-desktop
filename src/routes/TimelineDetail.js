@@ -1,7 +1,7 @@
 import React from 'react'
 import { injectIntl, intlShape } from 'react-intl'
+import { connect } from 'dva'
 import * as api from '../api'
-import { showError } from '../utils/util'
 import { Row, Col } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -54,7 +54,10 @@ class TimelineDetail extends React.Component {
       createdTime = formatDate(createdTime) + ' ' + formatTime(createdTime)
       this.setState({ status, alertCycle, createdTime })
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -81,4 +84,4 @@ class TimelineDetail extends React.Component {
 
 
 
-export default injectIntl(TimelineDetail)
+export default connect()(injectIntl(TimelineDetail))

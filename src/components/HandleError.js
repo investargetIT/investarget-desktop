@@ -23,7 +23,7 @@ class HandleError extends React.Component {
         console.error(error)
     }
   }
-  
+
   handleComError(error) {
     console.error(error)
   }
@@ -47,8 +47,18 @@ class HandleError extends React.Component {
           content: msg,
         })
         break
+      case 2009:
+        Modal.error({
+          title: '权限校验失败，请重新登录',
+          onOk() {
+            dispatch({
+              type: 'currentUser/logout'
+            })
+          }
+        })
+        break
       default:
-        message.error(`Api Error, code: ${code}, message: ${msg}`)
+        message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }
   }
 

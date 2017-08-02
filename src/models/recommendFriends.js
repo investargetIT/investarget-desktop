@@ -45,9 +45,6 @@ export default {
 
       try {
         yield call(api.addFriend, token, { user: id, friend: selectedFriends })
-      } catch (e) {
-        // TODO 错误处理
-        console.error(e)
       } finally {
         yield put({ type: 'app/registerStepForward' })
       }

@@ -111,7 +111,10 @@ class EditProject extends React.Component {
         project: data
       })
     }, error => {
-      message.error(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -124,7 +127,10 @@ class EditProject extends React.Component {
           message.success('项目已更新')
           this.getProject()
         }, error => {
-          message.error(error.message)
+         this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
         })
       }
     })
@@ -216,4 +222,4 @@ class EditProject extends React.Component {
   }
 }
 
-export default EditProject
+export default connect()(EditProject)

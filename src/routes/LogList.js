@@ -30,6 +30,11 @@ class LogList extends React.Component {
         data: data.data.data,
         loading: false
       })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -51,6 +56,11 @@ class LogList extends React.Component {
         current: page,
         data: data.data.data,
         loading: false
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
       })
     })
 

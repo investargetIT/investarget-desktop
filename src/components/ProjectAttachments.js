@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
 import {
@@ -156,7 +157,10 @@ class ProjectAttachments extends React.Component {
         fileList: [ ...this.state.fileList.slice(0, index), ...this.state.fileList.slice(index+1) ]
       })
     }, error => {
-      message.error(error.message, 2)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -165,6 +169,11 @@ class ProjectAttachments extends React.Component {
     const projId = this.props.projId
     return api.getProjAttachment(projId).then(result => {
       return result.data.data
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -179,6 +188,11 @@ class ProjectAttachments extends React.Component {
     }
     return api.addProjAttachment(data).then(result => {
       console.log(result)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -193,6 +207,11 @@ class ProjectAttachments extends React.Component {
         // 删除已有附件
         return api.deleteProjAttachment(id).then(result => {
           return api.qiniuDelete(bucket, key)
+        }, error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       } else {
         // 上传完成，添加附件失败时，删除
@@ -252,7 +271,10 @@ class ProjectAttachments extends React.Component {
         dirs: [ ...this.state.dirs, ...otherDirs ],
       })
     }, error => {
-      console.error(error)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -303,4 +325,4 @@ class ProjectAttachments extends React.Component {
   }
 }
 
-export default ProjectAttachments
+export default connect()(ProjectAttachments)

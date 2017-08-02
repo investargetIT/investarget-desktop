@@ -1,8 +1,8 @@
 import React from 'react'
+import { connect } from 'dva'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 
-import { showError } from '../utils/util'
 
 const iframeStyle = {
   border: 'none',
@@ -28,10 +28,16 @@ class MarketPlaceDetail extends React.Component {
         const linkpdfurl = result.data
         this.setState({ linkpdfurl })
       }, error => {
-        showError(error.message)
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -60,4 +66,4 @@ class MarketPlaceDetail extends React.Component {
 }
 
 
-export default MarketPlaceDetail
+export default connect()(MarketPlaceDetail)

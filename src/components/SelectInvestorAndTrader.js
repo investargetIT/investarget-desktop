@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from './ExtraInput'
@@ -27,6 +28,11 @@ class SelectUserTransaction extends React.Component {
         }
       })
       this.props.onOptionsChange(options)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -95,7 +101,10 @@ class SelectInvestorAndTrader extends React.Component {
       this.setState({ total, list, loading: false, traderMap: { ...traderMap, ..._traderMap } })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -173,4 +182,4 @@ class SelectInvestorAndTrader extends React.Component {
 
 }
 
-export default SelectInvestorAndTrader
+export default connect()(SelectInvestorAndTrader)

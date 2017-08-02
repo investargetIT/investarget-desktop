@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
@@ -125,7 +126,12 @@ class SelectTraderToRelation extends React.Component {
         relationtype: false
       })
       .then(data => this.props.history.goBack())
-      .catch(err => console.error(err))
+      .catch(err => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
     })
   }
 
@@ -182,4 +188,4 @@ class SelectTraderToRelation extends React.Component {
 
 }
 
-export default SelectTraderToRelation
+export default connect()(SelectTraderToRelation)

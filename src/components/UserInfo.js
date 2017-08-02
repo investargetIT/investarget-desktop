@@ -1,7 +1,6 @@
 import React from 'react'
-
+import { connect } from 'dva'
 import { Row, Col } from 'antd'
-import { showError } from '../utils/util'
 
 
 const rowStyle = {
@@ -60,7 +59,10 @@ class UserInfo extends React.Component {
         username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl
       })
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -89,4 +91,4 @@ class UserInfo extends React.Component {
   }
 }
 
-export default UserInfo
+export default connect()(UserInfo)

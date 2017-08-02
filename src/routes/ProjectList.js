@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError, getGroup, hasPerm } from '../utils/util'
+import { i18n, getGroup, hasPerm } from '../utils/util'
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -79,7 +80,10 @@ class ProjectList extends React.Component {
       this.setState({ total, list, loading: false })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
     this.writeSetting()
   }
@@ -98,7 +102,10 @@ class ProjectList extends React.Component {
       this.getProject()
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -268,4 +275,4 @@ class ProjectList extends React.Component {
 
 
 
-export default ProjectList
+export default connect()(ProjectList)

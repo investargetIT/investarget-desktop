@@ -138,6 +138,11 @@ class PermList extends React.Component {
         value: groupPerms,
         groups: data.data.data
       })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -145,12 +150,22 @@ class PermList extends React.Component {
     return (value) => {
       const groupToBeUpdated = this.convertPermsToFormatted().filter(f => f.id === key)[0] || this.state.groups.filter(f => f.id === key)[0]
       groupToBeUpdated.name = value
-      updateUserGroup(key, groupToBeUpdated).then(data => this.setUserGroup())
+      updateUserGroup(key, groupToBeUpdated).then(data => this.setUserGroup(), error=> {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
     }
   }
 
   onDelete(groupId) {
-    deleteUserGroup(groupId).then(data => this.setUserGroup())
+    deleteUserGroup(groupId).then(data => this.setUserGroup(), error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   onChange(checkedValues, second) {
@@ -169,7 +184,10 @@ class PermList extends React.Component {
       .catch(error => {
         this.setState({loading: false})
         console.error(error)
-        message.error(error.message)
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
   }
 
@@ -199,6 +217,11 @@ class PermList extends React.Component {
       createGroup(this.state.newGroup).then(date => {
         this.setUserGroup()
         this.setState({ newGroup: '' })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }
   }

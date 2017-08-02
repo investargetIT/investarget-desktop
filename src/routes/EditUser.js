@@ -34,7 +34,10 @@ class EditUser extends React.Component {
           let url = this.props.location.query.redirect || "/app/user/list"
           this.props.dispatch(routerRedux.replace(url))
         }, error => {
-
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })

@@ -1,7 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-import { showError } from '../utils/util'
 import { Form, Button, InputNumber } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -48,7 +48,10 @@ class EditTimeline extends React.Component {
         api.editTimeline(id, params).then(result => {
           this.props.router.goBack()
         }, error => {
-          showError(error.message)
+          this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
         })
       }
     })
@@ -84,10 +87,16 @@ class EditTimeline extends React.Component {
           data: { status, cycle, transaction }
         })
       }, error => {
-        showError(error.message)
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error,
+        })
       })
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      })
     })
 
 
@@ -114,4 +123,4 @@ class EditTimeline extends React.Component {
   }
 }
 
-export default withRouter(EditTimeline)
+export default connect(withRouter(EditTimeline))

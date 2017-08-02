@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
-import { i18n, showError, hasPerm } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
 
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -84,7 +84,10 @@ class UserList extends React.Component {
       this.getUser()
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'findError',
+        payload: error,
+      })
     })
   }
 

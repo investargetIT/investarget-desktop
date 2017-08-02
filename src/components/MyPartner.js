@@ -83,7 +83,10 @@ class MyPartner extends React.Component {
       })
     }).catch(err => {
       this.setState({ loading: false })
-      console.error(err)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 

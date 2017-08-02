@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, i18n } from '../utils/util'
 import { Link } from 'dva/router'
@@ -166,7 +167,12 @@ class OrganizationDetail extends React.Component {
       })
       this.setState({ data: newData })
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   onRemoveUserPosition(positionID, userID) {
@@ -183,7 +189,12 @@ class OrganizationDetail extends React.Component {
     })
     api.editUser([userID], { title: null })
     .then(data => console.log(data))
-    .catch(err => console.error(err))
+    .catch(err => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   handleAddUser(orgID, titleID) {
@@ -205,7 +216,12 @@ class OrganizationDetail extends React.Component {
         const title = this.titleID
         const org = this.props.params.id
         const body = { ... values, org, title }
-        api.addUnreachUser(body).then(data => this.setState({ visible: false }))
+        api.addUnreachUser(body).then(data => this.setState({ visible: false }), error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
+        })
       }
     })
   }
@@ -248,15 +264,15 @@ class OrganizationDetail extends React.Component {
               orgID={m.org}
               position={m.position}
               user={m.user}
-              onRemoveUserPosition={this.onRemoveUserPosition.bind(this)} 
-              pathname={this.props.location.pathname} 
+              onRemoveUserPosition={this.onRemoveUserPosition.bind(this)}
+              pathname={this.props.location.pathname}
               onAddButtonClicked={this.handleAddUser.bind(this)} />
           </div>)}
         </div>
 
         <Modal
           title="添加投资人"
-          visible={this.state.visible} 
+          visible={this.state.visible}
           onOk={this.handleSubmit}
           onCancel={this.handleCancel}>
 
@@ -273,4 +289,4 @@ class OrganizationDetail extends React.Component {
   }
 }
 
-export default Form.create()(OrganizationDetail)
+export default connect()(Form.create()(OrganizationDetail))

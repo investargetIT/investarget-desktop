@@ -53,7 +53,10 @@ class AddProject extends React.Component {
           this.props.router.replace('/app/projects/published')
         })
       } else {
-        message.error(err.message)
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       }
     })
   }
@@ -81,4 +84,4 @@ class AddProject extends React.Component {
 
 }
 
-export default withRouter(AddProject)
+export default connect()(withRouter(AddProject))

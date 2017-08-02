@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError, hasPerm, getCurrentUser } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -74,7 +74,10 @@ class TimelineList extends React.Component {
       this.setState({ total, list, loading: false })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
     this.writeSetting()
   }
@@ -83,7 +86,10 @@ class TimelineList extends React.Component {
     api.deleteTimeline(id).then(result => {
       this.getTimeline()
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -164,6 +170,6 @@ class TimelineList extends React.Component {
   }
 }
 
-export default TimelineList
+export default connect()(TimelineList)
 
 

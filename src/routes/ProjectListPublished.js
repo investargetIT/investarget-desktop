@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError, isLogin } from '../utils/util'
+import { i18n, isLogin } from '../utils/util'
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -34,7 +35,10 @@ class ProjectListPublished extends React.Component {
       this.setState({ loading: false, total, list })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -43,7 +47,10 @@ class ProjectListPublished extends React.Component {
       message.success('删除成功', 2)
       this.getProjectList()
     }, error => {
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -134,4 +141,4 @@ class ProjectListPublished extends React.Component {
 }
 
 
-export default ProjectListPublished
+export default connect()(ProjectListPublished)

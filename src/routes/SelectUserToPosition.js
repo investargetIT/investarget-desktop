@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
@@ -66,7 +67,10 @@ class SelectUserToPosition extends React.Component {
       this.setState({ total, list, loading: false, traderMap: { ...traderMap, ..._traderMap } })
     }, error => {
       this.setState({ loading: false })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -110,7 +114,12 @@ class SelectUserToPosition extends React.Component {
       this.state.selectedRowKeys,
       { title: this.props.location.query.titleID }
     ).then(data => this.props.history.goBack())
-    .catch(err => console.error(err))
+    .catch(err => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   render() {
@@ -145,4 +154,4 @@ class SelectUserToPosition extends React.Component {
 
 }
 
-export default SelectUserToPosition
+export default connect()(SelectUserToPosition)

@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'dva'
 import { Modal, Input, Button } from 'antd'
-import { i18n, showError } from '../utils/util'
+import { i18n } from '../utils/util'
 import * as api from '../api'
 
 const titleStyle = { marginBottom: '4px' }
@@ -41,10 +42,18 @@ class CloseTimelineModal extends React.Component {
       api.addTimelineRemark(data).then(result => {
         this.setState({ visible: false, id: null, reason: '' })
         this.props.afterClose()
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
     }, error => {
       this.setState({ visible: false, id: null, reason: '' })
-      showError(error.message)
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -77,4 +86,4 @@ class CloseTimelineModal extends React.Component {
 }
 
 
-export default CloseTimelineModal
+export default connect()(CloseTimelineModal)

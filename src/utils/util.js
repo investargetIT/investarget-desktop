@@ -79,13 +79,6 @@ function formatMoney(value, currency) {
   }
 }
 
-function showError(message) {
-  Modal.error({
-    title: '错误',
-    content: message,
-  })
-}
-
 function hasPerm(name) {
   const userInfo = JSON.parse(localStorage.getItem('user_info'))
   if (!userInfo) return false
@@ -107,4 +100,4 @@ function getCurrentUser() {
   return userInfo.id
 }
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, showError, hasPerm, getGroup, getCurrentUser }
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser }

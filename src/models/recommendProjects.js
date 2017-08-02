@@ -43,9 +43,6 @@ export default {
       try {
         let params = { favoritetype: 4, user: id, projs: selectedProjects }
         yield call(api.favoriteProj, params)
-      } catch (e) {
-        // TODO 错误处理
-        console.error(e)
       } finally {
         yield put(routerRedux.push('/app'))
       }

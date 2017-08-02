@@ -31,12 +31,22 @@ class AddDataRoom extends React.Component {
       this.props.dispatch(routerRedux.replace('/403'))
       return
     }
-    const projectID = this.props.location.query.projectID 
+    const projectID = this.props.location.query.projectID
     if (projectID) {
       api.getProjLangDetail(projectID)
         .then(data => this.setState({ projectName: data.data.projtitle }))
-        .catch(error => console.error(error))
-      api.getUserRelation().then(data => this.setState({ relation: data.data.data }))
+        .catch(error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
+        })
+      api.getUserRelation().then(data => this.setState({ relation: data.data.data }), error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
     }
   }
 
@@ -53,17 +63,13 @@ class AddDataRoom extends React.Component {
           investor: investorID,
           trader: traderID
         }
-        api.createDataRoom(body).then(data => 
+        api.createDataRoom(body).then(data =>
           react.props.dispatch(routerRedux.replace('/app/dataroom/list'))
         ).catch(e => {
-          if (e.name === 'ApiError' && e.code === 2009) {
-            message.error('权限校验失败，请重新登录')
-            react.props.dispatch({
-              type: 'currentUser/logout'
-            })
-          } else {
-            message.error(e.message)
-          }
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error
+          })
         })
       }
     })
@@ -114,7 +120,7 @@ class AddDataRoom extends React.Component {
     const { currentUser, location, page, pageSize, dispatch, loading } = this.props
 
 
-  
+
 
   return (
     <LeftRightLayout location={location} title={i18n("create_dataroom")}>

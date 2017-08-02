@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva'
 import * as api from '../api'
 
 import RemarkList, {RemarkListReadOnly} from './RemarkList'
@@ -35,6 +36,11 @@ class OrganizationRemarkList extends React.Component {
         return a < b
       })
       this.setState({ list })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -45,6 +51,11 @@ class OrganizationRemarkList extends React.Component {
     }
     return api.addOrgRemark(data).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -55,12 +66,22 @@ class OrganizationRemarkList extends React.Component {
     }
     return api.editOrgRemark(id, data).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
   deleteRemark = (id) => {
     return api.deleteOrgRemark(id).then(result => {
       this.getRemarkList()
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -78,4 +99,4 @@ class OrganizationRemarkList extends React.Component {
   }
 }
 
-export default OrganizationRemarkList
+export default connect()(OrganizationRemarkList)

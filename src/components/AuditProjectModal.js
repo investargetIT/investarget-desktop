@@ -72,7 +72,10 @@ class AuditProjectModal extends React.Component {
       this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
     }, error => {
       this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
-      Modal.error({ title: '错误', content: error.message })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
     })
   }
 
@@ -111,4 +114,4 @@ class AuditProjectModal extends React.Component {
 }
 
 
-export default AuditProjectModal
+export default connect()(AuditProjectModal)
