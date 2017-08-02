@@ -423,8 +423,9 @@ export function createUser(user) {
 }
 
 export const modifyPassword = (id, oldpassword, newpassword) => r(`/user/password/${id}/`, 'PUT', {oldpassword, newpassword})
-
 export const addUnreachUser = body => r('/user/unuser/', 'POST', body)
+export const getUnreachUser = param => r('/user/unuser/?' + qs.stringify(param))
+export const deleteUnreachUser = id => r('/user/unuser/' + id, 'DELETE')
 
 /**
  * dataroom

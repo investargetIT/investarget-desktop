@@ -31,12 +31,12 @@ const PositionWithUser = props => {
     <div>
       <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
       <div style={{ width: '80%', marginLeft: '20%' }}>
-        {props.user.map(m => <Link key={m.id} to={"/app/user/" + m.id}>
+        {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
           <Popover content={<div>
             <p>交易师：<Link to={"/app/user/" + m.trader.id}>{m.trader.name}</Link></p>
             <p style={{ textAlign: 'center', marginTop: 10 }}>
-              <Link to={"/app/user/edit/" + m.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>&nbsp;
-              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, m.id)}>
+              {m.isUnreachUser ? null : <Link to={"/app/user/edit/" + m.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>}&nbsp;
+              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, m.key)}>
                 <Button type="danger">移除</Button>
                 </Popconfirm>
             </p>
@@ -45,7 +45,7 @@ const PositionWithUser = props => {
           </Popover>
         </Link>)}
         <Popover content={<Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>选择投资人</Link>}>
-          <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)}style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src="/images/add_circle.png" />
+          <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" />
           </Popover>
       </div>
     </div>
@@ -146,14 +146,17 @@ class OrganizationDetail extends React.Component {
             return { ...m, position, user, id, org }
           })
         })
-        return api.getUser({ org: data.id, page_size: 1000 })
+        return Promise.all([
+          api.getUser({ org: data.id, page_size: 1000 }), 
+          api.getUnreachUser({ org: data.id, page_size: 1000 })
+        ])
       } else {
         return Promise.resolve()
       }
     }).then(data => {
       if (!data) return
       const newData = this.state.data.slice()
-      data.data.data.map(m => {
+      data[0].data.data.map(m => {
         const index = newData.map(m => m.id).indexOf(m.title && m.title.id)
         if (index > -1) {
           const name = m.username
@@ -162,7 +165,21 @@ class OrganizationDetail extends React.Component {
             id: m.trader_relation && m.trader_relation.traderuser.id,
             name: m.trader_relation && m.trader_relation.traderuser.username
           }
-          newData[index].user.push({ ...m, name, avatar, trader })
+          const isUnreachUser = false
+          const key = 'reach-' + m.id
+          newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key })
+        }
+      })
+      data[1].data.data.map(m => {
+        const index = newData.map(m => m.id).indexOf(m.title)
+        if (index > -1) {
+          const trader = {
+            id: m.trader_relation && m.trader_relation.traderuser.id,
+            name: m.trader_relation && m.trader_relation.traderuser.username
+          }
+          const isUnreachUser = true
+          const key = 'unreach-' + m.id
+          newData[index].user.push({ ...m, trader, isUnreachUser, key })
         }
       })
       this.setState({ data: newData })
@@ -175,26 +192,22 @@ class OrganizationDetail extends React.Component {
     })
   }
 
-  onRemoveUserPosition(positionID, userID) {
+  onRemoveUserPosition(positionID, userKey) {
     const newData = this.state.data.slice()
     .map(m => {
       const user = m.user.slice()
       return {...m, user}
     })
     const positionIndex = newData.map(m => m.id).indexOf(positionID)
-    const index = newData[positionIndex].user.map(m => m.id).indexOf(userID)
+    const index = newData[positionIndex].user.map(m => m.id).indexOf(userKey)
     newData[positionIndex].user.splice(index, 1)
     this.setState({
       data: newData
     })
-    api.editUser([userID], { title: null })
-    .then(data => console.log(data))
-    .catch(err => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+
+    const isUnreachUser = userKey.split('-')[0] === 'unreach'
+    const userID = userKey.split('-')[1]
+    isUnreachUser ? api.deleteUnreachUser(userID) : api.editUser([userID], { title: null })
   }
 
   handleAddUser(orgID, titleID) {
