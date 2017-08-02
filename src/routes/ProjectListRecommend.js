@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, isLogin } from '../utils/util'
+import { i18n, showError, isLogin, hasPerm } from '../utils/util'
 
 import { Input, Icon, Button, Radio } from 'antd'
 
