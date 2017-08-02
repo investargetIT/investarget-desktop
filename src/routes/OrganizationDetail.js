@@ -229,11 +229,24 @@ class OrganizationDetail extends React.Component {
         const title = this.titleID
         const org = this.props.params.id
         const body = { ... values, org, title }
-        api.addUnreachUser(body).then(data => this.setState({ visible: false }), error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
+
+        api.addUnreachUser(body).then(data => {
+          const newUnreachUser = data.data
+
+          const newData = this.state.data.slice().map(m => {
+            const user = m.user.slice()
+            return { ...m, user }
           })
+          const index = newData.map(m => m.id).indexOf(newUnreachUser.title)
+          const trader = {
+            id: null,
+            name: null
+          }
+          const isUnreachUser = true
+          const key = 'unreach-' + newUnreachUser.id
+          newData[index].user.push({ ...newUnreachUser, trader, isUnreachUser, key })
+
+          this.setState({ visible: false, data: newData })
         })
       }
     })
