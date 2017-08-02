@@ -404,6 +404,7 @@ class OrganizationListFilter extends React.Component {
     industries: [],
     tags: [],
     orgtypes: [],
+    areas: [],
   }
 
   constructor(props) {
@@ -425,7 +426,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   render() {
-    const { isOversea, currencys, orgtransactionphases, industries, tags, orgtypes } = this.state
+    const { isOversea, currencys, orgtransactionphases, industries, tags, orgtypes, areas } = this.state
     return (
       <div>
         <OverseaFilter value={isOversea} onChange={this.handleChange.bind(this, 'isOversea')} />
@@ -434,6 +435,7 @@ class OrganizationListFilter extends React.Component {
         <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
+        <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
