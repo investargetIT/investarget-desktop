@@ -80,7 +80,7 @@ BasicFormItem.contextTypes = {
 
 
 
-const Email = () => <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input /></BasicFormItem>
+const Email = props => <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input onBlur={props.onBlur}/></BasicFormItem>
 
 const Group = props => <BasicFormItem label={i18n("role")} name="readOnlyGroup" required><Input disabled={props.disabled} /></BasicFormItem>
 

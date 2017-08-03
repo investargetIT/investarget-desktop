@@ -102,10 +102,6 @@ class DataRoomList extends React.Component {
               <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <Link to="">
-              <Button size="small" >{i18n("edit")}</Button>
-            </Link>
-            &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteDataRoom.bind(this, record.id)}>
               <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>

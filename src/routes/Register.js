@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message } from 'antd'
 import { injectIntl } from 'react-intl'
 import { t } from '../utils/util'
-import { getOrg, sendSmsCode } from '../api'
+import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
 import RecommendFriendsComponent from '../components/RecommendFriends'
@@ -204,7 +204,9 @@ class Register extends React.Component {
       mobile: mobile,
       areacode: areacode
     }
-    sendSmsCode(body).then(data => {
+    checkUserExist(mobile)
+    .then(() => sendSmsCode(body))
+    .then(data => {
       if (data.data.status !== 'success') {
         throw new Error(data.data.msg)
       }
@@ -217,14 +219,8 @@ class Register extends React.Component {
         fetchSmsCodeValue: 60
       })
     }).catch(error => {
-      message.error(error.message)
-      this.setState({
-        loading: false
-      })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      this.setState({ loading: false })
+      this.props.dispatch({ type: 'app/findError', payload: error })
     })
   }
 
@@ -248,6 +244,14 @@ class Register extends React.Component {
 
   handleMobileChange(evt) {
     this.mobile = evt.target.value
+  }
+
+  handleEmailOnBlur = evt => {
+    if (evt.target.value) {
+      checkUserExist(evt.target.value).catch(error =>
+        this.props.dispatch({ type: 'app/findError', payload: error })
+      )
+    }
   }
 
   render() {
@@ -296,7 +300,7 @@ class Register extends React.Component {
                   loading={this.state.loading}
                   value={this.state.fetchSmsCodeValue ? `${this.state.fetchSmsCodeValue}秒后重新获取` : null}
                   onFetchButtonClicked={this.handleFetchButtonClicked.bind(this)} />
-                <Email />
+                <Email onBlur={this.handleEmailOnBlur} />
                 <FullName />
                 <Org required org={this.state.org} onChange={this.handleOrgChange} />
                 <Position title={this.props.title} />
