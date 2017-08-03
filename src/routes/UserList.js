@@ -171,7 +171,9 @@ class UserList extends React.Component {
                   _.some(record.groups, function(group) {
                     return group.id == 1 // 投资人
                   }) ? (
-                    <Button size="small" onClick={this.showModal.bind(null, record.id, record.username)}>交易师</Button>
+                    <UserRelationModal investoruser={record.id} investorUsername={record.username}>
+                      <Button size="small" onClick={this.showModal.bind(null, record.id, record.username)}>交易师</Button>
+                    </UserRelationModal>
                   ) : null
                 }
                 &nbsp;
@@ -230,8 +232,6 @@ class UserList extends React.Component {
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
           showQuickJumper />
-
-        <UserRelationModal ref={(inst) => { this.modal = inst }} />
 
       </LeftRightLayout>
     )

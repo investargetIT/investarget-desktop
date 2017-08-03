@@ -19,20 +19,15 @@ class UserRelationModal extends React.Component {
 
     this.state = {
       show: false,
-      investoruser: null,
       traderuser: null,
       relationtype: false,
       data: [],
       options: [],
-      investorUsername: '',
     }
   }
 
   showModal = (id, username) => {
-    const investoruser = id
-    if (investoruser) {
-      this.setState({ show: true, investoruser, investorUsername: username }, this.getUserRelation)
-    }
+    this.setState({ show: true })
   }
 
   hideModal = () => {
@@ -52,7 +47,8 @@ class UserRelationModal extends React.Component {
   }
 
   addRelation = () => {
-    const { investoruser, traderuser, relationtype } = this.state
+    const { investoruser } = this.props
+    const { traderuser, relationtype } = this.state
     const param = { investoruser, traderuser, relationtype }
     api.addUserRelation(param).then(result => {
       //
@@ -74,7 +70,7 @@ class UserRelationModal extends React.Component {
   }
 
   getUserRelation = () => {
-    const param = { investoruser: this.state.investoruser }
+    const param = { investoruser: this.props.investoruser }
     api.getUserRelation(param).then(result => {
       const data = result.data.data
       this.setState({ data })
@@ -87,6 +83,7 @@ class UserRelationModal extends React.Component {
   }
 
   componentDidMount() {
+    this.getUserRelation()
     // group transaction id 2
     api.getUser({ groups: [2] }).then(result => {
       const transactions = result.data.data
@@ -101,27 +98,40 @@ class UserRelationModal extends React.Component {
   }
 
   render() {
+
+    const { investorUsername } = this.props
+    const { show, data, options, traderuser, relationtype } = this.state
+
+    const button = React.cloneElement(React.Children.only(this.props.children), {
+      onClick: this.showModal,
+    })
+
     return (
-      <Modal visible={this.state.show} title="修改交易师" footer={null} onCancel={this.hideModal}>
-        <h3 style={{marginBottom: '16px'}}>{this.state.investorUsername}的交易师：</h3>
-        <div style={{marginBottom: '8px'}}>
-          {
-            this.state.data.map((item, index) =>
-              <p key={item.id}>
-                <span style={{ color: item.relationtype ? 'red' : 'rgba(0,0,0,.65)' }}>{item.traderuser.username}</span>
-                <Popconfirm title="删除关联交易师" onConfirm={this.deleteRelation.bind(this, item.id)}>
-                  <Icon type="close" style={deleteIconStyle} />
-                </Popconfirm>
-              </p>
-            )
-          }
-        </div>
-        <div>
-          选择交易师：<SelectNumber options={this.state.options} value={this.state.traderuser} onChange={this.selectTrasaction} style={{width: '80px', marginRight: '8px'}} />
-          强弱：<RadioTrueOrFalse value={this.state.relationtype} onChange={this.selectRelationType} />
-          <Button onClick={this.addRelation}>新增</Button>
-        </div>
-      </Modal>
+      <span>
+        { button }
+        <Modal visible={show} title="修改交易师" footer={null} onCancel={this.hideModal}>
+          <h3 style={{marginBottom: '16px'}}>{investorUsername}的交易师：</h3>
+          <div style={{marginBottom: '8px'}}>
+            {
+              data.length > 0 ? data.map((item, index) =>
+                <p key={item.id}>
+                  <span style={{ color: item.relationtype ? 'red' : 'rgba(0,0,0,.65)' }}>{item.traderuser.username}</span>
+                  <Popconfirm title="删除关联交易师" onConfirm={this.deleteRelation.bind(this, item.id)}>
+                    <Icon type="close" style={deleteIconStyle} />
+                  </Popconfirm>
+                </p>
+              ) : (
+                <p style={{ color: '#999' }}>暂时没有交易师</p>
+              )
+            }
+          </div>
+          <div>
+            选择交易师：<SelectNumber options={options} value={traderuser} onChange={this.selectTrasaction} style={{width: '80px', marginRight: '8px'}} />
+            强弱：<RadioTrueOrFalse value={relationtype} onChange={this.selectRelationType} />
+            <Button onClick={this.addRelation}>新增</Button>
+          </div>
+        </Modal>
+      </span>
     )
   }
 }

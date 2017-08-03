@@ -50,55 +50,18 @@ SelectProjectStatus = connect(function(state) {
 
 class AuditProjectModal extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      id: null,
-      currentStatus: null,
-      status: null,
-      sendEmail: false,
-    }
-  }
-
-  setData = (id, status) => {
-    this.setState({ visible: true, id, status, currentStatus: status })
-  }
-
-  handleOk = () => {
-    const { id, status, sendEmail } = this.state
-    api.editProj(id, { projstatus: status, isSendEmail: sendEmail }).then(result => {
-      this.props.afterAudit()
-      this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
-    }, error => {
-      this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  handleCancel = () => {
-    this.setState({ visible: false, id: null, currentStatus: null, status: null, sendEmail: false })
-  }
-
-  handleStatusChange = (status) => {
-    this.setState({ status })
-  }
-
   handleSendEmailChange = (e) => {
-    const sendEmail = e.target.checked
-    this.setState({ sendEmail })
+    this.props.onSendEmailChange(e.target.checked)
   }
 
   render() {
-    const { visible, currentStatus, status, sendEmail } = this.state
+    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
+
     return (
-      <Modal title="修改项目状态" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title="修改项目状态" visible={visible} onOk={onOk} onCancel={onCancel} confirmLoading={confirmLoading}>
         <div style={{width: '60%', display: 'flex', alignItems: 'center', margin: '0 auto'}}>
           <span style={{marginRight: '8px'}}>项目状态：</span>
-          <SelectProjectStatus style={{flexGrow: '1'}} status={currentStatus} value={status} onChange={this.handleStatusChange} />
+          <SelectProjectStatus style={{flexGrow: '1'}} status={currentStatus} value={status} onChange={onStatusChange} />
         </div>
         {
           (status == 4 || status == 6) ? (
@@ -114,4 +77,4 @@ class AuditProjectModal extends React.Component {
 }
 
 
-export default connect()(AuditProjectModal)
+export default AuditProjectModal

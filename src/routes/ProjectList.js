@@ -30,6 +30,13 @@ class ProjectList extends React.Component {
       total: 0,
       list: [],
       loading: false,
+
+      visible: false,
+      id: null,
+      currentStatus: null,
+      status: null,
+      sendEmail: false,
+      confirmLoading: false,
     }
   }
 
@@ -88,14 +95,6 @@ class ProjectList extends React.Component {
     this.writeSetting()
   }
 
-  auditProject = (id, status) => {
-    this.auditProjectModal.setData(id, status)
-  }
-
-  handleAfterAudit = () => {
-    this.getProject()
-  }
-
   handleDelete = (id) => {
     this.setState({ loading: true })
     api.deleteProj(id).then(result => {
@@ -108,6 +107,41 @@ class ProjectList extends React.Component {
       })
     })
   }
+
+  // audit project modal
+
+  openAuditProjectModal = (id, status) => {
+    this.setState({ visible: true, id, currentStatus: status, status, sendEmail: false })
+  }
+
+  handleStatusChange = (status) => {
+    this.setState({ status })
+  }
+
+  handleSendEmailChange = (sendEmail) => {
+    this.setState({ sendEmail })
+  }
+
+  handleConfirmAudit = () => {
+    const { id, status, sendEmail } = this.state
+    this.setState({ confirmLoading: true })
+    api.editProj(id, { projstatus: status, isSendEmail: sendEmail }).then(result => {
+      this.setState({ visible: false, confirmLoading: false })
+      this.getProject()
+    }, error => {
+      this.setState({ visible: false, confirmLoading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      })
+    })
+  }
+
+  handleCancelAudit = () => {
+    this.setState({ visible: false })
+  }
+
+
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
@@ -126,7 +160,7 @@ class ProjectList extends React.Component {
 
   render() {
     const { location } = this.props
-    const { total, list, loading, page, pageSize, filters, search } = this.state
+    const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading } = this.state
 
     const columns = [
       {
@@ -191,7 +225,7 @@ class ProjectList extends React.Component {
         render: (text, record) => {
           return record.ismarketplace ? (
             <span>
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
               &nbsp;
               <Link to={'/app/marketplace/edit/' + record.id}>
                 <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
@@ -203,7 +237,7 @@ class ProjectList extends React.Component {
             </span>
           ) : (
             <span>
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.auditProject.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
               &nbsp;
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>推荐</Button>
@@ -265,7 +299,17 @@ class ProjectList extends React.Component {
           />
         </div>
 
-        <AuditProjectModal afterAudit={this.handleAfterAudit} ref={inst => { this.auditProjectModal = inst }} />
+        <AuditProjectModal
+          visible={visible}
+          currentStatus={currentStatus}
+          status={status}
+          sendEmail={sendEmail}
+          confirmLoading={confirmLoading}
+          onStatusChange={this.handleStatusChange}
+          onSendEmailChange={this.handleSendEmailChange}
+          onOk={this.handleConfirmAudit}
+          onCancel={this.handleCancelAudit}
+        />
 
       </MainLayout>
     )

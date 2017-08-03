@@ -33,6 +33,9 @@ class TimelineList extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      visible: false,
+      id: null,
+      reason: '',
     }
   }
 
@@ -93,9 +96,46 @@ class TimelineList extends React.Component {
     })
   }
 
-  closeTimeline = (id) => {
-    this.closeTimelineModal.closeTimeline(id)
+
+  // 关闭时间轴
+
+  showCloseTimelineModal = (id) => {
+    this.setState({ visible: true, id, reason: '' })
   }
+
+  handleReasonChange = (reason) => {
+    this.setState({ reason })
+  }
+
+  handleCancelClose = () => {
+    this.setState({ visible: false })
+  }
+
+  handleConfirmClose = () => {
+    const { id, reason } = this.state
+    api.closeTimeline(id, reason).then(result => {
+      this.setState({ visible: false })
+      // refresh
+      this.getTimeline()
+      // 结束理由，添加一条备注
+      const data = { timeline: id, remark: reason }
+      api.addTimelineRemark(data).then(result => {
+        //
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error,
+        })
+      })
+    }, error => {
+      this.setState({ visible: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      })
+    })
+  }
+
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
@@ -130,7 +170,7 @@ class TimelineList extends React.Component {
       { title: '最新备注', key: 'remark', dataIndex: 'latestremark.remark' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button size="small" onClick={this.closeTimeline.bind(this, record.id)} disabled={!record.action.change || record.isClose}>关闭</Button>
+            <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change || record.isClose}>关闭</Button>
             &nbsp;
             <Link to={'/app/timeline/' + record.id}>
               <Button size="small" disabled={!record.action.get}>{i18n("view")}</Button>
@@ -148,7 +188,7 @@ class TimelineList extends React.Component {
       },
     ]
 
-    const { filters, search, total, list, loading, page, pageSize } = this.state
+    const { filters, search, total, list, loading, page, pageSize, visible, id, reason } = this.state
 
     return (
       <MainLayout location={location}>
@@ -164,7 +204,7 @@ class TimelineList extends React.Component {
           </div>
         </div>
 
-        <CloseTimelineModal ref={ inst => this.closeTimelineModal = inst} afterClose={this.getTimeline} />
+        <CloseTimelineModal visible={visible} id={id} reason={reason} onChange={this.handleReasonChange} onOk={this.handleConfirmClose} onCancel={this.handleCancelClose} />
       </MainLayout>
     )
   }
