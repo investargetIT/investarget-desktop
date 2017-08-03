@@ -294,6 +294,7 @@ class FileMgmt extends React.Component {
       name: 'file',
       action: 'http://192.168.1.201:8000/service/qiniubigupload?bucket=file',
       showUploadList: false,
+      multiple: true,
       onChange(info) {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);

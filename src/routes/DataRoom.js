@@ -304,7 +304,7 @@ class DataRoomList extends React.Component {
     const dataroom = newData[parentIndex].dataroom
     const body = {
       dataroom: dataroom,
-      filename: file.response.result.key,
+      filename: file.name,
       isFile: true,
       orderNO: 1,
       parent: [-1, -2, -3].includes(parentId) ? null : parentId,
