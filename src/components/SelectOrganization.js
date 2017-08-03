@@ -6,7 +6,7 @@ import * as api from '../api'
 
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { OrganizationListFilter } from './Filter'
-import { Search } from './Search'
+import { Search2 } from './Search'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -16,40 +16,28 @@ class SelectOrganization extends React.Component {
 
   constructor(props) {
     super(props)
+
     this.state = {
-      filters: {},
+      filters: OrganizationListFilter.defaultValue,
       search: null,
-      current: 0,
+      page: 1,
       pageSize: 10,
-      _param: {},
       total: 0,
       list: [],
       loading: false,
     }
   }
 
-  handleFiltersChange = (filters) => {
-    this.setState({ filters })
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getOrg)
   }
 
-  handleFilt = () => {
-    let { _params, filters } = this.state
-    _params = { ..._params, ...filters }
-    this.setState({ _params, page: 1 }, this.getOrg)
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getOrg)
   }
 
-  handleReset = () => {
-    this.setState({ filters: {}, page: 1, _params: {} }, this.getOrg)
-  }
-
-  handleSearchChange = (search) => {
-    this.setState({ search })
-  }
-
-  handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getOrg)
+  handleSearch = (search) => {
+    this.setState({ search, page: 1 }, this.getOrg)
   }
 
   handlePageChange = (page) => {
@@ -61,8 +49,11 @@ class SelectOrganization extends React.Component {
   }
 
   getOrg = () => {
-    const { _params, page, pageSize } = this.state
-    const params = { ..._params, page_index: page, page_size: pageSize }
+    const { filters, search, page, pageSize } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    if (this.props.traderId) {
+      params['trader'] = this.props.traderId
+    }
     this.setState({ loading: true })
     api.getOrg(params).then(result => {
       const { count: total, data: list } = result.data
@@ -102,8 +93,10 @@ class SelectOrganization extends React.Component {
 
     return (
       <div>
-        <OrganizationListFilter value={filters} onChange={this.handleFiltersChange} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+        <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <div style={{ marginBottom: '24px' }}>
+          <Search2 style={{ width: '200px' }} placeholder="机构名、股票代码" defaultValue={search} onSearch={this.handleSearch} />
+        </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
       </div>

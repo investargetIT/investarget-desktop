@@ -1,185 +1,81 @@
 import React from 'react'
-import { connect } from 'dva'
-import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
-import * as api from '../api'
-import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
-import { SelectNumber } from './ExtraInput'
-import { Search } from './Search'
-
-const tableStyle = { marginBottom: '24px' }
-const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
-
-
-class SelectUserTransaction extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  componentDidMount() {
-    const param = { investoruser: this.props.userId }
-    api.getUserRelation(param).then(result => {
-      const data = result.data.data
-      var options = []
-      data.forEach(item => {
-        const trader = item.traderuser
-        if (trader) {
-          options.push({ label: trader.username, value: trader.id })
-        }
-      })
-      this.props.onOptionsChange(options)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  render() {
-    console.log('>>>', this.props)
-    return (
-      <SelectNumber style={{width: '80px'}} options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
-    )
-  }
-}
-
+import { getCurrentUser, hasPerm } from '../utils/util'
+import { Button } from 'antd'
+import SelectOrganization from '../components/SelectOrganization'
+import SelectOrgInvestorAndTrader from '../components/SelectOrgInvestorAndTrader'
 
 
 class SelectInvestorAndTrader extends React.Component {
-
   constructor(props) {
     super(props)
+
+    const userId = getCurrentUser()
+    const traderId = (!hasPerm('usersys.as_admin') && hasPerm('usersys.as_trader')) ? userId : null
+
     this.state = {
-      search: null,
-      current: 0,
-      pageSize: 10,
-      _param: {},
-      total: 0,
-      list: [],
-      loading: false,
-      traderMap: {},
-      traderOptionsMap: {},
+      traderId,
+      selectedOrgs: [],
+      selectedUsers: [],
+      step: 1,
     }
   }
 
-  handleSearchChange = (search) => {
-    this.setState({ search })
-  }
-
-  handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getUser)
-  }
-
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getUser)
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getUser)
-  }
-
-  getUser = () => {
-    const { selectedOrgs } = this.props
-    const { _params, page, pageSize, traderMap } = this.state
-
-    const params = { ..._params, page_index: page, page_size: pageSize, org: selectedOrgs, groups: [1] }
-    this.setState({ loading: true })
-    api.getUser(params).then(result => {
-      const { count: total, data: list } = result.data
-      const investorList = list.filter(item => !!item.trader_relation)
-      const _traderMap = {}
-      investorList.forEach(item => {
-        const investorId = item.id
-        const traderId = item.trader_relation && item.trader_relation.traderuser.id
-        if (!traderMap[investorId]) {
-          _traderMap[investorId] = traderId
-        }
-      })
-      this.setState({ total, list, loading: false, traderMap: { ...traderMap, ..._traderMap } })
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  handleChangeTrader = (investorId, traderId) => {
-    let { traderMap } = this.state
-    traderMap = { ...traderMap, [investorId]: traderId }
-    this.setState({ traderMap })
-
-    const userList = this.props.value
-    const index = _.findIndex(userList, function(item) {
-      return item.investor == investorId
-    })
-    if (index > -1) {
-      let user = { investor: investorId, trader: traderId }
-      this.props.onChange([ ...userList.slice(0, index), user, ...userList.slice(index + 1) ])
-    }
-  }
-
-  handleSelectChange = (investorIds) => {
-    const { traderMap } = this.state
-    const value = investorIds.map(investorId => {
-      return { investor: investorId, trader: traderMap[investorId] }
-    })
-    this.props.onChange(value)
-  }
-
-  handleTraderOptionsChange = (investorId, traderOptions) => {
-    const { traderOptionsMap } = this.state
+  handleBack = () => {
     this.setState({
-      traderOptionsMap: { ...traderOptionsMap, [investorId]: traderOptions }
+      step: 1,
+      selectedUsers: [],
     })
   }
 
-  componentDidMount() {
-    this.getUser()
+  handleNext = () => {
+    this.setState({ step: 2 })
+  }
+
+  handleSelectOrg = (selectedOrgs) => {
+    this.setState({ selectedOrgs })
+  }
+
+  handleSelectUser = (selectedUsers) => {
+    this.setState({ selectedUsers })
+  }
+
+  handleOk = () => {
+    this.props.onSelect(this.state.selectedUsers)
   }
 
   render() {
-    const rowSelection = {
-      selectedRowKeys: this.props.value.map(item => item.investor),
-      onChange: this.handleSelectChange,
-    }
 
-    const columns = [
-      { title: '投资人', key: 'username', dataIndex: 'username' },
-      { title: '所属机构', key: 'orgname', dataIndex: 'org.orgname' },
-      { title: '职位', key: 'title', dataIndex: 'title.name' },
-      { title: '电话', key: 'mobile', dataIndex: 'mobile' },
-      { title: '邮箱', key: 'email', dataIndex: 'email' },
-      { title: '交易师', key: 'transaction', render: (text, record) => {
-        const trader = record.trader_relation && record.trader_relation.traderuser
-        return trader ? (
-          <SelectUserTransaction
-            userId={record.id}
-            options={this.state.traderOptionsMap[record.id] || []}
-            onOptionsChange={this.handleTraderOptionsChange.bind(this, record.id)}
-            value={this.state.traderMap[record.id]}
-            onChange={this.handleChangeTrader.bind(this, record.id)}
-          />
-        ) : null
-      }}
-    ]
-
-    const { filters, search, total, list, loading, page, pageSize } = this.state
+    const { traderId, selectedOrgs, selectedUsers, step } = this.state
 
     return (
       <div>
-        <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
-        <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+        <div style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
+          <p style={{fontSize: '13px'}}>
+            { step == 1 ? <span>1. 选择机构</span> : null }
+            { step == 2 ? <span>2. 选择用户</span> : null }
+          </p>
+        </div>
+
+        <div style={{padding: '16px'}}>
+          { step == 1 ? <SelectOrganization traderId={traderId} value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
+          { step == 2 ? <SelectInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
+        </div>
+
+        { step == 1 ? (
+          <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
+            <Button disabled={selectedOrgs.length == 0} type="primary" onClick={this.handleNext}>下一步</Button>
+          </div>
+        ) : null }
+
+        { step == 2 ? (
+          <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
+            <Button onClick={ this.handleBack}>返回</Button>
+            <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleOk}>创建</Button>
+          </div>
+        ) : null }
       </div>
     )
-
   }
-
 }
 
-export default connect()(SelectInvestorAndTrader)
+export default SelectInvestorAndTrader
