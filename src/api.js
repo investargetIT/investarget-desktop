@@ -451,7 +451,8 @@ export function getDataRoomFile(param) {
 export function queryDataRoomDetail(id) {
   return r('/dataroom/' + id)
 }
-
+export const deleteDataRoom = body => r('/dataroom/', 'DELETE', body)
+export const editDataRoom = body => r('/dataroom/', 'PUT', body)
 export const addToDataRoom = body => r('/dataroom/file/', 'POST', body)
 export const deleteFromDataRoom = body => r('/dataroom/file/', 'DELETE', body)
 export const editInDataRoom = body => r('/dataroom/file/', 'PUT', body)

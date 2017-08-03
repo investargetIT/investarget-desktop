@@ -64,8 +64,35 @@ class DataRoomList extends React.Component {
   }
 
 
-  deleteDataRoom = (id) => {
-    // TODO
+  deleteDataRoom (dataroom) {
+    this.setState({ loading: true })
+    const body = {
+      proj: dataroom.proj.id,
+      investor: dataroom.investor.id,
+      trader: dataroom.trader.id
+    }
+    api.deleteDataRoom(body)
+      .then(data => this.getDataRoomList())
+      .catch(err => {
+        this.setState({ loading: false })
+        this.props.dispatch({ type: 'app/findError', payload: err })
+      })
+  }
+
+  handleCloseDateRoom (dataroom) {
+    this.setState({ loading: true })
+    const body = {
+      isClose: !dataroom.isClose,
+      proj: dataroom.proj.id,
+      investor: dataroom.investor.id,
+      trader: dataroom.trader.id
+    }
+    api.editDataRoom(body)
+    .then(data => this.getDataRoomList())
+    .catch(err => {
+      this.setState({ loading: false })
+      this.props.dispatch({ type: 'app/findError', payload: err })
+    })
   }
 
   writeSetting = () => {
@@ -96,13 +123,13 @@ class DataRoomList extends React.Component {
       { title: '状态', key: 'isclose', render: record => record.isClose ? '已关闭' : '未关闭' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button size="small">关闭</Button>
+            <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="small">{record.isClose ? '打开' : '关闭'}</Button>
             &nbsp;
             <Link to={`/app/dataroom/detail?id=${record.id}&projectID=${record.proj.id}`}>
               <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteDataRoom.bind(this, record.id)}>
+            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteDataRoom.bind(this, record)}>
               <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>
           </span>
