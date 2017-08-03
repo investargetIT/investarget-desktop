@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
-import { i18n, exchange } from '../utils/util'
-
+import { i18n, exchange, hasPerm } from '../utils/util'
+import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
 const FormItem = Form.Item
 
@@ -51,6 +51,13 @@ class OrganizationForm extends React.Component {
 
   constructor(props) {
     super(props)
+  }
+
+  componentDidMount() {
+    if (!hasPerm('org.admin_addorg') && !hasPerm('org.user_addorg')) {
+      this.props.dispatch(routerRedux.replace('/403'))
+      return
+    }
   }
 
   handleCurrencyTypeChange = (currency) => {
@@ -180,9 +187,11 @@ class OrganizationForm extends React.Component {
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
 
+        { hasPerm('org.admin_addorg') ? 
         <BasicFormItem label={formatMessage({id: 'organization.audit_status'})} name="orgstatus" valueType="number" initialValue={1}>
           <RadioAudit />
-        </BasicFormItem>
+        </BasicFormItem> 
+        : null }
 
       </Form>
     )

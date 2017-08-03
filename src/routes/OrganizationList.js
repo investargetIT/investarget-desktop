@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { connect } from 'dva'
 import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
@@ -142,11 +142,13 @@ class OrganizationList extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
+          { hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ? 
           <PageTitle
             title={i18n('organization.org_list')}
             actionLink="/app/organization/add"
-            actionTitle={i18n('organization.new_org')}
-          />
+            actionTitle={i18n('organization.new_org')} /> 
+          : <PageTitle title={i18n('organization.org_list')} /> }
+
           <div>
             <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
