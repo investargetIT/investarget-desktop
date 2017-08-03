@@ -104,7 +104,7 @@ export default {
           dispatch({ type: 'getSourceList', payload: resourceList })
         }
 
-        if (pathname === '/app/user/add' && !checkPerm('usersys.admin_adduser')) {
+        if (pathname === '/app/user/add' && !checkPerm('usersys.admin_adduser') && !checkPerm('usersys.user_adduser')) {
           history.replace('/app')
         }
 

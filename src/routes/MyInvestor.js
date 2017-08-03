@@ -4,8 +4,14 @@ import { i18n } from '../utils/util'
 import MyPartner from '../components/MyPartner'
 
 function MyInvestor(props) {
+
+  const action = {
+    link: '/app/user/add',
+    name: '新增投资人',
+  }
+
   return (
-    <LeftRightLayout location={props.location} title={i18n("myinvestor")}>
+    <LeftRightLayout location={props.location} title={i18n("myinvestor")} action={action}>
       <MyPartner type="investor" />
     </LeftRightLayout>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { Link } from 'dva/router'
 
@@ -50,15 +50,29 @@ class UserForm extends React.Component {
     getFieldDecorator('cardBucket', {
       rules: [{required: true}], initialValue: 'image'
     })
+
+    if (!hasPerm('usersys.admin_adduser') && hasPhasPerm('usersys.user_adduser')) {
+      getFieldDecorator('groups', {
+        rules: [{required: true}], initialValue: [4] // 未审核投资人
+      })
+
+    }
   }
 
   render() {
     const { getFieldDecorator } = this.props.form
+
+    const isAdmin = hasPerm('usersys.admin_adduser')
+
     return (
       <Form>
-        <BasicFormItem label="用户组" name="groups" valueType="array" required>
-          <SelectUserGroup />
-        </BasicFormItem>
+        {
+          isAdmin ? (
+            <BasicFormItem label="用户组" name="groups" valueType="array" required>
+              <SelectUserGroup />
+            </BasicFormItem>
+          ) : null
+        }
 
         <BasicFormItem label="姓名" name="usernameC" required><Input /></BasicFormItem>
 
@@ -106,10 +120,9 @@ class UserForm extends React.Component {
           {/*</div>*/}
         </BasicFormItem>
 
-        {/*待确认*/}
-        {/*<BasicFormItem label="区域" valueType="number" name="area">
+        <BasicFormItem label="区域" valueType="number" name="area">
           <SelectOrganizatonArea />
-        </BasicFormItem>*/}
+        </BasicFormItem>
 
         <BasicFormItem label={i18n("country")} name="country" valueType="number">
           <CascaderCountry />
@@ -119,9 +132,13 @@ class UserForm extends React.Component {
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={1}>
-          <RadioAudit />
-        </BasicFormItem>
+        {
+          isAdmin ? (
+            <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={2}>
+              <RadioAudit />
+            </BasicFormItem>
+          ) : null
+        }
 
         {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
         <BasicFormItem label="强交易师" name="major_trader">
