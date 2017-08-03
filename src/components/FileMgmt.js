@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
-import { getRandomInt, formatBytes } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin } from '../utils/util'
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -50,9 +50,8 @@ class FileMgmt extends React.Component {
     if (file.isFolder) {
       this.setState({ parentId: file.id })
     } else {
-      const fileUrl = 'https://o7993llwa.qnssl.com/ebook_reading_1.pdf?e=1501123504&token=NJkzgfMrIi-wL_gJyeLfU4dSqXyk5eeGrI7COPPu:CBHngqvxb2n_-BvvXEHQajATXqE='
-      const watermark = "watermark"
-      const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileUrl) +
+      const watermark = isLogin().email || 'Investarget'
+      const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
         '&watermark=' + encodeURIComponent(watermark)
       window.open(url)
     }

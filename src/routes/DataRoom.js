@@ -309,7 +309,8 @@ class DataRoomList extends React.Component {
       orderNO: 1,
       parent: [-1, -2, -3].includes(parentId) ? null : parentId,
       key: file.response.result.key,
-      size: file.size
+      size: file.size,
+      bucket: 'file'
     }
 
     Api.addToDataRoom(body).then(data => {
