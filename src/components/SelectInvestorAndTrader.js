@@ -58,7 +58,7 @@ class SelectInvestorAndTrader extends React.Component {
 
         <div style={{padding: '16px'}}>
           { step == 1 ? <SelectOrganization traderId={traderId} value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
-          { step == 2 ? <SelectInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
+          { step == 2 ? <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
         </div>
 
         { step == 1 ? (
