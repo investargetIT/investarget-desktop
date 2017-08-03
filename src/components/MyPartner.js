@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n } from '../utils/util'
+import { i18n, isLogin } from '../utils/util'
 import { MyInvestorListFilter } from '../components/Filter'
 import { Input, Table, Button, Popconfirm, Pagination } from 'antd'
 import * as api from '../api'
@@ -23,14 +23,16 @@ class MyPartner extends React.Component {
   componentDidMount() {
     this.setState({ loading: true })
 
-    let title
+    let title, param
     if (this.props.type === "investor") {
       title = "investoruser"
+      param = { traderuser: isLogin().id}
     } else if (this.props.type == "trader") {
       title = "traderuser"
+      param = { investoruser: isLogin().id }
     }
 
-    api.getUserRelation().then(data => {
+    api.getUserRelation(param).then(data => {
       const investorRelationShip = data.data.data.map(m => m[title])
       const investorIdArr = new Set(investorRelationShip.map(m => m.id))
       const investorList = [...investorIdArr].reduce((acc, value) => {
