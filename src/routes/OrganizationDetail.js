@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, i18n } from '../utils/util'
-import { Link } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -44,9 +44,7 @@ const PositionWithUser = props => {
             <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        <Popover content={<Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}>选择投资人</Link>}>
           <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" />
-          </Popover>
       </div>
     </div>
   )
@@ -104,6 +102,7 @@ class OrganizationDetail extends React.Component {
       decisionMakingProcess: null,
       data: [],
       visible: false,
+      chooseModalVisible: false,
     }
   }
 
@@ -213,7 +212,7 @@ class OrganizationDetail extends React.Component {
   handleAddUser(orgID, titleID) {
     this.titleID = titleID
     this.setState({
-      visible: true
+      chooseModalVisible: true
     })
   }
 
@@ -222,6 +221,12 @@ class OrganizationDetail extends React.Component {
       visible: false
     })
   }
+
+  handleCancelChoose = () => this.setState({ chooseModalVisible: false })
+  handleAddNewInvestor = () => this.setState({ chooseModalVisible: false, visible: true })
+  handleChooseInvestor = () => this.setState({ chooseModalVisible: false }, this.props.dispatch(
+    routerRedux.push(`/app/organization/selectuser?orgID=${this.props.params.id}&titleID=${this.titleID}`)
+  ))
 
   handleSubmit = e => {
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -295,6 +300,13 @@ class OrganizationDetail extends React.Component {
               onAddButtonClicked={this.handleAddUser.bind(this)} />
           </div>)}
         </div>
+
+        <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
+          <div style={{ textAlign: 'center' }}>
+           <Button style={{ marginRight: 10 }} onClick={this.handleChooseInvestor}>从已有投资人中进行选择</Button>
+           <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
+          </div>
+        </Modal>
 
         <Modal
           title="添加投资人"
