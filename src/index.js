@@ -26,7 +26,7 @@ const app = dva({
   initialState: {
     currentUser: user,
   },
-  onError(e, dispatch) {
+  onError(error, dispatch) {
     dispatch({
       type: 'app/findError',
       payload: error
