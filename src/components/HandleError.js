@@ -51,6 +51,12 @@ class HandleError extends React.Component {
       case 2009:
         react.props.dispatch(routerRedux.replace('/403'))
         break
+      case 20041:
+        Modal.error({ title: '手机号码已存在' })
+        break
+      case 20042:
+        Modal.error({ title: '邮箱已存在' })
+        break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

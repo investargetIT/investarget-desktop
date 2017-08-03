@@ -29,7 +29,7 @@ const app = dva({
   onError(error, dispatch) {
     dispatch({
       type: 'app/findError',
-      payload: error
+      payload: e
     })
   },
 })
