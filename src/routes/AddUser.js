@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { i18n, isLogin } from '../utils/util'
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
+import { routerRedux } from 'dva/router'
 
 
 function onValuesChange(props, values) {
@@ -15,6 +16,11 @@ const AddUserForm = Form.create({ onValuesChange })(UserForm)
 
 
 class AddUser extends React.Component {
+
+  state = {
+    visible: false,
+    confirmLoading: false,
+  }
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
@@ -46,9 +52,37 @@ class AddUser extends React.Component {
     api.checkUserExist(account)
     .then(data => {
       const isExist = data.data.result
-      // TODO: query the exist user
+      if (!this.props.location.query.redirect) {
+        Modal.warning({ title: '该用户已经存在' })
+        return
+      }
+      return api.getUser({ search: account })
+    })
+    .then(data => {
+      const user = data.data.data[0]
+      this.setState({ visible: true, user })
     })
   }
+
+  handleAddRelation = () => {
+    this.setState({ confirmLoading: true })
+    const body = {
+      relationtype: false,
+      investoruser: this.state.user.id,
+      traderuser: isLogin().id
+    }
+    api.addUserRelation(body)
+    .then(data => {
+      this.setState({ visible: false, confirmLoading: false })
+      this.props.dispatch(routerRedux.replace(this.props.location.query.redirect))
+    })
+    .catch(err => {
+      this.setState({ visible: false, confirmLoading: false })
+      this.props.dispatch({ type: 'app/findError', payload: err })
+    })
+  }
+
+  handleCancel = () => this.setState({ visible: false })
 
   render () {
     return (
@@ -64,6 +98,14 @@ class AddUser extends React.Component {
         <div style={{textAlign: 'center'}}>
           <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
         </div>
+
+        <Modal title="用户已存在"
+          visible={this.state.visible}
+          onOk={this.handleAddRelation}
+          confirmLoading={this.state.confirmLoading}
+          onCancel={this.handleCancel}>
+          <p>{'是否要和用户 '  + (this.state.user && this.state.user.username) + ' 建立联系？'}</p>
+        </Modal>
 
       </LeftRightLayout>
     )

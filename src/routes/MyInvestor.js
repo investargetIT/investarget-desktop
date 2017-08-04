@@ -6,7 +6,7 @@ import MyPartner from '../components/MyPartner'
 function MyInvestor(props) {
 
   const action = {
-    link: '/app/user/add',
+    link: '/app/user/add?redirect=/app/investor/my',
     name: '新增投资人',
   }
 
