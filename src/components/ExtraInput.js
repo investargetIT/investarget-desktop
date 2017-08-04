@@ -370,11 +370,10 @@ class SelectUser extends React.Component {
     data: [],
   }
   componentDidMount() {
-    api.getUser({ groups: [2] }).then(result => {
-      this.setState({
-        data: result.data.data
-      })
-    }, error => {
+    api.queryUserGroup({ type: this.props.type || 'trader' })
+    .then(data => api.getUser({ groups: data.data.data.map(m => m.id) }))
+    .then(data => this.setState({ data: data.data.data }))
+    .catch(error => {
       this.props.dispatch({
         type: 'app/findError',
         payload: error

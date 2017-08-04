@@ -86,6 +86,7 @@ class EditUser extends React.Component {
       ishasfundorplan: data.ishasfundorplan,
       mergedynamic: data.mergedynamic,
       targetdemand: data.targetdemand,
+      IR: data.IR.id
     }
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }

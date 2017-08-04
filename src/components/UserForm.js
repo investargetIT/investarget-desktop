@@ -144,17 +144,23 @@ class UserForm extends React.Component {
           ) : null
         }
 
-        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
+        {/* { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
         <BasicFormItem label="强交易师" name="major_trader">
           <SelectUser mode="single" />
         </BasicFormItem>
-        : null }*/}
+        : null }
 
-        {/*{ this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
+        { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
         <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
           <SelectUser mode="multiple" />
         </BasicFormItem>
-        : null }*/}
+        : null } */}
+
+        { hasPerm('usersys.as_admin') ? 
+        <BasicFormItem label="IR" name="IR">
+          <SelectUser mode="single" type="admin" />
+        </BasicFormItem>
+        : null }
 
         <BasicFormItem label="名片" name="cardKey">
           <UploadImage />
