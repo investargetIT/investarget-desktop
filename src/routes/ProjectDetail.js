@@ -1,16 +1,11 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney } from '../utils/util'
-
+import { formatMoney, isLogin, hasPerm } from '../utils/util'
+import { Link } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { SelectNumber } from '../components/ExtraInput'
-
-
-const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const currentUserId = userInfo ? userInfo.id : null
-
 
 function Field (props) {
   return (
@@ -86,13 +81,14 @@ class ProjectDetail extends React.Component {
       favorId: null,
       traderOptions: [],
       trader: null,
+      userListWithInterest: []
     }
   }
 
   getFavorProject = () => {
     const param = {
       favoritetype: 4,
-      user: currentUserId,
+      user: isLogin() && isLogin().id,
       proj: this.state.id,
     }
     api.getFavoriteProj(param).then(result => {
@@ -111,7 +107,7 @@ class ProjectDetail extends React.Component {
   favorProject = () => {
     const param = {
       favoritetype: 4,
-      user: currentUserId,
+      user: isLogin() && isLogin().id,
       projs: [this.state.id],
     }
     api.projFavorite(param).then(result => {
@@ -150,7 +146,7 @@ class ProjectDetail extends React.Component {
     const params = {
       favoritetype: 5,
       projs: [id],
-      user: currentUserId,
+      user: isLogin() && isLogin().id,
       trader: trader,
     }
     api.projFavorite(params).then(result => {
@@ -177,8 +173,14 @@ class ProjectDetail extends React.Component {
 
     this.getFavorProject()
 
+    if (hasPerm('proj.admin_getfavorite')) {
+      api.getFavoriteProj({ favoritetype: 5, proj: this.state.id })
+      .then(data => this.setState({ userListWithInterest: data.data.data }))
+      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+    }
+
     // 获取投资人的交易师
-    api.getUserRelation({ investoruser: currentUserId }).then(result => {
+    api.getUserRelation({ investoruser: isLogin() && isLogin().id }).then(result => {
       const data = result.data.data
       const relation = data.filter(item => item.relationtype)[0]
       const trader = relation && relation.traderuser.id
@@ -341,7 +343,14 @@ class ProjectDetail extends React.Component {
           }
         </div>
 
-
+        { hasPerm('proj.admin_getfavorite') ? 
+        <div>感兴趣的人: 
+          { this.state.userListWithInterest.map(m => <Link key={m.id} to={'/app/user/' + m.user.id}>
+          <img style={{ width: 48, height: 48, borderRadius: '50%' }} src={m.user.photourl} />
+          </Link>) }
+        </div>
+        : null }
+        
         <div>
           <SelectNumber options={traderOptions} value={trader} onChange={this.handleTraderChange} />
           <Button onClick={this.haveInterest} disabled={traderOptions.length == 0}>感兴趣</Button>
