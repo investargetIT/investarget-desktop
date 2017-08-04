@@ -71,7 +71,8 @@ class DataRoomList extends React.Component {
         // Project Owner Folder
         Api.queryDataRoom({
           proj: project.id,
-          user: projectOwner.id
+          user: projectOwner.id,
+          isPublic: 0
         }),
       ]
       return Promise.all(queryDataRoomArr)

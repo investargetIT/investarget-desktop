@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-import { Form, Button, InputNumber } from 'antd'
+import { Form, Button, InputNumber, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import TimelineForm from '../components/TimelineForm'
@@ -45,14 +45,38 @@ class EditTimeline extends React.Component {
           timelinedata: { trader: transaction },
           statusdata: { alertCycle: cycle, transationStatus: status },
         }
-        api.editTimeline(id, params).then(result => {
-          this.props.router.goBack()
-        }, error => {
-          this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-        })
+        if (status === 4) {
+          const react = this
+          Modal.confirm({
+            title: '是否同步创建DataRoom？',
+            okText: '创建',
+            cancelText: '不创建',
+            onOk() {
+              const body = {
+                proj: react.timeline.proj,
+                isPublic: false,
+                investor: react.timeline.investor,
+                trader: react.timeline.trader || isLogin().id
+              }
+              Promise.all([api.createDataRoom(body), api.editTimeline(id, params)])
+              react.props.router.goBack()
+            },
+            onCancel() {
+              api.editTimeline(id, params)
+              react.props.router.goBack()
+            },
+          })
+        } else {
+          api.editTimeline(id, params)
+            .then(result => {
+              this.props.router.goBack()
+            }, error => {
+              this.props.dispatch({
+                type: 'app/findError',
+                payload: error
+              })
+            })
+        }
       }
     })
   }
@@ -71,6 +95,7 @@ class EditTimeline extends React.Component {
   componentDidMount() {
     const id = Number(this.props.params.id)
     api.getTimelineDetail(id).then(result => {
+      this.timeline = result.data
       const data = result.data
       const investor = data.investor
       const transaction = data.trader
