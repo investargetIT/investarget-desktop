@@ -51,7 +51,7 @@ class UserForm extends React.Component {
       rules: [{required: true}], initialValue: 'image'
     })
 
-    if (!hasPerm('usersys.admin_adduser') && hasPhasPerm('usersys.user_adduser')) {
+    if (!hasPerm('usersys.admin_adduser') && hasPerm('usersys.user_adduser')) {
       getFieldDecorator('groups', {
         rules: [{required: true}], initialValue: [4] // 未审核投资人
       })
@@ -74,12 +74,6 @@ class UserForm extends React.Component {
           ) : null
         }
 
-        <BasicFormItem label="姓名" name="usernameC" required><Input /></BasicFormItem>
-
-        <BasicFormItem label="英文名" name="usernameE" required><Input /></BasicFormItem>
-
-        <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input /></BasicFormItem>
-
         <FormItem {...formItemLayout} label={i18n("mobile")} required>
           <Row gutter={8}>
             <Col span={6}>
@@ -99,13 +93,19 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobile', {
                     rules: [{ message: 'Please input' }, {required: true}]
                   })(
-                    <Input />
+                    <Input onBlur={this.props.mobileOnBlur} />
                   )
                 }
               </FormItem>
             </Col>
           </Row>
         </FormItem>
+
+        <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input onBlur={this.props.emailOnBlur} /></BasicFormItem>
+
+        <BasicFormItem label="姓名" name="usernameC" required><Input /></BasicFormItem>
+
+        <BasicFormItem label="英文名" name="usernameE" required><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n("wechat")} name="wechat"><Input /></BasicFormItem>
 

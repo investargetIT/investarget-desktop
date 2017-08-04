@@ -9,6 +9,7 @@ import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
+import { ApiError } from '../utils/request'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -205,7 +206,13 @@ class Register extends React.Component {
       areacode: areacode
     }
     checkUserExist(mobile)
-    .then(() => sendSmsCode(body))
+    .then(data => {
+      const isExist = data.data.result
+      if (isExist) {
+        throw new ApiError(20041)
+      }
+      return sendSmsCode(body)
+    })
     .then(data => {
       if (data.data.status !== 'success') {
         throw new Error(data.data.msg)
@@ -247,11 +254,15 @@ class Register extends React.Component {
   }
 
   handleEmailOnBlur = evt => {
-    if (evt.target.value) {
-      checkUserExist(evt.target.value).catch(error =>
-        this.props.dispatch({ type: 'app/findError', payload: error })
-      )
-    }
+    if (!evt.target.value) return
+    checkUserExist(evt.target.value)
+    .then(data => {
+      const isExist = data.data.result
+      if (isExist) throw new ApiError(20042)
+    })
+    .catch(error => {
+      this.props.dispatch({ type: 'app/findError', payload: error })
+    })
   }
 
   render() {
