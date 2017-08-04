@@ -21,6 +21,7 @@ import {
   SliderMoney,
   TabCheckboxIndustry,
   TabCheckboxCountry,
+  CheckboxService,
 } from './ExtraInput'
 
 
@@ -56,6 +57,14 @@ function TagFilter(props) {
   return (
     <BasicContainer label={i18n('filter.tag')}>
       <CheckboxTag value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function ServiceFilter(props) {
+  return (
+    <BasicContainer label={'服务类型'}>
+      <CheckboxService value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
@@ -460,6 +469,7 @@ class ProjectListFilter extends React.Component {
     grossProfit_T: 200000000,
     projstatus: [],
     ismarketplace: null,
+    service: [],
   }
 
   constructor(props) {
@@ -487,7 +497,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -499,6 +509,7 @@ class ProjectListFilter extends React.Component {
         <ProfitFilter
           value={[grossProfit_F, grossProfit_T]}
           onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
+        <ServiceFilter value={service} onChange={this.handleChange.bind(this, 'service')} />
         <ProjectStatusFilter value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
         <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />

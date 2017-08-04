@@ -21,6 +21,7 @@ import {
   CascaderCountry,
   CascaderIndustry,
   RadioTrueOrFalse,
+  SelectService,
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -87,6 +88,10 @@ class ProjectBaseForm extends React.Component {
 
         <BasicFormItem label="交易类型" name="transactionType" required valueType="array">
           <SelectTransactionType mode="multiple" />
+        </BasicFormItem>
+
+        <BasicFormItem label="服务类型" name="service" required valueType="array">
+          <SelectService mode="multiple" />
         </BasicFormItem>
 
         <div style={{textAlign: 'center'}}>

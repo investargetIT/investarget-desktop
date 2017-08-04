@@ -29,6 +29,7 @@ import {
   InputCurrency,
   InputPhoneNumber,
   RadioTrueOrFalse,
+  SelectService,
 } from '../components/ExtraInput'
 
 import SelectUserModal from '../components/SelectUserModal'
@@ -80,6 +81,11 @@ class ProjectBaseForm extends React.Component {
         <BasicFormItem label="交易类型" name="transactionType" required valueType="array">
           <SelectTransactionType mode="multiple" />
         </BasicFormItem>
+
+        <BasicFormItem label="服务类型" name="service" required valueType="array">
+          <SelectService mode="multiple" />
+        </BasicFormItem>
+
       </Form>
     )
   }

@@ -116,6 +116,12 @@ const SelectTag = withOptionsAsync(SelectNumber, ['tag'], function(state) {
   return { options }
 })
 
+const SelectService = withOptionsAsync(SelectNumber, ['service'], function(state) {
+  const { service } = state.app
+  const options = service ? service.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 /**
  * SelectRole
  */
@@ -703,6 +709,12 @@ const CheckboxTag = withOptionsAsync(CheckboxGroup, ['tag'], function(state) {
   return { options }
 })
 
+const CheckboxService = withOptionsAsync(CheckboxGroup, ['service'], function(state) {
+  const {service} = state.app
+  const options = service ? service.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 /**
  * CheckboxProjStatus
  */
@@ -840,4 +852,6 @@ export {
   RadioTrueOrFalse,
   RadioCurrencyType,
   RadioAudit,
+  CheckboxService,
+  SelectService,
 }
