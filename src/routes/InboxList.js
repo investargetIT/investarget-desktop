@@ -113,7 +113,11 @@ class InboxList extends React.Component {
         const detail = m.content
         return { ...m, title, detail }
       })
-      this.setState({ data: list, total: data.data.count })
+      this.setState({ 
+        data: list, 
+        total: data.data.count, 
+        currentId: list.length > 0 && list[0].id 
+      })
     })
   }
 
@@ -187,8 +191,10 @@ class InboxList extends React.Component {
           <div style={headerStyle}>消息详情</div>
 
           <div style={{ padding: '30px 14px', fontSize: 13, lineHeight: 1.8 }}>
-            { this.state.data.filter(f => f.id === this.state.currentId)[0].detail
-              .split('\n').map((item, key) => <span key={key}>{item}<br /></span>) }
+            { this.state.data.length > 0 ?
+              this.state.data.filter(f => f.id === this.state.currentId)[0].detail
+              .split('\n').map((item, key) => <span key={key}>{item}<br /></span>) 
+             : null }
           </div>
 
         </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import { message, Modal } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { i18n } from '../utils/util'
 
 class HandleError extends React.Component {
 
@@ -56,6 +57,9 @@ class HandleError extends React.Component {
         break
       case 20042:
         Modal.error({ title: '邮箱已存在' })
+        break
+      case 2001:
+        Modal.error({ title: i18n('wrong_password') })
         break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)

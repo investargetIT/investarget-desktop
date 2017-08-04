@@ -18,6 +18,7 @@
     "home": "Home",
     "out": "Logout"
   },
+  "wrong_password": "The Password is not correct",
   "add_trader": "Add Trader",
   "can_not_be_empty": "This field can not be empty!",
   "please_check_agreement": "Please read and agree to term of use!",

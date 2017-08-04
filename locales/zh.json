@@ -18,6 +18,7 @@
     "home": "首页",
     "out": "退出"
   },
+  "wrong_password": "密码错误",
   "add_trader": "添加交易师",
   "can_not_be_empty": "该字段不能为空",
   "please_check_agreement": "请阅读并接受相关规定",
