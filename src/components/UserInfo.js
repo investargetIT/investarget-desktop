@@ -38,6 +38,9 @@ class UserInfo extends React.Component {
       email: '',
       userstatus: '',
       cardUrl: '',
+      ishasfundorplan: '',
+      mergedynamic: '',
+      targetdemand: '',
     }
   }
 
@@ -55,8 +58,11 @@ class UserInfo extends React.Component {
       const email = data.email
       const userstatus = data.userstatus.name
       const cardUrl = '' // TODO card url
+      const ishasfundorplan = data.ishasfundorplan
+      const mergedynamic = data.mergedynamic
+      const targetdemand = data.targetdemand
       this.setState({
-        username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl
+        username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, ishasfundorplan, mergedynamic, targetdemand
       })
     }, error => {
       this.props.dispatch({
@@ -67,7 +73,7 @@ class UserInfo extends React.Component {
   }
 
   render() {
-    const { username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl } = this.state
+    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl } = this.state
     return (
       <div>
         <Field title="姓名" value={username} />
@@ -86,6 +92,9 @@ class UserInfo extends React.Component {
         <Field title="收藏项目" value={''} />
         <Field title="推荐项目" value={''} />
         <Field title="感兴趣项目" value={''} />
+        <Field title="标的需求" value={targetdemand} />
+        <Field title="近年并购动态" value={mergedynamic} />
+        <Field title="是否有产业基金或成立计划" value={ishasfundorplan} />
       </div>
     )
   }

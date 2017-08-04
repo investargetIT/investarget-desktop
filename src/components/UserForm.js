@@ -132,6 +132,10 @@ class UserForm extends React.Component {
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
+        <BasicFormItem label="标的需求" name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
+        <BasicFormItem label="近年并购动态" name="mergedynamic"><Input.TextArea rows={4} /></BasicFormItem>
+        <BasicFormItem label="是否有产业基金或成立计划" name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
+        
         {
           isAdmin ? (
             <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={2}>

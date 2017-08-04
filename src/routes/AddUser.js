@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, isLogin } from '../utils/util'
+import { i18n, isLogin, hasPerm } from '../utils/util'
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
@@ -26,9 +26,12 @@ class AddUser extends React.Component {
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values)
-
+        if (hasPerm('usersys.user_adduser') && !hasPerm('usersys.admin_adduser')) {
+          values.groups = undefined
+        }
         api.addUser(values).then(result => {
-          // TODO// redirect to list ?
+          // TODO: add user relation if necessary
+          this.props.dispatch(routerRedux.replace(this.props.location.query.redirect || '/app/user/list'))
         }, error => {
           this.props.dispatch({
             type: 'app/findError',
@@ -52,13 +55,16 @@ class AddUser extends React.Component {
     api.checkUserExist(account)
     .then(data => {
       const isExist = data.data.result
-      if (!this.props.location.query.redirect) {
-        Modal.warning({ title: '该用户已经存在' })
-        return
+      if (isExist) {
+        if (!this.props.location.query.redirect) {
+          Modal.warning({ title: '该用户已经存在' })
+        } else {
+          return api.getUser({ search: account })
+        }
       }
-      return api.getUser({ search: account })
     })
     .then(data => {
+      if (!data) return
       const user = data.data.data[0]
       this.setState({ visible: true, user })
     })

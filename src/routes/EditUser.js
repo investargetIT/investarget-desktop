@@ -83,6 +83,9 @@ class EditUser extends React.Component {
       country: data.country && data.country.id,
       major_trader: data.majorTraderID,
       minor_traders: data.minorTraderIDArr,
+      ishasfundorplan: data.ishasfundorplan,
+      mergedynamic: data.mergedynamic,
+      targetdemand: data.targetdemand,
     }
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
