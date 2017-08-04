@@ -107,6 +107,7 @@ class EditProject extends React.Component {
       data.transactionType = data.transactionType ? data.transactionType.map(item => item.id) : []
       data.takeUser = data.takeUser ? data.takeUser.id : null
       data.makeUser = data.makeUser ? data.makeUser.id : null
+      data.service = data.service ? data.service.map(m => m.id) : []
       this.setState({
         project: data
       })

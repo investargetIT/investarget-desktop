@@ -14,7 +14,7 @@ export default {
     },
   },
   effects: {
-    *login({ payload: { username, password } }, { call, put }) {
+    *login({ payload: { username, password, redirect } }, { call, put }) {
       const { data } = yield call(api.login, { username, password })
       const { token, user_info, menulist, permissions } = data
       const userInfo = { ...user_info, token, menulist, permissions }
@@ -23,12 +23,12 @@ export default {
         type: 'save',
         userInfo
       })
-      yield put(routerRedux.replace('/app'))
+      yield put(routerRedux.replace(redirect || '/app'))
     },
     *logout({}, { call, put }) {
       localStorage.removeItem('user_info')
       yield put({ type: 'delete' })
-      yield put(routerRedux.replace('/'))
+      yield put(routerRedux.replace('/login'))
     },
     *register({ payload: user }, { call, put }) {
       yield call(api.register, user)

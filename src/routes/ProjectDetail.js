@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm } from '../utils/util'
-import { Link } from 'dva/router'
+import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { SelectNumber } from '../components/ExtraInput'
@@ -29,11 +29,6 @@ class ProjectFinanceYear extends React.Component {
     const id = this.props.projId
     api.getProjFinance(id).then(result => {
       this.setState({ finance: result.data.data })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
     })
   }
 
@@ -96,11 +91,6 @@ class ProjectDetail extends React.Component {
       const isFavorite = data.length == 1
       const favorId = data[0] && data[0].id
       this.setState({ isFavorite, favorId })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
     })
   }
 
@@ -161,6 +151,13 @@ class ProjectDetail extends React.Component {
 
   componentDidMount() {
     const { id } = this.state
+
+    if (!isLogin()) {
+      this.props.dispatch(routerRedux.replace(
+        '/login?redirect='+ encodeURIComponent(this.props.location.pathname)))
+      return
+    }
+
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project })
@@ -186,11 +183,6 @@ class ProjectDetail extends React.Component {
       const trader = relation && relation.traderuser.id
       const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
       this.setState({ traderOptions, trader })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
     })
   }
 

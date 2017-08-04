@@ -39,12 +39,13 @@ class Login extends React.Component {
 
     this.props.form.validateFields((err, values) => {
       if (!err) {
-	console.log('Received values of form: ', values)
-
-	this.props.dispatch({
-	  type: 'currentUser/login',
-	  payload: values
-	})
+        const redirectUrl = this.props.location.query.redirect
+        this.props.dispatch({
+          type: 'currentUser/login',
+          payload: { ...values, 
+            redirect: redirectUrl && decodeURIComponent(redirectUrl) 
+          }
+        })
       }
     })
   }
