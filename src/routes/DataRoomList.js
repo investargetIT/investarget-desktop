@@ -125,7 +125,7 @@ class DataRoomList extends React.Component {
           <span>
             <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="small">{record.isClose ? '打开' : '关闭'}</Button>
             &nbsp;
-            <Link to={`/app/dataroom/detail?id=${record.id}&projectID=${record.proj.id}`}>
+            <Link to={`/app/dataroom/detail?id=${record.id}&projectID=${record.proj.id}&investorID=${record.investor.id}&traderID=${record.trader.id}&projectOwnerID=${record.proj.supportUser.id}`}>
               <Button size="small" >{i18n("view")}</Button>
             </Link>
             &nbsp;
