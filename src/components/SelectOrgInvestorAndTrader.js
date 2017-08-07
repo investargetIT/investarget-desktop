@@ -141,6 +141,14 @@ class SelectOrgInvestorAndTrader extends React.Component {
     this.props.onChange(value)
   }
 
+  handleSelect = (record) => {
+    if (record.trader_relation == null) {
+      Modal.warning({
+        title: '请先分配交易师',
+      })
+    }
+  }
+
   handleTraderOptionsChange = (investorId, traderOptions) => {
     const { traderOptionsMap } = this.state
     this.setState({
@@ -171,6 +179,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
     const rowSelection = {
       selectedRowKeys: this.props.value.map(item => item.investor),
       onChange: this.handleSelectChange,
+      onSelect: this.handleSelect,
     }
 
     const columns = [
@@ -192,7 +201,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
               value={this.state.traderMap[record.id]}
               onChange={this.handleChangeTrader.bind(this, record.id)}
             />
-          ) : '没有交易师'
+          ) : '暂无'
         }
       }}
     ]
