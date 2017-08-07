@@ -132,7 +132,7 @@ class EditTimeline extends React.Component {
     const data = toFormData(this.state.data)
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title="修改时间轴" />
         <div>
           <EditTimelineForm wrappedComponentRef={this.handleRef} data={data} transactionOptions={this.state.transactionOptions} />

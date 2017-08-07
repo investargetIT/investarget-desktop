@@ -6,6 +6,8 @@ import { i18n } from '../utils/util'
 
 class HandleError extends React.Component {
 
+  static handleSessionExpiration = false
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.error) {
       this.determineError(this.props.error)
@@ -34,14 +36,19 @@ class HandleError extends React.Component {
     const react = this
     switch (code) {
       case 3000:
-        Modal.error({
-          title: '会话过期，请重新登录',
-          onOk() {
-            react.props.dispatch({
-              type: 'currentUser/logout'
-            })
-          },
-        })
+        if (!HandleError.handleSessionExpiration) {
+          HandleError.handleSessionExpiration = true
+          Modal.error({
+            title: '会话过期，请重新登录',
+            onOk() {
+              HandleError.handleSessionExpiration = false
+              react.props.dispatch({
+                type: 'currentUser/logout',
+                payload: { redirect: react.props.pathname }
+              })
+            },
+          })
+        }
         break
       case 2010:
         Modal.error({

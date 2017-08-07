@@ -25,7 +25,7 @@ class LeftRightLayout extends React.Component {
       <Layout>
 
         <Sider trigger={null} collapsible collapsed={this.props.collapsed}>
-          <div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} /> 
+          <div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} />
           <SiderMenu mode={this.props.collapsed ? 'vertical': 'inline'} collapsed={this.props.collapsed} theme="dark" />
         </Sider>
 
@@ -60,7 +60,7 @@ class LeftRightLayout extends React.Component {
 
     return (
       <Layout>
-        <HandleError />
+        <HandleError pathname={this.props.location.pathname} />
         { this.props.currentUser ? sideBarAndContent : content }
         <Chat />
       </Layout>

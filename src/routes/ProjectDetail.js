@@ -152,12 +152,6 @@ class ProjectDetail extends React.Component {
   componentDidMount() {
     const { id } = this.state
 
-    if (!isLogin()) {
-      this.props.dispatch(routerRedux.replace(
-        '/login?redirect='+ encodeURIComponent(this.props.location.pathname)))
-      return
-    }
-
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project })
@@ -335,14 +329,14 @@ class ProjectDetail extends React.Component {
           }
         </div>
 
-        { hasPerm('proj.admin_getfavorite') ? 
-        <div>感兴趣的人: 
+        { hasPerm('proj.admin_getfavorite') ?
+        <div>感兴趣的人:
           { this.state.userListWithInterest.map(m => <Link key={m.id} to={'/app/user/' + m.user.id}>
           <img style={{ width: 48, height: 48, borderRadius: '50%' }} src={m.user.photourl} />
           </Link>) }
         </div>
         : null }
-        
+
         <div>
           <SelectNumber options={traderOptions} value={trader} onChange={this.handleTraderChange} />
           <Button onClick={this.haveInterest} disabled={traderOptions.length == 0}>感兴趣</Button>

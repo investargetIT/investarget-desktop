@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'currentUser',
-  state: null, 
+  state: null,
   reducers: {
     save(state,  { userInfo } ) {
       return { ...state, ...userInfo }
@@ -25,10 +25,14 @@ export default {
       })
       yield put(routerRedux.replace(redirect || '/app'))
     },
-    *logout({}, { call, put }) {
+    *logout({ payload }, { call, put }) {
       localStorage.removeItem('user_info')
       yield put({ type: 'delete' })
-      yield put(routerRedux.replace('/login'))
+      if (payload && payload.redirect) {
+        yield put(routerRedux.replace('/login?redirect=' + payload.redirect))
+      } else {
+        yield put(routerRedux.replace('/login'))
+      }
     },
     *register({ payload: user }, { call, put }) {
       yield call(api.register, user)

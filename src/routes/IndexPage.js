@@ -142,7 +142,7 @@ class IndexPage extends React.Component {
 
   render() {
     return (
-      <MainLayout location={location} style={{}}>
+      <MainLayout location={this.props.location} style={{}}>
 
         <Col span={16}>
 

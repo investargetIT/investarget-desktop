@@ -41,7 +41,7 @@ class MainLayout extends React.Component {
         <Header mode={this.props.currentUser ? "dark" : "light"} location={this.props.location} />
         { this.props.currentUser ? sideBarAndContent : content }
         <Chat />
-        <HandleError />
+        <HandleError pathname={this.props.location.pathname} />
       </Layout>
     )
   }
