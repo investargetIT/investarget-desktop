@@ -17,6 +17,7 @@ const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
 import _ from 'lodash'
 import * as api from '../api'
+import { hasPerm } from '../utils/util'
 
 
 function Select2 ({options, children, ...extraProps}) {
@@ -719,7 +720,10 @@ const CheckboxService = withOptionsAsync(CheckboxGroup, ['service'], function(st
  */
 
 const CheckboxProjStatus = withOptionsAsync(CheckboxGroup, ['projstatus'], function(state) {
-  const { projstatus } = state.app
+  var { projstatus } = state.app
+  if (!hasPerm('usersys.as_admin')) {
+    projstatus = projstatus.filter(item => item.id >= 4) // 非管理员只能查看终审发布之后的项目
+  }
   const options = projstatus ? projstatus.map(item => ({value: item.id, label: item.name})) : []
   return { options }
 })
