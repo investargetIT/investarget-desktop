@@ -65,7 +65,10 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
       onClick={handleMenuClicked}>
 
       <Menu.Item key="/">
-        <Link to={ currentUser ? "/app" : "/" }><Icon type="home" /><FormattedMessage id="header.home" /></Link>
+        <Link to={ currentUser ? "/app" : "/" }>
+        {/* <Icon type="home" /><FormattedMessage id="header.home" /> */}
+        <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
+        </Link>
       </Menu.Item>
 
       <Menu.Item key="toggle_menu">
