@@ -69,6 +69,8 @@ class TimelineList extends React.Component {
         params['investor'] = userId
       } else if (hasPerm('usersys.as_trader')) {
         params['trader'] = userId
+      } else {
+        return
       }
     }
     this.setState({ loading: true })
