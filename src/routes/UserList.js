@@ -195,7 +195,7 @@ class UserList extends React.Component {
 
     return (
       <LeftRightLayout
-        location={location}
+        location={this.props.location}
         title={i18n("user_list")}
         action={hasPerm("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
 

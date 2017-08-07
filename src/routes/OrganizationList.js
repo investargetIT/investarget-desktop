@@ -140,13 +140,13 @@ class OrganizationList extends React.Component {
     const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <div>
-          { hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ? 
+          { hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
           <PageTitle
             title={i18n('organization.org_list')}
             actionLink="/app/organization/add"
-            actionTitle={i18n('organization.new_org')} /> 
+            actionTitle={i18n('organization.new_org')} />
           : <PageTitle title={i18n('organization.org_list')} /> }
 
           <div>

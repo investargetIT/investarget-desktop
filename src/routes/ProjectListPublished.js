@@ -129,7 +129,7 @@ class ProjectListPublished extends React.Component {
     ]
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title="已发布项目" />
         <div>
           <Table columns={columns} dataSource={list} rowKey={record => record.id} loading={loading} pagination={false} />

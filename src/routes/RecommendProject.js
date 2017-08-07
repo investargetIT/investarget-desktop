@@ -144,7 +144,7 @@ class RecommendProject extends React.Component {
     }
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title="推荐项目" />
         <div>
           <h3 style={{lineHeight: 2, marginBottom: '24px'}}>项目名称：{projTitle}</h3>

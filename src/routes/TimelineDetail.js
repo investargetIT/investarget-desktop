@@ -66,7 +66,7 @@ class TimelineDetail extends React.Component {
     const { status, alertCycle, createdTime } = this.state
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title="查看时间轴" />
         <div>
           <div style={{ marginBottom: '24px' }}>

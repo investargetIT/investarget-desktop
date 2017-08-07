@@ -31,12 +31,12 @@ class UserDetail extends React.Component {
   render() {
     const userId = Number(this.props.params.id)
     return (
-      <LeftRightLayout location={location} title="用户详情">
+      <LeftRightLayout location={this.props.location} title="用户详情">
         <Row gutter={48}>
           <Col span={12}>
             <UserInfo userId={userId} />
           </Col>
-          <Col span={12}>            
+          <Col span={12}>
             <TransactionInfo userId={userId} />
           </Col>
         </Row>
