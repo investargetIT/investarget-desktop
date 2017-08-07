@@ -4,15 +4,17 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as Api from '../api'
 import { Modal } from 'antd'
+import { hasPerm, isLogin } from '../utils/util'
 
 class DataRoomList extends React.Component {
 
   constructor(props) {
     super(props)
     this.dataRoomRelation = []
-    this.state = {
-      title: '项目名称',
-      data: [
+
+    let data = []
+    if (hasPerm('dataroom.admin_getdataroom')) {
+      data = [
         {
           id: -3,
           name: 'Investor Folder',
@@ -44,70 +46,210 @@ class DataRoomList extends React.Component {
           parentId: -999
         }
       ]
+    } else if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+      data = [
+        {
+          id: -2,
+          name: 'Project Owner Folder',
+          rename: 'Project Owner Folder',
+          unique: -2,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        },
+        {
+          id: -1,
+          name: 'Public Folder',
+          rename: 'Public Folder',
+          unique: -1,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        }
+      ]
+    } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+      data = [
+        {
+          id: -3,
+          name: 'Investor Folder',
+          rename: 'Investor Folder',
+          unique: -3,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        },
+        {
+          id: -1,
+          name: 'Public Folder',
+          rename: 'Public Folder',
+          unique: -1,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        }
+      ]
+    } else {
+      data = [
+        {
+          id: -1,
+          name: 'Public Folder',
+          rename: 'Public Folder',
+          unique: -1,
+          isFolder: true,
+          size: null,
+          date: null,
+          parentId: -999
+        }
+      ]
+    }
+    this.state = {
+      title: decodeURIComponent(this.props.location.query.projectTitle),
+      data: data
     }
   }
 
   componentDidMount() {
-    Api.queryDataRoomDetail(this.props.location.query.id).then(data => {
-      const project = data.data.proj
-      const investor = data.data.investor
-      const projectOwner = project.supportUser
-      const newData = this.state.data.slice()
-      newData[0].name = investor.username
-      newData[0].rename = investor.username
-      newData[1].name = projectOwner.username
-      newData[1].rename = projectOwner.username
-      this.setState({
-        title: project.projtitle,
-        data: newData
-      })
-
-      const queryDataRoomArr = [
+    let queryDataRoomArr = []
+    if (hasPerm('dataroom.admin_getdataroom')) {
+      queryDataRoomArr = [
         // Public Folder
         Api.queryDataRoom({
-          proj: project.id,
+          proj: this.props.location.query.projectID,
           isPublic: 1
         }),
         // Project Owner Folder
         Api.queryDataRoom({
-          proj: project.id,
-          user: projectOwner.id,
+          proj: this.props.location.query.projectID,
+          user: this.props.location.query.projectOwnerID,
+          isPublic: 0
+        }),
+        // Investor Folder
+        Api.queryDataRoom({
+          proj: this.props.location.query.projectID,
+          investor: this.props.location.query.investorID,
           isPublic: 0
         }),
       ]
-      return Promise.all(queryDataRoomArr)
-    }).then(data => {
-
-      this.dataRoomRelation[this.props.location.query.id] = -3
-      this.dataRoomRelation[data[1].data.data[0].id] = -2
-      this.dataRoomRelation[data[0].data.data[0].id] = -1
-
-      const newData = this.state.data.slice()
-      newData[0]['dataroom'] = parseInt(this.props.location.query.id, 10)
-      newData[1]['dataroom'] = data[1].data.data[0].id
-      newData[2]['dataroom'] = data[0].data.data[0].id
-
-      this.setState({ data: newData })
-
-      const getDataRoomFileArr = [
-        Api.getDataRoomFile({ dataroom: this.props.location.query.id }), // Investor Folder
-        Api.getDataRoomFile({ dataroom: data[1].data.data[0].id}), // Project Owner Folder
-        Api.getDataRoomFile({ dataroom: data[0].data.data[0].id}) // Public Folder
+    } else {
+      queryDataRoomArr = [
+        Api.queryDataRoom({
+          proj: this.props.location.query.projectID,
+          isPublic: 1
+        })
       ]
+      if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+        queryDataRoomArr.push(
+          Api.queryDataRoom({
+            proj: this.props.location.query.projectID,
+            user: this.props.location.query.projectOwnerID,
+            isPublic: 0
+          })
+        )
+      } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+        queryDataRoomArr.push(
+          Api.queryDataRoom({
+            proj: this.props.location.query.projectID,
+            investor: this.props.location.query.investorID,
+            isPublic: 0
+          })
+        )
+      }
+    }
+    Promise.all(queryDataRoomArr)
+    .then(data => {
+      // return
+      let getDataRoomFileArr = []
+      if (hasPerm('dataroom.admin_getdataroom')) {
+        this.dataRoomRelation[data[2].data.data[0].id] = -3
+        this.dataRoomRelation[data[1].data.data[0].id] = -2
+        this.dataRoomRelation[data[0].data.data[0].id] = -1
+
+        const newData = this.state.data.slice()
+        newData[0]['dataroom'] = data[2].data.data[0].id
+        newData[1]['dataroom'] = data[1].data.data[0].id
+        newData[2]['dataroom'] = data[0].data.data[0].id
+
+        newData[0].name = data[2].data.data[0].investor.username
+        newData[0].rename = data[2].data.data[0].investor.username
+        newData[1].name = data[1].data.data[0].proj.supportUser.username
+        newData[1].rename = data[1].data.data[0].proj.supportUser.username
+
+        this.setState({ data: newData })
+
+        getDataRoomFileArr = [
+          Api.getDataRoomFile({ dataroom: data[2].data.data[0].id }), // Investor Folder
+          Api.getDataRoomFile({ dataroom: data[1].data.data[0].id }), // Project Owner Folder
+          Api.getDataRoomFile({ dataroom: data[0].data.data[0].id }) // Public Folder
+        ]
+      } else {
+        this.dataRoomRelation[data[0].data.data[0].id] = -1
+        const newData = this.state.data.slice()
+        getDataRoomFileArr = [
+          Api.getDataRoomFile({ dataroom: data[0].data.data[0].id })
+        ]
+        if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+          this.dataRoomRelation[data[1].data.data[0].id] = -2
+          newData[0]['dataroom'] = data[1].data.data[0].id
+          newData[0].name = data[1].data.data[0].proj.supportUser.username
+          newData[0].rename = data[1].data.data[0].proj.supportUser.username
+
+          getDataRoomFileArr.push(
+            Api.getDataRoomFile({ dataroom: data[1].data.data[0].id })
+          )
+        } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+          this.dataRoomRelation[data[1].data.data[0].id] = -3
+          newData[0]['dataroom'] = data[1].data.data[0].id
+          newData[0].name = data[1].data.data[0].investor.username
+          newData[0].rename = data[1].data.data[0].investor.username
+          getDataRoomFileArr.push(
+            Api.getDataRoomFile({ dataroom: data[1].data.data[0].id })
+          )
+        }
+        this.setState({ data: newData })
+      }
+
       return Promise.all(getDataRoomFileArr)
     }).then(data => {
       const formattedData = data.map((m, index) => m.data.data.map(item => {
         let parent
-        switch (index) {
-          case 0:
-          parent = -3
-          break
-          case 1:
-          parent = -2
-          break
-          case 2:
-          parent = -1
-          break
+        if (hasPerm('dataroom.admin_getdataroom')) {
+          switch (index) {
+            case 0:
+              parent = -3
+              break
+            case 1:
+              parent = -2
+              break
+            case 2:
+              parent = -1
+              break
+          }
+        } else {
+          if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+            switch (index) {
+              case 0:
+                parent = -1
+                break
+              case 1:
+                parent = -2
+                break
+            }
+          } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+            switch (index) {
+              case 0:
+                parent = -1
+                break
+              case 1:
+                parent = -3
+                break
+            }
+          } else {
+            parent = -1
+          }
         }
         const parentId = item.parent || parent
         const name = item.filename
