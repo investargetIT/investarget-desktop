@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { i18n, intersection } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
@@ -86,21 +86,27 @@ class EditUser extends React.Component {
       ishasfundorplan: data.ishasfundorplan,
       mergedynamic: data.mergedynamic,
       targetdemand: data.targetdemand,
-      IR: data.IR.id
+      IR: data.IR && data.IR.id + "",
     }
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
     }
+    _data['isInvestor'] = data.isInvestor
     return _data
   }
 
 
   componentDidMount() {
     const userId = Number(this.props.params.id)
-    let userDetailInfo
-    api.getUserDetail(userId).then(result => {
+    let userDetailInfo, investorGroup
+    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    .then(data => {
+      investorGroup = data.data.data.map(m => m.id)
+      return api.getUserDetail(userId)
+    })
+    .then(result => {
       userDetailInfo = result.data
-      if (result.data.groups.map(m => m.id).includes(1)) {
+      if (intersection(result.data.groups.map(m => m.id), investorGroup).length > 0) {
         const param = { investoruser: userId }
         return api.getUserRelation(param)
       } else {
@@ -111,10 +117,10 @@ class EditUser extends React.Component {
         const majorTraderArr = result.data.data.filter(f => f.relationtype)
         if (majorTraderArr.length > 0) {
           const majorTraderID = majorTraderArr[0].traderuser.id + ""
-          userDetailInfo = { ...userDetailInfo, majorTraderID }
+          userDetailInfo = { ...userDetailInfo, majorTraderID, isInvestor: true }
         }
         const minorTraderIDArr = result.data.data.filter( f => !f.relationtype).map(m => m.traderuser.id + "")
-        userDetailInfo = { ...userDetailInfo, minorTraderIDArr}
+        userDetailInfo = { ...userDetailInfo, minorTraderIDArr, isInvestor: true}
       }
       this.setState({ data: this.getData(userDetailInfo) })
     }).catch(error => console.error(error))
