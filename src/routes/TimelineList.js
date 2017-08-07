@@ -96,7 +96,21 @@ class TimelineList extends React.Component {
     })
   }
 
-
+  showOpenTimelineModal = (id) => {
+    Modal.confirm({
+      title: '打开时间轴',
+      onOk: () => {
+        api.openTimeline(id).then(result => {
+          this.getTimeline()
+        }, error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error,
+          })
+        })
+      },
+    })
+  }
   // 关闭时间轴
 
   showCloseTimelineModal = (id) => {
@@ -170,7 +184,13 @@ class TimelineList extends React.Component {
       { title: '最新备注', key: 'remark', dataIndex: 'latestremark.remark' },
       { title: '操作', key: 'action', render: (text, record) => (
           <span>
-            <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change || record.isClose}>关闭</Button>
+            {
+              record.isClose ? (
+                <Button size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>打开</Button>
+              ) : (
+                <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>关闭</Button>
+              )
+            }
             &nbsp;
             <Link to={'/app/timeline/' + record.id}>
               <Button size="small" disabled={!record.action.get}>{i18n("view")}</Button>
