@@ -4,6 +4,8 @@ import { PAGE_SIZE } from './constants'
 import { qsArrayToString } from './utils/util'
 import _ from 'lodash'
 
+export const SOURCE = 1
+
 function r(url, method, body) {
 
   const options = {
@@ -11,7 +13,7 @@ function r(url, method, body) {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "clienttype": "3",
-      "source": 2
+      "source": SOURCE
     }
   }
 
@@ -42,7 +44,7 @@ function r2(url, method, body) {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "clienttype": "3",
-      "source": 2
+      "source": SOURCE
     }
   }
 

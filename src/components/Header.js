@@ -3,6 +3,7 @@ import { Menu, Icon, Modal } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { FormattedMessage } from 'react-intl'
+import { SOURCE } from '../api'
 
 const confirm = Modal.confirm
 
@@ -66,8 +67,11 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
       <Menu.Item key="/">
         <Link to={ currentUser ? "/app" : "/" }>
-        {/* <Icon type="home" /><FormattedMessage id="header.home" /> */}
-        <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
+          {SOURCE === 2 ?
+            <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
+            :
+            <div><Icon type="home" /> <FormattedMessage id="header.home" /></div>
+          }
         </Link>
       </Menu.Item>
 
