@@ -3,17 +3,24 @@ import qs from 'qs'
 import { PAGE_SIZE } from './constants'
 import { qsArrayToString } from './utils/util'
 import _ from 'lodash'
+import { ApiError } from './utils/request'
 
 export const SOURCE = 1
 
 function r(url, method, body) {
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
 
   const options = {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "clienttype": "3",
-      "source": SOURCE
+      "source": source
     }
   }
 
@@ -39,12 +46,18 @@ function r(url, method, body) {
 
 function r2(url, method, body) {
 
+  const source = parseInt(localStorage.getItem('source'), 10)
+
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
   const options = {
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "clienttype": "3",
-      "source": SOURCE
+      "source": source
     }
   }
 

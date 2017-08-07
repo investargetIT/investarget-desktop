@@ -68,6 +68,16 @@ class HandleError extends React.Component {
       case 2001:
         Modal.error({ title: i18n('wrong_password') })
         break
+      case 1299:
+        Modal.error({
+          title: '请选择公司',
+          onOk() {
+            react.props.dispatch(
+             routerRedux.replace("/")
+            )
+          },
+        })
+        break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

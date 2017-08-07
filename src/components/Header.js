@@ -58,6 +58,8 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
     </Menu.Item>
   )
 
+  const source = parseInt(localStorage.getItem('source'), 10)
+
   return (
     <Menu
       selectedKeys={[location.pathname]}
@@ -67,11 +69,15 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
       <Menu.Item key="/">
         <Link to={ currentUser ? "/app" : "/" }>
-          {SOURCE === 2 ?
+          {source === 2 ? 
             <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
-            :
-            <div><Icon type="home" /> <FormattedMessage id="header.home" /></div>
-          }
+            : null }
+          {source === 1 ? 
+            <img style={{ height: 24, verticalAlign: 'middle', background: '#10458F' }} src="/images/investarget.png" />
+            : null }
+          {!source ? 
+            <div><Icon type="home" /> <FormattedMessage id="header.home" /></div> 
+            : null }
         </Link>
       </Menu.Item>
 
