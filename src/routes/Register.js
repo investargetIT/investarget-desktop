@@ -49,7 +49,7 @@ class Register extends React.Component {
       intervalId: null,
       loading: false,
       areaCode: '86',
-      countryID: 42
+      countryID: '',
     }
     this.onFriendToggle = this.onFriendToggle.bind(this)
     this.onFriendsSkip = this.onFriendsSkip.bind(this)
@@ -189,6 +189,11 @@ class Register extends React.Component {
     return country.length > 0 ? country[0].areaCode : null
   }
 
+  findCountryIDByAreaCode(areaCode) {
+    const country = this.props.country.filter(f => f.areaCode === areaCode)
+    const countryID = country.length > 0 ? country[0].id : 'unknow'
+  }
+
   handleFetchButtonClicked() {
     const areacode = this.state.areaCode
     if (!areacode) {
@@ -241,8 +246,7 @@ class Register extends React.Component {
 
   handleAreaCodeChange(evt) {
     const areaCode = evt.target.value
-    const country = this.props.country.filter(f => f.areaCode === areaCode)
-    const countryID = country.length > 0 ? country[0].id : 'unknow'
+    const countryID = findCountryIDByAreaCode(areaCode)
     this.setState({
       areaCode: areaCode,
       countryID: countryID
@@ -263,6 +267,16 @@ class Register extends React.Component {
     .catch(error => {
       this.props.dispatch({ type: 'app/findError', payload: error })
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.country.length > 0) {
+      const country = nextProps.country.filter(f => f.areaCode === this.state.areaCode)
+      const countryID = country.length > 0 ? country[0].id : 'unknow'
+      if (countryID) {
+        this.setState({ countryID })
+      }
+    }
   }
 
   render() {
@@ -351,7 +365,8 @@ class Register extends React.Component {
 }
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { tag, country, title, registerStep } = state.app
+  var { tag, country, title, registerStep } = state.app
+  country = country.filter(item => item.level == 2)
   const { friends, selectedFriends } = state.recommendFriends
   const { projects, selectedProjects } = state.recommendProjects
   return {
