@@ -91,7 +91,6 @@ class EditUser extends React.Component {
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
     }
-    _data['isInvestor'] = data.isInvestor
     return _data
   }
 
@@ -117,10 +116,10 @@ class EditUser extends React.Component {
         const majorTraderArr = result.data.data.filter(f => f.relationtype)
         if (majorTraderArr.length > 0) {
           const majorTraderID = majorTraderArr[0].traderuser.id + ""
-          userDetailInfo = { ...userDetailInfo, majorTraderID, isInvestor: true }
+          userDetailInfo = { ...userDetailInfo, majorTraderID }
         }
         const minorTraderIDArr = result.data.data.filter( f => !f.relationtype).map(m => m.traderuser.id + "")
-        userDetailInfo = { ...userDetailInfo, minorTraderIDArr, isInvestor: true}
+        userDetailInfo = { ...userDetailInfo, minorTraderIDArr }
       }
       this.setState({ data: this.getData(userDetailInfo) })
     }).catch(error => console.error(error))

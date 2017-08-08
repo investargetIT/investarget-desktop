@@ -60,7 +60,7 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator, getFieldValue } = this.props.form
     const isAdmin = hasPerm('usersys.admin_adduser')
     return (
       <Form>
@@ -154,7 +154,7 @@ class UserForm extends React.Component {
         </BasicFormItem>
         : null } */}
 
-        { hasPerm('usersys.as_admin') && this.props.data.isInvestor ?
+        { hasPerm('usersys.as_admin') && getFieldValue('groups') && getFieldValue('groups')[0] == 1 ?
         <BasicFormItem label="IR" name="IR">
           <SelectUser mode="single" type="admin" />
         </BasicFormItem>
