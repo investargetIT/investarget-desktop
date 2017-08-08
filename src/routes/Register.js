@@ -191,7 +191,7 @@ class Register extends React.Component {
 
   findCountryIDByAreaCode(areaCode) {
     const country = this.props.country.filter(f => f.areaCode === areaCode)
-    const countryID = country.length > 0 ? country[0].id : 'unknow'
+    return country.length > 0 ? country[0].id : 'unknow'
   }
 
   handleFetchButtonClicked() {
@@ -246,7 +246,7 @@ class Register extends React.Component {
 
   handleAreaCodeChange(evt) {
     const areaCode = evt.target.value
-    const countryID = findCountryIDByAreaCode(areaCode)
+    const countryID = this.findCountryIDByAreaCode(areaCode)
     this.setState({
       areaCode: areaCode,
       countryID: countryID
@@ -276,6 +276,13 @@ class Register extends React.Component {
       if (countryID) {
         this.setState({ countryID })
       }
+    }
+  }
+
+  componentDidMount() {
+    const countryID = this.findCountryIDByAreaCode(this.state.areaCode)
+    if (countryID) {
+      this.setState({ countryID })
     }
   }
 
