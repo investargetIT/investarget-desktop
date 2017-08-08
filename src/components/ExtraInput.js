@@ -467,12 +467,12 @@ class CascaderCountry extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['continent', 'country'] })
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
   }
 
   handleChange(value) {
     // onChange 只返回 国家
-    const countryId = value[1]
+    const countryId = value.length == 2 ? value[1] : value[0]
     if (this.props.onChange) {
       this.props.onChange(countryId)
     }
@@ -480,11 +480,11 @@ class CascaderCountry extends React.Component {
 
   render() {
     // 剔除部分属性
-    const {options, country2continent, children, dispatch, value:countryId, onChange, ...extraProps} = this.props
+    const {options, map, children, dispatch, value:countryId, onChange, ...extraProps} = this.props
 
-    // value 修改为 [大洲,国家]
-    const continentId = country2continent[countryId]
-    const value = [continentId, countryId]
+    // value 修改为 [大洲,国家] || [国家]
+    const continentId = map[countryId]
+    const value = continentId ? [continentId, countryId] : [countryId]
 
     return (
       <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
@@ -494,24 +494,35 @@ class CascaderCountry extends React.Component {
 }
 
 function mapStateToPropsCountry (state) {
-  const { continent, country } = state.app
-  let country2continent = {}
-  country.forEach(item => {
-    const index = continent.map(m => m.id).indexOf(item.parent)
-    if (index > -1) {
-      country2continent[item.id] = continent[index].country
-    }
+  const { country } = state.app
+
+  var list = country.filter(item => item.parent == null)
+  list = list.map(item => {
+    var children = country.filter(i => i.parent == item.id)
+    return { ...item, children }
   })
-  const options = continent.map(continent => {
-    return {
-      label: continent.country,
-      value: continent.id,
-      children: country.filter(country => country.parent == continent.id)
-                        .map(country => ({ label: country.country, value: country.id }))
+  var options = list.map(item => {
+    var ret = {
+      label: item.country,
+      value: item.id,
     }
+    if (item.children.length > 0) {
+      ret['children'] = item.children.map(i => {
+        return {
+          label: i.country,
+          value: i.id,
+        }
+      })
+    }
+    return ret
   })
 
-  return { options, country2continent }
+  var map = {}
+  country.forEach(item => {
+    map[item.id] = item.parent
+  })
+
+  return { options, map }
 }
 
 CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
@@ -533,15 +544,16 @@ class CascaderIndustry extends React.Component {
   }
 
   handleChange(value) {
+    let v = value.length == 2 ? value[1] : value[0]
     if (this.props.onChange) {
-      this.props.onChange(value[1])
+      this.props.onChange(v)
     }
   }
 
   render() {
     const { options, industry2pIndustry, children, dispatch, value:industryId, onChange, ...extraProps } = this.props
     const pIndustryId = industry2pIndustry[industryId]
-    const value = [pIndustryId, industryId]
+    const value = pIndustryId ? [pIndustryId, industryId] : [industryId]
     return (
       <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
     )
@@ -557,16 +569,19 @@ function mapStateToPropsIndustry (state) {
     item.children = subIndustries
   })
   const options = pIndustries.map(item => {
-    return {
+    var ret = {
       label: item.industry,
       value: item.id,
-      children: item.children.map(item => {
+    }
+    if (item.children.length > 0) {
+      ret['children'] = item.children.map(item => {
         return {
           label: item.industry,
           value: item.id
         }
       })
     }
+    return ret
   })
   let industry2pIndustry = {}
   industry.forEach(item => {
@@ -761,14 +776,49 @@ const CheckboxOrganizationType = withOptionsAsync(CheckboxGroup, ['orgtype'], fu
  * TabCheckboxCountry
  */
 
-const TabCheckboxCountry = withOptionsAsync(TabCheckbox, ['continent', 'country'], mapStateToPropsCountry)
+class TabCheckboxCountry extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
+  }
+
+  render() {
+    if (this.props.options.filter(item => item.children != null).length > 0) {
+      return <TabCheckbox options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
+    } else {
+      return <CheckboxGroup options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
+    }
+  }
+}
+TabCheckboxCountry = connect(mapStateToPropsCountry)(TabCheckboxCountry)
 
 /**
  * TabCheckboxIndustry
  */
 
-const TabCheckboxIndustry = withOptionsAsync(TabCheckbox, ['industry'], mapStateToPropsIndustry)
+class TabCheckboxIndustry extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
+  }
+
+  render() {
+    const { options, value, onChange } = this.props
+    if (options.filter(item => item.children != null).length > 0) {
+      return <TabCheckbox options={options} value={value} onChange={onChange} />
+    } else {
+      return <CheckboxGroup options={options} value={value} onChange={onChange} />
+    }
+  }
+}
+
+TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
 
 /**

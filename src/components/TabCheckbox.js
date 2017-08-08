@@ -70,7 +70,7 @@ class TabCheckbox extends React.Component {
 
   handleCheckAllChange(e) {
     const checked = e.target.checked
-    const subOptions = this.props.options.filter(item => item.value == this.state.currParentId)[0].children
+    const subOptions = this.props.options.filter(item => item.value == this.state.currParentId)[0].children || []
     let value = this.state.value.slice()
     if (checked) {
       subOptions.forEach(item => {
@@ -109,7 +109,7 @@ class TabCheckbox extends React.Component {
 
     if (options.length > 0 && this.state.currParentId) {
 
-      const subOptions = options.filter(item => item.value == this.state.currParentId)[0].children
+      const subOptions = options.filter(item => item.value == this.state.currParentId)[0].children || []
       const checkedSubOptions = subOptions.filter(item => this.state.value.includes(item.value))
       const isIndeterminate = !!checkedSubOptions.length && checkedSubOptions.length < subOptions.length
       const isAllChecked = checkedSubOptions.length == subOptions.length
@@ -121,7 +121,7 @@ class TabCheckbox extends React.Component {
               this.props.options
               .map(item => {
                 const active = item.value == this.state.currParentId
-                const subOptions = options.filter(item2 => item2.value == item.value)[0].children
+                const subOptions = options.filter(item2 => item2.value == item.value)[0].children || []
                 const checkedSubOptions = subOptions.filter(item => this.state.value.includes(item.value))
                 return <span key={item.value}
                             onClick={this.handleClick.bind(this, item.value)}
