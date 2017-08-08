@@ -3,9 +3,13 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message } from 'antd'
+import { Timeline, Icon, Tag, Button, message, Steps } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { SelectNumber } from '../components/ExtraInput'
+import TimelineView from '../components/TimelineView'
+
+
+const Step = Steps.Step
 
 function Field (props) {
   return (
@@ -346,8 +350,14 @@ class ProjectDetail extends React.Component {
 
         {/* TODO// 下载 Teaser */}
         {/* TODO// 公共 dataroom */}
-        {/* TODO// 项目进程（时间轴） */}
 
+        <div style={{ padding: '32px', marginBottom: '24px' }}>
+          <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ display: 'inline-block', width: '8px', height: '20px', background: '#ff6900', marginRight: '8px' }}></span>
+            <span>项目进程</span>
+          </div>
+          <TimelineView projId={id} />
+        </div>
 
       </MainLayout>
     )
