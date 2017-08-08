@@ -1,7 +1,7 @@
 import fetch from 'dva/fetch';
 
-let baseUrl = "http://192.168.1.201:8000"
-//baseUrl = "/api"
+let baseUrl = "http://192.168.1.251:8080"
+// baseUrl = "/api"
 
 export class ApiError extends Error {
   constructor(code, message) {
@@ -27,7 +27,7 @@ function parseErrorMessage(data) {
   if (code !== 1000) {
     throw new ApiError(code, errormsg)
   }
-  return  data 
+  return  data
 }
 
 /**
@@ -44,7 +44,7 @@ export default async function request(url, options) {
   checkStatus(response);
 
   const data = await response.json();
-  
+
   console.log(baseUrl + url, data)
 
   parseErrorMessage(data)
