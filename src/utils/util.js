@@ -103,5 +103,6 @@ function getCurrentUser() {
 function formatBytes(a,b){if(0==a)return"0 Bytes";var c=1024,d=b||0,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(d))+" "+e[f]}
 
 const intersection = (xs,ys) => xs.filter(x => ys.some(y => x === y))
+const subtracting = (xs, ys) => xs.filter(x => !ys.includes(x))
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection }
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting }

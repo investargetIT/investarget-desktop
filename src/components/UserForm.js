@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n, hasPerm } from '../utils/util'
+import { i18n, hasPerm, intersection } from '../utils/util'
 import * as api from '../api'
 import { Link } from 'dva/router'
 
@@ -57,11 +57,31 @@ class UserForm extends React.Component {
       })
 
     }
+    
+    this.state = {
+      investorGroup: [], // 投资人所在的用户组
+    }
+    let perm
+    switch (props.type) {
+      case 'edit':
+        perm = 'usersys.admin_getuser'
+        break
+      case 'add':
+        perm = 'usersys.admin_adduser'
+        break
+    }
+    this.hasPerm = hasPerm(perm)
+  }
+
+  componentDidMount() {
+    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    .then(data => this.setState({ investorGroup: data.data.data.map(m => m.id) }))
   }
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const isAdmin = hasPerm('usersys.admin_adduser')
+    const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
     return (
       <Form>
         {
@@ -118,6 +138,8 @@ class UserForm extends React.Component {
           {/*</div>*/}
         </BasicFormItem>
 
+        <BasicFormItem label={i18n("department")} name="department"><Input /></BasicFormItem>
+
         <BasicFormItem label="区域" valueType="number" name="area">
           <SelectOrganizatonArea />
         </BasicFormItem>
@@ -135,30 +157,30 @@ class UserForm extends React.Component {
         <BasicFormItem label="是否有产业基金或成立计划" name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
         
         {
-          isAdmin ? (
+          this.hasPerm ? (
             <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={2}>
               <RadioAudit />
             </BasicFormItem>
           ) : null
         }
 
-        {/* { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
-        <BasicFormItem label="强交易师" name="major_trader">
-          <SelectUser mode="single" />
-        </BasicFormItem>
-        : null }
+        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+          <BasicFormItem label="强交易师" name="major_trader">
+            <SelectUser mode="single" />
+          </BasicFormItem>
+        </div>
 
-        { this.props.data && this.props.data.groups && this.props.data.groups.value.includes(1) ?
-        <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
-          <SelectUser mode="multiple" />
-        </BasicFormItem>
-        : null } */}
+        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+          <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
+            <SelectUser mode="multiple" />
+          </BasicFormItem>
+        </div>
 
-        { hasPerm('usersys.as_admin') && getFieldValue('groups') && getFieldValue('groups')[0] == 1 ?
-        <BasicFormItem label="IR" name="IR">
-          <SelectUser mode="single" type="admin" />
-        </BasicFormItem>
-        : null }
+        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+          <BasicFormItem label="IR" name="IR">
+            <SelectUser mode="single" type="admin" />
+          </BasicFormItem>
+        </div>
 
         <BasicFormItem label="名片" name="cardKey">
           <UploadImage />

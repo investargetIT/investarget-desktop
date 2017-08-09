@@ -96,7 +96,7 @@ class AddUser extends React.Component {
         location={this.props.location}
         title={i18n("create_user")}>
 
-        <AddUserForm
+        <AddUserForm type="add"
           wrappedComponentRef={this.handleRef}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />

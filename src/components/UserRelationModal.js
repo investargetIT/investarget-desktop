@@ -35,7 +35,7 @@ class UserRelationModal extends React.Component {
   }
 
   deleteRelation = (id) => {
-    api.deleteUserRelation(id).then(result => {
+    api.deleteUserRelation([id]).then(result => {
       //
       this.getUserRelation()
     }, error => {

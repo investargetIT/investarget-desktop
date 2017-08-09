@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, intersection } from '../utils/util'
+import { i18n, intersection, subtracting } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
 import { routerRedux } from 'dva/router'
+import * as api from '../api'
 
 function onValuesChange(props, values) {
   console.log(values)
@@ -23,22 +24,63 @@ class EditUser extends React.Component {
     this.state = {
       data: {}
     }
+    this.majorRelation = {}
+    this.minorRelation = []
   }
 
   handleSubmit = e => {
     const userId = Number(this.props.params.id)
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        console.log('Received values of form: ', values)
-        api.editUser([userId], values).then(result => {
-          let url = this.props.location.query.redirect || "/app/user/list"
-          this.props.dispatch(routerRedux.replace(url))
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
+        console.log('Received values of form: ', values, this.majorRelation, this.minorRelation)
+        const addRelationArr = [], delRelationArr = []
+        if (this.majorRelation.traderuser && this.majorRelation.traderuser.id !== parseInt(values.major_trader, 10)) {
+          addRelationArr.push({
+            investoruser: this.props.params.id,
+            traderuser: values.major_trader,
+            relationtype: true
+          })
+          delRelationArr.push(this.majorRelation.id)
+        } else if (!this.majorRelation && values.major_trader) {
+          addRelationArr.push({
+            investoruser: this.props.params.id,
+            traderuser: values.major_trader,
+            relationtype: true
+          })
+        } else if (this.majorRelation && !values.major_trader) {
+          delRelationArr.push(this.majorRelation.id)
+        }
+
+        subtracting(
+          this.minorRelation.map(m => m.traderuser.id), 
+          values.minor_traders.map(m => parseInt(m, 10))
+        )
+        .map(m => this.minorRelation.filter(f => f.traderuser.id === m)[0])
+        .map(m => delRelationArr.push(m.id))
+
+        subtracting(
+          values.minor_traders.map(m => parseInt(m, 10)),
+          this.minorRelation.map(m => m.traderuser.id)
+        ).map(m => {
+          addRelationArr.push({
+            investoruser: this.props.params.id,
+            traderuser: m,
+            relationtype: false
           })
         })
+
+        Promise.all(delRelationArr.map(m => api.deleteUserRelation([m])))
+          .then(() => Promise.all(addRelationArr.map(m => api.addUserRelation(m))))
+          .then(() => api.editUser([userId], { ...values, major_trader: undefined, minor_traders: undefined }))
+          .then(result => {
+            let url = this.props.location.query.redirect || "/app/user/list"
+            this.props.dispatch(routerRedux.replace(url))
+          })
+          .catch(error => {
+            this.componentDidMount()
+            this.props.dispatch({ type: 'app/findError', payload: error })
+          })
+          
       }
     })
   }
@@ -82,7 +124,7 @@ class EditUser extends React.Component {
       userstatus: data.userstatus && data.userstatus.id,
       country: data.country && data.country.id,
       major_trader: data.majorTraderID,
-      minor_traders: data.minorTraderIDArr,
+      minor_traders: data.minorTraderIDArr || [],
       ishasfundorplan: data.ishasfundorplan,
       mergedynamic: data.mergedynamic,
       targetdemand: data.targetdemand,
@@ -91,6 +133,7 @@ class EditUser extends React.Component {
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
     }
+    _data['isInvestor'] = data.isInvestor
     return _data
   }
 
@@ -115,11 +158,13 @@ class EditUser extends React.Component {
       if (result) {
         const majorTraderArr = result.data.data.filter(f => f.relationtype)
         if (majorTraderArr.length > 0) {
+          this.majorRelation = majorTraderArr[0]
           const majorTraderID = majorTraderArr[0].traderuser.id + ""
-          userDetailInfo = { ...userDetailInfo, majorTraderID }
+          userDetailInfo = { ...userDetailInfo, majorTraderID, isInvestor: true }
         }
         const minorTraderIDArr = result.data.data.filter( f => !f.relationtype).map(m => m.traderuser.id + "")
-        userDetailInfo = { ...userDetailInfo, minorTraderIDArr }
+        this.minorRelation = result.data.data.filter(f => !f.relationtype)
+        userDetailInfo = { ...userDetailInfo, minorTraderIDArr, isInvestor: true }
       }
       this.setState({ data: this.getData(userDetailInfo) })
     }).catch(error => console.error(error))
@@ -131,7 +176,7 @@ class EditUser extends React.Component {
         location={this.props.location}
         title="修改用户">
 
-        <EditUserForm wrappedComponentRef={this.handleRef} data={this.state.data} />
+        <EditUserForm wrappedComponentRef={this.handleRef} data={this.state.data} type="edit" />
 
         <div style={{textAlign: 'center'}}>
           <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
