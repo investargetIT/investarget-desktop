@@ -55,7 +55,7 @@ class AddProject extends React.Component {
       } else {
         this.props.dispatch({
           type: 'app/findError',
-          payload: error
+          payload: err
         })
       }
     })

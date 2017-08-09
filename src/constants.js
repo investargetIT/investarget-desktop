@@ -32,7 +32,7 @@ export const KEY_TO_URI = {
   "change_password": URI_9,
   "profile": URI_10,
   "log": URI_11,
-  "permission_management": URI_14, 
+  "permission_management": URI_14,
   "recommon_projects": URI_15,
   "publish_projects": URI_16,
   "collect_projects": URI_17
@@ -52,3 +52,4 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
   7: '绑定管理管理'
 }
 
+export const BASE_URL = 'http://192.168.1.251:8080'

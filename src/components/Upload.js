@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Upload, Button, Icon, Modal, message } from 'antd'
+import { BASE_URL } from '../constants'
 
 const fileExtensions = [
   '.pdf',
@@ -147,7 +148,7 @@ class UploadFile extends React.Component {
     return (
       <Upload
         name="file"
-        action="http://192.168.1.201:8000/service/qiniubigupload?bucket=file"
+        action={BASE_URL + "/service/qiniubigupload?bucket=file"}
         accept={fileExtensions.join(',')}
         beforeUpload={this.beforeUpload}
         fileList={this.state.fileList}
@@ -329,7 +330,7 @@ class UploadImage extends React.Component {
     return (
       <Upload
         name="file"
-        action="http://192.168.1.201:8000/service/qiniubigupload?bucket=image"
+        action={BASE_URL + "/service/qiniubigupload?bucket=image"}
         accept={imageExtensions.join(',')}
         beforeUpload={this.beforeUpload}
         fileList={this.state.fileList}
