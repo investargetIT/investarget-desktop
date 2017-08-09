@@ -42,3 +42,6 @@ html, body, :global(#root) {
   border-left: 6px solid rgb(162, 229, 99);
   border-bottom: 4px solid transparent;
 }
+:global(.ant-input) {
+  line-height: 1.5;
+}
