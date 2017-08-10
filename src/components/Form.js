@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
+import IndustryImage from './IndustryImage'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -410,31 +411,89 @@ class IndustryDynamicFormItem extends React.Component {
   constructor(props, context) {
     super(props)
 
+    this.state = {
+      disabled: [],
+    }
+
     const { getFieldDecorator, getFieldValue } = context.form
     getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
-    const industriesKeys = getFieldValue('industriesKeys')
-    this.industryUuid = industriesKeys[industriesKeys.length - 1]
+    // set disabled
+    var t = setInterval(() => {
+      const keys = getFieldValue('industriesKeys')
+      if (keys.length > 0) {
+        let ids = keys.map(key => getFieldValue('industries-' + key))
+        this.setState({ disabled: ids })
+        clearInterval(t)
+      }
+    }, 100)
   }
 
-    // Industry 多 field
+  // Industry 多 field
   removeIndustry = (k) => {
     const { getFieldValue, setFieldsValue } = this.context.form
-    const keys = getFieldValue('industriesKeys')
+    var keys = getFieldValue('industriesKeys')
     if (keys.length === 1) {
       return
     }
-    this.context.form.setFieldsValue({
-      industriesKeys: keys.filter(key => key !== k),
-    })
+
+    keys = keys.filter(key => key !== k)
+    setFieldsValue({ industriesKeys: keys })
+
+    let oldKey = getFieldValue('industries-image-' + k)
+    this.deleteImage(oldKey)
+    //
+    const ids = keys.map(item => getFieldValue('industries-' + item))
+                              .filter(item => item != null)
+    this.setState({ disabled: ids })
   }
+
   addIndustry = () => {
     const { getFieldValue, setFieldsValue } = this.context.form
     this.industryUuid += 1
     const keys = getFieldValue('industriesKeys')
     const nextKeys = keys.concat(this.industryUuid)
-    this.context.form.setFieldsValue({
+    setFieldsValue({
       industriesKeys: nextKeys,
     })
+  }
+
+  handleIndustryChange = (k, id) => {
+    const { getFieldValue, setFieldsValue } = this.context.form
+    const { industry } = this.props
+    if (id) {
+      let i = industry.filter(item => item.id == id)[0]
+      let oldKey = getFieldValue('industries-image-' + k)
+      this.deleteImage(oldKey)
+      setFieldsValue({ ['industries-image-' + k]: i.key })
+    }
+    //
+    const keys = getFieldValue('industriesKeys')
+    var ids = keys.map(item => getFieldValue('industries-' + item))
+    var index = keys.indexOf(k)
+    ids = [ ...ids.slice(0, index), id, ...ids.slice(index+1) ]
+    ids = ids.filter(item => item != null)
+    this.setState({ disabled: ids })
+  }
+
+  handleIndustryImageChange = (k, key) => {
+    const { getFieldValue } = this.context.form
+    const oldKey = getFieldValue('industries-image-' + k)
+    this.deleteImage(oldKey)
+  }
+
+  deleteImage = (key) => {
+    if (key == undefined) {
+      return
+    }
+    // 判断图片是默认还是自己上传的
+    const isDefaultImage = this.props.industry.some(item => item.key == key)
+    if (!isDefaultImage) {
+      api.qiniuDelete('image', key).then(result => {
+        //
+      }, error => {
+        //
+      })
+    }
   }
 
   render() {
@@ -451,9 +510,10 @@ class IndustryDynamicFormItem extends React.Component {
                   rules: [
                     { type: 'number', message: 'The input is not valid!'},
                     { required: true, message: 'The input can not be empty!'},
-                  ]
+                  ],
+                  onChange: this.handleIndustryChange.bind(this, k)
                 })(
-                  <CascaderIndustry size="large" />
+                  <CascaderIndustry size="large" disabled={this.state.disabled} />
                 )
               }
               <Icon
@@ -470,6 +530,30 @@ class IndustryDynamicFormItem extends React.Component {
             <Icon type="plus" />
             添加
           </Button>
+        </FormItem>
+
+        <FormItem {...formItemLayoutWithOutLabel}>
+          {
+            industriesKeys.map((k, index) => {
+              const id = getFieldValue('industries-' + k)
+              return (
+                <FormItem key={k} style={{ float: 'left', marginRight: '8px', marginBottom: '8px' }}>
+                  {
+                    getFieldDecorator(`industries-image-${k}`, {
+                      rules: [
+                        { type: 'string' },
+                        { required: true },
+                        { whitespace: true },
+                      ],
+                      onChange: this.handleIndustryImageChange.bind(this, k)
+                    })(
+                      <IndustryImage disabled={!id} />
+                    )
+                  }
+                </FormItem>
+              )
+            })
+          }
         </FormItem>
       </div>
     )

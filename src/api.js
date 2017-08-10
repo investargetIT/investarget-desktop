@@ -1,6 +1,6 @@
 import request from './utils/request'
 import qs from 'qs'
-import { PAGE_SIZE } from './constants'
+import { PAGE_SIZE, BASE_URL } from './constants'
 import { qsArrayToString } from './utils/util'
 import _ from 'lodash'
 import { ApiError } from './utils/request'
@@ -247,6 +247,40 @@ export function getExchangeRate(param) {
 export function downloadUrl(bucket, key) {
   const params = { bucket, key }
   return r('/service/downloadUrl', 'POST', params)
+}
+
+export function qiniuUpload(bucket, file) {
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const userStr = localStorage.getItem('user_info')
+  const user = userStr ? JSON.parse(userStr) : null
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  var formData = new FormData()
+  formData.append('file', file)
+
+  return fetch(BASE_URL + '/service/qiniubigupload?bucket=' + bucket, {
+    headers,
+    method: 'POST',
+    body: formData,
+  }).then(response => {
+    return response.json()
+  }).then(data => {
+    return { data: data.result }
+  })
 }
 
 export function qiniuDelete(bucket, key) {

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'dva'
 import { injectIntl, intlShape } from 'react-intl'
 import { i18n } from '../utils/util'
 import { Link } from 'dva/router'
@@ -50,6 +51,10 @@ class MarketPlaceForm extends React.Component {
     })
   }
 
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
+  }
+
   render() {
     return (
       <Form>
@@ -65,7 +70,7 @@ class MarketPlaceForm extends React.Component {
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
-        <IndustryDynamicFormItem />
+        <IndustryDynamicFormItem industry={this.props.industry} />
 
         <BasicFormItem label="国家" name="country" required valueType="number">
           <CascaderCountry size="large" />
@@ -81,4 +86,9 @@ class MarketPlaceForm extends React.Component {
   }
 }
 
-export default MarketPlaceForm
+function mapStateToPropsIndustry(state) {
+  const { industry } = state.app
+  return { industry }
+}
+
+export default connect(mapStateToPropsIndustry)(MarketPlaceForm)

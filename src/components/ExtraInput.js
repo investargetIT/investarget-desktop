@@ -550,12 +550,26 @@ class CascaderIndustry extends React.Component {
     }
   }
 
+
   render() {
-    const { options, industry2pIndustry, children, dispatch, value:industryId, onChange, ...extraProps } = this.props
+    const { disabled, options, industry2pIndustry, children, dispatch, value:industryId, onChange, ...extraProps } = this.props
     const pIndustryId = industry2pIndustry[industryId]
     const value = pIndustryId ? [pIndustryId, industryId] : [industryId]
+
+    let _options = options.map(item => {
+      const { label, value, children } = item
+      const ret = disabled.includes(value) ? { label, value, disabled: true } : { label, value }
+      if (children) {
+        ret.children = children.map(item => {
+          const { label, value } = item
+          return disabled.includes(value) ? { label, value, disabled: true } : { label, value }
+        })
+      }
+      return ret
+    })
+
     return (
-      <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
+      <Cascader options={_options} value={value} onChange={this.handleChange} {...extraProps} />
     )
   }
 }

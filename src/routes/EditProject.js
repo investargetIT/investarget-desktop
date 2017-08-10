@@ -33,7 +33,7 @@ const formStyle = {
 
 
 function onValuesChange(props, values) {
-  console.log(values)
+  console.log('onValuesChange', values)
 }
 function mapPropsToFields(props) {
   return props.data
@@ -49,12 +49,13 @@ function toFormData(data) {
 
   for (let prop in data) {
     if (prop == 'industries') {
-      // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-2: {}
+      // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
       let value = data['industries']
       let keys = _.range(1, 1 + value.length)
       formData['industriesKeys'] = { 'value': keys }
       keys.forEach((key, index) => {
-        formData['industries-' + key] = { 'value': value[index] }
+        formData['industries-' + key] = { 'value': value[index].industry }
+        formData['industries-image-' + key] = { 'value': value[index].key }
       })
     } else {
       formData[prop] = { 'value': data[prop] }
@@ -68,13 +69,19 @@ function toData(formData) {
   var data = {}
 
   for (let prop in formData) {
-    if (!/industries-.*/.test(prop) && !'industriesKeys' == prop) {
+    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && 'industriesKeys' !== prop) {
       data[prop] = formData[prop]
     }
   }
 
   if ('industriesKeys' in formData) {
-    data['industries'] = formData['industriesKeys'].map(key => formData['industries-' + key])
+    data['industries'] = formData['industriesKeys'].map(key => {
+      return {
+        industry: formData['industries-' + key],
+        bucket: 'image',
+        key: formData['industries-image-' + key],
+      }
+    })
   }
 
   return data
@@ -100,7 +107,7 @@ class EditProject extends React.Component {
       data.character = data.character && data.character.id
       data.country = data.country && data.country.id
       data.currency = data.currency && data.currency.id
-      data.industries = data.industries ? data.industries.map(item => item.id) : []
+      data.industries = data.industries
       data.projstatus = data.projstatus && data.projstatus.id
       data.supportUser = data.supportUser && data.supportUser.id
       data.tags = data.tags ? data.tags.map(item => item.id) : []
@@ -124,7 +131,8 @@ class EditProject extends React.Component {
     const id = Number(this.props.params.id)
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        api.editProj(id, values).then(result => {
+        let params = toData(values)
+        api.editProj(id, params).then(result => {
           message.success('项目已更新')
           this.getProject()
         }, error => {

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl, intlShape } from 'react-intl'
 import { i18n } from '../utils/util'
+import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
 
@@ -56,11 +57,15 @@ class ProjectBaseForm extends React.Component {
     return { form: this.props.form }
   }
 
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form
     return (
       <Form>
-        <BasicFormItem label="是否隐藏" name="isHidden" valueType="boolean">
+        <BasicFormItem label="是否隐藏" name="isHidden" valueType="boolean" initialValue={false}>
           <RadioTrueOrFalse />
         </BasicFormItem>
 
@@ -76,7 +81,7 @@ class ProjectBaseForm extends React.Component {
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
-        <IndustryDynamicFormItem />
+        <IndustryDynamicFormItem industry={this.props.industry} />
 
         <BasicFormItem label="国家" name="country" required valueType="number">
           <CascaderCountry size="large" />
@@ -118,4 +123,9 @@ class ProjectBaseForm extends React.Component {
 
 }
 
-export default injectIntl(ProjectBaseForm)
+function mapStateToPropsIndustry(state) {
+  const { industry } = state.app
+  return { industry }
+}
+
+export default connect(mapStateToPropsIndustry)(injectIntl(ProjectBaseForm))

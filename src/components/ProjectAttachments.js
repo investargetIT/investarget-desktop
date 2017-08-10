@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
+import { BASE_URL } from '../constants'
 import {
   Input,
   Button,
@@ -307,7 +308,7 @@ class ProjectAttachments extends React.Component {
         </Tabs>
 
         <Dragger
-          action="http://192.168.1.201:8000/service/qiniubigupload?bucket=file"
+          action={BASE_URL + "/service/qiniubigupload?bucket=file"}
           accept={fileExtensions.join(',')}
           beforeUpload={this.beforeUpload}
           fileList={targetFileList}

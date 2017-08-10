@@ -14,11 +14,17 @@ const actionBtnStyle = {margin: '0 8px'}
 function toData(formData) {
   var data = {}
   for (let prop in formData) {
-    if (!/industries-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed') {
+    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed') {
       data[prop] = formData[prop]
     }
   }
-  data['industries'] = formData['industriesKeys'].map(key => formData['industries-' + key])
+  data['industries'] = formData['industriesKeys'].map(key => {
+    return {
+      industry: formData['industries-' + key],
+      bucket: 'image',
+      key: formData['industries-image-' + key],
+    }
+  })
   data['ismarketplace'] = true
   return data
 }
@@ -43,7 +49,7 @@ class AddMarketPlace extends React.Component {
       if (!err) {
         let param = toData(values)
         api.createProj(param).then(result => {
-          this.props.router.goBack()
+          this.props.router.push('/app/projects/list')
         }, error => {
           this.props.dispatch({
             type: 'app/findError',

@@ -49,6 +49,10 @@ class ProjectBaseForm extends React.Component {
     super(props)
   }
 
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
+  }
+
   render() {
     return (
       <Form>
@@ -68,7 +72,7 @@ class ProjectBaseForm extends React.Component {
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
-        <IndustryDynamicFormItem />
+        <IndustryDynamicFormItem industry={this.props.industry} />
 
         <BasicFormItem label="国家" name="country" required valueType="number" initialValue={[1,5]}>
           <CascaderCountry size="large" />
@@ -90,6 +94,13 @@ class ProjectBaseForm extends React.Component {
     )
   }
 }
+
+function mapStateToPropsIndustry(state) {
+  const { industry } = state.app
+  return { industry }
+}
+ProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm)
+
 
 class ProjectFinanceForm extends React.Component {
 
@@ -302,7 +313,6 @@ class ProjectDetailForm extends React.Component {
     )
   }
 }
-
 
 export {
   ProjectBaseForm,
