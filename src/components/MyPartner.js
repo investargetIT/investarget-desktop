@@ -20,6 +20,7 @@ class MyPartner extends React.Component {
     pageIndex: 1
   }
   investorList = []
+  redirect = this.props.type === 'investor' && URI_12
   componentDidMount() {
     this.setState({ loading: true })
 
@@ -143,13 +144,15 @@ class MyPartner extends React.Component {
               <Button size="small">{i18n("view")}</Button>
             </Link>
             &nbsp;
-          <Link to={'/app/user/edit/' + record.id}>
+          <Link to={'/app/user/edit/' + record.id + '?redirect=' + this.redirect}>
               <Button size="small">{i18n("edit")}</Button>
             </Link>
             &nbsp;
+            { this.props.type !== 'investor' ? 
           <Popconfirm title="Confirm to delete?" onConfirm={this.handleDeleteUser.bind(null, record.id)}>
               <Button type="danger" size="small">{i18n("delete")}</Button>
             </Popconfirm>
+            : null }
           </span>
         )
       })

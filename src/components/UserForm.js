@@ -53,7 +53,7 @@ class UserForm extends React.Component {
 
     if (!hasPerm('usersys.admin_adduser') && hasPerm('usersys.user_adduser')) {
       getFieldDecorator('groups', {
-        rules: [{required: true}], initialValue: [4] // 未审核投资人
+        rules: [{required: true}], initialValue: [] // 未审核投资人
       })
 
     }
@@ -61,10 +61,12 @@ class UserForm extends React.Component {
     this.state = {
       investorGroup: [], // 投资人所在的用户组
     }
+    this.isEditUser = false
     let perm
     switch (props.type) {
       case 'edit':
         perm = 'usersys.admin_getuser'
+        this.isEditUser = true
         break
       case 'add':
         perm = 'usersys.admin_adduser'
@@ -84,13 +86,10 @@ class UserForm extends React.Component {
     const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
     return (
       <Form>
-        {
-          isAdmin ? (
-            <BasicFormItem label="用户组" name="groups" valueType="array" required>
-              <SelectUserGroup />
-            </BasicFormItem>
-          ) : null
-        }
+
+        <BasicFormItem label="用户组" name="groups" valueType="array" required>
+          <SelectUserGroup type={isAdmin || 'investor'} />
+        </BasicFormItem>
 
         <FormItem {...formItemLayout} label={i18n("mobile")} required>
           <Row gutter={8}>
@@ -164,19 +163,21 @@ class UserForm extends React.Component {
           ) : null
         }
 
-        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="强交易师" name="major_trader">
-            <SelectUser mode="single" />
+            <SelectUser mode="single" onSelect={this.props.onSelectMajorTrader} />
           </BasicFormItem>
         </div>
 
-        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
-            <SelectUser mode="multiple" />
+            <SelectUser mode="multiple"
+              onSelect={this.props.onSelectMinorTrader}
+              onDeselect={this.props.onDeselectMinorTrader} />
           </BasicFormItem>
         </div>
 
-        <div style={{ display: this.hasPerm && targetUserIsInvestor ? 'block' : 'none' }}>
+        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="IR" name="IR">
             <SelectUser mode="single" type="admin" />
           </BasicFormItem>

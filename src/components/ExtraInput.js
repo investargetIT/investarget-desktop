@@ -383,7 +383,7 @@ class SelectUser extends React.Component {
   }
   render() {
     return (
-      <Select mode={this.props.mode} showSearch optionFilterProp="children" value={this.props.value} onChange={this.props.onChange}>
+      <Select mode={this.props.mode} showSearch optionFilterProp="children" value={this.props.value} onChange={this.props.onChange} onSelect={this.props.onSelect} onDeselect={this.props.onDeselect}>
         {this.state.data.map(d => <Option key={d.id} value={d.id + ""}>{d.username}</Option>)}
       </Select>
     )
@@ -425,7 +425,7 @@ class SelectUserGroup extends React.Component {
   }
 
   componentDidMount() {
-    api.queryUserGroup().then(result => {
+    api.queryUserGroup({ type: this.props.type }).then(result => {
       const groups = result.data.data
       const options = groups.map(item => ({ label: item.name, value: item.id }))
       this.setState({ options })
@@ -440,7 +440,9 @@ class SelectUserGroup extends React.Component {
   render() {
     const { value, onChange, children, ...extraProps } = this.props
     return (
-      <SelectNumber options={this.state.options} value={value && value[0]} onChange={this.handleChange} {...extraProps} />
+      <SelectNumber 
+      options={this.state.options} 
+      value={value && value[0]} onChange={this.handleChange} {...extraProps} />
     )
   }
 }

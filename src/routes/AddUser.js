@@ -7,6 +7,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
 import { routerRedux } from 'dva/router'
+import { URI_12 } from '../constants'
 
 
 function onValuesChange(props, values) {
@@ -22,22 +23,61 @@ class AddUser extends React.Component {
     confirmLoading: false,
   }
 
+  isTraderAddInvestor = this.props.location.query.redirect === URI_12
+
+  
+
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values)
         if (hasPerm('usersys.user_adduser') && !hasPerm('usersys.admin_adduser')) {
-          values.groups = undefined
+          // values.groups = undefined
         }
-        api.addUser(values).then(result => {
-          // TODO: add user relation if necessary
-          this.props.dispatch(routerRedux.replace(this.props.location.query.redirect || '/app/user/list'))
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
-          })
+        if (this.isTraderAddInvestor) {
+          values.userstatus = 2
+        }
+        let isUserExist
+        Promise.all([
+          api.checkUserExist(values.mobile),
+          api.checkUserExist(values.email)
+        ]).then(data => {
+          const isMobileExist = data[0].data.result 
+          const isEmailExist = data[1].data.result
+          if (isMobileExist || isEmailExist) {
+            isUserExist = true
+            if (!this.isTraderAddInvestor) {
+              Modal.warning({ title: '该用户已经存在' })
+            } else {
+              if (isMobileExist) return api.getUser({ search: values.mobile })
+              if (isEmailExist) return api.getUser({ search: values.email })
+            }
+          }
+        }).then(data => {
+          if (isUserExist && data) {
+            const user = data.data.data[0]
+            this.setState({ visible: true, user })
+          } else if (!isUserExist) {
+            return api.addUser(values)
+          }
         })
+        .then(result => {
+          if (this.isTraderAddInvestor && result) {
+            const body = {
+              relationtype: false,
+              investoruser: result.data.id,
+              traderuser: isLogin().id
+            }
+            return api.addUserRelation(body)
+          }
+        })
+        .then(data => {
+          if (!data && this.isTraderAddInvestor) return
+          this.props.dispatch(
+            routerRedux.replace(this.props.location.query.redirect || '/app/user/list')
+          )
+        })
+        .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
       }
     })
   }
@@ -56,7 +96,7 @@ class AddUser extends React.Component {
     .then(data => {
       const isExist = data.data.result
       if (isExist) {
-        if (!this.props.location.query.redirect) {
+        if (!this.isTraderAddInvestor) {
           Modal.warning({ title: '该用户已经存在' })
         } else {
           return api.getUser({ search: account })
@@ -94,7 +134,7 @@ class AddUser extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("create_user")}>
+        title={i18n(this.isTraderAddInvestor ? "add_investor" : "create_user")}>
 
         <AddUserForm type="add"
           wrappedComponentRef={this.handleRef}

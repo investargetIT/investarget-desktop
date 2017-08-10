@@ -523,6 +523,7 @@ export function deleteUserRelation(idArr) {
 }
 
 export const checkUserRelation = (investor, trader) => r('/user/checkrelation/', 'POST', { investor, trader })
+export const editUserRelation = (relationlist, relationdata) => r('/user/relationship/', 'PUT', { relationlist, relationdata })
 
 /**
  * msg
