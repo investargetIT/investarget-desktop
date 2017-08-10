@@ -2,6 +2,7 @@ import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt, formatBytes, isLogin } from '../utils/util'
+import { BASE_URL } from '../constants'
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -58,7 +59,7 @@ class FileMgmt extends React.Component {
   }
 
   handleNameChange(unique, evt) {
-    
+
   }
 
   current = []
@@ -292,7 +293,7 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: 'http://192.168.1.201:8000/service/qiniubigupload?bucket=file',
+      action: BASE_URL + '/service/qiniubigupload?bucket=file',
       showUploadList: false,
       multiple: true,
       onChange(info) {
@@ -321,7 +322,7 @@ class FileMgmt extends React.Component {
 
         <Button
           disabled={this.state.parentId === -999}
-          onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)} 
+          onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
           style={{ marginLeft: 10 }}>新建文件夹</Button>
 
         { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }

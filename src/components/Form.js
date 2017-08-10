@@ -6,6 +6,7 @@ import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
 import IndustryImage from './IndustryImage'
+import { BASE_URL } from '../constants'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -321,7 +322,7 @@ const UploadAvatar = (props, context) => {
         })(
           <Upload
           name="avatar"
-          action={props.photoKey ? "http://192.168.1.201:8000/service/qiniucoverupload?bucket=image&key=" + props.photoKey : "http://192.168.1.201:8000/service/qiniubigupload?bucket=image"}
+          action={props.photoKey ? (BASE_URL + "/service/qiniucoverupload?bucket=image&key=" + props.photoKey) : (BASE_URL + "/service/qiniubigupload?bucket=image")}
           onChange={handleChange}
           style={uploadStyle}>
             { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, height: 150 }} alt="" /> :
