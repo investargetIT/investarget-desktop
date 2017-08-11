@@ -237,18 +237,29 @@ class ProjectAttachments extends React.Component {
   }
 
   beforeUpload = (file) => {
+    const { fileList } = this.state
+
     if (mimeTypes.indexOf(file.type) == -1) {
-      message.warning('不支持的文件格式', 2)
+      message.error('不支持的文件格式', 2)
       return false
     }
     // 不允许重复上传
     const dir = this.state.activeDir // current dir
-    for (let i = 0, len = this.state.fileList.length; i < len; i++) {
-      let _file = this.state.fileList[i]
+    for (let i = 0, len = fileList.length; i < len; i++) {
+      let _file = fileList[i]
       if (dir == _file.filetype && file.filename == _file.filename) {
-        message.warning('不能上传同一文件', 2)
+        message.error('不能上传同一文件', 2)
         return false
       }
+    }
+    //NDA文件和Teaser文件只能上传一个
+    if (dir == 'NDA' && fileList.filter(item => item.filetype == 'NDA').length > 0) {
+      message.error('NDA 只能上传一个', 2)
+      return false
+    }
+    if (dir == 'Teaser' && fileList.filter(item => item.filetype == 'Teaser').length > 0) {
+      message.error('Teaser 只能上传一个', 2)
+      return false
     }
     return true
   }
