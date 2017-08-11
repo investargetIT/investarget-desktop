@@ -26,7 +26,7 @@ class EditUser extends React.Component {
     this.state = {
       data: {}
     }
-    this.majorRelation = {}
+    this.majorRelation = null
     this.minorRelation = []
   }
 
@@ -35,51 +35,13 @@ class EditUser extends React.Component {
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values, this.majorRelation, this.minorRelation)
-        const addRelationArr = [], delRelationArr = []
-        if (this.majorRelation.traderuser && this.majorRelation.traderuser.id !== parseInt(values.major_trader, 10)) {
-          addRelationArr.push({
-            investoruser: this.props.params.id,
-            traderuser: values.major_trader,
-            relationtype: true
-          })
-          delRelationArr.push(this.majorRelation.id)
-        } else if (!this.majorRelation && values.major_trader) {
-          addRelationArr.push({
-            investoruser: this.props.params.id,
-            traderuser: values.major_trader,
-            relationtype: true
-          })
-        } else if (this.majorRelation && !values.major_trader) {
-          delRelationArr.push(this.majorRelation.id)
-        }
-
-        subtracting(
-          this.minorRelation.map(m => m.traderuser.id), 
-          values.minor_traders.map(m => parseInt(m, 10))
-        )
-        .map(m => this.minorRelation.filter(f => f.traderuser.id === m)[0])
-        .map(m => delRelationArr.push(m.id))
-
-        subtracting(
-          values.minor_traders.map(m => parseInt(m, 10)),
-          this.minorRelation.map(m => m.traderuser.id)
-        ).map(m => {
-          addRelationArr.push({
-            investoruser: this.props.params.id,
-            traderuser: m,
-            relationtype: false
-          })
-        })
-
 
         let body = values
         if (!hasPerm('usersys.admin_changeuser')) {
           body = { ...values, IR: undefined}
         }
 
-        Promise.all(delRelationArr.map(m => api.deleteUserRelation([m])))
-        .then(() => Promise.all(addRelationArr.map(m => api.addUserRelation(m))))
-        .then(() => api.editUser([userId], body))
+        api.editUser([userId], body)
         .then(result => {
           let url = this.props.location.query.redirect || "/app/user/list"
           this.props.dispatch(routerRedux.replace(url))
@@ -179,7 +141,6 @@ class EditUser extends React.Component {
   }
 
   handleSelectTrader = (type, value) => {
-    console.log('abcdefg', type, value)
     const isSelectMajorTrader = type === 'major'
     const body = {
       investoruser: this.props.params.id,
@@ -187,16 +148,22 @@ class EditUser extends React.Component {
       relationtype: isSelectMajorTrader
     }
     if (isSelectMajorTrader && this.majorRelation) {
-      api.editUserRelation([this.majorRelation.id], body)
-      .then(data => console.log('ddddd', data))
+      api.editUserRelation([{ ...body, id: this.majorRelation.id }])
+      .then(data => {
+        this.majorRelation = data.data[0]
+      })
+      .catch(err => {
+        this.form.setFieldsValue({ major_trader: this.majorRelation.traderuser.id + "" })
+        this.props.dispatch({ type: 'app/findError', payload: err })
+      })
       return
     }
 
     api.addUserRelation(body)
-    .then(data => {
-      console.log('abcdefg', data)
-      console.log('adddd', this.minorRelation)
-      this.minorRelation.push(data.data)
+    .then(data => this.minorRelation.push(data.data))
+    .catch(err => {
+      this.form.setFieldsValue({ minor_traders: this.minorRelation.map(m => m.traderuser.id + "") })
+      this.props.dispatch({ type: 'app/findError', payload: err })
     })
   }
 

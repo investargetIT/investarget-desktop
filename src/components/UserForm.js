@@ -165,7 +165,10 @@ class UserForm extends React.Component {
 
         <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="强交易师" name="major_trader">
-            <SelectUser mode="single" onSelect={this.props.onSelectMajorTrader} />
+            <SelectUser 
+            mode="single" 
+            onSelect={this.props.onSelectMajorTrader}
+            disabledOption={getFieldValue('minor_traders')} />
           </BasicFormItem>
         </div>
 
@@ -173,7 +176,9 @@ class UserForm extends React.Component {
           <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
             <SelectUser mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
-              onDeselect={this.props.onDeselectMinorTrader} />
+              onDeselect={this.props.onDeselectMinorTrader} 
+              disabled={!getFieldValue('major_trader')}
+              disabledOption={getFieldValue('major_trader')} />
           </BasicFormItem>
         </div>
 
