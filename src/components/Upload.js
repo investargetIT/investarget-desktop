@@ -96,26 +96,7 @@ class UploadFile extends React.Component {
   }
 
   handleFileRemove = (file) => {
-    this.removeAttachment(file).then(result => {
-      this.setState({ fileList: [] }, this.onChange)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  removeAttachment = (file) => {
-    const bucket = file.bucket
-    const key = file.key
-    if (bucket && key) {
-      // 删除已有附件
-      return api.qiniuDelete(bucket, key)
-    } else {
-      // 上传过程中删除
-      return Promise.resolve(true)
-    }
+    this.setState({ fileList: [] }, this.onChange)
   }
 
   onChange = () => {

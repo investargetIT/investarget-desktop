@@ -158,10 +158,7 @@ class ProjectAttachments extends React.Component {
         fileList: [ ...this.state.fileList.slice(0, index), ...this.state.fileList.slice(index+1) ]
       })
     }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      this.handleError(error)
     })
   }
 
@@ -171,10 +168,7 @@ class ProjectAttachments extends React.Component {
     return api.getProjAttachment(projId).then(result => {
       return result.data.data
     }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      this.handleError(error)
     })
   }
 
@@ -190,10 +184,7 @@ class ProjectAttachments extends React.Component {
     return api.addProjAttachment(data).then(result => {
       console.log(result)
     }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      this.handleError(error)
     })
   }
 
@@ -203,23 +194,13 @@ class ProjectAttachments extends React.Component {
     const key = file.key
     const id = file.id
 
-    if (bucket && key) {
-      if (id) {
-        // 删除已有附件
-        return api.deleteProjAttachment(id).then(result => {
-          return api.qiniuDelete(bucket, key)
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
-          })
-        })
-      } else {
-        // 上传完成，添加附件失败时，删除
-        return api.qiniuDelete(bucket, key)
-      }
+    if (bucket && key && id) {
+      return api.deleteProjAttachment(id).then(result => {
+        return Promise.resolve()
+      }, error => {
+        this.handleError(error)
+      })
     } else {
-      // 上传过程中删除
       return Promise.resolve()
     }
   }
@@ -283,10 +264,14 @@ class ProjectAttachments extends React.Component {
         dirs: [ ...this.state.dirs, ...otherDirs ],
       })
     }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      this.handleError(error)
+    })
+  }
+
+  handleError = (error) => {
+    this.props.dispatch({
+      type: 'app/findError',
+      payload: error
     })
   }
 

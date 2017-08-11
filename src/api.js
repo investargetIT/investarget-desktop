@@ -283,11 +283,6 @@ export function qiniuUpload(bucket, file) {
   })
 }
 
-export function qiniuDelete(bucket, key) {
-  const param = { bucket, key }
-  return r('/service/qiniudelete', 'POST', param)
-}
-
 export function sendSmsCode(body) {
   return r('/service/sms', 'POST', body)
 }
