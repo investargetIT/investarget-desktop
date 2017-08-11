@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
@@ -36,15 +36,15 @@ class SelectUserToPosition extends React.Component {
   handleSearch = () => {
     let { _params, search } = this.state
     _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getUser)
+    this.setState({ _params, page: 1 }, this.requestData)
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getUser)
+    this.setState({ page }, this.requestData)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getUser)
+    this.setState({ pageSize, page: 1 }, this.requestData)
   }
 
   getUser = () => {
@@ -70,6 +70,18 @@ class SelectUserToPosition extends React.Component {
       this.props.dispatch({
         type: 'app/findError',
         payload: error
+      })
+    })
+  }
+
+  getUserRelation = () => {
+    this.setState({ loading: true })
+    api.getUserRelation()
+    .then(data => {
+      this.setState({
+        loading: false,
+        total: data.data.count,
+        list: data.data.data.map(m => m.investoruser)
       })
     })
   }
@@ -106,8 +118,11 @@ class SelectUserToPosition extends React.Component {
   }
 
   componentDidMount() {
-    this.getUser()
+    this.requestData()
   }
+
+  // 选择投资人到相应职位用到了修改用户的权限，如果没有管理员修改用户的权限，那么只能修改自己的投资人
+  requestData = () => hasPerm('usersys.admin_changeuser') ? this.getUser() : this.getUserRelation()
 
   handleActionButtonClicked() {
     api.editUser(
@@ -126,6 +141,9 @@ class SelectUserToPosition extends React.Component {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.handleSelectChange,
+      getCheckboxProps: record => ({
+        disabled: !record.org || record.org.id !== parseInt(this.props.location.query.orgID, 10)
+      })
     }
 
     const columns = [

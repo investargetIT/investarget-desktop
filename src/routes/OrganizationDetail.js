@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, i18n } from '../utils/util'
+import { formatMoney, i18n, hasPerm } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -27,24 +27,45 @@ const dataSample = [{
 }]
 
 const PositionWithUser = props => {
+
+  function popoverChildren(user) {
+    if (user.isUnreachUser && hasPerm('usersys.admin_deleteuser')) {
+      return <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
+        <Button type="danger">移除</Button>
+      </Popconfirm>
+    } else if (user.isUnreachUser && !hasPerm('usersys.deleteuser')) {
+      return null
+    }
+
+    if (hasPerm('usersys.admin_changeuser') || user.isMyInvestor) {
+      return <div>
+        <p>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
+        <p style={{ textAlign: 'center', marginTop: 10 }}>
+          <Link to={"/app/user/edit/" + user.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>&nbsp;
+              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
+            <Button type="danger">移除</Button>
+          </Popconfirm>
+        </p>
+      </div>
+    }
+
+    return null
+  }
+
   return (
     <div>
       <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
       <div style={{ width: '80%', marginLeft: '20%' }}>
         {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
-          <Popover content={<div>
-            <p>交易师：<Link to={"/app/user/" + m.trader.id}>{m.trader.name}</Link></p>
-            <p style={{ textAlign: 'center', marginTop: 10 }}>
-              {m.isUnreachUser ? null : <Link to={"/app/user/edit/" + m.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>}&nbsp;
-              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, m.key)}>
-                <Button type="danger">移除</Button>
-                </Popconfirm>
-            </p>
-          </div>} title={m.name}>
+          <Popover content={popoverChildren(m)} title={m.name}>
             <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
+        { hasPerm('usersys.admin_adduser') ? 
           <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" />
+          : 
+          <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" /></Link>
+        }
       </div>
     </div>
   )
@@ -135,7 +156,7 @@ class OrganizationDetail extends React.Component {
 
       const orgTypeID = result.data.orgtype && result.data.orgtype.id
       const orgStructure = orgTitleTable.filter(f => f.orgtype.id === orgTypeID)
-      if (orgStructure.length > 0) {
+      if (orgStructure.length > 0 && hasPerm('usersys.admin_getuser')) {
         this.setState({
           data: orgStructure.map(m => {
             const id = m.title.id
@@ -147,13 +168,15 @@ class OrganizationDetail extends React.Component {
         })
         return Promise.all([
           api.getUser({ org: data.id, page_size: 1000 }), 
-          api.getUnreachUser({ org: data.id, page_size: 1000 })
+          api.getUnreachUser({ org: data.id, page_size: 1000 }),
+          api.getUserRelation({ page_size: 1000 }),
         ])
       } else {
         return Promise.resolve()
       }
     }).then(data => {
       if (!data) return
+      const myInvestorIDArr = data[2].data.data.map(m => m.investoruser.id)
       const newData = this.state.data.slice()
       data[0].data.data.map(m => {
         const index = newData.map(m => m.id).indexOf(m.title && m.title.id)
@@ -165,8 +188,9 @@ class OrganizationDetail extends React.Component {
             name: m.trader_relation && m.trader_relation.traderuser.username
           }
           const isUnreachUser = false
+          const isMyInvestor = myInvestorIDArr.includes(m.id)
           const key = 'reach-' + m.id
-          newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key })
+          newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key, isMyInvestor })
         }
       })
       data[1].data.data.map(m => {
@@ -177,8 +201,9 @@ class OrganizationDetail extends React.Component {
             name: m.trader_relation && m.trader_relation.traderuser.username
           }
           const isUnreachUser = true
+          const isMyInvestor = false
           const key = 'unreach-' + m.id
-          newData[index].user.push({ ...m, trader, isUnreachUser, key })
+          newData[index].user.push({ ...m, trader, isUnreachUser, key, isMyInvestor })
         }
       })
       this.setState({ data: newData })
@@ -186,7 +211,7 @@ class OrganizationDetail extends React.Component {
     .catch(err => {
       this.props.dispatch({
         type: 'app/findError',
-        payload: error
+        payload: err
       })
     })
   }
@@ -304,7 +329,9 @@ class OrganizationDetail extends React.Component {
         <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
           <div style={{ textAlign: 'center' }}>
            <Button style={{ marginRight: 10 }} onClick={this.handleChooseInvestor}>从已有投资人中进行选择</Button>
-           <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
+           { hasPerm('usersys.admin_adduser') ? 
+             <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
+           : null }
           </div>
         </Modal>
 

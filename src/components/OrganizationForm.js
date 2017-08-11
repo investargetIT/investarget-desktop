@@ -98,7 +98,7 @@ class OrganizationForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={formatMessage({id: 'organization.industry'})} name="industry" valueType="number">
-          <CascaderIndustry />
+          <CascaderIndustry disabled={[]} />
         </BasicFormItem>
 
         <BasicFormItem label={formatMessage({id: 'organization.transaction_phase'})} name="orgtransactionphase" valueType="array">
