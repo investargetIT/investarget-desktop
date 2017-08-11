@@ -15,20 +15,11 @@ const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
+import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
 import { hasPerm } from '../utils/util'
 
-
-function Select2 ({options, children, ...extraProps}) {
-  return (
-    <Select {...extraProps}>
-      {options && options.map((item, index) =>
-        <Option key={index} value={item.value}>{item.label}</Option>
-      )}
-    </Select>
-  )
-}
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
   function handleChange(e) {
@@ -59,7 +50,11 @@ class SelectNumber extends React.Component {
     }
 
     return (
-      <Select2 options={_options} value={_value} onChange={this.handleChange} {...extraProps} />
+      <Select value={_value} onChange={this.handleChange} {...extraProps}>
+        {_options && _options.map((item, index) =>
+          <Option key={index} value={item.value}>{item.label}</Option>
+        )}
+      </Select>
     )
   }
 }
@@ -271,96 +266,35 @@ SelectOrganization = connect()(SelectOrganization)
  * SelectExistOrganization
  */
 class SelectExistOrganization extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      org: [],
-    }
 
-    if (props.value) {
-      this.getOrg(props.value)
-    } else {
-      api.getOrg().then(data => {
-        this.setState({
-          org: data.data.data.map(m => {
-            const obj = {}
-            obj.value = m.id
-            obj.label = m.orgname
-            return obj
-          })
-        })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+  getOrg = (params) => {
+    return api.getOrg(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, orgname: label } = item
+        return { value, label }
       })
-    }
-  }
-
-  getOrg = (id) => {
-    api.getOrgDetailLang(id).then(result => {
-      const org = result.data
-      this.setState({
-        org: [{ value: org.id, label: org.orgname }],
-      })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      return { total, list }
     })
   }
 
-  handleSearch = value => {
-    // 清空 value 和更新 org 同时进行
-    const isNumber = !Number.isNaN(parseInt(value))
-    if (!isNumber && value.length >= 2) {
-      this.props.onChange(undefined)
-      api.getOrg({search: value}).then(data => {
-        const org = data.data.data.map(item => {
-          return { value: item.id, label: item.orgname }
-        })
-        this.setState({ org })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-    }
-  }
-
-  handleChange = (value) => {
-    this.props.onChange(Number(value))
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.value && this.state.org.length == 0) {
-      this.getOrg(nextProps.value)
-    }
+  getOrgnameById = (id) => {
+    return api.getOrgDetailLang(id).then(result => {
+      return result.data.orgname
+    })
   }
 
   render() {
-    const { showSearh, value, onSearch, onChange, placeholder, children, optionLabelProp, ...extraProps } = this.props
-    const { org } = this.state
     return (
-      <Select
-        showSearch
-        value={value ? String(value) : undefined}
-        onSearch={this.handleSearch}
-        onChange={this.handleChange}
-        placeholder="输入至少2个字，查找机构"
-        optionFilterProp="children"
-        optionLabelProp="children"
-        {...extraProps}
-      >
-        { org ? org.map(d => <Option key={d.value} value={String(d.value)}>{d.label}</Option> ) : null }
-      </Select>
+      <Select2
+        getData={this.getOrg}
+        getNameById={this.getOrgnameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+      />
     )
   }
 }
-SelectExistOrganization = connect()(SelectExistOrganization)
 
 
 /**
@@ -440,8 +374,8 @@ class SelectUserGroup extends React.Component {
   render() {
     const { value, onChange, children, ...extraProps } = this.props
     return (
-      <SelectNumber 
-      options={this.state.options} 
+      <SelectNumber
+      options={this.state.options}
       value={value && value[0]} onChange={this.handleChange} {...extraProps} />
     )
   }
