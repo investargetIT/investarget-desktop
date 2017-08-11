@@ -168,6 +168,16 @@ class UserList extends React.Component {
         key: 'userstatus'
       },
       {
+        title: i18n("Transaction"),
+        dataIndex: 'trader_relation.traderuser.username',
+        key: 'trader'
+      },
+      {
+        title: 'IR',
+        dataIndex: 'IR.username',
+        key: 'IR'
+      },
+      {
         title: i18n("action"),
         key: 'action',
         render: (text, record) => (
