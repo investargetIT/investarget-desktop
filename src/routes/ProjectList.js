@@ -191,15 +191,15 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: '国家',
+        title: '地区',
         key: 'country',
         render: (text, record) => {
           const country = record.country
           const countryName = country ? country.country : ''
-          const imgUrl = country ? ('https://o79atf82v.qnssl.com/' + country.key) : ''
+          const imgUrl = country && country.key && country.url
           return (
             <span style={{display: 'flex', alignItems: 'center'}}>
-              <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} />
+              { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
               <span>{countryName}</span>
             </span>
           )
