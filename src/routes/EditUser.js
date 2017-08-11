@@ -128,7 +128,7 @@ class EditUser extends React.Component {
       title: data.title && data.title.id,
       wechat: data.wechat,
       org: data.org && data.org.id,
-      tags: data.tags && data.tags.map(item => item.id),
+      tags: data.tags ? data.tags.map(item => item.id) : [],
       userstatus: data.userstatus && data.userstatus.id,
       country: data.country && data.country.id,
       major_trader: data.majorTraderID,
