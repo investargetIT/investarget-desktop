@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
-import IndustryImage from './IndustryImage'
+import { UploadImage } from './Upload'
 import { BASE_URL } from '../constants'
 
 const FormItem = Form.Item
@@ -416,22 +416,35 @@ class IndustryDynamicFormItem extends React.Component {
       disabled: [],
     }
 
-    const { getFieldDecorator, getFieldValue } = context.form
+    const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
+
     getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
     // set disabled
     var t = setInterval(() => {
       const keys = getFieldValue('industriesKeys')
-      if (keys.length > 0) {
-        let ids = keys.map(key => getFieldValue('industries-' + key))
-        this.setState({ disabled: ids })
+      const ids = keys.map(key => getFieldValue('industries-' + key))
+      const images = keys.map(key => getFieldValue('industries-image-' + key))
+
+      this.industryUuid = ids.length
+
+      const _ids = ids.filter(id => id != null)
+      if (_ids.length > 0 && this.props.industry.length > 0) {
+        this.setState({ disabled: _ids })
+        // get default image
+        _ids.forEach((id, index) => {
+          const i = this.props.industry.filter(item => item.id == id)[0]
+          if (i && i.key) {
+            setFieldsValue({ ['industries-image-' + keys[index]]: i.key })
+          }
+        })
         clearInterval(t)
       }
-    }, 100)
+    }, 300)
   }
 
   // Industry 多 field
   removeIndustry = (k) => {
-    const { getFieldValue, setFieldsValue } = this.context.form
+    const { getFieldValue, setFieldsValue, validateFields } = this.context.form
     var keys = getFieldValue('industriesKeys')
     if (keys.length === 1) {
       return
@@ -439,9 +452,6 @@ class IndustryDynamicFormItem extends React.Component {
 
     keys = keys.filter(key => key !== k)
     setFieldsValue({ industriesKeys: keys })
-
-    let oldKey = getFieldValue('industries-image-' + k)
-    this.deleteImage(oldKey)
     //
     const ids = keys.map(item => getFieldValue('industries-' + item))
                               .filter(item => item != null)
@@ -460,41 +470,18 @@ class IndustryDynamicFormItem extends React.Component {
 
   handleIndustryChange = (k, id) => {
     const { getFieldValue, setFieldsValue } = this.context.form
-    const { industry } = this.props
+
     if (id) {
-      let i = industry.filter(item => item.id == id)[0]
-      let oldKey = getFieldValue('industries-image-' + k)
-      this.deleteImage(oldKey)
+      let i = this.props.industry.filter(item => item.id == id)[0]
       setFieldsValue({ ['industries-image-' + k]: i.key })
     }
-    //
+    // set diabled
     const keys = getFieldValue('industriesKeys')
     var ids = keys.map(item => getFieldValue('industries-' + item))
     var index = keys.indexOf(k)
     ids = [ ...ids.slice(0, index), id, ...ids.slice(index+1) ]
     ids = ids.filter(item => item != null)
     this.setState({ disabled: ids })
-  }
-
-  handleIndustryImageChange = (k, key) => {
-    const { getFieldValue } = this.context.form
-    const oldKey = getFieldValue('industries-image-' + k)
-    this.deleteImage(oldKey)
-  }
-
-  deleteImage = (key) => {
-    if (key == undefined) {
-      return
-    }
-    // 判断图片是默认还是自己上传的
-    const isDefaultImage = this.props.industry.some(item => item.key == key)
-    if (!isDefaultImage) {
-      api.qiniuDelete('image', key).then(result => {
-        //
-      }, error => {
-        //
-      })
-    }
   }
 
   render() {
@@ -543,12 +530,16 @@ class IndustryDynamicFormItem extends React.Component {
                     getFieldDecorator(`industries-image-${k}`, {
                       rules: [
                         { type: 'string' },
-                        { required: true },
-                        { whitespace: true },
+                        { validator: function(rule, value, callback) {
+                          if (!value) {
+                            callback('行业必须有图片')
+                          } else {
+                            callback()
+                          }
+                        } }
                       ],
-                      onChange: this.handleIndustryImageChange.bind(this, k)
                     })(
-                      <IndustryImage disabled={!id} />
+                      <UploadImage disabled={!id} />
                     )
                   }
                 </FormItem>

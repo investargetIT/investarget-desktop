@@ -188,138 +188,79 @@ const imageMimeTypes = ['image/jpeg', 'image/png']
 /**
  * 上传图片（头像、名片）
  */
+
 class UploadImage extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      fileList: [],
+      previewVisible: false,
+      previewImage: '',
+    }
 
     const key = props.value
     if (key) {
-      let file = {
-        'uid': -1,
-        'name': key,
-        'status': 'done',
-        'bucket': 'image',
-        'key': key,
-      }
-      api.downloadUrl(file.bucket, file.key).then(result => {
-        file['url'] = result.data
-        this.state = { fileList: [file] }
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+      this.getDownloadUrl(key).then(url => {
+        const file = { uid: -1, status: 'done', bucket: 'image', key, url }
+        this.setState({ fileList: [file] })
       })
-    } else {
-      this.state = { fileList: [] }
     }
+  }
+
+  handleCancel = () => this.setState({ previewVisible: false })
+
+  handlePreview = (file) => {
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
   }
 
   beforeUpload = (file) => {
-    if (imageMimeTypes.indexOf(file.type) == -1) {
-      message.warning('请上传 jpeg 或 png 格式的图片', 2)
-      return false
+    const isFormatAllowed = imageMimeTypes.indexOf(file.type) != -1
+    if (!isFormatAllowed) {
+      message.error('请上传 jpeg 或 png 格式的图片', 2)
     }
-    if (this.state.fileList.length == 1) {
-      message.warning('只能上传一个文件', 2)
-      return false
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('图片必须小于 2MB', 2);
     }
-  }
-
-  handleFileRemoveConfirm = (file) => {
-    return new Promise(function(resolve, reject) {
-      Modal.confirm({
-        title: '删除图片',
-        content: file.name,
-        onOk: function() { resolve(true) },
-        onCancel: function() { resolve(false) },
-      })
-    })
+    return isFormatAllowed && isLt2M
   }
 
   handleFileChange = ({ file, fileList, event }) => {
-    if (file.status == 'uploading') {
-      this.handleFileUpload(file)
-    } else if (file.status == 'done') {
-      this.handleFileUploadDone(file)
-    } else if (file.status == 'error') {
-      this.handleFileUploadError(file)
-    } else if (file.status == 'removed') {
-      this.handleFileRemove(file)
-    }
-  }
-
-  handleFileUpload = (file) => {
-    this.setState({ fileList: [file] })
-  }
-
-  handleFileUploadDone = (file) => {
-    file.bucket = 'image'
-    file.key = file.response.result.key
-    file.url = file.response.result.url
-    this.setState({ fileList: [file] }, this.onChange)
-  }
-
-  handleFileUploadError = (file) => {
-    this.setState({ fileList: [ file ] })
-  }
-
-  handleFileRemove = (file) => {
-    this.removeAttachment(file).then(result => {
-      this.setState({ fileList: [] }, this.onChange)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  removeAttachment = (file) => {
-    const bucket = file.bucket
-    const key = file.key
-    if (bucket && key) {
-      // 删除已有附件
-      return api.qiniuDelete(bucket, key)
+    if (file.status == 'removed') {
+      this.props.onChange(null)
     } else {
-      // 上传过程中删除
-      return Promise.resolve(true)
+      if (file.status == 'done') {
+        let { key } = file.response.result
+        this.props.onChange(key)
+      } else {
+        this.setState({ fileList })
+      }
     }
   }
 
-  onChange = () => {
-    if (this.props.onChange) {
-      let file = this.state.fileList[0] || null
-      let key = file ? file.key : null
-      this.props.onChange(key)
-    }
+  getDownloadUrl = (key) => {
+    return api.downloadUrl('image', key).then(result => {
+      return result.data
+    })
   }
 
   componentWillReceiveProps(nextProps) {
     const key = nextProps.value
-    if (key) {
-      let file = {
-        'uid': -1,
-        'name': key,
-        'status': 'done',
-        'bucket': 'image',
-        'key': key,
-      }
-      api.downloadUrl(file.bucket, file.key).then(result => {
-        file['url'] = result.data
-        this.setState({ fileList: [file] })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-    } else {
+    if (key == null) {
       this.setState({ fileList: [] })
+    } else {
+      this.getDownloadUrl(key).then(url => {
+        const file = { uid: -1, status: 'done', bucket: 'image', key, url }
+        this.setState({ fileList: [file] })
+      })
     }
   }
 
   render() {
+    const { fileList, previewVisible, previewImage } = this.state
 
     const uploadButton = (
       <div style={buttonStyle}>
@@ -328,23 +269,30 @@ class UploadImage extends React.Component {
     )
 
     return (
-      <Upload
-        name="file"
-        action={BASE_URL + "/service/qiniubigupload?bucket=image"}
-        accept={imageExtensions.join(',')}
-        beforeUpload={this.beforeUpload}
-        fileList={this.state.fileList}
-        listType="picture-card"
-        onPreview={this.handlePreview}
-        onChange={this.handleFileChange}
-        onRemove={this.handleFileRemoveConfirm}
-      >
-        {this.state.fileList.length == 1 ? null : uploadButton}
-      </Upload>
+      <div className="clearfix">
+        <Upload
+          style={{ cursor: this.props.disabled ? 'not-allowed' : 'pointer' }}
+          disabled={this.props.disabled || false}
+          name="file"
+          action={BASE_URL + "/service/qiniubigupload?bucket=image"}
+          accept={imageExtensions.join(',')}
+          beforeUpload={this.beforeUpload}
+          fileList={fileList}
+          listType="picture-card"
+          onPreview={this.handlePreview}
+          onChange={this.handleFileChange}
+        >
+          {fileList.length == 0 ? uploadButton : null}
+        </Upload>
+        <Modal visible={previewVisible} footer={null} closable={false} onCancel={this.handleCancel}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+          <div style={{ textAlign: 'center', marginTop: '8px' }}>
+            <Button onClick={this.handleCancel}>关闭</Button>
+          </div>
+        </Modal>
+      </div>
     )
   }
 }
-
-UploadImage = connect()(UploadImage)
 
 export { UploadFile, UploadImage }
