@@ -64,6 +64,11 @@ class UserList extends React.Component {
   getUser = () => {
     const { filters, search, page, pageSize } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
+    // 机构所有用户
+    const org = parseInt(this.props.location.query.org)
+    if (org) {
+      params['org'] = org
+    }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
