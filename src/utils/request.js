@@ -1,3 +1,4 @@
+require('es6-promise').polyfill();
 import fetch from 'dva/fetch';
 
 let baseUrl = "http://192.168.1.251:8080"
