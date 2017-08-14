@@ -16,3 +16,7 @@ historyApiFallback: {
 `antd` 2.10.0 升级到 2.11.0
 
 最新版本的 Upload 组件 onRemove 才支持返回一个 Promise 对象
+
+## 关于Dataroom文件操作的一些规则
+1. 当dataroom为关闭状态时，所以操作都无法执行
+2. 上传、新建文件夹、删除和复制这四个操作需要管理员添加dataroom权限

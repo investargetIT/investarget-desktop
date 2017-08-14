@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
-import { getRandomInt, formatBytes, isLogin } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm } from '../utils/util'
 import { BASE_URL } from '../constants'
 
 const confirm = Modal.confirm
@@ -313,22 +313,37 @@ class FileMgmt extends React.Component {
       },
     }
 
+    const unableToOperate = this.state.parentId === -999 || this.props.location.query.isClose === 'true'
+    const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
+
+    const operation = () => {
+      if (unableToOperate) return null
+      return (
+        <div>
+          { hasEnoughPerm ? 
+          <Upload {...props}>
+            <Button type="primary" style={{ marginRight: 10 }}>上传</Button>
+          </Upload>
+          : null }
+
+          { hasEnoughPerm ? 
+          <Button
+            onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
+            style={{ marginRight: 10 }}>新建文件夹</Button>
+          : null }
+
+          {this.state.selectedRows.length > 0 && hasEnoughPerm ? <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>删除</Button> : null}
+          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleRename} style={{ marginRight: 10 }}>重命名</Button> : null}
+          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 && hasEnoughPerm ? <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>复制到</Button> : null}
+          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleMove} style={{ marginRight: 10 }}>移动到</Button> : null}
+        </div>
+      )
+    }
+
     return (
       <div>
 
-        <Upload {...props}>
-          <Button disabled={this.state.parentId === -999} type="primary">上传</Button>
-        </Upload>
-
-        <Button
-          disabled={this.state.parentId === -999}
-          onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
-          style={{ marginLeft: 10 }}>新建文件夹</Button>
-
-        { this.state.selectedRows.length > 0 ? <Button onClick={this.handleDelete} style={{ marginLeft: 10 }}>删除</Button> : null }
-        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleRename} style={{ marginLeft: 10 }}>重命名</Button> : null }
-        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleCopy} style={{ marginLeft: 10 }}>复制到</Button> : null }
-        { this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleMove} style={{ marginLeft: 10 }}>移动到</Button> : null }
+       {operation()}
 
         <div style={{ margin: '10px 0' }}>
           { base }

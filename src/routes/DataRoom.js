@@ -482,6 +482,7 @@ class DataRoomList extends React.Component {
         title={'项目名称：' + this.state.title}>
 
         <FileMgmt
+          location={this.props.location}
           data={this.state.data}
           onCreateNewFolder={this.handleCreateNewFolder.bind(this)}
           onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)}
