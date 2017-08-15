@@ -296,6 +296,42 @@ class SelectExistOrganization extends React.Component {
   }
 }
 
+/**
+ * SelectExistUser
+ */
+class SelectExistUser extends React.Component {
+
+  getUser = (params) => {
+    params = { ...params, userstatus: 2 } // 审核通过
+    return api.getUser(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, username: label } = item
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  getUsernameById = (id) => {
+    return api.getUserDetailLang(id).then(result => {
+      return result.data.username
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        getData={this.getUser}
+        getNameById={this.getUsernameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+      />
+    )
+  }
+
+}
+
 
 /**
  * SelectUser
@@ -846,6 +882,7 @@ export {
   SelectOrganizatonArea,
   SelectOrganization,
   SelectExistOrganization,
+  SelectExistUser,
   SelectUser,
   SelectTransactionStatus,
   SelectProjectStatus,

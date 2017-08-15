@@ -30,9 +30,8 @@ import {
   InputPhoneNumber,
   RadioTrueOrFalse,
   SelectService,
+  SelectExistUser,
 } from '../components/ExtraInput'
-
-import SelectUserModal from '../components/SelectUserModal'
 
 
 class ProjectBaseForm extends React.Component {
@@ -223,17 +222,17 @@ class ProjectConnectForm extends React.Component {
         {
           hasPerm('proj.admin_addproj') ? (
             <BasicFormItem label="上传者" name="supportUser" required valueType="number" initialValue={currentUserId}>
-              <SelectUserModal />
+              <SelectExistUser />
             </BasicFormItem>
           ) : null
         }
 
         <BasicFormItem label="承揽" name="takeUser" required valueType="number">
-          <SelectUserModal />
+          <SelectExistUser />
         </BasicFormItem>
 
         <BasicFormItem label="承做" name="makeUser" required valueType="number">
-          <SelectUserModal />
+          <SelectExistUser />
         </BasicFormItem>
       </Form>
     )

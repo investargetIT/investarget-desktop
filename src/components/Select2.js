@@ -16,6 +16,7 @@ function isParent(obj, parentObj) {
 }
 
 const valueStyle = {
+  position: 'relative',
   display: 'block',
   boxSizing: 'border-box',
   paddingLeft: '7px',
@@ -44,6 +45,9 @@ const resultStyle = {
   overflow: 'scroll',
   border: '1px solid #d9d9d9',
   backgroundColor: '#fff',
+}
+const tipStyle = {
+  marginLeft: '8px',
 }
 
 
@@ -218,11 +222,11 @@ class Select2 extends React.Component {
 
     return (
       <div ref="container">
-        <div style={valueStyle} onClick={this.toggleSearch}>{label}</div>
+        <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
         <div style={{ ...searchStyle, display: visible ? 'block' : 'none' }}>
           <Input ref="search" style={inputStyle} size="large" suffix={<Icon type="search" />} placeholder="输入关键词搜索" value={search} onChange={this.handleSearch} />
           <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
-            { reloading ? <p>搜索中...</p> : null }
+            { reloading ? <p style={tipStyle}>搜索中...</p> : null }
             <ul className={styles['list']}>
               {
                 list.map(item =>
@@ -231,7 +235,7 @@ class Select2 extends React.Component {
               }
             </ul>
             {
-              loading ? <p>加载结果中...</p> : null
+              loading ? <p style={tipStyle}>加载结果中...</p> : null
             }
           </div>
         </div>
