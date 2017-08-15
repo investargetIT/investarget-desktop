@@ -315,6 +315,9 @@ class FileMgmt extends React.Component {
 
     const unableToOperate = this.state.parentId === -999 || this.props.location.query.isClose === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
+    const selectMoreThanOneRow = this.state.selectedRows.length > 0
+    const noShadowInSelectedRows = this.state.selectedRows.filter(f => f.isShadow).length === 0
+    const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
 
     const operation = () => {
       if (unableToOperate) return null
@@ -332,10 +335,22 @@ class FileMgmt extends React.Component {
             style={{ marginRight: 10 }}>新建文件夹</Button>
           : null }
 
-          {this.state.selectedRows.length > 0 && hasEnoughPerm ? <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>删除</Button> : null}
-          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleRename} style={{ marginRight: 10 }}>重命名</Button> : null}
-          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 && hasEnoughPerm ? <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>复制到</Button> : null}
-          {this.state.selectedRows.length > 0 && this.state.selectedRows.filter(f => f.isShadow).length === 0 ? <Button onClick={this.handleMove} style={{ marginRight: 10 }}>移动到</Button> : null}
+          {selectMoreThanOneRow && hasEnoughPerm ?
+            <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>删除</Button>
+          : null}
+
+          {selectMoreThanOneRow && noShadowInSelectedRows ?
+            <Button onClick={this.handleRename} style={{ marginRight: 10 }}>重命名</Button>
+          : null}
+
+          {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows && hasEnoughPerm ?
+            <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>复制到</Button>
+          : null}
+
+          {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows ?
+            <Button onClick={this.handleMove} style={{ marginRight: 10 }}>移动到</Button>
+          : null}
+
         </div>
       )
     }
