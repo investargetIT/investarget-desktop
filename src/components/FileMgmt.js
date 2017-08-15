@@ -232,7 +232,7 @@ class FileMgmt extends React.Component {
       key: 'name',
       render: (text, record, index) => (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? !record.isShadow ? "/images/folder.png" : "/images/avatar1.png" : "/images/pdf.png" } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? (record.isShadow || record.isVirtual) ? "/images/avatar1.png" : "/images/folder.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>

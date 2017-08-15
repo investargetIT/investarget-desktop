@@ -260,7 +260,15 @@ class DataRoomList extends React.Component {
         return { ...item, parentId, name, rename, unique, isFolder, date }
       })).reduce((acc, val) => acc.concat(val), [])
       const newData = this.state.data.concat(formattedData)
-      this.setState({ data: newData })
+      this.setState({ data: newData }, () => {
+        // Create children of shadow directory
+        this.state.data.filter(f => f.isShadow).map(m => {
+          this.findAllSubFiles(m.shadowdirectory)
+          this.createShadowFiles(this.allSubFiles, m.shadowdirectory, m.id)
+        })
+        this.setState({ data: this.state.data.concat(this.shadowContents)})
+      })
+
     }).catch(err => {
       this.props.dispatch({
         type: 'app/findError',
@@ -401,6 +409,7 @@ class DataRoomList extends React.Component {
         parent: [-1, -2, -3].includes(targetID) ? null : targetID
       }
       Api.addToDataRoom(body).then(data => {
+        this.findAllSubFiles(m.id)
         const newData = this.state.data.slice()
         const item = data.data
         const parentId = item.parent || this.dataRoomRelation[item.dataroom]
@@ -411,13 +420,48 @@ class DataRoomList extends React.Component {
         const date = item.lastmodifytime
         const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
-        this.setState({ data: newData })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+
+        this.createShadowFiles(this.allSubFiles, m.id, unique)
+
+        this.setState({ data: newData.concat(this.shadowContents) })
       })
+      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+    })
+  }
+
+  allSubFiles = []
+  findAllSubFiles = id => {
+    const subObjArr = this.state.data.filter(f => f.parentId === id)
+    if (subObjArr.length === 0) {
+      return this.allSubFiles
+    } else {
+      this.allSubFiles = this.allSubFiles.concat(subObjArr)
+      return subObjArr.map(m => this.findAllSubFiles(m.id))
+    }
+  }
+
+  shadowContents = []
+  data = []
+  createShadowFiles(files, oldParentId, newParentId) {
+    let content = files.slice()
+    if (content.length === 0) return this.shadowContents
+    const contentId = content.map(m => m.id)
+    content.filter(f => f.parentId === oldParentId).map(m => {
+      const existKeyList = this.data.map(m => m.unique)
+      const maxKey = Math.max(...existKeyList)
+      const id = maxKey + 99
+      const unique = id
+      const parentId = newParentId
+      const isVirtual = true
+
+      const rootIndex = contentId.indexOf(m.id)
+      if (rootIndex > -1) {
+        content.splice(rootIndex, 1)
+      }
+      const newValue = { ...m, id, unique, parentId, isVirtual }
+      this.shadowContents = this.shadowContents.concat(newValue)
+      this.data = this.data.concat(newValue)
+      return this.createShadowFiles(content, m.id, id)
     })
   }
 
@@ -476,6 +520,9 @@ class DataRoomList extends React.Component {
   }
 
   render () {
+    this.allSubFiles = []
+    this.shadowContents = []
+    this.data = this.state.data.slice()
     return (
       <LeftRightLayout
         location={this.props.location}
