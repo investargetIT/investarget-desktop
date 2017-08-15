@@ -110,7 +110,7 @@ class ProjectBaseForm extends React.Component {
                   }}],
                   initialValue: true,
                 })(
-                  <Checkbox><Link to="">已阅读并接受《免责声明》《平台保密声明》《信息准确性上传者承诺》</Link></Checkbox>
+                  <Checkbox><Link to="/app/agreement" target="_blank">已阅读并接受《免责声明》《平台保密声明》《信息准确性上传者承诺》</Link></Checkbox>
                 )
               }
             </FormItem>
