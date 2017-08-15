@@ -16,6 +16,28 @@ const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
 
 
+const ellipsisStyle = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+}
+const fileitemStyle = {
+  display: 'flex',
+  alignItems: 'center',
+}
+const filetypeStyle = {
+  flexShrink: 0,
+  width: '125px',
+  marginRight: '25px',
+  color: 'rgb(16, 69, 143)',
+  ...ellipsisStyle,
+}
+const filenameStyle = {
+  flexGrow: 1,
+  ...ellipsisStyle,
+}
+
+
 const fileExtensions = [
   '.pdf',
   '.doc',
@@ -280,9 +302,25 @@ class ProjectAttachments extends React.Component {
 
     let panes = dirs.map(item => ({ title: item, key: item, closable: !fixedDirs.includes(item) }))
     let targetFileList = fileList.filter(item => item.filetype == this.state.activeDir)
+    let doneFileList = fileList.filter(file => file.status == 'done')
 
     return (
       <div>
+
+        <div style={{ marginBottom: 16 }}>
+          <p style={{ marginBottom: '8px' }}>已有附件 (<span>{ doneFileList.length }</span>)</p>
+          <div style={{ marginLeft: '8px' }}>
+          {
+            doneFileList.map(file =>
+              <div key={file.key} style={fileitemStyle}>
+                <span style={filetypeStyle}>{file.filetype}</span>
+                <span style={filenameStyle}>{file.filename}</span>
+              </div>
+            )
+          }
+          </div>
+        </div>
+
         <div style={{ marginBottom: 16 }}>
           <Input
             value={this.state.newDir}
