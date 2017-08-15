@@ -221,8 +221,18 @@ class ProjectList extends React.Component {
           const statusName = status ? status.name : ''
           return statusName
         }
-      },
-      {
+      }
+    ]
+    if (hasPerm('usersys.as_admin')) {
+      columns.push({
+        title: '是否隐藏',
+        key: 'isHidden',
+        render: (text, record) => {
+          return record.isHidden ? '已隐藏' : '未隐藏'
+        }
+      })
+    }
+    columns.push({
         title: '操作',
         key: 'action',
         render: (text, record) => {
@@ -264,8 +274,7 @@ class ProjectList extends React.Component {
             </span>
           )
         }
-      },
-    ]
+    })
 
     return (
       <MainLayout location={location}>
