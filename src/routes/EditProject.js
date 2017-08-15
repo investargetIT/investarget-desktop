@@ -115,6 +115,11 @@ class EditProject extends React.Component {
       data.takeUser = data.takeUser ? data.takeUser.id : null
       data.makeUser = data.makeUser ? data.makeUser.id : null
       data.service = data.service ? data.service.map(m => m.id) : []
+      // `value` prop on `textarea` should not be null.
+      let textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
+      textFields.forEach(field => {
+        if (data[field] == null) { data[field] = '' }
+      })
       this.setState({
         project: data
       })

@@ -122,10 +122,6 @@ class ProjectFinanceForm extends React.Component {
     exchange(currencyMap[Number(currency)]).then((rate) => {
       console.log(rate)
       const fields = ['financeAmount', 'companyValuation']
-      getFieldValue('financeKeys').forEach(key => {
-        fields.push(`finance-${key}.revenue`)
-        fields.push(`finance-${key}.netIncome`)
-      })
       const values = {}
       fields.forEach(field => {
         let value = getFieldValue(field)
@@ -248,64 +244,64 @@ class ProjectDetailForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="公司简介" name="p_introducteC">
+        <BasicFormItem label="公司简介" name="p_introducteC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Company Introduction" name="p_introducteE">
+        <BasicFormItem label="Company Introduction" name="p_introducteE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="目标市场" name="targetMarketC">
+        <BasicFormItem label="目标市场" name="targetMarketC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="TargetMarket" name="targetMarketE">
+        <BasicFormItem label="TargetMarket" name="targetMarketE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="核心产品" name="productTechnologyC">
+        <BasicFormItem label="核心产品" name="productTechnologyC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Core Product" name="productTechnologyE">
+        <BasicFormItem label="Core Product" name="productTechnologyE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="商业模式" name="businessModelC">
+        <BasicFormItem label="商业模式" name="businessModelC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Business Model" name="businessModelE">
+        <BasicFormItem label="Business Model" name="businessModelE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="品牌渠道" name="brandChannelC">
+        <BasicFormItem label="品牌渠道" name="brandChannelC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Brand Channel" name="brandChannelE">
+        <BasicFormItem label="Brand Channel" name="brandChannelE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="管理团队" name="managementTeamC">
+        <BasicFormItem label="管理团队" name="managementTeamC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Management Team" name="managementTeamE">
+        <BasicFormItem label="Management Team" name="managementTeamE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="商业伙伴" name="BusinesspartnersC">
+        <BasicFormItem label="商业伙伴" name="BusinesspartnersC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Business Partner" name="BusinesspartnersE">
+        <BasicFormItem label="Business Partner" name="BusinesspartnersE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="资金用途" name="useOfProceedC">
+        <BasicFormItem label="资金用途" name="useOfProceedC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Use of Proceeds" name="useOfProceedE">
+        <BasicFormItem label="Use of Proceeds" name="useOfProceedE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="融资历史" name="financingHistoryC">
+        <BasicFormItem label="融资历史" name="financingHistoryC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Financing History" name="financingHistoryE">
+        <BasicFormItem label="Financing History" name="financingHistoryE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="经营数据" name="operationalDataC">
+        <BasicFormItem label="经营数据" name="operationalDataC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="Operational Data" name="operationalDataE">
+        <BasicFormItem label="Operational Data" name="operationalDataE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
       </Form>
