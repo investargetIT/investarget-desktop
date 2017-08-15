@@ -7,7 +7,7 @@ import * as api from '../api'
 
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
-import { UserListFilter } from '../components/Filter'
+import { OrgUserListFilter } from '../components/Filter'
 import UserRelationModal from '../components/UserRelationModal'
 
 const CheckboxGroup = Checkbox.Group
@@ -18,13 +18,13 @@ const confirm = Modal.confirm
 import { Search2 } from '../components/Search'
 
 
-class UserList extends React.Component {
+class OrgUserList extends React.Component {
 
   constructor(props) {
     super(props)
 
     const setting = this.readSetting()
-    const filters = setting ? setting.filters : UserListFilter.defaultValue
+    const filters = setting ? setting.filters : OrgUserListFilter.defaultValue
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
@@ -64,6 +64,12 @@ class UserList extends React.Component {
   getUser = () => {
     const { filters, search, page, pageSize } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
+    // 机构所有用户
+    const org = parseInt(this.props.location.query.org)
+    if (org) {
+      params['org'] = org
+      params['groups'] = [1]
+    }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -107,11 +113,11 @@ class UserList extends React.Component {
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
     const data = { filters, search, page, pageSize }
-    localStorage.setItem('UserList', JSON.stringify(data))
+    localStorage.setItem('OrgUserList', JSON.stringify(data))
   }
 
   readSetting = () => {
-    var data = localStorage.getItem('UserList')
+    var data = localStorage.getItem('OrgUserList')
     return data ? JSON.parse(data) : null
   }
 
@@ -177,16 +183,6 @@ class UserList extends React.Component {
         key: 'action',
         render: (text, record) => (
               <span>
-                {
-                  _.some(record.groups, function(group) {
-                    return group.id == 1 // 投资人
-                  }) ? (
-                    <UserRelationModal investoruser={record.id} investorUsername={record.username}>
-                      <Button size="small" onClick={this.showModal.bind(null, record.id, record.username)}>交易师</Button>
-                    </UserRelationModal>
-                  ) : null
-                }
-                &nbsp;
                 <Link to={'/app/user/' + record.id}>
                   <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>
                 </Link>
@@ -209,7 +205,7 @@ class UserList extends React.Component {
         title={i18n("user_list")}
         action={hasPerm("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
 
-        <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <OrgUserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ overflow: 'auto' }}>
           <div style={{ marginBottom: '24px', float: 'left' }}>
@@ -250,4 +246,4 @@ class UserList extends React.Component {
 
 }
 
-export default connect()(UserList)
+export default connect()(OrgUserList)

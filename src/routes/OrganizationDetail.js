@@ -61,9 +61,9 @@ const PositionWithUser = props => {
             <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        { hasPerm('usersys.admin_adduser') ? 
+        { hasPerm('usersys.admin_adduser') ?
           <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" />
-          : 
+          :
           <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" /></Link>
         }
       </div>
@@ -167,7 +167,7 @@ class OrganizationDetail extends React.Component {
           })
         })
         return Promise.all([
-          api.getUser({ org: data.id, page_size: 1000 }), 
+          api.getUser({ org: data.id, page_size: 1000 }),
           api.getUnreachUser({ org: data.id, page_size: 1000 }),
           api.getUserRelation({ page_size: 1000 }),
         ])
@@ -287,7 +287,7 @@ class OrganizationDetail extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title={<span>机构详情（<Link to={'/app/user/list?org=' + id}>投资人名单</Link>）</span>} />
+        <PageTitle title={<span>机构详情（<Link to={'/app/orguser/list?org=' + id}>投资人名单</Link>）</span>} />
         <div style={{ width: '50%', float: 'left' }}>
           <Field title="名称" value={this.state.orgname} />
           <Field title="机构类型" value={this.state.orgtype} />
@@ -329,7 +329,7 @@ class OrganizationDetail extends React.Component {
         <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
           <div style={{ textAlign: 'center' }}>
            <Button style={{ marginRight: 10 }} onClick={this.handleChooseInvestor}>从已有投资人中进行选择</Button>
-           { hasPerm('usersys.admin_adduser') ? 
+           { hasPerm('usersys.admin_adduser') ?
              <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
            : null }
           </div>

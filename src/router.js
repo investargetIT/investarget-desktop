@@ -3,6 +3,7 @@ import { Router, Route } from 'dva/router'
 import IndexPage from './routes/IndexPage'
 import Login from './components/Login.js'
 import UserList from "./routes/UserList.js"
+import OrgUserList from './routes/OrgUserList.js'
 import Register from './routes/Register'
 import Home from './routes/Home'
 import AddOrganization from "./routes/AddOrganization.js"
@@ -53,6 +54,7 @@ function RouterConfig({ history }) {
       <Route path="/register" component={Register} />
       <Route path="/app" component={IndexPage} />
       <Route path="/403" component={AccessDenied} />
+      <Route path="/app/orguser/list" component={OrgUserList} />
       <Route path={URI_6} component={UserList} />
       <Route path="/app/user/add" component={AddUser} />
       <Route path="/app/organization/list" component={OrganizationList} />

@@ -355,6 +355,52 @@ class UserListFilter extends React.Component {
 }
 
 
+class OrgUserListFilter extends React.Component {
+
+    static defaultValue = {
+      orgtransactionphases: [],
+      tags: [],
+      currency: [],
+      userstatus: null,
+      areas: [],
+    }
+
+    constructor(props) {
+      super(props)
+      this.state = props.defaultValue || OrgUserListFilter.defaultValue
+    }
+
+    handleChange = (key, value) => {
+      this.setState({ [key]: value })
+    }
+
+    handleSearch = () => {
+      this.props.onSearch({ ...this.state })
+    }
+
+    handleReset = () => {
+      this.setState({ ...OrgUserListFilter.defaultValue })
+      this.props.onReset({ ...OrgUserListFilter.defaultValue })
+    }
+
+    render() {
+      const { orgtransactionphases, tags, currency, userstatus, areas } = this.state
+
+      return (
+        <div>
+          <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+          <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+          <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
+          <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
+          <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
+          <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+        </div>
+      )
+    }
+
+  }
+
+
 class MyInvestorListFilter extends React.Component {
 
   state = {
@@ -532,6 +578,7 @@ module.exports = {
   mapStateToPropsForAudit,
   MyInvestorListFilter,
   UserListFilter,
+  OrgUserListFilter,
   OrganizationListFilter,
   ProjectListFilter,
   TimelineFilter,
