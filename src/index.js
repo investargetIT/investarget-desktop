@@ -33,6 +33,7 @@ const app = dva({
     })
   },
 })
+window.app = app
 
 // 2. Plugins
 // app.use({});

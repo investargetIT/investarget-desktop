@@ -1,8 +1,7 @@
 import React from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
-import { i18n, exchange } from '../utils/util'
+import { i18n, exchange, handleError } from '../utils/util'
 import PropTypes from 'prop-types'
-import { connect } from 'dva'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
 import { UploadImage } from './Upload'
@@ -352,16 +351,13 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
       setFieldsValue({
         [name + '_USD']: value == undefined ? value : Math.round(value * rate),
       })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    }, error => handleError)
   }
 
-  let rules = [{ type: 'number' }]
-  if (required) { rules.push({ required }) }
+  let rules = [
+    { type: 'number', message: 'The input is not valid!' },
+  ]
+  if (required) { rules.push({ required, message: i18n('can_not_be_empty') }) }
   if (validator) { rules.push({ validator }) }
 
   return (
@@ -397,7 +393,6 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
 CurrencyFormItem.contextTypes = {
   form: PropTypes.object
 }
-CurrencyFormItem = connect()(CurrencyFormItem)
 
 
 class IndustryDynamicFormItem extends React.Component {

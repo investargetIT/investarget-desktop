@@ -157,4 +157,12 @@ function formatBytes(a,b){if(0==a)return"0 Bytes";var c=1024,d=b||0,e=["Bytes","
 const intersection = (xs,ys) => xs.filter(x => ys.some(y => x === y))
 const subtracting = (xs, ys) => xs.filter(x => !ys.includes(x))
 
+
+export function handleError(error) {
+  window.app._store.dispatch({
+    type: 'app/findError',
+    payload: error,
+  })
+}
+
 export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting }
