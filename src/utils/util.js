@@ -67,6 +67,23 @@ function i18n(key) {
   return messages[key]
 }
 
+function time(dateFromServer) {
+  if (!window.Intl || typeof window.Intl !== "object") {
+    return dateFromServer.slice(0, 16).replace('T', ' ')
+  }
+  const date = new Date(dateFromServer)
+  const options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  }
+  const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
+  return new Intl.DateTimeFormat(locale, options).format(date)
+}
+
 var exchangeCache = {}
 var offlineRate = {
   'USD': 1,
@@ -165,4 +182,4 @@ export function handleError(error) {
   })
 }
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting }
+export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time } from '../utils/util'
 import { BASE_URL } from '../constants'
 
 const confirm = Modal.confirm
@@ -253,6 +253,7 @@ class FileMgmt extends React.Component {
       title: '修改日期',
       dataIndex: 'date',
       key: 'date',
+      render: date => date && time(date),
     }]
 
 

@@ -256,7 +256,7 @@ class DataRoomList extends React.Component {
         const rename = item.filename
         const unique = item.id
         const isFolder = !item.isFile
-        const date = item.lastmodifytime
+        const date = item.lastmodifytime || item.createdtime
         return { ...item, parentId, name, rename, unique, isFolder, date }
       })).reduce((acc, val) => acc.concat(val), [])
       const newData = this.state.data.concat(formattedData)
@@ -328,7 +328,7 @@ class DataRoomList extends React.Component {
         const rename = item.filename
         const unique = item.id
         const isFolder = !item.isFile
-        const date = item.lastmodifytime
+        const date = item.lastmodifytime || item.createdtime
         const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
