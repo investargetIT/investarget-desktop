@@ -77,6 +77,9 @@ class TimelineList extends React.Component {
     api.getTimeline(params).then(result => {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false })
+
+      const ids = list.map(item => item.id)
+      this.getLatestRemark(ids)
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -162,6 +165,25 @@ class TimelineList extends React.Component {
   readSetting = () => {
     var data = localStorage.getItem('TimelineList')
     return data ? JSON.parse(data) : null
+  }
+
+  getLatestRemark = (timelineIds) => {
+    const userId = getCurrentUser()
+
+    const q = timelineIds.map(id => {
+      const params = { timeline: id, createuser: userId }
+      return api.getTimelineRemark(params).then(result => {
+        const { count, data } = result.data
+        return count > 0 ? data[0] : ''
+      })
+    })
+
+    Promise.all(q).then(remarks => {
+      const list = this.state.list.map((item, index) => {
+        return { ...item, latestremark: remarks[index] }
+      })
+      this.setState({ list })
+    })
   }
 
   componentDidMount() {
