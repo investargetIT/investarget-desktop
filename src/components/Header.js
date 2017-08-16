@@ -4,6 +4,7 @@ import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { FormattedMessage } from 'react-intl'
 import { SOURCE } from '../api'
+import qs from 'qs'
 
 const confirm = Modal.confirm
 
@@ -22,7 +23,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
         break
       case "lang":
         const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
-        window.location.href = url + location.search
+        window.location.href = url + '?' + qs.stringify(location.query)
         break
       case "toggle_menu":
         dispatch({
