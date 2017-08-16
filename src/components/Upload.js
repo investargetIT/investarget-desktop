@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'dva'
 import { Upload, Button, Icon, Modal, message } from 'antd'
 import { BASE_URL } from '../constants'
+import Viewer from 'viewerjs'
+import 'viewerjs/dist/viewer.css'
 
 const fileExtensions = [
   '.pdf',
@@ -188,13 +190,17 @@ class UploadImage extends React.Component {
     }
   }
 
-  handleCancel = () => this.setState({ previewVisible: false })
+  handleCancel = () => {
+    this.setState({ previewVisible: false })
+    this.viewer.hide()
+  }
 
   handlePreview = (file) => {
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
     });
+    this.viewer.show()
   }
 
   beforeUpload = (file) => {
@@ -240,6 +246,18 @@ class UploadImage extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.viewer = new Viewer(this.refs.img, {
+      navbar: false,
+      scalable: false,
+      fullscreen: false,
+    })
+  }
+
+  componentWillUnmout() {
+    this.viewer.destroy()
+  }
+
   render() {
     const { fileList, previewVisible, previewImage } = this.state
 
@@ -265,12 +283,13 @@ class UploadImage extends React.Component {
         >
           {fileList.length == 0 ? uploadButton : null}
         </Upload>
-        <Modal visible={previewVisible} footer={null} closable={false} onCancel={this.handleCancel}>
+        <img ref="img" src={fileList[0] && fileList[0].url} style={{display: 'none'}} onLoad={this.handleImgLoad} />
+        {/* <Modal visible={previewVisible} footer={null} closable={false} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
           <div style={{ textAlign: 'center', marginTop: '8px' }}>
             <Button onClick={this.handleCancel}>关闭</Button>
           </div>
-        </Modal>
+        </Modal> */}
       </div>
     )
   }

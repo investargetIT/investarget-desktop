@@ -428,7 +428,7 @@ class IndustryDynamicFormItem extends React.Component {
         // get default image
         _ids.forEach((id, index) => {
           const i = this.props.industry.filter(item => item.id == id)[0]
-          if (i && i.key) {
+          if (i && i.key && !getFieldValue('industries-image-' + keys[index])) {
             setFieldsValue({ ['industries-image-' + keys[index]]: i.key })
           }
         })
@@ -477,6 +477,10 @@ class IndustryDynamicFormItem extends React.Component {
     ids = [ ...ids.slice(0, index), id, ...ids.slice(index+1) ]
     ids = ids.filter(item => item != null)
     this.setState({ disabled: ids })
+  }
+
+  isDefault = (key) => {
+    return this.props.industry.filter(item => item.id == key)[0] ? true : false
   }
 
   render() {
