@@ -320,7 +320,7 @@ class FileMgmt extends React.Component {
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
 
     const operation = () => {
-      if (unableToOperate) return null
+      if (unableToOperate || currentFolder.isShadow || currentFolder.isVirtual) return null
       return (
         <div>
           { hasEnoughPerm ? 
