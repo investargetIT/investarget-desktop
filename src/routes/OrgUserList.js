@@ -8,7 +8,6 @@ import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { OrgUserListFilter } from '../components/Filter'
-import UserRelationModal from '../components/UserRelationModal'
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group

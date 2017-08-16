@@ -8,7 +8,6 @@ import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
-import UserRelationModal from '../components/UserRelationModal'
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -177,16 +176,6 @@ class UserList extends React.Component {
         key: 'action',
         render: (text, record) => (
               <span>
-                {
-                  _.some(record.groups, function(group) {
-                    return group.id == 1 // 投资人
-                  }) ? (
-                    <UserRelationModal investoruser={record.id} investorUsername={record.username}>
-                      <Button size="small" onClick={this.showModal.bind(null, record.id, record.username)}>交易师</Button>
-                    </UserRelationModal>
-                  ) : null
-                }
-                &nbsp;
                 <Link to={'/app/user/' + record.id}>
                   <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>
                 </Link>
