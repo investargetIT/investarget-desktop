@@ -196,7 +196,13 @@ class ProjectList extends React.Component {
         render: (text, record) => {
           const country = record.country
           const countryName = country ? country.country : ''
-          const imgUrl = country && country.key && country.url
+          let imgUrl = country && country.key && country.url
+          if (!imgUrl) {
+            const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
+            if (parentCountry && parentCountry.url) {
+              imgUrl = parentCountry.url
+            }
+          }
           return (
             <span style={{display: 'flex', alignItems: 'center'}}>
               { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
@@ -328,7 +334,10 @@ class ProjectList extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  const { country } = state.app
+  return { country }
+}
 
 
-
-export default connect()(ProjectList)
+export default connect(mapStateToProps)(ProjectList)
