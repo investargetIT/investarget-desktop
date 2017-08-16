@@ -63,43 +63,18 @@ class EditUser extends React.Component {
   }
 
   getData = (data) => {
-    // {
-    //   'usernameC'
-    //   'usernameE'
-    //   'email'
-    //   'mobile'
-    //   'mobileAreaCode'
-    //   'title'
-    //   'wechat'
-    //   'org'
-    //   // 区域
-    //   'country'
-    //   'tags'
-    //   // 交易师
-    //   // 负责人
-    //   'userstatus'
-    // }
+    let _data = {  ...data }
+    _data['groups'] = data.groups && data.groups.map(item => item.id)
+    _data['title'] = data.title && data.title.id
+    _data['org'] = data.org && data.org.id
+    _data['orgarea'] = data.orgarea && data.orgarea.id
+    _data['tags'] = data.tags ? data.tags.map(item => item.id) : []
+    _data['userstatus'] = data.userstatus && data.userstatus.id
+    _data['country'] = data.country && data.country.id
+    _data['major_trader'] = data.majorTraderID
+    _data['minor_traders'] = data.minorTraderIDArr || []
+    _data['IR'] = data.IR && data.IR.id + ""
 
-    let _data = {
-      groups: data.groups && data.groups.map(item => item.id),
-      usernameC: data.usernameC,
-      usernameE: data.usernameE,
-      email: data.email,
-      mobile: data.mobile,
-      mobileAreaCode: data.mobileAreaCode,
-      title: data.title && data.title.id,
-      wechat: data.wechat,
-      org: data.org && data.org.id,
-      tags: data.tags ? data.tags.map(item => item.id) : [],
-      userstatus: data.userstatus && data.userstatus.id,
-      country: data.country && data.country.id,
-      major_trader: data.majorTraderID,
-      minor_traders: data.minorTraderIDArr || [],
-      ishasfundorplan: data.ishasfundorplan,
-      mergedynamic: data.mergedynamic,
-      targetdemand: data.targetdemand,
-      IR: data.IR && data.IR.id + "",
-    }
     for (let prop in _data) {
       _data[prop] = { value: _data[prop] }
     }
