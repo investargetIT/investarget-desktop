@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Row, Col } from 'antd'
-
+import ImageViewer from './ImageViewer'
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -22,6 +22,7 @@ const Field = (props) => {
   )
 }
 
+const cardStyle = { maxWidth: '100%', maxHeight: '150px', cursor: 'pointer' }
 
 
 class UserInfo extends React.Component {
@@ -57,12 +58,16 @@ class UserInfo extends React.Component {
       const wechat = data.wechat
       const email = data.email
       const userstatus = data.userstatus.name
-      const cardUrl = '' // TODO card url
+      const cardBucket = data.cardBucket
+      const cardKey = data.cardKey
       const ishasfundorplan = data.ishasfundorplan
       const mergedynamic = data.mergedynamic
       const targetdemand = data.targetdemand
       this.setState({
-        username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, ishasfundorplan, mergedynamic, targetdemand
+        username, title, tags, country, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand
+      })
+      api.downloadUrl(cardBucket, cardKey).then(result => {
+        this.setState({ cardUrl: result.data })
       })
     }, error => {
       this.props.dispatch({
@@ -88,7 +93,7 @@ class UserInfo extends React.Component {
         <Field title="微信号" value={wechat} />
         <Field title="邮箱" value={email} />
         <Field title="审核状态" value={userstatus} />
-        <Field title="名片" value={<img src={cardUrl} />} />
+        <Field title="名片" value={<ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer>} />
         <Field title="收藏项目" value={''} />
         <Field title="推荐项目" value={''} />
         <Field title="感兴趣项目" value={''} />
