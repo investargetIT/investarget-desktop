@@ -266,6 +266,7 @@ class DataRoomList extends React.Component {
           this.findAllSubFiles(m.shadowdirectory)
           this.createShadowFiles(this.allSubFiles, m.shadowdirectory, m.id)
         })
+        this.isAllDataLoaded = true
         this.setState({ data: this.state.data.concat(this.shadowContents)})
       })
 
@@ -536,6 +537,7 @@ class DataRoomList extends React.Component {
         location={this.props.location}
         title={'项目名称：' + this.state.title}>
 
+        { this.isAllDataLoaded ?
         <FileMgmt
           location={this.props.location}
           data={this.state.data}
@@ -547,6 +549,7 @@ class DataRoomList extends React.Component {
           onCopyFiles={this.handleCopyFiles.bind(this)}
           onMoveFiles={this.handleOnMoveFiles.bind(this)}
           onUploadFile={this.handleUploadFile.bind(this)} />
+          : null }
 
       </LeftRightLayout>
     )

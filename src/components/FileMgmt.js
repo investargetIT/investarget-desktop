@@ -3,6 +3,7 @@ import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time } from '../utils/util'
 import { BASE_URL } from '../constants'
+import qs from 'qs'
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -14,12 +15,11 @@ const actionName = {
 
 class FileMgmt extends React.Component {
     constructor(props) {
-
     super(props)
 
     this.state = {
       data: props.data,
-      parentId: -999,
+      parentId: parseInt(props.location.query.parentID, 10) || -999,
       name: null,
       renameRows: [],
       selectedRows: [],
@@ -41,14 +41,22 @@ class FileMgmt extends React.Component {
   }
 
   componentDidMount() {
+    window.onpopstate = () => {
+      const query = qs.parse(location.search)
+      this.setState({ parentId: parseInt(query.parentID, 10) || -999 })
+    }
   }
 
   folderClicked(file) {
     if (!file) {
+      this.props.location.query.parentID = undefined
+      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: -999 })
       return
     }
     if (file.isFolder) {
+      this.props.location.query.parentID = file.id
+      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: file.id })
     } else {
       const watermark = isLogin().email || 'Investarget'
