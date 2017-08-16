@@ -429,6 +429,33 @@ class DataRoomList extends React.Component {
     })
   }
 
+  handleOnMoveFiles(files, targetID) {
+    const targetFile = this.state.data.filter(f => f.id === targetID)[0]
+    if (files.filter(f => f.dataroom !== targetFile.dataroom).length > 0 ) {
+      Modal.error({
+        title: '禁止在不同的dataroom中进行移动操作',
+        content: '每个角色对应的目录为一个dataroom，移动操作只有在同一个dataroom中的时候才允许执行，请确保所选文件在同一个dataroom中',
+      })
+      return
+    }
+    files.map(m => {
+      const body = {
+        fileid: m.id,
+        parent: [-1, -2, -3].includes(targetID) ? null : targetID
+      }
+      Api.editInDataRoom(body).then(data => {
+        const index = this.state.data.map(m => m.id).indexOf(m.id)
+        this.state.data[index].parentId = targetID
+        this.setState({ data: this.state.data })
+      }, error => {
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
+    })
+  }
+
   allSubFiles = []
   findAllSubFiles = id => {
     const subObjArr = this.state.data.filter(f => f.parentId === id)
@@ -462,25 +489,6 @@ class DataRoomList extends React.Component {
       this.shadowContents = this.shadowContents.concat(newValue)
       this.data = this.data.concat(newValue)
       return this.createShadowFiles(content, m.id, id)
-    })
-  }
-
-  handleOnMoveFiles(files, targetID) {
-    files.map(m => {
-      const body = {
-        fileid: m.id,
-        parent: [-1, -2, -3].includes(targetID) ? null : targetID
-      }
-      Api.editInDataRoom(body).then(data => {
-        const index = this.state.data.map(m => m.id).indexOf(m.id)
-        this.state.data[index].parentId = targetID
-        this.setState({ data: this.state.data })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
     })
   }
 
