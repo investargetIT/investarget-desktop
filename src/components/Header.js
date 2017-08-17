@@ -23,7 +23,8 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
         break
       case "lang":
         const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
-        window.location.href = url + '?' + qs.stringify(location.query)
+        const query = qs.stringify(location.query)
+        window.location.href = url + (query.length > 0 ? '?' + query : '')
         break
       case "toggle_menu":
         dispatch({
