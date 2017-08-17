@@ -1,7 +1,8 @@
 import React from 'react'
-import { connect } from 'dva'
+import { withRouter } from 'dva/router'
 import { injectIntl, intlShape } from 'react-intl'
 import * as api from '../api'
+import { handleError } from '../utils/util'
 
 import { Form, Button } from 'antd'
 import MainLayout from '../components/MainLayout';
@@ -41,7 +42,7 @@ class EditOrganization extends React.Component {
   }
 
   cancel = (e) => {
-    this.props.history.goBack()
+    this.props.router.goBack()
   }
 
   handleRef = (inst) => {
@@ -57,12 +58,9 @@ class EditOrganization extends React.Component {
     validateFieldsAndScroll((err, values) => {
       if (!err) {
         api.editOrg(id, values).then((result) => {
-          this.props.history.goBack()
-        }, (error) => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
-          })
+          this.props.router.goBack()
+        }, error => {
+          handleError(error)
         })
       }
     })
@@ -79,6 +77,10 @@ class EditOrganization extends React.Component {
       data.orgtype = data.orgtype && data.orgtype.id
       data.orgstatus = data.orgstatus && data.orgstatus.id
 
+      const textFields = ['description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionMakingProcess']
+      textFields.forEach(item => {
+        if (data[item] == null) { data[item] = '' }
+      })
 
       for (let i in data) {
         data[i] = { 'value': data[i] }
@@ -87,10 +89,7 @@ class EditOrganization extends React.Component {
       console.log(data)
       this.setState({ data })
     }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
+      handleError(error)
     })
   }
 
@@ -120,4 +119,4 @@ class EditOrganization extends React.Component {
   }
 }
 
-export default connect()(EditOrganization)
+export default withRouter(EditOrganization)

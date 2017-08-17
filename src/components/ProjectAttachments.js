@@ -29,7 +29,7 @@ const filetypeStyle = {
   flexShrink: 0,
   width: '125px',
   marginRight: '25px',
-  color: 'rgb(16, 69, 143)',
+  color: '#108ee9',
   ...ellipsisStyle,
 }
 const filenameStyle = {
