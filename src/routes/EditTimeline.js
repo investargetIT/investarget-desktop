@@ -6,7 +6,7 @@ import { Form, Button, InputNumber, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import TimelineForm from '../components/TimelineForm'
-import TimelineRemarkList from '../components/TimelineRemarkList'
+import { TimelineRemarkList } from '../components/RemarkList'
 
 
 function onValuesChange(props, values) {
@@ -142,7 +142,7 @@ class EditTimeline extends React.Component {
           </div>
         </div>
 
-        <TimelineRemarkList timelineId={id} />
+        <TimelineRemarkList typeId={id} />
       </MainLayout>
     )
   }

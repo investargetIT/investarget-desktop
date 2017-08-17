@@ -5,7 +5,7 @@ import * as api from '../api'
 import { Row, Col } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import TimelineRemarkList from '../components/TimelineRemarkList'
+import { TimelineRemarkList } from '../components/RemarkList'
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -76,7 +76,7 @@ class TimelineDetail extends React.Component {
           </div>
         </div>
 
-        <TimelineRemarkList timelineId={id} readOnly />
+        <TimelineRemarkList typeId={id} readOnly />
       </MainLayout>
     )
   }

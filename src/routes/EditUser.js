@@ -7,6 +7,7 @@ import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
 import { routerRedux } from 'dva/router'
 import * as api from '../api'
+import { UserRemarkList } from '../components/RemarkList'
 
 const confirm = Modal.confirm
 
@@ -50,7 +51,7 @@ class EditUser extends React.Component {
           this.componentDidMount()
           this.props.dispatch({ type: 'app/findError', payload: error })
         })
-          
+
       }
     })
   }
@@ -169,6 +170,7 @@ class EditUser extends React.Component {
   }
 
   render () {
+    const userId = Number(this.props.params.id)
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -177,14 +179,16 @@ class EditUser extends React.Component {
         <EditUserForm
           wrappedComponentRef={this.handleRef}
           data={this.state.data}
-          type="edit" 
-          onSelectMajorTrader={this.handleSelectTrader.bind(this, 'major')} 
-          onSelectMinorTrader={this.handleSelectTrader.bind(this, 'minor')} 
+          type="edit"
+          onSelectMajorTrader={this.handleSelectTrader.bind(this, 'major')}
+          onSelectMinorTrader={this.handleSelectTrader.bind(this, 'minor')}
           onDeselectMinorTrader={this.handleDeselectTrader} />
 
         <div style={{textAlign: 'center'}}>
           <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
         </div>
+
+        <UserRemarkList typeId={userId} />
 
       </LeftRightLayout>
     )

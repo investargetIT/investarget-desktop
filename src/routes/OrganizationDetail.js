@@ -6,7 +6,7 @@ import { Link, routerRedux } from 'dva/router'
 import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import OrganizationRemarkList from '../components/OrganizationRemarkList'
+import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 
 const dataSample = [{
@@ -310,7 +310,8 @@ class OrganizationDetail extends React.Component {
           <Field title="典型投资案例" value={this.state.typicalCase} />
           <Field title="合伙人/投委会成员" value={this.state.partnerOrInvestmentCommiterMember} />
           <Field title="决策流程" value={this.state.decisionMakingProcess} />
-          <OrganizationRemarkList orgId={id} readOnly />
+
+          <OrganizationRemarkList typeId={id} readOnly />
         </div>
 
         <div style={{ width: '50%', marginLeft: '50%' }}>

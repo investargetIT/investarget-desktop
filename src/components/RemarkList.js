@@ -2,6 +2,8 @@ import React from 'react'
 import { injectIntl, intlShape } from 'react-intl'
 
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
+import { handleError, getCurrentUser } from '../utils/util'
+import * as api from '../api'
 
 
 const addIconStyle = {
@@ -43,7 +45,6 @@ class RemarkList extends React.Component {
       showEdit: false,
       editId: null,
       remark: '',
-      // loading: false,
     }
   }
 
@@ -55,17 +56,10 @@ class RemarkList extends React.Component {
     this.setState({ showAdd: true })
   }
 
-  addRemark = () => {
-    const remark = this.state.remark
-    this.props.addRemark(remark).then(result => {
-      this.setState({ showAdd: false, remark: '' })
-    }, error => {
-      this.setState({ showAdd: false, remark: '' })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+  confirmAddRemark = () => {
+    const { remark } = this.state
+    this.setState({ showAdd: false, remark: '' })
+    this.props.addRemark(remark)
   }
 
   cancelAddRemark = () => {
@@ -73,99 +67,177 @@ class RemarkList extends React.Component {
   }
 
   showEditRemark = (id) => {
-    const list = this.props.list
+    const { list } = this.props
     const remark = list.filter(item => item.id == id)[0]
     this.setState({ showEdit: true, editId: id, remark: remark.remark })
   }
 
-  editRemark = () => {
+  confirmEditRemark = () => {
     const { editId, remark } = this.state
-    this.props.editRemark(editId, remark).then(result => {
-      this.setState({ showEdit: false, remark: '', editId: null })
-    }, error => {
-      this.setState({ showEdit: false, remark: '', editId: null })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    this.setState({ showEdit: false, remark: '', editId: null })
+    this.props.editRemark(editId, remark)
   }
 
   cancelEditRemark = () => {
     this.setState({ showEdit: false, editId: null, remark: '' })
   }
 
-  deleteRemark = (id) => {
-    this.props.deleteRemark(id).then(result => {
-      //
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+  confirmDeleteRemark = (id) => {
+    this.props.deleteRemark(id)
   }
-
 
   render() {
     const { formatDate, formatTime } = this.props.intl
-    return (
-      <div>
-        <h3 style={remarkTitleStyle}>备注信息<Icon type="plus" style={addIconStyle} onClick={this.showAddRemark} /></h3>
+
+    if (this.props.readOnly) {
+      return (
         <div>
-          {
-            this.props.list.map(item =>
-              <div key={item.id} style={remarkStyle}>
-                <p style={remarkTimeStyle}>
-                  { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
-                  {/* TODO// 操作与权限挂钩 */}
-                  <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>编辑</a>
-                  <Popconfirm title="删除备注" onConfirm={this.deleteRemark.bind(this, item.id)}>
-                    <a style={remarkActionStyle}>删除</a>
-                  </Popconfirm>
-                </p>
-                <p style={remarkTextStyle}>{item.remark}</p>
-              </div>
-            )
-          }
+          <h3 style={remarkTitleStyle}>备注</h3>
+          <div>
+            {
+              this.props.list.map(item =>
+                <div key={item.id} style={remarkStyle}>
+                  <p style={remarkTimeStyle}>
+                    { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
+                  </p>
+                  <p style={remarkTextStyle}>{item.remark}</p>
+                </div>
+              )
+            }
+          </div>
         </div>
-        <Modal title="新增备注" visible={this.state.showAdd} onOk={this.addRemark} onCancel={this.cancelAddRemark}>
-          <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
-        </Modal>
-        <Modal title="修改备注" visible={this.state.showEdit} onOk={this.editRemark} onCancel={this.cancelEditRemark}>
-          <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
-        </Modal>
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div>
+          <h3 style={remarkTitleStyle}>备注信息<Icon type="plus" style={addIconStyle} onClick={this.showAddRemark} /></h3>
+          <div>
+            {
+              this.props.list.map(item =>
+                <div key={item.id} style={remarkStyle}>
+                  <p style={remarkTimeStyle}>
+                    { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
+                    {/* TODO// 操作与权限挂钩 */}
+                    <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>编辑</a>
+                    <Popconfirm title="删除备注" onConfirm={this.confirmDeleteRemark.bind(this, item.id)}>
+                      <a style={remarkActionStyle}>删除</a>
+                    </Popconfirm>
+                  </p>
+                  <p style={remarkTextStyle}>{item.remark}</p>
+                </div>
+              )
+            }
+          </div>
+          <Modal title="新增备注" visible={this.state.showAdd} onOk={this.confirmAddRemark} onCancel={this.cancelAddRemark}>
+            <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
+          </Modal>
+          <Modal title="修改备注" visible={this.state.showEdit} onOk={this.confirmEditRemark} onCancel={this.cancelEditRemark}>
+            <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
+          </Modal>
+        </div>
+      )
+    }
   }
 }
 
+RemarkList = injectIntl(RemarkList)
 
-function RemarkListReadOnly(props) {
-  const { formatDate, formatTime } = props.intl
-  return (
-    <div>
-      <h3 style={remarkTitleStyle}>备注</h3>
-      <div>
-        {
-          props.list.map(item =>
-            <div key={item.id} style={remarkStyle}>
-              <p style={remarkTimeStyle}>
-                { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
-              </p>
-              <p style={remarkTextStyle}>{item.remark}</p>
-            </div>
-          )
-        }
-      </div>
-    </div>
-  )
+
+function sortByTime(list) {
+  list.sort((a, b) => {
+    a = new Date(a.createdtime)
+    b = new Date(b.createdtime)
+    return a < b
+  })
 }
-RemarkListReadOnly.propTypes = {
-  intl: intlShape.isRequired,
+
+// HOC
+function remarkListWithApi(type) {
+
+  const getApi = api.getRemark.bind(null, type)
+  const addApi = api.addRemark.bind(null, type)
+  const editApi = api.editRemark.bind(null, type)
+  const deleteApi = api.deleteRemark.bind(null, type)
+
+  class CommonRemarkList extends React.Component {
+
+    constructor(props) {
+      super(props)
+
+      this.state = {
+        list: [],
+      }
+    }
+
+    getRemarkList = () => {
+      const param = {
+        [type]: this.props.typeId,
+        createuser: getCurrentUser(),
+      }
+      getApi(param).then(result => {
+        const list = result.data.data
+        sortByTime(list)
+        this.setState({ list })
+      }, error => {
+        handleError(error)
+      })
+    }
+
+    addRemark = (remark) => {
+      const params = { [type]: this.props.typeId, remark }
+      addApi(params).then(result => {
+        this.getRemarkList()
+      }, error => {
+        handleError(error)
+      })
+    }
+
+    editRemark = (editId, remark) => {
+      const params = { [type]: this.props.typeId, remark }
+      editApi(editId, params).then(result => {
+        this.getRemarkList()
+      }, error => {
+        handleError(error)
+      })
+    }
+
+    deleteRemark = (id) => {
+      deleteApi(id).then(result => {
+        this.getRemarkList()
+      }, error => {
+        handleError(error)
+      })
+    }
+
+    componentDidMount() {
+      this.getRemarkList()
+    }
+
+    render() {
+      const readOnly = 'readOnly' in this.props
+      return (
+        <RemarkList
+          list={this.state.list}
+          readOnly={readOnly}
+          addRemark={this.addRemark}
+          editRemark={this.editRemark}
+          deleteRemark={this.deleteRemark}
+        />
+      )
+    }
+
+  }
+
+  return CommonRemarkList
 }
-RemarkListReadOnly = injectIntl(RemarkListReadOnly)
 
 
-export { RemarkListReadOnly }
-export default injectIntl(RemarkList)
+const TimelineRemarkList = remarkListWithApi('timeline')
+const OrganizationRemarkList = remarkListWithApi('org')
+const UserRemarkList = remarkListWithApi('user')
+
+export {
+  TimelineRemarkList,
+  OrganizationRemarkList,
+  UserRemarkList
+}

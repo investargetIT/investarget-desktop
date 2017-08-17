@@ -7,7 +7,7 @@ import { Form, Button } from 'antd'
 import MainLayout from '../components/MainLayout';
 import PageTitle from '../components/PageTitle'
 import OrganizationForm from '../components/OrganizationForm'
-import OrganizationRemarkList from '../components/OrganizationRemarkList'
+import { OrganizationRemarkList } from '../components/RemarkList'
 
 const formStyle = {
   overflow: 'auto',
@@ -112,7 +112,7 @@ class EditOrganization extends React.Component {
             </div>
           </div>
 
-          <OrganizationRemarkList orgId={id} />
+          <OrganizationRemarkList typeId={id} />
 
         </div>
       </MainLayout>

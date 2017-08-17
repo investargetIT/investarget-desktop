@@ -472,6 +472,30 @@ export const getUnreachUser = param => r('/user/unuser/?' + qs.stringify(param))
 export const deleteUnreachUser = id => r('/user/unuser/' + id, 'DELETE')
 export const checkUserExist = mobileOrEmail => r('/user/checkexists/?account=' + mobileOrEmail)
 
+
+// user remark
+
+export function getUserRemark(param) {
+  return r('/user/remark/?' + qs.stringify(param))
+}
+
+export function getUserRemarkDetail(id) {
+  return r('/user/remark/' + id + '/')
+}
+
+export function addUserRemark(data) {
+  return r('/user/remark/', 'POST', data)
+}
+
+export function editUserRemark(id, data) {
+  return r('/user/remark/' + id + '/', 'PUT', data)
+}
+
+export function deleteUserRemark(id) {
+  return r('/user/remark/' + id + '/', 'DELETE')
+}
+
+
 /**
  * dataroom
  */
@@ -525,3 +549,27 @@ export const editUserRelation = body => r('/user/relationship/', 'PUT', body)
  */
 export const getMsg = param => r('/msg/?' + qs.stringify(param))
 export const readMsg = id => r('/msg/' + id + '/', 'POST')
+
+/**
+ * remark
+ */
+
+export function getRemark(type, param) {
+  return r(`/${type}/remark/?` + qs.stringify(param))
+}
+
+export function getRemarkDetail(type, id) {
+  return r(`/${type}/remark/${id}/`)
+}
+
+export function addRemark(type, data) {
+  return r(`/${type}/remark/`, 'POST', data)
+}
+
+export function editRemark(type, id, data) {
+  return r(`/${type}/remark/${id}/`, 'PUT', data)
+}
+
+export function deleteRemark(type, id) {
+  return r(`/${type}/remark/${id}/`, 'DELETE')
+}

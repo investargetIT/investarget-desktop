@@ -4,6 +4,7 @@ import { Row, Col, Tabs } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import UserInfo from '../components/UserInfo'
 import TransactionInfo from '../components/TransactionInfo'
+import { UserRemarkList } from '../components/RemarkList'
 
 const TabPane = Tabs.TabPane
 
@@ -35,6 +36,7 @@ class UserDetail extends React.Component {
         <Row gutter={48}>
           <Col span={12}>
             <UserInfo userId={userId} />
+            <UserRemarkList typeId={userId} readOnly />
           </Col>
           <Col span={12}>
             <TransactionInfo userId={userId} />
