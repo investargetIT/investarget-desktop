@@ -573,3 +573,10 @@ export function editRemark(type, id, data) {
 export function deleteRemark(type, id) {
   return r(`/${type}/remark/${id}/`, 'DELETE')
 }
+
+/**
+ * log
+ */
+export function getLogOfUserUpdate(param) {
+    return r('/log/userupdate?' + qs.stringify(param))
+}
