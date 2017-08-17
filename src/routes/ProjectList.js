@@ -197,7 +197,7 @@ class ProjectList extends React.Component {
           const country = record.country
           const countryName = country ? country.country : ''
           let imgUrl = country && country.key && country.url
-          if (!imgUrl) {
+          if (country && !imgUrl) {
             const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
             if (parentCountry && parentCountry.url) {
               imgUrl = parentCountry.url
