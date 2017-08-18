@@ -83,6 +83,8 @@ class UserForm extends React.Component {
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
+    const userIsApproved = getFieldValue('userstatus') === 2
+
     return (
       <Form>
 
@@ -164,7 +166,7 @@ class UserForm extends React.Component {
           ) : null
         }
 
-        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
+        <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="强交易师" name="major_trader">
             <SelectUser 
             mode="single" 
@@ -173,7 +175,7 @@ class UserForm extends React.Component {
           </BasicFormItem>
         </div>
 
-        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
+        <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
             <SelectUser mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
