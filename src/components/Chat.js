@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import md5 from '../utils/md5'
 
 const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 //const mySpeechBubbleColor = 'lightBlue'
@@ -298,6 +299,22 @@ class Chat extends React.Component {
     this.handleKeyPress = this.handleKeyPress.bind(this)
     this.handleChannelClicked = this.handleChannelClicked.bind(this)
     this.handleCloseChatDialog = this.handleCloseChatDialog.bind(this)
+  }
+
+  componentDidMount() {
+    var conn = new WebIM.connection({
+      https: WebIM.config.https,
+      url: WebIM.config.xmppURL,
+      isAutoLogin: WebIM.config.isAutoLogin,
+      isMultiLoginSessions: WebIM.config.isMultiLoginSessions
+    });
+    var options = {
+      apiUrl: WebIM.config.apiURL,
+      user: '8',
+      pwd: md5('8'),
+      appKey: WebIM.config.appkey
+    };
+    conn.open(options);
   }
 
   componentDidUpdate() {
