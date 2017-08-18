@@ -65,7 +65,7 @@ class UserForm extends React.Component {
     let perm
     switch (props.type) {
       case 'edit':
-        perm = 'usersys.admin_getuser'
+        perm = 'usersys.admin_changeuser'
         this.isEditUser = true
         break
       case 'add':
@@ -82,14 +82,15 @@ class UserForm extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
-    const isAdmin = hasPerm('usersys.admin_adduser')
     const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
     return (
       <Form>
 
+        { this.hasPerm ? 
         <BasicFormItem label="用户组" name="groups" valueType="array" required>
-          <SelectUserGroup type={isAdmin || 'investor'} />
+          <SelectUserGroup />
         </BasicFormItem>
+        : null }
 
         <FormItem {...formItemLayout} label={i18n("mobile")} required>
           <Row gutter={8}>

@@ -39,7 +39,7 @@ class EditUser extends React.Component {
 
         let body = values
         if (!hasPerm('usersys.admin_changeuser')) {
-          body = { ...values, IR: undefined}
+          body = { ...values, IR: undefined, groups: undefined}
         }
 
         api.editUser([userId], body)
