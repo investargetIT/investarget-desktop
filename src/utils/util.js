@@ -127,11 +127,10 @@ function checkPerm(perm) {
 
 function isLogin() {
   const userInfoStr = localStorage.getItem('user_info')
-  if (!userInfoStr) {
-    return false
-  } else {
+  if (userInfoStr) {
     return JSON.parse(userInfoStr)
   }
+  return false
 }
 
 function getRandomInt(min, max) {

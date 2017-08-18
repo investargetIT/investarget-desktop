@@ -48,6 +48,7 @@ class LeftRightLayout extends React.Component {
               {this.props.children}
 
             </div>
+            <Chat />
 
           </Content>
 
@@ -62,7 +63,6 @@ class LeftRightLayout extends React.Component {
       <Layout>
         <HandleError pathname={this.props.location.pathname} />
         { this.props.currentUser ? sideBarAndContent : content }
-        <Chat />
       </Layout>
     )
   }

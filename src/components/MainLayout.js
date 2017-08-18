@@ -6,7 +6,7 @@ import { Layout } from 'antd'
 import { routerRedux } from 'dva/router'
 import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
-import Chat from './Chat'
+import InstantMessage from './InstantMessage'
 import HandleError from './HandleError'
 
 const { Content, Sider } = Layout
@@ -30,7 +30,7 @@ class MainLayout extends React.Component {
 
         <Layout style={{ padding: '0 24px 24px' }}>
           {content}
-
+          <InstantMessage />
         </Layout>
 
       </Layout>
@@ -40,7 +40,6 @@ class MainLayout extends React.Component {
       <Layout>
         <Header mode={this.props.currentUser ? "dark" : "light"} location={this.props.location} />
         { this.props.currentUser ? sideBarAndContent : content }
-        <Chat />
         <HandleError pathname={this.props.location.pathname} />
       </Layout>
     )

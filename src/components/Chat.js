@@ -5,6 +5,122 @@ import md5 from '../utils/md5'
 const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 //const mySpeechBubbleColor = 'lightBlue'
 
+const defaultMessages = [
+  {
+    id: 1,
+    user: {
+      id: 1,
+      name: '小游侠',
+      photoUrl: '/images/default-avatar.png',
+    },
+    time: '2017-07-10 17:50:38',
+    channelId: 1,
+    type: 'text',
+    content: '这是小游侠发送的文本内容'
+  },
+  {
+    id: 2,
+    user: {
+      id: 2,
+      name: '小型',
+      photoUrl: '/images/avatar1.png',
+    },
+    time: '2017-07-10 17:50:48',
+    channelId: 1,
+    type: 'text',
+    content: '这是小型发送的文本内容'
+  },
+  {
+    id: 3,
+    user: {
+      id: 1,
+      name: '小游侠',
+      photoUrl: '/images/default-avatar.png',
+    },
+    time: '2017-07-10 17:50:58',
+    channelId: 1,
+    type: 'text',
+    content: '这是小游侠再一次发送的文本内容'
+  },
+  {
+    id: 4,
+    user: {
+      id: 2,
+      name: '小型',
+      photoUrl: '/images/avatar1.png',
+    },
+    time: '2017-07-10 17:51:08',
+    channelId: 1,
+    type: 'text',
+    content: '这是小型再一次发送的文本内容'
+  },
+]
+
+const defaultChannels = [
+  {
+    id: 1,
+    imgUrl: '/images/avatar1.png',
+    name: '小型',
+    latestMessage: {
+      content: '这是小型再一次发送的文本内容',
+      time: '1:15 PM'
+    },
+    member: [
+      {
+        id: 1,
+        name: '小游侠',
+        photoUrl: '...'
+      },
+      {
+        id: 2,
+        name: '小懒猪',
+        photoUrl: '...'
+      }
+    ]
+  },
+  {
+    id: 2,
+    imgUrl: '/images/avatar3.png',
+    name: '小兵',
+    latestMessage: {
+      content: '这是小兵小小兵再一次发送的文本内容',
+      time: '11:38 AM'
+    },
+    member: [
+      {
+        id: 1,
+        name: '小游侠',
+        photoUrl: '...'
+      },
+      {
+        id: 3,
+        name: '小兵张嘎',
+        photoUrl: '...'
+      }
+    ]
+  },
+  {
+    id: 3,
+    imgUrl: '/images/avatar2.png',
+    name: '小红',
+    latestMessage: {
+      content: '这是小红再一次发送的文本内容',
+      time: '7/9/17'
+    },
+    member: [
+      {
+        id: 1,
+        name: '小游侠',
+        photoUrl: '...'
+      },
+      {
+        id: 4,
+        name: '小红',
+        photoUrl: '...'
+      }
+    ]
+  },
+]
 
 function SpeechOfMy(props) {
   return (
@@ -179,56 +295,7 @@ class Chat extends React.Component {
           }
         ]
       },
-      messages: [
-        {
-          id: 1,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png',
-          },
-          time: '2017-07-10 17:50:38',
-          channelId: 1,
-          type: 'text',
-          content: '这是小游侠发送的文本内容'
-        },
-        {
-          id: 2,
-          user: {
-            id: 2,
-            name: '小型',
-            photoUrl: '/images/avatar1.png',
-          },
-          time: '2017-07-10 17:50:48',
-          channelId: 1,
-          type: 'text',
-          content: '这是小型发送的文本内容'
-        },
-        {
-          id: 3,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png',
-          },
-          time: '2017-07-10 17:50:58',
-          channelId: 1,
-          type: 'text',
-          content: '这是小游侠再一次发送的文本内容'
-        },
-        {
-          id: 4,
-          user: {
-            id: 2,
-            name: '小型',
-            photoUrl: '/images/avatar1.png',
-          },
-          time: '2017-07-10 17:51:08',
-          channelId: 1,
-          type: 'text',
-          content: '这是小型再一次发送的文本内容'
-        },
-      ],
+      messages: [],
       channels: [
         {
           id: 1,
@@ -293,7 +360,7 @@ class Chat extends React.Component {
             }
           ]
         },
-      ]
+      ],
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleKeyPress = this.handleKeyPress.bind(this)
@@ -301,24 +368,9 @@ class Chat extends React.Component {
     this.handleCloseChatDialog = this.handleCloseChatDialog.bind(this)
   }
 
-  componentDidMount() {
-    var conn = new WebIM.connection({
-      https: WebIM.config.https,
-      url: WebIM.config.xmppURL,
-      isAutoLogin: WebIM.config.isAutoLogin,
-      isMultiLoginSessions: WebIM.config.isMultiLoginSessions
-    });
-    var options = {
-      apiUrl: WebIM.config.apiURL,
-      user: '8',
-      pwd: md5('8'),
-      appKey: WebIM.config.appkey
-    };
-    conn.open(options);
-  }
 
-  componentDidUpdate() {
-    if (this.shouldScrollBottom) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.onReceiveMessage || this.shouldScrollBottom) {
       this.refs.inputTextContent.scrollTop = this.refs.inputTextContent.scrollHeight
       this.shouldScrollBottom = false
     }
@@ -332,7 +384,7 @@ class Chat extends React.Component {
     const value = evt.target.value
     const keyCode = evt.keyCode || evt.which
     if (value.trim() !== "" && keyCode === 13) {
-      const existKey = this.state.messages.map(m => m.id)
+      const existKey = (this.props.messages || defaultMessages).concat(this.state.messages).map(m => m.id) // TODO: how to generate a safe local id
       this.setState({
         messages: this.state.messages.concat({
           id: Math.max(...existKey) + 1,
@@ -349,6 +401,7 @@ class Chat extends React.Component {
         inputValue: ''
       })
       this.shouldScrollBottom = true
+      this.props.onSendMsg && this.props.onSendMsg(value)
     }
   }
 
@@ -364,6 +417,10 @@ class Chat extends React.Component {
   }
 
   render () {
+    const propMsg = this.props.messages || defaultMessages
+    const messages = propMsg.concat(this.state.messages)
+    const channels = this.props.channels || defaultChannels
+
     const mainContainerStyle = {
       position: 'fixed',
       left: (window.innerWidth - mainContainerWidth) / 2,
@@ -375,7 +432,7 @@ class Chat extends React.Component {
       display: this.props.showChat ? 'block' : 'none'
     }
 
-    const contactJSX = this.state.channels.map(m =>
+    const contactJSX = channels.map(m =>
       <Contact
         key={m.id}
         isActive={this.state.channel.id === m.id}
@@ -386,7 +443,7 @@ class Chat extends React.Component {
         onClick={this.handleChannelClicked} />
     )
 
-    const messagesJSX = this.state.messages.filter(f => f.channelId === this.state.channel.id).map(m =>
+    const messagesJSX = messages.filter(f => f.channelId === this.state.channel.id).map(m =>
       <li key={m.id} style={{ marginTop: 20 }}>
         {m.user.id === 1 ?
           <SpeechOfMy avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfMy>
