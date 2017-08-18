@@ -357,6 +357,7 @@ class SelectUser extends React.Component {
       <Select 
       mode={this.props.mode} 
       showSearch 
+      allowClear={this.props.allowClear}
       disabled={this.props.disabled}
       optionFilterProp="children" 
       value={this.props.value} 

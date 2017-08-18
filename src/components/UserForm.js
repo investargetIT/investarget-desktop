@@ -170,6 +170,7 @@ class UserForm extends React.Component {
           <BasicFormItem label="强交易师" name="major_trader">
             <SelectUser 
             mode="single" 
+            allowClear={true}
             onSelect={this.props.onSelectMajorTrader}
             disabledOption={getFieldValue('minor_traders')} />
           </BasicFormItem>
