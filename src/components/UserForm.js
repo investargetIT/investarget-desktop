@@ -57,7 +57,7 @@ class UserForm extends React.Component {
       })
 
     }
-    
+
     this.state = {
       investorGroup: [], // 投资人所在的用户组
     }
@@ -88,7 +88,7 @@ class UserForm extends React.Component {
     return (
       <Form>
 
-        { this.hasPerm ? 
+        { this.hasPerm ?
         <BasicFormItem label="用户组" name="groups" valueType="array" required>
           <SelectUserGroup />
         </BasicFormItem>
@@ -157,7 +157,7 @@ class UserForm extends React.Component {
         <BasicFormItem label="标的需求" name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
         <BasicFormItem label="近年并购动态" name="mergedynamic"><Input.TextArea rows={4} /></BasicFormItem>
         <BasicFormItem label="是否有产业基金或成立计划" name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
-        
+
         {
           this.hasPerm ? (
             <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={2}>
@@ -168,9 +168,10 @@ class UserForm extends React.Component {
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label="强交易师" name="major_trader">
-            <SelectUser 
-            mode="single" 
+            <SelectUser
+            mode="single"
             allowClear={true}
+            onChange={this.props.onMajorTraderChange}
             onSelect={this.props.onSelectMajorTrader}
             disabledOption={getFieldValue('minor_traders')} />
           </BasicFormItem>
@@ -180,7 +181,7 @@ class UserForm extends React.Component {
           <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
             <SelectUser mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
-              onDeselect={this.props.onDeselectMinorTrader} 
+              onDeselect={this.props.onDeselectMinorTrader}
               disabled={!getFieldValue('major_trader')}
               disabledOption={getFieldValue('major_trader')} />
           </BasicFormItem>

@@ -141,7 +141,13 @@ class EditUser extends React.Component {
     }
 
     api.addUserRelation(body)
-    .then(data => this.minorRelation.push(data.data))
+    .then(data => {
+      if (isSelectMajorTrader) {
+        this.majorRelation = data.data
+      } else {
+        this.minorRelation.push(data.data)
+      }
+    })
     .catch(err => {
       this.form.setFieldsValue({ minor_traders: this.minorRelation.map(m => m.traderuser.id + "") })
       this.props.dispatch({ type: 'app/findError', payload: err })
@@ -174,6 +180,33 @@ class EditUser extends React.Component {
     })
   }
 
+  handleMajorTraderChange = (value) => {
+    if (value == undefined) {
+      let id = this.majorRelation.id
+      let investor = this.majorRelation.investoruser.username
+      let trader = this.majorRelation.traderuser.username
+      let react = this
+      confirm({
+        title: `你确定要解除投资人 ${investor} 和交易师 ${trader} 的关系吗？`,
+        onOk() {
+          react.deleteUserMajorRelation(id)
+        },
+        onCancel() {
+          react.form.setFieldsValue({ major_trader: react.majorRelation.traderuser.id + "" })
+        }
+      })
+    }
+  }
+
+  deleteUserMajorRelation = (id) => {
+    api.deleteUserRelation([id])
+    .then(() => { this.majorRelation = null })
+    .catch(err => {
+      this.form.setFieldsValue({ major_trader: this.majorRelation.id + "" })
+      this.props.dispatch({ type: 'app/findError', payload: err })
+    })
+  }
+
   render () {
     const userId = Number(this.props.params.id)
     return (
@@ -186,6 +219,7 @@ class EditUser extends React.Component {
           data={this.state.data}
           type="edit"
           onSelectMajorTrader={this.handleSelectTrader.bind(this, 'major')}
+          onMajorTraderChange={this.handleMajorTraderChange}
           onSelectMinorTrader={this.handleSelectTrader.bind(this, 'minor')}
           onDeselectMinorTrader={this.handleDeselectTrader} />
 

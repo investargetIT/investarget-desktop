@@ -341,7 +341,7 @@ class SelectUser extends React.Component {
     data: [],
   }
   componentDidMount() {
-    
+
     api.queryUserGroup({ type: this.props.type || 'trader' })
     .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
     .then(data => this.setState({ data: data.data.data }))
@@ -354,15 +354,15 @@ class SelectUser extends React.Component {
   }
   render() {
     return (
-      <Select 
-      mode={this.props.mode} 
-      showSearch 
-      allowClear={this.props.allowClear}
+      <Select
+      mode={this.props.mode}
+      showSearch
       disabled={this.props.disabled}
-      optionFilterProp="children" 
-      value={this.props.value} 
-      onChange={this.props.onChange} 
-      onSelect={this.props.onSelect} 
+      optionFilterProp="children"
+      allowClear={this.props.allowClear}
+      value={this.props.value}
+      onChange={this.props.onChange}
+      onSelect={this.props.onSelect}
       onDeselect={this.props.onDeselect}>
         {this.state.data.map(d => <Option key={d.id} value={d.id + ""}
           disabled={this.props.disabledOption && (parseInt(this.props.disabledOption, 10) === d.id || this.props.disabledOption.includes(d.id + ""))}>
