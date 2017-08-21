@@ -238,6 +238,17 @@ class FileMgmt extends React.Component {
       title: '文件名',
       dataIndex: 'name',
       key: 'name',
+      sorter: (a, b) => {
+        const nameA = a.name
+        const nameB = b.name
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      },
       render: (text, record, index) => (
         <div>
           <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? (record.isShadow || record.isVirtual) ? "/images/avatar1.png" : "/images/folder.png" : "/images/pdf.png" } />
@@ -256,6 +267,7 @@ class FileMgmt extends React.Component {
       title: '大小',
       dataIndex: 'size',
       key: 'size',
+      sorter: (a, b) => a.size - b.size,
       render: text => text && formatBytes(text),
     }, {
       title: '修改日期',
