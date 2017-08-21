@@ -2,6 +2,7 @@ import React from 'react'
 import Chat from './Chat'
 import { isLogin } from '../utils/util'
 import md5 from '../utils/md5'
+import * as api from '../api.js'
 
 class InstantMessage extends React.Component {
 
@@ -208,6 +209,8 @@ class InstantMessage extends React.Component {
       appKey: WebIM.config.appkey
     };
     this.conn.open(options);
+
+    this.getUserFriend()
   }
 
   // 单聊发送文本消息
@@ -228,6 +231,31 @@ class InstantMessage extends React.Component {
     msg.body.chatType = 'singleChat';
     this.conn.send(msg.body);
   };
+
+  getUserFriend = () => {
+    api.getUserFriend()
+    .then(data => {
+      const channels = data.data.data.filter(f => 
+        (f.user && (f.user.id === isLogin().id)) || f.friend && (f.friend.id === isLogin().id)
+      )
+      .map(m => {
+        if (m.user.id === isLogin().id) {
+          const obj = {}
+          obj.id = m.friend.id
+          obj.name = m.friend.username
+          obj.imgUrl = m.friend.photourl
+          return obj
+        } else if (m.friend.id === isLogin().id) {
+          const obj = {}
+          obj.id = m.user.id
+          obj.name = m.user.username
+          obj.imgUrl = m.user.photourl
+          return obj
+        }
+      })
+      this.setState({ channels })
+    })
+  }
 
   render() {
     return <Chat

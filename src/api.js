@@ -471,6 +471,7 @@ export const addUnreachUser = body => r('/user/unuser/', 'POST', body)
 export const getUnreachUser = param => r('/user/unuser/?' + qs.stringify(param))
 export const deleteUnreachUser = id => r('/user/unuser/' + id, 'DELETE')
 export const checkUserExist = mobileOrEmail => r('/user/checkexists/?account=' + mobileOrEmail)
+export const getUserFriend = () => r('/user/friend/')
 
 
 // user remark
