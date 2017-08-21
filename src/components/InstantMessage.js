@@ -126,6 +126,14 @@ class InstantMessage extends React.Component {
       ],
       onReceiveMessage: false,
     }
+    
+    const currentUser = isLogin()
+    this.currentUser = currentUser ? {
+      id: currentUser.id,
+      name: currentUser.username,
+      photoUrl: currentUser.photourl
+    } : null
+
   }
 
   componentDidMount() {
@@ -145,16 +153,18 @@ class InstantMessage extends React.Component {
     },
     onClosed: function (message) { },         //连接关闭回调
     onTextMessage: function (message) {
+      const channel = react.state.channels.filter(f => f.id === parseInt(message.from, 10))[0]
+      const user = {
+        id: channel.id,
+        name: channel.name,
+        photoUrl: channel.imgUrl
+      }
       react.setState({
         messages: react.state.messages.concat({
           id: message.id,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png'
-          },
+          user,
           time: '2017-07-10 17:58:08',
-          channelId: 1,
+          channelId: parseInt(message.from, 10),
           type: 'text',
           content: message.data          
         }),
@@ -214,15 +224,19 @@ class InstantMessage extends React.Component {
   }
 
   // 单聊发送文本消息
-  sendPrivateText =  content => {
+  sendPrivateText =  message => {
+    const react = this
     var id = this.conn.getUniqueId();                 // 生成本地消息id
     var msg = new WebIM.message('txt', id);      // 创建文本消息
     msg.set({
-      msg: content,                  // 消息内容
-      to: '102',                          // 接收消息对象（用户id）
+      msg: message.content,                  // 消息内容
+      to: '' + message.channelId,                          // 接收消息对象（用户id）
       roomType: false,
       success: function (id, serverMsgId) {
-        console.log('send private text Success');
+        console.log('send private text Success', id, serverMsgId);
+        react.setState({
+          messages: react.state.messages.concat({ ...message, id: serverMsgId, localID: message.id })
+        })
       },
       fail: function (e) {
         console.log("Send private text error");
@@ -259,6 +273,7 @@ class InstantMessage extends React.Component {
 
   render() {
     return <Chat
+      user={this.currentUser}
       onSendMsg={this.sendPrivateText}
       channels={this.state.channels}
       messages={this.state.messages} 

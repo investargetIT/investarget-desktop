@@ -122,6 +122,12 @@ const defaultChannels = [
   },
 ]
 
+const defaultCurrentUser = {
+  id: 1,
+  name: '小游侠',
+  photoUrl: '/images/default-avatar.png'
+}
+
 function SpeechOfMy(props) {
   return (
     <div style={{ overflow: 'auto' }}>
@@ -384,24 +390,20 @@ class Chat extends React.Component {
     const value = evt.target.value
     const keyCode = evt.keyCode || evt.which
     if (value.trim() !== "" && keyCode === 13) {
-      const existKey = (this.props.messages || defaultMessages).concat(this.state.messages).map(m => m.id) // TODO: how to generate a safe local id
+      const message = {
+        id: Date.now() + '',
+        user: this.props.user || defaultCurrentUser,
+        time: '2017-07-10 17:58:08',
+        channelId: this.state.channel.id,
+        type: 'text',
+        content: value
+      }
       this.setState({
-        messages: this.state.messages.concat({
-          id: Math.max(...existKey) + 1,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png'
-          },
-          time: '2017-07-10 17:58:08',
-          channelId: this.state.channel.id,
-          type: 'text',
-          content: value          
-        }),
+        messages: this.state.messages.concat(message),
         inputValue: ''
       })
       this.shouldScrollBottom = true
-      this.props.onSendMsg && this.props.onSendMsg(value)
+      this.props.onSendMsg && this.props.onSendMsg(message)
     }
   }
 
@@ -418,8 +420,14 @@ class Chat extends React.Component {
 
   render () {
     const propMsg = this.props.messages || defaultMessages
-    const messages = propMsg.concat(this.state.messages)
+    const messages = [...propMsg]
+    this.state.messages.map(m => {
+      if (!propMsg.map(m => m.localID).includes(m.id)) {
+        messages.push(m)
+      }
+    }) // TODO: sort messages by time
     const channels = this.props.channels || defaultChannels
+    const currentUserID = (this.props.user && this.props.user.id) || defaultCurrentUser.id
 
     const mainContainerStyle = {
       position: 'fixed',
@@ -445,7 +453,7 @@ class Chat extends React.Component {
 
     const messagesJSX = messages.filter(f => f.channelId === this.state.channel.id).map(m =>
       <li key={m.id} style={{ marginTop: 20 }}>
-        {m.user.id === 1 ?
+        {m.user.id === currentUserID ?
           <SpeechOfMy avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfMy>
           : <SpeechOfOthers avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfOthers>}
       </li>
