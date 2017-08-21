@@ -13,6 +13,16 @@ const actionName = {
   'move': '移动到',
 }
 
+const validFileTypes = [
+  'application/msword',
+  'application/pdf',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+]
+
 class FileMgmt extends React.Component {
     constructor(props) {
     super(props)
@@ -239,8 +249,8 @@ class FileMgmt extends React.Component {
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => {
-        const nameA = a.name
-        const nameB = b.name
+        const nameA = a.name.toUpperCase()
+        const nameB = b.name.toUpperCase()
         if (nameA < nameB) {
           return -1;
         }
@@ -317,6 +327,17 @@ class FileMgmt extends React.Component {
       action: BASE_URL + '/service/qiniubigupload?bucket=file',
       showUploadList: false,
       multiple: true,
+      beforeUpload: file => {
+        const fileType = file.type
+        if (!validFileTypes.includes(fileType)) {
+          Modal.error({
+            title: '不支持的文件类型',
+            content: '请上传 office 或 pdf 文档',
+          })
+          return false
+        }
+        return true
+      },
       onChange(info) {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
