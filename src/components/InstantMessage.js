@@ -254,7 +254,7 @@ class InstantMessage extends React.Component {
     api.getUserFriend()
     .then(data => {
       const channels = data.data.data.filter(f => 
-        (f.user && (f.user.id === isLogin().id)) || f.friend && (f.friend.id === isLogin().id)
+        (f.user && (f.user.id === isLogin().id) && f.isaccept) || f.friend && (f.friend.id === isLogin().id)
       )
       .map(m => {
         if (m.user.id === isLogin().id) {
@@ -262,17 +262,34 @@ class InstantMessage extends React.Component {
           obj.id = m.friend.id
           obj.name = m.friend.username
           obj.imgUrl = m.friend.photourl
+          obj.isRequestAddFriend = !m.isaccept
+          obj.relationID = m.id
           return obj
         } else if (m.friend.id === isLogin().id) {
           const obj = {}
           obj.id = m.user.id
           obj.name = m.user.username
           obj.imgUrl = m.user.photourl
+          obj.isRequestAddFriend = !m.isaccept
+          obj.relationID = m.id
           return obj
         }
       })
       this.setState({ channels })
     })
+  }
+
+  handleNewFriend = (isAccept, channel) => {
+    const newData = [...this.state.channels]
+    const index = newData.map(m => m.relationID).indexOf(channel.relationID)
+    if (index < 0) return
+    if (isAccept) {
+      newData[index].isRequestAddFriend = false
+    } else {
+      newData.splice(index, 1)
+    }
+    this.setState({ channels: newData })
+    api.editUserFriend(channel.relationID, isAccept)
   }
 
   render() {
@@ -281,7 +298,9 @@ class InstantMessage extends React.Component {
       onSendMsg={this.sendPrivateText}
       channels={this.state.channels}
       messages={this.state.messages} 
-      onReceiveMessage={this.state.onReceiveMessage} />
+      onReceiveMessage={this.state.onReceiveMessage} 
+      onAcceptNewFriend={this.handleNewFriend.bind(this, true)} 
+      onRejectNewFriend={this.handleNewFriend.bind(this, false)} />
   }
 
 }

@@ -65,6 +65,7 @@ const defaultChannels = [
       content: '这是小型再一次发送的文本内容',
       time: '1:15 PM'
     },
+    isRequestAddFriend: false,
     member: [
       {
         id: 1,
@@ -83,9 +84,10 @@ const defaultChannels = [
     imgUrl: '/images/avatar3.png',
     name: '小兵',
     latestMessage: {
-      content: '这是小兵小小兵再一次发送的文本内容',
+      content: '请求加您为好友',
       time: '11:38 AM'
     },
+    isRequestAddFriend: true,
     member: [
       {
         id: 1,
@@ -107,6 +109,7 @@ const defaultChannels = [
       content: '这是小红再一次发送的文本内容',
       time: '7/9/17'
     },
+    isRequestAddFriend: false,
     member: [
       {
         id: 1,
@@ -126,6 +129,19 @@ const defaultCurrentUser = {
   id: 1,
   name: '小游侠',
   photoUrl: '/images/default-avatar.png'
+}
+
+function UserInfoDetail({ name, photoUrl, onAccept, onReject }) {
+  return (
+    <div style={{ padding: 40, textAlign: 'center' }}>
+      <div style={{ fontSize: 20 }}>{name}</div>
+      <div style={{ margin: 20 }}><img style={{ width: 76 }} src={photoUrl} /></div>
+      <div>
+        <button onClick={onAccept} style={{ width: 100, height: 32, marginRight: 10, fontSize: 16 }}>同意</button>
+        <button onClick={onReject} style={{ width: 100, height: 32, fontSize: 16 }}>拒绝</button>
+      </div>
+    </div>
+  )
 }
 
 function SpeechOfMy(props) {
@@ -437,7 +453,8 @@ class Chat extends React.Component {
       height: mainContainerHeight,
       boxShadow: '0 0 1em rgba(0, 0, 0, 0.2)',
       zIndex: 99,
-      display: this.props.showChat ? 'block' : 'none'
+      display: this.props.showChat ? 'block' : 'none',
+      display: 'block',
     }
 
     const contactJSX = channels.map(m =>
@@ -462,6 +479,8 @@ class Chat extends React.Component {
     return (
       <div style={mainContainerStyle}>
 
+        <img onClick={this.handleCloseChatDialog} style={{ cursor: 'pointer', width: closeIconHeight, position:'absolute', right: -closeIconHeight/2, top: -closeIconHeight/2 }} src="/images/ic_close.png" />
+        
         <div style={leftContainerStyle}>
 
           <div style={searchContainerStyle}>
@@ -472,26 +491,29 @@ class Chat extends React.Component {
 
         </div>
 
-        <div style={rightContainerStyle}>
-
-          <div style={titleContainerStyle}>
-            <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
-            <img onClick={this.handleCloseChatDialog} style={{ cursor: 'pointer', float: 'right', width: closeIconHeight, marginTop: (topBarHeight - closeIconHeight) / 2 }} src="/images/ic_close_black_24px.svg" />
-          </div>
-
-          <div ref="inputTextContent" style={messageContainerStyle}>
-            <ul>{messagesJSX}</ul>
-          </div>
-
-          <div style={contentContainerStyle}>
-            <textarea
-              onChange={this.handleInputChange}
-              onKeyPress={this.handleKeyPress}
-              value={this.state.inputValue}
-              style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
-          </div>
-
-        </div>
+        { this.state.channel.isRequestAddFriend ? 
+          <div style={rightContainerStyle}>
+            <UserInfoDetail
+              name={this.state.channel.name}
+              photoUrl={this.state.channel.imgUrl} 
+              onAccept={this.props.onAcceptNewFriend && this.props.onAcceptNewFriend.bind(this, this.state.channel)} 
+              onReject={this.props.onRejectNewFriend && this.props.onRejectNewFriend.bind(this, this.state.channel)} />
+          </div> :  
+          <div style={rightContainerStyle}>
+            <div style={titleContainerStyle}>
+              <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
+            </div>
+            <div ref="inputTextContent" style={messageContainerStyle}>
+              <ul>{messagesJSX}</ul>
+            </div>
+            <div style={contentContainerStyle}>
+              <textarea
+                onChange={this.handleInputChange}
+                onKeyPress={this.handleKeyPress}
+                value={this.state.inputValue}
+                style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
+            </div> 
+          </div> }
         
       </div>
     )
