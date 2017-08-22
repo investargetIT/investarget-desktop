@@ -223,6 +223,10 @@ class InstantMessage extends React.Component {
     this.getUserFriend()
   }
 
+  componentWillUnmount() {
+    this.conn.close();
+  }
+
   // 单聊发送文本消息
   sendPrivateText =  message => {
     const react = this
