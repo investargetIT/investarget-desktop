@@ -454,7 +454,6 @@ class Chat extends React.Component {
       boxShadow: '0 0 1em rgba(0, 0, 0, 0.2)',
       zIndex: 99,
       display: this.props.showChat ? 'block' : 'none',
-      display: 'block',
     }
 
     const contactJSX = channels.map(m =>

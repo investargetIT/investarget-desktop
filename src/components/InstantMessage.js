@@ -254,7 +254,7 @@ class InstantMessage extends React.Component {
     api.getUserFriend()
     .then(data => {
       const channels = data.data.data.filter(f => 
-        (f.user && (f.user.id === isLogin().id) && f.isaccept) || f.friend && (f.friend.id === isLogin().id)
+        f.user && f.friend && (((f.user.id === isLogin().id) && f.isaccept) || (f.friend.id === isLogin().id))
       )
       .map(m => {
         if (m.user.id === isLogin().id) {

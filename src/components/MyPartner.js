@@ -2,7 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, isLogin } from '../utils/util'
 import { MyInvestorListFilter } from '../components/Filter'
-import { Input, Table, Button, Popconfirm, Pagination } from 'antd'
+import { Input, Table, Button, Popconfirm, Pagination, message } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
 import { URI_12, URI_13 } from '../constants'
@@ -105,6 +105,12 @@ class MyPartner extends React.Component {
     console.log(pageSize)
   }
 
+  handleAddFriend(userID) {
+    api.addUserFriend([userID])
+    .then(() => message.success('添加好友请求已成功发送，请耐心等待～'))
+    .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
+  }
+
   render() {
     const columns = [
       {
@@ -153,8 +159,16 @@ class MyPartner extends React.Component {
               <Button type="danger" size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
             : null }
+            &nbsp;
+            <Button onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>
           </span>
         )
+      })
+    } else {
+      columns.push({
+        title: i18n("action"),
+        key: 'action',
+        render: (text, record) => <Button onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>,
       })
     }
     return (
