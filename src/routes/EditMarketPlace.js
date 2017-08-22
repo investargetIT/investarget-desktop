@@ -100,7 +100,7 @@ class EditMarketPlace extends React.Component {
       if (!err) {
         let params = toData(values)
         api.editProj(id, params).then(result => {
-          message.success('Market Place 已更新')
+          message.success(i18n('project.message.marketplace_updated'))
           this.props.router.goBack()
         }, error => {
           this.props.dispatch({
@@ -128,12 +128,12 @@ class EditMarketPlace extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="修改 Market Place" />
+        <PageTitle title={i18n('project.edit_marketplace')} />
         <div>
           <EditMarketPlaceForm wrappedComponentRef={this.handleRef} data={data} />
           <div style={actionStyle}>
-            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>取消</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editMarketPlace}>提交</Button>
+            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editMarketPlace}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </MainLayout>

@@ -69,12 +69,12 @@ class AddMarketPlace extends React.Component {
   render() {
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="新增 Market Place" />
+        <PageTitle title={i18n('project.upload_marketplace')} />
         <div>
           <AddMarketPlaceForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
-            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>取消</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addMarketPlace}>提交</Button>
+            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addMarketPlace}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </MainLayout>

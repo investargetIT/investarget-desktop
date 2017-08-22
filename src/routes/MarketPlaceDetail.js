@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
+import { i18n } from '../utils/util'
 
 
 const iframeStyle = {
@@ -48,7 +49,7 @@ class MarketPlaceDetail extends React.Component {
 
     if (linkpdfurl) {
       let fileUrl = linkpdfurl
-      let viewerUrl = 'http://192.168.1.115:4040/pdf_viewer.html'
+      let viewerUrl = '/pdf_viewer.html'
       let watermark = 'deal@investarget.com'
       let url = viewerUrl + '?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(watermark);
       content = <iframe src={url} style={iframeStyle} ></iframe>
@@ -56,7 +57,7 @@ class MarketPlaceDetail extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="Market Place 详情" />
+        <PageTitle title={i18n('project.marketplace_detail')} />
         <div>
           { content }
         </div>

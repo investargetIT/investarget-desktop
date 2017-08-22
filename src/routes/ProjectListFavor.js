@@ -54,7 +54,7 @@ class ProjectListRecommend extends React.Component {
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="收藏项目" />
+        <PageTitle title={i18n('project.favorite_projects')} />
           <FavoriteProjectList {...props} />
       </MainLayout>
     )

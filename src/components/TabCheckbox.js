@@ -1,6 +1,7 @@
 import React from 'react'
 import { Checkbox } from 'antd'
-import { injectIntl, intlShape } from 'react-intl'
+import { i18n } from '../utils/util'
+
 
 const styles = {
   container: {},
@@ -19,10 +20,6 @@ styles.activeTab = Object.assign({}, styles.tab, {
 
 
 class TabCheckbox extends React.Component {
-
-  static propTypes = {
-    intl: intlShape.isRequired
-  }
 
   static defaultProps = {
     options: [],
@@ -138,7 +135,7 @@ class TabCheckbox extends React.Component {
                   onChange={this.handleCheckAllChange}
                   checked={isAllChecked}
                 >
-                  {this.props.intl.formatMessage({id: 'all'})}
+                  {i18n('common.select_all')}
                 </Checkbox>
                 {
                   subOptions.map(item => {
@@ -158,4 +155,4 @@ class TabCheckbox extends React.Component {
 }
 
 
-export default injectIntl(TabCheckbox)
+export default TabCheckbox

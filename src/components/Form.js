@@ -47,7 +47,7 @@ function BasicFormItem(props, context) {
 
   const rules = [
     { type: props.valueType, message: 'The input is not valid!'},
-    { required: props.required, message: i18n('can_not_be_empty')},
+    { required: props.required, message: i18n('validation.not_empty')},
   ]
 
   if (props.whitespace) {
@@ -81,15 +81,13 @@ BasicFormItem.contextTypes = {
 
 
 
-const Email = props => <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input onBlur={props.onBlur}/></BasicFormItem>
+const Email = props => <BasicFormItem label={i18n("account.email")} name="email" valueType="email" required><Input onBlur={props.onBlur}/></BasicFormItem>
 
-const Group = props => <BasicFormItem label={i18n("role")} name="readOnlyGroup" required><Input disabled={props.disabled} /></BasicFormItem>
+const Group = props => <BasicFormItem label={i18n("account.role")} name="readOnlyGroup" required><Input disabled={props.disabled} /></BasicFormItem>
 
-const FullName = props => <BasicFormItem label={i18n("username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
+const FullName = props => <BasicFormItem label={i18n("account.username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
 
-const ChineseFullName = props => <BasicFormItem label={i18n("username")} name="usernameC" required><Input /></BasicFormItem>
-
-const Password = props => <BasicFormItem label={props.label || i18n("password")} name="password" required><Input type="password" /></BasicFormItem>
+const Password = props => <BasicFormItem label={props.label || i18n("account.password")} name="password" required><Input type="password" /></BasicFormItem>
 
 const ConfirmPassword = (props, context) => {
 
@@ -102,17 +100,17 @@ const ConfirmPassword = (props, context) => {
     }
   }
 
-  return <BasicFormItem label={i18n("confirm_password")} name="confirm" required validator={validator}><Input type="password" /></BasicFormItem>
+  return <BasicFormItem label={i18n("account.confirm_password")} name="confirm" required validator={validator}><Input type="password" /></BasicFormItem>
 }
 ConfirmPassword.contextTypes = {
   form: PropTypes.object
 }
 
-const OldPassword = () => <BasicFormItem label={i18n("old_password")} name="old_password" required><Input type="password" /></BasicFormItem>
+const OldPassword = () => <BasicFormItem label={i18n("account.old_password")} name="old_password" required><Input type="password" /></BasicFormItem>
 
 
 const Position = props => (
-  <BasicFormItem label={i18n("position")} name="title" required>
+  <BasicFormItem label={i18n("account.position")} name="title" required>
     <Select placeholder="Please select your position" disabled={props.disabled}>
       { props.title ? props.title.map(t => <Option key={t.id} value={t.id + ''} title={t.name}>{t.name}</Option>) : null }
     </Select>
@@ -120,7 +118,7 @@ const Position = props => (
 )
 
 const Tags = props => (
-  <BasicFormItem label={i18n("tag")} name="tags" required={props.required} valueType="array">
+  <BasicFormItem label={i18n("account.tag")} name="tags" required={props.required} valueType="array">
     <Select mode="multiple" placeholder="Please choose your favorite tags">
       { props.tag ? props.tag.map(t => <Option key={t.id}>{t.name}</Option>) : null }
     </Select>
@@ -128,7 +126,7 @@ const Tags = props => (
 )
 
 const Org = props => (
-  <BasicFormItem label={i18n("org")} name="organization" required={props.required} >
+  <BasicFormItem label={i18n("account.org")} name="organization" required={props.required} >
     <Select mode="combobox" onChange={props.onChange} disabled={props.disabled}>
       { props.org ? props.org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
     </Select>
@@ -136,12 +134,12 @@ const Org = props => (
 )
 
 const Code = (props, context) => (
-  <FormItem {...formItemLayout} label={i18n("code")}>
+  <FormItem {...formItemLayout} label={i18n("account.code")}>
     <Row gutter={8}>
       <Col span={12}>
         {context.form.getFieldDecorator("code", {
           rules: [{
-            required: true, message: i18n('can_not_be_empty'),
+            required: true, message: i18n('validation.not_empty'),
           }],
         })(<Input size="large" />)}
       </Col>
@@ -150,7 +148,7 @@ const Code = (props, context) => (
           loading={props.loading}
           disabled={props.value ? true : false}
           onClick={props.onFetchButtonClicked} size="large">
-          {props.loading ? "正在获取验证码" : props.value || i18n("fetch_code")}
+          {props.loading ? i18n("account.is_fetching_code") : props.value || i18n("account.fetch_code")}
         </Button>
       </Col>
     </Row>
@@ -164,7 +162,7 @@ const Mobile = (props, context) => {
   const { getFieldDecorator } = context.form
 
   return (
-    <BasicFormItem label={i18n("mobile")} required={props.required} name="mobileInfo">
+    <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo">
       <Input.Group compact>
         <Select style={{ width: 60 }} onChange={props.onSelectChange} value={props.countryID + ''}>
           {props.country.map(c => <Option key={c.id} value={c.id + ''}>
@@ -182,10 +180,10 @@ Mobile.contextTypes = {
 }
 
 const Role = props => (
-  <BasicFormItem label={i18n("role")} name="type" required>
+  <BasicFormItem label={i18n("account.role")} name="type" required>
     <RadioGroup disabled={props.disabled}>
-      <Radio value={'investor'}>{i18n("investor")}</Radio>
-      <Radio value={'trader'}>{i18n("transaction")}</Radio>
+      <Radio value={'investor'}>{i18n("account.investor")}</Radio>
+      <Radio value={'trader'}>{i18n("account.trader")}</Radio>
     </RadioGroup>
   </BasicFormItem>
 )
@@ -193,97 +191,22 @@ const Role = props => (
 const Agreement = () => {
   function checkAgreement(rule, value, callback) {
     if (!value) {
-      callback(i18n('please_check_agreement'))
+      callback(i18n('account.please_check_agreement'))
     } else {
       callback()
     }
   }
   return (
     <BasicFormItem layout={tailFormItemLayout} name="agreement"  validator={checkAgreement} valueType="boolean">
-      <Checkbox>{i18n("agreement")}I have read the <a href="">agreement</a></Checkbox>
+      <Checkbox>{i18n("account.agreement")}I have read the <a href="">agreement</a></Checkbox>
     </BasicFormItem>
   )
 }
 
 const Submit = props => (
   <FormItem {...tailFormItemLayout}>
-    <Button type="primary" htmlType="submit" size="large" loading={props.loading}>{i18n("submit")}</Button>
+    <Button type="primary" htmlType="submit" size="large" loading={props.loading}>{i18n("common.submit")}</Button>
   </FormItem>
-)
-
-const Company = () => <BasicFormItem label={i18n("company")} name="company" required><Input /></BasicFormItem>
-
-const EnglishFullName = () => <BasicFormItem label={i18n("nameE")} name="engusername" required={false}><Input /></BasicFormItem>
-
-const Department = () => <BasicFormItem label={i18n("department")} name="department" required={false}><Input /></BasicFormItem>
-
-const Wechat = () => <BasicFormItem label={i18n("wechat")} name="wechat" required={false}><Input /></BasicFormItem>
-
-const Area = props => (
-  <BasicFormItem label={i18n("area")} name="area" required={false}>
-    <Select showSearch>
-      <Option value="上海">上海</Option>
-      <Option value="广州">广州</Option>
-      <Option value="深圳">深圳</Option>
-      <Option value="北京">北京</Option>
-      <Option value="杭州">杭州</Option>
-    </Select>
-  </BasicFormItem>
-)
-
-const options = [{
-  value: 'zhejiang',
-  label: 'Zhejiang',
-  children: [{
-    value: 'hangzhou',
-    label: 'Hangzhou',
-    children: [{
-      value: 'xihu',
-      label: 'West Lake',
-    }],
-  }],
-}, {
-  value: 'jiangsu',
-  label: 'Jiangsu',
-  children: [{
-    value: 'nanjing',
-    label: 'Nanjing',
-    children: [{
-      value: 'zhonghuamen',
-      label: 'Zhong Hua Men',
-    }],
-  }],
-}]
-const Country = props => (
-  <BasicFormItem label={i18n("country")} name="country" required={false} valueType="array">
-    <Cascader options={options} placeholder="Please select" />
-  </BasicFormItem>
-)
-
-const Trader = props => (
-  <BasicFormItem label={i18n("trader_relation")} name="trader" required={false}>
-    <Select>
-      <Option value="吴军柯">吴军柯</Option>
-      <Option value="许志铭">许志铭</Option>
-      <Option value="杨晓明">杨晓明</Option>
-    </Select>
-  </BasicFormItem>
-)
-
-const Leader = props => (
-  <BasicFormItem label={i18n("owner")} name="leader" required={false}>
-    <Select>
-      <Option value="Summer">Summer</Option>
-    </Select>
-  </BasicFormItem>
-)
-
-
-
-const Status = props => (
-  <BasicFormItem label={i18n("status")} name="status" required={false} valueType="number">
-    <RadioGroup options={props.options} />
-  </BasicFormItem>
 )
 
 const UploadAvatar = (props, context) => {
@@ -313,7 +236,7 @@ const UploadAvatar = (props, context) => {
   }
 
   return (
-    <FormItem {...formItemLayout} label={i18n("photo")}>
+    <FormItem {...formItemLayout} label={i18n("user.photo")}>
       <div className="dropbox">
         {context.form.getFieldDecorator('dragger', {
           valuePropName: 'fileList',
@@ -357,7 +280,7 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
   let rules = [
     { type: 'number', message: 'The input is not valid!' },
   ]
-  if (required) { rules.push({ required, message: i18n('can_not_be_empty') }) }
+  if (required) { rules.push({ required, message: i18n('validation.not_empty') }) }
   if (validator) { rules.push({ validator }) }
 
   return (
@@ -491,7 +414,7 @@ class IndustryDynamicFormItem extends React.Component {
       <div>
         {industriesKeys.map((k, index) => {
           return (
-            <FormItem {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)} key={k} label={index === 0 ? '项目行业' : ''}>
+            <FormItem {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)} key={k} label={index === 0 ? i18n('project.industry') : ''}>
               {
                 getFieldDecorator(`industries-${k}`, {
                   rules: [
@@ -515,7 +438,7 @@ class IndustryDynamicFormItem extends React.Component {
         <FormItem {...formItemLayoutWithOutLabel}>
           <Button type="dashed" onClick={this.addIndustry} style={{ width: '100%' }}>
             <Icon type="plus" />
-            添加
+            {i18n('project.add_industry')}
           </Button>
         </FormItem>
 
@@ -531,7 +454,7 @@ class IndustryDynamicFormItem extends React.Component {
                         { type: 'string' },
                         { validator: function(rule, value, callback) {
                           if (!value) {
-                            callback('行业必须有图片')
+                            callback(i18n('project.message.validation_industry_image_not_null'))
                           } else {
                             callback()
                           }
@@ -566,19 +489,9 @@ module.exports = {
   Role,
   Agreement,
   Submit,
-  Company,
-  EnglishFullName,
-  Department,
-  Wechat,
-  Area,
-  Country,
-  Trader,
-  Leader,
-  Status,
   UploadAvatar,
   BasicFormItem,
   CurrencyFormItem,
-  ChineseFullName,
   IndustryDynamicFormItem,
   Group
 }

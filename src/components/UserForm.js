@@ -89,12 +89,12 @@ class UserForm extends React.Component {
       <Form>
 
         { this.hasPerm ?
-        <BasicFormItem label="用户组" name="groups" valueType="array" required>
+        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
           <SelectUserGroup />
         </BasicFormItem>
         : null }
 
-        <FormItem {...formItemLayout} label={i18n("mobile")} required>
+        <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>
             <Col span={6}>
               <FormItem required>
@@ -121,53 +121,53 @@ class UserForm extends React.Component {
           </Row>
         </FormItem>
 
-        <BasicFormItem label={i18n("email")} name="email" valueType="email" required><Input onBlur={this.props.emailOnBlur} /></BasicFormItem>
+        <BasicFormItem label={i18n("user.email")} name="email" valueType="email" required><Input onBlur={this.props.emailOnBlur} /></BasicFormItem>
 
-        <BasicFormItem label="姓名" name="usernameC" required><Input /></BasicFormItem>
+        <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required><Input /></BasicFormItem>
 
-        <BasicFormItem label="英文名" name="usernameE" required><Input /></BasicFormItem>
+        <BasicFormItem label={i18n('user.en_name')} name="usernameE" required><Input /></BasicFormItem>
 
-        <BasicFormItem label={i18n("wechat")} name="wechat"><Input /></BasicFormItem>
+        <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
 
-        <BasicFormItem label={i18n("position")} name="title" valueType="number" required>
+        <BasicFormItem label={i18n("user.position")} name="title" valueType="number" required>
           <SelectTitle />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("org")} name="org" valueType="number">
+        <BasicFormItem label={i18n("user.institution")} name="org" valueType="number">
           {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
             <SelectExistOrganization size="large" />
             {/*<Link to="/app/organization/add" target="_blank"><Button size="large" style={{marginLeft: '8px'}}>新增</Button></Link>*/}
           {/*</div>*/}
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("department")} name="department"><Input /></BasicFormItem>
+        <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
 
-        <BasicFormItem label="区域" valueType="number" name="orgarea">
+        <BasicFormItem label={i18n('user.area')} valueType="number" name="orgarea">
           <SelectOrganizatonArea />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("country")} name="country" valueType="number">
+        <BasicFormItem label={i18n("user.country")} name="country" valueType="number">
           <CascaderCountry />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("tag")} name="tags" valueType="array">
+        <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
-        <BasicFormItem label="标的需求" name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
-        <BasicFormItem label="近年并购动态" name="mergedynamic"><Input.TextArea rows={4} /></BasicFormItem>
-        <BasicFormItem label="是否有产业基金或成立计划" name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
+        <BasicFormItem label={i18n('user.target_demand')} name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
+        <BasicFormItem label={i18n('user.merges')} name="mergedynamic"><Input.TextArea rows={4} /></BasicFormItem>
+        <BasicFormItem label={i18n('user.industry_fund')} name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
 
         {
           this.hasPerm ? (
-            <BasicFormItem label={i18n("status")} name="userstatus" valueType="number" initialValue={2}>
+            <BasicFormItem label={i18n("user.status")} name="userstatus" valueType="number" initialValue={2}>
               <RadioAudit />
             </BasicFormItem>
           ) : null
         }
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label="强交易师" name="major_trader">
+          <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
             <SelectUser
             mode="single"
             allowClear={true}
@@ -178,7 +178,7 @@ class UserForm extends React.Component {
         </div>
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label="弱交易师" name="minor_traders" valueType="array">
+          <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
             <SelectUser mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
               onDeselect={this.props.onDeselectMinorTrader}
@@ -188,12 +188,12 @@ class UserForm extends React.Component {
         </div>
 
         <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label="IR" name="IR">
+          <BasicFormItem label={i18n('user.IR')} name="IR">
             <SelectUser mode="single" type="admin" />
           </BasicFormItem>
         </div>
 
-        <BasicFormItem label="名片" name="cardKey">
+        <BasicFormItem label={i18n('user.card')} name="cardKey">
           <UploadImage />
         </BasicFormItem>
 

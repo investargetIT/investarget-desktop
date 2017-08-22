@@ -87,15 +87,15 @@ class ProjectListRecommend extends React.Component {
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
 
     const map = {
-      1: '系统推荐项目',
-      2: '后台推荐项目',
-      3: '交易师推荐项目',
-      4: '推荐给投资人的项目',
+      1: i18n('project.recommended_by_system'),
+      2: i18n('project.recommended_by_admin'),
+      3: i18n('project.recommended_by_trader'),
+      4: i18n('project.recommend_to_investor'),
     }
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="推荐项目" />
+        <PageTitle title={i18n('project.recommended_projects')} />
           <div style={{ marginBottom: '24px' }}>
             <RadioGroup onChange={this.handleFavorChange} value={type}>
               <Radio value={1}>{map[1]}</Radio>

@@ -79,14 +79,14 @@ class SelectOrganization extends React.Component {
     }
 
     const columns = [
-      { title: '名称', key: 'orgname', dataIndex: 'orgname' },
-      { title: '行业', key: 'industry', dataIndex: 'industry.industry' },
-      { title: '货币类型', key: 'currency', dataIndex: 'currency.currency' },
-      { title: '轮次', key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
+      { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname' },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
+      { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return phases.map(p => p.name).join(' ')
       } },
-      { title: '股票代码', key: 'orgcode', dataIndex: 'orgcode' },
+      { title: i18n('organiztion.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
@@ -95,7 +95,7 @@ class SelectOrganization extends React.Component {
       <div>
         <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '24px' }}>
-          <Search2 style={{ width: '200px' }} placeholder="机构名、股票代码" defaultValue={search} onSearch={this.handleSearch} />
+          <Search2 style={{ width: '250px' }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

@@ -7,8 +7,8 @@ function MyTrader(props) {
   return (
     <LeftRightLayout
       location={props.location}
-      title={i18n("mytrader")}
-      action={{ name: i18n("add_trader"), link: "/app/trader/add" }}>
+      title={i18n("user.mytrader")}
+      action={{ name: i18n("user.add_trader"), link: "/app/trader/add" }}>
       <MyPartner type="trader" />
     </LeftRightLayout>
   )

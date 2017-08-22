@@ -2,9 +2,9 @@ import React from 'react';
 import { Menu, Icon, Modal } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
-import { FormattedMessage } from 'react-intl'
 import { SOURCE } from '../api'
 import qs from 'qs'
+import { i18n } from '../utils/util'
 
 const confirm = Modal.confirm
 
@@ -44,19 +44,19 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
   const login = (
     <Menu.Item key="/login" style={{float: 'right'}}>
-      <Link to="/login"><FormattedMessage id="header.login" /></Link>
+      <Link to="/login">{i18n('account.login')}</Link>
     </Menu.Item>
   )
 
   const logout = (
     <Menu.Item key="/logout" style={{float: 'right'}}>
-      <FormattedMessage id="header.out" />
+      {i18n('account.logout')}
     </Menu.Item>
   )
 
   const register = (
     <Menu.Item key="/register" style={{float: 'right'}}>
-      <Link to="/register"><FormattedMessage id="header.sign_up" /></Link>
+      <Link to="/register">{i18n('account.register')}</Link>
     </Menu.Item>
   )
 
@@ -71,14 +71,14 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
       <Menu.Item key="/">
         <Link to={ currentUser ? "/app" : "/" }>
-          {source === 2 ? 
+          {source === 2 ?
             <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
             : null }
-          {source === 1 ? 
+          {source === 1 ?
             <img style={{ height: 24, verticalAlign: 'middle', background: '#10458F' }} src="/images/investarget.png" />
             : null }
-          {!source ? 
-            <div><Icon type="home" /> <FormattedMessage id="header.home" /></div> 
+          {!source ?
+            <div><Icon type="home" />{i18n('common.home')}</div>
             : null }
         </Link>
       </Menu.Item>

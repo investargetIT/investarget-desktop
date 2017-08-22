@@ -5,7 +5,7 @@ import { SelectNumber } from '../components/ExtraInput'
 import { BasicFormItem } from '../components/Form'
 import { SelectTransactionStatus } from '../components/ExtraInput'
 
-
+import { i18n } from '../utils/util'
 
 
 class TimelineForm extends React.Component {
@@ -16,13 +16,13 @@ class TimelineForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="当前状态" name="status" valueType="number" required>
+        <BasicFormItem label={i18n('timeline.transaction_status')} name="status" valueType="number" required>
           <SelectTransactionStatus />
         </BasicFormItem>
-        <BasicFormItem label="提醒周期" name="cycle" valueType="number" required>
+        <BasicFormItem label={i18n('timeline.alert_cycle')} name="cycle" valueType="number" required>
           <InputNumber min={1} max={7} />
         </BasicFormItem>
-        <BasicFormItem label="交易师" name="transaction" valueType="number" required>
+        <BasicFormItem label={i18n('timeline.trader')} name="transaction" valueType="number" required>
           <SelectNumber options={this.props.transactionOptions} />
         </BasicFormItem>
       </Form>

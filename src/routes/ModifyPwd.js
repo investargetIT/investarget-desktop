@@ -21,7 +21,7 @@ function ModifyPwd(props) {
       if(!err) {
         modifyPassword(props.currentUserID, values.old_password, values.password)
         .then(data => {
-          message.success('密码修改成功')
+          message.success(i18n('account.password_updated'))
           props.dispatch(routerRedux.replace('/app'))
         })
         .catch(err => {
@@ -37,11 +37,11 @@ function ModifyPwd(props) {
   return (
     <LeftRightLayout
       location={props.location}
-      title={i18n("change_password")}>
+      title={i18n("account.change_password")}>
 
       <Form style={{ width: 500, margin: '0 auto' }} onSubmit={handleSubmit}>
         <OldPassword />
-        <Password label={i18n("new_password")} />
+        <Password label={i18n("account.new_password")} />
         <ConfirmPassword />
         <Submit />
       </Form>

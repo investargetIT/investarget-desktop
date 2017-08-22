@@ -73,7 +73,7 @@ class IndustryImage extends React.Component {
           accept="jpeg,png"
           onChange={this.onChange}
         />
-        <img style={imgStyle} src={ value ? "https://o79atf82v.qnssl.com/" + value : '' } alt="没有图片" />
+        <img style={imgStyle} src={ value ? "https://o79atf82v.qnssl.com/" + value : '' } alt={i18n('common.no_image')} />
       </span>
     )
   }

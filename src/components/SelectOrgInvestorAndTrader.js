@@ -183,12 +183,12 @@ class SelectOrgInvestorAndTrader extends React.Component {
     }
 
     const columns = [
-      { title: '投资人', key: 'username', dataIndex: 'username' },
-      { title: '所属机构', key: 'orgname', dataIndex: 'org.orgname' },
-      { title: '职位', key: 'title', dataIndex: 'title.name' },
-      { title: '电话', key: 'mobile', dataIndex: 'mobile' },
-      { title: '邮箱', key: 'email', dataIndex: 'email' },
-      { title: '交易师', key: 'transaction', render: (text, record) => {
+      { title: i18n('user.name'), key: 'username', dataIndex: 'username' },
+      { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
+      { title: i18n('user.email'), key: 'email', dataIndex: 'email' },
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
         } else {
@@ -201,7 +201,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
               value={this.state.traderMap[record.id]}
               onChange={this.handleChangeTrader.bind(this, record.id)}
             />
-          ) : '暂无'
+          ) : i18n('common.none')
         }
       }}
     ]
@@ -211,7 +211,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
     return (
       <div>
         <div style={{ marginBottom: '24px' }}>
-          <Search2 style={{ width: 200 }} placeholder="姓名、电话、邮箱" defaultValue={search} onSearch={this.handleSearch} />
+          <Search2 style={{ width: 250 }} placeholder={[i18n('user.name'), i18n('user.mobile'), i18n('user.email')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'dva/router'
 import { Table, Pagination } from 'antd'
+import { i18n } from '../utils/util'
 
 
 const columns = [
   {
-    title: '图片',
+    title: i18n('project.image'),
     key: 'image',
     render: (text, record) => {
       const industry = record.proj.industries && record.proj.industries[0]
@@ -16,7 +17,7 @@ const columns = [
     }
   },
   {
-    title: '名称',
+    title: i18n('project.name'),
     key: 'title',
     render: (text, record) => {
       return (
@@ -25,7 +26,7 @@ const columns = [
     }
   },
   {
-    title: '国家',
+    title: i18n('project.country'),
     key: 'country',
     render: (text, record) => {
       const country = record.proj.country
@@ -37,7 +38,7 @@ const columns = [
     }
   },
   {
-    title: '交易规模',
+    title: i18n('project.transaction_size'),
     key: 'transactionAmount',
     render: (text, record) => {
       const transactionAmount = record.proj.transactionAmount
@@ -45,7 +46,7 @@ const columns = [
     }
   },
   {
-    title: '当前状态',
+    title: i18n('project.current_status'),
     key: 'projstatus',
     render: (text, record) => {
       const status = record.proj.projstatus

@@ -1,7 +1,5 @@
 import React from 'react'
 import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message } from 'antd'
-import { injectIntl } from 'react-intl'
-import { t } from '../utils/util'
 import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
@@ -77,7 +75,7 @@ class Register extends React.Component {
     e.preventDefault()
     const smstoken = localStorage.getItem('smstoken')
     if (!smstoken) {
-      message.error('请先获取短信验证码')
+      message.error(i18n('account.require_code'))
       return
     }
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -197,12 +195,12 @@ class Register extends React.Component {
   handleFetchButtonClicked() {
     const areacode = this.state.areaCode
     if (!areacode) {
-      message.error('请选择地区或直接填写地区代码')
+      message.error(i18n('account.require_areacode'))
       return
     }
     const mobile = this.mobile
     if (!mobile) {
-      message.error('手机号码不能为空')
+      message.error(i18n('account.require_mobile'))
       return
     }
     this.setState({ loading: true })
@@ -222,7 +220,7 @@ class Register extends React.Component {
       if (data.data.status !== 'success') {
         throw new Error(data.data.msg)
       }
-      message.success('验证码已发送至您的手机，请注意查收')
+      message.success(i18n('account.code_sent'))
       localStorage.setItem('smstoken', data.data.smstoken)
       const intervalId = setInterval(this.timer, 1000)
       this.setState({
@@ -330,7 +328,7 @@ class Register extends React.Component {
                   onMobileChange={this.handleMobileChange.bind(this)} />
                 <Code
                   loading={this.state.loading}
-                  value={this.state.fetchSmsCodeValue ? `${this.state.fetchSmsCodeValue}秒后重新获取` : null}
+                  value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}
                   onFetchButtonClicked={this.handleFetchButtonClicked.bind(this)} />
                 <Email onBlur={this.handleEmailOnBlur} />
                 <FullName />
@@ -389,4 +387,4 @@ Register.childContextTypes = {
   form: PropTypes.object
 }
 
-export default connect(mapStateToProps)(Form.create()(injectIntl(Register)))
+export default connect(mapStateToProps)(Form.create()(Register))

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
+import { i18n } from '../utils/util'
 import { Form, Button, InputNumber, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -133,12 +134,12 @@ class EditTimeline extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="修改时间轴" />
+        <PageTitle title={i18n('timeline.edit_timeline')} />
         <div>
           <EditTimelineForm wrappedComponentRef={this.handleRef} data={data} transactionOptions={this.state.transactionOptions} />
           <div style={{ textAlign: 'center' }}>
-            <Button style={{ margin: '0 8px' }} type="primary" size="large" onClick={this.handleSubmit}>提交</Button>
-            <Button style={{ margin: '0 8px' }} size="large" onClick={this.handleCancel}>返回</Button>
+            <Button style={{ margin: '0 8px' }} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
+            <Button style={{ margin: '0 8px' }} size="large" onClick={this.handleCancel}>{i18n('common.cancel')}</Button>
           </div>
         </div>
 

@@ -18,7 +18,7 @@ import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
-import { hasPerm } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -835,7 +835,7 @@ const SliderMoney = function(props) {
         max={max}
         marks={_marks}
         style={{width: '400px'}} />
-      <span style={{marginLeft: '24px'}}>单位（百万美元）</span>
+      <span style={{marginLeft: '24px'}}>{i18n('common.unit') + ' (' + i18n('common.million') + ')'}</span>
     </div>
   )
 }
@@ -845,8 +845,8 @@ const SliderMoney = function(props) {
  */
 
 const RadioTrueOrFalse = withOptions(RadioGroup2, [
-  { value: true, label: '是' },
-  { value: false, label: '否' },
+  { value: true, label: i18n('common.yes') },
+  { value: false, label: i18n('common.no') },
 ])
 
 /**

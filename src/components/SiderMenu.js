@@ -2,8 +2,8 @@ import React from 'react'
 import { Menu, Layout, Icon } from 'antd'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { FormattedMessage } from 'react-intl'
 import { KEY_TO_URI } from '../constants'
+import { i18n } from '../utils/util'
 
 const { SubMenu } = Menu
 const { Sider } = Layout
@@ -41,8 +41,8 @@ class SiderMenu extends React.Component {
           this.props.menulist.filter(f => !f.parentmenu).map(m => {
             const subMenu = this.props.menulist.filter(f => f.parentmenu === m.id)
             if (subMenu.length > 0) {
-              return <SubMenu key={m.namekey} title={<span><img style={iconImgStyle} src={m.icon_normal} /><span style={navTextStyle}><FormattedMessage id={m.namekey} /></span></span>}>
-                { subMenu.map(n => <Menu.Item key={n.namekey}><Link to={KEY_TO_URI[n.namekey]}><FormattedMessage id={n.namekey} /></Link></Menu.Item>) }
+              return <SubMenu key={m.namekey} title={<span><img style={iconImgStyle} src={m.icon_normal} /><span style={navTextStyle}>{i18n(`menu.${m.namekey}`)}</span></span>}>
+                { subMenu.map(n => <Menu.Item key={n.namekey}><Link to={KEY_TO_URI[n.namekey]}>{i18n(`menu.${n.namekey}`)}</Link></Menu.Item>) }
               </SubMenu>
             } else {
               return (
@@ -50,7 +50,7 @@ class SiderMenu extends React.Component {
                   <Link to={KEY_TO_URI[m.namekey]}>
                     <img style={iconImgStyle} src={m.icon_normal} />
                     <span style={navTextStyle}>
-                      <FormattedMessage id={m.namekey} />
+                      {i18n(`menu.${m.namekey}`)}
                     </span>
                   </Link>
                 </Menu.Item>

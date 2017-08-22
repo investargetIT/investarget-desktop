@@ -1,7 +1,7 @@
 import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
 import { connect } from 'dva'
 import * as api from '../api'
+import { i18n, time } from '../utils/util'
 import { Row, Col } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -29,10 +29,6 @@ const Field = (props) => {
 
 class TimelineDetail extends React.Component {
 
-  static propTypes = {
-    intl: intlShape.isRequired,
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -45,13 +41,12 @@ class TimelineDetail extends React.Component {
   componentDidMount() {
     // get timeline
     const id = Number(this.props.params.id)
-    const { formatDate, formatTime } = this.props.intl
     api.getTimelineDetail(id).then(result => {
       const data = result.data.transationStatu
       const status = data.transationStatus.name
       const alertCycle = data.alertCycle
       let createdTime = new Date(data.inDate)
-      createdTime = formatDate(createdTime) + ' ' + formatTime(createdTime)
+      createdTime = time(createdTime)
       this.setState({ status, alertCycle, createdTime })
     }, error => {
       this.props.dispatch({
@@ -67,12 +62,12 @@ class TimelineDetail extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="查看时间轴" />
+        <PageTitle title={i18n('timeline.timeline_detail')} />
         <div>
           <div style={{ marginBottom: '24px' }}>
-            <Field title="当前状态" value={status} />
-            <Field title="提醒周期" value={alertCycle} />
-            <Field title="创建日期" value={createdTime} />
+            <Field title={i18n('timeline.status')} value={status} />
+            <Field title={i18n('timeline.alert_cycle')} value={alertCycle} />
+            <Field title={i18n('timeline.created_time')} value={createdTime} />
           </div>
         </div>
 
@@ -84,4 +79,4 @@ class TimelineDetail extends React.Component {
 
 
 
-export default connect()(injectIntl(TimelineDetail))
+export default connect()(TimelineDetail)

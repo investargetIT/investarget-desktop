@@ -78,10 +78,10 @@ class EmailList extends React.Component {
     const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: '项目名称', key: 'proj', render: (text, record) => {
+      { title: i18n('email.project_name'), key: 'proj', render: (text, record) => {
         return <Link target="_blank" to={'/app/projects/' + record.proj.id}>{record.proj.Title}</Link>
       } },
-      { title: '邮箱', key: 'email', render: (text, record) => {
+      { title: i18n('email.email'), key: 'email', render: (text, record) => {
         return <Link target="_blank" to={'/app/email/detail/' + record.proj.id}><Icon type="mail" style={{fontSize: '16px'}} /></Link>
       } },
     ]
@@ -89,10 +89,10 @@ class EmailList extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title="邮件管理" />
+          <PageTitle title={i18n('email.email_management')} />
 
           <div style={{marginBottom: '16px'}}>
-            <Search2 style={{width: 200}} placeholder="项目名称" defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 style={{width: 200}} placeholder={i18n('email.project_name')} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <Table

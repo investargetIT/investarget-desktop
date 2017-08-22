@@ -77,13 +77,13 @@ class ProjectListRecommend extends React.Component {
 
 
     const map = {
-      1: '感兴趣项目',
-      2: '投资人感兴趣项目',
+      1: i18n('project.has_interest'),
+      2: i18n('project.investor_has_interest'),
     }
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="感兴趣项目" />
+        <PageTitle title={i18n('project.interested_projects')} />
           <div style={{ marginBottom: '24px' }}>
             <RadioGroup onChange={this.handleFavorChange} value={type}>
               { hasPerm('usersys.as_investor') ? <Radio value={1}>{map[1]}</Radio> : null }

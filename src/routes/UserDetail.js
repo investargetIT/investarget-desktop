@@ -5,6 +5,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import UserInfo from '../components/UserInfo'
 import TransactionInfo from '../components/TransactionInfo'
 import { UserRemarkList } from '../components/RemarkList'
+import { i18n } from '../utils/util'
 
 const TabPane = Tabs.TabPane
 
@@ -32,7 +33,7 @@ class UserDetail extends React.Component {
   render() {
     const userId = Number(this.props.params.id)
     return (
-      <LeftRightLayout location={this.props.location} title="用户详情">
+      <LeftRightLayout location={this.props.location} title={i18n('user.user_detail')}>
         <Row gutter={48}>
           <Col span={12}>
             <UserInfo userId={userId} />

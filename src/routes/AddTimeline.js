@@ -2,7 +2,7 @@ import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
-import { getCurrentUser, hasPerm } from '../utils/util'
+import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
@@ -23,8 +23,8 @@ class AddTimeline extends React.Component {
 
   handleCreate = () => {
     Modal.confirm({
-      title: '确认',
-      content: '你确定为这些交易师或投资人创建时间轴吗？',
+      title: i18n('timeline.message.confirm_create_title'),
+      content: i18n('timeline.message.confirm_create_content'),
       onOk: this.createTimeline,
     })
   }
@@ -43,8 +43,8 @@ class AddTimeline extends React.Component {
       })
     ).then(results => {
       Modal.success({
-        title: '提示',
-        content: '创建时间轴成功',
+        title: i18n('timeline.message.create_success_title'),
+        content: i18n('timeline.message.create_success_content'),
         onOk: () => { this.props.router.replace('/app/timeline/list') }
       })
     }, error => {
@@ -76,9 +76,9 @@ class AddTimeline extends React.Component {
 
     return (
       <MainLayout location={location}>
-        <PageTitle title="创建时间轴" />
+        <PageTitle title={i18n('timeline.create_timeline')} />
         <div>
-          <h3 style={{lineHeight: 2}}>项目名称：{this.state.projTitle}</h3>
+          <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
 
           <SelectInvestorAndTrader onSelect={this.handleSelectUser} />
         </div>

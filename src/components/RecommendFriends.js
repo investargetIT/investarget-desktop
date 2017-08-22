@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './RecommendFriends.css';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { Card, Icon, Tag, Button } from 'antd'
 
 
@@ -61,4 +60,4 @@ function RecommendFriends(props) {
 }
 
 
-export default injectIntl(RecommendFriends);
+export default RecommendFriends

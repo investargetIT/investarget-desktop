@@ -4,7 +4,6 @@ import styles from './MainLayout.css';
 import Header from './Header';
 import { Layout } from 'antd'
 import { routerRedux } from 'dva/router'
-import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
 import InstantMessage from './InstantMessage'
 import HandleError from './HandleError'

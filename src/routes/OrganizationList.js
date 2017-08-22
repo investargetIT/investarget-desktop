@@ -110,27 +110,27 @@ class OrganizationList extends React.Component {
   render() {
 
     const columns = [
-      { title: '名称', key: 'orgname', dataIndex: 'orgname' },
-      { title: '行业', key: 'industry', dataIndex: 'industry.industry' },
-      { title: '货币类型', key: 'currency', dataIndex: 'currency.currency' },
-      { title: '决策周期（天）', key: 'decisionCycle', dataIndex: 'decisionCycle' },
-      { title: '轮次', key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
+      { title: i18n('organization.name'), key: 'orgname', dataIndex: 'orgname' },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
+      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle' },
+      { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return phases.map(p => p.name).join(' ')
       } },
-      { title: '股票代码', key: 'orgcode', dataIndex: 'orgcode' },
-      { title: '操作', key: 'action', render: (text, record) => (
+      { title: i18n('organization.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
+      { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span>
             <Link to={'/app/organization/' + record.id}>
-              <Button disabled={!record.action.get} size="small" >{i18n("view")}</Button>
+              <Button disabled={!record.action.get} size="small" >{i18n("common.view")}</Button>
             </Link>
             &nbsp;
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
           </span>
         )
@@ -154,14 +154,14 @@ class OrganizationList extends React.Component {
 
             <div style={{ overflow: 'auto' }}>
               <div style={{ marginBottom: '16px', float: 'left' }}>
-                <Search2 style={{ width: 200 }} placeholder="机构名、股票代码" defaultValue={search} onSearch={this.handleSearch} />
+                <Search2 style={{ width: 250 }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
               </div>
 
               <div style={{ float: 'right' }}>
-                按创建时间&nbsp;
+                {i18n('common.sort_by_created_time')}&nbsp;
                 <Select defaultValue="desc" onChange={this.handleSortChange}>
-                  <Option value="asc">正序</Option>
-                  <Option value="desc">倒序</Option>
+                  <Option value="asc">{i18n('common.asc_order')}</Option>
+                  <Option value="desc">{i18n('common.dec_order')}</Option>
                 </Select>
               </div>
             </div>

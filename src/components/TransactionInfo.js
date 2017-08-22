@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import { i18n } from '../utils/util'
 import { Row, Col, Select } from 'antd'
 const Option = Select.Option
 
@@ -114,15 +115,15 @@ class TransactionInfo extends React.Component {
 
     return list.length > 0 ?
       (<div>
-          <h3>交易师信息</h3>
-          <Field title="姓名" value={SelectTransaction} />
+          <h3>{i18n('user.trader_info')}</h3>
+          <Field title={i18n('user.name')} value={SelectTransaction} />
           <Field title="公司" value={company} />
-          <Field title="职位" value={title} />
-          <Field title="标签" value={tags} />
-          <Field title="国家" value={country} />
-          <Field title="手机号码" value={mobile} />
-          <Field title="邮箱" value={email} />
-          <Field title="分数" value={score} />
+          <Field title={i18n('user.position')} value={title} />
+          <Field title={i18n('user.tags')} value={tags} />
+          <Field title={i18n('user.country')} value={country} />
+          <Field title={i18n('user.mobile')} value={mobile} />
+          <Field title={i18n('user.email')} value={email} />
+          <Field title={i18n('user.score')} value={score} />
       </div>) : null
 
   }

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { injectIntl, intlShape } from 'react-intl'
 import { i18n, exchange } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
@@ -51,35 +50,35 @@ class YearFinanceForm extends React.Component {
 
     return (
       <Form>
-        <BasicFormItem label="年份" name="fYear" valueType="number" required>
+        <BasicFormItem label={i18n('project.year')} name="fYear" valueType="number" required>
           <SelectYear disabled={ mode == 'edit' } disabledYears={ mode == 'add' ? disabledYears : [] } />
         </BasicFormItem>
 
-        <CurrencyFormItem label="营业收入" name="revenue" required currencyType={currencyType} />
+        <CurrencyFormItem label={i18n('project.revenue')} name="revenue" required currencyType={currencyType} />
 
-        <CurrencyFormItem label="净利润" name="netIncome" required currencyType={currencyType} />
+        <CurrencyFormItem label={i18n('project.profits')} name="netIncome" required currencyType={currencyType} />
 
-        <BasicFormItem label="息税折旧摊销前利润" name="EBITDA" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.EBITDA')} name="EBITDA" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
 
-        <BasicFormItem label="毛利润" name="grossProfit" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.gross_profits')} name="grossProfit" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
 
-        <BasicFormItem label="总资产" name="totalAsset" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.total_assets')} name="totalAsset" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
 
-        <BasicFormItem label="净资产" name="stockholdersEquity" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.net_assets')} name="stockholdersEquity" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
 
-        <BasicFormItem label="经营性现金流" name="operationalCashFlow" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.operating_cash_flow')} name="operationalCashFlow" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
 
-        <BasicFormItem label="净现金流" name="grossMerchandiseValue" valueType="number" initialValue={0}>
+        <BasicFormItem label={i18n('project.net_cash_flow')} name="grossMerchandiseValue" valueType="number" initialValue={0}>
           <InputNumber />
         </BasicFormItem>
       </Form>

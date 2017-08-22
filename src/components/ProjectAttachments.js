@@ -3,6 +3,7 @@ import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
 import { BASE_URL } from '../constants'
+import { i18n } from '../utils/util'
 import {
   Input,
   Button,
@@ -83,8 +84,8 @@ class ProjectAttachments extends React.Component {
   handleTabsEdit = (targetDir, action) => {
     if (action == 'remove') {
       Modal.confirm({
-        title: '删除目录',
-        content: '该目录下的文件都将被删除',
+        title: i18n('project.message.delete_dir_title'),
+        content: i18n('project.message.delete_dir_content'),
         onOk: () => { this.removeDir(targetDir) },
       })
     }
@@ -231,7 +232,7 @@ class ProjectAttachments extends React.Component {
   handleFileRemoveConfirm = (file) => {
     return new Promise(function(resolve, reject) {
       Modal.confirm({
-        title: '删除文件',
+        title: i18n('project.message.delete_file_title'),
         content: file.name,
         onOk: function() { resolve(true) },
         onCancel: function() { resolve(false) },
@@ -243,7 +244,7 @@ class ProjectAttachments extends React.Component {
     const { fileList } = this.state
 
     if (mimeTypes.indexOf(file.type) == -1) {
-      message.error('不支持的文件格式', 2)
+      message.error(i18n('project.message.unsported_format'), 2)
       return false
     }
     // 不允许重复上传
@@ -251,17 +252,17 @@ class ProjectAttachments extends React.Component {
     for (let i = 0, len = fileList.length; i < len; i++) {
       let _file = fileList[i]
       if (dir == _file.filetype && file.filename == _file.filename) {
-        message.error('不能上传同一文件', 2)
+        message.error(i18n('project.message.upload_same_file'), 2)
         return false
       }
     }
     //NDA文件和Teaser文件只能上传一个
     if (dir == 'NDA' && fileList.filter(item => item.filetype == 'NDA').length > 0) {
-      message.error('NDA 只能上传一个', 2)
+      message.error(i18n('project.message.only_one_NDA'), 2)
       return false
     }
     if (dir == 'Teaser' && fileList.filter(item => item.filetype == 'Teaser').length > 0) {
-      message.error('Teaser 只能上传一个', 2)
+      message.error(i18n('project.message.only_one_teaser'), 2)
       return false
     }
     return true
@@ -308,7 +309,7 @@ class ProjectAttachments extends React.Component {
       <div>
 
         <div style={{ marginBottom: 16 }}>
-          <p style={{ marginBottom: '8px' }}>已有附件 (<span>{ doneFileList.length }</span>)</p>
+          <p style={{ marginBottom: '8px' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
           <div style={{ marginLeft: '8px' }}>
           {
             doneFileList.map(file =>
@@ -326,7 +327,7 @@ class ProjectAttachments extends React.Component {
             value={this.state.newDir}
             onChange={(e) => {this.setState({ newDir: e.target.value })}}
             style={{width: 'auto', marginRight: '8px'}}
-            placeholder="新建目录"
+            placeholder={i18n('project.add_directory')}
           />
           <Button onClick={this.addDir} disabled={this.state.newDir == ''}>ADD</Button>
         </div>
@@ -352,7 +353,7 @@ class ProjectAttachments extends React.Component {
           <p className="ant-upload-drag-icon">
             <Icon type="inbox" />
           </p>
-          <p className="ant-upload-text">点击或拖拽上传</p>
+          <p className="ant-upload-text">{i18n('project.click_drag_upload')}</p>
           <p className="ant-upload-hint">pdf, doc, docx, xls, xlsx, ppt, pptx</p>
         </Dragger>
       </div>

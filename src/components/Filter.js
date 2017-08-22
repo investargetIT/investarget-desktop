@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'dva'
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import { i18n } from '../utils/util'
 
 import { Row, Col, Button, Checkbox, Select, Radio } from 'antd'
@@ -38,8 +37,8 @@ function BasicContainer(props) {
 function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-      <Button type="primary" icon="search" onClick={props.onSearch}><FormattedMessage id="filterr" /></Button>
-      <Button style={{ marginLeft: 10 }} onClick={props.onReset}><FormattedMessage id="reset" /></Button>
+      <Button type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button>
+      <Button style={{ marginLeft: 10 }} onClick={props.onReset}>{i18n('filter.reset')}</Button>
     </div>
   )
 }
@@ -63,7 +62,7 @@ function TagFilter(props) {
 
 function ServiceFilter(props) {
   return (
-    <BasicContainer label={'服务类型'}>
+    <BasicContainer label={i18n('filter.service_type')}>
       <CheckboxService value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
@@ -119,7 +118,7 @@ function OrganizationTypeFilter(props) {
 
 function CountryFilter(props) {
   return (
-    <BasicContainer label="地区">
+    <BasicContainer label={i18n('filter.area')}>
       <TabCheckboxCountry value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
@@ -129,7 +128,7 @@ function RevenueFilter(props) {
   const value = props.value.map(item => parseInt(item / 1000000))
   const onChange = (value) => { props.onChange(value.map(item => item * 1000000)) }
   return (
-    <BasicContainer label="收入">
+    <BasicContainer label={i18n('filter.income')}>
       <SliderMoney min={0} max={500} value={value} onChange={onChange} />
     </BasicContainer>
   )
@@ -139,7 +138,7 @@ function ProfitFilter(props) {
   const value = props.value.map(item => parseInt(item / 1000000))
   const onChange = (value) => { props.onChange(value.map(item => item * 1000000)) }
   return (
-    <BasicContainer label="利润">
+    <BasicContainer label={i18n('filter.profit')}>
       <SliderMoney min={-200} max={200} value={value} onChange={onChange} />
     </BasicContainer>
   )
@@ -147,7 +146,7 @@ function ProfitFilter(props) {
 
 function ProjectStatusFilter(props) {
   return (
-    <BasicContainer label="状态">
+    <BasicContainer label={i18n('filter.status')}>
       <CheckboxProjStatus value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
@@ -158,10 +157,10 @@ function ProjectTypeFilter(props) {
     props.onChange(e.target.value)
   }
   return (
-    <BasicContainer label="类型">
+    <BasicContainer label={i18n('filter.project_type')}>
       <RadioGroup value={props.value} onChange={handleChange}>
-        <Radio value={false}>独家项目</Radio>
-        <Radio value={true}>精品项目</Radio>
+        <Radio value={false}>{i18n('filter.exclusive_project')}</Radio>
+        <Radio value={true}>{i18n('filter.choice_project')}</Radio>
       </RadioGroup>
     </BasicContainer>
   )
@@ -191,11 +190,11 @@ function TimelineStatusFilter(props) {
 
   const Option = Select.Option
   return (
-    <BasicContainer label="状态">
+    <BasicContainer label={i18n('filter.status')}>
       <Select value={value} onChange={onChange}>
-        <Option value="0">全部</Option>
-        <Option value="1">未结束</Option>
-        <Option value="2">已结束</Option>
+        <Option value="0">{i18n('timeline.all')}</Option>
+        <Option value="1">{i18n('timeline.processing')}</Option>
+        <Option value="2">{i18n('timeline.closed')}</Option>
       </Select>
     </BasicContainer>
   )
@@ -229,7 +228,7 @@ class GroupFilter extends React.Component {
 
   render() {
     return (
-      <BasicContainer label="角色">
+      <BasicContainer label={i18n('filter.group')}>
          <RadioGroup value={this.props.value} onChange={this.handleChange}>
           {
             this.state.groups.map(item =>

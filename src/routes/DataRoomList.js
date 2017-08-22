@@ -180,7 +180,7 @@ class DataRoomList extends React.Component {
             <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
               <Icon type="plus" style={{ fontSize: '64px', marginBottom: '16px' }} />
               <br />
-              <span style={{ fontSize: '14px' }}>创建 DataRoom</span>
+              <span style={{ fontSize: '14px' }}>{i18n('dataroom.create_dataroom')}</span>
             </div>
           </Link>
         </Card>
@@ -211,22 +211,22 @@ class DataRoomList extends React.Component {
             <div style={cardTitleStyle}>
               <Link to={`/app/projects/${projId}`} target="_blank">{projTitle}</Link>
             </div>
-            <div style={cardTimeStyle}>创建时间: {dataroomTime}</div>
+            <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
             <div style={cardUserStyle}>
-              <span>投资人: <Link to={`/app/user/${investorId}`} target="_blank">{investorName}</Link></span>
-              <span>交易师: <Link to={`/app/user/${traderId}`} target="_blank">{traderName}</Link></span>
+              <span>{i18n('dataroom.investor')}: <Link to={`/app/user/${investorId}`} target="_blank">{investorName}</Link></span>
+              <span>{i18n('dataroom.trader')}: <Link to={`/app/user/${traderId}`} target="_blank">{traderName}</Link></span>
               {
                 hasPerm('usersys.as_investor') ? null : (
-                  <span>项目方: <Link to={`/app/user/${supportorId}`} target="_blank">{supportorName}</Link></span>
+                  <span>{i18n('dataroom.uploader')}: <Link to={`/app/user/${supportorId}`} target="_blank">{supportorName}</Link></span>
                 )
               }
             </div>
             <div style={cardActionStyle}>
               <Popconfirm title="Confirm to close ?" onConfirm={this.handleCloseDateRoom.bind(this, record)}>
-                <Button size="small" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ marginRight: '8px' }}>{record.isClose ? '打开' : '关闭'}</Button>
+                <Button size="small" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ marginRight: '8px' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               </Popconfirm>
               <Popconfirm title="Confirm to delete ?" onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')}>{i18n("delete")}</Button>
+                <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')}>{i18n("common.delete")}</Button>
               </Popconfirm>
             </div>
           </div>
@@ -237,10 +237,10 @@ class DataRoomList extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title="Data Room" />
+          <PageTitle title={i18n('dataroom.dataroom_list')} />
 
           <div style={{marginBottom: '16px'}}>
-            <Search2 style={{width: 200}} placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? "项目名称" : "项目名称、投资人"} defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 style={{width: 200}} placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <div className="ant-spin-nested-loading">

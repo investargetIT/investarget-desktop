@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { injectIntl, intlShape } from 'react-intl'
 import { i18n, exchange, hasPerm } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
@@ -55,37 +54,37 @@ class ProjectBaseForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="是否隐藏" name="isHidden" valueType="boolean">
+        <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean">
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <BasicFormItem label="项目中文名" name="projtitleC" required whitespace>
+        <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="项目英文名" name="projtitleE" required whitespace>
+        <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" required whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="热门标签" name="tags" valueType="array" required>
+        <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
         <IndustryDynamicFormItem industry={this.props.industry} />
 
-        <BasicFormItem label="国家" name="country" required valueType="number" initialValue={[1,5]}>
+        <BasicFormItem label={i18n('project.region')} name="country" required valueType="number" initialValue={[1,5]}>
           <CascaderCountry size="large" />
         </BasicFormItem>
 
-        <BasicFormItem label="我的角色" name="character" required valueType="number">
+        <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
           <SelectRole />
         </BasicFormItem>
 
-        <BasicFormItem label="交易类型" name="transactionType" required valueType="array">
+        <BasicFormItem label={i18n('project.transaction_type')} name="transactionType" required valueType="array">
           <SelectTransactionType mode="multiple" />
         </BasicFormItem>
 
-        <BasicFormItem label="服务类型" name="service" required valueType="array">
+        <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
           <SelectService mode="multiple" />
         </BasicFormItem>
 
@@ -140,19 +139,19 @@ class ProjectFinanceForm extends React.Component {
     const { getFieldValue } = this.props.form
     return (
       <Form>
-        <BasicFormItem label="公司成立年份" name="companyYear" valueType="number">
+        <BasicFormItem label={i18n('project.company_year')} name="companyYear" valueType="number">
           <SelectYear />
         </BasicFormItem>
 
-        <BasicFormItem label="货币类型" name="currency" required valueType="number" onChange={this.handleCurrencyTypeChange}>
+        <BasicFormItem label={i18n('project.currency')} name="currency" required valueType="number" onChange={this.handleCurrencyTypeChange}>
           <SelectCurrencyType />
         </BasicFormItem>
 
-        <CurrencyFormItem label="拟交易规模" name="financeAmount" required currencyType={getFieldValue('currency')} />
+        <CurrencyFormItem label={i18n('project.transaction_size')} name="financeAmount" required currencyType={getFieldValue('currency')} />
 
-        <CurrencyFormItem label="公司估值" name="companyValuation" currencyType={getFieldValue('currency')} />
+        <CurrencyFormItem label={i18n('project.company_valuation')} name="companyValuation" currencyType={getFieldValue('currency')} />
 
-        <BasicFormItem label="公开财务信息" name="financeIsPublic" valueType="boolean" valuePropName="checked">
+        <BasicFormItem label={i18n('project.disclose_financials')} name="financeIsPublic" valueType="boolean" valuePropName="checked">
           <Switch checkedChildren={'ON'} unCheckedChildren={'OFF'} />
         </BasicFormItem>
 
@@ -206,28 +205,28 @@ class ProjectConnectForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="联系人" name="contactPerson" required whitespace><Input /></BasicFormItem>
+        <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
 
-        <BasicFormItem label="联系号码" name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
+        <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
 
-        <BasicFormItem label="邮箱" name="email" required valueType="email">
+        <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
           <Input type="email" />
         </BasicFormItem>
 
         {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
           hasPerm('proj.admin_addproj') ? (
-            <BasicFormItem label="上传者" name="supportUser" required valueType="number" initialValue={currentUserId}>
+            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={currentUserId}>
               <SelectExistUser />
             </BasicFormItem>
           ) : null
         }
 
-        <BasicFormItem label="承揽" name="takeUser" required valueType="number">
+        <BasicFormItem label={i18n('project.take_user')} name="takeUser" required valueType="number">
           <SelectExistUser />
         </BasicFormItem>
 
-        <BasicFormItem label="承做" name="makeUser" required valueType="number">
+        <BasicFormItem label={i18n('project.take_user')} name="makeUser" required valueType="number">
           <SelectExistUser />
         </BasicFormItem>
       </Form>
@@ -253,7 +252,7 @@ class ProjectDetailForm extends React.Component {
         <BasicFormItem label="目标市场" name="targetMarketC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
-        <BasicFormItem label="TargetMarket" name="targetMarketE" initialValue={''}>
+        <BasicFormItem label="Target Market" name="targetMarketE" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
         <BasicFormItem label="核心产品" name="productTechnologyC" initialValue={''}>

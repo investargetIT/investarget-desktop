@@ -167,7 +167,7 @@ class ProjectList extends React.Component {
 
     const columns = [
       {
-        title: '图片',
+        title: i18n('project.image'),
         key: 'image',
         render: (text, record) => {
           const industry = record.industries && record.industries[0]
@@ -178,7 +178,7 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: '名称',
+        title: i18n('project.name'),
         key: 'title',
         render: (text, record) => {
           if (record.action.get) {
@@ -191,7 +191,7 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: '地区',
+        title: i18n('project.country'),
         key: 'country',
         render: (text, record) => {
           const country = record.country
@@ -212,7 +212,7 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: '交易规模',
+        title: i18n('project.transaction_amount'),
         key: 'transactionAmount',
         render: (text, record) => {
           const transactionAmount = record.transactionAmount
@@ -220,7 +220,7 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: '当前状态',
+        title: i18n('project.current_status'),
         key: 'projstatus',
         render: (text, record) => {
           const status = record.projstatus
@@ -231,51 +231,51 @@ class ProjectList extends React.Component {
     ]
     if (hasPerm('usersys.as_admin')) {
       columns.push({
-        title: '是否隐藏',
+        title: i18n('project.is_hidden'),
         key: 'isHidden',
         render: (text, record) => {
-          return record.isHidden ? '已隐藏' : '未隐藏'
+          return record.isHidden ? i18n('project.invisible') : i18n('project.visible')
         }
       })
     }
     columns.push({
-        title: '操作',
+        title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
           return record.ismarketplace ? (
             <span>
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
               &nbsp;
               <Link to={'/app/marketplace/edit/' + record.id}>
-                <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+                <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
               &nbsp;
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
               </Popconfirm>
             </span>
           ) : (
             <span>
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>修改状态</Button>
+              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
               &nbsp;
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>推荐</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
               &nbsp;
               <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>创建时间轴</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
               &nbsp;
               <Link target="_blank" to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>创建DataRoom</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
               &nbsp;
               <Link to={'/app/projects/edit/' + record.id}>
-                <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+                <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
               &nbsp;
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
               </Popconfirm>
             </span>
           )
@@ -286,14 +286,14 @@ class ProjectList extends React.Component {
       <MainLayout location={location}>
         {
           (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
-            <PageTitle title="平台项目" actionLink="/app/projects/add" actionTitle="新增项目" /> :
-            <PageTitle title="平台项目" />
+            <PageTitle title={i18n('project.platform_projects')} actionLink="/app/projects/add" actionTitle={i18n('project.upload_project')} /> :
+            <PageTitle title={i18n('project.platform_projects')} />
         }
 
         <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 defaultValue={search} placeholder="项目名称" style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
 
         <Table

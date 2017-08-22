@@ -113,10 +113,10 @@ class InboxList extends React.Component {
         const detail = m.content
         return { ...m, title, detail }
       })
-      this.setState({ 
-        data: list, 
-        total: data.data.count, 
-        currentId: list.length > 0 && list[0].id 
+      this.setState({
+        data: list,
+        total: data.data.count,
+        currentId: list.length > 0 && list[0].id
       })
     })
   }
@@ -170,7 +170,7 @@ class InboxList extends React.Component {
 
         <div style={leftContainerStyle}>
 
-          <div style={headerStyle}>消息列表</div>
+          <div style={headerStyle}>{i18n('inbox.message_list')}</div>
 
           <div><ul>
             {this.state.data.map(m => <li onClick={this.handleItemClicked.bind(this, m.id)} key={m.id} style={m.id === this.state.currentId ? activeTitleStyle : titleStyle}><p style={{ fontWeight: m.isRead ? 'normal' : 'bold' }}>{m.title}</p></li>)}
@@ -188,12 +188,12 @@ class InboxList extends React.Component {
 
         <div style={rightContainerStyle}>
 
-          <div style={headerStyle}>消息详情</div>
+          <div style={headerStyle}>{i18n('inbox.message_detail')}</div>
 
           <div style={{ padding: '30px 14px', fontSize: 13, lineHeight: 1.8 }}>
             { this.state.data.length > 0 ?
               this.state.data.filter(f => f.id === this.state.currentId)[0].detail
-              .split('\n').map((item, key) => <span key={key}>{item}<br /></span>) 
+              .split('\n').map((item, key) => <span key={key}>{item}<br /></span>)
              : null }
           </div>
 

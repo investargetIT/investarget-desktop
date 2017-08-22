@@ -103,7 +103,7 @@ class TimelineList extends React.Component {
 
   showOpenTimelineModal = (id) => {
     Modal.confirm({
-      title: '打开时间轴',
+      title: i18n('timeline.open_timeline'),
       onOk: () => {
         api.openTimeline(id).then(result => {
           this.getTimeline()
@@ -195,37 +195,37 @@ class TimelineList extends React.Component {
     const { location } = this.props
 
     const columns = [
-      { title: '项目', key: 'proj', dataIndex: 'proj.projtitle' },
-      { title: '投资人', key: 'investor', dataIndex: 'investor.username' },
-      { title: '投资人所属机构', key: 'org', dataIndex: 'investor.org.orgname' },
-      { title: '交易师', key: 'trader', dataIndex: 'trader.username' },
-      { title: '剩余天数', key: 'remainingAlertDay', render: (text, record) => {
+      { title: i18n('timeline.project_name'), key: 'proj', dataIndex: 'proj.projtitle' },
+      { title: i18n('timeline.investor'), key: 'investor', dataIndex: 'investor.username' },
+      { title: i18n('timeline.institution'), key: 'org', dataIndex: 'investor.org.orgname' },
+      { title: i18n('timeline.trader'), key: 'trader', dataIndex: 'trader.username' },
+      { title: i18n('timeline.remaining_day'), key: 'remainingAlertDay', render: (text, record) => {
         let day = Number(record.transationStatu.remainingAlertDay)
         day = day > 0 ? Math.ceil(day) : 0
         return day
       } },
-      { title: '当前状态', key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
-      { title: '最新备注', key: 'remark', dataIndex: 'latestremark.remark' },
-      { title: '操作', key: 'action', render: (text, record) => (
+      { title: i18n('timeline.transaction_status'), key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
+      { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
+      { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span>
             {
               record.isClose ? (
-                <Button size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>打开</Button>
+                <Button size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.open')}</Button>
               ) : (
-                <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>关闭</Button>
+                <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.close')}</Button>
               )
             }
             &nbsp;
             <Link to={'/app/timeline/' + record.id}>
-              <Button size="small" disabled={!record.action.get}>{i18n("view")}</Button>
+              <Button size="small" disabled={!record.action.get}>{i18n("common.view")}</Button>
             </Link>
             &nbsp;
             <Link to={'/app/timeline/edit/' + record.id}>
-              <Button size="small" disabled={!record.action.change || record.isClose}>{i18n("edit")}</Button>
+              <Button size="small" disabled={!record.action.change || record.isClose}>{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteTimeline.bind(null, record.id)}>
-              <Button type="danger" size="small" disabled={!record.action.delete}>{i18n("delete")}</Button>
+              <Button type="danger" size="small" disabled={!record.action.delete}>{i18n("common.delete")}</Button>
             </Popconfirm>
           </span>
         )
@@ -237,11 +237,11 @@ class TimelineList extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title="时间轴列表" />
+          <PageTitle title={i18n('timeline.timeline_list')} />
           <div>
             <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
             <div style={{ marginBottom: '24px' }}>
-              <Search2 style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} placeholder="项目、投资人、交易师" />
+              <Search2 style={{ width: 250 }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')} />
             </div>
             <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

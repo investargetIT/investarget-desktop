@@ -39,7 +39,7 @@ class HandleError extends React.Component {
         if (!HandleError.handleSessionExpiration) {
           HandleError.handleSessionExpiration = true
           Modal.error({
-            title: '会话过期，请重新登录',
+            title: i18n('message.session_expire'),
             onOk() {
               HandleError.handleSessionExpiration = false
               react.props.dispatch({
@@ -52,7 +52,7 @@ class HandleError extends React.Component {
         break
       case 2010:
         Modal.error({
-          title: '无法完成相关操作',
+          title: i18n('message.operation_fail'),
           content: msg,
         })
         break
@@ -60,17 +60,17 @@ class HandleError extends React.Component {
         react.props.dispatch(routerRedux.replace('/403'))
         break
       case 20041:
-        Modal.error({ title: '手机号码已存在' })
+        Modal.error({ title: i18n('message.mobile_exist') })
         break
       case 20042:
-        Modal.error({ title: '邮箱已存在' })
+        Modal.error({ title: i18n('message.email_exist') })
         break
       case 2001:
-        Modal.error({ title: i18n('wrong_password') })
+        Modal.error({ title: i18n('message.wrong_password') })
         break
       case 1299:
         Modal.error({
-          title: '请选择公司',
+          title: i18n('message.choose_company'),
           onOk() {
             react.props.dispatch(
              routerRedux.replace("/")

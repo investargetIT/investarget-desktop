@@ -147,23 +147,23 @@ class SelectUserToPosition extends React.Component {
     }
 
     const columns = [
-      { title: '投资人', key: 'username', dataIndex: 'username' },
-      { title: '所属机构', key: 'orgname', dataIndex: 'org.orgname' },
-      { title: '职位', key: 'title', dataIndex: 'title.name' },
-      { title: '电话', key: 'mobile', dataIndex: 'mobile' },
-      { title: '邮箱', key: 'email', dataIndex: 'email' }
+      { title: i18n('user.trader'), key: 'username', dataIndex: 'username' },
+      { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
+      { title: i18n('user.email'), key: 'email', dataIndex: 'email' }
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location} title="选择投资人">
+      <LeftRightLayout location={this.props.location} title={i18n('user.select_trader')}>
         <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
         <div style={{ textAlign: 'center' }}>
-          <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>确定</Button>
-          <Button onClick={this.props.history.goBack} style={{ marginLeft: 10 }}>取消</Button>
+          <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>{i18n('common.confirm')}</Button>
+          <Button onClick={this.props.history.goBack} style={{ marginLeft: 10 }}>{i18n('common.cancel')}</Button>
         </div>
       </LeftRightLayout>
     )

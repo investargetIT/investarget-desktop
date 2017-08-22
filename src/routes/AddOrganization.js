@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
-import { injectIntl, intlShape } from 'react-intl'
 import * as api from '../api'
+import { i18n } from '../utils/util'
 
 import { Form, Button } from 'antd'
 import MainLayout from '../components/MainLayout';
@@ -59,15 +59,15 @@ class AddOrganization extends React.Component {
     return (
       <MainLayout location={this.props.location}>
         <div>
-          <PageTitle title="新增机构" />
+          <PageTitle title={i18n('organization.new_org')} />
 
           <div style={formStyle}>
             <AddOrganizationForm wrappedComponentRef={this.handleRef} />
           </div>
 
           <div style={actionStyle}>
-            <Button style={actionBtnStyle} size="large" onClick={this.goBack}>取消</Button>
-            <Button style={actionBtnStyle} type="primary" size="large" onClick={this.handleSubmit}>发布</Button>
+            <Button style={actionBtnStyle} size="large" onClick={this.goBack}>{i18n('common.cancel')}</Button>
+            <Button style={actionBtnStyle} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </MainLayout>

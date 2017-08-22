@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import { i18n } from '../utils/util'
 import { Modal, Select, Checkbox } from 'antd'
 const Option = Select.Option
 
@@ -58,15 +59,15 @@ class AuditProjectModal extends React.Component {
     const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
 
     return (
-      <Modal title="修改项目状态" visible={visible} onOk={onOk} onCancel={onCancel} confirmLoading={confirmLoading}>
+      <Modal title={i18n('project.modify_project_status')} visible={visible} onOk={onOk} onCancel={onCancel} confirmLoading={confirmLoading}>
         <div style={{width: '60%', display: 'flex', alignItems: 'center', margin: '0 auto'}}>
-          <span style={{marginRight: '8px'}}>项目状态：</span>
+          <span style={{marginRight: '8px'}}>{i18n('project.project_status')} : </span>
           <SelectProjectStatus style={{flexGrow: '1'}} status={currentStatus} value={status} onChange={onStatusChange} />
         </div>
         {
           (status == 4 || status == 6) ? (
             <div style={{textAlign: 'center', marginTop: '16px'}}>
-              <Checkbox checked={sendEmail} onChange={this.handleSendEmailChange}>是否发送邮件</Checkbox>
+              <Checkbox checked={sendEmail} onChange={this.handleSendEmailChange}>{i18n('project.is_send_email')}</Checkbox>
             </div>
           ) : null
         }

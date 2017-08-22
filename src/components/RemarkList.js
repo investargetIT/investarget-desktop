@@ -1,8 +1,7 @@
 import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
 
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
-import { handleError, getCurrentUser } from '../utils/util'
+import { handleError, getCurrentUser, time, i18n } from '../utils/util'
 import * as api from '../api'
 
 
@@ -32,10 +31,6 @@ const remarkTextStyle = {
 
 
 class RemarkList extends React.Component {
-
-  static propTypes = {
-    intl: intlShape.isRequired,
-  }
 
   constructor(props) {
     super(props)
@@ -87,18 +82,16 @@ class RemarkList extends React.Component {
   }
 
   render() {
-    const { formatDate, formatTime } = this.props.intl
-
     if (this.props.readOnly) {
       return (
         <div>
-          <h3 style={remarkTitleStyle}>备注</h3>
+          <h3 style={remarkTitleStyle}>{i18n('remark.remark')}</h3>
           <div>
             {
               this.props.list.map(item =>
                 <div key={item.id} style={remarkStyle}>
                   <p style={remarkTimeStyle}>
-                    { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
+                    { time(item.createdtime) }
                   </p>
                   <p style={remarkTextStyle}>{item.remark}</p>
                 </div>
@@ -110,17 +103,17 @@ class RemarkList extends React.Component {
     } else {
       return (
         <div>
-          <h3 style={remarkTitleStyle}>备注信息<Icon type="plus" style={addIconStyle} onClick={this.showAddRemark} /></h3>
+          <h3 style={remarkTitleStyle}>{i18n('remark.remark_info')}<Icon type="plus" style={addIconStyle} onClick={this.showAddRemark} /></h3>
           <div>
             {
               this.props.list.map(item =>
                 <div key={item.id} style={remarkStyle}>
                   <p style={remarkTimeStyle}>
-                    { formatDate(item.createdtime) + ' ' + formatTime(item.createdtime) }
+                    { time(item.createdtime) }
                     {/* TODO// 操作与权限挂钩 */}
-                    <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>编辑</a>
-                    <Popconfirm title="删除备注" onConfirm={this.confirmDeleteRemark.bind(this, item.id)}>
-                      <a style={remarkActionStyle}>删除</a>
+                    <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>{i18n('common.edit')}</a>
+                    <Popconfirm title={i18n('remark.remove_remark')} onConfirm={this.confirmDeleteRemark.bind(this, item.id)}>
+                      <a style={remarkActionStyle}>{i18n('common.delete')}</a>
                     </Popconfirm>
                   </p>
                   <p style={remarkTextStyle}>{item.remark}</p>
@@ -128,10 +121,10 @@ class RemarkList extends React.Component {
               )
             }
           </div>
-          <Modal title="新增备注" visible={this.state.showAdd} onOk={this.confirmAddRemark} onCancel={this.cancelAddRemark}>
+          <Modal title={i18n('remark.add_remark')} visible={this.state.showAdd} onOk={this.confirmAddRemark} onCancel={this.cancelAddRemark}>
             <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
           </Modal>
-          <Modal title="修改备注" visible={this.state.showEdit} onOk={this.confirmEditRemark} onCancel={this.cancelEditRemark}>
+          <Modal title={i18n('remark.edit_remark')} visible={this.state.showEdit} onOk={this.confirmEditRemark} onCancel={this.cancelEditRemark}>
             <Input type="textarea" rows={4} value={this.state.remark} onChange={this.updateRemark} />
           </Modal>
         </div>
@@ -139,8 +132,6 @@ class RemarkList extends React.Component {
     }
   }
 }
-
-RemarkList = injectIntl(RemarkList)
 
 
 function sortByTime(list) {

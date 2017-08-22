@@ -1,5 +1,5 @@
 import React from 'react'
-import { getCurrentUser, hasPerm } from '../utils/util'
+import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button } from 'antd'
 import SelectOrganization from '../components/SelectOrganization'
 import SelectOrgInvestorAndTrader from '../components/SelectOrgInvestorAndTrader'
@@ -51,8 +51,8 @@ class SelectInvestorAndTrader extends React.Component {
       <div>
         <div style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
           <p style={{fontSize: '13px'}}>
-            { step == 1 ? <span>1. 选择机构</span> : null }
-            { step == 2 ? <span>2. 选择用户</span> : null }
+            { step == 1 ? <span>1. {i18n('timeline.select_institution')}</span> : null }
+            { step == 2 ? <span>2. {i18n('timeline.select_user')}</span> : null }
           </p>
         </div>
 
@@ -63,14 +63,14 @@ class SelectInvestorAndTrader extends React.Component {
 
         { step == 1 ? (
           <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
-            <Button disabled={selectedOrgs.length == 0} type="primary" onClick={this.handleNext}>下一步</Button>
+            <Button disabled={selectedOrgs.length == 0} type="primary" onClick={this.handleNext}>{i18n('common.next')}</Button>
           </div>
         ) : null }
 
         { step == 2 ? (
           <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
-            <Button onClick={ this.handleBack}>返回</Button>
-            <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleOk}>创建</Button>
+            <Button onClick={ this.handleBack}>{i18n('common.back')}</Button>
+            <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleOk}>{i18n('common.create')}</Button>
           </div>
         ) : null }
       </div>

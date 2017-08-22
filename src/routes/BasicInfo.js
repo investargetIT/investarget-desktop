@@ -23,7 +23,7 @@ class BasicInfo extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         if (values.tags.length === 0) {
-          message.error('请至少选择一个标签')
+          message.error(i18n('personal_info.message.tag_required'))
           return
         }
         editUser([this.props.currentUser.id], {tags: values.tags}).then(data => {
@@ -34,7 +34,7 @@ class BasicInfo extends React.Component {
             type: 'currentUser/save',
             userInfo
           })
-          message.success('个人信息修改成功')
+          message.success(i18n('personal_info.message.update_success'))
           this.props.dispatch(routerRedux.replace('/app'))
         }, error => {
           this.props.dispatch({
@@ -49,7 +49,7 @@ class BasicInfo extends React.Component {
   handleUploaded(response) {
     this.setState({ avatarUrl: response.url })
     if (this.props.currentUser.photoKey) {
-      message.success('头像上传成功，但是由于缓存，更新图像需要时间，请耐心等待')
+      message.success(i18n('personal_info.message.avatar_cache_tip'))
       return
     }
     editUser([this.props.currentUser.id], { photoBucket: 'image', photoKey: response.key }).then(data => {
@@ -74,7 +74,7 @@ class BasicInfo extends React.Component {
   return (
     <LeftRightLayout
       location={this.props.location}
-      title={i18n("modify_profile")}>
+      title={i18n("account.modify_profile")}>
 
       <Form style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
         <UploadAvatar photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />

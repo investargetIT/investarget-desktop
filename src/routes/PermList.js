@@ -73,14 +73,14 @@ class PermList extends React.Component {
         />
       ),
     }, {
-      title: i18n('operation'),
+      title: i18n('common.operation'),
       dataIndex: 'operation',
       render: (text, record, index) => {
         return (
           this.state.groups.length > 1 ?
           (
             <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.id)}>
-              <a>{i18n("delete")}</a>
+              <a>{i18n("common.delete")}</a>
             </Popconfirm>
           ) : null
         )
@@ -179,7 +179,7 @@ class PermList extends React.Component {
       .then(data => {
         this.setState({loading: false})
         console.log(data)
-        message.success('权限保存成功')
+        message.success(i18n('perm.save_success'))
       })
       .catch(error => {
         this.setState({loading: false})
@@ -251,7 +251,7 @@ class PermList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("permission_management")}>
+        title={i18n("user.permission_management")}>
 
         <div style={{ width: 300, marginBottom: 10 }}>
           <Input value={this.state.newGroup} addonAfter={<Icon type="plus" onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
@@ -280,7 +280,7 @@ class PermList extends React.Component {
         </Checkbox.Group>
 
         <div style={{ textAlign: 'center', marginTop: 30 }}>
-          <Button type="primary" onClick={this.savePerm}>保存</Button>
+          <Button type="primary" onClick={this.savePerm}>{i18n('common.save')}</Button>
         </div>
 
       </LeftRightLayout>

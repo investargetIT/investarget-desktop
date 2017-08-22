@@ -4,6 +4,7 @@ import { Form, Icon, Row, Col, Tabs, Button, Modal, Popconfirm, message } from '
 import * as api from '../api'
 import YearFinanceForm from './YearFinanceForm'
 import { SelectYear } from './ExtraInput'
+import { i18n } from '../utils/util'
 const TabPane = Tabs.TabPane
 
 const titleStyle = {
@@ -166,7 +167,7 @@ class ProjectYearFinance extends React.Component {
       <div>
 
         <div style={{textAlign: 'left', marginBottom: '8px'}}>
-          <Button type="dashed" style={{fontSize: '14px', fontWeight: 400}} onClick={this.add}>添加财务年度</Button>
+          <Button type="dashed" style={{fontSize: '14px', fontWeight: 400}} onClick={this.add}>{i18n('project.add_fiscal_year')}</Button>
         </div>
 
         {
@@ -175,29 +176,29 @@ class ProjectYearFinance extends React.Component {
               <div style={{marginBottom: '24px'}} key={item.fYear}>
                 <h3 style={subTitleStyle}>
                   {item.fYear}
-                  <a style={{marginLeft: '8px'}} onClick={this.handleEditYear.bind(this, item.id)}>编辑</a>
-                  <Popconfirm title={`删除${item.fYear}财务年度?`} onConfirm={this.handleDeleteYear.bind(this, item.id)}><a style={{marginLeft: '8px'}}>删除</a></Popconfirm>
+                  <a style={{marginLeft: '8px'}} onClick={this.handleEditYear.bind(this, item.id)}>{i18n('common.edit')}</a>
+                  <Popconfirm title={i18n('project.delete_fiscal_year') + '?'} onConfirm={this.handleDeleteYear.bind(this, item.id)}><a style={{marginLeft: '8px'}}>{i18n('common.delete')}</a></Popconfirm>
                 </h3>
                 <div style={{display:'flex', flexWrap: 'wrap'}}>
-                  <Field label="营业收入：" value={item.revenue} />
-                  <Field label="净利润：" value={item.netIncome} />
-                  <Field label="息税折旧摊销前利润：" value={item.EBITDA} />
-                  <Field label="毛利润：" value={item.grossProfit} />
-                  <Field label="总资产：" value={item.totalAsset} />
-                  <Field label="净资产：" value={item.stockholdersEquity} />
-                  <Field label="经营性现金流：" value={item.operationalCashFlow} />
-                  <Field label="净现金流：" value={item.grossMerchandiseValue} />
+                  <Field label={i18n('project.revenue') + ' : '} value={item.revenue} />
+                  <Field label={i18n('project.profits') + ' : '} value={item.netIncome} />
+                  <Field label={i18n('project.EBITDA') + ' : '} value={item.EBITDA} />
+                  <Field label={i18n('project.gross_profits') + ' : '} value={item.grossProfit} />
+                  <Field label={i18n('project.total_assets') + ' : '} value={item.totalAsset} />
+                  <Field label={i18n('project.net_assets') + ' : '} value={item.stockholdersEquity} />
+                  <Field label={i18n('project.operating_cash_flow') + ' : '} value={item.operationalCashFlow} />
+                  <Field label={i18n('project.net_cash_flow') + ' : '} value={item.grossMerchandiseValue} />
                 </div>
               </div>
             )
           })
         }
 
-        <Modal title="新增财务年度" visible={this.state.showAddModal} onOk={this.handleConfirmAdd} onCancel={this.handleCancelAdd}>
+        <Modal title={i18n('project.add_fiscal_year')} visible={this.state.showAddModal} onOk={this.handleConfirmAdd} onCancel={this.handleCancelAdd}>
           <AddYearForm wrappedComponentRef={this.handleAddRef} currencyType={this.props.currencyType} mode="add" disabledYears={disabledYears} />
         </Modal>
 
-        <Modal title="修改财务年度" visible={this.state.showEditModal} onOk={this.handleConfirmEdit} onCancel={this.handleCancelEdit}>
+        <Modal title={i18n('project.edit_fiscal_year')} visible={this.state.showEditModal} onOk={this.handleConfirmEdit} onCancel={this.handleCancelEdit}>
           <EditYearForm wrappedComponentRef={this.handleEditRef} currencyType={this.props.currencyType} data={this.state.editData} mode="edit" />
         </Modal>
 

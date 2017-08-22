@@ -56,34 +56,34 @@ class LogList extends React.Component {
 
     const columns = [
       {
-        title: "操作对象",
+        title: i18n('syslog.operated_item'),
         dataIndex: 'user_name',
         key: 'user_name'
       },
       {
-        title: "操作",
+        title: i18n('syslog.operation'),
         dataIndex: 'action',
         render: (text, record) => {
           return '修改用户'
         }
       },
       {
-        title: '修改属性',
+        title: i18n('syslog.modified_property'),
         dataIndex: 'type',
         key: 'type',
       },
       {
-        title: '操作前',
+        title: i18n('syslog.before_operation'),
         dataIndex: 'before',
         key: 'before'
       },
       {
-        title: "操作后",
+        title: i18n('syslog.after_operation'),
         dataIndex: 'after',
         key: 'after'
       },
       {
-        title: "时间",
+        title: i18n('syslog.modified_time'),
         dataIndex: 'updatetime',
         key: 'updatetime',
         render: (text, record) => {
@@ -91,7 +91,7 @@ class LogList extends React.Component {
         }
       },
       {
-        title: "操作者",
+        title: i18n('syslog.operator'),
         dataIndex: 'requestuser_name',
         key: 'requestuser_name'
       },
@@ -102,14 +102,14 @@ class LogList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("log_list")}>
+        title={i18n("syslog.log_list")}>
 
         <div style={{ marginBottom: '1.5em' }}>
           <Search2
             defaultValue={search}
             onSearch={this.handleSearch}
             style={{ width: '200px' }}
-            placeholder="操作对象、操作者"
+            placeholder={[i18n('syslog.operated_item'), i18n('syslog.operator')].join(' / ')}
           />
         </div>
 

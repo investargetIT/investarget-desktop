@@ -145,17 +145,17 @@ class SelectTraderToRelation extends React.Component {
     }
 
     const columns = [
-      { title: '交易师', key: 'username', dataIndex: 'username' },
-      { title: '所属机构', key: 'orgname', dataIndex: 'org.orgname' },
-      { title: '职位', key: 'title', dataIndex: 'title.name' },
-      { title: '电话', key: 'mobile', dataIndex: 'mobile' },
-      { title: '邮箱', key: 'email', dataIndex: 'email' }
+      { title: i18n('user.trader'), key: 'username', dataIndex: 'username' },
+      { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
+      { title: i18n('user.email'), key: 'email', dataIndex: 'email' }
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location} title="选择交易师">
+      <LeftRightLayout location={this.props.location} title={i18n('user.select_trader')}>
         <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
 
         <Table
@@ -178,8 +178,8 @@ class SelectTraderToRelation extends React.Component {
           showQuickJumper />
 
         <div style={{ textAlign: 'center' }}>
-          <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>确定</Button>
-          <Button onClick={this.props.history.goBack} style={{ marginLeft: 10 }}>取消</Button>
+          <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>{i18n('common.confirm')}</Button>
+          <Button onClick={this.props.history.goBack} style={{ marginLeft: 10 }}>{i18n('common.cancel')}</Button>
         </div>
       </LeftRightLayout>
     )

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Upload, Button, Icon, Modal, message } from 'antd'
 import { BASE_URL } from '../constants'
+import { i18n } from '../utils/util'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 
@@ -50,11 +51,11 @@ class UploadFile extends React.Component {
 
   beforeUpload = (file) => {
     if (mimeTypes.indexOf(file.type) == -1) {
-      message.warning('不支持的文件格式', 2)
+      message.warning(i18n('project.message.unsupported_formart'), 2)
       return false
     }
     if (this.state.fileList.length == 1) {
-      message.warning('只能上传一个文件', 2)
+      message.warning(i18n('project.message.only_one'), 2)
       return false
     }
   }
@@ -62,7 +63,7 @@ class UploadFile extends React.Component {
   handleFileRemoveConfirm = (file) => {
     return new Promise(function(resolve, reject) {
       Modal.confirm({
-        title: '删除文件',
+        title: i18n('project.message.delete_file_title'),
         content: file.name,
         onOk: function() { resolve(true) },
         onCancel: function() { resolve(false) },
@@ -141,7 +142,7 @@ class UploadFile extends React.Component {
       {
         this.state.fileList.length == 0 ? (
           <Button>
-            <Icon type="upload" /> 上传
+            <Icon type="upload" /> {i18n('common.upload')}
           </Button>
         ) : null
       }
@@ -206,11 +207,11 @@ class UploadImage extends React.Component {
   beforeUpload = (file) => {
     const isFormatAllowed = imageMimeTypes.indexOf(file.type) != -1
     if (!isFormatAllowed) {
-      message.error('请上传 jpeg 或 png 格式的图片', 2)
+      message.error(i18n('project.message.supported_image_format'), 2)
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('图片必须小于 2MB', 2);
+      message.error(i18n('project.message.image_size_limit'), 2);
     }
     return isFormatAllowed && isLt2M
   }

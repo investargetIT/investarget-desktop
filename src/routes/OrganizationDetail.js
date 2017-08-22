@@ -9,22 +9,6 @@ import PageTitle from '../components/PageTitle'
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 
-const dataSample = [{
-  id: 1,
-  position: '总裁',
-  org: 1,
-  user: [
-    {
-      id: 9,
-      name: '马云',
-      avatar: '/images/avatar1.png',
-      trader: {
-        id: 104,
-        name: '夏琰'
-      }
-    }
-  ]
-}]
 
 const PositionWithUser = props => {
 
@@ -287,29 +271,29 @@ class OrganizationDetail extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title={<span>机构详情（<Link to={'/app/orguser/list?org=' + id}>投资人名单</Link>）</span>} />
+        <PageTitle title={<span>{i18n('organization.org_detail')}（<Link to={'/app/orguser/list?org=' + id}>{i18n('organization.investor_list')}</Link>）</span>} />
         <div style={{ width: '50%', float: 'left' }}>
-          <Field title="名称" value={this.state.orgname} />
-          <Field title="机构类型" value={this.state.orgtype} />
-          <Field title="货币类型" value={this.state.currency} />
-          <Field title="行业" value={this.state.industry} />
-          <Field title="交易范围起" value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
-          <Field title="交易范围至" value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
-          <Field title="基金规模" value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
-          <Field title="决策周期（天）" value={this.state.decisionCycle} />
-          <Field title="公司邮箱" value={this.state.companyEmail} />
-          <Field title="公司官网" value={this.state.webSite} />
-          <Field title="电话" value={this.state.mobile} />
-          <Field title="微信公众号" value={this.state.weChat} />
-          <Field title="轮次" value={this.state.orgtransactionphase} />
-          <Field title="审核状态" value={this.state.orgstatus} />
-          <Field title="股票代码" value={this.state.orgcode} />
-          <Field title="是否投海外项目" value={this.state.investoverseasproject} />
-          <Field title="地址" value={this.state.address} />
-          <Field title="描述" value={this.state.description} />
-          <Field title="典型投资案例" value={this.state.typicalCase} />
-          <Field title="合伙人/投委会成员" value={this.state.partnerOrInvestmentCommiterMember} />
-          <Field title="决策流程" value={this.state.decisionMakingProcess} />
+          <Field title={i18n('organization.name')} value={this.state.orgname} />
+          <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
+          <Field title={i18n('organization.currency')} value={this.state.currency} />
+          <Field title={i18n('organization.industry')} value={this.state.industry} />
+          <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
+          <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
+          <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
+          <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />
+          <Field title={i18n('organization.company_email')} value={this.state.companyEmail} />
+          <Field title={i18n('organization.company_website')} value={this.state.webSite} />
+          <Field title={i18n('organization.telephone')} value={this.state.mobile} />
+          <Field title={i18n('organization.wechat')} value={this.state.weChat} />
+          <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
+          <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
+          <Field title={i18n('organization.stock_code')} value={this.state.orgcode} />
+          <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
+          <Field title={i18n('organization.address')} value={this.state.address} />
+          <Field title={i18n('organization.description')} value={this.state.description} />
+          <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />
+          <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
+          <Field title={i18n('organization.decision_cycle')} value={this.state.decisionMakingProcess} />
 
           <OrganizationRemarkList typeId={id} readOnly />
         </div>
@@ -343,9 +327,9 @@ class OrganizationDetail extends React.Component {
           onCancel={this.handleCancel}>
 
           <Form>
-            <BasicFormItem label={i18n("username")} name="name" required><Input /></BasicFormItem>
-            <BasicFormItem label={i18n("email")} name="email"><Input /></BasicFormItem>
-            <BasicFormItem label={i18n("mobile")} name="mobile"><Input /></BasicFormItem>
+            <BasicFormItem label={i18n("user.name")} name="name" required><Input /></BasicFormItem>
+            <BasicFormItem label={i18n("user.email")} name="email"><Input /></BasicFormItem>
+            <BasicFormItem label={i18n("user.mobile")} name="mobile"><Input /></BasicFormItem>
           </Form>
 
         </Modal>

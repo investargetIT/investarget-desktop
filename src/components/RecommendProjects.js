@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './RecommendProjects.css';
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import { Card, Icon, Tag, Button } from 'antd'
 
 const tagStyle = {
@@ -68,4 +67,4 @@ function RecommendProjects(props) {
 }
 
 
-export default injectIntl(RecommendProjects);
+export default RecommendProjects

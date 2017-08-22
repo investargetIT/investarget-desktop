@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { injectIntl, intlShape } from 'react-intl'
 import { i18n } from '../utils/util'
 import { Link } from 'dva/router'
 
@@ -58,27 +57,27 @@ class MarketPlaceForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="项目中文名" name="projtitleC" required whitespace>
+        <BasicFormItem label={i18n('project.chinese_name')} name="projtitleC" required whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="项目英文名" name="projtitleE" required whitespace>
+        <BasicFormItem label={i18n('project.english_name')} name="projtitleE" required whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="热门标签" name="tags" valueType="array" required>
+        <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
           <SelectTag mode="multiple" />
         </BasicFormItem>
 
         <IndustryDynamicFormItem industry={this.props.industry} />
 
-        <BasicFormItem label="国家" name="country" required valueType="number">
+        <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
           <CascaderCountry size="large" />
         </BasicFormItem>
 
         {/* TODO 上传者 */}
 
-        <BasicFormItem label="附件" name="linkpdfkey" required>
+        <BasicFormItem label={i18n('project.attachment')} name="linkpdfkey" required>
           <UploadFile />
         </BasicFormItem>
       </Form>

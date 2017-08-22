@@ -7,11 +7,11 @@ function MyInvestor(props) {
 
   const action = {
     link: `/app/user/add?redirect=${encodeURIComponent(props.location.pathname)}`,
-    name: '新增投资人',
+    name: i18n('user.create_investor'),
   }
 
   return (
-    <LeftRightLayout location={props.location} title={i18n("myinvestor")} action={action}>
+    <LeftRightLayout location={props.location} title={i18n("user.myinvestor")} action={action}>
       <MyPartner type="investor" />
     </LeftRightLayout>
   )

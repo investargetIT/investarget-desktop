@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import styles from './MainLayout.css';
 import Header from './Header';
 import { Layout, Icon } from 'antd'
-import { FormattedMessage } from 'react-intl'
 import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
 import Chat from './Chat'

@@ -94,13 +94,13 @@ class EmailDetail extends React.Component {
     const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: '姓名', key: 'username', dataIndex: 'username' },
+      { title: i18n('email.username'), key: 'username', dataIndex: 'username' },
       // { title: '公司', key: '', dataIndex: '' },
-      { title: '职位', key: 'title', dataIndex: 'title.name' },
+      { title: i18n('email.title'), key: 'title', dataIndex: 'title.name' },
       // { title: '行业', key: '', dataIndex: '' },
-      { title: '手机号码', key: 'mobile', dataIndex: 'mobile' },
-      { title: '邮箱', key: 'userEmail', dataIndex: 'userEmail' },
-      { title: '未读/已读', key: 'isRead', render: (text, record) => {
+      { title: i18n('email.mobile'), key: 'mobile', dataIndex: 'mobile' },
+      { title: i18n('email.email'), key: 'userEmail', dataIndex: 'userEmail' },
+      { title: i18n('email.has_read') + '/' + i18n('email.not_read'), key: 'isRead', render: (text, record) => {
         return <Icon type={record.isRead ? 'check' : 'close'} />
       } },
     ]
@@ -108,10 +108,10 @@ class EmailDetail extends React.Component {
     return (
       <MainLayout location={location}>
         <div>
-          <PageTitle title="邮件管理" />
+          <PageTitle title={i18n('email.investors')} />
 
           <div style={{marginBottom: '16px'}}>
-            <Search2 placeholder="邮箱、电话" style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 placeholder={i18n('email.email') + ' / ' + i18n('email.mobile')} style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <Table

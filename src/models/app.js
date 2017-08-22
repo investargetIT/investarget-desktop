@@ -24,7 +24,7 @@ export default {
     country: [],
     title: [],
     currencyType: [],
-    audit: [{id: 1, name: i18n('under_approval')}, {id: 2, name: i18n('recevied_approval')}, {id: 3, name: i18n('reject_approval')}],
+    audit: [{id: 1, name: i18n('common.under_approval')}, {id: 2, name: i18n('common.recevied_approval')}, {id: 3, name: i18n('common.reject_approval')}],
     industry: [],
     transactionPhases:  [],
     transactionType: [],

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { injectIntl, intlShape } from 'react-intl'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
@@ -138,7 +137,7 @@ class EditProject extends React.Component {
       if (!err) {
         let params = toData(values)
         api.editProj(id, params).then(result => {
-          message.success('项目已更新')
+          message.success(i18n('project.message.project_updated'), 2)
           this.getProject()
         }, error => {
          this.props.dispatch({
@@ -182,50 +181,50 @@ class EditProject extends React.Component {
     const FormAction = ({form}) => {
       return (
         <div style={actionStyle}>
-          <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form)}>保存</Button>
+          <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form)}>{i18n('common.save')}</Button>
         </div>
       )
     }
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="修改项目" />
+        <PageTitle title={i18n('project.edit_project')} />
         <div>
 
           <Tabs defaultActiveKey="1">
-            <TabPane tab="基本信息" key="1">
+            <TabPane tab={i18n('project.basics')} key="1">
               <div style={formStyle}>
                 <BaseForm wrappedComponentRef={this.handleBaseFormRef} data={data} />
                 <FormAction form="baseForm" />
               </div>
             </TabPane>
 
-            <TabPane tab="财务信息" key="2">
+            <TabPane tab={i18n('project.financials')} key="2">
               <div style={formStyle}>
                 <FinanceForm wrappedComponentRef={this.handleFinanceFormRef} data={data} />
                 <FormAction form="financeForm" />
               </div>
             </TabPane>
 
-            <TabPane tab="财务年度" key="6">
+            <TabPane tab={i18n('project.fiscal_year')} key="6">
               <ProjectYearFinance projId={id} currencyType={this.state.project.currency} />
             </TabPane>
 
-            <TabPane tab="联系方式" key="3">
+            <TabPane tab={i18n('project.contact')} key="3">
               <div style={formStyle}>
                 <ConnectForm wrappedComponentRef={this.handleConnectFormRef} data={data} />
                 <FormAction form="connectForm" />
               </div>
             </TabPane>
 
-            <TabPane tab="项目详情" key="4">
+            <TabPane tab={i18n('project.details')} key="4">
               <div style={formStyle}>
                 <DetailForm wrappedComponentRef={this.handleDetailFormRef} data={data} />
                 <FormAction form="detailForm" />
               </div>
             </TabPane>
 
-            <TabPane tab="附件上传" key="5">
+            <TabPane tab={i18n('project.attachments')} key="5">
               <ProjectAttachments projId={id} />
             </TabPane>
           </Tabs>

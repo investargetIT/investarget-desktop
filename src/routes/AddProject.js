@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { injectIntl, intlShape } from 'react-intl'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
@@ -76,12 +75,12 @@ class AddProject extends React.Component {
   render() {
     return(
       <MainLayout location={this.props.location}>
-        <PageTitle title="新增项目" actionTitle="新增 Market Place" actionLink="/app/marketplace/add" />
+        <PageTitle title={i18n('project.upload_project')} actionTitle={i18n('project.upload_marketplace')} actionLink="/app/marketplace/add" />
         <div>
           <AddProjectForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
-            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>取消</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>提交</Button>
+            <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </MainLayout>

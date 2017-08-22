@@ -4,7 +4,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as Api from '../api'
 import { Modal } from 'antd'
-import { hasPerm, isLogin } from '../utils/util'
+import { hasPerm, isLogin, i18n } from '../utils/util'
 
 class DataRoomList extends React.Component {
 
@@ -284,13 +284,13 @@ class DataRoomList extends React.Component {
     const maxKey = Math.max(...existKeyList)
 
     newData.splice(0, 0, {
-      name: "新建文件夹",
+      name: i18n('dataroom.new_folder'),
       isFolder: true,
       parentId: parentId,
-      rename: "新建文件夹",
+      rename: i18n('dataroom.new_folder'),
       unique: maxKey + 1,
     })
-    this.setState({ data: newData, name: "新建文件夹" })
+    this.setState({ data: newData, name: i18n('dataroom.new_folder') })
   }
 
   handleNewFolderNameChange(unique, evt) {
@@ -395,8 +395,8 @@ class DataRoomList extends React.Component {
     const targetFile = this.state.data.filter(f => f.id === targetID)[0]
     if (files.map(m => m.dataroom).includes(targetFile.dataroom)) {
       Modal.error({
-        title: '不能在同一个 data room 中进行复制操作',
-        content: '每个角色对应的目录为一个 data room，复制操作只有在跨 data room 的时候才允许执行 ',
+        title: i18n('dataroom.message.error_copy_files_title'),
+        content: i18n('dataroom.message.error_copy_files_content'),
       })
       return
     }
@@ -434,8 +434,8 @@ class DataRoomList extends React.Component {
     const targetFile = this.state.data.filter(f => f.id === targetID)[0]
     if (files.filter(f => f.dataroom !== targetFile.dataroom).length > 0 ) {
       Modal.error({
-        title: '禁止在不同的dataroom中进行移动操作',
-        content: '每个角色对应的目录为一个dataroom，移动操作只有在同一个dataroom中的时候才允许执行，请确保所选文件在同一个dataroom中',
+        title: i18n('dataroom.message.error_move_files_title'),
+        content: i18n('dataroom.message.error_move_files_content')
       })
       return
     }
@@ -535,7 +535,7 @@ class DataRoomList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={'项目名称：' + this.state.title}>
+        title={i18n('dataroom.project_name') + ' : ' + this.state.title}>
 
         { this.isAllDataLoaded ?
         <FileMgmt

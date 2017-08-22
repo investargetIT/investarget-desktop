@@ -25,7 +25,7 @@ class AddUser extends React.Component {
 
   isTraderAddInvestor = this.props.location.query.redirect === URI_12
 
-  
+
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
@@ -42,12 +42,12 @@ class AddUser extends React.Component {
           api.checkUserExist(values.mobile),
           api.checkUserExist(values.email)
         ]).then(data => {
-          const isMobileExist = data[0].data.result 
+          const isMobileExist = data[0].data.result
           const isEmailExist = data[1].data.result
           if (isMobileExist || isEmailExist) {
             isUserExist = true
             if (!this.isTraderAddInvestor) {
-              Modal.warning({ title: '该用户已经存在' })
+              Modal.warning({ title: i18n('user.message.user_exist') })
             } else {
               if (isMobileExist) return api.getUser({ search: values.mobile })
               if (isEmailExist) return api.getUser({ search: values.email })
@@ -97,7 +97,7 @@ class AddUser extends React.Component {
       const isExist = data.data.result
       if (isExist) {
         if (!this.isTraderAddInvestor) {
-          Modal.warning({ title: '该用户已经存在' })
+          Modal.warning({ title: i18n('user.message.user_exist') })
         } else {
           return api.getUser({ search: account })
         }
@@ -134,7 +134,7 @@ class AddUser extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n(this.isTraderAddInvestor ? "add_investor" : "create_user")}>
+        title={i18n(this.isTraderAddInvestor ? "user.add_investor" : "user.create_user")}>
 
         <AddUserForm type="add"
           wrappedComponentRef={this.handleRef}
@@ -142,15 +142,15 @@ class AddUser extends React.Component {
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
         <div style={{textAlign: 'center'}}>
-          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
+          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
         </div>
 
-        <Modal title="用户已存在"
+        <Modal title={i18n('user.message.user_exist')}
           visible={this.state.visible}
           onOk={this.handleAddRelation}
           confirmLoading={this.state.confirmLoading}
           onCancel={this.handleCancel}>
-          <p>{'是否要和用户 '  + (this.state.user && this.state.user.username) + ' 建立联系？'}</p>
+          <p>{i18n('user.message.user_add_relation', {'username': this.state.user && this.state.user.username})}</p>
         </Modal>
 
       </LeftRightLayout>

@@ -1,6 +1,6 @@
 import React from 'react'
-import { FormattedMessage } from 'react-intl'
 import _ from 'lodash'
+import { i18n } from '../utils/util'
 
 import { Input, Select, Icon, Button } from 'antd'
 const Option = Select.Option
@@ -52,11 +52,11 @@ class Search extends React.Component {
 
 function UserListSearch({ onChange, onSearch }) {
   const searchKeys = [
-    { value: 'name', label: <FormattedMessage id="name" /> },
-    { value: 'phone', label: <FormattedMessage id="phone" /> },
-    { value: 'email', label: <FormattedMessage id="email" /> },
-    { value: 'organization', label: <FormattedMessage id="org" /> },
-    { value: 'transaction', label: <FormattedMessage id="transaction" /> },
+    { value: 'name', label: i18n("user.name") },
+    { value: 'phone', label: i18n("user.phone") },
+    { value: 'email', label: i18n("user.email") },
+    { value: 'organization', label: i18n("organization.org") },
+    { value: 'transaction', label: i18n("user.trader") },
   ]
   return <Search keys={searchKeys} onChange={onChange} onSearch={onSearch} />
 }

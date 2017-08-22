@@ -3,6 +3,7 @@ import MainLayout from '../components/MainLayout'
 import { Radio, Button } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import { i18n } from '../utils/util'
 
 const RadioGroup = Radio.Group
 
@@ -24,10 +25,10 @@ function Home(props) {
   }
 
   return <MainLayout location={props.location}>
-    <h1>Choose</h1>
+    <h1>{i18n('common.choose')}</h1>
     <RadioGroup onChange={onChange} options={options} />
     <div style={{ marginTop: 20 }}>
-      <Button onClick={onClick} type="primary">确定</Button>
+      <Button onClick={onClick} type="primary">{i18n('common.confirm')}</Button>
     </div>
   </MainLayout>
 }

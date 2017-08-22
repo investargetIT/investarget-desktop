@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import { i18n } from '../utils/util'
 import { Row, Col } from 'antd'
 import ImageViewer from './ImageViewer'
 
@@ -81,25 +82,25 @@ class UserInfo extends React.Component {
     const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl } = this.state
     return (
       <div>
-        <Field title="姓名" value={username} />
+        <Field title={i18n('user.name')} value={username} />
         <Field title="公司" value={''} />
-        <Field title="部门" value={''} />
-        <Field title="职位" value={title} />
-        <Field title="标签" value={tags} />
-        <Field title="国家" value={country} />
-        <Field title="所属机构" value={org} />
-        <Field title="地区" value={''} />
-        <Field title="手机号码" value={mobile} />
-        <Field title="微信号" value={wechat} />
-        <Field title="邮箱" value={email} />
-        <Field title="审核状态" value={userstatus} />
-        <Field title="名片" value={<ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer>} />
-        <Field title="收藏项目" value={''} />
-        <Field title="推荐项目" value={''} />
-        <Field title="感兴趣项目" value={''} />
-        <Field title="标的需求" value={targetdemand} />
-        <Field title="近年并购动态" value={mergedynamic} />
-        <Field title="是否有产业基金或成立计划" value={ishasfundorplan} />
+        <Field title={i18n('user.department')} value={''} />
+        <Field title={i18n('user.position')} value={title} />
+        <Field title={i18n('user.tags')} value={tags} />
+        <Field title={i18n('user.country')} value={country} />
+        <Field title={i18n('user.institution')} value={org} />
+        <Field title={i18n('user.region')} value={''} />
+        <Field title={i18n('user.mobile')} value={mobile} />
+        <Field title={i18n('user.wechat')} value={wechat} />
+        <Field title={i18n('user.email')} value={email} />
+        <Field title={i18n('user.status')} value={userstatus} />
+        <Field title={i18n('user.card')} value={<ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer>} />
+        <Field title={i18n('project.favorite_projects')} value={''} />
+        <Field title={i18n('project.recommended_projects')} value={''} />
+        <Field title={i18n('project.interested_projects')} value={''} />
+        <Field title={i18n('user.target_demand')} value={targetdemand} />
+        <Field title={i18n('user.merges')} value={mergedynamic} />
+        <Field title={i18n('user.industry_fund')} value={ishasfundorplan} />
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Modal } from 'antd' 
+import { Modal } from 'antd'
 import { routerRedux } from 'dva/router'
 import * as api from '../api'
 import { hasPerm, i18n, isLogin } from '../utils/util'
@@ -35,7 +35,7 @@ class AddDataRoom extends React.Component {
     const projectID = this.props.location.query.projectID
     const react = this
     confirm({
-      title: '你确定为这些交易师或投资人创建Dataroom吗?',
+      title: i18n('dataroom.message.confirm_create_dataroom'),
       onOk() {
         Promise.all(selectedUsers.map(m => {
           const body = {
@@ -54,8 +54,8 @@ class AddDataRoom extends React.Component {
 
   render () {
     return (
-      <LeftRightLayout location={this.props.location} title={i18n("create_dataroom")}>
-        <div style={{ fontSize: 16, marginBottom: 24 }}>项目名称: {this.state.projectName}</div>
+      <LeftRightLayout location={this.props.location} title={i18n("dataroom.create_dataroom")}>
+        <div style={{ fontSize: 16, marginBottom: 24 }}>{i18n('dataroom.project_name')}: {this.state.projectName}</div>
         <SelectInvestorAndTrader onSelect={this.handleCreateDataroom} />
       </LeftRightLayout>
     )

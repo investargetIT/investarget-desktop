@@ -1,8 +1,7 @@
 import React from 'react'
 import { withRouter } from 'dva/router'
-import { injectIntl, intlShape } from 'react-intl'
 import * as api from '../api'
-import { handleError } from '../utils/util'
+import { handleError, i18n } from '../utils/util'
 
 import { Form, Button } from 'antd'
 import MainLayout from '../components/MainLayout';
@@ -98,7 +97,7 @@ class EditOrganization extends React.Component {
     return (
       <MainLayout location={this.props.location}>
         <div>
-          <PageTitle title="修改机构" />
+          <PageTitle title={i18n('organization.edit_org')} />
 
           <div style={formStyle}>
             <EditOrganizationForm
@@ -106,8 +105,8 @@ class EditOrganization extends React.Component {
               data={this.state.data}
             />
             <div style={actionStyle}>
-              <Button size="large" onClick={this.cancel} style={actionBtnStyle}>取消</Button>
-              <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>保存</Button>
+              <Button size="large" onClick={this.cancel} style={actionBtnStyle}>{i18n('common.cancel')}</Button>
+              <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>{i18n('common.save')}</Button>
             </div>
           </div>
 

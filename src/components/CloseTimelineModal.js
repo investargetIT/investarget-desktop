@@ -22,16 +22,16 @@ function CloseTimelineModal(props) {
 
     return (
       <Modal
-        title="关闭时间轴"
+        title={i18n('timeline.close_timeline')}
         visible={props.visible}
         onOk={props.onOk}
         onCancel={props.onCancel}
         footer={[
-          <Button key="cancel" size="large" onClick={props.onCancel}>取消</Button>,
-          <Button key="confirm" size="large" type="primary" disabled={props.reason == ''} onClick={props.onOk}>确定</Button>,
+          <Button key="cancel" size="large" onClick={props.onCancel}>{i18n('common.cancel')}</Button>,
+          <Button key="confirm" size="large" type="primary" disabled={props.reason == ''} onClick={props.onOk}>{i18n('common.confirm')}</Button>,
         ]}
       >
-        <h3 style={titleStyle}><span style={starStyle}>*</span>结束理由：</h3>
+        <h3 style={titleStyle}><span style={starStyle}>*</span>{i18n('timeline.close_reason')} : </h3>
         <div>
           <Input value={props.reason} onChange={handleReasonChange} />
         </div>

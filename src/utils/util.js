@@ -1,8 +1,8 @@
-import zhMessages from '../../locales/zh_flat.js'
-import enMessages from '../../locales/en_flat.js'
 import { Popconfirm, Button, Modal } from 'antd'
 import * as api from '../api'
 window.api = api
+
+import i18next from 'i18next'
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -43,7 +43,7 @@ if (!Array.prototype.includes) {
       while (k < len) {
         // a. Let elementK be the result of ? Get(O, ! ToString(k)).
         // b. If SameValueZero(searchElement, elementK) is true, return true.
-        // c. Increase k by 1. 
+        // c. Increase k by 1.
         if (sameValueZero(o[k], searchElement)) {
           return true;
         }
@@ -56,15 +56,24 @@ if (!Array.prototype.includes) {
   });
 }
 
-function t(obj, id) {
-  const props = obj.props || obj
-  return props.intl.formatMessage({ id: id })
-}
+// 使用 i18next 库来做国际化
+const lang = window.appLocale.lang || 'cn'
+i18next.init({
+  lng: lang,
+  debug: true,
+  resources: {
+    [lang]: {
+      translation: window.appLocale.messages
+    }
+  }
+})
 
-function i18n(key) {
-  var lang = window.LANG
-  var messages = (lang == 'en') ? enMessages : zhMessages
-  return messages[key]
+function i18n(key, options=null) {
+  if (options) {
+    return i18next.t(key, options)
+  } else {
+    return i18next.t(key)
+  }
 }
 
 function time(dateFromServer) {
@@ -181,4 +190,4 @@ export function handleError(error) {
   })
 }
 
-export { t, i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time }
+export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time }

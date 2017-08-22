@@ -44,7 +44,7 @@ class ProjectListPublished extends React.Component {
 
   handleDelete = (id) => {
     api.deleteProj(id).then(result => {
-      message.success('删除成功', 2)
+      message.success(i18n('project.message.delete_success'), 2)
       this.getProjectList()
     }, error => {
       this.props.dispatch({
@@ -63,7 +63,7 @@ class ProjectListPublished extends React.Component {
 
     const columns = [
       {
-        title: '图片',
+        title: i18n('project.image'),
         key: 'image',
         render: (text, record) => {
           const industry = record.industries && record.industries[0]
@@ -74,7 +74,7 @@ class ProjectListPublished extends React.Component {
         }
       },
       {
-        title: '名称',
+        title: i18n('project.name'),
         key: 'title',
         render: (text, record) => {
           return (
@@ -83,7 +83,7 @@ class ProjectListPublished extends React.Component {
         }
       },
       {
-        title: '国家',
+        title: i18n('project.country'),
         key: 'country',
         render: (text, record) => {
           const country = record.country
@@ -95,7 +95,7 @@ class ProjectListPublished extends React.Component {
         }
       },
       {
-        title: '交易规模',
+        title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
           const transactionAmount = record.transactionAmount
@@ -103,7 +103,7 @@ class ProjectListPublished extends React.Component {
         }
       },
       {
-        title: '当前状态',
+        title: i18n('project.current_status'),
         key: 'projstatus',
         render: (text, record) => {
           const status = record.projstatus
@@ -112,16 +112,16 @@ class ProjectListPublished extends React.Component {
         }
       },
       {
-        title: '操作',
+        title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => (
           <span>
             <Link to={'/app/projects/edit/' + record.id}>
-              <Button disabled={!record.action.change} size="small" >{i18n("edit")}</Button>
+              <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
           </span>
         )
@@ -130,7 +130,7 @@ class ProjectListPublished extends React.Component {
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="已发布项目" />
+        <PageTitle title={i18n('project.published_projects')} />
         <div>
           <Table columns={columns} dataSource={list} rowKey={record => record.id} loading={loading} pagination={false} />
           <Pagination className="ant-table-pagination" total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

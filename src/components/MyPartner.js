@@ -108,22 +108,22 @@ class MyPartner extends React.Component {
   render() {
     const columns = [
       {
-        title: i18n("username"),
+        title: i18n("user.name"),
         dataIndex: 'username',
         key: 'username'
       },
       {
-        title: i18n("org"),
-        dataIndex: 'org.orgname',
+        title: i18n("organization.org"),
+        dataIndex: 'org.org',
         key: 'org'
       },
       {
-        title: i18n("position"),
+        title: i18n("user.position"),
         dataIndex: 'title.name',
         key: 'title'
       },
       {
-        title: i18n("tag"),
+        title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
         render: tags => tags ? tags.map(t => t.name).join(' ') : null
@@ -131,26 +131,26 @@ class MyPartner extends React.Component {
     ]
     if (this.props.type === 'investor') {
       columns.push({
-        title: i18n("userstatus"),
+        title: i18n("user.status"),
         dataIndex: 'userstatus.name',
         key: 'userstatus'
       })
       columns.push({
-        title: i18n("action"),
+        title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
           <span>
             <Link to={'/app/user/' + record.id}>
-              <Button size="small">{i18n("view")}</Button>
+              <Button size="small">{i18n("common.view")}</Button>
             </Link>
             &nbsp;
           <Link to={'/app/user/edit/' + record.id + '?redirect=' + this.redirect}>
-              <Button size="small">{i18n("edit")}</Button>
+              <Button size="small">{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
-            { this.props.type !== 'investor' ? 
+            { this.props.type !== 'investor' ?
           <Popconfirm title="Confirm to delete?" onConfirm={this.handleDeleteUser.bind(null, record.id)}>
-              <Button type="danger" size="small">{i18n("delete")}</Button>
+              <Button type="danger" size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
             : null }
           </span>

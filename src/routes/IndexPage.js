@@ -234,8 +234,8 @@ class IndexPage extends React.Component {
           </SelectedContent> : null }
 
           <div style={{ margin: 10, textAlign: 'center' }}>
-            <Button type="primary" onClick={this.confirmAddWidgets}>确定</Button>
-            <Button style={{ marginLeft: 10 }} onClick={this.addWidgetButtonClicked}>取消</Button>
+            <Button type="primary" onClick={this.confirmAddWidgets}>{i18n('common.confirm')}</Button>
+            <Button style={{ marginLeft: 10 }} onClick={this.addWidgetButtonClicked}>{i18n('common.cancel')}</Button>
           </div>
 
         </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { getDataRoomFile } from '../api'
 import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
 import { BASE_URL } from '../constants'
 import qs from 'qs'
 
@@ -9,8 +9,8 @@ const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
 
 const actionName = {
-  'copy': '复制到',
-  'move': '移动到',
+  'copy': i18n('dataroom.copy_to'),
+  'move': i18n('dataroom.move_to'),
 }
 
 const validFileTypes = [
@@ -160,7 +160,7 @@ class FileMgmt extends React.Component {
   handleDelete() {
     const react = this
     confirm({
-      title: '确定删除吗？',
+      title: i18n('dataroom.message.confirm_delete_files'),
       onOk() {
         react.state.selectedRows.map(m => react.deleteContent(m.id))
         const deleteContents = react.contents.concat(react.state.selectedRows.map(m => m.id))
@@ -185,7 +185,7 @@ class FileMgmt extends React.Component {
     const notAllowedKeys = this.contents.concat(this.state.selectedRows.map(m => m.id), this.state.parentId)
 
     if (notAllowedKeys.includes(parseInt(this.selectedKeys[0], 10))) {
-      message.error("不能将文件复制或移动到自身及子目录下")
+      message.error('dataroom.message.error_move_files')
       return
     }
 
@@ -245,7 +245,7 @@ class FileMgmt extends React.Component {
     }
 
     const columns = [{
-      title: '文件名',
+      title: i18n('dataroom.filename'),
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => {
@@ -269,18 +269,18 @@ class FileMgmt extends React.Component {
                 style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }}
                 value={record.rename}
                 onChange={this.props.onNewFolderNameChange.bind(this, record.unique)} />
-          <Button onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>确定</Button>
-          <Button onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>取消</Button> </span>) }
+          <Button onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.confirm')}</Button>
+          <Button onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.cancel')}</Button> </span>) }
         </div>
       ),
     }, {
-      title: '大小',
+      title: i18n('dataroom.size'),
       dataIndex: 'size',
       key: 'size',
       sorter: (a, b) => a.size - b.size,
       render: text => text && formatBytes(text),
     }, {
-      title: '修改日期',
+      title: i18n('dataroom.modified_time'),
       dataIndex: 'date',
       key: 'date',
       render: date => date && time(date),
@@ -300,11 +300,11 @@ class FileMgmt extends React.Component {
         parentFolder = parentFolderArr[0]
       }
     }
-    const base = this.state.parentId === -999 ? "全部文件" : (
+    const base = this.state.parentId === -999 ? i18n('dataroom.all') : (
       <span>
-        <a onClick={this.folderClicked.bind(this, parentFolder)}>返回上一级</a>
+        <a onClick={this.folderClicked.bind(this, parentFolder)}>{i18n('dataroom.back')}</a>
         &nbsp;|&nbsp;
-        <a onClick={this.folderClicked.bind(this, null)}>全部文件</a>
+        <a onClick={this.folderClicked.bind(this, null)}>{i18n('dataroom.all')}</a>
       </span>
     )
 
@@ -365,32 +365,32 @@ class FileMgmt extends React.Component {
       if (unableToOperate || currentFolder.isShadow || currentFolder.isVirtual) return null
       return (
         <div>
-          { hasEnoughPerm ? 
+          { hasEnoughPerm ?
           <Upload {...props}>
-            <Button type="primary" style={{ marginRight: 10 }}>上传</Button>
+            <Button type="primary" style={{ marginRight: 10 }}>{i18n('dataroom.upload')}</Button>
           </Upload>
           : null }
 
-          { hasEnoughPerm ? 
+          { hasEnoughPerm ?
           <Button
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
-            style={{ marginRight: 10 }}>新建文件夹</Button>
+            style={{ marginRight: 10 }}>{i18n('dataroom.new_folder')}</Button>
           : null }
 
           {selectMoreThanOneRow && hasEnoughPerm ?
-            <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>删除</Button>
+            <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
           : null}
 
           {selectMoreThanOneRow && noShadowInSelectedRows ?
-            <Button onClick={this.handleRename} style={{ marginRight: 10 }}>重命名</Button>
+            <Button onClick={this.handleRename} style={{ marginRight: 10 }}>{i18n('dataroom.rename')}</Button>
           : null}
 
           {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows && hasEnoughPerm ?
-            <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>复制到</Button>
+            <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>{i18n('dataroom.copy_to')}</Button>
           : null}
 
           {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows ?
-            <Button onClick={this.handleMove} style={{ marginRight: 10 }}>移动到</Button>
+            <Button onClick={this.handleMove} style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
           : null}
 
         </div>

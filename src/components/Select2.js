@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Input, Icon } from 'antd'
 import _ from 'lodash'
 import styles from './Select2.css'
+import { i18n } from '../utils/util'
 
 function isParent(obj, parentObj) {
   while (obj != undefined && obj != null && obj.tagName.toUpperCase() != 'BODY') {
@@ -224,9 +225,9 @@ class Select2 extends React.Component {
       <div ref="container">
         <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
         <div style={{ ...searchStyle, display: visible ? 'block' : 'none' }}>
-          <Input ref="search" style={inputStyle} size="large" suffix={<Icon type="search" />} placeholder="输入关键词搜索" value={search} onChange={this.handleSearch} />
+          <Input ref="search" style={inputStyle} size="large" suffix={<Icon type="search" />} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
           <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
-            { reloading ? <p style={tipStyle}>搜索中...</p> : null }
+            { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
             <ul className={styles['list']}>
               {
                 list.map(item =>
@@ -235,7 +236,7 @@ class Select2 extends React.Component {
               }
             </ul>
             {
-              loading ? <p style={tipStyle}>加载结果中...</p> : null
+              loading ? <p style={tipStyle}>{i18n('common.is_loading')}</p> : null
             }
           </div>
         </div>

@@ -136,39 +136,39 @@ class OrgUserList extends React.Component {
 
     const columns = [
       {
-        title: i18n("username"),
+        title: i18n("use.name"),
         dataIndex: 'username',
         key: 'username'
       },
       {
-        title: i18n("org"),
+        title: i18n("organization.org"),
         dataIndex: 'org.orgname',
         key: 'org'
       },
       {
-        title: i18n("position"),
+        title: i18n("user.position"),
         dataIndex: 'title.name',
         key: 'title'
       },
       {
-        title: i18n("tag"),
+        title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
         render: tags => tags ? tags.map(t => t.name).join(' ') : null
       },
       {
-        title: i18n("role"),
+        title: i18n("account.role"),
         dataIndex: 'groups',
         key: 'role',
         render: groups => groups ? groups.map(m => m.name).join(' ') : null
       },
       {
-        title: i18n("userstatus"),
+        title: i18n("user.status"),
         dataIndex: 'userstatus.name',
         key: 'userstatus'
       },
       {
-        title: i18n("Transaction"),
+        title: i18n("user.trader"),
         dataIndex: 'trader_relation.traderuser.username',
         key: 'trader'
       },
@@ -178,20 +178,20 @@ class OrgUserList extends React.Component {
         key: 'IR'
       },
       {
-        title: i18n("action"),
+        title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
               <span>
                 <Link to={'/app/user/' + record.id}>
-                  <Button disabled={!record.action.get} size="small">{i18n("view")}</Button>
+                  <Button disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
                 </Link>
                 &nbsp;
                 <Link to={'/app/user/edit/' + record.id}>
-                  <Button disabled={!record.action.change} size="small">{i18n("edit")}</Button>
+                  <Button disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
                 &nbsp;
                 <Popconfirm title="Confirm to delete?" onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button type="danger" disabled={!record.action.delete} size="small">{i18n("delete")}</Button>
+                  <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
                 </Popconfirm>
               </span>
         )
@@ -201,21 +201,21 @@ class OrgUserList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("user_list")}
-        action={hasPerm("usersys.admin_adduser") ? { name: i18n("create_user"), link: "/app/user/add" } : null}>
+        title={i18n("user.user_list")}
+        action={hasPerm("usersys.admin_adduser") ? { name: i18n("user.create_user"), link: "/app/user/add" } : null}>
 
         <OrgUserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ overflow: 'auto' }}>
           <div style={{ marginBottom: '24px', float: 'left' }}>
-            <Search2 placeholder="搜索用户" style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 placeholder={i18n('user.name')} style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <div style={{ float: 'right' }}>
-            按创建时间&nbsp;
+            {i18n('common.sort_by_created_time')}&nbsp;
                 <Select defaultValue="desc" onChange={this.handleSortChange}>
-              <Option value="asc">正序</Option>
-              <Option value="desc">倒序</Option>
+              <Option value="asc">{i18n('common.asc_order')}</Option>
+              <Option value="desc">{i18n('common.dec_order')}</Option>
             </Select>
           </div>
         </div>

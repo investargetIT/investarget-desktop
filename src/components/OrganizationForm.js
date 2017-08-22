@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { injectIntl, intlShape } from 'react-intl'
 import { i18n, exchange, hasPerm } from '../utils/util'
 import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
@@ -44,11 +43,6 @@ const formItemLayout = {
 
 class OrganizationForm extends React.Component {
 
-  static propTypes = {
-    intl: intlShape.isRequired,
-    form: PropTypes.object,
-  }
-
   constructor(props) {
     super(props)
   }
@@ -80,58 +74,57 @@ class OrganizationForm extends React.Component {
   }
 
   render() {
-    const { formatMessage } = this.props.intl
     const { getFieldDecorator, getFieldValue, setFieldsValue } = this.props.form
     return (
       <Form>
 
-        <BasicFormItem label={formatMessage({id: 'organization.cn_name'})} name="orgnameC" required whitespace>
+        <BasicFormItem label={i18n('organization.cn_name')} name="orgnameC" required whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.en_name'})} name="orgnameE" whitespace>
+        <BasicFormItem label={i18n('organization.en_name')} name="orgnameE" whitespace>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.org_type'})} name="orgtype" valueType="number">
+        <BasicFormItem label={i18n('organization.org_type')} name="orgtype" valueType="number">
           <SelectOrganizationType />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.industry'})} name="industry" valueType="number">
+        <BasicFormItem label={i18n('organization.industry')} name="industry" valueType="number">
           <CascaderIndustry disabled={[]} />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.transaction_phase'})} name="orgtransactionphase" valueType="array">
+        <BasicFormItem label={i18n('organization.transaction_phase')} name="orgtransactionphase" valueType="array">
           <SelectTransactionPhase mode="multiple" allowClear />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.stock_code'})} name="orgcode">
+        <BasicFormItem label={i18n('organization.stock_code')} name="orgcode">
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.invest_oversea_project'})} name="investoverseasproject" valueType="boolean" initialValue={false}>
+        <BasicFormItem label={i18n('organization.invest_oversea_project')} name="investoverseasproject" valueType="boolean" initialValue={false}>
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.currency'})} name="currency" valueType="number" onChange={this.handleCurrencyTypeChange}>
+        <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number" onChange={this.handleCurrencyTypeChange}>
           <RadioCurrencyType />
         </BasicFormItem>
 
-        <CurrencyFormItem label={formatMessage({id: 'organization.transaction_amount_from'})} name="transactionAmountF" />
+        <CurrencyFormItem label={i18n('organization.transaction_amount_from')} name="transactionAmountF" />
 
-        <CurrencyFormItem label={formatMessage({id: 'organization.transaction_amount_to'})} name="transactionAmountT" />
+        <CurrencyFormItem label={i18n('organization.transaction_amount_to')} name="transactionAmountT" />
 
-        <CurrencyFormItem label={formatMessage({id: 'organization.fund_size'})} name="fundSize" />
+        <CurrencyFormItem label={i18n('organization.fund_size')} name="fundSize" />
 
-        <BasicFormItem label={formatMessage({id: 'organization.company_email'})} name="companyEmail" valueType="email">
+        <BasicFormItem label={i18n('organization.company_email')} name="companyEmail" valueType="email">
           <Input type="email" />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.company_website'})} name="webSite">
+        <BasicFormItem label={i18n('organization.company_website')} name="webSite">
           <Input />
         </BasicFormItem>
 
-        <FormItem {...formItemLayout} label={formatMessage({id: 'organization.telephone'})}>
+        <FormItem {...formItemLayout} label={i18n('organization.telephone')}>
           <Row gutter={8}>
             <Col span={6}>
               <FormItem>
@@ -159,38 +152,38 @@ class OrganizationForm extends React.Component {
           </Row>
         </FormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.wechat'})} name="weChat">
+        <BasicFormItem label={i18n('organization.wechat')} name="weChat">
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.address'})} name="address">
+        <BasicFormItem label={i18n('organization.address')} name="address">
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.description'})} name="description">
+        <BasicFormItem label={i18n('organization.description')} name="description">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.typical_case'})} name="typicalCase">
+        <BasicFormItem label={i18n('organization.typical_case')} name="typicalCase">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.partner_or_investment_committee_member'})} name="partnerOrInvestmentCommiterMember">
+        <BasicFormItem label={i18n('organization.partner_or_investment_committee_member')} name="partnerOrInvestmentCommiterMember">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.decision_cycle'})} name="decisionCycle" valueType="number">
+        <BasicFormItem label={i18n('organization.decision_cycle')} name="decisionCycle" valueType="number">
           <InputNumber style={{ width: '100%' }} />
         </BasicFormItem>
 
-        <BasicFormItem label={formatMessage({id: 'organization.decision_process'})} name="decisionMakingProcess">
+        <BasicFormItem label={i18n('organization.decision_process')} name="decisionMakingProcess">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
 
-        { hasPerm('org.admin_addorg') ? 
-        <BasicFormItem label={formatMessage({id: 'organization.audit_status'})} name="orgstatus" valueType="number" initialValue={1}>
+        { hasPerm('org.admin_addorg') ?
+        <BasicFormItem label={i18n('organization.audit_status')} name="orgstatus" valueType="number" initialValue={1}>
           <RadioAudit />
-        </BasicFormItem> 
+        </BasicFormItem>
         : null }
 
       </Form>
@@ -198,4 +191,4 @@ class OrganizationForm extends React.Component {
   }
 }
 
-export default connect()(injectIntl(OrganizationForm))
+export default connect()(OrganizationForm)

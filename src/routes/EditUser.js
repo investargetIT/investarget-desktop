@@ -161,7 +161,7 @@ class EditUser extends React.Component {
     const trader = this.minorRelation[index].traderuser.username
     const react = this
     confirm({
-      title: `你确定要解除投资人 ${investor} 和交易师 ${trader} 的关系吗？`,
+      title: i18n('user.message.user_remove_relation', {investor, trader}),
       onOk() {
         react.deleteUserRelation(index)
       },
@@ -187,7 +187,7 @@ class EditUser extends React.Component {
       let trader = this.majorRelation.traderuser.username
       let react = this
       confirm({
-        title: `你确定要解除投资人 ${investor} 和交易师 ${trader} 的关系吗？`,
+        title: i18n('user.message.user_remove_relation', {investor, trader}),
         onOk() {
           react.deleteUserMajorRelation(id)
         },
@@ -212,7 +212,7 @@ class EditUser extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title="修改用户">
+        title={i18n('user.edit_user')}>
 
         <EditUserForm
           wrappedComponentRef={this.handleRef}
@@ -224,7 +224,7 @@ class EditUser extends React.Component {
           onDeselectMinorTrader={this.handleDeselectTrader} />
 
         <div style={{textAlign: 'center'}}>
-          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("submit")}</Button>
+          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
         </div>
 
         <UserRemarkList typeId={userId} />
