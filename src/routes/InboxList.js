@@ -3,6 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Pagination } from 'antd'
 import { getMsg, readMsg } from '../api'
+import { i18n } from '../utils/util'
 
 const leftContainerStyle = {
   width: '50%',

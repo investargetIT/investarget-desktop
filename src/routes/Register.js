@@ -8,6 +8,7 @@ import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
+import { i18n } from '../utils/util'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group

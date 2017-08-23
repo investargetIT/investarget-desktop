@@ -3,6 +3,7 @@ import { connect } from 'dva'
 import MainLayout from '../components/MainLayout'
 import { Button, Icon, Card, Col, Popconfirm } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { i18n } from '../utils/util'
 
 function SelectedContent(props) {
 

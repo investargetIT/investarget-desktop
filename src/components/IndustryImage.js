@@ -1,5 +1,6 @@
 import React from 'react'
 import * as api from '../api'
+import { i18n } from '../utils/util'
 
 const style = {
   display: 'inline-block',
