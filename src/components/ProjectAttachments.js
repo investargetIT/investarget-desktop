@@ -188,9 +188,27 @@ class ProjectAttachments extends React.Component {
 
   getAttachment = () => {
     const projId = this.props.projId
-    return api.getProjAttachment(projId).then(result => {
+    api.getProjAttachment(projId).then(result => {
       return result.data.data
-    }, error => {
+    })
+    .then(fileList => {
+      fileList.forEach((item, index) => {
+        item.uid = -(index + 1)
+        item.name = item.filename
+        item.status = 'done'
+      })
+      const otherDirs = []
+      fileList.forEach(item => {
+        if (!this.state.dirs.includes(item.filetype)) {
+          otherDirs.push(item.filetype)
+        }
+      })
+      this.setState({
+        fileList,
+        dirs: [ ...this.state.dirs, ...otherDirs ],
+      })
+    })
+    .catch(error => {
       this.handleError(error)
     })
   }
@@ -205,7 +223,7 @@ class ProjectAttachments extends React.Component {
       key: file.key,
     }
     return api.addProjAttachment(data).then(result => {
-      console.log(result)
+      this.getAttachment()
     }, error => {
       this.handleError(error)
     })
@@ -270,25 +288,7 @@ class ProjectAttachments extends React.Component {
 
   componentDidMount() {
     // test data
-    this.getAttachment().then(fileList => {
-      fileList.forEach((item, index) => {
-        item.uid = -(index + 1)
-        item.name = item.filename
-        item.status = 'done'
-      })
-      const otherDirs = []
-      fileList.forEach(item => {
-        if (!this.state.dirs.includes(item.filetype)) {
-          otherDirs.push(item.filetype)
-        }
-      })
-      this.setState({
-        fileList,
-        dirs: [ ...this.state.dirs, ...otherDirs ],
-      })
-    }, error => {
-      this.handleError(error)
-    })
+    this.getAttachment()
   }
 
   handleError = (error) => {
