@@ -221,7 +221,7 @@ class InstantMessage extends React.Component {
     };
     this.conn.open(options);
 
-    this.getUserFriend()
+    this.getUserFriendAndMsg()
   }
 
   componentWillUnmount() {
@@ -254,7 +254,7 @@ class InstantMessage extends React.Component {
     this.conn.send(msg.body);
   };
 
-  getUserFriend = () => {
+  getUserFriendAndMsg = () => {
     api.getUserFriend()
     .then(data => {
       const channels = data.data.data.filter(f => 
@@ -282,7 +282,9 @@ class InstantMessage extends React.Component {
       if (this._isMounted) {
         this.setState({ channels })
       }
+      return Promise.all(channels.map(m => api.getChatMsg({ to: m.id })))
     })
+    .then(data => console.log('abcdef', data))
   }
 
   handleNewFriend = (isAccept, channel) => {

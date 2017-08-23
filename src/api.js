@@ -582,3 +582,8 @@ export function deleteRemark(type, id) {
 export function getLogOfUserUpdate(param) {
     return r('/log/userupdate?' + qs.stringify(param))
 }
+
+/**
+ * mongolog
+ */
+export const getChatMsg = param => r('/mongolog/chatmsg?' + qs.stringify(param))

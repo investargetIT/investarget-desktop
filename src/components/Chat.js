@@ -424,6 +424,7 @@ class Chat extends React.Component {
   }
 
   handleChannelClicked(channel) {
+    this.shouldScrollBottom = true
     this.setState({ channel: channel })
   }
 
