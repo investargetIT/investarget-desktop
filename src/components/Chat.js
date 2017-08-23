@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'dva'
 import md5 from '../utils/md5'
 
-const mySpeechBubbleColor = 'rgb(162, 229, 99)'
-//const mySpeechBubbleColor = 'lightBlue'
+// const mySpeechBubbleColor = 'rgb(162, 229, 99)'
+// const mySpeechBubbleColor = 'lightBlue'
+const mySpeechBubbleColor = 'rgb(229, 243, 253)'
 
 const defaultMessages = [
   {
@@ -286,8 +287,7 @@ const messageContainerStyle = {
 }
 
 const contentContainerStyle = {
-  height: (1 - topBarHeight / mainContainerHeight - 0.6) * 100 + '%',
-  background: 'red'
+  height: (1 - topBarHeight / mainContainerHeight - 0.6) * 100 + '%'
 }
 
 class Chat extends React.Component {
@@ -434,6 +434,32 @@ class Chat extends React.Component {
     })
   }
 
+  handleInputFileChange = () => {
+    console.log('dasdad', this.imgupload.files)
+    this.handleFiles(this.imgupload.files)
+  }
+
+  handleFiles = files => {
+    const preview = []
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var imageType = /^image\//;
+
+      if (!imageType.test(file.type)) {
+        continue;
+      }
+
+      var img = document.createElement("img");
+      img.classList.add("obj");
+      img.file = file;
+      preview.push(img);
+
+      var reader = new FileReader();
+      reader.onload = (function (aImg) { return function (e) { aImg.src = e.target.result; }; })(img);
+      reader.readAsDataURL(file);
+    }
+  }
+
   render () {
     const propMsg = this.props.messages || defaultMessages
     const messages = [...propMsg]
@@ -478,6 +504,12 @@ class Chat extends React.Component {
     return (
       <div style={mainContainerStyle}>
 
+        <input
+          type="file"
+          ref={input => this.imgupload = input}
+          style={{ display: 'none' }}
+          onChange={this.handleInputFileChange} />
+
         <img onClick={this.handleCloseChatDialog} style={{ cursor: 'pointer', width: closeIconHeight, position:'absolute', right: -closeIconHeight/2, top: -closeIconHeight/2 }} src="/images/ic_close.png" />
         
         <div style={leftContainerStyle}>
@@ -505,13 +537,17 @@ class Chat extends React.Component {
             <div ref="inputTextContent" style={messageContainerStyle}>
               <ul>{messagesJSX}</ul>
             </div>
-            <div style={contentContainerStyle}>
-              <textarea
-                onChange={this.handleInputChange}
-                onKeyPress={this.handleKeyPress}
-                value={this.state.inputValue}
-                style={{ width: '100%', height: '100%', padding: 10, border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
-            </div> 
+            <div style={{ height: 44, padding: '10px 18px' }}>
+              <img
+                onClick={() => this.imgupload.click()}
+                style={{ cursor: 'pointer', width: 24, height: 24 }} src="/images/ic_image.svg" />
+            </div>
+            <textarea
+              onChange={this.handleInputChange}
+              onKeyPress={this.handleKeyPress}
+              value={this.state.inputValue}
+              style={{ width: '100%', height: (1 - topBarHeight / mainContainerHeight - 0.6 - 56 / mainContainerHeight) * 100 + '%', padding: '0 20px', border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
+            <div style={{ height: 12 }} />
           </div> }
         
       </div>

@@ -39,7 +39,7 @@ html, body, :global(#root) {
   height: 0;
 
   border-top: 4px solid transparent;
-  border-left: 6px solid rgb(162, 229, 99);
+  border-left: 6px solid rgb(229, 243, 253);
   border-bottom: 4px solid transparent;
 }
 :global(.ant-input) {
