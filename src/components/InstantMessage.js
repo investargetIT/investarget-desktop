@@ -137,6 +137,7 @@ class InstantMessage extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true
     this.conn = new WebIM.connection({
       https: WebIM.config.https,
       url: WebIM.config.xmppURL,
@@ -224,7 +225,10 @@ class InstantMessage extends React.Component {
   }
 
   componentWillUnmount() {
-    this.conn.close();
+    this._isMounted = false
+    if (this.conn && this.conn.context.stropheConn) {
+      this.conn.close();
+    }
   }
 
   // 单聊发送文本消息
@@ -275,7 +279,9 @@ class InstantMessage extends React.Component {
           return obj
         }
       })
-      this.setState({ channels })
+      if (this._isMounted) {
+        this.setState({ channels })
+      }
     })
   }
 
