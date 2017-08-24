@@ -9,121 +9,8 @@ class InstantMessage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages: [
-        {
-          id: 1,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png',
-          },
-          time: '2017-07-10 17:50:38',
-          channelId: 1,
-          type: 'text',
-          content: '这是小游侠发送的文本内容'
-        },
-        {
-          id: 2,
-          user: {
-            id: 2,
-            name: '小型',
-            photoUrl: '/images/avatar1.png',
-          },
-          time: '2017-07-10 17:50:48',
-          channelId: 1,
-          type: 'text',
-          content: '这是小型发送的文本内容'
-        },
-        {
-          id: 3,
-          user: {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '/images/default-avatar.png',
-          },
-          time: '2017-07-10 17:50:58',
-          channelId: 1,
-          type: 'text',
-          content: '这是小游侠再一次发送的文本内容'
-        },
-        {
-          id: 4,
-          user: {
-            id: 2,
-            name: '小型',
-            photoUrl: '/images/avatar1.png',
-          },
-          time: '2017-07-10 17:51:08',
-          channelId: 1,
-          type: 'text',
-          content: '这是小型再一次发送的文本内容'
-        },
-      ],
-      channels: [
-        {
-          id: 1,
-          imgUrl: '/images/avatar1.png',
-          name: '小型',
-          latestMessage: {
-            content: '这是小型再一次发送的文本内容',
-            time: '1:15 PM'
-          },
-          member: [
-            {
-              id: 1,
-              name: '小游侠',
-              photoUrl: '...'
-            },
-            {
-              id: 2,
-              name: '小懒猪',
-              photoUrl: '...'
-            }
-          ]
-        },
-        {
-          id: 2,
-          imgUrl: '/images/avatar3.png',
-          name: '小兵',
-          latestMessage: {
-            content: '这是小兵小小兵再一次发送的文本内容',
-            time: '11:38 AM'
-          },
-          member: [
-            {
-              id: 1,
-              name: '小游侠',
-              photoUrl: '...'
-            },
-            {
-              id: 3,
-              name: '小兵张嘎',
-              photoUrl: '...'
-            }
-          ]
-        },
-        {
-          id: 3,
-          imgUrl: '/images/avatar2.png',
-          name: '小红',
-          latestMessage: {
-            content: '这是小红再一次发送的文本内容',
-            time: '7/9/17'
-          },
-          member: [
-            {
-              id: 1,
-              name: '小游侠',
-              photoUrl: '...'
-            },
-            {
-              id: 4,
-              name: '小红',
-              photoUrl: '...'
-            }
-          ]
-        },
-      ],
+      messages: null,
+      channels: [],
       onReceiveMessage: false,
     }
     
@@ -255,6 +142,7 @@ class InstantMessage extends React.Component {
   };
 
   getUserFriendAndMsg = () => {
+    let friends
     api.getUserFriend()
     .then(data => {
       const channels = data.data.data.filter(f => 
@@ -279,12 +167,40 @@ class InstantMessage extends React.Component {
           return obj
         }
       })
+      friends = channels
       if (this._isMounted) {
         this.setState({ channels })
       }
       return Promise.all(channels.map(m => api.getChatMsg({ to: m.id })))
     })
-    .then(data => console.log('abcdef', data))
+    .then(data => {
+      const allRawMessages = data.map(m => m.data.data).reduce((val, acc) => acc.concat(val), [])
+      const filteredRawMessages = allRawMessages.filter(f => f.payload.bodies[0].type === 'txt')
+      const messages = filteredRawMessages.map(m => {
+        const id = m.msg_id
+
+        let user = {}, channelId
+        const index = friends.map(m => m.id + '').indexOf(m.chatfrom)
+        if (index > -1) {
+          channelId = friends[index].id
+          user.id = friends[index].id
+          user.name = friends[index].name
+          user.photoUrl = friends[index].imgUrl
+        } else {
+          channelId = parseInt(m.to, 10)
+          user.id = isLogin().id
+          user.name = isLogin().username
+          user.photoUrl = isLogin().photourl
+        }
+        const time = parseInt(m.timestamp, 10)
+        const type = 'text'
+        const content = m.payload.bodies[0].msg
+        return { id, user, time, channelId, type, content }
+      })
+      if (this._isMounted) {
+        this.setState({ messages })
+      }
+    })
   }
 
   handleNewFriend = (isAccept, channel) => {
@@ -301,14 +217,14 @@ class InstantMessage extends React.Component {
   }
 
   render() {
-    return <Chat
+    return this.state.messages ? <Chat
       user={this.currentUser}
       onSendMsg={this.sendPrivateText}
       channels={this.state.channels}
-      messages={this.state.messages} 
-      onReceiveMessage={this.state.onReceiveMessage} 
-      onAcceptNewFriend={this.handleNewFriend.bind(this, true)} 
-      onRejectNewFriend={this.handleNewFriend.bind(this, false)} />
+      messages={this.state.messages}
+      onReceiveMessage={this.state.onReceiveMessage}
+      onAcceptNewFriend={this.handleNewFriend.bind(this, true)}
+      onRejectNewFriend={this.handleNewFriend.bind(this, false)} /> : null
   }
 
 }

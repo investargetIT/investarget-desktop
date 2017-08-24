@@ -296,27 +296,7 @@ class Chat extends React.Component {
 
     this.state = {
       inputValue: '',
-      channel: {
-        id: 1,
-        imgUrl: '...',
-        name: '小型',
-        latestMessage: {
-          content: '这是小型再一次发送的文本内容',
-          time: '1:15 PM'
-        },
-        member: [
-          {
-            id: 1,
-            name: '小游侠',
-            photoUrl: '...'
-          },
-          {
-            id: 2,
-            name: '小懒猪',
-            photoUrl: '...'
-          }
-        ]
-      },
+      channel: (props.channels && props.channels[0]) || defaultChannels[0],
       messages: [],
       channels: [
         {
@@ -424,7 +404,7 @@ class Chat extends React.Component {
   }
 
   handleChannelClicked(channel) {
-    this.shouldScrollBottom = true
+    this.shouldScrollBottom = !channel.isRequestAddFriend
     this.setState({ channel: channel })
   }
 
@@ -494,7 +474,8 @@ class Chat extends React.Component {
         onClick={this.handleChannelClicked} />
     )
 
-    const messagesJSX = messages.filter(f => f.channelId === this.state.channel.id).map(m =>
+    const messagesJSX = messages.filter(f => f.channelId === this.state.channel.id)
+    .sort((a, b) => a.time - b.time).map(m =>
       <li key={m.id} style={{ marginTop: 20 }}>
         {m.user.id === currentUserID ?
           <SpeechOfMy avatarUrl={m.user.photoUrl}>{m.content}</SpeechOfMy>
