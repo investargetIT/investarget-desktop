@@ -116,19 +116,19 @@ class OrganizationList extends React.Component {
       { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
-        return phases.map(p => p.name).join(' ')
+        return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
       } },
       { title: i18n('organization.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-          <span>
+          <span className="span-operation">
             <Link to={'/app/organization/' + record.id}>
               <Button disabled={!record.action.get} size="small" >{i18n("common.view")}</Button>
             </Link>
-            &nbsp;
+
             <Link to={'/app/organization/edit/' + record.id}>
               <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
             </Link>
-            &nbsp;
+
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteOrg.bind(null, record.id)}>
               <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
@@ -158,7 +158,7 @@ class OrganizationList extends React.Component {
               </div>
 
               <div style={{ float: 'right' }}>
-                {i18n('common.sort_by_created_time')}&nbsp;
+                {i18n('common.sort_by_created_time')}
                 <Select defaultValue="desc" onChange={this.handleSortChange}>
                   <Option value="asc">{i18n('common.asc_order')}</Option>
                   <Option value="desc">{i18n('common.dec_order')}</Option>

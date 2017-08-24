@@ -182,11 +182,15 @@ class ProjectList extends React.Component {
         key: 'title',
         render: (text, record) => {
           if (record.action.get) {
-            return record.ismarketplace ?
-              <Link to={'/app/marketplace/' + record.id}>{record.projtitle}</Link> :
-              <Link to={'/app/projects/' + record.id}>{record.projtitle}</Link>
+            return (
+              <span className="span-title">
+                {record.ismarketplace ?
+                <Link to={'/app/marketplace/' + record.id}>{record.projtitle}</Link> :
+                <Link to={'/app/projects/' + record.id}>{record.projtitle}</Link>}
+              </span>
+            )
           } else {
-            return record.projtitle
+            return <span className="span-title">record.projtitle</span>
           }
         }
       },
@@ -204,7 +208,7 @@ class ProjectList extends React.Component {
             }
           }
           return (
-            <span style={{display: 'flex', alignItems: 'center'}}>
+            <span style={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
               { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
               <span>{countryName}</span>
             </span>
@@ -243,37 +247,37 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (text, record) => {
           return record.ismarketplace ? (
-            <span>
+            <span className="span-operation">
               <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
-              &nbsp;
+
               <Link to={'/app/marketplace/edit/' + record.id}>
                 <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
-              &nbsp;
+
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
                 <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
               </Popconfirm>
             </span>
           ) : (
-            <span>
+            <span className="span-operation">
               <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
-              &nbsp;
+
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
-              &nbsp;
+
               <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
-              &nbsp;
+
               <Link target="_blank" to={'/app/dataroom/add?projectID=' + record.id}>
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
-              &nbsp;
+
               <Link to={'/app/projects/edit/' + record.id}>
                 <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
-              &nbsp;
+
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
                 <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
               </Popconfirm>

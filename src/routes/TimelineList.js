@@ -207,7 +207,7 @@ class TimelineList extends React.Component {
       { title: i18n('timeline.transaction_status'), key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
       { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-          <span>
+          <span className="span-operation">
             {
               record.isClose ? (
                 <Button size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.open')}</Button>
@@ -215,15 +215,15 @@ class TimelineList extends React.Component {
                 <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.close')}</Button>
               )
             }
-            &nbsp;
+
             <Link to={'/app/timeline/' + record.id}>
               <Button size="small" disabled={!record.action.get}>{i18n("common.view")}</Button>
             </Link>
-            &nbsp;
+
             <Link to={'/app/timeline/edit/' + record.id}>
               <Button size="small" disabled={!record.action.change || record.isClose}>{i18n("common.edit")}</Button>
             </Link>
-            &nbsp;
+
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteTimeline.bind(null, record.id)}>
               <Button type="danger" size="small" disabled={!record.action.delete}>{i18n("common.delete")}</Button>
             </Popconfirm>

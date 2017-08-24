@@ -84,9 +84,9 @@ class SelectOrganization extends React.Component {
       { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
-        return phases.map(p => p.name).join(' ')
+        return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
       } },
-      { title: i18n('organiztion.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
+      { title: i18n('organization.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state

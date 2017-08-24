@@ -45,3 +45,32 @@ html, body, :global(#root) {
 :global(.ant-input) {
   line-height: 1.5;
 }
+:global(th) {
+  white-space: nowrap;
+}
+
+
+:global .span-title {
+  display: inline-block;
+  max-width: 200px;
+}
+:global .span-operation {
+  display: inline-block;
+  max-width: 240px;
+}
+:global .span-phase {
+  display: inline-block;
+  max-width: 150px;
+  word-break: keep-all;
+}
+:global .span-tag {
+  display: inline-block;
+  max-width: 150px;
+  word-break: keep-all;
+}
+
+:global .span-operation > button,:global .span-operation > a {
+  margin-right: 4px;
+  margin-bottom: 4px;
+  display: inline-block;
+}

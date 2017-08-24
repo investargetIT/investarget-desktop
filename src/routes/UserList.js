@@ -148,7 +148,7 @@ class UserList extends React.Component {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? <p style={{maxWidth: '240px', wordBreak: 'keep-all'}}>{tags.map(t => t.name).join(' / ')}</p> : null
+        render: tags => tags ? <span className="span-tag">{tags.map(t => t.name).join(' / ')}</span> : null
       },
       {
         title: i18n("account.role"),
@@ -175,15 +175,15 @@ class UserList extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span>
+              <span className="span-operation">
                 <Link to={'/app/user/' + record.id}>
                   <Button disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
                 </Link>
-                &nbsp;
+
                 <Link to={'/app/user/edit/' + record.id}>
                   <Button disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
-                &nbsp;
+
                 <Popconfirm title="Confirm to delete?" onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
                 </Popconfirm>
@@ -206,7 +206,7 @@ class UserList extends React.Component {
           </div>
 
           <div style={{ float: 'right' }}>
-            {i18n('common.sort_by_created_time')}&nbsp;
+            {i18n('common.sort_by_created_time')}
                 <Select defaultValue="desc" onChange={this.handleSortChange}>
               <Option value="asc">{i18n('common.asc_order')}</Option>
               <Option value="desc">{i18n('common.dec_order')}</Option>

@@ -2,6 +2,7 @@ import React from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
 import { i18n, exchange, handleError } from '../utils/util'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
 import { UploadImage } from './Upload'
@@ -198,7 +199,7 @@ const Agreement = () => {
   }
   return (
     <BasicFormItem layout={tailFormItemLayout} name="agreement"  validator={checkAgreement} valueType="boolean">
-      <Checkbox>{i18n("account.agreement")}I have read the <a href="">agreement</a></Checkbox>
+      <Checkbox><Link to="/app/agreement" target="_blank">{i18n("account.agreement")}</Link></Checkbox>
     </BasicFormItem>
   )
 }
