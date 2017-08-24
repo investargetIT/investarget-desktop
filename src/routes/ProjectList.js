@@ -212,7 +212,7 @@ class ProjectList extends React.Component {
         }
       },
       {
-        title: i18n('project.transaction_amount'),
+        title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
           const transactionAmount = record.transactionAmount
