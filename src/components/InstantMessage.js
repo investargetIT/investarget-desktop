@@ -216,12 +216,17 @@ class InstantMessage extends React.Component {
     api.editUserFriend(channel.relationID, isAccept)
   }
 
+  handleMessageScrollTop = channel => {
+    console.warn('TODO: scroll to get more history chat records')
+  }
+
   render() {
     return this.state.messages ? <Chat
       user={this.currentUser}
       onSendMsg={this.sendPrivateText}
       channels={this.state.channels}
       messages={this.state.messages}
+      onScrollTop={this.handleMessageScrollTop}
       onReceiveMessage={this.state.onReceiveMessage}
       onAcceptNewFriend={this.handleNewFriend.bind(this, true)}
       onRejectNewFriend={this.handleNewFriend.bind(this, false)} /> : null

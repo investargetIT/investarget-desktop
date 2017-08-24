@@ -441,6 +441,12 @@ class Chat extends React.Component {
     }
   }
 
+  handleScrollMessage = () => {
+    if (this.refs.inputTextContent.scrollTop <= 0 && this.props.onScrollTop) {
+      this.props.onScrollTop(this.state.channel)
+    }
+  }
+
   render () {
     const propMsg = this.props.messages || defaultMessages
     const messages = [...propMsg]
@@ -516,7 +522,7 @@ class Chat extends React.Component {
             <div style={titleContainerStyle}>
               <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
             </div>
-            <div ref="inputTextContent" style={messageContainerStyle}>
+            <div ref="inputTextContent" style={messageContainerStyle} onScroll={this.handleScrollMessage}>
               <ul>{messagesJSX}</ul>
             </div>
             <div style={{ height: 44, padding: '10px 18px' }}>
