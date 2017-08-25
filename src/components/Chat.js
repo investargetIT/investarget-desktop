@@ -539,6 +539,7 @@ class Chat extends React.Component {
           type="file"
           ref={input => this.imgupload = input}
           style={{ display: 'none' }}
+          accept="image/jpeg,image/png,image/gif"
           onChange={this.handleInputFileChange} />
 
         <img onClick={this.handleCloseChatDialog} style={{ cursor: 'pointer', width: closeIconHeight, position:'absolute', right: -closeIconHeight/2, top: -closeIconHeight/2 }} src="/images/ic_close.png" />
