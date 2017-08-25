@@ -157,12 +157,20 @@ function UserInfoDetail({ name, photoUrl, onAccept, onReject }) {
   )
 }
 
+const messageStyle = {
+  padding: '6px 10px', 
+  lineHeight: 1.6, 
+  fontSize: 14, 
+  color: 'black',
+  overflowWrap: 'break-word',
+  wordWrap: 'break-word',
+}
 function SpeechOfMy(props) {
   return (
     <div style={{ overflow: 'auto' }}>
     <div style={{ float: 'right' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src={props.avatarUrl} /></div>
     <div className="my-talk-bubble" style={{ float: 'right', maxWidth: '75%', marginRight: 8, position: 'relative', border: `1px solid ${mySpeechBubbleColor}`, borderRadius: 4 }}>
-      <div style={{ padding: '6px 10px', background: mySpeechBubbleColor, lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
+      <div style={{...messageStyle, background: mySpeechBubbleColor}}>{props.children}</div>
     </div>
   </div>
   )
@@ -173,7 +181,7 @@ function SpeechOfOthers(props) {
     <div style={{ overflow: 'auto' }}>
       <div style={{ float: 'left' }}><img style={{ width: 30, height: 30, borderRadius: 2 }} src={props.avatarUrl} /></div>
       <div className="other-talk-bubble" style={{ float: 'left', maxWidth: '75%', marginLeft: 8, position: 'relative', border: '1px solid white', borderRadius: 4 }}>
-        <div style={{ padding: '6px 10px', background: 'white', lineHeight: 1.6, fontSize: 14, color: 'black' }}>{props.children}</div>
+        <div style={{...messageStyle, background: 'white'}}>{props.children}</div>
       </div>
     </div>
   )
