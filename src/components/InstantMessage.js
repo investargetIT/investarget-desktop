@@ -312,7 +312,7 @@ class InstantMessage extends React.Component {
       this.state.messages.filter(
         f => f.channelId === m.id && 
         f.user.id !== this.currentUser.id && 
-        f.time > m.latestReadMessage.time
+        (m.latestReadMessage ? f.time > m.latestReadMessage.time : true)
       ).length
     ).reduce((acc, val) => acc + val)
     this.props.dispatch({

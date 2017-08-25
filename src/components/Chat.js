@@ -16,7 +16,7 @@ const defaultMessages = [
       name: '小游侠',
       photoUrl: '/images/default-avatar.png',
     },
-    time: 10,
+    time: Date.now(),
     channelId: 1,
     type: 'text',
     content: '这是小游侠发送的文本内容'
@@ -28,7 +28,7 @@ const defaultMessages = [
       name: '小型',
       photoUrl: '/images/avatar1.png',
     },
-    time: 1001,
+    time: Date.now()+1,
     channelId: 1,
     type: 'text',
     content: '这是小型发送的文本内容'
@@ -40,7 +40,7 @@ const defaultMessages = [
       name: '小游侠',
       photoUrl: '/images/default-avatar.png',
     },
-    time: 100002,
+    time: Date.now()+2,
     channelId: 1,
     type: 'text',
     content: '这是小游侠再一次发送的文本内容'
@@ -52,7 +52,7 @@ const defaultMessages = [
       name: '小型',
       photoUrl: '/images/avatar1.png',
     },
-    time: 120333,
+    time: Date.now()+3,
     channelId: 1,
     type: 'text',
     content: '这是小型再一次发送的文本内容'
@@ -64,7 +64,7 @@ const defaultMessages = [
       name: '小型',
       photoUrl: '/images/avatar1.png',
     },
-    time: 1000323,
+    time: Date.now()+4,
     channelId: 1,
     type: 'text',
     content: <img style={{ maxWidth: "100%" }} src="/images/avatar1.png" />,
@@ -78,7 +78,7 @@ const defaultChannels = [
     name: '小型',
     latestMessage: {
       content: '这是小型再一次发送的文本内容',
-      time: '1:15 PM'
+      time: Date.now()
     },
     isRequestAddFriend: false,
     member: [
@@ -100,7 +100,7 @@ const defaultChannels = [
     name: '小兵',
     latestMessage: {
       content: '请求加您为好友',
-      time: '11:38 AM'
+      time: Date.now()
     },
     isRequestAddFriend: true,
     member: [
@@ -122,7 +122,7 @@ const defaultChannels = [
     name: '小红',
     latestMessage: {
       content: '这是小红再一次发送的文本内容',
-      time: '7/9/17'
+      time: Date.now()
     },
     isRequestAddFriend: false,
     member: [
@@ -511,7 +511,7 @@ class Chat extends React.Component {
     }
 
     const contactJSX = channels.map(m => {
-      const unReadMsgs = messages.filter(f => f.channelId === m.id && f.user.id !== this.props.user.id && f.time > m.latestReadMessage.time)
+      const unReadMsgs = messages.filter(f => f.channelId === m.id && f.user.id !== currentUserID && (m.latestReadMessage ? f.time > m.latestReadMessage.time : true))
       return <Contact
         key={m.id}
         isActive={this.state.channel.id === m.id}
