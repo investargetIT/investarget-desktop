@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'dva'
 import md5 from '../utils/md5'
+import { Badge } from 'antd'
+import { timeForIM } from '../utils/util'
 
 // const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 // const mySpeechBubbleColor = 'lightBlue'
@@ -234,13 +236,15 @@ function Contact(props) {
   return (
     <div style={contactContainerStyle1} onClick={evt => props.onClick(props.channel)}>
       <div style={contactAvatarContainerStyle}>
-        <img style={{ width: contactAvatarSize, height: contactAvatarSize, borderRadius: 2 }} src={props.imgUrl} />
+        <Badge count={props.unreadMessageNum}>
+          <img style={{ width: contactAvatarSize, height: contactAvatarSize, borderRadius: 2 }} src={props.imgUrl} />
+        </Badge>
       </div>
       <div style={contactRightContainerStyle}>
         <div style={contactRightContentStyle}>
           <p style={contactNameAndDateContainerStyle}>
             <span style={{ fontSize: contactLeftNameFontSize, color: 'black' }}>{props.name}</span>
-            <span style={{ width: 60, height: '100%', overflow: 'hidden', float: 'right', color: 'rgb(177, 177, 177)', textAlign: 'right' }}>{props.latestMessage ? props.latestMessage.time : ""}</span>
+              <span style={{ width: 60, height: '100%', overflow: 'hidden', float: 'right', color: 'rgb(177, 177, 177)', textAlign: 'right' }}>{props.latestMessage ? timeForIM(props.latestMessage.time) : ""}</span>  
           </p>
           <p style={contactAbstractStyle}>{props.latestMessage ? props.latestMessage.content : ""}</p>
         </div>
@@ -426,6 +430,9 @@ class Chat extends React.Component {
   handleChannelClicked(channel) {
     this.shouldScrollBottom = !channel.isRequestAddFriend
     this.setState({ channel: channel })
+    if (this.props.onClickChannel) {
+      this.props.onClickChannel(channel)
+    }
   }
 
   handleCloseChatDialog() {
@@ -503,16 +510,18 @@ class Chat extends React.Component {
       display: this.props.showChat ? 'block' : 'none',
     }
 
-    const contactJSX = channels.map(m =>
-      <Contact
+    const contactJSX = channels.map(m => {
+      const unReadMsgs = messages.filter(f => f.channelId === m.id && f.user.id !== this.props.user.id && f.time > m.latestReadMessage.time)
+      return <Contact
         key={m.id}
         isActive={this.state.channel.id === m.id}
         channel={m}
         imgUrl={m.imgUrl}
         name={m.name}
+        unreadMessageNum={unReadMsgs.length}
         latestMessage={m.latestMessage}
         onClick={this.handleChannelClicked} />
-    )
+    })
 
     const messagesJSX = messages.filter(f => f.channelId === this.state.channel.id)
     .sort((a, b) => a.time - b.time).map(m =>

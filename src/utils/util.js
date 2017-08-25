@@ -93,6 +93,43 @@ function time(dateFromServer) {
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
+function timeForIM(timestamp) {
+  const timeInMs = Date.now()
+  const date = new Date(timestamp)
+  const nowDate = new Date(timeInMs)
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
+  const nowYear = nowDate.getFullYear();
+  const nowMonth = nowDate.getMonth();
+  const nowDay = nowDate.getDate();
+
+  let options
+  if (year === nowYear && month === nowMonth && day === nowDay) {
+    if (!window.Intl || typeof window.Intl !== "object") {
+      return `${hour}:${minutes}`
+    }
+    options = {
+      hour: 'numeric',
+      minute: 'numeric',
+    }
+  } else {
+    if (!window.Intl || typeof window.Intl !== "object") {
+      return `${year.slice(2)}-${month}-${day}`
+    }
+    options = {
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric',
+    }
+  }
+  const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
+  return new Intl.DateTimeFormat(locale, options).format(date)
+}
+
 var exchangeCache = {}
 var offlineRate = {
   'USD': 1,
@@ -190,4 +227,4 @@ export function handleError(error) {
   })
 }
 
-export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time }
+export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM }

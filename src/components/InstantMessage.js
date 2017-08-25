@@ -240,9 +240,6 @@ class InstantMessage extends React.Component {
         }
       })
       friends = channels
-      if (this._isMounted) {
-        this.setState({ channels })
-      }
       return Promise.all(channels.map(m => api.getChatMsg({ to: m.id })))
     })
     .then(data => {
@@ -269,8 +266,14 @@ class InstantMessage extends React.Component {
         const content = m.payload.bodies[0].msg
         return { id, user, time, channelId, type, content }
       })
+      const channels = friends.map(m => {
+        const sortedMessages = messages.filter(f => f.channelId === m.id).sort((a, b) => b.time - a.time)
+        const latestMessage = sortedMessages[0]
+        const latestReadMessage = sortedMessages.find(f => f.user.id !== isLogin().id)
+        return {...m, latestMessage, latestReadMessage}
+      })
       if (this._isMounted) {
-        this.setState({ messages })
+        this.setState({ messages, channels })
       }
     })
   }
@@ -292,6 +295,15 @@ class InstantMessage extends React.Component {
     console.log("%cTODO: ScrollToTop to get more history chat records", "color: yellow; font-style: italic; background-color: blue; padding: 3px");
   }
 
+  handleChannelClicked = channel => {
+    const newChannels = [...this.state.channels]
+    const sortedMessages = this.state.messages.filter(f => f.channelId === channel.id).sort((a, b) => b.time - a.time)
+    const latestReadMessage = sortedMessages.find(f => f.user.id !== isLogin().id)
+    const index = newChannels.findIndex(f => f.id === channel.id)
+    newChannels[index].latestReadMessage = latestReadMessage
+    this.setState({ channels: newChannels })
+  }
+
   render() {
     return this.state.messages ? <Chat
       user={this.currentUser}
@@ -299,6 +311,7 @@ class InstantMessage extends React.Component {
       channels={this.state.channels}
       messages={this.state.messages}
       onScrollTop={this.handleMessageScrollTop}
+      onClickChannel={this.handleChannelClicked}
       onReceiveMessage={this.state.onReceiveMessage}
       onAcceptNewFriend={this.handleNewFriend.bind(this, true)}
       onRejectNewFriend={this.handleNewFriend.bind(this, false)} /> : null
