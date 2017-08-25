@@ -3,6 +3,7 @@ import Chat from './Chat'
 import { isLogin } from '../utils/util'
 import md5 from '../utils/md5'
 import * as api from '../api.js'
+import { connect } from 'dva'
 
 class InstantMessage extends React.Component {
 
@@ -56,9 +57,10 @@ class InstantMessage extends React.Component {
           type: 'text',
           content: message.data          
         }),
-        inputValue: ''
-      })
-      react.setState({ onReceiveMessage: true })
+        inputValue: '',
+        onReceivedMessage: true
+      }, react.calculateUnreadMessageNum)
+      // react.setState({ onReceiveMessage: true })
     },    //收到文本消息
     onEmojiMessage: function (message) { },   //收到表情消息
     onPictureMessage: function (message) { 
@@ -77,9 +79,10 @@ class InstantMessage extends React.Component {
           type: 'img',
           content: <img style={{ maxWidth: "100%" }} src={message.url} />         
         }),
-        inputValue: ''
-      })
-      react.setState({ onReceiveMessage: true })
+        inputValue: '',
+        onReceiveMessage: true,
+      }, react.calculateUnreadMessageNum)
+      // react.setState({ onReceiveMessage: true })
     }, //收到图片消息
     onCmdMessage: function (message) { },     //收到命令消息
     onAudioMessage: function (message) { },   //收到音频消息
@@ -301,7 +304,21 @@ class InstantMessage extends React.Component {
     const latestReadMessage = sortedMessages.find(f => f.user.id !== isLogin().id)
     const index = newChannels.findIndex(f => f.id === channel.id)
     newChannels[index].latestReadMessage = latestReadMessage
-    this.setState({ channels: newChannels })
+    this.setState({ channels: newChannels }, this.calculateUnreadMessageNum)
+  }
+
+  calculateUnreadMessageNum = () => {
+    const num = this.state.channels.map(m => 
+      this.state.messages.filter(
+        f => f.channelId === m.id && 
+        f.user.id !== this.currentUser.id && 
+        f.time > m.latestReadMessage.time
+      ).length
+    ).reduce((acc, val) => acc + val)
+    this.props.dispatch({
+      type: 'app/setUnreadMessageNum',
+      payload: num
+    })
   }
 
   render() {
@@ -319,4 +336,4 @@ class InstantMessage extends React.Component {
 
 }
 
-export default InstantMessage
+export default connect()(InstantMessage)

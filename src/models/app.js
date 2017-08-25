@@ -35,7 +35,8 @@ export default {
     showChat: false,
     projstatus: [],
     error: null,
-    service: []
+    service: [],
+    unreadMessageNum: 0,
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -62,7 +63,10 @@ export default {
     dismissError(state) {
       const error = null
       return { ...state, error }
-    }
+    },
+    setUnreadMessageNum(state, { payload: unreadMessageNum }) {
+      return { ...state, unreadMessageNum }
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {

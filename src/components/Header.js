@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Icon, Modal } from 'antd';
+import { Menu, Icon, Modal, Badge } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
@@ -8,7 +8,7 @@ import { i18n } from '../utils/util'
 
 const confirm = Modal.confirm
 
-function Header({ dispatch, location, currentUser, mode, collapsed }) {
+function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessageNum }) {
 
   function handleMenuClicked(param) {
 
@@ -93,7 +93,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
       { currentUser ? null : register }
 
-      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}>IM</Menu.Item> : null }
+      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>消息</Badge></Menu.Item> : null }
 
     </Menu>
   );
@@ -101,8 +101,8 @@ function Header({ dispatch, location, currentUser, mode, collapsed }) {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { collapsed } = state.app
-  return { currentUser, collapsed }
+  const { collapsed, unreadMessageNum } = state.app
+  return { currentUser, collapsed, unreadMessageNum }
 }
 
 export default connect(mapStateToProps)(Header)
