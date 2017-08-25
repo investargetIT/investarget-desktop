@@ -283,6 +283,25 @@ export function qiniuUpload(bucket, file) {
   })
 }
 
+/**
+ * 在使用环信发送图片或语音等消息时需要先把这些文件上传给环信
+ * WebSDK好像有直接发送图片的接口，先放这儿吧
+ * 
+ * @param {string} token 登录环信后获取的 token
+ * @param {object} file 上传的文件
+ */
+export const easemobUpload = (token, file) => {
+  const url = 'https://a1.easemob.com/investarget001/investarget/chatfiles'
+  const headers = {
+    'Authorization': token,
+    'restrict-access': true,
+  }
+  const body = new FormData()
+  body.append('file', file)
+  const options = { headers, method: 'POST', body }
+  return request(url, options)
+}
+
 export function sendSmsCode(body) {
   return r('/service/sms', 'POST', body)
 }

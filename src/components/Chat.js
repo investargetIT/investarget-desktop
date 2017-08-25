@@ -14,7 +14,7 @@ const defaultMessages = [
       name: '小游侠',
       photoUrl: '/images/default-avatar.png',
     },
-    time: '2017-07-10 17:50:38',
+    time: 10,
     channelId: 1,
     type: 'text',
     content: '这是小游侠发送的文本内容'
@@ -26,7 +26,7 @@ const defaultMessages = [
       name: '小型',
       photoUrl: '/images/avatar1.png',
     },
-    time: '2017-07-10 17:50:48',
+    time: 1001,
     channelId: 1,
     type: 'text',
     content: '这是小型发送的文本内容'
@@ -38,7 +38,7 @@ const defaultMessages = [
       name: '小游侠',
       photoUrl: '/images/default-avatar.png',
     },
-    time: '2017-07-10 17:50:58',
+    time: 100002,
     channelId: 1,
     type: 'text',
     content: '这是小游侠再一次发送的文本内容'
@@ -50,10 +50,22 @@ const defaultMessages = [
       name: '小型',
       photoUrl: '/images/avatar1.png',
     },
-    time: '2017-07-10 17:51:08',
+    time: 120333,
     channelId: 1,
     type: 'text',
     content: '这是小型再一次发送的文本内容'
+  },
+  {
+    id: 5,
+    user: {
+      id: 2,
+      name: '小型',
+      photoUrl: '/images/avatar1.png',
+    },
+    time: 1000323,
+    channelId: 1,
+    type: 'text',
+    content: <img style={{ maxWidth: "100%" }} src="/images/avatar1.png" />,
   },
 ]
 
@@ -389,16 +401,16 @@ class Chat extends React.Component {
       const message = {
         id: Date.now() + '',
         user: this.props.user || defaultCurrentUser,
-        time: '2017-07-10 17:58:08',
+        time: Date.now(),
         channelId: this.state.channel.id,
-        type: 'text',
+        type: 'txt',
         content: value
       }
+      this.shouldScrollBottom = true
       this.setState({
         messages: this.state.messages.concat(message),
         inputValue: ''
       })
-      this.shouldScrollBottom = true
       this.props.onSendMsg && this.props.onSendMsg(message)
     }
   }
@@ -430,15 +442,29 @@ class Chat extends React.Component {
         continue;
       }
 
-      var img = document.createElement("img");
-      img.classList.add("obj");
-      img.file = file;
-      preview.push(img);
-
       var reader = new FileReader();
-      reader.onload = (function (aImg) { return function (e) { aImg.src = e.target.result; }; })(img);
+      reader.onload = e => {
+        const id = Date.now() + ''
+        const message = {
+          id,
+          user: this.props.user || defaultCurrentUser,
+          time: Date.now(),
+          channelId: this.state.channel.id,
+          type: 'img',
+          content: <img id={id} style={{ maxWidth: "100%" }} src={e.target.result} />,
+          file: file,
+          input: this.imgupload,
+        }
+        this.shouldScrollBottom = true
+        this.setState({
+          messages: this.state.messages.concat(message),
+          inputValue: ''
+        })
+        this.props.onSendMsg && this.props.onSendMsg(message)
+      }
       reader.readAsDataURL(file);
     }
+
   }
 
   handleScrollMessage = () => {

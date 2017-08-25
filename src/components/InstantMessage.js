@@ -61,7 +61,26 @@ class InstantMessage extends React.Component {
       react.setState({ onReceiveMessage: true })
     },    //收到文本消息
     onEmojiMessage: function (message) { },   //收到表情消息
-    onPictureMessage: function (message) { }, //收到图片消息
+    onPictureMessage: function (message) { 
+      const channel = react.state.channels.filter(f => f.id === parseInt(message.from, 10))[0]
+      const user = {
+        id: channel.id,
+        name: channel.name,
+        photoUrl: channel.imgUrl
+      }
+      react.setState({
+        messages: react.state.messages.concat({
+          id: message.id,
+          user,
+          time: Date.now(),
+          channelId: parseInt(message.from, 10),
+          type: 'img',
+          content: <img style={{ maxWidth: "100%" }} src={message.url} />         
+        }),
+        inputValue: ''
+      })
+      react.setState({ onReceiveMessage: true })
+    }, //收到图片消息
     onCmdMessage: function (message) { },     //收到命令消息
     onAudioMessage: function (message) { },   //收到音频消息
     onLocationMessage: function (message) { },//收到位置消息
@@ -104,7 +123,11 @@ class InstantMessage extends React.Component {
       apiUrl: WebIM.config.apiURL,
       user: '' + isLogin().id,
       pwd: md5('' + isLogin().id),
-      appKey: WebIM.config.appkey
+      appKey: WebIM.config.appkey,
+      success: function (token) {
+        var accessToken = token.access_token;
+        localStorage.setItem('easemob_access_token', accessToken)
+      }
     };
     this.conn.open(options);
 
@@ -115,6 +138,17 @@ class InstantMessage extends React.Component {
     this._isMounted = false
     if (this.conn && this.conn.context.stropheConn) {
       this.conn.close();
+    }
+  }
+
+  handleSendMsg = message => {
+    switch (message.type) {
+      case 'txt':
+        this.sendPrivateText(message)
+        break
+      case 'img':
+        this.sendPrivateImg(message)
+        break
     }
   }
 
@@ -139,6 +173,44 @@ class InstantMessage extends React.Component {
     });
     msg.body.chatType = 'singleChat';
     this.conn.send(msg.body);
+  };
+
+  // 单聊发送图片消息
+  sendPrivateImg = message => {
+    var id = this.conn.getUniqueId();                   // 生成本地消息id
+    var msg = new WebIM.message('img', id);        // 创建图片消息
+    var input = message.input;  // 选择图片的input
+    var file = WebIM.utils.getFileUrl(input);      // 将图片转化为二进制文件
+        var allowType = {
+        'jpg': true,
+        'gif': true,
+        'png': true,
+        'bmp': true
+    };
+    if (file.filetype.toLowerCase() in allowType) {
+      var option = {
+        apiUrl: WebIM.config.apiURL,
+        file: file,
+        to: '' + message.channelId,                       // 接收消息对象
+        roomType: false,
+        chatType: 'singleChat',
+        onFileUploadError: function () {      // 消息上传失败
+          console.log('onFileUploadError');
+        },
+        onFileUploadComplete: function () {   // 消息上传成功
+          console.log('onFileUploadComplete');
+        },
+        success: function (id, serverMsgId) {                // 消息发送成功
+          console.log('send private image Success', id, serverMsgId);
+          react.setState({
+            messages: react.state.messages.concat({ ...message, id: serverMsgId, localID: message.id })
+          })
+        },
+        flashUpload: WebIM.flashUpload
+      };
+      msg.set(option);
+      this.conn.send(msg.body);
+    }
   };
 
   getUserFriendAndMsg = () => {
@@ -217,13 +289,13 @@ class InstantMessage extends React.Component {
   }
 
   handleMessageScrollTop = channel => {
-    console.warn('TODO: scroll to get more history chat records')
+    console.log("%cTODO: ScrollToTop to get more history chat records", "color: yellow; font-style: italic; background-color: blue; padding: 3px");
   }
 
   render() {
     return this.state.messages ? <Chat
       user={this.currentUser}
-      onSendMsg={this.sendPrivateText}
+      onSendMsg={this.handleSendMsg}
       channels={this.state.channels}
       messages={this.state.messages}
       onScrollTop={this.handleMessageScrollTop}

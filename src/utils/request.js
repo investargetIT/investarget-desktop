@@ -33,24 +33,32 @@ function parseErrorMessage(data) {
 }
 
 /**
- *  * Requests a URL, returning a promise.
- *   *
- *    * @param  {string} url       The URL we want to request
- *     * @param  {object} [options] The options we want to pass to "fetch"
- *      * @return {object}           An object containing either "data" or "err"
- *       */
+ * Requests a URL, returning a promise.
+ *
+ * @param  {string} url       The URL we want to request
+ * @param  {object} [options] The options we want to pass to "fetch"
+ * @return {object}           An object containing either "data" or "err"
+ */
 export default async function request(url, options) {
 
-  const response = await fetch(baseUrl + url, options);
+  const isThirdPartyServer = /^http/.test(url);
+
+  const fullUrl = isThirdPartyServer ? url : baseUrl + url;
+
+  const response = await fetch(fullUrl, options);
 
   checkStatus(response);
 
   const data = await response.json();
 
-  console.log(baseUrl + url, data)
+  console.log(fullUrl, data);
 
-  parseErrorMessage(data)
+  if (isThirdPartyServer) return data;
 
-  return { data: data.result }
+  // Parse response with code 200 using our own rule is meaningless 
+  // Only when request our own server should we parse response data
+  parseErrorMessage(data);
+
+  return { data: data.result };
 
 }
