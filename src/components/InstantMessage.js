@@ -51,7 +51,7 @@ class InstantMessage extends React.Component {
         messages: react.state.messages.concat({
           id: message.id,
           user,
-          time: '2017-07-10 17:58:08',
+          time: Date.now(),
           channelId: parseInt(message.from, 10),
           type: 'text',
           content: message.data          
