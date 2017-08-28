@@ -1,6 +1,6 @@
 import React from 'react'
 import Chat from './Chat'
-import { isLogin } from '../utils/util'
+import { isLogin, handleError } from '../utils/util'
 import md5 from '../utils/md5'
 import * as api from '../api.js'
 import { connect } from 'dva'
@@ -278,6 +278,9 @@ class InstantMessage extends React.Component {
       if (this._isMounted) {
         this.setState({ messages, channels })
       }
+    })
+    .catch(error => {
+      handleError(error)
     })
   }
 

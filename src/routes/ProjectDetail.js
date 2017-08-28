@@ -231,7 +231,7 @@ class ProjectDetail extends React.Component {
         </div>
 
         <div style={blockStyle}>
-          <img src={(project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl' } />
+          <img style={{width: 400}} src={(project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl' } />
         </div>
 
         <div style={blockStyle}>
