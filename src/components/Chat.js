@@ -299,7 +299,8 @@ const titleContainerStyle = {
   width: '100%',
   height: topBarHeight,
   padding: '0 20px',
-  borderBottom: '1px solid #DDD'
+  borderBottom: '1px solid #DDD',
+  cursor: 'move',
 }
 
 const messageContainerStyle = {
@@ -500,9 +501,11 @@ class Chat extends React.Component {
     const currentUserID = (this.props.user && this.props.user.id) || defaultCurrentUser.id
 
     const mainContainerStyle = {
-      position: 'fixed',
-      left: (window.innerWidth - mainContainerWidth) / 2,
-      top: (window.innerHeight - mainContainerHeight) / 2,
+      position: 'relative',
+      // left: (window.innerWidth - mainContainerWidth) / 2,
+      // top: (window.innerHeight - mainContainerHeight) / 2,
+      // bottom: 0,
+      // right: 0,
       width: mainContainerWidth,
       height: mainContainerHeight,
       boxShadow: '0 0 1em rgba(0, 0, 0, 0.2)',
@@ -547,7 +550,7 @@ class Chat extends React.Component {
         <div style={leftContainerStyle}>
 
           <div style={searchContainerStyle}>
-            <input style={searchInputStyle} type="text" placeholder="查找联系人或群" />
+            <input className="text-area" style={searchInputStyle} type="text" placeholder="查找联系人或群" />
           </div>
 
           <div style={contactContainerStyle}>{contactJSX}</div>
@@ -575,6 +578,7 @@ class Chat extends React.Component {
                 style={{ cursor: 'pointer', width: 24, height: 24 }} src="/images/ic_image.svg" />
             </div>
             <textarea
+              className="text-area"
               onChange={this.handleInputChange}
               onKeyPress={this.handleKeyPress}
               value={this.state.inputValue}

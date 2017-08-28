@@ -4,6 +4,14 @@ import { isLogin, handleError } from '../utils/util'
 import md5 from '../utils/md5'
 import * as api from '../api.js'
 import { connect } from 'dva'
+import Draggable from 'react-draggable'
+
+const style = {
+  position: 'absolute',
+  left: (window.innerWidth - 700) / 2,
+  top: (window.innerHeight - 500) / 2,
+  zIndex: 2,
+}
 
 class InstantMessage extends React.Component {
 
@@ -58,7 +66,7 @@ class InstantMessage extends React.Component {
           content: message.data          
         }),
         inputValue: '',
-        onReceivedMessage: true
+        onReceiveMessage: true
       }, react.calculateUnreadMessageNum)
       // react.setState({ onReceiveMessage: true })
     },    //收到文本消息
@@ -325,7 +333,8 @@ class InstantMessage extends React.Component {
   }
 
   render() {
-    return this.state.messages ? <Chat
+    return this.state.messages ? <Draggable cancel=".text-area"><div style={style}>
+      <Chat
       user={this.currentUser}
       onSendMsg={this.handleSendMsg}
       channels={this.state.channels}
@@ -334,7 +343,7 @@ class InstantMessage extends React.Component {
       onClickChannel={this.handleChannelClicked}
       onReceiveMessage={this.state.onReceiveMessage}
       onAcceptNewFriend={this.handleNewFriend.bind(this, true)}
-      onRejectNewFriend={this.handleNewFriend.bind(this, false)} /> : null
+      onRejectNewFriend={this.handleNewFriend.bind(this, false)} /></div></Draggable> : null
   }
 
 }

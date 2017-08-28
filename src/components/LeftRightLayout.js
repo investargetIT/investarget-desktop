@@ -7,8 +7,16 @@ import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
 import Chat from './Chat'
 import HandleError from './HandleError'
+import Draggable from 'react-draggable'
 
 const { Content, Sider } = Layout
+
+const style = {
+  position: 'absolute',
+  left: (window.innerWidth - 700) / 2,
+  top: (window.innerHeight - 500) / 2,
+  zIndex: 2,
+}
 
 class LeftRightLayout extends React.Component {
 
@@ -47,7 +55,9 @@ class LeftRightLayout extends React.Component {
               {this.props.children}
 
             </div>
+            <Draggable cancel=".text-area"><div style={style}>
             <Chat />
+            </div></Draggable>
 
           </Content>
 
