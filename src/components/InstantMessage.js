@@ -306,7 +306,7 @@ class InstantMessage extends React.Component {
   }
 
   handleMessageScrollTop = channel => {
-    console.log("%cTODO: ScrollToTop to get more history chat records", "color: yellow; font-style: italic; background-color: blue; padding: 3px");
+    echo(channel)
   }
 
   handleChannelClicked = channel => {

@@ -56,6 +56,13 @@ if (!Array.prototype.includes) {
   });
 }
 
+window.echo = function () {
+  const args = [...arguments];
+  args.unshift('%cLOG', 'color: white; font-weight: bold; background-color: black; padding: 3px')
+  console.log.apply(console, args);
+  // TODO: add caller position including file name and line number
+}
+
 // 使用 i18next 库来做国际化
 const lang = window.appLocale.lang || 'cn'
 i18next.init({
