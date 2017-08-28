@@ -33,15 +33,23 @@ class MyPartner extends React.Component {
       param = { investoruser: isLogin().id }
     }
 
-    api.getUserRelation(param).then(data => {
-      const investorRelationShip = data.data.data.map(m => m[title])
+    Promise.all([api.getUserRelation(param), api.getUserFriend()])
+    .then(data => {
+      const investorRelationShip = data[0].data.data.map(m => m[title])
       const investorIdArr = new Set(investorRelationShip.map(m => m.id))
       const investorList = [...investorIdArr].reduce((acc, value) => {
         acc.push(investorRelationShip.filter(f => f.id === value)[0])
         return acc
       }, [])
+      const list = investorList.map(m => {
+        let isAlreadyAdded = false
+        if (data[1].data.data.filter(f => f.friend.id === m.id || f.user.id === m.id).length > 0) {
+          isAlreadyAdded = true
+        }
+        return {...m, isAlreadyAdded}
+      })
       this.setState({
-        list: investorList,
+        list,
         loading: false,
         total: investorList.length
       })
@@ -160,7 +168,7 @@ class MyPartner extends React.Component {
             </Popconfirm>
             : null }
             &nbsp;
-            <Button onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>
+            <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>
           </span>
         )
       })
@@ -168,7 +176,7 @@ class MyPartner extends React.Component {
       columns.push({
         title: i18n("action"),
         key: 'action',
-        render: (text, record) => <Button onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>,
+        render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>,
       })
     }
     return (
