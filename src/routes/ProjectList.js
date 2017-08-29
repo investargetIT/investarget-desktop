@@ -80,7 +80,7 @@ class ProjectList extends React.Component {
 
   getProject = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...this.handleFinancialFilter(filters), search, page_index: page, page_size: pageSize }
+    const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize }
     if (!hasPerm('usersys.as_admin')) {
       params['projstatus'] = [4, 6, 7, 8] // 非管理员只能查看终审发布之后的项目
     }
