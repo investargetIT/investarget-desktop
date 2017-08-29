@@ -398,7 +398,7 @@ class Chat extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.onReceiveMessage || this.shouldScrollBottom) {
-      this.refs.inputTextContent.scrollTop = this.refs.inputTextContent.scrollHeight
+      this.messageContainer.scrollTop = this.messageContainer.scrollHeight
       this.shouldScrollBottom = false
     }
   }
@@ -484,8 +484,8 @@ class Chat extends React.Component {
   }
 
   handleScrollMessage = () => {
-    if (this.refs.inputTextContent.scrollTop <= 0 && this.props.onScrollTop) {
-      this.props.onScrollTop(this.state.channel)
+    if (this.messageContainer.scrollTop <= 0 && this.props.onScrollTop) {
+      this.props.onScrollTop(this.state.channel, this.messageContainer)
     }
   }
 
@@ -569,7 +569,7 @@ class Chat extends React.Component {
             <div style={titleContainerStyle}>
               <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
             </div>
-            <div ref="inputTextContent" style={messageContainerStyle} onScroll={this.handleScrollMessage}>
+            <div ref={div => this.messageContainer = div} style={messageContainerStyle} onScroll={this.handleScrollMessage}>
               <ul>{messagesJSX}</ul>
             </div>
             <div style={{ height: 44, padding: '10px 18px' }}>

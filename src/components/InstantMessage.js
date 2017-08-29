@@ -284,12 +284,18 @@ class InstantMessage extends React.Component {
     api.editUserFriend(channel.relationID, isAccept)
   }
 
-  handleMessageScrollTop = channel => {
+  handleMessageScrollTop = (channel, conainer) => {
+    const div = conainer
+    const previousHeight = conainer.scrollHeight
     const oldestMessage = this.state.messages.filter(f => f.channelId === channel.id).sort((a, b) => a.time - b.time)[0]
     api.getChatMsg({ to: channel.id, timestamp: oldestMessage.time })
     .then(data => {
       const historyMessages = this.processMessageFromServer(data.data.data, this.state.channels)
-      this.setState({ messages: this.state.messages.concat(historyMessages)})
+      this.setState(
+        { messages: this.state.messages.concat(historyMessages) },
+        // keep scroll position after load history records
+        () => div.scrollTop = div.scrollHeight - previousHeight
+      )
     })
   }
 
