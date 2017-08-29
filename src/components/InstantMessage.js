@@ -255,28 +255,7 @@ class InstantMessage extends React.Component {
     })
     .then(data => {
       const allRawMessages = data.map(m => m.data.data).reduce((val, acc) => acc.concat(val), [])
-      const filteredRawMessages = allRawMessages.filter(f => f.payload.bodies[0].type === 'txt')
-      const messages = filteredRawMessages.map(m => {
-        const id = m.msg_id
-
-        let user = {}, channelId
-        const index = friends.map(m => m.id + '').indexOf(m.chatfrom)
-        if (index > -1) {
-          channelId = friends[index].id
-          user.id = friends[index].id
-          user.name = friends[index].name
-          user.photoUrl = friends[index].imgUrl
-        } else {
-          channelId = parseInt(m.to, 10)
-          user.id = isLogin().id
-          user.name = isLogin().username
-          user.photoUrl = isLogin().photourl
-        }
-        const time = parseInt(m.timestamp, 10)
-        const type = 'text'
-        const content = m.payload.bodies[0].msg
-        return { id, user, time, channelId, type, content }
-      })
+      const messages = this.processMessageFromServer(allRawMessages, friends)
       const channels = friends.map(m => {
         const sortedMessages = messages.filter(f => f.channelId === m.id).sort((a, b) => b.time - a.time)
         const latestMessage = sortedMessages[0]
@@ -306,7 +285,35 @@ class InstantMessage extends React.Component {
   }
 
   handleMessageScrollTop = channel => {
-    echo(channel)
+    const oldestMessage = this.state.messages.filter(f => f.channelId === channel.id).sort((a, b) => a.time - b.time)[0]
+    api.getChatMsg({ to: channel.id, timestamp: oldestMessage.time })
+    .then(data => {
+      const historyMessages = this.processMessageFromServer(data.data.data, this.state.channels)
+      this.setState({ messages: this.state.messages.concat(historyMessages)})
+    })
+  }
+
+  processMessageFromServer = (messages, friends) => {
+    return messages.filter(f => f.payload.bodies[0].type === 'txt').map(m => {
+      const id = m.msg_id
+      let user = {}, channelId
+      const index = friends.map(m => m.id + '').indexOf(m.chatfrom)
+      if (index > -1) {
+        channelId = friends[index].id
+        user.id = friends[index].id
+        user.name = friends[index].name
+        user.photoUrl = friends[index].imgUrl
+      } else {
+        channelId = parseInt(m.to, 10)
+        user.id = isLogin().id
+        user.name = isLogin().username
+        user.photoUrl = isLogin().photourl
+      }
+      const time = parseInt(m.timestamp, 10)
+      const type = 'text'
+      const content = m.payload.bodies[0].msg
+      return { id, user, time, channelId, type, content }
+    })
   }
 
   handleChannelClicked = channel => {
