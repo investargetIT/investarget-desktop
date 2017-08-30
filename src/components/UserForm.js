@@ -100,7 +100,7 @@ class UserForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator('mobileAreaCode', {
-                    rules: [{ message: '' }, {required: true}], initialValue: '86'
+                    rules: [{ message: i18n('validation.not_empty'), required: true}], initialValue: '86'
                   })(
                     <Input prefix="+" />
                   )
@@ -111,7 +111,7 @@ class UserForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator('mobile', {
-                    rules: [{ message: 'Please input' }, {required: true}]
+                    rules: [{ message: i18n('validation.not_empty'), required: true}]
                   })(
                     <Input onBlur={this.props.mobileOnBlur} />
                   )
