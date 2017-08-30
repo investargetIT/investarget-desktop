@@ -47,7 +47,7 @@ const tailFormItemLayout = {
 function BasicFormItem(props, context) {
 
   const rules = [
-    { type: props.valueType, message: 'The input is not valid!'},
+    { type: props.valueType, message: i18n('validation.not_valid')},
     { required: props.required, message: i18n('validation.not_empty')},
   ]
 
@@ -95,7 +95,7 @@ const ConfirmPassword = (props, context) => {
   function validator(rule, value, callback) {
     const password = context.form.getFieldValue('password')
     if (value && password && value !== password) {
-      callback('Two passwords that you enter is inconsistent!')
+      callback(i18n('validation.two_passwords_not_inconsistent'))
     } else {
       callback()
     }
@@ -112,7 +112,7 @@ const OldPassword = () => <BasicFormItem label={i18n("account.old_password")} na
 
 const Position = props => (
   <BasicFormItem label={i18n("account.position")} name="title" required>
-    <Select placeholder="Please select your position" disabled={props.disabled}>
+    <Select placeholder={i18n("account.choose_position")} disabled={props.disabled}>
       { props.title ? props.title.map(t => <Option key={t.id} value={t.id + ''} title={t.name}>{t.name}</Option>) : null }
     </Select>
   </BasicFormItem>
@@ -120,7 +120,7 @@ const Position = props => (
 
 const Tags = props => (
   <BasicFormItem label={i18n("account.tag")} name="tags" required={props.required} valueType="array">
-    <Select mode="multiple" placeholder="Please choose your favorite tags">
+    <Select mode="multiple" placeholder={i18n("account.choose_tags")}>
       { props.tag ? props.tag.map(t => <Option key={t.id}>{t.name}</Option>) : null }
     </Select>
   </BasicFormItem>
@@ -279,7 +279,7 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
   }
 
   let rules = [
-    { type: 'number', message: 'The input is not valid!' },
+    { type: 'number', message: i18n('validation.not_valid') },
   ]
   if (required) { rules.push({ required, message: i18n('validation.not_empty') }) }
   if (validator) { rules.push({ validator }) }
@@ -419,8 +419,8 @@ class IndustryDynamicFormItem extends React.Component {
               {
                 getFieldDecorator(`industries-${k}`, {
                   rules: [
-                    { type: 'number', message: 'The input is not valid!'},
-                    { required: true, message: 'The input can not be empty!'},
+                    { type: 'number', message: i18n('validation.not_valid')},
+                    { required: true, message: i18n('validation.not_empty')},
                   ],
                   onChange: this.handleIndustryChange.bind(this, k)
                 })(

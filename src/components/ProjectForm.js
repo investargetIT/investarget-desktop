@@ -198,7 +198,7 @@ class ProjectConnectForm extends React.Component {
     if (isPhoneNumber.test(value)) {
       callback()
     } else {
-      callback('Please input correct phone number')
+      callback(i18n('validation.please_input_correct_phone_number'))
     }
   }
 

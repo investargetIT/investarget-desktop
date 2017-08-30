@@ -56,7 +56,9 @@
     "require_areacode": "请选择地区或直接填写地区代码",
     "require_mobile": "手机号码不能为空",
     "code_sent": "验证码已发送至您的手机，请注意查收",
-    "send_wait_time": "{{second}}秒后重新获取"
+    "send_wait_time": "{{second}}秒后重新获取",
+    "choose_tags": "请选择你的标签",
+    "choose_position": "请选择你的职位"
   },
 
   "project": {
@@ -421,7 +423,10 @@
   },
 
   "validation": {
-    "not_empty": "该字段不能为空"
+    "not_empty": "该字段不能为空",
+    "please_input_correct_phone_number": "请输入正确的手机号码",
+    "not_valid": "请输入有效内容",
+    "two_passwords_not_inconsistent": "两次输入的密码不一致"
   },
 
   "message": {

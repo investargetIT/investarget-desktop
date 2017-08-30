@@ -56,7 +56,9 @@
     "require_areacode": "Please select or input area code",
     "require_mobile": "Mobile number required",
     "code_sent": "Captcha has been sent to your phone, please check it carefully",
-    "send_wait_time": "Send code after {{second}} seconds"
+    "send_wait_time": "Send code after {{second}} seconds",
+    "choose_tags": "Please choose your favorite tags!",
+    "choose_position": "Please select your position"
   },
 
   "project": {
@@ -131,8 +133,8 @@
     "email": "Email",
     "uploader": "Uploader",
     "manager": "Manager",
-    "take_user": "承揽",
-    "make_user": "承做",
+    "take_user": "Take User",
+    "make_user": "Make User",
     "has_attachments": "Has attachments",
     "add_directory": "Add Directory",
     "click_drag_upload": "点击或拖拽上传",
@@ -420,7 +422,10 @@
   },
 
   "validation": {
-    "not_empty": "This field can not be empty!"
+    "not_empty": "This field can not be empty!",
+    "please_input_correct_phone_number": "Please input correct phone number!",
+    "not_valid": "The input is not valid!",
+    "two_passwords_not_inconsistent": "Two passwords that you enter is inconsistent!"
   },
 
   "message": {
