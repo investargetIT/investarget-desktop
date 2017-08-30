@@ -2,7 +2,7 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, isLogin } from '../utils/util'
 import { MyInvestorListFilter } from '../components/Filter'
-import { Input, Table, Button, Popconfirm, Pagination, message } from 'antd'
+import { Input, Table, Button, Popconfirm, Pagination, message, Modal } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
 import { URI_12, URI_13 } from '../constants'
@@ -114,8 +114,19 @@ class MyPartner extends React.Component {
   }
 
   handleAddFriend(userID) {
+    const index = this.state.list.map(m => m.id).indexOf(userID)
+    if (index < 0) return
+    
     api.addUserFriend([userID])
-    .then(() => message.success('添加好友请求已成功发送，请耐心等待～'))
+    .then(() => {
+      Modal.success({
+        title: i18n('success'),
+        content: i18n('request_sent_please_wait'),
+      })
+      const newList = [...this.state.list]
+      newList[index].isAlreadyAdded = true
+      this.setState({ list: newList })
+    })
     .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
   }
 
@@ -168,7 +179,7 @@ class MyPartner extends React.Component {
             </Popconfirm>
             : null }
             &nbsp;
-            <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>
+            <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>
           </span>
         )
       })
@@ -176,7 +187,7 @@ class MyPartner extends React.Component {
       columns.push({
         title: i18n("action"),
         key: 'action',
-        render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">加为好友</Button>,
+        render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>,
       })
     }
     return (

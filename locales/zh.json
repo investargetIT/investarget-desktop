@@ -450,5 +450,10 @@
   "perm": {
     "save_success": "权限保存成功"
   },
-  "error": "错误"
+  "error": "错误",
+  "add_friend": "加为好友",
+  "msg": "消息",
+  "success": "成功",
+  "request_sent_please_wait": "请求已成功发送，请耐心等待！",
+  "logout_confirm": "你确定要退出吗？"
 }

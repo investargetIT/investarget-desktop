@@ -15,7 +15,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
     switch (param.key) {
       case "/logout":
         confirm({
-          title: 'Are you sure to logout?',
+          title: i18n('logout_confirm'),
           onOk() {
             dispatch({ type: 'currentUser/logout' })
           },
@@ -93,7 +93,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
 
       { currentUser ? null : register }
 
-      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>消息</Badge></Menu.Item> : null }
+      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>{i18n("msg")}</Badge></Menu.Item> : null }
 
     </Menu>
   );
