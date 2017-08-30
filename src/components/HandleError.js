@@ -78,6 +78,9 @@ class HandleError extends React.Component {
           },
         })
         break
+      case 4007:
+        Modal.error({ title: i18n('error'), content: i18n('project.message.project_message_missing') })
+        break
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

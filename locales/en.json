@@ -179,7 +179,8 @@
       "project_updated": "Project updated",
       "favor_success": "Favor success",
       "unfavor_sucee": "Unfavor success",
-      "delete_success": "Delete success"
+      "delete_success": "Delete success",
+      "project_message_missing": "This project can not be published due to insufficient information!"
     }
   },
 
@@ -447,5 +448,7 @@
 
   "perm": {
     "save_success": "Permission saved"
-  }
+  },
+
+  "error": "Error"
 }

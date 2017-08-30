@@ -180,7 +180,8 @@
       "favor_success": "收藏成功",
       "unfavor_sucee": "取消收藏成功",
       "interest_success": "感兴趣成功",
-      "delete_success": "删除成功"
+      "delete_success": "删除成功",
+      "project_message_missing": "项目信息未完善，无法终审发布"
     }
   },
 
@@ -448,5 +449,6 @@
 
   "perm": {
     "save_success": "权限保存成功"
-  }
+  },
+  "error": "错误"
 }
