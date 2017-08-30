@@ -205,13 +205,25 @@ class ProjectConnectForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
+          ) : null
+        }
 
-        <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
+          ) : null
+        }
 
-        <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
-          <Input type="email" />
-        </BasicFormItem>
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
+              <Input type="email" />
+            </BasicFormItem>
+          ) : null
+        }
 
         {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
@@ -226,7 +238,7 @@ class ProjectConnectForm extends React.Component {
           <SelectExistUser />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project.take_user')} name="makeUser" required valueType="number">
+        <BasicFormItem label={i18n('project.make_user')} name="makeUser" required valueType="number">
           <SelectExistUser />
         </BasicFormItem>
       </Form>

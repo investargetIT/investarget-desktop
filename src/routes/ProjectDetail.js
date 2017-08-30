@@ -258,16 +258,20 @@ class ProjectDetail extends React.Component {
           </div>
         </div>
 
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.privacy_infomation')}</h2>
-          <div>
-            <Field label={i18n('project.name') + ' : '} value={project.contactPerson} />
-            <Field label={i18n('project.phone') + ' : '} value={project.phoneNumber} />
-            <Field label={i18n('project.email') + ' : '} value={project.email} />
-            <Field label={i18n('project.uploader') + ' : '} value={project.supportUser && project.supportUser.username} />
-            <Field label={i18n('project.manager') + ' : '} value={project.makeUser && project.makeUser.username} />
-          </div>
-        </div>
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <div style={blockStyle}>
+              <h2 style={blockTitleStyle}>{i18n('project.privacy_infomation')}</h2>
+              <div>
+                <Field label={i18n('project.name') + ' : '} value={project.contactPerson} />
+                <Field label={i18n('project.phone') + ' : '} value={project.phoneNumber} />
+                <Field label={i18n('project.email') + ' : '} value={project.email} />
+                {/* <Field label={i18n('project.uploader') + ' : '} value={project.supportUser && project.supportUser.username} />
+                <Field label={i18n('project.manager') + ' : '} value={project.makeUser && project.makeUser.username} /> */}
+              </div>
+            </div>
+          ) : null
+        }
 
         <div style={blockStyle}>
           <ProjectFinanceYear projId={id} />

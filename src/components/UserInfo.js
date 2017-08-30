@@ -89,7 +89,7 @@ class UserInfo extends React.Component {
         <Field title={i18n('user.tags')} value={tags} />
         <Field title={i18n('user.country')} value={country} />
         <Field title={i18n('user.institution')} value={org} />
-        <Field title={i18n('user.region')} value={''} />
+        <Field title={i18n('user.area')} value={''} />
         <Field title={i18n('user.mobile')} value={mobile} />
         <Field title={i18n('user.wechat')} value={wechat} />
         <Field title={i18n('user.email')} value={email} />
