@@ -222,10 +222,10 @@ class DataRoomList extends React.Component {
               }
             </div>
             <div style={cardActionStyle}>
-              <Popconfirm title="Confirm to close ?" onConfirm={this.handleCloseDateRoom.bind(this, record)}>
+              <Popconfirm title={i18n("close_confirm")} onConfirm={this.handleCloseDateRoom.bind(this, record)}>
                 <Button size="small" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ marginRight: '8px' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               </Popconfirm>
-              <Popconfirm title="Confirm to delete ?" onConfirm={this.deleteDataRoom.bind(this, record)}>
+              <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
                 <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')}>{i18n("common.delete")}</Button>
               </Popconfirm>
             </div>

@@ -455,5 +455,7 @@
   "msg": "Message",
   "success": "Success",
   "request_sent_please_wait": "The request has been sent successfully! Please wait patiently!",
-  "logout_confirm": "Are you sure to logout?"
+  "logout_confirm": "Are you sure to logout?",
+  "delete_confirm": "Confirm to delete?",
+  "close_confirm": "Confirm to close?"
 }
