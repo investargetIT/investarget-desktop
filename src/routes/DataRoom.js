@@ -12,158 +12,186 @@ class DataRoomList extends React.Component {
     super(props)
     this.dataRoomRelation = []
 
-    let data = []
-    if (hasPerm('dataroom.admin_getdataroom')) {
-      data = [
-        {
-          id: -3,
-          name: 'Investor Folder',
-          rename: 'Investor Folder',
-          unique: -3,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        },
-        {
-          id: -2,
-          name: 'Project Owner Folder',
-          rename: 'Project Owner Folder',
-          unique: -2,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        },
-        {
-          id: -1,
-          name: 'Public Folder',
-          rename: 'Public Folder',
-          unique: -1,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        }
-      ]
-    } else if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
-      data = [
-        {
-          id: -2,
-          name: 'Project Owner Folder',
-          rename: 'Project Owner Folder',
-          unique: -2,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        },
-        {
-          id: -1,
-          name: 'Public Folder',
-          rename: 'Public Folder',
-          unique: -1,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        }
-      ]
-    } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
-      data = [
-        {
-          id: -3,
-          name: 'Investor Folder',
-          rename: 'Investor Folder',
-          unique: -3,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        },
-        {
-          id: -1,
-          name: 'Public Folder',
-          rename: 'Public Folder',
-          unique: -1,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        }
-      ]
-    } else {
-      data = [
-        {
-          id: -1,
-          name: 'Public Folder',
-          rename: 'Public Folder',
-          unique: -1,
-          isFolder: true,
-          size: null,
-          date: null,
-          parentId: -999
-        }
-      ]
-    }
     this.state = {
       title: decodeURIComponent(this.props.location.query.projectTitle),
-      data: data
+      data: []
     }
   }
 
   componentDidMount() {
-    let queryDataRoomArr = []
-    if (hasPerm('dataroom.admin_getdataroom')) {
-      queryDataRoomArr = [
-        // Public Folder
-        Api.queryDataRoom({
-          proj: this.props.location.query.projectID,
-          isPublic: 1
-        }),
-        // Project Owner Folder
-        Api.queryDataRoom({
-          proj: this.props.location.query.projectID,
-          user: this.props.location.query.projectOwnerID,
-          isPublic: 0
-        }),
-        // Investor Folder
-        Api.queryDataRoom({
-          proj: this.props.location.query.projectID,
-          investor: this.props.location.query.investorID,
-          isPublic: 0
-        }),
-      ]
-    } else {
-      queryDataRoomArr = [
-        Api.queryDataRoom({
-          proj: this.props.location.query.projectID,
-          isPublic: 1
-        })
-      ]
-      if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
-        queryDataRoomArr.push(
+
+    const currentUser = isLogin().id;
+
+    const investor = parseInt(this.props.location.query.investorID, 10);
+    const trader = parseInt(this.props.location.query.traderID, 10);
+    const projectOwer = parseInt(this.props.location.query.projectOwnerID, 10);
+    const createUser = parseInt(this.props.location.query.createUserID, 10);
+    let makeUser; // 承揽 
+    let takeUser; // 承做
+
+    // 只允许访问投资人 dataroom 的用户
+    const onlyAccessInvestorDataroom = [investor, trader];
+    // 只允许访问项目方 dataroom 的用户
+    const onlyAccessProjectOwnerDataroom = [projectOwer];
+    // 允许访问所有 dataroom 的用户
+    let accessBoth;
+
+    Api.getProjDetail(this.props.location.query.projectID)
+    .then(detail => {
+      makeUser = detail.data.makeUser.id;
+      takeUser = detail.data.takeUser.id;
+
+      accessBoth = [makeUser, takeUser, createUser];
+
+      let data = []
+      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+        data = [
+          {
+            id: -3,
+            name: 'Investor Folder',
+            rename: 'Investor Folder',
+            unique: -3,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          },
+          {
+            id: -2,
+            name: 'Project Owner Folder',
+            rename: 'Project Owner Folder',
+            unique: -2,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          },
+          {
+            id: -1,
+            name: 'Public Folder',
+            rename: 'Public Folder',
+            unique: -1,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          }
+        ]
+      } else if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
+        data = [
+          {
+            id: -2,
+            name: 'Project Owner Folder',
+            rename: 'Project Owner Folder',
+            unique: -2,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          },
+          {
+            id: -1,
+            name: 'Public Folder',
+            rename: 'Public Folder',
+            unique: -1,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          }
+        ]
+      } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
+        data = [
+          {
+            id: -3,
+            name: 'Investor Folder',
+            rename: 'Investor Folder',
+            unique: -3,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          },
+          {
+            id: -1,
+            name: 'Public Folder',
+            rename: 'Public Folder',
+            unique: -1,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          }
+        ]
+      } else {
+        data = [
+          {
+            id: -1,
+            name: 'Public Folder',
+            rename: 'Public Folder',
+            unique: -1,
+            isFolder: true,
+            size: null,
+            date: null,
+            parentId: -999
+          }
+        ]
+      }
+
+      this.setState({ data });
+
+      let queryDataRoomArr = []
+      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+        queryDataRoomArr = [
+          // Public Folder
+          Api.queryDataRoom({
+            proj: this.props.location.query.projectID,
+            isPublic: 1
+          }),
+          // Project Owner Folder
           Api.queryDataRoom({
             proj: this.props.location.query.projectID,
             user: this.props.location.query.projectOwnerID,
             isPublic: 0
-          })
-        )
-      } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
-        queryDataRoomArr.push(
+          }),
+          // Investor Folder
           Api.queryDataRoom({
             proj: this.props.location.query.projectID,
             investor: this.props.location.query.investorID,
             isPublic: 0
+          }),
+        ]
+      } else {
+        queryDataRoomArr = [
+          Api.queryDataRoom({
+            proj: this.props.location.query.projectID,
+            isPublic: 1
           })
-        )
+        ]
+        if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
+          queryDataRoomArr.push(
+            Api.queryDataRoom({
+              proj: this.props.location.query.projectID,
+              user: this.props.location.query.projectOwnerID,
+              isPublic: 0
+            })
+          )
+        } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
+          queryDataRoomArr.push(
+            Api.queryDataRoom({
+              proj: this.props.location.query.projectID,
+              investor: this.props.location.query.investorID,
+              isPublic: 0
+            })
+          )
+        }
       }
-    }
-    Promise.all(queryDataRoomArr)
+      return Promise.all(queryDataRoomArr)
+    })
     .then(data => {
       // return
       let getDataRoomFileArr = []
-      if (hasPerm('dataroom.admin_getdataroom')) {
+      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
         this.dataRoomRelation[data[2].data.data[0].id] = -3
         this.dataRoomRelation[data[1].data.data[0].id] = -2
         this.dataRoomRelation[data[0].data.data[0].id] = -1
@@ -191,7 +219,7 @@ class DataRoomList extends React.Component {
         getDataRoomFileArr = [
           Api.getDataRoomFile({ dataroom: data[0].data.data[0].id })
         ]
-        if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+        if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
           this.dataRoomRelation[data[1].data.data[0].id] = -2
           newData[0]['dataroom'] = data[1].data.data[0].id
           newData[0].name = data[1].data.data[0].proj.supportUser.username
@@ -200,7 +228,7 @@ class DataRoomList extends React.Component {
           getDataRoomFileArr.push(
             Api.getDataRoomFile({ dataroom: data[1].data.data[0].id })
           )
-        } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+        } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
           this.dataRoomRelation[data[1].data.data[0].id] = -3
           newData[0]['dataroom'] = data[1].data.data[0].id
           newData[0].name = data[1].data.data[0].investor.username
@@ -216,7 +244,7 @@ class DataRoomList extends React.Component {
     }).then(data => {
       const formattedData = data.map((m, index) => m.data.data.map(item => {
         let parent
-        if (hasPerm('dataroom.admin_getdataroom')) {
+        if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
           switch (index) {
             case 0:
               parent = -3
@@ -229,7 +257,7 @@ class DataRoomList extends React.Component {
               break
           }
         } else {
-          if (isLogin().id === parseInt(this.props.location.query.projectOwnerID, 10)) {
+          if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
             switch (index) {
               case 0:
                 parent = -1
@@ -238,7 +266,7 @@ class DataRoomList extends React.Component {
                 parent = -2
                 break
             }
-          } else if (isLogin().id === parseInt(this.props.location.query.investorID, 10)) {
+          } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
             switch (index) {
               case 0:
                 parent = -1
