@@ -63,24 +63,26 @@ class OrgUserList extends React.Component {
   getUser = () => {
     const { filters, search, page, pageSize } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
+
     // 机构所有用户
     const org = parseInt(this.props.location.query.org)
     if (org) {
       params['org'] = org
-      params['groups'] = [1]
-    }
-    this.setState({ loading: true })
-    api.getUser(params).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
+      params['groups'] = this.investorGroupIds
+      this.setState({ loading: true })
+      api.getUser(params).then(result => {
+        const { count: total, data: list } = result.data
+        this.setState({ total, list, loading: false })
+      }, error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
-    })
-    this.writeSetting()
+      this.writeSetting()
+    }
+
   }
 
   handleSortChange = value => {
@@ -121,7 +123,10 @@ class OrgUserList extends React.Component {
   }
 
   componentDidMount() {
-    this.getUser()
+    api.queryUserGroup({ type: 'investor' }).then(data => {
+      this.investorGroupIds = data.data.data.map(item => item.id)
+      this.getUser()
+    })
   }
 
   render() {
@@ -136,7 +141,7 @@ class OrgUserList extends React.Component {
 
     const columns = [
       {
-        title: i18n("use.name"),
+        title: i18n("user.name"),
         dataIndex: 'username',
         key: 'username'
       },
