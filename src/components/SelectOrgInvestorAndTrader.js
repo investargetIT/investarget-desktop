@@ -90,7 +90,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
         })
       })
     } else {
-      let params = { search, page_index: page, page_size: pageSize, org: this.props.selectedOrgs, groups: [1] }
+      let params = { search, page_index: page, page_size: pageSize, org: this.props.selectedOrgs, groups: this.investorGroupIds }
       this.setState({ loading: true })
       api.getUser(params).then(result => {
         const { count: total, data: list } = result.data
@@ -169,10 +169,13 @@ class SelectOrgInvestorAndTrader extends React.Component {
   }
 
   componentDidMount() {
-    this.getUser()
-    if (this.props.traderId) {
-      this.getTrader()
-    }
+    api.queryUserGroup({ type: 'investor' }).then(data => {
+      this.investorGroupIds = data.data.data.map(item => item.id)
+      this.getUser()
+      if (this.props.traderId) {
+        this.getTrader()
+      }
+    })
   }
 
   render() {
