@@ -2,6 +2,22 @@ import dva from 'dva'
 import * as api from '../api'
 import { routerRedux } from 'dva/router'
 
+function clearFilters() {
+  const keys = [
+    'DataRooomList',
+    'EmailList',
+    'EmailDetail',
+    'OrganizationList',
+    'OrgUserList',
+    'ProjectList',
+    'TimelineList',
+    'UserList',
+  ]
+  keys.forEach(key => {
+    localStorage.removeItem(key)
+  })
+}
+
 export default {
   namespace: 'currentUser',
   state: null,
@@ -27,6 +43,7 @@ export default {
     },
     *logout({ payload }, { call, put }) {
       localStorage.removeItem('user_info')
+      clearFilters()
       yield put({ type: 'delete' })
       if (payload && payload.redirect) {
         yield put(routerRedux.replace('/login?redirect=' + payload.redirect))
