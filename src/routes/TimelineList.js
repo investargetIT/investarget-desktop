@@ -79,7 +79,24 @@ class TimelineList extends React.Component {
       this.setState({ total, list, loading: false })
 
       const ids = list.map(item => item.id)
-      this.getLatestRemark(ids)
+      const investorIds = list.map(item => item.investor.id)
+
+      Promise.all([this.getInvestorOrganization(investorIds), this.getLatestRemark(ids)])
+        .then(data => {
+          const orgs = data[0]
+          const remarks = data[1]
+          const list = this.state.list.map((item, index) => {
+            return { ...item, org: orgs[index], latestremark: remarks[index] }
+          })
+          this.setState({ list })
+        })
+        .catch(error => {
+          this.props.dispatch({
+            type: 'app/findError',
+            payload: error,
+          })
+        })
+
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -167,6 +184,18 @@ class TimelineList extends React.Component {
     return data ? JSON.parse(data) : null
   }
 
+  getInvestorOrganization = (investorIds) => {
+
+    const q = investorIds.map(id => {
+      return api.getUserDetailLang(id).then(result => {
+        const user = result.data
+        return user.org
+      })
+    })
+
+    return Promise.all(q)
+  }
+
   getLatestRemark = (timelineIds) => {
     const userId = getCurrentUser()
 
@@ -178,12 +207,7 @@ class TimelineList extends React.Component {
       })
     })
 
-    Promise.all(q).then(remarks => {
-      const list = this.state.list.map((item, index) => {
-        return { ...item, latestremark: remarks[index] }
-      })
-      this.setState({ list })
-    })
+    return Promise.all(q)
   }
 
   componentDidMount() {
@@ -195,9 +219,16 @@ class TimelineList extends React.Component {
     const { location } = this.props
 
     const columns = [
-      { title: i18n('timeline.project_name'), key: 'proj', dataIndex: 'proj.projtitle' },
+      { title: i18n('timeline.project_name'), key: 'proj', render: (text, record) => (
+        <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>
+      ) },
       { title: i18n('timeline.investor'), key: 'investor', dataIndex: 'investor.username' },
-      { title: i18n('timeline.institution'), key: 'org', dataIndex: 'investor.org.orgname' },
+      { title: i18n('timeline.institution'), key: 'org', render: (text, record) => {
+        if (record.org) {
+          let { id, orgname } = record.org
+          return <Link to={'/app/organization/' + id}>{ orgname }</Link>
+        }
+       } },
       { title: i18n('timeline.trader'), key: 'trader', dataIndex: 'trader.username' },
       { title: i18n('timeline.remaining_day'), key: 'remainingAlertDay', render: (text, record) => {
         let day = Number(record.transationStatu.remainingAlertDay)
