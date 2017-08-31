@@ -43,7 +43,7 @@ class MyPartner extends React.Component {
       }, [])
       const list = investorList.map(m => {
         let isAlreadyAdded = false
-        if (data[1].data.data.filter(f => f.friend.id === m.id || f.user.id === m.id).length > 0) {
+        if (data[1].data.data.filter(f => (f.friend && f.friend.id === m.id) || (f.user && f.user.id === m.id)).length > 0) {
           isAlreadyAdded = true
         }
         return {...m, isAlreadyAdded}
