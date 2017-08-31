@@ -249,7 +249,7 @@ class ProjectDetail extends React.Component {
             </div>
             <div>
               <Field label={i18n('project.region') + ' : '} value={project.country && project.country.country} />
-              <Field label={i18n('project.industry') + ' : '} value={project.industries && project.industries[0] && project.industries[0].industry} />
+              <Field label={i18n('project.industry') + ' : '} value={project.industries && project.industries[0] && project.industries[0].name} />
               <Field label={i18n('project.transaction_type') + ' : '} value={project.transactionType && project.transactionType[0] && project.transactionType[0].name} />
               <Field label={i18n('project.engagement_in_transaction') + ' : '} value={project.character && project.character.character} />
               <Field label={i18n('project.transaction_size') + ' : '} value={project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'} />

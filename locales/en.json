@@ -435,7 +435,8 @@
     "mobile_exist": "手机号码已存在",
     "operation_fail": "无法完成相关操作",
     "choose_company": "请选择公司",
-    "session_expire": "会话过期，请重新登录"
+    "session_expire": "会话过期，请重新登录",
+    "confirm_delete": "Are you sure to delete?"
   },
 
   "personal_info": {

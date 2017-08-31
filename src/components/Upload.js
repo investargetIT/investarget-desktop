@@ -204,6 +204,16 @@ class UploadImage extends React.Component {
     this.viewer.show()
   }
 
+  handleRemove = (file) => {
+    return new Promise(function(resolve, reject) {
+      Modal.confirm({
+        title: i18n('message.confirm_delete'),
+        onOk: () => resolve(true),
+        onCancel: () => reject(false),
+      })
+    })
+  }
+
   beforeUpload = (file) => {
     const isFormatAllowed = imageMimeTypes.indexOf(file.type) != -1
     if (!isFormatAllowed) {
@@ -280,6 +290,7 @@ class UploadImage extends React.Component {
           fileList={fileList}
           listType="picture-card"
           onPreview={this.handlePreview}
+          onRemove={this.handleRemove}
           onChange={this.handleFileChange}
         >
           {fileList.length == 0 ? uploadButton : null}
