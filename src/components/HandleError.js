@@ -25,6 +25,10 @@ class HandleError extends React.Component {
         break
       default:
         console.error(error)
+        Modal.error({
+          title: i18n('unknown_error'),
+          content: i18n('contact_admin'),
+        })
     }
   }
 

@@ -457,5 +457,7 @@
   "request_sent_please_wait": "请求已成功发送，请耐心等待！",
   "logout_confirm": "你确定要退出吗？",
   "delete_confirm": "确定要删除吗？",
-  "close_confirm": "确定要关闭吗？"
+  "close_confirm": "确定要关闭吗？",
+  "unknown_error": "未知错误",
+  "contact_admin": "请联系系统管理员"
 }

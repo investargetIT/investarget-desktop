@@ -103,7 +103,7 @@ function mapPropsToFields(props) {
     organization: { value:  props.currentUser.org.orgname},
     username: { value: props.currentUser.username },
     title: { value: props.currentUser.title && props.currentUser.title.id + ''},
-    tags: { value: props.currentUser.tags.map(m => '' + m.id) },
+    tags: { value: props.currentUser.tags ? props.currentUser.tags.map(m => '' + m.id) : [] },
   }
 }
 

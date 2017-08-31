@@ -38,10 +38,10 @@ class DataRoomList extends React.Component {
 
     Api.getProjDetail(this.props.location.query.projectID)
     .then(detail => {
-      makeUser = detail.data.makeUser.id;
-      takeUser = detail.data.takeUser.id;
+      makeUser = detail.data.makeUser && detail.data.makeUser.id;
+      takeUser = detail.data.takeUser && detail.data.takeUser.id;
 
-      accessBoth = [makeUser, takeUser, createUser];
+      accessBoth = (investor && trader && projectOwer && createUser) ? [makeUser, takeUser, createUser] : [];
 
       let data = []
       if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
@@ -189,7 +189,6 @@ class DataRoomList extends React.Component {
       return Promise.all(queryDataRoomArr)
     })
     .then(data => {
-      // return
       let getDataRoomFileArr = []
       if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
         this.dataRoomRelation[data[2].data.data[0].id] = -3

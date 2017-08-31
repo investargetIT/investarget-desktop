@@ -210,7 +210,7 @@ class ProjectDetail extends React.Component {
 
   render() {
     const { id, project, isFavorite, trader, traderOptions, teaser } = this.state
-
+    
     return (
       <MainLayout location={this.props.location}>
         <h1>{project.projtitle}</h1>
@@ -406,14 +406,14 @@ class ProjectDetail extends React.Component {
           ) : null
         }
 
-        {/* TODO// 公共 dataroom */}
-
+        { project.projstatus && project.projstatus.id >= 4 ?
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.public_dataroom')}</h2>
-          <Link to="/app">
-            <Button icon="folder">{i18n('project.public_dataroom')}</Button>
+          <Link to={`/app/dataroom/detail?projectID=${project.id}&projectTitle=${project.projtitle}`}>
+            <Button disabled={project.projstatus && project.projstatus.id < 4} icon="folder">{i18n('project.public_dataroom')}</Button>
           </Link>
-        </div>
+        </div> 
+        : null }
 
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.deal_process')}</h2>

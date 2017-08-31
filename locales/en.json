@@ -457,5 +457,7 @@
   "request_sent_please_wait": "The request has been sent successfully! Please wait patiently!",
   "logout_confirm": "Are you sure to logout?",
   "delete_confirm": "Confirm to delete?",
-  "close_confirm": "Confirm to close?"
+  "close_confirm": "Confirm to close?",
+  "unknown_error": "Unknown Error",
+  "contact_admin": "Please contact service administrator!"
 }
