@@ -341,7 +341,11 @@
 
   "inbox": {
     "message_list": "Message List",
-    "message_detail": "Message Detail"
+    "message_detail": "Message Detail",
+    "title": "Title",
+    "time": "Time",
+    "back_to_list": "Back to List",
+    "mark_as_read": "Mark as Read"
   },
 
   "syslog": {

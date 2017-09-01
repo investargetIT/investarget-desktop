@@ -342,7 +342,11 @@
 
   "inbox": {
     "message_list": "消息列表",
-    "message_detail": "消息详情"
+    "message_detail": "消息详情",
+    "title": "标题",
+    "time": "时间",
+    "back_to_list": "返回列表",
+    "mark_as_read": "标记已读"
   },
 
   "syslog": {
