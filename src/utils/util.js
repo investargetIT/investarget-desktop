@@ -234,4 +234,8 @@ export function handleError(error) {
   })
 }
 
+export function getImageUrl(key) {
+  return 'https://o79atf82v.qnssl.com/' + key
+}
+
 export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM }

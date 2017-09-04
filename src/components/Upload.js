@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Upload, Button, Icon, Modal, message } from 'antd'
 import { BASE_URL } from '../constants'
-import { i18n } from '../utils/util'
+import { i18n, getImageUrl } from '../utils/util'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 
@@ -240,9 +240,8 @@ class UploadImage extends React.Component {
   }
 
   getDownloadUrl = (key) => {
-    return api.downloadUrl('image', key).then(result => {
-      return result.data
-    })
+    const url = getImageUrl(key)
+    return Promise.resolve(url)
   }
 
   componentWillReceiveProps(nextProps) {
