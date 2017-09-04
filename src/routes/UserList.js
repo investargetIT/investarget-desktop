@@ -82,17 +82,10 @@ class UserList extends React.Component {
     this.getUser()
   }
 
-  deleteUser = (id) => {
-    this.setState({ loading: true })
-    api.deleteUser(id).then(result => {
-      this.getUser()
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'findError',
-        payload: error,
-      })
-    })
+  deleteUser = id => {
+    api.deleteUser(id)
+    .then(result => this.getUser())
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
   }
 
   showModal = (id, username) => {
@@ -184,7 +177,7 @@ class UserList extends React.Component {
                   <Button disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
 
-                <Popconfirm title="Confirm to delete?" onConfirm={this.deleteUser.bind(null, record.id)}>
+                <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
                 </Popconfirm>
               </span>
