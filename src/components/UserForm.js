@@ -51,13 +51,6 @@ class UserForm extends React.Component {
       rules: [{required: true}], initialValue: 'image'
     })
 
-    if (!hasPerm('usersys.admin_adduser') && hasPerm('usersys.user_adduser')) {
-      getFieldDecorator('groups', {
-        rules: [{required: true}], initialValue: [] // 未审核投资人
-      })
-
-    }
-
     this.state = {
       investorGroup: [], // 投资人所在的用户组
     }
@@ -88,11 +81,11 @@ class UserForm extends React.Component {
     return (
       <Form>
 
-        { this.hasPerm ?
+         { this.hasPerm || !this.isEditUser ?
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
-          <SelectUserGroup />
+          <SelectUserGroup type={this.hasPerm ? null : 'investor'} />
         </BasicFormItem>
-        : null }
+        : null } 
 
         <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>

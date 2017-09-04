@@ -407,7 +407,7 @@ class SelectUserGroup extends React.Component {
   }
 
   componentDidMount() {
-    api.queryUserGroup().then(result => {
+    api.queryUserGroup({ type: this.props.type }).then(result => {
       const groups = result.data.data
       const options = groups.map(item => ({ label: item.name, value: item.id }))
       this.setState({ options })

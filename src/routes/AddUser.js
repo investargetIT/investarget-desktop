@@ -31,9 +31,6 @@ class AddUser extends React.Component {
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values)
-        if (hasPerm('usersys.user_adduser') && !hasPerm('usersys.admin_adduser')) {
-          // values.groups = undefined
-        }
         if (this.isTraderAddInvestor) {
           values.userstatus = 2
         }
