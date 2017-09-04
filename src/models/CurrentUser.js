@@ -31,6 +31,7 @@ export default {
   },
   effects: {
     *login({ payload: { username, password, redirect } }, { call, put }) {
+      clearFilters()
       const { data } = yield call(api.login, { username, password })
       const { token, user_info, menulist, permissions } = data
       const userInfo = { ...user_info, token, menulist, permissions }

@@ -82,6 +82,8 @@ class EditMarketPlace extends React.Component {
       data.country = data.country && data.country.id
       data.industries = data.industries
       data.supportUser = data.supportUser && data.supportUser.id
+      data.takeUser = data.takeUser ? data.takeUser.id : null
+      data.makeUser = data.makeUser ? data.makeUser.id : null
       data.tags = data.tags ? data.tags.map(item => item.id) : []
       this.setState({
         marketPlace: data

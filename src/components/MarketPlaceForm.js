@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util'
 import { Link } from 'dva/router'
 
 import { Form, Input, Radio, Checkbox, Upload, Icon, Button, message, Modal } from 'antd'
@@ -16,16 +16,14 @@ import {
   SelectTag,
   CascaderCountry,
   CascaderIndustry,
+  InputPhoneNumber,
+  SelectExistUser,
 } from '../components/ExtraInput'
 import { UploadFile } from './Upload'
 
 // currentUserId
 const userInfo = localStorage.getItem('user_info')
 const currentUserId = userInfo ? JSON.parse(userInfo).id : null
-
-
-
-
 
 
 
@@ -48,6 +46,15 @@ class MarketPlaceForm extends React.Component {
       rules: [{required: true, type: 'number'}],
       initialValue: currentUserId,
     })
+  }
+
+  phoneNumberValidator = (rule, value, callback) => {
+    const isPhoneNumber = /([0-9]+)-([0-9]+)/
+    if (isPhoneNumber.test(value)) {
+      callback()
+    } else {
+      callback(i18n('validation.please_input_correct_phone_number'))
+    }
   }
 
   componentDidMount() {
@@ -75,11 +82,47 @@ class MarketPlaceForm extends React.Component {
           <CascaderCountry size="large" />
         </BasicFormItem>
 
-        {/* TODO 上传者 */}
-
         <BasicFormItem label={i18n('project.attachment')} name="linkpdfkey" required>
           <UploadFile />
         </BasicFormItem>
+
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
+          ) : null
+        }
+
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
+          ) : null
+        }
+
+        {
+          hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
+              <Input type="email" />
+            </BasicFormItem>
+          ) : null
+        }
+
+        {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
+        {
+          hasPerm('proj.admin_addproj') ? (
+            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={currentUserId}>
+              <SelectExistUser />
+            </BasicFormItem>
+          ) : null
+        }
+
+        <BasicFormItem label={i18n('project.take_user')} name="takeUser" required valueType="number">
+          <SelectExistUser />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project.make_user')} name="makeUser" required valueType="number">
+          <SelectExistUser />
+        </BasicFormItem>
+
       </Form>
     )
   }

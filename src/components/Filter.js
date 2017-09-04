@@ -530,6 +530,12 @@ class ProjectListFilter extends React.Component {
     } else {
       this.setState({ [key]: value })
     }
+
+    if (key == 'ismarketplace' && value == true) {
+      ['netIncome_USD_F', 'netIncome_USD_T', 'grossProfit_F', 'grossProfit_T', 'service'].forEach(item => {
+        this.setState({ [item]: ProjectListFilter.defaultValue[item] })
+      })
+    }
   }
 
   handleSearch = () => {
@@ -548,13 +554,19 @@ class ProjectListFilter extends React.Component {
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <CountryFilter value={country} onChange={this.handleChange.bind(this, 'country')} />
         <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
-        <RevenueFilter
-          value={[netIncome_USD_F, netIncome_USD_T]}
-          onChange={this.handleChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
-        <ProfitFilter
-          value={[grossProfit_F, grossProfit_T]}
-          onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
-        <ServiceFilter value={service} onChange={this.handleChange.bind(this, 'service')} />
+        { ismarketplace ? null : (
+          <RevenueFilter
+            value={[netIncome_USD_F, netIncome_USD_T]}
+            onChange={this.handleChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
+        )}
+        { ismarketplace ? null : (
+          <ProfitFilter
+            value={[grossProfit_F, grossProfit_T]}
+            onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
+          )}
+        { ismarketplace ? null : (
+          <ServiceFilter value={service} onChange={this.handleChange.bind(this, 'service')} />
+        )}
         <ProjectStatusFilter value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
         <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
