@@ -464,5 +464,6 @@
   "delete_confirm": "Confirm to delete?",
   "close_confirm": "Confirm to close?",
   "unknown_error": "Unknown Error",
-  "contact_admin": "Please contact service administrator!"
+  "contact_admin": "Please contact service administrator!",
+  "mobile": "Mobile"
 }

@@ -123,7 +123,7 @@ class UserList extends React.Component {
 
     const columns = [
       {
-        title: i18n("user.name"),
+        title: i18n("email.username"),
         dataIndex: 'username',
         key: 'username'
       },
@@ -195,7 +195,7 @@ class UserList extends React.Component {
 
         <div style={{ overflow: 'auto' }}>
           <div style={{ marginBottom: '24px', float: 'left' }}>
-            <Search2 placeholder={[i18n('user.name'),i18n('organization.org')].join(' / ')} style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')} style={{ width: 240 }} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <div style={{ float: 'right' }}>

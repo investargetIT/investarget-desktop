@@ -464,5 +464,6 @@
   "delete_confirm": "确定要删除吗？",
   "close_confirm": "确定要关闭吗？",
   "unknown_error": "未知错误",
-  "contact_admin": "请联系系统管理员"
+  "contact_admin": "请联系系统管理员",
+  "mobile": "手机"
 }
