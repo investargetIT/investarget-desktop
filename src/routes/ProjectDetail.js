@@ -90,6 +90,7 @@ class ProjectDetail extends React.Component {
       trader: null,
       userListWithInterest: [],
       teaserUrl: null,
+      hasPublicDataroom: false,
     }
   }
 
@@ -162,6 +163,16 @@ class ProjectDetail extends React.Component {
     })
   }
 
+  getPublicDataroom = () => {
+    api.queryDataRoom({ proj: this.state.id, isPublic: 1 })
+    .then(result => {
+      if (result.data.count > 0) {
+        this.setState({ hasPublicDataroom: true });
+      }
+    })
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+  }
+
   componentDidMount() {
     const { id } = this.state
 
@@ -176,6 +187,8 @@ class ProjectDetail extends React.Component {
     })
 
     this.getFavorProject()
+
+    this.getPublicDataroom();
 
     if (hasPerm('proj.admin_getfavorite')) {
       api.getFavoriteProj({ favoritetype: 5, proj: this.state.id })
@@ -406,7 +419,7 @@ class ProjectDetail extends React.Component {
           ) : null
         }
 
-        { project.projstatus && project.projstatus.id >= 4 ?
+        { this.state.hasPublicDataroom ?
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.public_dataroom')}</h2>
           <Link to={`/app/dataroom/detail?projectID=${project.id}&projectTitle=${project.projtitle}`}>
