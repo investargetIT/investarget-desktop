@@ -69,7 +69,7 @@ class DataRoomList extends React.Component {
     const setting = this.readSetting()
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
+    const pageSize = 11
 
     this.state = {
       search,
@@ -89,9 +89,9 @@ class DataRoomList extends React.Component {
     this.setState({ page }, this.getDataRoomList)
   }
 
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getDataRoomList)
-  }
+  // handlePageSizeChange = (current, pageSize) => {
+  //   this.setState({ pageSize, page: 1 }, this.getDataRoomList)
+  // }
 
   getDataRoomList = () => {
     const { search, page, pageSize } = this.state
@@ -283,8 +283,6 @@ class DataRoomList extends React.Component {
             current={page}
             pageSize={pageSize}
             onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
           />
         </div>
