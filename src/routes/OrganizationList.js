@@ -129,7 +129,7 @@ class OrganizationList extends React.Component {
               <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
             </Link>
 
-            <Popconfirm title="Confirm to delete?" onConfirm={this.deleteOrg.bind(null, record.id)}>
+            <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteOrg.bind(null, record.id)}>
               <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
             </Popconfirm>
           </span>

@@ -26,6 +26,9 @@ class DataRoomList extends React.Component {
     const trader = parseInt(this.props.location.query.traderID, 10);
     const projectOwer = parseInt(this.props.location.query.projectOwnerID, 10);
     const createUser = parseInt(this.props.location.query.createUserID, 10);
+
+    const isFromDataRoomList = investor && trader && projectOwer && createUser ? true : false;
+
     let makeUser; // 承揽 
     let takeUser; // 承做
 
@@ -41,10 +44,10 @@ class DataRoomList extends React.Component {
       makeUser = detail.data.makeUser && detail.data.makeUser.id;
       takeUser = detail.data.takeUser && detail.data.takeUser.id;
 
-      accessBoth = (investor && trader && projectOwer && createUser) ? [makeUser, takeUser, createUser] : [];
+      accessBoth = isFromDataRoomList ? [makeUser, takeUser, createUser] : [];
 
       let data = []
-      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
         data = [
           {
             id: -3,
@@ -141,7 +144,7 @@ class DataRoomList extends React.Component {
       this.setState({ data });
 
       let queryDataRoomArr = []
-      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
         queryDataRoomArr = [
           // Public Folder
           Api.queryDataRoom({
@@ -190,7 +193,7 @@ class DataRoomList extends React.Component {
     })
     .then(data => {
       let getDataRoomFileArr = []
-      if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
         this.dataRoomRelation[data[2].data.data[0].id] = -3
         this.dataRoomRelation[data[1].data.data[0].id] = -2
         this.dataRoomRelation[data[0].data.data[0].id] = -1
@@ -243,7 +246,7 @@ class DataRoomList extends React.Component {
     }).then(data => {
       const formattedData = data.map((m, index) => m.data.data.map(item => {
         let parent
-        if (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser)) {
+        if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
           switch (index) {
             case 0:
               parent = -3
