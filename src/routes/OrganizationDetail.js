@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, i18n, hasPerm } from '../utils/util'
+import { formatMoney, i18n, hasPerm, isLogin } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -21,7 +21,7 @@ const PositionWithUser = props => {
       return null
     }
 
-    if (hasPerm('usersys.admin_changeuser') || user.isMyInvestor) {
+    if (user.couldEdit) {
       return <div>
         <p>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
         <p style={{ textAlign: 'center', marginTop: 10 }}>
@@ -42,7 +42,7 @@ const PositionWithUser = props => {
       <div style={{ width: '80%', marginLeft: '20%' }}>
         {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
           <Popover content={popoverChildren(m)} title={m.name}>
-            <img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
+            <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
         { hasPerm('usersys.admin_adduser') ?
@@ -153,14 +153,12 @@ class OrganizationDetail extends React.Component {
         return Promise.all([
           api.getUser({ org: data.id, page_size: 1000 }),
           api.getUnreachUser({ org: data.id, page_size: 1000 }),
-          api.getUserRelation({ page_size: 1000 }),
         ])
       } else {
         return Promise.resolve()
       }
     }).then(data => {
       if (!data) return
-      const myInvestorIDArr = data[2].data.data.map(m => m.investoruser.id)
       const newData = this.state.data.slice()
       data[0].data.data.map(m => {
         const index = newData.map(m => m.id).indexOf(m.title && m.title.id)
@@ -172,9 +170,8 @@ class OrganizationDetail extends React.Component {
             name: m.trader_relation && m.trader_relation.traderuser.username
           }
           const isUnreachUser = false
-          const isMyInvestor = myInvestorIDArr.includes(m.id)
           const key = 'reach-' + m.id
-          newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key, isMyInvestor })
+          newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key })
         }
       })
       data[1].data.data.map(m => {
@@ -266,6 +263,30 @@ class OrganizationDetail extends React.Component {
     })
   }
 
+  /**
+   * 鼠标停留在投资人上时判断是否有权限修改该投资人
+   */
+  handleHoverInvestor = (positionID, userKey) => {
+    const newData = this.state.data.slice()
+    .map(m => {
+      const user = m.user.slice()
+      return {...m, user}
+    })
+    const positionIndex = newData.map(m => m.id).indexOf(positionID)
+    const index = newData[positionIndex].user.map(m => m.key).indexOf(userKey)
+    if (hasPerm('usersys.admin_changeuser')) {
+      newData[positionIndex].user[index].couldEdit = true;
+      this.setState({ data: newData });
+      return
+    }
+    api.checkUserRelation(userKey.split('-')[1], isLogin().id)
+    .then(result => {
+      if (!result.data) return
+      newData[positionIndex].user[index].couldEdit = true;
+      this.setState({ data: newData });
+    });
+  }
+
   render() {
     const id = this.props.params.id
 
@@ -305,6 +326,7 @@ class OrganizationDetail extends React.Component {
               orgID={m.org}
               position={m.position}
               user={m.user}
+              onHover={this.handleHoverInvestor}
               onRemoveUserPosition={this.onRemoveUserPosition.bind(this)}
               pathname={this.props.location.pathname}
               onAddButtonClicked={this.handleAddUser.bind(this)} />
