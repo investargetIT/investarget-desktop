@@ -86,7 +86,7 @@ class SelectOrganization extends React.Component {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
       } },
-      { title: i18n('organization.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state

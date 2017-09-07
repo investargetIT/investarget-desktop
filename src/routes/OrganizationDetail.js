@@ -85,7 +85,7 @@ class OrganizationDetail extends React.Component {
       industry: null,
       orgtransactionphase: [],
       orgstatus: null,
-      orgcode: null,
+      stockcode: null,
       investoverseasproject: null,
       currency: null,
       transactionAmountF: 'N/A',
@@ -287,7 +287,7 @@ class OrganizationDetail extends React.Component {
           <Field title={i18n('organization.wechat')} value={this.state.weChat} />
           <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
           <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
-          <Field title={i18n('organization.stock_code')} value={this.state.orgcode} />
+          <Field title={i18n('organization.stock_code')} value={this.state.stockcode} />
           <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
           <Field title={i18n('organization.address')} value={this.state.address} />
           <Field title={i18n('organization.description')} value={this.state.description} />

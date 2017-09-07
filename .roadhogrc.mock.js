@@ -450,7 +450,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": "",
+            "stockcode": "",
             "orgtransactionphase": [{
               "is_deleted": false,
               "id": 1,
@@ -484,7 +484,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": null,
+            "stockcode": null,
             "orgtransactionphase": [],
             "id": 2
           }, {
@@ -506,7 +506,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": null,
+            "stockcode": null,
             "orgtransactionphase": [],
             "id": 3
           }, {
@@ -532,7 +532,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": null,
+            "stockcode": null,
             "orgtransactionphase": [],
             "id": 4
           }, {
@@ -546,7 +546,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": null,
+            "stockcode": null,
             "orgtransactionphase": [],
             "id": 20
           }, {
@@ -560,7 +560,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": null,
+            "stockcode": null,
             "orgtransactionphase": [],
             "id": 21
           }, {
@@ -590,7 +590,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": "2341",
+            "stockcode": "2341",
             "orgtransactionphase": [{
               "is_deleted": false,
               "id": 7,
@@ -636,7 +636,7 @@ export default {
               "change": true,
               "delete": true
             },
-            "orgcode": "0000",
+            "stockcode": "0000",
             "orgtransactionphase": [],
             "id": 30
           }]

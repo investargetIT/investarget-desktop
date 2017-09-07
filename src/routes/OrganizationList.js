@@ -118,7 +118,7 @@ class OrganizationList extends React.Component {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
       } },
-      { title: i18n('organization.stock_code'), key: 'orgcode', dataIndex: 'orgcode' },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span className="span-operation">
             <Link to={'/app/organization/' + record.id}>

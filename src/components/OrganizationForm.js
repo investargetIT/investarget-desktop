@@ -34,7 +34,7 @@ const formItemLayout = {
 
 /**
  *  OrganizationForm 的字段 :
- *  'orgnameC', 'orgnameE', 'orgtype', 'industry', 'orgtransactionphase', 'orgcode', 'investoverseasproject', 'currency',
+ *  'orgnameC', 'orgnameE', 'orgtype', 'industry', 'orgtransactionphase', 'stockcode', 'investoverseasproject', 'currency',
  *  'transactionAmountF', 'transactionAmountT', 'fundSize', 'companyEmail', 'webSite', 'mobileAreaCode', 'mobile', 'weChat',
  *  'address', 'description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionCycle', 'decisionMakingProcess',
  *  'orgstatus'
@@ -98,7 +98,7 @@ class OrganizationForm extends React.Component {
           <SelectTransactionPhase mode="multiple" allowClear />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('organization.stock_code')} name="orgcode">
+        <BasicFormItem label={i18n('organization.stock_code')} name="stockcode">
           <Input />
         </BasicFormItem>
 
