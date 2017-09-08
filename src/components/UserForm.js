@@ -126,7 +126,7 @@ class UserForm extends React.Component {
           <SelectTitle />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("user.institution")} name="org" valueType="number">
+        <BasicFormItem label={i18n("user.institution")} name="org">
           {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
             <SelectExistOrganization size="large" />
             {/*<Link to="/app/organization/add" target="_blank"><Button size="large" style={{marginLeft: '8px'}}>新增</Button></Link>*/}

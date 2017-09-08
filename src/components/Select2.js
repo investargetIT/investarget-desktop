@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Input, Icon } from 'antd'
+import { Input, Icon, Tooltip } from 'antd'
 import _ from 'lodash'
 import styles from './Select2.css'
 import { i18n } from '../utils/util'
@@ -138,8 +138,13 @@ class Select2 extends React.Component {
   }
 
   handleSelect = (value) => {
-    this.props.onChange(value)
+    this.props.onChange(`${value}`)
     this.closeSearch()
+  }
+
+  handleCreate = value => {
+    this.props.onChange(value);
+    this.closeSearch();
   }
 
   handleScroll = (e) => {
@@ -190,14 +195,15 @@ class Select2 extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const value = nextProps.value
-    if (value) {
+    const allowCreate = nextProps.allowCreate
+    if (allowCreate) {
+      this.setState({ label: value});
+    } else {
       this.getLabelByValue(value).then(name => {
         this.setState({ label: name })
       }, error => {
         this.handleError(error)
       })
-    } else {
-      this.setState({ label: '' })
     }
   }
 
@@ -225,13 +231,15 @@ class Select2 extends React.Component {
       <div ref="container">
         <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
         <div style={{ ...searchStyle, display: visible ? 'block' : 'none' }}>
-          <Input ref="search" style={inputStyle} size="large" suffix={<Icon type="search" />} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
+          <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
           <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
             { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
             <ul className={styles['list']}>
               {
                 list.map(item =>
-                  <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, item.value)}>{item.label}</li>
+                <Tooltip key={item.value} title={item.description}>
+                  <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, this.props.allowCreate ? item.label : item.value)}>{item.label}</li>
+                </Tooltip>
                 )
               }
             </ul>

@@ -421,7 +421,7 @@
     "select_all": "All",
     "choose": "Choose",
     "no_image": "No image",
-    "keyword_search": "Keyword search",
+    "keyword_search": "Keyword search(name/stock/area)",
     "is_searching": "searching...",
     "is_loading": "loading..."
   },

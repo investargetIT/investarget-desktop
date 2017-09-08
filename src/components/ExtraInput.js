@@ -271,8 +271,8 @@ class SelectExistOrganization extends React.Component {
     return api.getOrg(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
-        const { id: value, orgname: label } = item
-        return { value, label }
+        const { id: value, orgname: label, description } = item
+        return { value, label, description }
       })
       return { total, list }
     })
@@ -291,6 +291,7 @@ class SelectExistOrganization extends React.Component {
         getNameById={this.getOrgnameById}
         value={this.props.value}
         onChange={this.props.onChange}
+        allowCreate={this.props.allowCreate}
       />
     )
   }

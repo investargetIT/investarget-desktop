@@ -9,6 +9,8 @@ import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
 import { i18n } from '../utils/util'
+import { BasicFormItem } from '../components/Form'
+import { SelectExistOrganization } from '../components/ExtraInput'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -333,7 +335,11 @@ class Register extends React.Component {
                   onFetchButtonClicked={this.handleFetchButtonClicked.bind(this)} />
                 <Email onBlur={this.handleEmailOnBlur} />
                 <FullName />
-                <Org required org={this.state.org} onChange={this.handleOrgChange} />
+
+                <BasicFormItem label={i18n("user.institution")} name="organization" required>
+                  <SelectExistOrganization size="large" allowCreate />
+                </BasicFormItem>
+
                 <Position title={this.props.title} />
                 <Tags required tag={this.props.tag} />
                 <Password />
