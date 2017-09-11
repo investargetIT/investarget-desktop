@@ -15,19 +15,12 @@ class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      type: null,
+      favoritetype: 3, // default 交易师推荐
       page: 1,
       pageSize: 10,
       total: 0,
       list: [],
       loading: false,
-    }
-    if (hasPerm('usersys.as_investor')) {
-      this.state.type = 3
-    } else if (hasPerm('usersys.as_trader')) {
-      this.state.type = 4
-    } else {
-      this.state.type = 2
     }
   }
 
@@ -40,29 +33,13 @@ class ProjectListRecommend extends React.Component {
   }
 
   handleFavorChange = (e) => {
-    const type = e.target.value
-    this.setState({ type }, this.getProjectList)
+    const favoritetype = e.target.value
+    this.setState({ favoritetype }, this.getProjectList)
   }
 
   getProjectList = () => {
-    const { type, page, pageSize } = this.state
-
-    var params = { page_index: page, page_size: pageSize }
-    if (type == 1) {
-      params['favoritetype'] = 1
-      params['user'] = isLogin().id
-    } else if (type == 2) {
-      params['favoritetype'] = 2
-      params['user'] = isLogin().id
-    } else if (type == 3) {
-      params['favoritetype'] = 3
-      params['user'] = isLogin().id
-    } else if (type == 4) {
-      params['favoritetype'] = 3
-      params['trader'] = isLogin().id
-    } else {
-      return
-    }
+    const { favoritetype, page, pageSize } = this.state
+    var params = { page_index: page, page_size: pageSize, favoritetype }
 
     this.setState({ loading: true })
     api.getFavoriteProj(params).then(result => {
@@ -83,28 +60,29 @@ class ProjectListRecommend extends React.Component {
 
   render() {
     const { location } = this.props
-    const { type, page, pageSize, total, list, loading } = this.state
+    const { favoritetype, page, pageSize, total, list, loading } = this.state
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
 
     const map = {
       1: i18n('project.recommended_by_system'),
       2: i18n('project.recommended_by_admin'),
       3: i18n('project.recommended_by_trader'),
-      4: i18n('project.recommend_to_investor'),
     }
 
     return (
       <MainLayout location={location}>
         <PageTitle title={i18n('project.recommended_projects')} />
           <div style={{ marginBottom: '24px' }}>
-            <RadioGroup onChange={this.handleFavorChange} value={type}>
+            <RadioGroup onChange={this.handleFavorChange} value={favoritetype}>
               <Radio value={1}>{map[1]}</Radio>
               <Radio value={2}>{map[2]}</Radio>
-              { hasPerm('usersys.as_investor') ? <Radio value={3}>{map[3]}</Radio> : null }
-              { hasPerm('usersys.as_trader') ? <Radio value={4}>{map[4]}</Radio> : null }
+              <Radio value={3}>{map[3]}</Radio>
             </RadioGroup>
           </div>
-          <FavoriteProjectList {...props} />
+          {
+            favoritetype == 3 ? <FavoriteProjectList showInvestor showTrader {...props} />
+                              : <FavoriteProjectList {...props} />
+          }
       </MainLayout>
     )
   }

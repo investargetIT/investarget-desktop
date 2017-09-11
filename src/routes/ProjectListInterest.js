@@ -12,17 +12,11 @@ class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      type: null,
       page: 1,
       pageSize: 10,
       total: 0,
       list: [],
       loading: false,
-    }
-    if (hasPerm('usersys.as_investor')) {
-      this.state.type =  1
-    } else if (hasPerm('usersys.as_trader')) {
-      this.state.type = 2
     }
   }
 
@@ -34,24 +28,10 @@ class ProjectListRecommend extends React.Component {
     this.setState({ pageSize, page: 1 }, this.getProjectList)
   }
 
-  handleFavorChange = (e) => {
-    const type = e.target.value
-    this.setState({ type }, this.getProjectList)
-  }
-
   getProjectList = () => {
-    const { type, page, pageSize } = this.state
+    const { page, pageSize } = this.state
 
-    var params = { page_index: page, page_size: pageSize }
-    if (type == 1) {
-      params['favoritetype'] = 5
-      params['user'] = isLogin().id
-    } else if (type == 2) {
-      params['favoritetype'] = 5
-      params['trader'] = isLogin().id
-    } else {
-      return
-    }
+    var params = { page_index: page, page_size: pageSize, favoritetype: 5 }
 
     this.setState({ loading: true })
     api.getFavoriteProj(params).then(result => {
@@ -72,25 +52,13 @@ class ProjectListRecommend extends React.Component {
 
   render() {
     const { location } = this.props
-    const { type, page, pageSize, total, list, loading } = this.state
+    const { favoritetype, page, pageSize, total, list, loading } = this.state
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
-
-
-    const map = {
-      1: i18n('project.has_interest'),
-      2: i18n('project.investor_has_interest'),
-    }
 
     return (
       <MainLayout location={location}>
         <PageTitle title={i18n('project.interested_projects')} />
-          <div style={{ marginBottom: '24px' }}>
-            <RadioGroup onChange={this.handleFavorChange} value={type}>
-              { hasPerm('usersys.as_investor') ? <Radio value={1}>{map[1]}</Radio> : null }
-              { hasPerm('usersys.as_trader') ? <Radio value={2}>{map[2]}</Radio> : null }
-            </RadioGroup>
-          </div>
-          <FavoriteProjectList {...props} />
+          <FavoriteProjectList showInvestor showTrader {...props} />
       </MainLayout>
     )
   }
