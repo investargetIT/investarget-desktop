@@ -179,6 +179,8 @@
       "project_updated": "Project updated",
       "favor_success": "Favor success",
       "unfavor_sucee": "Unfavor success",
+      "interest_success": "Operation Success",
+      "recommend_success": "Operation Success",
       "delete_success": "Delete success",
       "project_message_missing": "This project can not be published due to insufficient information!"
     }
@@ -465,5 +467,8 @@
   "close_confirm": "Confirm to close?",
   "unknown_error": "Unknown Error",
   "contact_admin": "Please contact service administrator!",
-  "mobile": "Mobile"
+  "mobile": "Mobile",
+  "recommend_to_investor": "Recommend to Investor",
+  "investor_not_found": "Investor Not Found",
+  "not_favorite_yet": "You haven't favorite the project yet! So you can't recomment to investor"
 }

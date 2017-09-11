@@ -181,6 +181,7 @@
       "unfavor_sucee": "取消收藏成功",
       "interest_success": "感兴趣成功",
       "delete_success": "删除成功",
+      "recommend_success": "推荐成功",
       "project_message_missing": "项目信息未完善，无法终审发布"
     }
   },
@@ -465,5 +466,8 @@
   "close_confirm": "确定要关闭吗？",
   "unknown_error": "未知错误",
   "contact_admin": "请联系系统管理员",
-  "mobile": "手机"
+  "mobile": "手机",
+  "recommend_to_investor": "推荐给投资人",
+  "investor_not_found": "暂无投资人",
+  "not_favorite_yet": "您还没有收藏该项目，无法推荐给投资人"
 }

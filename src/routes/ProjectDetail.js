@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps } from 'antd'
+import { Timeline, Icon, Tag, Button, message, Steps, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
@@ -91,6 +91,8 @@ class ProjectDetail extends React.Component {
       userListWithInterest: [],
       teaserUrl: null,
       hasPublicDataroom: false,
+      investor: null,
+      investorOptions: []
     }
   }
 
@@ -144,6 +146,7 @@ class ProjectDetail extends React.Component {
   handleTraderChange = (trader) => {
     this.setState({ trader })
   }
+  handleInvestorChange = investor => this.setState({ investor });
 
   haveInterest = () => {
     const { id, trader } = this.state
@@ -161,6 +164,25 @@ class ProjectDetail extends React.Component {
         payload: error
       })
     })
+  }
+
+  recommendToInvestor = () => {
+    if (!this.state.isFavorite) {
+      Modal.error({
+        title: i18n('not_favorite_yet')
+      });
+      return;
+    }
+    const { id, investor } = this.state
+    const param = {
+      user: investor,
+      projs: [id],
+      favoritetype: 3,
+      trader: isLogin() && isLogin().id,
+    }
+    api.projFavorite(param)
+    .then(result => message.success(i18n('project.message.recommend_success'), 2))
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
   }
 
   getPublicDataroom = () => {
@@ -197,13 +219,25 @@ class ProjectDetail extends React.Component {
     }
 
     // 获取投资人的交易师
-    api.getUserRelation({ investoruser: isLogin() && isLogin().id }).then(result => {
-      const data = result.data.data
-      const relation = data.filter(item => item.relationtype)[0]
-      const trader = relation && relation.traderuser.id
-      const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
-      this.setState({ traderOptions, trader })
-    })
+    if (hasPerm('usersys.as_investor')) {
+      api.getUserRelation({ investoruser: isLogin() && isLogin().id }).then(result => {
+        const data = result.data.data
+        const relation = data.filter(item => item.relationtype)[0]
+        const trader = relation && relation.traderuser.id
+        const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
+        this.setState({ traderOptions, trader })
+      })
+    }
+
+    if (hasPerm('usersys.as_trader')) {
+      api.getUserRelation({ traderuser: isLogin() && isLogin().id }).then(result => {
+        const data = result.data.data
+        const relation = data.filter(item => item.relationtype)[0]
+        const investor = relation && relation.investoruser.id
+        const investorOptions = data.map(item => ({ value: item.investoruser.id, label: item.investoruser.username }))
+        this.setState({ investorOptions, investor })
+      })
+    }
 
     this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
 
@@ -400,6 +434,17 @@ class ProjectDetail extends React.Component {
           : null
         }
 
+        {hasPerm('usersys.as_trader') ?
+          <div style={blockStyle}>
+            <h2 style={blockTitleStyle}>{i18n('recommend_to_investor')}</h2>
+            <div>
+              <SelectNumber style={{ minWidth: 100 }} options={this.state.investorOptions} value={this.state.investor} onChange={this.handleInvestorChange} notFoundContent={i18n('investor_not_found')} />
+              <Button onClick={this.recommendToInvestor} disabled={this.state.investorOptions.length == 0}>{i18n('recommend_to_investor')}</Button>
+            </div>
+          </div>
+          : null}
+
+        { hasPerm('usersys.as_investor') ?
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.contact_transaction')}</h2>
           <div>
@@ -407,6 +452,7 @@ class ProjectDetail extends React.Component {
             <Button onClick={this.haveInterest} disabled={traderOptions.length == 0}>{i18n('project.contact_transaction')}</Button>
           </div>
         </div>
+        : null}
 
         {
           teaser ? (
