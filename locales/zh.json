@@ -268,7 +268,7 @@
     "score": "分数",
     "photo": "当前头像",
     "permission_management": "权限管理",
-    "no_trader": "暂无交易师",
+    "no_trader": "暂无交易师，系统会在近期分配交易师",
     "select_trader": "选择交易师",
 
     "message": {

@@ -148,6 +148,12 @@ class ProjectDetail extends React.Component {
   handleInvestorChange = investor => this.setState({ investor });
 
   haveInterest = () => {
+    if (this.state.traderOptions.length === 0) {
+      Modal.error({
+        title: i18n('user.no_trader')
+      });
+      return;
+    }
     const { id, trader } = this.state
     const params = {
       favoritetype: 5,
@@ -438,8 +444,10 @@ class ProjectDetail extends React.Component {
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.contact_transaction')}</h2>
           <div>
+            {traderOptions.length > 0 ? 
             <SelectNumber style={{minWidth: 100}} options={traderOptions} value={trader} onChange={this.handleTraderChange} notFoundContent={i18n('user.no_trader')} />
-            <Button onClick={this.haveInterest} disabled={traderOptions.length == 0}>{i18n('project.contact_transaction')}</Button>
+            : null }
+            <Button onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
           </div>
         </div>
         : null}
