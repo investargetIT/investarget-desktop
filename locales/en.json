@@ -302,6 +302,7 @@
     "close_timeline": "Close Timeline",
     "close_reason": "Close Reason",
     "open_timeline": "Open Timeline",
+    "expire_time": "Expire Time",
 
     "message": {
       "confirm_create_title": "确认",

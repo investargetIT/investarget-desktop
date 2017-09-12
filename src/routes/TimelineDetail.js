@@ -67,7 +67,7 @@ class TimelineDetail extends React.Component {
           <div style={{ marginBottom: '24px' }}>
             <Field title={i18n('timeline.status')} value={status} />
             <Field title={i18n('timeline.alert_cycle')} value={alertCycle} />
-            <Field title={i18n('timeline.created_time')} value={createdTime} />
+            <Field title={i18n('timeline.expire_time')} value={createdTime} />
           </div>
         </div>
 

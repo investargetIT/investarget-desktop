@@ -302,6 +302,7 @@
     "close_timeline": "关闭时间轴",
     "close_reason": "结束理由",
     "open_timeline": "打开时间轴",
+    "expire_time": "过期时间",
 
     "message": {
       "confirm_create_timeline": "确认",

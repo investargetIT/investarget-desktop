@@ -163,7 +163,6 @@ function remarkListWithApi(type) {
     getRemarkList = () => {
       const param = {
         [type]: this.props.typeId,
-        createuser: getCurrentUser(),
       }
       getApi(param).then(result => {
         const list = result.data.data
