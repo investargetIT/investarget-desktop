@@ -4,6 +4,7 @@ import { Input, Table, Pagination, Button, message } from 'antd'
 import { Search } from '../components/Search'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
+import { hasPerm } from '../utils/util'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -74,25 +75,22 @@ class RecommendProject extends React.Component {
   }
 
   getUser = () => {
-    // 交易师 自己的投资人，管理员 所有投资人
-    if (groupId == 2) {
+    if (hasPerm('proj.admin_addfavorite')) {
+      this.setState({ loading: true })
+      api.queryUserGroup({ type: 'investor' })
+        .then(result => api.getUser({ groups: result.data.data.map(m => m.id) }))
+        .then(result => {
+          const total = result.data.count
+          const list = result.data.data
+          this.setState({ loading: false, total, list })
+        })
+        .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+    } else if (hasPerm('usersys.as_trader')) {
       this.setState({ loading: true })
       api.getUserRelation({ traderuser: userId }).then(result => {
         const total = result.data.count
         const data = result.data.data
         const list = data.map(item => item.investoruser)
-        this.setState({ loading: false, total, list })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-    } else if (groupId == 3) {
-      this.setState({ loading: true })
-      api.getUser({ groups: [1] }).then(result => {
-        const total = result.data.count
-        const list = result.data.data
         this.setState({ loading: false, total, list })
       }, error => {
         this.props.dispatch({
@@ -107,16 +105,11 @@ class RecommendProject extends React.Component {
     const { projId, selectedUsers: userIds } = this.state
 
     const q = userIds.map(id => {
-
-      const params = groupId == 2 ? {
-        'favoritetype': 3,
-        'projs': [projId],
-        'user': id,
-        'trader': userId,
-      } : {
-        'favoritetype': 2,
-        'projs': [projId],
-        'user': id,
+      const param = {
+        user: id,
+        projs: [projId],
+        favoritetype: hasPerm('proj.admin_addfavorite') ? 2 : 3, // 有管理员推荐项目权限的全部当作后台推荐
+        trader: hasPerm('proj.admin_addfavorite') ? undefined : isLogin() && isLogin().id, // 后台推荐不需要交易师
       }
       return api.favoriteProj(params)
     })

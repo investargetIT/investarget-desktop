@@ -263,7 +263,7 @@ class ProjectList extends React.Component {
               <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('usersys.as_admin') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
+                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
               <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">

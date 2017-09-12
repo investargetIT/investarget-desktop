@@ -99,7 +99,6 @@ class ProjectDetail extends React.Component {
   getFavorProject = () => {
     const param = {
       favoritetype: 4,
-      user: isLogin() && isLogin().id,
       proj: this.state.id,
     }
     api.getFavoriteProj(param).then(result => {
@@ -173,16 +172,7 @@ class ProjectDetail extends React.Component {
       });
       return;
     }
-    const { id, investor } = this.state
-    const param = {
-      user: investor,
-      projs: [id],
-      favoritetype: 3,
-      trader: isLogin() && isLogin().id,
-    }
-    api.projFavorite(param)
-    .then(result => message.success(i18n('project.message.recommend_success'), 2))
-    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+    window.open("/app/projects/recommend/" + this.state.id);
   }
 
   getPublicDataroom = () => {
@@ -434,17 +424,17 @@ class ProjectDetail extends React.Component {
           : null
         }
 
-        {hasPerm('usersys.as_trader') ?
+        { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
           <div style={blockStyle}>
             <h2 style={blockTitleStyle}>{i18n('recommend_to_investor')}</h2>
             <div>
-              <SelectNumber style={{ minWidth: 100 }} options={this.state.investorOptions} value={this.state.investor} onChange={this.handleInvestorChange} notFoundContent={i18n('investor_not_found')} />
+              {/* <SelectNumber style={{ minWidth: 100 }} options={this.state.investorOptions} value={this.state.investor} onChange={this.handleInvestorChange} notFoundContent={i18n('investor_not_found')} /> */}
               <Button onClick={this.recommendToInvestor} disabled={this.state.investorOptions.length == 0}>{i18n('recommend_to_investor')}</Button>
             </div>
           </div>
           : null}
 
-        { hasPerm('usersys.as_investor') ?
+        { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.contact_transaction')}</h2>
           <div>

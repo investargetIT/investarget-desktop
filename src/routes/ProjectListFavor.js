@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n, isLogin } from '../utils/util'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import FavoriteProjectList from '../components/FavoriteProjectList'
+import { i18n } from '../utils/util'
 
 class ProjectListRecommend extends React.Component {
   constructor(props) {
@@ -28,8 +28,7 @@ class ProjectListRecommend extends React.Component {
 
   getProjectList = () => {
     const { favoritetype, page, pageSize } = this.state
-    const user = isLogin().id
-    const params = { favoritetype, user, page_index: page, page_size: pageSize }
+    const params = { favoritetype, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getFavoriteProj(params).then(result => {
       const { count: total, data: list } = result.data
