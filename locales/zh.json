@@ -270,6 +270,7 @@
     "permission_management": "权限管理",
     "no_trader": "暂无交易师，系统会在近期分配交易师",
     "select_trader": "选择交易师",
+    "select_investor": "选择投资人",
 
     "message": {
       "user_exist": "该用户已经存在",

@@ -270,6 +270,7 @@
     "permission_management": "Permission Management",
     "no_trader": "No Trader",
     "select_trader": "Select Trader",
+    "select_investor": "Select Investor",
 
     "message": {
       "user_exist": "User exist",

@@ -157,7 +157,7 @@ class SelectUserToPosition extends React.Component {
     const { filters, search, total, list, loading, page, pageSize } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('user.select_trader')}>
+      <LeftRightLayout location={this.props.location} title={i18n('user.select_investor')}>
         <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
