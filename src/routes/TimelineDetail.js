@@ -45,7 +45,7 @@ class TimelineDetail extends React.Component {
       const data = result.data.transationStatu
       const status = data.transationStatus.name
       const alertCycle = data.alertCycle
-      let createdTime = new Date(data.inDate)
+      let createdTime = new Date(data.inDate+data.timezone)
       createdTime = time(createdTime)
       this.setState({ status, alertCycle, createdTime })
     }, error => {

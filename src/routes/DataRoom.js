@@ -287,7 +287,8 @@ class DataRoomList extends React.Component {
         const unique = item.id
         const isFolder = !item.isFile
         const date = item.lastmodifytime || item.createdtime
-        return { ...item, parentId, name, rename, unique, isFolder, date }
+        const timezone = item.timezone || '+08:00'
+        return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
       })).reduce((acc, val) => acc.concat(val), [])
       const newData = this.state.data.concat(formattedData)
       this.setState({ data: newData }, () => {

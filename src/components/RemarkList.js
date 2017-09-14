@@ -91,7 +91,7 @@ class RemarkList extends React.Component {
               this.props.list.map(item =>
                 <div key={item.id} style={remarkStyle}>
                   <p style={remarkTimeStyle}>
-                    { time(item.createdtime) }
+                    { time(item.createdtime+item.timezone) }
                   </p>
                   <p style={remarkTextStyle}>{item.remark}</p>
                 </div>
@@ -109,7 +109,7 @@ class RemarkList extends React.Component {
               this.props.list.map(item =>
                 <div key={item.id} style={remarkStyle}>
                   <p style={remarkTimeStyle}>
-                    { time(item.createdtime) }
+                    { time(item.createdtime+item.timezone) }
                     {/* TODO// 操作与权限挂钩 */}
                     <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>{i18n('common.edit')}</a>
                     <Popconfirm title={i18n('remark.remove_remark')} onConfirm={this.confirmDeleteRemark.bind(this, item.id)}>

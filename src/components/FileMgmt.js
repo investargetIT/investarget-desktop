@@ -283,7 +283,7 @@ class FileMgmt extends React.Component {
       title: i18n('dataroom.modified_time'),
       dataIndex: 'date',
       key: 'date',
-      render: date => date && time(date),
+      render: (date, record) => date && time(date+record.timezone),
     }]
 
 
