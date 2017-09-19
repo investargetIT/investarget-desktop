@@ -151,7 +151,7 @@ class OrganizationDetail extends React.Component {
           })
         })
         return Promise.all([
-          api.getUser({ org: data.id, page_size: 1000 }),
+          api.getUser({ org: data.id, page_size: 1000, title: orgStructure.map(m => m.title.id)}),
           api.getUnreachUser({ org: data.id, page_size: 1000 }),
         ])
       } else {
