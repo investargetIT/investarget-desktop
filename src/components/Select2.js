@@ -142,7 +142,7 @@ class Select2 extends React.Component {
   }
 
   handleSelect = (value) => {
-    this.props.onChange(`${value}`)
+    this.props.onChange(this.props.allowCreate ? `${value}` : value)
     this.closeSearch()
   }
 
