@@ -4,7 +4,7 @@ import { Input, Table, Pagination, Button, message } from 'antd'
 import { Search } from '../components/Search'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { hasPerm } from '../utils/util'
+import { hasPerm, isLogin } from '../utils/util'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -105,7 +105,7 @@ class RecommendProject extends React.Component {
     const { projId, selectedUsers: userIds } = this.state
 
     const q = userIds.map(id => {
-      const param = {
+      const params = {
         user: id,
         projs: [projId],
         favoritetype: hasPerm('proj.admin_addfavorite') ? 2 : 3, // 有管理员推荐项目权限的全部当作后台推荐
