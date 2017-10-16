@@ -46,6 +46,8 @@ import SelectUserToPosition from './routes/SelectUserToPosition'
 import AccessDenied from './routes/AccessDenied'
 import SelectTraderToRelation from './routes/SelectTraderToRelation'
 import Agreement from './routes/Agreement'
+import ProjectLibrary from './routes/ProjectLibrary'
+import ProjectLibraryItem from './routes/ProjectLibraryItem'
 
 function RouterConfig({ history }) {
   return (
@@ -66,6 +68,8 @@ function RouterConfig({ history }) {
       <Route path={URI_11} component={LogList} />
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
+      <Route path="/app/projects/library" component={ProjectLibrary} />
+      <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
       <Route path="/app/projects/list" component={ProjectList} />
       <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
       <Route path="/app/projects/list/favor" component={ProjectListFavor} />

@@ -37,6 +37,7 @@ export default {
     error: null,
     service: [],
     unreadMessageNum: 0,
+    libIndustry: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -47,6 +48,9 @@ export default {
     },
     saveSource(state, { payload: { sourceType, data } }) {
       return { ...state, [sourceType]: data }
+    },
+    saveLibIndustry(state, { payload: data }) {
+      return { ...state, libIndustry: data }
     },
     setRegisterStep(state, { payload: registerStep }) {
       return { ...state, registerStep }
@@ -91,6 +95,14 @@ export default {
         let sourceType = sourceTypeList[i]
         yield put({ type: 'getSource', payload: sourceType })
       }
+    },
+    *requestLibIndustry({}, { call, put }) {
+      const { data } = yield call(api.getLibIndustry)
+      yield put({ type: 'saveLibIndustry', payload: data.data })
+    },
+    *getLibIndustry({}, { select, put }) {
+      const data = yield select(state => state.app.libIndustry)
+      data.length > 0 || (yield put({ type: 'requestLibIndustry' }))
     },
   },
   subscriptions: {

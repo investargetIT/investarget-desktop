@@ -37,6 +37,12 @@ class SiderMenu extends React.Component {
         openKeys={this.props.openKeys}
         onOpenChange={this.handleOpenChange.bind(this)} style={this.props.style}>
 
+        <Menu.Item>
+          <Link to="/app/projects/library">
+            <img style={iconImgStyle} src={'https://o79atf82v.qnssl.com/1024icon.png'} />
+            <span style={navTextStyle}>项目全库</span>
+          </Link>
+        </Menu.Item>
         {
           this.props.menulist.filter(f => !f.parentmenu).map(m => {
             const subMenu = this.props.menulist.filter(f => f.parentmenu === m.id)

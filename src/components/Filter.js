@@ -4,6 +4,7 @@ import { i18n } from '../utils/util'
 
 import { Row, Col, Button, Checkbox, Select, Radio } from 'antd'
 const RadioGroup = Radio.Group
+const CheckboxGroup = Checkbox.Group
 
 import TabCheckbox from './TabCheckbox'
 import {
@@ -576,6 +577,108 @@ class ProjectListFilter extends React.Component {
 }
 
 
+class ProjectLibraryFilter extends React.Component {
+
+  static defaultValue = {
+    com_sub_cat_name: [],
+    com_born_date: [],
+    com_addr: [],
+    invse_round_id: [],
+    com_status: [],
+    com_fund_needs_name: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || ProjectLibraryFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...ProjectLibraryFilter.defaultValue })
+    this.props.onReset({ ...ProjectLibraryFilter.defaultValue })
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getLibIndustry' })
+  }
+
+  render() {
+    const { industryOptions } = this.props
+    const { com_sub_cat_name, com_born_date, com_addr, invse_round_id, com_status, com_fund_needs_name } = this.state
+
+    const yearOptions = _.range(2017, 2000-1).map(y => ({ label: String(y), value: String(y) }))
+    const area = ['北京','上海','广东','浙江','江苏','天津','福建','湖北','湖南','四川','河北','山西','内蒙古','辽宁','吉林','黑龙江','安徽','江西','山东','河南','广西','海南','重庆','贵州','云南','西藏','陕西','甘肃','青海','宁夏','新疆','香港','澳门','台湾','国外']
+    const areaOptions = area.map(item => ({ label: item, value: item }))
+    const _fundStatus = ['尚未获投','种子轮','天使轮','Pre-A轮','A轮','A+轮','Pre-B轮','B轮','B+轮','C轮','C+轮','D轮','D+轮','E轮','F轮-上市前','已上市','新三板','战略投资','已被收购','不明确']
+    const fundStatusOptions = _fundStatus.map(item => ({ label: item, value: item }))
+    const _status = ['运营中','未上线','已关闭','已转型']
+    const statusOptions = _status.map(item => ({ label: item, value: item }))
+    const _fundNeeds = ['需要融资','不需要融资','寻求被收购','不明确']
+    const fundNeedsOptions = _fundNeeds.map(item => ({ label: item, value: item }))
+
+    return (
+      <div>
+        <BasicContainer label={i18n('filter.industry')}>
+          <TabCheckbox options={industryOptions} value={com_sub_cat_name} onChange={this.handleChange.bind(this, 'com_sub_cat_name')} />
+        </BasicContainer>
+        <BasicContainer label={'成立时间'}>
+          <CheckboxGroup options={yearOptions} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
+        </BasicContainer>
+        <BasicContainer label={'地区'}>
+          <CheckboxGroup options={areaOptions} value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
+        </BasicContainer>
+        <BasicContainer label={'获投状态'}>
+          <CheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />
+        </BasicContainer>
+        <BasicContainer label={'运营状态'}>
+          <CheckboxGroup options={statusOptions} value={com_status} onChange={this.handleChange.bind(this, 'com_status')} />
+        </BasicContainer>
+        <BasicContainer label={'融资需求'}>
+          <CheckboxGroup options={fundNeedsOptions} value={com_fund_needs_name} onChange={this.handleChange.bind(this, 'com_fund_needs_name')} />
+        </BasicContainer>
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
+ProjectLibraryFilter = connect(mapStateToPropsIndustry)(ProjectLibraryFilter)
+
+function mapStateToPropsIndustry (state) {
+  const { libIndustry: industry } = state.app
+
+  let pIndustries = industry.filter(item => item.p_cat_id === null)
+  pIndustries.forEach(item => {
+    let p_cat_id = item.cat_id
+    let subIndustries = industry.filter(item => item.p_cat_id == p_cat_id && item.cat_id != p_cat_id)
+    item.children = subIndustries
+  })
+  const industryOptions = pIndustries.map(item => {
+    var ret = {
+      label: item.cat_name,
+      value: item.cat_name,
+    }
+    if (item.children.length > 0) {
+      ret['children'] = item.children.map(item => {
+        return {
+          label: item.cat_name,
+          value: item.cat_name
+        }
+      })
+    }
+    return ret
+  })
+
+  return { industryOptions }
+}
+
 
 
 ///// used in AddUser.js TODO:// refractor
@@ -593,4 +696,5 @@ module.exports = {
   OrganizationListFilter,
   ProjectListFilter,
   TimelineFilter,
+  ProjectLibraryFilter,
 }

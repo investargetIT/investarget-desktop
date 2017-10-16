@@ -286,7 +286,7 @@ export function qiniuUpload(bucket, file) {
 /**
  * 在使用环信发送图片或语音等消息时需要先把这些文件上传给环信
  * WebSDK好像有直接发送图片的接口，先放这儿吧
- * 
+ *
  * @param {string} token 登录环信后获取的 token
  * @param {object} file 上传的文件
  */
@@ -606,3 +606,21 @@ export function getLogOfUserUpdate(param) {
  * mongolog
  */
 export const getChatMsg = param => r('/mongolog/chatmsg?' + qs.stringify(param))
+
+export const getLibIndustry = () => r('/mongolog/cat')
+export const getLibEvent = (param) => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
+  return r('/mongolog/event?' + qs.stringify(param))
+}
+export const getLibProj = (param) => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
+  return r('/mongolog/proj?' + qs.stringify(param))
+}

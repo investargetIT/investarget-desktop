@@ -1,7 +1,10 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Input, Icon, Tooltip } from 'antd'
+import Trigger from 'rc-trigger'
+import 'rc-trigger/assets/index.css';
 import _ from 'lodash'
 import styles from './Select2.css'
 import { i18n } from '../utils/util'
@@ -42,6 +45,7 @@ const inputStyle = {
   outline: 'none',
 }
 const resultStyle = {
+  minHeight: '200px',
   maxHeight: '250px',
   overflow: 'scroll',
   border: '1px solid #d9d9d9',
@@ -68,7 +72,7 @@ class Select2 extends React.Component {
 
     this.state = {
       label: '',
-      visible: false,
+      visible: true,
       search: '',
       page: 1,
       pageSize: 10,
@@ -216,6 +220,19 @@ class Select2 extends React.Component {
     }
   }
 
+
+  getPopupDOMNode = () => {
+    return this.refs.trigger.getPopupDomNode()
+  }
+
+  componentDidUpdate() {
+    const dropdownDOMNode = this.getPopupDOMNode()
+
+    if (dropdownDOMNode) {
+      dropdownDOMNode.style['width'] = `${ReactDOM.findDOMNode(this).offsetWidth}px`
+    }
+  }
+
   componentDidMount() {
     document.body.addEventListener('click', this.handleOutClick)
   }
@@ -227,27 +244,38 @@ class Select2 extends React.Component {
   render() {
     const { label, visible, search, list, reloading, loading } = this.state
 
+    const content = (
+      <div style={{ ...searchStyle }}>
+        <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
+        <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
+          { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
+          <ul className={styles['list']}>
+            {
+              list.map(item =>
+              <Tooltip key={item.value} title={item.description}>
+                <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, this.props.allowCreate ? item.label : item.value)}>{item.label}</li>
+              </Tooltip>
+              )
+            }
+          </ul>
+          {
+            loading ? <p style={tipStyle}>{i18n('common.is_loading')}</p> : null
+          }
+        </div>
+      </div>
+    )
+
+
     return (
       <div ref="container">
-        <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
-        <div style={{ ...searchStyle, display: visible ? 'block' : 'none' }}>
-          <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
-          <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
-            { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
-            <ul className={styles['list']}>
-              {
-                list.map(item =>
-                <Tooltip key={item.value} title={item.description}>
-                  <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, this.props.allowCreate ? item.label : item.value)}>{item.label}</li>
-                </Tooltip>
-                )
-              }
-            </ul>
-            {
-              loading ? <p style={tipStyle}>{i18n('common.is_loading')}</p> : null
-            }
-          </div>
-        </div>
+        <Trigger
+          action={['click']}
+          popup={content}
+          popupAlign={{points: ['tl', 'bl'],offset:[0,3]}}
+          ref="trigger"
+        >
+          <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
+        </Trigger>
       </div>
     )
   }
