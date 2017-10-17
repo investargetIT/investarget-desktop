@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Button, Table, Pagination, Input } from 'antd'
 import Trigger from 'rc-trigger'
+import 'rc-trigger/assets/index.css';
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectLibraryFilter } from '../components/Filter'

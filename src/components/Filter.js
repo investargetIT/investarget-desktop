@@ -16,6 +16,8 @@ import {
   CheckboxTag,
   CheckboxOrganizationType,
   CheckboxProjStatus,
+  CheckboxArea,
+  CheckboxAreaString,
   SelectOrganizatonArea,
   SelectTimelineStatus,
   SliderMoney,
@@ -615,8 +617,8 @@ class ProjectLibraryFilter extends React.Component {
     const { com_sub_cat_name, com_born_date, com_addr, invse_round_id, com_status, com_fund_needs_name } = this.state
 
     const yearOptions = _.range(2017, 2000-1).map(y => ({ label: String(y), value: String(y) }))
-    const area = ['北京','上海','广东','浙江','江苏','天津','福建','湖北','湖南','四川','河北','山西','内蒙古','辽宁','吉林','黑龙江','安徽','江西','山东','河南','广西','海南','重庆','贵州','云南','西藏','陕西','甘肃','青海','宁夏','新疆','香港','澳门','台湾','国外']
-    const areaOptions = area.map(item => ({ label: item, value: item }))
+    // const area = ['北京','上海','广东','浙江','江苏','天津','福建','湖北','湖南','四川','河北','山西','内蒙古','辽宁','吉林','黑龙江','安徽','江西','山东','河南','广西','海南','重庆','贵州','云南','西藏','陕西','甘肃','青海','宁夏','新疆','香港','澳门','台湾','国外']
+    // const areaOptions = area.map(item => ({ label: item, value: item }))
     const _fundStatus = ['尚未获投','种子轮','天使轮','Pre-A轮','A轮','A+轮','Pre-B轮','B轮','B+轮','C轮','C+轮','D轮','D+轮','E轮','F轮-上市前','已上市','新三板','战略投资','已被收购','不明确']
     const fundStatusOptions = _fundStatus.map(item => ({ label: item, value: item }))
     const _status = ['运营中','未上线','已关闭','已转型']
@@ -633,7 +635,7 @@ class ProjectLibraryFilter extends React.Component {
           <CheckboxGroup options={yearOptions} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
         </BasicContainer>
         <BasicContainer label={'地区'}>
-          <CheckboxGroup options={areaOptions} value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
+          <CheckboxAreaString value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
         </BasicContainer>
         <BasicContainer label={'获投状态'}>
           <CheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />

@@ -770,6 +770,23 @@ const CheckboxOrganizationType = withOptionsAsync(CheckboxGroup, ['orgtype'], fu
   return { options }
 })
 
+/**
+ * CheckboxArea
+ */
+const CheckboxArea = withOptionsAsync(CheckboxGroup, ['country'], function(state) {
+  const { country } = state.app
+  const options = country.filter(item => item.level == 3).map(item => {
+    return { label: item.country, value: item.id }
+  })
+  return { options }
+})
+const CheckboxAreaString = withOptionsAsync(CheckboxGroup, ['country'], function(state) {
+  const { country } = state.app
+  const options = country.filter(item => item.level == 3).map(item => {
+    return { label: item.country, value: item.country }
+  })
+  return { options }
+})
 
 /**
  * TabCheckboxCountry
@@ -899,12 +916,16 @@ export {
   CheckboxCurrencyType,
   CheckboxTransactionPhase,
   CheckboxOrganizationType,
+  CheckboxArea,
+  CheckboxAreaString,
   TabCheckboxCountry,
   TabCheckboxIndustry,
   SliderMoney,
   RadioTrueOrFalse,
   RadioCurrencyType,
   RadioAudit,
+  RadioBDStatus,
+  RadioBDSource,
   CheckboxService,
   SelectService,
 }

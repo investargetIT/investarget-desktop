@@ -28,6 +28,7 @@ const valueStyle = {
   outline: 'none',
   border: '1px solid #d9d9d9',
   height: '32px',
+  lineHeight: '32px',
   borderRadius: '4px',
   backgroundColor: '#fff',
   transition: 'all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)',
@@ -130,14 +131,18 @@ class Select2 extends React.Component {
   }
 
   getLabelByValue = (value) => {
-    // first, search from this.state.list, then, search from remote api
-    const { list } = this.state
-    const item = list.filter(item => item.value == value)[0]
-    const name = item ? item.label : ''
-    if (name) {
-      return Promise.resolve(name)
+    if (value) {
+      // first, search from this.state.list, then, search from remote api
+      let { list } = this.state
+      let item = list.filter(item => item.value == value)[0]
+      let name = item ? item.label : ''
+      if (name) {
+        return Promise.resolve(name)
+      } else {
+        return this.props.getNameById(value)
+      }
     } else {
-      return this.props.getNameById(value)
+      return Promise.resolve('')
     }
   }
 
