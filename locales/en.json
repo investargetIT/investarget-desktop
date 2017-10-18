@@ -1,5 +1,9 @@
 {
   "menu": {
+    "project_library": "Project Library",
+    "bd_management": "BD Management",
+    "project_bd": "Project BD",
+    "organization_bd": "Organization BD",
     "project_management": "Project Management",
     "platform_projects": "Platform Projects",
     "interest_projects": "Interested Projects",

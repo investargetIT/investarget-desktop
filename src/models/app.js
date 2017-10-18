@@ -32,6 +32,7 @@ export default {
     orgarea: [],
     orgtype: [],
     character: [],
+    bdStatus: [],
     showChat: false,
     projstatus: [],
     error: null,

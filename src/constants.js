@@ -19,8 +19,10 @@ export const URI_16 = "/app/projects/published"
 export const URI_17 = "/app/projects/list/favor"
 
 export const KEY_TO_URI = {
+  "project_library": "/app/projects/library",
+  "project_bd": "/app/projects/bd",
   "platform_projects": URI_1,
-  "institution_management": URI_3,
+  "organization_bd": URI_3,
   "email_management": URI_4,
   "timeline_management": URI_5,
   "user_management": URI_6,

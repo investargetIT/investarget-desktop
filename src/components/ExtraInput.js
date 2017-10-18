@@ -32,6 +32,19 @@ function RadioGroup2 ({children, onChange, ...extraProps}) {
 }
 
 
+class _Select extends React.Component {
+  render() {
+    const { children, options, value, onChange, ...extraProps } = this.props
+    return (
+      <Select value={value} onChange={onChange} {...extraProps}>
+        {options.map((item, index) =>
+          <Option key={index} value={item.value}>{item.label}</Option>
+        )}
+      </Select>
+    )
+  }
+}
+
 class SelectNumber extends React.Component {
 
   handleChange = (value) => {
@@ -60,7 +73,7 @@ class SelectNumber extends React.Component {
 }
 
 
-const withOptions = function(Component, options, mapStateToProps) {
+const withOptions = function(Component, options) {
   return class extends React.Component {
     constructor(props) {
       super(props)
@@ -323,6 +336,7 @@ class SelectExistUser extends React.Component {
   render() {
     return (
       <Select2
+        style={this.props.style}
         getData={this.getUser}
         getNameById={this.getUsernameById}
         value={this.props.value}
@@ -373,6 +387,38 @@ class SelectUser extends React.Component {
   }
 }
 SelectUser = connect()(SelectUser)
+
+/**
+ * SelectOrgUser
+ */
+class SelectOrgUser extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      options: []
+    }
+  }
+
+  componentDidMount() {
+    const { org, type } = this.props
+    api.queryUserGroup({ type: type || 'trader'}).then(data => {
+      const groups = data.data.data.map(item => item.id)
+      const param = { groups, userstatus: 2, org, page_size: 1000 }
+      return api.getUser(param)
+    }).then(data => {
+      const traders = data.data.data
+      const options = traders.map(item => {
+        return { label: item.username, value: item.id }
+      })
+      this.setState({ options })
+    })
+  }
+
+  render() {
+    return <SelectNumber options={this.state.options} {...this.props} />
+  }
+}
 
 /**
  * SelectTransactionStatus
@@ -440,6 +486,32 @@ const SelectTitle = withOptionsAsync(SelectNumber, ['title'], function(state) {
   return { options }
 })
 
+/**
+ * SelectBDStatus
+ */
+const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(state) {
+  const { bdStatus } = state.app
+  const options = bdStatus ? bdStatus.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
+/**
+ * SelectBDSource
+ */
+const SelectBDSource = withOptions(_Select, [
+  { label: '全库筛选', value: '全库筛选' }
+])
+
+/**
+ * SelectArea
+ */
+const SelectArea = withOptionsAsync(SelectNumber, ['country'], function(state) {
+  const { country } = state.app
+  const options = country.filter(item => item.level == 3).map(item => {
+    return { label: item.country, value: item.id }
+  })
+  return { options }
+})
 
 /**
  * CascaderCountry
@@ -783,7 +855,7 @@ const CheckboxArea = withOptionsAsync(CheckboxGroup, ['country'], function(state
 const CheckboxAreaString = withOptionsAsync(CheckboxGroup, ['country'], function(state) {
   const { country } = state.app
   const options = country.filter(item => item.level == 3).map(item => {
-    return { label: item.country, value: item.country }
+    return { label: item.country, value: item.country, key: item.id }
   })
   return { options }
 })
@@ -887,6 +959,23 @@ const RadioAudit = withOptionsAsync(RadioGroup2, ['audit'], function(state) {
   return { options }
 })
 
+/**
+ * RadioBDStatus
+ */
+
+const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state) {
+  const { bdStatus } = state.app
+  const options = bdStatus ? bdStatus.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
+/**
+ * RadioBDSource
+ */
+const RadioBDSource = withOptions(RadioGroup2, [
+  { value: '全库筛选', label: '全库筛选' },
+])
+
 
 export {
   SelectNumber,
@@ -907,6 +996,10 @@ export {
   SelectProjectStatus,
   SelectUserGroup,
   SelectTitle,
+  SelectBDStatus,
+  SelectBDSource,
+  SelectArea,
+  SelectOrgUser,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,

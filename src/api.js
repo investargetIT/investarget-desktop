@@ -624,3 +624,57 @@ export const getLibProj = (param) => {
   })
   return r('/mongolog/proj?' + qs.stringify(param))
 }
+
+// com_id, com_name
+export const getLibProjRemark = (param) => {
+  return r('/mongolog/projremark?' + qs.stringify(param))
+}
+
+// { com_id, com_name, remark }
+export const addLibProjRemark = (data) => {
+  return r('/mongolog/projremark', 'POST', data)
+}
+
+// { remark }
+export const editLibProjRemark = (id, data) => {
+  return r('/mongolog/projremark?id=' + id, 'PUT', data)
+}
+
+export const deleteLibProjRemark = (id) => {
+  return r('/mongolog/projremark?id=' + id, 'DELETE')
+}
+
+
+export const getProjBDList = (param) => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
+  return r('/proj/BD/?' + qs.stringify(param))
+}
+
+export const getProjBD = (id) => {
+  return r('/proj/BD/' + id + '/')
+}
+
+// {  }
+export const addProjBD = (data) => {
+  return r('/proj/BD/', 'POST', data)
+}
+
+export const editProjBD = (id, data) => {
+  return r('/proj/BD/' + id + '/', 'PUT', data)
+}
+
+export const deleteProjBD = (id) => {
+  return r('/proj/BD/' + id + '/', 'DELETE')
+}
+
+export const addProjBDCom = (data) => {
+  return r('/proj/BDCom/', 'POST', data)
+}
+
+export const deleteProjBDCom = (id) => {
+  return r('/proj/BDCom/' + id + '/', 'DELETE')
+}

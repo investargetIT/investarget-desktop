@@ -48,6 +48,9 @@ import SelectTraderToRelation from './routes/SelectTraderToRelation'
 import Agreement from './routes/Agreement'
 import ProjectLibrary from './routes/ProjectLibrary'
 import ProjectLibraryItem from './routes/ProjectLibraryItem'
+import ProjectBDList from './routes/ProjectBDList'
+import AddProjectBD from './routes/AddProjectBD'
+import EditProjectBD from './routes/EditProjectBD'
 
 function RouterConfig({ history }) {
   return (
@@ -70,6 +73,9 @@ function RouterConfig({ history }) {
       <Route path={URI_10} component={BasicInfo} />
       <Route path="/app/projects/library" component={ProjectLibrary} />
       <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
+      <Route path="/app/projects/bd" component={ProjectBDList} />
+      <Route path="/app/projects/bd/add" component={AddProjectBD} />
+      <Route path="/app/projects/bd/edit/:id" component={EditProjectBD} />
       <Route path="/app/projects/list" component={ProjectList} />
       <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
       <Route path="/app/projects/list/favor" component={ProjectListFavor} />

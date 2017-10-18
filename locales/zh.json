@@ -1,5 +1,9 @@
 {
   "menu": {
+    "project_library": "项目全库",
+    "bd_management": "BD管理",
+    "project_bd": "项目BD",
+    "organization_bd": "机构BD",
     "project_management": "项目管理",
     "platform_projects": "平台项目",
     "interest_projects": "感兴趣项目",

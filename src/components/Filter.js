@@ -11,6 +11,8 @@ import {
   RadioTrueOrFalse,
   RadioAudit,
   RadioRole,
+  RadioBDStatus,
+  RadioBDSource,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
   CheckboxTag,
@@ -20,6 +22,8 @@ import {
   CheckboxAreaString,
   SelectOrganizatonArea,
   SelectTimelineStatus,
+  SelectOrgUser,
+  SelectUser,
   SliderMoney,
   TabCheckboxIndustry,
   TabCheckboxCountry,
@@ -682,6 +686,56 @@ function mapStateToPropsIndustry (state) {
 }
 
 
+class ProjectBDFilter extends React.Component {
+
+  static defaultValue = {
+    bd_status: null,
+    source: null,
+    location: [],
+    manager: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || ProjectBDFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...ProjectBDFilter.defaultValue })
+    this.props.onReset({ ...ProjectBDFilter.defaultValue })
+  }
+
+  render() {
+    const { bd_status, source, location, manager } = this.state
+
+    return (
+      <div>
+        <BasicContainer label={'BD状态'}>
+          <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
+        </BasicContainer>
+        <BasicContainer label={'导入方式'}>
+          <RadioBDSource value={source} onChange={this.handleChange.bind(this, 'source')} />
+        </BasicContainer>
+        <BasicContainer label={'地区'}>
+          <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />
+        </BasicContainer>
+        <BasicContainer label={'BD负责人'}>
+          <SelectOrgUser style={{width:'100%'}} org={2585} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
+        </BasicContainer>
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
+
 
 ///// used in AddUser.js TODO:// refractor
 function mapStateToPropsForAudit(state) {
@@ -699,4 +753,5 @@ module.exports = {
   ProjectListFilter,
   TimelineFilter,
   ProjectLibraryFilter,
+  ProjectBDFilter,
 }

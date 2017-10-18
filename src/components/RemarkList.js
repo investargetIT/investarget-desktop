@@ -3,7 +3,7 @@ import React from 'react'
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
 import { handleError, getCurrentUser, time, i18n } from '../utils/util'
 import * as api from '../api'
-
+import RemarkList2 from './RemarkList2'
 
 const addIconStyle = {
   cursor: 'pointer',
@@ -226,8 +226,86 @@ const TimelineRemarkList = remarkListWithApi('timeline')
 const OrganizationRemarkList = remarkListWithApi('org')
 const UserRemarkList = remarkListWithApi('user')
 
+
+class LibProjRemarkList extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      list: [],
+    }
+  }
+
+  getRemarkList = () => {
+    const { com_id } = this.props
+    const params = { com_id }
+    api.getLibProjRemark(params).then(result => {
+      const list = result.data.data.map(item => {
+        return {
+          ...item,
+          createdtime: item.date,
+          timezone: '+08:00',
+        }
+      })
+      sortByTime(list)
+      this.setState({ list })
+    }, error => {
+      handleError(error)
+    })
+  }
+
+  addRemark = (remark) => {
+    const { com_id, com_name } = this.props
+    const params = { com_id, com_name, remark }
+    api.addLibProjRemark(params).then(result => {
+      this.getRemarkList()
+    }, error => {
+      handleError(error)
+    })
+  }
+
+  editRemark = (id, remark) => {
+    const params = { remark }
+    api.editLibProjRemark(id, params).then(result => {
+      this.getRemarkList()
+    }, error => {
+      handleError(error)
+    })
+  }
+
+  deleteRemark = (id) => {
+    api.deleteLibProjRemark(id).then(result => {
+      this.getRemarkList()
+    }, error => {
+      handleError(error)
+    })
+  }
+
+  componentDidMount() {
+    this.getRemarkList()
+  }
+
+  render() {
+    return (
+      // <RemarkList
+      //   list={this.state.list}
+      //   addRemark={this.addRemark}
+      //   editRemark={this.editRemark}
+      //   deleteRemark={this.deleteRemark}
+      // />
+      <RemarkList2
+        list={this.state.list}
+        onAdd={this.addRemark}
+        onEdit={this.editRemark}
+        onDelete={this.deleteRemark}
+      />
+    )
+  }
+}
+
 export {
   TimelineRemarkList,
   OrganizationRemarkList,
-  UserRemarkList
+  UserRemarkList,
+  LibProjRemarkList,
 }

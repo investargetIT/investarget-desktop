@@ -5,7 +5,7 @@ import PageTitle from '../components/PageTitle'
 
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
-
+import { LibProjRemarkList } from '../components/RemarkList'
 
 
 
@@ -42,7 +42,7 @@ class ProjectLibraryItem extends React.Component {
   }
 
   render() {
-    const { com_name, com_des, events } = this.state
+    const { com_id, com_name, com_des, events } = this.state
     return (
       <MainLayout location={location}>
         <PageTitle title={com_name} />
@@ -74,6 +74,8 @@ class ProjectLibraryItem extends React.Component {
               }) : '暂无'}
             </div>
           </div>
+
+          <LibProjRemarkList com_id={com_id} com_name={com_name} />
         </div>
       </MainLayout>
     )
