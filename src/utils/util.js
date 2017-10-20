@@ -2,6 +2,7 @@ import { Popconfirm, Button, Modal } from 'antd'
 import * as api from '../api'
 window.api = api
 
+import { baseUrl } from './request'
 import i18next from 'i18next'
 
 // Since IE doesn't support this we need the polyfill
@@ -221,6 +222,18 @@ function getCurrentUser() {
   return userInfo.id
 }
 
+function getToken() {
+  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  if (!userInfo) return null
+  return userInfo.token
+}
+
+function getPdfUrl(id) {
+  const token = getToken()
+  return baseUrl + '/proj/pdf/' + id + '/?acw_tk=' + token
+}
+
+
 function formatBytes(a,b){if(0==a)return"0 Bytes";var c=1024,d=b||0,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(d))+" "+e[f]}
 
 const intersection = (xs,ys) => xs.filter(x => ys.some(y => x === y))
@@ -238,4 +251,4 @@ export function getImageUrl(key) {
   return 'https://o79atf82v.qnssl.com/' + key
 }
 
-export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM }
+export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM, getPdfUrl }

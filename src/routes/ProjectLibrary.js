@@ -82,7 +82,7 @@ class ProjectLibrary extends React.Component {
 
       // load events
       const q = list.map(item => {
-        return api.getLibEvent({ com_name: item.com_name })
+        return api.getLibEvent({ com_id: item.com_id })
       })
       return Promise.all(q).then(results => {
         const events = results.map(result => {

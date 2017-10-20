@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
@@ -256,7 +256,12 @@ class ProjectDetail extends React.Component {
     
     return (
       <MainLayout location={this.props.location}>
-        <h1>{project.projtitle}</h1>
+        <h1>
+          {project.projtitle}
+          <a href={getPdfUrl(id)} style={{float:'right'}}>
+            <Button icon="file-pdf">下载 pdf</Button>
+          </a>
+        </h1>
 
         <div style={blockStyle}>
           <span>{i18n('project.release_time')} {project.createdtime && project.createdtime.substr(0,10)}</span>
