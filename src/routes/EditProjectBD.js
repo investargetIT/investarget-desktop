@@ -87,7 +87,7 @@ class EditProjectBD extends React.Component {
     const data = toFormData(this.state.bd)
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="修改项目BD" />
+        <PageTitle title={i18n('project_bd.edit_project_bd')} />
         <div>
           <EditProjectBDForm wrappedComponentRef={this.handleRef} data={data} />
           <div style={actionStyle}>

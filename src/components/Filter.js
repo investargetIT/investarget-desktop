@@ -621,8 +621,7 @@ class ProjectLibraryFilter extends React.Component {
     const { com_sub_cat_name, com_born_date, com_addr, invse_round_id, com_status, com_fund_needs_name } = this.state
 
     const yearOptions = _.range(2017, 2000-1).map(y => ({ label: String(y), value: String(y) }))
-    // const area = ['北京','上海','广东','浙江','江苏','天津','福建','湖北','湖南','四川','河北','山西','内蒙古','辽宁','吉林','黑龙江','安徽','江西','山东','河南','广西','海南','重庆','贵州','云南','西藏','陕西','甘肃','青海','宁夏','新疆','香港','澳门','台湾','国外']
-    // const areaOptions = area.map(item => ({ label: item, value: item }))
+    // TODO//翻译
     const _fundStatus = ['尚未获投','种子轮','天使轮','Pre-A轮','A轮','A+轮','Pre-B轮','B轮','B+轮','C轮','C+轮','D轮','D+轮','E轮','F轮-上市前','已上市','新三板','战略投资','已被收购','不明确']
     const fundStatusOptions = _fundStatus.map(item => ({ label: item, value: item }))
     const _status = ['运营中','未上线','已关闭','已转型']
@@ -635,19 +634,19 @@ class ProjectLibraryFilter extends React.Component {
         <BasicContainer label={i18n('filter.industry')}>
           <TabCheckbox options={industryOptions} value={com_sub_cat_name} onChange={this.handleChange.bind(this, 'com_sub_cat_name')} />
         </BasicContainer>
-        <BasicContainer label={'成立时间'}>
+        <BasicContainer label={i18n('project_library.established_time')}>
           <CheckboxGroup options={yearOptions} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
         </BasicContainer>
-        <BasicContainer label={'地区'}>
+        <BasicContainer label={i18n('project_library.area')}>
           <CheckboxAreaString value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
         </BasicContainer>
-        <BasicContainer label={'获投状态'}>
+        <BasicContainer label={i18n('project_library.investment_round')}>
           <CheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />
         </BasicContainer>
-        <BasicContainer label={'运营状态'}>
+        <BasicContainer label={i18n('project_library.operating_status')}>
           <CheckboxGroup options={statusOptions} value={com_status} onChange={this.handleChange.bind(this, 'com_status')} />
         </BasicContainer>
-        <BasicContainer label={'融资需求'}>
+        <BasicContainer label={i18n('project_library.financial_needs')}>
           <CheckboxGroup options={fundNeedsOptions} value={com_fund_needs_name} onChange={this.handleChange.bind(this, 'com_fund_needs_name')} />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
@@ -718,16 +717,16 @@ class ProjectBDFilter extends React.Component {
 
     return (
       <div>
-        <BasicContainer label={'BD状态'}>
+        <BasicContainer label={i18n('project_bd.bd_status')}>
           <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
         </BasicContainer>
-        <BasicContainer label={'导入方式'}>
+        <BasicContainer label={i18n('project_bd.import_methods')}>
           <RadioBDSource value={source} onChange={this.handleChange.bind(this, 'source')} />
         </BasicContainer>
-        <BasicContainer label={'地区'}>
+        <BasicContainer label={i18n('project_bd.area')}>
           <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         </BasicContainer>
-        <BasicContainer label={'BD负责人'}>
+        <BasicContainer label={i18n('project_bd.bd_manager')}>
           <SelectOrgUser style={{width:'100%'}} org={2585} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />

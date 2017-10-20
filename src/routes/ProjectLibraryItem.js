@@ -31,7 +31,7 @@ class ProjectLibraryItem extends React.Component {
         com_des: proj.com_des,
       })
 
-      return api.getLibEvent({ com_name: proj.com_name }).then(result => {
+      return api.getLibEvent({ com_id: com_id }).then(result => {
         const { data } = result.data
         this.setState({ events: data })
       })
@@ -49,12 +49,12 @@ class ProjectLibraryItem extends React.Component {
 
         <div>
           <div style={{marginBottom: 16}}>
-            <h3 style={{lineHeight: 2,fontSize: 16}}>简介</h3>
+            <h3 style={{lineHeight: 2,fontSize: 16}}>{i18n('project_library.intro')}</h3>
             <p style={{fontSize: 13}}>{com_des}</p>
           </div>
 
           <div style={{marginBottom: 16}}>
-            <h3 style={{lineHeight: 2,fontSize: 16}}>历史融资情况</h3>
+            <h3 style={{lineHeight: 2,fontSize: 16}}>{i18n('project_library.financial_history')}</h3>
             <div>
               {events.length ? events.map(event => {
                 return (
@@ -71,7 +71,7 @@ class ProjectLibraryItem extends React.Component {
                     </div>
                   </div>
                 )
-              }) : '暂无'}
+              }) : i18n('remark.no_comments')}
             </div>
           </div>
 

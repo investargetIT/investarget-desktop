@@ -14,6 +14,7 @@ import {
   SelectArea,
   SelectOrgUser,
 } from './ExtraInput'
+import { i18n } from '../utils/util'
 
 
 class ProjectBDForm extends React.Component {
@@ -31,40 +32,40 @@ class ProjectBDForm extends React.Component {
 
     return (
       <Form>
-        <BasicFormItem label="项目名称" name="com_name" required>
+        <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="BD状态" name="bd_status" required valueType="number">
+        <BasicFormItem label={i18n('project_bd.bd_status')} name="bd_status" required valueType="number">
           <SelectBDStatus />
         </BasicFormItem>
 
-        <BasicFormItem label="导入方式" name="source" required>
+        <BasicFormItem label={i18n('project_bd.import_methods')} name="source" required>
           <SelectBDSource />
         </BasicFormItem>
 
-        <BasicFormItem label="地区" name="location" required valueType="number">
+        <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
           <SelectArea />
         </BasicFormItem>
 
-        <BasicFormItem label="联系人" name="username" required>
+        <BasicFormItem label={i18n('project_bd.contact')} name="username" required>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="联系人职位" name="usertitle" required valueType="number">
+        <BasicFormItem label={i18n('project_bd.title')} name="usertitle" required valueType="number">
           <SelectTitle />
         </BasicFormItem>
 
-        <BasicFormItem label="联系电话" name="usermobile" required>
+        <BasicFormItem label={i18n('project_bd.mobile')} name="usermobile" required>
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label="负责人" name="manager" valueType="number" required>
+        <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number" required>
           <SelectOrgUser type="trader" org={2585} />
         </BasicFormItem>
 
         {'isAdd' in this.props ? (
-          <BasicFormItem label="备注" name="comments">
+          <BasicFormItem label={i18n('remark.comment')} name="comments">
             <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
           </BasicFormItem>
         ) : null}

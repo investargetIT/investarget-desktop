@@ -55,7 +55,7 @@ class AddProjectBD extends React.Component {
   render() {
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="添加项目BD" />
+        <PageTitle title={i18n('project_bd.add_project_bd')} />
         <div>
           <AddProjectBDForm isAdd wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>

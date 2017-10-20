@@ -65,6 +65,41 @@
     "choose_position": "Please select your position"
   },
 
+  "project_library": {
+    "project_library": "Project Library",
+    "project_name": "Project Name",
+    "established_time": "Establish Time",
+    "area": "Area",
+    "industry": "Industry",
+    "latest_financial_time": "Latest Financial Time",
+    "latest_financial_events": "Latest Financial Events",
+    "investment_round": "Investment Round",
+    "operating_status": "Operating Status",
+    "financial_needs": "Financial Needs",
+    "export_excel": "Export to Excel",
+    "intro": "Introduction",
+    "financial_history": "Financial History",
+    "none": "None"
+  },
+
+  "project_bd": {
+    "project_bd": "Project BD",
+    "add_project_bd": "Add Project BD",
+    "edit_project_bd": "Edit Project BD",
+    "bd_status": "BD Status",
+    "import_methods": "Import Methods",
+    "area": "Area",
+    "bd_manager": "BD Manager",
+    "project_name": "Project Name",
+    "status": "Status",
+    "contact": "Contact",
+    "title": "Title",
+    "mobile": "Mobile",
+    "manager": "Manager",
+    "created_time": "Created Time",
+    "operation": "Operations"
+  },
+
   "project": {
     "platform_projects": "Platform Projects",
     "upload_project": "Upload Project",
@@ -393,7 +428,12 @@
     "remark_info": "Remark Info",
     "add_remark": "Add Remark",
     "remove_remark": "Remove Remark",
-    "edit_remark": "Edit Remark"
+    "edit_remark": "Edit Remark",
+    "new_comment": "New Comment",
+    "comments": "Comments",
+    "view_add": "View/Add",
+    "no_comments": "No Comments",
+    "comment": "Comment"
   },
 
   "common": {
@@ -409,6 +449,7 @@
     "submit": "Submit",
     "save": "Save",
     "view": "View",
+    "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
     "upload": "Upload",

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input, Button, Popconfirm, Icon } from 'antd'
-import { time } from '../utils/util'
+import { time, i18n } from '../utils/util'
 
 
 const addIconStyle = {
@@ -40,16 +40,16 @@ class RemarkList extends React.Component {
   render() {
     return (
       <div>
-        <h3 style={remarkTitleStyle}>备注信息<Icon type="plus" style={addIconStyle} onClick={this.toggleNewComment} /></h3>
+        <h3 style={remarkTitleStyle}>{i18n('remark.comments')}<Icon type="plus" style={addIconStyle} onClick={this.toggleNewComment} /></h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
           <p style={{lineHeight:2,fontSize:13}}>
-            <span style={{marginRight:8}}>新备注</span>
+            <span style={{marginRight:8}}>{i18n('remark.new_comment')}</span>
             <span>
-              <a href="javascript:void(0)" onClick={this.handleSave} disabled={this.state.comments == ''}>提交</a>
+              <a href="javascript:void(0)" onClick={this.handleSave} disabled={this.state.comments == ''}>{i18n('common.submit')}</a>
             </span>
           </p>
-          <Input.TextArea value={this.state.comments} onChange={this.handleChange} />
+          <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
         </div>
 
         {this.props.list.map(item => (
@@ -103,20 +103,20 @@ class Remark extends React.Component {
           <span style={{marginRight:8}}>{createdtime}</span>
           {this.state.isEditing ? (
             <span>
-              <a href="javascript:void(0)" onClick={this.handleSave} disabled={this.state.comments == ''} style={{marginRight:4}}>保存</a>
-              <a href="javascript:void(0)" onClick={this.handleCancel}>取消</a>
+              <a href="javascript:void(0)" onClick={this.handleSave} disabled={this.state.comments == ''} style={{marginRight:4}}>{i18n('common.save')}</a>
+              <a href="javascript:void(0)" onClick={this.handleCancel}>{i18n('common.cancel')}</a>
             </span>
           ) : (
             <span>
-              <a href="javascript:void(0)" onClick={this.handleEdit} style={{marginRight:4}}>编辑</a>
-              <Popconfirm title="确定删除吗？" onConfirm={this.props.onDelete}>
-                <a href="javascript:void(0)">删除</a>
+              <a href="javascript:void(0)" onClick={this.handleEdit} style={{marginRight:4}}>{i18n('common.edit')}</a>
+              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
+                <a href="javascript:void(0)">{i18n('common.delete')}</a>
               </Popconfirm>
             </span>
           )}
         </p>
         {this.state.isEditing ? (
-          <Input.TextArea value={this.state.comments} onChange={this.handleChange} />
+          <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
         ) : (
           <p>{this.props.comments}</p>
         )}

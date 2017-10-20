@@ -4,7 +4,7 @@ import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
-import { handleError, time } from '../utils/util'
+import { handleError, time, i18n } from '../utils/util'
 import * as api from '../api'
 import { Link } from 'dva/router'
 
@@ -124,24 +124,24 @@ class ProjectBDList extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
 
     const columns = [
-      {title: '项目名称', dataIndex: 'com_name'},
-      {title: '状态', dataIndex: 'bd_status.name'},
-      {title: '地点', dataIndex: 'location.country'},
-      {title: '导入方式', dataIndex: 'source'},
-      {title: '联系人', dataIndex: 'username'},
-      {title: '联系人职位', dataIndex: 'usertitle.name'},
-      {title: '联系电话', dataIndex: 'usermobile'},
-      {title: '负责人', dataIndex: 'manager.username'},
-      {title: '创建时间', render: (text, record) => {
+      {title: i18n('project_bd.project_name'), dataIndex: 'com_name'},
+      {title: i18n('project_bd.status'), dataIndex: 'bd_status.name'},
+      {title: i18n('project_bd.area'), dataIndex: 'location.country'},
+      {title: i18n('project_bd.import_methods'), dataIndex: 'source'},
+      {title: i18n('project_bd.contact'), dataIndex: 'username'},
+      {title: i18n('project_bd.title'), dataIndex: 'usertitle.name'},
+      {title: i18n('project_bd.mobile'), dataIndex: 'usermobile'},
+      {title: i18n('project_bd.manager'), dataIndex: 'manager.username'},
+      {title: i18n('project_bd.created_time'), render: (text, record) => {
         return time(record.createdtime + record.timezone)
       }},
-      {title: '操作', render: (text, record) => {
+      {title: i18n('project_bd.operation'), render: (text, record) => {
         return (<span>
           <Link to={'/app/projects/bd/edit/' + record.id}>
-            <Button size="small" style={{marginRight: 4}}>编辑</Button>
+            <Button size="small" style={{marginRight: 4}}>{i18n('common.edit')}</Button>
           </Link>
           <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(this, record.id)}>
-            <Button size="small" type="danger">删除</Button>
+            <Button size="small" type="danger">{i18n('common.delete')}</Button>
           </Popconfirm>
         </span>)
       }},
@@ -150,18 +150,18 @@ class ProjectBDList extends React.Component {
         const comments = latestComment ? latestComment.comments : ''
         return (<div>
           <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
-          <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>查看/添加</a>
+          <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.view_add')}</a>
         </div>)
       }},
     ]
 
     return (
       <MainLayout location={this.props.location}>
-        <PageTitle title="项目BD" actionLink="/app/projects/bd/add" actionTitle={'添加项目BD'} />
+        <PageTitle title={i18n('project_bd.project_bd')} actionLink="/app/projects/bd/add" actionTitle={i18n('project_bd.add_project_bd')} />
 
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 defaultValue={search} placeholder={'项目名称'} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
         <Table
           columns={columns}
@@ -205,20 +205,20 @@ function BDComments(props) {
     <div>
       <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
         <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
-        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>添加</Button>
+        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
       </div>
       <div>
         {comments.length ? comments.map(comment => (
           <div key={comment.id} style={{marginBottom:8}}>
             <p>
               <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
-              <Popconfirm title="确定删除吗？" onConfirm={onDelete.bind(this, comment.id)}>
-                <a href="javascript:void(0)">删除</a>
+              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                <a href="javascript:void(0)">{i18n('common.delete')}</a>
               </Popconfirm>
             </p>
             <p>{comment.comments}</p>
           </div>
-        )) : <p>暂无评论</p>}
+        )) : <p>{i18n('remark.no_comments')}</p>}
       </div>
     </div>
   )

@@ -122,24 +122,24 @@ class ProjectLibrary extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
 
     const columns = [
-      {title: '项目名称', render: (text, record) => {
+      {title: i18n('project_library.project_name'), render: (text, record) => {
         return (<Link to={{ pathname: '/app/projects/library/' + record.com_id }} target="_blank" style={{display:'flex',alignItems:'center'}}>
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
                   {record.com_name}
                 </Link>)
       }},
-      {title: '成立时间', dataIndex: 'com_born_date'},
-      {title: '地区', dataIndex: 'com_addr'},
-      {title: '行业', dataIndex: 'com_cat_name'},
-      {title: '最近融资时间', dataIndex: 'invse_date'},
-      {title: '最近融资事件', dataIndex: 'event'},
-      {title: '轮次', dataIndex: 'invse_round_id'},
-      {title: '运营状态', dataIndex: 'com_status'},
+      {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
+      {title: i18n('project_library.area'), dataIndex: 'com_addr'},
+      {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
+      {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date'},
+      {title: i18n('project_library.latest_financial_events'), dataIndex: 'event'},
+      {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
+      {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
 
     return (
       <MainLayout location={location}>
-        <PageTitle title={'项目全库'} />
+        <PageTitle title={i18n('project_library.project_library')} />
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
           {/* <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} /> */}
@@ -153,7 +153,7 @@ class ProjectLibrary extends React.Component {
           pagination={false}
         />
         <div style={{ margin: '16px 0' }} className="clearfix">
-          <Button type="primary" onClick={this.exportExcel}>导出</Button>
+          <Button type="primary" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
           <Pagination
             style={{ float: 'right' }}
             total={total}

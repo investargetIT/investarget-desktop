@@ -65,6 +65,41 @@
     "choose_position": "请选择你的职位"
   },
 
+  "project_library": {
+    "project_library": "项目全库",
+    "project_name": "项目名称",
+    "established_time": "成立时间",
+    "area": "地区",
+    "industry": "行业",
+    "latest_financial_time": "最近融资时间",
+    "latest_financial_events": "最近融资事件",
+    "investment_round": "获投状态",
+    "operating_status": "运营状态",
+    "financial_needs": "融资需求",
+    "export_excel": "导出Excel",
+    "intro": "简介",
+    "financial_history": "历史融资情况",
+    "none": "暂无"
+  },
+
+  "project_bd": {
+    "project_bd": "项目BD",
+    "add_project_bd": "添加项目BD",
+    "edit_project_bd": "修改项目BD",
+    "bd_status": "BD状态",
+    "import_methods": "导入方式",
+    "area": "地区",
+    "bd_manager": "BD负责人",
+    "project_name": "项目名称",
+    "status": "状态",
+    "contact": "联系人",
+    "title": "联系人职位",
+    "mobile": "联系电话",
+    "manager": "负责人",
+    "created_time": "创建时间",
+    "operation": "操作"
+  },
+
   "project": {
     "platform_projects": "平台项目",
     "upload_project": "发布项目",
@@ -393,7 +428,12 @@
     "remark_info": "备注信息",
     "add_remark": "添加备注",
     "remove_remark": "移除备注",
-    "edit_remark": "修改备注"
+    "edit_remark": "修改备注",
+    "new_comment": "新备注",
+    "comments": "备注信息",
+    "view_add": "查看/添加",
+    "no_comments": "暂无备注",
+    "comment": "备注"
   },
 
   "common": {
@@ -409,6 +449,7 @@
     "submit": "提交",
     "save": "保存",
     "view": "查看",
+    "add": "添加",
     "edit": "编辑",
     "delete": "删除",
     "upload": "上传",
