@@ -4,7 +4,7 @@ import { Input, Table, Pagination, Button, message } from 'antd'
 import { Search } from '../components/Search'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { hasPerm, isLogin } from '../utils/util'
+import { hasPerm, isLogin, getCurrentUser } from '../utils/util'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -17,10 +17,6 @@ const columns = [
   { title: '邮箱', key: 'email', dataIndex: 'email' },
 ]
 
-const userInfo = JSON.parse(localStorage.getItem('user_info'))
-const userId = userInfo ? userInfo.id : null
-const groupId = userInfo && userInfo.groups.length > 0 ? userInfo.groups[0].id : null
-
 
 class RecommendProject extends React.Component {
   constructor(props) {
@@ -29,9 +25,8 @@ class RecommendProject extends React.Component {
       projId: Number(this.props.params.id),
       projTitle: '',
       search: null,
-      page: 0,
+      page: 1,
       pageSize: 10,
-      _param: {},
       total: 0,
       list: [],
       loading: false,
@@ -44,9 +39,7 @@ class RecommendProject extends React.Component {
   }
 
   handleSearch = () => {
-    let { _params, search } = this.state
-    _params = { ..._params, search }
-    this.setState({ _params, page: 1 }, this.getUser)
+    this.setState({ page: 1 }, this.getUser)
   }
 
   handlePageChange = (page) => {
@@ -76,29 +69,42 @@ class RecommendProject extends React.Component {
 
   getUser = () => {
     if (hasPerm('proj.admin_addfavorite')) {
-      this.setState({ loading: true })
-      api.queryUserGroup({ type: 'investor' })
-        .then(result => api.getUser({ groups: result.data.data.map(m => m.id) }))
-        .then(result => {
-          const total = result.data.count
-          const list = result.data.data
-          this.setState({ loading: false, total, list })
-        })
-        .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+      this.getAllInvestors()
     } else if (hasPerm('usersys.as_trader')) {
-      this.setState({ loading: true })
-      api.getUserRelation({ traderuser: userId }).then(result => {
-        const total = result.data.count
-        const data = result.data.data
-        const list = data.map(item => item.investoruser)
-        this.setState({ loading: false, total, list })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
+      this.getMyInvestors()
     }
+  }
+
+  getAllInvestors = () => {
+    this.setState({ loading: true })
+    api.queryUserGroup({ type: 'investor' })
+      .then(result => {
+        const groups = result.data.data.map(m => m.id)
+        const { search, page, pageSize } = this.state
+        const params = { groups, search, page_index: page, page_size: pageSize }
+        return api.getUser(params)
+      })
+      .then(result => {
+        const { count: total, data: list } = result.data
+        this.setState({ loading: false, total, list })
+      })
+      .catch(error => {
+        this.props.dispatch({ type: 'app/findError', payload: error })
+      })
+  }
+
+  getMyInvestors = () => {
+    const userId = getCurrentUser()
+    const { search, page, pageSize } = this.state
+    this.setState({ loading: true })
+    const params = { search, traderuser: userId, page_index: page, page_size: pageSize }
+    api.getUserRelation(params).then(result => {
+      const { count: total, data } = result.data
+      const list = data.map(item => item.investoruser)
+      this.setState({ loading: false, total, list })
+    }).catch(error => {
+      this.props.dispatch({ type: 'app/findError', payload: error })
+    })
   }
 
   recommendProject = () => {
