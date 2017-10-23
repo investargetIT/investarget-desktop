@@ -20,6 +20,7 @@ import {
   CheckboxProjStatus,
   CheckboxArea,
   CheckboxAreaString,
+  CheckboxYear,
   SelectOrganizatonArea,
   SelectTimelineStatus,
   SelectOrgUser,
@@ -620,7 +621,6 @@ class ProjectLibraryFilter extends React.Component {
     const { industryOptions } = this.props
     const { com_sub_cat_name, com_born_date, com_addr, invse_round_id, com_status, com_fund_needs_name } = this.state
 
-    const yearOptions = _.range(2017, 2000-1).map(y => ({ label: String(y), value: String(y) }))
     // TODO//翻译
     const _fundStatus = ['尚未获投','种子轮','天使轮','Pre-A轮','A轮','A+轮','Pre-B轮','B轮','B+轮','C轮','C+轮','D轮','D+轮','E轮','F轮-上市前','已上市','新三板','战略投资','已被收购','不明确']
     const fundStatusOptions = _fundStatus.map(item => ({ label: item, value: item }))
@@ -635,7 +635,7 @@ class ProjectLibraryFilter extends React.Component {
           <TabCheckbox options={industryOptions} value={com_sub_cat_name} onChange={this.handleChange.bind(this, 'com_sub_cat_name')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.established_time')}>
-          <CheckboxGroup options={yearOptions} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
+          <CheckboxYear end={2000-1} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.area')}>
           <CheckboxAreaString value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />

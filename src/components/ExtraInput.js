@@ -38,7 +38,7 @@ class _Select extends React.Component {
     return (
       <Select value={value} onChange={onChange} {...extraProps}>
         {options.map((item, index) =>
-          <Option key={index} value={item.value}>{item.label}</Option>
+          <Option key={item.key || index} value={item.value}>{item.label}</Option>
         )}
       </Select>
     )
@@ -109,7 +109,24 @@ const withOptionsAsync = function(Component, sourceTypeList, mapStateToProps) {
   return connect(mapStateToProps)(WrappedComponent)
 }
 
+function withYear(Component) {
+  class WrappedComponent extends React.Component {
 
+    render() {
+      const currYear = new Date().getFullYear()
+      const { disabledYears=[], start=currYear, end=currYear-100, children, ...extraProps } = this.props
+      const yearList = _.range(start, end)
+      const options = yearList.map(year => {
+        return { label: String(year), value: year, disabled: disabledYears.includes(year) }
+      })
+
+      return (
+        <Component options={options} {...extraProps} />
+      )
+    }
+  }
+  return WrappedComponent
+}
 
 
 
@@ -144,33 +161,7 @@ const SelectRole = withOptionsAsync(SelectNumber, ['character'], function(state)
 /**
  * SelectYear
  */
-const currYear = new Date().getFullYear()
-const yearList = _.range(currYear, currYear - 100)
-// const yearOptions = yearList.map(item => ({ value: item, label: String(item) }))
-// const SelectYear = withOptions(SelectNumber, yearOptions)
-
-class SelectYear extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  handleChange = (value) => {
-    this.props.onChange(value && Number(value))
-  }
-
-  render() {
-    const { value, onChange, disabled, disabledYears=[] } = this.props
-    return (
-      <Select value={value && String(value)} onChange={this.handleChange} disabled={disabled}>
-        {
-          yearList.map(year =>
-            <Option key={year} disabled={disabledYears.includes(year)} value={String(year)}>{String(year)}</Option>
-          )
-        }
-      </Select>
-    )
-  }
-}
+const SelectYear = withYear(SelectNumber)
 
 
 /**
@@ -908,6 +899,11 @@ class TabCheckboxIndustry extends React.Component {
 
 TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
+/**
+ * CheckboxYear
+ */
+const CheckboxYear = withYear(CheckboxGroup)
+
 
 /**
  * Slider
@@ -1011,6 +1007,7 @@ export {
   CheckboxOrganizationType,
   CheckboxArea,
   CheckboxAreaString,
+  CheckboxYear,
   TabCheckboxCountry,
   TabCheckboxIndustry,
   SliderMoney,
