@@ -1,14 +1,10 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { Button, Table, Pagination, Input } from 'antd'
-import Trigger from 'rc-trigger'
-import 'rc-trigger/assets/index.css';
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectLibraryFilter } from '../components/Filter'
-import { Search2 } from '../components/Search'
+import { Search3 } from '../components/Search'
 import { Link } from 'dva/router'
-import styles from '../components/Select2.css'
 
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
@@ -60,8 +56,12 @@ class ProjectLibrary extends React.Component {
     this.setState({ filters, page: 1 }, this.getProject)
   }
 
+  handleChangeSearch = (search) => {
+    this.setState({ search })
+  }
+
   handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getProject)
+    this.setState({ page: 1 }, this.getProject)
   }
 
   handlePageChange = (page) => {
@@ -106,6 +106,13 @@ class ProjectLibrary extends React.Component {
     })
   }
 
+  getLibProj = (_param) => {
+    var param = { ..._param }
+    param['com_name'] = param['search']
+    delete param['search']
+    return api.getLibProj(param)
+  }
+
   exportExcel = () => {
     var link = document.createElement('a')
     link.download = 'Investors.xls'
@@ -142,8 +149,14 @@ class ProjectLibrary extends React.Component {
         <PageTitle title={i18n('project_library.project_library')} />
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          {/* <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} /> */}
-          <Search defaultValue={search} onSearch={this.handleSearch} />
+          <Search3
+            getApi={this.getLibProj}
+            value={search}
+            onChange={this.handleChangeSearch}
+            onSearch={this.handleSearch}
+            placeholder={i18n('project.project_name')}
+            style={{ width: 250 }}
+          />
         </div>
         <Table
           columns={columns}
@@ -169,157 +182,5 @@ class ProjectLibrary extends React.Component {
     )
   }
 }
-
-
-
-const resultStyle = {
-  maxHeight: '250px',
-  overflow: 'scroll',
-  backgroundColor: '#fff',
-  boxShadow: '0 1px 6px rgba(0,0,0,.2)',
-  borderRadius: '4px',
-  boxSizing: 'border-box',
-  outline: 'none',
-}
-const tipStyle = {
-  marginLeft: '8px',
-}
-
-class Search extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      search: null,
-      page: 1,
-      pageSize: 10,
-      total: 0,
-      list: [],
-      reloading: false,
-      loading: false,
-    }
-
-    this.handleScroll = _.throttle(this.handleScroll, 300)
-    this.reloadData = _.debounce(this.reloadData, 500)
-  }
-
-  isLoading = false
-
-  handleScroll = (e) => {
-    // load more when go to bottom
-    const { total, list } = this.state
-    const el = this.refs.result
-    const distance = el.scrollHeight - el.clientHeight - el.scrollTop
-    if (distance < 30 && list.length < total && !this.isLoading) {
-      this.isLoading = true
-      this.loadMoreData()
-    }
-  }
-
-  handleChange = (e) => {
-    const search = e.target.value
-    if (search) {
-      this.setState({ search, visible: true }, this.reloadData)
-    } else {
-      this.setState({ search, total: 0, list: [], visible: false })
-    }
-  }
-
-  handleSearch = (search) => {
-    this.props.onSearch(search)
-    // 执行搜索后，blur 搜索框
-    const Search = this.refs.search
-    setTimeout(function() {
-      Search.input.blur()
-    }, 0)
-  }
-
-  handleFocus = (e) => {
-    this.setState({ visible: !!this.state.search })
-  }
-
-  reloadData = () => {
-    const { search } = this.state
-    const param = { com_name: search }
-    this.setState({ reloading: true, page: 1 })
-    api.getLibProj(param).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ reloading: false, total, list })
-    })
-  }
-
-  loadMoreData = () => {
-    const { search, page, pageSize, list } = this.state
-    this.setState({ loading: true, page: page + 1 })
-    const param = { com_name: search, page_index: page + 1, page_size: pageSize }
-    api.getLibProj(param).then(result => {
-      const { count, data } = result.data
-      this.setState({ loading: false, list: [...list, ...data] })
-      this.isLoading = false
-    }).catch(error => {
-      handleError(error)
-      this.isLoading = false
-    })
-  }
-
-  handleItemClicked = (value) => {
-    const list = this.state.list.filter(item => item.com_name == value)
-    this.setState({ search: value, list })
-    this.props.onSearch(value)
-  }
-
-  getPopupDOMNode = () => {
-    return this.refs.trigger.getPopupDomNode()
-  }
-
-  componentDidUpdate() {
-    const dropdownDOMNode = this.getPopupDOMNode()
-
-    if (dropdownDOMNode) {
-      dropdownDOMNode.style['width'] = `${ReactDOM.findDOMNode(this).offsetWidth}px`
-    }
-  }
-
-  render() {
-    const { visible, search, page, pageSize, total, list, reloading, loading } = this.state
-
-    const result = (
-      <div ref="result" style={{...resultStyle, display: visible ? 'block' : 'none'}} onScroll={this.handleScroll}>
-        { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
-        <ul className={styles['list']}>
-          {
-            list.map(item =>
-              <li key={item.com_id} className={styles['item']} onClick={this.handleItemClicked.bind(this, item.com_name)}>{item.com_name}</li>
-            )
-          }
-        </ul>
-        {
-          loading ? <p style={tipStyle}>{i18n('common.is_loading')}</p> : null
-        }
-      </div>
-    )
-
-    return (
-      <Trigger
-        action={['focus']}
-        popup={result}
-        popupAlign={{points: ['tl', 'bl'],offset:[0,3]}}
-        ref="trigger"
-      >
-        <Input.Search
-          ref="search"
-          style={{width:'250px'}}
-          placeholder={i18n('project.project_name')}
-          value={search}
-          onChange={this.handleChange}
-          onSearch={this.handleSearch}
-          onFocus={this.handleFocus}
-        />
-      </Trigger>
-    )
-  }
-}
-
 
 export default ProjectLibrary
