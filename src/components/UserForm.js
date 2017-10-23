@@ -180,12 +180,6 @@ class UserForm extends React.Component {
           </BasicFormItem>
         </div>
 
-        <div style={{ display: targetUserIsInvestor && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label={i18n('user.IR')} name="IR">
-            <SelectUser mode="single" type="admin" />
-          </BasicFormItem>
-        </div>
-
         <BasicFormItem label={i18n('user.card')} name="cardKey">
           <UploadImage />
         </BasicFormItem>

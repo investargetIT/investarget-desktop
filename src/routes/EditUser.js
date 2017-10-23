@@ -39,7 +39,7 @@ class EditUser extends React.Component {
 
         let body = values
         if (!hasPerm('usersys.admin_changeuser')) {
-          body = { ...values, IR: undefined, groups: undefined}
+          body = { ...values, groups: undefined}
         }
 
         api.editUser([userId], body)
@@ -74,7 +74,6 @@ class EditUser extends React.Component {
     _data['country'] = data.country && data.country.id
     _data['major_trader'] = data.majorTraderID
     _data['minor_traders'] = data.minorTraderIDArr || []
-    _data['IR'] = data.IR && data.IR.id + ""
 
     const textFields = ['targetdemand', 'mergedynamic', 'ishasfundorplan']
     textFields.forEach(item => {
