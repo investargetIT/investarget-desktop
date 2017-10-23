@@ -44,25 +44,28 @@ class EmailDetail extends React.Component {
   getUserList = () => {
     const id = Number(this.props.params.id)
     const { search, page, pageSize } = this.state
-    const params = { search, id, page_index: page, page_size: pageSize }
+    const params = { search, proj: id, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
     api.getEmail(params).then(result => {
       const { count: total, data: list } = result.data
       // 填充用户信息
       const q = list.map(item => {
-        return api.getUserDetailLang(item.user).then(result => result.data)
+        return api.getUserDetailLang(item.user).then(result => {
+          return result.data
+        }, error => {
+          return undefined
+        })
       })
-      Promise.all(q).then(results => {
+      return Promise.all(q).then(results => {
         results.forEach((data, index) => {
-          list[index].title = data.title
-          list[index].mobile = data.mobile
+          if (data) {
+            list[index].title = data.title
+            list[index].mobile = data.mobile
+          } else {
+            list[index].username = list[index].username + '(已删除)'
+          }
         })
         this.setState({ total, list, loading: false })
-      }, error => {
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
       })
     }, error => {
       this.setState({ loading: false })
