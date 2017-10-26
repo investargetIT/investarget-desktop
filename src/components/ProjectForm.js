@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm } from '../utils/util'
+import { i18n, exchange, hasPerm, getCurrentUser } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 
@@ -164,11 +164,6 @@ class ProjectFinanceForm extends React.Component {
 ProjectFinanceForm = connect()(ProjectFinanceForm)
 
 
-// currentUserId
-const userInfo = localStorage.getItem('user_info')
-const currentUserId = userInfo ? JSON.parse(userInfo).id : null
-
-
 class ProjectConnectForm extends React.Component {
 
   static childContextTypes = {
@@ -183,11 +178,12 @@ class ProjectConnectForm extends React.Component {
     super(props)
 
     const { getFieldDecorator } = this.props.form
+    this.currentUserId = getCurrentUser()
     // 用户上传项目权限 -> supportUser 为当前用户，不可更改
     if (hasPerm('proj.user_addproj')) {
       getFieldDecorator('supportUser', {
         rules: [{required: true, type: 'number'}],
-        initialValue: currentUserId,
+        initialValue: this.currentUserId,
       })
     }
   }
@@ -228,7 +224,7 @@ class ProjectConnectForm extends React.Component {
         {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
           hasPerm('proj.admin_addproj') ? (
-            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={currentUserId}>
+            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={this.currentUserId}>
               <SelectExistUser />
             </BasicFormItem>
           ) : null

@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE, BASE_URL } from './constants'
-import { qsArrayToString } from './utils/util'
+import { qsArrayToString, getUserInfo } from './utils/util'
 import _ from 'lodash'
 import { ApiError } from './utils/request'
 
@@ -24,9 +24,7 @@ function r(url, method, body) {
     }
   }
 
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
-
+  const user = getUserInfo()
   if (user) {
     options.headers["token"] = user.token
   }
@@ -61,8 +59,8 @@ function r2(url, method, body) {
     }
   }
 
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
+
+  const user = getUserInfo()
 
   if (user) {
     options.headers["token"] = user.token
@@ -256,8 +254,7 @@ export function qiniuUpload(bucket, file) {
     throw new ApiError(1299, 'data source missing')
   }
 
-  const userStr = localStorage.getItem('user_info')
-  const user = userStr ? JSON.parse(userStr) : null
+  const user = getUserInfo()
 
   let headers = {
     "Accept": "application/json",

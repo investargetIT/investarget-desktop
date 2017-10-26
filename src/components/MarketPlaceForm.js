@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, hasPerm } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 import { Link } from 'dva/router'
 
 import { Form, Input, Radio, Checkbox, Upload, Icon, Button, message, Modal } from 'antd'
@@ -21,10 +21,6 @@ import {
 } from '../components/ExtraInput'
 import { UploadFile } from './Upload'
 
-// currentUserId
-const userInfo = localStorage.getItem('user_info')
-const currentUserId = userInfo ? JSON.parse(userInfo).id : null
-
 
 
 class MarketPlaceForm extends React.Component {
@@ -41,10 +37,10 @@ class MarketPlaceForm extends React.Component {
     super(props)
 
     const { getFieldDecorator } = props.form
-
+    this.currentUserId = getCurrentUser()
     getFieldDecorator('supportUser', {
       rules: [{required: true, type: 'number'}],
-      initialValue: currentUserId,
+      initialValue: this.currentUserId,
     })
   }
 
@@ -109,7 +105,7 @@ class MarketPlaceForm extends React.Component {
         {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
           hasPerm('proj.admin_addproj') ? (
-            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={currentUserId}>
+            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={this.currentUserId}>
               <SelectExistUser />
             </BasicFormItem>
           ) : null

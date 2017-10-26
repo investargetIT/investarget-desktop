@@ -8,10 +8,8 @@ import { createHistory } from 'history'
 import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
-import { hasPerm } from './utils/util'
+import { hasPerm, getUserInfo } from './utils/util'
 
-const userStr = localStorage.getItem('user_info')
-const user = userStr ? JSON.parse(userStr) : null
 
 // 6. Intl
 const appLocale = window.appLocale
@@ -24,7 +22,7 @@ const basename = lang ? ('/' + lang) : ''
 const app = dva({
   history: useRouterHistory(createHistory)({ basename: basename }),
   initialState: {
-    currentUser: user,
+    currentUser: getUserInfo(),
   },
   onError(error, dispatch) {
     dispatch({

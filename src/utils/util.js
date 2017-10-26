@@ -166,25 +166,25 @@ function exchange(source) {
 
 }
 
-function checkPerm(perm) {
+function getUserInfo() {
   const userInfoStr = localStorage.getItem('user_info')
-  if (!userInfoStr) {
-    return false
-  }
-  const permissions = JSON.parse(userInfoStr).permissions
-  if (permissions.includes(perm)) {
-    return true
-  } else {
-    return false
+  try {
+    return JSON.parse(userInfoStr)
+  } catch(e) {
+    return null
   }
 }
 
-function isLogin() {
-  const userInfoStr = localStorage.getItem('user_info')
-  if (userInfoStr) {
-    return JSON.parse(userInfoStr)
+function checkPerm(perm) {
+  const userInfo = getUserInfo()
+  if (!userInfo) {
+    return false
   }
-  return false
+  return userInfo.permissions.includes(perm)
+}
+
+function isLogin() {
+  return getUserInfo()
 }
 
 function getRandomInt(min, max) {
@@ -202,28 +202,27 @@ function formatMoney(value, currency) {
 }
 
 function hasPerm(name) {
-  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  const userInfo = getUserInfo()
   if (!userInfo) return false
   const perms = userInfo.permissions
   return perms.includes(name)
 }
 
 function getGroup() {
-  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  const userInfo = getUserInfo()
   if (!userInfo) return null
   const group = userInfo.groups[0]
   return group && group.id
 }
-window.getGroup = getGroup
 
 function getCurrentUser() {
-  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  const userInfo = getUserInfo()
   if (!userInfo) return null
   return userInfo.id
 }
 
 function getToken() {
-  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+  const userInfo = getUserInfo()
   if (!userInfo) return null
   return userInfo.token
 }
@@ -251,4 +250,4 @@ export function getImageUrl(key) {
   return 'https://o79atf82v.qnssl.com/' + key
 }
 
-export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM, getPdfUrl }
+export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, getUserInfo, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM, getPdfUrl }

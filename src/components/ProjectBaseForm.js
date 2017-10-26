@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n } from '../utils/util'
+import { i18n, getCurrentUser } from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
@@ -27,10 +27,6 @@ import {
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
 
 
-// currentUserId
-const userInfo = localStorage.getItem('user_info')
-const currentUserId = userInfo ? JSON.parse(userInfo).id : null
-
 
 class ProjectBaseForm extends React.Component {
 
@@ -42,7 +38,7 @@ class ProjectBaseForm extends React.Component {
     super(props)
     window.form = props.form
     const { getFieldDecorator } = props.form
-
+    const currentUserId = getCurrentUser()
     getFieldDecorator('supportUser', {
       rules: [{required: true, type: 'number'}],
       initialValue: currentUserId,
