@@ -675,3 +675,15 @@ export const addProjBDCom = (data) => {
 export const deleteProjBDCom = (id) => {
   return r('/proj/BDCom/' + id + '/', 'DELETE')
 }
+
+/**
+ * News
+ */
+export const getWxMsg = (param) => {
+  return r('/mongolog/wxmsg?' + qs.stringify(param))
+}
+
+export const editWxMsg = (id) => {
+  return r('/mongolog/wxmsg?id=' + id, 'PUT')
+}
+

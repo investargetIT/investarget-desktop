@@ -8,6 +8,7 @@ const CheckboxGroup = Checkbox.Group
 
 import TabCheckbox from './TabCheckbox'
 import {
+  RadioGroup2,
   RadioTrueOrFalse,
   RadioAudit,
   RadioRole,
@@ -735,6 +736,45 @@ class ProjectBDFilter extends React.Component {
   }
 }
 
+class WxMessageFilter extends React.Component {
+
+  static defaultValue = {
+    isShow: false,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = this.props.defaultValue || WxMessageFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...WxMessageFilter.defaultValue })
+    this.props.onReset({ ...WxMessageFilter.defaultValue })
+  }
+
+  render() {
+    const { isShow } = this.state
+    const options = [{label: '显示', value: true }, { label: '隐藏', value: false }]
+    return (
+      <div>
+        <BasicContainer label="状态">
+          <RadioGroup2 options={options} value={isShow} onChange={this.handleChange.bind(this, 'isShow')} />
+        </BasicContainer>
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
+
+
 
 ///// used in AddUser.js TODO:// refractor
 function mapStateToPropsForAudit(state) {
@@ -753,4 +793,5 @@ module.exports = {
   TimelineFilter,
   ProjectLibraryFilter,
   ProjectBDFilter,
+  WxMessageFilter,
 }

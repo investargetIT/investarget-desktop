@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
 import MainLayout from '../components/MainLayout'
-import { Button, Icon, Card, Col, Popconfirm } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { i18n } from '../utils/util'
+import { i18n, handleError, time } from '../utils/util'
 
 function SelectedContent(props) {
 
@@ -92,13 +92,61 @@ function SimpleBarChart(props) {
   )
 }
 
+class News extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      list: [],
+    }
+  }
+
+  getNews = () => {
+    api.getWxMsg({ isShow: true }).then(result => {
+      this.setState({ list: result.data.data })
+    }).catch(error => {
+      handleError(error.message)
+    })
+  }
+
+  componentDidMount() {
+    this.getNews()
+    // 60s 刷新一次
+    setInterval(() => {
+      api.getWxMsg({ isShow: true }).then(result => {
+        this.setState({ list: [] }, () => {
+          this.setState({ list: result.data.data })
+        })
+      })
+    }, 60000)
+  }
+
+  render() {
+    return (
+      <Card title="市场消息" bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
+        <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
+          <Icon style={{ cursor: "pointer" }} type="close" />
+        </Popconfirm>
+      }>
+        {this.state.list.length > 0 ? (
+          <Carousel vertical={true} autoplay={true} dots={false}>
+            {this.state.list.map(item => {
+              return <div key={item.id} style={{height:120,overflow:'scroll'}}><p style={{fontSize:13}}>{item.content}</p></div>
+            })}
+          </Carousel>
+        ) : <div style={{height:120}}><p style={{fontSize:13}}>暂无消息</p></div>}
+      </Card>
+    )
+  }
+}
+
+
 class IndexPage extends React.Component {
 
   constructor(props) {
     super(props)
 
     this.state = {
-      widgets: ['simple_line_chart', 'simple_bar_chart'],
+      widgets: ['news', 'simple_line_chart', 'simple_bar_chart'],
       selectedWidgets: [],
       selectMode: false,
     }
@@ -146,7 +194,7 @@ class IndexPage extends React.Component {
       <MainLayout location={this.props.location} style={{}}>
 
         <Col span={16}>
-
+          { this.state.widgets.includes('news') ? <News onClose={this.closeCard} /> : null }
           { this.state.widgets.includes('simple_line_chart') ? <SimpleLineChart onClose={this.closeCard} /> : null }
           { this.state.widgets.includes('simple_bar_chart') ? <SimpleBarChart onClose={this.closeCard} /> : null }
 

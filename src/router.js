@@ -1,5 +1,5 @@
 import React from 'react'
-import { Router, Route } from 'dva/router'
+import { Router, Route, Redirect } from 'dva/router'
 import IndexPage from './routes/IndexPage'
 import Login from './components/Login.js'
 import UserList from "./routes/UserList.js"
@@ -51,10 +51,13 @@ import ProjectLibraryItem from './routes/ProjectLibraryItem'
 import ProjectBDList from './routes/ProjectBDList'
 import AddProjectBD from './routes/AddProjectBD'
 import EditProjectBD from './routes/EditProjectBD'
+import WxMessage from './routes/WxMessage'
+import { isLogin } from './utils/util'
 
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
+      {isLogin() ? <Redirect from="/" to="/app" /> : null}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
@@ -105,6 +108,7 @@ function RouterConfig({ history }) {
       <Route path={URI_13} component={MyTrader} />
       <Route path="/app/trader/add" component={SelectTraderToRelation} />
       <Route path="/app/agreement" component={Agreement} />
+      <Route path="/app/wxmsg" component={WxMessage} />
     </Router>
   )
 }

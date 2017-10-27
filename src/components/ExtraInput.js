@@ -975,6 +975,7 @@ const RadioBDSource = withOptions(RadioGroup2, [
 
 export {
   SelectNumber,
+  RadioGroup2,
 
   SelectTag,
   SelectRole,
