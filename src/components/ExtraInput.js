@@ -489,8 +489,9 @@ const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(sta
 /**
  * SelectBDSource
  */
-const SelectBDSource = withOptions(_Select, [
-  { label: '全库筛选', value: '全库筛选' }
+const SelectBDSource = withOptions(SelectNumber, [
+  { label: '全库筛选', value: 0 },
+  { label: '其他', value: 1 },
 ])
 
 /**
@@ -969,7 +970,8 @@ const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state
  * RadioBDSource
  */
 const RadioBDSource = withOptions(RadioGroup2, [
-  { value: '全库筛选', label: '全库筛选' },
+  { value: 0, label: '全库筛选' },
+  { value: 1, label: '其他' },
 ])
 
 

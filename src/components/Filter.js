@@ -690,7 +690,7 @@ class ProjectBDFilter extends React.Component {
 
   static defaultValue = {
     bd_status: null,
-    source: null,
+    source_type: null,
     location: [],
     manager: [],
   }
@@ -714,7 +714,7 @@ class ProjectBDFilter extends React.Component {
   }
 
   render() {
-    const { bd_status, source, location, manager } = this.state
+    const { bd_status, source_type, location, manager } = this.state
 
     return (
       <div>
@@ -722,7 +722,7 @@ class ProjectBDFilter extends React.Component {
           <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_bd.import_methods')}>
-          <RadioBDSource value={source} onChange={this.handleChange.bind(this, 'source')} />
+          <RadioBDSource value={source_type} onChange={this.handleChange.bind(this, 'source_type')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_bd.area')}>
           <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />

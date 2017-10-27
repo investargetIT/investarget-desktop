@@ -27,6 +27,7 @@ class AddProjectBD extends React.Component {
 
   constructor(props) {
     super(props)
+    console.log(props)
   }
 
   goBack = () => {
@@ -53,11 +54,13 @@ class AddProjectBD extends React.Component {
   }
 
   render() {
+    const state = this.props.location.state
+    const comName = state ? state.com_name : ''
     return (
       <MainLayout location={this.props.location}>
         <PageTitle title={i18n('project_bd.add_project_bd')} />
         <div>
-          <AddProjectBDForm isAdd wrappedComponentRef={this.handleRef} />
+          <AddProjectBDForm isAdd comName={comName} wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProjectBD}>{i18n('common.submit')}</Button>

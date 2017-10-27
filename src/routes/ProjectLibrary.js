@@ -134,7 +134,7 @@ class ProjectLibrary extends React.Component {
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
                   {record.com_name}
                 </Link>)
-      }},
+      }, width: 120},
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
@@ -142,6 +142,9 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.latest_financial_events'), dataIndex: 'event'},
       {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
+      {title: '操作', render: (text, record) => {
+        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button>新建BD</Button></Link>
+      }}
     ]
 
     return (

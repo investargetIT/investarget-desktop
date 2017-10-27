@@ -32,7 +32,7 @@ class ProjectBDForm extends React.Component {
 
     return (
       <Form>
-        <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required>
+        <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required initialValue={this.props.comName}>
           <Input />
         </BasicFormItem>
 
@@ -40,7 +40,7 @@ class ProjectBDForm extends React.Component {
           <SelectBDStatus />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project_bd.import_methods')} name="source" required>
+        <BasicFormItem label={i18n('project_bd.import_methods')} name="source_type" required valueType="number">
           <SelectBDSource />
         </BasicFormItem>
 
