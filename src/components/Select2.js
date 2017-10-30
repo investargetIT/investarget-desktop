@@ -73,7 +73,7 @@ class Select2 extends React.Component {
 
     this.state = {
       label: '',
-      visible: true,
+      visible: false,
       search: '',
       page: 1,
       pageSize: 10,
@@ -218,9 +218,10 @@ class Select2 extends React.Component {
 
   handleOutClick = (e) => {
     const containerEl = this.refs.container
+    const contentEl   = this.refs.content
     const targetEl = e.target
     // 如果 containerEl 不是 targetEl 的祖先元素，则 closeSearch
-    if (!isParent(targetEl, containerEl)) {
+    if (!isParent(targetEl, containerEl) && !isParent(targetEl, contentEl)) {
       this.closeSearch()
     }
   }
@@ -250,16 +251,14 @@ class Select2 extends React.Component {
     const { label, visible, search, list, reloading, loading } = this.state
 
     const content = (
-      <div style={{ ...searchStyle }}>
+      <div style={{ ...searchStyle }} ref="content">
         <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
         <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
           { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
           <ul className={styles['list']}>
             {
               list.map(item =>
-              <Tooltip key={item.value} title={item.description}>
                 <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, this.props.allowCreate ? item.label : item.value)}>{item.label}</li>
-              </Tooltip>
               )
             }
           </ul>
@@ -276,10 +275,11 @@ class Select2 extends React.Component {
         <Trigger
           action={['click']}
           popup={content}
+          popupVisible={visible}
           popupAlign={{points: ['tl', 'bl'],offset:[0,3]}}
           ref="trigger"
         >
-          <div style={valueStyle} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
+          <div style={{...valueStyle, ...this.props.style}} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
         </Trigger>
       </div>
     )

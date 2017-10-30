@@ -327,7 +327,7 @@ class SelectExistUser extends React.Component {
   render() {
     return (
       <Select2
-        style={this.props.style}
+        style={this.props.style || {}}
         getData={this.getUser}
         getNameById={this.getUsernameById}
         value={this.props.value}
