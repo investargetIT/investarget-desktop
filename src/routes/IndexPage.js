@@ -104,14 +104,14 @@ class News extends React.Component {
     api.getWxMsg({ isShow: true }).then(result => {
       this.setState({ list: result.data.data })
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
   }
 
   componentDidMount() {
     this.getNews()
     // 60s 刷新一次
-    setInterval(() => {
+    this.timer = setInterval(() => {
       api.getWxMsg({ isShow: true }).then(result => {
         this.setState({ list: [] }, () => {
           this.setState({ list: result.data.data })

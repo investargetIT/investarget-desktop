@@ -66,7 +66,7 @@ class ProjectBDList extends React.Component {
         this.setState({ comments })
       }
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
       this.setState({ loading: false })
     })
   }
@@ -75,7 +75,7 @@ class ProjectBDList extends React.Component {
     api.deleteProjBD(id).then(data => {
       this.getProjectBDList()
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
   }
 
@@ -104,7 +104,7 @@ class ProjectBDList extends React.Component {
       this.setState({ newComment: '' })
       this.getProjectBDList()
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
   }
 
@@ -112,7 +112,7 @@ class ProjectBDList extends React.Component {
     api.deleteProjBDCom(id).then(data => {
       this.getProjectBDList()
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
   }
 

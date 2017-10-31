@@ -46,7 +46,7 @@ class WxMessage extends React.Component {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false })
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
       this.setState({ loading: false })
     })
   }
@@ -56,7 +56,7 @@ class WxMessage extends React.Component {
       this.getWxMsg()
     }).catch(error => {
       console.error(error)
-      handleError(error.message)
+      handleError(error)
     })
   }
 

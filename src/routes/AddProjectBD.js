@@ -41,7 +41,7 @@ class AddProjectBD extends React.Component {
         api.addProjBD(param).then(result => {
           this.props.router.goBack()
         }).catch(error => {
-          handleError(error.message)
+          handleError(error)
         })
       }
     })

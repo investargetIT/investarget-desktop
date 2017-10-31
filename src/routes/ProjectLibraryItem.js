@@ -36,7 +36,7 @@ class ProjectLibraryItem extends React.Component {
         this.setState({ events: data })
       })
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
 
   }

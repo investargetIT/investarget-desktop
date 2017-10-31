@@ -102,7 +102,7 @@ class ProjectLibrary extends React.Component {
 
     }).catch(error => {
       this.setState({ loading: false })
-      handleError(error.message)
+      handleError(error)
     })
   }
 

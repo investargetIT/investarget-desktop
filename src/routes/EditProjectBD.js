@@ -62,7 +62,7 @@ class EditProjectBD extends React.Component {
         api.editProjBD(id, param).then(result => {
           this.props.router.goBack()
         }).catch(error => {
-          handleError(error.message)
+          handleError(error)
         })
       }
     })
@@ -79,7 +79,7 @@ class EditProjectBD extends React.Component {
     api.getProjBD(id).then(result => {
       this.setState({ bd: result.data })
     }).catch(error => {
-      handleError(error.message)
+      handleError(error)
     })
   }
 
