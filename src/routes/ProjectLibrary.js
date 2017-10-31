@@ -148,7 +148,7 @@ class ProjectLibrary extends React.Component {
     ]
 
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title={i18n('project_library.project_library')} />
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">

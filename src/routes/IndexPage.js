@@ -120,6 +120,10 @@ class News extends React.Component {
     }, 60000)
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
   render() {
     return (
       <Card title={i18n('market_news')} bordered={false} style={{ margin: '10px 0 0 10px' }} extra={

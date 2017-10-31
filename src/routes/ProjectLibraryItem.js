@@ -44,7 +44,7 @@ class ProjectLibraryItem extends React.Component {
   render() {
     const { com_id, com_name, com_des, events } = this.state
     return (
-      <MainLayout location={location}>
+      <MainLayout location={this.props.location}>
         <PageTitle title={com_name} />
 
         <div>
