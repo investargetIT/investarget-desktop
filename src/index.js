@@ -10,6 +10,10 @@ import createLoading from 'dva-loading';
 import { message } from 'antd'
 import { hasPerm, getUserInfo } from './utils/util'
 
+// 推荐在入口文件全局设置 locale
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 // 6. Intl
 const appLocale = window.appLocale

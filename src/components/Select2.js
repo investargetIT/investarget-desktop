@@ -252,7 +252,7 @@ class Select2 extends React.Component {
 
     const content = (
       <div style={{ ...searchStyle }} ref="content">
-        <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={i18n('common.keyword_search')} value={search} onChange={this.handleSearch} />
+        <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={this.props.placeholder} value={search} onChange={this.handleSearch} />
         <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
           { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
           <ul className={styles['list']}>
@@ -281,7 +281,7 @@ class Select2 extends React.Component {
           popupAlign={{points: ['tl', 'bl'],offset:[0,3]}}
           ref="trigger"
         >
-          <div style={{...valueStyle, ...this.props.style}} onClick={this.toggleSearch}>{label}<span className="ant-select-arrow"></span></div>
+          <div style={{...valueStyle, ...this.props.style}} onClick={this.toggleSearch}>{label || this.props.placeholder}<span className="ant-select-arrow"></span></div>
         </Trigger>
       </div>
     )

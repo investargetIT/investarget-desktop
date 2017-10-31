@@ -1,0 +1,13 @@
+.event {
+  background-color: #FAFAFA;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event:hover {
+  background-color: #FFF9C4;
+}
+:global(.event-selected) {
+  background-color: #FFF9C4;
+}

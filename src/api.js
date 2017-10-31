@@ -714,3 +714,21 @@ export const editWxMsg = (id) => {
   return r('/mongolog/wxmsg?id=' + id, 'PUT')
 }
 
+/**
+ * Schedule
+ */
+export const getSchedule = (param) => {
+  return r('/msg/schedule/?' + qs.stringify(param))
+}
+export const addSchedule = (param) => {
+  return r('/msg/schedule/', 'POST', param)
+}
+export const editSchedule = (id, param) => {
+  return r('/msg/schedule/' + id + '/', 'PUT', param)
+}
+export const deleteSchedule = (id) => {
+  return r('/msg/schedule/' + id + '/', 'DELETE')
+}
+export const getScheduleDetail = (id) => {
+  return r('/msg/schedule/' + id + '/')
+}

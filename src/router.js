@@ -52,7 +52,9 @@ import ProjectBDList from './routes/ProjectBDList'
 import AddProjectBD from './routes/AddProjectBD'
 import EditProjectBD from './routes/EditProjectBD'
 import WxMessage from './routes/WxMessage'
+import Schedule from './routes/Schedule'
 import { isLogin } from './utils/util'
+
 
 function RouterConfig({ history }) {
   return (
@@ -109,6 +111,7 @@ function RouterConfig({ history }) {
       <Route path="/app/trader/add" component={SelectTraderToRelation} />
       <Route path="/app/agreement" component={Agreement} />
       <Route path="/app/wxmsg" component={WxMessage} />
+      <Route path="/app/schedule" component={Schedule} />
     </Router>
   )
 }

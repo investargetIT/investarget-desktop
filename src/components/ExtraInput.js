@@ -18,7 +18,7 @@ import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n, hasPerm } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -332,12 +332,90 @@ class SelectExistUser extends React.Component {
         getNameById={this.getUsernameById}
         value={this.props.value}
         onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
       />
     )
   }
 
 }
 
+/**
+ * SelectExistInvestor
+ */
+class SelectExistInvestor extends React.Component {
+
+  getInvestor = (params) => {
+    params = { ...params, traderuser: getCurrentUser() } // 审核通过
+    return api.getUserRelation(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => item.investoruser).map(item => {
+        const { id: value, username: label } = item
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  getUsernameById = (id) => {
+    return api.getUserDetailLang(id).then(result => {
+      return result.data.username
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getInvestor}
+        getNameById={this.getUsernameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+      />
+    )
+  }
+}
+
+/**
+ * SelectExistProject
+ */
+class SelectExistProject extends React.Component {
+
+  getProject = (params) => {
+    params = { ...params }
+    params['skip_count'] = (params['page_index'] - 1) * params['page_size']
+    params['max_size'] = params['page_size']
+    delete params['page_index']
+    delete params['page_size']
+    return api.getProj(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, projtitle: label } = item
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  getProjectNameById = (id) => {
+    return api.getProjLangDetail(id).then(result => {
+      return result.data.projtitle
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getProject}
+        getNameById={this.getProjectNameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+      />
+    )
+  }
+}
 
 /**
  * SelectUser
@@ -505,6 +583,7 @@ const SelectArea = withOptionsAsync(SelectNumber, ['country'], function(state) {
   })
   return { options }
 })
+
 
 /**
  * CascaderCountry
@@ -988,6 +1067,8 @@ export {
   SelectOrganization,
   SelectExistOrganization,
   SelectExistUser,
+  SelectExistProject,
+  SelectExistInvestor,
   SelectUser,
   SelectTransactionStatus,
   SelectProjectStatus,
