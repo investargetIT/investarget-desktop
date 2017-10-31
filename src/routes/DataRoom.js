@@ -5,7 +5,7 @@ import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
 import { Modal } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
-import DataRoomUser from '../routes/DataRoomUser'
+import DataRoomUser from '../components/DataRoomUser'
 
 class DataRoom extends React.Component {
 

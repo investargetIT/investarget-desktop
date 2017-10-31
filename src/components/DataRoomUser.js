@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Popconfirm } from 'antd'
 import { SelectExistUser } from '../components/ExtraInput'
-
+import { i18n } from '../utils/util'
 
 const rowStyle = {
   display: 'flex',
@@ -22,8 +22,8 @@ function DataRoomUser(props) {
             {list.map(item => (
               <div key={item.id} style={rowStyle}>
                 <span>{item.user.username}</span>
-                <Popconfirm title="确定删除吗？" onConfirm={onDeleteUser.bind(this, item.id)}>
-                  <Button size="small">删除</Button>
+                <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+                  <Button size="small" type="danger">{i18n('common.delete')}</Button>
                 </Popconfirm>
               </div>
             ))}
@@ -32,10 +32,10 @@ function DataRoomUser(props) {
               <div style={{flexGrow: 1,marginRight: 8}}>
                 <SelectExistUser style={{height:28,lineHeight:'28px'}} value={newUser} onChange={onSelectUser} />
               </div>
-              <Button onClick={onAddUser} disabled={!newUser}>添加用户</Button>
+              <Button onClick={onAddUser} disabled={!newUser}>{i18n('dataroom.add_user')}</Button>
             </div>
           </div>
-        ) : <div>暂无关联用户</div>}
+        ) : <div>{i18n('dataroom.no_user')}</div>}
       </div>
     )
 }
