@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, hasPerm } from '../utils/util'
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col } from 'antd'
+import { i18n, hasPerm, getCurrentUser } from '../utils/util'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
 import {
@@ -97,28 +97,39 @@ class DataRoomList extends React.Component {
     const { search, page, pageSize } = this.state
     const params = { search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
-    api.queryDataRoom(params).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ loading: false, total, list })
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
+
+    if (hasPerm('usersys.as_admin')) {
+      api.queryDataRoom(params).then(result => {
+        const { count: total, data: list } = result.data
+        this.setState({ loading: false, total, list })
+      }).catch(error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
       })
-    })
+    } else {
+      api.queryUserDataRoom(params).then(result => {
+        const { count: total, data: list } = result.data
+        this.setState({ loading: false, total, list: list.map(item=>item.dataroom) })
+      }).catch(error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
+    }
+
     this.writeSetting()
   }
 
 
   deleteDataRoom (dataroom) {
     this.setState({ loading: true })
-    const body = {
-      proj: dataroom.proj.id,
-      investor: dataroom.investor.id,
-      trader: dataroom.trader.id
-    }
-    api.deleteDataRoom(body)
+    const id = dataroom.id
+    api.deleteDataRoom(id)
       .then(data => this.getDataRoomList())
       .catch(err => {
         this.setState({ loading: false })
@@ -128,13 +139,11 @@ class DataRoomList extends React.Component {
 
   handleCloseDateRoom (dataroom) {
     this.setState({ loading: true })
+    const id = dataroom.id
     const body = {
       isClose: !dataroom.isClose,
-      proj: dataroom.proj.id,
-      investor: dataroom.investor.id,
-      trader: dataroom.trader.id
     }
-    api.editDataRoom(body)
+    api.editDataRoom(id, body)
     .then(data => this.getDataRoomList())
     .catch(err => {
       this.setState({ loading: false })
@@ -191,15 +200,10 @@ class DataRoomList extends React.Component {
 
       const dataroomId = record.id
       const projId = record.proj.id
-      const investorId = record.investor.id
-      const investorName = record.investor.username
-      const traderId = record.trader.id
-      const traderName = record.trader.username
-      const supportorId = record.proj.supportUser.id
-      const supportorName = record.proj.supportUser.username
       const projTitle = record.proj.projtitle
       const createUserID = record.createuser
-      const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&investorID=${investorId}&traderID=${traderId}&projectOwnerID=${supportorId}&projectTitle=${encodeURIComponent(projTitle)}&isClose=${record.isClose}&createUserID=${createUserID}`
+      // const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&investorID=${investorId}&traderID=${traderId}&projectOwnerID=${supportorId}&projectTitle=${encodeURIComponent(projTitle)}&isClose=${record.isClose}&createUserID=${createUserID}`
+      const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
       const imgUrl = (record.proj.industries && record.proj.industries.length) ? record.proj.industries[0].url : ''
       const dataroomTime = record.createdtime.slice(0, 16).replace('T', ' ')
 
@@ -213,21 +217,12 @@ class DataRoomList extends React.Component {
               <Link to={`/app/projects/${projId}`} target="_blank">{projTitle}</Link>
             </div>
             <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
-            <div style={cardUserStyle}>
-              <span>{i18n('dataroom.investor')}: <Link to={`/app/user/${investorId}`} target="_blank">{investorName}</Link></span>
-              <span>{i18n('dataroom.trader')}: <Link to={`/app/user/${traderId}`} target="_blank">{traderName}</Link></span>
-              {
-                hasPerm('usersys.as_investor') ? null : (
-                  <span>{i18n('dataroom.uploader')}: <Link to={`/app/user/${supportorId}`} target="_blank">{supportorName}</Link></span>
-                )
-              }
-            </div>
             <div style={cardActionStyle}>
               <Popconfirm title={i18n("close_confirm")} onConfirm={this.handleCloseDateRoom.bind(this, record)}>
                 <Button size="small" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ marginRight: '8px' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               </Popconfirm>
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')}>{i18n("common.delete")}</Button>
+                <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')} style={{ marginRight: '8px' }}>{i18n("common.delete")}</Button>
               </Popconfirm>
             </div>
           </div>

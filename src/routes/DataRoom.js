@@ -2,309 +2,106 @@ import React from 'react'
 import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
-import * as Api from '../api'
+import * as api from '../api'
 import { Modal } from 'antd'
-import { hasPerm, isLogin, i18n } from '../utils/util'
+import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
+import DataRoomUser from '../routes/DataRoomUser'
 
-class DataRoomList extends React.Component {
+class DataRoom extends React.Component {
 
   constructor(props) {
     super(props)
     this.dataRoomRelation = []
 
     this.state = {
+      id: props.location.query.id,
       title: decodeURIComponent(this.props.location.query.projectTitle),
-      data: []
+      data: [],
+      visible: false,
+
+      userOptions: [],
+      userDataroomIds: [],
+      fileUserList: [],
+
+      list: [],
+      newUser: null,
     }
   }
 
   componentDidMount() {
+    this.getDataRoomFile()
+    this.getAllUserFile()
+  }
 
-    const currentUser = isLogin().id;
-
-    const investor = parseInt(this.props.location.query.investorID, 10);
-    const trader = parseInt(this.props.location.query.traderID, 10);
-    const projectOwer = parseInt(this.props.location.query.projectOwnerID, 10);
-    const createUser = parseInt(this.props.location.query.createUserID, 10);
-
-    const isFromDataRoomList = investor && trader && projectOwer && createUser ? true : false;
-
-    let makeUser; // 承揽 
-    let takeUser; // 承做
-
-    // 只允许访问投资人 dataroom 的用户
-    const onlyAccessInvestorDataroom = [investor, trader];
-    // 只允许访问项目方 dataroom 的用户
-    const onlyAccessProjectOwnerDataroom = [projectOwer];
-    // 允许访问所有 dataroom 的用户
-    let accessBoth;
-
-    Api.getProjDetail(this.props.location.query.projectID)
-    .then(detail => {
-      makeUser = detail.data.makeUser && detail.data.makeUser.id;
-      takeUser = detail.data.takeUser && detail.data.takeUser.id;
-
-      accessBoth = isFromDataRoomList ? [makeUser, takeUser, createUser] : [];
-
-      let data = []
-      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
-        data = [
-          {
-            id: -3,
-            name: 'Investor Folder',
-            rename: 'Investor Folder',
-            unique: -3,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          },
-          {
-            id: -2,
-            name: 'Project Owner Folder',
-            rename: 'Project Owner Folder',
-            unique: -2,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          },
-          {
-            id: -1,
-            name: 'Public Folder',
-            rename: 'Public Folder',
-            unique: -1,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          }
-        ]
-      } else if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
-        data = [
-          {
-            id: -2,
-            name: 'Project Owner Folder',
-            rename: 'Project Owner Folder',
-            unique: -2,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          },
-          {
-            id: -1,
-            name: 'Public Folder',
-            rename: 'Public Folder',
-            unique: -1,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          }
-        ]
-      } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
-        data = [
-          {
-            id: -3,
-            name: 'Investor Folder',
-            rename: 'Investor Folder',
-            unique: -3,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          },
-          {
-            id: -1,
-            name: 'Public Folder',
-            rename: 'Public Folder',
-            unique: -1,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          }
-        ]
-      } else {
-        data = [
-          {
-            id: -1,
-            name: 'Public Folder',
-            rename: 'Public Folder',
-            unique: -1,
-            isFolder: true,
-            size: null,
-            date: null,
-            parentId: -999
-          }
-        ]
-      }
-
-      this.setState({ data });
-
-      let queryDataRoomArr = []
-      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
-        queryDataRoomArr = [
-          // Public Folder
-          Api.queryDataRoom({
-            proj: this.props.location.query.projectID,
-            isPublic: 1
-          }),
-          // Project Owner Folder
-          Api.queryDataRoom({
-            proj: this.props.location.query.projectID,
-            user: this.props.location.query.projectOwnerID,
-            isPublic: 0
-          }),
-          // Investor Folder
-          Api.queryDataRoom({
-            proj: this.props.location.query.projectID,
-            investor: this.props.location.query.investorID,
-            isPublic: 0
-          }),
-        ]
-      } else {
-        queryDataRoomArr = [
-          Api.queryDataRoom({
-            proj: this.props.location.query.projectID,
-            isPublic: 1
-          })
-        ]
-        if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
-          queryDataRoomArr.push(
-            Api.queryDataRoom({
-              proj: this.props.location.query.projectID,
-              user: this.props.location.query.projectOwnerID,
-              isPublic: 0
-            })
-          )
-        } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
-          queryDataRoomArr.push(
-            Api.queryDataRoom({
-              proj: this.props.location.query.projectID,
-              investor: this.props.location.query.investorID,
-              isPublic: 0
-            })
-          )
-        }
-      }
-      return Promise.all(queryDataRoomArr)
+  formatData = (data) => {
+    return data.map(item => {
+      const parentId = item.parent || -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
     })
-    .then(data => {
-      let getDataRoomFileArr = []
-      if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
-        this.dataRoomRelation[data[2].data.data[0].id] = -3
-        this.dataRoomRelation[data[1].data.data[0].id] = -2
-        this.dataRoomRelation[data[0].data.data[0].id] = -1
+  }
 
-        const newData = this.state.data.slice()
-        newData[0]['dataroom'] = data[2].data.data[0].id
-        newData[1]['dataroom'] = data[1].data.data[0].id
-        newData[2]['dataroom'] = data[0].data.data[0].id
-
-        newData[0].name = data[2].data.data[0].investor.username
-        newData[0].rename = data[2].data.data[0].investor.username
-        newData[1].name = data[1].data.data[0].proj.supportUser.username
-        newData[1].rename = data[1].data.data[0].proj.supportUser.username
-
-        this.setState({ data: newData })
-
-        getDataRoomFileArr = [
-          Api.getDataRoomFile({ dataroom: data[2].data.data[0].id }), // Investor Folder
-          Api.getDataRoomFile({ dataroom: data[1].data.data[0].id }), // Project Owner Folder
-          Api.getDataRoomFile({ dataroom: data[0].data.data[0].id }) // Public Folder
-        ]
-      } else {
-        this.dataRoomRelation[data[0].data.data[0].id] = -1
-        const newData = this.state.data.slice()
-        getDataRoomFileArr = [
-          Api.getDataRoomFile({ dataroom: data[0].data.data[0].id })
-        ]
-        if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
-          this.dataRoomRelation[data[1].data.data[0].id] = -2
-          newData[0]['dataroom'] = data[1].data.data[0].id
-          newData[0].name = data[1].data.data[0].proj.supportUser.username
-          newData[0].rename = data[1].data.data[0].proj.supportUser.username
-
-          getDataRoomFileArr.push(
-            Api.getDataRoomFile({ dataroom: data[1].data.data[0].id })
-          )
-        } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
-          this.dataRoomRelation[data[1].data.data[0].id] = -3
-          newData[0]['dataroom'] = data[1].data.data[0].id
-          newData[0].name = data[1].data.data[0].investor.username
-          newData[0].rename = data[1].data.data[0].investor.username
-          getDataRoomFileArr.push(
-            Api.getDataRoomFile({ dataroom: data[1].data.data[0].id })
-          )
-        }
-        this.setState({ data: newData })
-      }
-
-      return Promise.all(getDataRoomFileArr)
-    }).then(data => {
-      const formattedData = data.map((m, index) => m.data.data.map(item => {
-        let parent
-        if (isFromDataRoomList && (hasPerm('dataroom.admin_getdataroom') || accessBoth.includes(currentUser))) {
-          switch (index) {
-            case 0:
-              parent = -3
-              break
-            case 1:
-              parent = -2
-              break
-            case 2:
-              parent = -1
-              break
-          }
-        } else {
-          if (onlyAccessProjectOwnerDataroom.includes(currentUser)) {
-            switch (index) {
-              case 0:
-                parent = -1
-                break
-              case 1:
-                parent = -2
-                break
-            }
-          } else if (onlyAccessInvestorDataroom.includes(currentUser)) {
-            switch (index) {
-              case 0:
-                parent = -1
-                break
-              case 1:
-                parent = -3
-                break
-            }
-          } else {
-            parent = -1
-          }
-        }
-        const parentId = item.parent || parent
-        const name = item.filename
-        const rename = item.filename
-        const unique = item.id
-        const isFolder = !item.isFile
-        const date = item.lastmodifytime || item.createdtime
-        const timezone = item.timezone || '+08:00'
-        return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
-      })).reduce((acc, val) => acc.concat(val), [])
-      const newData = this.state.data.concat(formattedData)
-      this.setState({ data: newData }, () => {
-        // Create children of shadow directory
-        this.state.data.filter(f => f.isShadow).map(m => {
-          this.findAllSubFiles(m.shadowdirectory)
-          this.createShadowFiles(this.allSubFiles, m.shadowdirectory, m.id)
-        })
-        this.isAllDataLoaded = true
-        this.setState({ data: this.state.data.concat(this.shadowContents)})
+  getDataRoomFile = () => {
+    const id = this.state.id
+    if (hasPerm('usersys.as_admin')) {
+      let param = { dataroom: id }
+      api.queryDataRoomFile(param).then(result => {
+        var { count, data } = result.data
+        data = this.formatData(data)
+        this.setState({ data })
+      }).catch(error => {
+        handleError(error)
       })
+    } else {
+      let currentUser = isLogin().id
+      api.queryDataRoomDir(id).then(result => {
+        this.setState({ data: this.formatData(result.data) })
+        const param = { dataroom: id }
+        return api.queryUserDataRoom(param).then(result => {
+          const data = result.data.data[0]
+          return api.queryUserDataRoomFile(data.id).then(result => {
+            const files = result.data.files
+            const data = [...this.state.data, ...files]
+            this.setState({ data: this.formatData(data) })
+          })
+        })
+      }).catch(error => {
+        handleError(error)
+      })
+    }
+  }
 
-    }).catch(err => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: err
+  getAllUserFile = () => {
+    api.queryUserDataRoom({ dataroom: this.state.id }).then(result => {
+      const list = result.data.data
+      const users = list.map(item => item.user)
+      const userDataroomIds = list.map(item => item.id)
+      var userDataroomMap = {}
+      users.forEach((user, index) => {
+        userDataroomMap[user.id] = userDataroomIds[index]
+      })
+      const userOptions = users.map(item => ({ label: item.username, value: item.id }))
+      this.setState({ list, userOptions, userDataroomIds, userDataroomMap })
+
+      Promise.all(list.map(item => {
+        return api.queryUserDataRoomFile(item.id).then(result => {
+          const { files, user } = result.data
+          return files.map(item => {
+            return { file: item.id, user }
+          })
+        })
+      })).
+      then(results => {
+        const list = results.reduce((a,b) => a.concat(b))
+        this.setState({ fileUserList: list })
+      }).
+      catch(error => {
+        handleError(error)
       })
     })
   }
@@ -322,6 +119,13 @@ class DataRoomList extends React.Component {
       unique: maxKey + 1,
     })
     this.setState({ data: newData, name: i18n('dataroom.new_folder') })
+  }
+
+  showModal = () => {
+    this.setState({ visible: true })
+  }
+  hideModal = () => {
+    this.setState({ visible: false, newUser: null })
   }
 
   handleNewFolderNameChange(unique, evt) {
@@ -348,14 +152,14 @@ class DataRoomList extends React.Component {
         filename: value.rename,
         isFile: false,
         orderNO: 1,
-        parent: [-1, -2, -3].includes(value.parentId) ? null : value.parentId
+        parent: value.parentId == -999 ? null : value.parentId
       }
 
       newData.splice(index, 1)
 
-      Api.addToDataRoom(body).then(data => {
+      api.addDataRoomFile(body).then(data => {
         const item = data.data
-        const parentId = item.parent || this.dataRoomRelation[item.dataroom]
+        const parentId = item.parent || -999
         const name = item.filename
         const rename = item.filename
         const unique = item.id
@@ -364,7 +168,7 @@ class DataRoomList extends React.Component {
         const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
         newData.push(newItem)
         this.setState({ data: newData })
-      }, error => {
+      }).catch(error => {
         this.props.dispatch({
           type: 'app/findError',
           payload: error
@@ -373,13 +177,13 @@ class DataRoomList extends React.Component {
     } else {
       // Rename
       const body = {
-        fileid: value.id,
+        id: value.id,
         filename: value.rename
       }
-      Api.editInDataRoom(body).then(data => {
+      api.editDataRoomFile(body).then(data => {
         newData[index].name = newData[index].rename
         this.setState({ data: newData })
-      }, error => {
+      }).catch(error => {
         this.props.dispatch({
           type: 'app/findError',
           payload: error
@@ -407,57 +211,18 @@ class DataRoomList extends React.Component {
     const body = {
       filelist: idArr
     }
-    Api.deleteFromDataRoom(body).then(data => {
+    api.deleteDataRoomFile(body).then(data => {
       const newData = this.state.data.slice()
       idArr.map(d => {
         const index = newData.map(m => m.id).indexOf(d)
         newData.splice(index, 1)
       })
       this.setState({ data: newData })
-    }, error => {
+    }).catch(error => {
       this.props.dispatch({
         type: 'app/findError',
         payload: error
       })
-    })
-  }
-
-  handleCopyFiles(files, targetID) {
-    const targetFile = this.state.data.filter(f => f.id === targetID)[0]
-    if (files.map(m => m.dataroom).includes(targetFile.dataroom)) {
-      Modal.error({
-        title: i18n('dataroom.message.error_copy_files_title'),
-        content: i18n('dataroom.message.error_copy_files_content'),
-      })
-      return
-    }
-    files.map(m => {
-      const body = {
-        isShadow: true,
-        shadowdirectory: m.id,
-        dataroom: targetFile.dataroom,
-        filename: m.filename,
-        isFile: m.isFile,
-        parent: [-1, -2, -3].includes(targetID) ? null : targetID
-      }
-      Api.addToDataRoom(body).then(data => {
-        this.findAllSubFiles(m.id)
-        const newData = this.state.data.slice()
-        const item = data.data
-        const parentId = item.parent || this.dataRoomRelation[item.dataroom]
-        const name = item.filename
-        const rename = item.filename
-        const unique = item.id
-        const isFolder = !item.isFile
-        const date = item.lastmodifytime
-        const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
-        newData.push(newItem)
-
-        this.createShadowFiles(this.allSubFiles, m.id, unique)
-
-        this.setState({ data: newData.concat(this.shadowContents) })
-      })
-      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
     })
   }
 
@@ -472,55 +237,19 @@ class DataRoomList extends React.Component {
     }
     files.map(m => {
       const body = {
-        fileid: m.id,
-        parent: [-1, -2, -3].includes(targetID) ? null : targetID
+        id: m.id,
+        parent: targetID == -999 ? null : targetID
       }
-      Api.editInDataRoom(body).then(data => {
+      api.editDataRoomFile(body).then(data => {
         const index = this.state.data.map(m => m.id).indexOf(m.id)
         this.state.data[index].parentId = targetID
         this.setState({ data: this.state.data })
-      }, error => {
+      }).catch(error => {
         this.props.dispatch({
           type: 'app/findError',
           payload: error
         })
       })
-    })
-  }
-
-  allSubFiles = []
-  findAllSubFiles = id => {
-    const subObjArr = this.state.data.filter(f => f.parentId === id)
-    if (subObjArr.length === 0) {
-      return this.allSubFiles
-    } else {
-      this.allSubFiles = this.allSubFiles.concat(subObjArr)
-      return subObjArr.map(m => this.findAllSubFiles(m.id))
-    }
-  }
-
-  shadowContents = []
-  data = []
-  createShadowFiles(files, oldParentId, newParentId) {
-    let content = files.slice()
-    if (content.length === 0) return this.shadowContents
-    const contentId = content.map(m => m.id)
-    content.filter(f => f.parentId === oldParentId).map(m => {
-      const existKeyList = this.data.map(m => m.unique)
-      const maxKey = Math.max(...existKeyList)
-      const id = maxKey + 99
-      const unique = id
-      const parentId = newParentId
-      const isVirtual = true
-
-      const rootIndex = contentId.indexOf(m.id)
-      if (rootIndex > -1) {
-        content.splice(rootIndex, 1)
-      }
-      const newValue = { ...m, id, unique, parentId, isVirtual }
-      this.shadowContents = this.shadowContents.concat(newValue)
-      this.data = this.data.concat(newValue)
-      return this.createShadowFiles(content, m.id, id)
     })
   }
 
@@ -534,24 +263,25 @@ class DataRoomList extends React.Component {
       filename: file.name,
       isFile: true,
       orderNO: 1,
-      parent: [-1, -2, -3].includes(parentId) ? null : parentId,
+      parent: parentId == -999 ? null : parentId,
       key: file.response.result.key,
       size: file.size,
       bucket: 'file'
     }
 
-    Api.addToDataRoom(body).then(data => {
+    api.addDataRoomFile(body).then(data => {
       const item = data.data
-      const parentId = item.parent || this.dataRoomRelation[item.dataroom]
+      const parentId = item.parent || -999
+
       const name = item.filename
       const rename = item.filename
       const unique = item.id
       const isFolder = !item.isFile
-      const date = item.lastmodifytime
+      const date = item.lastmodifytime || item.createdtime
       const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
       newData.push(newItem)
       this.setState({ data: newData })
-    }, error => {
+    }).catch(error => {
       this.props.dispatch({
         type: 'app/findError',
         payload: error
@@ -559,32 +289,93 @@ class DataRoomList extends React.Component {
     })
   }
 
+  handleSelectFileUser = (file, user) => {
+    const list = [...this.state.fileUserList, {file, user}]
+    this.setState({ fileUserList: list })
+    const files = list.filter(item => item.user == user).map(item => item.file)
+    this.editUserFileList(user, files)
+  }
+
+  handleDeselectFileUser = (file, user) => {
+    const list = this.state.fileUserList.filter(item => {
+      return !(item.file == file && item.user == user)
+    })
+    this.setState({ fileUserList: list })
+    const files = list.filter(item => item.user == user).map(item => item.file)
+    this.editUserFileList(user, files)
+  }
+
+  editUserFileList = (user, files) => {
+    const id = this.state.userDataroomMap[user]
+    api.editUserDataRoomFile(id, {files}).then(result => {
+      this.getAllUserFile()
+    }).catch(error => {
+      handleError(error)
+    })
+  }
+
+  handleSelectUser = (value) => {
+    this.setState({ newUser: value })
+  }
+
+  handleAddUser = () => {
+    const { id, newUser } = this.state
+    const param = { dataroom: id, user: newUser }
+    api.addUserDataRoom(param).then(result => {
+      this.setState({ newUser: null })
+      this.getAllUserFile()
+    }).catch(error => {
+      handleError(error)
+    })
+  }
+
+  handleDeleteUser = (id) => {
+    api.deleteUserDataRoom(id).then(result => {
+      this.getAllUserFile()
+    }).catch(error => {
+      handleError(error)
+    })
+  }
+
+
   render () {
-    this.allSubFiles = []
-    this.shadowContents = []
-    this.data = this.state.data.slice()
     return (
       <LeftRightLayout
         location={this.props.location}
         title={i18n('dataroom.project_name') + ' : ' + this.state.title}>
 
-        { this.isAllDataLoaded ?
         <FileMgmt
           location={this.props.location}
           data={this.state.data}
           onCreateNewFolder={this.handleCreateNewFolder.bind(this)}
+          onManageUser={this.showModal}
+          userOptions={this.state.userOptions}
+          fileUserList={this.state.fileUserList}
+          onSelectFileUser={this.handleSelectFileUser}
+          onDeselectFileUser={this.handleDeselectFileUser}
           onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)}
           onConfirm={this.handleConfirm.bind(this)}
           onCancel={this.handleCancel.bind(this)}
           onDeleteFiles={this.handleDeleteFiles.bind(this)}
-          onCopyFiles={this.handleCopyFiles.bind(this)}
           onMoveFiles={this.handleOnMoveFiles.bind(this)}
           onUploadFile={this.handleUploadFile.bind(this)} />
-          : null }
 
+
+          <Modal
+            title="用户管理"
+            footer={null}
+            onCancel={this.hideModal}
+            visible={this.state.visible}>
+            <DataRoomUser
+              list={this.state.list}
+              newUser={this.state.newUser}
+              onSelectUser={this.handleSelectUser}
+              onAddUser={this.handleAddUser}
+              onDeleteUser={this.handleDeleteUser} />
+          </Modal>
       </LeftRightLayout>
     )
   }
 }
 
-export default connect()(DataRoomList)
+export default connect()(DataRoom)

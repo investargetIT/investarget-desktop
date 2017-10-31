@@ -513,30 +513,57 @@ export function deleteUserRemark(id) {
   return r('/user/remark/' + id + '/', 'DELETE')
 }
 
-
 /**
- * dataroom
+ * DataRoom
  */
-export function queryDataRoom(param) {
+
+export const queryDataRoom = (param) => {
   return r('/dataroom/?' + qs.stringify(param))
 }
-
-export function createDataRoom(body) {
-  return r('/dataroom/', 'POST', body)
+export const addDataRoom = (param) => {
+  return r('/dataroom/', 'POST', param)
 }
 
-export function getDataRoomFile(param) {
+export const editDataRoom = (id, data) => {
+  return r('/dataroom/' + id + '/', 'PUT', data)
+}
+export const deleteDataRoom = (id) => {
+  return r('/dataroom/' + id + '/', 'DELETE')
+}
+
+export const queryUserDataRoom = (param) => {
+  return r('/dataroom/user/?' + qs.stringify(param))
+}
+export const addUserDataRoom = (param) => {
+  return r('/dataroom/user/', 'POST', param)
+}
+export const deleteUserDataRoom = (id) => {
+  return r('/dataroom/user/' + id + '/', 'DELETE')
+}
+
+export const queryDataRoomFile = (param) => {
   return r('/dataroom/file/?' + qs.stringify(param))
 }
-
-export function queryDataRoomDetail(id) {
-  return r('/dataroom/' + id)
+export const addDataRoomFile = (param) => {
+  return r('/dataroom/file/', 'POST', param)
 }
-export const deleteDataRoom = body => r('/dataroom/', 'DELETE', body)
-export const editDataRoom = body => r('/dataroom/', 'PUT', body)
-export const addToDataRoom = body => r('/dataroom/file/', 'POST', body)
-export const deleteFromDataRoom = body => r('/dataroom/file/', 'DELETE', body)
-export const editInDataRoom = body => r('/dataroom/file/', 'PUT', body)
+export const editDataRoomFile = (param) => {
+  return r('/dataroom/file/', 'PUT', param)
+}
+export const deleteDataRoomFile = (param) => {
+  return r('/dataroom/file/', 'DELETE', param)
+}
+
+export const queryUserDataRoomFile = (id) => {
+  return r('/dataroom/user/' + id + '/')
+}
+export const editUserDataRoomFile = (id, param) => {
+  return r('/dataroom/user/' + id + '/', 'PUT', param)
+}
+
+export const queryDataRoomDir = (id) => {
+  return r('/dataroom/' + id + '/')
+}
 
 /**
  * User Relation

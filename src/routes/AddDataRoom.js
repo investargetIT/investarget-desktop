@@ -38,13 +38,16 @@ class AddDataRoom extends React.Component {
       title: i18n('dataroom.message.confirm_create_dataroom'),
       onOk() {
         Promise.all(selectedUsers.map(m => {
-          const body = {
-            proj: parseInt(projectID, 10),
-            isPublic: false,
-            investor: m.investor,
-            trader: m.trader || isLogin().id
-          }
-          return api.createDataRoom(body)
+          const body = { proj: projectID }
+          return api.createDataRoom(body).then(result => {
+            const { id } = result.data
+            const param1 = { dataroom: id, user: m.investor }
+            const param2 = { dataroom: id, user: m.trader }
+            return Promise.all([
+              api.addUserDataRoom(param1),
+              api.addUserDataRoom(param2)
+            ])
+          })
         }))
         .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/list')))
         .catch(e => react.props.dispatch({ type: 'app/findError', payload: e }))

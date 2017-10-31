@@ -1,6 +1,5 @@
 import React from 'react'
-import { getDataRoomFile } from '../api'
-import { Upload, message, Tree, Modal, Input, Button, Table } from 'antd'
+import { Upload, message, Tree, Modal, Input, Button, Table, Select } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
 import { BASE_URL } from '../constants'
 import qs from 'qs'
@@ -38,12 +37,11 @@ class FileMgmt extends React.Component {
       loading: false,
     }
 
-    this.handleNameChange = this.handleNameChange.bind(this)
+    // this.handleNameChange = this.handleNameChange.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
     this.handleRename = this.handleRename.bind(this)
     this.deleteContent = this.deleteContent.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleCopy = this.handleCopy.bind(this)
     this.handleMove = this.handleMove.bind(this)
     this.handleOk = this.handleOk.bind(this)
     this.handleCancelModal = this.handleCancelModal.bind(this)
@@ -76,9 +74,9 @@ class FileMgmt extends React.Component {
     }
   }
 
-  handleNameChange(unique, evt) {
+  // handleNameChange(unique, evt) {
 
-  }
+  // }
 
   current = []
   parentFolderFunc (parentId) {
@@ -97,32 +95,6 @@ class FileMgmt extends React.Component {
       this.contents = this.contents.concat(subObjArr.map(m => m.id))
       return subObjArr.map(m => this.deleteContent(m.id))
     }
-  }
-
-  copyContents = []
-  data = []
-  copyContentsFunc(contentName, oldParentIds, targetId) {
-    let content = contentName.slice()
-    if (content.length === 0) return this.copyContents
-    const contentId = content.map(m => m.id)
-    oldParentIds.map(oldParentId => {
-      content.filter(f => f.parentId === oldParentId).map(m => {
-        const existKeyList = this.data.map(m => m.unique)
-        const maxKey = Math.max(...existKeyList)
-        const id = maxKey + 1
-        const unique = id
-        const parentId = targetId
-
-        const rootIndex = contentId.indexOf(m.id)
-        if(rootIndex > -1) {
-          content.splice(rootIndex, 1)
-        }
-        const newValue = {...m, id, unique, parentId}
-        this.copyContents = this.copyContents.concat(newValue)
-        this.data = this.data.concat(newValue)
-        return this.copyContentsFunc(content, [m.id], id)
-      })
-    })
   }
 
   handleConfirm(unique) {
@@ -171,10 +143,6 @@ class FileMgmt extends React.Component {
     })
   }
 
-  handleCopy() {
-    this.setState({ visible: true, action: 'copy' })
-  }
-
   handleMove() {
     this.setState({ visible: true, action: 'move' })
   }
@@ -199,23 +167,6 @@ class FileMgmt extends React.Component {
       // })
 
       this.props.onMoveFiles(this.state.selectedRows, targetId)
-
-    } else if (this.state.action === "copy") {
-      const index = notAllowedKeys.indexOf(this.state.parentId)
-      if (index > -1) {
-        notAllowedKeys.splice(index, 1)
-      }
-      const contentsToCopy = notAllowedKeys.map(m => {
-        const result = newData.filter(f => f.id === m)
-        return result[0]
-      })
-      const parentIds = this.state.selectedRows.map(m => m.parentId)
-      const parentIdSet = new Set(parentIds)
-      this.copyContentsFunc(contentsToCopy, [...parentIdSet], targetId)
-
-      this.props.onCopyFiles(this.state.selectedRows, targetId)
-
-      newData = newData.concat(this.copyContents)
     }
 
     this.setState({
@@ -233,7 +184,9 @@ class FileMgmt extends React.Component {
   }
 
   render () {
-    const rowSelection = {
+    const isAdmin = hasPerm('usersys.as_admin')
+
+    const rowSelection = isAdmin ? {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         this.setState({ selectedRows: selectedRowKeys.map(m => this.props.data.filter(f => f.id === m)[0]) })
@@ -242,7 +195,7 @@ class FileMgmt extends React.Component {
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User',    // Column configuration not to be checked
       }),
-    }
+    } : null
 
     const columns = [{
       title: i18n('dataroom.filename'),
@@ -261,7 +214,7 @@ class FileMgmt extends React.Component {
       },
       render: (text, record, index) => (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? (record.isShadow || record.isVirtual) ? "/images/avatar1.png" : "/images/folder.png" : "/images/pdf.png" } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
@@ -285,12 +238,33 @@ class FileMgmt extends React.Component {
       key: 'date',
       render: (date, record) => date && time(date+record.timezone),
     }]
-
+    if (isAdmin) {
+      columns.push({
+        title: '可见用户',
+        render: (text, record) => {
+          const fileId = record.id
+          const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
+          return record.isFile ? (
+            <Select
+              style={{width: '100%'}}
+              mode="multiple"
+              optionLabelProp="children"
+              value={users}
+              onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
+              onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
+              {this.props.userOptions.map(option => (
+                <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
+              ))}
+            </Select>
+          ) : null
+        }
+      })
+    }
 
     this.current = []
     this.contents = []
     this.data = this.props.data
-    this.copyContents = []
+    // this.copyContents = []
 
     const currentFolder = this.props.data.filter(f => f.id === this.state.parentId)[0]
     let parentFolder = null
@@ -300,7 +274,7 @@ class FileMgmt extends React.Component {
         parentFolder = parentFolderArr[0]
       }
     }
-    const base = this.state.parentId === -999 ? i18n('dataroom.all') : (
+    const base = (
       <span>
         <a onClick={this.folderClicked.bind(this, parentFolder)}>{i18n('dataroom.back')}</a>
         &nbsp;|&nbsp;
@@ -355,14 +329,14 @@ class FileMgmt extends React.Component {
       },
     }
 
-    const unableToOperate = this.state.parentId === -999 || this.props.location.query.isClose === 'true'
+    const unableToOperate = this.props.location.query.isClose === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const selectMoreThanOneRow = this.state.selectedRows.length > 0
     const noShadowInSelectedRows = this.state.selectedRows.filter(f => f.isShadow).length === 0
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
 
     const operation = () => {
-      if (unableToOperate || currentFolder.isShadow || currentFolder.isVirtual) return null
+      if (unableToOperate ) return null
       return (
         <div>
           { hasEnoughPerm ?
@@ -377,6 +351,10 @@ class FileMgmt extends React.Component {
             style={{ marginRight: 10 }}>{i18n('dataroom.new_folder')}</Button>
           : null }
 
+          { hasEnoughPerm ?
+            <Button onClick={this.props.onManageUser} style={{ marginRight: 10 }}>用户管理</Button>
+          : null}
+
           {selectMoreThanOneRow && hasEnoughPerm ?
             <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
           : null}
@@ -385,14 +363,9 @@ class FileMgmt extends React.Component {
             <Button onClick={this.handleRename} style={{ marginRight: 10 }}>{i18n('dataroom.rename')}</Button>
           : null}
 
-          {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows && hasEnoughPerm ?
-            <Button onClick={this.handleCopy} style={{ marginRight: 10 }}>{i18n('dataroom.copy_to')}</Button>
-          : null}
-
           {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows ?
             <Button onClick={this.handleMove} style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
           : null}
-
         </div>
       )
     }
@@ -404,7 +377,7 @@ class FileMgmt extends React.Component {
 
         <div style={{ margin: '10px 0' }}>
           { base }
-          {
+          {this.props.data.length > 0 &&
             this.parentFolderFunc(this.state.parentId)
               .map(
                 m => m.id !== this.state.parentId ?
