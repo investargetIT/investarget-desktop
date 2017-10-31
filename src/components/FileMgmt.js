@@ -240,7 +240,7 @@ class FileMgmt extends React.Component {
     }]
     if (isAdmin) {
       columns.push({
-        title: '可见用户',
+        title: i18n('dataroom.visible_user'),
         render: (text, record) => {
           const fileId = record.id
           const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
@@ -352,7 +352,7 @@ class FileMgmt extends React.Component {
           : null }
 
           { hasEnoughPerm ?
-            <Button onClick={this.props.onManageUser} style={{ marginRight: 10 }}>用户管理</Button>
+            <Button onClick={this.props.onManageUser} style={{ marginRight: 10 }}>{i18n('dataroom.user_management')}</Button>
           : null}
 
           {selectMoreThanOneRow && hasEnoughPerm ?

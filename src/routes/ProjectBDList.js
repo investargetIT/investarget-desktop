@@ -128,7 +128,7 @@ class ProjectBDList extends React.Component {
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name'},
       {title: i18n('project_bd.area'), dataIndex: 'location.country'},
       {title: i18n('project_bd.import_methods'), render: (text, record) => {
-        return record.source_type == 0 ? '全库筛选' : '其他'
+        return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
       }},
       {title: i18n('project_bd.contact'), dataIndex: 'username'},
       {title: i18n('project_bd.title'), dataIndex: 'usertitle.name'},

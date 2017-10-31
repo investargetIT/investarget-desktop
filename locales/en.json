@@ -370,6 +370,10 @@
     "rename": "Rename",
     "copy_to": "Copy To",
     "move_to": "Move To",
+    "user_management": "User Management",
+    "add_user": "Add User",
+    "no_user": "No User",
+    "visible_user": "Visible Users",
 
     "message": {
       "confirm_delete_files": "Delete those files?",
@@ -420,7 +424,9 @@
     "project_type": "Project Type",
     "exclusive_project": "Exclusive Project",
     "choice_project": "Choice Project",
-    "group": "Group"
+    "group": "Group",
+    "project_library": "Project Library",
+    "other": "Other"
   },
 
   "remark": {
@@ -512,10 +518,14 @@
   "logout_confirm": "Are you sure to logout?",
   "delete_confirm": "Confirm to delete?",
   "close_confirm": "Confirm to close?",
+  "open_confirm": "Confirm to open?",
   "unknown_error": "Unknown Error",
   "contact_admin": "Please contact service administrator!",
   "mobile": "Mobile",
   "recommend_to_investor": "Recommend to Investor",
   "investor_not_found": "Investor Not Found",
-  "not_favorite_yet": "You haven't favorite the project yet! So you can't recomment to investor"
+  "not_favorite_yet": "You haven't favorite the project yet! So you can't recomment to investor",
+
+  "market_news": "Market News",
+  "no_news": "No News"
 }

@@ -362,7 +362,7 @@ class DataRoom extends React.Component {
 
 
           <Modal
-            title="用户管理"
+            title={i18n('dataroom.user_management')}
             footer={null}
             onCancel={this.hideModal}
             visible={this.state.visible}>

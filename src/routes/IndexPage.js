@@ -122,7 +122,7 @@ class News extends React.Component {
 
   render() {
     return (
-      <Card title="市场消息" bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
+      <Card title={i18n('market_news')} bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
         <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
           <Icon style={{ cursor: "pointer" }} type="close" />
         </Popconfirm>
@@ -133,7 +133,7 @@ class News extends React.Component {
               return <div key={item.id} style={{height:120,overflow:'scroll'}}><p style={{fontSize:13}}>{item.content}</p></div>
             })}
           </Carousel>
-        ) : <div style={{height:120}}><p style={{fontSize:13}}>暂无消息</p></div>}
+        ) : <div style={{height:120}}><p style={{fontSize:13}}>{i18n('no_news')}</p></div>}
       </Card>
     )
   }

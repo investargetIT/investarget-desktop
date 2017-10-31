@@ -370,6 +370,10 @@
     "rename": "重命名",
     "copy_to": "复制到",
     "move_to": "移动到",
+    "user_management": "用户管理",
+    "add_user": "添加用户",
+    "no_user": "暂无关联用户",
+    "visible_user": "可见用户",
 
     "message": {
       "confirm_delete_files": "确定删除吗？",
@@ -420,7 +424,9 @@
     "project_type": "项目类型",
     "exclusive_project": "独家项目",
     "choice_project": "精品项目",
-    "group": "用户组"
+    "group": "用户组",
+    "project_library": "全库筛选",
+    "other": "其他"
   },
 
   "remark": {
@@ -511,10 +517,14 @@
   "logout_confirm": "你确定要退出吗？",
   "delete_confirm": "确定要删除吗？",
   "close_confirm": "确定要关闭吗？",
+  "open_confirm": "确定要打开吗？",
   "unknown_error": "未知错误",
   "contact_admin": "请联系系统管理员",
   "mobile": "手机",
   "recommend_to_investor": "推荐给投资人",
   "investor_not_found": "暂无投资人",
-  "not_favorite_yet": "您还没有收藏该项目，无法推荐给投资人"
+  "not_favorite_yet": "您还没有收藏该项目，无法推荐给投资人",
+
+  "market_news": "市场消息",
+  "no_news": "暂无消息"
 }
