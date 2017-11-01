@@ -1,16 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import { Form, Input, DatePicker } from 'antd'
 
 import {
   BasicFormItem,
 } from '../components/Form'
-
 import {
   SelectExistProject,
   SelectExistInvestor,
 } from '../components/ExtraInput'
+import { i18n } from '../utils/util'
 
 
 class ScheduleForm extends React.Component {
@@ -29,19 +28,19 @@ class ScheduleForm extends React.Component {
   render() {
     return (
       <Form>
-        <BasicFormItem label="标题" name="comments" required>
+        <BasicFormItem label={i18n('schedule.title')} name="comments" required>
           <Input />
         </BasicFormItem>
-        <BasicFormItem label="时间" name="scheduledtime" valueType="object" required>
+        <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </BasicFormItem>
-        <BasicFormItem label="地址" name="address" required>
+        <BasicFormItem label={i18n('schedule.address')} name="address" required>
           <Input />
         </BasicFormItem>
-        <BasicFormItem label="项目" name="proj" valueType="number" required>
+        <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number" required>
           <SelectExistProject />
         </BasicFormItem>
-        <BasicFormItem label="投资人" name="user" valueType="number" required>
+        <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number" required>
           <SelectExistInvestor />
         </BasicFormItem>
       </Form>

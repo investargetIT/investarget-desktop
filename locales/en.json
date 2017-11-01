@@ -23,7 +23,10 @@
     "change_password": "Change Password",
     "profile": "Personal Info",
     "log": "Sys Log",
-    "permission_management": "Permission Management"
+    "permission_management": "Permission Management",
+    "schedule_management": "Schedule Management",
+    "schedule_list": "Schedule List",
+    "my_schedule": "My Schedule"
   },
   "account": {
     "login": "Login",
@@ -404,6 +407,23 @@
     "after_operation": "After Operation",
     "modified_time": "Modified Time",
     "operator": "Operator"
+  },
+
+  "schedule": {
+    "schedule_management": "Schedule Management",
+    "schedule_list": "Schedule List",
+    "my_schedule": "My Schedule",
+    "creator_name": "Creator Name",
+    "creator_mobile": "Creator Mobile",
+    "schedule_time": "Schedule Time",
+    "creator": "Creator",
+    "project": "Project",
+    "investor": "Investor",
+    "title": "Title",
+    "address": "Address",
+    "event": "Event",
+    "add_event": "New Event",
+    "edit_event": "Edit Event"
   },
 
   "filter": {

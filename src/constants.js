@@ -37,7 +37,9 @@ export const KEY_TO_URI = {
   "permission_management": URI_14,
   "recommon_projects": URI_15,
   "publish_projects": URI_16,
-  "collect_projects": URI_17
+  "collect_projects": URI_17,
+  "schedule_list": "/app/schedule/list",
+  "my_schedule": "/app/schedule",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = {

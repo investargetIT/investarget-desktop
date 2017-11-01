@@ -23,7 +23,10 @@
     "change_password": "修改密码",
     "profile": "个人信息",
     "log": "日志查询",
-    "permission_management": "权限管理"
+    "permission_management": "权限管理",
+    "schedule_management": "日程管理",
+    "schedule_list": "日程列表",
+    "my_schedule": "我的日程表"
   },
   "account": {
     "login": "登录",
@@ -404,6 +407,23 @@
     "after_operation": "操作后",
     "modified_time": "修改时间",
     "operator": "操作者"
+  },
+
+  "schedule": {
+    "schedule_management": "日程管理",
+    "schedule_list": "日程列表",
+    "my_schedule": "我的日程表",
+    "creator_name": "创建者姓名",
+    "creator_mobile": "创建者手机",
+    "schedule_time": "预定时间",
+    "creator": "创建者",
+    "project": "项目",
+    "investor": "投资人",
+    "title": "标题",
+    "address": "地址",
+    "event": "事件",
+    "add_event": "新建事件",
+    "edit_event": "编辑事件"
   },
 
   "filter": {

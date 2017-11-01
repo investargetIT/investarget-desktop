@@ -53,6 +53,7 @@ import AddProjectBD from './routes/AddProjectBD'
 import EditProjectBD from './routes/EditProjectBD'
 import WxMessage from './routes/WxMessage'
 import Schedule from './routes/Schedule'
+import ScheduleList from './routes/ScheduleList'
 import { isLogin } from './utils/util'
 
 
@@ -112,6 +113,7 @@ function RouterConfig({ history }) {
       <Route path="/app/agreement" component={Agreement} />
       <Route path="/app/wxmsg" component={WxMessage} />
       <Route path="/app/schedule" component={Schedule} />
+      <Route path="/app/schedule/list" component={ScheduleList} />
     </Router>
   )
 }

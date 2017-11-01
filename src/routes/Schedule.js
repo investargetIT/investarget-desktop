@@ -2,7 +2,7 @@ import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
 import MainLayout from '../components/MainLayout'
 import PageTitle from '../components/PageTitle'
-import { handleError, time } from '../utils/util'
+import { handleError, time, i18n, getCurrentUser } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
 const Option = Select.Option
@@ -37,6 +37,7 @@ class Schedule extends React.Component {
       visibleEvent: false,
       visibleEdit: false,
       selectedDate: null,
+      mode: 'month',
     }
   }
 
@@ -75,25 +76,21 @@ class Schedule extends React.Component {
   }
 
   monthCellRender = (value) => {
-    const num = this.getMonthData(value);
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
+    //
   }
 
   onPanelChange = (date, mode) => {
-
+    this.setState({ mode })
   }
 
   onSelect = (date, dateString) => {
-    this.setState({ visibleAdd: true, selectedDate: date })
+    if (this.state.mode == 'month') {
+      this.setState({ visibleAdd: true, selectedDate: date })
+    }
   }
 
   getEvents = () => {
-    api.getSchedule().then(result => {
+    api.getSchedule({ createuser: getCurrentUser() }).then(result => {
       var { count: total, data: list } = result.data
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
@@ -109,10 +106,10 @@ class Schedule extends React.Component {
       if (!err) {
         let param = toData(values)
         api.addSchedule(param).then(result => {
-          this.setState({ visibleAdd: false })
+          this.hideAddModal()
           this.getEvents()
         }).catch(error => {
-          this.setState({ visibleAdd: false })
+          this.hideEditModal()
           handleError(error)
         })
       }
@@ -125,10 +122,10 @@ class Schedule extends React.Component {
         let param = toData(values)
         let id = this.state.event.id
         api.editSchedule(id, param).then(result => {
-          this.setState({ visibleEdit: false })
+          this.hideEditModal()
           this.getEvents()
         }).catch(error => {
-          this.setState({ visibleEdit: false })
+          this.hideEditModal()
           handleError(error)
         })
       }
@@ -138,16 +135,31 @@ class Schedule extends React.Component {
   deleteEvent = () => {
     let id = this.state.event.id
     api.deleteSchedule(id).then(result => {
-      this.setState({ visibleEvent: false })
+      this.hideEventModal()
       this.getEvents()
     }).catch(error => {
-      this.setState({ visibleEvent: false })
+      this.hideEventModal()
       handleError(error)
     })
   }
 
+  hideAddModal = () => {
+    this.setState({ visibleAdd: false })
+  }
+
+  hideEventModal = () => {
+    this.setState({ visibleEvent: false, event: {} })
+    this.eventEl.classList.remove('event-selected')
+  }
+
   showEditModal = () => {
-    this.setState({ visibleEdit: true, visibleEvent: false })
+    this.setState({ visibleEvent: false })
+    this.eventEl.classList.remove('event-selected')
+    this.setState({ visibleEdit: true })
+  }
+
+  hideEditModal = () => {
+    this.setState({ visibleEdit: false, event: {} })
   }
 
   handleRef = (inst) => {
@@ -177,18 +189,18 @@ class Schedule extends React.Component {
 
     const eventTitle = (
       <div style={{marginRight:32}}>
-        活动
-        <Popconfirm title="确定删除吗?" onConfirm={this.deleteEvent}>
-          <a href="javascript:void(0)" style={eventTitleStyle}>删除</a>
+        {i18n('schedule.event')}
+        <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteEvent}>
+          <a href="javascript:void(0)" style={eventTitleStyle}>{i18n('common.delete')}</a>
         </Popconfirm>
-        <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>修改</a>
+        <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
       </div>
     )
 
     return (
 
       <MainLayout location={this.props.location}>
-        <PageTitle title="日程安排" />
+        <PageTitle title={i18n('schedule.my_schedule')} />
 
         <Calendar
           dateCellRender={this.dateCellRender}
@@ -198,10 +210,10 @@ class Schedule extends React.Component {
         />
 
         <Modal
-          title="新建活动"
+          title={i18n('schedule.add_event')}
           visible={visibleAdd}
           onOk={this.addEvent}
-          onCancel={() => { this.setState({ visibleAdd: false }) }}
+          onCancel={this.hideAddModal}
           style={modalStyle}
           maskStyle={maskStyle}
         >
@@ -211,7 +223,7 @@ class Schedule extends React.Component {
         <Modal
           title={eventTitle}
           visible={visibleEvent}
-          onCancel={() => { this.setState({ visibleEvent: false, event: {} }); this.eventEl.classList.remove('event-selected'); }}
+          onCancel={this.hideEventModal}
           maskStyle={maskStyle}
           footer={null}
         >
@@ -219,10 +231,10 @@ class Schedule extends React.Component {
         </Modal>
 
         <Modal
-          title="修改活动"
+          title={i18n('schedule.edit_event')}
           visible={visibleEdit}
           onOk={this.editEvent}
-          onCancel={() => { this.setState({ visibleEdit: false, event: {} }) }}
+          onCancel={this.hideEditModal}
           maskStyle={maskStyle}
         >
           <EditScheduleForm wrappedComponentRef={this.handleRef2} data={toFormData(this.state.event)} />
@@ -260,11 +272,11 @@ function toFormData(data) {
 function Event(props) {
   return (
     <div>
-      <Field title="标题：" content={props.comments} />
-      <Field title="时间：" content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
-      <Field title="地址：" content={props.address} />
-      <Field title="项目：" content={props.projtitle} />
-      <Field title="投资人：" content={props.user && props.user.username} />
+      <Field title={i18n('schedule.title')} content={props.comments} />
+      <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
+      <Field title={i18n('schedule.address')} content={props.address} />
+      <Field title={i18n('schedule.project')} content={props.projtitle} />
+      <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
     </div>
   )
 }
