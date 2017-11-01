@@ -238,7 +238,7 @@ class FileMgmt extends React.Component {
       key: 'date',
       render: (date, record) => date && time(date+record.timezone),
     }]
-    if (isAdmin) {
+    if (isAdmin && !this.props.isClose) {
       columns.push({
         title: i18n('dataroom.visible_user'),
         render: (text, record) => {

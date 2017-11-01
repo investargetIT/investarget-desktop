@@ -11,11 +11,12 @@ class DataRoom extends React.Component {
 
   constructor(props) {
     super(props)
-    this.dataRoomRelation = []
 
+    const { id, isClose, projectID, projectTitle } = props.location.query
     this.state = {
-      id: props.location.query.id,
-      title: decodeURIComponent(this.props.location.query.projectTitle),
+      id: id,
+      isClose: isClose == 'true' ? true : false,
+      title: decodeURIComponent(projectTitle),
       data: [],
       visible: false,
 
@@ -97,7 +98,7 @@ class DataRoom extends React.Component {
         })
       })).
       then(results => {
-        const list = results.reduce((a,b) => a.concat(b))
+        const list = results.reduce((a,b) => a.concat(b), [])
         this.setState({ fileUserList: list })
       }).
       catch(error => {
@@ -346,6 +347,7 @@ class DataRoom extends React.Component {
 
         <FileMgmt
           location={this.props.location}
+          isClose={this.state.isClose}
           data={this.state.data}
           onCreateNewFolder={this.handleCreateNewFolder.bind(this)}
           onManageUser={this.showModal}
