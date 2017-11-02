@@ -54,13 +54,11 @@ import EditProjectBD from './routes/EditProjectBD'
 import WxMessage from './routes/WxMessage'
 import Schedule from './routes/Schedule'
 import ScheduleList from './routes/ScheduleList'
-import { isLogin } from './utils/util'
 
 
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
-      {isLogin() ? <Redirect from="/" to="/app" /> : null}
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />

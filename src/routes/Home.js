@@ -3,7 +3,7 @@ import MainLayout from '../components/MainLayout'
 import { Radio, Button } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { i18n } from '../utils/util'
+import { i18n, isLogin } from '../utils/util'
 
 const RadioGroup = Radio.Group
 
@@ -13,24 +13,32 @@ const options = [
 ]
 let source
 
-function Home(props) {
+class Home extends React.Component {
 
-  function onChange(e) {
+  onChange = (e) => {
     source = e.target.value
   }
 
-  function onClick() {
+  onClick = () => {
     localStorage.setItem('source', source)
-    props.dispatch(routerRedux.push('/login'))
+    this.props.dispatch(routerRedux.push('/login'))
   }
 
-  return <MainLayout location={props.location}>
-    <h1>{i18n('common.choose')}</h1>
-    <RadioGroup onChange={onChange} options={options} />
-    <div style={{ marginTop: 20 }}>
-      <Button onClick={onClick} type="primary">{i18n('common.confirm')}</Button>
-    </div>
-  </MainLayout>
+  componentDidMount() {
+    if(isLogin()) {
+      this.props.dispatch(routerRedux.push('/app'))
+    }
+  }
+
+  render() {
+    return <MainLayout location={this.props.location}>
+      <h1>{i18n('common.choose')}</h1>
+      <RadioGroup onChange={this.onChange} options={options} />
+      <div style={{ marginTop: 20 }}>
+        <Button onClick={this.onClick} type="primary">{i18n('common.confirm')}</Button>
+      </div>
+    </MainLayout>
+  }
 }
 
 export default connect()(Home)
