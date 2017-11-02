@@ -470,7 +470,7 @@ class FileMgmt extends React.Component {
           columns={columns}
           rowKey={record => record.unique}
           rowSelection={rowSelection}
-          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileType)}
+          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName)}
           loading={this.state.loading}
           pagination={false} />
 
@@ -494,10 +494,24 @@ class FileMgmt extends React.Component {
   }
 }
 
+function sortByFileTypeAndName(a, b) {
+  return 10 * sortByFileType(a, b) + sortByFileName(a, b)
+}
+
 function sortByFileType(a, b) {
   const va = a.isFolder ? 0 : 1
   const vb = b.isFolder ? 0 : 1
   return va - vb
+}
+
+function sortByFileName(a, b) {
+  if (a.name < b.name) {
+    return -1;
+  } else if (a.name > b.name) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 export default FileMgmt
