@@ -274,6 +274,7 @@ function Event(props) {
     <div>
       <Field title={i18n('schedule.title')} content={props.comments} />
       <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
+      <Field title={i18n('schedule.area')} content={props.country && props.country.country} />
       <Field title={i18n('schedule.address')} content={props.address} />
       <Field title={i18n('schedule.project')} content={props.projtitle} />
       <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />

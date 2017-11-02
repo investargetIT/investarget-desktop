@@ -69,6 +69,7 @@ class ScheduleList extends React.Component {
         return <Link to={'/app/user/' + record.user.id} target="_blank">{text}</Link>
       }},
       {title: i18n('schedule.title'), dataIndex: 'comments'},
+      {title: i18n('schedule.area'), dataIndex: 'country.country'},
       {title: i18n('schedule.address'), dataIndex: 'address'},
     ]
 

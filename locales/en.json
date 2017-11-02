@@ -423,6 +423,7 @@
     "project": "Project",
     "investor": "Investor",
     "title": "Title",
+    "area": "Area",
     "address": "Address",
     "event": "Event",
     "add_event": "New Event",

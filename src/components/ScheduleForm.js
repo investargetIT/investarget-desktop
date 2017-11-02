@@ -8,6 +8,7 @@ import {
 import {
   SelectExistProject,
   SelectExistInvestor,
+  SelectArea,
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
 
@@ -33,6 +34,9 @@ class ScheduleForm extends React.Component {
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+        </BasicFormItem>
+        <BasicFormItem label={i18n('schedule.area')} name="country" valueType="number" required>
+          <SelectArea />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.address')} name="address" required>
           <Input />
