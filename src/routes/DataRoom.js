@@ -96,7 +96,7 @@ class DataRoom extends React.Component {
         this.setState({ selectedUser: null })
       }
 
-      Promise.all(list.map(item => {
+      return Promise.all(list.map(item => {
         return api.queryUserDataRoomFile(item.id).then(result => {
           const { files, user } = result.data
           return files.map(item => {
@@ -111,10 +111,10 @@ class DataRoom extends React.Component {
           let _list = list.filter(item => item.user == this.state.selectedUser)
           this.setState({ targetUserFileList: _list })
         }
-      }).
-      catch(error => {
-        handleError(error)
       })
+
+    }).catch(error => {
+      handleError(error)
     })
   }
 

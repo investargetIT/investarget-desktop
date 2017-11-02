@@ -56,6 +56,15 @@ class FileMgmt extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    const parentId = this.props.location.query.parentID
+    const parentId2 = nextProps.location.query.parentID
+    if (parentId !== parentId2) {
+      // 切换目录时，清空选中的行
+      this.setState({ selectedRows: [] })
+    }
+  }
+
   folderClicked(file) {
     if (!file) {
       this.props.location.query.parentID = undefined
@@ -67,6 +76,8 @@ class FileMgmt extends React.Component {
       this.props.location.query.parentID = file.id
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: file.id })
+      // 切换目录时，清空选中的行
+      this.setState({ selectedRows: [] })
     } else {
       const watermark = isLogin().email || 'Investarget'
       const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
@@ -109,6 +120,7 @@ class FileMgmt extends React.Component {
       this.setState({ renameRows: newRenameRows })
     }
     this.props.onConfirm(unique)
+    this.setState({ selectedRows: [] })
   }
 
   handleCancel(unique) {
@@ -182,6 +194,40 @@ class FileMgmt extends React.Component {
   selectedKeys = []
   onSelect(keys) {
     this.selectedKeys = keys
+  }
+
+  handleMultiVisible = () => {
+    const ids = this.getSelectFileIds()
+    this.props.onMultiVisible(ids)
+    this.setState({ selectedRows: [] })
+  }
+
+  handleMultiInvisible = () => {
+    const ids = this.getSelectFileIds()
+    this.props.onMultiInvisible(ids)
+    this.setState({ selectedRows: [] })
+  }
+
+  getSelectFileIds = () => {
+    const list = this.props.data
+    const { selectedRows } = this.state
+    const baseFileIds = selectedRows.filter(item=>item.isFile).map(item=>item.id)
+    const baseDirIds = selectedRows.filter(item=>item.isFolder).map(item=>item.id)
+
+    function getFiles(list, id) {
+      const children = list.filter(item => item.parent == id)
+      const files = children.filter(item => item.isFile).map(item => item.id)
+      const dirs = children.filter(item => item.isFolder).map(item => item.id)
+      const subFiles = dirs.map(id => getFiles(list, id))
+                           .reduce((a,b) => a.concat(b), [])
+      return files.concat(subFiles)
+    }
+
+    return baseFileIds.concat(
+      baseDirIds.map(id => getFiles(list, id))
+                .reduce((a, b) => a.concat(b), [])
+    )
+
   }
 
   render () {
@@ -355,7 +401,7 @@ class FileMgmt extends React.Component {
     const unableToOperate = this.props.location.query.isClose === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const selectMoreThanOneRow = this.state.selectedRows.length > 0
-    const noShadowInSelectedRows = this.state.selectedRows.filter(f => f.isShadow).length === 0
+    const selectMoreThanTwoRow = this.state.selectedRows.length > 1
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
 
     const operation = () => {
@@ -382,11 +428,11 @@ class FileMgmt extends React.Component {
             <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
           : null}
 
-          {selectMoreThanOneRow && noShadowInSelectedRows ?
-            <Button onClick={this.handleRename} style={{ marginRight: 10 }}>{i18n('dataroom.rename')}</Button>
+          {selectMoreThanOneRow ?
+            <Button onClick={this.handleRename} style={{ marginRight: 10 }} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
           : null}
 
-          {selectMoreThanOneRow && noShadowInSelectedRows && noFileInSelectedRows ?
+          {selectMoreThanOneRow ?
             <Button onClick={this.handleMove} style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
           : null}
         </div>
@@ -429,8 +475,8 @@ class FileMgmt extends React.Component {
           pagination={false} />
 
         <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
-          <Button type="primary" style={{marginRight:8}} onClick={()=>{this.props.onMultiVisible(this.state.selectedRows.filter(item=>item.isFile).map(item=>item.id))}}>{i18n('dataroom.visible')}</Button>
-          <Button onClick={() => {this.props.onMultiInvisible(this.state.selectedRows.filter(item=>item.isFile).map(item=>item.id))}}>{i18n('dataroom.invisible')}</Button>
+          <Button type="primary" style={{marginRight:8}} onClick={this.handleMultiVisible}>{i18n('dataroom.visible')}</Button>
+          <Button onClick={this.handleMultiInvisible}>{i18n('dataroom.invisible')}</Button>
         </div>
 
         <Modal
