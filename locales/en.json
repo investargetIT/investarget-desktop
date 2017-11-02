@@ -377,6 +377,9 @@
     "add_user": "Add User",
     "no_user": "No User",
     "visible_user": "Visible Users",
+    "visible": "Visible",
+    "invisible": "Invisible",
+    "click_toggle_visible": "Click to toggle visible",
 
     "message": {
       "confirm_delete_files": "Delete those files?",

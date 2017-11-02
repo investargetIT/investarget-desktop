@@ -26,6 +26,9 @@ class DataRoom extends React.Component {
 
       list: [],
       newUser: null,
+
+      selectedUser: null,
+      targetUserFileList: [],
     }
   }
 
@@ -81,13 +84,17 @@ class DataRoom extends React.Component {
     api.queryUserDataRoom({ dataroom: this.state.id }).then(result => {
       const list = result.data.data
       const users = list.map(item => item.user)
+      const userIds = users.map(item => item.id)
       const userDataroomIds = list.map(item => item.id)
       var userDataroomMap = {}
-      users.forEach((user, index) => {
-        userDataroomMap[user.id] = userDataroomIds[index]
+      userIds.forEach((userId, index) => {
+        userDataroomMap[userId] = userDataroomIds[index]
       })
       const userOptions = users.map(item => ({ label: item.username, value: item.id }))
       this.setState({ list, userOptions, userDataroomIds, userDataroomMap })
+      if (this.state.selectedUser && !userIds.includes(this.state.selectedUser)) {
+        this.setState({ selectedUser: null })
+      }
 
       Promise.all(list.map(item => {
         return api.queryUserDataRoomFile(item.id).then(result => {
@@ -100,6 +107,10 @@ class DataRoom extends React.Component {
       then(results => {
         const list = results.reduce((a,b) => a.concat(b), [])
         this.setState({ fileUserList: list })
+        if (this.state.selectedUser) {
+          let _list = list.filter(item => item.user == this.state.selectedUser)
+          this.setState({ targetUserFileList: _list })
+        }
       }).
       catch(error => {
         handleError(error)
@@ -315,7 +326,7 @@ class DataRoom extends React.Component {
     })
   }
 
-  handleSelectUser = (value) => {
+  handleChangeUser = (value) => {
     this.setState({ newUser: value })
   }
 
@@ -338,6 +349,52 @@ class DataRoom extends React.Component {
     })
   }
 
+  handleSelectUser = (value) => {
+    this.setState({ selectedUser: value })
+    const list = this.state.fileUserList.filter(item => item.user == value)
+    this.setState({ targetUserFileList: list })
+  }
+
+  handleToggleVisible = (id) => {
+    const { selectedUser, targetUserFileList } = this.state
+    var list = targetUserFileList.map(item => item.file)
+
+    var index = list.indexOf(id)
+    if (index > -1) {
+      list = [...list.slice(0, index), ...list.slice(index + 1)]
+    } else {
+      list = [...list, id]
+    }
+
+    this.editUserFileList(selectedUser, list)
+  }
+
+  handleMultiVisible = (ids) => {
+    const { selectedUser, targetUserFileList } = this.state
+    var list = targetUserFileList.map(item => item.file)
+    var list2 = [...list]
+    ids.forEach(id => {
+      if (!list2.includes(id)) {
+        list2.push(id)
+      }
+    })
+    this.editUserFileList(selectedUser, list2)
+  }
+
+  handleMultiInvisible = (ids) => {
+    const { selectedUser, targetUserFileList } = this.state
+    var list = targetUserFileList.map(item => item.file)
+
+    var list2 = [...list]
+    ids.forEach(id => {
+      if (list.includes(id)) {
+        let index = list2.indexOf(id)
+        list2 = [...list2.slice(0,index), ...list2.slice(index + 1)]
+      }
+    })
+
+    this.editUserFileList(selectedUser, list2)
+  }
 
   render () {
     return (
@@ -360,7 +417,14 @@ class DataRoom extends React.Component {
           onCancel={this.handleCancel.bind(this)}
           onDeleteFiles={this.handleDeleteFiles.bind(this)}
           onMoveFiles={this.handleOnMoveFiles.bind(this)}
-          onUploadFile={this.handleUploadFile.bind(this)} />
+          onUploadFile={this.handleUploadFile.bind(this)}
+          selectedUser={this.state.selectedUser}
+          onSelectUser={this.handleSelectUser}
+          targetUserFileList={this.state.targetUserFileList}
+          onToggleVisible={this.handleToggleVisible}
+          onMultiVisible={this.handleMultiVisible}
+          onMultiInvisible={this.handleMultiInvisible}
+           />
 
 
           <Modal
@@ -371,7 +435,7 @@ class DataRoom extends React.Component {
             <DataRoomUser
               list={this.state.list}
               newUser={this.state.newUser}
-              onSelectUser={this.handleSelectUser}
+              onSelectUser={this.handleChangeUser}
               onAddUser={this.handleAddUser}
               onDeleteUser={this.handleDeleteUser} />
           </Modal>

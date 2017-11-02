@@ -377,6 +377,9 @@
     "add_user": "添加用户",
     "no_user": "暂无关联用户",
     "visible_user": "可见用户",
+    "visible": "可见",
+    "invisible": "不可见",
+    "click_toggle_visible": "点击切换可见状态",
 
     "message": {
       "confirm_delete_files": "确定删除吗？",

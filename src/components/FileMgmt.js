@@ -1,8 +1,9 @@
 import React from 'react'
-import { Upload, message, Tree, Modal, Input, Button, Table, Select } from 'antd'
+import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
 import { BASE_URL } from '../constants'
 import qs from 'qs'
+import styles from './FileMgmt.css'
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -239,27 +240,49 @@ class FileMgmt extends React.Component {
       render: (date, record) => date && time(date+record.timezone),
     }]
     if (isAdmin && !this.props.isClose) {
-      columns.push({
-        title: i18n('dataroom.visible_user'),
-        render: (text, record) => {
-          const fileId = record.id
-          const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
-          return record.isFile ? (
-            <Select
-              style={{width: '100%'}}
-              mode="multiple"
-              optionLabelProp="children"
-              value={users}
-              onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
-              onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
-              {this.props.userOptions.map(option => (
-                <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
-              ))}
-            </Select>
-          ) : null
-        }
-      })
+      if (this.props.selectedUser) {
+        columns.push({
+          title: i18n('dataroom.visible'),
+          key: 'visible',
+          render: (text, record) => {
+            const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
+            const visible = Boolean(file)
+            return record.isFile ? (
+              <Tooltip title={i18n('dataroom.click_toggle_visible')}>
+                <Icon
+                  type={visible ? 'check' : 'close'}
+                  onClick={this.props.onToggleVisible.bind(this, record.id)}
+                  className={styles['visible']}
+                  style={{fontSize:24}} />
+              </Tooltip>
+            ) : null
+          }
+        })
+      } else {
+        columns.push({
+          title: i18n('dataroom.visible_user'),
+          key: 'visible_user',
+          render: (text, record) => {
+            const fileId = record.id
+            const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
+            return record.isFile ? (
+              <Select
+                style={{width: '100%'}}
+                mode="multiple"
+                optionLabelProp="children"
+                value={users}
+                onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
+                onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
+                {this.props.userOptions.map(option => (
+                  <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
+                ))}
+              </Select>
+            ) : null
+          }
+        })
+      }
     }
+
 
     this.current = []
     this.contents = []
@@ -375,17 +398,26 @@ class FileMgmt extends React.Component {
 
        {operation()}
 
-        <div style={{ margin: '10px 0' }}>
-          { base }
-          {this.props.data.length > 0 &&
-            this.parentFolderFunc(this.state.parentId)
-              .map(
-                m => m.id !== this.state.parentId ?
-                <span key={m.unique}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m)}>{m.name}</a></span>
-                :
-                <span key={m.unique}>&nbsp;>&nbsp;{m.name}</span>
-              )
-          }
+        <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            { base }
+            {this.props.data.length > 0 &&
+              this.parentFolderFunc(this.state.parentId)
+                .map(
+                  m => m.id !== this.state.parentId ?
+                  <span key={m.unique}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m)}>{m.name}</a></span>
+                  :
+                  <span key={m.unique}>&nbsp;>&nbsp;{m.name}</span>
+                )
+            }
+          </div>
+
+          {hasEnoughPerm ? (
+            <UserCheckableTag
+              options={this.props.userOptions}
+              value={this.props.selectedUser}
+              onChange={this.props.onSelectUser} />
+          ) : null}
         </div>
 
         <Table
@@ -395,6 +427,11 @@ class FileMgmt extends React.Component {
           dataSource={this.props.data.filter(f => f.parentId === this.state.parentId)}
           loading={this.state.loading}
           pagination={false} />
+
+        <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
+          <Button type="primary" style={{marginRight:8}} onClick={()=>{this.props.onMultiVisible(this.state.selectedRows.filter(item=>item.isFile).map(item=>item.id))}}>{i18n('dataroom.visible')}</Button>
+          <Button onClick={() => {this.props.onMultiInvisible(this.state.selectedRows.filter(item=>item.isFile).map(item=>item.id))}}>{i18n('dataroom.invisible')}</Button>
+        </div>
 
         <Modal
           title={actionName[this.state.action]}
@@ -412,3 +449,28 @@ class FileMgmt extends React.Component {
 }
 
 export default FileMgmt
+
+const CheckableTag = Tag.CheckableTag
+// 单选
+class UserCheckableTag extends React.Component {
+
+  handleChange = (value, checked) => {
+    this.props.onChange(checked ? value : null)
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.options.map(option => (
+          <CheckableTag
+            key={option.value}
+            checked={option.value == this.props.value}
+            onChange={this.handleChange.bind(this, option.value)}
+          >
+            {option.label}
+          </CheckableTag>
+        ))}
+      </div>
+    )
+  }
+}
