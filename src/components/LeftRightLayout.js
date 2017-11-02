@@ -70,7 +70,7 @@ class LeftRightLayout extends React.Component {
 
     return (
       <Layout>
-        <HandleError pathname={this.props.location.pathname} />
+        <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
         { this.props.currentUser ? sideBarAndContent : content }
       </Layout>
     )

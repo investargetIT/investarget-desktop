@@ -39,7 +39,7 @@ class MainLayout extends React.Component {
       <Layout>
         <Header mode={this.props.currentUser ? "dark" : "light"} location={this.props.location} />
         { this.props.currentUser ? sideBarAndContent : content }
-        <HandleError pathname={this.props.location.pathname} />
+        <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
       </Layout>
     )
   }

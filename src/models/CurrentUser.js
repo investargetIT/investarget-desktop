@@ -40,7 +40,7 @@ export default {
         type: 'save',
         userInfo
       })
-      yield put(routerRedux.replace(redirect || '/app'))
+      yield put(routerRedux.replace(decodeURIComponent(redirect) || '/app'))
     },
     *logout({ payload }, { call, put }) {
       localStorage.removeItem('user_info')
