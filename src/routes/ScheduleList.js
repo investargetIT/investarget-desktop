@@ -66,7 +66,9 @@ class ScheduleList extends React.Component {
         return <Link to={'/app/projects/' + record.proj} target="_blank">{text}</Link>
       }},
       {title: i18n('schedule.investor'), dataIndex: 'user.username', render: (text, record) => {
-        return <Link to={'/app/user/' + record.user.id} target="_blank">{text}</Link>
+        return record.user ? (
+          <Link to={'/app/user/' + record.user.id} target="_blank">{text}</Link>
+        ) : null
       }},
       {title: i18n('schedule.title'), dataIndex: 'comments'},
       {title: i18n('schedule.area'), dataIndex: 'country.country'},
