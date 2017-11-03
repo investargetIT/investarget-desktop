@@ -1,16 +1,6 @@
 import * as api from '../api'
-import { URI_6, URI_3, URI_10 } from '../constants'
 import { i18n, checkPerm, isLogin } from '../utils/util'
-import { routerRedux } from 'dva/router'
 
-const resourceMap = {
-  '/register': ['tag', 'country', 'title'],
-  [URI_3]: ['currencyType', 'transactionPhases', 'industry', 'tag', 'orgtype'],
-  [URI_6]: ['transactionPhases', 'tag', 'currencyType', 'orgarea'],
-  '/app/organization/add': ['currencyType', 'orgtype', 'industry', 'transactionPhases'],
-  '/app/user/add': ['title', 'tag', 'country'],
-  [URI_10]: ['tag', 'title'],
-}
 
 export default {
   namespace: 'app',
@@ -116,11 +106,6 @@ export default {
           payload: selectedKeys
         })
         // TODO 设置 selectedKeys 的同时设置 openKeys
-
-        let resourceList = resourceMap[pathname]
-        if (resourceList && resourceList.length > 0) {
-          dispatch({ type: 'getSourceList', payload: resourceList })
-        }
 
         if (pathname === '/app/user/add' && !checkPerm('usersys.admin_adduser') && !checkPerm('usersys.user_adduser')) {
           history.replace('/app')

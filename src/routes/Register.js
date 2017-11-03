@@ -281,6 +281,8 @@ class Register extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
+
     const countryID = this.findCountryIDByAreaCode(this.state.areaCode)
     if (countryID) {
       this.setState({ countryID })

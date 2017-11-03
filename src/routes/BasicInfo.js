@@ -70,6 +70,10 @@ class BasicInfo extends React.Component {
     })
   }
 
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['title', 'tag'] })
+  }
+
   render() {
   return (
     <LeftRightLayout
