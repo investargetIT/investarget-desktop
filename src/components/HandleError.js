@@ -72,6 +72,9 @@ class HandleError extends React.Component {
       case 2001:
         Modal.error({ title: i18n('message.wrong_password') })
         break
+      case 2002:
+        Modal.error({ title: i18n('message.mobile_not_exist')})
+        break;
       case 1299:
         Modal.error({
           title: i18n('message.choose_company'),

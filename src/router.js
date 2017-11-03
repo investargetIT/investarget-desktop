@@ -54,6 +54,7 @@ import EditProjectBD from './routes/EditProjectBD'
 import WxMessage from './routes/WxMessage'
 import Schedule from './routes/Schedule'
 import ScheduleList from './routes/ScheduleList'
+import ResetPassword from './routes/ResetPassword'
 
 
 function RouterConfig({ history }) {
@@ -112,6 +113,7 @@ function RouterConfig({ history }) {
       <Route path="/app/wxmsg" component={WxMessage} />
       <Route path="/app/schedule" component={Schedule} />
       <Route path="/app/schedule/list" component={ScheduleList} />
+      <Route path="/password" component={ResetPassword} />
     </Router>
   )
 }

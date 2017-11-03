@@ -65,7 +65,9 @@
     "code_sent": "Captcha has been sent to your phone, please check it carefully",
     "send_wait_time": "Send code after {{second}} seconds",
     "choose_tags": "Please choose your favorite tags!",
-    "choose_position": "Please select your position"
+    "choose_position": "Please select your position",
+    "reset_password": "Reset Password",
+    "password_reset_ok": "Password reset successfully, please login again"
   },
 
   "project_library": {
@@ -514,11 +516,12 @@
 
   "message": {
     "wrong_password": "The Password is not correct",
-    "email_exist": "邮箱已存在",
-    "mobile_exist": "手机号码已存在",
-    "operation_fail": "无法完成相关操作",
-    "choose_company": "请选择公司",
-    "session_expire": "会话过期，请重新登录",
+    "email_exist": "Email already exists",
+    "mobile_exist": "Mobile already exists",
+    "mobile_not_exist": "Mobile does not exists",
+    "operation_fail": "Unable to complete related operation",
+    "choose_company": "Please select company",
+    "session_expire": "Session expired, please login again",
     "confirm_delete": "Are you sure to delete?"
   },
 

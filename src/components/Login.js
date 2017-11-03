@@ -77,7 +77,7 @@ class Login extends React.Component {
 	  })(
 	    <Checkbox>{i18n("account.remember_user")}</Checkbox>
 	  )}
-	  <a style={loginFormForgot} href="">{i18n("account.forget_password")}</a>
+	  <Link style={loginFormForgot} to="/password">{i18n("account.forget_password")}</Link>
 	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
 	    {i18n("account.login")}
 	  </Button>

@@ -732,3 +732,10 @@ export const deleteSchedule = (id) => {
 export const getScheduleDetail = (id) => {
   return r('/msg/schedule/' + id + '/')
 }
+
+/**
+ * password
+ */
+export const resetPassword = (param) => {
+  return r('/user/password/', 'POST', param)
+}
