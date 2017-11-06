@@ -92,7 +92,9 @@ class ProjectDetail extends React.Component {
       teaserUrl: null,
       hasPublicDataroom: false,
       investor: null,
-      investorOptions: []
+      investorOptions: [],
+      dataroomId: null,
+      isClose: null,
     }
   }
 
@@ -181,14 +183,30 @@ class ProjectDetail extends React.Component {
     window.open("/app/projects/recommend/" + this.state.id);
   }
 
-  getPublicDataroom = () => {
-    api.queryDataRoom({ proj: this.state.id, isPublic: 1 })
-    .then(result => {
-      if (result.data.count > 0) {
-        this.setState({ hasPublicDataroom: true });
-      }
-    })
-    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+  getDataroom = () => {
+    if (hasPerm('usersys.as_admin')) {
+      api.queryDataRoom({ search: this.state.project.projtitle })
+      .then(result => {
+        if (result.data.count > 0) {
+          let dataroom = result.data.data[0]
+          this.setState({ dataroomId: dataroom.id, isClose: dataroom.isClose })
+        }
+      })
+      .catch(error => handleError(error));
+    } else {
+      api.queryUserDataRoom({ search: this.state.project.projtitle })
+      .then(result => {
+        if (result.data.count > 0) {
+          let dataroom = result.data.data[0]
+          this.setState({ dataroomId: dataroom.dataroom.id, isClose: false })
+        }
+      })
+      .catch(error => handleError(error))
+    }
+  }
+
+  handleClickDataRoom = () => {
+    Modal.error({ title: i18n('dataroom.message.no_dataroom_permission') })
   }
 
   componentDidMount() {
@@ -196,7 +214,7 @@ class ProjectDetail extends React.Component {
 
     api.getProjLangDetail(id).then(result => {
       const project = result.data
-      this.setState({ project })
+      this.setState({ project }, this.getDataroom)
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -205,8 +223,6 @@ class ProjectDetail extends React.Component {
     })
 
     this.getFavorProject()
-
-    this.getPublicDataroom();
 
     if (hasPerm('proj.admin_getfavorite')) {
       api.getFavoriteProj({ favoritetype: 5, proj: this.state.id })
@@ -252,8 +268,8 @@ class ProjectDetail extends React.Component {
   }
 
   render() {
-    const { id, project, isFavorite, trader, traderOptions, teaser } = this.state
-    
+    const { id, project, isFavorite, trader, traderOptions, teaser, dataroomId, isClose } = this.state
+
     return (
       <MainLayout location={this.props.location}>
         <h1>
@@ -449,7 +465,7 @@ class ProjectDetail extends React.Component {
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.contact_transaction')}</h2>
           <div>
-            {traderOptions.length > 0 ? 
+            {traderOptions.length > 0 ?
             <SelectNumber style={{minWidth: 100}} options={traderOptions} value={trader} onChange={this.handleTraderChange} notFoundContent={i18n('user.no_trader')} />
             : null }
             <Button onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
@@ -468,14 +484,16 @@ class ProjectDetail extends React.Component {
           ) : null
         }
 
-        { this.state.hasPublicDataroom ?
         <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.public_dataroom')}</h2>
-          <Link to={`/app/dataroom/detail?projectID=${project.id}&projectTitle=${project.projtitle}`}>
-            <Button disabled={project.projstatus && project.projstatus.id < 4} icon="folder">{i18n('project.public_dataroom')}</Button>
-          </Link>
-        </div> 
-        : null }
+          <h2 style={blockTitleStyle}>{i18n('dataroom.dataroom')}</h2>
+          {dataroomId ? (
+            <Link to={`/app/dataroom/detail?id=${dataroomId}&isClose=${isClose}&projectID=${project.id}&projectTitle=${project.projtitle}`}>
+              <Button disabled={project.projstatus && project.projstatus.id < 4} icon="folder">{i18n('dataroom.dataroom')}</Button>
+            </Link>
+          ) : (
+            <Button disabled={project.projstatus && project.projstatus.id < 4} onClick={this.handleClickDataRoom} icon="folder">{i18n('dataroom.dataroom')}</Button>
+          )}
+        </div>
 
         <div style={blockStyle}>
           <h2 style={blockTitleStyle}>{i18n('project.deal_process')}</h2>

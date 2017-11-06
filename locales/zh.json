@@ -202,7 +202,6 @@
     "unfavor": "取消收藏",
     "contact_transaction": "联系交易师",
     "download_teaser": "下载 Teaser",
-    "public_dataroom": "公共 Data Room",
     "modify_project_status": "修改项目状态",
     "project_status": "项目状态",
     "is_send_email": "是否发送邮件？",
@@ -358,6 +357,7 @@
 
   "dataroom": {
     "dataroom_list": "Data Room 列表",
+    "dataroom": "Data Room",
     "project_name": "项目名称",
     "investor": "投资人",
     "create_dataroom": "创建 Data Room",
@@ -390,7 +390,8 @@
       "error_copy_files_title": "不能在同一个 data room 中进行复制操作",
       "error_copy_files_content": "每个角色对应的目录为一个 data room，复制操作只有在跨 data room 的时候才允许执行",
       "error_move_files_title": "禁止在不同的dataroom中进行移动操作",
-      "error_move_files_content": "每个角色对应的目录为一个dataroom，移动操作只有在同一个dataroom中的时候才允许执行，请确保所选文件在同一个dataroom中"
+      "error_move_files_content": "每个角色对应的目录为一个dataroom，移动操作只有在同一个dataroom中的时候才允许执行，请确保所选文件在同一个dataroom中",
+      "no_dataroom_permission": "你没有权限查看该 data room"
     }
   },
 
