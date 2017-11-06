@@ -7,6 +7,7 @@ import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
 import { UploadImage } from './Upload'
 import { BASE_URL } from '../constants'
+import GlobalMobile from './GlobalMobile'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -161,18 +162,25 @@ Code.contextTypes = {
 
 const Mobile = (props, context) => {
   const { getFieldDecorator } = context.form
+  const allowAreaCode = props.country.map(item => item.areaCode)
+
+  function check(rule, value, callback) {
+    if (value.areaCode == '') {
+      callback(i18n('areacode_not_empty'))
+    } else if (!allowAreaCode.includes(value.areaCode)) {
+      callback(i18n('areacode_invalid'))
+    } else if (value.mobile == '') {
+      callback(i18n('mobile_not_empty'))
+    } else if (!/^\d+$/.test(value.mobile)) {
+      callback(i18n('mobile_incorrect_format'))
+    } else {
+      callback()
+    }
+  }
 
   return (
-    <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo">
-      <Input.Group compact>
-        <Select style={{ width: 60 }} onChange={props.onSelectChange} value={props.countryID + ''}>
-          {props.country.map(c => <Option key={c.id} value={c.id + ''}>
-            <img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} />
-          </Option>)}
-        </Select>
-        <Input style={{ width: '10%' }} value={props.areaCode} onChange={props.onAreaCodeChange} />
-        <Input style={{ width: '30%' }} name="mobile" onChange={props.onMobileChange} />
-      </Input.Group>
+    <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo" valueType="object" validator={check} initialValue={{areaCode:'86',mobile:''}}>
+      <GlobalMobile />
     </BasicFormItem>
   )
 }

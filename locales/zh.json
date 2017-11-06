@@ -553,5 +553,10 @@
   "not_favorite_yet": "您还没有收藏该项目，无法推荐给投资人",
 
   "market_news": "市场消息",
-  "no_news": "暂无消息"
+  "no_news": "暂无消息",
+
+  "areacode_not_empty": "国家区号不能为空",
+  "areacode_invalid": "国家区号不正确",
+  "mobile_not_empty": "手机号码不能为空",
+  "mobile_incorrect_format": "手机号码格式错误"
 }

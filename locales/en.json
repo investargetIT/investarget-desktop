@@ -554,5 +554,10 @@
   "not_favorite_yet": "You haven't favorite the project yet! So you can't recomment to investor",
 
   "market_news": "Market News",
-  "no_news": "No News"
+  "no_news": "No News",
+
+  "areacode_not_empty": "Area code can not be empty",
+  "areacode_invalid": "Area code is invalid",
+  "mobile_not_empty": "Mobile can not be empty",
+  "mobile_incorrect_format": "Mobile format is incorrect"
 }

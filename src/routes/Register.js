@@ -49,8 +49,6 @@ class Register extends React.Component {
       fetchSmsCodeValue: null,
       intervalId: null,
       loading: false,
-      areaCode: '86',
-      countryID: '',
     }
     this.onFriendToggle = this.onFriendToggle.bind(this)
     this.onFriendsSkip = this.onFriendsSkip.bind(this)
@@ -83,11 +81,11 @@ class Register extends React.Component {
     }
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        const prefix = this.state.areaCode
-        const mobile = this.mobile
+        const { mobileInfo, ...otherValues } = values
+        const { areaCode: prefix, mobile } = mobileInfo
         this.props.dispatch({
           type: 'currentUser/register',
-          payload: { ...values, smstoken, prefix, mobile }
+          payload: { prefix, mobile, ...otherValues, smstoken }
         })
       }
     })
@@ -185,23 +183,14 @@ class Register extends React.Component {
     }
   }
 
-  findAreaCodeByCountryID(countryID) {
-    const country = this.props.country.filter(f => f.id === parseInt(countryID, 10))
-    return country.length > 0 ? country[0].areaCode : null
-  }
-
-  findCountryIDByAreaCode(areaCode) {
-    const country = this.props.country.filter(f => f.areaCode === areaCode)
-    return country.length > 0 ? country[0].id : 'unknow'
-  }
-
   handleFetchButtonClicked() {
-    const areacode = this.state.areaCode
+    const { getFieldValue } = this.props.form
+    const mobileInfo = getFieldValue('mobileInfo')
+    const { areaCode: areacode, mobile } = mobileInfo
     if (!areacode) {
       message.error(i18n('account.require_areacode'))
       return
     }
-    const mobile = this.mobile
     if (!mobile) {
       message.error(i18n('account.require_mobile'))
       return
@@ -237,27 +226,6 @@ class Register extends React.Component {
     })
   }
 
-  handleCountryChange(countryID) {
-    const areaCode = this.findAreaCodeByCountryID(countryID)
-    this.setState({
-      areaCode: areaCode,
-      countryID: countryID
-    })
-  }
-
-  handleAreaCodeChange(evt) {
-    const areaCode = evt.target.value
-    const countryID = this.findCountryIDByAreaCode(areaCode)
-    this.setState({
-      areaCode: areaCode,
-      countryID: countryID
-    })
-  }
-
-  handleMobileChange(evt) {
-    this.mobile = evt.target.value
-  }
-
   handleEmailOnBlur = evt => {
     if (!evt.target.value) return
     checkUserExist(evt.target.value)
@@ -270,23 +238,8 @@ class Register extends React.Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.country.length > 0) {
-      const country = nextProps.country.filter(f => f.areaCode === this.state.areaCode)
-      const countryID = country.length > 0 ? country[0].id : 'unknow'
-      if (countryID) {
-        this.setState({ countryID })
-      }
-    }
-  }
-
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
-
-    const countryID = this.findCountryIDByAreaCode(this.state.areaCode)
-    if (countryID) {
-      this.setState({ countryID })
-    }
   }
 
   render() {
@@ -323,14 +276,7 @@ class Register extends React.Component {
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
-                <Mobile
-                  required
-                  onSelectChange={this.handleCountryChange.bind(this)}
-                  country={this.props.country}
-                  onAreaCodeChange={this.handleAreaCodeChange.bind(this)}
-                  areaCode={this.state.areaCode}
-                  countryID={this.state.countryID}
-                  onMobileChange={this.handleMobileChange.bind(this)} />
+                <Mobile country={this.props.country} required />
                 <Code
                   loading={this.state.loading}
                   value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}

@@ -33,30 +33,7 @@ class ResetPassword extends React.Component {
       fetchSmsCodeValue: null,
       intervalId: null,
       loading: false,
-      areaCode: '86',
-      countryID: '',
     }
-  }
-
-  handleCountryChange = (countryID) => {
-    const areaCode = this.findAreaCodeByCountryID(countryID)
-    this.setState({
-      areaCode: areaCode,
-      countryID: countryID
-    })
-  }
-
-  handleAreaCodeChange = (evt) => {
-    const areaCode = evt.target.value
-    const countryID = this.findCountryIDByAreaCode(areaCode)
-    this.setState({
-      areaCode: areaCode,
-      countryID: countryID
-    })
-  }
-
-  handleMobileChange = (evt) => {
-    this.mobile = evt.target.value
   }
 
   handleSubmit = (e) => {
@@ -68,9 +45,9 @@ class ResetPassword extends React.Component {
     }
     this.props.form.validateFields((err, values) => {
       if(!err) {
-        const { code, password } = values
-        const { areaCode, smstoken } = this.state
-        const mobile = this.mobile
+        const { smstoken } = this.state
+        const { mobileInfo, code, password } = values
+        const { areaCode, mobile } = mobileInfo
 
         let param = {
           mobile: mobile,
@@ -105,23 +82,15 @@ class ResetPassword extends React.Component {
     }
   }
 
-  findAreaCodeByCountryID = (countryID) => {
-    const country = this.props.country.filter(f => f.id === parseInt(countryID, 10))
-    return country.length > 0 ? country[0].areaCode : null
-  }
-
-  findCountryIDByAreaCode = (areaCode) => {
-    const country = this.props.country.filter(f => f.areaCode === areaCode)
-    return country.length > 0 ? country[0].id : 'unknown'
-  }
-
   handleFetchButtonClicked = () => {
-    const areacode = this.state.areaCode
+    const { getFieldValue } = this.props.form
+    const mobileInfo = getFieldValue('mobileInfo')
+    const { areaCode: areacode, mobile } = mobileInfo
+
     if (!areacode) {
       message.error(i18n('account.require_areacode'))
       return
     }
-    const mobile = this.mobile
     if (!mobile) {
       message.error(i18n('account.require_mobile'))
       return
@@ -157,23 +126,8 @@ class ResetPassword extends React.Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.country.length > 0) {
-      const country = nextProps.country.filter(f => f.areaCode === this.state.areaCode)
-      const countryID = country.length > 0 ? country[0].id : 'unknown'
-      if (countryID) {
-        this.setState({ countryID })
-      }
-    }
-  }
-
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
-
-    const countryID = this.findCountryIDByAreaCode(this.state.areaCode)
-    if (countryID) {
-      this.setState({ countryID })
-    }
   }
 
   render() {
@@ -181,14 +135,7 @@ class ResetPassword extends React.Component {
       <MainLayout location={this.props.location}>
           <h2 style={titleStyle}>{i18n('account.reset_password')}</h2>
           <Form onSubmit={this.handleSubmit}>
-            <Mobile
-              required
-              onSelectChange={this.handleCountryChange}
-              country={this.props.country}
-              onAreaCodeChange={this.handleAreaCodeChange}
-              areaCode={this.state.areaCode}
-              countryID={this.state.countryID}
-              onMobileChange={this.handleMobileChange} />
+            <Mobile required country={this.props.country} />
             <Code
               loading={this.state.loading}
               value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}
