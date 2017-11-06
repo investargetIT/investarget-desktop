@@ -76,7 +76,7 @@ class GlobalMobile extends React.Component {
           </Option>)}
         </Select>
         <Input style={{ width: '10%' }} value={areaCode} onChange={this.handleChangeAreaCode} />
-        <Input style={{ width: '30%' }} value={mobile} onChange={this.handleChangeMobile} />
+        <Input style={{ width: '30%' }} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
       </Input.Group>
     )
   }

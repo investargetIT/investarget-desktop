@@ -559,5 +559,8 @@
   "areacode_not_empty": "Area code can not be empty",
   "areacode_invalid": "Area code is invalid",
   "mobile_not_empty": "Mobile can not be empty",
-  "mobile_incorrect_format": "Mobile format is incorrect"
+  "mobile_incorrect_format": "Mobile format is incorrect",
+
+  "retrieve_password": "Retrieve Password",
+  "to_login": "Login"
 }

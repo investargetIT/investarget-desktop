@@ -1,8 +1,9 @@
 import React from 'react'
-import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message } from 'antd'
+import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal } from 'antd'
 import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import MainLayout from '../components/MainLayout'
 import { connect } from 'dva'
+import { withRouter } from 'dva/router'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
@@ -165,11 +166,6 @@ class Register extends React.Component {
     })
   }
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getCountries' })
-    this.props.dispatch({ type: 'app/getTitles' })
-  }
-
   timer() {
     if (this.state.fetchSmsCodeValue > 0) {
     this.setState({ fetchSmsCodeValue: this.state.fetchSmsCodeValue - 1 })
@@ -222,6 +218,31 @@ class Register extends React.Component {
       })
     }).catch(error => {
       this.setState({ loading: false })
+    })
+  }
+
+  handleMobileBlur = (evt) => {
+    if (!evt.target.value) return
+    checkUserExist(evt.target.value)
+    .then(data => {
+      const isExist = data.data.result
+      if (isExist) {
+        Modal.confirm({
+          closable: false,
+          maskClosable: false,
+          title: i18n('message.mobile_exist'),
+          cancelText: i18n('retrieve_password'),
+          okText: i18n('to_login'),
+          onCancel: () => {
+            this.props.router.push('/password')
+          },
+          onOk: () => {
+            this.props.router.push('/login')
+          }
+        })
+      }
+    })
+    .catch(error => {
       this.props.dispatch({ type: 'app/findError', payload: error })
     })
   }
@@ -276,7 +297,7 @@ class Register extends React.Component {
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
-                <Mobile country={this.props.country} required />
+                <Mobile country={this.props.country} onBlur={this.handleMobileBlur} required />
                 <Code
                   loading={this.state.loading}
                   value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}
@@ -342,4 +363,4 @@ Register.childContextTypes = {
   form: PropTypes.object
 }
 
-export default connect(mapStateToProps)(Form.create()(Register))
+export default connect(mapStateToProps)(withRouter(Form.create()(Register)))

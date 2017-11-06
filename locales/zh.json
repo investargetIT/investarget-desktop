@@ -558,5 +558,8 @@
   "areacode_not_empty": "国家区号不能为空",
   "areacode_invalid": "国家区号不正确",
   "mobile_not_empty": "手机号码不能为空",
-  "mobile_incorrect_format": "手机号码格式错误"
+  "mobile_incorrect_format": "手机号码格式错误",
+
+  "retrieve_password": "找回密码",
+  "to_login": "前往登录"
 }

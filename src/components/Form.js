@@ -180,7 +180,7 @@ const Mobile = (props, context) => {
 
   return (
     <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo" valueType="object" validator={check} initialValue={{areaCode:'86',mobile:''}}>
-      <GlobalMobile />
+      <GlobalMobile onBlur={props.onBlur} />
     </BasicFormItem>
   )
 }
