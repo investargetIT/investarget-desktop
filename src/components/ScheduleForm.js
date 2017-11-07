@@ -33,7 +33,7 @@ class ScheduleForm extends React.Component {
           <Input />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
-          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+          <DatePicker showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.area')} name="country" valueType="number" required>
           <SelectArea />

@@ -130,7 +130,7 @@ class ProjectLibrary extends React.Component {
 
     const columns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
-        return (<Link to={{ pathname: '/app/projects/library/' + record.com_id }} target="_blank" style={{display:'flex',alignItems:'center'}}>
+        return (<Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
                   {record.com_name}
                 </Link>)
