@@ -41,10 +41,10 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.address')} name="address" required>
           <Input />
         </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number" required>
+        <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
           <SelectExistProject />
         </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number" required>
+        <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
         </BasicFormItem>
       </Form>

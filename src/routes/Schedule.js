@@ -258,7 +258,8 @@ function toData(formData) {
 function toFormData(data) {
   var formData = {
     comments: data.comments,
-    scheduledtime: moment(data.scheduledtime),
+    scheduledtime: data.scheduledtime && moment(data.scheduledtime),
+    country: data.country && data.country.id,
     address: data.address,
     proj: data.proj,
     user: data.user && data.user.id,
