@@ -82,9 +82,15 @@
     "operating_status": "运营状态",
     "financial_needs": "融资需求",
     "export_excel": "导出Excel",
+    "new_bd": "新建BD",
     "intro": "简介",
     "financial_history": "历史融资情况",
-    "none": "暂无"
+    "none": "暂无",
+    "contact": "联系方式",
+    "mobile": "电话：",
+    "email": "邮箱：",
+    "address": "地址：",
+    "news": "新闻"
   },
 
   "project_bd": {

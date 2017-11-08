@@ -647,7 +647,7 @@ class ProjectLibraryFilter extends React.Component {
         <BasicContainer label={i18n('project_library.operating_status')}>
           <CheckboxGroup options={statusOptions} value={com_status} onChange={this.handleChange.bind(this, 'com_status')} />
         </BasicContainer>
-        <BasicContainer label={i18n('project_library.financial_needs')}>
+        <BasicContainer label={i18n('project_library.fund_needs')}>
           <CheckboxGroup options={fundNeedsOptions} value={com_fund_needs_name} onChange={this.handleChange.bind(this, 'com_fund_needs_name')} />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />

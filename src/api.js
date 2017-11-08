@@ -668,6 +668,9 @@ export const deleteLibProjRemark = (id) => {
   return r('/mongolog/projremark?id=' + id, 'DELETE')
 }
 
+export const getLibProjNews = (param) => {
+  return r('/mongolog/projnews?' + qs.stringify(param))
+}
 
 export const getProjBDList = (param) => {
   _.forIn(param, function(value, key) {

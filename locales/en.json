@@ -80,11 +80,17 @@
     "latest_financial_events": "Latest Financial Events",
     "investment_round": "Investment Round",
     "operating_status": "Operating Status",
-    "financial_needs": "Financial Needs",
+    "fund_needs": "Fund Needs",
     "export_excel": "Export to Excel",
+    "new_bd": "New BD",
     "intro": "Introduction",
     "financial_history": "Financial History",
-    "none": "None"
+    "none": "None",
+    "contact": "Contact",
+    "mobile": "Mobile : ",
+    "email": "Email : ",
+    "address": "Address : ",
+    "news": "News"
   },
 
   "project_bd": {

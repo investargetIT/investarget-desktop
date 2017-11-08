@@ -78,28 +78,7 @@ class ProjectLibrary extends React.Component {
     this.setState({ loading: true })
     api.getLibProj(param).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list })
-
-      // load events
-      const q = list.map(item => {
-        return api.getLibEvent({ com_id: item.com_id })
-      })
-      return Promise.all(q).then(results => {
-        const events = results.map(result => {
-          const event = result.data.data[0]
-          if (event) {
-            let { round, date, money, invsest_with } = event
-            return [round, date, money, invsest_with ? invsest_with.join('，') : ''].join('，')
-          } else {
-            return '-'
-          }
-        })
-        this.setState({
-          list: list.map((item, index) => ({ ...item, event: events[index] })),
-          loading: false,
-        })
-      })
-
+      this.setState({ total, list, loading: false })
     }).catch(error => {
       this.setState({ loading: false })
       handleError(error)
@@ -139,11 +118,12 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
       {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date'},
-      {title: i18n('project_library.latest_financial_events'), dataIndex: 'event'},
+      {title: i18n('project_library.latest_financial_events'), dataIndex: 'invse_detail_money'},
       {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
+      {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
-      {title: '操作', render: (text, record) => {
-        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button>新建BD</Button></Link>
+      {title: i18n('common.operation'), render: (text, record) => {
+        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button>{i18n('project_library.new_bd')}</Button></Link>
       }}
     ]
 
