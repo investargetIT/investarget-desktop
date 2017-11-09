@@ -55,6 +55,7 @@ class AddUser extends React.Component {
             const user = data.data.data[0]
             this.setState({ visible: true, user })
           } else if (!isUserExist) {
+            values['registersource'] = 3 // 标识注册来源
             return api.addUser(values)
           }
         })

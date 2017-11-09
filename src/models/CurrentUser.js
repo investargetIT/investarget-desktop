@@ -54,7 +54,7 @@ export default {
       }
     },
     *register({ payload: user }, { call, put }) {
-      yield call(api.register, user)
+      yield call(api.register, {...user, registersource: 3}) // 标识注册来源
 
       const { data } = yield call(api.login, { username: user.email, password: user.password })
       const { token, user_info, menulist, permissions } = data
