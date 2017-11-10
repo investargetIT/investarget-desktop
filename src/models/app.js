@@ -1,6 +1,6 @@
 import * as api from '../api'
 import { i18n, checkPerm, isLogin } from '../utils/util'
-
+import { URI_TO_KEY } from '../constants'
 
 export default {
   namespace: 'app',
@@ -99,8 +99,10 @@ export default {
   subscriptions: {
     setup({ history, dispatch }) {
       return history.listen(({ pathname }) => {
-        // TODO 路径不在 menu 中时，selectedKeys 为 []
-        const selectedKeys = [pathname]
+
+        const key = URI_TO_KEY[pathname]
+        const selectedKeys = key ? [key] : []
+
         dispatch({
           type: 'menuSelect',
           payload: selectedKeys

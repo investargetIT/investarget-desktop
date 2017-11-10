@@ -1,0 +1,125 @@
+@import "./theme.less";
+
+@menuColor: #8f939e;
+@menuActiveColor: #1d2939;
+@menuActiveBackgroundColor: #fff;
+@menuSelectedColor: #fff;
+@menuSelectedBackgroundColor: @primary-color;
+@submenuActiveColor: @primary-color;
+@submenuActiveBackgroundColor: transparent;
+@submenuSelectedColor: @primary-color;
+@submenuSelectedBackgroundColor: transparent;
+
+.it-menu {
+
+  .it-menu-item {
+    margin-top: 2px;
+    margin-left: 0;
+
+    a {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 3px;
+      color: @menuColor;
+      text-decoration: none;
+    }
+  }
+
+  .it-menu-item-active {
+    a, a:hover, a:focus {
+      color: @menuActiveColor;
+      background-color: @menuActiveBackgroundColor;
+      text-decoration: none;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+    }
+  }
+
+  .it-menu-item-selected {
+    a, a:hover, a:focus {
+      color: @menuSelectedColor;
+      background-color: @menuSelectedBackgroundColor;
+    }
+  }
+
+
+  .it-menu-submenu {
+    margin-top: 2px;
+    margin-left: 0;
+
+    .it-menu-submenu-title {
+      padding: 7px 10px!important;
+      border-radius: 3px;
+      cursor: pointer;
+      color: @menuColor;
+    }
+  }
+
+  .it-menu-submenu-open {
+    .it-menu-submenu-title {
+      color: @menuActiveColor;
+      background-color: @menuActiveBackgroundColor;
+    }
+  }
+
+  .it-menu-submenu-active {
+    .it-menu-submenu-title {
+      color: @menuActiveColor;
+      background-color: @menuActiveBackgroundColor;
+    }
+  }
+
+  .it-menu-submenu-selected {
+    .it-menu-submenu-title {
+      color: @menuSelectedColor;
+      background-color: @menuSelectedBackgroundColor;
+    }
+  }
+
+}
+
+// 二级菜单
+
+
+.it-menu-sub {
+
+  .it-menu-item {
+
+    a, a:hover, a:focus {
+      display: block;
+      padding: 5px 0 5px 27px;
+      color: @menuColor;
+      text-decoration: none;
+      box-shadow: none;
+    }
+
+    i {
+      font-size: 12px;
+      opacity: 0.5;
+      margin-right: 5px;
+      text-align: left;
+      width: auto;
+      vertical-align: baseline;
+    }
+
+  }
+
+  .it-menu-item-active {
+    a, a:hover, a:focus {
+      color: @submenuActiveColor;
+      background-color: @submenuActiveBackgroundColor;
+    }
+  }
+
+  .it-menu-item-selected {
+    a, a:hover, a:focus {
+      color: @submenuSelectedColor;
+      background-color: @submenuSelectedBackgroundColor;
+    }
+  }
+
+}
+
+
+.it-menu-hidden {
+  display: none;
+}

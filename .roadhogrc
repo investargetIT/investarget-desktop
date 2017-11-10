@@ -19,6 +19,7 @@
   "cssModulesExclude": [
     "./src/base_components/theme.less",
     "./src/base_components/button.less",
+    "./src/base_components/menu.less",
     "./src/base_components/index.less"
   ]
 }

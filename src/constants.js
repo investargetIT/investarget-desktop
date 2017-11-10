@@ -42,6 +42,30 @@ export const KEY_TO_URI = {
   "my_schedule": "/app/schedule",
 }
 
+export const URI_TO_KEY = {
+  "/app/projects/library": "project_library",
+  "/app/projects/bd": "project_bd",
+  URI_1: "platform_projects",
+  URI_3: "organization_bd",
+  URI_4: "email_management",
+  URI_5: "timeline_management",
+  URI_6: "user_management",
+  URI_7: "dataroom_management",
+  URI_8: "reminder",
+  URI_2: "interest_projects",
+  URI_12: "myinvestor",
+  URI_13: "mytrader",
+  URI_9: "change_password",
+  URI_10: "profile",
+  URI_11: "log",
+  URI_14: "permission_management",
+  URI_15: "recommon_projects",
+  URI_16: "publish_projects",
+  URI_17: "collect_projects",
+  "/app/schedule/list": "schedule_list",
+  "/app/schedule": "my_schedule",
+}
+
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
   50: 'dataroom管理',
   12: '机构管理',
