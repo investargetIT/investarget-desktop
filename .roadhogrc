@@ -5,14 +5,20 @@
       "extraBabelPlugins": [
         "dva-hmr",
         "transform-runtime",
-       ["import", { "libraryName": "antd", "style": "css" }]
+       ["import", { "libraryName": "antd", "style": true }]
       ]
     },
     "production": {
       "extraBabelPlugins": [
         "transform-runtime",
-       ["import", { "libraryName": "antd", "style": "css" }]
+       ["import", { "libraryName": "antd", "style": true }]
       ]
     }
-  }
+  },
+  "theme": "./src/theme.js",
+  "cssModulesExclude": [
+    "./src/base_components/theme.less",
+    "./src/base_components/button.less",
+    "./src/base_components/index.less"
+  ]
 }
