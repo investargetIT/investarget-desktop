@@ -17,6 +17,9 @@ const style = {
   top: (window.innerHeight - 500) / 2,
   zIndex: 2,
 }
+const siderStyle = {
+  backgroundColor: '#1d2a3a',
+}
 
 class LeftRightLayout extends React.Component {
 
@@ -31,9 +34,9 @@ class LeftRightLayout extends React.Component {
     const sideBarAndContent = (
       <Layout>
 
-        <Sider trigger={null} collapsible collapsed={this.props.collapsed}>
-          <div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} />
-          <SiderMenu mode={this.props.collapsed ? 'vertical': 'inline'} collapsed={this.props.collapsed} theme="dark" />
+        <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
+          {<div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} />}
+          <SiderMenu collapsed={this.props.collapsed} theme="dark" />
         </Sider>
 
         <Layout>

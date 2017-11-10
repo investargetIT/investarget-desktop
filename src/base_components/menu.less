@@ -11,6 +11,9 @@
 @submenuSelectedBackgroundColor: transparent;
 
 .it-menu {
+  &:focus {
+    outline: none;
+  }
 
   .it-menu-item {
     margin-top: 2px;
@@ -51,13 +54,9 @@
       border-radius: 3px;
       cursor: pointer;
       color: @menuColor;
-    }
-  }
-
-  .it-menu-submenu-open {
-    .it-menu-submenu-title {
-      color: @menuActiveColor;
-      background-color: @menuActiveBackgroundColor;
+      background-position: 92% 50%;
+      background-repeat: no-repeat;
+      background-image: url(/images/plus-white.png);
     }
   }
 
@@ -65,6 +64,15 @@
     .it-menu-submenu-title {
       color: @menuActiveColor;
       background-color: @menuActiveBackgroundColor;
+      background-image: url(/images/plus.png);
+    }
+  }
+
+  .it-menu-submenu-open {
+    .it-menu-submenu-title {
+      color: @menuActiveColor;
+      background-color: @menuActiveBackgroundColor;
+      background-image: url(/images/minus.png);
     }
   }
 
@@ -119,7 +127,126 @@
 
 }
 
+.it-menu-vertical {
+  .it-menu-item {
+    position: relative;
+
+    a {
+      padding: 10px;
+      border-radius: 2px;
+    }
+
+    span {
+      position: absolute;
+      color: @menuActiveColor;
+      background: @menuActiveBackgroundColor;
+      padding: 10px 10px 10px 5px;
+      left: 40px;
+      top: 0;
+      min-width: 209px;
+      text-align: left;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 3px 0 rgba(12,12,12,0.03);
+      border-radius: 0 2px 2px 0;
+    }
+  }
+
+  .it-menu-item-active {
+
+    a {
+      border-radius: 2px 0 0 2px;
+    }
+
+    span {
+      display: block;
+      border-radius: 0 2px 2px 0;
+    }
+  }
+
+  .it-menu-item-selected {
+
+    span {
+      color: @menuSelectedColor;
+      background-color: @menuSelectedBackgroundColor;
+    }
+  }
+
+
+  .it-menu-submenu {
+    position: relative;
+
+    .it-menu-submenu-title {
+      position: relative;
+      padding: 10px!important;
+      border-radius: 2px;
+      background-image: none;
+
+      span>span {
+        position: absolute;
+        color: @menuActiveColor;
+        background: @menuActiveBackgroundColor;
+        padding: 10px 10px 10px 5px;
+        left: 40px;
+        top: 0;
+        min-width: 209px;
+        text-align: left;
+        z-index: 100;
+        display: none;
+        box-shadow: 0 3px 0 rgba(12,12,12,0.03);
+        border-radius: 0 2px 2px 0;
+      }
+    }
+
+    .it-menu-sub {
+      display: none;
+      position: absolute;
+      top: 41px;
+      left: 45px;
+      margin: 0;
+      min-width: 204px;
+      background: #1d2939;
+      z-index: 100;
+      border-radius: 0 0 2px 0;
+
+      .it-menu-item {
+        a {
+          padding: 5px 0 5px 0;
+        }
+      }
+    }
+  }
+
+  .it-menu-submenu-active {
+    .it-menu-submenu-title {
+      border-radius: 2px 0 0 2px;
+
+      span>span {
+        display: block;
+        border-radius: 0 2px 2px 0;
+      }
+    }
+
+    .it-menu-sub {
+      display: block;
+    }
+  }
+
+  .it-menu-submenu-open {
+    .it-menu-submenu-title {
+      color: @menuActiveColor;
+      background-color: @menuActiveBackgroundColor;
+    }
+  }
+
+}
+
+
 
 .it-menu-hidden {
   display: none;
+}
+
+.it-menu-inline-collapsed-tooltip {
+  display: none!important;
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Table, Pagination, Input } from 'antd'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 import PageTitle from '../components/PageTitle'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
@@ -128,7 +128,7 @@ class ProjectLibrary extends React.Component {
     ]
 
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location}>
         <PageTitle title={i18n('project_library.project_library')} />
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
@@ -161,7 +161,7 @@ class ProjectLibrary extends React.Component {
             showQuickJumper
           />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }
