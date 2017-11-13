@@ -50,6 +50,9 @@
     margin-left: 0;
 
     .it-menu-submenu-title {
+      // Menu组件的inlineIndent(inline模式的菜单缩进宽度)属性，设置了元素的style.paddingLeft，优先级高
+      // 这里要使用padding: 7px 10px!important;强制覆盖style.paddingLeft
+      // https://github.com/react-component/menu/blob/e2d85a05e2e4c42412bd92395bd268312c410087/src/SubMenu.jsx#L364
       padding: 7px 10px!important;
       border-radius: 3px;
       cursor: pointer;
@@ -248,5 +251,6 @@
 }
 
 .it-menu-inline-collapsed-tooltip {
+  // Menu collpased 的时候，不显示 tooltip。因为使用了自定义的样式
   display: none!important;
 }

@@ -8,6 +8,7 @@ import { Link } from 'dva/router'
 import Chat from './Chat'
 import HandleError from './HandleError'
 import Draggable from 'react-draggable'
+import Logo from './Logo'
 
 const { Content, Sider } = Layout
 
@@ -20,6 +21,13 @@ const style = {
 const siderStyle = {
   backgroundColor: '#1d2a3a',
 }
+const menuStyle = {
+  padding: 15,
+}
+const collapsedMenuStyle = {
+  padding: 5,
+}
+
 
 class LeftRightLayout extends React.Component {
 
@@ -35,17 +43,16 @@ class LeftRightLayout extends React.Component {
       <Layout>
 
         <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
-          {<div style={{ height: 32, background: '#333', borderRadius: 6, margin: 16 }} />}
-          <SiderMenu collapsed={this.props.collapsed} theme="dark" />
+          <Logo />
+          <div style={this.props.collapsed ? collapsedMenuStyle : menuStyle}>
+            <SiderMenu collapsed={this.props.collapsed} theme="dark" />
+          </div>
         </Sider>
 
-        <Layout>
+        <Layout style={{backgroundColor: '#e4e7ea'}}>
+          <Header mode="light" location={this.props.location} />
 
-          {/*<Layout.Header style={{ background: '#fff', padding: 0 }}>*/}
-            <Header mode="light" location={this.props.location} />
-          {/*</Layout.Header>*/}
-
-          <Content style={{ margin: '16px' }}>
+          <Content style={{ padding: 20 }}>
 
             <div style={this.props.style || { padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
 
@@ -64,7 +71,7 @@ class LeftRightLayout extends React.Component {
 
           </Content>
 
-          <Layout.Footer style={{ textAlign: 'center' }}>Ant Design ©2016 Created by Ant UED</Layout.Footer>
+          <Layout.Footer style={{ textAlign: 'center', backgroundColor: 'transparent' }}>Ant Design ©2016 Created by Ant UED</Layout.Footer>
 
         </Layout>
 

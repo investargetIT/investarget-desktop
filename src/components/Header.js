@@ -8,6 +8,12 @@ import { i18n } from '../utils/util'
 
 const confirm = Modal.confirm
 
+const headerStyle = {
+  height: 50,
+  borderBottom: 'none',
+}
+
+
 function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessageNum }) {
 
   function handleMenuClicked(param) {
@@ -64,24 +70,11 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
 
   return (
     <Menu
+      style={headerStyle}
       selectedKeys={[location.pathname]}
       mode="horizontal"
       theme={mode}
       onClick={handleMenuClicked}>
-
-      <Menu.Item key="/">
-        <Link to={ currentUser ? "/app" : "/" }>
-          {source === 2 ?
-            <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />
-            : null }
-          {source === 1 ?
-            <img style={{ height: 24, verticalAlign: 'middle', background: '#10458F' }} src="/images/investarget.png" />
-            : null }
-          {!source ?
-            <div><Icon type="home" />{i18n('common.home')}</div>
-            : null }
-        </Link>
-      </Menu.Item>
 
       <Menu.Item key="toggle_menu">
         <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />

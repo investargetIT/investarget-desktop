@@ -38,19 +38,12 @@ class SiderMenu extends React.Component {
       iconStyle['marginRight'] = 0
     }
 
-    const siderStyle = {
-      padding: '5px 15px',
-    }
-    const collapsedSiderWidth = {
-      padding: '5px',
-    }
-
     return (
       <Menu
-        style={this.props.collapsed ? collapsedSiderWidth : siderStyle}
         prefixCls="it-menu"
         theme={this.props.theme}
-        mode={this.props.collapsed ? "vertical" : "inline"}
+        mode={"inline"}
+        inlineCollapsed={this.props.collapsed}
         inlineIndent={0}
         selectedKeys={this.props.selectedKeys}
         onSelect={this.handleSelect.bind(this)}
