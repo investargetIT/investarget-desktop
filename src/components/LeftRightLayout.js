@@ -8,6 +8,7 @@ import Chat from './Chat'
 import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
+import PageHeader from './PageHeader'
 
 const { Content, Sider } = Layout
 
@@ -51,18 +52,12 @@ class LeftRightLayout extends React.Component {
         <Layout style={{backgroundColor: '#e4e7ea'}}>
           <Header mode="light" location={this.props.location} />
 
+          <PageHeader title={this.props.title} action={this.props.action} />
+
           <Content style={{ padding: 20 }}>
 
             <div style={this.props.style || { padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
-
-              { this.props.title ?
-                <div style={{ fontSize: '16px', marginBottom: '24px' }}>
-                  <span>{this.props.title}</span>
-                  {this.props.action ? <span style={{ float: 'right' }}><Link to={this.props.action.link}><Icon type="plus" />{this.props.action.name}</Link></span> : null}
-                </div> : null }
-
               {this.props.children}
-
             </div>
             <Draggable cancel=".text-area"><div style={style}>
             <Chat />
