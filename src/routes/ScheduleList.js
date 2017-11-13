@@ -2,8 +2,8 @@ import React from 'react'
 import { Table, Pagination } from 'antd'
 import { Link } from 'dva/router'
 
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { Search2 } from '../components/Search'
 import { hasPerm, i18n, handleError, time } from '../utils/util'
 import * as api from '../api'
@@ -76,8 +76,7 @@ class ScheduleList extends React.Component {
     ]
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('schedule.schedule_list')} />
+      <LeftRightLayout location={this.props.location} title={i18n('schedule.schedule_list')}>
         <div style={{ marginBottom: '24px' }}>
           <Search2 style={{ width: 250 }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('schedule.creator_name'), i18n('schedule.creator_mobile')].join(' / ')} />
         </div>
@@ -97,7 +96,7 @@ class ScheduleList extends React.Component {
           showSizeChanger
           onShowSizeChange={this.handleChangePageSize}
           showQuickJumper />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

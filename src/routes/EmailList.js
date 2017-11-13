@@ -4,8 +4,8 @@ import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
 
 import { Icon, Table, Pagination } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { Search2 } from '../components/Search'
 
 
@@ -87,9 +87,8 @@ class EmailList extends React.Component {
     ]
 
     return (
-      <MainLayout location={location}>
+      <LeftRightLayout location={location} title={i18n('email.email_management')}>
         <div>
-          <PageTitle title={i18n('email.email_management')} />
 
           <div style={{marginBottom: '16px'}}>
             <Search2 style={{width: 200}} placeholder={i18n('email.project_name')} defaultValue={search} onSearch={this.handleSearch} />
@@ -113,7 +112,7 @@ class EmailList extends React.Component {
             showQuickJumper
           />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

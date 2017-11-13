@@ -10,6 +10,14 @@ const { Sider } = Layout
 
 class SiderMenu extends React.Component {
 
+  constructor(props) {
+    super(props)
+
+    const submenuIds = _.uniq(this.props.menulist.filter(f => f.parentmenu != null).map(f => f.parentmenu))
+    this.rootSubmenuKeys = this.props.menulist.filter(f => submenuIds.includes(f.id)).map(f => f.namekey)
+  }
+
+
   handleSelect({item, key, selectedKeys}) {
     this.props.dispatch({
       type: 'app/menuSelect',
@@ -18,9 +26,16 @@ class SiderMenu extends React.Component {
   }
 
   handleOpenChange(openKeys) {
+    const latestOpenKey = openKeys.find(key => this.props.openKeys.indexOf(key) === -1);
+    var keys = []
+    if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      keys = [...openKeys]
+    } else {
+      keys = latestOpenKey ? [latestOpenKey] : []
+    }
     this.props.dispatch({
       type: 'app/menuOpen',
-      payload: openKeys
+      payload: keys,
     })
   }
 

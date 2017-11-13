@@ -1,7 +1,7 @@
 import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { handleError, time, i18n, getCurrentUser } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
@@ -199,8 +199,7 @@ class Schedule extends React.Component {
 
     return (
 
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('schedule.my_schedule')} />
+      <LeftRightLayout location={this.props.location} title={i18n('schedule.my_schedule')}>
 
         <Calendar
           dateCellRender={this.dateCellRender}
@@ -239,7 +238,7 @@ class Schedule extends React.Component {
         >
           <EditScheduleForm wrappedComponentRef={this.handleRef2} data={toFormData(this.state.event)} />
         </Modal>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

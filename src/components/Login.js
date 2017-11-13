@@ -3,7 +3,7 @@ import fetch from 'dva/fetch'
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
 import { i18n } from '../utils/util'
-import MainLayout from './MainLayout'
+import LeftRightLayout from './LeftRightLayout'
 
 const FormItem = Form.Item;
 
@@ -52,7 +52,7 @@ class Login extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location}>
       <div style={loginContainerStyle}>
 	<h2 style={loginTitleStyle}>{i18n("account.login")}</h2>
       <Form onSubmit={this.handleSubmit}>
@@ -85,7 +85,7 @@ class Login extends React.Component {
 	</FormItem>
       </Form>
     </div>
-  </MainLayout>
+  </LeftRightLayout>
     );
   }
 }

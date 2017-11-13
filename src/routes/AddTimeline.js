@@ -4,8 +4,8 @@ import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
 
 
@@ -75,14 +75,13 @@ class AddTimeline extends React.Component {
     const { location }  = this.props
 
     return (
-      <MainLayout location={location}>
-        <PageTitle title={i18n('timeline.create_timeline')} />
+      <LeftRightLayout location={location} title={i18n('timeline.create_timeline')}>
         <div>
           <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
 
           <SelectInvestorAndTrader onSelect={this.handleSelectUser} />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

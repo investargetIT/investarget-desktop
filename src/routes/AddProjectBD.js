@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Button } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { withRouter } from 'dva/router'
@@ -57,8 +57,7 @@ class AddProjectBD extends React.Component {
     const state = this.props.location.state
     const comName = state ? state.com_name : ''
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project_bd.add_project_bd')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project_bd.add_project_bd')}>
         <div>
           <AddProjectBDForm isAdd comName={comName} wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
@@ -66,7 +65,7 @@ class AddProjectBD extends React.Component {
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProjectBD}>{i18n('common.submit')}</Button>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

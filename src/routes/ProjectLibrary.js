@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Table, Pagination, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import PageTitle from '../components/PageTitle'
+
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
 import { Link } from 'dva/router'
@@ -128,8 +128,7 @@ class ProjectLibrary extends React.Component {
     ]
 
     return (
-      <LeftRightLayout location={this.props.location}>
-        <PageTitle title={i18n('project_library.project_library')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')}>
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
           <Search3

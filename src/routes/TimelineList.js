@@ -4,8 +4,8 @@ import { Link } from 'dva/router'
 import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { TimelineFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search2 } from '../components/Search'
@@ -266,9 +266,8 @@ class TimelineList extends React.Component {
     const { filters, search, total, list, loading, page, pageSize, visible, id, reason } = this.state
 
     return (
-      <MainLayout location={location}>
+      <LeftRightLayout location={location} title={i18n('timeline.timeline_list')}>
         <div>
-          <PageTitle title={i18n('timeline.timeline_list')} />
           <div>
             <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
             <div style={{ marginBottom: '24px' }}>
@@ -280,7 +279,7 @@ class TimelineList extends React.Component {
         </div>
 
         <CloseTimelineModal visible={visible} id={id} reason={reason} onChange={this.handleReasonChange} onOk={this.handleConfirmClose} onCancel={this.handleCancelClose} />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

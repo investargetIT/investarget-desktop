@@ -4,8 +4,8 @@ import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { connect } from 'dva'
 import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { OrganizationListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
 
@@ -138,16 +138,12 @@ class OrganizationList extends React.Component {
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
+    const action = hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
+                    { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
 
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location} title={i18n('organization.org_list')} action={action}>
         <div>
-          { hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
-          <PageTitle
-            title={i18n('organization.org_list')}
-            actionLink="/app/organization/add"
-            actionTitle={i18n('organization.new_org')} />
-          : <PageTitle title={i18n('organization.org_list')} /> }
 
           <div>
             <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
@@ -170,7 +166,7 @@ class OrganizationList extends React.Component {
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
 
   }

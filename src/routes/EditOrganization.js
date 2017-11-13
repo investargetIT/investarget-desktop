@@ -4,8 +4,8 @@ import * as api from '../api'
 import { handleError, i18n } from '../utils/util'
 
 import { Form, Button } from 'antd'
-import MainLayout from '../components/MainLayout';
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout';
+
 import OrganizationForm from '../components/OrganizationForm'
 import { OrganizationRemarkList } from '../components/RemarkList'
 
@@ -95,9 +95,8 @@ class EditOrganization extends React.Component {
   render() {
     const id = Number(this.props.params.id)
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location} title={i18n('organization.edit_org')}>
         <div>
-          <PageTitle title={i18n('organization.edit_org')} />
 
           <div style={formStyle}>
             <EditOrganizationForm
@@ -113,7 +112,7 @@ class EditOrganization extends React.Component {
           <OrganizationRemarkList typeId={id} />
 
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

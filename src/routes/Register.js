@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal } from 'antd'
 import { getOrg, sendSmsCode, checkUserExist } from '../api'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import RecommendFriendsComponent from '../components/RecommendFriends'
@@ -293,7 +293,7 @@ class Register extends React.Component {
       <div style={containerStyle}>
         <div style={wrapperStyle} className="clearfix">
           <div style={this.props.currentUser ? Object.assign({},itemStyle,{opacity: 0}) : itemStyle}>
-            <MainLayout location={this.props.location}>
+            <LeftRightLayout location={this.props.location}>
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
@@ -317,7 +317,7 @@ class Register extends React.Component {
                 <Submit loading={this.props.loading} />
               </Form>
 
-          </MainLayout>
+          </LeftRightLayout>
           </div>
           <div style={itemStyle}>
             <RecommendFriendsComponent

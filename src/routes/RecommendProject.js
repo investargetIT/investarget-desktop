@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'dva'
 import { Input, Table, Pagination, Button, message } from 'antd'
 import { Search } from '../components/Search'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { hasPerm, isLogin, getCurrentUser } from '../utils/util'
 
 const tableStyle = { marginBottom: '24px' }
@@ -143,8 +143,7 @@ class RecommendProject extends React.Component {
     }
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title="推荐项目" />
+      <LeftRightLayout location={this.props.location} title="推荐项目">
         <div>
           <h3 style={{lineHeight: 2, marginBottom: '24px'}}>项目名称：{projTitle}</h3>
 
@@ -172,7 +171,7 @@ class RecommendProject extends React.Component {
             </div>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

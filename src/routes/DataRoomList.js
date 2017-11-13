@@ -3,8 +3,8 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
@@ -231,9 +231,8 @@ class DataRoomList extends React.Component {
     }
 
     return (
-      <MainLayout location={location}>
+      <LeftRightLayout location={location} title={i18n('dataroom.dataroom_list')}>
         <div>
-          <PageTitle title={i18n('dataroom.dataroom_list')} />
 
           <div style={{marginBottom: '16px'}}>
             <Search2 style={{width: 200}} placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
@@ -281,7 +280,7 @@ class DataRoomList extends React.Component {
             showQuickJumper
           />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 

@@ -4,8 +4,8 @@ import { i18n, showError, isLogin, hasPerm } from '../utils/util'
 
 import { Radio } from 'antd'
 const RadioGroup = Radio.Group
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import FavoriteProjectList from '../components/FavoriteProjectList'
 
 class ProjectListRecommend extends React.Component {
@@ -56,10 +56,9 @@ class ProjectListRecommend extends React.Component {
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
 
     return (
-      <MainLayout location={location}>
-        <PageTitle title={i18n('project.interested_projects')} />
+      <LeftRightLayout location={location} title={i18n('project.interested_projects')}>
           <FavoriteProjectList showInvestor showTrader {...props} />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

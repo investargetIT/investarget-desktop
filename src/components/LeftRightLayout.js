@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './MainLayout.css';
 import Header from './Header';
 import { Layout, Icon } from 'antd'
 import SiderMenu from './SiderMenu'

@@ -3,8 +3,8 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { i18n, time } from '../utils/util'
 import { Row, Col } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { TimelineRemarkList } from '../components/RemarkList'
 
 const rowStyle = {
@@ -61,8 +61,7 @@ class TimelineDetail extends React.Component {
     const { status, alertCycle, createdTime } = this.state
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('timeline.timeline_detail')} />
+      <LeftRightLayout location={this.props.location} title={i18n('timeline.timeline_detail')}>
         <div>
           <div style={{ marginBottom: '24px' }}>
             <Field title={i18n('timeline.status')} value={status} />
@@ -72,7 +71,7 @@ class TimelineDetail extends React.Component {
         </div>
 
         <TimelineRemarkList typeId={id} readOnly />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

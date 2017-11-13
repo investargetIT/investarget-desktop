@@ -1,6 +1,6 @@
 import React from 'react'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { i18n } from '../utils/util'
 
 
@@ -29,8 +29,7 @@ class Agreement extends React.Component {
   render() {
     const { basename } = this.props.location
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('account.term_of_service')} />
+      <LeftRightLayout location={this.props.location} title={i18n('account.term_of_service')}>
         {
           basename === "/en" ? (
             <div>
@@ -140,7 +139,7 @@ class Agreement extends React.Component {
             </div>
           )
         }
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

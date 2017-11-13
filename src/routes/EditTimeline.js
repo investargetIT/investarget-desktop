@@ -4,8 +4,8 @@ import { withRouter } from 'dva/router'
 import * as api from '../api'
 import { i18n } from '../utils/util'
 import { Form, Button, InputNumber, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import TimelineForm from '../components/TimelineForm'
 import { TimelineRemarkList } from '../components/RemarkList'
 
@@ -133,8 +133,7 @@ class EditTimeline extends React.Component {
     const data = toFormData(this.state.data)
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('timeline.edit_timeline')} />
+      <LeftRightLayout location={this.props.location} title={i18n('timeline.edit_timeline')}>
         <div>
           <EditTimelineForm wrappedComponentRef={this.handleRef} data={data} transactionOptions={this.state.transactionOptions} />
           <div style={{ textAlign: 'center' }}>
@@ -144,7 +143,7 @@ class EditTimeline extends React.Component {
         </div>
 
         <TimelineRemarkList typeId={id} />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

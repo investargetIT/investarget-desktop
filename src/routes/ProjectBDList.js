@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Table, Pagination, Input, Popconfirm, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { ProjectBDFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
 import { handleError, time, i18n } from '../utils/util'
@@ -158,8 +158,7 @@ class ProjectBDList extends React.Component {
     ]
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project_bd.project_bd')} actionLink="/app/projects/bd/add" actionTitle={i18n('project_bd.add_project_bd')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project_bd.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>
 
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
@@ -193,7 +192,7 @@ class ProjectBDList extends React.Component {
             onAdd={this.handleAddComment}
             onDelete={this.handleDeleteComment} />
         </Modal>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

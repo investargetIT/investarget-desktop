@@ -4,8 +4,8 @@ import * as api from '../api'
 import { i18n } from '../utils/util'
 
 import { Form, Button } from 'antd'
-import MainLayout from '../components/MainLayout';
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout';
+
 import OrganizationForm from '../components/OrganizationForm'
 
 const formStyle = {
@@ -57,9 +57,8 @@ class AddOrganization extends React.Component {
 
   render() {
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location} title={i18n('organization.new_org')}>
         <div>
-          <PageTitle title={i18n('organization.new_org')} />
 
           <div style={formStyle}>
             <AddOrganizationForm wrappedComponentRef={this.handleRef} />
@@ -70,7 +69,7 @@ class AddOrganization extends React.Component {
             <Button style={actionBtnStyle} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

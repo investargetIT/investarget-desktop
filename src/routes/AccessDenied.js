@@ -1,10 +1,10 @@
 import React from 'react'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 
 function AccessDenied(props) {
-  return <MainLayout location={props.location}>
+  return <LeftRightLayout location={props.location}>
     <h1>You are not allowed to access this page!</h1>
-  </MainLayout>
+  </LeftRightLayout>
 }
 
 export default AccessDenied

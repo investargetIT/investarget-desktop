@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Form, Button, message } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import MarketPlaceForm from '../components/MarketPlaceForm'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
@@ -129,8 +129,7 @@ class EditMarketPlace extends React.Component {
     const data = toFormData(this.state.marketPlace)
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project.edit_marketplace')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project.edit_marketplace')}>
         <div>
           <EditMarketPlaceForm wrappedComponentRef={this.handleRef} data={data} />
           <div style={actionStyle}>
@@ -138,7 +137,7 @@ class EditMarketPlace extends React.Component {
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editMarketPlace}>{i18n('common.submit')}</Button>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

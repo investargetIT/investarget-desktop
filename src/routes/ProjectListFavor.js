@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import FavoriteProjectList from '../components/FavoriteProjectList'
 import { i18n } from '../utils/util'
 
@@ -52,10 +52,9 @@ class ProjectListRecommend extends React.Component {
     const props = { page, pageSize, total, list, loading, onPageChange: this.handlePageChange, onPageSizeChange: this.handlePageSizeChange }
 
     return (
-      <MainLayout location={location}>
-        <PageTitle title={i18n('project.favorite_projects')} />
+      <LeftRightLayout location={location} title={i18n('project.favorite_projects')}>
           <FavoriteProjectList {...props} />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

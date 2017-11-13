@@ -7,8 +7,8 @@ import { i18n } from '../utils/util'
 
 
 import { Form, Button, message } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import ProjectBaseForm from '../components/ProjectBaseForm'
 
 
@@ -74,8 +74,7 @@ class AddProject extends React.Component {
 
   render() {
     return(
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project.upload_project')} actionTitle={i18n('project.upload_marketplace')} actionLink="/app/marketplace/add" />
+      <LeftRightLayout location={this.props.location} title={i18n('project.upload_project')} action={{name: i18n('project.upload_marketplace'), link: "/app/marketplace/add" }}>
         <div>
           <AddProjectForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
@@ -83,7 +82,7 @@ class AddProject extends React.Component {
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>{i18n('common.submit')}</Button>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 

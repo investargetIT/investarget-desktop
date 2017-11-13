@@ -319,7 +319,7 @@ function InvestBarChart(props) {
   var frame = new Frame(data);
   // frame = Frame.sort(frame, 'population'); // 将数据按照population 进行排序，由大到小
   frame = Frame.sortBy(frame, function(obj1, obj2) {
-    return obj1.population < obj2.population;                  
+    return obj1.population < obj2.population;
   });
   return (
     <div>
@@ -458,7 +458,7 @@ function IndustryDegree(props) {
         height={400}
         plotCfg={ {
             margin: [20, 80, 90, 60],
-            background: { 
+            background: {
               stroke: '#ccc', // 边颜色
               lineWidth: 1, // 边框粗细
             } // 绘图区域背景设置

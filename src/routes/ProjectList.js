@@ -4,8 +4,8 @@ import { Link } from 'dva/router'
 import { i18n, getGroup, hasPerm } from '../utils/util'
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { ProjectListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
 
@@ -286,13 +286,11 @@ class ProjectList extends React.Component {
         }
     })
 
+    const action = (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
+                    { name: i18n('project.upload_project'), link: "/app/projects/add" } : null
+
     return (
-      <MainLayout location={location}>
-        {
-          (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
-            <PageTitle title={i18n('project.platform_projects')} actionLink="/app/projects/add" actionTitle={i18n('project.upload_project')} /> :
-            <PageTitle title={i18n('project.platform_projects')} />
-        }
+      <LeftRightLayout location={location} title={i18n('project.platform_projects')} action={action}>
 
         <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
@@ -333,7 +331,7 @@ class ProjectList extends React.Component {
           onCancel={this.handleCancelAudit}
         />
 
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

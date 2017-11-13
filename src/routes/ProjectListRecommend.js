@@ -5,8 +5,8 @@ import { i18n, showError, isLogin, hasPerm } from '../utils/util'
 
 import { Input, Icon, Button, Radio } from 'antd'
 
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import FavoriteProjectList from '../components/FavoriteProjectList'
 
 const RadioGroup = Radio.Group
@@ -70,8 +70,7 @@ class ProjectListRecommend extends React.Component {
     }
 
     return (
-      <MainLayout location={location}>
-        <PageTitle title={i18n('project.recommended_projects')} />
+      <LeftRightLayout location={location} title={i18n('project.recommended_projects')}>
           <div style={{ marginBottom: '24px' }}>
             <RadioGroup onChange={this.handleFavorChange} value={favoritetype}>
               <Radio value={1}>{map[1]}</Radio>
@@ -83,7 +82,7 @@ class ProjectListRecommend extends React.Component {
             favoritetype == 3 ? <FavoriteProjectList showInvestor showTrader {...props} />
                               : <FavoriteProjectList {...props} />
           }
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

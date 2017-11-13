@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { i18n } from '../utils/util'
 
 
@@ -56,12 +56,11 @@ class MarketPlaceDetail extends React.Component {
     }
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project.marketplace_detail')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project.marketplace_detail')}>
         <div>
           { content }
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

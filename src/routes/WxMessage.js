@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Table, Pagination } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { WxMessageFilter } from '../components/Filter'
 import { handleError, time } from '../utils/util'
 import * as api from '../api'
@@ -85,8 +85,7 @@ class WxMessage extends React.Component {
     ]
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title="微信群消息" />
+      <LeftRightLayout location={this.props.location} title="微信群消息">
         <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <Table
           columns={columns}
@@ -103,7 +102,7 @@ class WxMessage extends React.Component {
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
           showQuickJumper />
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

@@ -4,8 +4,8 @@ import * as api from '../api'
 import { formatMoney, i18n, hasPerm, isLogin } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 
@@ -291,8 +291,7 @@ class OrganizationDetail extends React.Component {
     const id = this.props.params.id
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={<span>{i18n('organization.org_detail')}（<Link to={'/app/orguser/list?org=' + id}>{i18n('organization.investor_list')}</Link>）</span>} />
+      <LeftRightLayout location={this.props.location} title={i18n('organization.org_detail')} action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
         <div style={{ width: '50%', float: 'left' }}>
           <Field title={i18n('organization.name')} value={this.state.orgname} />
           <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
@@ -356,7 +355,7 @@ class OrganizationDetail extends React.Component {
 
         </Modal>
 
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

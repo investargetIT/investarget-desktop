@@ -4,7 +4,7 @@ import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
 
@@ -271,7 +271,7 @@ class ProjectDetail extends React.Component {
     const { id, project, isFavorite, trader, traderOptions, teaser, dataroomId, isClose } = this.state
 
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location}>
         <h1>
           {project.projtitle}
           <a href={getPdfUrl(id)} style={{float:'right'}}>
@@ -500,7 +500,7 @@ class ProjectDetail extends React.Component {
           <TimelineView projId={id} />
         </div>
 
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

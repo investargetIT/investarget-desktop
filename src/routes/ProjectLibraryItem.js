@@ -1,8 +1,8 @@
 import React from 'react'
 import { Pagination } from 'antd'
 
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { LibProjRemarkList } from '../components/RemarkList'
@@ -43,8 +43,7 @@ class ProjectLibraryItem extends React.Component {
   render() {
     const { proj, events } = this.state
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={proj.com_name} />
+      <LeftRightLayout location={this.props.location} title={proj.com_name}>
 
         <div>
           <div style={divStyle}>
@@ -89,7 +88,7 @@ class ProjectLibraryItem extends React.Component {
           {proj.com_id ? <LibProjRemarkList com_id={proj.com_id} com_name={proj.com_name} /> : null}
 
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

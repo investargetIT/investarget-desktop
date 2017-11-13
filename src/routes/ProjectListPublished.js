@@ -3,8 +3,8 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { i18n, isLogin } from '../utils/util'
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 
 class ProjectListPublished extends React.Component {
   constructor(props) {
@@ -129,13 +129,12 @@ class ProjectListPublished extends React.Component {
     ]
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project.published_projects')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project.published_projects')}>
         <div>
           <Table columns={columns} dataSource={list} rowKey={record => record.id} loading={loading} pagination={false} />
           <Pagination className="ant-table-pagination" total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

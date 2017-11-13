@@ -7,8 +7,8 @@ import { i18n } from '../utils/util'
 
 import { Form, Button, Tabs, message } from 'antd'
 const TabPane = Tabs.TabPane
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import {
   ProjectBaseForm,
   ProjectFinanceForm,
@@ -187,8 +187,7 @@ class EditProject extends React.Component {
     }
 
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project.edit_project')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')}>
         <div>
 
           <Tabs defaultActiveKey="1">
@@ -230,7 +229,7 @@ class EditProject extends React.Component {
           </Tabs>
 
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

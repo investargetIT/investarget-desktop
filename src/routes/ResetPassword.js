@@ -4,7 +4,7 @@ import { connect } from 'dva'
 import fetch from 'dva/fetch'
 import { routerRedux, Link, withRouter } from 'dva/router'
 import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal } from 'antd'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 import { Mobile, Code, Password, Submit } from '../components/Form'
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
@@ -132,7 +132,7 @@ class ResetPassword extends React.Component {
 
   render() {
     return (
-      <MainLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location}>
           <h2 style={titleStyle}>{i18n('account.reset_password')}</h2>
           <Form onSubmit={this.handleSubmit}>
             <Mobile required country={this.props.country} />
@@ -143,7 +143,7 @@ class ResetPassword extends React.Component {
             <Password />
             <Submit loading={this.props.loading} />
           </Form>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

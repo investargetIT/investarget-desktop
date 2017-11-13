@@ -1,5 +1,5 @@
 import React from 'react'
-import MainLayout from '../components/MainLayout'
+import LeftRightLayout from '../components/LeftRightLayout'
 import { Radio, Button } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
@@ -31,13 +31,13 @@ class Home extends React.Component {
   }
 
   render() {
-    return <MainLayout location={this.props.location}>
+    return <LeftRightLayout location={this.props.location}>
       <h1>{i18n('common.choose')}</h1>
       <RadioGroup onChange={this.onChange} options={options} />
       <div style={{ marginTop: 20 }}>
         <Button onClick={this.onClick} type="primary">{i18n('common.confirm')}</Button>
       </div>
-    </MainLayout>
+    </LeftRightLayout>
   }
 }
 

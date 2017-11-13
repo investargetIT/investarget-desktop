@@ -3,8 +3,8 @@ import { connect } from 'dva'
 import { i18n, shwoError } from '../utils/util'
 
 import { Icon, Table, Pagination } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { Search2 } from '../components/Search'
 
 
@@ -109,9 +109,8 @@ class EmailDetail extends React.Component {
     ]
 
     return (
-      <MainLayout location={location}>
+      <LeftRightLayout location={location} title={i18n('email.investors')}>
         <div>
-          <PageTitle title={i18n('email.investors')} />
 
           <div style={{marginBottom: '16px'}}>
             <Search2 placeholder={i18n('email.email') + ' / ' + i18n('email.mobile')} style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
@@ -135,7 +134,7 @@ class EmailDetail extends React.Component {
             showQuickJumper
           />
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }

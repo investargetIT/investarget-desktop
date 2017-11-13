@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Button } from 'antd'
-import MainLayout from '../components/MainLayout'
-import PageTitle from '../components/PageTitle'
+import LeftRightLayout from '../components/LeftRightLayout'
+
 import { i18n, handleError } from '../utils/util'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
@@ -86,8 +86,7 @@ class EditProjectBD extends React.Component {
   render() {
     const data = toFormData(this.state.bd)
     return (
-      <MainLayout location={this.props.location}>
-        <PageTitle title={i18n('project_bd.edit_project_bd')} />
+      <LeftRightLayout location={this.props.location} title={i18n('project_bd.edit_project_bd')}>
         <div>
           <EditProjectBDForm wrappedComponentRef={this.handleRef} data={data} />
           <div style={actionStyle}>
@@ -95,7 +94,7 @@ class EditProjectBD extends React.Component {
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProjectBD}>{i18n('common.submit')}</Button>
           </div>
         </div>
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }
