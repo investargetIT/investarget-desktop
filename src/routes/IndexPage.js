@@ -1,14 +1,14 @@
 import React from 'react'
 import { connect } from 'dva'
-import MainLayout from '../components/MainLayout'
-import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { i18n, handleError, time } from '../utils/util'
-import createG2 from 'g2-react';
+import createG2 from '../g2-react';
 import { Stat, Frame } from 'g2';
 import data1 from '../diamond.json';
 import data2 from '../top2000.json';
 import data3 from '../populationByAge.json';
+import LeftRightLayout from '../components/LeftRightLayout'
 
 function SelectedContent(props) {
 
@@ -131,7 +131,7 @@ class News extends React.Component {
 
   render() {
     return (
-      <Card title={i18n('market_news')} bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
+      <Card title={i18n('market_news')} bordered={false} extra={
         <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
           <Icon style={{ cursor: "pointer" }} type="close" />
         </Popconfirm>
@@ -164,6 +164,12 @@ class IndexPage extends React.Component {
     this.handleWidgetClicked = this.handleWidgetClicked.bind(this)
     this.addWidgetButtonClicked = this.addWidgetButtonClicked.bind(this)
     this.confirmAddWidgets = this.confirmAddWidgets.bind(this)
+  }
+
+  componentDidMount () {
+    // Trigger resize event directly doesn't work unless wrap it with `setTimeout`
+    // I don't know why
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
   }
 
   closeCard(widgetName) {
@@ -200,110 +206,42 @@ class IndexPage extends React.Component {
 
   render() {
     return (
-      <MainLayout location={this.props.location} style={{}}>
+      <LeftRightLayout location={this.props.location}>
 
-        <InvestBarChart />
-        <PopulationByAge />
-        <IndustryDegree />
-        <EventArea />
-
-        <Col span={16}>
-          { this.state.widgets.includes('news') ? <News onClose={this.closeCard} /> : null }
-          { this.state.widgets.includes('simple_line_chart') ? <SimpleLineChart onClose={this.closeCard} /> : null }
-          { this.state.widgets.includes('simple_bar_chart') ? <SimpleBarChart onClose={this.closeCard} /> : null }
-
-          { this.state.widgets.includes('card_title_3') ?
-          <Card title="Card title 3" bordered={false} style={{ margin: '10px 0 0 10px' }}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card> : null }
-
+        <Row style={{ height: 200 }}>
+          <Col span={6} style={{ height: '100%' }}>
+          <div style={{ height: 180, margin: 10, backgroundColor: 'rgb(41, 174, 154)' }}></div>
+          </Col>
+          <Col span={3} style={{ height: '100%' }}>
+          <div style={{ height: 180, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)' }}></div>
+          </Col>
+          <Col span={3} style={{ height: '100%'  }}>
+          <div style={{ height: 180, margin: '10px 5px', backgroundColor: 'rgb(215, 84, 82)' }}></div>
+          </Col>
+          <Col span={12}>
+        <News onClose={this.closeCard} />
         </Col>
+        </Row>
 
-        <Col span={8}>
+        <Row>
+          <Col span={12}>
+            <InvestBarChart />
+          </Col>
+          <Col span={12}>
+            <PopulationByAge />
+          </Col>
+        </Row>
 
-          { this.state.widgets.includes('card_title_4') ?
-          <Card title="Card title 4" bordered={false} style={{ margin: '10px 0 0 10px' }} extra={
-      <Popconfirm title="Confirm to delete?" onConfirm={this.closeCard.bind(null, 'card_title_4')}>
-        <Icon style={{ cursor: "pointer" }} type="close" />
-      </Popconfirm>
-          }>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card> : null }
+        <Row>
+          <Col span={12}>
+            <IndustryDegree />
+          </Col>
+          <Col span={12}>
+            <EventArea />
+          </Col>
+        </Row>
 
-          { this.state.widgets.includes('card_title_5') ?
-          <Card title="Card title 5" bordered={false} style={{ margin: '10px 0 0 10px' }}>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card> : null }
-
-          { this.state.widgets.includes('card_title_6') ?
-          <Card title="Card title 6" bordered={false} style={{ margin: '10px 0 0 10px' }}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card> : null }
-
-          <Card bordered={false} style={{ margin: '10px 0 0 10px' }}>
-            <Button onClick={this.addWidgetButtonClicked}>Add Widget</Button>
-          </Card>
-
-        </Col>
-
-        <div style={{ display: this.state.selectMode ? 'block': 'none', position: 'fixed', top: 0, bottom: 0, right: 0, width: 300,  background: '#CCC', overflow: 'auto' }}>
-
-          { !this.state.widgets.includes('simple_line_chart') ? <SimpleLineChart onClose={this.closeCard} /> : null }
-          { !this.state.widgets.includes('simple_bar_chart') ? <SimpleBarChart onClose={this.closeCard} /> : null }
-
-          { !this.state.widgets.includes('card_title_3') ?
-          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_3")}  name="card_title_3" onClick={this.handleWidgetClicked}>
-              <Card title="Card title 3" bordered={false}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-        </Card></SelectedContent> : null }
-
-          { !this.state.widgets.includes('card_title_4') ?
-          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_4")}  name="card_title_4" onClick={this.handleWidgetClicked}>
-            <Card title="Card title 4" bordered={false}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
-          </SelectedContent> : null }
-
-          { !this.state.widgets.includes('card_title_5') ?
-          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_5")}  name="card_title_5" onClick={this.handleWidgetClicked}>
-            <Card title="Card title 5" bordered={false}>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
-          </SelectedContent> : null }
-
-          { !this.state.widgets.includes('card_title_6') ?
-          <SelectedContent selected={this.state.selectedWidgets.includes("card_title_6")}  name="card_title_6" onClick={this.handleWidgetClicked}>
-            <Card title="Card title 6" bordered={false}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
-          </SelectedContent> : null }
-
-          <div style={{ margin: 10, textAlign: 'center' }}>
-            <Button type="primary" onClick={this.confirmAddWidgets}>{i18n('common.confirm')}</Button>
-            <Button style={{ marginLeft: 10 }} onClick={this.addWidgetButtonClicked}>{i18n('common.cancel')}</Button>
-          </div>
-
-        </div>
-
-      </MainLayout>
+      </LeftRightLayout>
     )
   }
 }
@@ -343,10 +281,11 @@ function EventArea(props) {
     <Pie
     data={data1}
     width= {500}
-    height={ 250}
+    height={400}
     plotCfg={ {
-      margin: [10, 100, 50, 120],
+      margin: [100, 100, 100, 10],
     }}
+    forceFit={true}
   />
   );
 
@@ -387,10 +326,10 @@ function InvestBarChart(props) {
       <Chart
       data={frame }
       width={500}
-      height={450}
+      height={400}
       plotCfg={
-        {margin: [20, 60, 80, 120]}
-      } forceFit={false} />
+        {margin: [20, 60, 80, 80]}
+      } forceFit={true} />
 </div>
   );
 
@@ -423,12 +362,12 @@ function PopulationByAge(props) {
     <Chart
       data={frame1}
       width={600}
-      height={450}
+      height={400}
       plotCfg={{
-        margin: [30, 80, 90, 80],
+        margin: [30, 20, 90, 80],
         }}
           // 绘图区域背景设置}
-      forceFit={false} />
+      forceFit={true} />
 </div>
   )
 }
@@ -524,7 +463,7 @@ function IndustryDegree(props) {
               lineWidth: 1, // 边框粗细
             } // 绘图区域背景设置
           }}
-        forceFit={false} />
+        forceFit={true} />
 </div>
   );
 }
