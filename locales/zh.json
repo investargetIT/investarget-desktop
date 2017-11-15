@@ -26,7 +26,8 @@
     "permission_management": "权限管理",
     "schedule_management": "日程管理",
     "schedule_list": "日程列表",
-    "my_schedule": "我的日程表"
+    "my_schedule": "我的日程表",
+    "dashboard": "Dashboard"
   },
   "account": {
     "login": "登录",

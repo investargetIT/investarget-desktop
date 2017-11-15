@@ -142,7 +142,7 @@
       border-radius: 2px;
     }
 
-    span {
+    .title {
       position: absolute;
       color: @menuActiveColor;
       background: @menuActiveBackgroundColor;
@@ -164,7 +164,7 @@
       border-radius: 2px 0 0 2px;
     }
 
-    span {
+    .title {
       display: block;
       border-radius: 0 2px 2px 0;
     }
@@ -172,7 +172,7 @@
 
   .it-menu-item-selected {
 
-    span {
+    .title {
       color: @menuSelectedColor;
       background-color: @menuSelectedBackgroundColor;
     }
@@ -188,7 +188,7 @@
       border-radius: 2px;
       background-image: none;
 
-      span>span {
+      span>.title {
         position: absolute;
         color: @menuActiveColor;
         background: @menuActiveBackgroundColor;
@@ -227,7 +227,7 @@
     .it-menu-submenu-title {
       border-radius: 2px 0 0 2px;
 
-      span>span {
+      span>.title {
         display: block;
         border-radius: 0 2px 2px 0;
       }

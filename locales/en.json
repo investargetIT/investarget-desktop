@@ -26,7 +26,8 @@
     "permission_management": "Permission Management",
     "schedule_management": "Schedule Management",
     "schedule_list": "Schedule List",
-    "my_schedule": "My Schedule"
+    "my_schedule": "My Schedule",
+    "dashboard": "Dashboard"
   },
   "account": {
     "login": "Login",

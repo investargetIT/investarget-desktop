@@ -4,9 +4,29 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { KEY_TO_URI } from '../constants'
 import { i18n } from '../utils/util'
+import classNames from 'classnames'
 
 const { SubMenu } = Menu
 const { Sider } = Layout
+
+const KEY_TO_ICON = {
+  'dashboard': 'fa fa-home',
+  'project_library': 'glyphicon glyphicon-book',
+  'project_management': 'glyphicon glyphicon-list',
+  'bd_management': 'glyphicon glyphicon-lock',
+  'email_management': 'fa fa-envelope-o',
+  'schedule_management': 'fa fa-calendar',
+  'user_management': 'fa fa-group',
+  'myinvestor': 'fa fa-user',
+  'mytrader': 'fa fa-user-plus',
+  'timeline_management': 'fa fa-tasks',
+  'dataroom_management': 'fa fa-folder',
+  'inbox_management': 'glyphicon glyphicon-envelope',
+  'user_center': 'fa fa-cogs',
+  'permission_management': 'fa fa-sitemap',
+  'log': 'fa fa-search',
+}
+
 
 class SiderMenu extends React.Component {
 
@@ -40,14 +60,15 @@ class SiderMenu extends React.Component {
   }
 
   render() {
-    const navTextStyle = {}
+    const navTextStyle = {
+      verticalAlign: 'middle',
+    }
     var iconStyle = {
-      display: 'inline-block',
-      width: 20,
-      height: 21,
+      fontSize: 16,
+      verticalAlign: 'middle',
       marginRight: 10,
+      width: 16,
       textAlign: 'center',
-      verticalAlign: 'top',
     }
     if (this.props.collapsed) {
       iconStyle['marginRight'] = 0
@@ -73,9 +94,9 @@ class SiderMenu extends React.Component {
                 <SubMenu
                   key={m.namekey}
                   title={(
-                    <span>
-                      <img style={iconStyle} src={m.icon_normal} />
-                      <span style={navTextStyle}>{i18n(`menu.${m.namekey}`)}</span>
+                    <span style={{display: 'block'}}>
+                      <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
+                      <span style={navTextStyle} className="title">{i18n(`menu.${m.namekey}`)}</span>
                     </span>)}
                 >
                   { subMenu.map(n => (
@@ -92,8 +113,8 @@ class SiderMenu extends React.Component {
               return (
                 <Menu.Item key={m.namekey}>
                   <Link to={KEY_TO_URI[m.namekey]}>
-                    <img style={iconStyle} src={m.icon_normal} />
-                    <span style={navTextStyle}>
+                    <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
+                    <span style={navTextStyle} className="title">
                       {i18n(`menu.${m.namekey}`)}
                     </span>
                   </Link>
