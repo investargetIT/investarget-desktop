@@ -37,7 +37,7 @@ import {
 function BasicContainer(props) {
   return (
     <Row gutter={16} style={{marginBottom: '16px'}}>
-      <Col span={4} >{ props.label }</Col>
+      <Col span={4} style={{color: '#4a535e'}}>{ props.label }</Col>
       <Col span={20} >{ props.children }</Col>
     </Row>
   )
@@ -46,8 +46,8 @@ function BasicContainer(props) {
 function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-      <Button type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button>
-      <Button style={{ marginLeft: 10 }} onClick={props.onReset}>{i18n('filter.reset')}</Button>
+      <Button size="large" type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button>
+      <Button size="large" style={{ marginLeft: 10 }} onClick={props.onReset}>{i18n('filter.reset')}</Button>
     </div>
   )
 }
@@ -200,7 +200,7 @@ function TimelineStatusFilter(props) {
   const Option = Select.Option
   return (
     <BasicContainer label={i18n('filter.status')}>
-      <Select value={value} onChange={onChange}>
+      <Select size="large" value={value} onChange={onChange}>
         <Option value="0">{i18n('timeline.all')}</Option>
         <Option value="1">{i18n('timeline.processing')}</Option>
         <Option value="2">{i18n('timeline.closed')}</Option>

@@ -27,7 +27,7 @@ function RadioGroup2 ({children, onChange, ...extraProps}) {
   }
 
   return (
-    <RadioGroup {...extraProps} onChange={handleChange} />
+    <RadioGroup size="large" {...extraProps} onChange={handleChange} />
   )
 }
 
@@ -36,7 +36,7 @@ class _Select extends React.Component {
   render() {
     const { children, options, value, onChange, ...extraProps } = this.props
     return (
-      <Select value={value} onChange={onChange} {...extraProps}>
+      <Select value={value} onChange={onChange} size="large" {...extraProps}>
         {options.map((item, index) =>
           <Option key={item.key || index} value={item.value}>{item.label}</Option>
         )}
@@ -63,7 +63,7 @@ class SelectNumber extends React.Component {
     }
 
     return (
-      <Select value={_value} onChange={this.handleChange} {...extraProps}>
+      <Select value={_value} onChange={this.handleChange} size="large" {...extraProps}>
         {_options && _options.map((item, index) =>
           <Option key={index} value={item.value}>{item.label}</Option>
         )}
@@ -258,7 +258,7 @@ class SelectOrganization extends React.Component {
   render() {
     const { org } = this.state
     return (
-      <Select mode="combobox" value={this.props.value} onChange={this.onChange}>
+      <Select size="large" mode="combobox" value={this.props.value} onChange={this.onChange}>
         { org ? org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
       </Select>
     )

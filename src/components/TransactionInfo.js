@@ -104,7 +104,7 @@ class TransactionInfo extends React.Component {
     const relationId = relation ? relation.id : null
 
     const SelectTransaction = (
-      <Select value={ relationId ? String(relationId) : null } onChange={this.handleChangeTransaction}>
+      <Select size="large" value={ relationId ? String(relationId) : null } onChange={this.handleChangeTransaction}>
         {
           list.map(item => <Option key={item.id} value={String(item.id)}>{item.traderuser.username}</Option>)
         }

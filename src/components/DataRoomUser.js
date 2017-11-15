@@ -30,9 +30,9 @@ function DataRoomUser(props) {
             </div>
             <div style={{display:'flex',flexWrap:'nowrap'}}>
               <div style={{flexGrow: 1,marginRight: 8}}>
-                <SelectExistUser style={{height:28,lineHeight:'28px'}} value={newUser} onChange={onSelectUser} />
+                <SelectExistUser value={newUser} onChange={onSelectUser} />
               </div>
-              <Button onClick={onAddUser} disabled={!newUser}>{i18n('dataroom.add_user')}</Button>
+              <Button size="large" onClick={onAddUser} disabled={!newUser}>{i18n('dataroom.add_user')}</Button>
             </div>
           </div>
         ) : <div>{i18n('dataroom.no_user')}</div>}

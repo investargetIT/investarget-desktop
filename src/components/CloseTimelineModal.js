@@ -33,7 +33,7 @@ function CloseTimelineModal(props) {
       >
         <h3 style={titleStyle}><span style={starStyle}>*</span>{i18n('timeline.close_reason')} : </h3>
         <div>
-          <Input value={props.reason} onChange={handleReasonChange} />
+          <Input size="large" value={props.reason} onChange={handleReasonChange} />
         </div>
       </Modal>
     )

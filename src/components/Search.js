@@ -18,7 +18,7 @@ function Search(props) {
   const { value, onChange, onSearch, ...extraProps } = props
   return (
     <div style={{ marginBottom: '24px', width: '200px' }}>
-      <Input.Search value={props.value} onChange={handleChange} onSearch={props.onSearch} {...extraProps} />
+      <Input.Search size="large" value={props.value} onChange={handleChange} onSearch={props.onSearch} {...extraProps} />
     </div>
   )
 }
@@ -42,7 +42,7 @@ class Search2 extends React.Component {
 
   render() {
     const { value, onChange, onSearch, ...extraProps } = this.props
-    return <Input.Search value={this.state.value} onChange={this.handleChange} onSearch={this.handleSearch} {...extraProps} />
+    return <Input.Search size="large" value={this.state.value} onChange={this.handleChange} onSearch={this.handleSearch} {...extraProps} />
   }
 }
 
@@ -188,6 +188,7 @@ class Search3 extends React.Component {
         >
           <Input.Search
             ref="search"
+            size="large"
             value={this.props.value}
             onChange={this.handleChange}
             onSearch={this.handleSearch}

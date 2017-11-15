@@ -308,6 +308,7 @@ class ProjectList extends React.Component {
 
         <div style={{ margin: '16px 0' }} className="clearfix">
           <Pagination
+            size="large"
             style={{ float: 'right' }}
             total={total}
             current={page}

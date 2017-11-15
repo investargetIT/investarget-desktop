@@ -155,7 +155,7 @@ class OrganizationList extends React.Component {
 
               <div style={{ float: 'right' }}>
                 {i18n('common.sort_by_created_time')}
-                <Select defaultValue="desc" onChange={this.handleSortChange}>
+                <Select size="large" style={{marginLeft: 8}} defaultValue="desc" onChange={this.handleSortChange}>
                   <Option value="asc">{i18n('common.asc_order')}</Option>
                   <Option value="desc">{i18n('common.dec_order')}</Option>
                 </Select>

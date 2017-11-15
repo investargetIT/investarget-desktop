@@ -266,11 +266,12 @@ class FileMgmt extends React.Component {
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
               <Input
+                size="large"
                 style={{ width: '60%', marginLeft: 6, verticalAlign: 'middle' }}
                 value={record.rename}
                 onChange={this.props.onNewFolderNameChange.bind(this, record.unique)} />
-          <Button onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.confirm')}</Button>
-          <Button onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.cancel')}</Button> </span>) }
+          <Button size="large" onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.confirm')}</Button>
+          <Button size="large" onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.cancel')}</Button> </span>) }
         </div>
       ),
     }, {
@@ -315,6 +316,7 @@ class FileMgmt extends React.Component {
               <Select
                 style={{width: '100%'}}
                 mode="multiple"
+                size="large"
                 optionLabelProp="children"
                 value={users}
                 onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
@@ -410,30 +412,31 @@ class FileMgmt extends React.Component {
         <div>
           { hasEnoughPerm ?
           <Upload {...props}>
-            <Button type="primary" style={{ marginRight: 10 }}>{i18n('dataroom.upload')}</Button>
+            <Button size="large" type="primary" style={{ marginRight: 10 }}>{i18n('dataroom.upload')}</Button>
           </Upload>
           : null }
 
           { hasEnoughPerm ?
           <Button
+            size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
             style={{ marginRight: 10 }}>{i18n('dataroom.new_folder')}</Button>
           : null }
 
           { hasEnoughPerm ?
-            <Button onClick={this.props.onManageUser} style={{ marginRight: 10 }}>{i18n('dataroom.user_management')}</Button>
+            <Button onClick={this.props.onManageUser} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.user_management')}</Button>
           : null}
 
           {selectMoreThanOneRow && hasEnoughPerm ?
-            <Button onClick={this.handleDelete} style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
+            <Button onClick={this.handleDelete} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
           : null}
 
           {selectMoreThanOneRow ?
-            <Button onClick={this.handleRename} style={{ marginRight: 10 }} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
+            <Button onClick={this.handleRename} size="large" style={{ marginRight: 10 }} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
           : null}
 
           {selectMoreThanOneRow ?
-            <Button onClick={this.handleMove} style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
+            <Button onClick={this.handleMove} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
           : null}
         </div>
       )
@@ -475,8 +478,8 @@ class FileMgmt extends React.Component {
           pagination={false} />
 
         <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
-          <Button type="primary" style={{marginRight:8}} onClick={this.handleMultiVisible}>{i18n('dataroom.visible')}</Button>
-          <Button onClick={this.handleMultiInvisible}>{i18n('dataroom.invisible')}</Button>
+          <Button type="primary" size="large" style={{marginRight:8}} onClick={this.handleMultiVisible}>{i18n('dataroom.visible')}</Button>
+          <Button size="large" onClick={this.handleMultiInvisible}>{i18n('dataroom.invisible')}</Button>
         </div>
 
         <Modal

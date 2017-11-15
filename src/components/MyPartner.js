@@ -116,7 +116,7 @@ class MyPartner extends React.Component {
   handleAddFriend(userID) {
     const index = this.state.list.map(m => m.id).indexOf(userID)
     if (index < 0) return
-    
+
     api.addUserFriend([userID])
     .then(() => {
       Modal.success({
@@ -196,6 +196,7 @@ class MyPartner extends React.Component {
         <MyInvestorListFilter onFilter={this.handleSearch.bind(this)} />
 
         <Search
+          size="large"
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
           onSearch={this.handleSearch.bind(this)} />
 

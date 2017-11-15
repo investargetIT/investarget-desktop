@@ -148,7 +148,7 @@ class ProjectLibrary extends React.Component {
           pagination={false}
         />
         <div style={{ margin: '16px 0' }} className="clearfix">
-          <Button type="primary" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
+          <Button type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
           <Pagination
             style={{ float: 'right' }}
             total={total}

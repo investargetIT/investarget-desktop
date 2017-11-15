@@ -83,13 +83,13 @@ BasicFormItem.contextTypes = {
 
 
 
-const Email = props => <BasicFormItem label={i18n("account.email")} name="email" valueType="email" required><Input onBlur={props.onBlur}/></BasicFormItem>
+const Email = props => <BasicFormItem label={i18n("account.email")} name="email" valueType="email" required><Input size="large" onBlur={props.onBlur}/></BasicFormItem>
 
-const Group = props => <BasicFormItem label={i18n("account.role")} name="readOnlyGroup" required><Input disabled={props.disabled} /></BasicFormItem>
+const Group = props => <BasicFormItem label={i18n("account.role")} name="readOnlyGroup" required><Input size="large" disabled={props.disabled} /></BasicFormItem>
 
-const FullName = props => <BasicFormItem label={i18n("account.username")} name="username" required><Input disabled={props.disabled} /></BasicFormItem>
+const FullName = props => <BasicFormItem label={i18n("account.username")} name="username" required><Input size="large" disabled={props.disabled} /></BasicFormItem>
 
-const Password = props => <BasicFormItem label={props.label || i18n("account.password")} name="password" required><Input type="password" /></BasicFormItem>
+const Password = props => <BasicFormItem label={props.label || i18n("account.password")} name="password" required><Input size="large" type="password" /></BasicFormItem>
 
 const ConfirmPassword = (props, context) => {
 
@@ -102,13 +102,13 @@ const ConfirmPassword = (props, context) => {
     }
   }
 
-  return <BasicFormItem label={i18n("account.confirm_password")} name="confirm" required validator={validator}><Input type="password" /></BasicFormItem>
+  return <BasicFormItem label={i18n("account.confirm_password")} name="confirm" required validator={validator}><Input size="large" type="password" /></BasicFormItem>
 }
 ConfirmPassword.contextTypes = {
   form: PropTypes.object
 }
 
-const OldPassword = () => <BasicFormItem label={i18n("account.old_password")} name="old_password" required><Input type="password" /></BasicFormItem>
+const OldPassword = () => <BasicFormItem label={i18n("account.old_password")} name="old_password" required><Input size="large" type="password" /></BasicFormItem>
 
 
 const Position = props => (

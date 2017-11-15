@@ -32,6 +32,7 @@ class EditableCell extends React.Component {
           editable ?
             <div style={{ paddingRight: 24 }}>
               <Input
+                size="large"
                 value={value}
                 onChange={this.handleChange}
                 onPressEnter={this.check}
@@ -254,7 +255,7 @@ class PermList extends React.Component {
         title={i18n("user.permission_management")}>
 
         <div style={{ width: 300, marginBottom: 10 }}>
-          <Input value={this.state.newGroup} addonAfter={<Icon type="plus" onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
+          <Input size="large" value={this.state.newGroup} addonAfter={<Icon type="plus" onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
         </div>
 
         <Table

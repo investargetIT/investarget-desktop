@@ -136,7 +136,7 @@ class InboxList extends React.Component {
 
               <div className="clearfix" style={{marginBottom: '24px'}}>
                 <div style={{ float: 'left' }}>
-                  <Button style={{marginLeft: '8px'}} disabled={selectedMsg.length == 0} onClick={this.handleReadMsg}>{i18n('inbox.mark_as_read')}</Button>
+                  <Button size="large" style={{marginLeft: '8px'}} disabled={selectedMsg.length == 0} onClick={this.handleReadMsg}>{i18n('inbox.mark_as_read')}</Button>
                 </div>
                 <Pagination style={{ float: 'right' }} total={total} current={pageIndex} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
               </div>

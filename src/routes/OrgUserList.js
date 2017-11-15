@@ -218,7 +218,7 @@ class OrgUserList extends React.Component {
 
           <div style={{ float: 'right' }}>
             {i18n('common.sort_by_created_time')}&nbsp;
-                <Select defaultValue="desc" onChange={this.handleSortChange}>
+                <Select size="large" defaultValue="desc" onChange={this.handleSortChange}>
               <Option value="asc">{i18n('common.asc_order')}</Option>
               <Option value="desc">{i18n('common.dec_order')}</Option>
             </Select>

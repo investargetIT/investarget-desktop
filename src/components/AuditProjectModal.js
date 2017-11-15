@@ -30,7 +30,7 @@ class SelectProjectStatus extends React.Component {
     }
 
     return (
-      <Select value={String(value)} onChange={this.handleChange} {...extraProps}>
+      <Select size="large" value={String(value)} onChange={this.handleChange} {...extraProps}>
         {
           _options.map(item =>
             <Option key={item.value} value={String(item.value)}>{item.label}</Option>

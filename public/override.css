@@ -1,12 +1,58 @@
+/* 覆盖 Bootstarp 样式 */
+
+button[disabled], html input[disabled] {
+  cursor: not-allowed;
+}
+
+
 /* 覆盖 AntDesign 样式 */
 
+/* Buttons */
+.ant-btn {
+  color: #636e7b;
+  background-color: #e4e7ea;
+  border-color: #ccc;
+}
+.ant-btn:hover, .ant-btn:focus, .ant-btn:active {
+  color: #636e7b;
+  background-color: #f7f7f7;
+  border-color: #ccc;
+}
+/* 白色按钮 */
+/* .ant-btn {
+  color: #666;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.ant-btn:hover, .ant-btn:focus, .ant-btn:active {
+  color: #333;
+  background-color: #f7f7f7;
+  border-color: #ccc;
+} */
+.ant-btn-primary {
+  color: #fff;
+  background-color: #428bca;
+  border-color: #357ebd;
+}
+.ant-btn-primary:hover, .ant-btn-primary:focus, .ant-btn-primary:active {
+  color: #fff;
+  background-color: #3071a9;
+  border-color: #285e8e;
+}
+.ant-btn-danger, .ant-btn-danger:hover, .ant-btn-danger:focus, .ant-btn-danger:active {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+.ant-btn-lg {
+  font-size: 14px;
+}
 
 /* Input */
 .ant-input:active, .ant-input:focus {
   border-color: #999;
   box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important; /* 使任何状态的 input 的 box-shadow 相同 */
 }
-
 .ant-form-item-required:before {
   color: #D9534F;
 }
@@ -19,8 +65,97 @@
   box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important;
 }
 
+.ant-select-dropdown {
+  border: 1px solid #999;
+  /* color: #000; */
+  /* background-color: #f7f7f7; */
+  box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+}
+/* .ant-select-dropdown-menu-item:hover, .ant-select-dropdown-menu-item-active {
+  color: #fff;
+  background-color: #666;
+}
+.ant-select-dropdown-menu-item-selected {
+  font-weight: 400;
+} */
+
+
 /* Cascader */
 .ant-cascader-picker:focus .ant-cascader-input {
+  border-color: #999;
+  outline: 0;
+  box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important;
+}
+.ant-cascader-menus {
+  border: 1px solid #999;
+  /* color: #000; */
+  /* background-color: #f7f7f7; */
+  box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+}
+/* .ant-cascader-menu-item-active {
+  font-weight: 400;
+}
+.ant-cascader-menu-item:hover {
+  color: #fff;
+  background-color: #666!important;
+}
+.ant-cascader-menu-item-disabled {
+  opacity: 0.3;
+}
+.ant-cascader-menu-item-disabled:hover {
+  color: #000;
+  background-color: #f7f7f7;
+} */
+
+
+/* Radio */
+.ant-radio-inner {
+  width: 18px;
+  height: 18px;
+  border-radius: 18px;
+}
+.ant-radio-inner:after {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+}
+
+
+/* Pagination */
+.ant-pagination-item {
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.ant-pagination-prev, .ant-pagination-next {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link {
+  height: 100%;
+}
+.ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
+  height: 30px;
+  line-height: 32px;
+}
+/* Pagination -- select */
+.ant-pagination-options-size-changer.ant-select .ant-select-selection--single {
+  height: 32px;
+}
+.ant-pagination-options-size-changer.ant-select .ant-select-selection__rendered {
+  line-height: 30px;
+}
+/* Pagination -- input */
+.ant-pagination-options-quick-jumper {
+  height: 32px;
+  line-height: 32px;
+}
+.ant-pagination-options-quick-jumper input {
+  padding: 6px 7px;
+  height: 32px;
+}
+.ant-pagination-options-quick-jumper input:focus {
   border-color: #999;
   outline: 0;
   box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important;

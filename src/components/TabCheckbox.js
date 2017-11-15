@@ -5,17 +5,18 @@ import { i18n } from '../utils/util'
 
 const styles = {
   container: {},
-  tabbar: {},
+  tabbar: {
+    marginBottom: 8,
+  },
   tab: {
     marginRight: '16px',
     cursor: 'pointer',
+    color: '#4a535e',
   },
-  checkboxWrapper: {
-    lineHeight: 2,
-  }
+  checkboxWrapper: {}
 }
 styles.activeTab = Object.assign({}, styles.tab, {
-  color: '#333',
+  color: '#428BCA',
 })
 
 
