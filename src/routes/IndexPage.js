@@ -9,6 +9,7 @@ import data1 from '../diamond.json';
 import data2 from '../top2000.json';
 import data3 from '../populationByAge.json';
 import LeftRightLayout from '../components/LeftRightLayout'
+import * as api from '../api';
 
 function SelectedContent(props) {
 
@@ -158,6 +159,10 @@ class IndexPage extends React.Component {
       widgets: ['news', 'simple_line_chart', 'simple_bar_chart'],
       selectedWidgets: [],
       selectMode: false,
+      investEvent: null,
+      investRound: null,
+      investAddr: null,
+      investDegree: null,
     }
 
     this.closeCard = this.closeCard.bind(this)
@@ -169,7 +174,65 @@ class IndexPage extends React.Component {
   componentDidMount () {
     // Trigger resize event directly doesn't work unless wrap it with `setTimeout`
     // I don't know why
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+    // setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+
+    const allReq = [
+      api.getStatisticalData('com'),
+      api.getStatisticalData('evecat'),
+      api.getStatisticalData('everound'),
+      api.getStatisticalData('eveaddr'),
+    ];
+
+    Promise.all(allReq)
+    .then(result => {
+
+      const investDegree = [];
+      for (var key in result[0].data) {
+        if (result[0].data.hasOwnProperty(key) && key !== '企业服务' && key !== '电子商务') {
+          var value = result[0].data[key];
+          var item = {
+            "name": key,
+            "y": value,
+            "x": result[1].data[key],
+            "z": value,
+          }
+          investDegree.push(item);
+        }
+      }
+
+      const investEvent = [];
+      for (var key in result[1].data) {
+        if (result[1].data.hasOwnProperty(key)) {
+          var value = result[1].data[key];
+          var item = {
+            "industry": key,
+            "number": value
+          }
+          investEvent.push(item);
+        }
+      }
+      const investRound = [];
+      for (var key in result[2].data) {
+        if (result[2].data.hasOwnProperty(key)) {
+          var value = result[2].data[key];
+          var item = {...value, year: key}
+          investRound.push(item);
+        }
+      }
+      const investAddr = [];
+      for (var key in result[3].data) {
+        if (result[3].data.hasOwnProperty(key)) {
+          var value = result[3].data[key];
+          var item = {
+            "name": key,
+            "value": value
+          }
+          investAddr.push(item);
+        }
+      }
+      investAddr.sort( (a, b) => b.value - a.value);
+      this.setState({ investEvent, investAddr: investAddr.slice(0, 6), investRound, investDegree });
+    });
   }
 
   closeCard(widgetName) {
@@ -225,19 +288,19 @@ class IndexPage extends React.Component {
 
         <Row>
           <Col span={12}>
-            <InvestBarChart />
+            { this.state.investEvent ? <InvestBarChart data={this.state.investEvent} /> : null }
           </Col>
           <Col span={12}>
-            <PopulationByAge />
+            { this.state.investRound ? <PopulationByAge data={ this.state.investRound} /> : null }
           </Col>
         </Row>
 
         <Row>
           <Col span={12}>
-            <IndustryDegree />
+            { this.state.investDegree ? <IndustryDegree data={this.state.investDegree} /> : null }
           </Col>
           <Col span={12}>
-            <EventArea />
+            { this.state.investAddr ? <EventArea data={this.state.investAddr} /> : null }
           </Col>
         </Row>
 
@@ -279,7 +342,7 @@ function EventArea(props) {
 
   return (
     <Pie
-    data={data1}
+    data={props.data}
     width= {500}
     height={400}
     plotCfg={ {
@@ -293,33 +356,32 @@ function EventArea(props) {
 
 function InvestBarChart(props) {
   const Chart = createG2(chart => {
-    chart.axis('province',{
+    chart.axis('industry',{
       title: null
     });
-    chart.axis('population',{
+    chart.axis('number',{
       title: null
     });
     chart.coord('rect');
-    chart.interval().position('province*population').color('rgb(245, 137, 91)');
+    chart.interval().position('industry*number').color('rgb(245, 137, 91)');
     chart.render();
   });
 
   var data = [
-    {"province":"北京市","population":19612368},
-    {"province":"天津市","population":12938693},
-    {"province":"河北省","population":71854210},
-    {"province":"山西省","population":27500000},
-    {"province":"内蒙古自治区","population":24706291},
-    {"province":"辽宁省","population":43746323},
-    {"province":"吉林省","population":27452815},
-    {"province":"黑龙江省","population":38313991},
-    {"province":"上海市","population":23019196},
+    {"industry":"北京市","number":19612368},
+    {"industry":"天津市","number":12938693},
+    {"industry":"河北省","number":71854210},
+    {"industry":"山西省","number":27500000},
+    {"industry":"内蒙古自治区","number":24706291},
+    {"industry":"辽宁省","number":43746323},
+    {"industry":"吉林省","number":27452815},
+    {"industry":"黑龙江省","number":38313991},
+    {"industry":"上海市","number":23019196},
   ];
-
+  data = props.data;
   var frame = new Frame(data);
-  // frame = Frame.sort(frame, 'population'); // 将数据按照population 进行排序，由大到小
   frame = Frame.sortBy(frame, function(obj1, obj2) {
-    return obj1.population < obj2.population;
+    return obj2['number'] - obj1['number'];                  
   });
   return (
     <div>
@@ -340,23 +402,27 @@ function PopulationByAge(props) {
     chart.legend({
       position: 'bottom'
     });
-    chart.axis('State', {
+    chart.axis('year', {
       title: null
     });
-    chart.axis('人口数量', {
-      titleOffset: 75,
+    chart.axis('投资事件数量', {
+      title: '投资事件数量',
+      // titleOffset: 75,
       formatter: function(val) {
-        return val / 1000000 + 'M';
+        return val / 1000 + 'K';
       },
       position: 'right'
     });
     chart.coord('rect').transpose();
-    chart.intervalStack().position('State*人口数量').color('年龄段', ['#98ABC5', '#8A89A6', '#7B6888', '#6B486B', '#A05D56', '#D0743C', '#FF8C00']).size(9);
+    chart.intervalStack()
+      .position('year*投资事件数量')
+      .color('轮次', ['#98ABC5', '#8A89A6', '#7B6888', '#6B486B', '#A05D56', '#D0743C', '#FF8C00'])
+      ;
     chart.render();
   });
 
-  var frame1 = new Frame(data3);
-  frame1 = Frame.combinColumns(frame1,["小于5岁","5至13岁","14至17岁","18至24岁","25至44岁","45至64岁","65岁及以上"],'人口数量','年龄段','State');
+  var frame1 = new Frame(props.data);
+  frame1 = Frame.combinColumns(frame1,["A+轮","A轮","B+轮","B轮","C+轮","C轮","D+轮","D轮"],'投资事件数量','轮次','year');
   return (
     <div>
     <Chart
@@ -393,27 +459,27 @@ function IndustryDegree(props) {
 
   const Chart = createG2(chart => {
     chart.col('x', {
-      alias: 'Daily fat intake', // 定义别名
-      tickInterval: 5, // 自定义刻度间距
-      nice: false, // 不对最大最小值优化
-      max: 96, // 自定义最大值
-      min: 62 // 自定义最小值
+      alias: '事件数量', // 定义别名
+      // tickInterval: 5, // 自定义刻度间距
+      // nice: false, // 不对最大最小值优化
+      // max: 96, // 自定义最大值
+      // min: 62 // 自定义最小值
     });
     chart.col('y', {
-      alias: 'Daily sugar intake',
-      tickInterval: 50,
-      nice: false,
-      max: 165,
-      min: 0
+      alias: '公司数量',
+      // tickInterval: 50,
+      // nice: false,
+      // max: 165,
+      // min: 0
     });
     chart.col('z', {
-      alias: 'Obesity(adults) %'
+      alias: '公司数量'
     });
     // 开始配置坐标轴
     chart.axis('x', {
-      formatter: function(val) {
-        return val + ' gr'; // 格式化坐标轴显示文本
-      },
+      // formatter: function(val) {
+      //   return val + ' gr'; // 格式化坐标轴显示文本
+      // },
       grid: {
         line: {
           stroke: '#d9d9d9',
@@ -423,20 +489,20 @@ function IndustryDegree(props) {
       }
     });
     chart.axis('y', {
-      titleOffset: 80, // 设置标题距离坐标轴的距离
-      formatter: function(val) {
-        if (val > 0) {
-          return val + ' gr';
-        }
-      }
+      // titleOffset: 80, // 设置标题距离坐标轴的距离
+      // formatter: function(val) {
+      //   if (val > 0) {
+      //     return val + ' gr';
+      //   }
+      // }
     });
     chart.legend(false);
     chart.tooltip({
       map: {
-        title: 'country'
+        title: 'name'
       }
     });
-    chart.point().position('x*y').size('z', 40, 10).label('name*country', {
+    chart.point().position('x*y').size('z', 40, 10).label('name*name', {
       offset:0, // 文本距离图形的距离
       label: {
         fill: '#000',
@@ -453,12 +519,12 @@ function IndustryDegree(props) {
   return (
     <div>
       <Chart
-        data={data}
+        data={props.data}
         width={700}
         height={400}
         plotCfg={ {
-            margin: [20, 80, 90, 60],
-            background: {
+            margin: [20, 80, 90, 80],
+            background: { 
               stroke: '#ccc', // 边颜色
               lineWidth: 1, // 边框粗细
             } // 绘图区域背景设置

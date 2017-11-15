@@ -742,3 +742,5 @@ export const getScheduleDetail = (id) => {
 export const resetPassword = (param) => {
   return r('/user/password/', 'POST', param)
 }
+
+export const getStatisticalData = type => r('/mongolog/count?type=' + type);
