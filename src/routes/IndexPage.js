@@ -140,10 +140,10 @@ class News extends React.Component {
         {this.state.list.length > 0 ? (
           <Carousel vertical={true} autoplay={true} dots={false}>
             {this.state.list.map(item => {
-              return <div key={item.id} style={{height:120,overflow:'scroll'}}><p style={{fontSize:13}}>{item.content}</p></div>
+              return <div key={item.id} style={{height:100,overflow:'scroll'}}><p style={{fontSize:13}}>{item.content}</p></div>
             })}
           </Carousel>
-        ) : <div style={{height:120}}><p style={{fontSize:13}}>{i18n('no_news')}</p></div>}
+        ) : <div style={{height:100}}><p style={{fontSize:13}}>{i18n('no_news')}</p></div>}
       </Card>
     )
   }
@@ -271,15 +271,21 @@ class IndexPage extends React.Component {
     return (
       <LeftRightLayout location={this.props.location}>
 
-        <Row style={{ height: 200 }}>
+        <Row style={{ height: 150, overflow: 'hidden' }}>
           <Col span={6} style={{ height: '100%' }}>
-          <div style={{ height: 180, margin: 10, backgroundColor: 'rgb(41, 174, 154)' }}></div>
+          <div style={{ height: 130, margin: 10, backgroundColor: 'rgb(41, 174, 154)', overflow: 'hidden' }}>
+          <img style={{ background: '#10458F', width: 200, margin: 'auto', verticalAlign: 'middle' }} src="/images/investor_stat.png" />
+          </div>
           </Col>
           <Col span={3} style={{ height: '100%' }}>
-          <div style={{ height: 180, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)' }}></div>
+          <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)', overflow: 'hidden' }}>
+          <img style={{ width: 80, marginTop: 20 }} src="/images/calendar.png" />
+          </div>
           </Col>
           <Col span={3} style={{ height: '100%'  }}>
-          <div style={{ height: 180, margin: '10px 5px', backgroundColor: 'rgb(215, 84, 82)' }}></div>
+          <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(215, 84, 82)', overflow: 'hidden' }}>
+          <img style={{ width: 80, marginTop: 20 }} src="/images/time.png" />
+          </div>
           </Col>
           <Col span={12}>
         <News onClose={this.closeCard} />
