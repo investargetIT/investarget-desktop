@@ -100,8 +100,24 @@ class ProjectLibrary extends React.Component {
     link.click()
   }
 
+  handleQuery = (location) => {
+    const { query } = location
+    if (query) {
+      let { search } = query
+      if (search) {
+        this.handleChangeSearch(search)
+        this.handleSearch(search)
+      }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.handleQuery(nextProps.location)
+  }
+
   componentDidMount() {
     this.getProject()
+    this.handleQuery(this.props.location)
   }
 
   render() {

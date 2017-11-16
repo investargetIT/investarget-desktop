@@ -1,6 +1,7 @@
 import * as api from '../api'
 import { i18n, checkPerm, isLogin } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
+import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'app',
@@ -29,6 +30,7 @@ export default {
     service: [],
     unreadMessageNum: 0,
     libIndustry: [],
+    search: '',
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -62,6 +64,9 @@ export default {
     setUnreadMessageNum(state, { payload: unreadMessageNum }) {
       return { ...state, unreadMessageNum }
     },
+    saveSearch(state, { payload: search }) {
+      return { ...state, search }
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {
@@ -94,6 +99,10 @@ export default {
     *getLibIndustry({}, { select, put }) {
       const data = yield select(state => state.app.libIndustry)
       data.length > 0 || (yield put({ type: 'requestLibIndustry' }))
+    },
+    *globalSearch({ payload: search }, { select, put }) {
+      yield put({ type: 'saveSearch', payload: search })
+      yield put(routerRedux.push('/app/projects/library?search=' + search))
     },
   },
   subscriptions: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Icon, Modal, Badge, Input, Popover } from 'antd';
-import { Link } from 'dva/router';
+import { Link, withRouter } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
 import qs from 'qs'
@@ -108,10 +108,11 @@ class UserProfile extends React.Component {
 
 
 
-function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessageNum }) {
+function Header(props) {
+
+  const { dispatch, location, currentUser, mode, collapsed, unreadMessageNum } = props
 
   function handleMenuClicked(param) {
-    console.log('@@', param)
 
     switch (param.key) {
       case "logout":
@@ -141,6 +142,18 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
         break
     }
 
+  }
+
+  function handleChangeSearch(e) {
+    const search = e.target.value
+    props.dispatch({ type: 'app/saveSearch', payload: search })
+  }
+
+  function handleSearch(e) {
+    if (e.keyCode == 13) {
+      let search = e.target.value
+      props.dispatch({ type: 'app/globalSearch', payload: search })
+    }
   }
 
   const login = (
@@ -179,7 +192,13 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
         <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
       </div>
       <div style={searchStyle}>
-        <input style={searchInputStyle} placeholder="搜索一下" />
+        <input
+          placeholder="搜索一下"
+          style={searchInputStyle}
+          value={props.search}
+          onChange={handleChangeSearch}
+          onKeyUp={handleSearch}
+        />
         <Icon type="search" style={searchIconStyle}/>
       </div>
 
@@ -197,8 +216,8 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { collapsed, unreadMessageNum } = state.app
-  return { currentUser, collapsed, unreadMessageNum }
+  const { collapsed, unreadMessageNum, search } = state.app
+  return { currentUser, collapsed, unreadMessageNum, search }
 }
 
-export default connect(mapStateToProps)(Header)
+export default connect(mapStateToProps)(withRouter(Header))
