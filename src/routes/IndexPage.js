@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import { Link } from 'dva/router'
 import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { i18n, handleError, time } from '../utils/util'
@@ -133,9 +134,14 @@ class News extends React.Component {
   render() {
     return (
       <Card title={i18n('market_news')} bordered={false} extra={
-        <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
-          <Icon style={{ cursor: "pointer" }} type="close" />
-        </Popconfirm>
+        <div style={{fontSize: 16}}>
+          <Link to="/app/wxmsg">
+            <Icon style={{ cursor: "pointer", marginRight: 8 }} type="edit" />
+          </Link>
+          <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
+            <Icon style={{ cursor: "pointer" }} type="close" />
+          </Popconfirm>
+        </div>
       }>
         {this.state.list.length > 0 ? (
           <Carousel vertical={true} autoplay={true} dots={false}>
@@ -269,7 +275,7 @@ class IndexPage extends React.Component {
 
   render() {
     return (
-      <LeftRightLayout location={this.props.location}>
+      <LeftRightLayout location={this.props.location} title="Dashboard">
 
         <Row style={{ height: 150, overflow: 'hidden' }}>
           <Col span={6} style={{ height: '100%' }}>
@@ -387,7 +393,7 @@ function InvestBarChart(props) {
   data = props.data;
   var frame = new Frame(data);
   frame = Frame.sortBy(frame, function(obj1, obj2) {
-    return obj2['number'] - obj1['number'];                  
+    return obj2['number'] - obj1['number'];
   });
   return (
     <div>
@@ -530,7 +536,7 @@ function IndustryDegree(props) {
         height={400}
         plotCfg={ {
             margin: [20, 80, 90, 80],
-            background: { 
+            background: {
               stroke: '#ccc', // 边颜色
               lineWidth: 1, // 边框粗细
             } // 绘图区域背景设置

@@ -43,10 +43,10 @@
   border-right: 6px solid transparent;
   content: "";
   display: inline-block;
-  right: 17px;
   position: absolute;
   top: -6px;
-  right: 95px;
+  right: 50%;
+  margin-right: -6px;
 }
 
 .nav-item li {

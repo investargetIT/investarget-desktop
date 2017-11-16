@@ -8,7 +8,8 @@ import Chat from './Chat'
 import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
-import PageHeader from './PageHeader'
+import { PATH_LIST } from '../path'
+
 
 const { Content, Sider } = Layout
 
@@ -26,6 +27,61 @@ const menuStyle = {
 }
 const collapsedMenuStyle = {
   padding: 5,
+}
+
+const titleWrapStyle = {
+  padding: '15px 20px',
+  borderBottom: '1px solid #d3d7db',
+  borderTop: '1px solid #eee',
+  background: '#f7f7f7',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+}
+const titleStyle = {
+  fontSize: 28,
+  color: '#1D2939',
+  letterSpacing: -0.5,
+  margin: 0,
+}
+const actionStyle = {
+  fontSize: 16,
+  textDecoration: 'underline',
+  color: '#428bca',
+}
+
+function Navigation({ path }) {
+
+  var paths = []
+  var p = PATH_LIST.filter(item => {
+    if (item.realpath instanceof RegExp) {
+      return item.realpath.test(path)
+    } else {
+      return item.realpath == path
+    }
+  })[0]
+
+  while(p) {
+    paths.unshift(p)
+    p = PATH_LIST.filter(item => item.key == p.parent)[0]
+  }
+
+  var len = paths.length
+  return (
+    <div>
+      {
+        paths.map((item, index) => {
+          return (index == len - 1) ? (
+            <span>{item.name}</span>
+          ) : (
+            <span>
+              <Link key={item.key} to={item.path}>{item.name}</Link>&nbsp;/&nbsp;
+            </span>
+          )
+        })
+      }
+    </div>
+  )
 }
 
 
@@ -52,9 +108,19 @@ class LeftRightLayout extends React.Component {
         <Layout style={{backgroundColor: '#e4e7ea'}}>
           <Header mode="light" location={this.props.location} />
 
-          <PageHeader title={this.props.title} action={this.props.action} />
+          <div style={titleWrapStyle}>
+            <h2 style={titleStyle}>
+              { this.props.title }
+            </h2>
+            <Navigation path={this.props.location.pathname} />
+          </div>
 
           <Content style={{ padding: 20 }}>
+            { this.props.action ? (
+              <div style={{textAlign:'right',backgroundColor:'#fff',padding:'8px 24px'}}>
+                <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
+              </div>
+            ) : null }
 
             <div style={this.props.style || { padding: 24, background: '#fff', minHeight: 360, overflow: 'auto' }}>
               {this.props.children}

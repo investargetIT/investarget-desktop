@@ -2,30 +2,12 @@ import React from 'react'
 import { Menu, Layout, Icon } from 'antd'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { KEY_TO_URI } from '../constants'
+import { KEY_TO_URI, KEY_TO_ICON } from '../constants'
 import { i18n } from '../utils/util'
 import classNames from 'classnames'
 
 const { SubMenu } = Menu
 const { Sider } = Layout
-
-const KEY_TO_ICON = {
-  'dashboard': 'fa fa-home',
-  'project_library': 'glyphicon glyphicon-book',
-  'project_management': 'glyphicon glyphicon-list',
-  'bd_management': 'glyphicon glyphicon-lock',
-  'email_management': 'fa fa-envelope-o',
-  'schedule_management': 'fa fa-calendar',
-  'user_management': 'fa fa-group',
-  'myinvestor': 'fa fa-user',
-  'mytrader': 'fa fa-user-plus',
-  'timeline_management': 'fa fa-tasks',
-  'dataroom_management': 'fa fa-folder',
-  'inbox_management': 'glyphicon glyphicon-envelope',
-  'user_center': 'fa fa-cogs',
-  'permission_management': 'fa fa-sitemap',
-  'log': 'fa fa-search',
-}
 
 
 class SiderMenu extends React.Component {

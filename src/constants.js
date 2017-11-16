@@ -1,3 +1,4 @@
+
 export const PAGE_SIZE = 5
 
 export const URI_1 = "/app/projects/list"
@@ -83,3 +84,21 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
 }
 
 export const BASE_URL = 'http://192.168.1.251:8080'
+
+export const KEY_TO_ICON = {
+  'dashboard': 'fa fa-home',
+  'project_library': 'glyphicon glyphicon-book',
+  'project_management': 'glyphicon glyphicon-list',
+  'bd_management': 'glyphicon glyphicon-lock',
+  'email_management': 'fa fa-envelope-o',
+  'schedule_management': 'fa fa-calendar',
+  'user_management': 'fa fa-group',
+  'myinvestor': 'fa fa-user',
+  'mytrader': 'fa fa-user-plus',
+  'timeline_management': 'fa fa-tasks',
+  'dataroom_management': 'fa fa-folder',
+  'inbox_management': 'glyphicon glyphicon-envelope',
+  'user_center': 'fa fa-cogs',
+  'permission_management': 'fa fa-sitemap',
+  'log': 'fa fa-search',
+}
