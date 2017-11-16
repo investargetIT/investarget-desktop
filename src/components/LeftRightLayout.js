@@ -131,8 +131,6 @@ class LeftRightLayout extends React.Component {
 
           </Content>
 
-          <Layout.Footer style={{ textAlign: 'center', backgroundColor: 'transparent' }}>Ant Design ©2016 Created by Ant UED</Layout.Footer>
-
         </Layout>
 
       </Layout>
