@@ -81,7 +81,7 @@ class Login extends React.Component {
 	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
 	    {i18n("account.login")}
 	  </Button>
-	  Or <Link to="/register">{i18n("account.register")}</Link>
+	  Or <Link to="/register1">{i18n("account.register")}</Link>
 	</FormItem>
       </Form>
     </div>

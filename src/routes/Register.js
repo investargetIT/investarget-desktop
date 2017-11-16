@@ -320,23 +320,23 @@ class Register extends React.Component {
           </LeftRightLayout>
           </div>
           <div style={itemStyle}>
-            <RecommendFriendsComponent
+            {/* <RecommendFriendsComponent
               key={1}
               friends={this.props.friends}
               selectedFriends={this.props.selectedFriends}
               onFriendToggle={this.onFriendToggle}
               onFriendsSkip={this.onFriendsSkip}
               onFriendsSubmit={this.onFriendsSubmit}
-            />
+            /> */}
           </div>
           <div style={itemStyle}>
-            <RecommendProjectsComponent
+            {/* <RecommendProjectsComponent
               projects={this.props.projects}
               selectedProjects={this.props.selectedProjects}
               onProjectToggle={this.onProjectToggle}
               onProjectsSkip={this.onProjectsSkip}
               onProjectsSubmit={this.onProjectsSubmit}
-            />
+            /> */}
           </div>
         </div>
     </div>
