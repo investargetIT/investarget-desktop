@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { i18n, handleError, time } from '../utils/util'
+import { i18n, handleError, time, hasPerm } from '../utils/util'
 import createG2 from '../g2-react';
 import { Stat, Frame } from 'g2';
 import data1 from '../diamond.json';
@@ -135,9 +135,11 @@ class News extends React.Component {
     return (
       <Card title={i18n('market_news')} bordered={false} extra={
         <div style={{fontSize: 16}}>
-          <Link to="/app/wxmsg">
-            <Icon style={{ cursor: "pointer", marginRight: 8 }} type="edit" />
-          </Link>
+          { hasPerm('usersys.as_admin') ? (
+            <Link to="/app/wxmsg">
+              <Icon style={{ cursor: "pointer", marginRight: 8 }} type="edit" />
+            </Link>
+          ) : null }
           <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
             <Icon style={{ cursor: "pointer" }} type="close" />
           </Popconfirm>

@@ -85,7 +85,7 @@ class WxMessage extends React.Component {
     ]
 
     return (
-      <LeftRightLayout location={this.props.location} title="微信群消息">
+      <LeftRightLayout location={this.props.location} title="市场消息">
         <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <Table
           columns={columns}
