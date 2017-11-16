@@ -43,7 +43,7 @@ class LeftRightLayout extends React.Component {
       <Layout>
 
         <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
-          <Logo />
+          { this.props.collapsed ? <div style={{height:50,backgroundColor:'#fff'}}></div> : <Logo /> }
           <div style={this.props.collapsed ? collapsedMenuStyle : menuStyle}>
             <SiderMenu collapsed={this.props.collapsed} theme="dark" />
           </div>

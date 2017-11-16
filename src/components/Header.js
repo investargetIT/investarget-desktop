@@ -1,10 +1,12 @@
 import React from 'react';
-import { Menu, Icon, Modal, Badge } from 'antd';
+import { Menu, Icon, Modal, Badge, Input, Popover } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
 import qs from 'qs'
 import { i18n } from '../utils/util'
+import styles from './Header.css'
+import classNames from 'classnames'
 
 const confirm = Modal.confirm
 
@@ -12,11 +14,63 @@ const headerStyle = {
   height: 50,
   borderBottom: 'none',
 }
+const searchStyle = {
+  float: 'left',
+  position: 'relative',
+  width: 250,
+  height: 50,
+  borderRight: '1px solid #eee',
+}
+const searchInputStyle = {
+  height: '100%',
+  width: '100%',
+  border: 'none',
+  outline: 'none',
+  padding: '18px 20px',
+  paddingRight: 40,
+}
+const searchIconStyle = {
+  position: 'absolute',
+  right: 8,
+  top: 15,
+  zIndex: 1,
+  fontSize: 20,
+}
+const caretStyle = {
+  display: 'inline-block',
+  width: 0,
+  height: 0,
+  marginLeft: 2,
+  verticalAlign: 'middle',
+  borderTop: '4px solid',
+  borderRight: '4px solid transparent',
+  borderLeft: '4px solid transparent',
+  marginLeft: 5,
+}
+
+function UserProfile(props) {
+  return (
+    <div style={{borderLeft:'1px solid #eee',float:'left'}}>
+      <div style={{padding:'12px 10px'}}>
+        <img src="http://themetrace.com/demo/bracket/images/photos/loggeduser.png" style={{verticalAlign:'center',marginRight:5,width:26,borderRadius:50}} />
+        <span>John Doe</span>
+        <span style={caretStyle}></span>
+      </div>
+      <ul className="dropdown-menu pull-right">
+        <li>
+          <i className="glyphicon glyphicon-log-out"></i> Log Out
+        </li>
+      </ul>
+    </div>
+  )
+}
+
 
 
 function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessageNum }) {
 
   function handleMenuClicked(param) {
+    console.log('@@', param)
 
     switch (param.key) {
       case "/logout":
@@ -69,26 +123,38 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
   const source = parseInt(localStorage.getItem('source'), 10)
 
   return (
-    <Menu
-      style={headerStyle}
-      selectedKeys={[location.pathname]}
-      mode="horizontal"
-      theme={mode}
-      onClick={handleMenuClicked}>
-
-      <Menu.Item key="toggle_menu">
+    <div>
+      <div
+        onClick={() => {handleMenuClicked({key:'toggle_menu'})}}
+        className={classNames(styles['menutoggle'], {[styles['menutoggle-collapsed']]: collapsed})}>
         <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
-      </Menu.Item>
+      </div>
+      <div style={searchStyle}>
+        <input style={searchInputStyle} placeholder="搜索一下" />
+        <Icon type="search" style={searchIconStyle}/>
+      </div>
 
-      <Menu.Item key="lang" style={{float: 'right'}}>{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
+      <div style={{height: 50,float: 'right'}} className="clearfix">
+        <UserProfile />
+      </div>
+      <Menu
+        style={headerStyle}
+        selectedKeys={[location.pathname]}
+        mode="horizontal"
+        theme={mode}
+        onClick={handleMenuClicked}>
 
-      { currentUser ? logout : login }
 
-      { currentUser ? null : register }
+        <Menu.Item key="lang" style={{float: 'right'}}>{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
 
-      { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>{i18n("msg")}</Badge></Menu.Item> : null }
+        { currentUser ? logout : login }
 
-    </Menu>
+        { currentUser ? null : register }
+
+        { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>{i18n("msg")}</Badge></Menu.Item> : null }
+
+      </Menu>
+    </div>
   );
 }
 

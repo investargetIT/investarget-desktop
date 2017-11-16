@@ -40,6 +40,7 @@ export const KEY_TO_URI = {
   "collect_projects": URI_17,
   "schedule_list": "/app/schedule/list",
   "my_schedule": "/app/schedule",
+  "dashboard": "/app",
 }
 
 export const URI_TO_KEY = {
@@ -64,6 +65,7 @@ export const URI_TO_KEY = {
   URI_17: "collect_projects",
   "/app/schedule/list": "schedule_list",
   "/app/schedule": "my_schedule",
+  "/app": "dashboard",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = {

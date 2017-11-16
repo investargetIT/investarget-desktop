@@ -5,14 +5,13 @@ import { i18n, getCurrentUser } from '../utils/util'
 
 
 const logoStyle = {
-  padding: 10,
+  height: 50,
   background: '#fff',
   borderRight: '1px solid #eee',
 }
 const logoImgStyle = {
-  height: 30,
-  padding: '4px 8px',
   verticalAlign: 'top',
+  height: '100%',
 }
 
 
@@ -25,10 +24,10 @@ function Logo() {
     <div style={logoStyle}>
       <Link to={ currentUser ? "/app" : "/" }>
         {source === 2 ?
-          <img style={logoImgStyle} src="/images/autospace.png" />
+          <img style={{logoImgStyle, padding: 10}} src="/images/autospace.png" />
           : null }
         {source === 1 ?
-          <img style={{ ...logoImgStyle, background: '#10458F' }} src="/images/investarget.png" />
+          <img style={logoImgStyle} src="/images/logo.png" />
           : null }
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>
