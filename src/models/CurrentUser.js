@@ -65,7 +65,7 @@ export default {
         userInfo
       })
 
-      yield put({ type: 'app/registerStepForward' })
+      yield put(routerRedux.replace('/recommend-friends'));
     },
   }
 }

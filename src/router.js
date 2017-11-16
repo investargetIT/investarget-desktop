@@ -55,6 +55,9 @@ import WxMessage from './routes/WxMessage'
 import Schedule from './routes/Schedule'
 import ScheduleList from './routes/ScheduleList'
 import ResetPassword from './routes/ResetPassword'
+import Register1 from './routes/Register1'
+import RecommendFriends from './components/RecommendFriends';
+import RecommendProjects from './components/RecommendProjects';
 
 
 function RouterConfig({ history }) {
@@ -63,6 +66,9 @@ function RouterConfig({ history }) {
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/register1" component={Register1} />
+      <Route path="/recommend-friends" component={RecommendFriends} />
+      <Route path="/recommend-projects" component={RecommendProjects} />
       <Route path="/app" component={IndexPage} />
       <Route path="/403" component={AccessDenied} />
       <Route path="/app/orguser/list" component={OrgUserList} />
