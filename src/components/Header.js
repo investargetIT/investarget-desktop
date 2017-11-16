@@ -36,33 +36,74 @@ const searchIconStyle = {
   zIndex: 1,
   fontSize: 20,
 }
-const caretStyle = {
-  display: 'inline-block',
-  width: 0,
-  height: 0,
-  marginLeft: 2,
-  verticalAlign: 'middle',
-  borderTop: '4px solid',
-  borderRight: '4px solid transparent',
-  borderLeft: '4px solid transparent',
-  marginLeft: 5,
-}
 
-function UserProfile(props) {
-  return (
-    <div style={{borderLeft:'1px solid #eee',float:'left'}}>
-      <div style={{padding:'12px 10px'}}>
-        <img src="http://themetrace.com/demo/bracket/images/photos/loggeduser.png" style={{verticalAlign:'center',marginRight:5,width:26,borderRadius:50}} />
-        <span>John Doe</span>
-        <span style={caretStyle}></span>
+class UserProfile extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      visible: false,
+    }
+  }
+
+  handleClick = () => {
+    this.setState({ visible: !this.state.visible })
+  }
+
+  handleMenuClick = (key) => {
+    this.props.onMenuClick({ key: key })
+  }
+
+  render() {
+    const imgStyle = {
+      verticalAlign:'center',
+      marginRight:5,
+      width:26,
+      borderRadius:50
+    }
+    const caretStyle = {
+      display: 'inline-block',
+      width: 0,
+      height: 0,
+      marginLeft: 2,
+      verticalAlign: 'middle',
+      borderTop: '4px solid',
+      borderRight: '4px solid transparent',
+      borderLeft: '4px solid transparent',
+      marginLeft: 5,
+    }
+    const dropMenuStyle = {
+      display: 'block',
+      backgroundColor: '#1d2939',
+      minWith: 200,
+      border: 0,
+      marginTop: 0,
+      marginRight: -1,
+      borderRadius: '2px 0 2px 2px',
+      boxShadow: '3px 3px 0 rgba(12,12,12,0.05)',
+      padding: 5,
+      right: 0,
+      left: 'auto',
+    }
+
+    const photourl = this.props.user && this.props.user.photourl
+    const username = this.props.user && this.props.user.username
+
+    return (
+      <div className={styles['nav-item']} style={{position: 'relative'}} onClick={this.handleClick}>
+        <div style={{paddingLeft:10,paddingRight:10,userSelect:'none'}}>
+          <img src={photourl} style={imgStyle} />
+          <span>{username}</span>
+          <span style={caretStyle}></span>
+        </div>
+        <ul className="dropdown-menu" style={{...dropMenuStyle, display: this.state.visible ? 'block' : 'none'}}>
+          <li onClick={this.handleMenuClick.bind(this, 'logout')}>
+            <i className="glyphicon glyphicon-log-out"></i> Log Out
+          </li>
+        </ul>
       </div>
-      <ul className="dropdown-menu pull-right">
-        <li>
-          <i className="glyphicon glyphicon-log-out"></i> Log Out
-        </li>
-      </ul>
-    </div>
-  )
+    )
+  }
 }
 
 
@@ -73,7 +114,7 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
     console.log('@@', param)
 
     switch (param.key) {
-      case "/logout":
+      case "logout":
         confirm({
           title: i18n('logout_confirm'),
           onOk() {
@@ -103,27 +144,35 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
   }
 
   const login = (
-    <Menu.Item key="/login" style={{float: 'right'}}>
+    <div className={styles["nav-item"]}>
       <Link to="/login">{i18n('account.login')}</Link>
-    </Menu.Item>
-  )
-
-  const logout = (
-    <Menu.Item key="/logout" style={{float: 'right'}}>
-      {i18n('account.logout')}
-    </Menu.Item>
+    </div>
   )
 
   const register = (
-    <Menu.Item key="/register" style={{float: 'right'}}>
+    <div className={styles["nav-item"]}>
       <Link to="/register">{i18n('account.register')}</Link>
-    </Menu.Item>
+    </div>
+  )
+
+  const lang = (
+    <div className={styles["nav-item"]} onClick={()=>{handleMenuClicked({key:'lang'})}}>
+      {location.basename === "/en" ? "中文" : "EN"}
+    </div>
+  )
+
+  const chat = (
+    <div className={styles["nav-item"]} onClick={()=>{handleMenuClicked({key:'chat'})}}>
+      <Badge count={unreadMessageNum}>
+        <i className="glyphicon glyphicon-comment" style={{fontSize:16}} />
+      </Badge>
+    </div>
   )
 
   const source = parseInt(localStorage.getItem('source'), 10)
 
   return (
-    <div>
+    <div style={{backgroundColor:'#fff'}}>
       <div
         onClick={() => {handleMenuClicked({key:'toggle_menu'})}}
         className={classNames(styles['menutoggle'], {[styles['menutoggle-collapsed']]: collapsed})}>
@@ -135,25 +184,13 @@ function Header({ dispatch, location, currentUser, mode, collapsed, unreadMessag
       </div>
 
       <div style={{height: 50,float: 'right'}} className="clearfix">
-        <UserProfile />
-      </div>
-      <Menu
-        style={headerStyle}
-        selectedKeys={[location.pathname]}
-        mode="horizontal"
-        theme={mode}
-        onClick={handleMenuClicked}>
-
-
-        <Menu.Item key="lang" style={{float: 'right'}}>{location.basename === "/en" ? "中文" : "EN"}</Menu.Item>
-
-        { currentUser ? logout : login }
-
+        { currentUser ? null : login }
         { currentUser ? null : register }
+        { lang }
+        { currentUser ? <UserProfile user={currentUser} onMenuClick={handleMenuClicked} /> : null }
+        { currentUser ? chat : null }
+      </div>
 
-        { currentUser ? <Menu.Item key="chat" style={{ float: 'right' }}><Badge count={unreadMessageNum}>{i18n("msg")}</Badge></Menu.Item> : null }
-
-      </Menu>
     </div>
   );
 }

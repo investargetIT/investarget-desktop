@@ -5,7 +5,7 @@ import dva from 'dva';
 import { useRouterHistory } from 'dva/router';
 import { createHistory } from 'history'
 
-import './base_components/index.less';
+import './base_components/menu.less';
 import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'

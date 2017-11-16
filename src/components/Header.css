@@ -21,3 +21,44 @@
   top: 0;
   z-index: 1;
 }
+
+
+.nav-item {
+  float: left;
+  min-width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  background-color: #fff;
+  cursor: pointer;
+  border-left: 1px solid #eee;
+}
+.nav-item:hover {
+  background-color: #f7f7f7;
+}
+
+.nav-item ul:after {
+  border-bottom: 6px solid #1d2939;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  content: "";
+  display: inline-block;
+  right: 17px;
+  position: absolute;
+  top: -6px;
+  right: 95px;
+}
+
+.nav-item li {
+  color: #94989d;
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 2px;
+  transition: all 0.2s ease-out 0s;
+  line-height: 1.4;
+}
+
+.nav-item li:hover {
+  color: #fff;
+  background-color: #1caf9a;
+}
