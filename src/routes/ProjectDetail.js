@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -112,7 +112,6 @@ class ProjectDetail extends React.Component {
       traderOptions: [],
       trader: null,
       userListWithInterest: [],
-      teaserUrl: null,
       hasPublicDataroom: false,
       investor: null,
       investorOptions: [],
@@ -273,22 +272,10 @@ class ProjectDetail extends React.Component {
 
     this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
 
-    // download Teaser
-    api.getProjAttachment(id).then(result => {
-      const { data: attachments } = result.data
-      const teaser = attachments.filter(item => item.filetype == 'Teaser')[0]
-      if (teaser) {
-        let { bucket, key, filename } = teaser
-        key = key + '?attname=' + encodeURIComponent(filename)
-        api.downloadUrl(bucket, key).then(result => {
-          this.setState({ teaser: result.data })
-        })
-      }
-    })
   }
 
   render() {
-    const { id, project, isFavorite, trader, traderOptions, teaser, dataroomId, isClose } = this.state
+    const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
 
     return (
       <LeftRightLayout location={this.props.location} title="项目详情">
@@ -341,11 +328,7 @@ class ProjectDetail extends React.Component {
                   <Detail project={project} />
                 </TabPane>
                 <TabPane tab="文件下载" key="4">
-                  <div style={blockStyle}>
-                    <a href={teaser}>
-                      <Button icon="file-pdf">{i18n('project.download_teaser')}</Button>
-                    </a>
-                  </div>
+                  <DownloadFiles projectId={id} />
                 </TabPane>
               </Tabs>
             </div>
@@ -663,4 +646,91 @@ function Detail({ project }) {
       }
     </div>
   )
+}
+
+class DownloadFiles extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      attachments: [],
+    }
+  }
+
+  componentDidMount() {
+    const id = this.props.projectId
+    api.getProjAttachment(id).then(result => {
+      const { data: attachments } = result.data
+      this.setState({ attachments })
+
+      const q = attachments.map(item => {
+        let { bucket, key, filename } = item
+        key = key + '?attname=' + encodeURIComponent(filename)
+        return api.downloadUrl(bucket, key).then(result => {
+          return result.data
+        })
+      })
+      Promise.all(q).then(urls => {
+        const list = attachments.map((item, index) => {
+          return { ...item, url: urls[index] }
+        })
+        this.setState({ attachments: list })
+      })
+    })
+  }
+
+  render() {
+    const containerStyle = {
+      padding: 10,
+    }
+    const sectionStyle = {
+      borderBottom: '1px dashed #e0e0e0',
+      padding: '10px 0',
+      display: 'flex',
+    }
+    const lastSectionStyle = {
+      padding: '10px 0',
+      display: 'flex',
+    }
+    const titleStyle = {
+      flexShrink: 0,
+      width: 150,
+      paddingRight: 15,
+    }
+    const listStyle = {
+      flexGrow: 1,
+    }
+
+    const dirs = this.state.attachments.map(item => item.filetype)
+
+    return (
+      <div style={containerStyle}>
+        {dirs.map((dir, index) => {
+          const files = this.state.attachments.filter(item => item.filetype == dir)
+          const isLast = index == dirs.length - 1
+
+          return (
+            <div key={dir} style={isLast ? lastSectionStyle : sectionStyle}>
+              <div style={titleStyle}>{dir}</div>
+              <ul style={listStyle}>
+                {files.map(file => {
+                  return (
+                    <li key={file.key}>
+                      <a
+                        disabled={!file.url}
+                        download={file.filename}
+                        href={file.url}
+                      >
+                        {file.filename}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
 }
