@@ -3,26 +3,27 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal } from 'antd'
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
 
-
+const TabPane = Tabs.TabPane
 const Step = Steps.Step
 
 function Field (props) {
+  const defaultLabelStyle = { width:150 }
   return (
     <div style={{display: 'flex'}}>
-      <span style={{width: '150px'}}>{props.label}</span>
-      <span>{props.value}</span>
+      <span style={props.labelStyle || defaultLabelStyle}>{props.label}</span>
+      <span style={props.valueStyle || {}}>{props.value}</span>
     </div>
   )
 }
 
 
 const blockStyle = {
-  marginBottom: '24px',
+  marginBottom: 30,
 }
 const blockTitleStyle = {
   margin: '16px 0',
@@ -46,28 +47,50 @@ class ProjectFinanceYear extends React.Component {
 
   render() {
     const { finance } = this.state
+
+    const containerStyle = {
+      padding: 10,
+    }
+    const titleStyle = {
+      fontWeight: 400,
+      fontSize: 14,
+      color: '#333',
+      paddingBottom: 10,
+      lineHeight: 1.4,
+    }
+    const yearStyle = {
+      marginLeft: 10,
+      color: '#ff6900',
+    }
+    const contentStyle = {
+      paddingLeft: 10,
+    }
+    const labelStyle = {
+      width: 250,
+    }
+
     return finance.length > 0 ? (
       <div>
-        <h2>{i18n('project.financials')}</h2>
-        <div>
-          {
-            finance.map(item =>
-              <div key={item.fYear}>
-                <h3>{i18n('project.fiscal_year')} {item.fYear}</h3>
-                <div>
-                  <Field label={`${i18n('project.revenue')}(${i18n('common.USD')})`} value={item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'} />
-                  <Field label={`${i18n('project.profits')}(${i18n('common.USD')})`} value={item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} />
-                  <Field label={`${i18n('project.gross_profits')}(${i18n('common.USD')})`} value={item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} />
-                  <Field label={`${i18n('project.total_assets')}(${i18n('common.USD')})`} value={item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} />
-                  <Field label={`${i18n('project.net_assets')}(${i18n('common.USD')})`} value={item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} />
-                  <Field label={`${i18n('project.net_cash_flow')}(${i18n('common.USD')})`} value={item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} />
-                  <Field label={`${i18n('project.operating_cash_flow')}(${i18n('common.USD')})`} value={item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} />
-                  <Field label={`${i18n('project.EBITDA')}(${i18n('common.USD')})`} value={item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} />
-                </div>
+        {
+          finance.map(item =>
+            <div key={item.fYear} style={containerStyle}>
+              <h3 style={titleStyle}>
+                {i18n('project.fiscal_year')}
+                <span style={yearStyle}>{item.fYear}</span>
+              </h3>
+              <div style={contentStyle}>
+                <Field labelStyle={labelStyle} label={`${i18n('project.revenue')}(${i18n('common.USD')})`} value={item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.profits')}(${i18n('common.USD')})`} value={item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.gross_profits')}(${i18n('common.USD')})`} value={item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.total_assets')}(${i18n('common.USD')})`} value={item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.net_assets')}(${i18n('common.USD')})`} value={item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.net_cash_flow')}(${i18n('common.USD')})`} value={item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.operating_cash_flow')}(${i18n('common.USD')})`} value={item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} />
+                <Field labelStyle={labelStyle} label={`${i18n('project.EBITDA')}(${i18n('common.USD')})`} value={item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} />
               </div>
-            )
-          }
-        </div>
+            </div>
+          )
+        }
       </div>
     ) : null
   }
@@ -95,13 +118,20 @@ class ProjectDetail extends React.Component {
       investorOptions: [],
       dataroomId: null,
       isClose: null,
+      visible: false,
+      loading: false,
+
+      activeKey: 1,
     }
   }
 
   getFavorProject = () => {
-    const param = {
+    var param = {
       favoritetype: 4,
       proj: this.state.id,
+    }
+    if (hasPerm('usersys.as_admin')) {
+      param['user'] = isLogin() && isLogin().id
     }
     api.getFavoriteProj(param).then(result => {
       const data = result.data.data
@@ -154,8 +184,13 @@ class ProjectDetail extends React.Component {
       Modal.error({
         title: i18n('user.no_trader')
       });
-      return;
+    } else {
+      this.setState({ visible: true })
     }
+  }
+
+  handleOk = () => {
+    this.setState({ loading: true })
     const { id, trader } = this.state
     const params = {
       favoritetype: 5,
@@ -164,13 +199,18 @@ class ProjectDetail extends React.Component {
       trader: trader,
     }
     api.projFavorite(params).then(result => {
+      this.setState({ visible: false, loading: false })
       message.success(i18n('project.message.interest_success'), 2)
     }, error => {
+      this.setState({ visible: false, loading: false })
       this.props.dispatch({
         type: 'app/findError',
         payload: error
       })
     })
+  }
+  handleCancel = () => {
+    this.setState({ visible: false, loading: false })
   }
 
   recommendToInvestor = () => {
@@ -183,27 +223,7 @@ class ProjectDetail extends React.Component {
     window.open("/app/projects/recommend/" + this.state.id);
   }
 
-  getDataroom = () => {
-    if (hasPerm('usersys.as_admin')) {
-      api.queryDataRoom({ search: this.state.project.projtitle })
-      .then(result => {
-        if (result.data.count > 0) {
-          let dataroom = result.data.data[0]
-          this.setState({ dataroomId: dataroom.id, isClose: dataroom.isClose })
-        }
-      })
-      .catch(error => handleError(error));
-    } else {
-      api.queryUserDataRoom({ search: this.state.project.projtitle })
-      .then(result => {
-        if (result.data.count > 0) {
-          let dataroom = result.data.data[0]
-          this.setState({ dataroomId: dataroom.dataroom.id, isClose: false })
-        }
-      })
-      .catch(error => handleError(error))
-    }
-  }
+
 
   handleClickDataRoom = () => {
     Modal.error({ title: i18n('dataroom.message.no_dataroom_permission') })
@@ -271,235 +291,84 @@ class ProjectDetail extends React.Component {
     const { id, project, isFavorite, trader, traderOptions, teaser, dataroomId, isClose } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location}>
-        <h1>
-          {project.projtitle}
-          <a href={getPdfUrl(id)} style={{float:'right'}}>
-            <Button icon="file-pdf">下载 pdf</Button>
-          </a>
-        </h1>
+      <LeftRightLayout location={this.props.location} title="项目详情">
 
-        <div style={blockStyle}>
-          <span>{i18n('project.release_time')} {project.createdtime && project.createdtime.substr(0,10)}</span>
-        </div>
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.deal_audit_process')}</h2>
-          <div>
-            {
-              this.props.projstatus.map(item =>
-                <Tag key={item.id} color={project.projstatus && project.projstatus.id == item.id ? 'pink' : null}>{item.name}</Tag>
-              )
-            }
-          </div>
-        </div>
-
-        <div style={blockStyle}>
-          <img style={{width: 400}} src={(project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl' } />
-        </div>
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.profile')}</h2>
-          <div>
+        <Row gutter={24}>
+          <Col span={8}>
             <div>
-              {project.p_introducte}
+              <ProjectImage project={project} />
+              { hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
+              <SecretInfo project={project} />
             </div>
+          </Col>
+          <Col span={16}>
             <div>
-              {
-                project.tags && project.tags.map(item =>
-                  <Tag key={item.id} color="orange">{item.name}</Tag>
-                )
-              }
-            </div>
-            <div>
-              <Field label={i18n('project.region') + ' : '} value={project.country && project.country.country} />
-              <Field label={i18n('project.industry') + ' : '} value={project.industries && project.industries[0] && project.industries[0].name} />
-              <Field label={i18n('project.transaction_type') + ' : '} value={project.transactionType && project.transactionType[0] && project.transactionType[0].name} />
-              <Field label={i18n('project.engagement_in_transaction') + ' : '} value={project.character && project.character.character} />
-              <Field label={i18n('project.transaction_size') + ' : '} value={project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'} />
-              <Field label={i18n('project.company_valuation') + ' : '} value={project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'} />
-            </div>
-          </div>
-        </div>
+              <ProjectHead project={project} />
+              <div style={blockStyle}>
+                { isFavorite ?
+                    <Button icon="heart" className="success" size="large" style={{marginRight: 8}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 8}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
 
-        {
-          hasPerm('proj.get_secretinfo') ? (
-            <div style={blockStyle}>
-              <h2 style={blockTitleStyle}>{i18n('project.privacy_infomation')}</h2>
-              <div>
-                <Field label={i18n('project.name') + ' : '} value={project.contactPerson} />
-                <Field label={i18n('project.phone') + ' : '} value={project.phoneNumber} />
-                <Field label={i18n('project.email') + ' : '} value={project.email} />
-                {/* <Field label={i18n('project.uploader') + ' : '} value={project.supportUser && project.supportUser.username} />
-                <Field label={i18n('project.manager') + ' : '} value={project.makeUser && project.makeUser.username} /> */}
+                { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
+                  <Button className="white" size="large" style={{marginRight: 8}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                : null }
+
+                { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
+                  <Button className="white" size="large" style={{marginRight: 8}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                : null }
+
+                <a href={getPdfUrl(id)}>
+                  <Button  className="white" size="large" icon="file-pdf">项目PDF下载</Button>
+                </a>
               </div>
+
+              <Tabs animated={false}>
+                <TabPane tab="项目简介" key="1">
+                  <div style={{padding:10}}>
+                    <ProjectIntro project={project} />
+                    <div style={blockStyle}>
+                      <h2 style={{fontSize:14,paddingLeft: 10,fontWeight: 600,borderLeft: '4px solid #ff6900',marginBottom:20}}>
+                        {i18n('project.deal_process')}
+                      </h2>
+                      <TimelineView projId={id} />
+                    </div>
+                  </div>
+                </TabPane>
+                <TabPane tab="财务信息" key="2">
+                  <ProjectFinanceYear projId={id} />
+                </TabPane>
+                <TabPane tab="项目详情" key="3">
+                  <Detail project={project} />
+                </TabPane>
+                <TabPane tab="文件下载" key="4">
+                  <div style={blockStyle}>
+                    <a href={teaser}>
+                      <Button icon="file-pdf">{i18n('project.download_teaser')}</Button>
+                    </a>
+                  </div>
+                </TabPane>
+              </Tabs>
             </div>
-          ) : null
-        }
+          </Col>
+        </Row>
 
-        <div style={blockStyle}>
-          <ProjectFinanceYear projId={id} />
-        </div>
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.details')}</h2>
-          <div>
-            {
-              project.targetMarket ? (
-                <div>
-                  <h3>{i18n('project.target_market')}</h3>
-                  <p>{project.targetMarket}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.productTechnology ? (
-                <div>
-                  <h3>{i18n('project.product_technology')}</h3>
-                  <p>{project.productTechnology}</p>
-                </div>
-              ): null
-            }
-            {
-              project.businessModel ? (
-                <div>
-                  <h3>{i18n('project.business_model')}</h3>
-                  <p>{project.businessModel}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.brandChannel ? (
-                <div>
-                  <h3>{i18n('project.brand_channel')}</h3>
-                  <p>{project.brandChannel}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.managementTeam ? (
-                <div>
-                  <h3>{i18n('project.management_team')}</h3>
-                  <p>{project.managementTeam}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.Businesspartners ? (
-                <div>
-                  <h3>{i18n('project.business_partners')}</h3>
-                  <p>{project.Businesspartners}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.useOfProceed ? (
-                <div>
-                  <h3>{i18n('project.use_of_proceed')}</h3>
-                  <p>{project.useOfProceed}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.financingHistory ? (
-                <div>
-                  <h3>{i18n('project.financing_history')}</h3>
-                  <p>{project.financingHistory}</p>
-                </div>
-              ) : null
-            }
-            {
-              project.operationalData ? (
-                <div>
-                  <h3>{i18n('project.operational_data')}</h3>
-                  <p>{project.operationalData}</p>
-                </div>
-              ) : null
-            }
-          </div>
-        </div>
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.favor_project')}</h2>
-          {
-            isFavorite ? (
-              <Button icon="heart" onClick={this.unfavorProject}>
-                {i18n('project.unfavor')}
-              </Button>
-            ) : (
-              <Button icon="heart-o" onClick={this.favorProject}>
-                {i18n('project.favor')}
-              </Button>
-            )
-          }
-        </div>
-
-        {
-          hasPerm('proj.admin_getfavorite') ?
-            <div style={blockStyle}>
-              <h2 style={blockTitleStyle}>{i18n('project.investors_interested')}</h2>
-              <div>
-                {
-                  this.state.userListWithInterest.map(m =>
-                    <Link key={m.id} to={'/app/user/' + m.user.id}>
-                      <img style={{ width: 48, height: 48, borderRadius: '50%' }} src={m.user.photourl} />
-                    </Link>
-                  )
-                }
-                </div>
-            </div>
-          : null
-        }
-
-        { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-          <div style={blockStyle}>
-            <h2 style={blockTitleStyle}>{i18n('recommend_to_investor')}</h2>
-            <div>
-              {/* <SelectNumber style={{ minWidth: 100 }} options={this.state.investorOptions} value={this.state.investor} onChange={this.handleInvestorChange} notFoundContent={i18n('investor_not_found')} /> */}
-              <Button onClick={this.recommendToInvestor} disabled={this.state.investorOptions.length == 0}>{i18n('recommend_to_investor')}</Button>
-            </div>
-          </div>
-          : null}
-
-        { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.contact_transaction')}</h2>
-          <div>
-            {traderOptions.length > 0 ?
-            <SelectNumber style={{minWidth: 100}} options={traderOptions} value={trader} onChange={this.handleTraderChange} notFoundContent={i18n('user.no_trader')} />
-            : null }
-            <Button onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
-          </div>
-        </div>
-        : null}
-
-        {
-          teaser ? (
-            <div style={blockStyle}>
-              <h2 style={blockTitleStyle}>{i18n('project.download_teaser')}</h2>
-              <a href={teaser}>
-                <Button icon="file-pdf">{i18n('project.download_teaser')}</Button>
-              </a>
-            </div>
-          ) : null
-        }
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('dataroom.dataroom')}</h2>
-          {dataroomId ? (
-            <Link to={`/app/dataroom/detail?id=${dataroomId}&isClose=${isClose}&projectID=${project.id}&projectTitle=${project.projtitle}`}>
-              <Button disabled={project.projstatus && project.projstatus.id < 4} icon="folder">{i18n('dataroom.dataroom')}</Button>
-            </Link>
-          ) : (
-            <Button disabled={project.projstatus && project.projstatus.id < 4} onClick={this.handleClickDataRoom} icon="folder">{i18n('dataroom.dataroom')}</Button>
-          )}
-        </div>
-
-        <div style={blockStyle}>
-          <h2 style={blockTitleStyle}>{i18n('project.deal_process')}</h2>
-          <TimelineView projId={id} />
-        </div>
-
+        <Modal
+          visible={this.state.visible}
+          title="联系交易师"
+          onCancel={this.handleCancel}
+          footer={[
+            <Button key="1" onClick={this.handleCancel}>取消</Button>,
+            <Button key="2" type="primary" loading={this.state.loading} onClick={this.handleOk}>确定</Button>
+          ]}
+        >
+          选择你的交易师：
+          <SelectNumber
+            style={{minWidth:150}}
+            options={traderOptions}
+            value={trader}
+            onChange={this.handleTraderChange}
+            notFoundContent={i18n('user.no_trader')} />
+        </Modal>
       </LeftRightLayout>
     )
   }
@@ -512,3 +381,263 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(ProjectDetail)
+
+
+// style
+const subtitleStyle = {
+  fontSize: 14,
+  textTransform: 'uppercase',
+  color: '#333',
+  marginBottom: 15,
+  marginTop: 0,
+}
+const iconStyle = {
+  width: 16,
+  marginRight: 8,
+  textAlign: 'center',
+}
+
+
+
+function ProjectImage({ project }) {
+  const src = (project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl'
+  return (
+    <div style={{marginBottom:30,position:'relative'}}>
+      <img style={{width:'100%',padding: 5, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: 3}} src={src} />
+      { project.projstatus && project.projstatus.id == 7 ?
+        <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>已完成</div>
+      : null }
+    </div>
+  )
+}
+
+class InterestedPeople extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      userListWithInterest: [],
+    }
+  }
+
+  componentDidMount() {
+    api.getFavoriteProj({ favoritetype: 5, proj: this.props.projId })
+      .then(data => this.setState({ userListWithInterest: data.data.data }))
+      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+  }
+
+  render() {
+    const { userListWithInterest } = this.state
+    return (
+      <div style={blockStyle}>
+        <h2 style={subtitleStyle}>{i18n('project.investors_interested')}</h2>
+        <div>
+          {userListWithInterest.length > 0 ? (
+              userListWithInterest.map(m =>
+                <Link key={m.id} to={'/app/user/' + m.user.id}>
+                  <img style={{ width: 48, height: 48, borderRadius: '50%', verticalAlign: 'top', marginRight: 4, marginBottom: 4 }} src={m.user.photourl} />
+                </Link>
+              )
+            ) : (
+              <p>暂无</p>
+            )
+          }
+          </div>
+      </div>
+    )
+  }
+}
+
+function Icon2(props) {
+  return <i style={props.style || iconStyle} className={'fa fa-' + props.type} aria-hidden="true"></i>
+}
+
+function SecretInfo({ project }) {
+  const spanStyle={width:100,display:'inline-block'}
+  return (
+    <div style={blockStyle}>
+      <h2 style={subtitleStyle}>{i18n('project.privacy_infomation')}</h2>
+      { hasPerm('proj.get_secretinfo') ?
+        <div>
+          <div>
+            <span style={spanStyle}>联系人</span>{project.contactPerson}
+          </div>
+          <div>
+            <span style={spanStyle}>电话</span>{project.phoneNumber}
+          </div>
+          <div>
+            <span style={spanStyle}>邮箱</span>{project.email}
+          </div>
+          <div>
+            <span style={spanStyle}>{i18n('project.uploader')}</span>{project.supportUser ? project.supportUser.username : '暂无'}
+          </div>
+          <div>
+            <span style={spanStyle}>{i18n('project.manager')}</span>{project.makeUser ? project.makeUser.username : '暂无'}
+          </div>
+        </div>
+      : null}
+    </div>
+  )
+}
+
+function ProjectHead({ project }) {
+  const tagStyle = {
+    flexShrink:0,
+    marginLeft: 8,
+    marginTop: 3,
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    boxShadow: 'none',
+    height: 28,
+    lineHeight: '28px',
+    cursor: 'default',
+  }
+  return (
+    <div style={{marginBottom:24}}>
+      <div style={{display:'flex'}}>
+        <h2 style={{margin: 0,marginBottom: 10,color: '#333',flexGrow: 1}}>{project.projtitle}</h2>
+        <Tag style={tagStyle}>{project.projstatus && project.projstatus.name}</Tag>
+      </div>
+      <p style={{marginBottom: 8}}>{i18n('project.release_time')} {project.createdtime && project.createdtime.substr(0,10)}</p>
+      <div style={{fontSize:13,marginBottom:3}}>
+        <Icon2 type="map-marker" />{project.country && project.country.country}
+      </div>
+      <div style={{fontSize:13,marginBottom:3}}>
+        <Icon2 type="industry" />{project.industries && project.industries[0] && project.industries[0].name}
+      </div>
+    </div>
+  )
+}
+
+function ProjectIntro({ project }) {
+  const labelStyle = {display: 'inline-block', width: 250}
+  return (
+    <div style={blockStyle}>
+      <p style={{marginBottom: 20}}>{project.p_introducte}</p>
+      <div style={{marginBottom: 20}}>
+        {project.tags && project.tags.map(item =>
+          <Tag key={item.id} color="orange">{item.name}</Tag>
+        )}
+      </div>
+      <div>
+        <div>
+          <span style={labelStyle}>{i18n('project.transaction_type') + ' : '}</span>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}
+        </div>
+        <div>
+          <span style={labelStyle}>{i18n('project.engagement_in_transaction') + ' : '}</span>{project.character && project.character.character}
+        </div>
+        <div>
+          <span style={labelStyle}>{i18n('project.transaction_size') + ' : '}</span>{project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'}
+        </div>
+        <div>
+          <span style={labelStyle}>{i18n('project.company_valuation') + ' : '}</span>{project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Detail({ project }) {
+  const containerStyle = {
+    padding: 10,
+    paddingTop: 0,
+  }
+  const style = {
+    paddingBottom: 10,
+    borderBottom: '1px dashed #e0e0e0',
+  }
+  const titleStyle = {
+    backgroundColor: '#f4f4f4',
+    fontSize: 14,
+    fontWeight: 400,
+    paddingLeft: 20,
+    height: 28,
+    lineHeight: '28px',
+    marginTop: 16,
+    color: '#0e0e0e',
+  }
+  const paraStyle = {
+    paddingTop: 10,
+    paddingLeft: 20,
+    fontSize: 13,
+    wordBreak: 'break-word',
+    lineHeight: '22px',
+  }
+
+  return (
+    <div style={containerStyle}>
+      {
+        project.targetMarket ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.target_market')}</h3>
+            <p style={paraStyle}>{project.targetMarket}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.productTechnology ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.product_technology')}</h3>
+            <p style={paraStyle}>{project.productTechnology}</p>
+          </div>
+        ): null
+      }
+      {
+        project.businessModel ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.business_model')}</h3>
+            <p style={paraStyle}>{project.businessModel}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.brandChannel ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.brand_channel')}</h3>
+            <p style={paraStyle}>{project.brandChannel}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.managementTeam ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.management_team')}</h3>
+            <p style={paraStyle}>{project.managementTeam}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.Businesspartners ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.business_partners')}</h3>
+            <p style={paraStyle}>{project.Businesspartners}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.useOfProceed ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.use_of_proceed')}</h3>
+            <p style={paraStyle}>{project.useOfProceed}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.financingHistory ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.financing_history')}</h3>
+            <p style={paraStyle}>{project.financingHistory}</p>
+          </div>
+        ) : null
+      }
+      {
+        project.operationalData ? (
+          <div style={style}>
+            <h3 style={titleStyle}>{i18n('project.operational_data')}</h3>
+            <p style={paraStyle}>{project.operationalData}</p>
+          </div>
+        ) : null
+      }
+    </div>
+  )
+}

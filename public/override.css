@@ -18,7 +18,7 @@ button[disabled], html input[disabled] {
   background-color: #f7f7f7;
   border-color: #ccc;
 }
-/* 白色按钮 */
+
 /* .ant-btn {
   color: #666;
   background-color: #fff;
@@ -47,6 +47,30 @@ button[disabled], html input[disabled] {
 .ant-btn-lg {
   font-size: 14px;
 }
+/* 白色按钮 */
+.ant-btn.white {
+  color: #666;
+  background-color: #fff;
+  border-color: #ccc;
+}
+.ant-btn.white:hover, .ant-btn.white:focus, .ant-btn.white:active {
+  color: #333;
+  background-color: #f7f7f7;
+  border-color: #ccc;
+}
+/* 成功色按钮 */
+.ant-btn.success {
+  color: #fff;
+  background-color: #1CAF9A;
+  border-color: #17a08c;
+}
+.ant-btn.success:hover, .ant-btn.success:focus, .ant-btn.success:active {
+  color: #fff;
+  background-color: #17a08c;
+  border-color: #119380;
+}
+
+
 
 /* Input */
 .ant-input:active, .ant-input:focus {
@@ -165,4 +189,44 @@ button[disabled], html input[disabled] {
 /* Checkbox */
 .ant-checkbox-wrapper + .ant-checkbox-wrapper {
   margin-left: 0;
+}
+
+
+/* Tabs */
+.ant-tabs {
+  background-color: #fcfcfc;
+  border-radius: 3px;
+}
+.ant-tabs-bar {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.ant-tabs-ink-bar {
+  display: none!important;
+}
+.ant-tabs-nav {
+  display: flex;
+  background-color: #d8dbde;
+}
+.ant-tabs-nav .ant-tabs-tab {
+  flex-grow: 1;
+  margin-right: 0;
+  color: #666;
+  text-align: center;
+  border-radius: 3px 3px 0 0;
+}
+.ant-tabs-nav .ant-tabs-tab:hover {
+  color: #333;
+}
+.ant-tabs-nav .ant-tabs-tab-active, .ant-tabs-nav .ant-tabs-tab-active:hover {
+  color: #555;
+  background-color: #fcfcfc;
+  cursor: default;
+}
+.ant-tabs-content {
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 3px 0 rgba(12,12,12,0.03);
+}
+.ant-tabs-tabpane {
+  padding: 15px;
 }
