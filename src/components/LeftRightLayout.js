@@ -122,7 +122,7 @@ class LeftRightLayout extends React.Component {
               </div>
             ) : null }
 
-            <div style={this.props.style || { padding: 24, minHeight: 360, overflow: 'auto' }}>
+            <div style={{ padding: 24, minHeight: 360, background: '#fff', overflow: 'auto', ...this.props.style }}>
               {this.props.children}
             </div>
             <Draggable cancel=".text-area"><div style={style}>

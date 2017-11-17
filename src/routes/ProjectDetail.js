@@ -278,7 +278,7 @@ class ProjectDetail extends React.Component {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location} title="项目详情">
+      <LeftRightLayout location={this.props.location} title="项目详情" style={{backgroundColor:'transparent'}}>
 
         <Row gutter={24}>
           <Col span={8}>
