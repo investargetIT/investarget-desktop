@@ -4,7 +4,7 @@ import Header from './Header';
 import { Layout, Icon } from 'antd'
 import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
-import Chat from './Chat'
+import InstantMessage from './InstantMessage'
 import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
@@ -126,7 +126,7 @@ class LeftRightLayout extends React.Component {
               {this.props.children}
             </div>
             <Draggable cancel=".text-area"><div style={style}>
-            <Chat />
+            <InstantMessage />
             </div></Draggable>
 
           </Content>
