@@ -72,10 +72,10 @@ function Navigation({ path }) {
       {
         paths.map((item, index) => {
           return (index == len - 1) ? (
-            <span>{item.name}</span>
+            <span key={item.key}>{item.name}</span>
           ) : (
-            <span>
-              <Link key={item.key} to={item.path}>{item.name}</Link>&nbsp;/&nbsp;
+            <span key={item.key}>
+              <Link to={item.path}>{item.name}</Link>&nbsp;/&nbsp;
             </span>
           )
         })
