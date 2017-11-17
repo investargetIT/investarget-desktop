@@ -133,26 +133,16 @@ class News extends React.Component {
 
   render() {
     return (
-      <Card title={i18n('market_news')} bordered={false} extra={
-        <div style={{fontSize: 16}}>
-          { hasPerm('usersys.as_admin') ? (
-            <Link to="/app/wxmsg">
-              <Icon style={{ cursor: "pointer", marginRight: 8 }} type="edit" />
-            </Link>
-          ) : null }
-          <Popconfirm title="Confirm to delete?" onConfirm={this.props.onClose.bind(null, 'news')}>
-            <Icon style={{ cursor: "pointer" }} type="close" />
-          </Popconfirm>
-        </div>
-      }>
+      <div style={{ position: 'relative' }}>
         {this.state.list.length > 0 ? (
-          <Carousel vertical={true} autoplay={true} dots={false}>
+          <Carousel vertical={true} autoplay={true} dots={false} style={{ margin: 10, position: 'relative' }}>
             {this.state.list.map(item => {
-              return <div key={item.id} style={{height:100,overflow:'scroll'}}><p style={{fontSize:13}}>{item.content}</p></div>
+              return <div key={item.id} style={{height:130,overflow:'scroll',display: 'flex', alignItems: 'center' }}> <Link to="/app/wxmsg"><p style={{fontSize:13, color: '#333'}}>{item.content}</p></Link></div>
             })}
           </Carousel>
         ) : <div style={{height:100}}><p style={{fontSize:13}}>{i18n('no_news')}</p></div>}
-      </Card>
+        <div style={{ position: 'absolute', top: -38, fontSize: 108, fontFamily: 'Georgia', color: 'lightGray' }}>&ldquo;</div>
+      </div>
     )
   }
 }
@@ -281,24 +271,28 @@ class IndexPage extends React.Component {
 
         <Row style={{ height: 150, overflow: 'hidden' }}>
           <Col span={6} style={{ height: '100%' }}>
-          <div style={{ height: 130, margin: 10, backgroundColor: 'rgb(41, 174, 154)', overflow: 'hidden' }}>
-          <img style={{ background: '#10458F', width: 200, margin: 'auto', verticalAlign: 'middle' }} src="/images/investor_stat.png" />
-          </div>
+            <div style={{ height: 130, margin: 10, backgroundColor: 'rgb(41, 174, 154)', overflow: 'hidden' }}>
+              <InvestorStatistic totalInvestorNum="900K+" newInvestorNum="78" />
+            </div>
           </Col>
           <Col span={3} style={{ height: '100%' }}>
-          <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)', overflow: 'hidden' }}>
-          <img style={{ width: 80, marginTop: 20 }} src="/images/calendar.png" />
-          </div>
+            <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)', overflow: 'hidden', textAlign: 'center' }}>
+              <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="fa fa-calendar-o"></i>
+              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>11月17日</p>
+            </div>
           </Col>
-          <Col span={3} style={{ height: '100%'  }}>
-          <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(215, 84, 82)', overflow: 'hidden' }}>
-          <img style={{ width: 80, marginTop: 20 }} src="/images/time.png" />
-          </div>
+          <Col span={3} style={{ height: '100%' }}>
+            <div style={{ height: 130, margin: '10px 5px', textAlign: 'center', backgroundColor: 'rgb(215, 84, 82)', overflow: 'hidden' }}>
+              <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="glyphicon glyphicon-time"></i>
+              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>17:50</p>
+            </div>
           </Col>
-          <Col span={12}>
-        <News onClose={this.closeCard} />
-        </Col>
+          <Col span={12} style={{ padding: 10 }}>
+            <News onClose={this.closeCard} />
+          </Col>
         </Row>
+
+        <div style={{ height: 40 }} />
 
         <Row>
           <Col span={12}>
@@ -545,6 +539,28 @@ function IndustryDegree(props) {
           }}
         forceFit={true} />
 </div>
+  );
+}
+
+function InvestorStatistic(props) {
+  return (
+    <div>
+      <Row>
+        <Col span={12} style={{ padding: 10 }}>
+          <img style={{ height: 60, margin: 'auto', verticalAlign: 'middle' }} src="/images/is-user.png" />
+        </Col>
+        <Col span={12} style={{ padding: '10px 0' }}>
+          <div style={{ height: 60, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ color: 'white', fontSize: 12, fontWeight: 'lighter' }}>投资人总数</p>
+          <h1 style={{ color: 'white', fontSize: 32 }}>{props.totalInvestorNum}</h1>
+          </div>
+        </Col>
+      </Row>
+      <Row style={{ padding: '0 10px' }}>
+        <p style={{ color: 'white', fontSize: 12, fontWeight: 'lighter' }}>新增投资人数量</p>
+        <p style={{ color: 'white', fontSize: 20 }}>{props.newInvestorNum}</p>
+      </Row>
+    </div>
   );
 }
 

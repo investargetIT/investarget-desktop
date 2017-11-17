@@ -19,7 +19,7 @@ class RecommendFriends extends React.Component {
 
   componentDidMount() {
     const params = {
-      org: 39, // 机构: 多维海拓
+      // org: 39, // 机构: 多维海拓
       groups: [2], // 用户组：交易师
     }
     api.getUser(params)
