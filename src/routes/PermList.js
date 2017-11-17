@@ -244,7 +244,7 @@ class PermList extends React.Component {
       title: 'Permission',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record, index) => `${text}, key is ${record.codename}`,
+      render: (text, record, index) => `${text}`,
     }]
 
     const columns = firstColumn.concat(groups)
