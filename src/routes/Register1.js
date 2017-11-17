@@ -23,11 +23,12 @@ class Register1 extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
-        const { mobile } = values.mobileInfo;
+        const { mobile, areaCode } = values.mobileInfo;
         api.checkUserExist(mobile)
         .then(result => {
-          const url = result.data.result ? '/password' : '/register';
-          this.props.dispatch(routerRedux.push(url));
+          const pathname = result.data.result ? '/password' : '/register';
+          const state = { mobile, areaCode }
+          this.props.dispatch(routerRedux.push({ pathname, state }));
         });
       }
     });
@@ -35,11 +36,13 @@ class Register1 extends React.Component {
 
   render () {
     return (
-      <div style={{ padding: 200 }}>
-      <Form onSubmit={this.handleSubmit}>
-      <Mobile country={this.props.country} onBlur={this.handleMobileBlur} required />
-      <Button style={{ marginLeft: 250 }} type="primary" htmlType="submit" size="large">下一步</Button>
-      </Form>
+      <div style={{ padding: 200, backgroundColor: 'white' }}>
+        <div style={{ width: 700, margin: 'auto' }}>
+          <Form onSubmit={this.handleSubmit}>
+            <Mobile country={this.props.country} onBlur={this.handleMobileBlur} required />
+            <Button style={{ marginLeft: 175 }} type="primary" htmlType="submit" size="large">下一步</Button>
+          </Form>
+        </div>
       </div>
     );
   }

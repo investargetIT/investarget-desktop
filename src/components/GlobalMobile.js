@@ -70,13 +70,13 @@ class GlobalMobile extends React.Component {
     const { countryId, areaCode, mobile } = this.state
     return (
       <Input.Group compact>
-        <Select size="large" style={{ width: 60 }} onChange={this.handleChangeCountry} value={countryId + ''}>
+        <Select size="large" style={{ width: 60 }} disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId + ''}>
           {this.props.country.map(c => <Option key={c.id} value={c.id + ''}>
             <img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} />
           </Option>)}
         </Select>
-        <Input size="large" style={{ width: '10%' }} value={areaCode} onChange={this.handleChangeAreaCode} />
-        <Input size="large" style={{ width: '30%' }} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
+        <Input size="large" style={{ width: '10%' }} disabled={this.props.disabled} value={areaCode} onChange={this.handleChangeAreaCode} />
+        <Input size="large" style={{ width: '30%' }} disabled={this.props.disabled} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
       </Input.Group>
     )
   }

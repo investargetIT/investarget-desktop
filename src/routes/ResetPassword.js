@@ -34,6 +34,13 @@ class ResetPassword extends React.Component {
       intervalId: null,
       loading: false,
     }
+
+    const { state } = this.props.location;
+    if (state) {
+      const { mobile, areaCode } = state;
+      this.mobile = mobile;
+      this.areaCode = areaCode;
+    }
   }
 
   handleSubmit = (e) => {
@@ -135,7 +142,7 @@ class ResetPassword extends React.Component {
       <LeftRightLayout location={this.props.location}>
           <h2 style={titleStyle}>{i18n('account.reset_password')}</h2>
           <Form onSubmit={this.handleSubmit}>
-            <Mobile required country={this.props.country} />
+            <Mobile disabled={this.mobile&&this.areaCode ? true : false} required country={this.props.country} mobile={this.mobile} areaCode={this.areaCode}/>
             <Code
               loading={this.state.loading}
               value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}

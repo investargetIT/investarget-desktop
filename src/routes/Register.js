@@ -58,6 +58,13 @@ class Register extends React.Component {
     this.onProjectsSkip = this.onProjectsSkip.bind(this)
     this.onProjectsSubmit = this.onProjectsSubmit.bind(this)
     this.timer = this.timer.bind(this)
+
+    const { state } = this.props.location;
+    if (state) {
+      const { mobile, areaCode } = state;
+      this.mobile = mobile;
+      this.areaCode = areaCode;
+    }
   }
 
   getChildContext() {
@@ -297,7 +304,14 @@ class Register extends React.Component {
 
               <Form onSubmit={this.handleSubmit}>
                 <Role />
-                <Mobile country={this.props.country} onBlur={this.handleMobileBlur} required />
+                <Mobile 
+                disabled={this.mobile&&this.areaCode?true:false}
+                country={this.props.country} 
+                onBlur={this.handleMobileBlur} 
+                required
+                mobile={this.mobile}
+                areaCode={this.areaCode} 
+                />
                 <Code
                   loading={this.state.loading}
                   value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}

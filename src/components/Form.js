@@ -179,8 +179,8 @@ const Mobile = (props, context) => {
   }
 
   return (
-    <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo" valueType="object" validator={check} initialValue={{areaCode:'86',mobile:''}}>
-      <GlobalMobile onBlur={props.onBlur} />
+    <BasicFormItem label={i18n("account.mobile")} required={props.required} name="mobileInfo" valueType="object" validator={check} initialValue={{areaCode:props.areaCode||'86',mobile:props.mobile || '' }}>
+      <GlobalMobile onBlur={props.onBlur} disabled={props.disabled} />
     </BasicFormItem>
   )
 }
