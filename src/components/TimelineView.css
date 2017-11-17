@@ -91,3 +91,9 @@
   padding: 10px 20px 20px;
   line-height: 22px;
 }
+
+.investor-box {
+  width: 40px;
+  margin-right: 5px;
+  float: left;
+}

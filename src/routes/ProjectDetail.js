@@ -457,7 +457,7 @@ function SecretInfo({ project }) {
   return (
     <div style={blockStyle}>
       <h2 style={subtitleStyle}>{i18n('project.privacy_infomation')}</h2>
-      { hasPerm('proj.get_secretinfo') ?
+      { hasPerm('proj.get_secretinfo') ? (
         <div>
           <div>
             <span style={spanStyle}>联系人</span>{project.contactPerson}
@@ -475,7 +475,30 @@ function SecretInfo({ project }) {
             <span style={spanStyle}>{i18n('project.manager')}</span>{project.makeUser ? project.makeUser.username : '暂无'}
           </div>
         </div>
-      : null}
+      ) : (
+        <div style={{position:'relative'}}>
+          <div style={{position:'absolute',left:0,right:0,top:0,bottom:0,margin:'auto',width:'100%',textAlign:'center',height:28,lineHeight:'28px',color:'#616161',fontSize:13}}>
+            <span style={{padding:'5px 10px',border:'1px dashed #9e9e9e',borderRadius:3}}>您没有查看权限</span>
+          </div>
+          <div style={{filter:'blur(10px)',userSelect:'none'}}>
+            <div>
+              <span style={spanStyle}>联系人</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>电话</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>邮箱</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>{i18n('project.uploader')}</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>{i18n('project.manager')}</span>unknown
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
