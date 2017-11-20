@@ -80,7 +80,9 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
   39: '时间轴备注管理',
   9: '用户管理',
   54: '好友管理管理',
-  7: '绑定管理管理'
+  7: '绑定管理管理',
+  74: '日程管理',
+  71: '项目BD管理',
 }
 
 export const BASE_URL = 'http://192.168.1.251:8080'
