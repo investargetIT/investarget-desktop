@@ -1,12 +1,13 @@
 import React from 'react';
 import { Menu, Icon, Modal, Badge, Input, Popover } from 'antd';
-import { Link, withRouter } from 'dva/router';
+import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
 import qs from 'qs'
 import { i18n } from '../utils/util'
 import styles from './Header.css'
 import classNames from 'classnames'
+import SiteSearch from './SiteSearch'
 
 const confirm = Modal.confirm
 
@@ -14,28 +15,7 @@ const headerStyle = {
   height: 50,
   borderBottom: 'none',
 }
-const searchStyle = {
-  float: 'left',
-  position: 'relative',
-  width: 250,
-  height: 50,
-  borderRight: '1px solid #eee',
-}
-const searchInputStyle = {
-  height: '100%',
-  width: '100%',
-  border: 'none',
-  outline: 'none',
-  padding: '18px 20px',
-  paddingRight: 40,
-}
-const searchIconStyle = {
-  position: 'absolute',
-  right: 8,
-  top: 15,
-  zIndex: 1,
-  fontSize: 20,
-}
+
 
 class UserProfile extends React.Component {
 
@@ -144,18 +124,6 @@ function Header(props) {
 
   }
 
-  function handleChangeSearch(e) {
-    const search = e.target.value
-    props.dispatch({ type: 'app/saveSearch', payload: search })
-  }
-
-  function handleSearch(e) {
-    if (e.keyCode == 13) {
-      let search = e.target.value
-      props.dispatch({ type: 'app/globalSearch', payload: search })
-    }
-  }
-
   const login = (
     <div className={styles["nav-item"]}>
       <Link to="/login">{i18n('account.login')}</Link>
@@ -191,16 +159,8 @@ function Header(props) {
         className={classNames(styles['menutoggle'], {[styles['menutoggle-collapsed']]: collapsed})}>
         <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
       </div>
-      <div style={searchStyle}>
-        <input
-          placeholder="搜索一下"
-          style={searchInputStyle}
-          value={props.search}
-          onChange={handleChangeSearch}
-          onKeyUp={handleSearch}
-        />
-        <Icon type="search" style={searchIconStyle}/>
-      </div>
+
+      <SiteSearch />
 
       <div style={{height: 50,float: 'right'}} className="clearfix">
         { currentUser ? null : login }
@@ -216,8 +176,8 @@ function Header(props) {
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { collapsed, unreadMessageNum, search } = state.app
-  return { currentUser, collapsed, unreadMessageNum, search }
+  const { collapsed, unreadMessageNum } = state.app
+  return { currentUser, collapsed, unreadMessageNum }
 }
 
-export default connect(mapStateToProps)(withRouter(Header))
+export default connect(mapStateToProps)(Header)

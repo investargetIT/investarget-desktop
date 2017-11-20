@@ -251,3 +251,13 @@ export function getImageUrl(key) {
 }
 
 export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, getUserInfo, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM, getPdfUrl }
+
+export function isParent(node, parentNode) {
+  while (node != undefined && node != null && node.tagName.toUpperCase() != 'BODY') {
+    if (node == parentNode) {
+      return true
+    }
+    node = node.parentNode
+  }
+  return false
+}
