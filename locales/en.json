@@ -154,6 +154,7 @@
     "project_english_name": "Project English Name",
     "chinese_name": "Chinese Name",
     "english_name": "English Name",
+    "real_name": "Real Name",
     "tags": "Tags",
     "industry": "Industry",
     "engagement_in_transaction": "Engagement in Transaction",
@@ -212,6 +213,15 @@
     "modify_project_status": "Modify Project Status",
     "project_status": "Project Status",
     "is_send_email": "Whether to send email ?",
+    "project_pdf_download": "Project PDF Download",
+    "file_download": "File Donwload",
+    "connect_trader": "Connect Trader",
+    "select_trader": "Please select your trader:",
+    "finished": "Finished",
+    "project_real_name": "Project Real Name",
+    "no_view_permission": "You have no view permission",
+    "timeline": "Timeline",
+    "project_detail": "Project Detail",
 
     "message": {
       "validation_industry_image_not_null": "Industry image can't be null",
@@ -321,6 +331,7 @@
     "no_trader": "No Trader",
     "select_trader": "Select Trader",
     "select_investor": "Select Investor",
+    "org_investors": "Organization Investors",
 
     "message": {
       "user_exist": "User exist",
@@ -559,7 +570,7 @@
   "mobile": "Mobile",
   "recommend_to_investor": "Recommend to Investor",
   "investor_not_found": "Investor Not Found",
-  "not_favorite_yet": "You haven't favorite the project yet! So you can't recomment to investor",
+  "not_favorite_yet": "You haven't favorite the project yet! So you can't recommend to investor",
 
   "market_news": "Market News",
   "no_news": "No News",
@@ -570,5 +581,7 @@
   "mobile_incorrect_format": "Mobile format is incorrect",
 
   "retrieve_password": "Retrieve Password",
-  "to_login": "Login"
+  "to_login": "Login",
+  "site_search": "Search...",
+  "query_no_results": "No results found for query"
 }

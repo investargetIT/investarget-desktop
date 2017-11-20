@@ -4,6 +4,7 @@ import { Link } from 'dva/router'
 import { Button } from 'antd'
 import styles from './TimelineView.css'
 import classNames from 'classnames'
+import { i18n } from '../utils/util'
 
 const titleStyle = {
   padding: '8px 0'
@@ -52,7 +53,7 @@ class TimelineView extends React.Component {
       <div className={styles['timeline']}>
         <div className={styles["timeline-line"]}></div>
         <div style={{width:150,margin:'0 auto 20px',textAlign:'center'}}>
-          <Button style={{backgroundColor: '#a0d468',borderColor: '#a0d468',color: '#fff'}}>时间轴</Button>
+          <Button style={{backgroundColor: '#a0d468',borderColor: '#a0d468',color: '#fff'}}>{i18n('project.timeline')}</Button>
         </div>
         {
           transactionStatus.map((status, index) => {

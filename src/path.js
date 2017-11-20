@@ -3,7 +3,7 @@ import { i18n } from "./utils/util";
 export const PATH_LIST = [
   {
     key: 'home',
-    name: '主页',
+    name: i18n('common.home'),
     path: '/app',
     realpath: '/',
     parent: null
@@ -24,7 +24,7 @@ export const PATH_LIST = [
   },
   {
     key: 'project_library_detail',
-    name: '项目详情', // todo
+    name: i18n('project.project_detail'), // todo
     path: /^\/app\/projects\/library\/(\d+)$/,
     realpath: /^\/app\/projects\/library\/(\d+)$/,
     parent: 'project_library',
@@ -80,7 +80,7 @@ export const PATH_LIST = [
   },
   {
     key: 'edit_marketplace',
-    name: i18n('project.eidt_marketplace'),
+    name: i18n('project.edit_marketplace'),
     path: /^\/app\/marketplace\/edit\/(\d+)$/,
     realpath: /^\/app\/marketplace\/edit\/(\d+)$/,
     parent: 'platform_projects',
@@ -143,14 +143,14 @@ export const PATH_LIST = [
   },
   {
     key: 'organization_investors',
-    name: '机构投资人', // todo i18n
+    name: i18n('user.org_investors'),
     path: '/app/orguser/list',
     realpath: '/app/orguser/list',
     parent: 'organization_bd', // todo ?
   },
   {
     key: 'organization_select_investor',
-    name: '选择投资人', // todo i18n
+    name: i18n('user.select_investor'),
     path: '/app/organization/selectuser',
     realpath: '/app/organization/selectuser',
     parent: 'organization_bd',

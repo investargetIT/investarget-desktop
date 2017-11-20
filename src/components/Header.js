@@ -78,7 +78,8 @@ class UserProfile extends React.Component {
         </div>
         <ul className="dropdown-menu" style={{...dropMenuStyle, display: this.state.visible ? 'block' : 'none'}}>
           <li onClick={this.handleMenuClick.bind(this, 'logout')}>
-            <i className="glyphicon glyphicon-log-out"></i> Log Out
+            <i className="glyphicon glyphicon-log-out" style={{fontSize:11,marginRight:5}}></i>
+            {i18n('account.logout')}
           </li>
         </ul>
       </div>

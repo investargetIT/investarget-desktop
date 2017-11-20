@@ -215,7 +215,7 @@ class SiteSearch extends React.Component {
       } else {
         content = (
           <ul style={listStyle}>
-            <li style={itemStyle}>查询没有结果</li>
+            <li style={itemStyle}>{i18n('query_no_results')}</li>
           </ul>
         )
       }
@@ -224,7 +224,7 @@ class SiteSearch extends React.Component {
     return (
       <div style={searchStyle} ref="site_search">
         <input
-          placeholder="搜索一下"
+          placeholder={i18n('site_search')}
           style={searchInputStyle}
           value={this.props.search}
           onChange={this.handleChangeSearch}

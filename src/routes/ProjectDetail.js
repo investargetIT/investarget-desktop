@@ -278,7 +278,7 @@ class ProjectDetail extends React.Component {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
 
     return (
-      <LeftRightLayout location={this.props.location} title="项目详情" style={{backgroundColor:'transparent'}}>
+      <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')} style={{backgroundColor:'transparent'}}>
 
         <Row gutter={24}>
           <Col span={8}>
@@ -293,24 +293,24 @@ class ProjectDetail extends React.Component {
               <ProjectHead project={project} />
               <div style={blockStyle}>
                 { isFavorite ?
-                    <Button icon="heart" className="success" size="large" style={{marginRight: 8}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 8}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
+                    <Button icon="heart" className="success" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
 
                 { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-                  <Button className="white" size="large" style={{marginRight: 8}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                  <Button className="white" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
                 : null }
 
                 { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-                  <Button className="white" size="large" style={{marginRight: 8}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                  <Button className="white" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
                 : null }
 
                 <a href={getPdfUrl(id)}>
-                  <Button  className="white" size="large" icon="file-pdf">项目PDF下载</Button>
+                  <Button  className="white" size="large" icon="file-pdf">{i18n('project.project_pdf_download')}</Button>
                 </a>
               </div>
 
               <Tabs animated={false}>
-                <TabPane tab="项目简介" key="1">
+                <TabPane tab={i18n('project.profile')} key="1">
                   <div style={{padding:10}}>
                     <ProjectIntro project={project} />
                     <div style={blockStyle}>
@@ -321,13 +321,13 @@ class ProjectDetail extends React.Component {
                     </div>
                   </div>
                 </TabPane>
-                <TabPane tab="财务信息" key="2">
+                <TabPane tab={i18n('project.financials')} key="2">
                   <ProjectFinanceYear projId={id} />
                 </TabPane>
-                <TabPane tab="项目详情" key="3">
+                <TabPane tab={i18n('project.details')} key="3">
                   <Detail project={project} />
                 </TabPane>
-                <TabPane tab="文件下载" key="4">
+                <TabPane tab={i18n('project.file_download')} key="4">
                   <DownloadFiles projectId={id} />
                 </TabPane>
               </Tabs>
@@ -337,14 +337,14 @@ class ProjectDetail extends React.Component {
 
         <Modal
           visible={this.state.visible}
-          title="联系交易师"
+          title={i18n('project.connect_trader')}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="1" onClick={this.handleCancel}>取消</Button>,
-            <Button key="2" type="primary" loading={this.state.loading} onClick={this.handleOk}>确定</Button>
+            <Button key="1" onClick={this.handleCancel}>{i18n('common.cancel')}</Button>,
+            <Button key="2" type="primary" loading={this.state.loading} onClick={this.handleOk}>{i18n('common.confirm')}</Button>
           ]}
         >
-          选择你的交易师：
+          {i18n('project.select_trader')}
           <SelectNumber
             style={{minWidth:150}}
             options={traderOptions}
@@ -388,7 +388,7 @@ function ProjectImage({ project }) {
     <div style={{marginBottom:30,position:'relative'}}>
       <img style={{width:'100%',padding: 5, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: 3}} src={src} />
       { project.projstatus && project.projstatus.id == 7 ?
-        <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>已完成</div>
+        <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>{i18n('project.finished')}</div>
       : null }
     </div>
   )
@@ -422,7 +422,7 @@ class InterestedPeople extends React.Component {
                 </Link>
               )
             ) : (
-              <p>暂无</p>
+              <p>{i18n('common.none')}</p>
             )
           }
           </div>
@@ -436,48 +436,68 @@ function Icon2(props) {
 }
 
 function SecretInfo({ project }) {
-  const spanStyle={width:100,display:'inline-block'}
+  const spanStyle={width:'40%',minWidth:120,marginRight:16,display:'inline-block',verticalAlign:'top'}
+  const contentStyle={verticalAlign:'top'}
   return (
     <div style={blockStyle}>
       <h2 style={subtitleStyle}>{i18n('project.privacy_infomation')}</h2>
       { hasPerm('proj.get_secretinfo') ? (
         <div>
           <div>
-            <span style={spanStyle}>联系人</span>{project.contactPerson}
+            <span style={spanStyle}>{i18n('project.project_real_name')}</span>
+            <span style={contentStyle}>{project.realname}</span>
           </div>
           <div>
-            <span style={spanStyle}>电话</span>{project.phoneNumber}
+            <span style={spanStyle}>{i18n('project.contact_person')}</span>
+            <span style={contentStyle}>{project.contactPerson}</span>
           </div>
           <div>
-            <span style={spanStyle}>邮箱</span>{project.email}
+            <span style={spanStyle}>{i18n('project.phone')}</span>
+            <span style={contentStyle}>{project.phoneNumber}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.uploader')}</span>{project.supportUser ? project.supportUser.username : '暂无'}
+            <span style={spanStyle}>{i18n('project.email')}</span>
+            <span style={contentStyle}>{project.email}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.manager')}</span>{project.makeUser ? project.makeUser.username : '暂无'}
+            <span style={spanStyle}>{i18n('project.uploader')}</span>
+            <span style={contentStyle}>{project.supportUser ? project.supportUser.username : i18n('common.none')}</span>
+          </div>
+          <div>
+            <span style={spanStyle}>{i18n('project.take_user')}</span>
+            <span style={contentStyle}>{project.takeUser ? project.takeUser.username : i18n('common.none')}</span>
+          </div>
+          <div>
+            <span style={spanStyle}>{i18n('project.make_user')}</span>
+            <span style={contentStyle}>{project.makeUser ? project.makeUser.username : i18n('common.none')}</span>
           </div>
         </div>
       ) : (
         <div style={{position:'relative'}}>
           <div style={{position:'absolute',left:0,right:0,top:0,bottom:0,margin:'auto',width:'100%',textAlign:'center',height:28,lineHeight:'28px',color:'#616161',fontSize:13}}>
-            <span style={{padding:'5px 10px',border:'1px dashed #9e9e9e',borderRadius:3}}>您没有查看权限</span>
+            <span style={{padding:'5px 10px',border:'1px dashed #9e9e9e',borderRadius:3}}>{i18n('no_view_permission')}</span>
           </div>
           <div style={{filter:'blur(10px)',userSelect:'none'}}>
             <div>
-              <span style={spanStyle}>联系人</span>unknown
+              <span style={spanStyle}>{i18n('project.project_real_name')}</span>unknown
             </div>
             <div>
-              <span style={spanStyle}>电话</span>unknown
+              <span style={spanStyle}>{i18n('project.contact_person')}</span>unknown
             </div>
             <div>
-              <span style={spanStyle}>邮箱</span>unknown
+              <span style={spanStyle}>{i18n('project.phone')}</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>{i18n('project.email')}</span>unknown
             </div>
             <div>
               <span style={spanStyle}>{i18n('project.uploader')}</span>unknown
             </div>
             <div>
-              <span style={spanStyle}>{i18n('project.manager')}</span>unknown
+              <span style={spanStyle}>{i18n('project.take_user')}</span>unknown
+            </div>
+            <div>
+              <span style={spanStyle}>{i18n('project.make_user')}</span>unknown
             </div>
           </div>
         </div>

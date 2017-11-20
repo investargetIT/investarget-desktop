@@ -154,6 +154,7 @@
     "project_english_name": "项目英文名",
     "chinese_name": "中文名",
     "english_name": "英文名",
+    "real_name": "真实名称",
     "tags": "热门标签",
     "industry": "项目行业",
     "engagement_in_transaction": "我的角色",
@@ -212,6 +213,15 @@
     "modify_project_status": "修改项目状态",
     "project_status": "项目状态",
     "is_send_email": "是否发送邮件？",
+    "project_pdf_download": "项目PDF下载",
+    "file_download": "文件下载",
+    "connect_trader": "联系交易师",
+    "select_trader": "选择你的交易师：",
+    "finished": "已完成",
+    "project_real_name": "项目真实名称",
+    "no_view_permission": "您没有查看权限",
+    "timeline": "时间轴",
+    "project_detail": "项目详情",
 
     "message": {
       "validation_industry_image_not_null": "行业图片不能为空",
@@ -321,6 +331,7 @@
     "no_trader": "暂无交易师，系统会在近期分配交易师",
     "select_trader": "选择交易师",
     "select_investor": "选择投资人",
+    "org_investors": "机构投资人",
 
     "message": {
       "user_exist": "该用户已经存在",
@@ -569,5 +580,7 @@
   "mobile_incorrect_format": "手机号码格式错误",
 
   "retrieve_password": "找回密码",
-  "to_login": "前往登录"
+  "to_login": "前往登录",
+  "site_search": "搜索一下",
+  "query_no_results": "查询没有结果"
 }
