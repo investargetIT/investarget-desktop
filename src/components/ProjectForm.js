@@ -66,6 +66,10 @@ class ProjectBaseForm extends React.Component {
           <Input />
         </BasicFormItem>
 
+        <BasicFormItem label={i18n('project.real_name')} name="realname" required whitespace>
+          <Input />
+        </BasicFormItem>
+
         <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
           <SelectTag mode="multiple" />
         </BasicFormItem>

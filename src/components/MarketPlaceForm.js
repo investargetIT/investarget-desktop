@@ -45,7 +45,7 @@ class MarketPlaceForm extends React.Component {
   }
 
   phoneNumberValidator = (rule, value, callback) => {
-    const isPhoneNumber = /([0-9]+)-([0-9]+)/
+    const isPhoneNumber = /^\d*\-?\d*$/
     if (isPhoneNumber.test(value)) {
       callback()
     } else {
@@ -65,6 +65,10 @@ class MarketPlaceForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.english_name')} name="projtitleE" required whitespace>
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project.real_name')} name="realname" required whitespace>
           <Input />
         </BasicFormItem>
 
@@ -90,7 +94,7 @@ class MarketPlaceForm extends React.Component {
 
         {
           hasPerm('proj.get_secretinfo') ? (
-            <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
+            <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><Input /></BasicFormItem>
           ) : null
         }
 
