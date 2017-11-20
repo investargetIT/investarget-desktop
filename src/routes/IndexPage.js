@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row, Tooltip as Tooltips } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { i18n, handleError, time, hasPerm } from '../utils/util'
 import createG2 from '../g2-react';
@@ -161,6 +161,9 @@ class IndexPage extends React.Component {
       investRound: null,
       investAddr: null,
       investDegree: null,
+      investorStatistic: null,
+      firstSchedule: null,
+      secondSchedule: null,
     }
 
     this.closeCard = this.closeCard.bind(this)
@@ -231,6 +234,29 @@ class IndexPage extends React.Component {
       investAddr.sort( (a, b) => b.value - a.value);
       this.setState({ investEvent, investAddr: investAddr.slice(0, 6), investRound, investDegree });
     });
+
+    api.getInvestorStatistic()
+    .then(data => this.setState({ investorStatistic: data.data }))
+
+    api.getSchedule({ time: formatDate(new Date()) })
+    .then(result => {
+      if (result.data.count > 0) {
+        const schedule = result.data.data[0];
+        this.setState({ firstSchedule: schedule.scheduledtime.split('T').join(' ') + ' ' + schedule.comments });
+      }
+    });
+
+    const dayAfterTomorrow = new Date();
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+
+    api.getSchedule({ time: formatDate(dayAfterTomorrow) })
+    .then(result => {
+      if (result.data.count > 0) {
+        const schedule = result.data.data[0];
+        this.setState({ secondSchedule: schedule.scheduledtime.split('T').join(' ') + ' ' + schedule.comments });
+      }
+    });
+
   }
 
   closeCard(widgetName) {
@@ -266,26 +292,44 @@ class IndexPage extends React.Component {
   }
 
   render() {
+    const date = new Date();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
     return (
       <LeftRightLayout location={this.props.location} title="Dashboard">
 
         <Row style={{ height: 150, overflow: 'hidden' }}>
           <Col span={6} style={{ height: '100%' }}>
             <div style={{ height: 130, margin: 10, backgroundColor: 'rgb(41, 174, 154)', overflow: 'hidden' }}>
-              <InvestorStatistic totalInvestorNum="900K+" newInvestorNum="78" />
+              {this.state.investorStatistic ?
+                <InvestorStatistic
+                  totalInvestorNum={this.state.investorStatistic.total}
+                  newInvestorNum={this.state.investorStatistic.new}
+                />
+                : null}
             </div>
           </Col>
           <Col span={3} style={{ height: '100%' }}>
+          <Link to="/app/schedule">
+          <Tooltips title={this.state.firstSchedule || ''}>
             <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)', overflow: 'hidden', textAlign: 'center' }}>
               <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="fa fa-calendar-o"></i>
-              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>11月17日</p>
+              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>{pad(month + 1) + '月' + pad(day) + '日'}</p>
             </div>
+          </Tooltips>
+          </Link>
           </Col>
           <Col span={3} style={{ height: '100%' }}>
+          <Link to="/app/schedule">
+          <Tooltips title={this.state.secondSchedule || ''}>
             <div style={{ height: 130, margin: '10px 5px', textAlign: 'center', backgroundColor: 'rgb(215, 84, 82)', overflow: 'hidden' }}>
               <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="glyphicon glyphicon-time"></i>
-              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>17:50</p>
+              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>{pad(hour) + ':' + pad(minute)}</p>
             </div>
+            </Tooltips>
+          </Link>
           </Col>
           <Col span={12} style={{ padding: 10 }}>
             <News onClose={this.closeCard} />
@@ -302,6 +346,8 @@ class IndexPage extends React.Component {
             { this.state.investRound ? <PopulationByAge data={ this.state.investRound} /> : null }
           </Col>
         </Row>
+
+        <div style={{ height: 20 }} />
 
         <Row>
           <Col span={12}>
@@ -349,6 +395,8 @@ function EventArea(props) {
   });
 
   return (
+    <div>
+      <p style={{ textAlign: 'center' }}>投资事件行业分布图</p>
     <Pie
     data={props.data}
     width= {500}
@@ -358,6 +406,7 @@ function EventArea(props) {
     }}
     forceFit={true}
   />
+  </div>
   );
 
 }
@@ -393,6 +442,7 @@ function InvestBarChart(props) {
   });
   return (
     <div>
+      <p style={{ textAlign: 'center' }}>投资事件地区分布图</p>
       <Chart
       data={frame }
       width={500}
@@ -433,6 +483,7 @@ function PopulationByAge(props) {
   frame1 = Frame.combinColumns(frame1,["A+轮","A轮","B+轮","B轮","C+轮","C轮","D+轮","D轮"],'投资事件数量','轮次','year');
   return (
     <div>
+      <p style={{ textAlign: 'center' }}>投资事件轮次分布图</p>
     <Chart
       data={frame1}
       width={600}
@@ -526,6 +577,7 @@ function IndustryDegree(props) {
 
   return (
     <div>
+      <p style={{ textAlign: 'center' }}>行业热度分布图</p>
       <Chart
         data={props.data}
         width={700}
@@ -562,6 +614,22 @@ function InvestorStatistic(props) {
       </Row>
     </div>
   );
+}
+
+function pad(number) {
+  if (number < 10) {
+    return '0' + number;
+  }
+  return number;
+}
+
+function formatDate(date) {
+  return date.getFullYear() +
+  '-' + pad(date.getMonth() + 1) +
+  '-' + pad(date.getDate()) +
+  'T' + pad(date.getHours()) +
+  ':' + pad(date.getMinutes()) +
+  ':' + pad(date.getSeconds());
 }
 
 export default connect()(IndexPage)

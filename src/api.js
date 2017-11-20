@@ -744,3 +744,4 @@ export const resetPassword = (param) => {
 }
 
 export const getStatisticalData = type => r('/mongolog/count?type=' + type);
+export const getInvestorStatistic = () => r('/user/count');
