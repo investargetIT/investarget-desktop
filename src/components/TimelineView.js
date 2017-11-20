@@ -70,7 +70,7 @@ class TimelineView extends React.Component {
                     </span>
                 </div>
                 <div className={styles["timeline-badge"] + ' ' + styles["line-padding"]}>
-                    <img src={`http://10.0.0.4:4040/assets/img/step${step}.png`} />
+                    <img src={`/images/step${step}.png`} />
                 </div>
                 <div className={styles["timeline-panel"]} style={borderStyle}>
                   <div className={styles["timeline-header"]}>
