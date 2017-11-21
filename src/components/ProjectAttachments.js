@@ -13,6 +13,7 @@ import {
   message,
   Modal,
 } from 'antd'
+import QRCode from 'qrcode.react';
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
 
@@ -77,6 +78,7 @@ class ProjectAttachments extends React.Component {
       dirs: fixedDirs.slice(),
       activeDir: fixedDirs[0],
       newDir: '',
+      qrCodeValue: null,
     }
   }
 
@@ -298,6 +300,14 @@ class ProjectAttachments extends React.Component {
     })
   }
 
+  handleMobileUploadBtnClicked = () => {
+    this.setState({ qrCodeValue: 'http://192.168.1.113:3000/upload' });
+  }
+
+  handleCancelMobileUpload = () => {
+    this.setState({ qrCodeValue: null });
+  }
+
   render() {
     const { fileList, dirs } = this.state
 
@@ -356,6 +366,22 @@ class ProjectAttachments extends React.Component {
           <p className="ant-upload-text">{i18n('project.click_drag_upload')}</p>
           <p className="ant-upload-hint">pdf, doc, docx, xls, xlsx, ppt, pptx</p>
         </Dragger>
+        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button>
+        
+        { this.state.qrCodeValue ? 
+        <Modal
+          width={230}
+          visible={true}
+          footer={null}
+          onCancel={this.handleCancelMobileUpload}
+        >
+          <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
+            <QRCode value={this.state.qrCodeValue} />
+          </div>
+          <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
+        </Modal>
+        : null }
+        
       </div>
     )
   }
