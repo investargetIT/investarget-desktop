@@ -118,13 +118,12 @@ class InboxList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={showDetail ? (
-            <a href="javascript:void(0)" onClick={this.handleBackToList} style={backStyle}>&lt; {i18n('inbox.back_to_list')}</a>
-          ) : i18n('inbox.message_list')}>
-
+        title={i18n('menu.reminder')}
+      >
         {
           showDetail ? (
             <div>
+              <a href="javascript:void(0)" onClick={this.handleBackToList} style={backStyle}>&lt; {i18n('inbox.back_to_list')}</a>
               <h1 style={detailTitleStyle}>{currentMsg.messagetitle}</h1>
               <h3 style={detailTimeStyle}>{currentMsg.created}</h3>
               <div style={lineStyle}></div>

@@ -278,7 +278,7 @@ export const PATH_LIST = [
     key: 'timeline_management',
     name: i18n('menu.timeline_management'),
     path: '/app/timeline/list',
-    realpath: null,
+    realpath: '/app/timeline/list',
     parent: 'home',
   },
   {
@@ -290,7 +290,7 @@ export const PATH_LIST = [
   },
   {
     key: 'add_timeline',
-    name: i18n('timeline.add_timeline'),
+    name: i18n('timeline.create_timeline'),
     path: '/app/timeline/add',
     realpath: '/app/timeline/add',
     parent: 'timeline_management',
@@ -304,7 +304,7 @@ export const PATH_LIST = [
   },
   {
     key: 'dataroom_management',
-    name: i18n('menu.dataroom_management'),
+    name: i18n('dataroom.dataroom_list'),
     path: '/app/dataroom/list',
     realpath: '/app/dataroom/list',
     parent: 'home',
@@ -332,7 +332,7 @@ export const PATH_LIST = [
   },
   {
     key: 'message_list',
-    name: i18n('inbox.message_list'),
+    name: i18n('menu.reminder'),
     path: '/app/inbox/list',
     realpath: '/app/inbox/list',
     parent: 'inbox_management',

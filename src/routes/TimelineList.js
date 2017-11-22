@@ -266,7 +266,7 @@ class TimelineList extends React.Component {
     const { filters, search, total, list, loading, page, pageSize, visible, id, reason } = this.state
 
     return (
-      <LeftRightLayout location={location} title={i18n('timeline.timeline_list')}>
+      <LeftRightLayout location={location} title={i18n('menu.timeline_management')}>
         <div>
           <div>
             <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />

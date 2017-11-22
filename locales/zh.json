@@ -96,7 +96,7 @@
 
   "project_bd": {
     "project_bd": "项目BD",
-    "add_project_bd": "添加项目BD",
+    "add_project_bd": "新增项目BD",
     "edit_project_bd": "修改项目BD",
     "bd_status": "BD状态",
     "import_methods": "导入方式",
@@ -115,8 +115,8 @@
   "project": {
     "platform_projects": "平台项目",
     "upload_project": "发布项目",
-    "upload_marketplace": "新增 Market Place",
-    "edit_project": "修改项目信息",
+    "upload_marketplace": "发布 Market Place",
+    "edit_project": "修改项目",
     "edit_marketplace": "修改 Market Place",
     "recommended_projects": "推荐项目",
     "favorite_projects": "收藏项目",

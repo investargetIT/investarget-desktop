@@ -68,16 +68,16 @@ class WxMessage extends React.Component {
     const { filters, total, list, page, pageSize, loading } = this.state
 
     const columns = [
-      {title: '发布日期', render: (text, record) => {
+      {title: '发布日期', key: 'createtime', render: (text, record) => {
         return record.createtime ? time(record.createtime + '+08:00') : ''
       }},
       {title: '内容', dataIndex: 'content', width: 500},
       {title: '微信群', dataIndex: 'group_name'},
       {title: '用户', dataIndex: 'name'},
-      {title: '状态', render: (text, record) => {
+      {title: '状态', key: 'status', render: (text, record) => {
         return record.isShow ? '显示' : '隐藏'
       }},
-      {title: '操作', render: (text, record) => {
+      {title: '操作', key: 'operation', render: (text, record) => {
         return (
           <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
         )

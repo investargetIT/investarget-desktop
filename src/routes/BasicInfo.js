@@ -78,7 +78,7 @@ class BasicInfo extends React.Component {
   return (
     <LeftRightLayout
       location={this.props.location}
-      title={i18n("account.modify_profile")}>
+      title={i18n("menu.profile")}>
 
       <Form style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
         <UploadAvatar photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />

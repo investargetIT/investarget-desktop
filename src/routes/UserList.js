@@ -183,7 +183,7 @@ class UserList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("user.user_list")}
+        title={i18n("menu.user_management")}
         action={hasPerm("usersys.admin_adduser") ? { name: i18n("user.create_user"), link: "/app/user/add" } : null}>
 
         <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />

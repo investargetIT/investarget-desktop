@@ -203,11 +203,16 @@ class OrgUserList extends React.Component {
       }
     ]
 
+    const action = {
+      link: `/app/user/add?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`,
+      name: i18n('user.create_investor'),
+    }
+
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("user.user_list")}
-        action={hasPerm("usersys.admin_adduser") ? { name: i18n("user.create_user"), link: "/app/user/add" } : null}>
+        title={i18n("user.org_investors")}
+        action={hasPerm("usersys.admin_adduser") ? action : null}>
 
         <OrgUserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
@@ -226,7 +231,6 @@ class OrgUserList extends React.Component {
         </div>
 
         <Table
-          rowSelection={rowSelection}
           columns={columns}
           dataSource={list}
           loading={loading}

@@ -24,7 +24,7 @@ class AddUser extends React.Component {
   }
 
   isTraderAddInvestor = this.props.location.query.redirect === URI_12
-
+  isAdminAddInvestor = this.props.location.query.redirect.startsWith('/app/orguser/list')
 
 
   handleSubmit = e => {
@@ -128,11 +128,15 @@ class AddUser extends React.Component {
 
   handleCancel = () => this.setState({ visible: false })
 
+
   render () {
+    const title = (this.isTraderAddInvestor || this.isAdminAddInvestor)
+                  ? i18n("user.add_investor")
+                  : i18n("user.create_user")
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n(this.isTraderAddInvestor ? "user.add_investor" : "user.create_user")}>
+        title={title}>
 
         <AddUserForm type="add"
           wrappedComponentRef={this.handleRef}

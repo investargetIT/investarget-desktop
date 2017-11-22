@@ -102,7 +102,7 @@ class LogList extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n("syslog.log_list")}>
+        title={i18n("menu.log")}>
 
         <div style={{ marginBottom: '1.5em' }}>
           <Search2
