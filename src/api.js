@@ -678,32 +678,32 @@ export const getProjBDList = (param) => {
       param[key] = value.join(',')
     }
   })
-  return r('/proj/BD/?' + qs.stringify(param))
+  return r('/bd/projbd/?' + qs.stringify(param))
 }
 
 export const getProjBD = (id) => {
-  return r('/proj/BD/' + id + '/')
+  return r('/bd/projbd/' + id + '/')
 }
 
 // {  }
 export const addProjBD = (data) => {
-  return r('/proj/BD/', 'POST', data)
+  return r('/bd/projbd/', 'POST', data)
 }
 
 export const editProjBD = (id, data) => {
-  return r('/proj/BD/' + id + '/', 'PUT', data)
+  return r('/bd/projbd/' + id + '/', 'PUT', data)
 }
 
 export const deleteProjBD = (id) => {
-  return r('/proj/BD/' + id + '/', 'DELETE')
+  return r('/bd/projbd/' + id + '/', 'DELETE')
 }
 
 export const addProjBDCom = (data) => {
-  return r('/proj/BDCom/', 'POST', data)
+  return r('/bd/projbd/comment/', 'POST', data)
 }
 
 export const deleteProjBDCom = (id) => {
-  return r('/proj/BDCom/' + id + '/', 'DELETE')
+  return r('/bd/projbd/comment/' + id + '/', 'DELETE')
 }
 
 /**
