@@ -1,6 +1,7 @@
 {
   "menu": {
     "project_library": "Project Library",
+    "organization_management": "Organization Management",
     "bd_management": "BD Management",
     "project_bd": "Project BD",
     "organization_bd": "Organization BD",
@@ -116,7 +117,7 @@
     "platform_projects": "Platform Projects",
     "upload_project": "Upload Project",
     "upload_marketplace": "Upload Market Place",
-    "edit_project": "Edit Deal Information",
+    "edit_project": "Edit Project",
     "edit_marketplace": "Edit Market Place",
     "recommended_projects": "Recommended Projects",
     "favorite_projects": "Favorite Projects",

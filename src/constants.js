@@ -23,7 +23,8 @@ export const KEY_TO_URI = {
   "project_library": "/app/projects/library",
   "project_bd": "/app/projects/bd",
   "platform_projects": URI_1,
-  "organization_bd": URI_3,
+  "organization_management": URI_3,
+  "organization_bd": "/app", // todo?
   "email_management": URI_4,
   "timeline_management": URI_5,
   "user_management": URI_6,
@@ -52,7 +53,8 @@ export const URI_TO_KEY = {
   "/app/projects/list/recommend": "recommon_projects",
   "/app/projects/published": "publish_projects",
   "/app/projects/list/favor": "collect_projects",
-  "/app/organization/list": "organization_bd",
+  "/app/organization/list": "organization_management",
+  "/app/organization/bd": "dashboard", // todo?
   "/app/projects/bd": "project_bd",
   "/app/email/list": "email_management",
   "/app/schedule/list": "schedule_list",

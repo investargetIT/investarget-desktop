@@ -142,7 +142,7 @@ class OrganizationList extends React.Component {
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
 
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('menu.organization_bd')} action={action}>
+      <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} action={action}>
         <div>
 
           <div>

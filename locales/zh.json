@@ -1,6 +1,7 @@
 {
   "menu": {
     "project_library": "项目全库",
+    "organization_management": "机构管理",
     "bd_management": "BD管理",
     "project_bd": "项目BD",
     "organization_bd": "机构BD",
