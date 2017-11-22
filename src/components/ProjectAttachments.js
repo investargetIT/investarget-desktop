@@ -300,12 +300,39 @@ class ProjectAttachments extends React.Component {
     })
   }
 
+  queryQrCodeStatus = () => {
+    api.getQRCodeStatus(this.qrCodeKey)
+    .then(result => {
+      const record = result.data[this.qrCodeKey];
+      if (record.key) {
+        clearInterval(this.pull);
+        this.setState({ qrCodeValue: null });
+        const file = {...record, filetype: this.state.activeDir};
+        this.addAttachment(file);
+      }
+    });
+  }
+
   handleMobileUploadBtnClicked = () => {
-    this.setState({ qrCodeValue: 'http://192.168.1.113:3000/upload' });
+    api.getMobileUploadKey()
+    .then(result => {
+      let record;
+      const object = result.data;
+      for (var key in object) {
+        if (object.hasOwnProperty(key)) {
+          record = key;
+        }
+      }
+      this.qrCodeKey = record;
+      this.setState({ qrCodeValue: 'http://192.168.1.113:3000/upload?key=' + record });
+      this.pull = setInterval(this.queryQrCodeStatus, 1000);
+    }); 
   }
 
   handleCancelMobileUpload = () => {
     this.setState({ qrCodeValue: null });
+    clearInterval(this.pull);
+    api.cancelMobileUpload(this.qrCodeKey);
   }
 
   render() {

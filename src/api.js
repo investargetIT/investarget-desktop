@@ -745,3 +745,7 @@ export const resetPassword = (param) => {
 
 export const getStatisticalData = type => r('/mongolog/count?type=' + type);
 export const getInvestorStatistic = () => r('/user/count');
+
+export const getMobileUploadKey = () => r('/service/recordUpload');
+export const getQRCodeStatus = key => r('/service/selectUpload?record=' + key);
+export const cancelMobileUpload = record => r('/service/cancelUpload', 'POST', { record });
