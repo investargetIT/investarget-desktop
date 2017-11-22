@@ -590,80 +590,32 @@ function Detail({ project }) {
     lineHeight: '22px',
   }
 
+  function createMarkup(str) {
+    str = str.replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--')
+    str = str.replace(/\n/g, '<br/>')
+    return { __html: str }
+  }
+
+  function DetailItem({ label, content }) {
+    return content ? (
+      <div style={style}>
+        <h3 style={titleStyle}>{label}</h3>
+        <p style={paraStyle} dangerouslySetInnerHTML={createMarkup(content)}></p>
+      </div>
+    ) : null
+  }
+
   return (
     <div style={containerStyle}>
-      {
-        project.targetMarket ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.target_market')}</h3>
-            <p style={paraStyle}>{project.targetMarket}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.productTechnology ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.product_technology')}</h3>
-            <p style={paraStyle}>{project.productTechnology}</p>
-          </div>
-        ): null
-      }
-      {
-        project.businessModel ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.business_model')}</h3>
-            <p style={paraStyle}>{project.businessModel}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.brandChannel ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.brand_channel')}</h3>
-            <p style={paraStyle}>{project.brandChannel}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.managementTeam ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.management_team')}</h3>
-            <p style={paraStyle}>{project.managementTeam}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.Businesspartners ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.business_partners')}</h3>
-            <p style={paraStyle}>{project.Businesspartners}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.useOfProceed ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.use_of_proceed')}</h3>
-            <p style={paraStyle}>{project.useOfProceed}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.financingHistory ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.financing_history')}</h3>
-            <p style={paraStyle}>{project.financingHistory}</p>
-          </div>
-        ) : null
-      }
-      {
-        project.operationalData ? (
-          <div style={style}>
-            <h3 style={titleStyle}>{i18n('project.operational_data')}</h3>
-            <p style={paraStyle}>{project.operationalData}</p>
-          </div>
-        ) : null
-      }
+      <DetailItem label={i18n('project.target_market')} content={project.targetMarket} />
+      <DetailItem label={i18n('project.product_technology')} content={project.productTechnology} />
+      <DetailItem label={i18n('project.business_model')} content={project.businessModel} />
+      <DetailItem label={i18n('project.brand_channel')} content={project.brandChannel} />
+      <DetailItem label={i18n('project.management_team')} content={project.managementTeam} />
+      <DetailItem label={i18n('project.business_partners')} content={project.Businesspartners} />
+      <DetailItem label={i18n('project.use_of_proceed')} content={project.useOfProceed} />
+      <DetailItem label={i18n('project.financing_history')} content={project.financingHistory} />
+      <DetailItem label={i18n('project.operational_data')} content={project.operationalData} />
     </div>
   )
 }
