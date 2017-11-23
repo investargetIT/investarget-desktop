@@ -249,3 +249,21 @@ button[disabled], html input[disabled] {
 .it-login-form .ant-form-explain {
   display: none; /*隐藏输出框下出现的错误提示*/
 }
+
+/* 覆盖全球手机号输入组件的样式 */
+.it-mobile .ant-select-selection {
+  height: 48px;
+  border: none;
+}
+.it-mobile .ant-select-selection__rendered {
+  margin-left: 8px;
+  margin-right: 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.it-mobile .ant-select-selection-selected-value {
+  padding-right: 10px;
+}
+.it-mobile .ant-select-arrow {
+  right: 6px;
+}

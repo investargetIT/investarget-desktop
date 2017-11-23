@@ -69,14 +69,14 @@ class GlobalMobile extends React.Component {
   render() {
     const { countryId, areaCode, mobile } = this.state
     return (
-      <Input.Group compact>
-        <Select size="large" style={{ width: 60 }} disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId + ''}>
+      <Input.Group compact className="it-mobile" style={{display: 'flex'}}>
+        <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId + ''}>
           {this.props.country.map(c => <Option key={c.id} value={c.id + ''}>
-            <img src={c.url} style={{ width: 28, height: 18, marginTop: 4, display: 'block' }} />
+            <img src={c.url} style={{ width: 40, height: 28, marginLeft: 6, verticalAlign: 'top' }} />
           </Option>)}
         </Select>
-        <Input size="large" style={{ width: '10%' }} disabled={this.props.disabled} value={areaCode} onChange={this.handleChangeAreaCode} />
-        <Input size="large" style={{ width: '30%' }} disabled={this.props.disabled} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
+        <Input size="large" readOnly style={{width: 60,height: 48,border: 'none',borderLeft: '1px solid #cfcfcf',fontSize:16,color:'#989898'}} disabled={this.props.disabled} value={areaCode} onChange={this.handleChangeAreaCode} />
+        <Input size="large" style={{flexGrow: 1,height: 48,border: 'none',fontSize:16,color:'#989898'}} disabled={this.props.disabled} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
       </Input.Group>
     )
   }
