@@ -1,6 +1,7 @@
 import dva from 'dva'
 import * as api from '../api'
 import { routerRedux } from 'dva/router'
+import { handleError } from '../utils/util';
 
 function clearFilters() {
   const keys = [
@@ -30,7 +31,7 @@ export default {
     },
   },
   effects: {
-    *login({ payload: { username, password, redirect } }, { call, put }) {
+    *login({ payload: { username, password, remember, redirect } }, { call, put }) {
       clearFilters()
       const { data } = yield call(api.login, { username, password })
       const { token, user_info, menulist, permissions } = data
@@ -42,6 +43,12 @@ export default {
       })
       const url = redirect ? decodeURIComponent(redirect) : '/app'
       yield put(routerRedux.replace(url))
+      // 存储用户名和密码？
+      if (remember) {
+        localStorage.setItem('login_info', JSON.stringify({ username, password }))
+      } else {
+        localStorage.removeItem('login_info')
+      }
     },
     *logout({ payload }, { call, put }) {
       localStorage.removeItem('user_info')

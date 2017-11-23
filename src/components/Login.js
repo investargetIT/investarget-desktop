@@ -1,35 +1,41 @@
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
-import fetch from 'dva/fetch'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
-import { i18n } from '../utils/util'
-import LeftRightLayout from './LeftRightLayout'
+import { i18n, handleError } from '../utils/util'
+import HandleError from '../components/HandleError'
+import FormError from '../utils/FormError'
 
-const FormItem = Form.Item;
+const containerStyle = {background:'#fff'}
+const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
+const logoStyle = {height: 70, padding: '10px 0'}
 
-const loginContainerStyle = {
-  maxWidth: '400px',
-  margin: '200px auto'
-}
+const bodyWrapStyle = {minWidth: 1200, height: 750, backgroundImage: 'url(/images/background.jpg)', backgroundPosition: 'center center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}
+const bodyStyle = {width: 1200, height: '100%', margin: '0 auto', position: 'relative'}
+const formStyle = {width:418,height:360,padding:'0 19px',background:'rgba(47,48,49,.8)',position:'absolute',top:196,right:20,zIndex:1,color:'#fff'}
+const formTitleStyle = {padding:'24px 0 18px',fontSize:22,fontWeight:400,textAlign:'center',color:'#fff',borderBottom:'2px solid #fff'}
+const formSubtitleStyle = {fontSize:16,padding:'12px 16px',fontWeight:200}
+const formInputStyle = {border:'none',fontSize:16,fontWeight:200,color:'#989898',padding:'12px 16px',paddingRight:40,height:'auto'}
+const inputIconStyle = {width:18,height:18,lineHeight:'18x',textAlign:'center',position:'absolute',top:15,right:16}
+const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200}
 
-const loginTitleStyle = {
-  textAlign: 'center',
-  lineHeight: 4
-}
+const footerStyle = {width: 1200, height: 100, margin: '0 auto', backgroundColor: '#fff'}
+const copyrightStyle = {textAlign:'center',height:20,lineHeight:'20px',paddingTop:40,fontSize:16,color:'#989898'}
 
-const loginFormForgot = {
-  float: 'right'
-}
-
-const loginFormButton = {
-  width: '100%'
-}
 
 class Login extends React.Component {
 
-  componentDidMount() {
-    if (this.props.currentUser) {
-      this.props.dispatch(routerRedux.replace('/'))
+  constructor(props) {
+    super(props)
+
+    let loginInfo = localStorage.getItem('login_info')
+    if (loginInfo) {
+      try {
+        loginInfo = JSON.parse(loginInfo)
+        this.username = loginInfo.username
+        this.password = loginInfo.password
+      } catch(e) {
+        console.error(e.message)
+      }
     }
   }
 
@@ -45,47 +51,94 @@ class Login extends React.Component {
             redirect: redirectUrl && decodeURIComponent(redirectUrl)
           }
         })
+      } else {
+        // 按字段顺序处理错误，只处理第一个错误
+        let fields = ['username', 'password']
+        for (let i = 0, len = fields.length; i < len; i++) {
+          let field = fields[i]
+          let errField = err[field]
+          if (errField) {
+            let error = errField.errors[0]
+            handleError(new FormError(error.message))
+            return
+          }
+        }
       }
     })
+  }
+
+  componentDidMount() {
+    if (this.props.currentUser) {
+      this.props.dispatch(routerRedux.replace('/'))
+    }
   }
 
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <LeftRightLayout location={this.props.location}>
-      <div style={loginContainerStyle}>
-	<h2 style={loginTitleStyle}>{i18n("account.login")}</h2>
-      <Form onSubmit={this.handleSubmit}>
-	<FormItem>
-	  {getFieldDecorator('username', {
-	    rules: [{ required: true, message: i18n('account.account_warning') }],
-	  })(
-	    <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder={i18n("account.account")} />
-	  )}
-	</FormItem>
-	<FormItem>
-	  {getFieldDecorator('password', {
-	    rules: [{ required: true, message: i18n('account.password_warning') }],
-	  })(
-	    <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder={i18n("account.password")} />
-	  )}
-	</FormItem>
-	<FormItem>
-	  {getFieldDecorator('remember', {
-	    valuePropName: 'checked',
-	    initialValue: true,
-	  })(
-	    <Checkbox>{i18n("account.remember_user")}</Checkbox>
-	  )}
-	  <Link style={loginFormForgot} to="/password">{i18n("account.forget_password")}</Link>
-	  <Button type="primary" htmlType="submit" style={loginFormButton} loading={this.props.loading}>
-	    {i18n("account.login")}
-	  </Button>
-	  Or <Link to="/register1">{i18n("account.register")}</Link>
-	</FormItem>
-      </Form>
+      <div style={containerStyle}>
+        <div style={headerStyle}>
+          <img src="/images/logo.jpg" style={logoStyle} />
+        </div>
+
+        <Form onSubmit={this.handleSubmit} className="it-login-form">
+          <div style={bodyWrapStyle}>
+            <div style={bodyStyle}>
+              <div style={formStyle}>
+                <h1 style={formTitleStyle}>立即登录</h1>
+                <p style={formSubtitleStyle}>登录访问您的账号！</p>
+
+                <div style={{position:'relative', marginBottom:8}}>
+                  {getFieldDecorator('username', {
+                    rules: [{ required: true, message: i18n('account.account_warning') }],
+                    initialValue: this.username || '',
+                  })(
+                    <Input placeholder="请输入用户名" style={formInputStyle} />
+                  )}
+                  <div style={inputIconStyle}>
+                    <img src="/images/sign-in-username.jpg" style={{verticalAlign:'top'}} />
+                  </div>
+                </div>
+
+                <div style={{position:'relative'}}>
+                  {getFieldDecorator('password', {
+                    rules: [{ required: true, message: i18n('account.password_warning') }],
+                    initialValue: this.password || '',
+                  })(
+                    <Input placeholder="请输入密码" style={formInputStyle} />
+                  )}
+                  <div style={inputIconStyle}>
+                    <img src="/images/sign-in-password.jpg" style={{verticalAlign:'top'}} />
+                  </div>
+                </div>
+
+                <div style={{padding:'8px 16px'}}>
+                  {getFieldDecorator('remember', {
+                    valuePropName: 'checked',
+                    initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
+                  })(
+                    <Checkbox className="it" style={{color:'#fff'}}>下次自动登录</Checkbox>
+                  )}
+                  <Link style={{float:'right',textDecoration:'underline'}} to="/password">{i18n("account.forget_password")}</Link>
+                </div>
+
+                <Button htmlType="submit" style={submitStyle}>登录</Button>
+                <div style={{padding:8}}>
+                  还没有账号，<Link to="/register1" style={{textDecoration:'underline'}}>立即注册</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Form>
+
+        <div style={footerStyle}>
+          <p style={copyrightStyle}>
+            &copy; 2017.All Rights Reserved. Investarget
+          </p>
+        </div>
+
+        <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
     </div>
-  </LeftRightLayout>
     );
   }
 }

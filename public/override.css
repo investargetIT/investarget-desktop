@@ -191,6 +191,17 @@ button[disabled], html input[disabled] {
   margin-left: 0;
 }
 
+.it .ant-checkbox .ant-checkbox-inner, .it .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: transparent;
+  border-color: #fff;
+}
+.it .ant-checkbox-checked .ant-checkbox-inner:after {
+  border-color: #237ccc;
+}
+.it.ant-checkbox-wrapper {
+  margin-bottom: 0!important;
+}
+
 
 /* Tabs */
 .ant-tabs {
@@ -232,4 +243,9 @@ button[disabled], html input[disabled] {
 }
 .ant-tabs-tabpane {
   padding: 15px;
+}
+
+/* login form */
+.it-login-form .ant-form-explain {
+  display: none; /*隐藏输出框下出现的错误提示*/
 }

@@ -20,6 +20,9 @@ class HandleError extends React.Component {
       case 'Error':
         this.handleComError(error)
         break
+      case 'FormError':
+        this.handleFormError(error)
+        break;
       case 'ApiError':
         this.handleApiError(error.code, error.message)
         break
@@ -34,6 +37,12 @@ class HandleError extends React.Component {
 
   handleComError(error) {
     console.error(error)
+  }
+
+  handleFormError(error) {
+    Modal.error({
+      title: error.message,
+    })
   }
 
   handleApiError(code, msg) {
