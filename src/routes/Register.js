@@ -349,17 +349,17 @@ class Register extends React.Component {
     }
 
     const formStyle = {width:418,height:712,padding:'0 19px',background:'rgba(47,48,49,.8)',position:'absolute',top:19,right:20,zIndex:1,color:'#fff'}
-    const formInputStyle = {border:'none',fontSize:16,fontWeight:200,color:'#989898',padding:'12px 16px',paddingRight:40,height:50}
+    const formInputStyle = {border:'none',fontSize:14,padding:'12px 16px',paddingRight:40,height:50}
     const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
 
     const selectWrapStyle = {display: 'flex',alignItems: 'center',backgroundColor: '#fff',marginBottom: 8,borderRadius: 4,height: 50}
     const selectLabelStyle = {flexShrink: 0,fontSize: 16,paddingLeft: 16,width: 84,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
-    const selectContentStyle = {height:50,lineHeight:'50px',color:'#656565',fontSize:16,border:'none'}
+    const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none'}
     const selectContentContainerStyle = {flexGrow:1,height:50}
 
-    const wrapStyle = {backgroundColor:'#fff',borderRadius:4,height:50,display:'flex',alignItems:'center',color:'#656565',marginBottom:8}
+    const wrapStyle = {backgroundColor:'#fff',borderRadius:4,height:50,display:'flex',alignItems:'center',marginBottom:8}
     const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
-    const inputStyle = {border:'none',fontSize:16,fontWeight:200,padding:'12px 16px',height:'100%',paddingLeft:0}
+    const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0}
 
     const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200}
 
@@ -386,7 +386,7 @@ class Register extends React.Component {
               rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
               initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
             })(
-              <GlobalMobile disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
+              <GlobalMobile disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} inputStyle={{fontSize:14,color:'#636e7b'}} />
             )}
             </div>
 
@@ -436,21 +436,21 @@ class Register extends React.Component {
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">机构</label>
+              <label style={selectLabelStyle} className="mb0">机&nbsp;&nbsp;&nbsp;&nbsp;构</label>
               {getFieldDecorator("organization", { rules: [{required: true, message: '请选择或填写机构'}] })(
                 <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
               )}
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">职位</label>
+              <label style={selectLabelStyle} className="mb0">职&nbsp;&nbsp;&nbsp;&nbsp;位</label>
               {getFieldDecorator("title", {rules: [{required: true, message: '请选择职位'}]})(
                 <SelectTitle className="it-login-select" />
               )}
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">标签</label>
+              <label style={selectLabelStyle} className="mb0">标&nbsp;&nbsp;&nbsp;&nbsp;签</label>
               {getFieldDecorator("tags", {rules: [{required: true, message: '请选择标签'}, {type: 'array'}]})(
                 <SelectTag mode="multiple" className="it-login-select-multiple" />
               )}
