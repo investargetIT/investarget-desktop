@@ -91,7 +91,7 @@ class Login extends React.Component {
                 rules: [{ required: true, message: i18n('account.password_warning') }],
                 initialValue: this.password || '',
               })(
-                <Input placeholder="请输入密码" style={formInputStyle} />
+                <Input placeholder="请输入密码" style={formInputStyle} type="password" />
               )}
               <div style={inputIconStyle}>
                 <img src="/images/sign-in-password.jpg" style={{verticalAlign:'top'}} />
