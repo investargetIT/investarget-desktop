@@ -289,6 +289,7 @@ class SelectExistOrganization extends React.Component {
   }
 
   render() {
+    const { value, onChange, allowCreate, ...extraProps } = this.props
     return (
       <Select2
         getData={this.getOrg}
@@ -296,6 +297,7 @@ class SelectExistOrganization extends React.Component {
         value={this.props.value}
         onChange={this.props.onChange}
         allowCreate={this.props.allowCreate}
+        {...extraProps}
       />
     )
   }

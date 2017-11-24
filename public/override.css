@@ -267,3 +267,73 @@ button[disabled], html input[disabled] {
 .it-mobile .ant-select-arrow {
   right: 6px;
 }
+
+
+/* 覆盖 bootstrap label 元素的样式 */
+.mb0 {
+  margin-bottom: 0!important;
+}
+
+/* 覆盖登录注册页的 select 样式 */
+.it-login-select.ant-select-lg {
+  height: 50px;
+}
+.it-login-select.ant-select-lg .ant-select-selection--single {
+  height: 50px;
+  border: none;
+}
+.it-login-select.ant-select-lg .ant-select-selection__rendered {
+  line-height: 50px;
+}
+.it-login-select.ant-select-lg .ant-select-selection-selected-value {
+  font-size: 16px;
+}
+
+.it-login-select-multiple.ant-select-focused .ant-select-selection {
+  box-shadow: none!important;
+}
+.it-login-select-multiple .ant-select-selection {
+  border: none;
+  height: 50px;
+}
+.it-login-select-multiple .ant-select-selection {
+  height: 50px;
+}
+.it-login-select-multiple .ant-select-selection__rendered {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 40px;
+  overflow: scroll;
+}
+
+.it-login-radio.ant-radio-group .ant-radio-wrapper {
+  color: #fff;
+  font-size: 18px;
+  margin-right: 18px;
+}
+
+.it-login-radio.ant-radio-group .ant-radio-inner {
+  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  border-color: #989898;
+}
+.it-login-radio.ant-radio-group .ant-radio-inner:after {
+  width: 6px;
+  height: 6px;
+  left: 3px;
+  top: 3px;
+}
+.it-login-radio .ant-radio-checked .ant-radio-inner {
+  border-color: #237ccc;
+}
+.it-login-radio .ant-radio-checked .ant-radio-inner:after {
+  background-color: #237ccc;
+}
+.it-login-radio .ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: #237ccc;
+}
+.it-login-radio .ant-radio {
+  vertical-align: middle;
+}

@@ -3,15 +3,19 @@ import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal 
 import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva'
-import { withRouter } from 'dva/router'
+import { withRouter, Link } from 'dva/router'
 import RecommendFriendsComponent from '../components/RecommendFriends'
 import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
-import { i18n } from '../utils/util'
+import { i18n, handleError } from '../utils/util'
 import { BasicFormItem } from '../components/Form'
-import { SelectExistOrganization } from '../components/ExtraInput'
+import { SelectExistOrganization, SelectTitle, SelectTag } from '../components/ExtraInput'
+import LoginContainer from '../components/LoginContainer'
+import GlobalMobile from '../components/GlobalMobile'
+import FormError from '../utils/FormError'
+import HandleError from '../components/HandleError'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
@@ -82,12 +86,9 @@ class Register extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    const smstoken = localStorage.getItem('smstoken')
-    if (!smstoken) {
-      message.error(i18n('account.require_code'))
-      return
-    }
+
     this.props.form.validateFieldsAndScroll((err, values) => {
+      const smstoken = localStorage.getItem('smstoken')
       if(!err) {
         const { mobileInfo, ...otherValues } = values
         const { areaCode: prefix, mobile } = mobileInfo
@@ -95,6 +96,25 @@ class Register extends React.Component {
           type: 'currentUser/register',
           payload: { prefix, mobile, ...otherValues, smstoken }
         })
+      } else {
+        // 按字段顺序处理错误，只处理第一个错误
+        let fields = ['type', 'mobileInfo', 'smstoken', 'code', 'email', 'username', 'organization', 'title', 'tags', 'password', 'confirm', 'agreement']
+        for (let i = 0, len = fields.length; i < len; i++) {
+          let field = fields[i]
+          if (field == 'smstoken') {
+            let smstoken = localStorage.getItem('smstoken')
+            if (!smstoken) {
+              Modal.error({ title: i18n('account.require_code') })
+              return
+            }
+          }
+          let errField = err[field]
+          if (errField) {
+            let error = errField.errors[0]
+            handleError(new FormError(error.message))
+            return
+          }
+        }
       }
     })
   }
@@ -126,7 +146,7 @@ class Register extends React.Component {
 
   checkAgreement = (rule, value, callback) => {
     if (!value) {
-      callback('Please check agreement!')
+      callback('请阅读并接受声明')
     } else {
       callback()
     }
@@ -271,6 +291,9 @@ class Register extends React.Component {
   }
 
   render() {
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+
+
     const containerStyle = {
       position: 'relative',
       width: '100%',
@@ -294,44 +317,183 @@ class Register extends React.Component {
       overflow: 'auto',
     }
 
-    const { getFieldDecorator } = this.props.form;
+    function checkMobileInfo(rule, value, callback) {
+      if (value.areaCode == '') {
+        callback(i18n('areacode_not_empty'))
+      // } else if (!allowAreaCode.includes(value.areaCode)) {
+      //   callback(i18n('areacode_invalid'))
+      } else if (value.mobile == '') {
+        callback(i18n('mobile_not_empty'))
+      } else if (!/^\d+$/.test(value.mobile)) {
+        callback(i18n('mobile_incorrect_format'))
+      } else {
+        callback()
+      }
+    }
+
+    function checkAgreement(rule, value, callback) {
+      if (!value) {
+        callback(i18n('account.please_check_agreement'))
+      } else {
+        callback()
+      }
+    }
+
+    function confirmValidator(rule, value, callback) {
+      const password = getFieldValue('password')
+      if (value && password && value !== password) {
+        callback(i18n('validation.two_passwords_not_inconsistent'))
+      } else {
+        callback()
+      }
+    }
+
+    const formStyle = {width:418,height:712,padding:'0 19px',background:'rgba(47,48,49,.8)',position:'absolute',top:19,right:20,zIndex:1,color:'#fff'}
+    const formInputStyle = {border:'none',fontSize:16,fontWeight:200,color:'#989898',padding:'12px 16px',paddingRight:40,height:50}
+    const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
+
+    const selectWrapStyle = {display: 'flex',alignItems: 'center',backgroundColor: '#fff',marginBottom: 8,borderRadius: 4,height: 50}
+    const selectLabelStyle = {flexShrink: 0,fontSize: 16,paddingLeft: 16,width: 84,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
+    const selectContentStyle = {height:50,lineHeight:'50px',color:'#656565',fontSize:16,border:'none'}
+    const selectContentContainerStyle = {flexGrow:1,height:50}
+
+    const wrapStyle = {backgroundColor:'#fff',borderRadius:4,height:50,display:'flex',alignItems:'center',color:'#656565',marginBottom:8}
+    const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
+    const inputStyle = {border:'none',fontSize:16,fontWeight:200,padding:'12px 16px',height:'100%',paddingLeft:0}
+
+    const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200}
+
+
+    const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
+
+    const content = (
+      <LoginContainer>
+        <Form onSubmit={this.handleSubmit} className="it-login-form">
+          <div style={formStyle}>
+
+            <div style={{marginTop:20,marginBottom:10}}>
+              <span style={{fontSize:22,marginLeft:24,marginRight:32}}>角色</span>
+              {getFieldDecorator('type', {rules: [{required: true, message: '请选择角色'}]})(
+                <RadioGroup size="large" className="it-login-radio">
+                  <Radio value={'investor'}>投资人</Radio>
+                  <Radio value={'trader'}>交易师</Radio>
+                </RadioGroup>
+              )}
+            </div>
+
+            <div style={{marginBottom: 8}}>
+            {getFieldDecorator('mobileInfo', {
+              rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
+              initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
+            })(
+              <GlobalMobile disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
+            )}
+            </div>
+
+            <div style={{marginBottom: 8}}>
+              <Row gutter={8}>
+                <Col span={12}>
+                  {getFieldDecorator("code", {
+                    rules: [{
+                      required: true, message: '请输入验证码',
+                    }],
+                  })(<Input style={formInputStyle} placeholder="请输入验证码" />)}
+                </Col>
+                <Col span={12}>
+                  <Button
+                    loading={this.state.loading}
+                    disabled={codeValue ? true : false}
+                    onClick={this.handleFetchButtonClicked.bind(this)}
+                    size="large"
+                    style={codeButtonStyle}
+                  >
+                    {this.state.loading
+                      ? i18n("account.is_fetching_code")
+                      : (codeValue ? <span style={{color:'#237ccc'}}>{codeValue}</span>
+                                   : (<span>
+                                        <span style={{textDecoration:'underline'}}>{i18n("account.fetch_code")}</span>
+                                        &nbsp;<span style={{color:'#237ccc'}}>(60s)</span>
+                                    </span>)
+                      )
+                    }
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+
+            <div style={wrapStyle}>
+              <label style={labelStyle} className="mb0">邮箱：</label>
+              {getFieldDecorator("email", { rules: [{required: true, message: '请输入邮箱'}, {type: 'email'}]})(
+                <Input style={inputStyle} />
+              )}
+            </div>
+
+            <div style={wrapStyle}>
+              <label style={labelStyle} className="mb0">姓名：</label>
+              {getFieldDecorator("username", { rules: [{required: true, message: '请输入姓名'}]})(
+                <Input style={inputStyle} />
+              )}
+            </div>
+
+            <div style={selectWrapStyle}>
+              <label style={selectLabelStyle} className="mb0">机构</label>
+              {getFieldDecorator("organization", { rules: [{required: true, message: '请选择或填写机构'}] })(
+                <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
+              )}
+            </div>
+
+            <div style={selectWrapStyle}>
+              <label style={selectLabelStyle} className="mb0">职位</label>
+              {getFieldDecorator("title", {rules: [{required: true, message: '请选择职位'}]})(
+                <SelectTitle className="it-login-select" />
+              )}
+            </div>
+
+            <div style={selectWrapStyle}>
+              <label style={selectLabelStyle} className="mb0">标签</label>
+              {getFieldDecorator("tags", {rules: [{required: true, message: '请选择标签'}, {type: 'array'}]})(
+                <SelectTag mode="multiple" className="it-login-select-multiple" />
+              )}
+            </div>
+
+            <div style={wrapStyle}>
+              <label style={labelStyle} className="mb0">密码：</label>
+              {getFieldDecorator("password", { rules: [{required: true, message: '请输入密码'}]})(
+                <Input style={inputStyle} type="password" />
+              )}
+            </div>
+
+            <div style={{...wrapStyle,marginBottom:0}}>
+              <label style={labelStyle} className="mb0">确认密码：</label>
+              {getFieldDecorator("confirm", { rules: [{required: true, message: '请输入密码'}, {validator: confirmValidator}]})(
+                <Input style={inputStyle} type="password" />
+              )}
+            </div>
+
+            <div style={{padding:'8px 16px'}}>
+              {getFieldDecorator("agreement", { rules: [{required: true}, {type: 'boolean'}, {validator: checkAgreement}] })(
+                <Checkbox className="it" style={{color:'#fff'}}>已阅读并接受</Checkbox>
+              )}
+              <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>“免责声明” “平台保密声明”...</Link>
+            </div>
+
+            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>提交</Button>
+
+            <div style={{padding:'8px 16px'}}>
+              已有账号？
+              <Link to="/login" style={{textDecoration: 'underline', color:'#237ccc'}}>立即登录</Link>
+            </div>
+
+          </div>
+        </Form>
+      </LoginContainer>
+    )
 
     return (
       <div style={containerStyle}>
         <div style={wrapperStyle} className="clearfix">
           <div style={this.props.currentUser ? Object.assign({},itemStyle,{opacity: 0}) : itemStyle}>
-            <LeftRightLayout location={this.props.location}>
-
-              <Form onSubmit={this.handleSubmit}>
-                <Role />
-                <Mobile 
-                disabled={this.mobile&&this.areaCode?true:false}
-                country={this.props.country} 
-                onBlur={this.handleMobileBlur} 
-                required
-                mobile={this.mobile}
-                areaCode={this.areaCode} 
-                />
-                <Code
-                  loading={this.state.loading}
-                  value={this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null}
-                  onFetchButtonClicked={this.handleFetchButtonClicked.bind(this)} />
-                <Email onBlur={this.handleEmailOnBlur} />
-                <FullName />
-
-                <BasicFormItem label={i18n("user.institution")} name="organization" required>
-                  <SelectExistOrganization size="large" allowCreate />
-                </BasicFormItem>
-
-                <Position title={this.props.title} />
-                <Tags required tag={this.props.tag} />
-                <Password />
-                <ConfirmPassword />
-                <Agreement />
-                <Submit loading={this.props.loading} />
-              </Form>
-
-          </LeftRightLayout>
+            {content}
           </div>
           <div style={itemStyle}>
             {/* <RecommendFriendsComponent
@@ -353,6 +515,8 @@ class Register extends React.Component {
             /> */}
           </div>
         </div>
+
+        <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
     </div>
     );
   }

@@ -276,7 +276,7 @@ class Select2 extends React.Component {
 
 
     return (
-      <div ref="container">
+      <div ref="container" style={this.props.containerStyle}>
         <Trigger
           action={['click']}
           popup={content}
