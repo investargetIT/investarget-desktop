@@ -113,6 +113,25 @@
     "operation": "Operations"
   },
 
+  "org_bd": {
+    "project_bd": "Project BD",
+    "add_project_bd": "Add Project BD",
+    "edit_project_bd": "Edit Project BD",
+    "bd_status": "BD Status",
+    "import_methods": "Import Methods",
+    "area": "Area",
+    "bd_manager": "BD Manager",
+    "project_name": "Project Name",
+    "status": "Status",
+    "contact": "Contact",
+    "title": "Title",
+    "mobile": "Mobile",
+    "manager": "Manager",
+    "created_time": "Created Time",
+    "operation": "Operations",
+    "org": "Organization"
+  },
+
   "project": {
     "platform_projects": "Platform Projects",
     "upload_project": "Upload Project",

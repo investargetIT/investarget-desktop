@@ -113,6 +113,24 @@
     "operation": "操作"
   },
 
+  "org_bd": {
+    "project_bd": "项目BD",
+    "add_project_bd": "新增项目BD",
+    "edit_project_bd": "修改项目BD",
+    "bd_status": "BD状态",
+    "import_methods": "导入方式",
+    "area": "地区",
+    "bd_manager": "BD负责人",
+    "project_name": "项目名称",
+    "status": "状态",
+    "contact": "联系人",
+    "title": "联系人职位",
+    "mobile": "联系电话",
+    "manager": "负责人",
+    "created_time": "创建时间",
+    "operation": "操作",
+    "org": "机构"
+  },
   "project": {
     "platform_projects": "平台项目",
     "upload_project": "发布项目",
