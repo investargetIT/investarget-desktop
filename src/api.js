@@ -752,3 +752,4 @@ export const cancelMobileUpload = record => r('/service/cancelUpload', 'POST', {
 
 export const getOrgBdList = () => r('/bd/orgbd/');
 export const getOrgBdDetail = id => r(`/bd/orgbd/${id}/`);
+export const addOrgBD = body => r('/bd/orgbd/', 'POST', body);

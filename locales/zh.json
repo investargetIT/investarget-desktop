@@ -584,5 +584,6 @@
   "retrieve_password": "找回密码",
   "to_login": "前往登录",
   "site_search": "搜索一下",
-  "query_no_results": "查询没有结果"
+  "query_no_results": "查询没有结果",
+  "create_orgbd_success": "机构BD创建成功"
 }

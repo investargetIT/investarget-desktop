@@ -17,7 +17,7 @@ class AddOrgBD extends React.Component {
     this.state = {
       projId: Number(this.props.location.query.projId),
       projTitle: '',
-      selectedUsers: [], // 数组项的结构 {investor: ##, trader: ##}
+      selectedUsers: [], // 数组项的结构 {investor: ##, trader: ##, org: ##}
     }
   }
 
@@ -29,36 +29,32 @@ class AddOrgBD extends React.Component {
     })
   }
 
-  createTimeline = (projId, selectedUsers) => {
-    Promise.all(
-      selectedUsers.map(item => {
-        const params = {
-          timelinedata: {
-            'proj': projId,
-            'investor': item.investor,
-            'trader': item.trader,
-          }
-        }
-        return api.addTimeline(params)
+  createOrgBD = (projId, selectedUsers) => {
+    Promise.all(selectedUsers.map(m => {
+      const body = {
+        'bduser': m.investor,
+        'manager': m.trader,
+        'org': m.org,
+        'proj': projId,
+        'bd_status': 1,
+      };
+      return api.addOrgBD(body);
+    }))
+      .then(result => {
+        Modal.success({
+            title: i18n('timeline.message.create_success_title'),
+            content: i18n('create_orgbd_success'),
+            onOk: () => { this.props.router.replace('/app/org/bd') }
+          })
       })
-    ).then(results => {
-      Modal.success({
-        title: i18n('timeline.message.create_success_title'),
-        content: i18n('timeline.message.create_success_content'),
-        onOk: () => { this.props.router.replace('/app/timeline/list') }
-      })
-    }, error => {
-      this.props.dispatch({
+      .catch(error => this.props.dispatch({
         type: 'app/findError',
         payload: error,
-      })
-    })
+      }));
   }
 
   handleSelectUser = (selectedUsers) => {
-    echo(selectedUsers);
-    return;
-    this.createTimeline(this.state.projId, selectedUsers)
+    this.createOrgBD(this.state.projId, selectedUsers)
   }
 
   componentDidMount() {

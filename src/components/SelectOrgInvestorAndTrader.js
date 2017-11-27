@@ -130,12 +130,14 @@ class SelectOrgInvestorAndTrader extends React.Component {
     }
   }
 
-  handleSelectChange = (investorIds) => {
+  handleSelectChange = (investorIds, rows) => {
     const { traderMap } = this.state
     const value = investorIds.map(investorId => {
+      const org = rows.filter(f => f.id === investorId)[0].org.id;
       return {
         investor: investorId,
-        trader: this.props.traderId ? this.props.traderId : traderMap[investorId]
+        trader: this.props.traderId ? this.props.traderId : traderMap[investorId],
+        org
       }
     }).filter(item => item.trader != null)
     this.props.onChange(value)
