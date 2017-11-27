@@ -12,18 +12,45 @@ class RecommendFriends extends React.Component {
     this.state = {
       friends: [],
       selected: [],
+      total: 0,
+      page: 1,
+      pageSize: 6,
+      maxPages: 0,
     }
     this.onFriendsSubmit = this.onFriendsSubmit.bind(this);
     this.onFriendsSkip = this.onFriendsSkip.bind(this);
   }
 
-  componentDidMount() {
+  getFriends = () => {
+    const { page, pageSize } = this.state
     const params = {
       // org: 39, // 机构: 多维海拓
       groups: [2], // 用户组：交易师
+      page_index: page,
+      page_size: pageSize,
     }
     api.getUser(params)
-    .then(result => this.setState({ friends: result.data.data }));
+    .then(result => {
+      const { count, data } = result.data
+      const maxPages = Math.ceil(count / 6)
+      this.setState({ friends: data, total: count, maxPages })
+    });
+  }
+
+  handleChangePage = (page) => {
+    this.setState({ page }, this.getFriends)
+  }
+
+  handleClickPrev = () => {
+    this.handleChangePage(this.state.page - 1)
+  }
+
+  handleClickNext = () => {
+    this.handleChangePage(this.state.page + 1)
+  }
+
+  componentDidMount() {
+    this.getFriends()
   }
 
   onFriendToggle(id) {
@@ -71,7 +98,7 @@ class RecommendFriends extends React.Component {
               {this.state.friends.slice(0,3).map(item => {
                 const isSelected = this.state.selected.includes(item.id)
                 return (
-                  <Card key={item.id} {...item} />
+                  <Card key={item.id} {...item} selected={isSelected} onClick={this.onFriendToggle.bind(this, item.id)} />
                 )
               })}
             </div>
@@ -81,14 +108,20 @@ class RecommendFriends extends React.Component {
               {this.state.friends.slice(3,6).map(item => {
                 const isSelected = this.state.selected.includes(item.id)
                 return (
-                  <Card key={item.id} {...item} />
+                  <Card key={item.id} {...item} selected={isSelected} onClick={this.onFriendToggle.bind(this, item.id)} />
                 )
               })}
             </div>
           ):null}
 
-          <img src="/images/arrow-left.jpg" style={{...arrowStyle, left: 50}} />
-          <img src="/images/arrow-right.jpg" style={{...arrowStyle, right: 50}} />
+          {this.state.page > 1 ? (
+            <img src="/images/arrow-left.jpg" style={{...arrowStyle, left: 50}} onClick={this.handleClickPrev} />
+          ) : null}
+
+          {this.state.page < this.state.maxPages ? (
+            <img src="/images/arrow-right.jpg" style={{...arrowStyle, right: 50}} onClick={this.handleClickNext} />
+          ) : null}
+
         </div>
         <div style={{height:100}}></div>
       </div>
@@ -102,11 +135,14 @@ export default connect()(RecommendFriends)
 
 function Card(props) {
   return (
-    <div className={styles["card"]} style={{width:240,height:280,backgroundColor:'#fff',cursor:'pointer'}}>
-      <div style={{height:216,backgroundSize:'cover',backgroundImage:`url(${props.photourl})`}}></div>
+    <div className={styles["card"]} style={{width:240,height:280,backgroundColor:'#fff',cursor:'pointer',position:'relative'}} onClick={props.onClick}>
+      <div style={{height:216,backgroundSize:'cover',backgroundPosition:'center',backgroundImage:`url("${props.photourl || '/images/defaultAvatar@2x.png'}")`}}></div>
       <div style={{height:64,textAlign:'center'}}>
         <h3 style={{marginTop:5,color:'#232323',fontSize:20,lineHeight: 1.5}}>{props.username}</h3>
         <p style={{color:'#989898',fontSize:16,lineHeight: 1.5}}>{props.title ? props.title.name : '暂无'}</p>
+      </div>
+      <div style={{display:props.selected ? 'block':'none',position:'absolute',zIndex:1,top:0,left:0,width:'100%',height:'100%',backgroundColor:'rgba(0,0,0,.3)'}}>
+        <img src="/images/check.png" style={{position:'absolute',zIndex:1,top:0,bottom:0,left:0,right:0,margin:'auto'}} />
       </div>
     </div>
   )
