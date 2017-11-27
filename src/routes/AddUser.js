@@ -24,8 +24,8 @@ class AddUser extends React.Component {
   }
 
   isTraderAddInvestor = this.props.location.query.redirect === URI_12
-  isAdminAddInvestor = this.props.location.query.redirect.startsWith('/app/orguser/list')
-
+  isAdminAddInvestor = this.props.location.query.redirect ?
+    this.props.location.query.redirect.startsWith('/app/orguser/list') : false;
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
