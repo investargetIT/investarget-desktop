@@ -93,6 +93,7 @@ export const KEY_TO_ICON = {
   'dashboard': 'fa fa-home',
   'project_library': 'glyphicon glyphicon-book',
   'project_management': 'glyphicon glyphicon-list',
+  'organization_management': 'fa fa-sitemap',
   'bd_management': 'glyphicon glyphicon-lock',
   'email_management': 'fa fa-envelope-o',
   'schedule_management': 'fa fa-calendar',

@@ -39,6 +39,7 @@ class UserProfile extends React.Component {
       verticalAlign:'center',
       marginRight:5,
       width:26,
+      height:26,
       borderRadius:50
     }
     const caretStyle = {

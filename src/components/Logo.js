@@ -13,6 +13,11 @@ const logoImgStyle = {
   verticalAlign: 'top',
   height: '100%',
 }
+const logoImg2Style = {
+  verticalAlign: 'top',
+  padding: 10,
+  height: '100%',
+}
 
 
 function Logo() {
@@ -27,7 +32,7 @@ function Logo() {
           <img style={{logoImgStyle, padding: 10}} src="/images/autospace.png" />
           : null }
         {source === 1 ?
-          <img style={logoImgStyle} src="/images/logo.png" />
+          <img style={logoImg2Style} src="/images/logo.png" />
           : null }
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>
