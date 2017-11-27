@@ -43,6 +43,7 @@ export const KEY_TO_URI = {
   "schedule_list": "/app/schedule/list",
   "my_schedule": "/app/schedule",
   "dashboard": "/app",
+  "organization_bd": "/app/org/bd",
 }
 
 export const URI_TO_KEY = {

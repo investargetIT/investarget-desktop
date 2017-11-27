@@ -749,3 +749,6 @@ export const getInvestorStatistic = () => r('/user/count');
 export const getMobileUploadKey = () => r('/service/recordUpload');
 export const getQRCodeStatus = key => r('/service/selectUpload?record=' + key);
 export const cancelMobileUpload = record => r('/service/cancelUpload', 'POST', { record });
+
+export const getOrgBdList = () => r('/bd/orgbd/');
+export const getOrgBdDetail = id => r(`/bd/orgbd/${id}/`);

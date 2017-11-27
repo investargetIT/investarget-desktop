@@ -58,6 +58,8 @@ import ResetPassword from './routes/ResetPassword'
 import Register1 from './routes/Register1'
 import RecommendFriends from './components/RecommendFriends';
 import RecommendProjects from './components/RecommendProjects';
+import OrgBdList from './routes/OrgBdList';
+import AddOrgBD from './routes/AddOrgBD';
 
 
 function RouterConfig({ history }) {
@@ -120,6 +122,8 @@ function RouterConfig({ history }) {
       <Route path="/app/schedule" component={Schedule} />
       <Route path="/app/schedule/list" component={ScheduleList} />
       <Route path="/password" component={ResetPassword} />
+      <Route path="/app/org/bd" component={OrgBdList} />
+      <Route path="/app/orgbd/add" component={AddOrgBD} />
     </Router>
   )
 }
