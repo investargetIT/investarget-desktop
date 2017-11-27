@@ -9,6 +9,7 @@ import {
   Table, 
   Button, 
   Popconfirm, 
+  Pagination, 
 } from 'antd';
 
 class OrgBdList extends React.Component {
@@ -32,11 +33,21 @@ class OrgBdList extends React.Component {
   }
 
   componentDidMount() {
-    api.getOrgBdList()
+    this.getOrgBdList();
+  }
+
+  getOrgBdList = () => {
+    const { page, pageSize } = this.state;
+    const params = {
+        page_index: page,
+        page_size: pageSize,
+    }
+    api.getOrgBdList(params)
     .then(result => {
-      this.setState({
-        list: result.data.data
-      })
+        this.setState({
+            list: result.data.data,
+            total: result.data.count,
+          })
     })
   }
 
@@ -86,6 +97,18 @@ class OrgBdList extends React.Component {
           loading={loading}
           pagination={false}
         />
+                <div style={{ margin: '16px 0' }} className="clearfix">
+          <Pagination
+            style={{ float: 'right' }}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={page => this.setState({ page }, this.getOrgBdList)}
+            showSizeChanger
+            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
+            showQuickJumper
+          />
+        </div>
         </LeftRightLayout>
     )
   }
