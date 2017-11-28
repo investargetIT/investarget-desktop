@@ -11,13 +11,15 @@ import {
   Popconfirm, 
   Pagination, 
 } from 'antd';
+import { OrgBDFilter } from '../components/Filter';
+import { Search2 } from '../components/Search';
 
 class OrgBdList extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
-        // filters: ProjectBDFilter.defaultValue,
+        filters: OrgBDFilter.defaultValue,
         search: null,
         page: 1,
         pageSize: 10,
@@ -37,10 +39,12 @@ class OrgBdList extends React.Component {
   }
 
   getOrgBdList = () => {
-    const { page, pageSize } = this.state;
+    const { page, pageSize, search, filters } = this.state;
     const params = {
         page_index: page,
         page_size: pageSize,
+        search,
+        ...filters,
     }
     api.getOrgBdList(params)
     .then(result => {
@@ -53,9 +57,17 @@ class OrgBdList extends React.Component {
 
   handleDelete(id) {}
 
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getOrgBdList)
+  }
+
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getOrgBdList)
+  }
+
   render() {
 
-    const { search, page, pageSize, total, list, loading } = this.state
+    const { filters, search, page, pageSize, total, list, loading } = this.state
 
     const columns = [
         {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle'},
@@ -86,10 +98,22 @@ class OrgBdList extends React.Component {
       ]
 
     return (
-        <LeftRightLayout 
+      <LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.organization_bd')} 
-        >
+      >
+
+        <OrgBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        
+        <div style={{ marginBottom: '16px' }} className="clearfix">
+          <Search2
+            defaultValue={search}
+            placeholder={i18n('project_bd.project_name')}
+            style={{ width: 200, float: 'left' }}
+            onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)} 
+          />
+        </div>
+        
         <Table
           columns={columns}
           dataSource={list}
@@ -97,7 +121,8 @@ class OrgBdList extends React.Component {
           loading={loading}
           pagination={false}
         />
-                <div style={{ margin: '16px 0' }} className="clearfix">
+                
+        <div style={{ margin: '16px 0' }} className="clearfix">
           <Pagination
             style={{ float: 'right' }}
             total={total}
@@ -109,8 +134,9 @@ class OrgBdList extends React.Component {
             showQuickJumper
           />
         </div>
-        </LeftRightLayout>
-    )
+
+      </LeftRightLayout>
+    );
   }
 }
 

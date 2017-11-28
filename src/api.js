@@ -750,6 +750,13 @@ export const getMobileUploadKey = () => r('/service/recordUpload');
 export const getQRCodeStatus = key => r('/service/selectUpload?record=' + key);
 export const cancelMobileUpload = record => r('/service/cancelUpload', 'POST', { record });
 
-export const getOrgBdList = params => r('/bd/orgbd/?' + qs.stringify(params));
+export const getOrgBdList = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r('/bd/orgbd/?' + qs.stringify(params))
+};
 export const getOrgBdDetail = id => r(`/bd/orgbd/${id}/`);
 export const addOrgBD = body => r('/bd/orgbd/', 'POST', body);

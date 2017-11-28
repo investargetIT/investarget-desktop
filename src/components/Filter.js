@@ -728,13 +728,55 @@ class ProjectBDFilter extends React.Component {
           <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_bd.bd_manager')}>
-          <SelectOrgUser style={{width:'100%'}} org={2585} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
   }
 }
+
+class OrgBDFilter extends React.Component {
+  
+    static defaultValue = {
+      bd_status: null,
+      manager: [],
+    }
+  
+    constructor(props) {
+      super(props)
+      this.state = props.defaultValue || OrgBDFilter.defaultValue
+    }
+  
+    handleChange = (key, value) => {
+      this.setState({ [key]: value })
+    }
+  
+    handleSearch = () => {
+      this.props.onSearch({ ...this.state })
+    }
+  
+    handleReset = () => {
+      this.setState({ ...OrgBDFilter.defaultValue })
+      this.props.onReset({ ...OrgBDFilter.defaultValue })
+    }
+  
+    render() {
+      const { bd_status, source_type, location, manager } = this.state
+  
+      return (
+        <div>
+          <BasicContainer label={i18n('project_bd.bd_status')}>
+            <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
+          </BasicContainer>
+          <BasicContainer label={i18n('project_bd.bd_manager')}>
+            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
+          </BasicContainer>
+          <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+        </div>
+      )
+    }
+  }
 
 class WxMessageFilter extends React.Component {
 
@@ -794,4 +836,5 @@ module.exports = {
   ProjectLibraryFilter,
   ProjectBDFilter,
   WxMessageFilter,
+  OrgBDFilter,
 }
