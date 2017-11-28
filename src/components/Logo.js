@@ -13,11 +13,6 @@ const logoImgStyle = {
   verticalAlign: 'top',
   height: '100%',
 }
-const logoImg2Style = {
-  verticalAlign: 'top',
-  padding: 10,
-  height: '100%',
-}
 
 
 function Logo() {
@@ -29,7 +24,7 @@ function Logo() {
     <div style={logoStyle}>
       <Link to={ currentUser ? "/app" : "/" }>
         {source === 2 ?
-          <img style={{logoImg2Style, padding: 10}} src="/images/autospace.png" />
+          <img style={{...logoImgStyle, padding: 10}} src="/images/autospace.png" />
           : null }
         {source === 1 ?
           <img style={logoImgStyle} src="/images/logo.png" />
