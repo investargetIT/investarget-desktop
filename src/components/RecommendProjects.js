@@ -151,7 +151,7 @@ function Card(props) {
   return (
     <div className={styles['card']} style={{width:260,height:300,backgroundColor:'#fff',cursor:'pointer',position:'relative'}} onClick={props.onClick}>
       <div style={{height:186,backgroundSize:'cover',backgroundPosition:'center',backgroundImage:`url("${imgUrl}")`}}></div>
-      <div style={{padding: '10px 8px',height:60,paddingBottom:6,overflow:'hidden'}}>
+      <div style={{margin: '10px 8px 6px',height:44,overflow:'hidden'}}>
         {tags.map(tag => (
           <span key={tag.id} style={tagStyle}>{tag.name}</span>
         ))}

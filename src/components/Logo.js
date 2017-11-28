@@ -29,10 +29,10 @@ function Logo() {
     <div style={logoStyle}>
       <Link to={ currentUser ? "/app" : "/" }>
         {source === 2 ?
-          <img style={{logoImgStyle, padding: 10}} src="/images/autospace.png" />
+          <img style={{logoImg2Style, padding: 10}} src="/images/autospace.png" />
           : null }
         {source === 1 ?
-          <img style={logoImg2Style} src="/images/logo.png" />
+          <img style={logoImgStyle} src="/images/logo.png" />
           : null }
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>
