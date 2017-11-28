@@ -3,6 +3,7 @@ import LeftRightLayout from '../components/LeftRightLayout';
 import { 
   i18n, 
   time, 
+  handleError, 
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -55,7 +56,11 @@ class OrgBdList extends React.Component {
     })
   }
 
-  handleDelete(id) {}
+  handleDelete(id) {
+    api.deleteOrgBD(id)
+      .then(data => this.getOrgBdList())
+      .catch(error => handleError(error));
+  }
 
   handleFilt = (filters) => {
     this.setState({ filters, page: 1 }, this.getOrgBdList)
@@ -82,7 +87,7 @@ class OrgBdList extends React.Component {
         {
             title: i18n('org_bd.operation'), render: (text, record) => <span>
                 <Button size="small" style={{ marginRight: 4 }}>{i18n('project.modify_status')}</Button>
-                <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(this, record.id)}>
+                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
                     <Button size="small" type="danger">{i18n('common.delete')}</Button>
                 </Popconfirm>
             </span>
