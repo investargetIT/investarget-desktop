@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
+import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 
 class OrgBdList extends React.Component {
   
@@ -27,11 +28,11 @@ class OrgBdList extends React.Component {
         total: 0,
         list: [],
         loading: false,
-  
         visible: false,
-        currentBDId: null,
+        currentBD: null,
         comments: [],
         newComment: '',
+        status: null,
     }
   }
 
@@ -70,6 +71,25 @@ class OrgBdList extends React.Component {
     this.setState({ filters, page: 1 }, this.getOrgBdList)
   }
 
+  handleModifyStatusBtnClicked(bd) {
+    this.setState({ 
+        visible: true, 
+        currentBD: bd,
+        status: bd.bd_status.id,
+    });
+  }
+
+  handleStatusChange = (status) => {
+    this.setState({ status })
+  }
+
+  handleConfirmAudit = () => {
+    api.modifyOrgBDStatus(this.state.currentBD.id, this.state.status)
+    .then(result => {
+        this.setState({ visible: false }, this.getOrgBdList);
+    });  
+  }
+
   render() {
 
     const { filters, search, page, pageSize, total, list, loading } = this.state
@@ -86,7 +106,7 @@ class OrgBdList extends React.Component {
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name'},
         {
             title: i18n('org_bd.operation'), render: (text, record) => <span>
-                <Button size="small" style={{ marginRight: 4 }}>{i18n('project.modify_status')}</Button>
+                <Button size="small" style={{ marginRight: 4 }} onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
                     <Button size="small" type="danger">{i18n('common.delete')}</Button>
                 </Popconfirm>
@@ -139,6 +159,14 @@ class OrgBdList extends React.Component {
             showQuickJumper
           />
         </div>
+
+        <ModalModifyOrgBDStatus 
+          visible={this.state.visible} 
+          onCancel={() => this.setState({ visible: false })} 
+          status={this.state.status}
+          onStatusChange={this.handleStatusChange}
+          onOk={this.handleConfirmAudit}
+        />
 
       </LeftRightLayout>
     );

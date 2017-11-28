@@ -605,5 +605,6 @@
   "to_login": "Login",
   "site_search": "Search...",
   "query_no_results": "No results found for query",
-  "create_orgbd_success": "You have created organization bd successfully!"
+  "create_orgbd_success": "You have created organization bd successfully!",
+  "modify_orgbd_status": "Modify Status of Organization BD"
 }
