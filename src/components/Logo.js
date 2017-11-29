@@ -15,13 +15,13 @@ const logoImgStyle = {
 }
 
 
-function Logo() {
+function Logo(props) {
 
   const source = parseInt(localStorage.getItem('source'), 10)
   const currentUser = getCurrentUser()
 
   return (
-    <div style={logoStyle}>
+    <div style={{...logoStyle, ...props.style}}>
       <Link to={ currentUser ? "/app" : "/" }>
         {source === 2 ?
           <img style={{...logoImgStyle, padding: 10}} src="/images/autospace.png" />

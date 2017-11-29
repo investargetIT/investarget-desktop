@@ -1,0 +1,4 @@
+
+.sider-menu::-webkit-scrollbar {
+  display: none;
+}

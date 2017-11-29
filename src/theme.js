@@ -8,13 +8,15 @@ var theme = {
   "warning-color": "#F0AD4E",
   "error-color": "#D9534F",
 
-  "body-background": "#1d2939",
+  "body-background": "#f2f2f2",
   "text-color": "#636e7b",
   "font-size-base": "14px",
   "line-height-base": 1.5,
 
   "border-color-base": "#ccc",
 
+  // Layout
+  "layout-body-background": "#f2f2f2",
 
   // Buttons
   "btn-font-weight": "400",

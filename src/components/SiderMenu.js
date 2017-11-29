@@ -5,9 +5,17 @@ import { Link } from 'dva/router'
 import { KEY_TO_URI, KEY_TO_ICON } from '../constants'
 import { i18n } from '../utils/util'
 import classNames from 'classnames'
+import styles from './SiderMenu.css'
 
 const { SubMenu } = Menu
 const { Sider } = Layout
+
+const menuStyle = {
+  padding: 15,
+}
+const collapsedMenuStyle = {
+  padding: 5,
+}
 
 
 class SiderMenu extends React.Component {
@@ -41,6 +49,13 @@ class SiderMenu extends React.Component {
     })
   }
 
+  toggelMenu = () => {
+    this.props.dispatch({
+      type: 'app/toggleMenu',
+      payload: !this.props.collapsed
+    })
+  }
+
   render() {
     const navTextStyle = {
       verticalAlign: 'middle',
@@ -56,7 +71,23 @@ class SiderMenu extends React.Component {
       iconStyle['marginRight'] = 0
     }
 
+    const menuStyle = {
+      padding: this.props.collapsed ? 5 : 10,
+      height: '100%',
+      overflowY: 'scroll',
+    }
+
     return (
+    <div className={styles["sider-menu"]} style={menuStyle}>
+      {/* <div
+        style={{textAlign: 'center',backgroundColor:'rgba(117, 117, 117, 0.2)',borderRadius:2,marginBottom:10,height:30,lineHeight:'30px',cursor:'pointer'}}
+        onClick={this.toggelMenu}
+      >
+        <Icon
+          style={{fontSize:16,verticalAlign:'middle'}}
+          type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
+        />
+      </div> */}
       <Menu
         prefixCls="it-menu"
         theme={this.props.theme}
@@ -66,8 +97,8 @@ class SiderMenu extends React.Component {
         selectedKeys={this.props.selectedKeys}
         onSelect={this.handleSelect.bind(this)}
         openKeys={this.props.openKeys}
-        onOpenChange={this.handleOpenChange.bind(this)}>
-
+        onOpenChange={this.handleOpenChange.bind(this)}
+      >
         {
           this.props.menulist.filter(f => !f.parentmenu).map(m => {
             const subMenu = this.props.menulist.filter(f => f.parentmenu === m.id)
@@ -107,6 +138,7 @@ class SiderMenu extends React.Component {
         }
 
       </Menu>
+    </div>
     )
   }
 

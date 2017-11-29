@@ -8,6 +8,7 @@ import { i18n } from '../utils/util'
 import styles from './Header.css'
 import classNames from 'classnames'
 import SiteSearch from './SiteSearch'
+import Logo from './Logo'
 
 const confirm = Modal.confirm
 
@@ -155,12 +156,9 @@ function Header(props) {
   const source = parseInt(localStorage.getItem('source'), 10)
 
   return (
-    <div style={{backgroundColor:'#fff'}}>
-      <div
-        onClick={() => {handleMenuClicked({key:'toggle_menu'})}}
-        className={classNames(styles['menutoggle'], {[styles['menutoggle-collapsed']]: collapsed})}>
-        <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
-      </div>
+    <div style={{backgroundColor:'#fff', ...props.style}}>
+
+      <Logo style={{float: 'left', width: 240}} />
 
       <SiteSearch />
 

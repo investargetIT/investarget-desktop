@@ -9,6 +9,7 @@ import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
 import { PATH_LIST } from '../path'
+import styles from './LeftRightLayout.css'
 
 
 const { Content, Sider } = Layout
@@ -19,69 +20,23 @@ const style = {
   top: (window.innerHeight - 500) / 2,
   zIndex: 2,
 }
-const siderStyle = {
-  backgroundColor: '#1d2a3a',
-}
-const menuStyle = {
-  padding: 15,
-}
-const collapsedMenuStyle = {
-  padding: 5,
-}
+
+
 
 const titleWrapStyle = {
-  padding: '15px 20px',
-  borderBottom: '1px solid #d3d7db',
-  borderTop: '1px solid #eee',
-  background: '#f7f7f7',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
+  paddingBottom: 16,
+  borderBottom: '1px solid #ccc',
 }
 const titleStyle = {
-  fontSize: 28,
-  color: '#1D2939',
-  letterSpacing: -0.5,
-  margin: 0,
+  fontSize: 30,
+  lineHeight: '30px',
+  color: '#232323',
 }
 const actionStyle = {
+  float: 'right',
   fontSize: 16,
   textDecoration: 'underline',
   color: '#428bca',
-}
-
-function Navigation({ path }) {
-
-  var paths = []
-  var p = PATH_LIST.filter(item => {
-    if (item.realpath instanceof RegExp) {
-      return item.realpath.test(path)
-    } else {
-      return item.realpath == path
-    }
-  })[0]
-
-  while(p) {
-    paths.unshift(p)
-    p = PATH_LIST.filter(item => item.key == p.parent)[0]
-  }
-
-  var len = paths.length
-  return (
-    <div>
-      {
-        paths.map((item, index) => {
-          return (index == len - 1) ? (
-            <span key={item.key}>{item.name}</span>
-          ) : (
-            <span key={item.key}>
-              <Link to={item.path}>{item.name}</Link>&nbsp;/&nbsp;
-            </span>
-          )
-        })
-      }
-    </div>
-  )
 }
 
 
@@ -95,40 +50,38 @@ class LeftRightLayout extends React.Component {
       </Content>
     )
 
+    const headStyle = {position:'fixed',zIndex:1,top:0,left:0,width:'100%',height:50}
+    const siderStyle = {position:'fixed',zIndex:1,top:70,left:0,bottom:0,backgroundColor: '#1d2a3a'}
+
     const sideBarAndContent = (
-      <Layout>
+      <Layout style={{height:'100%'}}>
 
-        <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
-          { this.props.collapsed ? <div style={{height:50,backgroundColor:'#fff'}}></div> : <Logo /> }
-          <div style={this.props.collapsed ? collapsedMenuStyle : menuStyle}>
+        <Header location={this.props.location} style={headStyle} />
+
+        <Layout style={{marginTop: 50,paddingTop:20,height:'100%'}}>
+
+          <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
             <SiderMenu collapsed={this.props.collapsed} theme="dark" />
-          </div>
-        </Sider>
+          </Sider>
 
-        <Layout style={{backgroundColor: '#e4e7ea'}}>
-          <Header mode="light" location={this.props.location} />
-
-          <div style={titleWrapStyle}>
-            <h2 style={titleStyle}>
-              { this.props.title }
-            </h2>
-            <Navigation path={this.props.location.pathname} />
-          </div>
-
-          <Content style={{ padding: 20 }}>
-            { this.props.action ? (
-              <div style={{textAlign:'right',backgroundColor:'#fff',padding:'8px 24px'}}>
-                <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
+          <Content className={styles['content']} style={{marginLeft: 240,paddingLeft:20}}>
+            <div style={{padding: 30,backgroundColor:'#fff'}}>
+              <div style={titleWrapStyle}>
+                <h2 style={titleStyle}>
+                  { this.props.title }
+                </h2>
+                { this.props.action ? (
+                    <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
+                ) : null }
               </div>
-            ) : null }
 
-            <div style={{ padding: 24, minHeight: 360, background: '#fff', overflow: 'auto', ...this.props.style }}>
-              {this.props.children}
+              <div style={{ padding: 24, minHeight: 360, background: '#fff', overflow: 'auto', ...this.props.style }}>
+                {this.props.children}
+              </div>
+              <Draggable cancel=".text-area"><div style={style}>
+              <InstantMessage />
+              </div></Draggable>
             </div>
-            <Draggable cancel=".text-area"><div style={style}>
-            <InstantMessage />
-            </div></Draggable>
-
           </Content>
 
         </Layout>
@@ -137,7 +90,7 @@ class LeftRightLayout extends React.Component {
     )
 
     return (
-      <Layout>
+      <Layout style={{height:'100%'}}>
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
         { this.props.currentUser ? sideBarAndContent : content }
       </Layout>
