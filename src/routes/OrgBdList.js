@@ -44,6 +44,7 @@ class OrgBdList extends React.Component {
   }
 
   getOrgBdList = () => {
+    this.setState({ loading: true });
     const { page, pageSize, search, filters } = this.state;
     const params = {
         page_index: page,
@@ -56,6 +57,7 @@ class OrgBdList extends React.Component {
         this.setState({
           list: result.data.data,
           total: result.data.count,
+          loading: false,
         });
         if (this.state.currentBD) {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
