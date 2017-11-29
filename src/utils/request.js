@@ -4,6 +4,7 @@ import fetch from 'dva/fetch';
 let baseUrl = "http://192.168.1.251:8080"
 // baseUrl = "/api"
 // baseUrl = "http://192.168.1.201:8000"
+// baseUrl = "http://39.107.14.53:8080"
 export { baseUrl }
 
 export class ApiError extends Error {

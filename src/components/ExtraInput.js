@@ -424,10 +424,11 @@ class SelectExistProject extends React.Component {
  */
 class SelectUser extends React.Component {
   state = {
-    data: [],
+    data: this.props.data || [],
   }
   componentDidMount() {
 
+    if (!this.props.data) {
     api.queryUserGroup({ type: this.props.type || 'trader' })
     .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
     .then(data => this.setState({ data: data.data.data }))
@@ -437,10 +438,12 @@ class SelectUser extends React.Component {
         payload: error
       })
     })
+    }
   }
   render() {
     return (
       <Select
+      {...this.props}
       mode={this.props.mode}
       showSearch
       disabled={this.props.disabled}

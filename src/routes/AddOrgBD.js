@@ -18,6 +18,7 @@ class AddOrgBD extends React.Component {
       projId: Number(this.props.location.query.projId),
       projTitle: '',
       selectedUsers: [], // 数组项的结构 {investor: ##, trader: ##, org: ##}
+      data: null,
     }
   }
 
@@ -67,6 +68,12 @@ class AddOrgBD extends React.Component {
         payload: error,
       })
     })
+
+    api.queryUserGroup({ type: this.props.type || 'trader' })
+    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => this.setState({ data: data.data.data }))
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+
   }
 
   render() {
@@ -77,7 +84,7 @@ class AddOrgBD extends React.Component {
         <div>
           <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
 
-          <SelectInvestorAndTrader onSelect={this.handleSelectUser} />
+          { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} /> : null }
         </div>
       </LeftRightLayout>
     )
