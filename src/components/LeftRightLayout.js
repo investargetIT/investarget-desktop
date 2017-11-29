@@ -56,11 +56,11 @@ class LeftRightLayout extends React.Component {
     const siderStyle = {position:'fixed',zIndex:1,top:70,left:0,bottom:0,backgroundColor: '#1d2a3a'}
 
     const sideBarAndContent = (
-      <Layout style={{height:'100%'}}>
+      <Layout style={{}}>
 
         <Header location={this.props.location} style={headStyle} />
 
-        <Layout style={{marginTop: 50,paddingTop:20,height:'100%'}}>
+        <Layout style={{marginTop: 50,paddingTop:20}}>
 
           <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
             <SiderMenu collapsed={this.props.collapsed} theme="dark" />
@@ -92,7 +92,7 @@ class LeftRightLayout extends React.Component {
     )
 
     return (
-      <Layout style={{height:'100%'}}>
+      <Layout style={{}}>
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
         { this.props.currentUser ? sideBarAndContent : content }
       </Layout>
