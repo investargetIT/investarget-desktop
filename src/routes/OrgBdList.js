@@ -11,6 +11,8 @@ import {
   Button, 
   Popconfirm, 
   Pagination, 
+  Modal, 
+  Input, 
 } from 'antd';
 import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
@@ -33,6 +35,7 @@ class OrgBdList extends React.Component {
         comments: [],
         newComment: '',
         status: null,
+        commentVisible: false,
     }
   }
 
@@ -51,9 +54,13 @@ class OrgBdList extends React.Component {
     api.getOrgBdList(params)
     .then(result => {
         this.setState({
-            list: result.data.data,
-            total: result.data.count,
-          })
+          list: result.data.data,
+          total: result.data.count,
+        });
+        if (this.state.currentBD) {
+          const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
+          this.setState({ comments });
+        }
     })
   }
 
@@ -90,6 +97,26 @@ class OrgBdList extends React.Component {
     });  
   }
 
+  handleOpenModal = bd => {
+    this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
+  }
+
+  handleAddComment = () => {
+    const body = {
+      orgBD: this.state.currentBD.id,
+      comments: this.state.newComment,
+    };
+    api.addOrgBDComment(body)
+      .then(data => this.setState({ newComment: '' }, this.getOrgBdList))
+      .catch(error => handleError(error));
+  }
+
+  handleDeleteComment = id => {
+    api.deleteOrgBDComment(id)
+    .then(() => this.getOrgBdList())
+    .catch(error => handleError(error));
+  }
+
   render() {
 
     const { filters, search, page, pageSize, total, list, loading } = this.state
@@ -112,14 +139,14 @@ class OrgBdList extends React.Component {
                 </Popconfirm>
             </span>
         },
-        // {title: 'Comments', render: (text, record) => {
-        //   const latestComment = record.BDComments && record.BDComments[0]
-        //   const comments = latestComment ? latestComment.comments : ''
-        //   return (<div>
-        //     <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
-        //     <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.view_add')}</a>
-        //   </div>)
-        // }},
+        {title: 'Comments', render: (text, record) => {
+          const latestComment = record.BDComments && record.BDComments[0]
+          const comments = latestComment ? latestComment.comments : ''
+          return (<div>
+            <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
+            <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.view_add')}</a>
+          </div>)
+        }},
       ]
 
     return (
@@ -168,9 +195,50 @@ class OrgBdList extends React.Component {
           onOk={this.handleConfirmAudit}
         />
 
+        <Modal
+          title="Comments"
+          visible={this.state.commentVisible}
+          footer={null}
+          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
+          maskClosable={false}
+        >
+          <BDComments
+            comments={this.state.comments}
+            newComment={this.state.newComment}
+            onChange={e => this.setState({ newComment: e.target.value })}
+            onAdd={this.handleAddComment}
+            onDelete={this.handleDeleteComment} 
+          />
+        </Modal>
+
       </LeftRightLayout>
     );
   }
 }
 
 export default OrgBdList;
+
+function BDComments(props) {
+  const { comments, newComment, onChange, onDelete, onAdd } = props
+  return (
+    <div>
+      <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
+        <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
+        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
+      </div>
+      <div>
+        {comments.length ? comments.map(comment => (
+          <div key={comment.id} style={{marginBottom:8}}>
+            <p>
+              <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
+              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                <a href="javascript:void(0)">{i18n('common.delete')}</a>
+              </Popconfirm>
+            </p>
+            <p>{comment.comments}</p>
+          </div>
+        )) : <p>{i18n('remark.no_comments')}</p>}
+      </div>
+    </div>
+  )
+}

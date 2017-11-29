@@ -762,3 +762,6 @@ export const getOrgBdDetail = id => r(`/bd/orgbd/${id}/`);
 export const addOrgBD = body => r('/bd/orgbd/', 'POST', body);
 export const deleteOrgBD = id => r(`/bd/orgbd/${id}/`, 'DELETE');
 export const modifyOrgBDStatus = (id, status) => r(`/bd/orgbd/${id}/`, 'PUT', { bd_status: status });
+
+export const addOrgBDComment = body => r('/bd/orgbd/comment/', 'POST', body);
+export const deleteOrgBDComment = id => r(`/bd/orgbd/comment/${id}/`, 'DELETE');
