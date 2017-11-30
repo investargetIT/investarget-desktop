@@ -26,11 +26,13 @@ const style = {
 const titleWrapStyle = {
   paddingBottom: 16,
   borderBottom: '1px solid #ccc',
+  overflow: 'auto',
 }
 const titleStyle = {
   fontSize: 30,
   lineHeight: '30px',
   color: '#232323',
+  float: 'left',
 }
 const actionStyle = {
   float: 'right',
