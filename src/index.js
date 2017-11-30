@@ -10,6 +10,7 @@ import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
 import { hasPerm, getUserInfo } from './utils/util'
+import favicon from 'favicon.js'
 
 // 推荐在入口文件全局设置 locale
 import moment from 'moment';
@@ -65,3 +66,17 @@ ReactDOM.render(
   </LocaleProvider>),
   document.getElementById('root')
 )
+
+// 6. Modify ico
+
+const source = parseInt(localStorage.getItem('source'), 10)
+switch(source) {
+  case 1:
+    favicon.change('/images/page_logo.png')
+    break;
+  case 2:
+    favicon.change('/images/autospace.ico')
+    break;
+  default:
+    favicon.change('/images/page_logo.png')
+}

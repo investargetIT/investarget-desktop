@@ -4,6 +4,7 @@ import { Radio, Button } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { i18n, isLogin } from '../utils/util'
+import favicon from 'favicon.js'
 
 const RadioGroup = Radio.Group
 
@@ -21,6 +22,16 @@ class Home extends React.Component {
 
   onClick = () => {
     localStorage.setItem('source', source)
+    switch(source) {
+      case 1:
+        favicon.change('/images/page_logo.png')
+        break;
+      case 2:
+        favicon.change('/images/autospace.ico')
+        break;
+      default:
+        favicon.change('/images/page_logo.png')
+    }
     this.props.dispatch(routerRedux.push('/login'))
   }
 
