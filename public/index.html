@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>多维海拓 Investarget</title>
-  <link rel="shortcut icon" href="/images/page_logo.png" type="image/x-icon">
+  <script>
+    var source = parseInt(localStorage.getItem('source')) || 1
+    if (source == 1) {
+      document.write('<title>多维海拓 Investarget</title><link rel="shortcut icon" href="/images/page_logo.png" type="image/x-icon">')
+    } else if (source == 2) {
+      document.write('<title>车创 AutoSpace</title><link rel="shortcut icon" href="/images/autospace.ico" type="image/x-icon">')
+    }
+  </script>
   <link rel="stylesheet" href="/bootstrap.min.css" />
   <link rel="stylesheet" href="/bootstrap-override.css" />
   <link rel="stylesheet" href="/font-awesome.min.css" />
