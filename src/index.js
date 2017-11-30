@@ -72,11 +72,11 @@ ReactDOM.render(
 const source = parseInt(localStorage.getItem('source'), 10)
 switch(source) {
   case 1:
-    favicon.change('/images/page_logo.png')
+    favicon.change('/images/page_logo.png', '多维海拓 Investarget')
     break;
   case 2:
-    favicon.change('/images/autospace.ico')
+    favicon.change('/images/autospace.ico', '车创 AutoSpace')
     break;
   default:
-    favicon.change('/images/page_logo.png')
+    favicon.change('/images/page_logo.png', '多维海拓 Investarget')
 }

@@ -24,13 +24,13 @@ class Home extends React.Component {
     localStorage.setItem('source', source)
     switch(source) {
       case 1:
-        favicon.change('/images/page_logo.png')
+        favicon.change('/images/page_logo.png', '多维海拓 Investarget')
         break;
       case 2:
-        favicon.change('/images/autospace.ico')
+        favicon.change('/images/autospace.ico', '车创 AutoSpace')
         break;
       default:
-        favicon.change('/images/page_logo.png')
+        favicon.change('/images/page_logo.png', '多维海拓 Investarget')
     }
     this.props.dispatch(routerRedux.push('/login'))
   }
