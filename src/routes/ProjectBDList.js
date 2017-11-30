@@ -131,8 +131,8 @@ class ProjectBDList extends React.Component {
         return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
       }},
       {title: i18n('project_bd.contact'), dataIndex: 'username'},
-      {title: i18n('project_bd.title'), dataIndex: 'usertitle.name'},
-      {title: i18n('project_bd.mobile'), dataIndex: 'usermobile'},
+      {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name'},
+      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile'},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username'},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return time(record.createdtime + record.timezone)

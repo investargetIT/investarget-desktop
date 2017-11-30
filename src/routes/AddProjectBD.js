@@ -14,6 +14,9 @@ function onValuesChange(props, values) {
 const AddProjectBDForm = Form.create({onValuesChange})(ProjectBDForm)
 
 function toData(formData) {
+  if (! 'bduser' in formData) {
+    formData['bduser'] = null
+  }
   return formData
 }
 

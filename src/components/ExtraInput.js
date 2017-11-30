@@ -379,6 +379,62 @@ class SelectExistInvestor extends React.Component {
 }
 
 /**
+ * SelectAllUser
+ */
+class SelectAllUser extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      groups: [],
+    }
+  }
+
+  componentDidMount() {
+    this.getGroups()
+  }
+
+  getGroups = () => {
+    api.queryUserGroup({ type: this.props.type }).then(result => {
+      const { data } = result.data
+      const groups = data.map(item => item.id)
+      this.setState({ groups })
+    })
+  }
+
+  getUser = (params) => {
+    params = { ...params, groups: this.state.groups }
+    return api.getUser(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, username: label } = item
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  getUsernameById = (id) => {
+    return api.getUserDetailLang(id).then(result => {
+      return result.data.username
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getUser}
+        getNameById={this.getUsernameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+      />
+    )
+  }
+}
+
+/**
  * SelectExistProject
  */
 class SelectExistProject extends React.Component {
@@ -1075,6 +1131,7 @@ export {
   SelectExistProject,
   SelectExistInvestor,
   SelectUser,
+  SelectAllUser,
   SelectTransactionStatus,
   SelectProjectStatus,
   SelectUserGroup,

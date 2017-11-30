@@ -29,6 +29,13 @@ function toFormData(data) {
     }
   }
 
+  // 如果 bduser 有值，则删除 username, usertitle, usermobile
+  if (formData['bduser']) {
+    delete formData['username']
+    delete formData['usertitle']
+    delete formData['usermobile']
+  }
+
   for (let prop in formData) {
     formData[prop] = { value: formData[prop] }
   }
@@ -36,6 +43,9 @@ function toFormData(data) {
 }
 
 function toData(formData) {
+  if (!('bduser' in formData)) {
+    formData['bduser'] = null
+  }
   return formData
 }
 
