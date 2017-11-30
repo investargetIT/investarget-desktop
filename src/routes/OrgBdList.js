@@ -124,7 +124,6 @@ class OrgBdList extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
 
     const columns = [
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle'},
         {title: i18n('org_bd.contact'), dataIndex: 'username'},
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
@@ -132,6 +131,7 @@ class OrgBdList extends React.Component {
         {title: i18n('org_bd.mobile'), dataIndex: 'usermobile'},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username'},
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle'},
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name'},
         {
             title: i18n('org_bd.operation'), render: (text, record) => <span>
@@ -141,7 +141,7 @@ class OrgBdList extends React.Component {
                 </Popconfirm>
             </span>
         },
-        {title: 'Comments', render: (text, record) => {
+        {title: i18n('remark.comment'), render: (text, record) => {
           const latestComment = record.BDComments && record.BDComments[0]
           const comments = latestComment ? latestComment.comments : ''
           return (<div>
@@ -155,6 +155,7 @@ class OrgBdList extends React.Component {
       <LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.organization_bd')} 
+        action={{ name: i18n('project_bd.add_project_bd'), link: '/app/orgbd/add' }}
       >
 
         <OrgBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
@@ -198,7 +199,7 @@ class OrgBdList extends React.Component {
         />
 
         <Modal
-          title="Comments"
+          title={i18n('remark.comment')}
           visible={this.state.commentVisible}
           footer={null}
           onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}

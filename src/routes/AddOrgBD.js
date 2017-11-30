@@ -59,6 +59,13 @@ class AddOrgBD extends React.Component {
   }
 
   componentDidMount() {
+    api.queryUserGroup({ type: this.props.type || 'trader' })
+    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => this.setState({ data: data.data.data }))
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+
+    if (isNaN(this.state.projId)) return;
+
     api.getProjLangDetail(this.state.projId).then(result => {
       const projTitle = result.data.projtitle
       this.setState({ projTitle })
@@ -68,12 +75,6 @@ class AddOrgBD extends React.Component {
         payload: error,
       })
     })
-
-    api.queryUserGroup({ type: this.props.type || 'trader' })
-    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
-    .then(data => this.setState({ data: data.data.data }))
-    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
-
   }
 
   render() {
@@ -82,7 +83,9 @@ class AddOrgBD extends React.Component {
     return (
       <LeftRightLayout location={location} title={i18n('project.create_org_bd')}>
         <div>
+          {this.state.projTitle ? 
           <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
+          : null}
 
           { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} /> : null }
         </div>

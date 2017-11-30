@@ -147,7 +147,7 @@ class ProjectBDList extends React.Component {
           </Popconfirm>
         </span>)
       }},
-      {title: 'Comments', render: (text, record) => {
+      {title: i18n('remark.comment'), render: (text, record) => {
         const latestComment = record.BDComments && record.BDComments[0]
         const comments = latestComment ? latestComment.comments : ''
         return (<div>
@@ -184,7 +184,7 @@ class ProjectBDList extends React.Component {
           />
         </div>
 
-        <Modal title="Comments" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false}>
+        <Modal title={i18n('remark.comment')} visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false}>
           <BDComments
             comments={this.state.comments}
             newComment={this.state.newComment}
