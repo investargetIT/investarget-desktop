@@ -266,7 +266,7 @@ class ProjectList extends React.Component {
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
-              <Link href={"/app/timeline/add?projId=" + record.id} target="_blank">
+              <Link to={"/app/timeline/add?projId=" + record.id}>
                 <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
 

@@ -64,7 +64,7 @@ class InboxList extends React.Component {
     }
     getMsg(param).then(data => {
       const list = data.data.data.map(m => {
-        m.created = m.created.slice(0,19).replace('T', ' ')
+        m.created = m.createdtime ? m.createdtime.slice(0,19).replace('T', ' ') : undefined;
         return m
       })
       this.setState({

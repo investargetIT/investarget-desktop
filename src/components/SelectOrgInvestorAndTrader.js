@@ -144,11 +144,12 @@ class SelectOrgInvestorAndTrader extends React.Component {
   }
 
   handleSelect = (record) => {
-    if (!this.props.options && record.trader_relation == null) {
-      Modal.warning({
-        title: '请先分配交易师',
-      })
-    }
+    echo('record', record);
+    // if (!this.props.options && record.trader_relation == null) {
+    //   Modal.warning({
+    //     title: '请先分配交易师',
+    //   })
+    // }
   }
 
   handleTraderOptionsChange = (investorId, traderOptions) => {

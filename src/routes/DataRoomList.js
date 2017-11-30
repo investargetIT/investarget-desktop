@@ -256,8 +256,13 @@ class DataRoomList extends React.Component {
                   <Row gutter={24} key={row} style={rowStyle} type="flex" align="stretch">
                     {
                       _.range(getRowCols(row)).map(col => {
+                        if (!hasPerm('dataroom.admin_adddataroom')) {
+                          let index = cols * row + col // -1 减去 AddCard
+                          let record = list[index]
+                          return record ? <Col span={24/cols} key={col}><DataroomCard record={record} /></Col> : null
+                        }
                         if (row == 0 && col == 0) {
-                          return <Col span={24/cols} key={col}><AddCard /></Col>
+                          return <Col span={24/cols} keye={col}><AddCard /></Col>
                         } else {
                           let index = cols * row + col - 1 // -1 减去 AddCard
                           let record = list[index]
