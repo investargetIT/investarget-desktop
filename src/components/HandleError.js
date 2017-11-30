@@ -97,6 +97,9 @@ class HandleError extends React.Component {
       case 4007:
         Modal.error({ title: i18n('error'), content: i18n('project.message.project_message_missing') })
         break
+      case 2005:
+        Modal.error({ title: i18n('wrong_verify_code')})
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

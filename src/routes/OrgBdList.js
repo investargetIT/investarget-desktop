@@ -155,7 +155,7 @@ class OrgBdList extends React.Component {
       <LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.organization_bd')} 
-        action={{ name: i18n('project_bd.add_project_bd'), link: '/app/orgbd/add' }}
+        action={{ name: i18n('add_orgbd'), link: '/app/orgbd/add' }}
       >
 
         <OrgBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />

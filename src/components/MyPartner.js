@@ -185,7 +185,7 @@ class MyPartner extends React.Component {
       })
     } else {
       columns.push({
-        title: i18n("action"),
+        title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>,
       })

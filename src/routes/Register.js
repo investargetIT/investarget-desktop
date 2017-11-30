@@ -471,7 +471,7 @@ class Register extends React.Component {
             </div>
 
             <div style={{padding:'8px 16px'}}>
-              {getFieldDecorator("agreement", { rules: [{required: true}, {type: 'boolean'}, {validator: checkAgreement}] })(
+              {getFieldDecorator("agreement", { rules: [{required: true, message: '请阅读并接受免责声明'}, {type: 'boolean'}, {validator: checkAgreement}] })(
                 <Checkbox className="it" style={{color:'#fff'}}>已阅读并接受</Checkbox>
               )}
               <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>“免责声明” “平台保密声明”...</Link>

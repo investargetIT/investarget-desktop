@@ -604,5 +604,7 @@
   "site_search": "搜索一下",
   "query_no_results": "查询没有结果",
   "create_orgbd_success": "机构BD创建成功",
-  "modify_orgbd_status": "修改机构BD状态"
+  "modify_orgbd_status": "修改机构BD状态", 
+  "wrong_verify_code": "验证码错误",
+  "add_orgbd": "新增机构BD"
 }
