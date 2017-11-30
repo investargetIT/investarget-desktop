@@ -764,7 +764,7 @@ const CNYFormatter = function(value) {
   }
 }
 const CNYParser = function(value) {
-  return value.replace(/\￥\s?|(,*)/g, '')
+  return value.replace(/\uffe5\s?|(,*)/g, '')
 }
 
 class InputCurrency extends React.Component {
