@@ -18,7 +18,7 @@ import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n, hasPerm, getCurrentUser } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -801,48 +801,17 @@ CascaderIndustry = connect(mapStateToPropsIndustry)(CascaderIndustry)
 /**
  * InputCurrency
  */
-
-const USDFormatter = function(value) {
-  if (isNaN(value)) {
-    return '$ '
-  } else{
-    return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  }
-}
-const USDParser = function(value) {
-  return value.replace(/\$\s?|(,*)/g, '')
-}
-const CNYFormatter = function(value) {
-  if (isNaN(value)) {
-    return '￥ '
-  } else {
-    return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
-  }
-}
-const CNYParser = function(value) {
-  return value.replace(/\uffe5\s?|(,*)/g, '')
-}
-
 class InputCurrency extends React.Component {
 
-  static formatterMap = {
-    '1': CNYFormatter,
-    '2': USDFormatter,
-    '3': CNYFormatter,
-  }
-  static parserMap = {
-    '1': CNYParser,
-    '2': USDParser,
-    '3': CNYParser,
-  }
-
   render() {
-    const { currencyType, formatter, parser, ...restProps } = this.props
+    const { currencyType, ...restProps } = this.props
+    const formatter = getCurrencyFormatter(currencyType)
+    const parser = getCurrencyParser(currencyType)
     return (
       <InputNumber
         style={{width: '100%'}}
-        formatter={InputCurrency.formatterMap[currencyType]}
-        parser={InputCurrency.parserMap[currencyType]}
+        formatter={formatter}
+        parser={parser}
         {...restProps}
       />
     )

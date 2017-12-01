@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm, getCurrentUser } from '../utils/util'
+import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
 
@@ -119,11 +119,10 @@ class ProjectFinanceForm extends React.Component {
   }
 
   // 处理货币相关表单联动
-  handleCurrencyTypeChange = (currency) => {
+  handleCurrencyTypeChange = (currencyId) => {
     const { getFieldValue, setFieldsValue } = this.props.form
-    const currencyMap = {'1': 'CNY','2': 'USD','3': 'CNY'}
-    exchange(currencyMap[Number(currency)]).then((rate) => {
-      console.log(rate)
+    const currency = getCurrencyFromId(currencyId)
+    exchange(currency).then((rate) => {
       const fields = ['financeAmount', 'companyValuation']
       const values = {}
       fields.forEach(field => {

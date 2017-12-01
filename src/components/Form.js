@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
-import { i18n, exchange, handleError } from '../utils/util'
+import { i18n, exchange, handleError, getCurrencyFromId } from '../utils/util'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
@@ -277,13 +277,14 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
   const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
 
   function onChange(value) {
-    const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
-    const currency = currencyType || 2
-    exchange(currencyMap[String(currency)]).then((rate) => {
+    const currency = getCurrencyFromId(currencyType || 2)
+    exchange(currency).then((rate) => {
       setFieldsValue({
         [name + '_USD']: value == undefined ? value : Math.round(value * rate),
       })
-    }, error => handleError)
+    }, error => {
+      handleError(error)
+    })
   }
 
   let rules = [

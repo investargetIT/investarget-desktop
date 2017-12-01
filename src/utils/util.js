@@ -138,13 +138,78 @@ function timeForIM(timestamp) {
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
-var exchangeCache = {}
-var offlineRate = {
-  'USD': 1,
-  'CNY': 0.147,
+
+export function getCurrencyFromId(id) {
+  const map = {
+    1: 'CNY', // 人民币
+    2: 'USD', // 美元
+    3: 'EUR', // 欧元
+    5: 'GBP', // 英镑
+    6: 'JPY', // 日元
+    7: 'KRW', // 韩元
+    12: 'CNY', // 人民币及美元
+  }
+  return map[id]
 }
+
+// const USDFormatter = function(value) {
+//   if (isNaN(value)) {
+//     return '$ '
+//   } else{
+//     return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+//   }
+// }
+// const USDParser = function(value) {
+//   return value.replace(/\$\s?|(,*)/g, '')
+// }
+// const CNYFormatter = function(value) {
+//   if (isNaN(value)) {
+//     return '￥ '
+//   } else {
+//     return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
+//   }
+// }
+// const CNYParser = function(value) {
+//   return value.replace(/\uffe5\s?|(,*)/g, '')
+// }
+
+function getCurrencySign(currency) {
+  const map = {
+    'CNY': '\uffe5',
+    'USD': '$',
+    'EUR': '\u20ac',
+    'GBP': '\uffe1',
+    'JPY': '\uffe5',
+    'KRW': '\u20a9',
+  }
+  return map[currency]
+}
+
+export function getCurrencyFormatter(id) {
+  const currency = getCurrencyFromId(id)
+  const sign = getCurrencySign(currency)
+  return function(value) {
+    if (isNaN(value)) {
+      return sign + ' '
+    } else{
+      return sign + ' ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
+  }
+}
+
+export function getCurrencyParser(id) {
+  const currency = getCurrencyFromId(id)
+  const sign = getCurrencySign(currency)
+  const re = (sign == '$') ? new RegExp('\$\s?|(,*)', 'g') : new RegExp(sign + '\s?|(,*)', 'g')
+  return function(value) {
+    return value.replace(re, '')
+  }
+}
+
+
+var exchangeCache = {}
+
 function exchange(source) {
-  console.log(source)
   if (exchangeCache[source] != null) {
     let rate = exchangeCache[source]
     return new Promise(function(resolve, reject) {
@@ -159,11 +224,8 @@ function exchange(source) {
       var rate = result.data.rate
       exchangeCache[source] = rate
       return rate
-    }, (error) => {
-      return offlineRate[source]
     })
   }
-
 }
 
 function getUserInfo() {
