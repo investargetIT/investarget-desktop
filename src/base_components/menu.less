@@ -20,7 +20,7 @@
 
     a {
       display: block;
-      padding: 7px 10px;
+      padding: 4px 10px;
       border-radius: 3px;
       color: @menuColor;
       text-decoration: none;
@@ -30,16 +30,20 @@
   .it-menu-item-active {
     a, a:hover, a:focus {
       color: @menuActiveColor;
-      background-color: @menuActiveBackgroundColor;
+      background-color: rgba(255,255,255,.95);
       text-decoration: none;
       box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+    }
+
+    a > span > span {
+      background-color: rgba(255,255,255,.95);
     }
   }
 
   .it-menu-item-selected {
     a, a:hover, a:focus {
       color: @menuSelectedColor;
-      background-color: @menuSelectedBackgroundColor;
+      background-color: rgba(35, 124, 204, 0.95);
     }
   }
 
@@ -52,7 +56,7 @@
       // Menu组件的inlineIndent(inline模式的菜单缩进宽度)属性，设置了元素的style.paddingLeft，优先级高
       // 这里要使用padding: 7px 10px!important;强制覆盖style.paddingLeft
       // https://github.com/react-component/menu/blob/e2d85a05e2e4c42412bd92395bd268312c410087/src/SubMenu.jsx#L364
-      padding: 7px 10px!important;
+      padding: 4px 10px!important;
       border-radius: 3px;
       cursor: pointer;
       color: @menuColor;
@@ -98,11 +102,10 @@
       display: block;
       color: #94989d;
       font-size: 13px;
-      padding: 5px 0 5px 27px;
+      padding: 3px 0 3px 27px;
       color: @menuColor;
       text-decoration: none;
       box-shadow: none;
-      transition: all 0.2s ease-out 0s;
     }
 
     i {
@@ -137,15 +140,15 @@
     position: relative;
 
     a {
-      padding: 10px;
+      padding: 5px;
       border-radius: 2px;
     }
 
     .title {
       position: absolute;
       color: @menuActiveColor;
-      background: @menuActiveBackgroundColor;
-      padding: 10px 10px 10px 5px;
+      background: rgba(255,255,255,.95);
+      padding: 5px 10px 5px 5px;
       left: 40px;
       top: 0;
       min-width: 209px;
@@ -183,15 +186,15 @@
 
     .it-menu-submenu-title {
       position: relative;
-      padding: 10px!important;
+      padding: 5px!important;
       border-radius: 2px;
       background-image: none;
 
       span>.title {
         position: absolute;
         color: @menuActiveColor;
-        background: @menuActiveBackgroundColor;
-        padding: 10px 10px 10px 5px;
+        background: rgba(255,255,255,.95);
+        padding: 5px 10px 5px 5px;
         left: 40px;
         top: 0;
         min-width: 209px;
@@ -206,17 +209,18 @@
     .it-menu-sub {
       display: none;
       position: absolute;
-      top: 41px;
+      top: 31px;
       left: 45px;
       margin: 0;
       min-width: 204px;
-      background: #1d2939;
+      background: rgba(29,42,58,.95);
       z-index: 100;
       border-radius: 0 0 2px 0;
 
       .it-menu-item {
         a {
           padding: 5px 0 5px 0;
+          text-align: left;
         }
       }
     }
@@ -240,7 +244,19 @@
   .it-menu-submenu-open {
     .it-menu-submenu-title {
       color: @menuActiveColor;
-      background-color: @menuActiveBackgroundColor;
+      background-color: rgba(255,255,255,.95);
+    }
+  }
+
+  .it-menu-submenu-selected {
+    .it-menu-submenu-title {
+      color: #fff;
+      background-color: rgba(35, 124, 204, 0.95);
+
+      span > .title {
+        color: #fff;
+        background-color: rgba(35, 124, 204, 0.95);
+      }
     }
   }
 

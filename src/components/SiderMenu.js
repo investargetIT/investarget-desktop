@@ -68,26 +68,26 @@ class SiderMenu extends React.Component {
       textAlign: 'center',
     }
     if (this.props.collapsed) {
+      iconStyle['marginLeft'] = 7
       iconStyle['marginRight'] = 0
     }
 
     const menuStyle = {
       padding: this.props.collapsed ? 5 : 10,
       height: '100%',
-      overflowY: 'scroll',
     }
 
     return (
     <div className={styles["sider-menu"]} style={menuStyle}>
-      {/* <div
-        style={{textAlign: 'center',backgroundColor:'rgba(117, 117, 117, 0.2)',borderRadius:2,marginBottom:10,height:30,lineHeight:'30px',cursor:'pointer'}}
+      <div
+        style={{textAlign: 'center',backgroundColor:'rgba(117, 117, 117, 0.2)',borderRadius:4,marginBottom:4,height:30,lineHeight:'30px',cursor:'pointer'}}
         onClick={this.toggelMenu}
       >
         <Icon
           style={{fontSize:16,verticalAlign:'middle'}}
           type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
         />
-      </div> */}
+      </div>
       <Menu
         prefixCls="it-menu"
         theme={this.props.theme}
@@ -108,7 +108,7 @@ class SiderMenu extends React.Component {
                   key={m.namekey}
                   title={(
                     <span style={{display: 'block'}}>
-                      <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
+                      <span style={{...iconStyle, marginLeft: this.props.collapsed ? 7 : 0}} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
                       <span style={navTextStyle} className="title">{i18n(`menu.${m.namekey}`)}</span>
                     </span>)}
                 >

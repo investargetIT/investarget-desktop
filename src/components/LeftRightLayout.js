@@ -53,7 +53,7 @@ class LeftRightLayout extends React.Component {
     )
 
     const headStyle = {position:'fixed',zIndex:1,top:0,left:0,width:'100%',height:50}
-    const siderStyle = {position:'fixed',zIndex:1,top:70,left:0,bottom:0,backgroundColor: '#1d2a3a'}
+    const siderStyle = {position:'fixed',zIndex:1,top:70,left:0,bottom:0,backgroundColor: '#1d2a3a', transition: 'none'}
 
     const sideBarAndContent = (
       <Layout style={{}}>
@@ -66,7 +66,7 @@ class LeftRightLayout extends React.Component {
             <SiderMenu collapsed={this.props.collapsed} theme="dark" />
           </Sider>
 
-          <Content className={styles['content']} style={{marginLeft: 240,paddingLeft:20}}>
+          <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
             <div style={{padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
                 <h2 style={titleStyle}>
