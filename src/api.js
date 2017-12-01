@@ -520,7 +520,7 @@ export function deleteUserRemark(id) {
 export const queryDataRoom = (param) => {
   return r('/dataroom/?' + qs.stringify(param))
 }
-export const addDataRoom = (param) => {
+export const createDataRoom = (param) => {
   return r('/dataroom/', 'POST', param)
 }
 
