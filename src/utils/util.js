@@ -323,3 +323,20 @@ export function isParent(node, parentNode) {
   }
   return false
 }
+
+export function appendToArray(array, item) {
+  if (array.includes(item)) {
+    return array // item 在 array 中，直接返回 array
+  } else {
+    return [...array, item]
+  }
+}
+
+export function removeFromArray(array, item) {
+  const index = array.indexOf(item)
+  if (index > -1) {
+    return [...array.slice(0, index), ...array.slice(index + 1)]
+  } else {
+    return array // item 不在 array 中，直接返回 array
+  }
+}
