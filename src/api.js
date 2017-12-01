@@ -3,7 +3,10 @@ import qs from 'qs'
 import { PAGE_SIZE, BASE_URL } from './constants'
 import { qsArrayToString, getUserInfo } from './utils/util'
 import _ from 'lodash'
-import { ApiError } from './utils/request'
+import { 
+  ApiError, 
+  baseUrl 
+} from './utils/request';
 
 export const SOURCE = 1
 
@@ -564,6 +567,43 @@ export const editUserDataRoomFile = (id, param) => {
 export const queryDataRoomDir = (id) => {
   return r('/dataroom/' + id + '/')
 }
+
+/**
+ * 查询DataRoom打包状态
+ * @param {Number} dataroomID - dataroom 的 id 
+ * @param {Number} investorID - 投资人的 id
+ */
+export const checkDataRoomStatus = (dataroomID, investorID) => {
+  let url = `/dataroom/checkzip/?path=dataroom_${dataroomID}`;
+  if (investorID) {
+    url = url + '_' + investorID;
+  }
+  url = url + '.zip';
+  return r(url);
+};
+/**
+ * 返回 DataRoom 打包下载的链接地址
+ * @param {Number} dataroomID - dataroom 的 id
+ * @param {Number} investorID - 投资人的 id
+ */
+export const downloadDataRoom = (dataroomID, investorID) => {
+  const user = getUserInfo()
+  let url = `/dataroom/downzip/?path=dataroom_${dataroomID}`;
+  if (investorID) {
+    url = url + '_' + investorID;
+  }
+  url = url + '.zip&token=' + user.token;
+  echo(baseUrl + url);
+  return baseUrl + url;
+};
+/**
+ * 生成 Dataroom 压缩包
+ * @param {Number} dataroomID - dataroom 的 id
+ * @param {Object} params
+ * @param {Number} params.user - 投资人的 id
+ * @param {String} params.water - 水印的内容 
+ */
+export const makeDataRoomZip = (dataroomID, params) => r(`/dataroom/makezip/${dataroomID}/?${qs.stringify(params)}`);
 
 /**
  * User Relation

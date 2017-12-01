@@ -230,6 +230,10 @@ class FileMgmt extends React.Component {
 
   }
 
+  handleDownloadBtnClicked = () => {
+    this.props.onDownloadBtnClicked();
+  }
+
   render () {
     const isAdmin = hasPerm('usersys.as_admin')
 
@@ -402,6 +406,7 @@ class FileMgmt extends React.Component {
 
     const unableToOperate = this.props.location.query.isClose === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
+    const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
     const selectMoreThanOneRow = this.state.selectedRows.length > 0
     const selectMoreThanTwoRow = this.state.selectedRows.length > 1
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
@@ -410,6 +415,12 @@ class FileMgmt extends React.Component {
       if (unableToOperate ) return null
       return (
         <div>
+          { hasDownloadPerm ?
+            <Button size="large" type="primary" style={{ marginRight: 10 }} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>
+              {i18n('download_package')}
+            </Button>
+          : null }
+
           { hasEnoughPerm ?
           <Upload {...props}>
             <Button size="large" type="primary" style={{ marginRight: 10 }}>{i18n('dataroom.upload')}</Button>

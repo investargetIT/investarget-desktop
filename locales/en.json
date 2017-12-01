@@ -609,5 +609,6 @@
   "create_orgbd_success": "You have created organization bd successfully!",
   "modify_orgbd_status": "Modify Status of Organization BD",
   "wrong_verify_code": "Wrong verify code",
-  "add_orgbd": "Add Organization BD"
+  "add_orgbd": "Add Organization BD",
+  "download_package": "Download Package"
 }

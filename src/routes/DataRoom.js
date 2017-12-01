@@ -29,6 +29,8 @@ class DataRoom extends React.Component {
 
       selectedUser: null,
       targetUserFileList: [],
+      downloadUrl: null,
+      isDownloadBtnLoading: false,
     }
   }
 
@@ -278,7 +280,8 @@ class DataRoom extends React.Component {
       parent: parentId == -999 ? null : parentId,
       key: file.response.result.key,
       size: file.size,
-      bucket: 'file'
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
     }
 
     api.addDataRoomFile(body).then(data => {
@@ -396,6 +399,32 @@ class DataRoom extends React.Component {
     this.editUserFileList(selectedUser, list2)
   }
 
+  checkDataRoomStatus = () => {
+    api.checkDataRoomStatus(this.state.id, this.state.selectedUser)
+      .then(result => {
+        if (result.data.code === 8005) {
+          clearInterval(this.pull);
+          this.setState({ 
+            isDownloadBtnLoading: false, 
+            downloadUrl: api.downloadDataRoom(this.state.id, this.state.selectedUser) 
+          });
+        }
+      });
+  }
+
+  handleDownloadBtnClicked = () => {
+    this.setState({ isDownloadBtnLoading: true });
+    const params = {
+      user: this.state.selectedUser,
+      water: 'abcdefghijklmn'
+    }
+    api.makeDataRoomZip(this.state.id, params)
+    .then(result => {
+      echo('result', result);
+      this.pull = setInterval(this.checkDataRoomStatus, 3000);
+    })
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -424,8 +453,11 @@ class DataRoom extends React.Component {
           onToggleVisible={this.handleToggleVisible}
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
+          onDownloadBtnClicked={this.handleDownloadBtnClicked}
+          isDownloadBtnLoading={this.state.isDownloadBtnLoading}
            />
 
+        <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
           <Modal
             title={i18n('dataroom.user_management')}
