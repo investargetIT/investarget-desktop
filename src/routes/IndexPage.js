@@ -133,15 +133,28 @@ class News extends React.Component {
 
   render() {
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ backgroundColor: '#f8f9fb', margin: '0 10px', padding: 20 }}>
+        <Row style={{ paddingBottom: 2 }}>
+          <Col span={12}>
+          <div style={{ fontSize: 18, color: '#232323' }}>
+          <span style={{ borderBottom: '2px solid #10458f', paddingBottom: 5 }}>市场消息</span>
+          </div>
+          </Col>
+          <Col span={12}>
+          <Link to="/app/wxmsg">
+          <div style={{ textAlign: 'right', fontSize: 14, color: '#989898' }}>更多></div>
+          </Link>
+          </Col>
+        </Row>
+        <hr />
+        <div style={{ height: 5 }} />
         {this.state.list.length > 0 ? (
           <Carousel vertical={true} autoplay={true} dots={false} style={{ margin: 10, position: 'relative' }}>
             {this.state.list.map(item => {
-              return <div key={item.id} style={{height:130,overflow:'scroll',display: 'flex', alignItems: 'center' }}> <Link to="/app/wxmsg"><p style={{fontSize:13, color: '#333'}}>{item.content}</p></Link></div>
+              return <div key={item.id} style={{height:120,overflow:'scroll',display: 'flex', alignItems: 'center' }}> <p style={{fontSize:14, color: '#656565', lineHeight: '24px' }}>{item.content}</p></div>
             })}
           </Carousel>
         ) : <div style={{height:100}}><p style={{fontSize:13}}>{i18n('no_news')}</p></div>}
-        <div style={{ position: 'absolute', top: -38, fontSize: 108, fontFamily: 'Georgia', color: 'lightGray' }}>&ldquo;</div>
       </div>
     )
   }
@@ -207,7 +220,7 @@ class IndexPage extends React.Component {
           var value = result[1].data[key];
           var item = {
             "industry": key,
-            "number": value
+            "数量": value
           }
           investEvent.push(item);
         }
@@ -298,11 +311,11 @@ class IndexPage extends React.Component {
     const hour = date.getHours();
     const minute = date.getMinutes();
     return (
-      <LeftRightLayout location={this.props.location} title="Dashboard">
+      <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, maxWidth: 1000, margin: '0 auto' }} location={this.props.location} title="Dashboard">
 
-        <Row style={{ height: 150, overflow: 'hidden' }}>
-          <Col span={6} style={{ height: '100%' }}>
-            <div style={{ height: 130, margin: 10, backgroundColor: 'rgb(41, 174, 154)', overflow: 'hidden' }}>
+        <Row style={{ height: 100, overflow: 'hidden' }}>
+          <Col span={8} style={{ height: '100%' }}>
+            <div style={{ height: 100, margin: '0 10px', backgroundColor: '#eeac56', overflow: 'hidden' }}>
               {this.state.investorStatistic ?
                 <InvestorStatistic
                   totalInvestorNum={this.state.investorStatistic.total}
@@ -311,52 +324,60 @@ class IndexPage extends React.Component {
                 : null}
             </div>
           </Col>
-          <Col span={3} style={{ height: '100%' }}>
+          <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
           <Tooltips title={this.state.firstSchedule || ''}>
-            <div style={{ height: 130, margin: '10px 5px', backgroundColor: 'rgb(239, 172, 87)', overflow: 'hidden', textAlign: 'center' }}>
-              <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="fa fa-calendar-o"></i>
-              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>{pad(month + 1) + '月' + pad(day) + '日'}</p>
+                <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
+                  <Col span={12}>
+                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="fa fa-calendar-o"></i>
             </div>
+                  </Col>
+                  <Col span={12}>
+                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>日程管理</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{pad(month + 1) + '月' + pad(day) + '日'}</p>
+                    </div>
+                  </Col>
+                </Row>
           </Tooltips>
           </Link>
           </Col>
-          <Col span={3} style={{ height: '100%' }}>
+          <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
           <Tooltips title={this.state.secondSchedule || ''}>
-            <div style={{ height: 130, margin: '10px 5px', textAlign: 'center', backgroundColor: 'rgb(215, 84, 82)', overflow: 'hidden' }}>
+
+          <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
+                  <Col span={12}>
+                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="glyphicon glyphicon-time"></i>
+                    </div>
+                  </Col>
+                  <Col span={12}>
+                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>我的日程</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{pad(hour) + ':' + pad(minute)}</p>
+                    </div>
+                  </Col>
+                </Row>
+
+          {/* <Row style={{ backgroundColor: '#eeac56', margin: 10 }}> */}
+            {/* <div style={{ height: 100, margin: 10, textAlign: 'center', backgroundColor: '#eeac56', overflow: 'hidden' }}>
               <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="glyphicon glyphicon-time"></i>
               <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>{pad(hour) + ':' + pad(minute)}</p>
-            </div>
+            </div> */}
             </Tooltips>
           </Link>
           </Col>
-          <Col span={12} style={{ padding: 10 }}>
-            <News onClose={this.closeCard} />
-          </Col>
         </Row>
 
-        <div style={{ height: 40 }} />
+        <div style={{ height: 30 }} />
 
-        <Row>
-          <Col span={12}>
+        <News onClose={this.closeCard} />
             { this.state.investEvent ? <InvestBarChart data={this.state.investEvent} /> : null }
-          </Col>
-          <Col span={12}>
             { this.state.investRound ? <PopulationByAge data={ this.state.investRound} /> : null }
-          </Col>
-        </Row>
-
-        <div style={{ height: 20 }} />
-
-        <Row>
-          <Col span={12}>
             { this.state.investDegree ? <IndustryDegree data={this.state.investDegree} /> : null }
-          </Col>
-          <Col span={12}>
             { this.state.investAddr ? <EventArea data={this.state.investAddr} /> : null }
-          </Col>
-        </Row>
 
       </LeftRightLayout>
     )
@@ -396,7 +417,7 @@ function EventArea(props) {
 
   return (
     <div>
-      <p style={{ textAlign: 'center' }}>投资事件行业分布图</p>
+      <p style={{ textAlign: 'center', marginBottom: 10, marginTop: 60, fontSize: 18, textWeight: 'bold', color: 'black' }}>投资事件地区分布图</p>
     <Pie
     data={props.data}
     width= {500}
@@ -416,11 +437,11 @@ function InvestBarChart(props) {
     chart.axis('industry',{
       title: null
     });
-    chart.axis('number',{
+    chart.axis('数量',{
       title: null
     });
     chart.coord('rect');
-    chart.interval().position('industry*number').color('rgb(245, 137, 91)');
+    chart.interval().position('industry*数量').color('rgb(245, 137, 91)');
     chart.render();
   });
 
@@ -438,11 +459,11 @@ function InvestBarChart(props) {
   data = props.data;
   var frame = new Frame(data);
   frame = Frame.sortBy(frame, function(obj1, obj2) {
-    return obj2['number'] - obj1['number'];
+    return obj2['数量'] - obj1['数量'];
   });
   return (
     <div>
-      <p style={{ textAlign: 'center' }}>投资事件地区分布图</p>
+      <p style={{ textAlign: 'center', marginBottom: 10, marginTop: 60, fontSize: 18, textWeight: 'bold', color: 'black' }}>投资事件行业分布图</p>
       <Chart
       data={frame }
       width={500}
@@ -483,13 +504,13 @@ function PopulationByAge(props) {
   frame1 = Frame.combinColumns(frame1,["A+轮","A轮","B+轮","B轮","C+轮","C轮","D+轮","D轮"],'投资事件数量','轮次','year');
   return (
     <div>
-      <p style={{ textAlign: 'center' }}>投资事件轮次分布图</p>
+      <p style={{ textAlign: 'center', marginBottom: 10, marginTop: 60, fontSize: 18, textWeight: 'bold', color: 'black' }}>投资事件轮次分布图</p>
     <Chart
       data={frame1}
       width={600}
       height={400}
       plotCfg={{
-        margin: [30, 20, 90, 80],
+        margin: [30, 20, 40, 80],
         }}
           // 绘图区域背景设置}
       forceFit={true} />
@@ -577,7 +598,7 @@ function IndustryDegree(props) {
 
   return (
     <div>
-      <p style={{ textAlign: 'center' }}>行业热度分布图</p>
+      <p style={{ textAlign: 'center', marginBottom: 10, marginTop: 60, fontSize: 18, textWeight: 'bold', color: 'black' }}>行业热度分布图</p>
       <Chart
         data={props.data}
         width={700}
@@ -598,19 +619,23 @@ function InvestorStatistic(props) {
   return (
     <div>
       <Row>
-        <Col span={12} style={{ padding: 10 }}>
-          <img style={{ height: 60, margin: 'auto', verticalAlign: 'middle' }} src="/images/is-user.png" />
-        </Col>
-        <Col span={12} style={{ padding: '10px 0' }}>
-          <div style={{ height: 60, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <p style={{ color: 'white', fontSize: 12, fontWeight: 'lighter' }}>投资人总数</p>
-          <h1 style={{ color: 'white', fontSize: 32 }}>{props.totalInvestorNum}</h1>
+        <Col span={5} style={{ }}>
+        <div style={{ height: 100, display: 'flex', justifyContent: 'center' }}>
+          <img style={{ height: 40, margin: 'auto', verticalAlign: 'middle' }} src="/images/is-user.png" />
           </div>
         </Col>
-      </Row>
-      <Row style={{ padding: '0 10px' }}>
-        <p style={{ color: 'white', fontSize: 12, fontWeight: 'lighter' }}>新增投资人数量</p>
-        <p style={{ color: 'white', fontSize: 20 }}>{props.newInvestorNum}</p>
+        <Col span={9} style={{ }}>
+          <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>投资人总数</p>
+          <p style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>{props.totalInvestorNum}</p>
+          </div>
+        </Col>
+      <Col span={10}>
+      <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>新投资人数量</p>
+        <p style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>{props.newInvestorNum}</p>
+          </div>
+        </Col>
       </Row>
     </div>
   );

@@ -67,7 +67,7 @@ class LeftRightLayout extends React.Component {
           </Sider>
 
           <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
-            <div style={{padding: 30,backgroundColor:'#fff'}}>
+            <div style={this.props.style || {padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
                 <h2 style={titleStyle}>
                   { this.props.title }
