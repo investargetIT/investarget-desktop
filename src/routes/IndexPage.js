@@ -311,7 +311,7 @@ class IndexPage extends React.Component {
     const hour = date.getHours();
     const minute = date.getMinutes();
     return (
-      <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, maxWidth: 1000, margin: '0 auto' }} location={this.props.location} title="Dashboard">
+      <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
 
         <Row style={{ height: 100, overflow: 'hidden' }}>
           <Col span={8} style={{ height: '100%' }}>
