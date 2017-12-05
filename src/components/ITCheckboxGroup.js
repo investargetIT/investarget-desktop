@@ -3,6 +3,44 @@ import styles from './ITCheckboxGroup.css'
 import { appendToArray, removeFromArray } from '../utils/util';
 
 
+const containerStyle = {
+  paddingRight: 60,
+  position: 'relative',
+}
+const listStyle = {
+  overflow: 'hidden',
+  height: 24,
+}
+const expandListStyle = {
+  ...listStyle,
+  height: 'auto',
+}
+const closeStyle = {
+  marginLeft: 4,
+  padding: 3,
+  cursor: 'pointer',
+}
+const toolStyle = {
+  position: 'absolute',
+  zIndex: 1,
+  right: 0,
+  top: 0,
+  width: 60,
+  height: 20,
+  lineHeight: '20px',
+  textAlign: 'right',
+  cursor: 'pointer',
+}
+const labelStyle = {
+
+}
+const iconStyle = {
+  marginLeft: 8,
+  marginTop: 7,
+  verticalAlign:'top',
+}
+
+
 // 受控组件，不支持非受控模式
 class ITCheckboxGroup extends React.Component {
 
@@ -10,20 +48,20 @@ class ITCheckboxGroup extends React.Component {
     super(props)
     this.state = {
       isMultiLine: false,
-      extend: false,
+      expand: false,
     }
   }
 
-  toggleExtend = () => {
-    this.setState({ extend: !this.state.extend })
+  toggleExpand = () => {
+    this.setState({ expand: !this.state.expand })
   }
 
   handleMouseEnter = () => {
-    this.setState({ extend: true })
+    this.setState({ expand: true })
   }
 
   handleMouseLeave = () => {
-    // this.setState({ extend: false })
+    // this.setState({ expand: false })
   }
 
   handleClear = () => {
@@ -73,50 +111,13 @@ class ITCheckboxGroup extends React.Component {
   }
 
   render() {
-    const containerStyle = {
-      paddingRight: 60,
-      position: 'relative',
-    }
-    const listStyle = {
-      overflow: 'hidden',
-      height: 24,
-    }
-    const extendListStyle = {
-      ...listStyle,
-      height: 'auto',
-    }
-    const closeStyle = {
-      marginLeft: 4,
-      padding: 3,
-      cursor: 'pointer',
-    }
-    const toolStyle = {
-      position: 'absolute',
-      zIndex: 1,
-      right: 0,
-      top: 0,
-      width: 60,
-      height: 20,
-      lineHeight: '20px',
-      textAlign: 'right',
-      cursor: 'pointer',
-    }
-    const labelStyle = {
-
-    }
-    const iconStyle = {
-      marginLeft: 8,
-      marginTop: 7,
-      verticalAlign:'top',
-    }
-
     const { value, onChange, options } = this.props // value 数组类型
 
     return (
       <div style={containerStyle} onMouseLeave={this.handleMouseLeave}>
-        <ul ref={el => {this.listEl = el}} className="clearfix" style={this.state.extend ? extendListStyle : listStyle}>
+        <ul ref={el => {this.listEl = el}} className="clearfix" style={this.state.expand ? expandListStyle : listStyle}>
 
-          <Item label="不限" isChecked={value.length == 0} onCheck={this.handleClear} closable={false} />
+          <Item label="不限" checked={value.length == 0} onCheck={this.handleClear} closable={false} />
 
           {options.map(item => {
             const isChecked = value.includes(item.value)
@@ -124,27 +125,61 @@ class ITCheckboxGroup extends React.Component {
               <Item
                 key={item.value}
                 label={item.label}
-                isChecked={isChecked}
+                checked={isChecked}
                 onCheck={this.handleCheck.bind(this, item.value)}
                 onUncheck={this.handleUncheck.bind(this, item.value)}
               />
             )
           })}
         </ul>
-        <div style={{...toolStyle, display: this.state.isMultiLine ? 'block' : 'none'}} onClick={this.toggleExtend} onMouseEnter={this.handleMouseEnter}>
-          <span style={labelStyle}>{this.state.extend ? '收起' : '更多' }</span>
-          {this.state.extend ? (
-            <img style={iconStyle} src="/images/arrow-up.png" />
-          ) : (
-            <img style={iconStyle} src="/images/arrow-down.png" />
-          )}
-        </div>
+
+        {this.state.isMultiLine ? (
+          <ToolMore
+            expand={this.state.expand}
+            onToggle={this.toggleExpand}
+            onMouseEnter={this.handleMouseEnter}
+          />
+        ) : null}
       </div>
     )
   }
 }
 
 export default ITCheckboxGroup
+
+
+function ToolMore(props) {
+  const toolStyle = {
+    position: 'absolute',
+    zIndex: 1,
+    right: 0,
+    top: 0,
+    width: 60,
+    height: 20,
+    lineHeight: '20px',
+    textAlign: 'right',
+    cursor: 'pointer',
+  }
+  const labelStyle = {
+
+  }
+  const iconStyle = {
+    marginLeft: 8,
+    marginTop: 7,
+    verticalAlign:'top',
+  }
+  const { expand } = props
+  return (
+    <div style={{...toolStyle, ...props.style}} onClick={props.onToggle} onMouseEnter={props.onMouseEnter}>
+      <span style={labelStyle}>{expand ? '收起' : '更多' }</span>
+      {expand ? (
+        <img style={iconStyle} src="/images/arrow-up.png" />
+      ) : (
+        <img style={iconStyle} src="/images/arrow-down.png" />
+      )}
+    </div>
+  )
+}
 
 
 function Item(props) {
@@ -157,6 +192,7 @@ function Item(props) {
     lineHeight: '20px',
     color: '#656565',
     borderRadius: 4,
+    listStyle: 'none',
     cursor: 'pointer',
   }
   const checkedItemStyle = {
@@ -171,12 +207,15 @@ function Item(props) {
   }
 
   const canClose = (props.closable !== false)
+  const style = props.checked ? checkedItemStyle : itemStyle
   return (
-    <li style={props.isChecked ? checkedItemStyle : itemStyle} className={styles['item']}>
+    <li style={{...style, ...props.style}} className={styles['item']}>
       <span onClick={props.onCheck}>{props.label}</span>
-      {canClose && props.isChecked ? (
+      {canClose && props.checked ? (
         <i className="fa fa-times" style={closeStyle} onClick={props.onUncheck}></i>
       ) : null}
     </li>
   )
 }
+
+export { ToolMore, Item }

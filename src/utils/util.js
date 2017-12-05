@@ -152,27 +152,6 @@ export function getCurrencyFromId(id) {
   return map[id]
 }
 
-// const USDFormatter = function(value) {
-//   if (isNaN(value)) {
-//     return '$ '
-//   } else{
-//     return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-//   }
-// }
-// const USDParser = function(value) {
-//   return value.replace(/\$\s?|(,*)/g, '')
-// }
-// const CNYFormatter = function(value) {
-//   if (isNaN(value)) {
-//     return '￥ '
-//   } else {
-//     return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
-//   }
-// }
-// const CNYParser = function(value) {
-//   return value.replace(/\uffe5\s?|(,*)/g, '')
-// }
-
 function getCurrencySign(currency) {
   const map = {
     'CNY': '\uffe5',
@@ -324,19 +303,40 @@ export function isParent(node, parentNode) {
   return false
 }
 
-export function appendToArray(array, item) {
-  if (array.includes(item)) {
-    return array // item 在 array 中，直接返回 array
+export function appendToArray(array, items) {
+  array = array.slice()
+  if (Array.isArray(items)) {
+    let len = items.length;
+    for (let i=0; i<len; i++) {
+      let item = items[i]
+      if (!array.includes(item)) {
+        array.push(item)
+      }
+    }
   } else {
-    return [...array, item]
+    if (!array.includes(items)) {
+      array.push(items)
+    }
   }
+  return array
 }
 
-export function removeFromArray(array, item) {
-  const index = array.indexOf(item)
-  if (index > -1) {
-    return [...array.slice(0, index), ...array.slice(index + 1)]
+export function removeFromArray(array, items) {
+  array = array.slice()
+  if (Array.isArray(items)) {
+    let len = items.length;
+    for (let i=0; i<len; i++) {
+      let item = items[i]
+      let index = array.indexOf(item)
+      if (index > -1) {
+        array.splice(index, 1)
+      }
+    }
   } else {
-    return array // item 不在 array 中，直接返回 array
+    let index = array.indexOf(items)
+    if (index > -1) {
+      array.splice(index, 1)
+    }
   }
+  return array
 }
