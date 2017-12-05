@@ -19,6 +19,7 @@ import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
+import ITCheckboxGroup from './ITCheckboxGroup'
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -954,7 +955,7 @@ const CheckboxArea = withOptionsAsync(CheckboxGroup, ['country'], function(state
   })
   return { options }
 })
-const CheckboxAreaString = withOptionsAsync(CheckboxGroup, ['country'], function(state) {
+const CheckboxAreaString = withOptionsAsync(ITCheckboxGroup, ['country'], function(state) {
   const { country } = state.app
   const options = country.filter(item => item.level == 3).map(item => {
     return { label: item.country, value: item.country, key: item.id }
@@ -1013,7 +1014,7 @@ TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 /**
  * CheckboxYear
  */
-const CheckboxYear = withYear(CheckboxGroup)
+const CheckboxYear = withYear(ITCheckboxGroup)
 
 
 /**

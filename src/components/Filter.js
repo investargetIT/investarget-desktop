@@ -31,7 +31,7 @@ import {
   TabCheckboxCountry,
   CheckboxService,
 } from './ExtraInput'
-
+import ITCheckboxGroup from './ITCheckboxGroup'
 
 
 function BasicContainer(props) {
@@ -642,13 +642,13 @@ class ProjectLibraryFilter extends React.Component {
           <CheckboxAreaString value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.investment_round')}>
-          <CheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />
+          <ITCheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.operating_status')}>
-          <CheckboxGroup options={statusOptions} value={com_status} onChange={this.handleChange.bind(this, 'com_status')} />
+          <ITCheckboxGroup options={statusOptions} value={com_status} onChange={this.handleChange.bind(this, 'com_status')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.fund_needs')}>
-          <CheckboxGroup options={fundNeedsOptions} value={com_fund_needs_name} onChange={this.handleChange.bind(this, 'com_fund_needs_name')} />
+          <ITCheckboxGroup options={fundNeedsOptions} value={com_fund_needs_name} onChange={this.handleChange.bind(this, 'com_fund_needs_name')} />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
@@ -737,33 +737,33 @@ class ProjectBDFilter extends React.Component {
 }
 
 class OrgBDFilter extends React.Component {
-  
+
     static defaultValue = {
       bd_status: null,
       manager: [],
     }
-  
+
     constructor(props) {
       super(props)
       this.state = props.defaultValue || OrgBDFilter.defaultValue
     }
-  
+
     handleChange = (key, value) => {
       this.setState({ [key]: value })
     }
-  
+
     handleSearch = () => {
       this.props.onSearch({ ...this.state })
     }
-  
+
     handleReset = () => {
       this.setState({ ...OrgBDFilter.defaultValue })
       this.props.onReset({ ...OrgBDFilter.defaultValue })
     }
-  
+
     render() {
       const { bd_status, source_type, location, manager } = this.state
-  
+
       return (
         <div>
           <BasicContainer label={i18n('project_bd.bd_status')}>
