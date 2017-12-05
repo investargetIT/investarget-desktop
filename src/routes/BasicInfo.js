@@ -103,7 +103,7 @@ function mapStateToProps(state) {
 
 function mapPropsToFields(props) {
   return {
-    readOnlyGroup: { value: props.currentUser.groups[0].name },
+    readOnlyGroup: { value: props.currentUser.groups.length > 0 ? props.currentUser.groups[0].name : '' },
     organization: { value:  props.currentUser.org.orgname},
     username: { value: props.currentUser.username },
     title: { value: props.currentUser.title && props.currentUser.title.id + ''},
