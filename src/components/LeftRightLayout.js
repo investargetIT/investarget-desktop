@@ -8,7 +8,6 @@ import InstantMessage from './InstantMessage'
 import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
-import { PATH_LIST } from '../path'
 import styles from './LeftRightLayout.css'
 
 
