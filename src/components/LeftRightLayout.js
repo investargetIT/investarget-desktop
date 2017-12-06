@@ -33,6 +33,12 @@ const titleStyle = {
   color: '#232323',
   float: 'left',
 }
+const nameStyle = {
+  fontSize: 16,
+  lineHeight: '40px',
+  color: '#232323',
+  float: 'left',
+}
 const actionStyle = {
   float: 'right',
   fontSize: 16,
@@ -68,18 +74,17 @@ class LeftRightLayout extends React.Component {
           <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
             <div style={this.props.style || {padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
-
-                { typeof this.props.title == "string" ? (
-                  <h2 style={titleStyle}>
-                    { this.props.title }
-                  </h2>
-                ) : this.props.title }
-
-                { this.props.right ? (
-                  <div style={{float:'right'}}>{this.props.right}</div>
-                ) : null }
+                <h2 style={titleStyle}>
+                  { this.props.title }/
+                </h2>
+                <div style={nameStyle}>
+                  {this.props.name}
+                </div>
                 { this.props.action ? (
                     <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
+                ) : null }
+                { this.props.right ? (
+                  <div style={{float:'right'}}>{this.props.right}</div>
                 ) : null }
               </div>
 
