@@ -49,6 +49,7 @@ export default {
       return { ...state, registerStep }
     },
     toggleMenu(state, { payload: collapsed }) {
+      localStorage.setItem('collapsed', collapsed);
       return { ...state, collapsed }
     },
     toggleChat(state, { payload: showChat }) {

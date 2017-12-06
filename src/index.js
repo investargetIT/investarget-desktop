@@ -4,7 +4,7 @@ import { LocaleProvider } from 'antd'
 import dva from 'dva';
 import { useRouterHistory } from 'dva/router';
 import { createHistory } from 'history'
-
+import { state } from './models/app';
 import './base_components/menu.less';
 import './index.css';
 import createLoading from 'dva-loading';
@@ -24,11 +24,21 @@ const lang = appLocale.lang
 window.LANG = lang || 'cn'
 const basename = lang ? ('/' + lang) : ''
 
+// 侧边栏菜单状态，页面宽度小于1200时关闭，大于1200时为用户设置值
+// 如果用户没设置过的话默认展开
+const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+let collapsed = localStorage.getItem('collapsed');
+collapsed = w < 1200 ? true : collapsed ? JSON.parse(collapsed) : false;
+
 // 1. Initialize
 const app = dva({
   history: useRouterHistory(createHistory)({ basename: basename }),
   initialState: {
     currentUser: getUserInfo(),
+    app: {
+      ...state,
+      collapsed,
+    }
   },
   onError(error, dispatch) {
     dispatch({
