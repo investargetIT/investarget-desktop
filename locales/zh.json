@@ -92,7 +92,8 @@
     "mobile": "电话：",
     "email": "邮箱：",
     "address": "地址：",
-    "news": "新闻"
+    "news": "新闻",
+    "information_detail": "信息详情"
   },
 
   "project_bd": {
@@ -544,7 +545,9 @@
     "no_image": "没有图片",
     "keyword_search": "输入关键词搜索(名称／股票代码／地区)",
     "is_searching": "正在搜索...",
-    "is_loading": "加载结果中..."
+    "is_loading": "加载结果中...",
+    "write_comment":"请在这里留下您想要备注的信息",
+    "view_more":"查看更多"
   },
 
   "validation": {

@@ -75,7 +75,7 @@ class LeftRightLayout extends React.Component {
             <div style={this.props.style || {padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
                 <h2 style={titleStyle}>
-                  { this.props.title }/
+                  { this.props.title }&nbsp;/&nbsp;
                 </h2>
                 <div style={nameStyle}>
                   {this.props.name}

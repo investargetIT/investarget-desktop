@@ -10,7 +10,7 @@ import { LibProjRemarkList } from '../components/RemarkList'
 const divStyle = {marginBottom: 16}
 const titleStyle = {lineHeight: 2,fontSize: 16}
 const paraStyle = {fontSize: 13}
-
+const wholeStyle={marginLeft:50}
 import styles from './ProjectLibraryItem.css'
 
 
@@ -22,6 +22,7 @@ class ProjectLibraryItem extends React.Component {
     this.state = {
       proj: {},
       events: [],
+      remarks:[],
     }
   }
 
@@ -34,18 +35,27 @@ class ProjectLibraryItem extends React.Component {
       return api.getLibEvent({ com_id }).then(result => {
         const { data } = result.data
         this.setState({ events: data })
+        console.log(this.state.events)
       })
+
     }).catch(error => {
       handleError(error)
     })
+
   }
 
   render() {
-    const { proj, events } = this.state
+    const { proj, events,remarks} = this.state
     return (
-      <LeftRightLayout location={this.props.location} title={proj.com_name}>
+      <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')} name={proj.com_name} >
+        {proj.com_id ? <LibProjRemarkList com_id={proj.com_id} com_name={proj.com_name} /> : null}
 
-        <div>
+        <h3 style={titleStyle}>{i18n('project_library.information_detail')}:</h3>
+        <div style={divStyle}>
+        
+        </div>
+        <div style={wholeStyle}>
+
           <div style={divStyle}>
             <h3 style={titleStyle}>{i18n('project_library.intro')}</h3>
             <p style={paraStyle}>{proj.com_des}</p>
@@ -85,7 +95,6 @@ class ProjectLibraryItem extends React.Component {
             {proj.com_id ? <News com_id={proj.com_id} /> : null}
           </div>
 
-          {proj.com_id ? <LibProjRemarkList com_id={proj.com_id} com_name={proj.com_name} /> : null}
 
         </div>
       </LeftRightLayout>
@@ -103,6 +112,7 @@ const itemStyle = {
 const linkStyle = {
   color: 'rgba(0, 0, 0, 0.65)',
 }
+
 
 class News extends React.Component {
 
