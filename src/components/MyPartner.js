@@ -7,6 +7,7 @@ import * as api from '../api'
 import { Link } from 'dva/router'
 import { URI_12, URI_13 } from '../constants'
 import { connect } from 'dva'
+import CardContainer from '../components/CardContainer'
 
 const Search = Input.Search
 
@@ -16,7 +17,7 @@ class MyPartner extends React.Component {
     list: [],
     loading: false,
     total: 0,
-    pageSize: 10,
+    pageSize: 9, // todo
     pageIndex: 1
   }
   investorList = []
@@ -190,32 +191,47 @@ class MyPartner extends React.Component {
         render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>,
       })
     }
+
+    const { list } = this.state
+
     return (
       <div>
 
+      {this.props.type === "investor" ? (
         <MyInvestorListFilter onFilter={this.handleSearch.bind(this)} />
+      ) : null}
 
+      {this.props.type === "investor" ? (
         <Search
           size="large"
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
           onSearch={this.handleSearch.bind(this)} />
+      ) : null}
 
-        <Table
-          columns={columns}
-          dataSource={this.state.list}
-          loading={this.state.loading}
-          rowKey={record => record.id}
-          pagination={false} />
+      {this.props.type === "trader" ? (
+          <CardContainer gutter={28} cardWidth={240}>
+            {list.map(item => {
+              return <Card key={item.id} {...item} />
+            })}
+          </CardContainer>
+      ) : null}
+
+        {this.props.type === "investor" ? (
+          <Table
+            columns={columns}
+            dataSource={this.state.list}
+            loading={this.state.loading}
+            rowKey={record => record.id}
+            pagination={false} />
+        ) : null}
 
         <Pagination
-          className="ant-table-pagination"
+          style={{textAlign: 'center'}}
           total={this.state.total}
           current={this.state.pageIndex}
           pageSize={this.state.pageSize}
           onChange={this.handlePageChange}
-          onShowSizeChange={this.handleShowSizeChange}
-          showSizeChanger
-          showQuickJumper />
+        />
 
       </div>
     )
@@ -223,3 +239,19 @@ class MyPartner extends React.Component {
 }
 
 export default connect()(MyPartner)
+
+
+function Card(props) {
+  const { id, photourl, username } = props
+  const containerStyle = {display:'block',width: 240,height: 280,backgroundColor:'#fff',border:'1px solid #ccc',overflow:'hidden',cursor:'pointer',textDecoration:'none'}
+  const photoStyle = {width:'100%',height:216,backgroundPosition:'center',backgroundSize:'cover',backgroundRepeat:'no-repeat',backgroundImage:`url("${photourl}")`}
+  const nameStyle = {margin:'0 auto',fontSize:18,textAlign:'center',color:'#333',marginTop:8}
+  return (
+    <Link to={'/app/trader/' + id} style={containerStyle}>
+      <div style={photoStyle}></div>
+      <div>
+        <p style={nameStyle}>{username}</p>
+      </div>
+    </Link>
+  )
+}

@@ -316,6 +316,7 @@
   "user": {
     "user_list": "User List",
     "user_detail": "User Detail",
+    "detail": "Detail",
     "add_user": "Add User",
     "add_investor": "Add Investor",
     "create_user": "Create User",
