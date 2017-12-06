@@ -12,6 +12,8 @@ import {
   Upload,
   message,
   Modal,
+  Row,
+  Col,
 } from 'antd'
 import QRCode from 'qrcode.react';
 const TabPane = Tabs.TabPane
@@ -22,14 +24,16 @@ const ellipsisStyle = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  color: '#656565'
 }
 const fileitemStyle = {
   display: 'flex',
   alignItems: 'center',
+  marginBottom: 10,
 }
 const filetypeStyle = {
   flexShrink: 0,
-  width: '125px',
+  width: '225px',
   marginRight: '25px',
   color: '#108ee9',
   ...ellipsisStyle,
@@ -65,6 +69,22 @@ const mimeTypes = [
 
 
 const fixedDirs = ['NDA', 'Teaser', 'Executive Summary', 'BP', 'Presetation', 'Brochure', 'Financials', 'FAQ', 'Cap Table']
+
+function DirectoryCell(props) {
+  return (
+    <Row style={{ padding: '0 20px', borderBottom: '1px solid lightgray' }}>
+      <Col span={16}>
+        <div style={{ height: 64, display: 'flex', alignItems: 'center', fontSize: 16, color: '#05161e' }}>{props.name}</div>
+      </Col>
+      <Col span={8}>
+      <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <span style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4 }}>点击上传</span>
+      <span style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4 }}>手机上传</span>
+      </div>
+      </Col>
+    </Row>
+  );
+}
 
 class ProjectAttachments extends React.Component {
 
@@ -343,23 +363,9 @@ class ProjectAttachments extends React.Component {
     let doneFileList = fileList.filter(file => file.status == 'done')
 
     return (
-      <div>
+      <div style={{ paddingTop: 15 }}>
 
-        <div style={{ marginBottom: 16 }}>
-          <p style={{ marginBottom: '8px' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
-          <div style={{ marginLeft: '8px' }}>
-          {
-            doneFileList.map(file =>
-              <div key={file.key} style={fileitemStyle}>
-                <span style={filetypeStyle}>{file.filetype}</span>
-                <span style={filenameStyle}>{file.filename}</span>
-              </div>
-            )
-          }
-          </div>
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
+        {/* <div style={{ marginBottom: 16 }}>
           <Input
             value={this.state.newDir}
             onChange={(e) => {this.setState({ newDir: e.target.value })}}
@@ -367,9 +373,24 @@ class ProjectAttachments extends React.Component {
             placeholder={i18n('project.add_directory')}
           />
           <Button onClick={this.addDir} disabled={this.state.newDir == ''}>ADD</Button>
-        </div>
+        </div> */}
 
-        <Tabs
+        <Row style={{ backgroundColor: '#ebf0f3', padding: '0 20px' }}>
+          <Col span={16}>
+            <div style={{ height: 40, display: 'flex', alignItems: 'center', color: '#282828', fontSize: 14  }}>目录</div>
+          </Col>
+          <Col span={8}>
+            <div style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <span style={{ color: '#282828', fontSize: 14 }}>添加目录</span>
+              <span style={{ marginLeft: 10, marginBottom: 4, color: '#237ccc', fontSize: 30, fontWeight: 'normal' }}>+</span>
+            </div>
+          </Col>
+        </Row>
+
+        { panes.map( pane => <DirectoryCell name={pane.title} /> ) }
+
+        <div style={{ height: 20 }} />
+        {/* <Tabs
           hideAdd
           onChange={(activeKey) => {this.setState({activeDir: activeKey})}}
           activeKey={this.state.activeDir}
@@ -377,9 +398,9 @@ class ProjectAttachments extends React.Component {
           onEdit={this.handleTabsEdit}
         >
           {panes.map(pane => <TabPane tab={pane.title} key={pane.key} closable={pane.closable}></TabPane>)}
-        </Tabs>
+        </Tabs> */}
 
-        <Dragger
+        {/* <Dragger
           action={BASE_URL + "/service/qiniubigupload?bucket=file"}
           accept={fileExtensions.join(',')}
           beforeUpload={this.beforeUpload}
@@ -393,8 +414,22 @@ class ProjectAttachments extends React.Component {
           <p className="ant-upload-text">{i18n('project.click_drag_upload')}</p>
           <p className="ant-upload-hint">pdf, doc, docx, xls, xlsx, ppt, pptx</p>
         </Dragger>
-        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button>
+        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button> */}
         
+        <div style={{ marginTop: 30 }}>
+          <p style={{ marginBottom: '8px', fontSize: 16, color: '#282828', fontWeight: 'bold' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
+          <div style={{ marginLeft: '8px', marginTop: 20 }}>
+          {
+            doneFileList.map(file =>
+              <div key={file.key} style={fileitemStyle}>
+                <span style={filetypeStyle}>{file.filetype}</span>
+                <span style={filenameStyle}>{file.filename}</span>
+              </div>
+            )
+          }
+          </div>
+        </div>
+
         { this.state.qrCodeValue ? 
         <Modal
           width={230}
@@ -408,7 +443,7 @@ class ProjectAttachments extends React.Component {
           <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
         </Modal>
         : null }
-        
+
       </div>
     )
   }
