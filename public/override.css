@@ -342,3 +342,65 @@ button[disabled], html input[disabled] {
 .it-login-radio .ant-radio {
   vertical-align: middle;
 }
+
+
+/* 覆盖 Pagination 样式 */
+.ant-pagination-item {
+  min-width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+.ant-pagination-prev, .ant-pagination-next, .ant-pagination-jump-prev, .ant-pagination-jump-next {
+  min-width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+.ant-pagination-item {
+  background-color: #ebf0f3;
+  border-color: #ebf0f3;
+}
+.ant-pagination-item-active {
+  background-color: #237CCC;
+  border-color: #237CCC;
+}
+.ant-pagination-item a {
+  color: #666;
+}
+.ant-pagination-item-active a {
+  color: #fff;
+}
+.ant-pagination-item:focus, .ant-pagination-item:hover {
+  border-color: #ebf0f3;
+}
+.ant-pagination-item-active:focus, .ant-pagination-item-active:hover {
+  background-color: #237CCC;
+  border-color: #237CCC;
+}
+.ant-pagination-item:focus a, .ant-pagination-item:hover a {
+  color: #666;
+}
+.ant-pagination-item-active:focus a, .ant-pagination-item-active:hover a {
+  color: #fff;
+}
+.ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link {
+  background-color: #ebf0f3;
+  border-color: #ebf0f3;
+  color: #666;
+}
+.ant-pagination-prev:focus .ant-pagination-item-link, .ant-pagination-next:focus .ant-pagination-item-link, .ant-pagination-prev:hover .ant-pagination-item-link, .ant-pagination-next:hover .ant-pagination-item-link {
+  border-color: #ebf0f3;
+  color: #666;
+}
+.ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
+  height: 32px;
+  line-height: 44px;
+}
+.ant-pagination-jump-prev:after, .ant-pagination-jump-next:after {
+  color: #666;
+}
+.ant-pagination-jump-prev:focus:after, .ant-pagination-jump-next:focus:after, .ant-pagination-jump-prev:hover:after, .ant-pagination-jump-next:hover:after {
+  color: #666;
+}
+.ant-pagination-item a {
+  margin: 0 8px;
+}
