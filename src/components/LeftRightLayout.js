@@ -74,12 +74,16 @@ class LeftRightLayout extends React.Component {
           <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
             <div style={this.props.style || {padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
+                           
                 <h2 style={titleStyle}>
-                  { this.props.title }&nbsp;/&nbsp;
+                  { this.props.title }
                 </h2>
+                {this.props.name ?(<span><h2 style={titleStyle}>&nbsp;/&nbsp;</h2>
                 <div style={nameStyle}>
                   {this.props.name}
-                </div>
+                </div></span>):null
+                }
+                
                 { this.props.action ? (
                     <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
                 ) : null }
@@ -88,7 +92,7 @@ class LeftRightLayout extends React.Component {
                 ) : null }
               </div>
 
-              <div style={this.props.innerStyle || { padding: 24, minHeight: 360, background: '#fff', overflow: 'auto' }}>
+              <div style={this.props.innerStyle || { padding: 0, minHeight: 360, background: '#fff', overflow: 'auto' }}>
                 {this.props.children}
               </div>
               <Draggable cancel=".text-area"><div style={style}>

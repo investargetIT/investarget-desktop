@@ -11,31 +11,71 @@ const addIconStyle = {
 const remarkTitleStyle = {
   lineHeight: 2,
   marginBottom: '8px',
-  borderBottom: '1px solid #eee',
+  fontSize:'20px'
 }
 
 const buttonStyle={
-  margin:'5px',
+  marginTop:'16px',
+  marginBottom:'50px',
   backgroundColor:'#237CCC',
   height:'30px',
   width:'70px',
   color:'white'
 }
+const smallBlock={
+  width:'40px',
+  height:'40px',
+  marginRight:'30px',
+  float:'left'
+}
+const imgStyle={
+  width:'100%',
+  height:'100%'
+}
+const largeBlock={
+  height:'40px',
+  backgroundColor:'#ebf0f3',
+  overflow:'hidden',
+  lineHeight:'40px'
+}
 
+const timeStyle={
+  fontSize:'14px',
+  float:'right',
+  marginRight:'18px',
+  color:'#656565'
+}
+const userStyle={
+  fontSize:'14px',
+  float:'left',
+  marginLeft:'16px',
+  marginRight:'16px',
+  marginBottom:'13px',
+  color:'#F4B348'
+}
 
+const comStyle={
+  marginLeft:'86px'
+}
+
+const textareaStyle={
+  paddingTop:'20px',
+  paddingLeft:'20px'
+}
 class RemarkList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       visible: false,
-      comments: '',
+      comments: ''
     }
   }
 
   toggleNewComment = () => {
     this.setState({ visible: !this.state.visible })
   }
-
+  
+  
   handleChange = (e) => {
     this.setState({ comments: e.target.value })
   }
@@ -51,7 +91,7 @@ class RemarkList extends React.Component {
         <h3 style={remarkTitleStyle}>{i18n('remark.comments')}<Icon type="plus" style={addIconStyle} onClick={this.toggleNewComment} /></h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
-          <Input.TextArea placeholder={i18n('common.write_comment')} autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
+          <Input.TextArea style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
           <center>
           <button style={buttonStyle} onClick={this.handleSave} disabled={this.state.comments == ''}>{i18n('common.submit')} </button>
           </center>
@@ -62,6 +102,7 @@ class RemarkList extends React.Component {
             key={item.id}
             comments={item.remark}
             createdtime={item.createdtime}
+            userid={item.createuser_id}
             timezone={item.timezone}
             onEdit={this.props.onEdit.bind(this, item.id)}
             onDelete={this.props.onDelete.bind(this, item.id)}
@@ -77,10 +118,24 @@ class Remark extends React.Component {
 
   constructor(props) {
     super(props)
+
     this.state = {
       isEditing: false,
       comments: '',
+      user:this.props.userid,
+      userName:'',
+      photoURL:'',
     }
+    
+  }
+
+  componentDidMount() {
+    api.getUserBase(this.state.user).then(result => {
+      this.setState({userName:result.data.username,photoURL:result.data.photourl}) 
+    }, error => {
+      handleError(error)
+    }
+    )
   }
 
   handleEdit = () => {
@@ -90,7 +145,7 @@ class Remark extends React.Component {
   handleChange = (e) => {
     this.setState({ comments: e.target.value })
   }
-
+  
   handleSave = () => {
     this.props.onEdit(this.state.comments)
     this.setState({ isEditing: false, comments: '' })
@@ -100,19 +155,22 @@ class Remark extends React.Component {
     this.setState({ isEditing: false, comments: '' })
   }
 
+
+  
   render() {
     const createdtime = time(this.props.createdtime + this.props.timezone)
+    const photourl=this.state.photoURL
     return ( 
-      <div style={{marginBottom:8,borderBottom:'1px solid #eee'}}>
-        <div style={smallBlock}></div>
-        <p style={{fontSize:13,lineHeight:2}}>
-          <span style={{marginRight:8}}>{createdtime}</span>
-        </p>
-        {this.state.isEditing ? (
-          <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
-        ) : (
-          <p>{this.props.comments}</p>
-        )}
+      <div style={{marginBottom:'16px',borderBottom:'1px solid #eee',paddingBottom:'16px'}}>
+        <div style={smallBlock}><img style={imgStyle} src={photourl}/></div>
+        <div style={largeBlock}>
+        <span style={userStyle}>{this.state.userName}</span>
+        <div style={timeStyle}>
+          {createdtime}
+        </div>
+        </div>
+        <p style={comStyle}>{this.props.comments}</p>
+        
       </div>    
       // <div style={{marginBottom:8}}>
       //   <p style={{fontSize:13,lineHeight:2}}>

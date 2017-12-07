@@ -547,7 +547,8 @@
     "is_searching": "正在搜索...",
     "is_loading": "加载结果中...",
     "write_comment":"请在这里留下您想要备注的信息",
-    "view_more":"查看更多"
+    "view_more":"查看更多",
+    "collapse":"收起"
   },
 
   "validation": {

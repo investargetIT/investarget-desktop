@@ -29,6 +29,12 @@ const remarkTextStyle = {
   paddingLeft: '16px',
 }
 
+const divStyle={
+  marginTop:'16px',
+  textAlign:'center',
+  fontSize:'14px'
+}
+
 
 class RemarkList extends React.Component {
 
@@ -233,12 +239,17 @@ class LibProjRemarkList extends React.Component {
 
     this.state = {
       list: [],
+      currentList:[],
+      currentListNum:0,
+      initComNum:2,
+      displayNum:2
     }
   }
 
   getRemarkList = () => {
     const { com_id } = this.props
     const params = { com_id }
+    const {initComNum,list,currentList,currentListNum}=this.state
     api.getLibProjRemark(params).then(result => {
       const list = result.data.data.map(item => {
         return {
@@ -249,6 +260,14 @@ class LibProjRemarkList extends React.Component {
       })
       sortByTime(list)
       this.setState({ list })
+      
+      if(currentListNum>initComNum){
+        this.setState({currentList:list.slice(0,currentListNum)})
+      }else{
+      this.setState({currentList:list.slice(0,initComNum),currentListNum:initComNum})
+      }
+      console.log(list)
+      
     }, error => {
       handleError(error)
     })
@@ -280,25 +299,48 @@ class LibProjRemarkList extends React.Component {
       handleError(error)
     })
   }
+  
+  displayMore = () =>{
+    const {initComNum,list,currentList,currentListNum,displayNum}=this.state  
+    if(list.length-currentList.length>=displayNum)
+    {this.setState({currentList:list.slice(0,currentListNum+displayNum),
+      currentListNum:currentListNum+displayNum})
+    }
+    else{
+    this.setState({currentList:list,currentListNum:list.length})
+   }
+ }
 
+  collapseAll = () =>{
+    const {initComNum,list,currentList,currentListNum}=this.state
+    this.setState({currentList:list.slice(0,initComNum),currentListNum:initComNum})
+  }
+    
+  
   componentDidMount() {
-    this.getRemarkList()
+    this.getRemarkList()   
   }
 
   render() {
     return (
       // <RemarkList
-      //   list={this.state.list}
+      //   list={this.state.currentList}
       //   addRemark={this.addRemark}
       //   editRemark={this.editRemark}
       //   deleteRemark={this.deleteRemark}
       // />
+      <div>
       <RemarkList2
-        list={this.state.list}
+        list={this.state.currentList}
         onAdd={this.addRemark}
         onEdit={this.editRemark}
         onDelete={this.deleteRemark}
       />
+      <div style={divStyle}>
+      {this.state.currentListNum===this.state.list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
+      <a onClick={this.displayMore}>{i18n('common.view_more')}</a>}
+      </div>
+      </div>
     )
   }
 }
