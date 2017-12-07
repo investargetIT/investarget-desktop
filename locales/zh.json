@@ -316,6 +316,7 @@
   "user": {
     "user_list": "用户列表",
     "user_detail": "用户详情",
+    "detail": "信息详情",
     "add_user": "添加用户",
     "add_investor": "添加投资人",
     "create_user": "创建用户",
@@ -609,7 +610,7 @@
   "site_search": "搜索一下",
   "query_no_results": "查询没有结果",
   "create_orgbd_success": "机构BD创建成功",
-  "modify_orgbd_status": "修改机构BD状态", 
+  "modify_orgbd_status": "修改机构BD状态",
   "wrong_verify_code": "验证码错误",
   "add_orgbd": "新增机构BD",
   "download_package": "打包下载"

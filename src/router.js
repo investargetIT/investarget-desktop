@@ -60,6 +60,7 @@ import RecommendFriends from './components/RecommendFriends';
 import RecommendProjects from './components/RecommendProjects';
 import OrgBdList from './routes/OrgBdList';
 import AddOrgBD from './routes/AddOrgBD';
+import TraderDetail from './routes/TraderDetail';
 
 
 function RouterConfig({ history }) {
@@ -124,6 +125,7 @@ function RouterConfig({ history }) {
       <Route path="/password" component={ResetPassword} />
       <Route path="/app/org/bd" component={OrgBdList} />
       <Route path="/app/orgbd/add" component={AddOrgBD} />
+      <Route path="/app/trader/:id" component={TraderDetail} />
     </Router>
   )
 }

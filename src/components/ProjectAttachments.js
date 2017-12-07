@@ -12,6 +12,9 @@ import {
   Upload,
   message,
   Modal,
+  Row,
+  Col,
+  Spin, 
 } from 'antd'
 import QRCode from 'qrcode.react';
 const TabPane = Tabs.TabPane
@@ -22,14 +25,17 @@ const ellipsisStyle = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  color: '#656565'
 }
 const fileitemStyle = {
   display: 'flex',
   alignItems: 'center',
+  marginBottom: 10,
+  padding: '0 4px',
 }
 const filetypeStyle = {
   flexShrink: 0,
-  width: '125px',
+  width: '225px',
   marginRight: '25px',
   color: '#108ee9',
   ...ellipsisStyle,
@@ -66,6 +72,22 @@ const mimeTypes = [
 
 const fixedDirs = ['NDA', 'Teaser', 'Executive Summary', 'BP', 'Presetation', 'Brochure', 'Financials', 'FAQ', 'Cap Table']
 
+function DirectoryCell(props) {
+  return (
+    <Row style={{ padding: '0 20px', borderBottom: '1px solid lightgray' }}>
+      <Col span={16}>
+        <div style={{ height: 64, display: 'flex', alignItems: 'center', fontSize: 16, color: '#05161e' }}>{props.name}</div>
+      </Col>
+      <Col span={8}>
+      <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <Upload {...props.upload}><span style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</span></Upload>
+      <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span>
+      </div>
+      </Col>
+    </Row>
+  );
+}
+
 class ProjectAttachments extends React.Component {
 
   uploading = {}
@@ -79,6 +101,9 @@ class ProjectAttachments extends React.Component {
       activeDir: fixedDirs[0],
       newDir: '',
       qrCodeValue: null,
+      spinning: false,
+      highlight: null,
+      addNewDir: false,
     }
   }
 
@@ -94,11 +119,13 @@ class ProjectAttachments extends React.Component {
   }
 
   addDir = () => {
+    if (this.state.newDir.length === 0) return;
     const newDir = this.state.newDir
     this.setState({
       dirs: [ ...this.state.dirs, newDir ],
       newDir: '',
       activeDir: newDir,
+      addNewDir: false,
     })
   }
 
@@ -146,6 +173,8 @@ class ProjectAttachments extends React.Component {
   }
 
   handleFileUploadDone = (file) => {
+    this.setState({ spinning: false });
+
     file.bucket = 'file'
     file.key = file.response.result.key
     file.url = file.response.result.url
@@ -166,6 +195,7 @@ class ProjectAttachments extends React.Component {
   }
 
   handleFileUploadError = (file) => {
+    this.setState({ spinning: false });
     const index  = _.findIndex(this.state.fileList, function(item) {
       return item.filetype == file.filetype && item.filename == file.filename
     })
@@ -175,12 +205,14 @@ class ProjectAttachments extends React.Component {
   }
 
   handleFileRemove = (file) => {
+    this.setState({ spinning: true });
     this.removeAttachment(file).then(result => {
       const index  = _.findIndex(this.state.fileList, function(item) {
         return item.filetype == file.filetype && item.filename == file.filename
       })
       this.setState({
-        fileList: [ ...this.state.fileList.slice(0, index), ...this.state.fileList.slice(index+1) ]
+        fileList: [ ...this.state.fileList.slice(0, index), ...this.state.fileList.slice(index+1) ],
+        spinning: false
       })
     }, error => {
       this.handleError(error)
@@ -260,7 +292,16 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  beforeUpload = (file) => {
+  handleConfirmRemoveFile = file => {
+    Modal.confirm({
+      title: i18n('project.message.delete_file_title'),
+      content: file.name,
+      onOk: this.handleFileRemove.bind(this, file),
+    })
+  }
+
+  beforeUpload = (key, file) => {
+    this.setState({ spinning: true, activeDir: key });
     const { fileList } = this.state
 
     if (mimeTypes.indexOf(file.type) == -1) {
@@ -342,24 +383,19 @@ class ProjectAttachments extends React.Component {
     let targetFileList = fileList.filter(item => item.filetype == this.state.activeDir)
     let doneFileList = fileList.filter(file => file.status == 'done')
 
+    const uploadProps = {
+      action: BASE_URL + "/service/qiniubigupload?bucket=file",
+      accept: fileExtensions.join(','),
+      fileList: targetFileList,
+      onChange: this.handleFileChange,
+      onRemove: this.handleFileRemoveConfirm,
+      showUploadList: false
+    }
+
     return (
-      <div>
+      <div style={{ paddingTop: 15 }}>
 
-        <div style={{ marginBottom: 16 }}>
-          <p style={{ marginBottom: '8px' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
-          <div style={{ marginLeft: '8px' }}>
-          {
-            doneFileList.map(file =>
-              <div key={file.key} style={fileitemStyle}>
-                <span style={filetypeStyle}>{file.filetype}</span>
-                <span style={filenameStyle}>{file.filename}</span>
-              </div>
-            )
-          }
-          </div>
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
+        {/* <div style={{ marginBottom: 16 }}>
           <Input
             value={this.state.newDir}
             onChange={(e) => {this.setState({ newDir: e.target.value })}}
@@ -369,6 +405,7 @@ class ProjectAttachments extends React.Component {
           <Button onClick={this.addDir} disabled={this.state.newDir == ''}>ADD</Button>
         </div>
 
+        <div style={{ height: 20 }} />
         <Tabs
           hideAdd
           onChange={(activeKey) => {this.setState({activeDir: activeKey})}}
@@ -393,8 +430,66 @@ class ProjectAttachments extends React.Component {
           <p className="ant-upload-text">{i18n('project.click_drag_upload')}</p>
           <p className="ant-upload-hint">pdf, doc, docx, xls, xlsx, ppt, pptx</p>
         </Dragger>
-        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button>
+        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button> */}
         
+        <Row style={{ backgroundColor: '#ebf0f3', padding: '0 20px' }}>
+          <Col span={16}>
+            <div style={{ height: 40, display: 'flex', alignItems: 'center', color: '#282828', fontSize: 14  }}>目录</div>
+          </Col>
+          <Col span={8}>
+            <div onClick={() => this.setState({ addNewDir: true })} style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', cursor: 'pointer' }}>
+              <span style={{ color: '#282828', fontSize: 14 }}>添加目录</span>
+              <span style={{ marginLeft: 10, marginBottom: 4, color: '#237ccc', fontSize: 30, fontWeight: 'normal' }}>+</span>
+            </div>
+          </Col>
+        </Row>
+
+        {this.state.addNewDir ?
+          <Row style={{ padding: '0 20px', borderBottom: '1px solid lightgray' }}>
+            <Col span={24}>
+              <div style={{ height: 64, display: 'flex', alignItems: 'center', fontSize: 16, color: '#05161e' }}>
+                <input onBlur={this.addDir} style={{ border: 'none', backgroundColor: 'inherit', outline: 'none' }} value={this.state.newDir} onChange={e => this.setState({ newDir: e.target.value })} placeholder="添加项目名" />
+              </div>
+            </Col>
+          </Row>
+          : null}
+
+        <div style={{ position: 'relative' }}>
+          {panes.map(pane => <DirectoryCell
+            name={pane.title}
+            key={pane.key}
+            upload={{ ...uploadProps, beforeUpload: this.beforeUpload.bind(this, pane.key) }} 
+            onMobileUploadClicked={() => this.setState({ activeDir: pane.key }, this.handleMobileUploadBtnClicked)} />
+          )}
+          { this.state.spinning ? 
+          <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Spin />
+          </div>
+          : null }
+        </div>
+
+        <div style={{ marginTop: 30 }}>
+          <p style={{ marginBottom: '8px', fontSize: 16, color: '#282828', fontWeight: 'bold' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
+          <div style={{ marginLeft: '8px', marginTop: 20 }}>
+          {
+            doneFileList.map(file =>
+              <div 
+                key={file.key} 
+                style={{ ...fileitemStyle, backgroundColor: this.state.highlight === file.key ? 'blanchedalmond': 'inherit'}} 
+                onMouseEnter={() => this.setState({highlight: file.key})}
+                onMouseLeave={() => this.setState({highlight: null})}
+              >
+                <span style={filetypeStyle}>{file.filetype}</span>
+                <span style={filenameStyle}>{file.filename}</span>
+                { this.state.highlight === file.key ? 
+                <span style={{ cursor: 'pointer' }} onClick={this.handleConfirmRemoveFile.bind(this, file)}>x</span>
+                : null }
+              </div>
+            )
+          }
+          </div>
+        </div>
+
         { this.state.qrCodeValue ? 
         <Modal
           width={230}
@@ -408,7 +503,7 @@ class ProjectAttachments extends React.Component {
           <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
         </Modal>
         : null }
-        
+
       </div>
     )
   }
