@@ -81,7 +81,7 @@ function DirectoryCell(props) {
       <Col span={8}>
       <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
       <Upload {...props.upload}><span style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</span></Upload>
-      <span style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4 }}>手机上传</span>
+      <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span>
       </div>
       </Col>
     </Row>
@@ -103,6 +103,7 @@ class ProjectAttachments extends React.Component {
       qrCodeValue: null,
       spinning: false,
       highlight: null,
+      addNewDir: false,
     }
   }
 
@@ -118,11 +119,13 @@ class ProjectAttachments extends React.Component {
   }
 
   addDir = () => {
+    if (this.state.newDir.length === 0) return;
     const newDir = this.state.newDir
     this.setState({
       dirs: [ ...this.state.dirs, newDir ],
       newDir: '',
       activeDir: newDir,
+      addNewDir: false,
     })
   }
 
@@ -392,7 +395,7 @@ class ProjectAttachments extends React.Component {
     return (
       <div style={{ paddingTop: 15 }}>
 
-        <div style={{ marginBottom: 16 }}>
+        {/* <div style={{ marginBottom: 16 }}>
           <Input
             value={this.state.newDir}
             onChange={(e) => {this.setState({ newDir: e.target.value })}}
@@ -427,25 +430,36 @@ class ProjectAttachments extends React.Component {
           <p className="ant-upload-text">{i18n('project.click_drag_upload')}</p>
           <p className="ant-upload-hint">pdf, doc, docx, xls, xlsx, ppt, pptx</p>
         </Dragger>
-        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button>
+        <Button onClick={this.handleMobileUploadBtnClicked} style={{ margin: '20px 0' }}>手机上传</Button> */}
         
         <Row style={{ backgroundColor: '#ebf0f3', padding: '0 20px' }}>
           <Col span={16}>
             <div style={{ height: 40, display: 'flex', alignItems: 'center', color: '#282828', fontSize: 14  }}>目录</div>
           </Col>
           <Col span={8}>
-            <div style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <div onClick={() => this.setState({ addNewDir: true })} style={{ height: 40, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', cursor: 'pointer' }}>
               <span style={{ color: '#282828', fontSize: 14 }}>添加目录</span>
               <span style={{ marginLeft: 10, marginBottom: 4, color: '#237ccc', fontSize: 30, fontWeight: 'normal' }}>+</span>
             </div>
           </Col>
         </Row>
 
+        {this.state.addNewDir ?
+          <Row style={{ padding: '0 20px', borderBottom: '1px solid lightgray' }}>
+            <Col span={24}>
+              <div style={{ height: 64, display: 'flex', alignItems: 'center', fontSize: 16, color: '#05161e' }}>
+                <input onBlur={this.addDir} style={{ border: 'none', backgroundColor: 'inherit', outline: 'none' }} value={this.state.newDir} onChange={e => this.setState({ newDir: e.target.value })} placeholder="添加项目名" />
+              </div>
+            </Col>
+          </Row>
+          : null}
+
         <div style={{ position: 'relative' }}>
           {panes.map(pane => <DirectoryCell
             name={pane.title}
             key={pane.key}
-            upload={{ ...uploadProps, beforeUpload: this.beforeUpload.bind(this, pane.key) }} />
+            upload={{ ...uploadProps, beforeUpload: this.beforeUpload.bind(this, pane.key) }} 
+            onMobileUploadClicked={() => this.setState({ activeDir: pane.key }, this.handleMobileUploadBtnClicked)} />
           )}
           { this.state.spinning ? 
           <div style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
