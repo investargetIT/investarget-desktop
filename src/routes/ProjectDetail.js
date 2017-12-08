@@ -119,7 +119,7 @@ class ProjectDetail extends React.Component {
       isClose: null,
       visible: false,
       loading: false,
-
+      imageHeight: 0,
       activeKey: 1,
     }
   }
@@ -136,7 +136,7 @@ class ProjectDetail extends React.Component {
       const data = result.data.data
       const isFavorite = data.length == 1
       const favorId = data[0] && data[0].id
-      this.setState({ isFavorite, favorId })
+      this.setState({ isFavorite, favorId }, this.updateDimensions)
     })
   }
 
@@ -228,12 +228,16 @@ class ProjectDetail extends React.Component {
     Modal.error({ title: i18n('dataroom.message.no_dataroom_permission') })
   }
 
+  updateDimensions = () => setTimeout(() => this.setState({ imageHeight: this.header.clientHeight }), 100);
+
   componentDidMount() {
+    window.addEventListener("resize", this.updateDimensions);
+    this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
     const { id } = this.state
 
     api.getProjLangDetail(id).then(result => {
       const project = result.data
-      this.setState({ project }, this.getDataroom)
+      this.setState({ project }, this.updateDimensions)
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -245,7 +249,7 @@ class ProjectDetail extends React.Component {
 
     if (hasPerm('proj.admin_getfavorite')) {
       api.getFavoriteProj({ favoritetype: 5, proj: this.state.id })
-      .then(data => this.setState({ userListWithInterest: data.data.data }))
+      .then(data => this.setState({ userListWithInterest: data.data.data }, this.updateDimensions))
       .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
     }
 
@@ -256,7 +260,7 @@ class ProjectDetail extends React.Component {
         const relation = data.filter(item => item.relationtype)[0]
         const trader = relation && relation.traderuser.id
         const traderOptions = data.map(item => ({ value: item.traderuser.id, label: item.traderuser.username }))
-        this.setState({ traderOptions, trader })
+        this.setState({ traderOptions, trader }, this.updateDimensions)
       })
     }
 
@@ -266,31 +270,30 @@ class ProjectDetail extends React.Component {
         const relation = data.filter(item => item.relationtype)[0]
         const investor = relation && relation.investoruser.id
         const investorOptions = data.map(item => ({ value: item.investoruser.id, label: item.investoruser.username }))
-        this.setState({ investorOptions, investor })
+        this.setState({ investorOptions, investor }, this.updateDimensions)
       })
     }
-
-    this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
-
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
+  setHeader = node => this.header = this.header || node;
 
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
-
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')} style={{backgroundColor:'transparent'}}>
+      <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')}>
 
         <Row gutter={24}>
-          <Col span={8}>
-            <div>
-              <ProjectImage project={project} />
-              { hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
-              <SecretInfo project={project} />
-            </div>
+          <Col span={10} style={{ height: '100%' }}>
+              <ProjectImage project={project} height={this.state.imageHeight}/>
           </Col>
-          <Col span={16}>
-            <div>
+          <Col span={14}>
+          <div ref={this.setHeader}>
               <ProjectHead project={project} />
+              <SecretInfo project={project} />
               <div style={blockStyle}>
                 { isFavorite ?
                     <Button icon="heart" className="success" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
@@ -308,8 +311,12 @@ class ProjectDetail extends React.Component {
                   <Button  className="white" size="large" icon="file-pdf">{i18n('project.project_pdf_download')}</Button>
                 </a>
               </div>
+              </div>
+          </Col>
+        </Row>
+{ hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
 
-              <Tabs animated={false}>
+<Tabs animated={false}>
                 <TabPane tab={i18n('project.profile')} key="1">
                   <div style={{padding:10}}>
                     <ProjectIntro project={project} />
@@ -331,9 +338,6 @@ class ProjectDetail extends React.Component {
                   <DownloadFiles projectId={id} />
                 </TabPane>
               </Tabs>
-            </div>
-          </Col>
-        </Row>
 
         <Modal
           visible={this.state.visible}
@@ -382,11 +386,11 @@ const iconStyle = {
 
 
 
-function ProjectImage({ project }) {
+function ProjectImage({ project, height }) {
   const src = (project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl'
   return (
-    <div style={{marginBottom:30,position:'relative'}}>
-      <img style={{width:'100%',padding: 5, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: 3}} src={src} />
+    <div style={{position:'relative'}}>
+      <img style={{width:'100%', height: height}} src={src} />
       { project.projstatus && project.projstatus.id == 7 ?
         <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>{i18n('project.finished')}</div>
       : null }
@@ -519,7 +523,7 @@ function ProjectHead({ project }) {
     cursor: 'default',
   }
   return (
-    <div style={{marginBottom:24}}>
+    <div>
       <div style={{display:'flex'}}>
         <h2 style={{margin: 0,marginBottom: 10,color: '#333',flexGrow: 1}}>{project.projtitle}</h2>
         <Tag style={tagStyle}>{project.projstatus && project.projstatus.name}</Tag>
