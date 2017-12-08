@@ -13,6 +13,10 @@ const rowStyle = {
   borderBottom: '1px dashed #eee',
   padding: '8px 0',
 }
+const detailStyle={
+  marginTop:'64px',
+  marginBottom:'24px'
+}
 
 const Field = (props) => {
   return (
@@ -33,11 +37,12 @@ class UserDetail extends React.Component {
   render() {
     const userId = Number(this.props.params.id)
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('user.user_detail')}>
+      <LeftRightLayout location={this.props.location} title={i18n('menu.user_management')} name={i18n('user.user_detail')}>
+        <UserRemarkList typeId={userId} />
+        <h3 style={detailStyle}>{i18n('user.detail')}:</h3>
         <Row gutter={48}>
           <Col span={12}>
             <UserInfo userId={userId} />
-            <UserRemarkList typeId={userId} readOnly />
           </Col>
           <Col span={12}>
             <TransactionInfo userId={userId} />

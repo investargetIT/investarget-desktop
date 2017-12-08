@@ -19,7 +19,7 @@ const buttonStyle={
   marginBottom:'50px',
   backgroundColor:'#237CCC',
   height:'30px',
-  width:'70px',
+  width:'80px',
   color:'white'
 }
 const smallBlock={
@@ -55,12 +55,14 @@ const userStyle={
 }
 
 const comStyle={
-  marginLeft:'86px'
+  marginLeft:'86px',
+  fontSize:'14px',
 }
 
 const textareaStyle={
   paddingTop:'20px',
-  paddingLeft:'20px'
+  paddingLeft:'20px',
+  minHeight:'100px',
 }
 class RemarkList extends React.Component {
   constructor(props) {
@@ -91,7 +93,7 @@ class RemarkList extends React.Component {
         <h3 style={remarkTitleStyle}>{i18n('remark.comments')}<Icon type="plus" style={addIconStyle} onClick={this.toggleNewComment} /></h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
-          <Input.TextArea style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
+          <Input.TextArea style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
           <center>
           <button style={buttonStyle} onClick={this.handleSave} disabled={this.state.comments == ''}>{i18n('common.submit')} </button>
           </center>
@@ -102,7 +104,7 @@ class RemarkList extends React.Component {
             key={item.id}
             comments={item.remark}
             createdtime={item.createdtime}
-            userid={item.createuser_id}
+            userid={item.createuser_id||item.createuser.id}     //for project remark and user remark
             timezone={item.timezone}
             onEdit={this.props.onEdit.bind(this, item.id)}
             onDelete={this.props.onDelete.bind(this, item.id)}

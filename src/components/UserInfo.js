@@ -5,16 +5,17 @@ import { Row, Col } from 'antd'
 import ImageViewer from './ImageViewer'
 
 const rowStyle = {
-  borderBottom: '1px dashed #eee',
-  padding: '8px 0',
-  fontSize: '13px',
+  //borderBottom: '1px dashed #eee',
+  padding: '12px 0',
+  fontSize: '14px',
+  marginLeft:'70px'
 }
 
 const Field = (props) => {
   return (
     <Row style={rowStyle} gutter={24}>
       <Col span={6}>
-        <div style={{textAlign: 'right'}}>{props.title}</div>
+        <div style={{textAlign: 'left',color:'#282828',fontSize:'16px'}}>{props.title}</div>
       </Col>
       <Col span={18}>
         <div>{props.value}</div>
@@ -50,6 +51,7 @@ class UserInfo extends React.Component {
     const userId = this.props.userId
     api.getUserDetailLang(userId).then(result => {
       const data = result.data
+      console.log(data)
       const username = data.username
       const title = data.title ? data.title.name : ''
       const tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : ''
@@ -82,7 +84,7 @@ class UserInfo extends React.Component {
     const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl } = this.state
     return (
       <div>
-        <Field title={i18n('user.name')} value={username} />
+        <Field title={i18n('user.cn_name')} value={username} />
         <Field title="公司" value={''} />
         <Field title={i18n('user.department')} value={''} />
         <Field title={i18n('user.position')} value={title} />

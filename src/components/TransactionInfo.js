@@ -10,6 +10,37 @@ const rowStyle = {
   fontSize: '13px',
 }
 
+const traderInfoStyle={
+  fontSize:'16px',
+  paddingTop:'8px',
+  paddingRight:'16px',
+  color:'#282828',
+  float:'right'
+}
+const traderStyle={
+  border:'1px solid gray',
+  maxWidth:'200px',
+  float:'left'
+}
+const photoContainer={
+  float:'left',
+  margin:'8px',
+  height:'30px',
+  width:'30px'
+}
+const imgStyle={
+  width:'100%',
+  height:'100%'
+}
+/*
+<Field title={i18n('user.name')} value={SelectTransaction} />
+          <Field title="公司" value={company} />
+          <Field title={i18n('user.position')} value={title} />
+          <Field title={i18n('user.tags')} value={tags} />
+          <Field title={i18n('user.country')} value={country} />
+          <Field title={i18n('user.mobile')} value={mobile} />
+          <Field title={i18n('user.email')} value={email} />
+          <Field title={i18n('user.score')} value={score} />*/
 const Field = (props) => {
   return (
     <Row style={rowStyle} gutter={24}>
@@ -99,7 +130,6 @@ class TransactionInfo extends React.Component {
 
   render() {
     const { current, list } = this.state
-
     const relation = list.filter(item => item.id == current)[0]
     const relationId = relation ? relation.id : null
 
@@ -115,15 +145,16 @@ class TransactionInfo extends React.Component {
 
     return list.length > 0 ?
       (<div>
-          <h3>{i18n('user.trader_info')}</h3>
-          <Field title={i18n('user.name')} value={SelectTransaction} />
-          <Field title="公司" value={company} />
-          <Field title={i18n('user.position')} value={title} />
-          <Field title={i18n('user.tags')} value={tags} />
-          <Field title={i18n('user.country')} value={country} />
-          <Field title={i18n('user.mobile')} value={mobile} />
-          <Field title={i18n('user.email')} value={email} />
-          <Field title={i18n('user.score')} value={score} />
+      <Row >
+        <Col span={6}>
+          <div style={traderInfoStyle}>{i18n('user.trader_info')}</div>
+        </Col>
+        <Col span={18}>
+        <div style={traderStyle}>
+          {list.map(item=> <span key={item.id} style={photoContainer}><img style={imgStyle} src={item.traderuser.photourl} /></span>)}
+        </div>
+        </Col>
+      </Row>
       </div>) : null
 
   }
