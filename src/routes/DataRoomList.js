@@ -231,13 +231,17 @@ class DataRoomList extends React.Component {
     }
 
     return (
-      <LeftRightLayout location={location} title={i18n('dataroom.dataroom_list')}>
+      <LeftRightLayout 
+        location={location} 
+        title={i18n('dataroom.dataroom_list')} 
+        right={<Search2 
+          style={{width: 200}} 
+          placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
+          defaultValue={search} 
+          onSearch={this.handleSearch} 
+        />}
+      >
         <div>
-
-          <div style={{marginBottom: '16px'}}>
-            <Search2 style={{width: 200}} placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
-          </div>
-
           <div className="ant-spin-nested-loading">
             {/* Loading effect copied from antd Table Component */}
             {
