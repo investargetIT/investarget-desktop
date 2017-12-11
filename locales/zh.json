@@ -613,5 +613,7 @@
   "modify_orgbd_status": "修改机构BD状态",
   "wrong_verify_code": "验证码错误",
   "add_orgbd": "新增机构BD",
-  "download_package": "打包下载"
+  "download_package": "打包下载",
+  "address": "地点",
+  "industry_type": "行业类型"
 }

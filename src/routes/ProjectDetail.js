@@ -23,7 +23,10 @@ function Field (props) {
 
 
 const blockStyle = {
-  marginBottom: 30,
+  marginBottom: 20,
+}
+const blockStyle2 = {
+  marginBottom: 44,
 }
 const blockTitleStyle = {
   margin: '16px 0',
@@ -296,19 +299,19 @@ class ProjectDetail extends React.Component {
               <SecretInfo project={project} />
               <div style={blockStyle}>
                 { isFavorite ?
-                    <Button icon="heart" className="success" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
+                    <Button icon="heart" className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
 
                 { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-                  <Button className="white" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                  <Button className="white" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none'}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
                 : null }
 
                 { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-                  <Button className="white" size="large" style={{marginRight: 8, marginBottom: 8}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                  <Button className="white" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none'}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
                 : null }
 
                 <a href={getPdfUrl(id)}>
-                  <Button  className="white" size="large" icon="file-pdf">{i18n('project.project_pdf_download')}</Button>
+                  <Button  className="white" size="large" style={{backgroundColor: '#f2f2f2', border: 'none'}}>{i18n('project.project_pdf_download')}</Button>
                 </a>
               </div>
               </div>
@@ -372,11 +375,16 @@ export default connect(mapStateToProps)(ProjectDetail)
 
 // style
 const subtitleStyle = {
+  paddingTop: 8,
   fontSize: 14,
   textTransform: 'uppercase',
-  color: '#333',
-  marginBottom: 15,
-  marginTop: 0,
+  color: '#f4b348',
+}
+const subtitleStyle2 = {
+  marginBottom: 10,
+  fontSize: 14,
+  textTransform: 'uppercase',
+  color: '#656565',
 }
 const iconStyle = {
   width: 16,
@@ -416,13 +424,16 @@ class InterestedPeople extends React.Component {
   render() {
     const { userListWithInterest } = this.state
     return (
-      <div style={blockStyle}>
-        <h2 style={subtitleStyle}>{i18n('project.investors_interested')}</h2>
+      <Row style={blockStyle2}>
+        <Col span={3}>
+        <div style={subtitleStyle}>{i18n('project.investors_interested')}</div>
+        </Col>
+        <Col span={21}>
         <div>
           {userListWithInterest.length > 0 ? (
               userListWithInterest.map(m =>
                 <Link key={m.id} to={'/app/user/' + m.user.id}>
-                  <img style={{ width: 48, height: 48, borderRadius: '50%', verticalAlign: 'top', marginRight: 4, marginBottom: 4 }} src={m.user.photourl} />
+                  <img style={{ width: 40, height: 40, verticalAlign: 'top', marginRight: 16, marginBottom: 16 }} src={m.user.photourl} />
                 </Link>
               )
             ) : (
@@ -430,7 +441,8 @@ class InterestedPeople extends React.Component {
             )
           }
           </div>
-      </div>
+          </Col>
+      </Row>
     )
   }
 }
@@ -444,36 +456,24 @@ function SecretInfo({ project }) {
   const contentStyle={verticalAlign:'top'}
   return (
     <div style={blockStyle}>
-      <h2 style={subtitleStyle}>{i18n('project.privacy_infomation')}</h2>
+      <h2 style={subtitleStyle2}>{i18n('project.privacy_infomation')}</h2>
       { hasPerm('proj.get_secretinfo') ? (
-        <div>
+        <div style={{padding: '20px 24px', fontSize: 14, color: '#656565', backgroundColor: 'rgb(233, 241, 243)'}}>
           <div>
-            <span style={spanStyle}>{i18n('project.project_real_name')}</span>
-            <span style={contentStyle}>{project.realname}</span>
+            <span style={spanStyle}>{i18n('project.project_real_name')}：{project.realname}</span>
+            <span style={contentStyle}>{i18n('project.contact_person')}：{project.contactPerson}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.contact_person')}</span>
-            <span style={contentStyle}>{project.contactPerson}</span>
+            <span style={spanStyle}>{i18n('project.phone')}：{project.phoneNumber}</span>
+            <span style={contentStyle}>{i18n('project.email')}：{project.email}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.phone')}</span>
-            <span style={contentStyle}>{project.phoneNumber}</span>
+            <span style={spanStyle}>{i18n('project.uploader')}：{project.supportUser ? project.supportUser.username : i18n('common.none')}</span>
+            <span style={contentStyle}>{i18n('project.take_user')}：{project.takeUser ? project.takeUser.username : i18n('common.none')}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.email')}</span>
-            <span style={contentStyle}>{project.email}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.uploader')}</span>
-            <span style={contentStyle}>{project.supportUser ? project.supportUser.username : i18n('common.none')}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.take_user')}</span>
-            <span style={contentStyle}>{project.takeUser ? project.takeUser.username : i18n('common.none')}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.make_user')}</span>
-            <span style={contentStyle}>{project.makeUser ? project.makeUser.username : i18n('common.none')}</span>
+            <span style={spanStyle}>{i18n('project.make_user')}：{project.makeUser ? project.makeUser.username : i18n('common.none')}</span>
+            <span style={contentStyle}></span>
           </div>
         </div>
       ) : (
@@ -516,25 +516,24 @@ function ProjectHead({ project }) {
     marginLeft: 8,
     marginTop: 3,
     backgroundColor: '#fff',
-    border: '1px solid #ccc',
     boxShadow: 'none',
     height: 28,
     lineHeight: '28px',
     cursor: 'default',
+    fontSize: 12,
+    color: '#656565'
   }
   return (
     <div>
-      <div style={{display:'flex'}}>
-        <h2 style={{margin: 0,marginBottom: 10,color: '#333',flexGrow: 1}}>{project.projtitle}</h2>
-        <Tag style={tagStyle}>{project.projstatus && project.projstatus.name}</Tag>
+      <div style={{ display: 'flex' }}>
+        <h2 style={{ margin: 0, marginBottom: 10, color: '#282828', flexGrow: 1, fontSize: 20, lineHeight: '23px' }}>{project.projtitle}</h2>
+        <div style={tagStyle}><img style={{lineHeight: '12px', marginRight: 10}} src="/images/label.png" />{project.projstatus && project.projstatus.name}</div>
       </div>
-      <p style={{marginBottom: 8}}>{i18n('project.release_time')} {project.createdtime && project.createdtime.substr(0,10)}</p>
-      <div style={{fontSize:13,marginBottom:3}}>
-        <Icon2 type="map-marker" />{project.country && project.country.country}
-      </div>
-      <div style={{fontSize:13,marginBottom:3}}>
-        <Icon2 type="industry" />{project.industries && project.industries[0] && project.industries[0].name}
-      </div>
+      <p style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
+        <span>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</span>
+        <span style={{ marginLeft: 20 }}>{i18n('address')}：{project.country && project.country.country}</span>
+        <span style={{ marginLeft: 20 }}>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</span>
+      </p>
     </div>
   )
 }
