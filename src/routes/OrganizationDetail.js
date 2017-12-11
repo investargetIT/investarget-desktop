@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, i18n, hasPerm, isLogin } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form } from 'antd'
+import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form, Icon } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationRemarkList } from '../components/RemarkList'
@@ -39,14 +39,15 @@ const PositionWithUser = props => {
   return (
     <div>
       <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
-      <div style={{ width: '80%', marginLeft: '20%' }}>
+      <div style={{ width: '80%', marginLeft: '20%'}}>
         {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
           <Popover content={popoverChildren(m)} title={m.name}>
-            <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%' }} src={m.photourl || '/images/default-avatar.png'} />
+            <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10,marginBottom:10 }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
         { hasPerm('usersys.admin_adduser') ?
-          <img onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" />
+
+          <Icon type='plus' onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width:48,height:48,fontSize:'36px',color: '#108ee9', cursor: 'pointer',display:'inline_block'}} />       
           :
           <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" /></Link>
         }
@@ -62,10 +63,18 @@ const rowStyle = {
   padding: '8px 0',
 }
 
+const h3Style={
+  marginTop:'64px',
+  marginBottom:'24px'
+}
+
+const titleStyle={
+  color:'black'
+}
 const Field = (props) => {
   return (
     <Row style={rowStyle}>
-      <Col span={6}>{props.title}</Col>
+      <Col span={6} style={titleStyle}>{props.title}</Col>
       <Col span={18}>{props.value}</Col>
     </Row>
   )
@@ -289,10 +298,11 @@ class OrganizationDetail extends React.Component {
 
   render() {
     const id = this.props.params.id
-
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('organization.org_detail')} action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
-        <div style={{ width: '50%', float: 'left' }}>
+      <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
+        <OrganizationRemarkList typeId={id} />
+        <h3 style={h3Style}>{i18n('project_library.information_detail')}:</h3>
+        <div style={{ width: '40%', float: 'left' ,marginLeft:'70px'}}>
           <Field title={i18n('organization.name')} value={this.state.orgname} />
           <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
           <Field title={i18n('organization.currency')} value={this.state.currency} />
@@ -315,7 +325,7 @@ class OrganizationDetail extends React.Component {
           <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
           <Field title={i18n('organization.decision_cycle')} value={this.state.decisionMakingProcess} />
 
-          <OrganizationRemarkList typeId={id} readOnly />
+          
         </div>
 
         <div style={{ width: '50%', marginLeft: '50%' }}>

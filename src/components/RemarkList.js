@@ -179,7 +179,7 @@ function remarkListWithApi(type) {
         sortByTime(list)
         this.setState({ list })
 
-        if(type==='user'){
+        if(type==='user'||type==='org'){
           if(currentListNum>initComNum){
             this.setState({currentList:list.slice(0,currentListNum)})
           }else{
@@ -239,7 +239,7 @@ function remarkListWithApi(type) {
     render() {
       const readOnly = 'readOnly' in this.props
       const {initComNum,list,currentList,currentListNum}=this.state
-      const ifUser = (type === 'user')
+      const ifUser = (type === 'user'||'org')
       return (
         <div>
         {ifUser ? <div>
