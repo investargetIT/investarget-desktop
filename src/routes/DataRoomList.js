@@ -18,7 +18,6 @@ const rowStyle = {
 }
 const addCardStyle = {
   height: '100%',
-  borderRadius: '8px',
   overflow: 'hidden',
 }
 const addCardBodyStyle = {
@@ -30,7 +29,6 @@ const addCardBodyStyle = {
 // ...
 const cardStyle = {
   height: '100%',
-  borderRadius: '8px',
   overflow: 'hidden',
 }
 const cardBodyStyle = {
@@ -46,9 +44,13 @@ const cardImageStyle = {
 const cardTitleStyle = {
   fontSize: '15px',
   marginBottom: '8px',
+  height: '20px',
+  overflow: 'hidden'
 }
 const cardTimeStyle = {
   marginBottom: '8px',
+  fontSize: 12, 
+  color: '#999'
 }
 const cardUserStyle = {
   fontSize: '13px',
@@ -58,6 +60,7 @@ const cardUserStyle = {
   flexWrap: 'wrap',
 }
 const cardActionStyle = {
+  textAlign: 'center'
 }
 
 
@@ -187,9 +190,9 @@ class DataRoomList extends React.Component {
         <Card style={addCardStyle} bodyStyle={addCardBodyStyle}>
           <Link to={'/app/projects/list'}>
             <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
-              <Icon type="plus" style={{ fontSize: '64px', marginBottom: '16px' }} />
+              <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
               <br />
-              <span style={{ fontSize: '14px' }}>{i18n('dataroom.create_dataroom')}</span>
+              <span style={{ fontSize: '16px', color: '#656565' }}>{i18n('dataroom.create_dataroom')}</span>
             </div>
           </Link>
         </Card>
@@ -214,16 +217,18 @@ class DataRoomList extends React.Component {
           </Link>
           <div style={{ padding: '16px' }}>
             <div style={cardTitleStyle}>
-              <Link to={`/app/projects/${projId}`} target="_blank">{projTitle}</Link>
+              <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
             </div>
             <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
             <div style={cardActionStyle}>
               <Popconfirm title={record.isClose ? i18n("open_confirm") : i18n("close_confirm")} onConfirm={this.handleCloseDateRoom.bind(this, record)}>
-                <Button size="small" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ marginRight: '8px' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
+                <Button size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               </Popconfirm>
+              { hasPerm('dataroom.admin_deletedataroom') ? 
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Button size="small" type="danger" disabled={!hasPerm('dataroom.admin_deletedataroom')} style={{ marginRight: '8px' }}>{i18n("common.delete")}</Button>
+                <Icon type="delete" style={{ float: 'right', lineHeight: '32px', cursor: 'pointer' }} />
               </Popconfirm>
+              : null }
             </div>
           </div>
         </Card>
