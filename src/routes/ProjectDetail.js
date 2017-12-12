@@ -57,19 +57,34 @@ class ProjectFinanceYear extends React.Component {
     const titleStyle = {
       fontWeight: 400,
       fontSize: 14,
-      color: '#333',
+      color: '#656565',
       paddingBottom: 10,
       lineHeight: 1.4,
+      paddingLeft:120,
     }
     const yearStyle = {
       marginLeft: 10,
       color: '#ff6900',
     }
     const contentStyle = {
-      paddingLeft: 10,
+      marginLeft: 120,
+      height:320,
+      width:510,
+      borderCollapse:'collapse',
+      marginBottom:60
     }
     const labelStyle = {
       width: 250,
+    }
+    const leftTd={
+      border:'1px solid #eee',
+      width:'255px',
+      paddingLeft:'10%'
+    }
+    const rightTd={
+      border:'1px solid #eee',
+      width:'255px',
+      paddingLeft:'15%'
     }
 
     return finance.length > 0 ? (
@@ -79,18 +94,44 @@ class ProjectFinanceYear extends React.Component {
             <div key={item.fYear} style={containerStyle}>
               <h3 style={titleStyle}>
                 {i18n('project.fiscal_year')}
-                <span style={yearStyle}>{item.fYear}</span>
+                {item.fYear}
               </h3>
-              <div style={contentStyle}>
-                <Field labelStyle={labelStyle} label={`${i18n('project.revenue')}(${i18n('common.USD')})`} value={item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.profits')}(${i18n('common.USD')})`} value={item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.gross_profits')}(${i18n('common.USD')})`} value={item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.total_assets')}(${i18n('common.USD')})`} value={item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.net_assets')}(${i18n('common.USD')})`} value={item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.net_cash_flow')}(${i18n('common.USD')})`} value={item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.operating_cash_flow')}(${i18n('common.USD')})`} value={item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} />
-                <Field labelStyle={labelStyle} label={`${i18n('project.EBITDA')}(${i18n('common.USD')})`} value={item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} />
-              </div>
+              <table style={contentStyle}>
+              <tbody>
+                <tr>  
+                  <td style={leftTd}>{`${i18n('project.revenue')}(${i18n('common.USD')})`}</td> 
+                  <td style={rightTd}>{item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'}</td>
+                </tr>
+                <tr> 
+                  <td style={leftTd}>{`${i18n('project.profits')}(${i18n('common.USD')})`}</td>
+                  <td style={rightTd}>{item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} </td>
+                </tr>
+                <tr> 
+                  <td style={leftTd}>{`${i18n('project.gross_profits')}(${i18n('common.USD')})`}</td> 
+                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} </td>
+                </tr>
+                <tr>
+                  <td style={leftTd}>{`${i18n('project.total_assets')}(${i18n('common.USD')})`} </td>
+                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} </td>
+                </tr>
+                <tr>
+                  <td style={leftTd}>{`${i18n('project.net_assets')}(${i18n('common.USD')})`} </td>
+                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} </td>
+                </tr>
+                <tr> 
+                  <td style={leftTd}>{`${i18n('project.net_cash_flow')}(${i18n('common.USD')})`} </td>
+                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} </td>
+                </tr>
+                <tr>
+                  <td style={leftTd}>{`${i18n('project.operating_cash_flow')}(${i18n('common.USD')})`} </td>
+                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} </td>
+                </tr>
+                <tr>
+                  <td style={leftTd}>{`${i18n('project.EBITDA')}(${i18n('common.USD')})`} </td>
+                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} </td>
+                </tr>
+              </tbody>
+              </table>
             </div>
           )
         }
