@@ -429,7 +429,21 @@ class DataRoom extends React.Component {
     return (
       <LeftRightLayout
         location={this.props.location}
-        title={i18n('dataroom.project_name') + ' : ' + this.state.title}>
+        title={i18n('dataroom.project_name')} 
+        name={this.state.title}
+      >
+      
+        {hasPerm('dataroom.admin_adddataroom') ?
+          <div style={{ marginBottom: 20 }}>
+            <DataRoomUser
+              list={this.state.list}
+              newUser={this.state.newUser}
+              onSelectUser={this.handleChangeUser}
+              onAddUser={this.handleAddUser}
+              onDeleteUser={this.handleDeleteUser}
+            />
+          </div>
+          : null}
 
         <FileMgmt
           location={this.props.location}
@@ -464,7 +478,7 @@ class DataRoom extends React.Component {
             footer={null}
             onCancel={this.hideModal}
             visible={this.state.visible}>
-            <DataRoomUser
+<DataRoomUser
               list={this.state.list}
               newUser={this.state.newUser}
               onSelectUser={this.handleChangeUser}

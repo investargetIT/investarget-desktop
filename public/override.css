@@ -404,3 +404,7 @@ button[disabled], html input[disabled] {
 .ant-pagination-item a {
   margin: 0 8px;
 }
+
+.ant-table-small {
+  border: none;
+}

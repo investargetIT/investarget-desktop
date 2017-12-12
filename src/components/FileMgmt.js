@@ -23,6 +23,13 @@ const validFileTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ]
 
+const buttonStyle = {
+  backgroundColor: 'transparent', 
+  color: '#989898', 
+  border: 'none', 
+  textDecoration: 'underline', 
+}
+
 class FileMgmt extends React.Component {
     constructor(props) {
     super(props)
@@ -293,7 +300,7 @@ class FileMgmt extends React.Component {
     if (isAdmin && !this.props.isClose) {
       if (this.props.selectedUser) {
         columns.push({
-          title: i18n('dataroom.visible'),
+          title: i18n('permission'),
           key: 'visible',
           render: (text, record) => {
             const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
@@ -351,9 +358,9 @@ class FileMgmt extends React.Component {
     }
     const base = (
       <span>
-        <a onClick={this.folderClicked.bind(this, parentFolder)}>{i18n('dataroom.back')}</a>
-        &nbsp;|&nbsp;
-        <a onClick={this.folderClicked.bind(this, null)}>{i18n('dataroom.all')}</a>
+        {/* <a onClick={this.folderClicked.bind(this, parentFolder)}>{i18n('dataroom.back')}</a>
+        &nbsp;|&nbsp; */}
+        <a onClick={this.folderClicked.bind(this, null)} style={{ fontSize: 16, color: '#282828' }}>{i18n('dataroom.all')}</a>
       </span>
     )
 
@@ -414,40 +421,43 @@ class FileMgmt extends React.Component {
     const operation = () => {
       if (unableToOperate ) return null
       return (
-        <div>
-          { hasDownloadPerm ?
-            <Button size="large" type="primary" style={{ marginRight: 10 }} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>
-              {i18n('download_package')}
-            </Button>
-          : null }
+        <div style={{ textAlign: 'right' }}>
 
           { hasEnoughPerm ?
           <Upload {...props}>
-            <Button size="large" type="primary" style={{ marginRight: 10 }}>{i18n('dataroom.upload')}</Button>
+            <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}}>
+            <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload')}
+            </Button>
           </Upload>
+          : null }
+
+          { hasDownloadPerm ?
+            <Button size="large" type="primary" style={buttonStyle} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>
+              <img style={{marginRight: 4, marginBottom: 3}} src="/images/download.png" />{i18n('download_package')}
+            </Button>
           : null }
 
           { hasEnoughPerm ?
           <Button
             size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
-            style={{ marginRight: 10 }}>{i18n('dataroom.new_folder')}</Button>
+            style={buttonStyle}><img style={{marginRight: 4, marginBottom: 3}} src="/images/create_folder.png" />{i18n('dataroom.new_folder')}</Button>
           : null }
 
           { hasEnoughPerm ?
-            <Button onClick={this.props.onManageUser} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.user_management')}</Button>
+            <Button onClick={this.props.onManageUser} size="large" style={buttonStyle}>{i18n('dataroom.user_management')}</Button>
           : null}
 
           {selectMoreThanOneRow && hasEnoughPerm ?
-            <Button onClick={this.handleDelete} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.delete')}</Button>
+            <Button onClick={this.handleDelete} size="large" style={buttonStyle}>{i18n('dataroom.delete')}</Button>
           : null}
 
           {selectMoreThanOneRow ?
-            <Button onClick={this.handleRename} size="large" style={{ marginRight: 10 }} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
+            <Button onClick={this.handleRename} size="large" style={buttonStyle} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
           : null}
 
           {selectMoreThanOneRow ?
-            <Button onClick={this.handleMove} size="large" style={{ marginRight: 10 }}>{i18n('dataroom.move_to')}</Button>
+            <Button onClick={this.handleMove} size="large" style={buttonStyle}>{i18n('dataroom.move_to')}</Button>
           : null}
         </div>
       )
@@ -456,22 +466,23 @@ class FileMgmt extends React.Component {
     return (
       <div>
 
-       {operation()}
+       
 
-        <div style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ lineHeight: '40px', padding: '0 20px', display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgb(233, 241, 243)' }}>
           <div>
             { base }
             {this.props.data.length > 0 &&
               this.parentFolderFunc(this.state.parentId)
                 .map(
                   m => m.id !== this.state.parentId ?
-                  <span key={m.unique}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m)}>{m.name}</a></span>
+                  <span key={m.unique}>&nbsp;>&nbsp;<a onClick={this.folderClicked.bind(this, m)} style={{ fontSize: 14, color: '#282828'}}>{m.name}</a></span>
                   :
-                  <span key={m.unique}>&nbsp;>&nbsp;{m.name}</span>
+                  <span key={m.unique} style={{ fontSize: 14, color: '#237ccc' }}>&nbsp;>&nbsp;{m.name}</span>
                 )
             }
           </div>
 
+          {operation()}
           {hasEnoughPerm ? (
             <UserCheckableTag
               options={this.props.userOptions}
@@ -481,6 +492,7 @@ class FileMgmt extends React.Component {
         </div>
 
         <Table
+          size="small"
           columns={columns}
           rowKey={record => record.unique}
           rowSelection={rowSelection}
