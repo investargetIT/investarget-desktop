@@ -307,11 +307,12 @@ class FileMgmt extends React.Component {
             const visible = Boolean(file)
             return record.isFile ? (
               <Tooltip title={i18n('dataroom.click_toggle_visible')}>
-                <Icon
+                {/* <Icon
                   type={visible ? 'check' : 'close'}
                   onClick={this.props.onToggleVisible.bind(this, record.id)}
                   className={styles['visible']}
-                  style={{fontSize:24}} />
+                  style={{fontSize:24}} /> */}
+                <VisiblitySwitch vis={visible} onClick={this.props.onToggleVisible.bind(this, record.id)} />
               </Tooltip>
             ) : null
           }
@@ -565,4 +566,17 @@ class UserCheckableTag extends React.Component {
       </div>
     )
   }
+}
+
+const activeStyle = {
+  backgroundColor: '#237ccc', 
+  color: 'white'
+};
+function VisiblitySwitch(props) {
+  return (
+    <span onClick={props.onClick} style={{ border: '1px solid #c3c3c3', borderRadius: '4px', fontSize: 12, color: '#989898', display: 'inline-block', cursor: 'pointer' }}>
+      <span style={{ borderRadius: '4px', padding: '2px 10px', backgroundColor: props.vis ? '#237ccc' : 'transparent', color: props.vis ? 'white' : 'inherit' }}>可见</span>
+      <span style={{ borderRadius: '4px', padding: '2px 4px', backgroundColor: !props.vis ? '#237ccc' : 'transparent', color: !props.vis ? 'white' : 'inherit' }}>不可见</span>
+    </span>
+  )
 }
