@@ -244,6 +244,8 @@
     "no_view_permission": "您没有查看权限",
     "timeline": "时间轴",
     "project_detail": "项目详情",
+    "project_process_timeline":"项目进程时间轴",
+    "view_investor":"查看投资人",
 
     "message": {
       "validation_industry_image_not_null": "行业图片不能为空",

@@ -319,13 +319,13 @@ class ProjectDetail extends React.Component {
         </Row>
 { hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
 
-<Tabs animated={false}>
+              <Tabs animated={false}>
                 <TabPane tab={i18n('project.profile')} key="1">
-                  <div style={{padding:10}}>
+                  <div style={{paddingLeft:120,paddingRight:120}}>
                     <ProjectIntro project={project} />
-                    <div style={blockStyle}>
-                      <h2 style={{fontSize:14,paddingLeft: 10,fontWeight: 600,borderLeft: '4px solid #ff6900',marginBottom:20}}>
-                        {i18n('project.deal_process')}
+                    <div style={{marginTop:60}}>
+                      <h2 style={{fontSize:14,fontWeight: 600,marginBottom:20,color:'#656565'}}>
+                        {i18n('project.project_process_timeline')}
                       </h2>
                       <TimelineView projId={id} />
                     </div>
@@ -539,29 +539,38 @@ function ProjectHead({ project }) {
 }
 
 function ProjectIntro({ project }) {
-  const labelStyle = {display: 'inline-block', width: 250}
+  //const labelStyle = {display: 'inline-block', width: 250}
+  const trStyle={border:'1px solid #eee',height:'40px'}
+  const tdStyle={paddingLeft:'60px'}
+  const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
   return (
     <div style={blockStyle}>
-      <p style={{marginBottom: 20}}>{project.p_introducte}</p>
-      <div style={{marginBottom: 20}}>
+      <p style={{marginBottom: 60}}>{project.p_introducte}</p>
+      <div style={{marginBottom: 60}}>
         {project.tags && project.tags.map(item =>
-          <Tag key={item.id} color="orange">{item.name}</Tag>
+          <Tag key={item.id} style={tagStyle}>{item.name}</Tag>
         )}
       </div>
-      <div>
-        <div>
-          <span style={labelStyle}>{i18n('project.transaction_type') + ' : '}</span>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}
-        </div>
-        <div>
-          <span style={labelStyle}>{i18n('project.engagement_in_transaction') + ' : '}</span>{project.character && project.character.character}
-        </div>
-        <div>
-          <span style={labelStyle}>{i18n('project.transaction_size') + ' : '}</span>{project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'}
-        </div>
-        <div>
-          <span style={labelStyle}>{i18n('project.company_valuation') + ' : '}</span>{project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'}
-        </div>
-      </div>
+      <table style={{height:'160px',width:'380px'}}>
+      <tbody>
+        <tr style={trStyle}>
+          <td style={tdStyle}>{i18n('project.transaction_type') + ' : '}</td>
+          <td>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}</td>
+        </tr>
+        <tr style={trStyle}>
+          <td style={tdStyle}>{i18n('project.engagement_in_transaction') + ' : '}</td>
+          <td>{project.character && project.character.character}</td>
+        </tr>
+        <tr style={trStyle}>
+          <td style={tdStyle}>{i18n('project.transaction_size') + ' : '}</td>
+          <td>{project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'}</td>
+        </tr>
+        <tr style={trStyle}>
+          <td style={tdStyle}>{i18n('project.company_valuation') + ' : '}</td>
+          <td>{project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   )
 }

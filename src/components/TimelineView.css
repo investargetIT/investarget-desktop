@@ -5,34 +5,21 @@
 }
 
 .timeline-line {
-  top: 0;
-  bottom: -35px;
+  top: 10px;
+  bottom: 5%;
   position: absolute;
   content: " ";
   width: 3px;
-  left: 50%;
+  left: 18px;
   margin-left: -1.5px;
   box-shadow: 0 1px 6px rgba(0,0,0,.175);
-  background-color: #f3f3f3;
+  background-color: #237CCC;
 }
 
 .timeline-item {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   position: relative;
-}
-
-.timeline-datetime {
-  color: #737373;
-  position: absolute;
-  left: 55%;
-  top: 6px;
-  text-align: left;
-  padding: 10px;
-}
-.timeline-item.inverted .timeline-datetime {
-  left: auto;
-  right: 55%;
-  text-align: right;
+  width:600px;
 }
 
 .timeline-time {
@@ -41,51 +28,77 @@
 }
 
 .timeline-badge {
-  width: 50px;
-  height: 50px;
-  font-size: 1.4em;
+  width: 48px;
+  height: 48px;
+  font-size: 1.2em;
   text-align: center;
   position: absolute;
-  top: 6px;
-  left: 50%;
+  top: 0px;
+  left: 0px;
   margin-left: -25px;
-  background-image: linear-gradient(to bottom,#eee 0,#fbfbfb 100%);
+  background-color:#237CCC;
+  /*background-image: linear-gradient(to bottom,#eee 0,#fbfbfb 100%);*/
+  border:4px solid #fbfbfb;
   z-index: 100;
   border-radius: 50%;
   background-clip: padding-box;
-  box-shadow: 0 1px 6px rgba(0,0,0,.175);
+ /* box-shadow: 0 1px 6px rgba(0,0,0,.175);*/
   color: #444;
 }
 
 .line-padding {
-  padding-top: 10px;
+  padding-top: 5px;
 }
 
 .timeline-panel {
+  border:1px solid #f0eeee;
   background-color: #fbfbfb;
-  width: calc(50% - 45px);
+  /*width: calc(50% - 45px);*/
+  width:500px;
+  height:80px;
+  margin-left:10%;
   float: left;
   border-radius: 2px;
   padding: 0;
   position: relative;
   box-shadow: 0 1px 6px rgba(0,0,0,.175);
 }
-.timeline-item.inverted .timeline-panel {
-  float: right;
+
+.timeline-panel:before{
+  content:'';
+  width:0;
+  height:0;
+  border:15px solid transparent;
+  border-right-color: #f0eeee;
+  position:absolute;
+  right:100%;
+  top:30%;
+}
+.timeline-panel:after{
+  content:'';
+  width:0;
+  height:0;
+  border:12px solid transparent;
+  border-right-color: #fbfbfb;
+  position:absolute;
+  right:100%;
+  top:33%;
 }
 
-.timeline-header {
 
+.timeline-header {
+  padding: 30px 20px 0;
 }
 
 .timeline-title {
-  display: block;
-  padding: 10px 20px 0;
+  float:left;
+  
   min-width: 200px;
   font-size: 14px;
   font-family: 'Roboto','Lucida Sans','trebuchet MS',Arial,Helvetica;
   font-weight: 700;
 }
+
 
 .timeline-body {
   padding: 10px 20px 20px;
