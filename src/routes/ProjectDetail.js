@@ -618,29 +618,27 @@ function ProjectIntro({ project }) {
 
 function Detail({ project }) {
   const containerStyle = {
-    padding: 10,
-    paddingTop: 0,
+    
   }
   const style = {
-    paddingBottom: 10,
-    borderBottom: '1px dashed #e0e0e0',
+    marginBottom: 30,
   }
   const titleStyle = {
     backgroundColor: '#f4f4f4',
     fontSize: 14,
     fontWeight: 400,
-    paddingLeft: 20,
-    height: 28,
+    paddingLeft: 120,
+    height: 24,
     lineHeight: '28px',
     marginTop: 16,
-    color: '#0e0e0e',
+    color: '#656565',
   }
   const paraStyle = {
-    paddingTop: 10,
-    paddingLeft: 20,
-    fontSize: 13,
+    paddingLeft: 120,
+    fontSize: 14,
     wordBreak: 'break-word',
-    lineHeight: '22px',
+    lineHeight: '24px',
+    marginTop:20
   }
 
   function createMarkup(str) {
