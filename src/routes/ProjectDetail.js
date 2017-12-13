@@ -707,14 +707,15 @@ class DownloadFiles extends React.Component {
       padding: 10,
     }
     const sectionStyle = {
-      borderBottom: '1px dashed #e0e0e0',
-      padding: '10px 0',
+      padding: '0px 20px',
+      paddingTop:'10px',
+      marginLeft:120,
+      marginBottom:10,
+      width:620,
       display: 'flex',
+      backgroundColor:'rgb(233, 241, 243)'
     }
-    const lastSectionStyle = {
-      padding: '10px 0',
-      display: 'flex',
-    }
+
     const titleStyle = {
       flexShrink: 0,
       width: 150,
@@ -723,28 +724,64 @@ class DownloadFiles extends React.Component {
     const listStyle = {
       flexGrow: 1,
     }
-
-    const dirs = this.state.attachments.map(item => item.filetype)
+    const headerStyle={
+      fontSize: 14,
+      fontWeight: 400,
+      paddingLeft: 120,
+      color: '#656565',
+      marginBottom:20,
+    }
+    const imgContainer={
+      width:30,
+      height:25,
+      position:'relative',
+    }
+    const cloudStyle={
+      width:'100%',
+      height:'100%',
+    }
+    const arrowStyle={
+      position:'absolute',
+      zIndex:10,
+      right:'35%',
+      top:'20%',
+      width:'30%',
+      height:'40%',
+    }
+    const liStyle={
+      display:'flex',
+      justifyContent:'space-between',
+      height:30,
+    }
+    const dirs = Array.from(new Set(this.state.attachments.map(item=>item.filetype)))
 
     return (
       <div style={containerStyle}>
+        {dirs.length?<div style={headerStyle}>{i18n('project.material_download')}</div>:
+        <div style={headerStyle}>{i18n('project.no_materials')}</div>}
         {dirs.map((dir, index) => {
           const files = this.state.attachments.filter(item => item.filetype == dir)
           const isLast = index == dirs.length - 1
 
           return (
-            <div key={dir} style={isLast ? lastSectionStyle : sectionStyle}>
+            <div key={index} style={sectionStyle}>
               <div style={titleStyle}>{dir}</div>
               <ul style={listStyle}>
                 {files.map(file => {
                   return (
-                    <li key={file.key}>
+                    <li key={file.key} style={liStyle}>
+                      <div>
+                        {file.filename}
+                      </div>
                       <a
                         disabled={!file.url}
                         download={file.filename}
                         href={file.url}
                       >
-                        {file.filename}
+                      <div style={imgContainer}>
+                        <img style={cloudStyle} src="/images/cloud.png" />
+                        <img style={arrowStyle} src="/images/arrow.png" />
+                      </div>
                       </a>
                     </li>
                   )

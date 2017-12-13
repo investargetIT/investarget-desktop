@@ -246,6 +246,8 @@
     "project_detail": "项目详情",
     "project_process_timeline":"项目进程时间轴",
     "view_investor":"查看投资人",
+    "material_download":"资料下载",
+    "no_materials":"无文件下载",
 
     "message": {
       "validation_industry_image_not_null": "行业图片不能为空",
