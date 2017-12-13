@@ -241,6 +241,12 @@ class FileMgmt extends React.Component {
     this.props.onDownloadBtnClicked();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.loading != nextProps.loading) {
+      this.setState({loading: nextProps.loading});
+    }
+  }
+
   render () {
     const isAdmin = hasPerm('usersys.as_admin')
 
@@ -484,12 +490,12 @@ class FileMgmt extends React.Component {
           </div>
 
           {operation()}
-          {hasEnoughPerm ? (
+          {/* {hasEnoughPerm ? (
             <UserCheckableTag
               options={this.props.userOptions}
               value={this.props.selectedUser}
               onChange={this.props.onSelectUser} />
-          ) : null}
+          ) : null} */}
         </div>
 
         <Table

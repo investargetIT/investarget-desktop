@@ -620,5 +620,6 @@
   "download_package": "打包下载",
   "address": "地点",
   "industry_type": "行业类型",
-  "permission": "权限"
+  "permission": "权限",
+  "choose_investor_download": "选择打包下载对象"
 }

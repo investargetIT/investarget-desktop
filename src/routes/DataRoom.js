@@ -5,7 +5,11 @@ import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
 import { Modal } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
-import DataRoomUser from '../components/DataRoomUser'
+import { 
+  DataRoomUser, 
+  DataRoomUserList, 
+} from '../components/DataRoomUser';
+import Tree from 'antd/lib/tree';
 
 class DataRoom extends React.Component {
 
@@ -30,7 +34,8 @@ class DataRoom extends React.Component {
       selectedUser: null,
       targetUserFileList: [],
       downloadUrl: null,
-      isDownloadBtnLoading: false,
+      downloadUser: null,
+      loading: false,
     }
   }
 
@@ -400,23 +405,26 @@ class DataRoom extends React.Component {
   }
 
   checkDataRoomStatus = () => {
-    api.checkDataRoomStatus(this.state.id, this.state.selectedUser)
+    api.checkDataRoomStatus(this.state.id, this.state.downloadUser && this.state.downloadUser.id)
       .then(result => {
         if (result.data.code === 8005) {
           clearInterval(this.pull);
           this.setState({ 
-            isDownloadBtnLoading: false, 
-            downloadUrl: api.downloadDataRoom(this.state.id, this.state.selectedUser) 
+            loading: false, 
+            downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id),
+            downloadUser: null
           });
+          // 重置下载链接， 防止相同下载链接不执行
+          setTimeout(() => this.setState({ downloadUrl: null }), 1000);
         }
       });
   }
 
   handleDownloadBtnClicked = () => {
-    this.setState({ isDownloadBtnLoading: true });
+    this.setState({ loading: true, visible: false });
     const params = {
-      user: this.state.selectedUser,
-      water: 'abcdefghijklmn'
+      user: this.state.downloadUser && this.state.downloadUser.id,
+      water: this.state.downloadUser && this.state.downloadUser.email
     }
     api.makeDataRoomZip(this.state.id, params)
     .then(result => {
@@ -434,13 +442,15 @@ class DataRoom extends React.Component {
       >
       
         {hasPerm('dataroom.admin_adddataroom') ?
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
               newUser={this.state.newUser}
               onSelectUser={this.handleChangeUser}
               onAddUser={this.handleAddUser}
               onDeleteUser={this.handleDeleteUser}
+              selectedUser={this.state.selectedUser}
+              onChange={this.handleSelectUser}
             />
           </div>
           : null}
@@ -463,27 +473,28 @@ class DataRoom extends React.Component {
           onUploadFile={this.handleUploadFile.bind(this)}
           selectedUser={this.state.selectedUser}
           onSelectUser={this.handleSelectUser}
+          loading={this.state.loading}
           targetUserFileList={this.state.targetUserFileList}
           onToggleVisible={this.handleToggleVisible}
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
-          onDownloadBtnClicked={this.handleDownloadBtnClicked}
-          isDownloadBtnLoading={this.state.isDownloadBtnLoading}
+          onDownloadBtnClicked={() => this.setState({ visible: true})}
            />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
           <Modal
-            title={i18n('dataroom.user_management')}
+            title={i18n('choose_investor_download')}
             footer={null}
             onCancel={this.hideModal}
+            closable={false}
             visible={this.state.visible}>
-<DataRoomUser
-              list={this.state.list}
-              newUser={this.state.newUser}
-              onSelectUser={this.handleChangeUser}
-              onAddUser={this.handleAddUser}
-              onDeleteUser={this.handleDeleteUser} />
+          <DataRoomUserList
+              list={this.state.list.filter(f => this.state.fileUserList.map(m => m.user).includes(f.user.id))}
+              selectedUser={this.state.downloadUser}
+              onChange={user => this.setState({ downloadUser: user })}
+              onConfirm={this.handleDownloadBtnClicked}
+              />
           </Modal>
       </LeftRightLayout>
     )

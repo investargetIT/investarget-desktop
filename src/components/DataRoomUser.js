@@ -3,7 +3,8 @@ import {
   Button, 
   Popconfirm, 
   Row, 
-  Col 
+  Col, 
+  Icon, 
 } from 'antd';
 import { SelectExistUser } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
@@ -26,25 +27,52 @@ function DataRoomUser(props) {
               <Row>
               <Col span={16}><SelectExistUser value={newUser} onChange={onSelectUser} /></Col>
               <Col span={1} />
-              <Col span={7}><Button size="large" onClick={onAddUser} disabled={!newUser}>{i18n('dataroom.add_user')}</Button></Col>
+              <Col span={7}><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></Col>
               </Row>
             </Col>
             <Col span={1} />
             <Col span={15}>
-            {list.map(item => (
-              // <div key={item.id} style={rowStyle}>
-                /* <span>{item.user.username}</span> */
-                
-                <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
-                <img style={{ marginRight: 15, marginBottom: 10, width: 40, height: 40 }}src={item.user.photourl} />
-                  {/* <Button size="small" type="danger">{i18n('common.delete')}</Button> */}
-                </Popconfirm>
-              // </div>
-            ))}
+          {list.map(item => (
+            <div key={item.id} onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
+              <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+              {props.selectedUser === item.user.id ?
+                <div>
+                  <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
+                  <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+                    <div style={{ position: 'absolute', top: -12, right: -8, cursor: 'pointer' }}>x</div>
+                  </Popconfirm>
+                </div>
+                : null}
+            </div>
+          ))}
             </Col>
           </Row>
         : <div>{i18n('dataroom.no_user')}</div>
     
 }
 
-export default DataRoomUser
+function DataRoomUserList(props) {
+  const { list, newUser, onSelectUser, onAddUser, onDeleteUser } = props
+  return list.length > 0 ? 
+
+        <div><Row style={{ textAlign: 'center' }}>
+        {list.map(item => (
+          <div key={item.id} onClick={props.onChange.bind(this, item.user)} style={{ width: 50, overflow: 'hidden', position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer', border: '1px solid rgb(234, 238, 238)' }}>
+            <div><img style={{ width: 50, height: 50 }} src={item.user.photourl} /></div>
+            <div style={{ fontSize: 12}}>{item.user.username}</div>
+            {props.selectedUser && props.selectedUser.id === item.user.id ?
+              <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <img style={{ width: 30 }} src="/images/check.png" />
+              </div>
+              : null}
+          </div>
+        ))}
+        </Row>
+        <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}><Button onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
+        </Row></div>
+      : <div>{i18n('dataroom.no_user')}</div>
+  
+}
+
+export {DataRoomUserList, DataRoomUser}
+

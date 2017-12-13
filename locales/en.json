@@ -614,5 +614,6 @@
   "download_package": "Download Package",
   "address": "Area",
   "industry_type": "Industry",
-  "permission": "Permission"
+  "permission": "Permission",
+  "choose_investor_download": "Select Target User"  
 }
