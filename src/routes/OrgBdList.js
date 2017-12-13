@@ -122,7 +122,8 @@ class OrgBdList extends React.Component {
   render() {
 
     const { filters, search, page, pageSize, total, list, loading } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username'},
         {title: i18n('org_bd.created_time'), render: (text, record) => {
@@ -134,21 +135,26 @@ class OrgBdList extends React.Component {
         {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle'},
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name'},
         {
-            title: i18n('org_bd.operation'), render: (text, record) => <span>
-                <Button size="small" style={{ marginRight: 4 }} onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
+            title: i18n('org_bd.operation'), render: (text, record) => 
+            {
+            const latestComment = record.BDComments && record.BDComments[0]
+            const comments = latestComment ? latestComment.comments : ''
+            return (
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <div>
+                <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
+                <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
+                <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
+                </div>
+                <div>
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
-                    <Button size="small" type="danger">{i18n('common.delete')}</Button>
+                    <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
                 </Popconfirm>
-            </span>
+                 </div>
+              </div>)
+            }
         },
-        {title: i18n('remark.comment'), render: (text, record) => {
-          const latestComment = record.BDComments && record.BDComments[0]
-          const comments = latestComment ? latestComment.comments : ''
-          return (<div>
-            <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
-            <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.view_add')}</a>
-          </div>)
-        }},
+       
       ]
 
     return (

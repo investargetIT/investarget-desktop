@@ -122,7 +122,7 @@ class ProjectLibrary extends React.Component {
 
   render() {
     const { filters, search, page, pageSize, total, list, loading } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const columns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
         return (<Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
@@ -139,7 +139,7 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
       {title: i18n('common.operation'), render: (text, record) => {
-        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button>{i18n('project_library.new_bd')}</Button></Link>
+        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button style={buttonStyle}>{i18n('project_library.new_bd')}</Button></Link>
       }}
     ]
 
