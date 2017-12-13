@@ -164,7 +164,8 @@ class ProjectList extends React.Component {
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
       {
         title: i18n('project.image'),
@@ -247,49 +248,58 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (text, record) => {
           return record.ismarketplace ? (
-            <span className="span-operation">
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
+            <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div>
+              <Button size="small" style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link to={'/app/marketplace/edit/' + record.id}>
-                <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+                <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
-
+            </div>
+            <div>
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
+                <a type="danger" disabled={!record.action.delete} >
+                  <img style={imgStyle} src="/images/delete.png" />
+                </a>
               </Popconfirm>
+            </div>
             </span>
           ) : (
-            <span className="span-operation">
-              <Button size="small" disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
+            <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+            <div>
+              <Button size="small" style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
+                <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
               <Link to={"/app/timeline/add?projId=" + record.id}>
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_org_bd')}</Button>
+                <Button style={buttonStyle} size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_org_bd')}</Button>
               </Link>
 
               <Link to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
+                <Button style={buttonStyle} size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
 
               <Link to={'/app/projects/edit/' + record.id}>
-                <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+                <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
               </Link>
-
+            </div>
+            <div>
               <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-                <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
+                <a type="danger" disabled={!record.action.delete} >
+                  <img style={imgStyle} src="/images/delete.png" />
+                </a>
               </Popconfirm>
+            </div>
             </span>
           )
         }
     })
-
     const action = (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
                     { name: i18n('project.upload_project'), link: "/app/projects/add" } : null
 
@@ -298,7 +308,7 @@ class ProjectList extends React.Component {
 
         <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-        <div style={{ marginBottom: '16px' }} className="clearfix">
+        <div style={{ marginBottom: '16px'}} className="clearfix">
           <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
         </div>
 
