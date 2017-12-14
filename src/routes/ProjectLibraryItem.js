@@ -126,7 +126,8 @@ class News extends React.Component {
 
   getNews = ()  => {
     const { com_id } = this.props
-    api.getLibProjNews(com_id).then(result => {
+
+    api.getLibProjNews({com_id}).then(result => {
       const list = result.data.data
       this.setState({list})
       this.setState({currentList:this.state.list.slice(0,this.state.initNum)})
