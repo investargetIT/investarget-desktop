@@ -90,8 +90,8 @@ class EmailList extends React.Component {
       <LeftRightLayout location={location} title={i18n('email.email_management')}>
         <div>
 
-          <div style={{marginBottom: '16px'}}>
-            <Search2 style={{width: 200}} placeholder={i18n('email.project_name')} defaultValue={search} onSearch={this.handleSearch} />
+          <div style={{marginBottom: '16px'}} className="clearfix">
+            <Search2 style={{width: 200,float:'right'}} placeholder={i18n('email.project_name')} defaultValue={search} onSearch={this.handleSearch} />
           </div>
 
           <Table

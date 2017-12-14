@@ -635,6 +635,7 @@ function Detail({ project }) {
   }
   const paraStyle = {
     paddingLeft: 120,
+    paddingRight:120,
     fontSize: 14,
     wordBreak: 'break-word',
     lineHeight: '24px',

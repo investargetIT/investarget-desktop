@@ -173,7 +173,7 @@ class OrgBdList extends React.Component {
           <Search2
             defaultValue={search}
             placeholder={i18n('project_bd.project_name')}
-            style={{ width: 200, float: 'left' }}
+            style={{ width: 200, float: 'right' }}
             onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)} 
           />
         </div>
