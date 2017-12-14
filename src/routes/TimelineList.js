@@ -217,7 +217,8 @@ class TimelineList extends React.Component {
   render() {
 
     const { location } = this.props
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
       { title: i18n('timeline.project_name'), key: 'proj', render: (text, record) => (
         <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>
@@ -238,26 +239,29 @@ class TimelineList extends React.Component {
       { title: i18n('timeline.transaction_status'), key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
       { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-          <span className="span-operation">
+          <span className="span-operation" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
             {
               record.isClose ? (
-                <Button size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.open')}</Button>
+                <Button style={buttonStyle} size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.open')}</Button>
               ) : (
-                <Button size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.close')}</Button>
+                <Button style={buttonStyle} size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.close')}</Button>
               )
             }
 
             <Link to={'/app/timeline/' + record.id}>
-              <Button size="small" disabled={!record.action.get}>{i18n("common.view")}</Button>
+              <Button style={buttonStyle} size="small" disabled={!record.action.get}>{i18n("common.view")}</Button>
             </Link>
 
             <Link to={'/app/timeline/edit/' + record.id}>
-              <Button size="small" disabled={!record.action.change || record.isClose}>{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} size="small" disabled={!record.action.change || record.isClose}>{i18n("common.edit")}</Button>
             </Link>
-
+            </div>
+            <div>
             <Popconfirm title="Confirm to delete?" onConfirm={this.deleteTimeline.bind(null, record.id)}>
-              <Button type="danger" size="small" disabled={!record.action.delete}>{i18n("common.delete")}</Button>
+              <a type="danger" size="small" disabled={!record.action.delete}><img style={imgStyle} src="/images/delete.png" /></a>
             </Popconfirm>
+            </div>
           </span>
         )
       },

@@ -122,7 +122,8 @@ class ProjectBDList extends React.Component {
 
   render() {
     const { filters, search, page, pageSize, total, list, loading } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name'},
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name'},
@@ -138,22 +139,21 @@ class ProjectBDList extends React.Component {
         return time(record.createdtime + record.timezone)
       }},
       {title: i18n('project_bd.operation'), render: (text, record) => {
-        return (<span>
+        return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
           <Link to={'/app/projects/bd/edit/' + record.id}>
-            <Button size="small" style={{marginRight: 4}}>{i18n('common.edit')}</Button>
+            <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
           </Link>
+          <div>        
+          <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+          </div>
+          </div>
+          <div>
           <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(this, record.id)}>
-            <Button size="small" type="danger">{i18n('common.delete')}</Button>
+            <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
           </Popconfirm>
+          </div>
         </span>)
-      }},
-      {title: i18n('remark.comment'), render: (text, record) => {
-        const latestComment = record.BDComments && record.BDComments[0]
-        const comments = latestComment ? latestComment.comments : ''
-        return (<div>
-          <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
-          <a href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.view_add')}</a>
-        </div>)
       }},
     ]
 
@@ -162,7 +162,7 @@ class ProjectBDList extends React.Component {
 
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
         </div>
         <Table
           columns={columns}

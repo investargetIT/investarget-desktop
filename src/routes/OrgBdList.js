@@ -141,11 +141,14 @@ class OrgBdList extends React.Component {
             const comments = latestComment ? latestComment.comments : ''
             return (
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                <div>
+              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
+                <div style={{marginRight:4}}>
                 <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
-                <p style={{maxWidth: 250,overflow: 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}>{comments}</p>
+                </div>
+                <div>
                 <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
                 </div>
+              </div>
                 <div>
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
                     <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>

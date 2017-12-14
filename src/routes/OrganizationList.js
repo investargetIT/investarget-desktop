@@ -108,7 +108,8 @@ class OrganizationList extends React.Component {
   }
 
   render() {
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
       { title: i18n('organization.name'), key: 'orgname', dataIndex: 'orgname' },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
@@ -120,17 +121,19 @@ class OrganizationList extends React.Component {
       } },
       { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-          <span className="span-operation">
+          <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
             <Link to={'/app/organization/' + record.id}>
-              <Button disabled={!record.action.get} size="small" >{i18n("common.view")}</Button>
+              <Button style={buttonStyle} disabled={!record.action.get} size="small" >{i18n("common.view")}</Button>
             </Link>
 
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
             </Link>
 
             <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
+              <a type="danger" disabled={!record.action.delete} >
+                <img style={imgStyle} src="/images/delete.png" />
+              </a>
             </Popconfirm>
           </span>
         )

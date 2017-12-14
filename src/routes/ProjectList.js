@@ -309,7 +309,7 @@ class ProjectList extends React.Component {
         <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
         <div style={{ marginBottom: '16px'}} className="clearfix">
-          <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'left' }} onSearch={this.handleSearch} />
+          <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
         </div>
 
         <Table

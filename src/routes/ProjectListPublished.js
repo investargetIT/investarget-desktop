@@ -60,7 +60,8 @@ class ProjectListPublished extends React.Component {
 
   render() {
     const { total, list, loading, page, pageSize } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
     const columns = [
       {
         title: i18n('project.image'),
@@ -115,13 +116,15 @@ class ProjectListPublished extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => (
-          <span>
+          <span style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
             <Link to={'/app/projects/edit/' + record.id}>
-              <Button disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+              <Button style={ buttonStyle} disabled={!record.action.change} >{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
+              <a type="danger" disabled={!record.action.delete} >
+                <img style={imgStyle} src="/images/delete.png" />
+              </a>
             </Popconfirm>
           </span>
         )

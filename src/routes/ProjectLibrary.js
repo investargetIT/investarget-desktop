@@ -153,7 +153,7 @@ class ProjectLibrary extends React.Component {
             onChange={this.handleChangeSearch}
             onSearch={this.handleSearch}
             placeholder={i18n('project.project_name')}
-            style={{ width: 250 }}
+            style={{ width: 250,float:'right' }}
           />
         </div>
         <Table
