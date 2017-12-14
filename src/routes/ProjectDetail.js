@@ -518,33 +518,8 @@ function SecretInfo({ project }) {
           </div>
         </div>
       ) : (
-        <div style={{position:'relative'}}>
-          <div style={{position:'absolute',left:0,right:0,top:0,bottom:0,margin:'auto',width:'100%',textAlign:'center',height:28,lineHeight:'28px',color:'#616161',fontSize:13}}>
-            <span style={{padding:'5px 10px',border:'1px dashed #9e9e9e',borderRadius:3}}>{i18n('project.no_view_permission')}</span>
-          </div>
-          <div style={{filter:'blur(10px)',userSelect:'none'}}>
-            <div>
-              <span style={spanStyle}>{i18n('project.project_real_name')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.contact_person')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.phone')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.email')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.uploader')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.take_user')}</span>unknown
-            </div>
-            <div>
-              <span style={spanStyle}>{i18n('project.make_user')}</span>unknown
-            </div>
-          </div>
+        <div style={{ height:130, backgroundColor: 'rgb(233, 241, 243)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div><img src="/images/lock.png" /></div>
         </div>
       )}
     </div>
