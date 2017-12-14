@@ -146,7 +146,7 @@ class ProjectLibrary extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')}>
         <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <div style={{ marginBottom: '16px' }} className="clearfix">
+        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
           <Search3
             getApi={this.getLibProj}
             value={search}
@@ -164,7 +164,7 @@ class ProjectLibrary extends React.Component {
           pagination={false}
         />
         <div style={{ margin: '16px 0' }} className="clearfix">
-          <Button type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
+          <Button style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
           <Pagination
             style={{ float: 'right' }}
             total={total}
