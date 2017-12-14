@@ -274,8 +274,8 @@ class TimelineList extends React.Component {
         <div>
           <div>
             <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-            <div style={{ marginBottom: '24px' }}>
-              <Search2 style={{ width: 250 }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')} />
+            <div style={{ marginBottom: '24px'}} className="clearfix">
+              <Search2 style={{ width: 250,float:'right' }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')} />
             </div>
             <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

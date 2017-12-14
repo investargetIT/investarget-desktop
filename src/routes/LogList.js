@@ -104,11 +104,11 @@ class LogList extends React.Component {
         location={this.props.location}
         title={i18n("menu.log")}>
 
-        <div style={{ marginBottom: '1.5em' }}>
+        <div style={{ marginBottom: '1.5em' }} className="clearfix">
           <Search2
             defaultValue={search}
             onSearch={this.handleSearch}
-            style={{ width: '200px' }}
+            style={{ width: '200px',float:'right'}}
             placeholder={[i18n('syslog.operated_item'), i18n('syslog.operator')].join(' / ')}
           />
         </div>
