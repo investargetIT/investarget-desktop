@@ -81,11 +81,15 @@ class AddOrgBD extends React.Component {
     const { location }  = this.props
 
     return (
-      <LeftRightLayout location={location} title={i18n('project.create_org_bd')}>
+      <LeftRightLayout
+        location={location}
+        title={i18n('menu.bd_management')}
+        breadcrumb={' > ' + i18n('menu.organization_bd') + ' > ' + i18n('project.create_org_bd')}
+      >
         <div>
-          {this.state.projTitle ? 
-          <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
-          : null}
+          {this.state.projTitle ?
+            <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
+            : null}
 
           { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} /> : null }
         </div>

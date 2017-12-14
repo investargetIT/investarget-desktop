@@ -37,12 +37,13 @@ import {
   SliderMoney,
   TabCheckboxIndustry,
   TabCheckboxCountry,
-  CheckboxService,
+  CheckboxService, 
+  TabCheckboxTag, 
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
 
-function BasicContainer(props) {
+export function BasicContainer(props) {
   return (
     <Row gutter={16} style={{marginBottom: '16px'}}>
       <Col span={4} style={{color: '#4a535e'}}>{ props.label + '：'}</Col>
@@ -489,7 +490,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
   }
 
   handleSearch = () => {
@@ -506,10 +507,17 @@ class OrganizationListFilter extends React.Component {
     return (
       <div>
         <OverseaFilter value={isOversea} onChange={this.handleChange.bind(this, 'isOversea')} />
-        <CurrencyFilter value={currencys} onChange={this.handleChange.bind(this, 'currencys')} />
-        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        {/* <CurrencyFilter value={currencys} onChange={this.handleChange.bind(this, 'currencys')} /> */}
+        <BasicContainer label={i18n('filter.currency')}>
+          <ITCheckboxGroup options={this.props.currencys} value={currencys} onChange={this.handleChange.bind(this, 'currencys')} />
+        </BasicContainer> 
+        {/* <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} /> */}
+        <BasicContainer label={i18n('filter.investment_rounds')}>
+          <ITCheckboxGroup options={this.props.orgtransactionphases} value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        </BasicContainer>
         <IndustryFilter value={industrys} onChange={this.handleChange.bind(this, 'industrys')} />
-        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        {/* <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} /> */}
+        <TabCheckboxTag value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
         <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
@@ -518,6 +526,13 @@ class OrganizationListFilter extends React.Component {
   }
 
 }
+function mapStateToPropsForRounds(state) {
+  const { transactionPhases, currencyType } = state.app;
+  const orgtransactionphases = transactionPhases ? transactionPhases.map(item =>({value: item.id, label: item.name})) : []
+  const currencys = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
+  return { orgtransactionphases, currencys }
+}
+OrganizationListFilter = connect(mapStateToPropsForRounds)(OrganizationListFilter);
 
 class ProjectListFilter extends React.Component {
 
@@ -844,5 +859,5 @@ module.exports = {
   ProjectLibraryFilter,
   ProjectBDFilter,
   WxMessageFilter,
-  OrgBDFilter,
+  OrgBDFilter, 
 }

@@ -83,6 +83,9 @@ class LeftRightLayout extends React.Component {
                   {this.props.name}
                 </div></span>):null
                 }
+                {this.props.breadcrumb ?
+                  <div style={nameStyle}>{this.props.breadcrumb}</div>
+                  : null}
                 
                 { this.props.action ? (
                     <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>

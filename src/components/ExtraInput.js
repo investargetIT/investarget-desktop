@@ -20,6 +20,7 @@ import _ from 'lodash'
 import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
+import { BasicContainer } from './Filter';
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -1011,6 +1012,27 @@ class TabCheckboxIndustry extends React.Component {
 
 TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
+class TabCheckboxTag extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.tag')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsTag(state) {
+  const {tag} = state.app
+  const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
+  return { options }  
+}
+TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
+
+
 /**
  * CheckboxYear
  */
@@ -1124,6 +1146,7 @@ export {
   CheckboxYear,
   TabCheckboxCountry,
   TabCheckboxIndustry,
+  TabCheckboxTag, 
   SliderMoney,
   RadioTrueOrFalse,
   RadioCurrencyType,

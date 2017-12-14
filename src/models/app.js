@@ -110,6 +110,8 @@ export default {
     setup({ history, dispatch }) {
       return history.listen(({ pathname }) => {
 
+        dispatch({ type: 'getSourceList', payload: ['transactionPhases'] });
+        dispatch({ type: 'getSourceList', payload: ['currencyType'] });
         const key = URI_TO_KEY[pathname]
         const selectedKeys = key ? [key] : []
 
@@ -126,7 +128,6 @@ export default {
         if (pathname === '/app' && !isLogin()) {
           history.replace('/')
         }
-
       })
     }
   },

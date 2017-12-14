@@ -93,8 +93,8 @@ class SelectOrganization extends React.Component {
 
     return (
       <div>
-        <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <div style={{ marginBottom: '24px' }}>
+        <OrganizationListFilter defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'flex-end' }}>
           <Search2 style={{ width: '250px' }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />

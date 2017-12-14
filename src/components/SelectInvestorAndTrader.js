@@ -51,8 +51,8 @@ class SelectInvestorAndTrader extends React.Component {
       <div>
         <div style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
           <p style={{fontSize: '13px'}}>
-            { step == 1 ? <span>1. {i18n('timeline.select_institution')}</span> : null }
-            { step == 2 ? <span>2. {i18n('timeline.select_user')}</span> : null }
+            { step == 1 ? <span style={{fontWeight: 'bold', color: 'black'}}>1. {i18n('timeline.select_institution')}</span> : null }
+            { step == 2 ? <span style={{fontWeight: 'bold'}}>2. {i18n('timeline.select_user')}</span> : null }
           </p>
         </div>
 
