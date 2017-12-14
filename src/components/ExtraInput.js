@@ -1032,7 +1032,45 @@ function mapStateToPropsTag(state) {
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
 
+class TabCheckboxOrgType extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['orgtype'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.org_type')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsOrgType(state) {
+  const { orgtype } = state.app
+  const options = orgtype ? orgtype.map(item =>({value: item.id, label: item.name})) : []
+  return { options }
+}
+TabCheckboxOrgType = connect(mapStateToPropsOrgType)(TabCheckboxOrgType);
 
+class TabCheckboxOrgArea extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['orgarea'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.area')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsOrgArea(state) {
+  const { orgarea } = state.app
+  const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+}
+TabCheckboxOrgArea = connect(mapStateToPropsOrgArea)(TabCheckboxOrgArea);
 /**
  * CheckboxYear
  */
@@ -1147,6 +1185,8 @@ export {
   TabCheckboxCountry,
   TabCheckboxIndustry,
   TabCheckboxTag, 
+  TabCheckboxOrgType, 
+  TabCheckboxOrgArea, 
   SliderMoney,
   RadioTrueOrFalse,
   RadioCurrencyType,

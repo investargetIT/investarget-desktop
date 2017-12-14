@@ -39,6 +39,8 @@ import {
   TabCheckboxCountry,
   CheckboxService, 
   TabCheckboxTag, 
+  TabCheckboxOrgType, 
+  TabCheckboxOrgArea, 
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -518,8 +520,10 @@ class OrganizationListFilter extends React.Component {
         <IndustryFilter value={industrys} onChange={this.handleChange.bind(this, 'industrys')} />
         {/* <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} /> */}
         <TabCheckboxTag value={tags} onChange={this.handleChange.bind(this, 'tags')} />
-        <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
-        <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} />
+        {/* <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} /> */}
+        <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
+        {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
+        <TabCheckboxOrgArea value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
