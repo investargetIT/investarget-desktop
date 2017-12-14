@@ -2,7 +2,15 @@ import React from 'react'
 import { connect } from 'dva'
 import { i18n } from '../utils/util'
 
-import { Row, Col, Button, Checkbox, Select, Radio } from 'antd'
+import { 
+  Row, 
+  Col, 
+  Button, 
+  Checkbox, 
+  Select, 
+  Radio, 
+  Icon, 
+} from 'antd'
 const RadioGroup = Radio.Group
 const CheckboxGroup = Checkbox.Group
 
@@ -37,7 +45,7 @@ import ITCheckboxGroup from './ITCheckboxGroup'
 function BasicContainer(props) {
   return (
     <Row gutter={16} style={{marginBottom: '16px'}}>
-      <Col span={4} style={{color: '#4a535e'}}>{ props.label }</Col>
+      <Col span={4} style={{color: '#4a535e'}}>{ props.label + '：'}</Col>
       <Col span={20} >{ props.children }</Col>
     </Row>
   )
@@ -46,8 +54,8 @@ function BasicContainer(props) {
 function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-      <Button size="large" type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button>
-      <Button size="large" style={{ marginLeft: 10 }} onClick={props.onReset}>{i18n('filter.reset')}</Button>
+      {/* <Button size="large" type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button> */}
+      <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={props.onReset}>{i18n('filter.reset')}</Button>
     </div>
   )
 }
@@ -749,7 +757,7 @@ class OrgBDFilter extends React.Component {
     }
 
     handleChange = (key, value) => {
-      this.setState({ [key]: value })
+      this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
     }
 
     handleSearch = () => {

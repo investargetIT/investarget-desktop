@@ -271,7 +271,7 @@ class DataRoomList extends React.Component {
                           return record ? <Col span={24/cols} key={col}><DataroomCard record={record} /></Col> : null
                         }
                         if (row == 0 && col == 0) {
-                          return <Col span={24/cols} keye={col}><AddCard /></Col>
+                          return <Col span={24/cols} key={col}><AddCard /></Col>
                         } else {
                           let index = cols * row + col - 1 // -1 减去 AddCard
                           let record = list[index]

@@ -18,7 +18,7 @@ import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 
-class OrgBdList extends React.Component {
+class OrgBDList extends React.Component {
   
   constructor(props) {
     super(props);
@@ -163,13 +163,19 @@ class OrgBdList extends React.Component {
     return (
       <LeftRightLayout 
         location={this.props.location} 
-        title={i18n('menu.organization_bd')} 
+        name={i18n('menu.organization_bd')} 
+        title={i18n('menu.bd_management')}
         action={{ name: i18n('add_orgbd'), link: '/app/orgbd/add' }}
       >
 
-        <OrgBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <OrgBDFilter
+          defaultValue={filters}
+          onSearch={this.handleFilt}
+          onReset={this.handleReset}
+          onChange={this.handleFilt}
+        />
         
-        <div style={{ marginBottom: '16px' }} className="clearfix">
+        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
           <Search2
             defaultValue={search}
             placeholder={i18n('project_bd.project_name')}
@@ -228,7 +234,7 @@ class OrgBdList extends React.Component {
   }
 }
 
-export default OrgBdList;
+export default OrgBDList;
 
 function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd } = props

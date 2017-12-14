@@ -58,7 +58,7 @@ import ResetPassword from './routes/ResetPassword'
 import Register1 from './routes/Register1'
 import RecommendFriends from './components/RecommendFriends';
 import RecommendProjects from './components/RecommendProjects';
-import OrgBdList from './routes/OrgBdList';
+import OrgBDList from './routes/OrgBDList';
 import AddOrgBD from './routes/AddOrgBD';
 import TraderDetail from './routes/TraderDetail';
 
@@ -123,7 +123,7 @@ function RouterConfig({ history }) {
       <Route path="/app/schedule" component={Schedule} />
       <Route path="/app/schedule/list" component={ScheduleList} />
       <Route path="/password" component={ResetPassword} />
-      <Route path="/app/org/bd" component={OrgBdList} />
+      <Route path="/app/org/bd" component={OrgBDList} />
       <Route path="/app/orgbd/add" component={AddOrgBD} />
       <Route path="/app/trader/:id" component={TraderDetail} />
     </Router>

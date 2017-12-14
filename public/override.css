@@ -408,3 +408,7 @@ button[disabled], html input[disabled] {
 .ant-table-small {
   border: none;
 }
+
+.ant-table-thead > tr > th {
+  background-color: rgb(233, 241, 243);
+}
