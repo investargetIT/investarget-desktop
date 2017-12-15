@@ -25,6 +25,7 @@ class TimelineView extends React.Component {
     super(props)
     this.state = {
       list: [],
+      showInvestorStep: null,
     }
   }
 
@@ -60,7 +61,6 @@ class TimelineView extends React.Component {
         {
           transactionStatus.map((status, index) => {
             const list = this.state.list.filter(item => item.status == status.index)
-            console.log(list)
             const step = index + 1
             const odd = step % 2 // 奇偶
             const colorList = ['#FD8B3B', '#2AA0AE', '#5649B9', '#F94545', '#0B87C1', '#F5C12D', '#EB090A', '#2AA0AE', '#855DC7', '#FF9B25', '#10458F']
@@ -77,7 +77,7 @@ class TimelineView extends React.Component {
                       <div className={styles["timeline-title"]}>
                         {step}.{status.name}
                       </div>                                          
-                      {list.length?<ViewInvestors investors={list}/>:null}                     
+                      {list.length?<ViewInvestors isShowInvestor={this.state.showInvestorStep === step} investors={list} onShowInvestorBtnClicked={() => this.setState({ showInvestorStep: step })}/>:null}                     
                   </div>
                 </div>
               </div>
@@ -139,26 +139,50 @@ class ViewInvestors extends React.Component{
     this.setState({ visible });
   }
   
+  popoverContent(investor) {
+    return (
+      <div style={{minWidth: 100, textAlign: 'center'}} >
+        <div style={{marginBottom: 4}}><img style={{ width: 30, height: 30 }} src={investor.photourl} /></div>
+        <div style={{fontSize: 12, lineHeight: '16px'}}>{investor.username}</div>
+        <div style={{fontSize: 12, lineHeight: '16px'}}>{investor.title && investor.title.name}</div>
+      </div>
+    )
+  }
+
   render(){  
     const blueTriangle={width:0,height:0,border:'5px solid transparent',borderTopColor:'#3573fd',top:'40%',right:'-10px',position:'absolute'}
     const investorStyle={maxWidth:'230px'}
     const imgStyle={width:'30px',height:'30px',margin:'4px'}
     return(
 
-      <Popover
-        content={ this.state.list.map(item=> <img key={item.investor.id} style={imgStyle} src={item.investor.photourl} />)}
-        overlayStyle={investorStyle}
-        placement="right"
-        trigger="click"
-        visible={this.state.visible}
-        onVisibleChange={this.handleVisibleChange}
-      >
-        <div style={{float:'right',marginRight:'20px',position:'relative'}}>
-          <a type="primary"><div id="triangle" style={blueTriangle} ></div></a>
-          <div style={{float:'right',marginRight:'10px'}}>{i18n('project.view_investor')}</div>                        
+      // <Popover
+      //   className="custom-pop"
+      //   content={ this.state.list.map(item=> <img key={item.investor.id} style={imgStyle} src={item.investor.photourl} />)}
+      //   overlayStyle={investorStyle}
+      //   placement="bottom"
+      //   trigger="click"
+      //   visible={this.state.visible}
+      //   onVisibleChange={this.handleVisibleChange}
+      // >
+        <div  style={{float:'right',marginRight:'20px',position:'relative', cursor: 'pointer'}}>
+          <a type="primary"><div onClick={this.props.onShowInvestorBtnClicked} id="triangle" style={blueTriangle} ></div></a>
+          <div style={{float:'right',marginRight:'10px'}}>
+          <div onClick={this.props.onShowInvestorBtnClicked}>{i18n('project.view_investor')}</div>
+            {this.props.isShowInvestor ?
+              <div style={{ position: 'absolute', width: this.state.list.length > 4 ? 200 : 'inherit', zIndex: 99 }}>
+                <div style={{border: '1px solid rgb(203, 204, 205)'}}>
+                {this.state.list.map(item => 
+                <Popover key={item.investor.id} content={this.popoverContent(item.investor)}>
+                <img key={item.investor.id} style={imgStyle} src={item.investor.photourl} />
+                </Popover>
+                )}
+                </div>
+              </div>
+              : null}
+          </div>                        
         </div>
         
-      </Popover>
+      // </Popover>
     )
   }
 }
