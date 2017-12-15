@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
 import { i18n } from '../utils/util'
-import { Row, Col, Select } from 'antd'
+import { 
+  Row, 
+  Col, 
+  Select, 
+  Popover, 
+} from 'antd';
 const Option = Select.Option
 
 const rowStyle = {
@@ -32,15 +37,7 @@ const imgStyle={
   width:'100%',
   height:'100%'
 }
-/*
-<Field title={i18n('user.name')} value={SelectTransaction} />
-          <Field title="公司" value={company} />
-          <Field title={i18n('user.position')} value={title} />
-          <Field title={i18n('user.tags')} value={tags} />
-          <Field title={i18n('user.country')} value={country} />
-          <Field title={i18n('user.mobile')} value={mobile} />
-          <Field title={i18n('user.email')} value={email} />
-          <Field title={i18n('user.score')} value={score} />*/
+
 const Field = (props) => {
   return (
     <Row style={rowStyle} gutter={24}>
@@ -54,7 +51,14 @@ const Field = (props) => {
   )
 }
 
-
+function SimpleLine(props) {
+  return (
+    <Row style={{ lineHeight: '24px' }}>
+      <Col span={8}>{props.title + '：'}</Col>
+      <Col span={16} style={{wordWrap: 'break-word'}}>{props.value}</Col>
+    </Row>
+  );
+}
 
 class TransactionInfo extends React.Component {
   constructor(props) {
@@ -128,6 +132,20 @@ class TransactionInfo extends React.Component {
     })
   }
 
+  popoverContent(item) {
+    const { traderuser: trader } = item;
+    return <div style={{minWidth: 240}}>
+      <SimpleLine title={i18n('user.name')} value={trader.username} />
+      <SimpleLine title="公司" value={trader.org && trader.org.orgname} />
+      <SimpleLine title={i18n('user.position')} value={trader.title && trader.title.name} />
+      <SimpleLine title={i18n('user.tags')} value={trader.tags ? trader.tags.map(m => m.name).join('，') : ''} />
+      <SimpleLine title={i18n('user.country')} value={trader.country && trader.country.country} />
+      <SimpleLine title={i18n('user.mobile')} value={trader.mobile} />
+      <SimpleLine title={i18n('user.email')} value={trader.email} />
+      <SimpleLine title={i18n('user.score')} value={item.score} />
+    </div>
+  }
+
   render() {
     const { current, list } = this.state
     const relation = list.filter(item => item.id == current)[0]
@@ -151,7 +169,11 @@ class TransactionInfo extends React.Component {
         </Col>
         <Col span={18}>
         <div style={traderStyle}>
-          {list.map(item=> <span key={item.id} style={photoContainer}><img style={imgStyle} src={item.traderuser.photourl} /></span>)}
+          {list.map(item=> <span key={item.id} style={photoContainer}>
+            <Popover placement="bottomLeft" content={this.popoverContent(item)}>
+              <img style={imgStyle} src={item.traderuser.photourl} />
+            </Popover>
+          </span>)}
         </div>
         </Col>
       </Row>
