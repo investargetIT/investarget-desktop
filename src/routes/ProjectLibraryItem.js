@@ -46,6 +46,7 @@ class ProjectLibraryItem extends React.Component {
 
   render() {
     const { proj, events} = this.state
+    console.log(proj)
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')} name={proj.com_name} >
         {proj.com_id ? <LibProjRemarkList com_id={proj.com_id} com_name={proj.com_name} /> : null}
@@ -57,6 +58,10 @@ class ProjectLibraryItem extends React.Component {
           <div style={divStyle}>
             <h3 style={titleStyle}>{i18n('project_library.intro')}</h3>
             <p style={desStyle}>{proj.com_des}</p>
+          </div>
+          <div style={divStyle}>
+            <h3 style={titleStyle}>{i18n('project_library.web_address')}</h3>
+            {proj.com_web?<a href={proj.com_web} target="_blank">{proj.com_web}</a>:<p style={paraStyle}>{i18n('project_library.none')}</p>}
           </div>
 
           <div style={divStyle}>

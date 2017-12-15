@@ -93,7 +93,8 @@
     "email": "邮箱：",
     "address": "地址：",
     "news": "新闻",
-    "information_detail": "信息详情"
+    "information_detail": "信息详情",
+    "web_address":"网址"
   },
 
   "project_bd": {
