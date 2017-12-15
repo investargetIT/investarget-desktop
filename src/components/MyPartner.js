@@ -132,6 +132,7 @@ class MyPartner extends React.Component {
   }
 
   render() {
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const columns = [
       {
         title: i18n("user.name"),
@@ -167,11 +168,11 @@ class MyPartner extends React.Component {
         render: (text, record) => (
           <span>
             <Link to={'/app/user/' + record.id}>
-              <Button size="small">{i18n("common.view")}</Button>
+              <Button style={buttonStyle} size="small">{i18n("common.view")}</Button>
             </Link>
             &nbsp;
           <Link to={'/app/user/edit/' + record.id + '?redirect=' + this.redirect}>
-              <Button size="small">{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} size="small">{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
             { this.props.type !== 'investor' ?
@@ -180,7 +181,7 @@ class MyPartner extends React.Component {
             </Popconfirm>
             : null }
             &nbsp;
-            <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>
+            <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>
           </span>
         )
       })
