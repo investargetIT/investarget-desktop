@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, i18n, hasPerm, isLogin } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Modal, Row, Col, Popover, Button, Popconfirm, Input, Form, Icon } from 'antd'
+import { Tooltip, Modal, Row, Col, Popover, Button, Popconfirm, Input, Form, Icon } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationRemarkList } from '../components/RemarkList'
@@ -23,13 +23,15 @@ const PositionWithUser = props => {
 
     if (user.couldEdit) {
       return <div>
-        <p>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
-        <p style={{ textAlign: 'center', marginTop: 10 }}>
-          <Link to={"/app/user/edit/" + user.id + '?redirect=' + props.pathname}><Button>编辑</Button></Link>&nbsp;
-              <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
-            <Button type="danger">移除</Button>
+        <div>
+          <span style={{ fontSize: 16, fontWeight: 'bold' }}>{user.name}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link to={"/app/user/edit/" + user.id + '?redirect=' + props.pathname}><span style={{ textDecoration: 'underline' }}>编辑</span></Link>&nbsp;&nbsp;
+          <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
+            <img style={{ cursor: 'pointer', marginBottom: 4 }} src="/images/delete.png" />
           </Popconfirm>
-        </p>
+        </div>
+        <hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
+        <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
       </div>
     }
 
@@ -41,7 +43,7 @@ const PositionWithUser = props => {
       <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
       <div style={{ width: '80%', marginLeft: '20%'}}>
         {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
-          <Popover content={popoverChildren(m)} title={m.name}>
+          <Popover content={popoverChildren(m)}>
             <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10,marginBottom:10 }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
