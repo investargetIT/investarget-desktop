@@ -279,7 +279,7 @@ class TimelineFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.handleSearch)
   }
 
   handleSearch = () => {
@@ -321,9 +321,9 @@ class UserListFilter extends React.Component {
 
   handleChange = (key, value) => {
     if (key == 'groups') {
-      this.setState({ ...UserListFilter.defaultValue })
+      this.setState({ ...UserListFilter.defaultValue },this.handleSearch)
     }
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.handleSearch)
   }
 
   handleSearch = () => {
@@ -431,7 +431,7 @@ class MyInvestorListFilter extends React.Component {
   }
 
   onChange(key, value) {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.onFilter)
   }
 
   onReset() {
@@ -492,7 +492,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
+    this.setState({ [key]: value }, this.handleSearch);
   }
 
   handleSearch = () => {
@@ -561,15 +561,15 @@ class ProjectListFilter extends React.Component {
   handleChange = (key, value) => {
     if (Array.isArray(key)) {
       key.forEach((item, index) => {
-        this.setState({ [item]: value[index] })
+        this.setState({ [item]: value[index] },this.handleSearch)
       })
     } else {
-      this.setState({ [key]: value })
+      this.setState({ [key]: value },this.handleSearch)
     }
 
     if (key == 'ismarketplace' && value == true) {
       ['netIncome_USD_F', 'netIncome_USD_T', 'grossProfit_F', 'grossProfit_T', 'service'].forEach(item => {
-        this.setState({ [item]: ProjectListFilter.defaultValue[item] })
+        this.setState({ [item]: ProjectListFilter.defaultValue[item] },this.handleSearch)
       })
     }
   }
@@ -629,7 +629,8 @@ class ProjectLibraryFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.handleSearch)
+
   }
 
   handleSearch = () => {
@@ -728,7 +729,7 @@ class ProjectBDFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.handleSearch)
   }
 
   handleSearch = () => {
