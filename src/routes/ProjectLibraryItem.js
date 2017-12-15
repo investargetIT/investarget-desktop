@@ -46,7 +46,6 @@ class ProjectLibraryItem extends React.Component {
 
   render() {
     const { proj, events} = this.state
-    console.log(proj)
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')} name={proj.com_name} >
         {proj.com_id ? <LibProjRemarkList com_id={proj.com_id} com_name={proj.com_name} /> : null}
@@ -84,7 +83,7 @@ class ProjectLibraryItem extends React.Component {
                         <span style={{display:'inline-block', width:'40%'}}>{event.money}</span>
                       </div>
                       <div style={{}}>
-                        {event.invsest_with.map((item,index) => <span key={index} style={{marginRight:'4px'}}>{item}</span>)}
+                        {event.invsest_with.map((item,index) => <span key={index} style={{marginRight:'4px'}}>{item.invst_name}</span>)}
                       </div>
                     </div>
                   </div>
