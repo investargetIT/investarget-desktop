@@ -250,7 +250,7 @@ function remarkListWithApi(type) {
         onDelete={this.deleteRemark}
       />
       <div style={divStyle}>
-      {list.length<initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
+      {list.length<=initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
       <a onClick={this.displayMore}>{i18n('common.view_more')}</a>)}
       </div>
       </div> : 
@@ -387,7 +387,7 @@ class LibProjRemarkList extends React.Component {
         onDelete={this.deleteRemark}
       />
       <div style={divStyle}>
-      {list.length<initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
+      {list.length<=initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
       <a onClick={this.displayMore}>{i18n('common.view_more')}</a>)}
       </div>
       </div>
