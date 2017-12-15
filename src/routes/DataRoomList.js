@@ -286,12 +286,11 @@ class DataRoomList extends React.Component {
           </div>
 
           <Pagination
-            className="ant-table-pagination"
+            style={{ textAlign: 'center' }}
             total={total}
             current={page}
             pageSize={pageSize}
             onChange={this.handlePageChange}
-            showQuickJumper
           />
         </div>
       </LeftRightLayout>
