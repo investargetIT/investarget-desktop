@@ -60,7 +60,8 @@ const cardUserStyle = {
   flexWrap: 'wrap',
 }
 const cardActionStyle = {
-  textAlign: 'center'
+  position: 'relative',
+  textAlign: 'center',
 }
 
 
@@ -221,16 +222,25 @@ class DataRoomList extends React.Component {
             </div>
             <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
             <div style={cardActionStyle}>
-              <Popconfirm title={record.isClose ? i18n("open_confirm") : i18n("close_confirm")} onConfirm={this.handleCloseDateRoom.bind(this, record)}>
-                <Button size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
-              </Popconfirm>
+                <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               { hasPerm('dataroom.admin_deletedataroom') ? 
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Icon type="delete" style={{ float: 'right', lineHeight: '32px', cursor: 'pointer' }} />
+                <Icon type="delete" style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} />
               </Popconfirm>
               : null }
             </div>
           </div>
+          {record.isClose ?
+            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .5)', textAlign: 'center', paddingTop: 270 }}>
+              <Button
+                onClick={this.handleCloseDateRoom.bind(this, record)}
+                size="large"
+                disabled={!hasPerm('dataroom.admin_closedataroom')}
+                style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#237ccc' }}>
+                {record.isClose ? i18n('common.open') : i18n('common.close')}
+              </Button>
+            </div>
+            : null}
         </Card>
       )
     }
@@ -286,7 +296,7 @@ class DataRoomList extends React.Component {
           </div>
 
           <Pagination
-            style={{ textAlign: 'center' }}
+            style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
             total={total}
             current={page}
             pageSize={pageSize}
