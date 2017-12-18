@@ -95,7 +95,7 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobileAreaCode', {
                     rules: [{ message: i18n('validation.not_empty'), required: true}], initialValue: '86'
                   })(
-                    <Input prefix="+" />
+                    <Input prefix="+" disabled={!hasPerm('usersys.admin_changeuser')} />
                   )
                 }
               </FormItem>
@@ -106,7 +106,7 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobile', {
                     rules: [{ message: i18n('validation.not_empty'), required: true}]
                   })(
-                    <Input onBlur={this.props.mobileOnBlur} />
+                    <Input onBlur={this.props.mobileOnBlur} disabled={!hasPerm('usersys.admin_changeuser')} />
                   )
                 }
               </FormItem>
@@ -114,7 +114,7 @@ class UserForm extends React.Component {
           </Row>
         </FormItem>
 
-        <BasicFormItem label={i18n("user.email")} name="email" valueType="email" required><Input onBlur={this.props.emailOnBlur} /></BasicFormItem>
+        <BasicFormItem label={i18n("user.email")} name="email" disabled valueType="email"><Input disabled={!hasPerm('usersys.admin_changeuser')} onblur={this.props.emailonblur} /></BasicFormItem>
 
         <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required><Input /></BasicFormItem>
 
