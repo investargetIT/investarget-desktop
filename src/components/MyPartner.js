@@ -17,7 +17,7 @@ class MyPartner extends React.Component {
     list: [],
     loading: false,
     total: 0,
-    pageSize: 9, // todo
+    pageSize: 10, // todo
     pageIndex: 1
   }
   investorList = []
@@ -42,6 +42,7 @@ class MyPartner extends React.Component {
         acc.push(investorRelationShip.filter(f => f.id === value)[0])
         return acc
       }, [])
+      echo('list', investorList.length);
       const list = investorList.map(m => {
         let isAlreadyAdded = false
         if (data[1].data.data.filter(f => (f.friend && f.friend.id === m.id) || (f.user && f.user.id === m.id)).length > 0) {
@@ -227,7 +228,7 @@ class MyPartner extends React.Component {
         ) : null}
 
         <Pagination
-          style={{textAlign: 'center'}}
+          style={{marginTop: 20, textAlign: 'center'}}
           total={this.state.total}
           current={this.state.pageIndex}
           pageSize={this.state.pageSize}
