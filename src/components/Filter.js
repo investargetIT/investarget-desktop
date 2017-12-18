@@ -197,7 +197,8 @@ function TimelineStatusFilter(props) {
     value = '2'
   }
 
-  const onChange = (value) => {
+  const onChange = (e) => {
+    var value = e.target.value
     if (value == '0') {
       value = null
     } else if (value == '1') {
@@ -211,11 +212,11 @@ function TimelineStatusFilter(props) {
   const Option = Select.Option
   return (
     <BasicContainer label={i18n('filter.status')}>
-      <Select size="large" value={value} onChange={onChange}>
-        <Option value="0">{i18n('timeline.all')}</Option>
-        <Option value="1">{i18n('timeline.processing')}</Option>
-        <Option value="2">{i18n('timeline.closed')}</Option>
-      </Select>
+      <RadioGroup onChange={onChange} defaultValue={1}  >
+        <Radio value={0}>{i18n('timeline.all')}</Radio>
+        <Radio value={1}>{i18n('timeline.processing')}</Radio>
+        <Radio value={2}>{i18n('timeline.closed')}</Radio>
+      </RadioGroup>
     </BasicContainer>
   )
 }
