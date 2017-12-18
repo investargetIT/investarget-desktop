@@ -41,6 +41,8 @@ import {
   TabCheckboxTag, 
   TabCheckboxOrgType, 
   TabCheckboxOrgArea, 
+  TabCheckboxService,
+  TabCheckboxProjStatus,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -590,7 +592,7 @@ class ProjectListFilter extends React.Component {
     const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
     return (
       <div>
-        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <TabCheckboxTag value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <CountryFilter value={country} onChange={this.handleChange.bind(this, 'country')} />
         <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
         { ismarketplace ? null : (
@@ -604,9 +606,9 @@ class ProjectListFilter extends React.Component {
             onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
           )}
         { ismarketplace ? null : (
-          <ServiceFilter value={service} onChange={this.handleChange.bind(this, 'service')} />
+          <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         )}
-        <ProjectStatusFilter value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
+        <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
         <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
@@ -732,6 +734,7 @@ class ProjectBDFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
+    console.log(value)
     this.setState({ [key]: value },this.handleSearch)
   }
 
@@ -746,7 +749,6 @@ class ProjectBDFilter extends React.Component {
 
   render() {
     const { bd_status, source_type, location, manager } = this.state
-
     return (
       <div>
         <BasicContainer label={i18n('project_bd.bd_status')}>

@@ -893,7 +893,7 @@ class InputPhoneNumber extends React.Component {
  * CheckboxTag
  */
 
-const CheckboxTag = withOptionsAsync(CheckboxGroup, ['tag'], function(state) {
+const CheckboxTag = withOptionsAsync(ITCheckboxGroup, ['tag'], function(state) {
   const {tag} = state.app
   const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
   return { options }
@@ -922,7 +922,7 @@ const CheckboxProjStatus = withOptionsAsync(CheckboxGroup, ['projstatus'], funct
  * CheckboxCurrencyType
  */
 
-const CheckboxCurrencyType = withOptionsAsync(CheckboxGroup, ['currencyType'], function(state) {
+const CheckboxCurrencyType = withOptionsAsync(ITCheckboxGroup, ['currencyType'], function(state) {
   const { currencyType } = state.app
   const options = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
   return { options }
@@ -931,7 +931,7 @@ const CheckboxCurrencyType = withOptionsAsync(CheckboxGroup, ['currencyType'], f
 /**
  * CheckboxTransactionPhase
  */
-const CheckboxTransactionPhase = withOptionsAsync(CheckboxGroup, ['transactionPhases'], function(state) {
+const CheckboxTransactionPhase = withOptionsAsync(ITCheckboxGroup, ['transactionPhases'], function(state) {
   const { transactionPhases } = state.app
   const options = transactionPhases ? transactionPhases.map(item =>({value: item.id, label: item.name})) : []
   return { options }
@@ -949,10 +949,10 @@ const CheckboxOrganizationType = withOptionsAsync(CheckboxGroup, ['orgtype'], fu
 /**
  * CheckboxArea
  */
-const CheckboxArea = withOptionsAsync(CheckboxGroup, ['country'], function(state) {
+const CheckboxArea = withOptionsAsync(ITCheckboxGroup, ['country'], function(state) {
   const { country } = state.app
   const options = country.filter(item => item.level == 3).map(item => {
-    return { label: item.country, value: item.id }
+    return { label: item.country, value: item.id, key: item.id}
   })
   return { options }
 })
@@ -1027,10 +1027,55 @@ class TabCheckboxTag extends React.Component {
 }
 function mapStateToPropsTag(state) {
   const {tag} = state.app
+  console.log(state.app)
   const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
   return { options }  
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
+
+
+class TabCheckboxService extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['service'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.service_type')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsService(state) {
+  const {service} = state.app
+  const options = service ? service.map(item => ({value: item.id, label: item.name})) : []
+  return { options }  
+}
+TabCheckboxService = connect(mapStateToPropsService)(TabCheckboxService);
+
+
+class TabCheckboxProjStatus extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['projstatus'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.status')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsProjStatus(state) {
+  const {projstatus} = state.app
+  const options = projstatus ? projstatus.map(item => ({value: item.id, label: item.name})) : []
+  return { options }  
+}
+TabCheckboxProjStatus = connect(mapStateToPropsProjStatus)(TabCheckboxProjStatus);
+
+
 
 class TabCheckboxOrgType extends React.Component {
   componentDidMount() {
@@ -1195,4 +1240,6 @@ export {
   RadioBDSource,
   CheckboxService,
   SelectService,
+  TabCheckboxService,
+  TabCheckboxProjStatus,
 }
