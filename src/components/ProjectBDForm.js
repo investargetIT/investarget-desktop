@@ -13,6 +13,7 @@ import {
   SelectTitle,
   SelectArea,
   SelectOrgUser,
+  SelectPartner, 
 } from './ExtraInput'
 import { i18n } from '../utils/util'
 import * as api from '../api'
@@ -121,7 +122,7 @@ class ProjectBDForm extends React.Component {
         {this.state.isSelect ? (
           <div>
             <BasicFormItem label={i18n('project_bd.contact')} name="bduser" valueType="number" required onChange={this.handleChangeBduser} initialValue={this.state._bduser}>
-              <SelectAllUser type="investor" />
+              <SelectPartner />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
               <div>联系人不在库里？<a href="javascript:void(0)" onClick={this.toggleManualInput}>手动输入</a></div>

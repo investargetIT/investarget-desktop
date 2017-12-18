@@ -437,6 +437,45 @@ class SelectAllUser extends React.Component {
 }
 
 /**
+ * SelectAllUser
+ */
+class SelectPartner extends React.Component {
+
+  getPartner = params => {
+    return api.getUserRelation(params).then(result => {
+      let { count: total, data: list } = result.data;
+      const unique = [];
+      list = list.map(item => {
+        const { id: value, username: label } = item.investoruser;
+        if (!unique.map(m => m.value).includes(value)) {
+          unique.push({ value, label });
+        }
+      })
+      return { total, list: unique } 
+    })
+  }
+
+  getUsernameById = (id) => {
+    return api.getUserDetailLang(id).then(result => {
+      return result.data.username
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getPartner}
+        getNameById={this.getUsernameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+      />
+    )
+  }
+}
+
+/**
  * SelectExistProject
  */
 class SelectExistProject extends React.Component {
@@ -1215,6 +1254,7 @@ export {
   SelectBDSource,
   SelectArea,
   SelectOrgUser,
+  SelectPartner, 
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
