@@ -179,7 +179,7 @@ export function getCurrencyFormatter(id) {
 export function getCurrencyParser(id) {
   const currency = getCurrencyFromId(id)
   const sign = getCurrencySign(currency)
-  const re = (sign == '$') ? new RegExp('\$\s?|(,*)', 'g') : new RegExp(sign + '\s?|(,*)', 'g')
+  const re = (sign == '$') ? new RegExp('\\$\\s?|(,*)', 'g') : new RegExp('\\' + sign + '\\s?|(,*)', 'g')
   return function(value) {
     return value.replace(re, '')
   }

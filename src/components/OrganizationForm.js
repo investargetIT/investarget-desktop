@@ -1,7 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  exchange, 
+  hasPerm, 
+  getCurrencyFromId, 
+} from '../utils/util';
 import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
 const FormItem = Form.Item
@@ -54,17 +59,17 @@ class OrganizationForm extends React.Component {
     }
   }
 
-  handleCurrencyTypeChange = (currency) => {
+  handleCurrencyTypeChange = currencyType => {
     const { getFieldDecorator, getFieldValue, setFieldsValue } = this.props.form
-    let currencyMap = {'1': 'CNY','2': 'USD','3': 'CNY'}
-    exchange(currencyMap[String(currency)]).then((rate) => {
+    const currency = getCurrencyFromId(currencyType || 2)
+    exchange(currency).then((rate) => {
       const fields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
       const values = {}
       fields.forEach(field => {
         let value = getFieldValue(field)
         values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
       })
-      setFieldsValue(values)
+      setFieldsValue({...values, currencyType})
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -107,14 +112,14 @@ class OrganizationForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number" onChange={this.handleCurrencyTypeChange}>
-          <RadioCurrencyType />
+          <RadioCurrencyType onChange={this.handleCurrencyTypeChange} />
         </BasicFormItem>
 
-        <CurrencyFormItem label={i18n('organization.transaction_amount_from')} name="transactionAmountF" />
+        <CurrencyFormItem label={i18n('organization.transaction_amount_from')} name="transactionAmountF" currencyType={this.props.form.getFieldValue('currency')}/>
 
-        <CurrencyFormItem label={i18n('organization.transaction_amount_to')} name="transactionAmountT" />
+        <CurrencyFormItem label={i18n('organization.transaction_amount_to')} name="transactionAmountT" currencyType={this.props.form.getFieldValue('currency')} />
 
-        <CurrencyFormItem label={i18n('organization.fund_size')} name="fundSize" />
+        <CurrencyFormItem label={i18n('organization.fund_size')} name="fundSize" currencyType={this.props.form.getFieldValue('currency')} />
 
         <BasicFormItem label={i18n('organization.company_email')} name="companyEmail" valueType="email">
           <Input type="email" />
