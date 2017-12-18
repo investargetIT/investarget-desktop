@@ -79,10 +79,10 @@ class EmailList extends React.Component {
 
     const columns = [
       { title: i18n('email.project_name'), key: 'proj', render: (text, record) => {
-        return <Link target="_blank" to={'/app/projects/' + record.proj.id}>{record.proj.Title}</Link>
+        return <Link to={'/app/projects/' + record.proj.id}>{record.proj.Title}</Link>
       } },
       { title: i18n('email.email'), key: 'email', render: (text, record) => {
-        return <Link target="_blank" to={'/app/email/detail/' + record.proj.id}><Icon type="mail" style={{fontSize: '16px'}} /></Link>
+        return <Link to={'/app/email/detail/' + record.proj.id}><Icon type="mail" style={{fontSize: '16px'}} /></Link>
       } },
     ]
 

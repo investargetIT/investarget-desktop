@@ -103,9 +103,7 @@ class EmailDetail extends React.Component {
       // { title: '行业', key: '', dataIndex: '' },
       { title: i18n('email.mobile'), key: 'mobile', dataIndex: 'mobile' },
       { title: i18n('email.email'), key: 'userEmail', dataIndex: 'userEmail' },
-      { title: i18n('email.has_read') + '/' + i18n('email.not_read'), key: 'isRead', render: (text, record) => {
-        return <Icon type={record.isRead ? 'check' : 'close'} />
-      } },
+      { title: i18n('user.status'), key: 'events', dataIndex: 'events', render: text => i18n(text || 'email.not_read') },
     ]
 
     return (

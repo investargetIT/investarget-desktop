@@ -615,5 +615,9 @@
   "address": "Area",
   "industry_type": "Industry",
   "permission": "Permission",
-  "choose_investor_download": "Select Target User"  
+  "choose_investor_download": "Select Target User",
+  "opened": "Opened",
+  "marked_as_spam": "Marked as Spam",
+  "clicked": "Click Link",
+  "report_as_spam": "Report as Spam"
 }
