@@ -820,7 +820,7 @@ class WxMessageFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value })
+    this.setState({ [key]: value },this.handleSearch)
   }
 
   handleSearch = () => {
