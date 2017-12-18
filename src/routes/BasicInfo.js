@@ -48,10 +48,6 @@ class BasicInfo extends React.Component {
 
   handleUploaded(response) {
     this.setState({ avatarUrl: response.url })
-    if (this.props.currentUser.photoKey) {
-      message.success(i18n('personal_info.message.avatar_cache_tip'))
-      return
-    }
     editUser([this.props.currentUser.id], { photoBucket: 'image', photoKey: response.key }).then(data => {
       const photoKey = data.data[0].photoKey
       const photourl = data.data[0].photourl
