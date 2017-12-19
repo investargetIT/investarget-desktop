@@ -1,12 +1,11 @@
 import React from 'react'
 import { Button, Table, Pagination, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
 import { Link } from 'dva/router'
 
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, getUserInfo } from '../utils/util'
 import * as api from '../api'
 
 
@@ -76,9 +75,24 @@ class ProjectLibrary extends React.Component {
     const { filters, search, page, pageSize } = this.state
     const param = { page_index: page, page_size: pageSize, com_name: search, ...filters }
     this.setState({ loading: true })
+    const user=getUserInfo()
+    var allList=[]
     api.getLibProj(param).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
+      var promises=list.map( (item) => {
+        const {com_id}=item
+        var hasComment=false;
+        return api.getLibProjRemark({com_id}).then(remarks => {
+          if(remarks.data.data.some(remark=>{return remark.createuser_id==user.id})){
+            hasComment=true;
+          }
+          allList.push({...item,hasComment:hasComment})
+        })
+        })
+      Promise.all(promises).then((val)=>{
+        this.setState({ total, list:allList, loading: false })
+      })
+      
     }).catch(error => {
       this.setState({ loading: false })
       handleError(error)
@@ -123,11 +137,12 @@ class ProjectLibrary extends React.Component {
   render() {
     const { filters, search, page, pageSize, total, list, loading } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const comNameStyle={color:'#d24914'}
     const columns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
         return (<div style={{minWidth:200}}><Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
-                  {record.com_name}
+                  <div style={record.hasComment?comNameStyle:null}>{record.com_name}</div>
                 </Link></div>)
       }, width: 120},
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
