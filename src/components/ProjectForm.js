@@ -30,6 +30,7 @@ import {
   RadioTrueOrFalse,
   SelectService,
   SelectExistUser,
+  SelectAllUser, 
 } from '../components/ExtraInput'
 
 
@@ -234,11 +235,11 @@ class ProjectConnectForm extends React.Component {
         }
 
         <BasicFormItem label={i18n('project.take_user')} name="takeUser" required valueType="number">
-          <SelectExistUser />
+          <SelectAllUser type="trader" />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.make_user')} name="makeUser" required valueType="number">
-          <SelectExistUser />
+          <SelectAllUser type="trader" />
         </BasicFormItem>
       </Form>
     )

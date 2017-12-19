@@ -405,7 +405,7 @@ class SelectAllUser extends React.Component {
   }
 
   getUser = (params) => {
-    params = { ...params, groups: this.state.groups }
+    params = { ...params, groups: this.state.groups, userstatus: 2 }
     return api.getUser(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
