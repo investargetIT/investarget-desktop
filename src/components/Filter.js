@@ -761,7 +761,7 @@ class ProjectBDFilter extends React.Component {
           <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_bd.bd_manager')}>
-          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
@@ -803,7 +803,7 @@ class OrgBDFilter extends React.Component {
             <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
           </BasicContainer>
           <BasicContainer label={i18n('project_bd.bd_manager')}>
-            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} />
+            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
           </BasicContainer>
           <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
         </div>
