@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row, Tooltip as Tooltips } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { i18n, handleError, time, hasPerm } from '../utils/util'
+import { i18n, handleError, time, hasPerm, parseDate, parseTime } from '../utils/util'
 import createG2 from '../g2-react';
 import { Stat, Frame } from 'g2';
 import data1 from '../diamond.json';
@@ -254,8 +254,8 @@ class IndexPage extends React.Component {
     api.getSchedule({ time: formatDate(new Date()) })
     .then(result => {
       if (result.data.count > 0) {
-        const schedule = result.data.data[0];
-        this.setState({ firstSchedule: schedule.scheduledtime.split('T').join(' ') + ' ' + schedule.comments });
+        const schedule = result.data.data[result.data.data.length-1];
+        this.setState({ firstSchedule: schedule });
       }
     });
 
@@ -265,8 +265,8 @@ class IndexPage extends React.Component {
     api.getSchedule({ time: formatDate(dayAfterTomorrow) })
     .then(result => {
       if (result.data.count > 0) {
-        const schedule = result.data.data[0];
-        this.setState({ secondSchedule: schedule.scheduledtime.split('T').join(' ') + ' ' + schedule.comments });
+        const schedule = result.data.data[result.data.data.length-1];
+        this.setState({ secondSchedule: schedule });
       }
     });
 
@@ -326,7 +326,7 @@ class IndexPage extends React.Component {
           </Col>
           <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
-          <Tooltips title={this.state.firstSchedule || ''}>
+          <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
                 <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
                   <Col span={12}>
                     <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -336,7 +336,7 @@ class IndexPage extends React.Component {
                   <Col span={12}>
                     <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>日程管理</p>
-                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{pad(month + 1) + '月' + pad(day) + '日'}</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{this.state.secondSchedule ? parseDate(this.state.secondSchedule.scheduledtime + this.state.secondSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}</p>
                     </div>
                   </Col>
                 </Row>
@@ -345,7 +345,7 @@ class IndexPage extends React.Component {
           </Col>
           <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
-          <Tooltips title={this.state.secondSchedule || ''}>
+          <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
 
           <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
                   <Col span={12}>
@@ -356,7 +356,7 @@ class IndexPage extends React.Component {
                   <Col span={12}>
                     <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>我的日程</p>
-                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{pad(hour) + ':' + pad(minute)}</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(hour) + ':' + pad(minute)}</p>
                     </div>
                   </Col>
                 </Row>

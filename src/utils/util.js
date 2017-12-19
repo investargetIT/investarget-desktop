@@ -101,6 +101,33 @@ function time(dateFromServer) {
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
+export function parseDate(dateFromServer) {
+  if (!window.Intl || typeof window.Intl !== "object") {
+    return dateFromServer.slice(0, 16).replace('T', ' ')
+  }
+  const date = new Date(dateFromServer)
+  const options = {
+    month: 'numeric',
+    day: 'numeric',
+  }
+  const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
+  return new Intl.DateTimeFormat(locale, options).format(date)
+}
+
+export function parseTime(dateFromServer) {
+  if (!window.Intl || typeof window.Intl !== "object") {
+    return dateFromServer.slice(0, 16).replace('T', ' ')
+  }
+  const date = new Date(dateFromServer)
+  const options = {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  }
+  const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
+  return new Intl.DateTimeFormat(locale, options).format(date)
+}
+
 function timeForIM(timestamp) {
   const timeInMs = Date.now()
   const date = new Date(timestamp)
