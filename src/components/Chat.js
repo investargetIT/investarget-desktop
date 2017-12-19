@@ -75,7 +75,7 @@ const defaultChannels = [
   {
     id: 1,
     imgUrl: '/images/avatar1.png',
-    name: '小型',
+    name: '',
     latestMessage: {
       content: '这是小型再一次发送的文本内容',
       time: Date.now()
