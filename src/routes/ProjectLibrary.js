@@ -79,14 +79,14 @@ class ProjectLibrary extends React.Component {
     var allList=[]
     api.getLibProj(param).then(result => {
       const { count: total, data: list } = result.data
-      var promises=list.map( (item) => {
+      var promises=list.map( (item,index) => {
         const {com_id}=item
         var hasComment=false;
         return api.getLibProjRemark({com_id}).then(remarks => {
           if(remarks.data.data.some(remark=>{return remark.createuser_id==user.id})){
             hasComment=true;
           }
-          allList.push({...item,hasComment:hasComment})
+          allList[index]={...item,hasComment:hasComment}
         })
         })
       Promise.all(promises).then((val)=>{
