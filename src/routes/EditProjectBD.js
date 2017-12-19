@@ -25,7 +25,7 @@ function toFormData(data) {
   for (let prop in formData) {
     let value = formData[prop]
     if (['bd_status', 'location', 'usertitle', 'manager'].includes(prop)) {
-      formData[prop] = value.id
+      formData[prop] = value && value.id
     }
   }
 
