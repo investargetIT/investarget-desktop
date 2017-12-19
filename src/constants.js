@@ -1,3 +1,4 @@
+import { baseUrl } from './utils/request';
 
 export const PAGE_SIZE = 5
 
@@ -72,7 +73,26 @@ export const URI_TO_KEY = {
   "/app/log/list": "log",
 }
 
-export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
+export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === 'http://39.107.14.53:8080' ? 
+{
+  52: 'dataroom管理',
+  13: '机构管理',
+  14: '机构备注管理',
+  18: '用户项目管理',
+  25: '项目管理',
+  21: '分享项目管理',
+  57: '时间轴管理',
+  56: '时间轴备注管理',
+  10: '用户管理',
+  9: '好友管理管理',
+  8: '绑定管理管理',
+  61: '日程管理',
+  71: '项目BD管理',
+  74: '会议BD',
+  70: '机构BD', 
+} 
+: 
+{
   50: 'dataroom管理',
   12: '机构管理',
   11: '机构备注管理',
@@ -85,7 +105,9 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = {
   54: '好友管理管理',
   7: '绑定管理管理',
   74: '日程管理',
-  71: '项目BD管理',
+  79: '项目BD管理',
+  82: '会议BD', 
+  78: '机构BD', 
 }
 
 export const BASE_URL = 'http://192.168.1.251:8080'
