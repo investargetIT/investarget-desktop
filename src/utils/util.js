@@ -128,6 +128,10 @@ export function parseTime(dateFromServer) {
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
+export function timeSlapFromNow(dateString) {
+  return (new Date(dateString).getTime() - Date.now()) / 1000;
+}
+
 function timeForIM(timestamp) {
   const timeInMs = Date.now()
   const date = new Date(timestamp)

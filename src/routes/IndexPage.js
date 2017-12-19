@@ -3,7 +3,16 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row, Tooltip as Tooltips } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
-import { i18n, handleError, time, hasPerm, parseDate, parseTime } from '../utils/util'
+import { 
+  i18n, 
+  handleError, 
+  time, 
+  hasPerm, 
+  parseDate, 
+  parseTime, 
+  isLogin, 
+  timeSlapFromNow, 
+} from '../utils/util';
 import createG2 from '../g2-react';
 import { Stat, Frame } from 'g2';
 import data1 from '../diamond.json';
@@ -251,21 +260,23 @@ class IndexPage extends React.Component {
     api.getInvestorStatistic()
     .then(data => this.setState({ investorStatistic: data.data }))
 
-    api.getSchedule({ time: formatDate(new Date()) })
+    api.getSchedule({ time: formatDate(new Date()), createuser: isLogin().id, sort: 'scheduledtime', desc: 0 })
     .then(result => {
       if (result.data.count > 0) {
-        const schedule = result.data.data[result.data.data.length-1];
-        this.setState({ firstSchedule: schedule });
+        const schedule = result.data.data[0];
+        if (timeSlapFromNow(schedule.scheduledtime + schedule.timezone) < 2 * 24 * 60 * 60) {
+          this.setState({ firstSchedule: schedule });
+        }
       }
     });
 
     const dayAfterTomorrow = new Date();
     dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
 
-    api.getSchedule({ time: formatDate(dayAfterTomorrow) })
+    api.getSchedule({ time: formatDate(dayAfterTomorrow), createuser: isLogin().id,  sort: 'scheduledtime', desc: 0  })
     .then(result => {
       if (result.data.count > 0) {
-        const schedule = result.data.data[result.data.data.length-1];
+        const schedule = result.data.data[0];
         this.setState({ secondSchedule: schedule });
       }
     });
