@@ -36,6 +36,8 @@ class TimelineList extends React.Component {
       visible: false,
       id: null,
       reason: '',
+      desc: undefined,
+      sort: undefined,
     }
   }
 
@@ -60,8 +62,8 @@ class TimelineList extends React.Component {
   }
 
   getTimeline = () => {
-    const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize }
+    const { filters, search, page, pageSize, sort, desc } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
     // 用户查看自己的时间轴，管理员查看全部时间轴
     if (!hasPerm('usersys.as_admin')) {
       let userId = getCurrentUser()
@@ -214,29 +216,66 @@ class TimelineList extends React.Component {
     this.getTimeline()
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getTimeline
+    );
+  };
+
   render() {
 
     const { location } = this.props
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
-      { title: i18n('timeline.project_name'), key: 'proj', render: (text, record) => (
-        <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>
-      ) },
-      { title: i18n('timeline.investor'), key: 'investor', dataIndex: 'investor.username' },
-      { title: i18n('timeline.institution'), key: 'org', render: (text, record) => {
-        if (record.org) {
-          let { id, orgname } = record.org
-          return <Link to={'/app/organization/' + id}>{ orgname }</Link>
-        }
-       } },
-      { title: i18n('timeline.trader'), key: 'trader', dataIndex: 'trader.username' },
-      { title: i18n('timeline.remaining_day'), key: 'remainingAlertDay', render: (text, record) => {
-        let day = Number(record.transationStatu.remainingAlertDay)
-        day = day > 0 ? Math.ceil(day) : 0
-        return day
-      } },
-      { title: i18n('timeline.transaction_status'), key: 'transactionStatus', dataIndex: 'transationStatu.transationStatus.name' },
+      { 
+        title: i18n('timeline.project_name'), 
+        key: 'proj', 
+        render: (text, record) => <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>, 
+        sorter: true, 
+      },
+      { 
+        title: i18n('timeline.investor'), 
+        key: 'investor', 
+        dataIndex: 'investor.username', 
+        sorter: true, 
+      },
+      {
+        title: i18n('timeline.institution'),
+        key: 'org',
+        render: (text, record) => {
+          if (record.org) {
+            let { id, orgname } = record.org
+            return <Link to={'/app/organization/' + id}>{orgname}</Link>
+          }
+        }, 
+        // sorter: true, 
+      },
+      { 
+        title: i18n('timeline.trader'), 
+        key: 'trader', 
+        dataIndex: 'trader.username', 
+        sorter: true, 
+      },
+      { 
+        title: i18n('timeline.remaining_day'), 
+        key: 'remainingAlertDay', 
+        render: (text, record) => {
+          let day = Number(record.transationStatu.remainingAlertDay)
+          day = day > 0 ? Math.ceil(day) : 0
+          return day
+        },
+      },
+      { 
+        title: i18n('timeline.transaction_status'), 
+        key: 'transationStatu', 
+        dataIndex: 'transationStatu.transationStatus.name', 
+        // sorter: true, 
+      },
       { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span className="span-operation" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -277,7 +316,17 @@ class TimelineList extends React.Component {
             <div style={{ marginBottom: '24px'}} className="clearfix">
               <Search2 style={{ width: 250,float:'right' }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')} />
             </div>
-            <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+
+            <Table
+              onChange={this.handleTableChange}
+              style={tableStyle}
+              columns={columns} 
+              dataSource={list} 
+              rowKey={record=>record.id} 
+              loading={loading} 
+              pagination={false} 
+            />
+
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
         </div>
