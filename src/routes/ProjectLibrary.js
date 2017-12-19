@@ -44,6 +44,7 @@ class ProjectLibrary extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      listForExport: [], 
     }
   }
 
@@ -99,6 +100,15 @@ class ProjectLibrary extends React.Component {
     })
   }
 
+  getAllProject = () => {
+    const { filters, search } = this.state
+    const param = { page_size: 500, com_name: search, ...filters }
+    api.getLibProj(param).then(result => {
+      const { data: list } = result.data;
+      this.setState({ listForExport: list });
+    });
+  }
+
   getLibProj = (_param) => {
     var param = { ..._param }
     param['com_name'] = param['search']
@@ -109,7 +119,7 @@ class ProjectLibrary extends React.Component {
   exportExcel = () => {
     var link = document.createElement('a')
     link.download = 'Investors.xls'
-    var table = document.querySelector('table')
+    var table = document.querySelectorAll('table')[1];
     link.href = tableToExcel(table, '投资人')
     link.click()
   }
@@ -131,6 +141,7 @@ class ProjectLibrary extends React.Component {
 
   componentDidMount() {
     this.getProject()
+    this.getAllProject();
     this.handleQuery(this.props.location)
   }
 
@@ -178,6 +189,15 @@ class ProjectLibrary extends React.Component {
           loading={loading}
           pagination={false}
         />
+
+        <Table
+          style={{ display: 'none' }}
+          columns={columns}
+          dataSource={this.state.listForExport}
+          rowKey={record=>record.id}
+          pagination={false}
+        />
+
         <div style={{ margin: '16px 0' }} className="clearfix">
           <Button style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
           <Pagination
