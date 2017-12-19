@@ -3,7 +3,7 @@ import { Button, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { WxMessageFilter } from '../components/Filter'
-import { handleError, time } from '../utils/util'
+import { handleError, time, hasPerm } from '../utils/util'
 import * as api from '../api'
 
 
@@ -74,19 +74,34 @@ class WxMessage extends React.Component {
       {title: '内容', dataIndex: 'content', width: 500},
       {title: '微信群', dataIndex: 'group_name'},
       {title: '用户', dataIndex: 'name'},
-      {title: '状态', key: 'status', render: (text, record) => {
+      // {title: '状态', key: 'status', render: (text, record) => {
+      //   return record.isShow ? '显示' : '隐藏'
+      // }},
+      // {title: '操作', key: 'operation', render: (text, record) => {
+      //   return (
+      //     <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
+      //   )
+      // }}
+    ]
+
+    if (hasPerm('usersys.admin_manageWXChatData')) {
+      columns.push({title: '状态', key: 'status', render: (text, record) => {
         return record.isShow ? '显示' : '隐藏'
-      }},
+      }});
+      columns.push(
       {title: '操作', key: 'operation', render: (text, record) => {
         return (
           <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
         )
-      }}
-    ]
-
+      }});
+    }
     return (
       <LeftRightLayout location={this.props.location} title="市场消息">
-        <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+
+        { hasPerm('usersys.admin_manageWXChatData') ?
+          <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        : null }
+
         <Table
           columns={columns}
           dataSource={list}
