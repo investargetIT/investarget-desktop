@@ -1,5 +1,11 @@
 import React from 'react'
-import { Menu, Layout, Icon } from 'antd'
+import { 
+  Menu, 
+  Layout, 
+  Icon, 
+  Alert, 
+  Modal, 
+} from 'antd';
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import { KEY_TO_URI, KEY_TO_ICON } from '../constants'
@@ -25,6 +31,9 @@ class SiderMenu extends React.Component {
 
     const submenuIds = _.uniq(this.props.menulist.filter(f => f.parentmenu != null).map(f => f.parentmenu))
     this.rootSubmenuKeys = this.props.menulist.filter(f => submenuIds.includes(f.id)).map(f => f.namekey)
+    this.state = {
+      showCollapseIcon: true, 
+    }
   }
 
 
@@ -56,6 +65,46 @@ class SiderMenu extends React.Component {
     })
   }
 
+  componentDidMount() {
+    window.addEventListener("resize", this.checkPageWidth);
+    this.checkPageWidth();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.checkPageWidth);
+  }
+
+  checkPageWidth = () => {
+    const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (w < 960) {
+      this.props.dispatch({
+        type: 'app/toggleMenu',
+        payload: true
+      });
+      this.props.dispatch({
+        type: 'app/showOrHideTooNarrowWarning',
+        payload: true
+      });
+      this.setState({ showCollapseIcon: false }); 
+    } else if (w < 1200) {
+      this.props.dispatch({
+        type: 'app/toggleMenu',
+        payload: true
+      });
+      this.props.dispatch({
+        type: 'app/showOrHideTooNarrowWarning',
+        payload: false 
+      }); 
+      this.setState({ showCollapseIcon: false });
+    } else {
+      this.props.dispatch({
+        type: 'app/showOrHideTooNarrowWarning',
+        payload: false  
+      }); 
+      this.setState({ showCollapseIcon: true });
+    }
+  }
+
   render() {
     const navTextStyle = {
       verticalAlign: 'middle',
@@ -79,6 +128,8 @@ class SiderMenu extends React.Component {
 
     return (
     <div className={styles["sider-menu"]} style={menuStyle}>
+
+      { this.state.showCollapseIcon ? (
       <div
         style={{textAlign: 'center',backgroundColor:'rgba(117, 117, 117, 0.2)',borderRadius:4,marginBottom:4,height:30,lineHeight:'30px',cursor:'pointer'}}
         onClick={this.toggelMenu}
@@ -88,6 +139,8 @@ class SiderMenu extends React.Component {
           type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
         />
       </div>
+      ) : null }
+
       <Menu
         prefixCls="it-menu"
         theme={this.props.theme}

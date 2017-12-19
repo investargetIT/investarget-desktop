@@ -58,7 +58,7 @@ class LeftRightLayout extends React.Component {
     )
 
     const headStyle = {position:'fixed',zIndex:10,top:0,left:0,width:'100%',height:50}
-    const siderStyle = {position:'fixed',zIndex:10,top:70,left:0,bottom:0,backgroundColor: '#1d2a3a', transition: 'none'}
+    const siderStyle = {position:'fixed',top:70,left:0,bottom:0,backgroundColor: '#1d2a3a', transition: 'none'}
 
     const sideBarAndContent = (
       <Layout style={{}}>

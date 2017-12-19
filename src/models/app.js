@@ -31,6 +31,7 @@ export default {
     unreadMessageNum: 0,
     libIndustry: [],
     search: '',
+    tooNarrow: false, 
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -68,6 +69,9 @@ export default {
     saveSearch(state, { payload: search }) {
       return { ...state, search }
     },
+    showOrHideTooNarrowWarning(state, { payload: tooNarrow }) {
+      return { ...state, tooNarrow };
+    }, 
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {

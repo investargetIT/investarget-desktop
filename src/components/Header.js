@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Icon, Modal, Badge, Input, Popover } from 'antd';
+import { Menu, Icon, Modal, Badge, Input, Popover, Alert } from 'antd';
 import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
@@ -168,15 +168,17 @@ function Header(props) {
         { currentUser ? <UserProfile user={currentUser} onMenuClick={handleMenuClicked} /> : null }
         { currentUser ? chat : null }
       </div>
-
+      { props.tooNarrow ? 
+      <Alert style={{ marginTop: 50 }} message="窗口宽度过窄，为保证使用体验，请调整窗口宽度" banner closable />
+      : null }
     </div>
   );
 }
 
 function mapStateToProps(state) {
   const { currentUser } = state
-  const { collapsed, unreadMessageNum } = state.app
-  return { currentUser, collapsed, unreadMessageNum }
+  const { collapsed, unreadMessageNum, tooNarrow } = state.app
+  return { currentUser, collapsed, unreadMessageNum, tooNarrow }
 }
 
 export default connect(mapStateToProps)(Header)
