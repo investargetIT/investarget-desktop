@@ -34,6 +34,8 @@ class OrganizationList extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      sort:undefined,
+      desc:undefined,
     }
   }
 
@@ -58,8 +60,8 @@ class OrganizationList extends React.Component {
   }
 
   getOrg = () => {
-    const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
+    const { filters, search, page, pageSize, sort, desc } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
     this.setState({ loading: true })
     api.getOrg(params).then(result => {
       const { count: total, data: list } = result.data
@@ -102,6 +104,16 @@ class OrganizationList extends React.Component {
     var data = localStorage.getItem('OrganizationList')
     return data ? JSON.parse(data) : null
   }
+  
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getOrg()
+    );
+  }
 
   componentDidMount() {
     this.getOrg()
@@ -111,15 +123,17 @@ class OrganizationList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
-      { title: i18n('organization.name'), key: 'orgname', dataIndex: 'orgname' },
-      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
-      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle' },
+      { title: i18n('organization.name'), key: 'orgname', dataIndex: 'orgname', 
+      //sorter:true, 
+      },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter:true, },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter:true, },
+      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter:true, },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
-      } },
-      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
+      }, sorter:true, },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter:true, },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
             <Link to={'/app/organization/' + record.id}>
@@ -136,7 +150,7 @@ class OrganizationList extends React.Component {
               </a>
             </Popconfirm>
           </span>
-        )
+        ),
       },
     ]
 
@@ -165,7 +179,7 @@ class OrganizationList extends React.Component {
               </div>
             </div>
 
-            <Table style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+            <Table onChange={this.handleTableChange} style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
             <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
           </div>
         </div>

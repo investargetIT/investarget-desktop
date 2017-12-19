@@ -26,6 +26,8 @@ class ProjectBDList extends React.Component {
       currentBDId: null,
       comments: [],
       newComment: '',
+      sort:undefined,
+      desc:undefined,
     }
   }
 
@@ -50,12 +52,15 @@ class ProjectBDList extends React.Component {
   }
 
   getProjectBDList = () => {
-    const { filters, search, page, pageSize } = this.state
+    const { filters, search, page, pageSize, sort, desc } = this.state
     const param = {
       page_index: page,
       page_size: pageSize,
       search,
+      sort,
+      desc,
       ...filters,
+
     }
     this.setState({ loading: true })
     return api.getProjBDList(param).then(result => {
@@ -116,6 +121,16 @@ class ProjectBDList extends React.Component {
     })
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getProjectBDList
+    );
+  }
+
   componentDidMount() {
     this.getProjectBDList()
   }
@@ -124,20 +139,21 @@ class ProjectBDList extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
+    console.log(list)
     const columns = [
-      {title: i18n('project_bd.project_name'), dataIndex: 'com_name'},
-      {title: i18n('project_bd.status'), dataIndex: 'bd_status.name'},
-      {title: i18n('project_bd.area'), dataIndex: 'location.country'},
+      {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
+      {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
+      {title: i18n('project_bd.area'), dataIndex: 'location.country', key:'location', sorter:true},
       {title: i18n('project_bd.import_methods'), render: (text, record) => {
         return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
-      }},
-      {title: i18n('project_bd.contact'), dataIndex: 'username'},
-      {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name'},
-      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile'},
-      {title: i18n('project_bd.manager'), dataIndex: 'manager.username'},
+      }, key:'source_type', sorter:true},
+      {title: i18n('project_bd.contact'), dataIndex: 'username', key:'username', sorter:true},
+      {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
+      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
+      {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return time(record.createdtime + record.timezone)
-      }},
+      }, key:'createdtime', sorter:true},
       {title: i18n('project_bd.operation'), render: (text, record) => {
         return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
@@ -165,6 +181,7 @@ class ProjectBDList extends React.Component {
           <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
         </div>
         <Table
+          onChange={this.handleTableChange}
           columns={columns}
           dataSource={list}
           rowKey={record=>record.id}

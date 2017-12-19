@@ -37,6 +37,8 @@ class UserList extends React.Component {
       list: [],
       loading: false,
       selectedUsers: [],
+      sort:undefined,
+      desc:undefined,
     }
   }
 
@@ -61,8 +63,8 @@ class UserList extends React.Component {
   }
 
   getUser = () => {
-    const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
+    const { filters, search, page, pageSize, sort, desc } = this.state
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -106,16 +108,26 @@ class UserList extends React.Component {
     var data = localStorage.getItem('UserList')
     return data ? JSON.parse(data) : null
   }
+  
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getUser()
+    );
+  }
 
   componentDidMount() {
     this.getUser()
   }
 
   render() {
-    const { selectedUsers, filters, search, list, total, page, pageSize, loading } = this.state
+    const { selectedUsers, filters, search, list, total, page, pageSize, loading, sort, desc} = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
-
+    console.log(list)
 
     const rowSelection = {
       selectedUsers,
@@ -126,39 +138,46 @@ class UserList extends React.Component {
       {
         title: i18n("email.username"),
         dataIndex: 'username',
-        key: 'username'
+        key: 'username',
+        //sorter:true,
       },
       {
         title: i18n("organization.org"),
         dataIndex: 'org.orgname',
-        key: 'org'
+        key: 'org',
+        sorter:true,
       },
       {
         title: i18n("user.position"),
         dataIndex: 'title.name',
-        key: 'title'
+        key: 'title',
+        sorter:true,
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? <span className="span-tag">{tags.map(t => t.name).join(' / ')}</span> : null
+        render: tags => tags ? <span className="span-tag">{tags.map(t => t.name).join(' / ')}</span> : null,
+        sorter:true,
       },
       {
         title: i18n("account.role"),
         dataIndex: 'groups',
         key: 'role',
-        render: groups => groups ? groups.map(m => m.name).join(' ') : null
+        render: groups => groups ? groups.map(m => m.name).join(' ') : null,
+        ///sorter:true,
       },
       {
         title: i18n("user.status"),
         dataIndex: 'userstatus.name',
-        key: 'userstatus'
+        key: 'userstatus',
+        sorter:true,
       },
       {
         title: i18n("user.trader"),
         dataIndex: 'trader_relation.traderuser.username',
-        key: 'trader'
+        key: 'trader',
+        //sorter:true,
       },
       {
         title: i18n("common.operation"),
@@ -177,7 +196,7 @@ class UserList extends React.Component {
                   <a type="danger" disabled={!record.action.delete} ><img style={imgStyle} src="/images/delete.png" /></a>
                 </Popconfirm>
               </span>
-        )
+        ),
       }
     ]
 
@@ -204,6 +223,7 @@ class UserList extends React.Component {
         </div>
 
         <Table
+          onChange={this.handleTableChange}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={list}

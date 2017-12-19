@@ -36,6 +36,8 @@ class OrgBDList extends React.Component {
         newComment: '',
         status: null,
         commentVisible: false,
+        sort:undefined,
+        desc:undefined,
     }
   }
 
@@ -45,13 +47,17 @@ class OrgBDList extends React.Component {
 
   getOrgBdList = () => {
     this.setState({ loading: true });
-    const { page, pageSize, search, filters } = this.state;
+    const { page, pageSize, search, filters, sort, desc } = this.state;
     const params = {
         page_index: page,
         page_size: pageSize,
         search,
         ...filters,
+        sort,
+        desc
+        
     }
+    console.log(params)
     api.getOrgBdList(params)
     .then(result => {
         this.setState({
@@ -118,6 +124,16 @@ class OrgBDList extends React.Component {
     .then(() => this.getOrgBdList())
     .catch(error => handleError(error));
   }
+  
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getOrgBdList
+    );
+  }
 
   render() {
 
@@ -125,15 +141,15 @@ class OrgBDList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
-        {title: i18n('org_bd.contact'), dataIndex: 'username'},
+        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
-        }},
-        {title: i18n('org_bd.mobile'), dataIndex: 'usermobile'},
-        {title: i18n('org_bd.manager'), dataIndex: 'manager.username'},
-        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle'},
-        {title: i18n('org_bd.status'), dataIndex: 'bd_status.name'},
+        }, key:'createdtime', sorter:true},
+        {title: i18n('org_bd.mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
+        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manage', sorter:true},
+        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true},
+        {title: i18n('org_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
         {
             title: i18n('org_bd.operation'), render: (text, record) => 
             {
@@ -185,6 +201,7 @@ class OrgBDList extends React.Component {
         </div>
         
         <Table
+          onChange={this.handleTableChange}
           columns={columns}
           dataSource={list}
           rowKey={record=>record.id}
