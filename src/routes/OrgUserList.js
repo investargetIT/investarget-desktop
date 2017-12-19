@@ -131,7 +131,8 @@ class OrgUserList extends React.Component {
 
   render() {
     const { selectedUsers, filters, search, list, total, page, pageSize, loading } = this.state
-
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const imgStyle={width:'20px',height:'25px'}
 
 
     const rowSelection = {
@@ -186,17 +187,21 @@ class OrgUserList extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span>
+              <span style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div>
                 <Link to={'/app/user/' + record.id}>
-                  <Button disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
+                  <Button style={buttonStyle} disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
                 </Link>
-                &nbsp;
+                
                 <Link to={'/app/user/edit/' + record.id}>
-                  <Button disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
+                  <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
-                &nbsp;
+               
+              </div>
                 <Popconfirm title="Confirm to delete?" onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button type="danger" disabled={!record.action.delete} size="small">{i18n("common.delete")}</Button>
+                  <a type="danger" disabled={!record.action.delete} size="small">
+                    <img style={imgStyle} src="/images/delete.png" />
+                  </a>
                 </Popconfirm>
               </span>
         )

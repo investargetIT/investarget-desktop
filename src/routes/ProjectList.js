@@ -164,7 +164,7 @@ class ProjectList extends React.Component {
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',width:'110px',textAlign:'left'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
       {
@@ -250,10 +250,10 @@ class ProjectList extends React.Component {
           return record.ismarketplace ? (
             <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
             <div>
-              <Button size="small" style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
+              <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link to={'/app/marketplace/edit/' + record.id}>
-                <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+                <Button style={buttonStyle} disabled={!record.action.change} >{i18n("common.edit")}</Button>
               </Link>
             </div>
             <div>
@@ -265,9 +265,9 @@ class ProjectList extends React.Component {
             </div>
             </span>
           ) : (
-            <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div>
-              <Button size="small" style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
+            <span  style={{display:'flex',alignItems:'center'}}>
+            <div style={{display:'flex',flexWrap:"wrap",maxWidth:'250px'}}>
+              <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
                 <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
@@ -278,15 +278,15 @@ class ProjectList extends React.Component {
               </Link>
 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
-                <Button style={buttonStyle} size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_org_bd')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_org_bd')}</Button>
               </Link>
 
               <Link to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button style={buttonStyle} size="small" disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
 
               <Link to={'/app/projects/edit/' + record.id}>
-                <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+                <Button style={buttonStyle} disabled={!record.action.change}  >{i18n("common.edit")}</Button>
               </Link>
             </div>
             <div>

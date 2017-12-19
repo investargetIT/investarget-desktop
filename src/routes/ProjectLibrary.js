@@ -125,16 +125,16 @@ class ProjectLibrary extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const columns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
-        return (<Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
+        return (<div style={{minWidth:200}}><Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
                   {record.com_name}
-                </Link>)
+                </Link></div>)
       }, width: 120},
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
-      {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date'},
-      {title: i18n('project_library.latest_financial_events'), dataIndex: 'invse_detail_money'},
+      {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date',width:100},
+      {title: i18n('project_library.latest_financial_events'), dataIndex: 'invse_detail_money',width:100},
       {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
       {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},

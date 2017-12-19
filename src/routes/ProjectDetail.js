@@ -746,7 +746,7 @@ class DownloadFiles extends React.Component {
                 {files.map(file => {
                   return (
                     <li key={file.key} style={liStyle}>
-                      <div>
+                      <div title={file.filename} style={{maxWidth:200,overflow:'hidden',textOverflow:'ellipsis'}}>
                         {file.filename}
                       </div>
                       <a
