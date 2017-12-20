@@ -424,7 +424,7 @@ class DataRoom extends React.Component {
     this.setState({ loading: true, visible: false });
     const params = {
       user: this.state.downloadUser && this.state.downloadUser.id,
-      water: this.state.downloadUser && this.state.downloadUser.email
+      water: this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null, 
     }
     api.makeDataRoomZip(this.state.id, params)
     .then(result => {
