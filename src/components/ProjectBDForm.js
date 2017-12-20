@@ -14,12 +14,10 @@ import {
   SelectArea,
   SelectOrgUser,
   SelectPartner, 
+  SelectAllUser, 
 } from './ExtraInput'
 import { i18n } from '../utils/util'
 import * as api from '../api'
-
-import { SelectAllUser } from '../components/ExtraInput'
-
 
 class ProjectBDForm extends React.Component {
 
@@ -158,7 +156,7 @@ class ProjectBDForm extends React.Component {
         )}
 
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number" required>
-          <SelectOrgUser type="trader" org={2585} />
+          <SelectAllUser type="trader" /> 
         </BasicFormItem>
 
         {'isAdd' in this.props ? (
