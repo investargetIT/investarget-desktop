@@ -14,6 +14,7 @@ import {
   Modal, 
   Input, 
 } from 'antd';
+import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
@@ -57,9 +58,9 @@ class OrgBDList extends React.Component {
         desc
         
     }
-    console.log(params)
     api.getOrgBdList(params)
     .then(result => {
+      console.log(result.data.data)
         this.setState({
           list: result.data.data,
           total: result.data.count,
@@ -141,7 +142,8 @@ class OrgBDList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
-        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', sorter:true },
+        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
+        render:(text,record)=>{return <Link to={'/app/user/'+record.bduser}>{record.username}</Link>},sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
