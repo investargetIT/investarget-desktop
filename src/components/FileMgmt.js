@@ -249,7 +249,7 @@ class FileMgmt extends React.Component {
 
   render () {
     const isAdmin = hasPerm('usersys.as_admin')
-
+    
     const rowSelection = isAdmin ? {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -276,9 +276,11 @@ class FileMgmt extends React.Component {
         }
         return 0;
       },
-      render: (text, record, index) => (
+      render: (text, record, index) => {
+        const childDocs = this.props.data.filter(f => f.parentId == record.id).length
+        return (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ record.isFolder ? "/images/folder.png" : "/images/pdf.png" } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : childDocs==0 ? "/images/folder.png":"/images/fullFolder.png"  } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
@@ -290,7 +292,7 @@ class FileMgmt extends React.Component {
           <Button size="large" onClick={this.handleConfirm.bind(this, record.unique)} type="primary" style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.confirm')}</Button>
           <Button size="large" onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.cancel')}</Button> </span>) }
         </div>
-      ),
+      )},
     }, {
       title: i18n('dataroom.size'),
       dataIndex: 'size',
@@ -469,7 +471,7 @@ class FileMgmt extends React.Component {
         </div>
       )
     }
-
+    
     return (
       <div>
 
