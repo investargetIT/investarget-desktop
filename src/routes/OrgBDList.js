@@ -148,7 +148,7 @@ class OrgBDList extends React.Component {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
         {title: i18n('org_bd.mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
-        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manage', sorter:true},
+        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
         {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true},
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
