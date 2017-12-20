@@ -192,8 +192,6 @@ class SelectOrgInvestorAndTrader extends React.Component {
       { title: i18n('user.name'), key: 'username', dataIndex: 'username' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
-      { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
-      { title: i18n('user.email'), key: 'email', dataIndex: 'email' },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
@@ -226,7 +224,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
     return (
       <div>
         <div style={{ marginBottom: '24px' }}>
-          <Search2 style={{ width: 250 }} placeholder={[i18n('user.name'), i18n('user.mobile'), i18n('user.email')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
+          <Search2 style={{ width: 250 }} placeholder={[i18n('user.name')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
