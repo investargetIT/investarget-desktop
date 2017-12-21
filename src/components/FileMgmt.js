@@ -241,6 +241,15 @@ class FileMgmt extends React.Component {
     this.props.onDownloadBtnClicked();
   }
 
+  ifContainFiles = (file) => {
+    let childFiles=this.props.data.filter(f => f.parentId == file.id)
+    if(childFiles.length==0)
+      return false;
+    if(childFiles.some(item=>this.ifContainFiles(item)||item.isFile))
+      return true;
+    
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.loading != nextProps.loading) {
       this.setState({loading: nextProps.loading});
@@ -277,11 +286,11 @@ class FileMgmt extends React.Component {
         return 0;
       },
       render: (text, record, index) => {
-        const ifHasFiles = this.props.data.filter(f => f.parentId == record.id).some(item=>item.isFile)
-      
+        const ifhasFiles = this.ifContainFiles(record)
+
         return (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : ifHasFiles ? "/images/fullFolder.png":"/images/folder.png"  } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : ifhasFiles ? "/images/fullFolder.png":"/images/folder.png"  } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
