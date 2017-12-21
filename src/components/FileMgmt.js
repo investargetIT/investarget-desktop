@@ -277,10 +277,11 @@ class FileMgmt extends React.Component {
         return 0;
       },
       render: (text, record, index) => {
-        const childDocs = this.props.data.filter(f => f.parentId == record.id).length
+        const ifHasFiles = this.props.data.filter(f => f.parentId == record.id).some(item=>item.isFile)
+      
         return (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : childDocs==0 ? "/images/folder.png":"/images/fullFolder.png"  } />
+          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : ifHasFiles ? "/images/fullFolder.png":"/images/folder.png"  } />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
