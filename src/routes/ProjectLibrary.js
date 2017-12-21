@@ -115,6 +115,19 @@ class ProjectLibrary extends React.Component {
     delete param['search']
     return api.getLibProj(param)
   }
+  
+  handleSelectChange = (listForExport) => {
+    const { filters, search } = this.state
+    const param = { page_size: 500, com_name: search, ...filters }
+    api.getLibProj(param).then(result => {
+      const list = result.data.data.filter(item=>
+        {
+          return listForExport.some(element=>element==item.id)
+        });
+      this.setState({ listForExport: list });
+    });
+   
+  }
 
   exportExcel = () => {
     var link = document.createElement('a')
@@ -141,14 +154,18 @@ class ProjectLibrary extends React.Component {
 
   componentDidMount() {
     this.getProject()
-    this.getAllProject();
+    //this.getAllProject();
     this.handleQuery(this.props.location)
   }
 
   render() {
-    const { filters, search, page, pageSize, total, list, loading } = this.state
+    const { filters, search, page, pageSize, total, list, loading, listForExport } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const comNameStyle={color:'#d24914'}
+    const rowSelection = {
+      listForExport,
+      onChange: this.handleSelectChange,
+    }
     const columns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
         return (<div style={{minWidth:200}}><Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
@@ -184,6 +201,7 @@ class ProjectLibrary extends React.Component {
         </div>
         <Table
           columns={columns}
+          rowSelection={rowSelection}
           dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
@@ -199,7 +217,7 @@ class ProjectLibrary extends React.Component {
         />
 
         <div style={{ margin: '16px 0' }} className="clearfix">
-          <Button style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
+          <Button disabled={listForExport.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
           <Pagination
             style={{ float: 'right' }}
             total={total}
