@@ -208,9 +208,8 @@ class DataRoomList extends React.Component {
       const createUserID = record.createuser
       // const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&investorID=${investorId}&traderID=${traderId}&projectOwnerID=${supportorId}&projectTitle=${encodeURIComponent(projTitle)}&isClose=${record.isClose}&createUserID=${createUserID}`
       const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
-      const imgUrl = (record.proj.industries && record.proj.industries.length) ? record.proj.industries[0].url : ''
+      const imgUrl = (record.proj.industries && record.proj.industries.length) ? encodeURI(record.proj.industries[0].url) : ''
       const dataroomTime = record.createdtime.slice(0, 16).replace('T', ' ')
-
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
           <Link to={dataroomUrl}>
