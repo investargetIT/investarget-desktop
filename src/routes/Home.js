@@ -22,17 +22,20 @@ class Home extends React.Component {
 
   onClick = () => {
     localStorage.setItem('source', source)
-    switch(source) {
-      case 1:
-        favicon.change('/images/page_logo.png', '多维海拓 Investarget')
-        break;
-      case 2:
-        favicon.change('/images/autospace.ico', '车创 AutoSpace')
-        break;
-      default:
-        favicon.change('/images/page_logo.png', '多维海拓 Investarget')
-    }
-    this.props.dispatch(routerRedux.push('/login'))
+    // switch(source) {
+    //   case 1:
+    //     // favicon.change('/images/page_logo.png', '多维海拓 Investarget')
+    //     document.title = '多维海拓 Investarget';
+    //     break;
+    //   case 2:
+    //     // favicon.change('/images/autospace.ico', '车创 AutoSpace')
+    //     document.title = '汽车·创新港';
+    //     break;
+    //   default:
+    //     // favicon.change('/images/page_logo.png', '多维海拓 Investarget')
+    // }
+    // this.props.dispatch(routerRedux.push('/login'))
+    window.location.href = '/login';
   }
 
   componentDidMount() {
