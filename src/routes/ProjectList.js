@@ -277,9 +277,11 @@ class ProjectList extends React.Component {
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
 
+              { hasPerm('BD.manageOrgBD') ? 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_org_bd')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_org_bd')}</Button>
               </Link>
+              : null }
 
               <Link to={'/app/dataroom/add?projectID=' + record.id}>
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>

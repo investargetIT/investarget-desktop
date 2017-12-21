@@ -4,6 +4,7 @@ import {
   i18n, 
   time, 
   handleError, 
+  hasPerm, 
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -183,7 +184,7 @@ class OrgBDList extends React.Component {
         location={this.props.location} 
         name={i18n('menu.organization_bd')} 
         title={i18n('menu.bd_management')}
-        action={{ name: i18n('add_orgbd'), link: '/app/orgbd/add' }}
+        action={hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined}
       >
 
         <OrgBDFilter
