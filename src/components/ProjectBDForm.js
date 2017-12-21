@@ -15,6 +15,7 @@ import {
   SelectOrgUser,
   SelectPartner, 
   SelectAllUser, 
+  SelectOrganizatonArea,
 } from './ExtraInput'
 import { i18n } from '../utils/util'
 import * as api from '../api'
@@ -114,7 +115,7 @@ class ProjectBDForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-          <SelectArea />
+          <SelectOrganizatonArea />
         </BasicFormItem>
 
         {this.state.isSelect ? (

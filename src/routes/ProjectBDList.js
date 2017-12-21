@@ -62,6 +62,7 @@ class ProjectBDList extends React.Component {
       ...filters,
 
     }
+    
     this.setState({ loading: true })
     return api.getProjBDList(param).then(result => {
       const { count: total, data: list } = result.data
@@ -139,11 +140,10 @@ class ProjectBDList extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
-    console.log(list)
     const columns = [
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
-      {title: i18n('project_bd.area'), dataIndex: 'location.country', key:'location', sorter:true},
+      {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
       {title: i18n('project_bd.import_methods'), render: (text, record) => {
         return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
       }, key:'source_type', sorter:true},

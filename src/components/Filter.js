@@ -757,9 +757,9 @@ class ProjectBDFilter extends React.Component {
         <BasicContainer label={i18n('project_bd.import_methods')}>
           <RadioBDSource value={source_type} onChange={this.handleChange.bind(this, 'source_type')} />
         </BasicContainer>
-        <BasicContainer label={i18n('project_bd.area')}>
-          <CheckboxArea value={location} onChange={this.handleChange.bind(this, 'location')} />
-        </BasicContainer>
+        
+          <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} />
+        
         <BasicContainer label={i18n('project_bd.bd_manager')}>
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
         </BasicContainer>
