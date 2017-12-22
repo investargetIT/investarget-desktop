@@ -376,7 +376,7 @@ class IndexPage extends React.Component {
                   <Col span={16}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>两天以内近期日程安排</p>
-                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(hour) + ':' + pad(minute)}</p>
                     </div>
                   </Col>
                 </Row>
