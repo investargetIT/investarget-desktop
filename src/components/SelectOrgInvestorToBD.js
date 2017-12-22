@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { 
+  i18n, removeFromArray, 
+} from '../utils/util';
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber, SelectUser } from './ExtraInput'
@@ -76,7 +78,7 @@ class SelectOrgInvestorToBD extends React.Component {
   getUser = () => {
     const { search, page, pageSize, traderMap } = this.state
     if (this.props.traderId) {
-      let params = { search, page_index: page, page_size: pageSize, traderuser: this.props.traderId, orgs: this.props.selectedOrgs }
+      let params = { search, page_index: page, page_size: pageSize, traderuser: this.props.traderId, orgs: this.props.selectedOrgs.map(m => m.id) }
       this.setState({ loading: true })
       api.getUserRelation(params).then(result => {
         const { count: total, data: _list } = result.data
@@ -90,11 +92,20 @@ class SelectOrgInvestorToBD extends React.Component {
         })
       })
     } else {
-      let params = { search, page_index: page, page_size: pageSize, org: this.props.selectedOrgs, groups: this.investorGroupIds }
+      let params = { search, page_index: page, page_size: pageSize, org: this.props.selectedOrgs.map(m => m.id), groups: this.investorGroupIds }
       this.setState({ loading: true })
       api.getUser(params).then(result => {
         const { count: total, data: list } = result.data
-        // const investorList = list.filter(item => !!item.trader_relation)
+        const orgWithoutInvestor = removeFromArray(this.props.selectedOrgs.map(m => m.id), list.map(m => m.org.id));
+        orgWithoutInvestor.forEach(element => {
+          const org = this.props.selectedOrgs.filter( f => f.id === element)[0];
+          list.push({
+            username: null,
+            org,
+            title: { name: null },
+            id: null, 
+          })
+        });
         const investorList = list
         const _traderMap = {}
         investorList.forEach(item => {
@@ -131,25 +142,14 @@ class SelectOrgInvestorToBD extends React.Component {
   }
 
   handleSelectChange = (investorIds, rows) => {
-    const { traderMap } = this.state
-    const value = investorIds.map(investorId => {
-      const org = rows.filter(f => f.id === investorId)[0].org.id;
+    const value = investorIds.map((investorId, index) => {
+      const org = rows[index].org.id;
       return {
-        investor: investorId,
-        trader: this.props.traderId ? this.props.traderId : traderMap[investorId],
+        investor: rows[index].id,
         org
       }
-    }).filter(item => item.trader != null)
+    });
     this.props.onChange(value)
-  }
-
-  handleSelect = (record) => {
-    echo('record', record);
-    // if (!this.props.options && record.trader_relation == null) {
-    //   Modal.warning({
-    //     title: '请先分配交易师',
-    //   })
-    // }
   }
 
   handleTraderOptionsChange = (investorId, traderOptions) => {
@@ -183,7 +183,7 @@ class SelectOrgInvestorToBD extends React.Component {
 
   render() {
     const rowSelection = {
-      selectedRowKeys: this.props.value.map(item => item.investor),
+      selectedRowKeys: this.props.value.map(item => item.investor + '-' + item.org),
       onChange: this.handleSelectChange,
       onSelect: this.handleSelect,
     }
@@ -196,26 +196,13 @@ class SelectOrgInvestorToBD extends React.Component {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
         } else {
-          if (this.props.options) {
-            return <SelectUser
-            style={{width: 100 }}
+          return <SelectUser
+            style={{ width: 100 }}
             mode="single"
             data={this.props.options}
             value={this.state.traderMap[record.id] ? String(this.state.traderMap[record.id]) : ''}
             onChange={this.handleChangeTrader.bind(this, record.id)} />;
-          } else {
-            const trader = record.trader_relation ? record.trader_relation.traderuser : null
-            return trader ? (
-              <SelectUserTransaction
-                userId={record.id}
-                options={this.state.traderOptionsMap[record.id] || []}
-                onOptionsChange={this.handleTraderOptionsChange.bind(this, record.id)}
-                value={this.state.traderMap[record.id]}
-                onChange={this.handleChangeTrader.bind(this, record.id)}
-              />
-            ) : i18n('common.none')
-          }
-        }
+         }
       }}
     ]
 
@@ -226,7 +213,7 @@ class SelectOrgInvestorToBD extends React.Component {
         <div style={{ marginBottom: '24px' }}>
           <Search2 style={{ width: 250 }} placeholder={[i18n('user.name')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
-        <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+        <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id + '-' + record.org.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
       </div>
     )

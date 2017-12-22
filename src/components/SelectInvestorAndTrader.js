@@ -18,6 +18,7 @@ class SelectInvestorAndTrader extends React.Component {
       selectedOrgs: [],
       selectedUsers: [],
       step: 1,
+      selectedOrgDetails: [], 
     }
   }
 
@@ -32,8 +33,8 @@ class SelectInvestorAndTrader extends React.Component {
     this.setState({ step: 2 })
   }
 
-  handleSelectOrg = (selectedOrgs) => {
-    this.setState({ selectedOrgs })
+  handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
+    this.setState({ selectedOrgs, selectedOrgDetails });
   }
 
   handleSelectUser = (selectedUsers) => {
@@ -46,7 +47,7 @@ class SelectInvestorAndTrader extends React.Component {
 
   render() {
 
-    const { traderId, selectedOrgs, selectedUsers, step } = this.state
+    const { traderId, selectedOrgs, selectedUsers, step, selectedOrgDetails } = this.state
 
     return (
       <div>
@@ -61,7 +62,7 @@ class SelectInvestorAndTrader extends React.Component {
           { step == 1 ? <SelectOrganization traderId={traderId} value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
           {step == 2 ?
             this.props.options ?
-              <SelectOrgInvestorToBD traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
+              <SelectOrgInvestorToBD traderId={traderId} selectedOrgs={selectedOrgDetails} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
               : <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
             : null}
         </div>
