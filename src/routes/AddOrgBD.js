@@ -5,6 +5,7 @@ import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
+import { SelectUser } from '../components/ExtraInput';
 
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
 
@@ -17,9 +18,12 @@ class AddOrgBD extends React.Component {
     this.state = {
       projId: Number(this.props.location.query.projId),
       projTitle: '',
-      selectedUsers: [], // 数组项的结构 {investor: ##, trader: ##, org: ##}
       data: null,
+      visible: false, 
+      manager: null, 
     }
+
+    this.selectedUsers = []; // 选中准备BD的投资人或机构
   }
 
   handleCreate = () => {
@@ -30,13 +34,14 @@ class AddOrgBD extends React.Component {
     })
   }
 
-  createOrgBD = (projId, selectedUsers) => {
-    Promise.all(selectedUsers.map(m => {
+  createOrgBD = () => {
+    this.setState({ visible: false });
+    Promise.all(this.selectedUsers.map(m => {
       const body = {
         'bduser': m.investor,
-        'manager': m.trader,
+        'manager': this.state.manager,
         'org': m.org,
-        'proj': projId,
+        'proj': this.state.projId,
         'bd_status': 1,
       };
       return api.addOrgBD(body);
@@ -55,7 +60,8 @@ class AddOrgBD extends React.Component {
   }
 
   handleSelectUser = (selectedUsers) => {
-    this.createOrgBD(this.state.projId, selectedUsers)
+    this.selectedUsers = selectedUsers;
+    this.setState({ visible: true });
   }
 
   componentDidMount() {
@@ -93,6 +99,27 @@ class AddOrgBD extends React.Component {
 
           { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} /> : null }
         </div>
+
+        <Modal
+          title="请选择负责人"
+          visible={this.state.visible}
+          onOk={this.createOrgBD}
+          footer={null}
+          onCancel={() => this.setState({ visible: false })}
+          closable={false}
+        >
+
+         <SelectUser
+            style={{ width: 300 }}
+            mode="single"
+            data={this.state.data}
+            value={this.state.manager}
+            onChange={manager => this.setState({ manager })} />
+
+          <Button style={{ marginLeft: 10 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD}>{i18n('common.confirm')}</Button>
+
+        </Modal>
+
       </LeftRightLayout>
     )
   }
