@@ -160,7 +160,7 @@ class TransactionInfo extends React.Component {
     )
 
     const { company, title, tags, country, mobile, email, score } = this.state
-
+    console.log(list)
     return list.length > 0 ?
       (<div>
       <Row >
@@ -171,7 +171,7 @@ class TransactionInfo extends React.Component {
         <div style={traderStyle}>
           {list.map(item=> <span key={item.id} style={photoContainer}>
             <Popover placement="bottomLeft" content={this.popoverContent(item)}>
-              <img style={imgStyle} src={item.traderuser.photourl} />
+              <a href={'/app/user/'+item.traderuser.id}><img style={imgStyle} src={item.traderuser.photourl} /></a>
             </Popover>
           </span>)}
         </div>
