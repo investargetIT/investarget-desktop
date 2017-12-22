@@ -7,6 +7,8 @@ import {
   Select, 
   Popover, 
 } from 'antd';
+import { Link } from 'dva/router';
+
 const Option = Select.Option
 
 const rowStyle = {
@@ -171,7 +173,7 @@ class TransactionInfo extends React.Component {
         <div style={traderStyle}>
           {list.map(item=> <span key={item.id} style={photoContainer}>
             <Popover placement="bottomLeft" content={this.popoverContent(item)}>
-              <a href={'/app/user/'+item.traderuser.id}><img style={imgStyle} src={item.traderuser.photourl} /></a>
+              <Link to={'/app/user/'+item.traderuser.id}><img style={imgStyle} src={item.traderuser.photourl} /></Link>
             </Popover>
           </span>)}
         </div>

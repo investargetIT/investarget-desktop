@@ -31,12 +31,21 @@ const Field = (props) => {
 class UserDetail extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      userId: Number(this.props.params.id), 
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState(
+      { userId: null }, 
+      () => this.setState({ userId: Number( newProps.params.id )}), 
+    );
   }
 
   render() {
-    const userId = Number(this.props.params.id)
-    return (
+    const { userId } = this.state;
+    return userId && (
       <LeftRightLayout location={this.props.location} title={i18n('menu.user_management')} name={i18n('user.user_detail')}>
         <UserRemarkList typeId={userId} />
         <h3 style={detailStyle}>{i18n('user.detail')}:</h3>
