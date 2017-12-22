@@ -277,7 +277,7 @@ class ProjectList extends React.Component {
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
 
-              { hasPerm('BD.manageOrgBD') ? 
+              { record.action.canAddOrgBD ? 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_org_bd')}</Button>
               </Link>
