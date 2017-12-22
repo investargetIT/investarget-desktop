@@ -186,6 +186,10 @@ class IndexPage extends React.Component {
       investorStatistic: null,
       firstSchedule: null,
       secondSchedule: null,
+      orgBDsuccess:null,
+      orgBDunsuccess:null,
+      projBDsuccess:null,
+      projBDunsuccess:null,
     }
 
     this.closeCard = this.closeCard.bind(this)
@@ -281,6 +285,30 @@ class IndexPage extends React.Component {
       }
     });
 
+    const orgbdsuccessfilter={bd_status:3}
+    api.getOrgBdList(orgbdsuccessfilter)
+    .then(result=>{
+      this.setState({orgBDsuccess:result.data.data.length})
+    })
+
+    const orgbdunsuccessfilter={bd_status:1}
+    api.getOrgBdList(orgbdunsuccessfilter)
+    .then(result=>{
+      this.setState({orgBDunsuccess:result.data.data.length})
+    })
+
+    const projbdsuccessfilter={bd_status:3}
+    api.getProjBDList(projbdsuccessfilter)
+    .then(result=>{
+      this.setState({projBDsuccess:result.data.data.length})
+    })
+
+    const projbdunsuccessfilter={bd_status:1}
+    api.getProjBDList(projbdunsuccessfilter)
+    .then(result=>{
+      this.setState({projBDunsuccess:result.data.data.length})
+    })
+
   }
 
   closeCard(widgetName) {
@@ -321,12 +349,13 @@ class IndexPage extends React.Component {
     const day = date.getDate();
     const hour = date.getHours();
     const minute = date.getMinutes();
+    const {orgBDsuccess, orgBDunsuccess, projBDsuccess, projBDunsuccess} =this.state
     return (
       <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
 
-        <Row style={{ height: 100, overflow: 'hidden' }}>
+        <Row style={{ height: 150, overflow: 'hidden' }}>
           <Col span={8} style={{ height: '100%' }}>
-            <div style={{ height: 100, margin: '0 10px', backgroundColor: '#eeac56', overflow: 'hidden' }}>
+            <div style={{ height: 150, margin: '0 10px', backgroundColor: '#eeac56', overflow: 'hidden' }}>
               {this.state.investorStatistic ?
                 <InvestorStatistic
                   totalInvestorNum={this.state.investorStatistic.total}
@@ -337,48 +366,90 @@ class IndexPage extends React.Component {
           </Col>
           <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
-          <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
-                <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
-                  <Col span={12}>
-                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                      <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="fa fa-calendar-o"></i>
-            </div>
+          <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
+                <Row style={{ backgroundColor: '#F08699', margin: '0 10px 10px', boxShadow:'0 5px 5px gray' }}>
+                  <Col span={8}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>                      
+                      <img  style={{ margin: '0 auto' }} src="./images/calendar.png"/>
+                    </div>
                   </Col>
-                  <Col span={12}>
-                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>日程管理</p>
-                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{this.state.secondSchedule ? parseDate(this.state.secondSchedule.scheduledtime + this.state.secondSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}</p>
+                  <Col span={16}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>两天以内近期日程安排</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}</p>
                     </div>
                   </Col>
                 </Row>
           </Tooltips>
           </Link>
-          </Col>
-          <Col span={8} style={{ height: '100%' }}>
-          <Link to="/app/schedule">
-          <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
-
-          <Row style={{ backgroundColor: '#eeac56', margin: '0 10px' }}>
-                  <Col span={12}>
-                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                      <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="glyphicon glyphicon-time"></i>
+          <Link to="app/org/bd">
+                <Row style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
+                  <Col span={8}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <img  style={{  margin: '0 auto' }} src="./images/org.png"/>
                     </div>
                   </Col>
-                  <Col span={12}>
-                    <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>我的日程</p>
-                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(hour) + ':' + pad(minute)}</p>
+                  <Col span={8}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构BD成功</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDsuccess}</p>
+                    </div>
+                  </Col>
+                  <Col span={8}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构未BD</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDunsuccess}</p>
                     </div>
                   </Col>
                 </Row>
-
-          {/* <Row style={{ backgroundColor: '#eeac56', margin: 10 }}> */}
-            {/* <div style={{ height: 100, margin: 10, textAlign: 'center', backgroundColor: '#eeac56', overflow: 'hidden' }}>
-              <i style={{ fontSize: 60, color: 'white', margin: 10 }} className="glyphicon glyphicon-time"></i>
-              <p style={{ lineHeight: '50px', color: 'white', fontSize: 20, fontWeight: 'bold' }}>{pad(hour) + ':' + pad(minute)}</p>
-            </div> */}
-            </Tooltips>
           </Link>
+          
+          </Col>
+          <Col span={8} style={{ height: '100%' }}>
+
+          <Link to="/app/schedule">
+          <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
+          <Row style={{ backgroundColor: '#93C575', margin: '0 10px 10px' }}>
+                  <Col span={8}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="glyphicon glyphicon-time"></i>
+                    </div>
+                  </Col>
+                  <Col span={16}>
+                    <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>两天以上日程安排</p>
+                      <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>
+                      {this.state.secondSchedule ? parseDate(this.state.secondSchedule.scheduledtime + this.state.secondSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}
+                      
+                      </p>
+                    </div>
+                  </Col>         
+          </Row>
+          </Tooltips>
+          </Link>
+
+          <Link to="/app/projects/bd">
+            <Row style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
+              <Col span={8}>
+                <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <img  style={{ margin: '0 auto' }} src="./images/projBD.png"/>
+                </div>
+              </Col>
+              <Col span={8}>
+                <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                  <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>项目BD成功</p>
+                  <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{projBDsuccess}</p>
+                </div>
+              </Col>
+              <Col span={8}>
+                <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                  <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>项目未BD</p>
+                  <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold',textAlign: 'left' }}>{projBDunsuccess}</p>
+                </div>
+              </Col>
+            </Row>
+          </Link>
+         
           </Col>
         </Row>
 
@@ -630,23 +701,22 @@ function InvestorStatistic(props) {
   return (
     <div>
       <Row>
-        <Col span={5} style={{ }}>
-        <div style={{ height: 100, display: 'flex', justifyContent: 'center' }}>
+      <Col span={12} style={{display:'flex',flexDirection:'column'}}>
+        <div style={{ height: 75, display: 'flex', justifyContent: 'center' }}>
           <img style={{ height: 40, margin: 'auto', verticalAlign: 'middle' }} src="/images/is-user.png" />
-          </div>
-        </Col>
-        <Col span={9} style={{ }}>
-          <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        </div>
+        <div style={{ height: 75, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>投资人总数</p>
           <p style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>{props.totalInvestorNum}</p>
-          </div>
-        </Col>
-      <Col span={10}>
-      <div style={{ height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>新投资人数量</p>
-        <p style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>{props.newInvestorNum}</p>
-          </div>
-        </Col>
+        </div>
+      </Col>
+      <Col span={12}>
+        <div style={{ marginTop:75,height: 75, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>新投资人数量</p>
+          <p style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>{props.newInvestorNum}</p>
+        </div>
+      </Col>
+       
       </Row>
     </div>
   );

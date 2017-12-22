@@ -61,7 +61,6 @@ class OrgBDList extends React.Component {
     }
     api.getOrgBdList(params)
     .then(result => {
-      console.log(result.data.data)
         this.setState({
           list: result.data.data,
           total: result.data.count,
