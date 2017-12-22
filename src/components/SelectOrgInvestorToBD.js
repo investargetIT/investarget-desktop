@@ -189,9 +189,9 @@ class SelectOrgInvestorToBD extends React.Component {
     }
 
     const columns = [
-      { title: i18n('user.name'), key: 'username', dataIndex: 'username' },
+      { title: i18n('user.name'), key: 'username', dataIndex: 'username', render: text => text || '暂无投资人' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
