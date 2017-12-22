@@ -3,6 +3,7 @@ import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button } from 'antd'
 import SelectOrganization from '../components/SelectOrganization'
 import SelectOrgInvestorAndTrader from '../components/SelectOrgInvestorAndTrader'
+import SelectOrgInvestorToBD from '../components/SelectOrgInvestorToBD';
 
 
 class SelectInvestorAndTrader extends React.Component {
@@ -58,7 +59,11 @@ class SelectInvestorAndTrader extends React.Component {
 
         <div style={{padding: '16px'}}>
           { step == 1 ? <SelectOrganization traderId={traderId} value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
-          { step == 2 ? <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} /> : null }
+          {step == 2 ?
+            this.props.options ?
+              <SelectOrgInvestorToBD traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
+              : <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
+            : null}
         </div>
 
         { step == 1 ? (
