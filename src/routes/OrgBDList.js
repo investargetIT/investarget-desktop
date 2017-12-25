@@ -233,13 +233,16 @@ class OrgBDList extends React.Component {
           />
         </div>
 
+        { this.state. visible ? 
         <ModalModifyOrgBDStatus 
           visible={this.state.visible} 
           onCancel={() => this.setState({ visible: false })} 
           status={this.state.status}
           onStatusChange={this.handleStatusChange}
           onOk={this.handleConfirmAudit}
+          bd={this.state.currentBD}
         />
+        : null }
 
         <Modal
           title={i18n('remark.comment')}
