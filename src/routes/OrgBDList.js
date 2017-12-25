@@ -19,6 +19,7 @@ import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
+import BDModal from '../components/BDModal';
 
 class OrgBDList extends React.Component {
   
@@ -40,6 +41,7 @@ class OrgBDList extends React.Component {
         commentVisible: false,
         sort:undefined,
         desc:undefined,
+        source:this.props.location.query.status||0,
     }
   }
 
@@ -138,7 +140,7 @@ class OrgBDList extends React.Component {
 
   render() {
 
-    const { filters, search, page, pageSize, total, list, loading } = this.state
+    const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'20px',height:'25px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
@@ -191,6 +193,7 @@ class OrgBDList extends React.Component {
         title={i18n('menu.bd_management')}
         action={hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined}
       >
+      {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         <OrgBDFilter
           defaultValue={filters}
@@ -285,3 +288,4 @@ function BDComments(props) {
     </div>
   )
 }
+

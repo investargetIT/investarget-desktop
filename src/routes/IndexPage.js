@@ -382,27 +382,31 @@ class IndexPage extends React.Component {
                 </Row>
           </Tooltips>
           </Link>
-          <Link to="app/org/bd">
+          
                 <Row style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                       <img  style={{  margin: '0 auto' }} src="./images/org.png"/>
                     </div>
                   </Col>
+          <Link to="app/org/bd?status=3">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构BD成功</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDsuccess}</p>
                     </div>
                   </Col>
+          </Link>
+          <Link to="app/org/bd?status=1">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构未BD</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDunsuccess}</p>
                     </div>
                   </Col>
-                </Row>
           </Link>
+                </Row>
+          
           
           </Col>
           <Col span={8} style={{ height: '100%' }}>
@@ -428,27 +432,31 @@ class IndexPage extends React.Component {
           </Tooltips>
           </Link>
 
-          <Link to="/app/projects/bd">
+          
             <Row style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <img  style={{ margin: '0 auto' }} src="./images/projBD.png"/>
                 </div>
               </Col>
+          <Link to="/app/projects/bd?status=3">
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                   <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>项目BD成功</p>
                   <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{projBDsuccess}</p>
                 </div>
               </Col>
+          </Link>
+          <Link to="/app/projects/bd?status=1">
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                   <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>项目未BD</p>
                   <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold',textAlign: 'left' }}>{projBDunsuccess}</p>
                 </div>
               </Col>
-            </Row>
           </Link>
+            </Row>
+          
          
           </Col>
         </Row>

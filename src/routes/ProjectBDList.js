@@ -7,6 +7,7 @@ import { Search2 } from '../components/Search'
 import { handleError, time, i18n } from '../utils/util'
 import * as api from '../api'
 import { Link } from 'dva/router'
+import BDModal from '../components/BDModal';
 
 
 class ProjectBDList extends React.Component {
@@ -28,6 +29,7 @@ class ProjectBDList extends React.Component {
       newComment: '',
       sort:undefined,
       desc:undefined,
+      source:this.props.location.query.status||0,
     }
   }
 
@@ -137,7 +139,7 @@ class ProjectBDList extends React.Component {
   }
 
   render() {
-    const { filters, search, page, pageSize, total, list, loading } = this.state
+    const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'20px',height:'25px'}
     const columns = [
@@ -175,7 +177,7 @@ class ProjectBDList extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>
-
+        {source!=0 ? <BDModal source={source}  element='proj'/> : null}
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '16px' }} className="clearfix">
           <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
