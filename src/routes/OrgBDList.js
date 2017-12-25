@@ -149,16 +149,16 @@ class OrgBDList extends React.Component {
         render:(text,record)=>{
           return <div >                  
                   {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null}                                
-                  <Link to={'/app/user/'+record.bduser}>{record.username}</Link>                  
+                  {text ? <Link to={'/app/user/'+record.bduser}>{record.username}</Link>  : '暂无' }                
                  </div>
         },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
-        {title: i18n('org_bd.mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
+        {title: i18n('org_bd.mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text || '暂无'},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
         {
             title: i18n('org_bd.operation'), render: (text, record) => 
