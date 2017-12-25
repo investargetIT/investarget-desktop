@@ -72,7 +72,7 @@ class BDModal extends React.Component{
           footer={null}
           onCancel={this.handleCancel}
         >
-          <Table columns={columns} dataSource={dataSource} />
+          <Table columns={columns} dataSource={dataSource} size="small" />
         </Modal>
       </div>
     )
