@@ -207,21 +207,10 @@ class SelectOrgInvestorToBD extends React.Component {
       { title: i18n('user.name'), key: 'username', dataIndex: 'username', render: text => text || '暂无投资人' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
-      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
-        if (this.props.traderId) {
-          return this.state.trader ? this.state.trader.username : ''
-        } else {
-          return <SelectUser
-            style={{ width: 100 }}
-            mode="single"
-            data={this.props.options}
-            value={this.state.traderMap[record.id] ? String(this.state.traderMap[record.id]) : ''}
-            onChange={this.handleChangeTrader.bind(this, record.id)} />;
-         }
-      }},
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' }, 
       {title:i18n('org_bd.important'), render:(text,record)=>{
         return <SwitchButton onChange={this.handleSwitchChange.bind(this,record.id)} />
-      }}
+      }},  
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
@@ -293,6 +282,36 @@ class SwitchButton extends React.Component{
         <div id="right" style={{backgroundColor:rightBgColor, color:rightColor, ...left }}>否</div>
       </div>
     )
+  }
+}
+class Trader extends React.Component {
+  state = {
+    list: [], 
+  }
+  componentDidMount() {
+    const param = { investoruser: this.props.investor}
+    api.getUserRelation(param).then(result => {
+      echo(result);
+      const data = result.data.data.sort((a, b) => a.relationtype || b.relationtype)
+      const list = []
+      data.forEach(item => {
+        const trader = item.traderuser
+        if (trader) {
+          list.push({ label: trader.username, value: trader.id, onjob: trader.onjob })
+        }
+        this.setState({ list });
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+  render () {
+    return <div>
+      { this.state.list.map(m => <span key={m.value} style={{ marginRight: 10, textDecoration: 'underline', color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
+    </div>
   }
 }
 
