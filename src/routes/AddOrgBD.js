@@ -42,11 +42,15 @@ class AddOrgBD extends React.Component {
         'manager': this.state.manager,
         'org': m.org,
         'proj': this.state.projId,
+        'isimportant':m.isimportant,
         'bd_status': 1,
       };
+      console.log(m.isimportant)
+      console.log(body)
       return api.addOrgBD(body);
     }))
       .then(result => {
+        console.log(result)
         Modal.success({
             title: i18n('timeline.message.create_success_title'),
             content: i18n('create_orgbd_success'),

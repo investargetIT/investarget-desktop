@@ -509,8 +509,6 @@ class OrganizationListFilter extends React.Component {
 
   render() {
     const { isOversea, currencys, orgtransactionphases, industrys, tags, orgtypes, area } = this.state
-    console.log({area})
-    console.log({orgtypes})
     return (
       <div>
         <OverseaFilter value={isOversea} onChange={this.handleChange.bind(this, 'isOversea')} />

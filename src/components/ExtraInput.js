@@ -1066,7 +1066,6 @@ class TabCheckboxTag extends React.Component {
 }
 function mapStateToPropsTag(state) {
   const {tag} = state.app
-  console.log(state.app)
   const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
   return { options }  
 }

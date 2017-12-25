@@ -141,9 +141,15 @@ class OrgBDList extends React.Component {
     const { filters, search, page, pageSize, total, list, loading } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'20px',height:'25px'}
+    const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
-        render:(text,record)=>{return <Link to={'/app/user/'+record.bduser}>{record.username}</Link>},sorter:true },
+        render:(text,record)=>{
+          return <div >                  
+                  {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null}                                
+                  <Link to={'/app/user/'+record.bduser}>{record.username}</Link>                  
+                 </div>
+        },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},

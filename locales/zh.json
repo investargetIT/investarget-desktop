@@ -132,7 +132,8 @@
     "manager": "负责人",
     "created_time": "创建时间",
     "operation": "操作",
-    "org": "机构"
+    "org": "机构",
+    "important":"重点BD"
   },
   "project": {
     "platform_projects": "平台项目",
