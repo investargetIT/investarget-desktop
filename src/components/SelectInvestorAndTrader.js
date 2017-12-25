@@ -75,7 +75,7 @@ class SelectInvestorAndTrader extends React.Component {
 
         { step == 2 ? (
           <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
-            <Button onClick={ this.handleBack}>{i18n('common.back')}</Button>
+            <Button style={{ marginRight: 10 }} onClick={ this.handleBack}>{i18n('common.back')}</Button>
             <Button disabled={selectedUsers.length == 0} type="primary" onClick={this.handleOk}>{i18n('common.create')}</Button>
           </div>
         ) : null }
