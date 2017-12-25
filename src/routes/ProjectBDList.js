@@ -141,7 +141,7 @@ class ProjectBDList extends React.Component {
   render() {
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
-    const imgStyle={width:'20px',height:'25px'}
+    const imgStyle={width:'15px',height:'20px'}
     const columns = [
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},

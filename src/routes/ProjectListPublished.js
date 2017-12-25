@@ -61,7 +61,7 @@ class ProjectListPublished extends React.Component {
   render() {
     const { total, list, loading, page, pageSize } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
-    const imgStyle={width:'20px',height:'25px'}
+    const imgStyle={width:'15px',height:'20px'}
     const columns = [
       {
         title: i18n('project.image'),

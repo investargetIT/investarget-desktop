@@ -142,7 +142,7 @@ class OrgBDList extends React.Component {
 
     const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
-    const imgStyle={width:'20px',height:'25px'}
+    const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 

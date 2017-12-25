@@ -230,7 +230,7 @@ class TimelineList extends React.Component {
 
     const { location } = this.props
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
-    const imgStyle={width:'20px',height:'25px'}
+    const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { 
         title: i18n('timeline.project_name'), 
