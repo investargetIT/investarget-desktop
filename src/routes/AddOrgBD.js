@@ -89,6 +89,7 @@ class AddOrgBD extends React.Component {
 
   render() {
     const { location }  = this.props
+    console.log(this.state.data)
 
     return (
       <LeftRightLayout
