@@ -9,6 +9,7 @@ import {
   Row, 
   Col, 
   Switch, 
+  Button, 
 } from 'antd';
 
 const Option = Select.Option
@@ -80,8 +81,15 @@ class ModalModifyOrgBDStatus extends React.Component {
   state = {
     username: '', 
     mobile: '',
+    wechat: '', 
+    email: '', 
     isimportant: this.props.bd.isimportant, 
     status: this.props.bd.bd_status.id, 
+  }
+
+  checkInvalid = () => {
+    const { username, mobile, wechat, email, status } = this.state;
+    return (username.length === 0 || mobile.length === 0 || wechat.length === 0 || email.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3;
   }
 
   render() {
@@ -90,9 +98,9 @@ class ModalModifyOrgBDStatus extends React.Component {
       <Modal
         title={i18n('modify_orgbd_status')}
         visible={visible}
-        onOk={() => onOk(this.state)}
         onCancel={onCancel}
         confirmLoading={confirmLoading}
+        footer={null}
       >
         <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
           <Row>
@@ -114,26 +122,31 @@ class ModalModifyOrgBDStatus extends React.Component {
               />
             </Col>
           </Row>
-          { !this.props.bd.bduser && this.state.status === 3 ? <div>
+          { !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ? <div>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.username')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.username')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.mobile')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.mobile')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
+            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.mobile')} value={this.state.mobile} onChange={e => this.setState({ mobile: e.target.value })} /></Col>
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
+            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.email')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.email')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
+            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.email')} value={this.state.email} onChange={e => this.setState({ email: e.target.value })} /></Col>
           </Row>
           </div>
           : null }
+          <Row style={{ marginTop: 10 }}>
+            <Col span={8} />
+            <Col span={16}><Button type="primary" onClick={() => onOk(this.state)} disabled={this.checkInvalid()}>{i18n('common.confirm')}</Button></Col>
+          </Row>
         </div>
+        
       </Modal>
     )
   }

@@ -101,7 +101,7 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
-  handleConfirmAudit = ({ status, isimportant }) => {
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email }) => {
     const body = {
       bd_status: status,
       isimportant: isimportant ? 1 : 0,
@@ -117,6 +117,23 @@ class OrgBDList extends React.Component {
         investoruser: this.state.currentBD.bduser,
         traderuser: this.state.currentBD.manager.id
       });
+    } else {
+      api.addOrgBDComment({
+        orgBD: this.state.currentBD.id,
+        comments: `${username} ${mobile} ${wechat} ${email}`
+      });
+      const newUser = { mobile, wechat, email };
+      if (window.LANG === 'en') {
+        newUser.usernameE = username;
+      } else {
+        newUser.usernameC = username;
+      }
+      api.addUser(newUser)
+        .then(result => api.addUserRelation({
+          relationtype: false,
+          investoruser: result.data.id,
+          traderuser: this.state.currentBD.manager.id
+        }));
     }
   }
 
