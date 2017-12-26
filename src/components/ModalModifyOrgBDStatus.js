@@ -79,25 +79,40 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   state = {
     username: '', 
-    mobile: ''
-  }
-
-  handleSendEmailChange = (e) => {
-    this.props.onSendEmailChange(e.target.checked)
+    mobile: '',
+    isimportant: this.props.bd.isimportant, 
+    status: this.props.bd.bd_status.id, 
   }
 
   render() {
     const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
     return (
-      <Modal title={i18n('modify_orgbd_status')} visible={visible} onOk={onOk} onCancel={onCancel} confirmLoading={confirmLoading}>
+      <Modal
+        title={i18n('modify_orgbd_status')}
+        visible={visible}
+        onOk={() => onOk(this.state)}
+        onCancel={onCancel}
+        confirmLoading={confirmLoading}
+      >
         <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
           <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
-            <Col span={16}><Switch defaultChecked={this.props.bd && this.props.bd.isimportant} /></Col>
+            <Col span={16}>
+              <Switch
+                defaultChecked={this.state.isimportant}
+                onChange={checked => this.setState({ isimportant: checked })}
+              />
+            </Col>
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
-            <Col span={16}><SelectProjectStatus style={{ width: 100 }} status={currentStatus} value={status} onChange={onStatusChange} /></Col>
+            <Col span={16}>
+              <SelectProjectStatus
+                style={{ width: 100 }}
+                value={this.state.status}
+                onChange={status => this.setState({ status })}
+              />
+            </Col>
           </Row>
           { this.props.bd && !this.props.bd.bduser && status === 3 ? <div>
           <Row style={{ marginTop: 10 }}>

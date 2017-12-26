@@ -101,11 +101,13 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
-  handleConfirmAudit = () => {
-    api.modifyOrgBDStatus(this.state.currentBD.id, this.state.status)
-    .then(result => {
-        this.setState({ visible: false }, this.getOrgBdList);
-    });  
+  handleConfirmAudit = ({ status, isimportant }) => {
+    const body = {
+      bd_status: status,
+      isimportant: isimportant ? 1 : 0,
+    }
+    api.modifyOrgBD(this.state.currentBD.id, body)
+      .then(result => this.setState({ visible: false }, this.getOrgBdList));
   }
 
   handleOpenModal = bd => {
@@ -233,7 +235,7 @@ class OrgBDList extends React.Component {
           />
         </div>
 
-        { this.state. visible ? 
+        { this.state.visible ? 
         <ModalModifyOrgBDStatus 
           visible={this.state.visible} 
           onCancel={() => this.setState({ visible: false })} 
