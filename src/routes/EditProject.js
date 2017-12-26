@@ -101,19 +101,21 @@ class EditProject extends React.Component {
 
   getProject = () => {
     const id = Number(this.props.params.id)
-    api.getProjDetail(id).then(result => {
-      let data = result.data
-      data.character = data.character && data.character.id
-      data.country = data.country && data.country.id
-      data.currency = data.currency && data.currency.id
-      data.industries = data.industries
-      data.projstatus = data.projstatus && data.projstatus.id
-      data.supportUser = data.supportUser && data.supportUser.id
-      data.tags = data.tags ? data.tags.map(item => item.id) : []
-      data.transactionType = data.transactionType ? data.transactionType.map(item => item.id) : []
-      data.takeUser = data.takeUser ? data.takeUser.id : null
-      data.makeUser = data.makeUser ? data.makeUser.id : null
-      data.service = data.service ? data.service.map(m => m.id) : []
+    api.getProjLangDetail(id).then(result => {
+      let data = Object.assign({}, result.data);
+      data.character = result.data.character && result.data.character.id
+      data.country = result.data.country && result.data.country.id
+      data.currency = result.data.currency && result.data.currency.id
+      data.industries = result.data.industries
+      data.projstatus = result.data.projstatus && result.data.projstatus.id
+      data.supportUserName = result.data.supportUser && result.data.supportUser.username
+      data.tags = result.data.tags ? result.data.tags.map(item => item.id) : []
+      data.transactionType = result.data.transactionType ? result.data.transactionType.map(item => item.id) : []
+      data.takeUser = result.data.takeUser === undefined ? undefined : (result.data.takeUser === null ? null : result.data.takeUser.id);
+      data.takeUserName = result.data.takeUser && result.data.takeUser.username;
+      data.makeUser = result.data.makeUser === undefined ? undefined : (result.data.makeUser === null ? null : result.data.makeUser.id);
+      data.makeUserName = result.data.makeUser && result.data.makeUser.username;
+      data.service = result.data.service ? result.data.service.map(m => m.id) : []
       // `value` prop on `textarea` should not be null.
       let textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
       textFields.forEach(field => {

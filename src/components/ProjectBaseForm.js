@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n, getCurrentUser } from '../utils/util'
+import { i18n, getCurrentUser, hasPerm } from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
@@ -21,7 +21,8 @@ import {
   CascaderCountry,
   CascaderIndustry,
   RadioTrueOrFalse,
-  SelectService,
+  SelectService, 
+  SelectExistUser, 
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -94,6 +95,12 @@ class ProjectBaseForm extends React.Component {
         <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
           <SelectService mode="multiple" />
         </BasicFormItem>
+
+        { hasPerm('proj.admin_addproj') ? 
+        <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={this.currentUserId} valueType="number">
+           <SelectExistUser />
+        </BasicFormItem>
+        : null }
 
         <div style={{textAlign: 'center'}}>
           <div style={paraStyle}>

@@ -183,13 +183,6 @@ class ProjectConnectForm extends React.Component {
 
     const { getFieldDecorator } = this.props.form
     this.currentUserId = getCurrentUser()
-    // 用户上传项目权限 -> supportUser 为当前用户，不可更改
-    if (hasPerm('proj.user_addproj')) {
-      getFieldDecorator('supportUser', {
-        rules: [{required: true, type: 'number'}],
-        initialValue: this.currentUserId,
-      })
-    }
   }
 
   phoneNumberValidator = (rule, value, callback) => {
@@ -202,45 +195,63 @@ class ProjectConnectForm extends React.Component {
     }
   }
 
+  isCurrentUserSupportUser = () => {
+    return this.currentUserId === this.props.form.getFieldValue('supportUser').id;
+  }
+
   render() {
     return (
       <Form>
         {
-          hasPerm('proj.get_secretinfo') ? (
+          this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
             <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
           ) : null
         }
 
         {
-          hasPerm('proj.get_secretinfo') ? (
+           this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
             <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
           ) : null
         }
 
         {
-          hasPerm('proj.get_secretinfo') ? (
+           this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
             <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
               <Input type="email" />
             </BasicFormItem>
           ) : null
         }
 
-        {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
-          hasPerm('proj.admin_addproj') ? (
-            <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={this.currentUserId}>
-              <SelectExistUser />
+         this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
+            <BasicFormItem label={i18n('project.uploader')} name="supportUserName" initialValue={this.currentUserId}>
+              <Input disabled />
             </BasicFormItem>
           ) : null
-        }
+        } 
 
-        <BasicFormItem label={i18n('project.take_user')} name="takeUser" required valueType="number">
-          <SelectAllUser type="trader" />
-        </BasicFormItem>
+        
+        {this.props.form.getFieldValue('takeUser') !== undefined ?
+          hasPerm('proj.admin_changeproj') ?
+            <BasicFormItem label={i18n('project.take_user')} name="takeUser" valueType="number">
+              <SelectAllUser type="trader" />
+            </BasicFormItem>
+            :
+            <BasicFormItem label={i18n('project.take_user')} name="takeUserName">
+              <Input disabled />
+            </BasicFormItem>
+          : null} 
 
-        <BasicFormItem label={i18n('project.make_user')} name="makeUser" required valueType="number">
-          <SelectAllUser type="trader" />
-        </BasicFormItem>
+        {this.props.form.getFieldValue('makeUser') !== undefined ?
+          hasPerm('proj.admin_changeproj') ?
+            <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="number">
+              <SelectAllUser type="trader" />
+            </BasicFormItem>
+            :
+            <BasicFormItem label={i18n('project.make_user')} name="makeUserName">
+              <Input disabled />
+            </BasicFormItem>
+          : null}
       </Form>
     )
   }
