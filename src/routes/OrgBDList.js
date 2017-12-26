@@ -101,7 +101,7 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email }) => {
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group }) => {
     const body = {
       bd_status: status,
       isimportant: isimportant ? 1 : 0,
@@ -122,7 +122,7 @@ class OrgBDList extends React.Component {
         orgBD: this.state.currentBD.id,
         comments: `${username} ${mobile} ${wechat} ${email}`
       });
-      const newUser = { mobile, wechat, email };
+      const newUser = { mobile, wechat, email, groups: [Number(group)], userstatus: 2 };
       if (window.LANG === 'en') {
         newUser.usernameE = username;
       } else {

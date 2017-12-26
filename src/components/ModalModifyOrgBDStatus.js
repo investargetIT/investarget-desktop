@@ -34,47 +34,54 @@ const options1 = [
 ]
 
 
-class SelectProjectStatus extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+function SelectBDStatus(props) {
+  const { value, onChange, ...extraProps } = props;
+  return (
+    <Select
+      size="large"
+      value={String(value)}
+      onChange={value => onChange(Number(value))}
+      {...extraProps}
+    >
+      {
+        options1.map(item =>
+          <Option key={item.value} value={String(item.value)}>{item.label}</Option>
+        )
+      }
+    </Select>
+  );
+}
 
-  handleChange = (value) => {
-    this.props.onChange(Number(value))
+class SelectInvestorGroup extends React.Component {
+
+  state = {
+    options: []
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['projstatus'] })
+    api.queryUserGroup({ type: 'investor' })
+      .then(result => {
+        echo('result', result.data.data);
+        const options = result.data.data.map(m => ({ label: m.name, value: m.id }));
+        echo(options);
+        this.setState({ options });
+      });
   }
 
   render() {
-    const {options, children, dispatch, status, value, onChange, ...extraProps} = this.props
-    let _options = []
-    if (status < 4) {
-      _options = options.filter(item => item.value <= status + 1)
-    } else {
-      _options = options
-    }
-
+    if (this.state.options.length === 0) return null;
     return (
-      <Select size="large" value={String(value)} onChange={this.handleChange} {...extraProps}>
-        {
-          options1.map(item =>
-            <Option key={item.value} value={String(item.value)}>{item.label}</Option>
-          )
-        }
+      <Select 
+        size="large" 
+        value={this.props.value} 
+        style={{ width: 120, height: 32 }} 
+        onChange={this.props.onChange}
+      >
+        { this.state.options.map(m => <Option key={m.value} value={String(m.value)}>{m.label}</Option>) }
       </Select>
     )
   }
 }
-
-SelectProjectStatus = connect(function(state) {
-  const { projstatus } = state.app
-  const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
-  return { options }
-})(SelectProjectStatus)
-
-
 
 class ModalModifyOrgBDStatus extends React.Component {
 
@@ -85,11 +92,12 @@ class ModalModifyOrgBDStatus extends React.Component {
     email: '', 
     isimportant: this.props.bd.isimportant, 
     status: this.props.bd.bd_status.id, 
+    group: '', 
   }
 
   checkInvalid = () => {
-    const { username, mobile, wechat, email, status } = this.state;
-    return (username.length === 0 || mobile.length === 0 || wechat.length === 0 || email.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3;
+    const { username, mobile, wechat, email, status, group } = this.state;
+    return (username.length === 0 || mobile.length === 0 || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3;
   }
 
   render() {
@@ -115,14 +123,18 @@ class ModalModifyOrgBDStatus extends React.Component {
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
-              <SelectProjectStatus
-                style={{ width: 100 }}
+              <SelectBDStatus
+                style={{ width: 120 }}
                 value={this.state.status}
                 onChange={status => this.setState({ status })}
               />
             </Col>
           </Row>
           { !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ? <div>
+          <Row style={{ marginTop: 10 }}>
+            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.role')} : </Col>
+            <Col span={16}><SelectInvestorGroup value={this.state.group} onChange={value => this.setState({group: value})} /></Col>
+          </Row> 
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.username')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.username')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
