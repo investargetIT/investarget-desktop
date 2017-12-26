@@ -142,11 +142,12 @@ class SelectOrgInvestorToBD extends React.Component {
     }
   }
 
-  handleSwitchChange = (id, ifimportant) => {
+  handleSwitchChange = (record, ifimportant) => {
+    let id=record.id+"_"+record.org.id
     this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
     const userList = this.props.value
     const index = _.findIndex(userList, function(item) {
-      return item.investor == id
+      return item.investor+"_"+item.org == id
     })
     if (index > -1) {
       userList[index].isimportant=ifimportant
@@ -157,7 +158,8 @@ class SelectOrgInvestorToBD extends React.Component {
   handleSelectChange = (investorIds, rows) => {
     const value = investorIds.map((investorId, index) => {
       const org = rows[index].org.id;
-      const isimportant=this.state.ifimportantMap[investorId]||false
+      const importantId=rows[index].id+"_"+org
+      const isimportant=this.state.ifimportantMap[importantId]||false
       return {
         investor: rows[index].id,
         org,
@@ -209,8 +211,8 @@ class SelectOrgInvestorToBD extends React.Component {
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' }, 
       {title:i18n('org_bd.important'), render:(text,record)=>{
-        return <SwitchButton onChange={this.handleSwitchChange.bind(this,record.id)} />
-      }},  
+        return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
+      }}
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
