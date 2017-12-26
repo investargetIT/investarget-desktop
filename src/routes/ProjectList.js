@@ -220,9 +220,12 @@ class ProjectList extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          const transactionAmount = record.transactionAmount
-          return transactionAmount || 'N/A'
-        }
+          if(record.country.country=='中国'&&record.currency.currency=='人民币'){
+            return record.financeAmount!=null ? record.financeAmount+"¥" : 'N/A'
+          }else{
+            return record.financeAmount_USD!=null ? record.financeAmount_USD+"$" : 'N/A'
+          }
+          }       
       },
       {
         title: i18n('project.current_status'),
