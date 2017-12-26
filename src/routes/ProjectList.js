@@ -221,9 +221,9 @@ class ProjectList extends React.Component {
         key: 'transactionAmount',
         render: (text, record) => {
           if(record.country.country=='中国'&&record.currency.currency=='人民币'){
-            return record.financeAmount!=null ? record.financeAmount+"¥" : 'N/A'
+            return record.financeAmount ? "¥"+Number(record.financeAmount).toLocaleString() : 'N/A'
           }else{
-            return record.financeAmount_USD!=null ? record.financeAmount_USD+"$" : 'N/A'
+            return record.financeAmount_USD ? "$"+Number(record.financeAmount_USD).toLocaleString() : 'N/A'
           }
           }       
       },
