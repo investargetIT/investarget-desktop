@@ -108,6 +108,16 @@ class OrgBDList extends React.Component {
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => this.setState({ visible: false }, this.getOrgBdList));
+  
+    if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
+
+    if (this.state.currentBD.bduser) {
+      api.addUserRelation({
+        relationtype: false,
+        investoruser: this.state.currentBD.bduser,
+        traderuser: this.state.currentBD.manager.id
+      });
+    }
   }
 
   handleOpenModal = bd => {

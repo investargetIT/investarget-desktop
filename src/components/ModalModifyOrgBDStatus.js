@@ -114,7 +114,7 @@ class ModalModifyOrgBDStatus extends React.Component {
               />
             </Col>
           </Row>
-          { this.props.bd && !this.props.bd.bduser && status === 3 ? <div>
+          { !this.props.bd.bduser && this.state.status === 3 ? <div>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.username')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.username')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
