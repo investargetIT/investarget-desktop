@@ -94,7 +94,14 @@ class TransactionInfo extends React.Component {
     const userId = this.props.userId
     const params = { investoruser: userId }
     api.getUserRelation(params).then(result => {
-      const { count, data: list } = result.data
+      let { count, data:list} = result.data
+      let index=list.findIndex((item)=>{return item.relationtype==true})
+      if(index!=-1){
+        let tmp=list[index]
+        list[index]=list[0]
+        list[0]=tmp
+      }
+      console.log(list)
       if (count) {
         this.setState({ current: list[0].id, list })
         let data = list[0]
