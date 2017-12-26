@@ -312,7 +312,7 @@ class Trader extends React.Component {
   }
   render () {
     return <div>
-      { this.state.list.map(m => <span key={m.value} style={{ marginRight: 10, textDecoration: 'underline', color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
+      { this.state.list.map(m => <span key={m.value} style={{ marginRight: 10, color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
     </div>
   }
 }
