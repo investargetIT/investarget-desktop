@@ -102,7 +102,7 @@ class DataRoomList extends React.Component {
     const params = { search, page_index: page, page_size: pageSize }
     this.setState({ loading: true })
 
-    if (hasPerm('usersys.as_admin')) {
+    // if (hasPerm('usersys.as_admin')) {
       api.queryDataRoom(params).then(result => {
         const { count: total, data: list } = result.data
         this.setState({ loading: false, total, list })
@@ -113,18 +113,18 @@ class DataRoomList extends React.Component {
           payload: error
         })
       })
-    } else {
-      api.queryUserDataRoom(params).then(result => {
-        const { count: total, data: list } = result.data
-        this.setState({ loading: false, total, list: list.map(item=>item.dataroom) })
-      }).catch(error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-    }
+    // } else {
+    //   api.queryUserDataRoom(params).then(result => {
+    //     const { count: total, data: list } = result.data
+    //     this.setState({ loading: false, total, list: list.map(item=>item.dataroom) })
+    //   }).catch(error => {
+    //     this.setState({ loading: false })
+    //     this.props.dispatch({
+    //       type: 'app/findError',
+    //       payload: error
+    //     })
+    //   })
+    // }
 
     this.writeSetting()
   }
