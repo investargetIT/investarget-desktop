@@ -101,6 +101,22 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
+  wechatConfirm = state => {
+    echo(this.state.currentBD);
+    if (this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0 ) {
+      Modal.confirm({
+        title: 'Do you want to delete these items?',
+        content: 'When clicked the OK button, this dialog will be closed after 1 second',
+        onOk() {
+
+        },
+        onCancel: this.handleConfirmAudit(state),
+      });
+    } else {
+      this.handleConfirmAudit(state);
+    }
+  }
+
   handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group }) => {
     const body = {
       bd_status: status,
@@ -108,7 +124,7 @@ class OrgBDList extends React.Component {
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => this.setState({ visible: false }, this.getOrgBdList));
-  
+
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
     if (this.state.currentBD.bduser) {
@@ -268,7 +284,7 @@ class OrgBDList extends React.Component {
           onCancel={() => this.setState({ visible: false })} 
           status={this.state.status}
           onStatusChange={this.handleStatusChange}
-          onOk={this.handleConfirmAudit}
+          onOk={this.wechatConfirm}
           bd={this.state.currentBD}
         />
         : null }

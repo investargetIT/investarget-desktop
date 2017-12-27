@@ -153,6 +153,15 @@ class ModalModifyOrgBDStatus extends React.Component {
           </Row>
           </div>
           : null }
+
+          { /* 有联系人的BD成功时要求填写联系人微信号 */ }
+          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ?
+            <Row style={{ marginTop: 10 }}>
+              <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
+              <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
+            </Row>
+            : null}
+
           <Row style={{ marginTop: 10 }}>
             <Col span={8} />
             <Col span={16}><Button type="primary" onClick={() => onOk(this.state)} disabled={this.checkInvalid()}>{i18n('common.confirm')}</Button></Col>
