@@ -179,7 +179,7 @@ function remarkListWithApi(type) {
         sortByTime(list)
         this.setState({ list })
 
-        if(type==='user'||type==='org'){
+        if(['user', 'org', 'timeline'].includes(type)){
           if(currentListNum>initComNum){
             this.setState({currentList:list.slice(0,currentListNum)})
           }else{
@@ -239,7 +239,7 @@ function remarkListWithApi(type) {
     render() {
       const readOnly = 'readOnly' in this.props
       const {initComNum,list,currentList,currentListNum}=this.state
-      const ifUser = (type === 'user'||'org')
+      const ifUser = ['user', 'org', 'timeline'].includes(type);
       return (
         <div>
         {ifUser ? <div>
@@ -250,8 +250,14 @@ function remarkListWithApi(type) {
         onDelete={this.deleteRemark}
       />
       <div style={divStyle}>
-      {list.length<=initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
-      <a onClick={this.displayMore}>{i18n('common.view_more')}</a>)}
+              {list.length <= initComNum ? null :
+                (
+                  currentListNum === list.length ?
+                    <a onClick={this.collapseAll}>{i18n('common.collapse')}</a>
+                    :
+                    <a onClick={this.displayMore}>{i18n('common.view_more')}</a>
+                )
+              }
       </div>
       </div> : 
         <RemarkList
