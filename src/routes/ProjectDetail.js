@@ -498,7 +498,7 @@ function SecretInfo({ project }) {
   return (
     <div style={blockStyle}>
       <h2 style={subtitleStyle2}>{i18n('project.privacy_infomation')}</h2>
-      { hasPerm('proj.get_secretinfo') ? (
+      { project.contactPerson !== undefined ? (
         <div style={{padding: '20px 24px', fontSize: 14, color: '#656565', backgroundColor: 'rgb(233, 241, 243)'}}>
           <div>
             <span style={spanStyle}>{i18n('project.project_real_name')}：{project.realname}</span>
