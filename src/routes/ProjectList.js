@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, getGroup, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  getGroup, 
+  hasPerm, 
+  formatMoney, 
+} from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -217,12 +222,12 @@ class ProjectList extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          if(record.country.country=='中国'&&record.currency.currency=='人民币'){
-            return record.financeAmount ? "¥"+Number(record.financeAmount).toLocaleString() : 'N/A'
-          }else{
-            return record.financeAmount_USD ? "$"+Number(record.financeAmount_USD).toLocaleString() : 'N/A'
+          if (['中国', 'China'].includes(record.country.country) && record.currency.id === 1) {
+            return record.financeAmount ? formatMoney(record.financeAmount, 'CNY') : 'N/A'
+          } else {
+            return record.financeAmount_USD ? formatMoney(record.financeAmount_USD) : 'N/A'
           }
-          }       
+        }       
       },
       {
         title: i18n('project.current_status'),

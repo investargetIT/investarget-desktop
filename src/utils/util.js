@@ -267,9 +267,9 @@ function getRandomInt(min, max) {
 
 function formatMoney(value, currency) {
   if (currency == 'CNY') {
-    return '￥ ' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
+    return '¥' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
   } else {
-    return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 

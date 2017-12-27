@@ -48,6 +48,11 @@ class ProjectFinanceYear extends React.Component {
     })
   }
 
+  showFinanceInfo = (item, property) => this.props.isCNY ?
+    item[property] && formatMoney(item[property], 'CNY')
+    :
+    item[property + '_USD'] && formatMoney(item[property + '_USD']);
+
   render() {
     const { finance } = this.state
 
@@ -99,36 +104,36 @@ class ProjectFinanceYear extends React.Component {
               <table style={contentStyle}>
               <tbody>
                 <tr>  
-                  <td style={leftTd}>{`${i18n('project.revenue')}(${i18n('common.USD')})`}</td> 
-                  <td style={rightTd}>{item.revenue_USD ? formatMoney(item.revenue_USD) : 'N/A'}</td>
+                  <td style={leftTd}>{`${i18n('project.revenue')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'revenue') || 'N/A'}</td>
                 </tr>
                 <tr> 
-                  <td style={leftTd}>{`${i18n('project.profits')}(${i18n('common.USD')})`}</td>
-                  <td style={rightTd}>{item.netIncome_USD ? formatMoney(item.netIncome_USD) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td>
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'netIncome') || 'N/A'} </td>
                 </tr>
                 <tr> 
-                  <td style={leftTd}>{`${i18n('project.gross_profits')}(${i18n('common.USD')})`}</td> 
-                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.gross_profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
+                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
                 <tr>
-                  <td style={leftTd}>{`${i18n('project.total_assets')}(${i18n('common.USD')})`} </td>
-                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.total_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
+                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
                 <tr>
-                  <td style={leftTd}>{`${i18n('project.net_assets')}(${i18n('common.USD')})`} </td>
-                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.net_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
+                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
                 <tr> 
-                  <td style={leftTd}>{`${i18n('project.net_cash_flow')}(${i18n('common.USD')})`} </td>
-                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.net_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
+                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
                 <tr>
-                  <td style={leftTd}>{`${i18n('project.operating_cash_flow')}(${i18n('common.USD')})`} </td>
-                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.operating_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
+                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
                 <tr>
-                  <td style={leftTd}>{`${i18n('project.EBITDA')}(${i18n('common.USD')})`} </td>
-                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA) : 'N/A'} </td>
+                  <td style={leftTd}>{`${i18n('project.EBITDA')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
+                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
                 </tr>
               </tbody>
               </table>
@@ -327,6 +332,7 @@ class ProjectDetail extends React.Component {
 
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
+    if (project.country === undefined) return null;
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')}>
 
@@ -373,7 +379,7 @@ class ProjectDetail extends React.Component {
                   </div>
                 </TabPane>
                 <TabPane tab={i18n('project.financials')} key="2">
-                  <ProjectFinanceYear projId={id} />
+                  <ProjectFinanceYear projId={id} isCNY={['中国', 'China'].includes(project.country.country) && project.currency.id === 1} />
                 </TabPane>
                 <TabPane tab={i18n('project.details')} key="3">
                   <Detail project={project} />
@@ -553,12 +559,21 @@ function ProjectHead({ project }) {
     </div>
   )
 }
+function showMoneyRelatedInfo(project, type) {
+  if (['中国', 'China'].includes(project.country.country) && project.currency.id === 1) {
+    return project[type] && formatMoney(project[type], 'CNY');
+  } else {
+    return project[type + '_USD'] && formatMoney(project[type + '_USD']);
+  }
+}
 
 function ProjectIntro({ project }) {
+  if (project.currency === undefined) return null;
   //const labelStyle = {display: 'inline-block', width: 250}
   const trStyle={border:'1px solid #eee',height:'40px'}
   const tdStyle={paddingLeft:'60px'}
   const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
+
   return (
     <div style={blockStyle}>
       <p style={{marginBottom: 60}}>{project.p_introducte}</p>
@@ -579,11 +594,11 @@ function ProjectIntro({ project }) {
         </tr>
         <tr style={trStyle}>
           <td style={tdStyle}>{i18n('project.transaction_size') + ' : '}</td>
-          <td>{project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'}</td>
+          <td>{showMoneyRelatedInfo(project, 'financeAmount') || 'N/A'}</td>
         </tr>
         <tr style={trStyle}>
           <td style={tdStyle}>{i18n('project.company_valuation') + ' : '}</td>
-          <td>{project.companyValuation_USD ? formatMoney(project.companyValuation_USD) : 'N/A'}</td>
+          <td>{showMoneyRelatedInfo(project, 'companyValuation') || 'N/A'}</td>
         </tr>
         </tbody>
       </table>
