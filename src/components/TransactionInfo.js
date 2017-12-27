@@ -106,7 +106,7 @@ class TransactionInfo extends React.Component {
         this.setState({ current: list[0].id, list })
         let data = list[0]
         let traderId = data.traderuser.id
-        this.getTransactionInfo(traderId)
+        // this.getTransactionInfo(traderId)
         this.setState({ score: data.score })
       }
     }, error => {
@@ -159,14 +159,6 @@ class TransactionInfo extends React.Component {
     const { current, list } = this.state
     const relation = list.filter(item => item.id == current)[0]
     const relationId = relation ? relation.id : null
-
-    const SelectTransaction = (
-      <Select size="large" value={ relationId ? String(relationId) : null } onChange={this.handleChangeTransaction}>
-        {
-          list.map(item => <Option key={item.id} value={String(item.id)}>{item.traderuser.username}</Option>)
-        }
-      </Select>
-    )
 
     const { company, title, tags, country, mobile, email, score } = this.state
     console.log(list)
