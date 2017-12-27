@@ -120,7 +120,7 @@ class OrgBDList extends React.Component {
     } else {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
-        comments: `${username} ${mobile} ${wechat} ${email}`
+        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`
       });
       const newUser = { mobile, wechat, email, groups: [Number(group)], userstatus: 2 };
       if (window.LANG === 'en') {
