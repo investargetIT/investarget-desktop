@@ -294,7 +294,7 @@ class Trader extends React.Component {
     const param = { investoruser: this.props.investor}
     api.getUserRelation(param).then(result => {
       echo(result);
-      const data = result.data.data.sort((a, b) => a.relationtype || b.relationtype)
+      const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
       const list = []
       data.forEach(item => {
         const trader = item.traderuser
