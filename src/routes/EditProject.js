@@ -101,14 +101,14 @@ class EditProject extends React.Component {
 
   getProject = () => {
     const id = Number(this.props.params.id)
-    api.getProjLangDetail(id).then(result => {
+    api.getProjDetail(id).then(result => {
       let data = Object.assign({}, result.data);
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
       data.currency = result.data.currency && result.data.currency.id
       data.industries = result.data.industries
       data.projstatus = result.data.projstatus && result.data.projstatus.id
-      data.supportUserName = result.data.supportUser && result.data.supportUser.username
+      data.supportUserName = result.data.supportUser && (window.LANG === 'en' ? result.data.supportUser.usernameE : result.data.supportUser.usernameC);
       data.tags = result.data.tags ? result.data.tags.map(item => item.id) : []
       data.transactionType = result.data.transactionType ? result.data.transactionType.map(item => item.id) : []
       data.takeUser = result.data.takeUser === undefined ? undefined : (result.data.takeUser === null ? null : result.data.takeUser.id);
