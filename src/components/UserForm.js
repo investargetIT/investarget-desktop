@@ -3,13 +3,17 @@ import PropTypes from 'prop-types'
 import { i18n, hasPerm, intersection } from '../utils/util'
 import * as api from '../api'
 import { Link } from 'dva/router'
-
-import { Form, Input, Row, Col, Button } from 'antd'
-const FormItem = Form.Item
+import { 
+  Form, 
+  Input, 
+  Row, 
+  Col, 
+  Button, 
+  Switch, 
+} from 'antd';
 import {
   BasicFormItem,
 } from '../components/Form'
-
 import {
   SelectTag,
   SelectTitle,
@@ -24,6 +28,7 @@ import {
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
 
+const FormItem = Form.Item
 
 const formItemLayout = {
   labelCol: {
@@ -158,6 +163,11 @@ class UserForm extends React.Component {
             </BasicFormItem>
           ) : null
         }
+        {getFieldValue('onjob') !== undefined ?
+          <FormItem {...formItemLayout} label="是否在职" name="onjob">
+            {getFieldDecorator('onjob')(<Switch defaultChecked={getFieldValue('onjob')} />)}
+          </FormItem>
+          : null}
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label={i18n('user.major_trader')} name="major_trader">

@@ -74,6 +74,7 @@ class EditUser extends React.Component {
     _data['country'] = data.country && data.country.id
     _data['major_trader'] = data.majorTraderID
     _data['minor_traders'] = data.minorTraderIDArr || []
+    _data['onjob'] = data.onjob;
 
     const textFields = ['targetdemand', 'mergedynamic', 'ishasfundorplan']
     textFields.forEach(item => {
