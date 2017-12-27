@@ -18,11 +18,13 @@ class MyPartner extends React.Component {
     loading: false,
     total: 0,
     pageSize: 10, // todo
-    pageIndex: 1
+    pageIndex: 1,
+    friendList: [], 
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
-  componentDidMount() {
+
+  getPartner = () => {
     this.setState({ loading: true })
 
     let title, param
@@ -33,33 +35,53 @@ class MyPartner extends React.Component {
       title = "traderuser"
       param = { investoruser: isLogin().id }
     }
+    param.page_size = this.state.pageSize;
+    param.page_index = this.state.pageIndex;
 
-    Promise.all([api.getUserRelation(param), api.getUserFriend()])
-    .then(data => {
-      const investorRelationShip = data[0].data.data.map(m => m[title])
-      const investorIdArr = new Set(investorRelationShip.map(m => m.id))
-      const investorList = [...investorIdArr].reduce((acc, value) => {
-        acc.push(investorRelationShip.filter(f => f.id === value)[0])
-        return acc
-      }, [])
-      echo('list', investorList.length);
-      const list = investorList.map(m => {
-        let isAlreadyAdded = false
-        if (data[1].data.data.filter(f => (f.friend && f.friend.id === m.id) || (f.user && f.user.id === m.id)).length > 0) {
-          isAlreadyAdded = true
-        }
-        return {...m, isAlreadyAdded}
+    api.getUserRelation(param)
+      .then(result => {
+        this.setState({
+          list: result.data.data.map(m => m[title]),
+          loading: false, 
+          total: result.data.count
+        })
+        echo(this.state.list)
       })
-      this.setState({
-        list,
-        loading: false,
-        total: investorList.length
-      })
-      this.investorList = investorList
-    }).catch(err => this.props.dispatch({
-      type: 'app/findError',
-      payload: err
-    }))
+  }
+
+  componentDidMount() {
+    this.getPartner();
+    api.getUserFriend()
+    .then(result => {
+      const friendList = result.data.data.map(m => m.friend.id === isLogin().id ? m.user.id : m.friend.id);
+      this.setState({ friendList })
+    })
+    // Promise.all([api.getUserRelation(param), api.getUserFriend()])
+    // .then(data => {
+    //   const investorRelationShip = data[0].data.data.map(m => m[title])
+    //   const investorIdArr = new Set(investorRelationShip.map(m => m.id))
+    //   const investorList = [...investorIdArr].reduce((acc, value) => {
+    //     acc.push(investorRelationShip.filter(f => f.id === value)[0])
+    //     return acc
+    //   }, [])
+    //   echo('list', investorList.length);
+    //   const list = investorList.map(m => {
+    //     let isAlreadyAdded = false
+    //     if (data[1].data.data.filter(f => (f.friend && f.friend.id === m.id) || (f.user && f.user.id === m.id)).length > 0) {
+    //       isAlreadyAdded = true
+    //     }
+    //     return {...m, isAlreadyAdded}
+    //   })
+    //   this.setState({
+    //     list,
+    //     loading: false,
+    //     total: investorList.length
+    //   })
+    //   this.investorList = investorList
+    // }).catch(err => this.props.dispatch({
+    //   type: 'app/findError',
+    //   payload: err
+    // }))
   }
 
   handleSearch(value) {
@@ -107,9 +129,7 @@ class MyPartner extends React.Component {
     console.log(userID)
   }
 
-  handlePageChange(pageIndex) {
-    console.log(pageIndex)
-  }
+  handlePageChange = pageIndex => this.setState({ pageIndex }, this.getPartner)
 
   handleShowSizeChange(pageSize) {
     console.log(pageSize)
@@ -142,7 +162,7 @@ class MyPartner extends React.Component {
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.org',
+        dataIndex: 'org.orgname',
         key: 'org'
       },
       {
@@ -182,7 +202,9 @@ class MyPartner extends React.Component {
             </Popconfirm>
             : null }
             &nbsp;
+            {!this.state.friendList.includes(record.id) ? 
             <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>
+            : null}
           </span>
         )
       })
