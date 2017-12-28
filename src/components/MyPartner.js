@@ -20,6 +20,7 @@ class MyPartner extends React.Component {
     pageSize: 10, // todo
     pageIndex: 1,
     friendList: [], 
+    search: '', 
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
@@ -37,6 +38,7 @@ class MyPartner extends React.Component {
     }
     param.page_size = this.state.pageSize;
     param.page_index = this.state.pageIndex;
+    param.search = this.state.search;
 
     api.getUserRelation(param)
       .then(result => {
@@ -86,6 +88,8 @@ class MyPartner extends React.Component {
 
   handleSearch(value) {
 
+    this.setState({ search: value }, this.getPartner);
+    return;
     let params
     if (typeof value === 'string') {
       // Search
