@@ -71,9 +71,10 @@ class GlobalMobile extends React.Component {
     return (
       <Input.Group compact className="it-mobile" style={{display: 'flex'}}>
         <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId + ''}>
-          {this.props.country.map(c => <Option key={c.id} value={c.id + ''}>
+          {this.props.country.map(c => {
+            return c.key ?<Option key={c.id} value={c.id + ''}>
             <img src={c.url} style={{ width: 40, height: 28, marginLeft: 6, verticalAlign: 'top' }} />
-          </Option>)}
+          </Option> : null})}
         </Select>
         <Input size="large" readOnly style={{width: 60,height: 48,border: 'none',borderLeft: '1px solid #cfcfcf',fontSize:16,color:'#989898', ...this.props.inputStyle}} disabled={this.props.disabled} value={areaCode} onChange={this.handleChangeAreaCode} />
         <Input size="large" style={{flexGrow: 1,height: 48,border: 'none',fontSize:16,color:'#989898', ...this.props.inputStyle}} disabled={this.props.disabled} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />

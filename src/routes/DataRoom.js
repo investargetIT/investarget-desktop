@@ -130,7 +130,6 @@ class DataRoom extends React.Component {
     const newData = this.state.data.slice()
     const existKeyList = newData.map(m => m.unique)
     const maxKey = Math.max(...existKeyList)
-
     newData.splice(0, 0, {
       name: i18n('dataroom.new_folder'),
       isFolder: true,
@@ -165,6 +164,17 @@ class DataRoom extends React.Component {
     if (!value.id) {
       // Create new folder
       const parentIndex = newData.map(m => m.id).indexOf(value.parentId)
+      
+      const currentFiles=newData.filter(f=>{return f.parentId==value.parentId}).slice(1)
+
+      if(currentFiles.some(item=>{return Object.is(item.name,value.rename)}))
+      {
+        Modal.error({
+            title: '不支持的文件夹名字',
+            content: '已存在相同的文件夹名字',
+          })
+        return 
+      }
       if (parentIndex < 0) return
       const dataroom = newData[parentIndex].dataroom
       const body = {
