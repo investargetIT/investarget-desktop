@@ -29,7 +29,9 @@ class Login extends React.Component {
         console.error(e.message)
       }
     }
-    localStorage.setItem('source', Number(this.props.location.query.source));
+    if (!localStorage.getItem('source')) {
+      localStorage.setItem('source', Number(this.props.location.query.source));
+    }
   }
 
   handleSubmit = (e) => {

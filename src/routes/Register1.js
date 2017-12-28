@@ -31,7 +31,9 @@ class Register1 extends React.Component {
 
   constructor(props) {
     super(props);
-    localStorage.setItem('source', Number(this.props.location.query.source));
+    if (!localStorage.getItem('source')) {
+      localStorage.setItem('source', Number(this.props.location.query.source));
+    }
   }
 
   getChildContext() {
