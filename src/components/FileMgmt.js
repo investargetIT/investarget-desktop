@@ -257,7 +257,7 @@ class FileMgmt extends React.Component {
   }
 
   render () {
-    const isAdmin = hasPerm('usersys.as_admin')
+    const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
     const rowSelection = isAdmin ? {
       onChange: (selectedRowKeys, selectedRows) => {
