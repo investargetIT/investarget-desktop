@@ -96,10 +96,14 @@ class FileMgmt extends React.Component {
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
     } else {
-      const watermark = isLogin().email || 'Investarget'
-      const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
-        '&watermark=' + encodeURIComponent(watermark)
-      window.open(url)
+      if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
+        window.open(file.fileurl);
+      } else {
+        const watermark = isLogin().email || 'Investarget'
+        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+          '&watermark=' + encodeURIComponent(watermark)
+        window.open(url)
+      }
     }
   }
 
@@ -300,7 +304,12 @@ class FileMgmt extends React.Component {
 
         return (
         <div>
-          <img style={{ width: 26, verticalAlign: 'middle' }} src={ !record.isFolder ? "/images/pdf.png" : ifhasFiles ? "/images/fullFolder.png":"/images/folder.png"  } />
+            <img style={{ width: 26, verticalAlign: 'middle' }}
+              src={!record.isFolder ? 
+                (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" : "/images/pdf.png" 
+                : 
+                ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png"}
+            />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
