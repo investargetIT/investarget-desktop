@@ -194,7 +194,7 @@ class OrgBDList extends React.Component {
         render:(text,record)=>{
           return <div >                  
                   {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null}                                
-                  {text ? <Link to={'/app/user/'+record.bduser}>{record.username}</Link>  : '暂无' }                
+                  {text || '暂无' }                
                  </div>
         },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
