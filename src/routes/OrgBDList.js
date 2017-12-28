@@ -104,22 +104,20 @@ class OrgBDList extends React.Component {
   }
 
   wechatConfirm = state => {
-    echo(this.state.currentBD);
-    if (this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0 ) {
+    const react = this;
+    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0 ) {
       Modal.confirm({
-        title: 'Do you want to delete these items?',
-        content: 'When clicked the OK button, this dialog will be closed after 1 second',
-        onOk() {
-
-        },
-        onCancel: this.handleConfirmAudit(state),
+        title: '警告',
+        content: '联系人微信已存在，是否覆盖现有微信',
+        onOk: () => this.handleConfirmAudit(state, true), 
+        onCancel:  () => this.handleConfirmAudit(state),
       });
     } else {
       this.handleConfirmAudit(state);
     }
   }
 
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group }) => {
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group }, isModifyWechat) => {
     const body = {
       bd_status: status,
       isimportant: isimportant ? 1 : 0,
@@ -134,6 +132,20 @@ class OrgBDList extends React.Component {
         relationtype: false,
         investoruser: this.state.currentBD.bduser,
         traderuser: this.state.currentBD.manager.id
+      })
+        .then(result => {
+          if (isModifyWechat) {
+            api.editUser([this.state.currentBD.bduser], { wechat });
+          }
+        })
+        .catch(error => {
+          if (isModifyWechat) {
+            api.editUser([this.state.currentBD.bduser], { wechat });
+          } 
+        });
+      api.addOrgBDComment({
+        orgBD: this.state.currentBD.id,
+        comments: `${i18n('user.wechat')}: ${wechat}`
       });
     } else {
       api.addOrgBDComment({
@@ -231,7 +243,7 @@ class OrgBDList extends React.Component {
                     <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
                 </Popconfirm>
                 : null }
-                
+
               </div>)
             }
         },
