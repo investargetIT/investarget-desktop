@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
+import {Link} from 'dva/router'
 import { i18n } from '../utils/util'
 import { Row, Col } from 'antd'
 import ImageViewer from './ImageViewer'
@@ -18,7 +19,9 @@ const Field = (props) => {
         <div style={{textAlign: 'left',color:'#282828',fontSize:'16px'}}>{props.title}</div>
       </Col>
       <Col span={18}>
-        <div>{props.value}</div>
+      {props.orgid? <Link to={"/app/organization/"+props.orgid}><div>{props.value}</div></Link> :
+      <div>{props.value}</div>
+      }
       </Col>
     </Row>
   )
@@ -44,6 +47,7 @@ class UserInfo extends React.Component {
       ishasfundorplan: '',
       mergedynamic: '',
       targetdemand: '',
+      orgid:'',
     }
   }
 
@@ -66,8 +70,9 @@ class UserInfo extends React.Component {
       const ishasfundorplan = data.ishasfundorplan
       const mergedynamic = data.mergedynamic
       const targetdemand = data.targetdemand
+      const orgid=data.org ? data.org.id : ''
       this.setState({
-        username, title, tags, country, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand
+        username, title, tags, country, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
       })
       api.downloadUrl(cardBucket, cardKey).then(result => {
         this.setState({ cardUrl: result.data })
@@ -81,7 +86,7 @@ class UserInfo extends React.Component {
   }
 
   render() {
-    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl } = this.state
+    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
     return (
       <div>
         <Field title={i18n('user.cn_name')} value={username} />
@@ -90,7 +95,7 @@ class UserInfo extends React.Component {
         <Field title={i18n('user.position')} value={title} />
         <Field title={i18n('user.tags')} value={tags} />
         <Field title={i18n('user.country')} value={country} />
-        <Field title={i18n('user.institution')} value={org} />
+        <Field title={i18n('user.institution')} value={org} orgid={orgid}/>
         <Field title={i18n('user.area')} value={''} />
         <Field title={i18n('user.mobile')} value={mobile} />
         <Field title={i18n('user.wechat')} value={wechat} />
