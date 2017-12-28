@@ -28,6 +28,12 @@ const submitStyle = {marginTop: 8,width:'100%',height:50,fontSize:20,backgroundC
 
 
 class Register1 extends React.Component {
+
+  constructor(props) {
+    super(props);
+    localStorage.setItem('source', Number(this.props.location.query.source));
+  }
+
   getChildContext() {
     return {
       form: this.props.form
