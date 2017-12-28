@@ -41,12 +41,8 @@ class AddDataRoom extends React.Component {
           const body = { proj: projectID }
           return api.createDataRoom(body).then(result => {
             const { id } = result.data
-            const param1 = { dataroom: id, user: m.investor }
-            const param2 = { dataroom: id, user: m.trader }
-            return Promise.all([
-              api.addUserDataRoom(param1),
-              api.addUserDataRoom(param2)
-            ])
+            const param1 = { dataroom: id, user: m.investor, trader: m.trader };
+            return api.addUserDataRoom(param1);
           })
         }))
         .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/list')))
