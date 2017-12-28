@@ -5,6 +5,7 @@ import {
   time, 
   handleError, 
   hasPerm, 
+  getUserInfo, 
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -20,6 +21,7 @@ import { OrgBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
+import { getUser } from '../api';
 
 class OrgBDList extends React.Component {
   
@@ -212,6 +214,8 @@ class OrgBDList extends React.Component {
             const comments = latestComment ? latestComment.comments : ''
             return (
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+
+              { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.manager.id ? 
               <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
                 <div style={{marginRight:4}}>
                 <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
@@ -220,11 +224,14 @@ class OrgBDList extends React.Component {
                 <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
                 </div>
               </div>
-                <div>
+              : null }
+
+               { hasPerm('BD.manageOrgBD') ?
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
                     <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
                 </Popconfirm>
-                 </div>
+                : null }
+                
               </div>)
             }
         },
