@@ -573,10 +573,12 @@ function ProjectIntro({ project }) {
   const trStyle={border:'1px solid #eee',height:'40px'}
   const tdStyle={paddingLeft:'60px'}
   const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
+  const introduce={__html:project.p_introducte}
 
   return (
     <div style={blockStyle}>
-      <p style={{marginBottom: 60}}>{project.p_introducte}</p>
+      <p dangerouslySetInnerHTML={introduce} style={{marginBottom: 60}}>
+      </p>
       <div style={{marginBottom: 60}}>
         {project.tags && project.tags.map(item =>
           <Tag key={item.id} style={tagStyle}>{item.name}</Tag>
