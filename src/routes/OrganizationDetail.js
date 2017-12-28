@@ -13,9 +13,10 @@ import { BasicFormItem } from '../components/Form'
 const PositionWithUser = props => {
 
   function popoverChildren(user) {
-    if (user.isUnreachUser && hasPerm('usersys.admin_deleteuser')) {
+    if (user.isUnreachUser) {
       return <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
-        <Button type="danger">移除</Button>
+        <p style={{ textAlign: 'center', marginBottom: 10 }}>{user.name}</p>
+        { hasPerm('usersys.admin_deleteuser') ? <Button type="danger">移除</Button> : null }
       </Popconfirm>
     } else if (user.isUnreachUser && !hasPerm('usersys.deleteuser')) {
       return null
