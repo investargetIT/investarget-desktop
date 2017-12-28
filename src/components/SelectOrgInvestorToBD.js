@@ -54,7 +54,7 @@ class SelectOrgInvestorToBD extends React.Component {
     this.state = {
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: 10000,
       total: 0,
       list: [],
       loading: false,
@@ -78,53 +78,28 @@ class SelectOrgInvestorToBD extends React.Component {
 
   getUser = () => {
     const { search, page, pageSize, traderMap } = this.state
-    if (this.props.traderId) {
-      let params = { search, page_index: page, page_size: pageSize, traderuser: this.props.traderId, orgs: this.props.selectedOrgs.map(m => m.id) }
-      this.setState({ loading: true })
-      api.getUserRelation(params).then(result => {
-        const { count: total, data: _list } = result.data
-        const list = _list.map(item => item.investoruser)
-        this.setState({ total, list, loading: false })
-      }, error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-    } else {
-      let params = { search, page_index: page, page_size: pageSize, org: this.props.selectedOrgs.map(m => m.id), groups: this.investorGroupIds }
-      this.setState({ loading: true })
-      api.getUser(params).then(result => {
-        const { count: total, data: list } = result.data
-        const orgWithoutInvestor = removeFromArray(this.props.selectedOrgs.map(m => m.id), list.map(m => m.org.id));
-        orgWithoutInvestor.forEach(element => {
-          const org = this.props.selectedOrgs.filter( f => f.id === element)[0];
-          list.push({
-            username: null,
-            org,
-            title: { name: null },
-            id: null, 
-          })
-        });
-        const investorList = list
-        const _traderMap = {}
-        investorList.forEach(item => {
-          const investorId = item.id
-          const traderId = item.trader_relation && item.trader_relation.traderuser.id
-          if (!traderMap[investorId]) {
-            _traderMap[investorId] = traderId
+
+    let params = { search, page_index: page, page_size: pageSize, groups: this.investorGroupIds }
+    this.setState({ loading: true })
+
+    Promise.all(this.props.selectedOrgs.map(m => api.getUser({ ...params, org: [m.id] })))
+      .then(result => {
+        const list = result.reduce((acc, value, index) => {
+          if (value.data.count > 0) {
+            return acc.concat(value.data.data.map(m => ({ ...m, org: this.props.selectedOrgs[index] })));
+          } else {
+            acc.push({
+              username: null,
+              org: this.props.selectedOrgs[index],
+              title: { name: null },
+              id: null,
+            });
+            return acc;
           }
-        })
-        this.setState({ total, list, loading: false, traderMap: { ...traderMap, ..._traderMap } })
-      }, error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+        }, []);
+        this.setState({ total: list.length, list, loading: false });
       })
-    }
+
   }
 
   handleChangeTrader = (investorId, traderId) => {
@@ -223,7 +198,6 @@ class SelectOrgInvestorToBD extends React.Component {
           <Search2 style={{ width: 250 }} placeholder={[i18n('user.name')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id + '-' + record.org.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
       </div>
     )
 
