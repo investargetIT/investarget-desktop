@@ -350,12 +350,21 @@ class IndexPage extends React.Component {
     const hour = date.getHours();
     const minute = date.getMinutes();
     const {orgBDsuccess, orgBDunsuccess, projBDsuccess, projBDunsuccess} =this.state
+    const nodes=document.getElementsByName("board")
+    for(let node of nodes){
+      node.onmouseover=()=>{
+        node.style.boxShadow='5px 5px 5px gray'
+      }
+      node.onmouseout=()=>{
+        node.style.boxShadow=''
+      }
+    }
     return (
       <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
 
-        <Row style={{ height: 150, overflow: 'hidden' }}>
-          <Col span={8} style={{ height: '100%' }}>
-            <div style={{ height: 150, margin: '0 10px', backgroundColor: '#eeac56', overflow: 'hidden' }}>
+        <Row style={{ height: 160, overflow: 'hidden' }}>
+          <Col  span={8} style={{ height: '100%' }}>
+            <div name="board" style={{ height: 150, margin: '0 10px', backgroundColor: '#eeac56', overflow: 'hidden' }}>
               {this.state.investorStatistic ?
                 <InvestorStatistic
                   totalInvestorNum={this.state.investorStatistic.total}
@@ -367,7 +376,7 @@ class IndexPage extends React.Component {
           <Col span={8} style={{ height: '100%' }}>
           <Link to="/app/schedule">
           <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
-                <Row style={{ backgroundColor: '#F08699', margin: '0 10px 10px', boxShadow:'0 5px 5px gray' }}>
+                <Row name="board" style={{ backgroundColor: '#F08699', margin: '0 10px 10px'}}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>                      
                       <img  style={{ margin: '0 auto' }} src="./images/calendar.png"/>
@@ -383,7 +392,7 @@ class IndexPage extends React.Component {
           </Tooltips>
           </Link>
           
-                <Row style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
+                <Row name="board" style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                       <img  style={{  margin: '0 auto' }} src="./images/org.png"/>
@@ -413,7 +422,7 @@ class IndexPage extends React.Component {
 
           <Link to="/app/schedule">
           <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
-          <Row style={{ backgroundColor: '#93C575', margin: '0 10px 10px' }}>
+          <Row name="board" style={{ backgroundColor: '#93C575', margin: '0 10px 10px' }}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                       <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="glyphicon glyphicon-time"></i>
@@ -433,7 +442,7 @@ class IndexPage extends React.Component {
           </Link>
 
           
-            <Row style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
+            <Row name="board" style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <img  style={{ margin: '0 auto' }} src="./images/projBD.png"/>
