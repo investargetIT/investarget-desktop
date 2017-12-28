@@ -59,34 +59,28 @@ class DataRoom extends React.Component {
 
   getDataRoomFile = () => {
     const id = this.state.id
-    // if (hasPerm('usersys.as_admin')) {
-      let param = { dataroom: id }
-      api.queryDataRoomFile(param).then(result => {
-        var { count, data } = result.data
-        data = this.formatData(data)
-        this.setState({ data })
-      }).catch(error => {
-        handleError(error)
-      })
-    // } 
-    // else {
-    //   let currentUser = isLogin().id
-    //   api.queryDataRoomDir(id).then(result => {
-    //     this.setState({ data: this.formatData(result.data) })
-    //     const param = { dataroom: id }
-    //     return api.queryUserDataRoom(param).then(result => {
-    //       const data = result.data.data[0]
-    //       return api.queryUserDataRoomFile(data.id).then(result => {
-    //         const files = result.data.files
-    //         const data = [...this.state.data, ...files]
-    //         this.setState({ data: this.formatData(data) })
-    //       })
-    //     })
-    //   }).catch(error => {
-    //     handleError(error)
-    //   })
-    // }
+    let param = { dataroom: id }
+    api.queryDataRoomFile(param).then(result => {
+      var { count, data } = result.data
+      data = this.formatData(data)
+      this.setState({ data })
+    }).catch(error => {
+      this.investorGetDataRoomFile();
+    })
   }
+
+  investorGetDataRoomFile = () => api.queryDataRoomDir(this.state.id).then(result => {
+    this.setState({ data: this.formatData(result.data) })
+    const param = { dataroom: this.state.id }
+    return api.queryUserDataRoom(param).then(result => {
+      const data = result.data.data[0]
+      return api.queryUserDataRoomFile(data.id).then(result => {
+        const files = result.data.files
+        const data = [...this.state.data, ...files]
+        this.setState({ data: this.formatData(data) })
+      })
+    })
+  })
 
   getAllUserFile = () => {
     api.queryUserDataRoom({ dataroom: this.state.id }).then(result => {
