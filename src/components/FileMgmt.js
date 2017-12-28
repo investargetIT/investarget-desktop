@@ -397,13 +397,17 @@ class FileMgmt extends React.Component {
 
     const react = this
 
+    const files=this.props.data.filter(f => f.parentId === this.state.parentId)
+
     const props = {
       name: 'file',
       action: BASE_URL + '/service/qiniubigupload?bucket=file',
       showUploadList: false,
       multiple: true,
       beforeUpload: file => {
+        console.log(file)
         const fileType = file.type
+        const files=this.props.data.filter(f => f.parentId === this.state.parentId)
         if (!validFileTypes.includes(fileType)) {
           Modal.error({
             title: '不支持的文件类型',
@@ -411,6 +415,16 @@ class FileMgmt extends React.Component {
           })
           return false
         }
+        if(files.some(item=>{
+          return item.name==file.name
+        })){
+          Modal.error({
+            title: '不支持的文件名字',
+            content: '已存在相同的文件名字',
+          })
+          return false
+        }
+
         return true
       },
       onChange(info) {
