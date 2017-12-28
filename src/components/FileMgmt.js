@@ -477,7 +477,7 @@ class FileMgmt extends React.Component {
             style={buttonStyle}><img style={{marginRight: 4, marginBottom: 3}} src="/images/create_folder.png" />{i18n('dataroom.new_folder')}</Button>
           : null }
 
-          {selectMoreThanOneRow && hasEnoughPerm ?
+          {selectMoreThanOneRow && hasPerm('dataroom.admin_deletedataroom') ?
             <Button onClick={this.handleDelete} size="large" style={buttonStyle}>{i18n('dataroom.delete')}</Button>
           : null}
 
