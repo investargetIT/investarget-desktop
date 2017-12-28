@@ -13,15 +13,25 @@ const actionName = {
   'move': i18n('dataroom.move_to'),
 }
 
-const validFileTypes = [
+const officeFileTypes = [
   'application/msword',
   'application/pdf',
   'application/vnd.ms-powerpoint',
   'application/vnd.ms-excel',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-]
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+];
+
+const imageFileTypes = [
+  'image/jpeg', 
+  'image/gif', 
+  'image/png', 
+  'image/bmp', 
+  'image/webp', 
+];
+
+const validFileTypes = officeFileTypes.concat(imageFileTypes);
 
 const buttonStyle = {
   backgroundColor: 'transparent', 
