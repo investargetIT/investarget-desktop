@@ -1,7 +1,11 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm, 
+  getUserInfo, 
+} from '../utils/util';
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
@@ -76,7 +80,10 @@ class SelectUserToPosition extends React.Component {
 
   getUserRelation = () => {
     this.setState({ loading: true })
-    api.getUserRelation()
+    api.getUserRelation({
+      orgs: [this.props.location.query.orgID],
+      traderuser: getUserInfo().id
+    })
     .then(data => {
       this.setState({
         loading: false,
