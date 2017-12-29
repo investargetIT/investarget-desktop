@@ -161,8 +161,10 @@ class MyPartner extends React.Component {
     const columns = [
       {
         title: i18n("user.name"),
-        dataIndex: 'username',
-        key: 'username'
+        key: 'username',
+        render:(text, record) =>{
+          return <Link to={'/app/user/' + record.id}>{record.username}</Link>
+        }
       },
       {
         title: i18n("organization.org"),
@@ -192,10 +194,6 @@ class MyPartner extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={'/app/user/' + record.id}>
-              <Button style={buttonStyle} size="small">{i18n("common.view")}</Button>
-            </Link>
-            &nbsp;
           <Link to={'/app/user/edit/' + record.id + '?redirect=' + this.redirect}>
               <Button style={buttonStyle} size="small">{i18n("common.edit")}</Button>
             </Link>
