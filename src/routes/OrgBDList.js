@@ -15,6 +15,9 @@ import {
   Pagination, 
   Modal, 
   Input, 
+  Popover,
+  Row,
+  Col
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
@@ -44,6 +47,7 @@ class OrgBDList extends React.Component {
         sort:undefined,
         desc:undefined,
         source:this.props.location.query.status||0,
+        userDetail:[],
     }
   }
 
@@ -65,6 +69,7 @@ class OrgBDList extends React.Component {
     }
     api.getOrgBdList(params)
     .then(result => {
+    console.log(result) 
         this.setState({
           list: result.data.data,
           total: result.data.count,
@@ -197,18 +202,39 @@ class OrgBDList extends React.Component {
     );
   }
 
+  content(user) {
+    console.log(user)
+    const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
+    const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
+    console.log(comments)
+    return <div style={{minWidth: 180}}>
+          <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
+          <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
+          <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
+          <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
+          <Row style={{ lineHeight: '24px' }}>
+            <Col span={12}>{i18n('remark.remark')}</Col>
+            <Col span={12} style={{wordWrap: 'break-word'}}>
+            {comments.length>0 ? comments.map(item=>{return (<p >{item}</p>)}) :'暂无'}
+            </Col>
+          </Row>
+           </div>
+  }
+
   render() {
 
     const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
+    console.log(list)
     const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return <div >                  
-                  {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null}                                
-                  {text || '暂无' }                
+                  {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
+                  {record.username? <Popover  placement="topRight" content={this.content(record)}>{text}</Popover> : '暂无'}                               
+                                 
                  </div>
         },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
@@ -330,6 +356,15 @@ class OrgBDList extends React.Component {
 }
 
 export default OrgBDList;
+
+function SimpleLine(props) {
+  return (
+    <Row style={{ lineHeight: '24px' }}>
+      <Col span={12}>{props.title + '：'}</Col>
+      <Col span={12} style={{wordWrap: 'break-word'}}>{props.value}</Col>
+    </Row>
+  );
+}
 
 function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd } = props
