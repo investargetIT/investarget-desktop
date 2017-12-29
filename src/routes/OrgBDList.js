@@ -68,8 +68,7 @@ class OrgBDList extends React.Component {
         
     }
     api.getOrgBdList(params)
-    .then(result => {
-    console.log(result) 
+    .then(result => { 
         this.setState({
           list: result.data.data,
           total: result.data.count,
@@ -203,10 +202,13 @@ class OrgBDList extends React.Component {
   }
 
   content(user) {
+    const photourl=user.useinfo&&user.useinfo.photourl
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
     const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
-    console.log(comments)
     return <div style={{minWidth: 180}}>
+          <Row style={{textAlign:'center',margin:'10px 0'}}>
+            {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
+          </Row>
           <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
           <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
           <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
@@ -232,7 +234,7 @@ class OrgBDList extends React.Component {
         render:(text,record)=>{
           return <div >                  
                   {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-                  {record.username? <Popover  placement="topRight" content={this.content(record)}><div style={{color:'#428BCA'}}>{text}</div></Popover> : '暂无'}                               
+                  {record.username? <Popover  placement="topRight" content={this.content(record)}><span style={{color:'#428BCA'}}>{text}</span></Popover> : '暂无'}                               
                                  
                  </div>
         },sorter:true },
