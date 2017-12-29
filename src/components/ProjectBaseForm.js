@@ -38,12 +38,6 @@ class ProjectBaseForm extends React.Component {
   constructor(props) {
     super(props)
     window.form = props.form
-    const { getFieldDecorator } = props.form
-    const currentUserId = getCurrentUser()
-    getFieldDecorator('supportUser', {
-      rules: [{required: true, type: 'number'}],
-      initialValue: currentUserId,
-    })
   }
 
   getChildContext() {
@@ -97,7 +91,7 @@ class ProjectBaseForm extends React.Component {
         </BasicFormItem>
 
         { hasPerm('proj.admin_addproj') ? 
-        <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={this.currentUserId} valueType="number">
+        <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
            <SelectExistUser />
         </BasicFormItem>
         : null }
