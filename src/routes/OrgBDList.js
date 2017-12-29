@@ -203,7 +203,6 @@ class OrgBDList extends React.Component {
   }
 
   content(user) {
-    console.log(user)
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
     const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
     console.log(comments)
@@ -213,7 +212,7 @@ class OrgBDList extends React.Component {
           <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
           <Row style={{ lineHeight: '24px' }}>
-            <Col span={12}>{i18n('remark.remark')}</Col>
+            <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
             {comments.length>0 ? comments.map(item=>{return (<p >{item}</p>)}) :'暂无'}
             </Col>
@@ -233,14 +232,13 @@ class OrgBDList extends React.Component {
         render:(text,record)=>{
           return <div >                  
                   {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-                  {record.username? <Popover  placement="topRight" content={this.content(record)}>{text}</Popover> : '暂无'}                               
+                  {record.username? <Popover  placement="topRight" content={this.content(record)}><div style={{color:'#428BCA'}}>{text}</div></Popover> : '暂无'}                               
                                  
                  </div>
         },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
-        {title: i18n('org_bd.mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text || '暂无'},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
         {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
@@ -359,7 +357,7 @@ export default OrgBDList;
 
 function SimpleLine(props) {
   return (
-    <Row style={{ lineHeight: '24px' }}>
+    <Row style={{ lineHeight: '24px',borderBottom: '1px dashed #ccc' }}>
       <Col span={12}>{props.title + '：'}</Col>
       <Col span={12} style={{wordWrap: 'break-word'}}>{props.value}</Col>
     </Row>
