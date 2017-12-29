@@ -14,10 +14,14 @@ const PositionWithUser = props => {
 
   function popoverChildren(user) {
     if (user.isUnreachUser) {
-      return <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
+      return <div>
         <p style={{ textAlign: 'center', marginBottom: 10 }}>{user.name}</p>
-        { hasPerm('usersys.admin_deleteuser') ? <Button type="danger">移除</Button> : null }
-      </Popconfirm>
+        {hasPerm('usersys.admin_deleteuser') ?
+          <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
+            <Button type="danger">移除</Button>
+          </Popconfirm>
+          : null}
+      </div>
     } else if (user.isUnreachUser && !hasPerm('usersys.deleteuser')) {
       return null
     }
@@ -152,7 +156,7 @@ class OrganizationDetail extends React.Component {
 
       const orgTypeID = result.data.orgtype && result.data.orgtype.id
       const orgStructure = orgTitleTable.filter(f => f.orgtype.id === orgTypeID)
-      if (orgStructure.length > 0 && hasPerm('usersys.admin_getuser')) {
+      if (orgStructure.length > 0) {
         this.setState({
           data: orgStructure.map(m => {
             const id = m.title.id
