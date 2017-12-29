@@ -52,11 +52,10 @@ const PositionWithUser = props => {
             <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10,marginBottom:10 }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        { hasPerm('usersys.admin_adduser') ?
-
+        { hasPerm('usersys.admin_adduser') || hasPerm('usersys.user_adduser') ?
           <Icon type='plus' onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width:48,height:48,fontSize:'36px',color: '#108ee9', cursor: 'pointer',display:'inline_block'}} />       
           :
-          <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><img style={{ width: 48, height: 48, marginRight: 10, borderRadius: '50%', cursor: 'pointer' }} src="/images/add_circle.png" /></Link>
+          <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><Icon type='plus' style={{ width: 48, height: 48,fontSize:'36px',color: '#108ee9', cursor: 'pointer',display:'inline_block'}} /></Link>
         }
       </div>
     </div>
@@ -352,12 +351,11 @@ class OrganizationDetail extends React.Component {
         <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
           <div style={{ textAlign: 'center' }}>
            <Button style={{ marginRight: 10 }} onClick={this.handleChooseInvestor}>从已有投资人中进行选择</Button>
-           { hasPerm('usersys.admin_adduser') ?
-             <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
-           : null }
+           <Button onClick={this.handleAddNewInvestor}>添加新的投资人</Button>
           </div>
         </Modal>
 
+        { this.state.visible ? 
         <Modal
           title="添加投资人"
           visible={this.state.visible}
@@ -371,6 +369,7 @@ class OrganizationDetail extends React.Component {
           </Form>
 
         </Modal>
+        : null }
 
       </LeftRightLayout>
     )
