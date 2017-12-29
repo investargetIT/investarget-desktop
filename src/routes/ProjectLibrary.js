@@ -4,8 +4,12 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
 import { Link } from 'dva/router'
-
-import { i18n, handleError, getUserInfo } from '../utils/util'
+import { 
+  i18n, 
+  handleError, 
+  getUserInfo, 
+  hasPerm, 
+} from '../utils/util';
 import * as api from '../api'
 
 
@@ -181,10 +185,16 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
       {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
-      {title: i18n('common.operation'), render: (text, record) => {
-        return <Link to={{pathname: '/app/projects/bd/add', state:{com_name: record.com_name}}}><Button style={buttonStyle}>{i18n('project_library.new_bd')}</Button></Link>
-      }}
     ]
+
+    if (hasPerm('BD.manageProjectBD') || hasPerm('BD.user_addProjectBD')) {
+      columns.push({
+        title: i18n('common.operation'),
+        render: (text, record) => <Link to={{ pathname: '/app/projects/bd/add', state: { com_name: record.com_name } }}>
+          <Button style={buttonStyle}>{i18n('project_library.new_bd')}</Button>
+        </Link>
+      });
+    }
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')}>
