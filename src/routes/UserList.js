@@ -139,6 +139,9 @@ class UserList extends React.Component {
         title: i18n("email.username"),
         dataIndex: 'username',
         key: 'username',
+        render: (text, record) => {
+          return <Link to={'/app/user/' + record.id}>{record.username}</Link>
+        }
         //sorter:true,
       },
       {
@@ -184,9 +187,6 @@ class UserList extends React.Component {
         key: 'action',
         render: (text, record) => (
               <span className="span-operation" style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
-                <Link to={'/app/user/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
-                </Link>
 
                 <Link to={'/app/user/edit/' + record.id}>
                   <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
