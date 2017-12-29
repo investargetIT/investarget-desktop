@@ -5,7 +5,8 @@ let devUrl = "http://192.168.1.251:8080";
 // devUrl = 'http://192.168.1.201:8000';
 const prodUrl = 'http://39.107.14.53:8080';
 const baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
-export { baseUrl }
+const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://192.168.1.113:3000' : 'http://39.107.14.53:803'; 
+export { baseUrl, mobileUploadUrl }
 
 export class ApiError extends Error {
   constructor(code, message) {

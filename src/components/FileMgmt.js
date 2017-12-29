@@ -1,9 +1,9 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
-import { BASE_URL } from '../constants'
 import qs from 'qs'
 import styles from './FileMgmt.css'
+import { baseUrl } from '../utils/request';
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -420,7 +420,7 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: BASE_URL + '/service/qiniubigupload?bucket=file',
+      action: baseUrl + '/service/qiniubigupload?bucket=file',
       showUploadList: false,
       multiple: true,
       beforeUpload: file => {

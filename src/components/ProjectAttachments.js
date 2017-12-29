@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
-import { BASE_URL } from '../constants'
 import { i18n } from '../utils/util'
 import {
   Input,
@@ -17,6 +16,8 @@ import {
   Spin, 
 } from 'antd'
 import QRCode from 'qrcode.react';
+import { baseUrl, mobileUploadUrl } from '../utils/request';
+
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
 
@@ -365,7 +366,7 @@ class ProjectAttachments extends React.Component {
         }
       }
       this.qrCodeKey = record;
-      this.setState({ qrCodeValue: 'http://192.168.1.113:3000/upload?key=' + record });
+      this.setState({ qrCodeValue: mobileUploadUrl + '/upload?key=' + record });
       this.pull = setInterval(this.queryQrCodeStatus, 1000);
     }); 
   }
@@ -384,7 +385,7 @@ class ProjectAttachments extends React.Component {
     let doneFileList = fileList.filter(file => file.status == 'done')
 
     const uploadProps = {
-      action: BASE_URL + "/service/qiniubigupload?bucket=file",
+      action: baseUrl + "/service/qiniubigupload?bucket=file",
       accept: fileExtensions.join(','),
       fileList: targetFileList,
       onChange: this.handleFileChange,
@@ -417,7 +418,7 @@ class ProjectAttachments extends React.Component {
         </Tabs>
 
         <Dragger
-          action={BASE_URL + "/service/qiniubigupload?bucket=file"}
+          action={baseUrl + "/service/qiniubigupload?bucket=file"}
           accept={fileExtensions.join(',')}
           beforeUpload={this.beforeUpload}
           fileList={targetFileList}

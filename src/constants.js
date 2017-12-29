@@ -112,8 +112,6 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === 'http://39.107.14.53:80
   67: '用户信息修改日志管理',  
 }
 
-export const BASE_URL = 'http://192.168.1.251:8080'
-
 export const KEY_TO_ICON = {
   'dashboard': 'fa fa-home',
   'project_library': 'glyphicon glyphicon-book',

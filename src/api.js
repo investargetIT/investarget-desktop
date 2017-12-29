@@ -1,6 +1,6 @@
 import request from './utils/request'
 import qs from 'qs'
-import { PAGE_SIZE, BASE_URL } from './constants'
+import { PAGE_SIZE } from './constants'
 import { qsArrayToString, getUserInfo } from './utils/util'
 import _ from 'lodash'
 import { 
@@ -272,7 +272,7 @@ export function qiniuUpload(bucket, file) {
   var formData = new FormData()
   formData.append('file', file)
 
-  return fetch(BASE_URL + '/service/qiniubigupload?bucket=' + bucket, {
+  return fetch(baseUrl + '/service/qiniubigupload?bucket=' + bucket, {
     headers,
     method: 'POST',
     body: formData,
