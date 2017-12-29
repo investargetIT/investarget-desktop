@@ -38,6 +38,12 @@ const PositionWithUser = props => {
         <hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
         <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
       </div>
+    } else {
+     return <div>
+       <p style={{ fontSize: 16, fontWeight: 'bold' }}>{user.name}</p>
+       <hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
+       <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
+       </div> 
     }
 
     return null
@@ -303,6 +309,7 @@ class OrganizationDetail extends React.Component {
   }
 
   render() {
+    echo(this.state.data);
     const id = this.props.params.id
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
