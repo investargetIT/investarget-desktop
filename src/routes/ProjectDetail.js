@@ -105,35 +105,35 @@ class ProjectFinanceYear extends React.Component {
               <tbody>
                 <tr>  
                   <td style={leftTd}>{`${i18n('project.revenue')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
-                  <td style={rightTd}>{this.showFinanceInfo(item, 'revenue') || 'N/A'}</td>
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'revenue') || ''}</td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td>
-                  <td style={rightTd}>{this.showFinanceInfo(item, 'netIncome') || 'N/A'} </td>
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'netIncome') || ''} </td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.gross_profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
-                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.total_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.net_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.net_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.operating_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.EBITDA')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA, this.props.isCNY ? 'CNY' : undefined) : 'N/A'} </td>
+                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
                 </tr>
               </tbody>
               </table>
@@ -637,6 +637,8 @@ function Detail({ project }) {
   function createMarkup(str) {
     str = str.replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--')
     str = str.replace(/\n/g, '<br/>')
+    if(str=='暂无')
+      str=''
     return { __html: str }
   }
 
@@ -648,8 +650,8 @@ function Detail({ project }) {
       </div>
     ) : null
   }
-
   return (
+
     <div style={containerStyle}>
       <DetailItem label={i18n('project.target_market')} content={project.targetMarket} />
       <DetailItem label={i18n('project.product_technology')} content={project.productTechnology} />
