@@ -190,6 +190,8 @@ class SelectOrgInvestorToBD extends React.Component {
       { title: i18n('user.name'), key: 'username', dataIndex: 'username', render: text => text || '暂无投资人' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
+      { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
+      { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' }, 
       {title:i18n('org_bd.important'), render:(text,record)=>{
         return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
