@@ -51,12 +51,6 @@ class AddOrgBD extends React.Component {
       return api.addOrgBD(body);
     }))
       .then(result => {
-        // console.log(result)
-        // Modal.success({
-        //     title: i18n('timeline.message.create_success_title'),
-        //     content: i18n('create_orgbd_success'),
-        //     onOk: () => { this.props.router.replace('/app/org/bd') }
-        //   })
         Modal.confirm({
             title: i18n('timeline.message.create_success_title'),
             content: i18n('create_orgbd_success'),
