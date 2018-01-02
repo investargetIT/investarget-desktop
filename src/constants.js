@@ -1,4 +1,4 @@
-import { baseUrl } from './utils/request';
+import { baseUrl, prodUrl } from './utils/request';
 
 export const PAGE_SIZE = 5
 
@@ -73,7 +73,7 @@ export const URI_TO_KEY = {
   "/app/log/list": "log",
 }
 
-export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === 'http://39.107.14.53:8080' ? 
+export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ? 
 {
   52: 'dataroom管理',
   13: '机构管理',
