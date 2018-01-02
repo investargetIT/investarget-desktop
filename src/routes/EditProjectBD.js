@@ -43,6 +43,10 @@ function toFormData(data) {
       formData.mobileAreaCode = '86';
       formData.mobile = formData['usermobile'];  
     }
+  } 
+  
+  if (formData['country']) {
+    formData.country = { value: formData['country'] };
   }
 
   for (let prop in formData) {

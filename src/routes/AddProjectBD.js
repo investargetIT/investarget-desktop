@@ -18,6 +18,10 @@ function toData(formData) {
     formData['bduser'] = null
     formData['usermobile'] = formData.mobileAreaCode + '-' + formData.mobile;
   }
+  if (!['中国', 'China'].includes(formData.country.label)) {
+    formData['location'] = null;
+  }
+  formData.country = formData.country.value;
   return formData
 }
 

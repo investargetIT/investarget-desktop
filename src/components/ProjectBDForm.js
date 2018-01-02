@@ -15,7 +15,8 @@ import {
   SelectOrgUser,
   SelectPartner, 
   SelectAllUser, 
-  SelectOrganizatonArea,
+  SelectOrganizatonArea, 
+  CascaderCountryDetail, 
 } from './ExtraInput'
 import { i18n } from '../utils/util'
 import * as api from '../api'
@@ -110,7 +111,7 @@ class ProjectBDForm extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
-
+    const country = getFieldValue('country');
     return (
       <Form>
         <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required initialValue={this.props.comName}>
@@ -125,9 +126,15 @@ class ProjectBDForm extends React.Component {
           <SelectBDSource />
         </BasicFormItem>
 
+        <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
+          <CascaderCountryDetail size="large" />
+        </BasicFormItem>
+
+        {['中国', 'China'].includes(country && country.label) ? 
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
           <SelectOrganizatonArea />
         </BasicFormItem>
+        : null }
 
         {this.state.isSelect ? (
           <div>
