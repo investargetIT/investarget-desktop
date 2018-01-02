@@ -113,7 +113,8 @@
     "contact_mobile": "联系人电话",
     "manager": "负责人",
     "created_time": "创建时间",
-    "operation": "操作"
+    "operation": "操作",
+    "source": "来源"
   },
 
   "org_bd": {

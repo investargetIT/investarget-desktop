@@ -149,6 +149,7 @@ class ProjectBDList extends React.Component {
       {title: i18n('project_bd.import_methods'), render: (text, record) => {
         return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
       }, key:'source_type', sorter:true},
+      {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true},
       {title: i18n('project_bd.contact'), dataIndex: 'username', key:'username', sorter:true},
       {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
       {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
