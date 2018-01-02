@@ -34,6 +34,15 @@ function toFormData(data) {
     delete formData['username']
     delete formData['usertitle']
     delete formData['usermobile']
+  } else if (formData['usermobile']) {
+    const mobileArr = formData['usermobile'].split('-');
+    if (mobileArr.length > 1) {
+    formData.mobileAreaCode = mobileArr[0];
+    formData.mobile = mobileArr.slice(1).join('-'); 
+    } else {
+      formData.mobileAreaCode = '86';
+      formData.mobile = formData['usermobile'];  
+    }
   }
 
   for (let prop in formData) {

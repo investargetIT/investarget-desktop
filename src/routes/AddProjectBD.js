@@ -16,6 +16,7 @@ const AddProjectBDForm = Form.create({onValuesChange})(ProjectBDForm)
 function toData(formData) {
   if (! 'bduser' in formData) {
     formData['bduser'] = null
+    formData['usermobile'] = formData.mobileAreaCode + '-' + formData.mobile;
   }
   return formData
 }

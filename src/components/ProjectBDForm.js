@@ -20,6 +20,17 @@ import {
 import { i18n } from '../utils/util'
 import * as api from '../api'
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+}
+
 class ProjectBDForm extends React.Component {
 
   static childContextTypes = {
@@ -150,9 +161,37 @@ class ProjectBDForm extends React.Component {
               <SelectTitle />
             </BasicFormItem>
 
-            <BasicFormItem label={i18n('project_bd.contact_mobile')} name="usermobile" required initialValue={this.state._usermobile}>
+            {/* <BasicFormItem label={i18n('project_bd.contact_mobile')} name="usermobile" required initialValue={this.state._usermobile}>
               <Input />
-            </BasicFormItem>
+            </BasicFormItem> */}
+
+              <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')} required>
+                <Row gutter={8}>
+                  <Col span={6}>
+                    <FormItem required>
+                      {
+                        getFieldDecorator('mobileAreaCode', {
+                          rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                        })(
+                          <Input prefix="+" />
+                          )
+                      }
+                    </FormItem>
+                  </Col>
+                  <Col span={18}>
+                    <FormItem required>
+                      {
+                        getFieldDecorator('mobile', {
+                          rules: [{ message: i18n('validation.not_empty'), required: true }]
+                        })(
+                          <Input onBlur={this.props.mobileOnBlur} />
+                          )
+                      }
+                    </FormItem>
+                  </Col>
+                </Row>
+              </FormItem>
+
           </div>
         )}
 
