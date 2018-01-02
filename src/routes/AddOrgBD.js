@@ -21,6 +21,7 @@ class AddOrgBD extends React.Component {
       data: null,
       visible: false, 
       manager: null, 
+      ifContinue:false
     }
 
     this.selectedUsers = []; // 选中准备BD的投资人或机构
@@ -50,11 +51,23 @@ class AddOrgBD extends React.Component {
       return api.addOrgBD(body);
     }))
       .then(result => {
-        console.log(result)
-        Modal.success({
+        // console.log(result)
+        // Modal.success({
+        //     title: i18n('timeline.message.create_success_title'),
+        //     content: i18n('create_orgbd_success'),
+        //     onOk: () => { this.props.router.replace('/app/org/bd') }
+        //   })
+        Modal.confirm({
             title: i18n('timeline.message.create_success_title'),
             content: i18n('create_orgbd_success'),
-            onOk: () => { this.props.router.replace('/app/org/bd') }
+            okText:"继续创建BD",
+            cancelText:"返回BD列表",
+            onOk: () => { this.setState({ifContinue:true}) },
+            onCancel: () => { 
+              this.props.router.replace('/app/org/bd') 
+              this.setState({ifContinue:false})
+            }
+            
           })
       })
       .catch(error => this.props.dispatch({
@@ -102,7 +115,7 @@ class AddOrgBD extends React.Component {
             <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
             : null}
 
-          { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} /> : null }
+          { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} ifContinue={this.state.ifContinue}/> : null }
         </div>
 
         <Modal

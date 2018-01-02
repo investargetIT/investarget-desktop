@@ -45,6 +45,10 @@ class SelectInvestorAndTrader extends React.Component {
     this.props.onSelect(this.state.selectedUsers)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.ifContinue)
+        this.setState({step:1});
+  }
   render() {
 
     const { traderId, selectedOrgs, selectedUsers, step, selectedOrgDetails } = this.state
