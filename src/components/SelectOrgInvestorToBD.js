@@ -79,7 +79,13 @@ class SelectOrgInvestorToBD extends React.Component {
   getUser = () => {
     const { search, page, pageSize, traderMap } = this.state
 
-    let params = { search, page_index: page, page_size: pageSize, groups: this.investorGroupIds }
+    let params = { 
+      search, 
+      page_index: page, 
+      page_size: pageSize, 
+      groups: this.investorGroupIds, 
+      starmobile: true, 
+    }
     this.setState({ loading: true })
 
     Promise.all(this.props.selectedOrgs.map(m => api.getUser({ ...params, org: [m.id] })))
