@@ -596,11 +596,11 @@ function ProjectIntro({ project }) {
         </tr>
         <tr style={trStyle}>
           <td style={tdStyle}>{i18n('project.transaction_size') + ' : '}</td>
-          <td>{showMoneyRelatedInfo(project, 'financeAmount') || 'N/A'}</td>
+          <td>{showMoneyRelatedInfo(project, 'financeAmount') || ''}</td>
         </tr>
         <tr style={trStyle}>
           <td style={tdStyle}>{i18n('project.company_valuation') + ' : '}</td>
-          <td>{showMoneyRelatedInfo(project, 'companyValuation') || 'N/A'}</td>
+          <td>{showMoneyRelatedInfo(project, 'companyValuation') || ''}</td>
         </tr>
         </tbody>
       </table>
