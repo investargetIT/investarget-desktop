@@ -416,7 +416,7 @@ button[disabled], html input[disabled] {
 .ant-popover-inner {
   background-color: rgb(233, 241, 243);
 }
-.ant-popover-placement-top > .ant-popover-content > .ant-popover-arrow:after {
+.ant-popover-placement-top > .ant-popover-content > .ant-popover-arrow:after, .ant-popover-placement-topLeft > .ant-popover-content > .ant-popover-arrow:after {
   border-top-color: rgb(233, 241, 243);
 }
 
