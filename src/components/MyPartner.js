@@ -257,6 +257,10 @@ class MyPartner extends React.Component {
           current={this.state.pageIndex}
           pageSize={this.state.pageSize}
           onChange={this.handlePageChange}
+          showSizeChanger
+          showQuickJumper
+          pageSizeOptions={['10', '20', '30', '40', '50']}
+          onShowSizeChange={(current, pageSize) => this.setState({ pageSize, pageIndex: 1 }, this.getPartner)}
         />
 
       </div>
