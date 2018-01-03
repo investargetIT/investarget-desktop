@@ -40,7 +40,6 @@ class BDModal extends React.Component{
     let param={bd_status:this.state.source}
     if(this.state.element=='org'){
       api.getOrgBdList(param).then(result=>{
-        console.log(result)
         this.setState({managers:result.data.manager_count},this.mapIdToManager)
       })
     }
@@ -55,6 +54,7 @@ class BDModal extends React.Component{
     this.getBdList()
   }
   render(){
+
     const {source, managers, element} =this.state
     const component = (element=='proj' ? '项目' : '机构')
     const columnName = (source==3 ? component+'BD成功数量' : component+'未BD数量')

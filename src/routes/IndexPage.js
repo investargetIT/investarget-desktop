@@ -288,25 +288,25 @@ class IndexPage extends React.Component {
     const orgbdsuccessfilter={bd_status:3}
     api.getOrgBdList(orgbdsuccessfilter)
     .then(result=>{
-      this.setState({orgBDsuccess:result.data.data.length})
+      this.setState({orgBDsuccess:result.data.count})
     })
 
     const orgbdunsuccessfilter={bd_status:1}
     api.getOrgBdList(orgbdunsuccessfilter)
     .then(result=>{
-      this.setState({orgBDunsuccess:result.data.data.length})
+      this.setState({orgBDunsuccess:result.data.count})
     })
 
     const projbdsuccessfilter={bd_status:3}
     api.getProjBDList(projbdsuccessfilter)
     .then(result=>{
-      this.setState({projBDsuccess:result.data.data.length})
+      this.setState({projBDsuccess:result.data.count})
     })
 
     const projbdunsuccessfilter={bd_status:1}
     api.getProjBDList(projbdunsuccessfilter)
     .then(result=>{
-      this.setState({projBDunsuccess:result.data.data.length})
+      this.setState({projBDunsuccess:result.data.count})
     })
 
   }

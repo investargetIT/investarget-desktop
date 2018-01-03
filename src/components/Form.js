@@ -245,9 +245,9 @@ const UploadAvatar = (props, context) => {
   }
 
   return (
-    <FormItem {...formItemLayout} label={i18n("user.photo")}>
+    <FormItem {...formItemLayout} label={props.name=='avatar' ? i18n("user.photo") : i18n("user.card")}>
       <div className="dropbox">
-        {context.form.getFieldDecorator('dragger', {
+        {context.form.getFieldDecorator(props.name, {
           valuePropName: 'fileList',
           getValueFromEvent: normFile,
         })(

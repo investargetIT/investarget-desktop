@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n } from '../utils/util'
+import { i18n, getImageUrl } from '../utils/util'
 import { Form, message } from 'antd'
 import { Group, Org, FullName, Position, Tags, Submit, UploadAvatar, BasicFormItem } from '../components/Form'
 import { connect } from 'dva'
@@ -12,7 +12,8 @@ import { UploadImage } from '../components/Upload'
 class BasicInfo extends React.Component {
 
   state = {
-    avatarUrl: this.props.currentUser.photourl
+    avatarUrl: this.props.currentUser.photourl,
+    cardUrl:getImageUrl(this.props.currentUser.cardKey)
   }
   getChildContext() {
     return {
@@ -68,27 +69,43 @@ class BasicInfo extends React.Component {
     })
   }
 
+  handleCardUploaded(response){
+    this.setState({ cardUrl: response.url })
+    editUser([this.props.currentUser.id], { cardBucket: 'image', cardKey: response.key }).then(data => {
+      const cardKey = data.data[0].cardKey
+      const cardBucket = data.data[0].cardBucket
+      const userInfo = { ...this.props.currentUser, cardKey, cardBucket }
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
+      this.props.dispatch({
+        type: 'currentUser/save',
+        userInfo
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['title', 'tag'] })
   }
 
   render() {
-    console.log(this.props)
   return (
     <LeftRightLayout
       location={this.props.location}
       title={i18n("menu.profile")}>
 
       <Form style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
-        <UploadAvatar photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />
+        <UploadAvatar name="avatar" photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />
         <Group disabled />
         <Org disabled />
         <FullName disabled />
         <Position disabled title={this.props.title} />
         <Tags tag={this.props.tag} />
-        <BasicFormItem label={i18n('user.card')} name="cardKey">
-          <UploadImage />
-        </BasicFormItem>
+        <UploadAvatar name="card" photoKey={this.props.currentUser.cardKey} avatarUrl={this.state.cardUrl} onUploaded={this.handleCardUploaded.bind(this)} />
         <Submit />
       </Form>
 

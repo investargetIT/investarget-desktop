@@ -183,6 +183,7 @@ class UploadImage extends React.Component {
     }
 
     const key = props.value
+
     if (key) {
       this.getDownloadUrl(key).then(url => {
         const file = { uid: -1, status: 'done', bucket: 'image', key, url }
@@ -246,9 +247,11 @@ class UploadImage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const key = nextProps.value
+
     if (key == null) {
-      this.setState({ fileList: [] })
-    } else {
+      this.setState({ fileList: [] })     
+    } 
+    else {
       this.getDownloadUrl(key).then(url => {
         const file = { uid: -1, status: 'done', bucket: 'image', key, url }
         this.setState({ fileList: [file] })
@@ -270,14 +273,13 @@ class UploadImage extends React.Component {
 
   render() {
     const { fileList, previewVisible, previewImage } = this.state
-    console.log(fileList)
     const uploadButton = (
       <div style={buttonStyle}>
         <Icon type="plus" style={iconStyle} />
       </div>
     )
-
     return (
+
       <div className="clearfix">
         <Upload
           style={{ cursor: this.props.disabled ? 'not-allowed' : 'pointer' }}
