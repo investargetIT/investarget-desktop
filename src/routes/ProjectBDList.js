@@ -1,10 +1,15 @@
 import React from 'react'
 import { Button, Table, Pagination, Input, Popconfirm, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { SelectBDStatus } from '../components/ModalModifyOrgBDStatus';
 import { ProjectBDFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
-import { handleError, time, i18n } from '../utils/util'
+import { 
+  handleError, 
+  time, 
+  i18n, 
+  hasPerm, 
+} from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
 import BDModal from '../components/BDModal';
@@ -29,8 +34,11 @@ class ProjectBDList extends React.Component {
       newComment: '',
       sort:undefined,
       desc:undefined,
-      source:this.props.location.query.status||0,
+      source:this.props.location.query.status||0, 
+      status: null, 
+      isShowModifyStatusModal: false, 
     }
+    this.bd = null;
   }
 
   handleFilt = (filters) => {
@@ -138,6 +146,18 @@ class ProjectBDList extends React.Component {
     this.getProjectBDList()
   }
 
+  handleModifyBDStatusBtnClicked = bd => {
+    this.bd = bd;
+    this.setState({ isShowModifyStatusModal: true, status: bd.bd_status.id });
+  }
+
+  modifyBDStatus = () => {
+    this.setState({ isShowModifyStatusModal: false, loading: true });
+    api.editProjBD(this.bd.id, { bd_status: this.state.status })
+      .then(result => this.getProjectBDList())
+      .catch(error => handleError(error));
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
@@ -163,9 +183,16 @@ class ProjectBDList extends React.Component {
           <Link to={'/app/projects/bd/edit/' + record.id}>
             <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
           </Link>
-          <div>        
-          <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
-          </div>
+            {hasPerm('BD.manageProjectBD') ?
+              <div>
+                <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+              </div>
+              :
+              <div>
+                <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>修改状态</a>
+              </div>
+            }
+
           </div>
           <div>
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
@@ -212,6 +239,22 @@ class ProjectBDList extends React.Component {
             onAdd={this.handleAddComment}
             onDelete={this.handleDeleteComment} />
         </Modal>
+
+        <Modal 
+          title="修改状态" 
+          visible={this.state.isShowModifyStatusModal} 
+          onCancel={() => this.setState({ isShowModifyStatusModal: false })}
+          onOk={this.modifyBDStatus} 
+        >
+
+          <SelectBDStatus 
+            style={{ width: 120 }} 
+            value={this.state.status} 
+            onChange={status => this.setState({ status })} 
+          />
+
+        </Modal>
+
       </LeftRightLayout>
     )
   }

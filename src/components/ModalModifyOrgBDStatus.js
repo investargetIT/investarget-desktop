@@ -34,7 +34,7 @@ const options1 = [
 ]
 
 
-function SelectBDStatus(props) {
+export function SelectBDStatus(props) {
   const { value, onChange, ...extraProps } = props;
   return (
     <Select

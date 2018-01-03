@@ -58,7 +58,12 @@ function toFormData(data) {
 function toData(formData) {
   if (!('bduser' in formData)) {
     formData['bduser'] = null
+    formData['usermobile'] = formData.mobileAreaCode + '-' + formData.mobile;
   }
+  if (!['中国', 'China'].includes(formData.country.label)) {
+    formData['location'] = null;
+  }
+  formData.country = formData.country.value;
   return formData
 }
 
