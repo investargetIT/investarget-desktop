@@ -2,11 +2,12 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n } from '../utils/util'
 import { Form, message } from 'antd'
-import { Group, Org, FullName, Position, Tags, Submit, UploadAvatar } from '../components/Form'
+import { Group, Org, FullName, Position, Tags, Submit, UploadAvatar, BasicFormItem } from '../components/Form'
 import { connect } from 'dva'
 import { editUser } from '../api'
 import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
+import { UploadImage } from '../components/Upload'
 
 class BasicInfo extends React.Component {
 
@@ -26,9 +27,10 @@ class BasicInfo extends React.Component {
           message.error(i18n('personal_info.message.tag_required'))
           return
         }
-        editUser([this.props.currentUser.id], {tags: values.tags}).then(data => {
+        editUser([this.props.currentUser.id], {tags: values.tags, cardKey:values.cardKey}).then(data => {
           const tags = data.data[0].tags
-          const userInfo = {...this.props.currentUser, tags}
+          const card = data.data[0].cardKey
+          const userInfo = {...this.props.currentUser, tags, card}
           localStorage.setItem('user_info', JSON.stringify(userInfo))
           this.props.dispatch({
             type: 'currentUser/save',
@@ -71,6 +73,7 @@ class BasicInfo extends React.Component {
   }
 
   render() {
+    console.log(this.props)
   return (
     <LeftRightLayout
       location={this.props.location}
@@ -83,6 +86,9 @@ class BasicInfo extends React.Component {
         <FullName disabled />
         <Position disabled title={this.props.title} />
         <Tags tag={this.props.tag} />
+        <BasicFormItem label={i18n('user.card')} name="cardKey">
+          <UploadImage />
+        </BasicFormItem>
         <Submit />
       </Form>
 

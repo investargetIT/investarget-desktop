@@ -270,7 +270,7 @@ class UploadImage extends React.Component {
 
   render() {
     const { fileList, previewVisible, previewImage } = this.state
-
+    console.log(fileList)
     const uploadButton = (
       <div style={buttonStyle}>
         <Icon type="plus" style={iconStyle} />

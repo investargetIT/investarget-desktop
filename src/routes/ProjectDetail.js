@@ -83,11 +83,14 @@ class ProjectFinanceYear extends React.Component {
     }
     const leftTd={
       border:'1px solid #eee',
+      borderRight:'none',
+      borderLeft:'none',
       width:'255px',
-      paddingLeft:'10%'
     }
     const rightTd={
       border:'1px solid #eee',
+      borderLeft:'none',
+      borderRight:'none',
       width:'255px',
       paddingLeft:'15%'
     }
@@ -105,35 +108,35 @@ class ProjectFinanceYear extends React.Component {
               <tbody>
                 <tr>  
                   <td style={leftTd}>{`${i18n('project.revenue')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
-                  <td style={rightTd}>{this.showFinanceInfo(item, 'revenue') || ''}</td>
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'revenue') || '-'}</td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td>
-                  <td style={rightTd}>{this.showFinanceInfo(item, 'netIncome') || ''} </td>
+                  <td style={rightTd}>{this.showFinanceInfo(item, 'netIncome') || '-'} </td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.gross_profits')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`}</td> 
-                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.grossProfit ? formatMoney(item.grossProfit, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.total_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.totalAsset ? formatMoney(item.totalAsset, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.net_assets')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.stockholdersEquity ? formatMoney(item.stockholdersEquity, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
                 <tr> 
                   <td style={leftTd}>{`${i18n('project.net_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.grossMerchandiseValue ? formatMoney(item.grossMerchandiseValue, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.operating_cash_flow')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.operationalCashFlow ? formatMoney(item.operationalCashFlow, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
                 <tr>
                   <td style={leftTd}>{`${i18n('project.EBITDA')}(${i18n(this.props.isCNY ? 'cny' : 'common.USD')})`} </td>
-                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA, this.props.isCNY ? 'CNY' : undefined) : ''} </td>
+                  <td style={rightTd}>{item.EBITDA ? formatMoney(item.EBITDA, this.props.isCNY ? 'CNY' : undefined) : '-'} </td>
                 </tr>
               </tbody>
               </table>
@@ -569,9 +572,7 @@ function showMoneyRelatedInfo(project, type) {
 
 function ProjectIntro({ project }) {
   if (project.currency === undefined) return null;
-  //const labelStyle = {display: 'inline-block', width: 250}
-  const trStyle={border:'1px solid #eee',height:'40px'}
-  const tdStyle={paddingLeft:'60px'}
+  const trStyle={border:'1px solid #eee',height:'40px',borderLeft:'none',borderRight:'none'}
   const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
   const introduce={__html:project.p_introducte}
 
@@ -584,26 +585,23 @@ function ProjectIntro({ project }) {
           <Tag key={item.id} style={tagStyle}>{item.name}</Tag>
         )}
       </div>
-      <table style={{height:'160px',width:'380px'}}>
+      <table style={{width:'380px', textAlign:'center'}}>
       <tbody>
+        <tr style={{...trStyle, backgroundColor:'#eee'}}>
+          <td>{i18n('project.transaction_type')}</td>
+          <td>{i18n('project.engagement_in_transaction')}</td>
+          <td>{i18n('project.transaction_size')}</td>
+          <td>{i18n('project.company_valuation')}</td>
+        </tr>
         <tr style={trStyle}>
-          <td style={tdStyle}>{i18n('project.transaction_type') + ' : '}</td>
           <td>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}</td>
-        </tr>
-        <tr style={trStyle}>
-          <td style={tdStyle}>{i18n('project.engagement_in_transaction') + ' : '}</td>
           <td>{project.character && project.character.character}</td>
+          <td>{showMoneyRelatedInfo(project, 'financeAmount') || '-'}</td>
+          <td>{showMoneyRelatedInfo(project, 'companyValuation') || '-'}</td>
         </tr>
-        <tr style={trStyle}>
-          <td style={tdStyle}>{i18n('project.transaction_size') + ' : '}</td>
-          <td>{showMoneyRelatedInfo(project, 'financeAmount') || ''}</td>
-        </tr>
-        <tr style={trStyle}>
-          <td style={tdStyle}>{i18n('project.company_valuation') + ' : '}</td>
-          <td>{showMoneyRelatedInfo(project, 'companyValuation') || ''}</td>
-        </tr>
-        </tbody>
+      </tbody>
       </table>
+      
     </div>
   )
 }
