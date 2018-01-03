@@ -75,7 +75,7 @@ class ScheduleList extends React.Component {
       },key:'scheduledtime', sorter:true},
       {title: i18n('schedule.creator'), dataIndex: 'createuser.username', key:'createuser', sorter:true},
       {title: i18n('schedule.project'), dataIndex: 'projtitle', render: (text, record) => {
-        return <Link to={'/app/projects/' + record.proj} target="_blank">{text}</Link>
+        return record.proj ? <Link to={'/app/projects/' + record.proj.id} >{text}</Link> :{text}
       }, key:'projtitle', sorter:true},
       {title: i18n('schedule.investor'), dataIndex: 'user.username', render: (text, record) => {
         return record.user ? (
