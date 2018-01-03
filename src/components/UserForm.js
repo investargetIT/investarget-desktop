@@ -101,7 +101,7 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobileAreaCode', {
                     rules: [{ message: i18n('validation.not_empty'), required: true}], initialValue: '86'
                   })(
-                    <Input prefix="+" disabled={!hasPerm('usersys.admin_changeuser')} />
+                    <Input prefix="+" />
                   )
                 }
               </FormItem>
@@ -112,7 +112,7 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobile', {
                     rules: [{ message: i18n('validation.not_empty'), required: true}]
                   })(
-                    <Input onBlur={this.props.mobileOnBlur} disabled={!hasPerm('usersys.admin_changeuser')} />
+                    <Input onBlur={this.props.mobileOnBlur} />
                   )
                 }
               </FormItem>
@@ -120,13 +120,15 @@ class UserForm extends React.Component {
           </Row>
         </FormItem>
 
-        <BasicFormItem label={i18n("user.email")} name="email" disabled valueType="email"><Input disabled={!hasPerm('usersys.admin_changeuser')} onblur={this.props.emailonblur} /></BasicFormItem>
+        <BasicFormItem label={i18n("user.email")} name="email" required valueType="email">
+          <Input onBlur={this.props.emailOnBlur} />
+        </BasicFormItem>
 
         <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n('user.en_name')} name="usernameE" required><Input /></BasicFormItem>
 
-        <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input disabled={!hasPerm('usersys.admin_changeuser')} /></BasicFormItem>
+        <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n("user.position")} name="title" valueType="number" required>
           <SelectTitle />
