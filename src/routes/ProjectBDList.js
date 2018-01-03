@@ -180,18 +180,19 @@ class ProjectBDList extends React.Component {
       {title: i18n('project_bd.operation'), render: (text, record) => {
         return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
-          <Link to={'/app/projects/bd/edit/' + record.id}>
-            <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
-          </Link>
             {hasPerm('BD.manageProjectBD') ?
+              <Link to={'/app/projects/bd/edit/' + record.id}>
+                <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
+              </Link>
+              :
+              <div style={{ padding: '0 7px' }}>
+                <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</a>
+              </div>
+            }
               <div>
                 <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
               </div>
-              :
-              <div>
-                <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>修改状态</a>
-              </div>
-            }
+
 
           </div>
           <div>
