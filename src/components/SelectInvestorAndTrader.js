@@ -28,13 +28,17 @@ class SelectInvestorAndTrader extends React.Component {
       selectedUsers: [],
     })
   }
-
+ 
   handleNext = () => {
     this.setState({ step: 2 })
   }
 
   handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
-    this.setState({ selectedOrgs: selectedOrgDetails.map(m => m.id), selectedOrgDetails });
+    
+    let newOrgDetails=selectedOrgDetails.filter(item=>{
+      return !this.state.selectedOrgDetails.includes(item)
+    })
+    this.setState({ selectedOrgs, selectedOrgDetails:[...this.state.selectedOrgDetails, ...newOrgDetails]})
   }
 
   handleSelectUser = (selectedUsers) => {
