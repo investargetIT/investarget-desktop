@@ -140,7 +140,7 @@ function OrganizationTypeFilter(props) {
 
 function CountryFilter(props) {
   return (
-    <BasicContainer label={i18n('filter.area')}>
+    <BasicContainer label={props.source=='projBD' ?i18n('user.country') : i18n('filter.area')}>
       <TabCheckboxCountry value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
@@ -724,6 +724,7 @@ class ProjectBDFilter extends React.Component {
     source_type: null,
     location: [],
     manager: [],
+    country:[],
   }
 
   constructor(props) {
@@ -746,7 +747,8 @@ class ProjectBDFilter extends React.Component {
   }
 
   render() {
-    const { bd_status, source_type, location, manager } = this.state
+    const { bd_status, source_type, location, manager, country } = this.state
+    console.log(this.state)
     return (
       <div>
         <BasicContainer label={i18n('project_bd.bd_status')}>
@@ -755,8 +757,8 @@ class ProjectBDFilter extends React.Component {
         <BasicContainer label={i18n('project_bd.import_methods')}>
           <RadioBDSource value={source_type} onChange={this.handleChange.bind(this, 'source_type')} />
         </BasicContainer>
-        
-          <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} />
+        <CountryFilter source="projBD" value={country} onChange={this.handleChange.bind(this, 'country')} />
+        <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         
         <BasicContainer label={i18n('project_bd.bd_manager')}>
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
