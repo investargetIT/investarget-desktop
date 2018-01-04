@@ -91,6 +91,7 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   74: '会议BD',
   70: '机构BD', 
   67: '用户信息修改日志管理', 
+  69: '邮件管理', 
 } 
 : 
 {
@@ -109,7 +110,8 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   79: '项目BD管理',
   82: '会议BD', 
   78: '机构BD', 
-  67: '用户信息修改日志管理',  
+  67: '用户信息修改日志管理', 
+  63: '邮件管理', 
 }
 
 export const KEY_TO_ICON = {
