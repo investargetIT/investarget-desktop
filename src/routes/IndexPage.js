@@ -392,7 +392,7 @@ class IndexPage extends React.Component {
           </Tooltips>
           </Link>
 
-         { hasPerm('BD.user_getOrgBD') ?  
+         { hasPerm('BD.user_getOrgBD') || hasPerm('BD.manageOrgBD') ?  
                 <Row name="board" style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -443,7 +443,7 @@ class IndexPage extends React.Component {
           </Tooltips>
           </Link>
 
-          { hasPerm('BD.user_getProjectBD') ? 
+          { hasPerm('BD.user_getProjectBD') || hasPerm('BD.manageProjectBD') ? 
             <Row name="board" style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
