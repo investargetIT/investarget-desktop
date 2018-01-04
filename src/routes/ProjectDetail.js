@@ -101,8 +101,8 @@ class ProjectFinanceYear extends React.Component {
           finance.map(item =>
             <div key={item.fYear} style={containerStyle}>
               <h3 style={titleStyle}>
-                {i18n('project.fiscal_year')}
-                {item.fYear}
+              <b> {i18n('project.fiscal_year')}
+                {item.fYear}</b>
               </h3>
               <table style={contentStyle}>
               <tbody>
@@ -635,13 +635,11 @@ function Detail({ project }) {
   function createMarkup(str) {
     str = str.replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--')
     str = str.replace(/\n/g, '<br/>')
-    if(str=='暂无')
-      str=''
     return { __html: str }
   }
 
   function DetailItem({ label, content }) {
-    return content ? (
+    return content&&content!='暂无' ? (
       <div style={style}>
         <h3 style={titleStyle}>{label}</h3>
         <p style={paraStyle} dangerouslySetInnerHTML={createMarkup(content)}></p>
