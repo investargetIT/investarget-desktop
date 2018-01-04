@@ -27,7 +27,7 @@ class BDModal extends React.Component{
   mapIdToManager = () =>{
     let {managers}=this.state   
     var promises=managers.map(item=>{
-      return api.getUserDetailLang(item.manager).then(result=>{
+      return api.getUserBase(item.manager).then(result=>{
       item.manager=result.data.username 
     })
     })
