@@ -25,7 +25,7 @@ import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
-
+ 
 class OrgBDList extends React.Component {
   
   constructor(props) {
@@ -132,6 +132,7 @@ class OrgBDList extends React.Component {
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
     if (this.state.currentBD.bduser) {
+      addRelation(status)
       api.addUserRelation({
         relationtype: false,
         investoruser: this.state.currentBD.bduser,
@@ -163,14 +164,25 @@ class OrgBDList extends React.Component {
         newUser.usernameC = username;
       }
       api.addUser(newUser)
-        .then(result => api.addUserRelation({
+        .then(result =>{
+          addRelation(status)
+          api.addUserRelation({
           relationtype: false,
           investoruser: result.data.id,
           traderuser: this.state.currentBD.manager.id
-        }));
+        })});
     }
   }
-
+  
+  addRelation(status){
+    if(this.state.currentBD.makeUser&&this.state.currentBD.proj&&status==3){
+        api.addUserRelation({
+        relationtype: false,
+        investoruser: this.state.currentBD.bduser,
+        traderuser: this.state.currentBD.makeUser
+      }) 
+      }
+  }
   handleOpenModal = bd => {
     this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
   }
