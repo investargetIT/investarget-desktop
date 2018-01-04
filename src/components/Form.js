@@ -222,7 +222,6 @@ const UploadAvatar = (props, context) => {
 
   const uploadStyle = {
     display: 'block',
-    border: '1px dashed #d9d9d9',
     borderRadius: 6,
     cursor: 'pointer',
     width: 150,
@@ -256,7 +255,7 @@ const UploadAvatar = (props, context) => {
           action={props.photoKey ? (baseUrl + "/service/qiniucoverupload?bucket=image&key=" + props.photoKey) : (baseUrl + "/service/qiniubigupload?bucket=image")}
           onChange={handleChange}
           style={uploadStyle}>
-            { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, height: 150 }} alt="" /> :
+            { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150,maxHeight:150}} alt="" /> :
             <Icon type="plus" style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
             }
           </Upload>
