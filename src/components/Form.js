@@ -121,7 +121,9 @@ const Position = props => (
 
 const Tags = props => (
   <BasicFormItem label={i18n("account.tag")} name="tags" required={props.required} valueType="array">
-    <Select mode="multiple" placeholder={i18n("account.choose_tags")}>
+    <Select 
+    filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+    mode="multiple" placeholder={i18n("account.choose_tags")}>
       { props.tag ? props.tag.map(t => <Option key={t.id}>{t.name}</Option>) : null }
     </Select>
   </BasicFormItem>

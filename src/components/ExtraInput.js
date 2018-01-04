@@ -46,7 +46,7 @@ class _Select extends React.Component {
     )
   }
 }
-
+ 
 class SelectNumber extends React.Component {
 
   handleChange = (value) => {
@@ -65,7 +65,10 @@ class SelectNumber extends React.Component {
     }
 
     return (
-      <Select value={_value} onChange={this.handleChange} size="large" {...extraProps}>
+      <Select value={_value} 
+      filterOption={(input, option) => option.props.children.indexOf(input) >= 0} 
+      onChange={this.handleChange} 
+      size="large" {...extraProps}>
         {_options && _options.map((item, index) =>
           <Option key={index} value={item.value}>{item.label}</Option>
         )}
