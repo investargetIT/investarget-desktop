@@ -4,7 +4,7 @@ import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
 import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
-
+import { SelectUser } from '../components/ExtraInput'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
@@ -37,8 +37,13 @@ class UserList extends React.Component {
       list: [],
       loading: false,
       selectedUsers: [],
+      selectedRecords:[],
+      traders:[],
+      trader:null,
+      visible:false,
       sort:undefined,
       desc:undefined,
+      ifShowCheckBox:false
     }
   }
 
@@ -77,7 +82,16 @@ class UserList extends React.Component {
       })
     })
     this.writeSetting()
+
+    api.queryUserGroup({ type: 'investor' }).then(result=>{
+      if(result.data.data.map(item=>item.id).includes(filters.groups)){
+        this.setState({ifShowCheckBox:true})
+      }else{
+        this.setState({ifShowCheckBox:false})
+      }
+    })
   }
+  
 
   handleSortChange = value => {
     this.sort = value === 'asc' ? true : false
@@ -94,8 +108,11 @@ class UserList extends React.Component {
     this.modal.showModal(id, username)
   }
 
-  handleSelectChange = (selectedUsers) => {
-    this.setState({ selectedUsers })
+  handleSelectChange = (selectedUsers,selectedRecords) => {
+    let newUsers=selectedRecords.filter(item=>{
+      return !this.state.selectedRecords.includes(item)
+    })
+    this.setState({ selectedUsers, selectedRecords:[...this.state.selectedRecords,...newUsers] })
   }
 
   writeSetting = () => {
@@ -118,17 +135,51 @@ class UserList extends React.Component {
       this.getUser()
     );
   }
+   
+  showModifyTraderModal = () =>{ 
+    this.state.selectedRecords.forEach(user=>{
+      api.getUserRelation({investoruser: user.id}).then(result=>{
+        console.log(result.data)
+      })
+    })
+    this.setState({visible:true})
+  }
 
+  comfirmModify = () =>{   
+    let promises=this.state.selectedRecords.map(user=>{
+      let body = {
+      investoruser: user.id,
+      traderuser: this.state.trader,
+      relationtype: true
+      }
+      if(user.userstatus.name=='审核通过'){
+        if(user.trader_relation&&user.trader_relation.traderuser.username){
+          return api.editUserRelation([{ ...body, id: user.trader_relation.id }])
+        }else{
+          return api.addUserRelation(body)
+        }
+      }
+    })
+    Promise.all(promises).then((data)=>{
+      console.log(111)
+      this.setState({selectedUsers:[], selectedRecords:[], trader:null, visible:false}, this.getUser)
+    })
+  }
   componentDidMount() {
     this.getUser()
+
+    api.queryUserGroup({ type: 'trader' })
+    .then(data =>api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => this.setState({ traders: data.data.data }))
+    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+
+    
   }
 
   render() {
     const { selectedUsers, filters, search, list, total, page, pageSize, loading, sort, desc} = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
-    console.log(list)
-
     const rowSelection = {
       selectedUsers,
       onChange: this.handleSelectChange,
@@ -222,15 +273,37 @@ class UserList extends React.Component {
           </div>
         </div>
 
+        <Modal
+          title="请选择交易师"
+          visible={this.state.visible}
+          onOk={this.comfirmModify}
+          footer={null}
+          onCancel={() => this.setState({ visible: false })}
+          closable={false}
+        >
+
+         <SelectUser
+            style={{ width: 300 }}
+            mode="single"
+            data={this.state.traders}
+            value={this.state.trader}
+            onChange={trader => this.setState({ trader })} />
+
+          <Button style={{ marginLeft: 10 }} disabled={this.state.trader === null} type="primary" onClick={this.comfirmModify}>{i18n('common.confirm')}</Button>
+
+        </Modal>
+
         <Table
           onChange={this.handleTableChange}
-          rowSelection={rowSelection}
+          rowSelection={this.state.ifShowCheckBox ? rowSelection :null}
           columns={columns}
           dataSource={list}
           loading={loading}
           rowKey={record => record.id}
           pagination={false} />
 
+        <div style={{ margin: '16px 0' }} className="clearfix">
+        <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button>
         <Pagination
           className="ant-table-pagination"
           total={total}
@@ -240,6 +313,7 @@ class UserList extends React.Component {
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
           showQuickJumper />
+        </div>
 
       </LeftRightLayout>
     )

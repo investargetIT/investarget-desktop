@@ -362,6 +362,7 @@
     "select_trader": "选择交易师",
     "select_investor": "选择投资人",
     "org_investors": "机构投资人",
+    "modify_trader":"修改交易师",
 
     "message": {
       "user_exist": "该用户已经存在",

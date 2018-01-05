@@ -132,7 +132,7 @@ class OrgBDList extends React.Component {
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
     if (this.state.currentBD.bduser) {
-      addRelation(status)
+      this.addRelation(status)
       api.addUserRelation({
         relationtype: false,
         investoruser: this.state.currentBD.bduser,
@@ -165,7 +165,7 @@ class OrgBDList extends React.Component {
       }
       api.addUser(newUser)
         .then(result =>{
-          addRelation(status)
+          this.addRelation(status)
           api.addUserRelation({
           relationtype: false,
           investoruser: result.data.id,
@@ -174,7 +174,7 @@ class OrgBDList extends React.Component {
     }
   }
   
-  addRelation(status){
+  addRelation = (status) =>{
     if(this.state.currentBD.makeUser&&this.state.currentBD.proj&&status==3){
         api.addUserRelation({
         relationtype: false,
@@ -237,10 +237,10 @@ class OrgBDList extends React.Component {
   render() {
 
     const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
+    console.log(list)
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
-    console.log(list)
     const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
