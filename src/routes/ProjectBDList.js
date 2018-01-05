@@ -172,7 +172,7 @@ class ProjectBDList extends React.Component {
       // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},
       {title: i18n('project_bd.contact'), dataIndex: 'username', key:'username', sorter:true},
       // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
-      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true},
+      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text.indexOf('-') > -1 ? '+' + text : text},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return time(record.createdtime + record.timezone)
