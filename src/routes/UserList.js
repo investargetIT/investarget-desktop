@@ -4,18 +4,16 @@ import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
 import { i18n, hasPerm } from '../utils/util'
 import * as api from '../api'
-import { SelectUser } from '../components/ExtraInput'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
+import { Search2 } from '../components/Search';
+import { SelectUser } from '../components/ExtraInput';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 const Option = Select.Option
 const confirm = Modal.confirm
-
-import { Search2 } from '../components/Search'
-
 
 class UserList extends React.Component {
 
@@ -281,13 +279,13 @@ class UserList extends React.Component {
           onCancel={() => this.setState({ visible: false })}
           closable={false}
         >
-
-         <SelectUser
-            style={{ width: 300 }}
-            mode="single"
-            data={this.state.traders}
-            value={this.state.trader}
-            onChange={trader => this.setState({ trader })} />
+ 
+          <SelectUser
+             style={{ width: 300 }}
+             mode="single"
+             data={this.state.traders}
+             value={this.state.trader}
+             onChange={trader => this.setState({ trader })} />
 
           <Button style={{ marginLeft: 10 }} disabled={this.state.trader === null} type="primary" onClick={this.comfirmModify}>{i18n('common.confirm')}</Button>
 
