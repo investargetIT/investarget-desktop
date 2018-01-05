@@ -34,7 +34,6 @@ class SelectInvestorAndTrader extends React.Component {
   }
 
   handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
-    console.log(selectedOrgs)
     let newOrgDetails=selectedOrgDetails.filter(item=>{
       return !this.state.selectedOrgDetails.includes(item)
     })
