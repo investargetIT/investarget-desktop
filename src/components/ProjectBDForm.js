@@ -138,7 +138,7 @@ class ProjectBDForm extends React.Component {
 
         {this.state.isSelect ? (
           <div>
-            <BasicFormItem label={i18n('project_bd.contact')} name="bduser" valueType="number" required onChange={this.handleChangeBduser} initialValue={this.state._bduser}>
+            <BasicFormItem label={i18n('project_bd.contact')} name="bduser" valueType="number" onChange={this.handleChangeBduser} initialValue={this.state._bduser}>
               <SelectPartner />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
@@ -157,14 +157,14 @@ class ProjectBDForm extends React.Component {
           </div>
         ) : (
           <div>
-            <BasicFormItem label={i18n('project_bd.contact_name')} name="username" required initialValue={this.state._username}>
+            <BasicFormItem label={i18n('project_bd.contact_name')} name="username" initialValue={this.state._username}>
               <Input />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
               <div>联系人在库里？<a href="javascript:void(0)" onClick={this.toggleSelect}>选择联系人</a></div>
             </LayoutItem>
 
-            <BasicFormItem label={i18n('project_bd.contact_title')} name="usertitle" valueType="number" required initialValue={this.state._usertitle}>
+            <BasicFormItem label={i18n('project_bd.contact_title')} name="usertitle" valueType="number" initialValue={this.state._usertitle}>
               <SelectTitle />
             </BasicFormItem>
 
@@ -172,13 +172,13 @@ class ProjectBDForm extends React.Component {
               <Input />
             </BasicFormItem> */}
 
-              <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')} required>
+              <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')}>
                 <Row gutter={8}>
                   <Col span={6}>
-                    <FormItem required>
+                    <FormItem>
                       {
                         getFieldDecorator('mobileAreaCode', {
-                          rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                          rules: [], initialValue: '86'
                         })(
                           <Input prefix="+" />
                           )
@@ -186,10 +186,10 @@ class ProjectBDForm extends React.Component {
                     </FormItem>
                   </Col>
                   <Col span={18}>
-                    <FormItem required>
+                    <FormItem>
                       {
                         getFieldDecorator('mobile', {
-                          rules: [{ message: i18n('validation.not_empty'), required: true }]
+                          rules: []
                         })(
                           <Input onBlur={this.props.mobileOnBlur} />
                           )
