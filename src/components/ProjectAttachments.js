@@ -147,13 +147,13 @@ class ProjectAttachments extends React.Component {
 
   handleFileChange = ({ file, fileList, event }) => {
     console.log('>>>', file, fileList, event);
-    if (file.status == 'uploading') {
+    if (file.status === 'uploading') {
       this.handleFileUpload(file)
-    } else if (file.status == 'done') {
+    } else if (file.status === 'done') {
       this.handleFileUploadDone(file)
-    } else if (file.status == 'error') {
+    } else if (file.status === 'error') {
       this.handleFileUploadError(file)
-    } else if (file.status == 'removed') {
+    } else if (file.status === 'removed') {
       this.handleFileRemove(file)
     }
   }
@@ -183,9 +183,7 @@ class ProjectAttachments extends React.Component {
       return item.filetype == file.filetype && item.filename == file.filename
     })
     this.addAttachment(file).then(result => {
-      this.setState({
-        fileList: [ ...this.state.fileList.slice(0, index), file ,...this.state.fileList.slice(index+1) ]
-      })
+      this.getAttachment(); 
     }, error => {
       file.status = 'error'
       file.error = error
@@ -223,7 +221,11 @@ class ProjectAttachments extends React.Component {
 
   getAttachment = () => {
     const projId = this.props.projId
-    api.getProjAttachment(projId).then(result => {
+    const param = {
+      proj: projId,
+      page_size: 10000
+    }
+    api.getProjAttachment(param).then(result => {
       return result.data.data
     })
     .then(fileList => {
@@ -308,18 +310,18 @@ class ProjectAttachments extends React.Component {
       return false
     }
 
-    this.setState({ spinning: true, activeDir: key });
     const { fileList } = this.state
 
-    // 不允许重复上传
-    const dir = this.state.activeDir // current dir
+    // 同一个目录下不允许重复上传相同的文件
+    const dir = key // current dir
     for (let i = 0, len = fileList.length; i < len; i++) {
       let _file = fileList[i]
-      if (dir == _file.filetype && file.filename == _file.filename) {
+      if (dir === _file.filetype && file.name === _file.filename) {
         message.error(i18n('project.message.upload_same_file'), 2)
         return false
       }
     }
+
     //NDA文件和Teaser文件只能上传一个
     if (dir == 'NDA' && fileList.filter(item => item.filetype == 'NDA').length > 0) {
       message.error(i18n('project.message.only_one_NDA'), 2)
@@ -329,6 +331,9 @@ class ProjectAttachments extends React.Component {
       message.error(i18n('project.message.only_one_teaser'), 2)
       return false
     }
+
+    this.setState({ spinning: true, activeDir: key });
+
     return true
   }
 
