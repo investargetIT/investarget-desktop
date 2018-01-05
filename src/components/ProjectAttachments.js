@@ -302,13 +302,15 @@ class ProjectAttachments extends React.Component {
   }
 
   beforeUpload = (key, file) => {
+
+    if (mimeTypes.indexOf(file.type) == -1) {
+      message.error(i18n('project.message.unsupported_formart'), 2)
+      return false
+    }
+
     this.setState({ spinning: true, activeDir: key });
     const { fileList } = this.state
 
-    if (mimeTypes.indexOf(file.type) == -1) {
-      message.error(i18n('project.message.unsported_format'), 2)
-      return false
-    }
     // 不允许重复上传
     const dir = this.state.activeDir // current dir
     for (let i = 0, len = fileList.length; i < len; i++) {
