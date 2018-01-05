@@ -237,7 +237,6 @@ class OrgBDList extends React.Component {
   render() {
 
     const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
-    console.log(list)
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}

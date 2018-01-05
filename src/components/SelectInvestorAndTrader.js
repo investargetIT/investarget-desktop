@@ -34,11 +34,14 @@ class SelectInvestorAndTrader extends React.Component {
   }
 
   handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
-    
+    console.log(selectedOrgs)
     let newOrgDetails=selectedOrgDetails.filter(item=>{
       return !this.state.selectedOrgDetails.includes(item)
     })
-    this.setState({ selectedOrgs, selectedOrgDetails:[...this.state.selectedOrgDetails, ...newOrgDetails]})
+    newOrgDetails = [...this.state.selectedOrgDetails, ...newOrgDetails].filter(item=>{
+      return selectedOrgs.includes(item.id)
+    })
+    this.setState({ selectedOrgs, selectedOrgDetails:newOrgDetails})
   }
 
   handleSelectUser = (selectedUsers) => {

@@ -107,10 +107,14 @@ class UserList extends React.Component {
   }
 
   handleSelectChange = (selectedUsers,selectedRecords) => {
+    
     let newUsers=selectedRecords.filter(item=>{
       return !this.state.selectedRecords.includes(item)
     })
-    this.setState({ selectedUsers, selectedRecords:[...this.state.selectedRecords,...newUsers] })
+    newUsers = [...this.state.selectedRecords,...newUsers].filter(item=>{
+      return selectedUsers.includes(item.id)
+    })
+    this.setState({ selectedUsers, selectedRecords:newUsers })
   }
 
   writeSetting = () => {
@@ -135,14 +139,9 @@ class UserList extends React.Component {
   }
    
   showModifyTraderModal = () =>{ 
-    this.state.selectedRecords.forEach(user=>{
-      api.getUserRelation({investoruser: user.id}).then(result=>{
-        console.log(result.data)
-      })
-    })
     this.setState({visible:true})
   }
-
+ 
   comfirmModify = () =>{   
     let promises=this.state.selectedRecords.map(user=>{
       let body = {
@@ -150,16 +149,31 @@ class UserList extends React.Component {
       traderuser: this.state.trader,
       relationtype: true
       }
-      if(user.userstatus.name=='审核通过'){
-        if(user.trader_relation&&user.trader_relation.traderuser.username){
-          return api.editUserRelation([{ ...body, id: user.trader_relation.id }])
-        }else{
-          return api.addUserRelation(body)
-        }
+      let weakTraders=[]
+      if(user.userstatus.name=='审核通过'){    //审核通过
+        return api.getUserRelation({investoruser: user.id})
+        .then(result=>{         
+          result.data.data.forEach(item=>{
+            if(item.relationtype==false){
+              weakTraders.push(item)     //获取弱交易师
+            }
+          })
+          let existUser=weakTraders.find(item=>{return item.traderuser.id==this.state.trader})
+          if(existUser){          
+            return api.deleteUserRelation([existUser.id])    //删除已存在的弱交易师
+          }
+          weakTraders=[]
+        })
+        .then(data=>{
+          if(user.trader_relation&&user.trader_relation.traderuser.username){
+            return api.editUserRelation([{ ...body, id: user.trader_relation.id }])   //修改已存在的强交易师
+          }else{
+            return api.addUserRelation(body)               //添加强交易师
+          }
+        })       
       }
     })
     Promise.all(promises).then((data)=>{
-      console.log(111)
       this.setState({selectedUsers:[], selectedRecords:[], trader:null, visible:false}, this.getUser)
     })
   }
