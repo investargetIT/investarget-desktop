@@ -2,12 +2,13 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, getImageUrl } from '../utils/util'
 import { Form, message } from 'antd'
-import { Group, Org, FullName, Position, Tags, Submit, UploadAvatar, BasicFormItem } from '../components/Form'
+import { Group, Org, FullName, Position, Submit, UploadAvatar, BasicFormItem } from '../components/Form'
 import { connect } from 'dva'
 import { editUser } from '../api'
 import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
 import { UploadImage } from '../components/Upload'
+import {SelectTag} from '../components/ExtraInput'
 
 class BasicInfo extends React.Component {
 
@@ -91,7 +92,7 @@ class BasicInfo extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['title', 'tag'] })
   }
-
+ 
   render() {
   return (
     <LeftRightLayout
@@ -104,7 +105,9 @@ class BasicInfo extends React.Component {
         <Org disabled />
         <FullName disabled />
         <Position disabled title={this.props.title} />
-        <Tags tag={this.props.tag} />
+        <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
+          <SelectTag mode="multiple" />
+        </BasicFormItem>
         <UploadAvatar name="card" photoKey={this.props.currentUser.cardKey} avatarUrl={this.state.cardUrl} onUploaded={this.handleCardUploaded.bind(this)} />
         <Submit />
       </Form>
