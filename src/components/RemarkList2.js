@@ -163,6 +163,7 @@ class Remark extends React.Component {
   render() {
     const createdtime = time(this.props.createdtime + this.props.timezone)
     const photourl=this.state.photoURL
+    const comments={__html:this.props.comments.replace(/\n/g,'<br>')}
     return ( 
       <div style={{marginBottom:'16px',borderBottom:'1px solid #eee',paddingBottom:'16px'}}>
         <div style={smallBlock}><img style={imgStyle} src={photourl}/></div>
@@ -172,7 +173,7 @@ class Remark extends React.Component {
           {createdtime}
         </div>
         </div>
-        <p style={comStyle}>{this.props.comments}</p>
+        <p style={comStyle} dangerouslySetInnerHTML={comments}></p>
         
       </div>    
       // <div style={{marginBottom:8}}>

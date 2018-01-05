@@ -281,7 +281,7 @@ function BDComments(props) {
                 <a href="javascript:void(0)">{i18n('common.delete')}</a>
               </Popconfirm>
             </p>
-            <p>{comment.comments}</p>
+            <p dangerouslySetInnerHTML={{__html:comment.comments.replace(/\n/g,'<br>')}}></p>
           </div>
         )) : <p>{i18n('remark.no_comments')}</p>}
       </div>
