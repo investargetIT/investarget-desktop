@@ -14,9 +14,9 @@ function onValuesChange(props, values) {
 const AddProjectBDForm = Form.create({onValuesChange})(ProjectBDForm)
 
 function toData(formData) {
-  if (! 'bduser' in formData) {
+  if (!('bduser' in formData)) {
     formData['bduser'] = null
-    formData['usermobile'] = formData.mobileAreaCode + '-' + formData.mobile;
+    formData['usermobile'] = (formData.mobileAreaCode && formData.mobile) ? formData.mobileAreaCode + '-' + formData.mobile : formData.mobile;
   }
   if (!['中国', 'China'].includes(formData.country.label)) {
     formData['location'] = null;
