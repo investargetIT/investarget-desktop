@@ -779,6 +779,7 @@ function mapStateToPropsCountry (state) {
         return {
           label: i.country,
           value: i.id,
+          areaCode: i.areaCode, 
         }
       })
     }
@@ -820,7 +821,6 @@ class CascaderCountryDetail extends React.Component {
   render() {
     // 剔除部分属性
     const {options, map, children, dispatch, value:country, onChange, ...extraProps} = this.props
-echo('country', country);
     // value 修改为 [大洲,国家] || [国家]
     const continentId = country ? map[country.value] : undefined; 
     const value = continentId ? [continentId, country ? country.value : undefined] : [country ? country.value : undefined]

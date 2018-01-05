@@ -20,6 +20,7 @@ import {
 } from './ExtraInput'
 import { i18n } from '../utils/util'
 import * as api from '../api'
+import { connect } from 'dva';
 
 const formItemLayout = {
   labelCol: {
@@ -109,9 +110,19 @@ class ProjectBDForm extends React.Component {
     this.handleChangeBduser(this.state._bduser)
   }
 
+  handleCountryChange = country => {
+    this.props.form.setFieldsValue({
+      mobileAreaCode: country.areaCode,
+    });
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
-    const country = getFieldValue('country');
+    const countryObj = getFieldValue('country');
+    let country = null;
+    if (countryObj && this.props.country.length > 0) {
+      country = this.props.country.filter(f => f.id === countryObj.value)[0];
+    }
     return (
       <Form>
         <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required initialValue={this.props.comName}>
@@ -127,10 +138,10 @@ class ProjectBDForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
-          <CascaderCountryDetail size="large" />
+          <CascaderCountryDetail size="large" onChange={this.handleCountryChange} />
         </BasicFormItem>
 
-        {['中国', 'China'].includes(country && country.label) ? 
+        {['中国', 'China'].includes(country && (country.label || country.country)) ? 
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
           <SelectOrganizatonArea />
         </BasicFormItem>
@@ -168,17 +179,13 @@ class ProjectBDForm extends React.Component {
               <SelectTitle />
             </BasicFormItem>
 
-            {/* <BasicFormItem label={i18n('project_bd.contact_mobile')} name="usermobile" required initialValue={this.state._usermobile}>
-              <Input />
-            </BasicFormItem> */}
-
               <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')}>
                 <Row gutter={8}>
                   <Col span={6}>
                     <FormItem>
                       {
                         getFieldDecorator('mobileAreaCode', {
-                          rules: [], initialValue: '86'
+                          rules: [], initialValue: country && country.areaCode || '86'
                         })(
                           <Input prefix="+" />
                           )
@@ -216,7 +223,11 @@ class ProjectBDForm extends React.Component {
   }
 }
 
-export default ProjectBDForm
+function mapStateToProps(state) {
+  const { country } = state.app;
+  return { country };
+}
+export default connect(mapStateToProps)(ProjectBDForm)
 
 
 function LayoutItem({ label, children, style }) {
