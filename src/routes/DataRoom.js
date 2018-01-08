@@ -169,10 +169,8 @@ class DataRoom extends React.Component {
           })
         return 
       }
-      if (parentIndex < 0) return
-      const dataroom = newData[parentIndex].dataroom
       const body = {
-        dataroom: dataroom,
+        dataroom: Number(this.state.id),
         filename: value.rename,
         isFile: false,
         orderNO: 1,
