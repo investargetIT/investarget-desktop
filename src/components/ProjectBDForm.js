@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes, { func } from 'prop-types'
-
+import {hasPerm} from '../utils/util'
 import { Form, Input, Radio, Checkbox, Row, Col } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
@@ -208,10 +208,10 @@ class ProjectBDForm extends React.Component {
 
           </div>
         )}
-
+        {hasPerm('proj.admin_changeproj') ?
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number" required>
           <SelectAllUser type="trader" /> 
-        </BasicFormItem>
+        </BasicFormItem> :null}
 
         {'isAdd' in this.props ? (
           <BasicFormItem label={i18n('remark.comment')} name="comments">
