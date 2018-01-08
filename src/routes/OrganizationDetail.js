@@ -35,14 +35,18 @@ const PositionWithUser = props => {
             <img style={{ cursor: 'pointer', marginBottom: 4 }} src="/images/delete.png" />
           </Popconfirm>
         </div>
+        {user.trader.id ?
+        <div>
         <hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
         <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
+        </div> :null}
       </div>
     } else {
      return <div>
        <p style={{ fontSize: 16, fontWeight: 'bold' }}>{user.name}</p>
-       <hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
-       <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p>
+       {user.trader.id ? <div><hr style={{ backgroundColor: 'rgb(192, 193, 194)', height: 1, margin: '0 -18px' }} />
+       <p style={{marginTop: 4}}>交易师：<Link to={"/app/user/" + user.trader.id}>{user.trader.name}</Link></p></div> : null}
+       
        </div> 
     }
 
@@ -156,7 +160,6 @@ class OrganizationDetail extends React.Component {
       data.transactionAmountT_USD = data.transactionAmountT_USD ? formatMoney(data.transactionAmountT_USD, 'USD') : 'N/A'
       data.fundSize = data.fundSize ? formatMoney(data.fundSize, currency) : 'N/A'
       data.fundSize_USD = data.fundSize_USD ? formatMoney(data.fundSize_USD, 'USD') : 'N/A'
-      console.log(data)
       this.setState(data)
 
       const orgTypeID = result.data.orgtype && result.data.orgtype.id
