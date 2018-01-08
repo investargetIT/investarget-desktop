@@ -117,7 +117,7 @@ class OrgBDList extends React.Component {
         onCancel:  () => this.handleConfirmAudit(state),
       });
     } else {
-      this.handleConfirmAudit(state);
+      this.handleConfirmAudit(state, true);
     }
   }
 
@@ -175,13 +175,14 @@ class OrgBDList extends React.Component {
   }
   
   addRelation = (status) =>{
-    if(this.state.currentBD.makeUser&&this.state.currentBD.proj&&status==3){
-        api.addUserRelation({
+    if (this.state.currentBD.makeUser && this.state.currentBD.proj && status == 3) {
+      api.addUserRelation({
         relationtype: false,
         investoruser: this.state.currentBD.bduser,
-        traderuser: this.state.currentBD.makeUser
-      }) 
-      }
+        traderuser: this.state.currentBD.makeUser,
+        proj: this.state.currentBD.proj.id,
+      })
+    }
   }
   handleOpenModal = bd => {
     this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
