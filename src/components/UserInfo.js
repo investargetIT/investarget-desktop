@@ -53,7 +53,7 @@ class UserInfo extends React.Component {
 
   componentDidMount() {
     const userId = this.props.userId
-    api.getUserDetailLang(userId).then(result => {
+    api.getUserInfo(userId).then(result => {
       const data = result.data
       console.log(data)
       const username = data.username

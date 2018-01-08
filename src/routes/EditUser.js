@@ -95,7 +95,7 @@ class EditUser extends React.Component {
     api.queryUserGroup({ type: 'investor', page_size: 100 })
     .then(data => {
       investorGroup = data.data.data.map(m => m.id)
-      return api.getUserDetail(userId)
+      return api.getUserInfo(userId, true);
     })
     .then(result => {
       userDetailInfo = result.data

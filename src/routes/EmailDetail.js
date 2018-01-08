@@ -50,7 +50,7 @@ class EmailDetail extends React.Component {
       const { count: total, data: list } = result.data
       // 填充用户信息
       const q = list.map(item => {
-        return api.getUserDetailLang(item.user).then(result => {
+        return api.getUserInfo(item.user).then(result => {
           return result.data
         }, error => {
           return undefined

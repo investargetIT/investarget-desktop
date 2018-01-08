@@ -9,7 +9,7 @@ import {
   RadioTrueOrFalse,
   CheckboxCurrencyType,
 } from '../components/ExtraInput'
-import { queryDataRoom, getUserBase, getProjLangDetail } from '../api'
+import { queryDataRoom, getProjLangDetail } from '../api'
 import * as api from '../api'
 import { Search2 } from '../components/Search'
 

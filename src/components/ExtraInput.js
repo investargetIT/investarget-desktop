@@ -281,7 +281,7 @@ class SelectExistArea extends React.Component {
   componentDidMount(){
     api.getSource('orgarea').then(result=>{
       const list=result.data.map(item=>{
-        return <Option key={item.id} value={item.id}>{item.name}</Option>
+        return <Option key={item.id} value={String(item.id)}>{item.name}</Option>
       })
       this.setState({options:list})
     })
@@ -293,9 +293,9 @@ class SelectExistArea extends React.Component {
         <Select
         showSearch
         optionFilterProp="children"
-        value={this.props.value}
+        value={this.props.value && String(this.props.value)}
         filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-        onChange={this.props.onChange}
+        onChange={value => this.props.onChange(Number(value))}
         allowCreate={this.props.allowCreate}
         {...extraProps}
         >
@@ -360,7 +360,7 @@ class SelectExistUser extends React.Component {
   }
 
   getUsernameById = (id) => {
-    return api.getUserDetailLang(id).then(result => {
+    return api.getUserInfo(id).then(result => {
       return result.data.username
     })
   }
@@ -398,7 +398,7 @@ class SelectExistInvestor extends React.Component {
   }
 
   getUsernameById = (id) => {
-    return api.getUserDetailLang(id).then(result => {
+    return api.getUserInfo(id).then(result => {
       return result.data.username
     })
   }
@@ -454,7 +454,7 @@ class SelectAllUser extends React.Component {
   }
 
   getUsernameById = (id) => {
-    return api.getUserDetailLang(id).then(result => {
+    return api.getUserInfo(id).then(result => {
       return result.data.username
     })
   }
@@ -493,7 +493,7 @@ class SelectPartner extends React.Component {
   }
 
   getUsernameById = (id) => {
-    return api.getUserDetailLang(id).then(result => {
+    return api.getUserInfo(id).then(result => {
       return result.data.username
     })
   }

@@ -161,7 +161,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
   }
 
   getTrader = () => {
-    api.getUserDetailLang(this.props.traderId).then(result => {
+    api.getUserInfo(this.props.traderId).then(result => {
       const trader = result.data
       this.setState({ trader })
     }, error => {

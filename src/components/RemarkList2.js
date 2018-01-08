@@ -133,7 +133,7 @@ class Remark extends React.Component {
   }
 
   componentDidMount() {
-    api.getUserBase(this.state.user).then(result => {
+    api.getUserInfo(this.state.user).then(result => {
       this.setState({userName:result.data.username,photoURL:result.data.photourl}) 
     }, error => {
       handleError(error)

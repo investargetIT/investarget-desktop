@@ -81,7 +81,7 @@ class ProjectBDForm extends React.Component {
   }
 
   getUserDetail = (id) => {
-    api.getUserDetailLang(id).then(result => {
+    api.getUserInfo(id).then(result => {
       const { title, mobile } = result.data
       this.setState({
         contactTitle: title ? title.name : '',

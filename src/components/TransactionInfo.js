@@ -118,7 +118,7 @@ class TransactionInfo extends React.Component {
   }
 
   getTransactionInfo = (id) => {
-    api.getUserDetailLang(id).then(result => {
+    api.getUserInfo(id).then(result => {
       const data = result.data
 
       const title = data.title ? data.title.name : ''

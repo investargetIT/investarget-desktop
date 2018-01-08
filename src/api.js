@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
-import { qsArrayToString, getUserInfo } from './utils/util'
+import { qsArrayToString, getUserInfo as getCurrentUserInfo } from './utils/util'
 import _ from 'lodash'
 import { 
   ApiError, 
@@ -27,7 +27,7 @@ function r(url, method, body) {
     }
   }
 
-  const user = getUserInfo()
+  const user = getCurrentUserInfo()
   if (user) {
     options.headers["token"] = user.token
   }
@@ -63,7 +63,7 @@ function r2(url, method, body) {
   }
 
 
-  const user = getUserInfo()
+  const user = getCurrentUserInfo()
 
   if (user) {
     options.headers["token"] = user.token
@@ -257,7 +257,7 @@ export function qiniuUpload(bucket, file) {
     throw new ApiError(1299, 'data source missing')
   }
 
-  const user = getUserInfo()
+  const user = getCurrentUserInfo()
 
   let headers = {
     "Accept": "application/json",
@@ -409,17 +409,7 @@ export function editUser(idArr, param) {
   return r('/user/', 'PUT', data)
 }
 
-export function getUserBase(id) {
-  return r('/user/' + id + '/')
-}
-
-export function getUserDetailLang(id) {
-  return r('/user/detail/' + id + '/')
-}
-
-export function getUserDetail(id) {
-  return r2('/user/detail/' + id + '/')
-}
+export const getUserInfo = (id, isShowAllLangInfo) => isShowAllLangInfo ? r2(`/user/${id}/`) : r(`/user/${id}/`);
 
 export function login(values) {
   const param = {
@@ -587,7 +577,7 @@ export const checkDataRoomStatus = (dataroomID, investorID) => {
  * @param {Number} investorID - 投资人的 id
  */
 export const downloadDataRoom = (dataroomID, investorID) => {
-  const user = getUserInfo()
+  const user = getCurrentUserInfo()
   let url = `/dataroom/downzip/?path=dataroom_${dataroomID}`;
   if (investorID) {
     url = url + '_' + investorID;

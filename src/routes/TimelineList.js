@@ -178,7 +178,7 @@ class TimelineList extends React.Component {
   getInvestorOrganization = (investorIds) => {
 
     const q = investorIds.map(id => {
-      return api.getUserBase(id).then(result => {
+      return api.getUserInfo(id).then(result => {
         const user = result.data
         return user.org
       })
