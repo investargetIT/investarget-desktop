@@ -74,9 +74,11 @@ class UserInfo extends React.Component {
       this.setState({
         username, title, tags, country, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
       })
-      api.downloadUrl(cardBucket, cardKey).then(result => {
-        this.setState({ cardUrl: result.data })
-      })
+      if (cardBucket && cardKey) {
+        api.downloadUrl(cardBucket, cardKey).then(result => {
+          this.setState({ cardUrl: result.data })
+        })
+      }
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -101,7 +103,7 @@ class UserInfo extends React.Component {
         <Field title={i18n('user.wechat')} value={wechat} />
         <Field title={i18n('user.email')} value={email} />
         <Field title={i18n('user.status')} value={userstatus} />
-        <Field title={i18n('user.card')} value={<ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer>} />
+        <Field title={i18n('user.card')} value={ cardUrl ? <ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer> : null } />
         <Field title={i18n('project.favorite_projects')} value={''} />
         <Field title={i18n('project.recommended_projects')} value={''} />
         <Field title={i18n('project.interested_projects')} value={''} />
