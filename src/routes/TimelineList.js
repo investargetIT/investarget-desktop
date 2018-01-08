@@ -64,17 +64,6 @@ class TimelineList extends React.Component {
   getTimeline = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
-    // 用户查看自己的时间轴，管理员查看全部时间轴
-    if (!hasPerm('usersys.as_admin')) {
-      let userId = getCurrentUser()
-      if (hasPerm('usersys.as_investor')) {
-        params['investor'] = userId
-      } else if (hasPerm('usersys.as_trader')) {
-        params['trader'] = userId
-      } else {
-        return
-      }
-    }
     this.setState({ loading: true })
     api.getTimeline(params).then(result => {
       const { count: total, data: list } = result.data
@@ -189,7 +178,7 @@ class TimelineList extends React.Component {
   getInvestorOrganization = (investorIds) => {
 
     const q = investorIds.map(id => {
-      return api.getUserDetailLang(id).then(result => {
+      return api.getUserBase(id).then(result => {
         const user = result.data
         return user.org
       })
