@@ -378,12 +378,12 @@ class IndexPage extends React.Component {
           <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
                 <Row name="board" style={{ backgroundColor: '#F08699', margin: '0 10px 10px'}}>
                   <Col span={8}>
-                    <div style={{ height: hasPerm('BD.user_getOrgBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>                      
+                    <div style={{ height: hasPerm('BD.user_getOrgBD') || hasPerm('BD.manageOrgBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>                      
                       <img  style={{ margin: '0 auto' }} src="./images/calendar.png"/>
                     </div>
                   </Col>
                   <Col span={16}>
-                    <div style={{ height: hasPerm('BD.user_getOrgBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                    <div style={{ height: hasPerm('BD.user_getOrgBD') || hasPerm('BD.manageOrgBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>两天以内近期日程安排</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{this.state.firstSchedule ? parseTime(this.state.firstSchedule.scheduledtime + this.state.firstSchedule.timezone) : pad(hour) + ':' + pad(minute)}</p>
                     </div>
@@ -416,7 +416,7 @@ class IndexPage extends React.Component {
                   </Col>
           </Link>
                 </Row>
-                : null }
+                 : null } 
           
           
           </Col>
@@ -426,12 +426,12 @@ class IndexPage extends React.Component {
           <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
           <Row name="board" style={{ backgroundColor: '#93C575', margin: '0 10px 10px' }}>
                   <Col span={8}>
-                    <div style={{ height: hasPerm('BD.user_getProjectBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ height: hasPerm('BD.user_getProjectBD') || hasPerm('BD.manageProjectBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                       <i style={{ fontSize: 40, color: 'white', margin: '0 auto' }} className="glyphicon glyphicon-time"></i>
                     </div>
                   </Col>
                   <Col span={16}>
-                    <div style={{ height: hasPerm('BD.user_getProjectBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
+                    <div style={{ height: hasPerm('BD.user_getProjectBD') || hasPerm('BD.manageProjectBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>两天以上日程安排</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>
                       {this.state.secondSchedule ? parseDate(this.state.secondSchedule.scheduledtime + this.state.secondSchedule.timezone) : pad(month + 1) + '月' + pad(day) + '日'}
@@ -467,7 +467,7 @@ class IndexPage extends React.Component {
               </Col>
           </Link>
             </Row>
-          : null }
+         : null } 
          
           </Col>
         </Row>
