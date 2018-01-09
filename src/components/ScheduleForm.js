@@ -9,6 +9,8 @@ import {
   SelectExistProject,
   SelectExistInvestor,
   SelectArea,
+  CascaderCountryDetail,
+  SelectOrganizatonArea
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
 
@@ -27,6 +29,8 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
+    const { getFieldDecorator, getFieldValue } = this.props.form
+    const countryObj = getFieldValue('country');
     return (
       <Form>
         <BasicFormItem label={i18n('schedule.title')} name="comments" required>
@@ -35,9 +39,14 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
           <DatePicker showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
         </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.area')} name="country" valueType="number" required>
-          <SelectArea />
+        <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
+          <CascaderCountryDetail size="large"  />
         </BasicFormItem>
+        {['中国', 'China'].includes(countryObj && countryObj.label) ? 
+        <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
+          <SelectOrganizatonArea />
+        </BasicFormItem>
+        : null }
         <BasicFormItem label={i18n('schedule.address')} name="address" required>
           <Input />
         </BasicFormItem>

@@ -105,6 +105,8 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
+        param.country=param.country.value
+        
         api.addSchedule(param).then(result => {
           this.hideAddModal()
           this.getEvents()
@@ -120,6 +122,7 @@ class Schedule extends React.Component {
     this.editForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
+        param.country=param.country.value
         let id = this.state.event.id
         api.editSchedule(id, param).then(result => {
           this.hideEditModal()
@@ -196,7 +199,6 @@ class Schedule extends React.Component {
         <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
       </div>
     )
-
     return (
 
       <LeftRightLayout location={this.props.location} title={i18n('schedule.my_schedule')}>
@@ -258,7 +260,8 @@ function toFormData(data) {
   var formData = {
     comments: data.comments,
     scheduledtime: data.scheduledtime && moment(data.scheduledtime),
-    country: data.country && data.country.id,
+    country: data.country && {label:data.country.country, value:data.country.id, areaCode:data.country.areaCode},
+    location: data.location &&data.location.id,
     address: data.address,
     proj: data.proj,
     user: data.user && data.user.id,
@@ -274,7 +277,8 @@ function Event(props) {
     <div>
       <Field title={i18n('schedule.title')} content={props.comments} />
       <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
-      <Field title={i18n('schedule.area')} content={props.country && props.country.country} />
+      <Field title={i18n('user.country')} content={props.country&&props.country.country} />
+      {props.location?<Field title={i18n('schedule.area')} content={props.location.name} />:null}
       <Field title={i18n('schedule.address')} content={props.address} />
       <Field title={i18n('schedule.project')} content={props.projtitle} />
       <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
