@@ -105,8 +105,6 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        param.country=param.country.value
-        
         api.addSchedule(param).then(result => {
           this.hideAddModal()
           this.getEvents()
@@ -122,7 +120,6 @@ class Schedule extends React.Component {
     this.editForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        param.country=param.country.value
         let id = this.state.event.id
         api.editSchedule(id, param).then(result => {
           this.hideEditModal()
@@ -253,6 +250,10 @@ export default Schedule
 function toData(formData) {
   var data = {...formData}
   data['scheduledtime'] = data['scheduledtime'].format('YYYY-MM-DDTHH:mm:ss')
+  if (!['中国', 'China'].includes(formData.country.label)) {
+    data['location'] = null;
+  }
+  data.country = formData.country.value;
   return data
 }
 
