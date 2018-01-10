@@ -95,6 +95,7 @@
     "news": "新闻",
     "information_detail": "信息详情",
     "web_address":"网址"
+
   },
 
   "project_bd": {
@@ -251,6 +252,24 @@
     "view_investor":"查看投资人",
     "material_download":"资料下载",
     "no_materials":"无文件下载",
+    "industry_commerce": "工商信息",
+    "shareholder_info": "股东信息",
+    "industry_foreign_invest": "企业对外投资信息",
+    "industry_commerce_change": "工商变更",
+    "register_capital": "注册资本",
+    "start_time": "成立时间",
+    "representative": "法人代表",
+    "company_type": "公司类型",
+    "invest_method": "出资方式",
+    "invest_percent": "出资比例",
+    "shareholder": "股东",
+    "subscribed_capital": "认缴出资额",
+    "invest_time": "出资日期",
+    "company_name": "公司名称",
+    "change_date": "变更日期",
+    "before_change": "变更前",
+    "after_change": "变更后",
+
 
     "message": {
       "validation_industry_image_not_null": "行业图片不能为空",

@@ -679,6 +679,10 @@ export const getLibProj = (param) => {
   return r('/mongolog/proj?' + qs.stringify(param))
 }
 
+export const getLibProjInfo = (param) => {
+  return r('/mongolog/projinfo?' + qs.stringify(param))
+}
+
 // com_id, com_name
 export const getLibProjRemark = (param) => {
   return r('/mongolog/projremark?' + qs.stringify(param))
