@@ -83,7 +83,8 @@ class ScheduleList extends React.Component {
         ) : null
       },key:'user', sorter:true},
       {title: i18n('schedule.title'), dataIndex: 'comments', key:'comments', sorter:true},
-      {title: i18n('schedule.area'), dataIndex: 'country.country', key:'country', sorter:true},
+      {title: i18n('user.country'), dataIndex: 'country.country', key:'country', sorter:true}, 
+      {title: i18n('schedule.area'), dataIndex: 'location.name', key:'location', sorter:true},
       {title: i18n('schedule.address'), dataIndex: 'address', key:'address', sorter:true},
     ]
 
