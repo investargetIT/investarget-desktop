@@ -17,7 +17,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
-if (document.domain === 'saas.investarget.com') {
+if (document.domain === 'saas.investarget.net') {
   localStorage.setItem('source', 1);
 }
 
