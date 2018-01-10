@@ -56,8 +56,16 @@ class AddUser extends React.Component {
             this.setState({ visible: true, user })
           } else if (!isUserExist) {
             values['registersource'] = 3 // 标识注册来源
-            return api.addUser(values)
+            if(isNaN(values.org)){
+              return api.addOrg({orgnameC:values.org})
+            }           
           }
+        })
+        .then(data=>{
+          if(data){
+            values.org=data.data.id
+          }
+          return api.addUser(values)
         })
         .then(result => {
           if (this.isTraderAddInvestor && result) {

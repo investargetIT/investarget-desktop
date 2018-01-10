@@ -38,11 +38,21 @@ class EditUser extends React.Component {
         console.log('Received values of form: ', values, this.majorRelation, this.minorRelation)
 
         let body = values
+
         if (!hasPerm('usersys.admin_changeuser')) {
           body = { ...values, groups: undefined}
         }
-
-        api.editUser([userId], body)
+        let promise = new Promise((resolve,reject)=>{
+          if(isNaN(body.org)){
+            resolve(api.addOrg({orgnameC:values.org}))
+          }
+        })
+        promise.then(data=>{
+          if(data){
+            body.org=data.data.id
+          }
+          return api.editUser([userId], body)
+        })  
         .then(result => {
           let url = this.props.location.query.redirect || "/app/user/list"
           this.props.dispatch(routerRedux.replace(url))
@@ -51,8 +61,9 @@ class EditUser extends React.Component {
           this.componentDidMount()
           this.props.dispatch({ type: 'app/findError', payload: error })
         })
-
-      }
+        
+        }
+              
     })
   }
 

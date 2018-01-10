@@ -149,8 +149,19 @@ class Select2 extends React.Component {
     }
   }
 
-  handleSelect = (value) => {
-    this.props.onChange(this.props.allowCreate ? `${value}` : value)
+  handleSelect = ({label, value}) => {
+    let newValue
+    if(this.props.allowCreate){
+      newValue = label
+      if(this.props.formName=='userform'){
+        newValue = `${value}`
+      }
+    }
+    else{
+      newValue=value
+    }
+    //this.props.onChange(this.props.allowCreate ? `${value}` : value)
+    this.props.onChange(newValue)
     this.closeSearch()
   }
 
@@ -210,6 +221,13 @@ class Select2 extends React.Component {
     const allowCreate = nextProps.allowCreate
     if (allowCreate) {
       this.setState({ label: value});
+      if(this.props.formName=='userform'&& !isNaN(value)){
+        this.getLabelByValue(parseInt(value)).then(name => {
+        this.setState({ label: name })
+      }, error => {
+        this.handleError(error)
+      })
+      }
     } else {
       this.getLabelByValue(value).then(name => {
         this.setState({ label: name })
@@ -252,7 +270,6 @@ class Select2 extends React.Component {
 
   render() {
     const { label, visible, search, list, reloading, loading } = this.state
-
     const content = (
       <div style={{ ...searchStyle }} ref="content">
         <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={this.props.placeholder} value={search} onChange={this.handleSearch} />
@@ -262,7 +279,7 @@ class Select2 extends React.Component {
             {
               list.map(item =>
               <Tooltip key={item.value} title={item.description}>
-                <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, this.props.allowCreate ? item.label : item.value)}>{item.label}</li>
+                <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, {label:item.label, value: item.value})}>{item.label}</li>
               </Tooltip>
               )
             }
