@@ -46,6 +46,9 @@ class EditUser extends React.Component {
           if(isNaN(body.org)){
             resolve(api.addOrg({orgnameC:values.org}))
           }
+          else{
+            resolve(null);
+          }
         })
         promise.then(data=>{
           if(data){
@@ -78,7 +81,7 @@ class EditUser extends React.Component {
     let _data = {  ...data }
     _data['groups'] = data.groups && data.groups.map(item => item.id)
     _data['title'] = data.title && data.title.id
-    _data['org'] = data.org && data.org.id
+    _data['org'] = data.org && String(data.org.id);
     _data['orgarea'] = data.orgarea && data.orgarea.id
     _data['tags'] = data.tags ? data.tags.map(item => item.id) : []
     _data['userstatus'] = data.userstatus && data.userstatus.id
