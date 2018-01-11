@@ -13,6 +13,7 @@ import {
 import * as api from '../api'
 import { Link } from 'dva/router'
 import BDModal from '../components/BDModal';
+import { isLogin } from '../utils/util'
 
 
 class ProjectBDList extends React.Component {
@@ -75,12 +76,26 @@ class ProjectBDList extends React.Component {
     
     this.setState({ loading: true })
     return api.getProjBDList(param).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ loading: false, total, list })
-      if (this.state.currentBDId) {
-        const comments = list.filter(item => item.id == this.state.currentBDId)[0].BDComments || []
-        this.setState({ comments })
-      }
+      let { count: total, data: list } = result.data
+      let promises = list.map(item=>{
+        if(item.bduser){
+          return api.checkUserRelation(isLogin().id, item.bduser)
+        }
+        else{
+          return {data:false}
+        }
+      })
+      Promise.all(promises).then(result=>{
+        result.forEach((item,index)=>{
+          list[index].hasRelation=item.data           
+        })
+        this.setState({ loading: false, total, list })
+        if (this.state.currentBDId) {
+          const comments = list.filter(item => item.id == this.state.currentBDId)[0].BDComments || []
+          this.setState({ comments })
+        }
+      })
+      
     }).catch(error => {
       handleError(error)
       this.setState({ loading: false })
@@ -163,14 +178,19 @@ class ProjectBDList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
+      {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
+        return (<div>{record&&record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>
+                {record.username}
+                </Link> : record.username}</div>
+                )
+      }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
       {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
       {title: i18n('project_bd.import_methods'), render: (text, record) => {
         return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
       }, key:'source_type', sorter:true},
-      // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},
-      {title: i18n('project_bd.contact'), dataIndex: 'username', key:'username', sorter:true},
+      // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
       // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
       {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},

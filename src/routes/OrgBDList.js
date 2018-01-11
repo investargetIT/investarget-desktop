@@ -25,6 +25,7 @@ import { Search2 } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
+import { isLogin } from '../utils/util'
  
 class OrgBDList extends React.Component {
   
@@ -69,8 +70,21 @@ class OrgBDList extends React.Component {
     }
     api.getOrgBdList(params)
     .then(result => { 
+      let list = result.data.data
+      let promises = list.map(item=>{
+        if(item.bduser){
+          return api.checkUserRelation(isLogin().id, item.bduser)
+        }
+        else{
+          return {data:false}
+        }
+      })
+      Promise.all(promises).then(data=>{
+        data.forEach((item,index)=>{
+          list[index].hasRelation=item.data          
+        })
         this.setState({
-          list: result.data.data,
+          list,
           total: result.data.count,
           loading: false,
         });
@@ -78,6 +92,7 @@ class OrgBDList extends React.Component {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
           this.setState({ comments });
         }
+    })
     })
   }
 
@@ -246,7 +261,12 @@ class OrgBDList extends React.Component {
         render:(text,record)=>{
           return <div >                  
                   {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-                  {record.username? <Popover  placement="topRight" content={this.content(record)}><span style={{color:'#428BCA'}}>{text}</span></Popover> : '暂无'}                               
+                  {record.username? <Popover  placement="topRight" content={this.content(record)}>
+                                    <span style={{color:'#428BCA'}}>
+                                    {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
+                                    : record.username}
+                                    </span>                                  
+                                    </Popover> : '暂无'}                               
                                  
                  </div>
         },sorter:true },
