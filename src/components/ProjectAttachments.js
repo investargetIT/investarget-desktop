@@ -71,7 +71,7 @@ const mimeTypes = [
 ]
 
 
-const fixedDirs = ['NDA', 'Teaser', 'Executive Summary', 'BP', 'Presetation', 'Brochure', 'Financials', 'FAQ', 'Cap Table']
+const fixedDirs = ['NDA', 'Teaser', 'Executive Summary', 'BP', 'Presentation', 'Brochure', 'Financials', 'FAQ', 'Cap Table']
 
 function DirectoryCell(props) {
   return (
