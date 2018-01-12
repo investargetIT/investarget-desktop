@@ -43,7 +43,7 @@ class EditUser extends React.Component {
           body = { ...values, groups: undefined}
         }
         let promise = new Promise((resolve,reject)=>{
-          if(isNaN(body.org)){
+          if(isNaN(body.org)&&body.org!=undefined){
             resolve(api.addOrg({orgnameC:values.org}))
           }
           else{

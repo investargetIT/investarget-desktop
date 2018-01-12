@@ -123,9 +123,9 @@ class UserForm extends React.Component {
           <Input onBlur={this.props.emailOnBlur} />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required><Input /></BasicFormItem>
+        <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required={window.LANG=='cn'? true:false} ><Input /></BasicFormItem>
 
-        <BasicFormItem label={i18n('user.en_name')} name="usernameE" required><Input /></BasicFormItem>
+        <BasicFormItem label={i18n('user.en_name')} name="usernameE" required={window.LANG=='en'? true:false} ><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
 

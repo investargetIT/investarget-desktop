@@ -56,7 +56,7 @@ class AddUser extends React.Component {
             this.setState({ visible: true, user })
           } else if (!isUserExist) {
             values['registersource'] = 3 // 标识注册来源
-            if(isNaN(values.org)){
+            if(isNaN(values.org)&&values.org!=undefined){
               return api.addOrg({orgnameC:values.org})
             }           
           }
