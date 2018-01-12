@@ -576,7 +576,8 @@
     "is_loading": "加载结果中...",
     "write_comment":"请在这里留下您想要备注的信息",
     "view_more":"查看更多",
-    "collapse":"收起"
+    "collapse":"收起",
+    "save_back":"保存并退出"
   },
 
   "validation": {

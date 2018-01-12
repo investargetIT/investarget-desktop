@@ -133,15 +133,21 @@ class EditProject extends React.Component {
     })
   }
 
-  editProject = (formStr) => {
+  editProject = (formStr, ifBack) => {
     const form = this[formStr]
     const id = Number(this.props.params.id)
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         let params = toData(values)
         api.editProj(id, params).then(result => {
-          message.success(i18n('project.message.project_updated'), 2)
           this.getProject()
+          if(ifBack){
+            this.goBack()
+          }
+          else{
+            message.success(i18n('project.message.project_updated'), 2)
+          }
+          
         }, error => {
          this.props.dispatch({
           type: 'app/findError',
@@ -184,7 +190,8 @@ class EditProject extends React.Component {
     const FormAction = ({form}) => {
       return (
         <div style={actionStyle}>
-          <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form)}>{i18n('common.save')}</Button>
+          <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
+          <Button size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
         </div>
       )
     }
