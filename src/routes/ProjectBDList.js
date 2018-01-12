@@ -7,6 +7,7 @@ import { Search2 } from '../components/Search'
 import { 
   handleError, 
   time, 
+  timeWithoutHour, 
   i18n, 
   hasPerm, 
 } from '../utils/util';
@@ -195,7 +196,7 @@ class ProjectBDList extends React.Component {
       {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
-        return time(record.createdtime + record.timezone)
+        return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
       {title: i18n('project_bd.operation'), render: (text, record) => {
         return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>

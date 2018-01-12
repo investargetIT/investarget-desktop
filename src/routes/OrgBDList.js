@@ -2,6 +2,7 @@ import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import { 
   i18n, 
+  timeWithoutHour, 
   time, 
   handleError, 
   hasPerm, 
@@ -270,7 +271,7 @@ class OrgBDList extends React.Component {
                  </div>
         },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
-            return time(record.createdtime + record.timezone)
+            return timeWithoutHour(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
         {title: i18n('org_bd.creator'), dataIndex:'createuser.username', key:'createuser', sorter:true},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},

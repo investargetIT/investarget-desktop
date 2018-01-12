@@ -101,6 +101,20 @@ function time(dateFromServer) {
   return new Intl.DateTimeFormat(locale, options).format(date)
 }
 
+export function timeWithoutHour(dateFromServer) {
+  if (!window.Intl || typeof window.Intl !== "object") {
+    return dateFromServer.slice(0, 16).replace('T', ' ')
+  }
+  const date = new Date(dateFromServer)
+  const options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  }
+  const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
+  return new Intl.DateTimeFormat(locale, options).format(date)
+}
+
 export function parseDate(dateFromServer) {
   if (!window.Intl || typeof window.Intl !== "object") {
     return dateFromServer.slice(0, 16).replace('T', ' ')
