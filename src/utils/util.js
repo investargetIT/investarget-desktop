@@ -266,10 +266,11 @@ function getRandomInt(min, max) {
 }
 
 function formatMoney(value, currency) {
+  let result = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   if (currency == 'CNY') {
-    return '¥' + value.toString().replace(/\B(?=(\d{4})+(?!\d))/g, ',')
+    return '¥' + result
   } else {
-    return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return '$' + result
   }
 }
 

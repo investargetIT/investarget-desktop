@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, isLogin } from '../utils/util'
+import { i18n, isLogin,formatMoney  } from '../utils/util'
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -99,8 +99,11 @@ class ProjectListPublished extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          const transactionAmount = record.transactionAmount
-          return transactionAmount || 'N/A'
+          if (['中国', 'China'].includes(record.country.country) && record.currency.id === 1) {
+            return record.financeAmount ? formatMoney(record.financeAmount, 'CNY') : 'N/A'
+          } else {
+            return record.financeAmount_USD ? formatMoney(record.financeAmount_USD) : 'N/A'
+          }
         }
       },
       {
