@@ -251,7 +251,6 @@ class OrgBDList extends React.Component {
   }
 
   render() {
-
     const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
@@ -273,6 +272,7 @@ class OrgBDList extends React.Component {
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return time(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
+        {title: i18n('org_bd.creator'), dataIndex:'createuser.username', key:'createuser', sorter:true},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
         {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},

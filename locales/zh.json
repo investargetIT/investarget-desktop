@@ -135,7 +135,8 @@
     "created_time": "创建时间",
     "operation": "操作",
     "org": "机构",
-    "important":"重点BD"
+    "important":"重点BD",
+    "creator": "创建人"
   },
   "project": {
     "platform_projects": "平台项目",
@@ -325,6 +326,7 @@
     "typical_case": "典型投资案例",
     "partner_or_investment_committee_member": "合伙人/投委会成员",
     "decision_process": "决策流程"
+
   },
 
   "email": {
