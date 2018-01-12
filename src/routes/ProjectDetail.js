@@ -733,7 +733,7 @@ class DownloadFiles extends React.Component {
     }
     const arrowStyle={
       position:'absolute',
-      zIndex:10,
+      zIndex:1,
       right:'35%',
       top:'20%',
       width:'30%',
@@ -742,7 +742,7 @@ class DownloadFiles extends React.Component {
     const liStyle={
       display:'flex',
       justifyContent:'space-between',
-      height:30,
+      minHeight:30,
     }
     const dirs = Array.from(new Set(this.state.attachments.map(item=>item.filetype)))
 
@@ -761,7 +761,7 @@ class DownloadFiles extends React.Component {
                 {files.map(file => {
                   return (
                     <li key={file.key} style={liStyle}>
-                      <div title={file.filename} style={{maxWidth:200,overflow:'hidden',textOverflow:'ellipsis'}}>
+                      <div title={file.filename} style={{maxWidth:200,wordWrap:'word-break:break-all'}}>
                         {file.filename}
                       </div>
                       <a
