@@ -241,7 +241,7 @@ class OrgBDList extends React.Component {
           <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
           <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
           <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
-          <Row style={{ lineHeight: '24px' }}>
+          <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
             <Col span={12}>{i18n('user.trader')}:</Col>
             <Col span={12} style={{wordBreak: 'break-all'}}>
             <Trader investor={user.bduser} />
