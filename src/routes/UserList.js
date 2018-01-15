@@ -39,8 +39,8 @@ class UserList extends React.Component {
       traders:[],
       trader:null,
       visible:false,
-      sort:undefined,
-      desc:undefined,
+      sort:'createdtime',
+      desc:1,
       ifShowCheckBox:false
     }
   }
@@ -68,6 +68,7 @@ class UserList extends React.Component {
   getUser = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
+    console.log(desc+" "+sort)
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
@@ -92,8 +93,12 @@ class UserList extends React.Component {
   
 
   handleSortChange = value => {
-    this.sort = value === 'asc' ? true : false
-    this.getUser()
+    this.setState({desc:value == 'desc' ? 1 : 0},this.getUser)
+    
+  }
+
+  handleTimeChange = value =>{
+    this.setState({sort:value},this.getUser)
   }
 
   deleteUser = id => {
@@ -277,8 +282,12 @@ class UserList extends React.Component {
           </div>
 
           <div style={{ float: 'right' }}>
-            {i18n('common.sort_by_created_time')}
-            <Select size="large" style={{marginLeft:8}} defaultValue="desc" onChange={this.handleSortChange}>
+            
+            <Select size="large" style={{marginLeft:8}} defaultValue="createdtime" onChange={this.handleTimeChange.bind(this)}>
+              <Option value="createdtime">{i18n('common.sort_by_created_time')}</Option>
+              <Option value="lastmodifytime">{i18n('common.sort_by_modify_time')}</Option>
+            </Select>
+            <Select size="large" style={{marginLeft:8}} defaultValue="desc" onChange={this.handleSortChange.bind(this)}>
               <Option value="asc">{i18n('common.asc_order')}</Option>
               <Option value="desc">{i18n('common.dec_order')}</Option>
             </Select>

@@ -528,6 +528,7 @@
     "delete": "Delete",
     "upload": "Upload",
     "sort_by_created_time": "Sort by Created Time",
+    "sort_by_modify_time": "Sort by Modify Time",
     "dec_order": "Descending Order",
     "asc_order": "Ascending Order",
     "USD": "USD",

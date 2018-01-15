@@ -557,6 +557,7 @@
     "delete": "删除",
     "upload": "上传",
     "sort_by_created_time": "按创建时间",
+    "sort_by_modify_time": "按修改时间",
     "dec_order": "倒序",
     "asc_order": "正序",
     "USD": "美元",
