@@ -241,6 +241,12 @@ class OrgBDList extends React.Component {
           <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
           <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
           <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
+          <Row style={{ lineHeight: '24px' }}>
+            <Col span={12}>{i18n('user.trader')}:</Col>
+            <Col span={12} style={{wordBreak: 'break-all'}}>
+            <Trader investor={user.bduser} />
+            </Col>
+          </Row>
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
           <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
@@ -389,6 +395,38 @@ class OrgBDList extends React.Component {
 }
 
 export default OrgBDList;
+
+class Trader extends React.Component {
+  state = {
+    list: [], 
+  }
+  componentDidMount() {
+    const param = { investoruser: this.props.investor}
+    api.getUserRelation(param).then(result => {
+      echo(result);
+      const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
+      const list = []
+      data.forEach(item => {
+        const trader = item.traderuser
+        if (trader) {
+          list.push({ label: trader.username, value: trader.id, onjob: trader.onjob })
+        }
+        this.setState({ list });
+      })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+  render () {
+    const traders=this.state.list.length>0 ? this.state.list.map(m =>m.label).join(',') :'暂无'
+    return <span>
+      {traders}
+    </span>
+  }
+}
 
 function SimpleLine(props) {
   return (
