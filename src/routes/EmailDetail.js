@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { i18n, shwoError } from '../utils/util'
-
+import { Link } from 'dva/router';
 import { Icon, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -25,6 +25,8 @@ class EmailDetail extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      sort: undefined,
+      desc: undefined, 
     }
   }
 
@@ -43,8 +45,8 @@ class EmailDetail extends React.Component {
 
   getUserList = () => {
     const id = Number(this.props.params.id)
-    const { search, page, pageSize } = this.state
-    const params = { search, proj: id, page_index: page, page_size: pageSize }
+    const { search, page, pageSize, sort, desc } = this.state
+    const params = { search, proj: id, page_index: page, page_size: pageSize, sort, desc }
     this.setState({ loading: true })
     api.getEmail(params).then(result => {
       const { count: total, data: list } = result.data
@@ -92,18 +94,28 @@ class EmailDetail extends React.Component {
     this.getUserList()
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getUserList
+    );
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: i18n('email.username'), key: 'username', dataIndex: 'username' },
+      { title: i18n('email.username'), key: 'username', dataIndex: 'username', render: (text, record) => <Link to={'/app/user/' + record.id}>{text}</Link> },
       // { title: '公司', key: '', dataIndex: '' },
       { title: i18n('email.title'), key: 'title', dataIndex: 'title.name' },
       // { title: '行业', key: '', dataIndex: '' },
       { title: i18n('email.mobile'), key: 'mobile', dataIndex: 'mobile' },
       { title: i18n('email.email'), key: 'userEmail', dataIndex: 'userEmail' },
-      { title: i18n('user.status'), key: 'events', dataIndex: 'events', render: text => i18n(text || 'email.not_read') },
+      { title: i18n('user.status'), key: 'events', sorter: true, dataIndex: 'events', render: text => i18n(text || 'email.not_read') },
     ]
 
     return (
@@ -116,6 +128,7 @@ class EmailDetail extends React.Component {
 
           <Table
             columns={columns}
+            onChange={this.handleTableChange}
             dataSource={list}
             rowKey={record=>record.id}
             loading={loading}
