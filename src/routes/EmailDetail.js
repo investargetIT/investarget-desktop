@@ -109,7 +109,7 @@ class EmailDetail extends React.Component {
     const { total, list, loading, page, pageSize, search } = this.state
 
     const columns = [
-      { title: i18n('email.username'), key: 'username', dataIndex: 'username', render: (text, record) => <Link to={'/app/user/' + record.id}>{text}</Link> },
+      { title: i18n('email.username'), key: 'username', dataIndex: 'username', render: (text, record) => <Link to={'/app/user/' + record.user}>{text}</Link> },
       // { title: '公司', key: '', dataIndex: '' },
       { title: i18n('email.title'), key: 'title', dataIndex: 'title.name' },
       // { title: '行业', key: '', dataIndex: '' },
