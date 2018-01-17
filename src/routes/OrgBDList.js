@@ -148,7 +148,7 @@ class OrgBDList extends React.Component {
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
     if (this.state.currentBD.bduser) {
-      this.addRelation(status)
+      this.addRelation(this.state.currentBD.bduser);
       api.addUserRelation({
         relationtype: false,
         investoruser: this.state.currentBD.bduser,
@@ -181,7 +181,7 @@ class OrgBDList extends React.Component {
       }
       api.addUser(newUser)
         .then(result =>{
-          this.addRelation(status)
+          this.addRelation(result.data.id);
           api.addUserRelation({
           relationtype: false,
           investoruser: result.data.id,
@@ -190,11 +190,11 @@ class OrgBDList extends React.Component {
     }
   }
   
-  addRelation = (status) =>{
-    if (this.state.currentBD.makeUser && this.state.currentBD.proj && status == 3) {
+  addRelation = investorID =>{
+    if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
       api.addUserRelation({
         relationtype: false,
-        investoruser: this.state.currentBD.bduser,
+        investoruser: investorID,
         traderuser: this.state.currentBD.makeUser,
         proj: this.state.currentBD.proj.id,
       })
