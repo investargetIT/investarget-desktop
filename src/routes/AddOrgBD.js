@@ -122,6 +122,7 @@ class AddOrgBD extends React.Component {
         >
 
          <SelectUser
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 300 }}
             mode="single"
             data={this.state.data}
