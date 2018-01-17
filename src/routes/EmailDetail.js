@@ -63,6 +63,7 @@ class EmailDetail extends React.Component {
           if (data) {
             list[index].title = data.title
             list[index].mobile = data.mobile
+            list[index].userEmail = data.email;
           } else {
             list[index].username = list[index].username + '(已删除)'
           }
