@@ -46,6 +46,7 @@ class ProjectFinanceYear extends React.Component {
     api.getProjFinance(id).then(result => {
       this.setState({ finance: result.data.data })
     })
+
   }
 
   showFinanceInfo = (item, property) => this.props.isCNY ?
@@ -190,6 +191,7 @@ class ProjectDetail extends React.Component {
       const favorId = data[0] && data[0].id
       this.setState({ isFavorite, favorId }, this.updateDimensions)
     })
+    .catch(handleError);
   }
 
   favorProject = () => {
@@ -290,12 +292,7 @@ class ProjectDetail extends React.Component {
     api.getProjLangDetail(id).then(result => {
       const project = result.data
       this.setState({ project }, this.updateDimensions)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    }).catch( handleError);
 
     this.getFavorProject()
 
@@ -335,7 +332,6 @@ class ProjectDetail extends React.Component {
 
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
-    if (project.country === undefined) return null;
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')}>
 
@@ -382,7 +378,7 @@ class ProjectDetail extends React.Component {
                   </div>
                 </TabPane>
                 <TabPane tab={i18n('project.financials')} key="2">
-                  <ProjectFinanceYear projId={id} isCNY={['中国', 'China'].includes(project.country.country) && project.currency.id === 1} />
+                  {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={['中国', 'China'].includes(project.country.country) && project.currency.id === 1} />}
                 </TabPane>
                 <TabPane tab={i18n('project.details')} key="3">
                   <Detail project={project} />
