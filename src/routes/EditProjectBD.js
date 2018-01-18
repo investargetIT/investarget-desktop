@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { connect } from 'dva';
 import { i18n, handleError } from '../utils/util'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
@@ -109,10 +109,18 @@ class EditProjectBD extends React.Component {
     }).catch(error => {
       handleError(error)
     })
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
   }
 
   render() {
     const data = toFormData(this.state.bd)
+    if (data) {
+      const countryObj = data.country;
+      if (countryObj && this.props.country.length > 0) {
+        const country = this.props.country.filter(f => f.id === countryObj.value.value)[0];
+        data.country.value.label = country.country
+      }
+    }
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_bd.edit_project_bd')}>
         <div>
@@ -127,4 +135,9 @@ class EditProjectBD extends React.Component {
   }
 }
 
-export default withRouter(EditProjectBD)
+function mapStateToProps(state) {
+  const { country } = state.app;
+  return { country };
+}
+
+export default connect(mapStateToProps)(withRouter(EditProjectBD));
