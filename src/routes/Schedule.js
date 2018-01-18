@@ -264,7 +264,7 @@ function toFormData(data) {
     country: data.country && {label:data.country.country, value:data.country.id, areaCode:data.country.areaCode},
     location: data.location &&data.location.id,
     address: data.address,
-    proj: data.proj,
+    proj: data.proj && data.proj.id,
     user: data.user && data.user.id,
   }
   for (let prop in formData) {
