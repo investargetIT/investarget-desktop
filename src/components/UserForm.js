@@ -20,11 +20,10 @@ import {
   SelectYear,
   CascaderCountry,
   SelectExistOrganization,
-  SelectOrganizatonArea,
   SelectUserGroup,
   RadioAudit,
   SelectUser,
-  SelectExistArea
+  SelectOrganizatonArea,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
@@ -143,7 +142,7 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n('user.area')} valueType="number" name="orgarea">
-          <SelectExistArea />
+          <SelectOrganizatonArea showSearch />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.country")} name="country" valueType="number">

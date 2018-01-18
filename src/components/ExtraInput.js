@@ -271,40 +271,6 @@ class SelectOrganization extends React.Component {
 }
 SelectOrganization = connect()(SelectOrganization)
 
-class SelectExistArea extends React.Component {
-  constructor(props){
-    super(props)
-    this.state={
-      options:[]
-    }
-  }
-  componentDidMount(){
-    api.getSource('orgarea').then(result=>{
-      const list=result.data.map(item=>{
-        return <Option key={item.id} value={String(item.id)}>{item.name}</Option>
-      })
-      this.setState({options:list})
-    })
-  }
-
-  render(){
-    const { value, onChange, allowCreate, ...extraProps } = this.props
-    return (
-        <Select
-        showSearch
-        optionFilterProp="children"
-        value={this.props.value && String(this.props.value)}
-        filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-        onChange={value => this.props.onChange(Number(value))}
-        allowCreate={this.props.allowCreate}
-        {...extraProps}
-        >
-        {this.state.options}
-        </Select>
-    )
-  }
-}
-
 /**
  * SelectExistOrganization
  */
@@ -1357,5 +1323,4 @@ export {
   SelectService,
   TabCheckboxService,
   TabCheckboxProjStatus,
-  SelectExistArea
 }

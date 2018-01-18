@@ -44,7 +44,7 @@ class ScheduleForm extends React.Component {
         </BasicFormItem>
         {['中国', 'China'].includes(countryObj && countryObj.label) ? 
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-          <SelectOrganizatonArea />
+          <SelectOrganizatonArea showSearch />
         </BasicFormItem>
         : null }
         <BasicFormItem label={i18n('schedule.address')} name="address" required>

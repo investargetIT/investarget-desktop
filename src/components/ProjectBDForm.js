@@ -143,7 +143,7 @@ class ProjectBDForm extends React.Component {
 
         {['中国', 'China'].includes(country && (country.label || country.country)) ? 
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-          <SelectOrganizatonArea />
+          <SelectOrganizatonArea showSearch />
         </BasicFormItem>
         : null }
 
