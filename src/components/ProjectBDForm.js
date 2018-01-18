@@ -176,7 +176,7 @@ class ProjectBDForm extends React.Component {
             </LayoutItem>
 
             <BasicFormItem label={i18n('project_bd.contact_title')} name="usertitle" valueType="number" initialValue={this.state._usertitle}>
-              <SelectTitle />
+              <SelectTitle showSearch />
             </BasicFormItem>
 
               <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')}>

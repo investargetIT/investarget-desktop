@@ -445,7 +445,7 @@ class Register extends React.Component {
             <div style={selectWrapStyle}>
               <label style={selectLabelStyle} className="mb0">职&nbsp;&nbsp;&nbsp;&nbsp;位</label>
               {getFieldDecorator("title", {rules: [{required: true, message: '请选择职位'}]})(
-                <SelectTitle className="it-login-select" />
+                <SelectTitle showSearch className="it-login-select" />
               )}
             </div>
 

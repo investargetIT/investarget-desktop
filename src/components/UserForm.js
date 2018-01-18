@@ -129,7 +129,7 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n("user.position")} name="title" valueType="number" required>
-          <SelectTitle />
+          <SelectTitle showSearch />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.institution")} name="org" >
