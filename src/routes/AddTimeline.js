@@ -37,6 +37,11 @@ class AddTimeline extends React.Component {
             'proj': projId,
             'investor': item.investor,
             'trader': item.trader,
+          },
+          statusdata: {
+            'alertCycle': 7,
+            'transationStatus': 1,
+            'isActive': true
           }
         }
         return api.addTimeline(params)
