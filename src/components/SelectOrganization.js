@@ -4,7 +4,7 @@ import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
 import * as api from '../api'
 
-import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
 import { OrganizationListFilter } from './Filter'
 import { Search2 } from './Search'
 
@@ -90,12 +90,14 @@ class SelectOrganization extends React.Component {
     ]
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
-
+ 
     return (
       <div>
         <OrganizationListFilter defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+        <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
           <Search2 style={{ width: '250px' }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
+        </Popover>
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />

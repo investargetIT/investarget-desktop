@@ -136,7 +136,8 @@
     "operation": "操作",
     "org": "机构",
     "important":"重点BD",
-    "creator": "创建人"
+    "creator": "创建人",
+    "support": "支持多机构名搜索,机构之间用逗号或空格隔开"
   },
   "project": {
     "platform_projects": "平台项目",

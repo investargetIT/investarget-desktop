@@ -130,7 +130,8 @@
     "manager": "Manager",
     "created_time": "Created Time",
     "operation": "Operations",
-    "org": "Organization"
+    "org": "Organization",
+    "support": "support searching many organization names, seperated by comma or blank"
   },
 
   "project": {
