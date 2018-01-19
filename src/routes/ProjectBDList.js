@@ -298,9 +298,11 @@ function BDComments(props) {
           <div key={comment.id} style={{marginBottom:8}}>
             <p>
               <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
+              { hasPerm('BD.manageProjectBD') ?
               <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
                 <a href="javascript:void(0)">{i18n('common.delete')}</a>
               </Popconfirm>
+              : null }
             </p>
             <p dangerouslySetInnerHTML={{__html:comment.comments.replace(/\n/g,'<br>')}}></p>
           </div>
