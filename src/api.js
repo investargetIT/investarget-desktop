@@ -799,3 +799,16 @@ export const modifyOrgBD = (id, body) => r(`/bd/orgbd/${id}/`, 'PUT', body);
 
 export const addOrgBDComment = body => r('/bd/orgbd/comment/', 'POST', body);
 export const deleteOrgBDComment = id => r(`/bd/orgbd/comment/${id}/`, 'DELETE');
+
+/**
+meeting
+**/
+export const getMeetingBdList = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r('/bd/meetbd/?' + qs.stringify(params))
+};
+export const addMeetingBD = body => r('/bd/meetbd/', 'POST', body);

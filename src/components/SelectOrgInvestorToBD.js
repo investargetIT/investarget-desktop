@@ -90,7 +90,7 @@ class SelectOrgInvestorToBD extends React.Component {
 
     Promise.all(this.props.selectedOrgs.map(m => api.getUser({ ...params, org: [m.id] })))
       .then(result => {
-        const list = result.reduce((acc, value, index) => {
+        let list = result.reduce((acc, value, index) => {
           if (value.data.count > 0) {
             return acc.concat(value.data.data.map(m => ({ ...m, org: this.props.selectedOrgs[index] })));
           } else {
@@ -103,6 +103,10 @@ class SelectOrgInvestorToBD extends React.Component {
             return acc;
           }
         }, []);
+        
+        if(this.props.source=="meetingbd"){
+          list = list.filter(item=>item.id)
+        }
         this.setState({ total: list.length, list, loading: false });
       })
 
@@ -192,11 +196,14 @@ class SelectOrgInvestorToBD extends React.Component {
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
       { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
       { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
-      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' }, 
-      {title:i18n('org_bd.important'), render:(text,record)=>{
-        return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
-      }}
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' } 
+      
     ]
+    if(this.props.source!="meetingbd"){
+      columns.push({title:i18n('org_bd.important'), render:(text,record)=>{
+        return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
+      }})
+    }
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
 

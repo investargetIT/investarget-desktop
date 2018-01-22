@@ -5,6 +5,8 @@
     "bd_management": "BD管理",
     "project_bd": "项目BD",
     "organization_bd": "机构BD",
+    "meeting_bd": "会议BD",
+    "meeting_management": "会议管理",
     "project_management": "项目管理",
     "platform_projects": "平台项目",
     "interest_projects": "感兴趣项目",
@@ -178,6 +180,7 @@
     "create_timeline": "创建时间轴",
     "create_dataroom": "创建DataRoom",
     "create_org_bd": "创建机构BD",
+    "create_meeting_bd": "创建会议BD",
     "project_chinese_name": "项目中文名",
     "project_english_name": "项目英文名",
     "chinese_name": "中文名",
@@ -271,6 +274,7 @@
     "change_date": "变更日期",
     "before_change": "变更前",
     "after_change": "变更后",
+    "select_meeting_date": "请选择会议时间",
 
 
     "message": {

@@ -23,6 +23,7 @@ export const URI_17 = "/app/projects/list/favor"
 export const KEY_TO_URI = {
   "project_library": "/app/projects/library",
   "project_bd": "/app/projects/bd",
+  "meeting_bd": "/app/meeting/bd",
   "platform_projects": URI_1,
   "organization_management": URI_3,
   "organization_bd": "/app", // todo?

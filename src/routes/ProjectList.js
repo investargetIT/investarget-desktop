@@ -252,6 +252,7 @@ class ProjectList extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
+          console.log(record)
           return record.ismarketplace ? (
             <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
             <div>
@@ -285,6 +286,12 @@ class ProjectList extends React.Component {
               { record.action.canAddOrgBD ? 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_org_bd')}</Button>
+              </Link>
+              : null }
+
+              { record.action.canAddMeetBD ? 
+              <Link to={"/app/meetingbd/add?projId=" + record.id}>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_meeting_bd')}</Button>
               </Link>
               : null }
 

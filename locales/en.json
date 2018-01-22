@@ -5,6 +5,8 @@
     "bd_management": "BD Management",
     "project_bd": "Project BD",
     "organization_bd": "Organization BD",
+    "meeting_bd": "Meeting BD",
+    "meeting_management": "Meeting Management",
     "project_management": "Project Management",
     "platform_projects": "Platform Projects",
     "interest_projects": "Interested Projects",
@@ -173,6 +175,7 @@
     "create_timeline": "Create Timeline",
     "create_dataroom": "Create DataRoom",
     "create_org_bd": "Create Organization BD",
+    "crate_meeting_bd" : "Create Meeting BD",
     "project_chinese_name": "Project Chinese Name",
     "project_english_name": "Project English Name",
     "chinese_name": "Chinese Name",
@@ -245,6 +248,7 @@
     "no_view_permission": "You have no view permission",
     "timeline": "Timeline",
     "project_detail": "Project Detail",
+    "select_meeting_date": "Please select date of meeting",
 
     "message": {
       "validation_industry_image_not_null": "Industry image can't be null",

@@ -67,12 +67,12 @@ class SelectInvestorAndTrader extends React.Component {
             { step == 2 ? <span style={{fontWeight: 'bold'}}>2. {i18n('timeline.select_user')}</span> : null }
           </p>
         </div>
-
+ 
         <div style={{padding: '16px'}}>
           { step == 1 ? <SelectOrganization traderId={this.props.options ? undefined : traderId} value={selectedOrgs} onChange={this.handleSelectOrg} /> : null }
           {step == 2 ?
             this.props.options ?
-              <SelectOrgInvestorToBD selectedOrgs={selectedOrgDetails} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
+              <SelectOrgInvestorToBD selectedOrgs={selectedOrgDetails} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} source={this.props.source}/>
               : <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
             : null}
         </div>

@@ -22,7 +22,7 @@ const menuStyle = {
 const collapsedMenuStyle = {
   padding: 5,
 }
-
+ 
 
 class SiderMenu extends React.Component {
 
@@ -125,7 +125,6 @@ class SiderMenu extends React.Component {
       padding: this.props.collapsed ? 5 : 10,
       height: '100%',
     }
-
     return (
     <div className={styles["sider-menu"]} style={menuStyle}>
 
@@ -140,7 +139,7 @@ class SiderMenu extends React.Component {
         />
       </div>
       ) : null }
-
+  
       <Menu
         prefixCls="it-menu"
         theme={this.props.theme}
