@@ -35,7 +35,8 @@ class AddMeetingBD extends React.Component{
         'bduser': m.investor,
         'manager': this.state.manager,
         'org': m.org,
-        'proj': this.state.projId
+        'proj': this.state.projId,
+        'meet_date': this.state.date
       };
       return api.addMeetingBD(body);
     }))
@@ -49,7 +50,8 @@ class AddMeetingBD extends React.Component{
 	}
 
 	changeDate = (date,datestring) =>{
-		this.setState({date:datestring})
+    
+		this.setState({date:date.format('YYYY-MM-DDTHH:mm:ss')})
 	}
 
   	componentDidMount() {
@@ -98,7 +100,7 @@ class AddMeetingBD extends React.Component{
         >
         <div style={{width:300,marginBottom:20}}>
         {i18n('project.select_meeting_date')}:
-        <DatePicker style={{float:'right'}}  onChange={this.changeDate} />
+        <DatePicker showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" style={{float:'right'}}  onChange={this.changeDate}/>
         </div>
 
          <SelectUser

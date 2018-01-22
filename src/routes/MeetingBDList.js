@@ -53,17 +53,18 @@ class MeetingBDList extends React.Component{
 	    }
 		api.getMeetingBdList(params)
 		.then(result=>{
-			console.log(result)
+			this.setState({list:result.data})
 		})
 	}
 
 	render(){
+		
 		return(
 		<LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.meeting_bd')}
         >
-        helllo
+        
         </LeftRightLayout>
 		)
 	}

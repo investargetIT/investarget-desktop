@@ -3,7 +3,7 @@ import fetch from 'dva/fetch';
 
 const prodUrl = 'https://api.investarget.com';
 let devUrl = "http://192.168.1.251:8080";
-// devUrl = 'http://192.168.1.201:8000';
+ //devUrl = 'http://192.168.1.201:8000';
 // devUrl = prodUrl;
 const baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
 const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://192.168.1.113:3000' : 'https://m.investarget.com'; 
