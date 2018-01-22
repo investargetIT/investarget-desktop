@@ -27,7 +27,7 @@ import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
- 
+  
 class OrgBDList extends React.Component {
   
   constructor(props) {
@@ -123,6 +123,20 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
+  checkExistence = (mobile, email) =>{
+    return Promise.all([api.checkUserExist(mobile),api.checkUserExist(email)])
+    .then(result=>{
+        for(let item of result){
+            if(item.data.result==true)
+                return true
+        }
+        return false
+    })
+    .catch(err=>{
+        handleError(error)
+    })
+}
+
   wechatConfirm = state => {
     const react = this;
     if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0 ) {
@@ -143,7 +157,13 @@ class OrgBDList extends React.Component {
       isimportant: isimportant ? 1 : 0,
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
-      .then(result => this.setState({ visible: false }, this.getOrgBdList));
+      .then(result => 
+        {
+          if (status !== 3 || this.state.currentBD.bd_status.id === 3){
+            this.setState({ visible: false }, this.getOrgBdList)
+          }
+        }
+        );
 
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
@@ -167,6 +187,8 @@ class OrgBDList extends React.Component {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
         comments: `${i18n('user.wechat')}: ${wechat}`
+      }).then(data=>{
+        this.setState({ visible: false }, this.getOrgBdList)
       });
     } else {
       api.addOrgBDComment({
@@ -179,16 +201,28 @@ class OrgBDList extends React.Component {
       } else {
         newUser.usernameC = username;
       }
-      api.addUser(newUser)
-        .then(result =>{
-          this.addRelation(result.data.id);
-          api.addUserRelation({
-          relationtype: false,
-          investoruser: result.data.id,
-          traderuser: this.state.currentBD.manager.id
-        })});
+      this.checkExistence(mobile,email).then(ifExist=>{
+        if(ifExist){
+          Modal.error({
+          content: i18n('user.message.user_exist')
+        });
+        }
+        else{
+        api.addUser(newUser)
+          .then(result =>{
+            this.addRelation(result.data.id);
+            api.addUserRelation({
+            relationtype: false,
+            investoruser: result.data.id,
+            traderuser: this.state.currentBD.manager.id
+          }).then(data=>{
+            this.setState({ visible: false }, this.getOrgBdList)
+          })
+          });
+        }
+      })
+      }
     }
-  }
   
   addRelation = investorID =>{
     if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
