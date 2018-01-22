@@ -35,8 +35,7 @@ class AddMeetingBD extends React.Component{
         'bduser': m.investor,
         'manager': this.state.manager,
         'org': m.org,
-        'proj': this.state.projId,
-        'bd_status': 1,
+        'proj': this.state.projId
       };
       return api.addMeetingBD(body);
     }))
