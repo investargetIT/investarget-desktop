@@ -812,3 +812,5 @@ export const getMeetingBdList = params => {
   return r('/bd/meetbd/?' + qs.stringify(params))
 };
 export const addMeetingBD = body => r('/bd/meetbd/', 'POST', body);
+export const deleteMeetingBD = id => r(`/bd/meetbd/${id}/`, 'DELETE');
+export const modifyMeetingBD = (id, body) => r(`/bd/meetbd/${id}/`, 'PUT', body);

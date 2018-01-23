@@ -16,7 +16,7 @@ function mapPropsToFields(props) {
 }
 const AddScheduleForm = Form.create()(ScheduleForm)
 const EditScheduleForm = Form.create({ mapPropsToFields })(ScheduleForm)
-
+ 
 const eventTitleStyle = {
   float: 'right',
   fontSize: '12px',
@@ -179,6 +179,7 @@ class Schedule extends React.Component {
   }
 
   render() {
+    console.log(this.state.event)
     const modalStyle = {
     }
     const maskStyle = {

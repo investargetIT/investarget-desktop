@@ -135,6 +135,16 @@
     "org": "Organization",
     "support": "support searching many organization names, seperated by comma or blank"
   },
+  "meeting_bd":{
+    "contact": "Contact",
+    "meet_date": "Meeting date",
+    "created_time": "Created time",
+    "manager": "Manager",
+    "org": "Organization",
+    "project": "Project",
+    "operation": "Operation",
+    "meeting_notes": "Meeting notes"
+  },
 
   "project": {
     "platform_projects": "Platform Projects",

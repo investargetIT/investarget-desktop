@@ -767,6 +767,42 @@ class ProjectBDFilter extends React.Component {
     )
   }
 }
+class MeetBDFilter extends React.Component {
+  static defaultValue = {
+      manager: []
+    }
+
+    constructor(props) {
+      super(props)
+      this.state = props.defaultValue || MeetBDFilter.defaultValue
+    }
+
+    handleChange = (key, value) => {
+      this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
+    }
+
+    handleSearch = () => {
+      this.props.onSearch({ ...this.state })
+    }
+
+    handleReset = () => {
+      this.setState({ ...MeetBDFilter.defaultValue })
+      this.props.onReset({ ...MeetBDFilter.defaultValue })
+    }
+
+    render() {
+      const { bd_status, source_type, location, manager } = this.state
+
+      return (
+        <div>
+          <BasicContainer label={i18n('project_bd.bd_manager')}>
+            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+          </BasicContainer>
+          <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+        </div>
+      )
+    }
+}
 
 class OrgBDFilter extends React.Component {
 
@@ -868,5 +904,6 @@ module.exports = {
   ProjectLibraryFilter,
   ProjectBDFilter,
   WxMessageFilter,
-  OrgBDFilter, 
+  OrgBDFilter,
+  MeetBDFilter 
 }

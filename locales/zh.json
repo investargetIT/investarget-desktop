@@ -141,6 +141,16 @@
     "creator": "创建人",
     "support": "支持多机构名搜索,机构之间用逗号或空格隔开"
   },
+  "meeting_bd":{
+    "contact": "联系人",
+    "meet_date": "会议时间",
+    "created_time": "创建时间",
+    "manager": "负责人",
+    "org": "机构",
+    "project": "项目",
+    "operation": "操作",
+    "meeting_notes": "会议纪要"
+  },
   "project": {
     "platform_projects": "平台项目",
     "upload_project": "发布项目",
