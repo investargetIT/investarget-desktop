@@ -19,7 +19,10 @@ import {
   Popover,
   Row,
   Col,
-  Form
+  Form,
+  Upload,
+  Icon,
+  message
 } from 'antd';
 import { Link } from 'dva/router';
 import { MeetBDFilter } from '../components/Filter';
@@ -27,18 +30,78 @@ import { Search2 } from '../components/Search';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import {BasicFormItem} from '../components/Form'
+import { baseUrl } from '../utils/request';
+ 
 const { TextArea } = Input;
-function EditForm (props){
+const FormItem = Form.Item
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+}
+const officeFileTypes = [
+  'application/msword',
+  'application/pdf',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+];
+
+function EditForm (props){	
+	let uploadProps = {
+      name: 'file',
+      action: baseUrl + '/service/qiniubigupload?bucket=file',
+      defaultFileList:props.file?[props.file]:[],
+      beforeUpload: (file, fileList) => {
+        const fileType = file.type
+        if (!officeFileTypes.includes(fileType)) {
+          Modal.error({
+            title: '不支持的文件类型',
+            content: '请上传 office 或 pdf 文档',
+          })
+          return false
+        }
+        return true
+      },
+      onChange(info) { 
+   		
+	    if (info.file.status === 'done') {
+	      if(info.fileList.length>1){
+	      	info.fileList.shift()
+	      	props.onRemove()
+	      }	      
+	      props.onUploadFile(info.file)
+	      message.success(`${info.file.name} file uploaded successfully`);
+	    } else if (info.file.status === 'error') {
+	      message.error(`${info.file.name} file upload failed.`);
+	    }
+      },
+    }
 	return(
 		<Form >
 		<BasicFormItem name="comments" label={i18n('meeting_bd.meeting_notes')}>
 			<TextArea rows={4}/>
 		</BasicFormItem>
+		<FormItem {...formItemLayout} label={i18n('project.attachments')}>
+		  <Upload {...uploadProps} onRemove={props.onRemove} >
+		    <Button>
+		      <Icon type="upload" />Upload
+		    </Button>
+		  </Upload>
+		
+		  <div></div>
+		</FormItem>
 		</Form>
 	)
 }
 function mapPropsToFields(props){
-
 	return {
 		comments:{value:props.data.comments}
 	}
@@ -58,7 +121,8 @@ class MeetingBDList extends React.Component{
 	        desc:undefined,
 	        loading: false,
 	        visible: false,
-	        currentBD:null
+	        currentBD:null,
+	        currentFile:null
 		}
 	}
 
@@ -110,7 +174,20 @@ class MeetingBDList extends React.Component{
   	}
 
   	showEditModal = (record) =>{
-  		this.setState({visible:true, currentBD:record})
+  		let file=null
+  		if(record.attachment){
+  			file={
+  				uid:-1,
+  				name:record.attachment,
+  				status:'done',
+  				url:record.attachmenturl
+  			}
+  		}
+  		this.setState({visible:true,currentBD:record, currentFile:file})
+  	}
+
+  	hideEditModal = () =>{
+  		this.setState({visible:false, currentFile:null})
   	}
 
   	handleEdit = () =>{
@@ -121,12 +198,35 @@ class MeetingBDList extends React.Component{
       	if (!err) {
        		api.modifyMeetingBD(id,values)
        		.then(result=>{
-       			this.setState({visible:false})
+       			this.hideEditModal()
        			this.getMeetingBDList()
        		})
        		.catch(error=> handleError(error))
     	}
     	})
+  	}
+
+  	onUploadFile = (file) =>{
+  		let id = this.state.currentBD.id
+  		let body={
+  			attachment:file.name,
+  			attachmenturl:file.response.result.url,
+  			attachmentbucket:'file'
+  		}
+  		api.modifyMeetingBD(id,body)
+  		.then(result=>{
+			this.getMeetingBDList()
+  		})
+  		.catch(error=>handleError(error))
+  	}
+
+  	removeFile = ()=>{
+  		api.deleteMeetingBDFile(this.state.currentBD.id)
+  		.then(result=>{
+
+  			this.getMeetingBDList()
+  		})
+  		.catch(error=>handleError(error))
   	}
  
 	render(){
@@ -158,9 +258,12 @@ class MeetingBDList extends React.Component{
          title={i18n('common.edit')}
          visible={visible}
          onOk={this.handleEdit}
-         onCancel={()=>this.setState({visible:false})}
+         onCancel={()=>this.hideEditModal()}
         >
-			<EditMeetingForm ref="editForm" data={currentBD}/>
+        {currentBD?
+			<EditMeetingForm ref="editForm" key={currentBD.id} data={currentBD} onUploadFile={this.onUploadFile} onRemove={this.removeFile} file={this.state.currentFile}/>
+			:null
+        }
         </Modal>
 
 
