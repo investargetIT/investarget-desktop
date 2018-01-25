@@ -123,29 +123,48 @@ class OrgBDList extends React.Component {
     this.setState({ status })
   }
 
-  checkExistence = (mobile, email) =>{
-    return Promise.all([api.checkUserExist(mobile),api.checkUserExist(email)])
-    .then(result=>{
-        for(let item of result){
-            if(item.data.result==true)
-                return true
-        }
-        return false
-    })
-    .catch(err=>{
-        handleError(error)
-    })
-}
+  checkExistence = (mobile, email) => {
+    return new Promise((resolve, reject) => {
+      Promise.all([api.checkUserExist(mobile), api.checkUserExist(email)])
+        .then(result => {
+          for (let item of result) {
+            if (item.data.result === true)
+              resolve(true);
+          }
+          resolve(false);
+        })
+        .catch(err => reject(err));
+    });
+  }
 
   wechatConfirm = state => {
     const react = this;
-    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0 ) {
-      Modal.confirm({
-        title: '警告',
-        content: '联系人微信已存在，是否覆盖现有微信',
-        onOk: () => this.handleConfirmAudit(state, true), 
-        onCancel:  () => this.handleConfirmAudit(state),
-      });
+    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 ) {
+      if (!this.state.currentBD.bduser) {
+        this.checkExistence(state.mobile, state.email).then(ifExist => {
+          if (ifExist) {
+            Modal.error({
+              content: i18n('user.message.user_exist')
+            });
+          } else {
+            this.handleConfirmAudit(state, true);
+          }
+        })
+      } else {
+        // 已经有联系人时
+        if (this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0) {
+          // 该联系人已经有微信
+          Modal.confirm({
+            title: '警告',
+            content: '联系人微信已存在，是否覆盖现有微信',
+            onOk: () => this.handleConfirmAudit(state, true), 
+            onCancel:  () => this.handleConfirmAudit(state),
+          });
+        } else {
+          // 该联系人没有微信
+          this.handleConfirmAudit(state, true);
+        }
+      }
     } else {
       this.handleConfirmAudit(state, true);
     }
