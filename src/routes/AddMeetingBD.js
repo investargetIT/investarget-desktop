@@ -41,7 +41,7 @@ class AddMeetingBD extends React.Component{
       return api.addMeetingBD(body);
     }))
     .then(result => {
-  	  this.props.router.replace('/app/projects/list') 
+  	  this.props.router.replace('/app/meeting/bd') 
     })
     .catch(error => this.props.dispatch({
       type: 'app/findError',
