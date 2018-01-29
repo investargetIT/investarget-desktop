@@ -63,7 +63,7 @@ const officeFileTypes = [
 function EditForm (props){	
 	let uploadProps = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file',
+      action: baseUrl + '/service/qiniubigupload?bucket=file&topdf=false',
       defaultFileList:props.file?[props.file]:[],
       beforeUpload: (file, fileList) => {
         const fileType = file.type
@@ -227,8 +227,7 @@ class MeetingBDList extends React.Component{
   	onUploadFile = (file) =>{
   		let id = this.state.currentBD.id
   		let body={
-  			attachment:file.name,
-  			attachmenturl:file.response.result.url,
+        attachment: file.response.result.realfilekey,
   			attachmentbucket:'file'
   		}
   		api.modifyMeetingBD(id,body)
