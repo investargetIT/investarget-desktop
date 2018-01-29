@@ -87,6 +87,7 @@ function EditForm (props){
 	      }else{	      
   	      props.onUploadFile(info.file)
         }
+        info.fileList[0].url=info.fileList[0].response.result.url
 	      message.success(`${info.file.name} file uploaded successfully`);
 	    } else if (info.file.status === 'error') {
 	      message.error(`${info.file.name} file upload failed.`);
@@ -230,8 +231,10 @@ class MeetingBDList extends React.Component{
         attachment: file.response.result.realfilekey,
   			attachmentbucket:'file'
   		}
+      console.log(body)
   		api.modifyMeetingBD(id,body)
   		.then(result=>{
+        console.log(result)
 			this.getMeetingBDList()
   		})
   		.catch(error=>handleError(error))
@@ -280,7 +283,7 @@ class MeetingBDList extends React.Component{
 		<LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.meeting_bd')}
-        action={hasPerm('BD.manageMeetBD') ? {name:i18n('add_meetbd'),link:'app/meetingbd/add'} : undefined}
+        action={hasPerm('BD.manageMeetBD')||hasPerm('BD.user_addMeetBD') ? {name:i18n('add_meetbd'),link:'app/meetingbd/add'} : undefined}
         >
         <Modal
          title={i18n('common.edit')}
@@ -346,11 +349,19 @@ class MeetingBDList extends React.Component{
 }
 
 function Event(props) {
+  console.log(props)
   return (
     <div>
       <Field title={i18n('meeting_bd.meeting_notes')} content={props.comments||i18n('common.none')} />
       <Field title={i18n('meeting_bd.meet_date')} content={props.meet_date? time(props.meet_date + props.timezone):i18n('common.none')} />
-      <Field title={i18n('meeting_bd.attachments')} content={props.attachment||i18n('common.none')} />
+      <Row  gutter={24}>
+      <Col span={6} >
+        <div style={{textAlign: 'right'}}>{i18n('meeting_bd.attachments')}</div>
+      </Col>
+      <Col span={18} >
+        <div><a href={props.attachmenturl}>{props.attachment}</a></div>
+      </Col>
+      </Row>
     </div>
   )
 }
