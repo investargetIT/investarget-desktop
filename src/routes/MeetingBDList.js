@@ -231,10 +231,8 @@ class MeetingBDList extends React.Component{
         attachment: file.response.result.realfilekey,
   			attachmentbucket:'file'
   		}
-      console.log(body)
   		api.modifyMeetingBD(id,body)
   		.then(result=>{
-        console.log(result)
 			this.getMeetingBDList()
   		})
   		.catch(error=>handleError(error))
@@ -349,7 +347,6 @@ class MeetingBDList extends React.Component{
 }
 
 function Event(props) {
-  console.log(props)
   return (
     <div>
       <Field title={i18n('meeting_bd.meeting_notes')} content={props.comments||i18n('common.none')} />
@@ -359,7 +356,8 @@ function Event(props) {
         <div style={{textAlign: 'right'}}>{i18n('meeting_bd.attachments')}</div>
       </Col>
       <Col span={18} >
-        <div><a href={props.attachmenturl}>{props.attachment}</a></div>
+        <div>{props.attachment? <a href={props.attachmenturl}>{props.attachment}</a>:i18n('common.none')}
+        </div>
       </Col>
       </Row>
     </div>
