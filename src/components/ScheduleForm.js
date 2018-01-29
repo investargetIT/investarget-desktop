@@ -37,7 +37,7 @@ class ScheduleForm extends React.Component {
           <Input />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
-          <DatePicker showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
+          <DatePicker disabled={'isAdd' in this.props ? false : true} showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
         </BasicFormItem>
         <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
           <CascaderCountryDetail size="large"  />
