@@ -44,6 +44,12 @@ const formItemLayout = {
     sm: { span: 14 },
   },
 }
+const bdTitleStyle = {
+  float: 'right',
+  fontSize: '12px',
+  fontWeight: 'normal',
+  marginLeft: 8,
+}
 const officeFileTypes = [
   'application/msword',
   'application/pdf',
@@ -75,9 +81,12 @@ function EditForm (props){
 	    if (info.file.status === 'done') {
 	      if(info.fileList.length>1){
 	      	info.fileList.shift()
-	      	props.onRemove()
-	      }	      
-	      props.onUploadFile(info.file)
+	      	props.removeFileAPI().then(data=>{
+            props.onUploadFile(info.file)
+          })
+	      }else{	      
+  	      props.onUploadFile(info.file)
+        }
 	      message.success(`${info.file.name} file uploaded successfully`);
 	    } else if (info.file.status === 'error') {
 	      message.error(`${info.file.name} file upload failed.`);
@@ -121,6 +130,7 @@ class MeetingBDList extends React.Component{
 	        desc:undefined,
 	        loading: false,
 	        visible: false,
+          viewModalVisible: false,
 	        currentBD:null,
 	        currentFile:null
 		}
@@ -173,18 +183,26 @@ class MeetingBDList extends React.Component{
     );
   	}
 
-  	showEditModal = (record) =>{
-  		let file=null
-  		if(record.attachment){
-  			file={
-  				uid:-1,
-  				name:record.attachment,
-  				status:'done',
-  				url:record.attachmenturl
-  			}
-  		}
-  		this.setState({visible:true,currentBD:record, currentFile:file})
+  	showEditModal = () =>{
+  		this.setState({visible:true, viewModalVisible:false})
   	}
+
+    showViewModal = (record) =>{
+      let file=null
+      if(record.attachment){
+        file={
+          uid:-1,
+          name:record.attachment,
+          status:'done',
+          url:record.attachmenturl
+        }
+      }
+      this.setState({viewModalVisible:true,currentBD:record, currentFile:file})
+    }
+
+    hideViewModal =()=>{
+      this.setState({viewModalVisible:false, currentFile:null})
+    }
 
   	hideEditModal = () =>{
   		this.setState({visible:false, currentFile:null})
@@ -220,17 +238,20 @@ class MeetingBDList extends React.Component{
   		.catch(error=>handleError(error))
   	}
 
+    removeFileAPI = ()=>{
+      return api.deleteMeetingBDFile(this.state.currentBD.id)
+    }  
+
   	removeFile = ()=>{
   		api.deleteMeetingBDFile(this.state.currentBD.id)
   		.then(result=>{
-
   			this.getMeetingBDList()
   		})
   		.catch(error=>handleError(error))
   	}
  
 	render(){
-		const {page, pageSize, total, list, loading, search, filters, visible, currentBD} = this.state
+		const {page, pageSize, total, list, loading, search, filters, visible, currentBD, viewModalVisible} = this.state
 		const imgStyle={width:'15px',height:'20px'}
 		const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
 		const columns=[{title: i18n('meeting_bd.contact'), dataIndex: 'username', key:'username',sorter:true},
@@ -240,7 +261,7 @@ class MeetingBDList extends React.Component{
         {title: i18n('meeting_bd.project'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
         {title: i18n('meeting_bd.operation'), render: (text, record) =>{
 		return <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-		<button style={buttonStyle} onClick={this.showEditModal.bind(this,record)}>{i18n('common.edit')}</button>
+		<button style={buttonStyle} onClick={this.showViewModal.bind(this,record)}>{i18n('common.view')}</button>
 		{hasPerm('BD.manageMeetBD')?
 		<Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
         	<a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
@@ -248,6 +269,13 @@ class MeetingBDList extends React.Component{
        	</div>
         }}
 		]
+
+    const viewModalTitle=(
+      <div style={{marginRight:32}}>
+        {i18n('common.view')}        
+        <a href="javascript:void(0)" style={bdTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
+      </div>
+      )
  
 		return(
 		<LeftRightLayout 
@@ -262,12 +290,21 @@ class MeetingBDList extends React.Component{
          onCancel={()=>this.hideEditModal()}
         >
         {currentBD?
-			<EditMeetingForm ref="editForm" key={currentBD.id} data={currentBD} onUploadFile={this.onUploadFile} onRemove={this.removeFile} file={this.state.currentFile}/>
+			<EditMeetingForm ref="editForm" key={currentBD.id} data={currentBD} onUploadFile={this.onUploadFile} onRemove={this.removeFile} removeFileAPI={this.removeFileAPI} file={this.state.currentFile}/>
 			:null
         }
         </Modal>
 
+        <Modal
+         title={viewModalTitle}
+         visible={viewModalVisible}
+         onCancel={()=>this.hideViewModal()}
+         footer={null}
+        >
+        {currentBD ? <Event {...currentBD}/>:null}
+        </Modal>
 
+ 
         <MeetBDFilter
           defaultValue={filters}
           onSearch={this.handleFilt}
@@ -307,6 +344,32 @@ class MeetingBDList extends React.Component{
         </LeftRightLayout>
 		)
 	}
+}
+
+function Event(props) {
+  return (
+    <div>
+      <Field title={i18n('meeting_bd.meeting_notes')} content={props.comments||i18n('common.none')} />
+      <Field title={i18n('meeting_bd.meet_date')} content={props.meet_date? time(props.meet_date + props.timezone):i18n('common.none')} />
+      <Field title={i18n('meeting_bd.attachments')} content={props.attachment||i18n('common.none')} />
+    </div>
+  )
+}
+
+
+const Field = (props) => {
+  return (
+    <Row  gutter={24}>
+      <Col span={6} >
+        <div style={{textAlign: 'right'}}>{props.title}</div>
+      </Col>
+      <Col span={18} >
+        <pre style={{background:'white',wordBreak:'break-all',maxWidth:'300px',border:'none',whiteSpace:'pre-wrap'}}>
+        {props.content}
+        </pre>
+      </Col>
+    </Row>
+  )
 }
 
 

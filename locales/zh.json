@@ -149,7 +149,8 @@
     "org": "机构",
     "project": "项目",
     "operation": "操作",
-    "meeting_notes": "会议纪要"
+    "meeting_notes": "会议纪要",
+    "attachments": "附件"
   },
   "project": {
     "platform_projects": "平台项目",
