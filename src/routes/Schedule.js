@@ -84,7 +84,7 @@ class Schedule extends React.Component {
   }
 
   onSelect = (date, dateString) => {
-    if (this.state.mode == 'month') {
+    if (this.state.mode == 'month' && date.diff(moment(), 'days') >= 0) {
       this.setState({ visibleAdd: true, selectedDate: date })
     }
   }

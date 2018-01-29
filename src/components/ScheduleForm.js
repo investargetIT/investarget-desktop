@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, DatePicker } from 'antd'
-
+import moment from 'moment';
 import {
   BasicFormItem,
 } from '../components/Form'
@@ -28,6 +28,29 @@ class ScheduleForm extends React.Component {
     }
   }
 
+  disabledDate = current => current && current < moment().startOf('day');
+  
+  disabledTime = date => {
+    if (!date.isSame(moment(), 'day')) {
+      return {
+        disabledHours: () => [],
+        disabledMinutes: () => [],
+      };
+    }
+    const hours = [];
+    for (let index = 0; index < moment().hours(); index++) {
+      hours.push(index);
+    }
+    const minutes = [];
+    for (let index = 0; index < moment().minutes(); index++) {
+      minutes.push(index);
+    }
+    return {
+      disabledHours: () => hours,
+      disabledMinutes: () => minutes,
+    };
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
@@ -37,7 +60,13 @@ class ScheduleForm extends React.Component {
           <Input />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
-          <DatePicker disabled={'isAdd' in this.props ? false : true} showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
+          <DatePicker 
+            disabledDate={this.disabledDate} 
+            disabledTime={this.disabledTime}
+            disabled={'isAdd' in this.props ? false : true} 
+            showTime={{format: 'HH:mm'}} 
+            format="YYYY-MM-DD HH:mm" 
+          />
         </BasicFormItem>
         <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
           <CascaderCountryDetail size="large"  />
