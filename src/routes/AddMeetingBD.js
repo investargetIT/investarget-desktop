@@ -18,7 +18,8 @@ class AddMeetingBD extends React.Component{
       data: null,
       visible: false, 
       manager: null,
-      date:''
+      date:'',
+      ifContinue:false
     }
     this.selectedUsers = []; // 选中准备BD的投资人或机构
   	}
@@ -41,7 +42,18 @@ class AddMeetingBD extends React.Component{
       return api.addMeetingBD(body);
     }))
     .then(result => {
-  	  this.props.router.replace('/app/meeting/bd') 
+        Modal.confirm({
+            title: i18n('timeline.message.create_success_title'),
+            content: i18n('create_orgbd_success'),
+            okText:"继续创建BD",
+            cancelText:"返回BD列表",
+            onOk: () => { this.setState({ifContinue:true}) },
+            onCancel: () => { 
+              this.props.router.replace('/app/meeting/bd') 
+              this.setState({ifContinue:false})
+            }
+            
+          })
     })
     .catch(error => this.props.dispatch({
       type: 'app/findError',
@@ -72,7 +84,7 @@ class AddMeetingBD extends React.Component{
       })
     })
   	}
-
+ 
   	render(){
   		const { location }  = this.props
   		const {manager, date} = this.state
@@ -87,7 +99,7 @@ class AddMeetingBD extends React.Component{
             <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
             : null}
 
-          { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} source="meetingbd" /> : null }
+          { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} source="meetingbd" ifContinue={this.state.ifContinue}/> : null }
         </div>
 
         <Modal

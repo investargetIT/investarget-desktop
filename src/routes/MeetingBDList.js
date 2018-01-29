@@ -248,11 +248,12 @@ class MeetingBDList extends React.Component{
        	</div>
         }}
 		]
-
+ 
 		return(
 		<LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.meeting_bd')}
+        action={hasPerm('BD.manageMeetBD') ? {name:i18n('add_meetbd'),link:'app/meetingbd/add'} : undefined}
         >
         <Modal
          title={i18n('common.edit')}
