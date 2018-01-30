@@ -22,8 +22,10 @@ import {
   Form,
   Upload,
   Icon,
-  message
+  message,
+  DatePicker
 } from 'antd';
+import moment from 'moment'
 import { Link } from 'dva/router';
 import { MeetBDFilter } from '../components/Filter';
 import { Search2 } from '../components/Search';
@@ -104,6 +106,9 @@ class EditForm extends React.Component{
 		<BasicFormItem name="comments" label={i18n('meeting_bd.meeting_notes')}>
 			<TextArea  rows={4}/>
 		</BasicFormItem>
+    <BasicFormItem name="meet_date" label={i18n('meeting_bd.meet_date')} valueType="object">
+      <DatePicker format="YYYY-MM-DD HH:mm" />
+    </BasicFormItem>
 		<FormItem {...formItemLayout} label={i18n('project.attachments')}>
 		  <Upload {...uploadProps} onRemove={this.props.onRemove} >
 		    <Button>
@@ -119,9 +124,10 @@ class EditForm extends React.Component{
 }
 function mapPropsToFields(props){
 	return {
-		comments:{value:props.data.comments}
+		comments:{value:props.data.comments},
+    meet_date:{value:moment(props.data.meet_date)}
 	}
-}
+} 
 const EditMeetingForm = Form.create({mapPropsToFields})(EditForm)
 class MeetingBDList extends React.Component{
 	constructor(props){
@@ -156,7 +162,7 @@ class MeetingBDList extends React.Component{
     this.setState({ filters, page: 1 }, this.getMeetingBDList)
   }
 
-	getMeetingBDList = (comments) =>{
+	getMeetingBDList = (values) =>{
 		this.setState({ loading: true });
 		const { page, pageSize, search, sort,filters,desc } = this.state;
 	    const params = {
@@ -173,7 +179,7 @@ class MeetingBDList extends React.Component{
         list:result.data.data, 
         total:result.data.count,
         loading: false,
-        currentBD:comments?{...this.state.currentBD,comments}:this.state.currentBD
+        currentBD:values?{...this.state.currentBD,...values}:this.state.currentBD
 		  })
 	  })
   }
@@ -227,7 +233,8 @@ class MeetingBDList extends React.Component{
 	let id=currentBD.id
 	this.form.validateFields((err, values) => {
     	if (!err) {
-     		api.modifyMeetingBD(id,values)
+        let param = this.formatData(values)
+     		api.modifyMeetingBD(id,param)
      		.then(result=>{
      			this.hideEditModal()
      			this.getMeetingBDList()
@@ -237,6 +244,12 @@ class MeetingBDList extends React.Component{
   	})
 	}
 
+  formatData = values =>{
+    var data = {...values}
+    data['meet_date'] = data['meet_date'].format('YYYY-MM-DDTHH:mm:ss')
+    return data
+  }
+
   handleRef = (inst) => {
   if (inst) {
     this.form = inst.props.form
@@ -244,7 +257,7 @@ class MeetingBDList extends React.Component{
   }
 
 	onUploadFile = (file) =>{   
-    let comments=this.form.getFieldValue('comments')
+    let params = this.getCurrentParam()
 		let id = this.state.currentBD.id
 		let body={
       attachment: file.response.result.realfilekey,
@@ -252,20 +265,27 @@ class MeetingBDList extends React.Component{
 		}
 		api.modifyMeetingBD(id,body)
 		.then(result=>{
-		this.getMeetingBDList(comments)
+		this.getMeetingBDList(params)
 		})
 		.catch(error=>handleError(error))
 	}
 
   removeFileAPI = ()=>{
     return api.deleteMeetingBDFile(this.state.currentBD.id)
+  }
+
+  getCurrentParam = () =>{
+    return{
+      comments:this.form.getFieldValue('comments'),
+      meet_date:this.form.getFieldValue('meet_date')
+    }
   }  
 
 	removeFile = ()=>{
-    let comments=this.form.getFieldValue('comments')
+    let params = this.getCurrentParam()
 		api.deleteMeetingBDFile(this.state.currentBD.id)
 		.then(result=>{
-			this.getMeetingBDList(comments)
+			this.getMeetingBDList(params)
 		})
 		.catch(error=>handleError(error))
 	}
