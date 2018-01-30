@@ -269,7 +269,16 @@ class MeetingBDList extends React.Component{
 		})
 		.catch(error=>handleError(error))
 	}
- 
+
+  viewModalTitle = currentBD => (
+    <div style={{ marginRight: 32 }}>
+      {i18n('common.view')}
+      {hasPerm('BD.manageMeetBD') || (currentBD && getUserInfo().id === currentBD.manager.id) ?
+        <a href="javascript:void(0)" style={bdTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
+        : null}
+    </div>
+  );
+
 	render(){
 		const {page, pageSize, total, list, loading, search, filters, visible, currentBD, viewModalVisible} = this.state
 		const imgStyle={width:'15px',height:'20px'}
@@ -290,15 +299,6 @@ class MeetingBDList extends React.Component{
         }}
 		]
 
-    const viewModalTitle=(
-      <div style={{marginRight:32}}>
-        {i18n('common.view')}   
-        {hasPerm('BD.manageMeetBD')||hasPerm('BD.user_addMeetBD')?   
-        <a href="javascript:void(0)" style={bdTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
-        :null}
-      </div>
-      )
- 
 		return(
 		<LeftRightLayout 
         location={this.props.location} 
@@ -318,7 +318,7 @@ class MeetingBDList extends React.Component{
         </Modal>
 
         <Modal
-         title={viewModalTitle}
+         title={this.viewModalTitle(currentBD)}
          visible={viewModalVisible}
          onCancel={()=>this.hideViewModal()}
          footer={null}
