@@ -91,7 +91,7 @@ class AddMeetingBD extends React.Component{
   		return(
   		<LeftRightLayout
         location={location}
-        title={i18n('menu.meeting_management')}
+        title={i18n('menu.bd_management')}
         breadcrumb={' > ' + i18n('menu.meeting_bd') + ' > ' + i18n('project.create_meeting_bd')}
       	>
       	<div>
