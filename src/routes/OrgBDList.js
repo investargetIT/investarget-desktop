@@ -170,7 +170,7 @@ class OrgBDList extends React.Component {
     }
   }
 
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group }, isModifyWechat) => {
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode }, isModifyWechat) => {
     const body = {
       bd_status: status,
       isimportant: isimportant ? 1 : 0,
@@ -214,7 +214,7 @@ class OrgBDList extends React.Component {
         orgBD: this.state.currentBD.id,
         comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`
       });
-      const newUser = { mobile, wechat, email, groups: [Number(group)], userstatus: 2 };
+      const newUser = { mobile, wechat, email, mobileAreaCode, groups: [Number(group)], userstatus: 2 };
       if (window.LANG === 'en') {
         newUser.usernameE = username;
       } else {

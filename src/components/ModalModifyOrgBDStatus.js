@@ -11,7 +11,7 @@ import {
   Switch, 
   Button, 
 } from 'antd';
-
+const InputGroup = Input.Group;
 const Option = Select.Option
 
 function SelectBDStatus(props) {
@@ -80,6 +80,7 @@ class ModalModifyOrgBDStatus extends React.Component {
     isimportant: this.props.bd.isimportant||null, 
     status: this.props.bd.bd_status.id, 
     group: '', 
+    mobileAreaCode: '86',
   }
 
   checkInvalid = () => {
@@ -135,7 +136,12 @@ class ModalModifyOrgBDStatus extends React.Component {
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.mobile')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.mobile')} value={this.state.mobile} onChange={e => this.setState({ mobile: e.target.value })} /></Col>
+            <Col span={16}>
+                <InputGroup compact>
+                    <Input style={{ width: '20%', height: 32 }} value={this.state.mobileAreaCode} onChange={e => this.setState({ mobileAreaCode: e.target.value })} />
+                    <Input style={{ width: '80%', height: 32 }} placeholder={i18n('account.mobile')} value={this.state.mobile} onChange={e => this.setState({ mobile: e.target.value })} />
+                </InputGroup>
+            </Col>
           </Row>
           {!this.props.projectBD?
           <Row style={{ marginTop: 10 }}>
