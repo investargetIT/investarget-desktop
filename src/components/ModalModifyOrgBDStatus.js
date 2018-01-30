@@ -14,28 +14,8 @@ import {
 
 const Option = Select.Option
 
-const options1 = [
-  {
-    label: '未BD',
-    value: 1
-  },
-  {
-    label: 'BD中',
-    value: 2
-  },
-  {
-    label: 'BD成功',
-    value: 3
-  },
-  {
-    label: '暂不BD',
-    value: 4
-  }
-]
-
-
-export function SelectBDStatus(props) {
-  const { value, onChange, ...extraProps } = props;
+function SelectBDStatus(props) {
+  const { value, onChange, options, ...extraProps } = props;
   return (
     <Select
       size="large"
@@ -44,13 +24,20 @@ export function SelectBDStatus(props) {
       {...extraProps}
     >
       {
-        options1.map(item =>
+        options.map(item =>
           <Option key={item.value} value={String(item.value)}>{item.label}</Option>
         )
       }
     </Select>
   );
 }
+function mapStateToProps(state) {
+  const { bdStatus } = state.app;
+  const options = bdStatus ? bdStatus.map(item => ({value: item.id, label: item.name})) : []
+  return { options };
+}
+SelectBDStatus = connect(mapStateToProps)(SelectBDStatus);
+export { SelectBDStatus };
 
 class SelectInvestorGroup extends React.Component {
 
