@@ -57,6 +57,7 @@ class ProjectBDForm extends React.Component {
       _bduser: null,
       contactTitle: null,
       contactMobile: null,
+      email:null
     }
   }
 
@@ -82,10 +83,11 @@ class ProjectBDForm extends React.Component {
 
   getUserDetail = (id) => {
     api.getUserInfo(id).then(result => {
-      const { title, mobile } = result.data
+      const { title, mobile, email } = result.data
       this.setState({
         contactTitle: title ? title.name : '',
         contactMobile: mobile,
+        email: email
       })
     })
   }
@@ -165,6 +167,11 @@ class ProjectBDForm extends React.Component {
                 {this.state.contactMobile}
               </LayoutItem>
             ) : null}
+            {getFieldValue('bduser') ? (
+              <LayoutItem label={i18n('project_bd.email')}>
+                {this.state.email}
+              </LayoutItem>
+            ) : null}
           </div>
         ) : (
           <div>
@@ -205,6 +212,9 @@ class ProjectBDForm extends React.Component {
                   </Col>
                 </Row>
               </FormItem>
+            <BasicFormItem label={i18n('project_bd.email')} name="email" valueType="email">
+              <Input />
+            </BasicFormItem>
 
           </div>
         )}

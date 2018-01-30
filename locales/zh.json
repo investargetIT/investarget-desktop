@@ -117,7 +117,8 @@
     "manager": "负责人",
     "created_time": "创建时间",
     "operation": "操作",
-    "source": "来源"
+    "source": "来源",
+    "email": "邮箱"
   },
 
   "org_bd": {
