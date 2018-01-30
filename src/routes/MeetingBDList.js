@@ -60,11 +60,32 @@ const officeFileTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
 ];
 
-function EditForm (props){	
-	let uploadProps = {
+class EditForm extends React.Component{	
+  constructor(props){
+    super(props)
+  }
+  onChange = info=>{
+    if (info.file.status === 'done') {
+        if(info.fileList.length>1){
+          info.fileList.splice(0,1)
+          this.props.removeFileAPI().then(data=>{
+            this.props.onUploadFile(info.file)
+          })
+        }else{        
+          this.props.onUploadFile(info.file)
+        }
+        info.fileList[0].url=info.fileList[0].response.result.url
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+  }
+	
+  render(){
+  let uploadProps = {
       name: 'file',
       action: baseUrl + '/service/qiniubigupload?bucket=file&topdf=false',
-      defaultFileList:props.file?[props.file]:[],
+      defaultFileList:this.props.file?[this.props.file]:[],
       beforeUpload: (file, fileList) => {
         const fileType = file.type
         if (!officeFileTypes.includes(fileType)) {
@@ -76,31 +97,15 @@ function EditForm (props){
         }
         return true
       },
-      onChange(info) { 
-   		
-	    if (info.file.status === 'done') {
-	      if(info.fileList.length>1){
-	      	info.fileList.shift()
-	      	props.removeFileAPI().then(data=>{
-            props.onUploadFile(info.file)
-          })
-	      }else{	      
-  	      props.onUploadFile(info.file)
-        }
-        info.fileList[0].url=info.fileList[0].response.result.url
-	      message.success(`${info.file.name} file uploaded successfully`);
-	    } else if (info.file.status === 'error') {
-	      message.error(`${info.file.name} file upload failed.`);
-	    }
-      },
+      onChange:this.onChange
     }
 	return(
 		<Form >
 		<BasicFormItem name="comments" label={i18n('meeting_bd.meeting_notes')}>
-			<TextArea rows={4}/>
+			<TextArea  rows={4}/>
 		</BasicFormItem>
 		<FormItem {...formItemLayout} label={i18n('project.attachments')}>
-		  <Upload {...uploadProps} onRemove={props.onRemove} >
+		  <Upload {...uploadProps} onRemove={this.props.onRemove} >
 		    <Button>
 		      <Icon type="upload" />Upload
 		    </Button>
@@ -110,6 +115,7 @@ function EditForm (props){
 		</FormItem>
 		</Form>
 	)
+}
 }
 function mapPropsToFields(props){
 	return {
@@ -131,6 +137,7 @@ class MeetingBDList extends React.Component{
 	        desc:undefined,
 	        loading: false,
 	        visible: false,
+          needRefresh: false,
           viewModalVisible: false,
 	        currentBD:null,
 	        currentFile:null
@@ -146,10 +153,10 @@ class MeetingBDList extends React.Component{
 	}
 
 	handleReset = (filters) => {
-    	this.setState({ filters, page: 1 }, this.getMeetingBDList)
-  	}
+    this.setState({ filters, page: 1 }, this.getMeetingBDList)
+  }
 
-	getMeetingBDList = () =>{
+	getMeetingBDList = (comments) =>{
 		this.setState({ loading: true });
 		const { page, pageSize, search, sort,filters,desc } = this.state;
 	    const params = {
@@ -162,9 +169,15 @@ class MeetingBDList extends React.Component{
 	    }
 		api.getMeetingBdList(params)
 		.then(result=>{
-			this.setState({list:result.data.data, total:result.data.count,loading: false})
-		})
-	}
+			this.setState({
+        list:result.data.data, 
+        total:result.data.count,
+        loading: false,
+        currentBD:comments?{...this.state.currentBD,comments}:this.state.currentBD
+		  })
+	  })
+  }
+
 
 	handleDelete = (id) =>{
 		api.deleteMeetingBD(id)
@@ -184,71 +197,78 @@ class MeetingBDList extends React.Component{
     );
   	}
 
-  	showEditModal = () =>{
-  		this.setState({visible:true, viewModalVisible:false})
-  	}
+	showEditModal = () =>{
+		this.setState({visible:true, viewModalVisible:false})
+	}
 
-    showViewModal = (record) =>{
-      let file=null
-      if(record.attachment){
-        file={
-          uid:-1,
-          name:record.attachment,
-          status:'done',
-          url:record.attachmenturl
-        }
+  showViewModal = (record) =>{
+    let file=null
+    if(record.attachment){
+      file={
+        uid:-1,
+        name:record.attachment,
+        status:'done',
+        url:record.attachmenturl
       }
-      this.setState({viewModalVisible:true,currentBD:record, currentFile:file})
     }
+    this.setState({viewModalVisible:true,currentBD:record, currentFile:file})
+  }
 
-    hideViewModal =()=>{
-      this.setState({viewModalVisible:false, currentFile:null})
-    }
+  hideViewModal =()=>{
+    this.setState({viewModalVisible:false, currentFile:null})
+  }
 
-  	hideEditModal = () =>{
-  		this.setState({visible:false, currentFile:null})
+	hideEditModal = () =>{
+		this.setState({visible:false, currentFile:null})
+	}
+
+	handleEdit = () =>{
+	const {currentBD} =this. state
+	let id=currentBD.id
+	this.form.validateFields((err, values) => {
+    	if (!err) {
+     		api.modifyMeetingBD(id,values)
+     		.then(result=>{
+     			this.hideEditModal()
+     			this.getMeetingBDList()
+     		})
+     		.catch(error=> handleError(error))
   	}
+  	})
+	}
 
-  	handleEdit = () =>{
-		let form=this.refs.editForm
-		const {currentBD} =this. state
-		let id=currentBD.id
-		form.validateFields((err, values) => {
-      	if (!err) {
-       		api.modifyMeetingBD(id,values)
-       		.then(result=>{
-       			this.hideEditModal()
-       			this.getMeetingBDList()
-       		})
-       		.catch(error=> handleError(error))
-    	}
-    	})
-  	}
+  handleRef = (inst) => {
+  if (inst) {
+    this.form = inst.props.form
+  }
+  }
 
-  	onUploadFile = (file) =>{
-  		let id = this.state.currentBD.id
-  		let body={
-        attachment: file.response.result.realfilekey,
-  			attachmentbucket:'file'
-  		}
-  		api.modifyMeetingBD(id,body)
-  		.then(result=>{
-			this.getMeetingBDList()
-  		})
-  		.catch(error=>handleError(error))
-  	}
+	onUploadFile = (file) =>{   
+    let comments=this.form.getFieldValue('comments')
+		let id = this.state.currentBD.id
+		let body={
+      attachment: file.response.result.realfilekey,
+			attachmentbucket:'file'
+		}
+		api.modifyMeetingBD(id,body)
+		.then(result=>{
+		this.getMeetingBDList(comments)
+		})
+		.catch(error=>handleError(error))
+	}
 
-    removeFileAPI = ()=>{
-      return api.deleteMeetingBDFile(this.state.currentBD.id)
-    }  
+  removeFileAPI = ()=>{
+    return api.deleteMeetingBDFile(this.state.currentBD.id)
+  }  
 
-  	removeFile = ()=>{
-  		api.deleteMeetingBDFile(this.state.currentBD.id)
-  		.then(result=>{
-  			this.getMeetingBDList()
-  		})
-  		.catch(error=>handleError(error))
-  	}
+	removeFile = ()=>{
+    let comments=this.form.getFieldValue('comments')
+		api.deleteMeetingBDFile(this.state.currentBD.id)
+		.then(result=>{
+			this.getMeetingBDList(comments)
+		})
+		.catch(error=>handleError(error))
+	}
  
 	render(){
 		const {page, pageSize, total, list, loading, search, filters, visible, currentBD, viewModalVisible} = this.state
@@ -272,8 +292,10 @@ class MeetingBDList extends React.Component{
 
     const viewModalTitle=(
       <div style={{marginRight:32}}>
-        {i18n('common.view')}        
+        {i18n('common.view')}   
+        {hasPerm('BD.manageMeetBD')||hasPerm('BD.user_addMeetBD')?   
         <a href="javascript:void(0)" style={bdTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
+        :null}
       </div>
       )
  
@@ -290,7 +312,7 @@ class MeetingBDList extends React.Component{
          onCancel={()=>this.hideEditModal()}
         >
         {currentBD?
-			<EditMeetingForm ref="editForm" key={currentBD.id} data={currentBD} onUploadFile={this.onUploadFile} onRemove={this.removeFile} removeFileAPI={this.removeFileAPI} file={this.state.currentFile}/>
+			<EditMeetingForm wrappedComponentRef={this.handleRef} key={currentBD.id} data={currentBD} onUploadFile={this.onUploadFile} onRemove={this.removeFile} removeFileAPI={this.removeFileAPI} file={this.state.currentFile}/>
 			:null
         }
         </Modal>
