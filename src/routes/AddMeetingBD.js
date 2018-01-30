@@ -141,16 +141,6 @@ class AddMeetingBD extends React.Component{
       </Col>
       </Row>
       <Row gutter={24} style={{marginBottom:20}}>
-      <Col span={6}>{i18n('meeting_bd.meeting_notes')}:</Col>
-      <Col span={18}><TextArea  rows={4} onChange={this.changeText} /></Col>
-      </Row>
-      <Row gutter={24} style={{marginBottom:20}}>
-      <Col span={6}>{i18n('project.attachments')}:</Col>
-      <Col span={18}>
-        <UploadFile setFile={this.setFile.bind(this)}/>
-      </Col>
-      </Row>
-      <Row gutter={24} style={{marginBottom:20}}>
       <Col span={6}>{i18n('project.manager')}:</Col>
       <Col span={18} ><SelectUser
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -161,6 +151,17 @@ class AddMeetingBD extends React.Component{
           onChange={manager => this.setState({ manager })} />
       </Col>
       </Row>
+      <Row gutter={24} style={{marginBottom:20}}>
+      <Col span={6}>{i18n('meeting_bd.meeting_notes')}:</Col>
+      <Col span={18}><TextArea  rows={4} onChange={this.changeText} /></Col>
+      </Row>
+      <Row gutter={24} style={{marginBottom:20}}>
+      <Col span={6}>{i18n('project.attachments')}:</Col>
+      <Col span={18}>
+        <UploadFile setFile={this.setFile.bind(this)}/>
+      </Col>
+      </Row>
+
       <Button style={{ marginLeft: 10 }} disabled={manager === null||date == ''} type="primary" onClick={this.createMeetingBD}>{i18n('common.confirm')}</Button>
 
       </Modal>

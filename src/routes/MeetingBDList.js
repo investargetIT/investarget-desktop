@@ -102,13 +102,13 @@ class EditForm extends React.Component{
       onChange:this.onChange
     }
 	return(
-		<Form >
+		<Form>
+      <BasicFormItem name="meet_date" label={i18n('meeting_bd.meet_date')} valueType="object">
+        <DatePicker showTime={{format: 'HH:mm'}} format="YYYY-MM-DD HH:mm" />
+      </BasicFormItem>
 		<BasicFormItem name="comments" label={i18n('meeting_bd.meeting_notes')}>
 			<TextArea  rows={4}/>
 		</BasicFormItem>
-    <BasicFormItem name="meet_date" label={i18n('meeting_bd.meet_date')} valueType="object">
-      <DatePicker format="YYYY-MM-DD HH:mm" />
-    </BasicFormItem>
 		<FormItem {...formItemLayout} label={i18n('project.attachments')}>
 		  <Upload {...uploadProps} onRemove={this.props.onRemove} >
 		    <Button>
@@ -391,8 +391,8 @@ class MeetingBDList extends React.Component{
 function Event(props) {
   return (
     <div>
-      <Field title={i18n('meeting_bd.meeting_notes')} content={props.comments||i18n('common.none')} />
       <Field title={i18n('meeting_bd.meet_date')} content={props.meet_date? time(props.meet_date + props.timezone):i18n('common.none')} />
+      <Field title={i18n('meeting_bd.meeting_notes')} content={props.comments||i18n('common.none')} />
       <Row  gutter={24}>
       <Col span={6} >
         <div style={{textAlign: 'right'}}>{i18n('meeting_bd.attachments')}</div>
