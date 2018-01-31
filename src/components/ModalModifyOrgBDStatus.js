@@ -76,10 +76,10 @@ class SelectInvestorGroup extends React.Component {
 class ModalModifyOrgBDStatus extends React.Component {
 
   state = {
-    username: '', 
-    mobile: '',
+    username: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.username ||'', 
+    mobile: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/,''):'',
     wechat: '', 
-    email: '', 
+    email: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.useremail ||'', 
     isimportant: this.props.bd.isimportant||null, 
     status: this.props.bd.bd_status.id, 
     group: '', 
@@ -95,12 +95,12 @@ class ModalModifyOrgBDStatus extends React.Component {
     const { username, mobile, email, status, group } = this.state;
     return ((username.length === 0 || !checkMobile(mobile) || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
   }
-
+ 
   render() {
     const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
     return (
       <Modal
-        title={i18n('modify_orgbd_status')}
+        title={i18n('modify_bd_status')}
         visible={visible}
         onCancel={onCancel}
         confirmLoading={confirmLoading}
