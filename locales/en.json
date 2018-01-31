@@ -112,7 +112,8 @@
     "mobile": "Mobile",
     "manager": "Manager",
     "created_time": "Created Time",
-    "operation": "Operations"
+    "operation": "Operations",
+    "contact_email": "Email"
   },
 
   "org_bd": {
