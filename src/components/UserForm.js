@@ -1,6 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n, hasPerm, intersection } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm, 
+  intersection, 
+  checkMobile, 
+} from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
 import { 
@@ -108,7 +113,10 @@ class UserForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator('mobile', {
-                    rules: [{ message: i18n('validation.not_empty'), required: true}]
+                    rules: [
+                      { message: i18n('validation.not_empty'), required: true},
+                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
+                    ]
                   })(
                     <Input onBlur={this.props.mobileOnBlur} />
                   )

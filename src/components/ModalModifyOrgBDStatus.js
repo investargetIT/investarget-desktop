@@ -1,6 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { 
+  i18n, 
+  checkMobile,
+} from '../utils/util';
 import { 
   Modal, 
   Select, 
@@ -85,12 +88,12 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   checkInvalid = () => {
     const { username, mobile, wechat, email, status, group } = this.state;
-    return ((username.length === 0 || mobile.length === 0 || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
+    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
            || (wechat.length === 0 && status === 3 && this.props.bd.bduser !== null && this.props.bd.bd_status.id !== 3);
   }
   checkProjectValid = () =>{
     const { username, mobile, email, status, group } = this.state;
-    return ((username.length === 0 || mobile.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
+    return ((username.length === 0 || !checkMobile(mobile) || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
   }
 
   render() {
