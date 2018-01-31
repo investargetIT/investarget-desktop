@@ -112,8 +112,7 @@
     "mobile": "Mobile",
     "manager": "Manager",
     "created_time": "Created Time",
-    "operation": "Operations",
-    "contact_email": "Email"
+    "operation": "Operations"
   },
 
   "org_bd": {
@@ -639,5 +638,6 @@
   "marked_as_spam": "Marked as Spam",
   "clicked": "Click Link",
   "report_as_spam": "Report as Spam",
-  "cny": "CNY"
+  "cny": "CNY",
+  "phone": "Phone"
 }

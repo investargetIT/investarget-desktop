@@ -283,8 +283,8 @@ class ProjectBDList extends React.Component {
       }, key:'source_type', sorter:true},
       // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
       // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
-      {title: i18n('project_bd.contact_mobile'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
-      {title: i18n('project_bd.contact_email'), dataIndex: 'useremail', key:'useremail', sorter: true},
+      {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
+      {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
