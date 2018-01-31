@@ -15,7 +15,7 @@ import * as api from '../api'
 import { Link } from 'dva/router'
 import BDModal from '../components/BDModal';
 import { isLogin } from '../utils/util'
-
+import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 
 class ProjectBDList extends React.Component {
 
@@ -38,9 +38,9 @@ class ProjectBDList extends React.Component {
       desc:undefined,
       source:this.props.location.query.status||0, 
       status: null, 
-      isShowModifyStatusModal: false, 
+      isShowModifyStatusModal: false,
+      currentBD:null
     }
-    this.bd = null;
   }
 
   handleFilt = (filters) => {
@@ -148,6 +148,99 @@ class ProjectBDList extends React.Component {
     })
   }
 
+  checkExistence = (mobile, email) => {
+    return new Promise((resolve, reject) => {
+      Promise.all([api.checkUserExist(mobile), api.checkUserExist(email)])
+        .then(result => {
+          for (let item of result) {
+            if (item.data.result === true)
+              resolve(true);
+          }
+          resolve(false);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  handleConfirm =(state)=>{
+    const react = this;
+    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && !this.state.currentBD.bduser){
+      this.checkExistence(state.mobile, state.email).then(ifExist => {
+          if (ifExist) {
+            Modal.error({
+              content: i18n('user.message.user_exist')
+            });
+          } else {
+            this.handleConfirmAudit(state);
+          }
+        })
+    }
+    else{
+      this.handleConfirmAudit(state)
+    }
+  }
+
+  handleConfirmAudit = ({ status,username, mobile, email, group }) => {
+    const body = {
+      bd_status: status
+    }
+    api.editProjBD(this.state.currentBD.id, body)
+      .then(result => 
+        {
+          if (status !== 3 || this.state.currentBD.bd_status.id === 3){
+            this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+          }
+        }
+        );
+
+    if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
+
+    if (this.state.currentBD.bduser) {
+      api.addUserRelation({
+        relationtype: false,
+        investoruser: this.state.currentBD.bduser,
+        traderuser: this.state.currentBD.manager.id
+      })
+        .then(result => {
+          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+        })
+        .catch(error => {
+          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+        });
+              
+    } else {
+      api.addProjBDCom({
+        projectBD: this.state.currentBD.id,
+        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('account.email')}: ${email}`
+      });
+      const newUser = { mobile, email, groups: [Number(group)], userstatus: 1 };
+      if (window.LANG === 'en') {
+        newUser.usernameE = username;
+      } else {
+        newUser.usernameC = username;
+      }
+      this.checkExistence(mobile,email).then(ifExist=>{
+        if(ifExist){
+          Modal.error({
+          content: i18n('user.message.user_exist')
+        });
+        }
+        else{
+        api.addUser(newUser)
+          .then(result =>{
+            api.addUserRelation({
+            relationtype: false,
+            investoruser: result.data.id,
+            traderuser: this.state.currentBD.manager.id
+          }).then(data=>{
+            this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+          })
+          });
+        }
+      })
+      }
+    }
+
   handleTableChange = (pagination, filters, sorter) => {
     this.setState(
       { 
@@ -162,16 +255,13 @@ class ProjectBDList extends React.Component {
     this.getProjectBDList()
   }
 
-  handleModifyBDStatusBtnClicked = bd => {
-    this.bd = bd;
-    this.setState({ isShowModifyStatusModal: true, status: bd.bd_status.id });
+  handleStatusChange =(status)=>{
+    this.setState({status})
   }
 
-  modifyBDStatus = () => {
-    this.setState({ isShowModifyStatusModal: false, loading: true });
-    api.editProjBD(this.bd.id, { bd_status: this.state.status })
-      .then(result => this.getProjectBDList())
-      .catch(error => handleError(error));
+  handleModifyBDStatusBtnClicked = bd => {
+    this.setState({currentBD:bd})
+    this.setState({ isShowModifyStatusModal: true, status: bd.bd_status.id });
   }
 
   render() {
@@ -261,21 +351,18 @@ class ProjectBDList extends React.Component {
             onAdd={this.handleAddComment}
             onDelete={this.handleDeleteComment} />
         </Modal>
-
-        <Modal 
-          title="修改状态" 
+        
+        {this.state.isShowModifyStatusModal?
+        <ModalModifyOrgBDStatus 
           visible={this.state.isShowModifyStatusModal} 
-          onCancel={() => this.setState({ isShowModifyStatusModal: false })}
-          onOk={this.modifyBDStatus} 
-        >
-
-          <SelectBDStatus 
-            style={{ width: 120 }} 
-            value={this.state.status} 
-            onChange={status => this.setState({ status })} 
-          />
-
-        </Modal>
+          onCancel={() => this.setState({ isShowModifyStatusModal: false })} 
+          status={this.state.status}
+          onStatusChange={this.handleStatusChange}
+          onOk={this.handleConfirm}
+          bd={this.state.currentBD}
+          projectBD
+        />
+        :null}
 
       </LeftRightLayout>
     )

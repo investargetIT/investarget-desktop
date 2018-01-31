@@ -77,7 +77,7 @@ class ModalModifyOrgBDStatus extends React.Component {
     mobile: '',
     wechat: '', 
     email: '', 
-    isimportant: this.props.bd.isimportant, 
+    isimportant: this.props.bd.isimportant||null, 
     status: this.props.bd.bd_status.id, 
     group: '', 
   }
@@ -86,6 +86,10 @@ class ModalModifyOrgBDStatus extends React.Component {
     const { username, mobile, wechat, email, status, group } = this.state;
     return ((username.length === 0 || mobile.length === 0 || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
            || (wechat.length === 0 && status === 3 && this.props.bd.bduser !== null && this.props.bd.bd_status.id !== 3);
+  }
+  checkProjectValid = () =>{
+    const { username, mobile, email, status, group } = this.state;
+    return ((username.length === 0 || mobile.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
   }
 
   render() {
@@ -99,6 +103,7 @@ class ModalModifyOrgBDStatus extends React.Component {
         footer={null}
       >
         <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
+          {this.state.isimportant!=null ?
           <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
             <Col span={16}>
@@ -108,6 +113,7 @@ class ModalModifyOrgBDStatus extends React.Component {
               />
             </Col>
           </Row>
+          :null}
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
@@ -131,10 +137,12 @@ class ModalModifyOrgBDStatus extends React.Component {
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.mobile')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.mobile')} value={this.state.mobile} onChange={e => this.setState({ mobile: e.target.value })} /></Col>
           </Row>
+          {!this.props.projectBD?
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
           </Row>
+          :null}
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.email')} : </Col>
             <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.email')} value={this.state.email} onChange={e => this.setState({ email: e.target.value })} /></Col>
@@ -143,7 +151,7 @@ class ModalModifyOrgBDStatus extends React.Component {
           : null }
 
           { /* 有联系人的BD成功时要求填写联系人微信号 */ }
-          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ?
+          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 &&!this.props.projectBD?
             <Row style={{ marginTop: 10 }}>
               <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
               <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
@@ -152,7 +160,7 @@ class ModalModifyOrgBDStatus extends React.Component {
 
           <Row style={{ marginTop: 10 }}>
             <Col span={8} />
-            <Col span={16}><Button type="primary" onClick={() => onOk(this.state)} disabled={this.checkInvalid()}>{i18n('common.confirm')}</Button></Col>
+            <Col span={16}><Button type="primary" onClick={() => onOk(this.state)} disabled={this.props.projectBD? this.checkProjectValid() : this.checkInvalid()}>{i18n('common.confirm')}</Button></Col>
           </Row>
         </div>
         
