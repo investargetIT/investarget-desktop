@@ -6,6 +6,7 @@ import {
   exchange, 
   hasPerm, 
   getCurrencyFromId, 
+  checkMobile,
 } from '../utils/util';
 import { routerRedux } from 'dva/router'
 import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
@@ -131,7 +132,7 @@ class OrganizationForm extends React.Component {
 
         <FormItem {...formItemLayout} label={i18n('organization.telephone')}>
           <Row gutter={8}>
-            <Col span={6}>
+            <Col span={4}>
               <FormItem>
                 {
                   getFieldDecorator('mobileAreaCode', {
@@ -143,11 +144,17 @@ class OrganizationForm extends React.Component {
                 }
               </FormItem>
             </Col>
-            <Col span={18}>
+            <Col span={4}>
+              <FormItem>{getFieldDecorator('mobileCode')(<Input placeholder="区号" />)}</FormItem>
+            </Col>
+            <Col span={16}>
               <FormItem>
                 {
                   getFieldDecorator('mobile', {
-                    rules: [{ message: 'Please input' }]
+                    rules: [
+                      { message: 'Please input' },
+                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
+                  ]
                   })(
                     <Input />
                   )

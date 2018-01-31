@@ -151,8 +151,17 @@ class OrganizationDetail extends React.Component {
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.name).join('/') : []
       data.orgtype = data.orgtype && data.orgtype.name
       data.investoverseasproject = data.investoverseasproject ? '是' : '否'
-      data.mobile = (data.mobile && data.mobileAreaCode) ? ('+' + data.mobileAreaCode + '-' + data.mobile) : ''
-
+      let mobile = '';
+      if (data.mobileAreaCode) {
+        mobile += '+' + data.mobileAreaCode;
+      }
+      if (data.mobileCode) {
+        mobile += data.mobileAreaCode ? '-' + data.mobileCode : data.mobileCode;
+      }
+      if (data.mobile) {
+        mobile += data.mobileCode || data.mobileAreaCode ? '-' + data.mobile : data.mobile;
+      }
+      data.mobile = mobile;
       let currency = currencyMap[data.currency.id]
       data.transactionAmountF = data.transactionAmountF ? formatMoney(data.transactionAmountF, currency) : 'N/A'
       data.transactionAmountF_USD = data.transactionAmountF_USD ? formatMoney(data.transactionAmountF_USD, 'USD') : 'N/A'
