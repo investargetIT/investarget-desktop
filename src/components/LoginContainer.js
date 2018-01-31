@@ -9,7 +9,7 @@ function LoginContainer(props) {
   const source = parseInt(localStorage.getItem('source'), 10)
   let logo, bg;
   if (source === 1) {
-    logo = '/images/logo.jpg';
+    logo = '/images/logo.png';
     bg = 'url(/images/background.jpg)';
   } else if (source === 2) {
     logo = '/images/autospace.png';
