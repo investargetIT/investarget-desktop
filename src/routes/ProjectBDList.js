@@ -306,11 +306,13 @@ class ProjectBDList extends React.Component {
 
 
           </div>
+          { hasPerm('BD.manageProjectBD') ? 
           <div>
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
             <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
           </Popconfirm>
           </div>
+          : null }
         </span>)
       }},
     ]

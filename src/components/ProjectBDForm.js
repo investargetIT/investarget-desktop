@@ -18,7 +18,10 @@ import {
   SelectOrganizatonArea, 
   CascaderCountryDetail, 
 } from './ExtraInput'
-import { i18n } from '../utils/util'
+import { 
+  i18n, 
+  checkMobile,
+} from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva';
 
@@ -203,7 +206,7 @@ class ProjectBDForm extends React.Component {
                     <FormItem>
                       {
                         getFieldDecorator('mobile', {
-                          rules: []
+                          rules: [{ validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() }]
                         })(
                           <Input onBlur={this.props.mobileOnBlur} />
                           )
