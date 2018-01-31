@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs } from 'antd'
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
@@ -387,6 +387,7 @@ class ProjectDetail extends React.Component {
                   <DownloadFiles projectId={id} />
                 </TabPane>
               </Tabs>
+              <div><BackTop /></div>
 
         <Modal
           visible={this.state.visible}
