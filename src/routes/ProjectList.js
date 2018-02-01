@@ -6,6 +6,7 @@ import {
   getGroup, 
   hasPerm, 
   formatMoney, 
+  isShowCNY, 
 } from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
@@ -222,7 +223,7 @@ class ProjectList extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          if (['中国', 'China'].includes(record.country.country) && record.currency.id === 1) {
+          if (isShowCNY(record, this.props.country)) {
             return record.financeAmount ? formatMoney(record.financeAmount, 'CNY') : 'N/A'
           } else {
             return record.financeAmount_USD ? formatMoney(record.financeAmount_USD) : 'N/A'
@@ -252,7 +253,6 @@ class ProjectList extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
-          console.log(record)
           return record.ismarketplace ? (
             <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
             <div>

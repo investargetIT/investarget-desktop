@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -287,6 +287,7 @@ class ProjectDetail extends React.Component {
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions);
     this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
+    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
     const { id } = this.state
 
     api.getProjLangDetail(id).then(result => {
@@ -378,7 +379,7 @@ class ProjectDetail extends React.Component {
                   </div>
                 </TabPane>
                 <TabPane tab={i18n('project.financials')} key="2">
-                  {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={['中国', 'China'].includes(project.country.country) && project.currency.id === 1} />}
+                  {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
                 </TabPane>
                 <TabPane tab={i18n('project.details')} key="3">
                   <Detail project={project} />
@@ -412,9 +413,9 @@ class ProjectDetail extends React.Component {
 }
 
 function mapStateToProps(state) {
-  var { projstatus } = state.app
+  var { projstatus, country } = state.app
   projstatus = projstatus.filter(item => item.id >= 2)
-  return { projstatus }
+  return { projstatus, country }
 }
 
 export default connect(mapStateToProps)(ProjectDetail)
@@ -559,15 +560,15 @@ function ProjectHead({ project }) {
     </div>
   )
 }
-function showMoneyRelatedInfo(project, type) {
-  if (['中国', 'China'].includes(project.country.country) && project.currency.id === 1) {
+function showMoneyRelatedInfo(project, type, allArea) {
+  if (isShowCNY(project, allArea)) {
     return project[type] && formatMoney(project[type], 'CNY');
   } else {
     return project[type + '_USD'] && formatMoney(project[type + '_USD']);
   }
 }
 
-function ProjectIntro({ project }) {
+function ProjectIntro({ project, country }) {
   if (project.currency === undefined) return null;
   const trStyle={border:'1px solid #eee',height:'40px',borderLeft:'none',borderRight:'none'}
   const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
@@ -593,8 +594,8 @@ function ProjectIntro({ project }) {
         <tr style={trStyle}>
           <td>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}</td>
           <td>{project.character && project.character.character}</td>
-          <td>{showMoneyRelatedInfo(project, 'financeAmount') || '-'}</td>
-          <td>{showMoneyRelatedInfo(project, 'companyValuation') || '-'}</td>
+          <td>{showMoneyRelatedInfo(project, 'financeAmount', country) || '-'}</td>
+          <td>{showMoneyRelatedInfo(project, 'companyValuation', country) || '-'}</td>
         </tr>
       </tbody>
       </table>
@@ -602,6 +603,7 @@ function ProjectIntro({ project }) {
     </div>
   )
 }
+ProjectIntro = connect(mapStateToProps)(ProjectIntro);
 
 function Detail({ project }) {
   const containerStyle = {

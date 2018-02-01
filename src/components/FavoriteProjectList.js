@@ -1,14 +1,18 @@
 import React from 'react'
 import { Link } from 'dva/router'
 import { Table, Pagination } from 'antd'
-import { i18n, formatMoney } from '../utils/util'
-
+import { i18n, formatMoney, isShowCNY } from '../utils/util'
+import { connect } from 'dva';
 
 class FavoriteProjectList extends React.Component {
   constructor(props) {
     super(props)
   }
- 
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+  }
+
   render() {
     const { page, pageSize, total, list, loading, onPageChange, onPageSizeChange } = this.props
 
@@ -49,7 +53,7 @@ class FavoriteProjectList extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          if (['中国', 'China'].includes(record.proj.country.country) && record.proj.currency.id === 1) {
+          if (isShowCNY(record.proj, this.props.country)) {
             return record.proj.financeAmount ? formatMoney(record.proj.financeAmount, 'CNY') : 'N/A'
           } else {
             return record.proj.financeAmount_USD ? formatMoney(record.proj.financeAmount_USD) : 'N/A'
@@ -121,4 +125,9 @@ class FavoriteProjectList extends React.Component {
   }
 }
 
-export default FavoriteProjectList
+function mapStateToProps(state) {
+  const { country } = state.app
+  return { country }
+}
+
+export default connect(mapStateToProps)(FavoriteProjectList);

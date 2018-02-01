@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, isLogin,formatMoney  } from '../utils/util'
+import { i18n, isLogin,formatMoney, isShowCNY  } from '../utils/util'
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -56,6 +56,7 @@ class ProjectListPublished extends React.Component {
 
   componentDidMount() {
     this.getProjectList()
+    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
   }
 
   render() {
@@ -99,7 +100,7 @@ class ProjectListPublished extends React.Component {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
         render: (text, record) => {
-          if (['中国', 'China'].includes(record.country.country) && record.currency.id === 1) {
+          if (isShowCNY(record, this.props.country)) {
             return record.financeAmount ? formatMoney(record.financeAmount, 'CNY') : 'N/A'
           } else {
             return record.financeAmount_USD ? formatMoney(record.financeAmount_USD) : 'N/A'
@@ -145,5 +146,9 @@ class ProjectListPublished extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  const { country } = state.app
+  return { country }
+}
 
-export default connect()(ProjectListPublished)
+export default connect(mapStateToProps)(ProjectListPublished)

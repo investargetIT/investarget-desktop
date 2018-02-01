@@ -390,3 +390,11 @@ export function removeFromArray(array, items) {
 export function checkMobile(mobile) {
   return /^\d{6,20}$/.test(mobile);
 }
+
+export function isShowCNY(record, allArea) {
+  const { country: recordArea } = record;
+  const parentArea = allArea.filter(f => f.id === recordArea.parent)[0];
+  const isRecordAreaChina = ['中国', 'China'].includes(recordArea.country);
+  const isRecordParentAreaChina = parentArea ? ['中国', 'China'].includes(parentArea.country) : false;
+  return isRecordAreaChina || isRecordParentAreaChina && record.currency.id === 1;
+}
