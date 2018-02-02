@@ -29,27 +29,6 @@ class ScheduleForm extends React.Component {
   }
 
   disabledDate = current => current && current < moment().startOf('day');
-  
-  disabledTime = date => {
-    if (!date.isSame(moment(), 'day')) {
-      return {
-        disabledHours: () => [],
-        disabledMinutes: () => [],
-      };
-    }
-    const hours = [];
-    for (let index = 0; index < moment().hours(); index++) {
-      hours.push(index);
-    }
-    const minutes = [];
-    for (let index = 0; index < moment().minutes(); index++) {
-      minutes.push(index);
-    }
-    return {
-      disabledHours: () => hours,
-      disabledMinutes: () => minutes,
-    };
-  }
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
@@ -62,7 +41,6 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
           <DatePicker 
             disabledDate={this.disabledDate} 
-            disabledTime={this.disabledTime}
             disabled={'isAdd' in this.props ? false : true} 
             showTime={{format: 'HH:mm'}} 
             format="YYYY-MM-DD HH:mm" 
