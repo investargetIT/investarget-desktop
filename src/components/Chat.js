@@ -2,7 +2,10 @@ import React from 'react'
 import { connect } from 'dva'
 import md5 from '../utils/md5'
 import { Badge } from 'antd'
-import { timeForIM } from '../utils/util'
+import { 
+  timeForIM,
+  isLogin,
+} from '../utils/util';
 
 // const mySpeechBubbleColor = 'rgb(162, 229, 99)'
 // const mySpeechBubbleColor = 'lightBlue'
@@ -155,6 +158,15 @@ function UserInfoDetail({ name, photoUrl, onAccept, onReject }) {
         <button onClick={onAccept} style={{ width: 100, height: 32, marginRight: 10, fontSize: 16 }}>同意</button>
         <button onClick={onReject} style={{ width: 100, height: 32, fontSize: 16 }}>拒绝</button>
       </div>
+    </div>
+  )
+}
+
+function UserInfoWithoutIM({ name, photoUrl }) {
+  return (
+    <div style={{ padding: 40, textAlign: 'center' }}>
+      <div style={{ fontSize: 20 }}>{name}</div>
+      <div style={{ margin: 20 }}><img style={{ width: 76 }} src={photoUrl} /></div>
     </div>
   )
 }
@@ -397,7 +409,7 @@ class Chat extends React.Component {
 
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.onReceiveMessage || this.shouldScrollBottom) {
+    if (prevProps.onReceiveMessage || this.shouldScrollBottom && this.messageContainer) {
       this.messageContainer.scrollTop = this.messageContainer.scrollHeight
       this.shouldScrollBottom = false
     }
@@ -564,7 +576,10 @@ class Chat extends React.Component {
               photoUrl={this.state.channel.imgUrl} 
               onAccept={this.props.onAcceptNewFriend && this.props.onAcceptNewFriend.bind(this, this.state.channel)} 
               onReject={this.props.onRejectNewFriend && this.props.onRejectNewFriend.bind(this, this.state.channel)} />
-          </div> :  
+          </div> : 
+        
+        this.state.channel.hasIM && isLogin().hasIM ? 
+
           <div style={rightContainerStyle}>
             <div style={titleContainerStyle}>
               <span style={{ fontSize: 16, lineHeight: topBarHeight + 'px', color: 'black' }}>{this.state.channel.name}</span>
@@ -584,7 +599,12 @@ class Chat extends React.Component {
               value={this.state.inputValue}
               style={{ width: '100%', height: (1 - topBarHeight / mainContainerHeight - 0.6 - 56 / mainContainerHeight) * 100 + '%', padding: '0 20px', border: 0, background: rightContainerBackground, outline: 0, fontSize: 14, color: 'black', resize: 'none' }} />
             <div style={{ height: 12 }} />
-          </div> }
+          </div> 
+        : 
+        <div style={rightContainerStyle}>
+          <UserInfoWithoutIM name={this.state.channel.name} photoUrl={this.state.channel.imgUrl} />
+        </div>
+        }
         
       </div>
     )

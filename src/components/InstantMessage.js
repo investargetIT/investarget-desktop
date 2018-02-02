@@ -226,7 +226,7 @@ class InstantMessage extends React.Component {
 
   getUserFriendAndMsg = () => {
     let friends
-    api.getUserFriend()
+    api.getUserFriend({ page_size: 100 })
     .then(data => {
       const channels = data.data.data.filter(f => 
         f.user && f.friend && (((f.user.id === isLogin().id) && f.isaccept) || (f.friend.id === isLogin().id))
@@ -239,6 +239,7 @@ class InstantMessage extends React.Component {
           obj.imgUrl = m.friend.photourl
           obj.isRequestAddFriend = !m.isaccept
           obj.relationID = m.id
+          obj.hasIM = m.friend.hasIM;
           return obj
         } else if (m.friend.id === isLogin().id) {
           const obj = {}
@@ -247,6 +248,7 @@ class InstantMessage extends React.Component {
           obj.imgUrl = m.user.photourl
           obj.isRequestAddFriend = !m.isaccept
           obj.relationID = m.id
+          obj.hasIM = m.user.hasIM;
           return obj
         }
       })
@@ -280,8 +282,21 @@ class InstantMessage extends React.Component {
     } else {
       newData.splice(index, 1)
     }
-    this.setState({ channels: newData })
     api.editUserFriend(channel.relationID, isAccept)
+      .then(data => {
+        if (isAccept) {
+          const userInfo = JSON.parse(localStorage.getItem('user_info'));
+          if (data.data.user.id === isLogin().id) {
+            newData[index].hasIM = data.data.friend.hasIM;
+            userInfo.hasIM = data.data.user.hasIM;
+          } else if (data.data.friend.id === isLogin().id) {
+            newData[index].hasIM = data.data.user.hasIM;
+            userInfo.hasIM = data.data.friend.hasIM;
+          }
+          localStorage.setItem('user_info', JSON.stringify(userInfo))
+        }
+        this.setState({ channels: newData })
+      });
   }
 
   handleMessageScrollTop = (channel, conainer) => {

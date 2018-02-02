@@ -53,7 +53,7 @@ class MyPartner extends React.Component {
 
   componentDidMount() {
     this.getPartner();
-    api.getUserFriend()
+    api.getUserFriend({ page_size: 100 })
     .then(result => {
       const friendList = result.data.data.map(m => m.friend.id === isLogin().id ? m.user.id : m.friend.id);
       this.setState({ friendList })

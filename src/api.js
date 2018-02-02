@@ -480,7 +480,7 @@ export const addUnreachUser = body => r('/user/unuser/', 'POST', body)
 export const getUnreachUser = param => r('/user/unuser/?' + qs.stringify(param))
 export const deleteUnreachUser = id => r('/user/unuser/' + id, 'DELETE')
 export const checkUserExist = mobileOrEmail => r('/user/checkexists/?account=' + mobileOrEmail)
-export const getUserFriend = () => r('/user/friend/')
+export const getUserFriend = params => r('/user/friend/?' + qs.stringify(params));
 export const editUserFriend = (id, isaccept) => r(`/user/friend/${id}/`, 'PUT', { isaccept })
 export const addUserFriend = friend => r('/user/friend/', 'POST', { friend })
 
