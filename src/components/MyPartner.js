@@ -21,6 +21,7 @@ class MyPartner extends React.Component {
     pageIndex: 1,
     friendList: [], 
     search: '', 
+    filters: null,
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
@@ -28,105 +29,39 @@ class MyPartner extends React.Component {
   getPartner = () => {
     this.setState({ loading: true })
 
-    let title, param
+    let param
     if (this.props.type === "investor") {
-      title = "investoruser"
-      param = { traderuser: isLogin().id}
+      param = { trader: isLogin().id}
     } else if (this.props.type == "trader") {
-      title = "traderuser"
-      param = { investoruser: isLogin().id }
+      param = { investor: isLogin().id }
     }
     param.page_size = this.state.pageSize;
     param.page_index = this.state.pageIndex;
     param.search = this.state.search;
+    
+    const params = Object.assign({}, param, this.state.filters);
 
-    api.getUserRelation(param)
+    api.getUser(params)
       .then(result => {
         this.setState({
-          list: result.data.data.map(m => m[title]),
+          list: result.data.data,
           loading: false, 
           total: result.data.count
         })
-        echo(this.state.list)
       })
   }
 
-  componentDidMount() {
-    this.getPartner();
+  getFriends = () => {
     api.getUserFriend({ page_size: 100 })
     .then(result => {
       const friendList = result.data.data.map(m => m.friend.id === isLogin().id ? m.user.id : m.friend.id);
       this.setState({ friendList })
-    })
-    // Promise.all([api.getUserRelation(param), api.getUserFriend()])
-    // .then(data => {
-    //   const investorRelationShip = data[0].data.data.map(m => m[title])
-    //   const investorIdArr = new Set(investorRelationShip.map(m => m.id))
-    //   const investorList = [...investorIdArr].reduce((acc, value) => {
-    //     acc.push(investorRelationShip.filter(f => f.id === value)[0])
-    //     return acc
-    //   }, [])
-    //   echo('list', investorList.length);
-    //   const list = investorList.map(m => {
-    //     let isAlreadyAdded = false
-    //     if (data[1].data.data.filter(f => (f.friend && f.friend.id === m.id) || (f.user && f.user.id === m.id)).length > 0) {
-    //       isAlreadyAdded = true
-    //     }
-    //     return {...m, isAlreadyAdded}
-    //   })
-    //   this.setState({
-    //     list,
-    //     loading: false,
-    //     total: investorList.length
-    //   })
-    //   this.investorList = investorList
-    // }).catch(err => this.props.dispatch({
-    //   type: 'app/findError',
-    //   payload: err
-    // }))
+    });
   }
 
-  handleSearch(value) {
-
-    this.setState({ search: value }, this.getPartner);
-    return;
-    let params
-    if (typeof value === 'string') {
-      // Search
-      if (value.length === 0) {
-        this.setState({ list: this.investorList })
-        return
-      }
-      params = { search: value }
-    } else if (typeof value === 'object') {
-      // Filter
-      if (value.orgtransactionphases.length === 0 && value.tags.length === 0 && value.currency.length === 0 && !value.userstatus && value.areas.length === 0) {
-        this.setState({ list: this.investorList })
-        return
-      }
-      params = value
-    }
-
-    this.setState({ loading: true })
-    api.getUser(params).then(data => {
-      const searchResult = data.data.data.map(m => m.id)
-      const newList = []
-      this.investorList.map((m, index) => {
-        if (searchResult.includes(m.id)) {
-          newList.push(m)
-        }
-      })
-      this.setState({
-        list: newList,
-        loading: false
-      })
-    }).catch(err => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+  componentDidMount() {
+    this.getPartner();
+    this.getFriends();
   }
 
   handleDeleteUser(userID) {
@@ -186,8 +121,9 @@ class MyPartner extends React.Component {
     if (this.props.type === 'investor') {
       columns.push({
         title: i18n("user.status"),
-        dataIndex: 'userstatus.name',
-        key: 'userstatus'
+        dataIndex: 'userstatus',
+        key: 'userstatus',
+        render: text => this.props.audit.filter(f => f.id === text)[0].name, 
       })
       columns.push({
         title: i18n("common.operation"),
@@ -224,14 +160,14 @@ class MyPartner extends React.Component {
       <div>
 
       {this.props.type === "investor" ? (
-        <MyInvestorListFilter onFilter={this.handleSearch.bind(this)} />
+        <MyInvestorListFilter onFilter={filters => this.setState({ filters, pageIndex: 1 }, this.getPartner)} />
       ) : null}
 
       {this.props.type === "investor" ? (
         <Search
           size="large"
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
-          onSearch={this.handleSearch.bind(this)} />
+          onSearch={search => this.setState({ search, pageIndex: 1 }, this.getPartner)} />
       ) : null}
 
       {this.props.type === "trader" ? (
@@ -268,7 +204,12 @@ class MyPartner extends React.Component {
   }
 }
 
-export default connect()(MyPartner)
+function mapStateToProps(state) {
+  const { audit } = state.app;
+  return { audit };
+}
+
+export default connect(mapStateToProps)(MyPartner);
 
 
 function Card(props) {
