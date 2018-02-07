@@ -121,9 +121,8 @@ class MyPartner extends React.Component {
     if (this.props.type === 'investor') {
       columns.push({
         title: i18n("user.status"),
-        dataIndex: 'userstatus',
+        dataIndex: 'userstatus.name',
         key: 'userstatus',
-        render: text => this.props.audit.filter(f => f.id === text)[0].name, 
       })
       columns.push({
         title: i18n("common.operation"),
@@ -204,12 +203,7 @@ class MyPartner extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { audit } = state.app;
-  return { audit };
-}
-
-export default connect(mapStateToProps)(MyPartner);
+export default connect()(MyPartner);
 
 
 function Card(props) {
