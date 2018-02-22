@@ -520,9 +520,9 @@ class SelectExistProject extends React.Component {
 }
 
 /**
- * SelectUser
+ * SelectTrader
  */
-class SelectUser extends React.Component {
+class SelectTrader extends React.Component {
   state = {
     data: this.props.data || [],
   }
@@ -548,6 +548,7 @@ class SelectUser extends React.Component {
       showSearch
       disabled={this.props.disabled}
       optionFilterProp="children"
+      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
       allowClear={this.props.allowClear}
       value={this.props.value}
       onChange={this.props.onChange}
@@ -560,7 +561,7 @@ class SelectUser extends React.Component {
     )
   }
 }
-SelectUser = connect()(SelectUser)
+SelectTrader = connect()(SelectTrader)
 
 /**
  * SelectOrgUser
@@ -1284,7 +1285,7 @@ export {
   SelectExistUser,
   SelectExistProject,
   SelectExistInvestor,
-  SelectUser,
+  SelectTrader,
   SelectAllUser,
   SelectTransactionStatus,
   SelectProjectStatus,

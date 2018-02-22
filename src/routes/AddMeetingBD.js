@@ -5,7 +5,7 @@ import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal, DatePicker, Input, Row, Col, upload, Icon, Upload, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { SelectUser } from '../components/ExtraInput';
+import { SelectTrader } from '../components/ExtraInput';
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
 import { baseUrl } from '../utils/request';
 
@@ -142,8 +142,7 @@ class AddMeetingBD extends React.Component{
       </Row>
       <Row gutter={24} style={{marginBottom:20}}>
       <Col span={6}>{i18n('project.manager')}:</Col>
-      <Col span={18} ><SelectUser
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+      <Col span={18} ><SelectTrader
           style={{ width: 200 }}
           mode="single"
           data={this.state.data}

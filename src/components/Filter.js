@@ -33,7 +33,6 @@ import {
   SelectOrganizatonArea,
   SelectTimelineStatus,
   SelectOrgUser,
-  SelectUser,
   SliderMoney,
   TabCheckboxIndustry,
   TabCheckboxCountry,

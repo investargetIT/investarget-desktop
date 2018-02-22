@@ -4,7 +4,7 @@ import { Link } from 'dva/router'
 import { i18n } from '../utils/util'
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
-import { SelectNumber, SelectUser } from './ExtraInput'
+import { SelectNumber } from './ExtraInput';
 import { Search2 } from './Search'
 
 const tableStyle = { marginBottom: '24px' }
@@ -197,25 +197,16 @@ class SelectOrgInvestorAndTrader extends React.Component {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
         } else {
-          if (this.props.options) {
-            return <SelectUser
-            style={{width: 100 }}
-            mode="single"
-            data={this.props.options}
-            value={this.state.traderMap[record.id] ? String(this.state.traderMap[record.id]) : ''}
-            onChange={this.handleChangeTrader.bind(this, record.id)} />;
-          } else {
-            const trader = record.trader_relation ? record.trader_relation.traderuser : null
-            return trader ? (
-              <SelectUserTransaction
-                userId={record.id}
-                options={this.state.traderOptionsMap[record.id] || []}
-                onOptionsChange={this.handleTraderOptionsChange.bind(this, record.id)}
-                value={this.state.traderMap[record.id]}
-                onChange={this.handleChangeTrader.bind(this, record.id)}
-              />
-            ) : i18n('common.none')
-          }
+          const trader = record.trader_relation ? record.trader_relation.traderuser : null
+          return trader ? (
+            <SelectUserTransaction
+              userId={record.id}
+              options={this.state.traderOptionsMap[record.id] || []}
+              onOptionsChange={this.handleTraderOptionsChange.bind(this, record.id)}
+              value={this.state.traderMap[record.id]}
+              onChange={this.handleChangeTrader.bind(this, record.id)}
+            />
+          ) : i18n('common.none')
         }
       }}
     ]

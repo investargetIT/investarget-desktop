@@ -5,7 +5,7 @@ import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { SelectUser } from '../components/ExtraInput';
+import { SelectTrader } from '../components/ExtraInput';
 
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
 
@@ -119,8 +119,7 @@ class AddOrgBD extends React.Component {
           closable={false}
         >
 
-         <SelectUser
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+         <SelectTrader
             style={{ width: 300 }}
             mode="single"
             data={this.state.data}

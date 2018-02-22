@@ -6,7 +6,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
-import { SelectNumber, SelectUser } from './ExtraInput'
+import { SelectNumber } from './ExtraInput'
 import { Search2 } from './Search'
 
 const tableStyle = { marginBottom: '24px' }

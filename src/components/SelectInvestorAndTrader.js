@@ -73,7 +73,7 @@ class SelectInvestorAndTrader extends React.Component {
           {step == 2 ?
             this.props.options ?
               <SelectOrgInvestorToBD selectedOrgs={selectedOrgDetails} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} source={this.props.source}/>
-              : <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} options={this.props.options} value={selectedUsers} onChange={this.handleSelectUser} />
+              : <SelectOrgInvestorAndTrader traderId={traderId} selectedOrgs={selectedOrgs} value={selectedUsers} onChange={this.handleSelectUser} />
             : null}
         </div>
 

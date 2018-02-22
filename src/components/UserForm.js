@@ -27,7 +27,7 @@ import {
   SelectExistOrganization,
   SelectUserGroup,
   RadioAudit,
-  SelectUser,
+  SelectTrader,
   SelectOrganizatonArea,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
@@ -180,7 +180,7 @@ class UserForm extends React.Component {
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
-            <SelectUser
+            <SelectTrader
             mode="single"
             allowClear={true}
             onChange={this.props.onMajorTraderChange}
@@ -191,7 +191,7 @@ class UserForm extends React.Component {
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
-            <SelectUser mode="multiple"
+            <SelectTrader mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
               onDeselect={this.props.onDeselectMinorTrader}
               disabled={!getFieldValue('major_trader')}

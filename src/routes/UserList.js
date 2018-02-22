@@ -8,7 +8,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search';
-import { SelectUser } from '../components/ExtraInput';
+import { SelectTrader } from '../components/ExtraInput';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -303,7 +303,7 @@ class UserList extends React.Component {
           closable={false}
         >
  
-          <SelectUser
+          <SelectTrader
              style={{ width: 300 }}
              mode="single"
              data={this.state.traders}
