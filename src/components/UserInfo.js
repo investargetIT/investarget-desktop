@@ -92,12 +92,11 @@ class UserInfo extends React.Component {
     return (
       <div>
         <Field title={i18n('user.cn_name')} value={username} />
-        <Field title="公司" value={''} />
+        <Field title={i18n('user.institution')} value={org} orgid={orgid}/>
         <Field title={i18n('user.department')} value={''} />
         <Field title={i18n('user.position')} value={title} />
         <Field title={i18n('user.tags')} value={tags} />
         <Field title={i18n('user.country')} value={country} />
-        <Field title={i18n('user.institution')} value={org} orgid={orgid}/>
         <Field title={i18n('user.area')} value={''} />
         <Field title={i18n('user.mobile')} value={mobile} />
         <Field title={i18n('user.wechat')} value={wechat} />
