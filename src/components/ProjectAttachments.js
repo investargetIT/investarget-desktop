@@ -156,6 +156,7 @@ class ProjectAttachments extends React.Component {
     file.bucket = 'file'
     file.key = file.response.result.key
     file.url = file.response.result.url
+    file.realfilekey = file.response.result.realfilekey;
     const index  = _.findIndex(this.state.fileList, function(item) {
       return item.filetype == file.filetype && item.filename == file.filename
     })
@@ -218,6 +219,7 @@ class ProjectAttachments extends React.Component {
       bucket: file.bucket,
       filename: file.name,
       key: file.key,
+      realfilekey: file.realfilekey,
     }
     return api.addProjAttachment(data).then(result => {
       this.getAttachment()
