@@ -105,14 +105,9 @@ class AddUser extends React.Component {
         if (!this.isTraderAddInvestor) {
           Modal.warning({ title: i18n('user.message.user_exist') })
         } else {
-          return api.getUser({ search: account })
+          this.setState({ visible: true, user: data.data.user });
         }
       }
-    })
-    .then(data => {
-      if (!data) return
-      const user = data.data.data[0]
-      this.setState({ visible: true, user })
     })
   }
 
