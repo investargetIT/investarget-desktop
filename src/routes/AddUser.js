@@ -43,29 +43,22 @@ class AddUser extends React.Component {
           const isEmailExist = data[1].data.result
           if (isMobileExist || isEmailExist) {
             isUserExist = true
+            const user = data[0].data.user || data[1].data.user;
             if (!this.isTraderAddInvestor) {
               Modal.warning({ title: i18n('user.message.user_exist') })
             } else {
-              if (isMobileExist) return api.getUser({ search: values.mobile })
-              if (isEmailExist) return api.getUser({ search: values.email })
+              this.setState({ visible: true, user });
             }
-          }
-        }).then(data => {
-          if (isUserExist && data) {
-            const user = data.data.data[0]
-            this.setState({ visible: true, user })
-          } else if (!isUserExist) {
+          } else {
             values['registersource'] = 3 // 标识注册来源
             if(isNaN(values.org)&&values.org!=undefined){
               return api.addOrg({orgnameC:values.org})
-            }           
+            }      
           }
         })
         .then(data=>{
-          if(data){
-            values.org=data.data.id
-          }
-          return api.addUser(values)
+          if (data) values.org = data.data.id;
+          if (!isUserExist) return api.addUser(values);
         })
         .then(result => {
           if (this.isTraderAddInvestor && result) {
