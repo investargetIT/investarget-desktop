@@ -186,29 +186,46 @@ class OrgBDList extends React.Component {
 
     if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
 
+    // 如果机构BD存在联系人
     if (this.state.currentBD.bduser) {
-      this.addRelation(this.state.currentBD.bduser);
-      api.addUserRelation({
-        relationtype: false,
-        investoruser: this.state.currentBD.bduser,
-        traderuser: this.state.currentBD.manager.id
-      })
+      // 首先检查经理和投资人的关联
+      api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
         .then(result => {
-          if (isModifyWechat) {
+          // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
+          if (result.data || hasPerm('usersys.admin_changeuser') && isModifyWechat) {
             api.editUser([this.state.currentBD.bduser], { wechat });
+          } else {
+            api.addUserRelation({
+              relationtype: false,
+              investoruser: this.state.currentBD.bduser,
+              traderuser: this.state.currentBD.manager.id
+            })
+              .then(result => {
+                if (isModifyWechat) {
+                  api.editUser([this.state.currentBD.bduser], { wechat });
+                }
+              })
+              .catch(error => {
+                if (!isModifyWechat) return;
+                if (error.code === 2025) {
+                  Modal.error({
+                    content: '该用户正处于保护期，无法建立联系，因此暂时无法修改微信',
+                  });
+                }
+              });
           }
-        })
-        .catch(error => {
-          if (isModifyWechat) {
-            api.editUser([this.state.currentBD.bduser], { wechat });
-          } 
         });
+
+      // 承做和投资人建立联系
+      this.addRelation(this.state.currentBD.bduser);
+
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
         comments: `${i18n('user.wechat')}: ${wechat}`
       }).then(data=>{
         this.setState({ visible: false }, this.getOrgBdList)
       });
+    // 如果机构BD不存在联系人
     } else {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
@@ -229,7 +246,6 @@ class OrgBDList extends React.Component {
         else{
         api.addUser(newUser)
           .then(result =>{
-            this.addRelation(result.data.id);
             api.addUserRelation({
             relationtype: false,
             investoruser: result.data.id,
@@ -243,6 +259,7 @@ class OrgBDList extends React.Component {
       }
     }
   
+  // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
   addRelation = investorID =>{
     if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
       api.addUserRelation({
