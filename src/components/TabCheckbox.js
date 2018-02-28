@@ -77,7 +77,7 @@ class TabCheckbox extends React.Component {
   getSubOptions = (tabId) => {
     const { options } = this.props
     const item = options.filter(item => item.value == tabId)[0]
-    return item ? item.children : []
+    return item && item.children ? item.children : []
   }
 
   handleChange = (v) => {
