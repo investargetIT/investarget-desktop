@@ -348,7 +348,7 @@ class OrganizationDetail extends React.Component {
           <Field title={i18n('organization.description')} value={this.state.description} />
           <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />
           <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
-          <Field title={i18n('organization.decision_cycle')} value={this.state.decisionMakingProcess} />
+          <Field title={i18n('organization.decision_process')} value={this.state.decisionMakingProcess} />
 
           
         </div>
