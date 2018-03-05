@@ -13,6 +13,7 @@ import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
 import { UploadImage } from '../components/Upload'
 import {SelectTag} from '../components/ExtraInput'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option;
 
@@ -115,11 +116,7 @@ class BasicInfo extends React.Component {
 
         <BasicFormItem label="分页条数" name="page">
           <Select placeholder="请设置分页条数">
-            <Option value="10">10 条/页</Option>
-            <Option value="20">20 条/页</Option>
-            <Option value="30">30 条/页</Option>
-            <Option value="40">40 条/页</Option>
-            <Option value="50">50 条/页</Option>
+            { PAGE_SIZE_OPTIONS.map(m => <Option key={m} value={m}>{`${m} 条/页`}</Option>) }
           </Select>
         </BasicFormItem>
 

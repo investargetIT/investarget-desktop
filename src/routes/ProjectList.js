@@ -16,6 +16,7 @@ import { ProjectListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
 
 import AuditProjectModal from '../components/AuditProjectModal'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 class ProjectList extends React.Component {
@@ -25,8 +26,8 @@ class ProjectList extends React.Component {
     const setting = this.readSetting()
     const filters = setting ? setting.filters : ProjectListFilter.defaultValue
     const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
+    const page = setting && setting.page ? setting.page : 1
+    const pageSize = setting && setting.pageSize ? setting.pageSize: props.userPageSize;
 
     this.state = {
       filters,
@@ -151,7 +152,7 @@ class ProjectList extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const data = { filters, search };
     localStorage.setItem('ProjectList', JSON.stringify(data))
   }
 
@@ -345,6 +346,7 @@ class ProjectList extends React.Component {
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
 
@@ -367,7 +369,8 @@ class ProjectList extends React.Component {
 
 function mapStateToProps(state) {
   const { country } = state.app
-  return { country }
+  const { page: userPageSize } = state.currentUser;
+  return { country, userPageSize };
 }
 
 
