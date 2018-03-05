@@ -1,7 +1,11 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, getImageUrl } from '../utils/util'
-import { Form, message } from 'antd'
+import { 
+  Form, 
+  message, 
+  Select, 
+} from 'antd';
 import { Group, Org, FullName, Position, Submit, UploadAvatar, BasicFormItem } from '../components/Form'
 import { connect } from 'dva'
 import { editUser } from '../api'
@@ -9,6 +13,8 @@ import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
 import { UploadImage } from '../components/Upload'
 import {SelectTag} from '../components/ExtraInput'
+
+const Option = Select.Option;
 
 class BasicInfo extends React.Component {
 
@@ -29,10 +35,11 @@ class BasicInfo extends React.Component {
           message.error(i18n('personal_info.message.tag_required'))
           return
         }
-        editUser([this.props.currentUser.id], {tags: values.tags, cardKey:values.cardKey}).then(data => {
+        editUser([this.props.currentUser.id], {tags: values.tags, cardKey:values.cardKey, page: values.page}).then(data => {
           const tags = data.data[0].tags
           const card = data.data[0].cardKey
-          const userInfo = {...this.props.currentUser, tags, card}
+          const page = data.data[0].page;
+          const userInfo = { ...this.props.currentUser, tags, card, page };
           localStorage.setItem('user_info', JSON.stringify(userInfo))
           this.props.dispatch({
             type: 'currentUser/save',
@@ -105,6 +112,17 @@ class BasicInfo extends React.Component {
         <Org disabled />
         <FullName disabled />
         <Position disabled title={this.props.title} />
+
+        <BasicFormItem label="分页条数" name="page">
+          <Select placeholder="请设置分页条数">
+            <Option value="10">10 条/页</Option>
+            <Option value="20">20 条/页</Option>
+            <Option value="30">30 条/页</Option>
+            <Option value="40">40 条/页</Option>
+            <Option value="50">50 条/页</Option>
+          </Select>
+        </BasicFormItem>
+
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
           <SelectTag mode="multiple" />
         </BasicFormItem>
@@ -130,6 +148,7 @@ function mapPropsToFields(props) {
     username: { value: props.currentUser.username },
     title: { value: props.currentUser.title && props.currentUser.title.id + ''},
     tags: { value: props.currentUser.tags ? props.currentUser.tags.map(m => '' + m.id) : [] },
+    page: { value: props.currentUser.page + '' }, 
   }
 }
 
