@@ -1,11 +1,19 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n, isLogin } from '../utils/util'
+import { 
+  i18n, 
+  isLogin, 
+  getUserInfo, 
+} from '../utils/util';
 import { MyInvestorListFilter } from '../components/Filter'
 import { Input, Table, Button, Popconfirm, Pagination, message, Modal } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
-import { URI_12, URI_13 } from '../constants'
+import { 
+  URI_12, 
+  URI_13, 
+  PAGE_SIZE_OPTIONS, 
+} from '../constants';
 import { connect } from 'dva'
 import CardContainer from '../components/CardContainer'
 
@@ -17,7 +25,7 @@ class MyPartner extends React.Component {
     list: [],
     loading: false,
     total: 0,
-    pageSize: 10, // todo
+    pageSize: getUserInfo().page || 10,
     pageIndex: 1,
     friendList: [], 
     search: '', 
@@ -194,7 +202,7 @@ class MyPartner extends React.Component {
           onChange={this.handlePageChange}
           showSizeChanger
           showQuickJumper
-          pageSizeOptions={['10', '20', '30', '40', '50']}
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
           onShowSizeChange={(current, pageSize) => this.setState({ pageSize, pageIndex: 1 }, this.getPartner)}
         />
 

@@ -1,10 +1,13 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n, shwoError } from '../utils/util'
+import { 
+  i18n, 
+  shwoError, getUserInfo, 
+} from '../utils/util';
 import { Link } from 'dva/router';
 import { Icon, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Search2 } from '../components/Search'
 
 
@@ -20,8 +23,8 @@ class EmailDetail extends React.Component {
 
     this.state = {
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -82,7 +85,7 @@ class EmailDetail extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const data = { filters, search };
     localStorage.setItem('EmailDetail', JSON.stringify(data))
   }
 
@@ -103,6 +106,10 @@ class EmailDetail extends React.Component {
       }, 
       this.getUserList
     );
+  }
+
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 }, this.getUserList);
   }
 
   render() {
@@ -142,8 +149,9 @@ class EmailDetail extends React.Component {
             pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
-            onShowSizeChange={this.handleShowSizeChange}
+            onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
       </LeftRightLayout>

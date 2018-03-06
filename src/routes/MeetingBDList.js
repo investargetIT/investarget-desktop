@@ -33,6 +33,7 @@ import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import {BasicFormItem} from '../components/Form'
 import { baseUrl } from '../utils/request';
+import { PAGE_SIZE_OPTIONS } from '../constants';
  
 const { TextArea } = Input;
 const FormItem = Form.Item
@@ -135,18 +136,18 @@ class MeetingBDList extends React.Component{
 		this.state={
 			filters: MeetBDFilter.defaultValue,
 			search: null,
-	        page: 1,
-	        pageSize: 10,
-	        total: 0,
-	        list: [],
-	        sort:undefined,
-	        desc:undefined,
-	        loading: false,
-	        visible: false,
-          needRefresh: false,
-          viewModalVisible: false,
-	        currentBD:null,
-	        currentFile:null
+      page: 1,
+      pageSize: getUserInfo().page || 10,
+      total: 0,
+      list: [],
+      sort: undefined,
+      desc: undefined,
+      loading: false,
+      visible: false,
+      needRefresh: false,
+      viewModalVisible: false,
+      currentBD: null,
+      currentFile:null
 		}
 	}
 
@@ -381,6 +382,7 @@ class MeetingBDList extends React.Component{
             showSizeChanger
             onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getMeetingBDList)}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
         </LeftRightLayout>

@@ -1,11 +1,14 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { 
+  i18n, getUserInfo, 
+} from '../utils/util';
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from './ExtraInput';
 import { Search2 } from './Search'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -52,7 +55,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
     this.state = {
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -219,7 +222,19 @@ class SelectOrgInvestorAndTrader extends React.Component {
           <Search2 style={{ width: 250 }} placeholder={[i18n('user.name')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+        
+        <Pagination
+          style={paginationStyle}
+          total={total}
+          current={page}
+          pageSize={pageSize}
+          onChange={this.handlePageChange}
+          showSizeChanger
+          onShowSizeChange={this.handlePageSizeChange}
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
+
       </div>
     )
 

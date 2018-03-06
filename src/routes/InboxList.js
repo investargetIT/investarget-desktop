@@ -2,7 +2,12 @@ import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Button, Table, Pagination } from 'antd'
 import { getMsg, readMsg } from '../api'
-import { i18n, handleError } from '../utils/util'
+import { 
+  i18n, 
+  handleError,
+  getUserInfo,
+} from '../utils/util';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 const tableStyle = { marginBottom: '24px' }
@@ -23,8 +28,8 @@ class InboxList extends React.Component {
       data: [],
       total: 0,
       loading: false,
-      pageIndex: this.props.location.query.page_index || 1,
-      pageSize: this.props.location.query.page_size || 10,
+      pageIndex: 1,
+      pageSize: getUserInfo().page || 10,
       selectedMsg: [],
       currentMsg: null,
     }
@@ -137,7 +142,19 @@ class InboxList extends React.Component {
                 <div style={{ float: 'left' }}>
                   <Button size="large" style={{marginLeft: '8px'}} disabled={selectedMsg.length == 0} onClick={this.handleReadMsg}>{i18n('inbox.mark_as_read')}</Button>
                 </div>
-                <Pagination style={{ float: 'right' }} total={total} current={pageIndex} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+                
+                <Pagination 
+                  style={{ float: 'right' }} 
+                  total={total} 
+                  current={pageIndex} 
+                  pageSize={pageSize} 
+                  onChange={this.handlePageChange} 
+                  showSizeChanger 
+                  onShowSizeChange={this.handlePageSizeChange} 
+                  showQuickJumper 
+                  pageSizeOptions={PAGE_SIZE_OPTIONS}
+                />
+
               </div>
             </div>
           )

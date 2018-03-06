@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
-
+import { 
+  i18n, 
+  getUserInfo, 
+} from '../utils/util';
 import { Icon, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { Search2 } from '../components/Search'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 class EmailList extends React.Component {
@@ -21,8 +24,8 @@ class EmailList extends React.Component {
 
     this.state = {
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page,
       total: 0,
       list: [],
       loading: false,
@@ -60,7 +63,7 @@ class EmailList extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const data = { filters, search };
     localStorage.setItem('EmailList', JSON.stringify(data))
   }
 
@@ -110,6 +113,7 @@ class EmailList extends React.Component {
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
       </LeftRightLayout>

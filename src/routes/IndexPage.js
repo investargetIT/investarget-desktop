@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Button, Icon, Card, Col, Popconfirm, Pagination, Carousel, Row, Tooltip as Tooltips } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Carousel, Row, Tooltip as Tooltips } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { 
   i18n, 

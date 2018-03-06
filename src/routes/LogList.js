@@ -1,7 +1,14 @@
 import React from 'react'
-import { URI_11 } from '../constants'
+import { 
+  URI_11, 
+  PAGE_SIZE_OPTIONS, 
+} from '../constants';
 import { getLogOfUserUpdate } from '../api'
-import { i18n, handleError } from '../utils/util'
+import { 
+  i18n, 
+  handleError,
+  getUserInfo,
+} from '../utils/util';
 
 import { Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -16,7 +23,7 @@ class LogList extends React.Component {
     this.state = {
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -128,7 +135,9 @@ class LogList extends React.Component {
           onChange={this.handlePageChange}
           showSizeChanger
           onShowSizeChange={this.handlePageSizeChange}
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
 
       </LeftRightLayout>
     )

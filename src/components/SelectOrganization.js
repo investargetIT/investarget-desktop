@@ -1,9 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { 
+  i18n,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
-
+import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
 import { OrganizationListFilter } from './Filter'
 import { Search2 } from './Search'
@@ -21,7 +24,7 @@ class SelectOrganization extends React.Component {
       filters: OrganizationListFilter.defaultValue,
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -100,7 +103,7 @@ class SelectOrganization extends React.Component {
         </Popover>
         </div>
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
       </div>
     )
 

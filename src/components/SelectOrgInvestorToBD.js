@@ -5,7 +5,7 @@ import {
   i18n, removeFromArray, 
 } from '../utils/util';
 import * as api from '../api'
-import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
+import { Button, Popconfirm, Modal, Table } from 'antd'
 import { SelectNumber } from './ExtraInput'
 import { Search2 } from './Search'
 
