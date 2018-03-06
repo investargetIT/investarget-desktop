@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, showError, isLogin, hasPerm } from '../utils/util'
+import { 
+  i18n,
+  showError, 
+  getUserInfo, 
+  hasPerm, 
+} from '../utils/util';
 
 import { Input, Icon, Button, Radio } from 'antd'
 
@@ -17,7 +22,7 @@ class ProjectListRecommend extends React.Component {
     this.state = {
       favoritetype: 3, // default 交易师推荐
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,

@@ -1,7 +1,13 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, isLogin,formatMoney, isShowCNY  } from '../utils/util'
+import { 
+  i18n, 
+  isLogin, 
+  formatMoney, 
+  isShowCNY, 
+  getUserInfo, 
+} from '../utils/util';
 import { Table, Pagination, Button, Popconfirm, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -11,7 +17,7 @@ class ProjectListPublished extends React.Component {
     super(props)
     this.state = {
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,

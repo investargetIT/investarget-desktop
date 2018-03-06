@@ -1,6 +1,11 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n, showError, isLogin, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  showError, 
+  getUserInfo, 
+  hasPerm, 
+} from '../utils/util';
 
 import { Radio } from 'antd'
 const RadioGroup = Radio.Group
@@ -13,7 +18,7 @@ class ProjectListRecommend extends React.Component {
     super(props)
     this.state = {
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,

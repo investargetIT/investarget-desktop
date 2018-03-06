@@ -3,11 +3,9 @@ import { Link } from 'dva/router'
 import { Table, Pagination } from 'antd'
 import { i18n, formatMoney, isShowCNY } from '../utils/util'
 import { connect } from 'dva';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 class FavoriteProjectList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -119,6 +117,7 @@ class FavoriteProjectList extends React.Component {
           showSizeChanger
           onShowSizeChange={onPageSizeChange}
           showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
       </div>
     )

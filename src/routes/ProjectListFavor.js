@@ -3,7 +3,10 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import FavoriteProjectList from '../components/FavoriteProjectList'
-import { i18n } from '../utils/util'
+import { 
+  i18n, 
+  getUserInfo, 
+} from '../utils/util';
 
 class ProjectListRecommend extends React.Component {
   constructor(props) {
@@ -11,7 +14,7 @@ class ProjectListRecommend extends React.Component {
     this.state = {
       favoritetype: 4,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
