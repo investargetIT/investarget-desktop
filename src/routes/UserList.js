@@ -2,13 +2,18 @@ import React from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
-import { i18n, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search';
 import { SelectTrader } from '../components/ExtraInput';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -29,8 +34,8 @@ class UserList extends React.Component {
     this.state = {
       filters,
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -325,6 +330,7 @@ class UserList extends React.Component {
 
         <div style={{ margin: '16px 0' }} className="clearfix">
         <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button>
+        
         <Pagination
           className="ant-table-pagination"
           total={total}
@@ -333,7 +339,9 @@ class UserList extends React.Component {
           onChange={this.handlePageChange}
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
         </div>
 
       </LeftRightLayout>

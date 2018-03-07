@@ -8,9 +8,10 @@ import {
   i18n, 
   handleError, 
   getUserInfo, 
-  hasPerm, 
+  hasPerm,
 } from '../utils/util';
 import * as api from '../api'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 const iconStyle = {
@@ -44,7 +45,7 @@ class ProjectLibrary extends React.Component {
       filters: ProjectLibraryFilter.defaultValue,
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -237,6 +238,7 @@ class ProjectLibrary extends React.Component {
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
       </LeftRightLayout>

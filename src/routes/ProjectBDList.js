@@ -9,13 +9,15 @@ import {
   time, 
   timeWithoutHour, 
   i18n, 
-  hasPerm, 
+  hasPerm,
+  getUserInfo,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
 import BDModal from '../components/BDModal';
 import { isLogin } from '../utils/util'
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 class ProjectBDList extends React.Component {
 
@@ -25,7 +27,7 @@ class ProjectBDList extends React.Component {
       filters: ProjectBDFilter.defaultValue,
       search: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -343,6 +345,7 @@ class ProjectBDList extends React.Component {
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
 

@@ -2,7 +2,11 @@ import React from 'react';
 import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router'
 import _ from 'lodash'
-import { i18n, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
 
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -15,6 +19,7 @@ const Option = Select.Option
 const confirm = Modal.confirm
 
 import { Search2 } from '../components/Search'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 class OrgUserList extends React.Component {
@@ -31,8 +36,8 @@ class OrgUserList extends React.Component {
     this.state = {
       filters,
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -245,7 +250,9 @@ class OrgUserList extends React.Component {
           onChange={this.handlePageChange}
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
 
       </LeftRightLayout>
     )

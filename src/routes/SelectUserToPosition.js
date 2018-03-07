@@ -11,6 +11,7 @@ import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
 import { Search } from '../components/Search'
 import LeftRightLayout from '../components/LeftRightLayout'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -22,7 +23,7 @@ class SelectUserToPosition extends React.Component {
     this.state = {
       search: null,
       current: 0,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       _param: {},
       total: 0,
       list: [],
@@ -167,7 +168,19 @@ class SelectUserToPosition extends React.Component {
       <LeftRightLayout location={this.props.location} title={i18n('user.select_investor')}>
         <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} onShowSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+
+        <Pagination 
+          style={paginationStyle} 
+          total={total} 
+          current={page} 
+          pageSize={pageSize} 
+          onChange={this.handlePageChange} 
+          showSizeChanger 
+          onShowSizeChange={this.handlePageSizeChange} 
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
+
         <div style={{ textAlign: 'center' }}>
           <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>{i18n('common.confirm')}</Button>
           <Button onClick={this.props.history.goBack} style={{ marginLeft: 10 }}>{i18n('common.cancel')}</Button>

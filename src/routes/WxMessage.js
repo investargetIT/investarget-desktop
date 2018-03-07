@@ -3,8 +3,14 @@ import { Button, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { WxMessageFilter } from '../components/Filter'
-import { handleError, time, hasPerm } from '../utils/util'
+import { 
+  handleError, 
+  time, 
+  hasPerm,
+  getUserInfo, 
+} from '../utils/util';
 import * as api from '../api'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
 class WxMessage extends React.Component {
@@ -16,7 +22,7 @@ class WxMessage extends React.Component {
       list: [],
       filters: null,
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       loading: false,
     }
   }
@@ -108,6 +114,7 @@ class WxMessage extends React.Component {
           loading={loading}
           rowKey={record => record.id}
           pagination={false} />
+
         <Pagination
           className="ant-table-pagination"
           total={total}
@@ -116,7 +123,10 @@ class WxMessage extends React.Component {
           onChange={this.handlePageChange}
           onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
+
       </LeftRightLayout>
     )
   }

@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, hasPerm, getCurrentUser } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm, 
+  getCurrentUser,
+  getUserInfo,
+} from '../utils/util';
 
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -9,6 +14,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { TimelineFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search2 } from '../components/Search'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -28,8 +34,8 @@ class TimelineList extends React.Component {
     this.state = {
       filters,
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -316,7 +322,18 @@ class TimelineList extends React.Component {
               pagination={false} 
             />
 
-            <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+            <Pagination 
+              style={paginationStyle} 
+              total={total} 
+              current={page} 
+              pageSize={pageSize} 
+              onChange={this.handlePageChange} 
+              showSizeChanger 
+              onShowSizeChange={this.handlePageSizeChange} 
+              showQuickJumper
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
+            />
+
           </div>
         </div>
 

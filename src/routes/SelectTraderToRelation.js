@@ -1,13 +1,17 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n } from '../utils/util'
+import { 
+  i18n,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
 import { Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import { SelectNumber } from '../components/ExtraInput'
 import { Search } from '../components/Search'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { isLogin } from '../utils/util'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -19,7 +23,7 @@ class SelectTraderToRelation extends React.Component {
     this.state = {
       search: null,
       current: 0,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       _param: {},
       total: 0,
       list: [],
@@ -173,9 +177,11 @@ class SelectTraderToRelation extends React.Component {
           current={page}
           pageSize={pageSize}
           onChange={this.handlePageChange}
-          onShowSizeChanger
+          showSizeChanger
           onShowSizeChange={this.handlePageSizeChange}
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
 
         <div style={{ textAlign: 'center' }}>
           <Button onClick={this.handleActionButtonClicked.bind(this)} type="primary" disabled={this.state.selectedRowKeys.length === 0}>{i18n('common.confirm')}</Button>

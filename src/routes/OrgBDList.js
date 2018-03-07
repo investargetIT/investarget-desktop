@@ -27,6 +27,7 @@ import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
+import { PAGE_SIZE_OPTIONS } from '../constants';
   
 class OrgBDList extends React.Component {
   
@@ -36,7 +37,7 @@ class OrgBDList extends React.Component {
         filters: OrgBDFilter.defaultValue,
         search: null,
         page: 1,
-        pageSize: 10,
+        pageSize: getUserInfo().page || 10,
         total: 0,
         list: [],
         loading: false,
@@ -429,6 +430,7 @@ class OrgBDList extends React.Component {
             showSizeChanger
             onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
             showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
 

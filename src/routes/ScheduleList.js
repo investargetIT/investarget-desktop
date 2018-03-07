@@ -5,8 +5,15 @@ import { Link } from 'dva/router'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { Search2 } from '../components/Search'
-import { hasPerm, i18n, handleError, time } from '../utils/util'
+import { 
+  hasPerm, 
+  i18n, 
+  handleError, 
+  time,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -21,7 +28,7 @@ class ScheduleList extends React.Component {
       total: 0,
       list: [],
       page: 1,
-      pageSize: 10,
+      pageSize: getUserInfo().page || 10,
       loading: false,
       sort:undefined,
       desc:undefined,
@@ -101,6 +108,7 @@ class ScheduleList extends React.Component {
           dataSource={list}
           loading={loading}
           pagination={false} />
+
         <Pagination
           style={paginationStyle}
           total={total}
@@ -109,7 +117,10 @@ class ScheduleList extends React.Component {
           onChange={this.handleChangePage}
           showSizeChanger
           onShowSizeChange={this.handleChangePageSize}
-          showQuickJumper />
+          showQuickJumper
+          pageSizeOptions={PAGE_SIZE_OPTIONS}
+        />
+
       </LeftRightLayout>
     )
   }
