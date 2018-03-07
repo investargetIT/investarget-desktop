@@ -1,6 +1,10 @@
 import React from 'react'
 import { Link } from 'dva/router'
-import { i18n, hasPerm } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm,
+  getUserInfo,
+} from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
 import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
@@ -8,6 +12,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
 import { Search2 } from '../components/Search'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option
 
@@ -29,8 +34,8 @@ class OrganizationList extends React.Component {
     this.state = {
       filters,
       search,
-      page,
-      pageSize,
+      page: 1,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -183,7 +188,19 @@ class OrganizationList extends React.Component {
             </div>
 
             <Table onChange={this.handleTableChange} style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-            <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper />
+
+            <Pagination 
+              style={paginationStyle} 
+              total={total} 
+              current={page} 
+              pageSize={pageSize} 
+              onChange={this.handlePageChange} 
+              showSizeChanger 
+              onShowSizeChange={this.handlePageSizeChange} 
+              showQuickJumper
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
+            />
+
           </div>
         </div>
       </LeftRightLayout>

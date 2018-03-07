@@ -131,7 +131,12 @@ class EmailDetail extends React.Component {
         <div>
 
           <div style={{marginBottom: '16px'}}>
-            <Search2 placeholder={i18n('email.email') + ' / ' + i18n('email.mobile')} style={{width: 200}} defaultValue={search} onSearch={this.handleSearch} />
+            <Search2 
+              placeholder={i18n('email.username') + ' / ' + i18n('email.mobile') + ' / ' + i18n('email.email')} 
+              style={{width: 200}} 
+              defaultValue={search} 
+              onSearch={this.handleSearch} 
+            />
           </div>
 
           <Table
