@@ -1,14 +1,31 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, i18n, hasPerm, isLogin } from '../utils/util'
+import { 
+  formatMoney, 
+  i18n, 
+  hasPerm, 
+  isLogin,
+} from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
-import { Tooltip, Modal, Row, Col, Popover, Button, Popconfirm, Input, Form, Icon } from 'antd'
+import { 
+  Tooltip, 
+  Modal, 
+  Row, 
+  Col, 
+  Popover, 
+  Button, 
+  Popconfirm, 
+  Input, 
+  Form, 
+  Icon,
+  Tabs,
+} from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
-
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 
+const TabPane = Tabs.TabPane;
 
 const PositionWithUser = props => {
 
@@ -134,6 +151,8 @@ class OrganizationDetail extends React.Component {
       visible: false,
       chooseModalVisible: false,
     }
+
+    this.id = props.params.id;
   }
 
   componentDidMount() {
@@ -228,6 +247,20 @@ class OrganizationDetail extends React.Component {
         payload: err
       })
     })
+
+    this.getDetail();
+  }
+
+  getDetail = () => {
+    const allReq = [
+      api.getOrgContact(this.id),
+      api.getOrgManageFund(this.id),
+      api.getOrgInvestEvent(this.id),
+      api.getOrgCooperation(this.id),
+      api.getOrgBuyout(this.id),
+    ];
+    Promise.all(allReq)
+      .then(result => echo('result', result));
   }
 
   onRemoveUserPosition(positionID, userKey) {
@@ -327,7 +360,28 @@ class OrganizationDetail extends React.Component {
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
         <OrganizationRemarkList typeId={id} />
         <h3 style={h3Style}>{i18n('project_library.information_detail')}:</h3>
-        <div style={{ width: '40%', float: 'left' ,marginLeft:'70px'}}>
+
+        <div style={{ width: '55%', float: 'left' }}>
+        <Tabs defaultActiveKey="1" >
+              <TabPane tab={i18n('project.basics')} key="1">
+                {/* <BasicInfo data={projInfo && projInfo.indus_base}/> */}
+              </TabPane>
+              <TabPane tab="联系方式" key="2">
+                {/* <Shareholder data={projInfo && projInfo.indus_shareholder} source="shareholder" /> */}
+              </TabPane>
+              <TabPane tab="管理基金" key="3">
+                {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
+              </TabPane>
+              <TabPane tab="投资事件" key="4">
+                {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+              <TabPane tab="合作关系" key="5">
+                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+              <TabPane tab="退出分析" key="6">
+                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+            </Tabs>
           <Field title={i18n('organization.name')} value={this.state.orgname} />
           <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
           <Field title={i18n('organization.currency')} value={this.state.currency} />
