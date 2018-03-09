@@ -313,7 +313,8 @@
     "description": "Description",
     "typical_case": "Typical Case",
     "partner_or_investment_committee_member": "Partner/Board Member",
-    "decision_process": "Decision Process"
+    "decision_process": "Decision Process",
+    "headquarters": "Headquarters"
   },
 
   "email": {

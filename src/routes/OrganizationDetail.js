@@ -416,13 +416,12 @@ class OrganizationDetail extends React.Component {
       <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />
       <Field title={i18n('organization.company_email')} value={this.state.companyEmail} />
       <Field title={i18n('organization.company_website')} value={this.state.webSite} />
-      <Field title={i18n('organization.telephone')} value={this.state.mobile} />
       <Field title={i18n('organization.wechat')} value={this.state.weChat} />
       <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
       <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
       <Field title={i18n('organization.stock_code')} value={this.state.stockcode} />
       <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
-      <Field title={i18n('organization.address')} value={this.state.address} />
+      <Field title={i18n('organization.headquarters')} value={this.state.address} />
       <Field title={i18n('organization.description')} value={this.state.description} />
       <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />
       <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
