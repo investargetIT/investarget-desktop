@@ -389,6 +389,10 @@ class OrganizationDetail extends React.Component {
     echo(this.state.data);
     const id = this.props.params.id
 
+    const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
+      || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
+      || this.state.buyout.length > 0;
+
     const basic = <div>
       <Field title={i18n('organization.name')} value={this.state.orgname} />
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
@@ -423,26 +427,28 @@ class OrganizationDetail extends React.Component {
         </h3>
 
         <div style={{ width: '55%', float: 'left' }}>
-          <Tabs defaultActiveKey="1" >
-            <TabPane tab={i18n('project.basics')} key="1">
-              {basic}
-            </TabPane>
-            <TabPane tab="联系方式" key="2">
-              <Contact data={this.state.contact} />
-            </TabPane>
-            <TabPane tab="管理基金" key="3">
-              {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
-            </TabPane>
-            <TabPane tab="投资事件" key="4">
-              {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
-            </TabPane>
-            <TabPane tab="合作关系" key="5">
-              {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
-            </TabPane>
-            <TabPane tab="退出分析" key="6">
-              {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
-            </TabPane>
-          </Tabs>
+          {isShowTabs ?
+            <Tabs defaultActiveKey="1" >
+              <TabPane tab={i18n('project.basics')} key="1">
+                {basic}
+              </TabPane>
+              <TabPane tab="联系方式" key="2">
+                <Contact data={this.state.contact} />
+              </TabPane>
+              <TabPane tab="管理基金" key="3">
+                {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
+              </TabPane>
+              <TabPane tab="投资事件" key="4">
+                {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+              <TabPane tab="合作关系" key="5">
+                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+              <TabPane tab="退出分析" key="6">
+                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+              </TabPane>
+            </Tabs>
+            : basic}
         </div>
 
         <div style={{ width: '50%', marginLeft: '50%' }}>
