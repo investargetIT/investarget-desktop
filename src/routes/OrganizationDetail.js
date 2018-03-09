@@ -113,6 +113,23 @@ const Field = (props) => {
   )
 }
 
+function Contact(props) {
+  return <div>
+    {props.data.map(m =>
+      <div key={m.id} style={{ marginBottom: 50 }}>
+        <Row>
+          <Col span={4} style={{ fontWeight: 500 }}>地址</Col>
+          <Col span={20}>{ m.address || '暂无' }</Col>
+        </Row>
+        <Row>
+          <Col span={4} style={{ fontWeight: 500 }}>邮编</Col>
+          <Col span={20}>{ m.postcode || '暂无' }</Col>
+        </Row>
+      </div>
+    )}
+  </div>;
+}
+
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
 
 
@@ -150,6 +167,11 @@ class OrganizationDetail extends React.Component {
       data: [],
       visible: false,
       chooseModalVisible: false,
+      contact: [],
+      manageFund: [],
+      investEvent: [],
+      cooperation: [],
+      buyout: [],
     }
 
     this.id = props.params.id;
@@ -253,14 +275,24 @@ class OrganizationDetail extends React.Component {
 
   getDetail = () => {
     const allReq = [
-      api.getOrgContact(this.id),
-      api.getOrgManageFund(this.id),
-      api.getOrgInvestEvent(this.id),
-      api.getOrgCooperation(this.id),
-      api.getOrgBuyout(this.id),
+      api.getOrgContact({ org: this.id, page_size: 100 }),
+      api.getOrgManageFund({ org: this.id }),
+      api.getOrgInvestEvent({ org: this.id }),
+      api.getOrgCooperation({ org: this.id }),
+      api.getOrgBuyout({ org: this.id }),
     ];
     Promise.all(allReq)
-      .then(result => echo('result', result));
+      .then(result => {
+        echo('result', result)
+        this.setState({
+          contact: result[0].data.data,
+          manageFund: result[1].data.data,
+          investEvent: result[2].data.data,
+          cooperation: result[3].data.data,
+          buyout: result[4].data.data,
+        });
+      })
+      .catch(error => console.error(error));
   }
 
   onRemoveUserPosition(positionID, userKey) {
@@ -356,55 +388,61 @@ class OrganizationDetail extends React.Component {
   render() {
     echo(this.state.data);
     const id = this.props.params.id
+
+    const basic = <div>
+      <Field title={i18n('organization.name')} value={this.state.orgname} />
+      <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
+      <Field title={i18n('organization.currency')} value={this.state.currency} />
+      <Field title={i18n('organization.industry')} value={this.state.industry} />
+      <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
+      <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
+      <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
+      <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />
+      <Field title={i18n('organization.company_email')} value={this.state.companyEmail} />
+      <Field title={i18n('organization.company_website')} value={this.state.webSite} />
+      <Field title={i18n('organization.telephone')} value={this.state.mobile} />
+      <Field title={i18n('organization.wechat')} value={this.state.weChat} />
+      <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
+      <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
+      <Field title={i18n('organization.stock_code')} value={this.state.stockcode} />
+      <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
+      <Field title={i18n('organization.address')} value={this.state.address} />
+      <Field title={i18n('organization.description')} value={this.state.description} />
+      <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />
+      <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
+      <Field title={i18n('organization.decision_process')} value={this.state.decisionMakingProcess} />
+    </div>;
+
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
+        
         <OrganizationRemarkList typeId={id} />
-        <h3 style={h3Style}>{i18n('project_library.information_detail')}:</h3>
+
+        <h3 style={h3Style}>
+          {i18n('project_library.information_detail')}:
+        </h3>
 
         <div style={{ width: '55%', float: 'left' }}>
-        <Tabs defaultActiveKey="1" >
-              <TabPane tab={i18n('project.basics')} key="1">
-                {/* <BasicInfo data={projInfo && projInfo.indus_base}/> */}
-              </TabPane>
-              <TabPane tab="联系方式" key="2">
-                {/* <Shareholder data={projInfo && projInfo.indus_shareholder} source="shareholder" /> */}
-              </TabPane>
-              <TabPane tab="管理基金" key="3">
-                {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
-              </TabPane>
-              <TabPane tab="投资事件" key="4">
-                {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
-              </TabPane>
-              <TabPane tab="合作关系" key="5">
-                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
-              </TabPane>
-              <TabPane tab="退出分析" key="6">
-                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
-              </TabPane>
-            </Tabs>
-          <Field title={i18n('organization.name')} value={this.state.orgname} />
-          <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
-          <Field title={i18n('organization.currency')} value={this.state.currency} />
-          <Field title={i18n('organization.industry')} value={this.state.industry} />
-          <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
-          <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
-          <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
-          <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />
-          <Field title={i18n('organization.company_email')} value={this.state.companyEmail} />
-          <Field title={i18n('organization.company_website')} value={this.state.webSite} />
-          <Field title={i18n('organization.telephone')} value={this.state.mobile} />
-          <Field title={i18n('organization.wechat')} value={this.state.weChat} />
-          <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
-          <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
-          <Field title={i18n('organization.stock_code')} value={this.state.stockcode} />
-          <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
-          <Field title={i18n('organization.address')} value={this.state.address} />
-          <Field title={i18n('organization.description')} value={this.state.description} />
-          <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />
-          <Field title={i18n('organization.partner_or_investment_committee_member')} value={this.state.partnerOrInvestmentCommiterMember} />
-          <Field title={i18n('organization.decision_process')} value={this.state.decisionMakingProcess} />
-
-          
+          <Tabs defaultActiveKey="1" >
+            <TabPane tab={i18n('project.basics')} key="1">
+              {basic}
+            </TabPane>
+            <TabPane tab="联系方式" key="2">
+              <Contact data={this.state.contact} />
+            </TabPane>
+            <TabPane tab="管理基金" key="3">
+              {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
+            </TabPane>
+            <TabPane tab="投资事件" key="4">
+              {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
+            </TabPane>
+            <TabPane tab="合作关系" key="5">
+              {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+            </TabPane>
+            <TabPane tab="退出分析" key="6">
+              {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+            </TabPane>
+          </Tabs>
         </div>
 
         <div style={{ width: '50%', marginLeft: '50%' }}>
