@@ -441,12 +441,17 @@ class OrganizationDetail extends React.Component {
         <div style={{ width: '55%', float: 'left' }}>
           {isShowTabs ?
             <Tabs defaultActiveKey="1" >
+
               <TabPane tab={i18n('project.basics')} key="1">
                 {basic}
               </TabPane>
+
+              { this.state.contact.length > 0 ?
               <TabPane tab="联系方式" key="2">
                 <Contact data={this.state.contact} />
               </TabPane>
+              : null }
+
               <TabPane tab="管理基金" key="3">
                 {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
               </TabPane>
