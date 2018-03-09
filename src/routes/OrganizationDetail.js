@@ -6,6 +6,7 @@ import {
   i18n, 
   hasPerm, 
   isLogin,
+  getUserInfo,
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
@@ -20,10 +21,13 @@ import {
   Form, 
   Icon,
   Tabs,
+  Table,
+  Pagination,
 } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const TabPane = Tabs.TabPane;
 
@@ -140,6 +144,79 @@ function Contact(props) {
       </div>
     )}
   </div>;
+}
+
+class ManageFund extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    loading: false,
+    total: 0,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    let manageFund;
+    api.getOrgManageFund({
+      org: this.props.id,
+      page_index: this.state.page,
+      page_size: this.state.pageSize,
+    })
+      .then(result => {
+        this.setState({ total: result.data.count});
+        manageFund = result.data.data;
+        return Promise.all(manageFund.map(m =>
+          api.getOrgDetail(m.fund, { lang: window.LANG })
+        ))
+      })
+      .then(result => {
+        manageFund.forEach((element, index) => {
+          element['fundname'] = result[index].data.orgname;
+        });
+        echo(manageFund);
+        this.setState({ data: manageFund, loading: false });
+      })
+      .catch(err => console.error(err));
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '基金', dataIndex: 'fundname'},
+      {title: '类型', dataIndex: 'type'},
+      {title: '资本来源', dataIndex: 'fundsource'},
+      {title: '募集完成时间', dataIndex: 'fundraisedate'},
+      {title: '募集完成规模', dataIndex: 'fundsize'},
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
 }
 
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
@@ -451,9 +528,12 @@ class OrganizationDetail extends React.Component {
               </TabPane>
               : null }
 
+              { this.state.manageFund.length > 0 ? 
               <TabPane tab="管理基金" key="3">
-                {/* <Shareholder data={projInfo && projInfo.indus_foreign_invest} source="foreign" /> */}
+                <ManageFund id={this.id} />
               </TabPane>
+              : null }
+
               <TabPane tab="投资事件" key="4">
                 {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
               </TabPane>
