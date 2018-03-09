@@ -125,6 +125,18 @@ function Contact(props) {
           <Col span={4} style={{ fontWeight: 500 }}>邮编</Col>
           <Col span={20}>{ m.postcode || '暂无' }</Col>
         </Row>
+        <Row>
+          <Col span={4} style={{ fontWeight: 500 }}>电话</Col>
+          <Col span={20}>{ m.numbercode ? m.countrycode + '-' + m.areacode + '-' + m.numbercode : '暂无' }</Col>
+        </Row>
+        <Row>
+          <Col span={4} style={{ fontWeight: 500 }}>传真</Col>
+          <Col span={20}>{ m.faxcode ? m.countrycode + '-' + m.areacode + '-' + m.faxcode : '暂无' }</Col>
+        </Row>
+        <Row>
+          <Col span={4} style={{ fontWeight: 500 }}>邮箱</Col>
+          <Col span={20}>{ m.email || '暂无' }</Col>
+        </Row>
       </div>
     )}
   </div>;
