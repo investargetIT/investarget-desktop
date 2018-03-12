@@ -212,9 +212,9 @@ class DataRoomList extends React.Component {
       const dataroomTime = record.createdtime.slice(0, 16).replace('T', ' ')
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
-          <Link to={dataroomUrl}>
-            <div style={{ ...cardImageStyle, backgroundImage: `url(${imgUrl})` }}></div>
-          </Link>
+
+          <div style={{ ...cardImageStyle, backgroundImage: `url(${imgUrl})` }}></div>
+
           <div style={{ padding: '16px' }}>
             <div style={cardTitleStyle}>
               <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
@@ -229,6 +229,11 @@ class DataRoomList extends React.Component {
               : null }
             </div>
           </div>
+
+          <Link to={dataroomUrl}>
+            <div className="dataroom-cell-banner-bg" style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 200 }} />
+          </Link>
+
           {record.isClose ?
             <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .5)', textAlign: 'center', paddingTop: 270 }}>
               <Button
@@ -240,6 +245,7 @@ class DataRoomList extends React.Component {
               </Button>
             </div>
             : null}
+
         </Card>
       )
     }

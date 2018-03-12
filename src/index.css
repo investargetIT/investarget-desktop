@@ -78,3 +78,11 @@ html, body, :global(#root) {
 :global .pointer {
   cursor: pointer;
 }
+
+:global(.dataroom-cell-banner-bg:hover){
+  background-color: rgba(0, 0, 0, .5);
+  cursor: pointer;
+  background-image: url(/images/open.png);
+  background-position: center;
+  background-repeat: no-repeat;
+}
