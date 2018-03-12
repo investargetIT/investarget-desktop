@@ -179,7 +179,6 @@ class ManageFund extends React.Component {
         manageFund.forEach((element, index) => {
           element['fundname'] = result[index].data.orgname;
         });
-        echo(manageFund);
         this.setState({ data: manageFund, loading: false });
       })
       .catch(err => console.error(err));
@@ -217,6 +216,74 @@ class ManageFund extends React.Component {
         pageSizeOptions={PAGE_SIZE_OPTIONS} />
     </div>;
   }
+}
+
+class InvestEvent extends React.Component {
+ 
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    area: [],
+    data: [],
+    total: 0,
+  }
+
+  componentDidMount() {
+    api.getSource('country')
+      .then(result => this.setState({ area: result.data }))
+      .catch(err => console.error(err));
+
+    api.getOrgInvestEvent({
+      org: this.props.id,
+      page_index: this.state.page,
+      page_size: this.state.pageSize,
+    })
+      .then(result => this.setState({ 
+        data: result.data.data, 
+        total: result.data.count
+      }))
+      .catch(err => console.error(err));
+  }
+
+  render() {
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '企业简称', dataIndex: 'comshortname'},
+      {title: 'CV行业分类', dataIndex: 'industrytype'},
+      {
+        title: '地区', dataIndex: 'area', render: text => {
+          const area = this.state.area.filter(f => f.id === text);
+          return area && area.length > 0 ? area[0].country : '';
+        }
+      },
+      {title: '投资人', dataIndex: 'investor'},
+      {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
+      {title: '投资性质', dataIndex: 'investType'},
+      {title: '投资金额', dataIndex: 'investSize'},
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
+
 }
 
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
@@ -372,7 +439,6 @@ class OrganizationDetail extends React.Component {
     ];
     Promise.all(allReq)
       .then(result => {
-        echo('result', result)
         this.setState({
           contact: result[0].data.data,
           manageFund: result[1].data.data,
@@ -475,7 +541,6 @@ class OrganizationDetail extends React.Component {
   }
 
   render() {
-    echo(this.state.data);
     const id = this.props.params.id
 
     const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
@@ -534,9 +599,12 @@ class OrganizationDetail extends React.Component {
               </TabPane>
               : null }
 
+              { this.state.investEvent.length > 0 ?
               <TabPane tab="投资事件" key="4">
-                {/* <IndusBui data={projInfo && projInfo.indus_busi_info} /> */}
+                <InvestEvent id={this.id} />
               </TabPane>
+              : null }
+
               <TabPane tab="合作关系" key="5">
                 {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
               </TabPane>
