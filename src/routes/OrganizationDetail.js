@@ -226,9 +226,15 @@ class InvestEvent extends React.Component {
     area: [],
     data: [],
     total: 0,
+    loading: false,
   }
 
   componentDidMount() {
+    this.getData();
+  }
+
+  getData() {
+    this.setState({ loading: true });
     api.getSource('country')
       .then(result => this.setState({ area: result.data }))
       .catch(err => console.error(err));
@@ -240,7 +246,8 @@ class InvestEvent extends React.Component {
     })
       .then(result => this.setState({ 
         data: result.data.data, 
-        total: result.data.count
+        total: result.data.count,
+        loading: false,
       }))
       .catch(err => console.error(err));
   }
@@ -284,6 +291,76 @@ class InvestEvent extends React.Component {
     </div>;
   }
 
+}
+
+class Cooperation extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    let cooperation;
+    api.getOrgCooperation({
+      org: this.props.id,
+      page_index: this.state.page,
+      page_size: this.state.pageSize,
+    })
+      .then(result => {
+        this.setState({ total: result.data.count});
+        cooperation = result.data.data;
+        return Promise.all(cooperation.map(m =>
+          api.getOrgDetail(m.cooperativeOrg, { lang: window.LANG })
+        ))
+      })
+      .then(result => {
+        cooperation.forEach((element, index) => {
+          element['partner'] = result[index].data.orgname;
+        });
+        this.setState({ data: cooperation, loading: false });
+      })
+      .catch(err => console.error(err));
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '合作投资机构', dataIndex: 'partner'},
+      {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
+      {title: '合作投资标的企业', dataIndex: 'comshortname'},
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
 }
 
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
@@ -604,10 +681,13 @@ class OrganizationDetail extends React.Component {
                 <InvestEvent id={this.id} />
               </TabPane>
               : null }
-
+              
+              { this.state.cooperation.length > 0 ? 
               <TabPane tab="合作关系" key="5">
-                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+                <Cooperation id={this.id} />
               </TabPane>
+              : null }
+
               <TabPane tab="退出分析" key="6">
                 {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
               </TabPane>
