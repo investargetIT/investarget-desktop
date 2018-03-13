@@ -769,7 +769,7 @@ class OrganizationDetail extends React.Component {
             : basic}
         </div>
 
-        <div style={{ width: '50%', marginLeft: '50%' }}>
+        <div style={{ width: '45%', marginLeft: '55%' }}>
           {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
             <PositionWithUser
               id={m.id}
