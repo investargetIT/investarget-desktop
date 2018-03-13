@@ -363,6 +363,77 @@ class Cooperation extends React.Component {
   }
 }
 
+class Buyout extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    let buyout;
+    api.getOrgBuyout({
+      org: this.props.id,
+      page_index: this.state.page,
+      page_size: this.state.pageSize,
+    })
+      .then(result => {
+        this.setState({ total: result.data.count});
+        buyout = result.data.data;
+        return Promise.all(buyout.map(m =>
+          api.getOrgDetail(m.buyoutorg, { lang: window.LANG })
+        ))
+      })
+      .then(result => {
+        buyout.forEach((element, index) => {
+          element['buyoutorgname'] = result[index].data.orgname;
+        });
+        this.setState({ data: buyout, loading: false });
+      })
+      .catch(err => console.error(err));
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '企业简称', dataIndex: 'comshortname'},
+      {title: '退出时间', dataIndex: 'buyoutDate', render: text => text ? text.substr(0, 10) : ''},
+      {title: '退出基金', dataIndex: 'buyoutorgname'},
+      {title: '退出方式', dataIndex: 'buyoutType'},
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
+}
+
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
 
 
@@ -688,9 +759,12 @@ class OrganizationDetail extends React.Component {
               </TabPane>
               : null }
 
+              { this.state.buyout.length > 0 ? 
               <TabPane tab="退出分析" key="6">
-                {/* <IndusBusi data={projInfo && projInfo.indus_busi_info} /> */}
+                <Buyout id={this.id} />
               </TabPane>
+              : null }
+
             </Tabs>
             : basic}
         </div>
