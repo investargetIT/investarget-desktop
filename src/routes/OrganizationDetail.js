@@ -727,7 +727,7 @@ class OrganizationDetail extends React.Component {
           {i18n('project_library.information_detail')}:
         </h3>
 
-        <div style={{ width: '55%', float: 'left' }}>
+        <div style={{ width: this.state.data.length > 0 ? '55%' : '100%', float: 'left' }}>
           {isShowTabs ?
             <Tabs defaultActiveKey="1" >
 
