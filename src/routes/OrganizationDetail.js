@@ -125,10 +125,10 @@ function Contact(props) {
           <Col span={4} style={{ fontWeight: 500 }}>地址</Col>
           <Col span={20}>{ m.address || '暂无' }</Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col span={4} style={{ fontWeight: 500 }}>邮编</Col>
           <Col span={20}>{ m.postcode || '暂无' }</Col>
-        </Row>
+        </Row> */}
         <Row>
           <Col span={4} style={{ fontWeight: 500 }}>电话</Col>
           <Col span={20}>{ m.numbercode ? m.countrycode + '-' + m.areacode + '-' + m.numbercode : '暂无' }</Col>
@@ -193,7 +193,7 @@ class ManageFund extends React.Component {
       {title: '类型', dataIndex: 'type'},
       {title: '资本来源', dataIndex: 'fundsource'},
       {title: '募集完成时间', dataIndex: 'fundraisedate'},
-      {title: '募集完成规模', dataIndex: 'fundsize'},
+      {title: '募集规模', dataIndex: 'fundsize'},
     ];
 
     return <div>
@@ -256,8 +256,8 @@ class InvestEvent extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '企业简称', dataIndex: 'comshortname'},
-      {title: 'CV行业分类', dataIndex: 'industrytype'},
+      {title: '企业名称', dataIndex: 'comshortname'},
+      {title: '行业分类', dataIndex: 'industrytype'},
       {
         title: '地区', dataIndex: 'area', render: text => {
           const area = this.state.area.filter(f => f.id === text);
@@ -338,7 +338,7 @@ class Cooperation extends React.Component {
     const columns = [
       {title: '合作投资机构', dataIndex: 'partner'},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
-      {title: '合作投资标的企业', dataIndex: 'comshortname'},
+      {title: '合作投资企业', dataIndex: 'comshortname'},
     ];
 
     return <div>
@@ -406,7 +406,7 @@ class Buyout extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '企业简称', dataIndex: 'comshortname'},
+      {title: '企业名称', dataIndex: 'comshortname'},
       {title: '退出时间', dataIndex: 'buyoutDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '退出基金', dataIndex: 'buyoutorgname'},
       {title: '退出方式', dataIndex: 'buyoutType'},
