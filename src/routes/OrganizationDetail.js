@@ -172,7 +172,7 @@ class ManageFund extends React.Component {
         this.setState({ total: result.data.count});
         manageFund = result.data.data;
         return Promise.all(manageFund.map(m =>
-          api.getOrgDetail(m.fund, { lang: window.LANG })
+          m.fund ? api.getOrgDetail(m.fund, { lang: window.LANG }) : Promise.resolve({ data: { orgname: '' }})
         ))
       })
       .then(result => {
@@ -319,7 +319,7 @@ class Cooperation extends React.Component {
         this.setState({ total: result.data.count});
         cooperation = result.data.data;
         return Promise.all(cooperation.map(m =>
-          api.getOrgDetail(m.cooperativeOrg, { lang: window.LANG })
+          m.cooperativeOrg ? api.getOrgDetail(m.cooperativeOrg, { lang: window.LANG }) : Promise.resolve({ data: { orgname: '' }})
         ))
       })
       .then(result => {
@@ -389,7 +389,7 @@ class Buyout extends React.Component {
         this.setState({ total: result.data.count});
         buyout = result.data.data;
         return Promise.all(buyout.map(m =>
-          api.getOrgDetail(m.buyoutorg, { lang: window.LANG })
+          m.buyoutorg ? api.getOrgDetail(m.buyoutorg, { lang: window.LANG }) : Promise.resolve({ data: { orgname: '' }})
         ))
       })
       .then(result => {
