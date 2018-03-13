@@ -66,7 +66,7 @@ class OrganizationList extends React.Component {
 
   getOrg = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false }
     this.setState({ loading: true })
     console.log(params)
     api.getOrg(params).then(result => {

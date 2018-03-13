@@ -479,7 +479,7 @@ class MyInvestorListFilter extends React.Component {
 class OrganizationListFilter extends React.Component {
 
   static defaultValue = {
-    isOversea: null,
+    investoverseasproject: null,
     currencys: [],
     orgtransactionphases: [],
     industrys: [],
@@ -507,10 +507,10 @@ class OrganizationListFilter extends React.Component {
   }
 
   render() {
-    const { isOversea, currencys, orgtransactionphases, industrys, tags, orgtypes, area } = this.state
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area } = this.state
     return (
       <div>
-        <OverseaFilter value={isOversea} onChange={this.handleChange.bind(this, 'isOversea')} />
+        <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
         {/* <CurrencyFilter value={currencys} onChange={this.handleChange.bind(this, 'currencys')} /> */}
         <BasicContainer label={i18n('filter.currency')}>
           <ITCheckboxGroup options={this.props.currencys} value={currencys} onChange={this.handleChange.bind(this, 'currencys')} />
