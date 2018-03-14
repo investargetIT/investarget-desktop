@@ -192,7 +192,7 @@ class ManageFund extends React.Component {
       {title: '基金', dataIndex: 'fundname'},
       {title: '类型', dataIndex: 'type'},
       {title: '资本来源', dataIndex: 'fundsource'},
-      {title: '募集完成时间', dataIndex: 'fundraisedate'},
+      {title: '募集完成时间', dataIndex: 'fundraisedate', render: text => text ? text.substr(0, 10) : ''},
       {title: '募集规模', dataIndex: 'fundsize'},
     ];
 
