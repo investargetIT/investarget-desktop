@@ -703,7 +703,8 @@ class OrganizationDetail extends React.Component {
       || this.state.buyout.length > 0;
 
     const basic = <div>
-      <Field title={i18n('organization.name')} value={this.state.orgname} />
+      <Field title="全称" value={this.state.orgfullname} />
+      <Field title="简称" value={this.state.orgname} />
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
       <Field title={i18n('organization.currency')} value={this.state.currency} />
       <Field title={i18n('organization.industry')} value={this.state.industry} />

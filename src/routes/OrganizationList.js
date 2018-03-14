@@ -129,10 +129,10 @@ class OrganizationList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
-      { title: i18n('organization.name'), key: 'orgname',  
+      { title: '全称', key: 'orgname',  
       render:(text, record) =>{
         return <Link to={'/app/organization/' + record.id}>
-                <div style={{color:"#428BCA"}}>{record.orgname}</div>
+                <div style={{color:"#428BCA"}}>{record.orgfullname}</div>
               </Link>
       }
       //sorter:true, 
