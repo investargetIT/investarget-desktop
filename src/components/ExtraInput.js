@@ -280,7 +280,7 @@ class SelectExistOrganization extends React.Component {
     return api.getOrg(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
-        const { id: value, orgname: label, description } = item
+        const { id: value, orgfullname: label, description } = item
         return { value, label, description }
       })
       return { total, list }
