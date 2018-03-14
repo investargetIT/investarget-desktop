@@ -476,6 +476,7 @@ class OrganizationDetail extends React.Component {
       investEvent: [],
       cooperation: [],
       buyout: [],
+      reloading: false,
     }
 
     this.id = props.params.id;
@@ -484,6 +485,9 @@ class OrganizationDetail extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.id !== this.id) {
       this.id = nextProps.params.id;
+      this.setState({
+        reloading: true
+      });
       this.componentDidMount();
     }
   }
@@ -521,6 +525,7 @@ class OrganizationDetail extends React.Component {
       data.transactionAmountT_USD = data.transactionAmountT_USD ? formatMoney(data.transactionAmountT_USD, 'USD') : 'N/A'
       data.fundSize = data.fundSize ? formatMoney(data.fundSize, currency) : 'N/A'
       data.fundSize_USD = data.fundSize_USD ? formatMoney(data.fundSize_USD, 'USD') : 'N/A'
+      data.reloading = false;
       this.setState(data)
 
       const orgTypeID = result.data.orgtype && result.data.orgtype.id
@@ -729,7 +734,8 @@ class OrganizationDetail extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
         
-        <OrganizationRemarkList typeId={id} />
+        { this.state.reloading ? null : <div>
+        <OrganizationRemarkList typeId={this.id} /> 
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:
@@ -813,7 +819,7 @@ class OrganizationDetail extends React.Component {
 
         </Modal>
         : null }
-
+</div>}
       </LeftRightLayout>
     )
   }
