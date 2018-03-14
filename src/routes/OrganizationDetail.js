@@ -256,7 +256,7 @@ class InvestEvent extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '企业名称', dataIndex: 'comshortname'},
+      {title: '企业名称', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
       {title: '行业分类', dataIndex: 'industrytype'},
       {
         title: '地区', dataIndex: 'area', render: text => {
@@ -336,7 +336,7 @@ class Cooperation extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '合作投资机构', dataIndex: 'partner'},
+      {title: '合作投资机构', dataIndex: 'partner', render: (text, record) => <Link to={'/app/organization/' + record.cooperativeOrg}>{text}</Link>},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '合作投资企业', dataIndex: 'comshortname'},
     ];
@@ -406,7 +406,7 @@ class Buyout extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '企业名称', dataIndex: 'comshortname'},
+      {title: '企业名称', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
       {title: '退出时间', dataIndex: 'buyoutDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '退出基金', dataIndex: 'buyoutorgname'},
       {title: '退出方式', dataIndex: 'buyoutType'},
@@ -479,6 +479,13 @@ class OrganizationDetail extends React.Component {
     }
 
     this.id = props.params.id;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.id !== this.id) {
+      this.id = nextProps.params.id;
+      this.componentDidMount();
+    }
   }
 
   componentDidMount() {
