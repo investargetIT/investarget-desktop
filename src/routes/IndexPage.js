@@ -286,25 +286,25 @@ class IndexPage extends React.Component {
     });
 
     const orgbdsuccessfilter={bd_status:3}
-    api.getOrgBdList(orgbdsuccessfilter)
+    api.getOrgBDCount(orgbdsuccessfilter)
     .then(result=>{
       this.setState({orgBDsuccess:result.data.count})
     })
 
     const orgbdunsuccessfilter={bd_status:1}
-    api.getOrgBdList(orgbdunsuccessfilter)
+    api.getOrgBDCount(orgbdunsuccessfilter)
     .then(result=>{
       this.setState({orgBDunsuccess:result.data.count})
     })
 
     const projbdsuccessfilter={bd_status:3}
-    api.getProjBDList(projbdsuccessfilter)
+    api.getProjBDCount(projbdsuccessfilter)
     .then(result=>{
       this.setState({projBDsuccess:result.data.count})
     })
 
     const projbdunsuccessfilter={bd_status:1}
-    api.getProjBDList(projbdunsuccessfilter)
+    api.getProjBDCount(projbdunsuccessfilter)
     .then(result=>{
       this.setState({projBDunsuccess:result.data.count})
     })

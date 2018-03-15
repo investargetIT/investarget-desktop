@@ -38,12 +38,12 @@ class BDModal extends React.Component{
   getBdList = () =>{
     let param={bd_status:this.state.source}
     if(this.state.element=='org'){
-      api.getOrgBdList(param).then(result=>{
+      api.getOrgBDCount(param).then(result=>{
         this.setState({managers:result.data.manager_count},this.mapIdToManager)
       })
     }
     else if(this.state.element=='proj'){
-      api.getProjBDList(param).then(result=>{
+      api.getProjBDCount(param).then(result=>{
         this.setState({managers:result.data.manager_count},this.mapIdToManager)
       })
     }

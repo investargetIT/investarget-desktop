@@ -821,6 +821,9 @@ export const modifyMeetingBD = (id, body) => r(`/bd/meetbd/${id}/`, 'PUT', body)
  */
 export const getOrgBuyout       = param => r('/org/buyout/?' + qs.stringify(param));       // 退出分析
 export const getOrgContact      = param => r('/org/contact/?' + qs.stringify(param));      // 联系方式
-export const getOrgCooperation  = param => r('/org/cooprelation/?' + qs.stringify(param)); // 合作关系 
-export const getOrgInvestEvent  = param => r('/org/investevent/?' + qs.stringify(param));  // 投资事件 
-export const getOrgManageFund   = param => r('/org/managefund/?' + qs.stringify(param));   // 管理基金 
+export const getOrgCooperation  = param => r('/org/cooprelation/?' + qs.stringify(param)); // 合作关系
+export const getOrgInvestEvent  = param => r('/org/investevent/?' + qs.stringify(param));  // 投资事件
+export const getOrgManageFund   = param => r('/org/managefund/?' + qs.stringify(param));   // 管理基金
+
+export const getOrgBDCount =  param => r('/bd/orgbd/count/?' + qs.stringify(param));
+export const getProjBDCount = param => r('/bd/projbd/count/?' + qs.stringify(param));
