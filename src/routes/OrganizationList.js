@@ -82,9 +82,10 @@ class OrganizationList extends React.Component {
     this.writeSetting()
   }
 
+  // 按创建时间排序
   handleSortChange = value => {
-    this.sort = value === 'asc' ? true : false
-    this.getOrg()
+    const desc = value === 'desc' ? 1 : 0;
+    this.setState({ desc, sort: undefined }, this.getOrg);
   }
 
   deleteOrg = (id) => {
@@ -117,7 +118,7 @@ class OrganizationList extends React.Component {
         sort: sorter.columnKey, 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getOrg()
+      this.getOrg
     );
   }
 
