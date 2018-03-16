@@ -1,6 +1,9 @@
 import React from 'react'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button } from 'antd'
+import { 
+  Button,
+  Modal,
+} from 'antd';
 import SelectOrganization from '../components/SelectOrganization'
 import SelectOrgInvestorAndTrader from '../components/SelectOrgInvestorAndTrader'
 import SelectOrgInvestorToBD from '../components/SelectOrgInvestorToBD';
@@ -34,6 +37,15 @@ class SelectInvestorAndTrader extends React.Component {
   }
 
   handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
+
+    if (selectedOrgs.length > 50) {
+      Modal.error({
+        title: '无效操作',
+        content: '最多选择50家机构',
+      })
+      return;
+    }
+
     let newOrgDetails=selectedOrgDetails.filter(item=>{
       return !this.state.selectedOrgDetails.includes(item)
     })
