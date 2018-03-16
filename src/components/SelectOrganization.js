@@ -82,6 +82,13 @@ class SelectOrganization extends React.Component {
     this.getOrg()
   }
 
+  // 用户删除了某个机构 Tag，模拟取消选中那个机构产生的 onChange 事件
+  handleDeleteOrgTag(tag, e) {
+    const newOrg = this.props.value.filter(f => f !== tag.id);
+    const newOrgDetails = this.props.details.filter( f => f.id !== tag.id);
+    this.props.onChange(newOrg, newOrgDetails);
+  }
+
   render() {
 
     const rowSelection= {
@@ -111,9 +118,17 @@ class SelectOrganization extends React.Component {
         </Popover>
         </div>
 
+        {/* 选中的机构以 Tag 的形式展现在表格上方，方便用户随时查看自己选中的机构，避免在分页中迷失 */}
         <div style={{ marginBottom: 10 }}>
           {this.props.details.map(m => 
-            <Tag closable style={{ marginBottom: 8 }}>{m.orgfullname}</Tag>
+            <Tag 
+              key={m.id} 
+              closable 
+              style={{ marginBottom: 8 }} 
+              onClose={this.handleDeleteOrgTag.bind(this, m)}
+            >
+              {m.orgfullname}
+            </Tag>
           )}
         </div>
 
