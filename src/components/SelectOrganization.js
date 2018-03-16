@@ -7,7 +7,15 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
+import { 
+  Button, 
+  Popconfirm, 
+  Modal, 
+  Table, 
+  Pagination, 
+  Popover,
+  Tag,
+} from 'antd';
 import { OrganizationListFilter } from './Filter'
 import { Search2 } from './Search'
 
@@ -102,6 +110,13 @@ class SelectOrganization extends React.Component {
           <Search2 style={{ width: '250px' }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
         </Popover>
         </div>
+
+        <div style={{ marginBottom: 10 }}>
+          {this.props.details.map(m => 
+            <Tag closable style={{ marginBottom: 8 }}>{m.orgfullname}</Tag>
+          )}
+        </div>
+
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
       </div>
