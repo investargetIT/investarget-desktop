@@ -5,13 +5,46 @@ import {
   i18n, removeFromArray, 
 } from '../utils/util';
 import * as api from '../api'
-import { Button, Popconfirm, Modal, Table } from 'antd'
+import { 
+  Button, 
+  Popconfirm, 
+  Modal, 
+  Table,
+  Popover,
+  Row,
+  Col,
+} from 'antd';
 import { SelectNumber } from './ExtraInput'
 import { Search2 } from './Search'
+import { 
+  SimpleLine, 
+  Trader as TraderForPopover, 
+} from '../routes/OrgBDList';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
+function displayUserWhenPopover(user) {
+  const photourl = user && user.photourl;
+  const tags = user && user.tags ? user.tags.map(item => item.name).join(',') : '';
+  return <div style={{ width: 180 }}>
+    <Row style={{ textAlign: 'center', margin: '10px 0' }}>
+      {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
+    </Row>
+    {/* <SimpleLine title={i18n('user.mobile')} value={user.mobile || '暂无'} /> */}
+    {/* <SimpleLine title={i18n('user.email')} value={user.email || '暂无'} /> */}
+    {/* <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}> */}
+      {/* <Col span={12}>{i18n('user.trader')}:</Col> */}
+      {/* <Col span={12} style={{ wordBreak: 'break-all' }}> */}
+        {/* <TraderForPopover investor={user.id} /> */}
+      {/* </Col> */}
+    {/* </Row> */}
+    <Row style={{ lineHeight: '24px' }}>
+      <Col span={12}>{i18n('user.tags') + '：'}</Col>
+      <Col span={12} style={{wordWrap: 'break-word'}}>{tags || '暂无'}</Col>
+    </Row>
+  </div>;
+}
 
 class SelectUserTransaction extends React.Component {
   constructor(props) {
@@ -191,7 +224,17 @@ class SelectOrgInvestorToBD extends React.Component {
     }
 
     const columns = [
-      { title: i18n('user.name'), key: 'username', dataIndex: 'username', render: text => text || '暂无投资人' },
+      {
+        title: i18n('user.name'), key: 'username', dataIndex: 'username',
+        render: (text, record) => <div>
+          {record.username ? <Popover placement="topRight" content={displayUserWhenPopover(record)}>
+            <span style={{ color: '#428BCA' }}>
+              {record.hasRelation ? <Link to={'app/user/edit/' + record.bduser}>{record.username}</Link>
+                : record.username}
+            </span>
+          </Popover> : '暂无投资人'}
+        </div>
+      },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
       { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },

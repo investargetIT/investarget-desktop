@@ -468,7 +468,7 @@ class OrgBDList extends React.Component {
 
 export default OrgBDList;
 
-class Trader extends React.Component {
+export class Trader extends React.Component {
   state = {
     list: [], 
   }
@@ -500,7 +500,7 @@ class Trader extends React.Component {
   }
 }
 
-function SimpleLine(props) {
+export function SimpleLine(props) {
   return (
     <Row style={{ lineHeight: '24px',borderBottom: '1px dashed #ccc' }}>
       <Col span={12}>{props.title + '：'}</Col>
