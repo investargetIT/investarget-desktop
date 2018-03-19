@@ -486,7 +486,8 @@ class OrganizationDetail extends React.Component {
     if (nextProps.params.id !== this.id) {
       this.id = nextProps.params.id;
       this.setState({
-        reloading: true
+        reloading: true,
+        data: [],
       });
       this.componentDidMount();
     }
