@@ -79,6 +79,9 @@ function BasicFormItem(props, context) {
 BasicFormItem.contextTypes = {
   form: PropTypes.object
 }
+BasicFormItem.propTypes = {
+  children: PropTypes.element.isRequired,
+}
 
 
 

@@ -838,7 +838,14 @@ class OrganizationDetail extends React.Component {
           footer={null}
           onCancel={() => this.setState({ isShowOrgDetailForm: false })}
         >
-          <OrgDetailForm />
+          <OrgDetailForm 
+            org={this.id}
+            onNewDetailAdded={() => this.setState({
+              reloading: true,
+              data: [],
+              isShowOrgDetailForm: false,
+            }, this.componentDidMount)} 
+          />
         </Modal>
         : null }
 
