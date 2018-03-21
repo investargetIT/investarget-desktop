@@ -28,7 +28,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import OrgDetailForm from '../components/OrgDetailForm';
+import AddOrgDetail from '../components/AddOrgDetail';
 
 const TabPane = Tabs.TabPane;
 
@@ -745,11 +745,11 @@ class OrganizationDetail extends React.Component {
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:
-          {/* <Icon 
+          <Icon 
             type="plus" 
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowOrgDetailForm: true })} 
-          /> */}
+          />
         </h3>
 
         <div style={{ width: this.state.data.length > 0 ? '55%' : '100%', float: 'left' }}>
@@ -838,7 +838,7 @@ class OrganizationDetail extends React.Component {
           footer={null}
           onCancel={() => this.setState({ isShowOrgDetailForm: false })}
         >
-          <OrgDetailForm 
+          <AddOrgDetail
             org={this.id}
             onNewDetailAdded={() => this.setState({
               reloading: true,

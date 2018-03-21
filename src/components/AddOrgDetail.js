@@ -6,6 +6,7 @@ import {
   Row,
   Col,
   Button,
+  Select,
 } from 'antd';
 import { 
   BasicFormItem,
@@ -21,21 +22,22 @@ import { connect } from 'dva';
 import * as api from '../api';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 6 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 14 },
-    },
-  }
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
 
-  function hasErrors(fieldsError) {
-    return Object.keys(fieldsError).some(field => fieldsError[field]);
-  }
+function hasErrors(fieldsError) {
+  return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 
 class OrgDetailForm extends React.Component {
   
@@ -162,4 +164,28 @@ OrgDetailForm.childContextTypes = {
   form: PropTypes.object
 };
 
-export default connect()(Form.create()(OrgDetailForm));
+OrgDetailForm = Form.create()(OrgDetailForm);
+
+class AddOrgDetail extends React.Component {
+  state = {
+    value: 'contact',
+  }
+  render() {
+    return (
+      <div>
+        <FormItem {...formItemLayout} label="类别">
+          <Select defaultValue="contact" style={{ width: 120 }} onChange={value => this.setState({ value })}>
+            <Option value="contact">联系方式</Option>
+            <Option value="managefund">管理基金</Option>
+            <Option value="investevent">投资事件</Option>
+            <Option value="cooperation">合作关系</Option>
+            <Option value="buyout">退出分析</Option>
+          </Select>
+        </FormItem>
+        <OrgDetailForm {...this.props} />
+      </div>
+    );
+  }
+}
+
+export default AddOrgDetail;
