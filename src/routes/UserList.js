@@ -256,6 +256,13 @@ class UserList extends React.Component {
         //sorter:true,
       },
       {
+        title: '是否活跃',
+        dataIndex: 'is_active',
+        key: 'is_active',
+        sorter: true,
+        render: text => text ? '活跃' : '静默',
+      },
+      {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (

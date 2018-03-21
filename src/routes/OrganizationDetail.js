@@ -745,11 +745,11 @@ class OrganizationDetail extends React.Component {
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:
-          <Icon 
+          {/* <Icon 
             type="plus" 
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowOrgDetailForm: true })} 
-          />
+          /> */}
         </h3>
 
         <div style={{ width: this.state.data.length > 0 ? '55%' : '100%', float: 'left' }}>
