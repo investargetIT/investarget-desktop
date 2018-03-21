@@ -28,6 +28,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import OrgDetailForm from '../components/OrgDetailForm';
 
 const TabPane = Tabs.TabPane;
 
@@ -477,6 +478,7 @@ class OrganizationDetail extends React.Component {
       cooperation: [],
       buyout: [],
       reloading: false,
+      isShowOrgDetailForm: false,
     }
 
     this.id = props.params.id;
@@ -736,11 +738,18 @@ class OrganizationDetail extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} name={i18n('organization.org_detail')}action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
         
-        { this.state.reloading ? null : <div>
+        { this.state.reloading ? null : 
+        <div>
+        
         <OrganizationRemarkList typeId={this.id} /> 
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:
+          <Icon 
+            type="plus" 
+            style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
+            onClick={() => this.setState({ isShowOrgDetailForm: true })} 
+          />
         </h3>
 
         <div style={{ width: this.state.data.length > 0 ? '55%' : '100%', float: 'left' }}>
@@ -821,7 +830,19 @@ class OrganizationDetail extends React.Component {
 
         </Modal>
         : null }
-</div>}
+    
+        { this.state.isShowOrgDetailForm ? 
+        <Modal
+          title="添加信息详情"
+          visible={true}
+          footer={null}
+          onCancel={() => this.setState({ isShowOrgDetailForm: false })}
+        >
+          <OrgDetailForm />
+        </Modal>
+        : null }
+
+        </div> }
       </LeftRightLayout>
     )
   }
