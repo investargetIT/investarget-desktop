@@ -20,6 +20,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import * as api from '../api';
+import { SelectExistOrganization } from './ExtraInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -39,7 +40,7 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-class OrgDetailForm extends React.Component {
+class ContactForm extends React.Component {
   
   getChildContext() {
     return {
@@ -160,19 +161,99 @@ class OrgDetailForm extends React.Component {
   }
 }
 
-OrgDetailForm.childContextTypes = {
+ContactForm.childContextTypes = {
   form: PropTypes.object
 };
 
-OrgDetailForm = Form.create()(OrgDetailForm);
+ContactForm = Form.create()(ContactForm);
+
+class ManageFundForm extends React.Component {
+  
+  getChildContext() {
+    return {
+      form: this.props.form
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        const body = { ...values, org: this.props.org };
+        echo('body', body);
+        api.addOrgContact(body)
+          .then(result => {
+              echo('resul', result)
+              this.props.onNewDetailAdded();
+            })
+      }
+    });
+  }
+
+  render() {
+
+    const { getFieldDecorator, getFieldsError } = this.props.form;
+
+    return (
+      <Form onSubmit={this.handleSubmit}>
+
+        <BasicFormItem label="基金" name="fund" >
+          <SelectExistOrganization allowCreate formName="userform" />
+        </BasicFormItem>
+
+        <BasicFormItem label="类型" name="type">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="资本来源" name="fundsource">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="募集完成时间" name="fundraisedate" valueType="object">
+          <DatePicker format="YYYY-MM-DD" />
+        </BasicFormItem>
+
+        <BasicFormItem label="募集规模" name="fundsize">
+          <Input />
+        </BasicFormItem>
+
+        <FormItem style={{ marginLeft: 120 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+          >
+            确定
+          </Button>
+        </FormItem>
+
+      </Form>
+    );
+  }
+}
+
+ManageFundForm.childContextTypes = {
+  form: PropTypes.object
+};
+
+ManageFundForm = Form.create()(ManageFundForm);
 
 class AddOrgDetail extends React.Component {
+
+  allForms = {
+    contact: <ContactForm {...this.props} />,
+    managefund: <ManageFundForm {...this.props} />,
+  }
+
   state = {
     value: 'contact',
   }
+
   render() {
     return (
       <div>
+
         <FormItem {...formItemLayout} label="类别">
           <Select defaultValue="contact" style={{ width: 120 }} onChange={value => this.setState({ value })}>
             <Option value="contact">联系方式</Option>
@@ -182,7 +263,9 @@ class AddOrgDetail extends React.Component {
             <Option value="buyout">退出分析</Option>
           </Select>
         </FormItem>
-        <OrgDetailForm {...this.props} />
+
+        { this.allForms[this.state.value] }
+
       </div>
     );
   }
