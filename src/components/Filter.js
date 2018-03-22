@@ -322,9 +322,6 @@ class UserListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    if (key == 'groups') {
-      this.setState({ ...UserListFilter.defaultValue },this.handleSearch)
-    }
     this.setState({ [key]: value },this.handleSearch)
   }
 
@@ -343,31 +340,11 @@ class UserListFilter extends React.Component {
     return (
       <div>
         <GroupFilter value={groups} onChange={this.handleChange.bind(this, 'groups')} />
-        {
-          [null, 1].includes(groups) ? (
-            <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
-          ) : null
-        }
-        {
-          [null, 1, 2].includes(groups) ? (
-            <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
-          ) : null
-        }
-        {
-          [null, 1].includes(groups) ? (
-            <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
-          ) : null
-        }
-        {
-          [null, 1, 2].includes(groups) ? (
-            <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
-          ) : null
-        }
-        {
-          [null, 1].includes(groups) ? (
-            <OrganizationAreaFilter value={areas.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
-          ) : null
-        }
+        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
+        <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
+        <OrganizationAreaFilter value={areas.map(item => item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
