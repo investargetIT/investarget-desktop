@@ -68,7 +68,9 @@ function BasicFormItem(props, context) {
   if ('onChange' in props) {
     options.onChange = props.onChange
   }
-
+  if ('getValueFromEvent' in props) {
+    options.getValueFromEvent = props.getValueFromEvent;
+  }
 
   return (
     <FormItem {...(props.layout || formItemLayout)} {...props.layout} label={props.label}>

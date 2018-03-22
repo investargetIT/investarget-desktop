@@ -16,7 +16,7 @@ import {
   SelectPartner, 
   SelectAllUser, 
   SelectOrganizatonArea, 
-  CascaderCountryDetail, 
+  CascaderCountry, 
 } from './ExtraInput'
 import { 
   i18n, 
@@ -142,8 +142,14 @@ class ProjectBDForm extends React.Component {
           <SelectBDSource />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('user.country')} name="country" required valueType="object">
-          <CascaderCountryDetail size="large" onChange={this.handleCountryChange} />
+        <BasicFormItem 
+          label={i18n('user.country')} 
+          name="country" 
+          required 
+          valueType="object" 
+          getValueFromEvent={(id, detail) => detail}
+        >
+          <CascaderCountry size="large" isDetail />
         </BasicFormItem>
 
         {['中国', 'China'].includes(country && (country.label || country.country)) ? 

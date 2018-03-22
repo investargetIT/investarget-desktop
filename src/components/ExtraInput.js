@@ -696,31 +696,24 @@ const SelectArea = withOptionsAsync(SelectNumber, ['country'], function(state) {
  */
 
 class CascaderCountry extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-  }
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
   }
 
-  handleChange(value) {
-    // onChange 只返回 国家
+  handleChange = (value, detail) => {
     const countryId = value.length == 2 ? value[1] : value[0]
+    const countryDetail = detail.length === 2 ? detail[1] : detail[0];
     if (this.props.onChange) {
-      this.props.onChange(countryId)
+      this.props.onChange(countryId, countryDetail)
     }
   }
 
   render() {
-    // 剔除部分属性
-    const {options, map, children, dispatch, value:countryId, onChange, ...extraProps} = this.props
-
-    // value 修改为 [大洲,国家] || [国家]
-    const continentId = map[countryId]
-    const value = continentId ? [continentId, countryId] : [countryId]
-
+    const {options, map, children, dispatch, value:country, onChange, isDetail, ...extraProps} = this.props;
+    const countryID = country && isDetail ? country.value : country; 
+    const continentID = countryID ? map[countryID] : undefined;
+    const value = [continentID, countryID];
     return (
       <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
     )
@@ -764,42 +757,7 @@ function mapStateToPropsCountry (state) {
 CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
 
-/**
- * CascaderCountry
- */
 
-class CascaderCountryDetail extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-  }
-
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
-  }
-
-  handleChange(value, detail) {
-    const countryDetail = detail.length === 2 ? detail[1] : detail[0];
-    if (this.props.onChange) {
-      this.props.onChange(countryDetail);
-    }
-  }
-
-  render() {
-    // 剔除部分属性
-    const {options, map, children, dispatch, value:country, onChange, ...extraProps} = this.props
-    // value 修改为 [大洲,国家] || [国家]
-    const continentId = country ? map[country.value] : undefined; 
-    const value = continentId ? [continentId, country ? country.value : undefined] : [country ? country.value : undefined]
-
-    return (
-      <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
-    )
-  }
-
-}
-
-CascaderCountryDetail = connect(mapStateToPropsCountry)(CascaderCountryDetail)
 
 /**
  * CascaderIndustry
@@ -1297,7 +1255,6 @@ export {
   SelectOrgUser,
   SelectPartner, 
   CascaderCountry,
-  CascaderCountryDetail, 
   CascaderIndustry,
   InputCurrency,
   InputPhoneNumber,
