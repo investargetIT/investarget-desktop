@@ -702,6 +702,7 @@ class CascaderCountry extends React.Component {
   }
 
   handleChange = (value, detail) => {
+    echo('dad', value, detail);
     const countryId = value.length == 2 ? value[1] : value[0]
     const countryDetail = detail.length === 2 ? detail[1] : detail[0];
     if (this.props.onChange) {
@@ -746,6 +747,16 @@ function mapStateToPropsCountry (state) {
     return ret
   })
 
+  const chinaArea = country.filter( item => item.parent === 42 )
+                      .map(item => ({ label: item.country, value: item.id }));
+  const asiaIndex = options.map(m => m.value).indexOf(4);
+  if (asiaIndex > -1) {
+    const chinaIndex = options[asiaIndex].children.map(m => m.value).indexOf(42);
+    if (chinaIndex > -1) {
+      options[asiaIndex].children[chinaIndex].children = chinaArea;
+    }
+  }
+  
   var map = {}
   country.forEach(item => {
     map[item.id] = item.parent
@@ -1229,7 +1240,6 @@ const RadioBDSource = withOptions(RadioGroup2, BDSourceOptions)
 export {
   SelectNumber,
   RadioGroup2,
-
   SelectTag,
   SelectRole,
   SelectYear,

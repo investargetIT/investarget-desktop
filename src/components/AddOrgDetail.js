@@ -20,7 +20,10 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import * as api from '../api';
-import { SelectExistOrganization } from './ExtraInput';
+import { 
+  SelectExistOrganization,
+  CascaderCountry,
+} from './ExtraInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -239,11 +242,92 @@ ManageFundForm.childContextTypes = {
 
 ManageFundForm = Form.create()(ManageFundForm);
 
+class InvestEventForm extends React.Component {
+  
+  getChildContext() {
+    return {
+      form: this.props.form
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        values.fundraisedate = values.fundraisedate.format('YYYY-MM-DDT00:00:00');
+        const body = { ...values, org: this.props.org };
+        api.addOrgManageFund(body)
+          .then(result => {
+              echo('resul', result)
+              this.props.onNewDetailAdded();
+            })
+      }
+    });
+  }
+
+  render() {
+
+    const { getFieldDecorator, getFieldsError } = this.props.form;
+
+    return (
+      <Form onSubmit={this.handleSubmit}>
+
+        <BasicFormItem label="企业名称" name="comshortname" >
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="行业分类" name="industrytype">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="地区" name="area" valueType="number">
+          <CascaderCountry />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资人" name="investor">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资时间" name="investDate" valueType="object">
+          <DatePicker format="YYYY-MM-DD" />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资性质" name="investType">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资金额" name="investSize">
+          <Input />
+        </BasicFormItem>
+
+        <FormItem style={{ marginLeft: 120 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+          >
+            确定
+          </Button>
+        </FormItem>
+
+      </Form>
+    );
+  }
+}
+
+InvestEventForm.childContextTypes = {
+  form: PropTypes.object
+};
+
+InvestEventForm = Form.create()(InvestEventForm);
+
 class AddOrgDetail extends React.Component {
 
   allForms = {
     contact: <ContactForm {...this.props} />,
     managefund: <ManageFundForm {...this.props} />,
+    investevent: <InvestEventForm {...this.props} />,
   }
 
   state = {
