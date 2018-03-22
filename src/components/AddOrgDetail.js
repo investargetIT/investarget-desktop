@@ -180,9 +180,9 @@ class ManageFundForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        values.fundraisedate = values.fundraisedate.format('YYYY-MM-DDT00:00:00');
         const body = { ...values, org: this.props.org };
-        echo('body', body);
-        api.addOrgContact(body)
+        api.addOrgManageFund(body)
           .then(result => {
               echo('resul', result)
               this.props.onNewDetailAdded();

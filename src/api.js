@@ -829,3 +829,4 @@ export const getOrgBDCount =  param => r('/bd/orgbd/count/?' + qs.stringify(para
 export const getProjBDCount = param => r('/bd/projbd/count/?' + qs.stringify(param));
 
 export const addOrgContact = body => r('/org/contact/', 'POST', body);
+export const addOrgManageFund = body => r('/org/managefund/', 'POST', body);
