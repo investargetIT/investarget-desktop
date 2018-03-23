@@ -77,7 +77,7 @@ class ProjectBaseForm extends React.Component {
 
         <IndustryDynamicFormItem industry={this.props.industry} />
 
-        <BasicFormItem label={i18n('project.region')} name="country" required valueType="number" initialValue={[1,5]}>
+        <BasicFormItem label={i18n('project.region')} name="country" required valueType="number">
           <CascaderCountry size="large" />
         </BasicFormItem>
 

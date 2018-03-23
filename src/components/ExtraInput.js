@@ -715,7 +715,7 @@ class CascaderCountry extends React.Component {
       return idArr;
     }
     idArr.unshift(detail.parent);
-    return this,this.findParent(idArr);
+    return this.findParent(idArr);
   }
 
   render() {
@@ -744,7 +744,7 @@ class CascaderCountry extends React.Component {
 
 function mapStateToPropsCountry (state) {
   const { country } = state.app
-
+echo('country', country)
   var list = country.filter(item => item.parent == null)
   list = list.map(item => {
     var children = country.filter(i => i.parent == item.id)
