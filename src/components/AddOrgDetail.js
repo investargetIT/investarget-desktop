@@ -384,6 +384,73 @@ CooperationForm.childContextTypes = {
 
 CooperationForm = Form.create()(CooperationForm);
 
+class BuyoutForm extends React.Component {
+  
+  getChildContext() {
+    return {
+      form: this.props.form
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        values.buyoutDate = values.buyoutDate.format('YYYY-MM-DDT00:00:00');
+        const body = { ...values, org: this.props.org };
+        api.addOrgBuyout(body)
+          .then(result => {
+              this.props.onNewDetailAdded();
+            })
+      }
+    });
+  }
+
+  render() {
+
+    const { getFieldDecorator, getFieldsError } = this.props.form;
+
+    return (
+      <Form onSubmit={this.handleSubmit}>
+
+        <BasicFormItem label="企业名称" name="comshortname">
+          <Input />
+        </BasicFormItem>
+
+        <BasicFormItem label="退出时间" name="buyoutDate" valueType="object">
+          <DatePicker format="YYYY-MM-DD" />
+        </BasicFormItem>
+
+        <BasicFormItem label="退出基金" name="buyoutorg" >
+          <SelectExistOrganization allowCreate formName="userform" />
+        </BasicFormItem>
+
+        <BasicFormItem label="退出方式" name="buyoutType">
+          <Input />
+        </BasicFormItem>
+
+        <FormItem style={{ marginLeft: 120 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+          >
+            确定
+          </Button>
+        </FormItem>
+
+      </Form>
+    );
+  }
+}
+
+BuyoutForm.childContextTypes = {
+  form: PropTypes.object
+};
+
+BuyoutForm = Form.create()(BuyoutForm);
+
 class AddOrgDetail extends React.Component {
 
   allForms = {
@@ -391,6 +458,7 @@ class AddOrgDetail extends React.Component {
     managefund: <ManageFundForm {...this.props} />,
     investevent: <InvestEventForm {...this.props} />,
     cooperation: <CooperationForm {...this.props} />,
+    buyout: <BuyoutForm {...this.props} />,
   }
 
   state = {
