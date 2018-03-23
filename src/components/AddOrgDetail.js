@@ -255,11 +255,10 @@ class InvestEventForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        values.fundraisedate = values.fundraisedate.format('YYYY-MM-DDT00:00:00');
+        values.investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
         const body = { ...values, org: this.props.org };
-        api.addOrgManageFund(body)
+        api.addOrgInvestEvent(body)
           .then(result => {
-              echo('resul', result)
               this.props.onNewDetailAdded();
             })
       }
@@ -282,7 +281,7 @@ class InvestEventForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label="地区" name="area" valueType="number">
-          <CascaderCountry />
+          <CascaderCountry isShowProvince />
         </BasicFormItem>
 
         <BasicFormItem label="投资人" name="investor">
