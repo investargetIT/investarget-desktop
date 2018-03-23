@@ -321,12 +321,76 @@ InvestEventForm.childContextTypes = {
 
 InvestEventForm = Form.create()(InvestEventForm);
 
+class CooperationForm extends React.Component {
+  
+  getChildContext() {
+    return {
+      form: this.props.form
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        values.investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
+        const body = { ...values, org: this.props.org };
+        api.addOrgCooperation(body)
+          .then(result => {
+              this.props.onNewDetailAdded();
+            })
+      }
+    });
+  }
+
+  render() {
+
+    const { getFieldDecorator, getFieldsError } = this.props.form;
+
+    return (
+      <Form onSubmit={this.handleSubmit}>
+
+        <BasicFormItem label="合作投资机构" name="cooperativeOrg" >
+          <SelectExistOrganization allowCreate formName="userform" />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资时间" name="investDate" valueType="object">
+          <DatePicker format="YYYY-MM-DD" />
+        </BasicFormItem>
+
+        <BasicFormItem label="合作投资企业" name="comshortname">
+          <Input />
+        </BasicFormItem>
+
+        <FormItem style={{ marginLeft: 120 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+          >
+            确定
+          </Button>
+        </FormItem>
+
+      </Form>
+    );
+  }
+}
+
+CooperationForm.childContextTypes = {
+  form: PropTypes.object
+};
+
+CooperationForm = Form.create()(CooperationForm);
+
 class AddOrgDetail extends React.Component {
 
   allForms = {
     contact: <ContactForm {...this.props} />,
     managefund: <ManageFundForm {...this.props} />,
     investevent: <InvestEventForm {...this.props} />,
+    cooperation: <CooperationForm {...this.props} />,
   }
 
   state = {
