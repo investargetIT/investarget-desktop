@@ -149,6 +149,11 @@ class Contact extends React.Component {
       .catch(err => console.error(err));
   }
 
+  delete(id) {
+    api.deleteOrgContact(id)
+      .then(() => this.getData());
+  }
+
   render() {
 
     const { page, pageSize, total } = this.state;
@@ -166,6 +171,15 @@ class Contact extends React.Component {
         render: (text, m) => m.faxcode ? m.countrycode + '-' + m.areacode + '-' + m.faxcode : '暂无'
       },
       {title: '邮箱', dataIndex: 'email'},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
     ];
 
     return <div>

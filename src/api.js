@@ -833,3 +833,5 @@ export const addOrgManageFund = body => r('/org/managefund/', 'POST', body);
 export const addOrgInvestEvent = body => r('/org/investevent/', 'POST', body);
 export const addOrgCooperation = body => r('/org/cooprelation/', 'POST', body);
 export const addOrgBuyout = body => r('/org/buyout/', 'POST', body);
+
+export const deleteOrgContact = id => r(`/org/contact/${id}/`, 'DELETE');
