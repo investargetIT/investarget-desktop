@@ -417,6 +417,11 @@ class Cooperation extends React.Component {
       .catch(err => console.error(err));
   }
 
+  delete(id) {
+    api.deleteOrgCooperation(id)
+      .then(() => this.getData());
+  }
+
   render() {
 
     const { page, pageSize, total } = this.state;
@@ -425,6 +430,15 @@ class Cooperation extends React.Component {
       {title: '合作投资机构', dataIndex: 'partner', render: (text, record) => <Link to={'/app/organization/' + record.cooperativeOrg}>{text}</Link>},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '合作投资企业', dataIndex: 'comshortname'},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
     ];
 
     return <div>
