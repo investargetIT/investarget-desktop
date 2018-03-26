@@ -77,8 +77,8 @@ const PositionWithUser = props => {
 
   return (
     <div>
-      <div style={{ width: '20%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
-      <div style={{ width: '80%', marginLeft: '20%'}}>
+      <div style={{ width: '10%', fontSize: 16, float: 'left', textAlign: 'right', paddingRight: 10, paddingTop: 10 }}>{props.position}</div>
+      <div style={{ width: '90%', marginLeft: '10%'}}>
         {props.user.map(m => <Link key={m.key} to={m.isUnreachUser ? null : "/app/user/" + m.id}>
           <Popover content={popoverChildren(m)}>
             <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10,marginBottom:10 }} src={m.photourl || '/images/default-avatar.png'} />
@@ -708,7 +708,7 @@ class OrgDetail extends React.Component {
 
     const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
       || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
-      || this.state.buyout.length > 0;
+      || this.state.buyout.length > 0 || this.state.data.length > 0;
 
     const basic = <div>
       <Field title="全称" value={this.state.orgfullname} />
@@ -752,13 +752,31 @@ class OrgDetail extends React.Component {
           />
         </h3>
 
-        <div style={{ width: this.state.data.length > 0 ? '55%' : '100%', float: 'left' }}>
           {isShowTabs ?
             <Tabs defaultActiveKey="1" >
 
               <TabPane tab={i18n('project.basics')} key="1">
                 {basic}
               </TabPane>
+
+              { this.state.data.length > 0 ?
+              <TabPane tab="组织架构" key="7">
+                <div>
+                  {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
+                    <PositionWithUser
+                      id={m.id}
+                      orgID={m.org}
+                      position={m.position}
+                      user={m.user}
+                      onHover={this.handleHoverInvestor}
+                      onRemoveUserPosition={this.onRemoveUserPosition.bind(this)}
+                      pathname={this.props.location.pathname}
+                      onAddButtonClicked={this.handleAddUser.bind(this)} 
+                    />
+                  </div>)}
+                </div>
+              </TabPane>
+              : null }
 
               { this.state.contact.length > 0 ?
               <TabPane tab="联系方式" key="2">
@@ -792,21 +810,7 @@ class OrgDetail extends React.Component {
 
             </Tabs>
             : basic}
-        </div>
 
-        <div style={{ width: '45%', marginLeft: '55%' }}>
-          {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
-            <PositionWithUser
-              id={m.id}
-              orgID={m.org}
-              position={m.position}
-              user={m.user}
-              onHover={this.handleHoverInvestor}
-              onRemoveUserPosition={this.onRemoveUserPosition.bind(this)}
-              pathname={this.props.location.pathname}
-              onAddButtonClicked={this.handleAddUser.bind(this)} />
-          </div>)}
-        </div>
 
         <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
           <div style={{ textAlign: 'center' }}>
