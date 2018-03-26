@@ -118,33 +118,76 @@ const Field = (props) => {
   )
 }
 
-function Contact(props) {
-  return <div>
-    {props.data.map(m =>
-      <div key={m.id} style={{ marginBottom: 50 }}>
-        <Row>
-          <Col span={4} style={{ fontWeight: 500 }}>地址</Col>
-          <Col span={20}>{ m.address || '暂无' }</Col>
-        </Row>
-        {/* <Row>
-          <Col span={4} style={{ fontWeight: 500 }}>邮编</Col>
-          <Col span={20}>{ m.postcode || '暂无' }</Col>
-        </Row> */}
-        <Row>
-          <Col span={4} style={{ fontWeight: 500 }}>电话</Col>
-          <Col span={20}>{ m.numbercode ? m.countrycode + '-' + m.areacode + '-' + m.numbercode : '暂无' }</Col>
-        </Row>
-        <Row>
-          <Col span={4} style={{ fontWeight: 500 }}>传真</Col>
-          <Col span={20}>{ m.faxcode ? m.countrycode + '-' + m.areacode + '-' + m.faxcode : '暂无' }</Col>
-        </Row>
-        <Row>
-          <Col span={4} style={{ fontWeight: 500 }}>邮箱</Col>
-          <Col span={20}>{ m.email || '暂无' }</Col>
-        </Row>
-      </div>
-    )}
-  </div>;
+class Contact extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    api.getOrgContact({
+      org: this.props.id,
+      page_index: this.state.page,
+      page_size: this.state.pageSize,
+    })
+      .then(result => {
+        this.setState({ 
+          total: result.data.count,
+          data: result.data.data, 
+          loading: false,
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '地址', dataIndex: 'address' }, 
+      {
+        title: '电话', 
+        dataIndex: 'numbercode', 
+        render: (text, m) => m.numbercode ? m.countrycode + '-' + m.areacode + '-' + m.numbercode : '暂无'
+      },
+      {
+        title: '传真', 
+        dataIndex: 'faxcode', 
+        render: (text, m) => m.faxcode ? m.countrycode + '-' + m.areacode + '-' + m.faxcode : '暂无'
+      },
+      {title: '邮箱', dataIndex: 'email'},
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
 }
 
 class ManageFund extends React.Component {
@@ -594,7 +637,7 @@ class OrgDetail extends React.Component {
 
   getDetail = () => {
     const allReq = [
-      api.getOrgContact({ org: this.id, page_size: 100 }),
+      api.getOrgContact({ org: this.id }),
       api.getOrgManageFund({ org: this.id }),
       api.getOrgInvestEvent({ org: this.id }),
       api.getOrgCooperation({ org: this.id }),
@@ -780,7 +823,7 @@ class OrgDetail extends React.Component {
 
               { this.state.contact.length > 0 ?
               <TabPane tab="联系方式" key="2">
-                <Contact data={this.state.contact} />
+                <Contact id={this.id} />
               </TabPane>
               : null }
 
