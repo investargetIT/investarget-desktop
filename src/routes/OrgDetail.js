@@ -242,6 +242,11 @@ class ManageFund extends React.Component {
       .catch(err => console.error(err));
   }
 
+  delete(id) {
+    api.deleteOrgManageFund(id)
+      .then(() => this.getData());
+  }
+
   render() {
 
     const { page, pageSize, total } = this.state;
@@ -252,6 +257,15 @@ class ManageFund extends React.Component {
       {title: '资本来源', dataIndex: 'fundsource'},
       {title: '募集完成时间', dataIndex: 'fundraisedate', render: text => text ? text.substr(0, 10) : ''},
       {title: '募集规模', dataIndex: 'fundsize'},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
     ];
 
     return <div>

@@ -835,3 +835,7 @@ export const addOrgCooperation = body => r('/org/cooprelation/', 'POST', body);
 export const addOrgBuyout = body => r('/org/buyout/', 'POST', body);
 
 export const deleteOrgContact = id => r(`/org/contact/${id}/`, 'DELETE');
+export const deleteOrgManageFund = id => r(`/org/managefund/${id}/`, 'DELETE');
+export const deleteOrgInvestEvent = id => r(`/org/investevent/${id}/`, 'DELETE');
+export const deleteOrgCooperation = id => r(`/org/cooprelation/${id}/`, 'DELETE');
+export const deleteOrgBuyout = id => r(`/org/buyout/${id}/`, 'DELETE');
