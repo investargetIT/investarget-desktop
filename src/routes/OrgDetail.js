@@ -501,6 +501,11 @@ class Buyout extends React.Component {
       .catch(err => console.error(err));
   }
 
+  delete(id) {
+    api.deleteOrgBuyout(id)
+      .then(() => this.getData());
+  }
+
   render() {
 
     const { page, pageSize, total } = this.state;
@@ -510,6 +515,15 @@ class Buyout extends React.Component {
       {title: '退出时间', dataIndex: 'buyoutDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '退出基金', dataIndex: 'buyoutorgname'},
       {title: '退出方式', dataIndex: 'buyoutType'},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
     ];
 
     return <div>
