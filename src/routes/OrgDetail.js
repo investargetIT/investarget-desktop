@@ -438,7 +438,7 @@ class Buyout extends React.Component {
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
 
 
-class OrganizationDetail extends React.Component {
+class OrgDetail extends React.Component {
 
   constructor(props) {
     super(props)
@@ -855,4 +855,4 @@ class OrganizationDetail extends React.Component {
   }
 }
 
-export default connect()(Form.create()(OrganizationDetail))
+export default connect()(Form.create()(OrgDetail))

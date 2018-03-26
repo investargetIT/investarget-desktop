@@ -17,7 +17,7 @@ import BasicInfo from './routes/BasicInfo'
 import PermList from './routes/PermList'
 import DataRoom from './routes/DataRoom'
 import EditOrganization from './routes/EditOrganization'
-import OrganizationDetail from './routes/OrganizationDetail'
+import OrgDetail from './routes/OrgDetail'
 import EditProject from './routes/EditProject'
 import ProjectList from './routes/ProjectList'
 import ProjectListRecommend from './routes/ProjectListRecommend'
@@ -82,7 +82,7 @@ function RouterConfig({ history }) {
       <Route path="/app/organization/add" component={AddOrganization} />
       <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
       <Route path="/app/organization/edit/:id" component={EditOrganization} />
-      <Route path="/app/organization/:id" component={OrganizationDetail} />
+      <Route path="/app/organization/:id" component={OrgDetail} />
       <Route path={URI_11} component={LogList} />
       <Route path={URI_9} component={ModifyPwd} />
       <Route path={URI_10} component={BasicInfo} />
