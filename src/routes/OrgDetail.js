@@ -324,6 +324,11 @@ class InvestEvent extends React.Component {
       .catch(err => console.error(err));
   }
 
+  delete(id) {
+    api.deleteOrgInvestEvent(id)
+      .then(() => this.getData());
+  }
+
   render() {
     const { page, pageSize, total } = this.state;
 
@@ -340,6 +345,15 @@ class InvestEvent extends React.Component {
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '投资性质', dataIndex: 'investType'},
       {title: '投资金额', dataIndex: 'investSize'},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
     ];
 
     return <div>
