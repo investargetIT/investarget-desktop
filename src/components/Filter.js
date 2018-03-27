@@ -664,7 +664,7 @@ class ProjectLibraryFilter extends React.Component {
 }
 ProjectLibraryFilter = connect(mapStateToPropsIndustry)(ProjectLibraryFilter)
 
-function mapStateToPropsIndustry (state) {
+export function mapStateToPropsIndustry (state) {
   const { libIndustry: industry } = state.app
 
   let pIndustries = industry.filter(item => item.p_cat_id === null)
@@ -689,7 +689,7 @@ function mapStateToPropsIndustry (state) {
     return ret
   })
 
-  return { industryOptions }
+  return { industryOptions, industry }
 }
 
 

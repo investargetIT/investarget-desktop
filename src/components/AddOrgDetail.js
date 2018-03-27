@@ -23,6 +23,7 @@ import * as api from '../api';
 import { 
   SelectExistOrganization,
   CascaderCountry,
+  SelectLibIndustry,
 } from './ExtraInput';
 
 const FormItem = Form.Item;
@@ -277,7 +278,7 @@ class InvestEventForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label="行业分类" name="industrytype">
-          <Input />
+          <SelectLibIndustry />
         </BasicFormItem>
 
         <BasicFormItem label="地区" name="area" valueType="number">

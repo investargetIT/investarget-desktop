@@ -21,6 +21,7 @@ import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
 import { BasicContainer } from './Filter';
+import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'; 
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -744,7 +745,6 @@ class CascaderCountry extends React.Component {
 
 function mapStateToPropsCountry (state) {
   const { country } = state.app
-echo('country', country)
   var list = country.filter(item => item.parent == null)
   list = list.map(item => {
     var children = country.filter(i => i.parent == item.id)
@@ -859,6 +859,38 @@ function mapStateToPropsIndustry (state) {
 
 CascaderIndustry = connect(mapStateToPropsIndustry)(CascaderIndustry)
 
+class SelectLibIndustry extends React.Component {
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getLibIndustry' });
+  }
+
+  handleChange = (value, detail) => {
+    let v = value.length == 2 ? value[1] : value[0]
+    if (this.props.onChange) {
+      this.props.onChange(v)
+    }
+  }
+
+  findParent = idArr => {
+    const detail = this.props.industry.filter(f => f.cat_name === idArr[0])[0];
+    if (detail.p_cat_id === null) {
+      return idArr;
+    }
+    idArr.unshift(detail.p_cat_name);
+    return this.findParent(idArr);
+  } 
+
+  render() {
+    const { industryOptions, value:industry, dispatch, industry: data, onChange, ...extraProps } = this.props;
+    const value = industry ? this.findParent([industry]) : [undefined];
+    return (
+      <Cascader options={industryOptions} value={value} onChange={this.handleChange} {...extraProps} />
+    )
+  }
+}
+
+SelectLibIndustry = connect(mapStateToPropsLibIndustry)(SelectLibIndustry);
 
 /**
  * InputCurrency
@@ -1273,7 +1305,8 @@ export {
   SelectBDSource,
   SelectArea,
   SelectOrgUser,
-  SelectPartner, 
+  SelectPartner,
+  SelectLibIndustry,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
