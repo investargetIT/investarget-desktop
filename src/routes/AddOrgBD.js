@@ -94,6 +94,21 @@ class AddOrgBD extends React.Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.sortedTrader !== nextProps.sortedTrader) {
+      const sortedData = [...this.state.data];
+      nextProps.sortedTrader.reverse().forEach(item => {
+        const index = sortedData.map(m => m.id).indexOf(item.value);
+        if (index > -1) {
+          const trader = sortedData[index];
+          sortedData.splice(index, 1);
+          sortedData.unshift(trader);
+        }
+      });
+      this.setState({ data: sortedData });
+    }
+  }
+
   render() {
     const { location }  = this.props
     return (
@@ -135,4 +150,8 @@ class AddOrgBD extends React.Component {
   }
 }
 
-export default connect()(withRouter(AddOrgBD))
+function mapStateToProps(state) {
+  const { sortedTrader } = state.app;
+  return { sortedTrader };
+}
+export default connect(mapStateToProps)(withRouter(AddOrgBD));

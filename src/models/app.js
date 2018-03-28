@@ -31,7 +31,8 @@ export default {
     unreadMessageNum: 0,
     libIndustry: [],
     search: '',
-    tooNarrow: false, 
+    tooNarrow: false,
+    sortedTrader: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -71,7 +72,10 @@ export default {
     },
     showOrHideTooNarrowWarning(state, { payload: tooNarrow }) {
       return { ...state, tooNarrow };
-    }, 
+    },
+    setSortedTrader(state, { payload: sortedTrader }) {
+      return { ...state, sortedTrader };
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {

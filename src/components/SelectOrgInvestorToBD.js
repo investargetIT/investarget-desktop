@@ -82,6 +82,8 @@ class SelectUserTransaction extends React.Component {
 
 class SelectOrgInvestorToBD extends React.Component {
 
+  investorTrader = [];
+
   constructor(props) {
     super(props)
     this.state = {
@@ -216,6 +218,30 @@ class SelectOrgInvestorToBD extends React.Component {
     })
   }
 
+  // 这个方法是为了实现创建机构BD最后选择交易师时有顺序的展示
+  handleLoadTrader = investorUserRelation => {
+    this.investorTrader.push(investorUserRelation);
+    const listWithInvestor = this.state.list.filter(f => f.id !== null);
+    if (this.investorTrader.length === listWithInvestor.length) {
+      const sortedRelation = [];
+      listWithInvestor.forEach(item => {
+        sortedRelation.push(this.investorTrader.filter(f => f.investor === item.id)[0]);
+      })
+      const sortedTrader = sortedRelation.map(m => m.trader).reduce((previous, current) => {
+        current.forEach(item => {
+          if (previous.map(m => m.value).indexOf(item.value) === -1) {
+            previous.push(item);
+          }
+        });
+        return previous;
+      }, []);
+      this.props.dispatch({
+        type: 'app/setSortedTrader',
+        payload: sortedTrader, 
+      }); 
+    }
+  }
+
   render() {
     const rowSelection = {
       selectedRowKeys: this.props.value.map(item => item.investor + '-' + item.org),
@@ -239,7 +265,7 @@ class SelectOrgInvestorToBD extends React.Component {
       { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
       { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
       { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
-      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} /> : '暂无' } 
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
       
     ]
     if(this.props.source!="meetingbd"){
@@ -325,7 +351,6 @@ class Trader extends React.Component {
   componentDidMount() {
     const param = { investoruser: this.props.investor}
     api.getUserRelation(param).then(result => {
-      echo(result);
       const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
       const list = []
       data.forEach(item => {
@@ -333,8 +358,12 @@ class Trader extends React.Component {
         if (trader) {
           list.push({ label: trader.username, value: trader.id, onjob: trader.onjob })
         }
-        this.setState({ list });
-      })
+      });
+
+      const investorUserRelation = { investor: this.props.investor, trader: list };
+      this.props.onLoadTrader(investorUserRelation);
+      this.setState({ list });
+
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
