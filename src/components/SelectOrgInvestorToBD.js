@@ -223,21 +223,9 @@ class SelectOrgInvestorToBD extends React.Component {
     this.investorTrader.push(investorUserRelation);
     const listWithInvestor = this.state.list.filter(f => f.id !== null);
     if (this.investorTrader.length === listWithInvestor.length) {
-      const sortedRelation = [];
-      listWithInvestor.forEach(item => {
-        sortedRelation.push(this.investorTrader.filter(f => f.investor === item.id)[0]);
-      })
-      const sortedTrader = sortedRelation.map(m => m.trader).reduce((previous, current) => {
-        current.forEach(item => {
-          if (previous.map(m => m.value).indexOf(item.value) === -1) {
-            previous.push(item);
-          }
-        });
-        return previous;
-      }, []);
       this.props.dispatch({
         type: 'app/setSortedTrader',
-        payload: sortedTrader, 
+        payload: this.investorTrader, 
       }); 
     }
   }

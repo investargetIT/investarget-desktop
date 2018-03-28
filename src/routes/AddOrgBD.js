@@ -73,6 +73,33 @@ class AddOrgBD extends React.Component {
   handleSelectUser = (selectedUsers) => {
     this.selectedUsers = selectedUsers;
     this.setState({ visible: true });
+
+    // 交易师选项按照要求排序
+    const listWithInvestor = selectedUsers.filter(f => f.investor !== null);
+    const sortedRelation = [];
+    listWithInvestor.forEach(item => {
+      sortedRelation.push(this.props.sortedTrader.filter(f => f.investor === item.investor)[0]);
+    })
+    const sortedTrader = sortedRelation.map(m => m.trader).reduce((previous, current) => {
+      current.forEach(item => {
+        if (previous.map(m => m.value).indexOf(item.value) === -1) {
+          previous.push(item);
+        }
+      });
+      return previous;
+    }, []);
+
+    const sortedData = [...this.state.data];
+    sortedTrader.reverse().forEach(item => {
+      const index = sortedData.map(m => m.id).indexOf(item.value);
+      if (index > -1) {
+        const trader = sortedData[index];
+        sortedData.splice(index, 1);
+        sortedData.unshift(trader);
+      }
+    });
+
+    this.setState({ data: sortedData });
   }
 
   componentDidMount() {
@@ -92,21 +119,6 @@ class AddOrgBD extends React.Component {
         payload: error,
       })
     })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.sortedTrader !== nextProps.sortedTrader) {
-      const sortedData = [...this.state.data];
-      nextProps.sortedTrader.reverse().forEach(item => {
-        const index = sortedData.map(m => m.id).indexOf(item.value);
-        if (index > -1) {
-          const trader = sortedData[index];
-          sortedData.splice(index, 1);
-          sortedData.unshift(trader);
-        }
-      });
-      this.setState({ data: sortedData });
-    }
   }
 
   render() {

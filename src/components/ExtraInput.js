@@ -541,6 +541,13 @@ class SelectTrader extends React.Component {
     })
     }
   }
+  
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data !== this.props.data) {
+      this.setState({ data: nextProps.data });
+    }
+  }
+
   render() {
     return (
       <Select
