@@ -41,7 +41,6 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
           <DatePicker 
             disabledDate={this.disabledDate} 
-            disabled={'isAdd' in this.props ? false : true} 
             showTime={{format: 'HH:mm'}} 
             format="YYYY-MM-DD HH:mm" 
           />

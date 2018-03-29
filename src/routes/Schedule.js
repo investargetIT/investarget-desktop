@@ -148,7 +148,7 @@ class Schedule extends React.Component {
   }
 
   hideEventModal = () => {
-    this.setState({ visibleEvent: false, event: {} })
+    this.setState({ visibleEvent: false });
     this.eventEl.classList.remove('event-selected')
   }
 
@@ -179,7 +179,6 @@ class Schedule extends React.Component {
   }
 
   render() {
-    console.log(this.state.event)
     const modalStyle = {
     }
     const maskStyle = {
@@ -194,7 +193,9 @@ class Schedule extends React.Component {
         <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteEvent}>
           <a href="javascript:void(0)" style={eventTitleStyle}>{i18n('common.delete')}</a>
         </Popconfirm>
+        { moment(this.state.event.scheduledtime + this.state.event.timezone) < moment().startOf('day') ? null : 
         <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
+        }
       </div>
     )
     return (
