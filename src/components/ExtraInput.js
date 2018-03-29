@@ -727,6 +727,9 @@ class CascaderCountry extends React.Component {
   }
 
   render() {
+
+    if (this.props.data.length === 0) return null;
+
     const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = this.props;
     const countryID = country && isDetail ? country.value : country; 
     const value = countryID ? this.findParent([countryID]) : [undefined];
