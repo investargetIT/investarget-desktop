@@ -58,7 +58,7 @@ class ProjectLibrary extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProject)
+    this.setState({ filters, page: 1, search: null }, this.getProject)
   }
 
   handleChangeSearch = (search) => {
