@@ -14,6 +14,13 @@ import {
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
 
+function range(start, end) {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+}
 
 class ScheduleForm extends React.Component {
 
@@ -25,10 +32,12 @@ class ScheduleForm extends React.Component {
       getFieldDecorator('scheduledtime', {
         rules: [{required: true}], initialValue: props.date,
       })
+      getFieldDecorator('country', { initialValue: props.country });
     }
   }
 
   disabledDate = current => current && current < moment().startOf('day');
+  disabledTime = () => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) });
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
@@ -39,9 +48,14 @@ class ScheduleForm extends React.Component {
           <Input />
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
-          <DatePicker 
-            disabledDate={this.disabledDate} 
-            showTime={{format: 'HH:mm'}} 
+          <DatePicker
+            disabledDate={this.disabledDate}
+            disabledTime={this.disabledTime}
+            showTime={{
+              hideDisabledOptions: true,
+              format: 'HH:mm',
+            }}
+            showToday={false}
             format="YYYY-MM-DD HH:mm" 
           />
         </BasicFormItem>

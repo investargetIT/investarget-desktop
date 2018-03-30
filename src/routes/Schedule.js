@@ -85,7 +85,7 @@ class Schedule extends React.Component {
 
   onSelect = (date, dateString) => {
     if (this.state.mode == 'month' && date.diff(moment(), 'days') >= 0) {
-      this.setState({ visibleAdd: true, selectedDate: date })
+      this.setState({ visibleAdd: true, selectedDate: date.startOf('hour') })
     }
   }
 
@@ -217,7 +217,14 @@ class Schedule extends React.Component {
           style={modalStyle}
           maskStyle={maskStyle}
         >
-          { visibleAdd ? <AddScheduleForm wrappedComponentRef={this.handleRef} isAdd date={selectedDate} /> : null }
+          { visibleAdd ? 
+            <AddScheduleForm 
+              wrappedComponentRef={this.handleRef} 
+              isAdd 
+              date={selectedDate}
+              country={{ label: 'China', value: 42 }}
+            /> 
+          : null }
         </Modal>
 
         <Modal
