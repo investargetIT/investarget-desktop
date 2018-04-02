@@ -480,7 +480,7 @@ class OrganizationListFilter extends React.Component {
 
   handleReset = () => {
     this.setState({ ...OrganizationListFilter.defaultValue })
-    this.props.onSearch({ ...OrganizationListFilter.defaultValue })
+    this.props.onReset({ ...OrganizationListFilter.defaultValue })
   }
 
   render() {

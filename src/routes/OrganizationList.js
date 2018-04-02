@@ -11,7 +11,7 @@ import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
-import { Search2 } from '../components/Search'
+import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option
@@ -49,7 +49,7 @@ class OrganizationList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrg)
+    this.setState({ filters, page: 1, search: null }, this.getOrg)
   }
 
   handleSearch = (search) => {
@@ -175,8 +175,15 @@ class OrganizationList extends React.Component {
             <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
             <div style={{ overflow: 'auto' }}>
-              <div style={{ marginBottom: '16px', float: 'left' }}>
-                <Search2 style={{ width: 250 }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
+
+              <div style={{ float: 'left' }}>
+                <Search 
+                  style={{ width: 250 }} 
+                  placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} 
+                  onSearch={() => this.setState({ page: 1 }, this.getOrg)}
+                  onChange={search => this.setState({ search })}
+                  value={search}
+                />
               </div>
 
               <div style={{ float: 'right' }}>
