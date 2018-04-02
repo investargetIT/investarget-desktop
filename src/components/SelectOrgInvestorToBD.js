@@ -241,11 +241,8 @@ class SelectOrgInvestorToBD extends React.Component {
       {
         title: i18n('user.name'), key: 'username', dataIndex: 'username',
         render: (text, record) => <div>
-          {record.username ? <Popover placement="topRight" content={displayUserWhenPopover(record)}>
-            <span style={{ color: '#428BCA' }}>
-              {record.hasRelation ? <Link to={'app/user/edit/' + record.bduser}>{record.username}</Link>
-                : record.username}
-            </span>
+          {record.username ? <Popover placement="topLeft" content={displayUserWhenPopover(record)}>
+            <span style={{ color: '#428BCA' }}>{ record.username }</span>
           </Popover> : '暂无投资人'}
         </div>
       },

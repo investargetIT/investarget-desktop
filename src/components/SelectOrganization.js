@@ -15,6 +15,9 @@ import {
   Pagination, 
   Popover,
   Tag,
+  Spin,
+  Row,
+  Col,
 } from 'antd';
 import { OrganizationListFilter } from './Filter'
 import { Search2 } from './Search'
@@ -22,6 +25,16 @@ import { Search2 } from './Search'
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
+
+function Investor(props) {
+  return (
+    <Row style={{ padding: '4px 0' }}>
+      <Col span={6}>{props.username}</Col>
+      <Col span={6}>{props.mobile}</Col>
+      <Col span={12}>{props.tags ? props.tags.map(m => m.name).join('，') : ''}</Col>
+    </Row>
+  )
+}
 
 class SelectOrganization extends React.Component {
 
@@ -36,6 +49,7 @@ class SelectOrganization extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      orgInvestor: [],
     }
   }
 
@@ -89,6 +103,48 @@ class SelectOrganization extends React.Component {
     this.props.onChange(newOrg, newOrgDetails);
   }
 
+  popoverContent = record => {
+    const orgInvestor = this.state.orgInvestor.filter(f => f.id === record.id);
+    if (orgInvestor.length > 0) {
+      const investor = orgInvestor[0].investors.data;
+      if (investor.length > 0) {
+        return <div style={{ width: 500 }}>
+          {investor.map(m => <Investor key={m.id} {...m} />)}
+        </div>;
+      } else {
+        return '暂无投资人';
+      }
+    } else {
+      return <Spin />;
+    }
+  }
+
+  handleOrgNameHover = record => {
+    const orgInvestor = this.state.orgInvestor.filter(f => f.id === record.id);
+    if (orgInvestor.length === 0) {
+      this.getInvestor(record.id);
+    }
+  }
+
+  getInvestor = orgID => {
+    api.queryUserGroup({ type: 'investor' })
+      .then(data => {
+        const investorGroups = data.data.data.map(item => item.id);
+        return api.getUser({
+          page_size: 1000,
+          groups: investorGroups,
+          starmobile: true,
+          org: [orgID]
+        })
+      })
+      .then(data => {
+        this.setState({ orgInvestor: this.state.orgInvestor.concat({
+          id: orgID,
+          investors: data.data
+        })});
+      })
+  }
+
   render() {
 
     const rowSelection= {
@@ -97,7 +153,13 @@ class SelectOrganization extends React.Component {
     }
 
     const columns = [
-      { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname' },
+      { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname', 
+        render: (text, record) => <div>
+          <Popover placement="topLeft" content={this.popoverContent(record)}>
+            <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>{text}</span>
+          </Popover>
+        </div>
+      },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
       { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
