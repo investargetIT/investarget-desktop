@@ -13,7 +13,7 @@ import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { ProjectListFilter } from '../components/Filter'
-import { Search2 } from '../components/Search'
+import { Search } from '../components/Search';
 
 import AuditProjectModal from '../components/AuditProjectModal'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -52,7 +52,7 @@ class ProjectList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProject)
+    this.setState({ filters, page: 1, search: null }, this.getProject)
   }
 
   handleSearch = (search) => {
@@ -323,8 +323,14 @@ class ProjectList extends React.Component {
 
         <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-        <div style={{ marginBottom: '16px'}} className="clearfix">
-          <Search2 defaultValue={search} placeholder={i18n('project.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
+        <div style={{ marginBottom: 20, textAlign: 'right' }} className="clearfix">
+          <Search
+            style={{ width: 200 }}
+            placeholder={i18n('project.project_name')}
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
         </div>
 
         <Table
