@@ -4,6 +4,7 @@ import { Link } from 'dva/router'
 import { 
   i18n,
   getUserInfo,
+  checkRealMobile,
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -30,8 +31,8 @@ function Investor(props) {
   return (
     <Row style={{ padding: '4px 0' }}>
       <Col span={6}>{props.username}</Col>
-      <Col span={6}>{props.mobile}</Col>
-      <Col span={12}>{props.tags ? props.tags.map(m => m.name).join('，') : ''}</Col>
+      <Col span={4}><div style={{ width: '80%', height: 20, background: checkRealMobile(props.mobile) ? 'green' : 'red' }} /></Col>
+      <Col span={14}>{props.tags ? props.tags.map(m => m.name).join('，') : ''}</Col>
     </Row>
   )
 }
@@ -109,6 +110,13 @@ class SelectOrganization extends React.Component {
       const investor = orgInvestor[0].investors.data;
       if (investor.length > 0) {
         return <div style={{ width: 500 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>
+            <div style={{ width: 20, height: 20, background: 'green' }} />
+            <div>表示联系方式可用</div>
+            <div style={{ width: 20 }} />
+            <div style={{ width: 20, height: 20, background: 'red' }} />
+            <div>表示联系方式不可用或暂无联系方式</div>
+          </div>
           {investor.map(m => <Investor key={m.id} {...m} />)}
         </div>;
       } else {

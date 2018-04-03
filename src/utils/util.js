@@ -398,3 +398,7 @@ export function isShowCNY(record, allArea) {
   const isRecordParentAreaChina = parentArea ? ['中国', 'China'].includes(parentArea.country) : false;
   return isRecordAreaChina || isRecordParentAreaChina && record.currency.id === 1;
 }
+
+export function checkRealMobile(mobile) {
+  return /^(13[0-9]|14[579]|15[0-3,5-9]|17[0135678]|18[0-9])[\d*]{8}$/.test(mobile);
+}
