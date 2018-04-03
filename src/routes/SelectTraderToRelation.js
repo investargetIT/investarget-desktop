@@ -160,8 +160,9 @@ class SelectTraderToRelation extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('user.select_trader')}>
-        <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
-
+        <div style={{ marginBottom: '24px', width: '200px' }}>
+          <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+        </div>
         <Table
           style={tableStyle}
           rowSelection={rowSelection}

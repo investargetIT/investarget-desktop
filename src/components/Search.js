@@ -17,9 +17,7 @@ function Search(props) {
   }
   const { value, onChange, onSearch, ...extraProps } = props
   return (
-    <div style={{ marginBottom: '24px', width: '200px' }}>
       <Input.Search size="large" value={props.value} onChange={handleChange} onSearch={props.onSearch} {...extraProps} />
-    </div>
   )
 }
 

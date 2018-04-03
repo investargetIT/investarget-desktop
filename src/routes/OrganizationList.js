@@ -176,7 +176,7 @@ class OrganizationList extends React.Component {
 
             <div style={{ overflow: 'auto' }}>
 
-              <div style={{ float: 'left' }}>
+              <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
                 <Search 
                   style={{ width: 250 }} 
                   placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} 

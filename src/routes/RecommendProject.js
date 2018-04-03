@@ -148,7 +148,9 @@ class RecommendProject extends React.Component {
           <h3 style={{lineHeight: 2, marginBottom: '24px'}}>项目名称：{projTitle}</h3>
 
           <div>
-            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+            <div style={{ marginBottom: '24px', width: '200px' }}>
+              <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
+            </div>
             <Table
               style={tableStyle}
               rowSelection={rowSelection}
