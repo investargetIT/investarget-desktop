@@ -16,9 +16,7 @@ import {
 } from '../constants';
 import { connect } from 'dva'
 import CardContainer from '../components/CardContainer'
-
-const Search = Input.Search
-
+import { Search } from './Search';
 class MyPartner extends React.Component {
 
   state = {
@@ -167,13 +165,17 @@ class MyPartner extends React.Component {
       <div>
 
       {this.props.type === "investor" ? (
-        <MyInvestorListFilter onFilter={filters => this.setState({ filters, pageIndex: 1 }, this.getPartner)} />
+        <MyInvestorListFilter 
+          onReset={filters => this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)}
+          onFilter={filters => this.setState({ filters, pageIndex: 1 }, this.getPartner)} />
       ) : null}
 
       {this.props.type === "investor" ? (
         <Search
           size="large"
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
+          value={this.state.search}
+          onChange={search => this.setState({ search })}
           onSearch={search => this.setState({ search, pageIndex: 1 }, this.getPartner)} />
       ) : null}
 

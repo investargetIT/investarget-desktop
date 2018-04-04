@@ -401,26 +401,23 @@ class OrgUserListFilter extends React.Component {
 
 class MyInvestorListFilter extends React.Component {
 
-  state = {
+  static defaultValue = {
     orgtransactionphases: [],
     tags: [],
     currency: [],
     userstatus: null,
     areas: []
-  }
+  };
+
+  state = this.props.defaultValue || MyInvestorListFilter.defaultValue;
 
   onChange(key, value) {
     this.setState({ [key]: value },this.onFilter)
   }
 
   onReset() {
-    this.setState({
-      orgtransactionphases: [],
-      tags: [],
-      currency: [],
-      userstatus: null,
-      areas: []
-    })
+    this.setState({ ...MyInvestorListFilter.defaultValue });
+    this.props.onReset({ ...MyInvestorListFilter.defaultValue });
   }
 
   onFilter() {
@@ -428,22 +425,23 @@ class MyInvestorListFilter extends React.Component {
   }
 
   render() {
+    const { orgtransactionphases, tags, currency, userstatus, areas } = this.state;
     return (
       <div>
         <TransactionPhaseFilter
-          value={this.state.orgtransactionphases}
+          value={orgtransactionphases}
           onChange={this.onChange.bind(this, 'orgtransactionphases')} />
         <TagFilter
-          value={this.state.tags}
+          value={tags}
           onChange={this.onChange.bind(this, 'tags')} />
         <CurrencyFilter
-          value={this.state.currency}
+          value={currency}
           onChange={this.onChange.bind(this, 'currency')} />
         <UserAuditFilter
-          value={this.state.userstatus}
+          value={userstatus}
           onChange={this.onChange.bind(this, 'userstatus')} />
         <OrganizationAreaFilter
-          value={this.state.areas}
+          value={areas}
           onChange={this.onChange.bind(this, 'areas')} />
         <FilterOperation
           onSearch={this.onFilter.bind(this)}
