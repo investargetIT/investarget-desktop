@@ -22,7 +22,7 @@ import {
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
-import { Search2 } from '../components/Search';
+import { Search } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
@@ -109,7 +109,7 @@ class OrgBDList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrgBdList)
+    this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
   }
 
   handleModifyStatusBtnClicked(bd) {
@@ -402,15 +402,16 @@ class OrgBDList extends React.Component {
           onChange={this.handleFilt}
         />
         
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
-          <Search2
-            defaultValue={search}
+        <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
+          <Search
+            style={{ width: 200 }}
             placeholder={i18n('project_bd.project_name')}
-            style={{ width: 200, float: 'right' }}
-            onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)} 
+            onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
+            onChange={search => this.setState({ search })}
+            value={search}
           />
         </div>
-        
+
         <Table
           onChange={this.handleTableChange}
           columns={columns}
