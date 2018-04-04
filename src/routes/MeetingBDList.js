@@ -28,7 +28,7 @@ import {
 import moment from 'moment'
 import { Link } from 'dva/router';
 import { MeetBDFilter } from '../components/Filter';
-import { Search2 } from '../components/Search';
+import { Search } from '../components/Search';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import {BasicFormItem} from '../components/Form'
@@ -160,7 +160,7 @@ class MeetingBDList extends React.Component{
 	}
 
 	handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getMeetingBDList)
+    this.setState({ filters, page: 1, search: null }, this.getMeetingBDList);
   }
 
 	getMeetingBDList = (values) =>{
@@ -355,14 +355,25 @@ class MeetingBDList extends React.Component{
           onChange={this.handleFilt}
         />
 
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
+        {/* <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
           <Search2
             defaultValue={search}
             placeholder={i18n('project_bd.project_name')}
             style={{ width: 200, float: 'right' }}
             onSearch={search => this.setState({ search, page: 1 }, this.getMeetingBDList)} 
           />
+        </div> */}
+
+        <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
+          <Search
+            style={{ width: 200 }}
+            placeholder={i18n('project_bd.project_name')}
+            onSearch={search => this.setState({ search, page: 1 }, this.getMeetingBDList)}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
         </div>
+
         <Table
           onChange={this.handleTableChange}
           columns={columns}

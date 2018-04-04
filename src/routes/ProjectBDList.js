@@ -3,7 +3,7 @@ import { Button, Table, Pagination, Input, Popconfirm, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectBDStatus } from '../components/ModalModifyOrgBDStatus';
 import { ProjectBDFilter } from '../components/Filter'
-import { Search2 } from '../components/Search'
+import { Search } from '../components/Search';
 import { 
   handleError, 
   time, 
@@ -50,7 +50,7 @@ class ProjectBDList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProjectBDList)
+    this.setState({ filters, page: 1, search: null }, this.getProjectBDList)
   }
 
   handleSearch = (search) => {
@@ -324,8 +324,14 @@ class ProjectBDList extends React.Component {
       <LeftRightLayout location={this.props.location} title={i18n('menu.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>
         {source!=0 ? <BDModal source={source}  element='proj'/> : null}
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2 defaultValue={search} placeholder={i18n('project_bd.project_name')} style={{ width: 200, float: 'right' }} onSearch={this.handleSearch} />
+        <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
+          <Search
+            style={{ width: 200 }}
+            placeholder={i18n('project_bd.project_name')}
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
         </div>
         <Table
           onChange={this.handleTableChange}
