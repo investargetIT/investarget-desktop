@@ -30,8 +30,11 @@ const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 function Investor(props) {
   return (
     <Row style={{ padding: '4px 0' }}>
-      <Col span={6}>{props.username}</Col>
-      <Col span={4}><div style={{ width: '80%', height: 20, background: checkRealMobile(props.mobile) ? 'green' : 'red' }} /></Col>
+      <Col span={3}>{props.username}</Col>
+      <Col span={2}><div style={{ width: '80%', height: 20, background: checkRealMobile(props.mobile) ? 'green' : 'red' }} /></Col>
+      <Col span={5}>
+      { props.traderList.map(m => <span key={m.value} style={{ marginRight: 10, color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
+      </Col>
       <Col span={14}>{props.tags ? props.tags.map(m => m.name).join('，') : ''}</Col>
     </Row>
   )
@@ -109,7 +112,7 @@ class SelectOrganization extends React.Component {
     if (orgInvestor.length > 0) {
       const investor = orgInvestor[0].investors.data;
       if (investor.length > 0) {
-        return <div style={{ width: 500 }}>
+        return <div style={{ width: 600 }}>
           <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>
             <div style={{ width: 20, height: 20, background: 'green' }} />
             <div>表示联系方式可用</div>
@@ -135,6 +138,9 @@ class SelectOrganization extends React.Component {
   }
 
   getInvestor = orgID => {
+    const orgInvestor = {
+      id: orgID,
+    };
     api.queryUserGroup({ type: 'investor' })
       .then(data => {
         const investorGroups = data.data.data.map(item => item.id);
@@ -143,13 +149,25 @@ class SelectOrganization extends React.Component {
           groups: investorGroups,
           starmobile: true,
           org: [orgID]
-        })
+        });
       })
       .then(data => {
-        this.setState({ orgInvestor: this.state.orgInvestor.concat({
-          id: orgID,
-          investors: data.data
-        })});
+        orgInvestor.investors = data.data;
+        return Promise.all(data.data.data.map(m => api.getUserRelation({ investoruser: m.id }))); 
+      })
+      .then(data => {
+        orgInvestor.investors.data.forEach((element, index) => {
+          const relationShip = data[index].data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype));
+          const traderList = [];
+          relationShip.forEach(item => {
+            const trader = item.traderuser;
+            if (trader) {
+              traderList.push({ label: trader.username, value: trader.id, onjob: trader.onjob });
+            }
+          });
+          element['traderList'] = traderList;
+        });
+        this.setState({ orgInvestor: this.state.orgInvestor.concat(orgInvestor) });
       })
   }
 
