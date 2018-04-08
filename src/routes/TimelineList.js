@@ -13,7 +13,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 
 import { TimelineFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
-import { Search2 } from '../components/Search'
+import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
@@ -52,7 +52,7 @@ class TimelineList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getTimeline)
+    this.setState({ filters, page: 1, search: null }, this.getTimeline)
   }
 
   handleSearch = (search) => {
@@ -308,10 +308,16 @@ class TimelineList extends React.Component {
         <div>
           <div>
             <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-            <div style={{ marginBottom: '24px'}} className="clearfix">
-              <Search2 style={{ width: 250,float:'right' }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')} />
-            </div>
 
+            <div style={{ marginBottom: 24, textAlign: 'right' }} className="clearfix">
+              <Search
+                style={{ width: 250 }}
+                placeholder={[i18n('timeline.project_name'), i18n('timeline.investor'), i18n('timeline.trader')].join(' / ')}
+                onSearch={this.handleSearch}
+                onChange={search => this.setState({ search })}
+                value={search}
+              />
+            </div>
             <Table
               onChange={this.handleTableChange}
               style={tableStyle}

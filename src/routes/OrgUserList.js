@@ -18,7 +18,7 @@ const RadioGroup = Radio.Group
 const Option = Select.Option
 const confirm = Modal.confirm
 
-import { Search2 } from '../components/Search'
+import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 
@@ -50,7 +50,7 @@ class OrgUserList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getUser)
+    this.setState({ filters, page: 1, search: null }, this.getUser)
   }
 
   handleSearch = (search) => {
@@ -221,10 +221,15 @@ class OrgUserList extends React.Component {
 
         <OrgUserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-        <div style={{ overflow: 'auto' }}>
-          <div style={{ marginBottom: '24px', float: 'left' }}>
-            <Search2 placeholder={i18n('user.name')} style={{ width: 200 }} defaultValue={search} onSearch={this.handleSearch} />
-          </div>
+        <div style={{ overflow: 'auto', marginBottom: 24 }}>
+
+          <Search
+            style={{ width: 200 }}
+            placeholder={i18n('user.name')}
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
 
           <div style={{ float: 'right' }}>
             {i18n('common.sort_by_created_time')}&nbsp;

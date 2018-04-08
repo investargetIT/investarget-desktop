@@ -11,7 +11,7 @@ import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
-import { Search2 } from '../components/Search';
+import { Search } from '../components/Search';
 import { SelectTrader } from '../components/ExtraInput';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
@@ -55,7 +55,7 @@ class UserList extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getUser)
+    this.setState({ filters, page: 1, search: null }, this.getUser)
   }
 
   handleSearch = (search) => {
@@ -288,11 +288,15 @@ class UserList extends React.Component {
 
         <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-        <div style={{ overflow: 'auto' }}>
-          <div style={{ marginBottom: '24px', float: 'left' }}>
-            <Search2 placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')} style={{ width: 240 }} defaultValue={search} onSearch={this.handleSearch} />
-          </div>
+        <div style={{ overflow: 'auto', marginBottom: 24 }}>
 
+          <Search
+            style={{ width: 240 }}
+            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')} 
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
           <div style={{ float: 'right' }}>
             
             <Select size="large" style={{marginLeft:8}} defaultValue="createdtime" onChange={this.handleTimeChange.bind(this)}>

@@ -21,7 +21,7 @@ import {
   Col,
 } from 'antd';
 import { OrganizationListFilter } from './Filter'
-import { Search2 } from './Search'
+import { Search } from './Search'
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -62,7 +62,7 @@ class SelectOrganization extends React.Component {
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrg)
+    this.setState({ filters, page: 1, search: null }, this.getOrg)
   }
 
   handleSearch = (search) => {
@@ -202,7 +202,13 @@ class SelectOrganization extends React.Component {
         <OrganizationListFilter defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'flex-end' }}>
         <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
-          <Search2 style={{ width: '250px' }} placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} defaultValue={search} onSearch={this.handleSearch} />
+          <Search
+            style={{ width: 250 }}
+            placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+          />
         </Popover>
         </div>
 
