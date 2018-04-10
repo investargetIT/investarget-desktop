@@ -314,7 +314,8 @@
     "typical_case": "Typical Case",
     "partner_or_investment_committee_member": "Partner/Board Member",
     "decision_process": "Decision Process",
-    "headquarters": "Headquarters"
+    "headquarters": "Headquarters",
+    "full_name": "Full Name"
   },
 
   "email": {

@@ -343,7 +343,8 @@
     "typical_case": "典型投资案例",
     "partner_or_investment_committee_member": "合伙人/投委会成员",
     "decision_process": "决策流程",
-    "headquarters": "总部"
+    "headquarters": "总部",
+    "full_name": "全称"
   },
 
   "email": {

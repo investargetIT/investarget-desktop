@@ -92,6 +92,10 @@ class OrganizationForm extends React.Component {
           <Input />
         </BasicFormItem>
 
+        <BasicFormItem label={i18n('organization.full_name')} name="orgfullname" whitespace>
+          <Input />
+        </BasicFormItem>
+
         <BasicFormItem label={i18n('organization.org_type')} name="orgtype" valueType="number">
           <SelectOrganizationType />
         </BasicFormItem>
