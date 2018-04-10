@@ -56,7 +56,7 @@ class AddOrgBD extends React.Component {
             content: i18n('create_orgbd_success'),
             okText:"继续创建BD",
             cancelText:"返回BD列表",
-            onOk: () => { this.setState({ifContinue:true}) },
+            onOk: () => { this.setState({ifContinue:true}, () => this.setState({ ifContinue: false })) },
             onCancel: () => { 
               this.props.router.replace('/app/org/bd') 
               this.setState({ifContinue:false})
