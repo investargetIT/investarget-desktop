@@ -68,7 +68,7 @@ function DataRoomUserList(props) {
           </div>
         ))}
         </Row>
-        <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}><Button onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
+        <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}><Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
         </Row></div>
       : <div>{i18n('dataroom.no_user')}</div>
   
