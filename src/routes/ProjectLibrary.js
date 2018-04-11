@@ -41,9 +41,14 @@ class ProjectLibrary extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue
+    const search = setting ? setting.search : null
+
     this.state = {
-      filters: ProjectLibraryFilter.defaultValue,
-      search: null,
+      filters,
+      search,
       page: 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
@@ -51,6 +56,17 @@ class ProjectLibrary extends React.Component {
       loading: false,
       listForExport: [], 
     }
+  }
+
+  writeSetting = () => {
+    const { filters, search } = this.state;
+    const data = { filters, search };
+    localStorage.setItem('ProjectLibrary', JSON.stringify(data));
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('ProjectLibrary');
+    return data ? JSON.parse(data) : null;
   }
 
   handleFilt = (filters) => {
@@ -103,6 +119,7 @@ class ProjectLibrary extends React.Component {
       this.setState({ loading: false })
       handleError(error)
     })
+    this.writeSetting();
   }
 
   getAllProject = () => {
