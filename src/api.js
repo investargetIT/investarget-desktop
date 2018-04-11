@@ -348,6 +348,8 @@ export function openTimeline(id) {
   return r('/timeline/' + id + '/', 'PUT', params)
 }
 
+export const getTimelineBasic = param => r('/timeline/basic/?' + qs.stringify(param));
+
 /**
  * timeline remark
  */

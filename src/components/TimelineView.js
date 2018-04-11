@@ -31,7 +31,7 @@ class TimelineView extends React.Component {
 
   getAllTimeline = () => {
     const param = { proj: this.props.projId, page_size: 10000 }
-    api.getTimeline(param).then(result => {
+    api.getTimelineBasic(param).then(result => {
       const timelineList = result.data.data
       const list = timelineList.map(item => {
         return {
