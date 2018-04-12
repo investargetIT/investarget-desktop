@@ -119,6 +119,15 @@ class SelectTraderToRelation extends React.Component {
 
   componentDidMount() {
     this.getUser()
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
   }
 
   handleActionButtonClicked() {
@@ -151,7 +160,7 @@ class SelectTraderToRelation extends React.Component {
     const columns = [
       { title: i18n('user.trader'), key: 'username', dataIndex: 'username' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) },
       { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
       { title: i18n('user.email'), key: 'email', dataIndex: 'email' }
     ]
@@ -194,5 +203,8 @@ class SelectTraderToRelation extends React.Component {
   }
 
 }
-
-export default connect()(SelectTraderToRelation)
+function mapStateToProps(state) {
+  const { title } = state.app;
+  return { title };
+}
+export default connect(mapStateToProps)(SelectTraderToRelation);
