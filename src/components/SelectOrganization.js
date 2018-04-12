@@ -28,6 +28,11 @@ const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
 
 function Investor(props) {
+  const loadLabelByValue = (type, value) => {
+    if (Array.isArray(value) && props.tag.length > 0) {
+      return value.map(m => props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } 
+  }
   return (
     <Row style={{ padding: '4px 0' }}>
       <Col span={3}>{props.username}</Col>
@@ -35,10 +40,16 @@ function Investor(props) {
       <Col span={5}>
       { props.traderList.map(m => <span key={m.value} style={{ marginRight: 10, color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
       </Col>
-      <Col span={14}>{props.tags ? props.tags.map(m => m.name).join('，') : ''}</Col>
+      <Col span={14}>{props.tags ? loadLabelByValue('tag', props.tags) : ''}</Col>
     </Row>
   )
 }
+
+function mapStateToProps(state) {
+  const { tag } = state.app;
+  return { tag };
+}
+Investor = connect(mapStateToProps)(Investor);
 
 class SelectOrganization extends React.Component {
 
