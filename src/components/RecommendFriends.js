@@ -51,6 +51,7 @@ class RecommendFriends extends React.Component {
 
   componentDidMount() {
     this.getFriends()
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   onFriendToggle(id) {
@@ -139,7 +140,7 @@ function Card(props) {
       <div style={{height:216,backgroundSize:'cover',backgroundPosition:'center',backgroundImage:`url("${props.photourl || '/images/defaultAvatar@2x.png'}")`}}></div>
       <div style={{height:64,textAlign:'center'}}>
         <h3 style={{marginTop:5,color:'#232323',fontSize:20,lineHeight: 1.5}}>{props.username}</h3>
-        <p style={{color:'#989898',fontSize:16,lineHeight: 1.5}}>{props.title ? props.title.name : '暂无'}</p>
+        <p style={{color:'#989898',fontSize:16,lineHeight: 1.5}}>{props.title && props.titles.length > 0 ? props.titles.filter(f => f.id === props.title)[0].name : '暂无'}</p>
       </div>
       <div style={{display:props.selected ? 'block':'none',position:'absolute',zIndex:1,top:0,left:0,width:'100%',height:'100%',backgroundColor:'rgba(0,0,0,.3)'}}>
         <img src="/images/check.png" style={{position:'absolute',zIndex:1,top:0,bottom:0,left:0,right:0,margin:'auto'}} />
@@ -147,3 +148,8 @@ function Card(props) {
     </div>
   )
 }
+function mapStateToProps(state) {
+  const { title: titles } = state.app;
+  return { titles };
+}
+Card = connect(mapStateToProps)(Card);
