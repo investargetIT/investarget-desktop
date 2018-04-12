@@ -9,13 +9,7 @@ import { hasPerm, isLogin, getCurrentUser } from '../utils/util'
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
-const columns = [
-  { title: '投资人', key: 'investor', dataIndex: 'username' },
-  { title: '所属机构', key: 'org', dataIndex: 'org.orgname' },
-  { title: '职位', key: 'title', dataIndex: 'title.name' },
-  { title: '电话', key: 'mobile', dataIndex: 'mobile' },
-  { title: '邮箱', key: 'email', dataIndex: 'email' },
-]
+
 
 
 class RecommendProject extends React.Component {
@@ -132,6 +126,7 @@ class RecommendProject extends React.Component {
   componentDidMount() {
     this.getProject()
     this.getUser()
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   render() {
@@ -141,6 +136,18 @@ class RecommendProject extends React.Component {
       selectedRowKeys: selectedUsers,
       onChange: this.handleSelectUser,
     }
+
+    const columns = [
+      { title: '投资人', key: 'investor', dataIndex: 'username' },
+      { title: '所属机构', key: 'org', dataIndex: 'org.orgname' },
+      {
+        title: '职位', key: 'title', dataIndex: 'title',
+        render: text => text ? (typeof text === 'object' ? text.name :
+          this.props.title.length > 0 ? this.props.title.filter(f => f.id === text)[0].name : '') : '',
+      },
+      { title: '电话', key: 'mobile', dataIndex: 'mobile' },
+      { title: '邮箱', key: 'email', dataIndex: 'email' },
+    ]
 
     return (
       <LeftRightLayout location={this.props.location} title="推荐项目">
@@ -178,5 +185,9 @@ class RecommendProject extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  const { title } = state.app;
+  return { title };
+}
 
-export default connect()(RecommendProject)
+export default connect(mapStateToProps)(RecommendProject);

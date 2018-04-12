@@ -198,8 +198,8 @@ class SelectOrgInvestorAndTrader extends React.Component {
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
       {
         title: i18n('user.position'), key: 'title', dataIndex: 'title',
-        render: text => typeof text === 'object' ? text.name : 
-        this.props.title.length > 0 ? this.props.title.filter(f => f.id === text)[0].name : '',
+        render: text => text ? (typeof text === 'object' ? text.name : 
+        this.props.title.length > 0 ? this.props.title.filter(f => f.id === text)[0].name : '') : '',
       },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
         if (this.props.traderId) {
