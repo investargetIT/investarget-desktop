@@ -183,6 +183,7 @@ class SelectOrgInvestorAndTrader extends React.Component {
         this.getTrader()
       }
     })
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   render() {
@@ -195,7 +196,11 @@ class SelectOrgInvestorAndTrader extends React.Component {
     const columns = [
       { title: i18n('user.name'), key: 'username', dataIndex: 'username' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      {
+        title: i18n('user.position'), key: 'title', dataIndex: 'title',
+        render: text => typeof text === 'object' ? text.name : 
+        this.props.title.length > 0 ? this.props.title.filter(f => f.id === text)[0].name : '',
+      },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => {
         if (this.props.traderId) {
           return this.state.trader ? this.state.trader.username : ''
@@ -241,5 +246,8 @@ class SelectOrgInvestorAndTrader extends React.Component {
   }
 
 }
-
-export default connect()(SelectOrgInvestorAndTrader)
+function mapStateToProps(state) {
+  const { title } = state.app;
+  return { title };
+}
+export default connect(mapStateToProps)(SelectOrgInvestorAndTrader)
