@@ -127,6 +127,15 @@ class SelectUserToPosition extends React.Component {
 
   componentDidMount() {
     this.requestData()
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
   }
 
   // 选择投资人到相应职位用到了修改用户的权限，如果没有管理员修改用户的权限，那么只能修改自己的投资人
@@ -157,7 +166,7 @@ class SelectUserToPosition extends React.Component {
     const columns = [
       { title: i18n('user.trader'), key: 'username', dataIndex: 'username' },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无'  },
       { title: i18n('user.mobile'), key: 'mobile', dataIndex: 'mobile' },
       { title: i18n('user.email'), key: 'email', dataIndex: 'email' }
     ]
@@ -193,5 +202,8 @@ class SelectUserToPosition extends React.Component {
   }
 
 }
-
-export default connect()(SelectUserToPosition)
+function mapStateToProps(state) {
+  const { title } = state.app;
+  return { title };
+}
+export default connect(mapStateToProps)(SelectUserToPosition);

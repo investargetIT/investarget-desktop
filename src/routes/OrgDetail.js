@@ -667,7 +667,7 @@ class OrgDetail extends React.Component {
       if (!data) return
       const newData = this.state.data.slice()
       data[0].data.data.map(m => {
-        const index = newData.map(m => m.id).indexOf(m.title && m.title.id)
+        const index = newData.map(m => m.id).indexOf(m.title)
         if (index > -1) {
           const name = m.username
           const avatar = null
