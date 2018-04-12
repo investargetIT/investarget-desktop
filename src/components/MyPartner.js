@@ -68,6 +68,17 @@ class MyPartner extends React.Component {
   componentDidMount() {
     this.getPartner();
     this.getFriends();
+
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+    this.props.dispatch({ type: 'app/getGroup' });
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
   }
 
   handleDeleteUser(userID) {
@@ -114,21 +125,23 @@ class MyPartner extends React.Component {
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'title.name',
-        key: 'title'
+        dataIndex: 'title',
+        key: 'title',
+        render: value => this.loadLabelByValue('title', value),
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? tags.map(t => t.name).join(' ') : null
+        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null,
       }
     ]
     if (this.props.type === 'investor') {
       columns.push({
         title: i18n("user.status"),
-        dataIndex: 'userstatus.name',
+        dataIndex: 'userstatus',
         key: 'userstatus',
+        render: value => this.loadLabelByValue('audit', value),
       })
       columns.push({
         title: i18n("common.operation"),
@@ -213,7 +226,12 @@ class MyPartner extends React.Component {
   }
 }
 
-export default connect()(MyPartner);
+function mapStateToProps(state) {
+  const { title, tag, audit } = state.app;
+  return { title, tag, audit };
+}
+
+export default connect(mapStateToProps)(MyPartner);
 
 
 function Card(props) {
