@@ -195,7 +195,16 @@ class UserList extends React.Component {
     .then(data => this.setState({ traders: data.data.data }))
     .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 
-    
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' }); 
+    this.props.dispatch({ type: 'app/getGroup' }); 
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
   }
 
   render() {
@@ -225,29 +234,30 @@ class UserList extends React.Component {
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'title.name',
+        dataIndex: 'title',
         key: 'title',
-        sorter:true,
+        sorter: true,
+        render: value => this.loadLabelByValue('title', value),
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? <span className="span-tag">{tags.map(t => t.name).join(' / ')}</span> : null,
+        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null,
         sorter:true,
       },
       {
         title: i18n("account.role"),
         dataIndex: 'groups',
         key: 'role',
-        render: groups => groups ? groups.map(m => m.name).join(' ') : null,
-        ///sorter:true,
+        render: groups => this.loadLabelByValue('group', groups),
       },
       {
         title: i18n("user.status"),
-        dataIndex: 'userstatus.name',
+        dataIndex: 'userstatus',
         key: 'userstatus',
         sorter:true,
+        render: value => this.loadLabelByValue('audit', value),
       },
       {
         title: i18n("user.trader"),
@@ -362,4 +372,9 @@ class UserList extends React.Component {
 
 }
 
-export default connect()(UserList)
+function mapStateToProps(state) {
+  const { title, tag, audit, group } = state.app;
+  return { title, tag, audit, group };
+}
+
+export default connect(mapStateToProps)(UserList);

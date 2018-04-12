@@ -33,6 +33,7 @@ export default {
     search: '',
     tooNarrow: false,
     sortedTrader: [],
+    group: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -76,6 +77,9 @@ export default {
     setSortedTrader(state, { payload: sortedTrader }) {
       return { ...state, sortedTrader };
     },
+    saveGroup(state, { payload: group }) {
+      return { ...state, group };
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {
@@ -112,6 +116,12 @@ export default {
     *globalSearch({ payload: search }, { select, put }) {
       yield put({ type: 'saveSearch', payload: search })
       yield put(routerRedux.push('/app/projects/library?search=' + search))
+    },
+    *getGroup({}, { call, put, select }) {
+      const group = yield select(state => state.app.group);
+      if (group.length > 0) return;
+      const { data } = yield call(api.queryUserGroup, { page_size: 99 });
+      yield put({ type: 'saveGroup', payload: data.data });
     },
   },
   subscriptions: {
