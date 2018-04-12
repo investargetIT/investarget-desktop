@@ -132,7 +132,7 @@ class SelectOrgInvestorToBD extends React.Component {
             acc.push({
               username: null,
               org: this.props.selectedOrgs[index],
-              title: { name: null },
+              title: null,
               id: null,
             });
             return acc;
@@ -216,6 +216,7 @@ class SelectOrgInvestorToBD extends React.Component {
         this.getTrader()
       }
     })
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   // 这个方法是为了实现创建机构BD最后选择交易师时有顺序的展示
@@ -227,6 +228,14 @@ class SelectOrgInvestorToBD extends React.Component {
         type: 'app/setSortedTrader',
         payload: this.investorTrader, 
       }); 
+    }
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
     }
   }
 
@@ -247,7 +256,7 @@ class SelectOrgInvestorToBD extends React.Component {
         </div>
       },
       { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      { title: i18n('user.position'), key: 'title', dataIndex: 'title.name', render: text => text || '暂无' },
+      { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
       { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
       { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
@@ -363,4 +372,9 @@ class Trader extends React.Component {
   }
 }
 
-export default connect()(SelectOrgInvestorToBD)
+function mapStateToProps(state) {
+  const { title } = state.app;
+  return { title };
+}
+
+export default connect(mapStateToProps)(SelectOrgInvestorToBD);
