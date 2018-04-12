@@ -132,6 +132,16 @@ class OrgUserList extends React.Component {
       this.investorGroupIds = data.data.data.map(item => item.id)
       this.getUser()
     })
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+    this.props.dispatch({ type: 'app/getGroup' });
+  }
+
+  loadLabelByValue(type, value) {
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
   }
 
   render() {
@@ -158,25 +168,27 @@ class OrgUserList extends React.Component {
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'title.name',
-        key: 'title'
+        dataIndex: 'title',
+        key: 'title',
+        render: value => this.loadLabelByValue('title', value),
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? tags.map(t => t.name).join(' ') : null
+        render: tags => tags ? this.loadLabelByValue('tag', tags) : null
       },
       {
         title: i18n("account.role"),
         dataIndex: 'groups',
         key: 'role',
-        render: groups => groups ? groups.map(m => m.name).join(' ') : null
+        render: groups => groups ? this.loadLabelByValue('group', groups) : null,
       },
       {
         title: i18n("user.status"),
-        dataIndex: 'userstatus.name',
-        key: 'userstatus'
+        dataIndex: 'userstatus',
+        key: 'userstatus',
+        render: value => this.loadLabelByValue('audit', value),
       },
       {
         title: i18n("user.trader"),
@@ -266,4 +278,9 @@ class OrgUserList extends React.Component {
 
 }
 
-export default connect()(OrgUserList)
+function mapStateToProps(state) {
+  const { title, tag, audit, group } = state.app;
+  return { title, tag, audit, group };
+}
+
+export default connect(mapStateToProps)(OrgUserList);
