@@ -152,7 +152,7 @@ class UserList extends React.Component {
     this.setState({visible:true})
   }
  
-  comfirmModify = () =>{   
+  comfirmModify = () =>{
     let promises=this.state.selectedRecords.map(user=>{
       let body = {
       investoruser: user.id,
@@ -160,7 +160,7 @@ class UserList extends React.Component {
       relationtype: true
       }
       let weakTraders=[]
-      if(user.userstatus.id == 2){    //审核通过
+      if(user.userstatus == 2){    //审核通过
         return api.getUserRelation({investoruser: user.id})
         .then(result=>{         
           result.data.data.forEach(item=>{
