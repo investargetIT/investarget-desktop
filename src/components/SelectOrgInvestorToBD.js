@@ -46,40 +46,6 @@ function displayUserWhenPopover(user) {
   </div>;
 }
 
-class SelectUserTransaction extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  componentDidMount() {
-    const param = { investoruser: this.props.userId }
-    api.getUserRelation(param).then(result => {
-      const data = result.data.data
-      var options = []
-      data.forEach(item => {
-        const trader = item.traderuser
-        if (trader) {
-          options.push({ label: trader.username, value: trader.id })
-        }
-      })
-      this.props.onOptionsChange(options)
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  render() {
-    return (
-      <SelectNumber style={{width: '80px'}} options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
-    )
-  }
-}
-
-
-
 class SelectOrgInvestorToBD extends React.Component {
 
   investorTrader = [];

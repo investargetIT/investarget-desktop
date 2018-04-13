@@ -123,7 +123,7 @@ class AddMeetingBD extends React.Component{
           <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
           : null}
 
-        { this.state.data ? <SelectInvestorAndTrader onSelect={this.handleSelectUser} options={this.state.data} source="meetingbd" ifContinue={this.state.ifContinue}/> : null }
+        <SelectInvestorAndTrader onSelect={this.handleSelectUser} bd source="meetingbd" ifContinue={this.state.ifContinue}/>
       </div>
 
       <Modal
