@@ -138,17 +138,18 @@ class ProjectLibrary extends React.Component {
     return api.getLibProj(param)
   }
   
-  handleSelectChange = (listForExport) => {
-    const { filters, search } = this.state
-    const param = { page_size: 500, com_name: search, ...filters }
-    api.getLibProj(param).then(result => {
-      const list = result.data.data.filter(item=>
-        {
-          return listForExport.some(element=>element==item.id)
-        });
-      this.setState({ listForExport: list });
-    });
-   
+  handleSelectChange = (selectedIds, selectedDetails) => {
+    const oldSelectIds = this.state.listForExport.map(m => m.id);
+
+    let newDetails = selectedDetails.filter(item => 
+      !oldSelectIds.includes(item.id)
+    );
+
+    newDetails = this.state.listForExport.concat(newDetails).filter(item => 
+      selectedIds.includes(item.id)
+    );
+
+    this.setState({ listForExport: newDetails});
   }
 
   exportExcel = () => {
@@ -185,7 +186,6 @@ class ProjectLibrary extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const comNameStyle={color:'#d24914'}
     const rowSelection = {
-      listForExport,
       onChange: this.handleSelectChange,
     }
     const columns = [
@@ -239,7 +239,7 @@ class ProjectLibrary extends React.Component {
         <Table
           style={{ display: 'none' }}
           columns={columns}
-          dataSource={this.state.listForExport}
+          dataSource={listForExport}
           rowKey={record=>record.id}
           pagination={false}
         />
