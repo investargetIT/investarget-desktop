@@ -54,7 +54,9 @@ class ProjectLibrary extends React.Component {
       total: 0,
       list: [],
       loading: false,
-      listForExport: [], 
+      listForExport: [],
+      selectedIds: [],
+      isLoadingExportData: false,
     }
   }
 
@@ -138,18 +140,24 @@ class ProjectLibrary extends React.Component {
     return api.getLibProj(param)
   }
   
-  handleSelectChange = (selectedIds, selectedDetails) => {
-    const oldSelectIds = this.state.listForExport.map(m => m.id);
+  handleSelectChange = selectedIds => {
+    this.setState({ selectedIds });
+  }
 
-    let newDetails = selectedDetails.filter(item => 
-      !oldSelectIds.includes(item.id)
-    );
-
-    newDetails = this.state.listForExport.concat(newDetails).filter(item => 
-      selectedIds.includes(item.id)
-    );
-
-    this.setState({ listForExport: newDetails});
+  handleExportBtnClicked = () => {
+    this.setState({ isLoadingExportData: true });
+    api.getProjLibraryForExport({ com_ids: this.state.selectedIds })
+      .then(data => {
+        const { proj, event } = data.data;
+        proj.forEach(element => {
+          const projEvent = event.filter(f => f.com_id === element.com_id);
+          element.event = projEvent;
+        });
+        this.setState(
+          { isLoadingExportData: false, listForExport: proj },
+          this.exportExcel,
+        );
+      })
   }
 
   exportExcel = () => {
@@ -188,7 +196,7 @@ class ProjectLibrary extends React.Component {
     const rowSelection = {
       onChange: this.handleSelectChange,
     }
-    const columns = [
+    const baseColumns = [
       {title: i18n('project_library.project_name'), render: (text, record) => {
         return (<div style={{minWidth:200}}><Link to={{ pathname: '/app/projects/library/' + record.com_id }} style={{display:'flex',alignItems:'center'}}>
                   <div style={{...iconStyle, backgroundImage: 'url('+record.com_logo_archive+')'}}></div>
@@ -204,7 +212,7 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
-
+    const columns = [...baseColumns];
     if (hasPerm('BD.manageProjectBD') || hasPerm('BD.user_addProjectBD')) {
       columns.push({
         title: i18n('common.operation'),
@@ -213,6 +221,20 @@ class ProjectLibrary extends React.Component {
         </Link>
       });
     }
+    const extraColumns = [
+      {title: '简介', dataIndex: 'com_des'},
+      {title: '网址', dataIndex: 'com_web'},
+      {title: '电话', dataIndex: 'mobile'},
+      {title: '邮箱', dataIndex: 'email'},
+      {title: '地址', dataIndex: 'detailaddress'},
+      {title: '历史融资情况', dataIndex: 'event', render: (text, record) => {
+        return record.event.map(m => {
+          const investors = m.invsest_with.map(m => m.invst_name).join('，');
+          return m.date + ' ' + m.round + ' ' + investors + ' ' + m.money;
+        }).join('；');
+      }},
+    ];
+    const columnForExport = baseColumns.concat(extraColumns);
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')}>
@@ -231,21 +253,29 @@ class ProjectLibrary extends React.Component {
           columns={columns}
           rowSelection={rowSelection}
           dataSource={list}
-          rowKey={record=>record.id}
+          rowKey={record=>record.com_id}
           loading={loading}
           pagination={false}
         />
 
         <Table
           style={{ display: 'none' }}
-          columns={columns}
+          columns={columnForExport}
           dataSource={listForExport}
-          rowKey={record=>record.id}
+          rowKey={record=>record.com_id}
           pagination={false}
         />
 
         <div style={{ margin: '16px 0' }} className="clearfix">
-          <Button disabled={listForExport.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.exportExcel}>{i18n('project_library.export_excel')}</Button>
+          <Button 
+            disabled={this.state.selectedIds.length==0} 
+            style={{ backgroundColor: 'orange', border: 'none' }} 
+            type="primary" 
+            size="large" 
+            loading={this.state.isLoadingExportData}
+            onClick={this.handleExportBtnClicked}>
+            {i18n('project_library.export_excel')}
+          </Button>
           <Pagination
             style={{ float: 'right' }}
             total={total}

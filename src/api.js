@@ -708,6 +708,8 @@ export const getLibProjNews = (param) => {
   return r('/mongolog/projnews?' + qs.stringify(param))
 }
 
+export const getProjLibraryForExport = body => r('/mongolog/projexc', 'POST', body);
+
 export const getProjBDList = (param) => {
   _.forIn(param, function(value, key) {
     if (Array.isArray(value)) {
