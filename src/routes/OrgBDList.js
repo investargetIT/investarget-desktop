@@ -405,7 +405,7 @@ class OrgBDList extends React.Component {
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
           <Search
             style={{ width: 200 }}
-            placeholder={i18n('project_bd.project_name')}
+            placeholder="联系人/机构/项目"
             onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
             onChange={search => this.setState({ search })}
             value={search}
