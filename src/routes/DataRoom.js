@@ -343,7 +343,7 @@ class DataRoom extends React.Component {
 
   handleAddUser = () => {
     const { id, newUser } = this.state
-    const param = { dataroom: id, user: newUser }
+    const param = { dataroom: id, user: newUser, trader: isLogin().id };
     api.addUserDataRoom(param).then(result => {
       this.setState({ newUser: null })
       this.getAllUserFile()

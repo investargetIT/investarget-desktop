@@ -7,8 +7,10 @@ import {
   Icon, 
 } from 'antd';
 import { SelectExistUser } from '../components/ExtraInput'
-import { i18n } from '../utils/util'
-// import { Col } from 'antd/lib/grid';
+import { 
+  i18n,
+  hasPerm,
+} from '../utils/util';
 
 const rowStyle = {
   display: 'flex',
@@ -21,34 +23,39 @@ const rowStyle = {
 
 function DataRoomUser(props) {
     const { list, newUser, onSelectUser, onAddUser, onDeleteUser } = props
-    return list.length > 0 ? 
-          <Row>
-            <Col span={8}>
-              <Row>
-              <Col span={16}><SelectExistUser value={newUser} onChange={onSelectUser} /></Col>
-              <Col span={1} />
-              <Col span={7}><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></Col>
-              </Row>
-            </Col>
-            <Col span={1} />
-            <Col span={15}>
-          {list.map(item => (
-            <div key={item.id} onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
-              <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
-              {props.selectedUser === item.user.id ?
-                <div>
-                  <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
-                  <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
-                    <div style={{ position: 'absolute', top: -12, right: -8, cursor: 'pointer' }}>x</div>
-                  </Popconfirm>
-                </div>
-                : null}
+    const isAbleToAddUser = hasPerm('usersys.as_trader');
+
+  return <Row>
+
+    {isAbleToAddUser ?
+      <Col span={8}>
+        <Row>
+          <Col span={16}><SelectExistUser value={newUser} onChange={onSelectUser} /></Col>
+          <Col span={1} />
+          <Col span={7}><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></Col>
+        </Row>
+      </Col>
+      : null}
+
+    { isAbleToAddUser ? <Col span={1} /> : null }
+
+    <Col span={ isAbleToAddUser ? 15 : 24 }>
+      {list.map(item => (
+        <div key={item.id} onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
+          <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+          {props.selectedUser === item.user.id ?
+            <div>
+              <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
+              <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+                <div style={{ position: 'absolute', top: -12, right: -8, cursor: 'pointer' }}>x</div>
+              </Popconfirm>
             </div>
-          ))}
-            </Col>
-          </Row>
-        : <div>{i18n('dataroom.no_user')}</div>
-    
+            : null}
+        </div>
+      ))}
+    </Col>
+
+  </Row>;
 }
 
 function DataRoomUserList(props) {
