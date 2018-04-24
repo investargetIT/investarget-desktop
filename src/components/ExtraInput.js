@@ -278,7 +278,7 @@ SelectOrganization = connect()(SelectOrganization)
 class SelectExistOrganization extends React.Component {
 
   getOrg = (params) => {
-    return api.getOrg(params).then(result => {
+    return api.getOrg({...params, issub: false}).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
         const { id: value, orgfullname: label, description } = item
