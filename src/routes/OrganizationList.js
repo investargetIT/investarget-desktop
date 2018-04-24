@@ -66,7 +66,11 @@ class OrganizationList extends React.Component {
 
   getOrg = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false }
+    const orgstatus = [];
+    if (!hasPerm('org.admin_changeorg')) {
+      orgstatus.push(2); // 审核通过 
+    }
+    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false, orgstatus }
     this.setState({ loading: true })
     console.log(params)
     api.getOrg(params).then(result => {
