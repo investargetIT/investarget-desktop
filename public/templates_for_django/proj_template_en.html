@@ -16,9 +16,27 @@
                 <h1>{{ project.projtitleE }}</h1>
             </div>
 
-            <div style="margin-bottom: 24px;">
-                <span>Release Time {{ project.createdtime }}</span>
+            <div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">Region : </span><span>{{ project.country.countryE }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">Industry : </span><span>{{ project.industries.0.nameE }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">Type of Transaction : </span><span>{{ project.transactionType.0.nameE }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">Engagement in Transaction: </span><span>{{ project.character.characterE }} </span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">TransactionSize : </span><span>$ {{ project.financeAmount_USD }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">Post Money Valuation : </span><span>$ {{ project.companyValuation_USD }}</span>
+                </div>
             </div>
+
             <div style="margin-bottom: 24px;">
                 <h2 style="margin: 16px 0px;">Deal Audit Process</h2>
                 <div>
@@ -57,26 +75,7 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">Region : </span><span>{{ project.country.countryE }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">Industry : </span><span>{{ project.industries.0.nameE }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">Type of Transaction : </span><span>{{ project.transactionType.0.nameE }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">Engagement in Transaction: </span><span>{{ project.character.characterE }} </span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">TransactionSize : </span><span>$ {{ project.financeAmount_USD }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">Post Money Valuation : </span><span>$ {{ project.companyValuation_USD }}</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div style="margin-bottom: 24px;">

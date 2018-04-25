@@ -16,9 +16,27 @@
                 <h1>{{ project.projtitleC }}</h1>
             </div>
 
-            <div style="margin-bottom: 24px;">
-                <span>发布时间 {{ project.createdtime }}</span>
+            <div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">项目地区 : </span><span>{{ project.country.countryC }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">项目行业 : </span><span>{{ project.industries.0.nameC }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">交易类型 : </span><span>{{ project.transactionType.0.nameC }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">我的角色 : </span><span>{{ project.character.characterC }} </span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">拟交易规模 : </span><span>$ {{ project.financeAmount_USD }}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 150px;">公司估值 : </span><span>$ {{ project.companyValuation_USD }}</span>
+                </div>
             </div>
+
             <div style="margin-bottom: 24px;">
                 <h2 style="margin: 16px 0px;">项目审核流程</h2>
                 <div>
@@ -57,26 +75,9 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">项目地区 : </span><span>{{ project.country.countryC }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">项目行业 : </span><span>{{ project.industries.0.nameC }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">交易类型 : </span><span>{{ project.transactionType.0.nameC }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">我的角色 : </span><span>{{ project.character.characterC }} </span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">拟交易规模 : </span><span>$ {{ project.financeAmount_USD }}</span>
-                        </div>
-                        <div style="display: flex;">
-                            <span style="width: 150px;">公司估值 : </span><span>$ {{ project.companyValuation_USD }}</span>
-                        </div>
-                    </div>
+
+
+
                 </div>
             </div>
             <div style="margin-bottom: 24px;">
