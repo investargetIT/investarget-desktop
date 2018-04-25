@@ -129,35 +129,35 @@
             {%  endif %}
 
 
-            <div style="margin-bottom: 24px;">
                 <div>
-                    <h2>财务信息</h2>
-                    <div>
+                    <h3>财务数据</h3>
+                
+                    <div style="display: flex;">
+                        <div style="font-weight: bolder">USD</div>
                         {% for item in finance %}
-                        <div>
-                            <h3>
-                                <!-- react-text: 143 -->财务年度
-                                <!-- /react-text -->
-                                <!-- react-text: 144 -->
-                                <!-- /react-text -->
-                                <!-- react-text: 145 -->{{ item.fYear }}
-                                <!-- /react-text -->
-                            </h3>
-                            <div>
-                                <div style="display: flex;"><span style="width: 150px;">营业收入(美元)</span><span>$ {{ item.revenue_USD }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">净利润(美元)</span><span>$ {{ item.netIncome_USD }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">毛利润(美元)</span><span>$ {{ item.grossProfit }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">总资产(美元)</span><span>$ {{ item.totalAsset }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">净资产(美元)</span><span>$ {{ item.stockholdersEquity }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">净现金流(美元)</span><span>$ {{ item.grossMerchandiseValue }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">经营性现金流(美元)</span><span>$ {{ item.operationalCashFlow }}</span></div>
-                                <div style="display: flex;"><span style="width: 150px;">息税折旧摊销前利润(美元)</span><span>$ {{ item.EBITDA }}</span></div>
-                            </div>
-                        </div>
+                        <div>$ {{ item.fYear }}</div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+
+                    <div style="height: 2px;background: rgb(0, 95, 175);"></div>
+                
+                    <div style="display: flex">
+                        <div style="font-weight: bolder">营业收入</div>
+                        {% for item in finance %}
+                        <div>$ {{ item.revenue_USD }}</div>
+                        {% endfor %}
+                    </div>
+                
+                    <!-- <div style="display: flex;"><span style="width: 150px;">净利润(美元)</span><span>$ {{ item.netIncome_USD }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">毛利润(美元)</span><span>$ {{ item.grossProfit }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">总资产(美元)</span><span>$ {{ item.totalAsset }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">净资产(美元)</span><span>$ {{ item.stockholdersEquity }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">净现金流(美元)</span><span>$ {{ item.grossMerchandiseValue }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">经营性现金流(美元)</span><span>$ {{ item.operationalCashFlow }}</span></div>
+                                                <div style="display: flex;"><span style="width: 150px;">息税折旧摊销前利润(美元)</span><span>$ {{ item.EBITDA }}</span></div> -->
+                
+                                                <div style="height: 1px;background: rgb(0, 95, 175);"></div>
+                                            </div>
 
         </div>
     </div>

@@ -135,22 +135,26 @@
             {%  endif %}
 
 
-            <div style="margin-bottom: 24px;">
                 <div>
-                    <h2>Financials</h2>
-                    <div>
-                        {% for item in finance %}
-                        <div>
-                            <h3>
-                                <!-- react-text: 143 -->Fiscal Year
-                                <!-- /react-text -->
-                                <!-- react-text: 144 -->
-                                <!-- /react-text -->
-                                <!-- react-text: 145 -->{{ item.fYear }}
-                                <!-- /react-text -->
-                            </h3>
-                            <div>
-                                <div style="display: flex;"><span style="width: 150px;">Revenue(USD)</span><span>$ {{ item.revenue_USD }}</span></div>
+                    <h3>Financials</h3>
+
+                    <div style="display: flex;">
+                            <div style="font-weight: bolder">USD</div>
+                            {% for item in finance %}
+                            <div>$ {{ item.fYear }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div style="height: 2px;background: rgb(0, 95, 175);"></div>
+
+                        <div style="display: flex">
+                                <div style="font-weight: bolder">Revenue</div>
+                                {% for item in finance %}
+                                <div>$ {{ item.revenue_USD }}</div>
+                                {% endfor %}
+                            </div>
+
+
                                 <div style="display: flex;"><span style="width: 150px;">Profits(USD)</span><span>$ {{ item.netIncome_USD }}</span></div>
                                 <div style="display: flex;"><span style="width: 150px;">Gross Profits(USD)</span><span>$ {{ item.grossProfit }}</span></div>
                                 <div style="display: flex;"><span style="width: 150px;">Total Assets(USD)</span><span>$ {{ item.totalAsset }}</span></div>
@@ -158,12 +162,9 @@
                                 <div style="display: flex;"><span style="width: 150px;">Net Cash Flow(USD)</span><span>$ {{ item.grossMerchandiseValue }}</span></div>
                                 <div style="display: flex;"><span style="width: 150px;">Operating Cash Flow(USD)</span><span>$ {{ item.operationalCashFlow }}</span></div>
                                 <div style="display: flex;"><span style="width: 150px;">EBITDA(USD)</span><span>$ {{ item.EBITDA }}</span></div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
+
+                                <div style="height: 1px;background: rgb(0, 95, 175);"></div>
                 </div>
-            </div>
 
         </div>
     </div>
