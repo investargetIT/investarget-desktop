@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>多维海拓 Investarget</title>
-    <link rel="shortcut icon" href="/static/image/123.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
 </head>
-
 <body>
     <div class="ant-layout" style="padding: 0px 24px 24px;">
         <div class="ant-layout-content" style="background: rgb(255, 255, 255); padding: 24px; margin: 0px; min-height: 280px;">
-            <h1>{{ project.projtitleC }}</h1>
+            <h1>{{ project.projtitleE }}</h1>
             <div style="margin-bottom: 24px;">
-                <span>Release Time {{ project.createdtime | date:"F j, Y" }}</span>
+                <span>Release Time {{ project.createdtime }}</span>
             </div>
             <div style="margin-bottom: 24px;">
                 <h2 style="margin: 16px 0px;">Deal Audit Process</h2>
@@ -47,26 +45,26 @@
             <div style="margin-bottom: 24px;">
                 <h2 style="margin: 16px 0px;">Project Profile</h2>
                 <div>
-                    <div>{{ project.p_introducteC }}</div>
+                    <div>{{ project.p_introducteE }}</div>
                     <div>
                         {% for tag in project.tags %}
                         <div data-show="true" class="ant-tag ant-tag-orange">
-                            <span class="ant-tag-text">{{ tag.nameC }}</span>
+                            <span class="ant-tag-text">{{ tag.nameE }}</span>
                         </div>
                         {% endfor %}
                     </div>
                     <div>
                         <div style="display: flex;">
-                            <span style="width: 150px;">Region : </span><span>{{ project.country.countryC }}</span>
+                            <span style="width: 150px;">Region : </span><span>{{ project.country.countryE }}</span>
                         </div>
                         <div style="display: flex;">
-                            <span style="width: 150px;">Industry : </span><span>{{ project.industries.0.nameC }}</span>
+                            <span style="width: 150px;">Industry : </span><span>{{ project.industries.0.nameE }}</span>
                         </div>
                         <div style="display: flex;">
-                            <span style="width: 150px;">Type of Transaction : </span><span>{{ project.transactionType.0.nameC }}</span>
+                            <span style="width: 150px;">Type of Transaction : </span><span>{{ project.transactionType.0.nameE }}</span>
                         </div>
                         <div style="display: flex;">
-                            <span style="width: 150px;">Engagement in Transaction: </span><span>{{ project.character.characterC }} </span>
+                            <span style="width: 150px;">Engagement in Transaction: </span><span>{{ project.character.characterE }} </span>
                         </div>
                         <div style="display: flex;">
                             <span style="width: 150px;">TransactionSize : </span><span>$ {{ project.financeAmount_USD }}</span>
@@ -109,50 +107,68 @@
             <div style="margin-bottom: 24px;">
                 <h2 style="margin: 16px 0px;">Details</h2>
                 <div>
+                    {% if project.targetMarketE != None %}
                     <div>
                         <h3>Target Market</h3>
                         <p>
-                            {{ project.targetMarketC }}
+                            {{ project.targetMarketE }}
                         </p>
                     </div>
+                    {%  endif %}
+                    {% if project.productTechnologyE != None %}
                     <div>
                         <h3>Product/Technology</h3>
                         <p>
-                            {{ project.productTechnologyC }}
+                            {{ project.productTechnologyE }}
                         </p>
                     </div>
+                    {%  endif %}
+                    {% if project.businessModelE != None %}
                     <div>
                         <h3>Business Model</h3>
                         <p>
-                            {{ project.businessModelC }}
+                            {{ project.businessModelE }}
                         </p>
                     </div>
+                    {%  endif %}
+                    {% if project.brandChannelE != None %}
                     <div>
                         <h3>Brand Channel</h3>
                         <p>
-                            {{ project.brandChannelC }}
+                            {{ project.brandChannelE }}
                         </p>
                     </div>
+                    {%  endif %}
+                    {% if project.managementTeamE != None %}
                     <div>
                         <h3>Management Team</h3>
-                        <p>{{ project.managementTeamC }}</p>
+                        <p>{{ project.managementTeamE }}</p>
                     </div>
+                    {%  endif %}
+                    {% if project.BusinesspartnersE != None %}
                     <div>
                         <h3>Business Partners</h3>
-                        <p>{{ project.BusinesspartnersC }}</p>
+                        <p>{{ project.BusinesspartnersE }}</p>
                     </div>
+                    {%  endif %}
+                    {% if project.useOfProceedC != None %}
                     <div>
                         <h3>Use of Proceeds</h3>
                         <p>{{ project.useOfProceedC }}</p>
                     </div>
+                    {%  endif %}
+                    {% if project.financingHistoryE != None %}
                     <div>
                         <h3>Financing History</h3>
-                        <p>{{ project.financingHistoryC }}</p>
+                        <p>{{ project.financingHistoryE }}</p>
                     </div>
+                    {%  endif %}
+                    {% if project.operationalDataE != None %}
                     <div>
                         <h3>Operational Data</h3>
-                        <p>{{ project.operationalDataC }}</p>
+                        <p>{{ project.operationalDataE }}</p>
                     </div>
+                    {%  endif %}
                 </div>
             </div>
         </div>
