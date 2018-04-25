@@ -65,6 +65,79 @@
 
                 </div>
             </div>
+
+            {% if project.targetMarketE != None %}
+            <div>
+                <h3>Target Market</h3>
+                <p>
+                    {{ project.targetMarketE }}
+                </p>
+            </div>
+            {%  endif %}
+
+            {% if project.productTechnologyE != None %}
+            <div>
+                <h3>Product/Technology</h3>
+                <p>
+                    {{ project.productTechnologyE }}
+                </p>
+            </div>
+            {%  endif %}
+
+            {% if project.businessModelE != None %}
+            <div>
+                <h3>Business Model</h3>
+                <p>
+                    {{ project.businessModelE }}
+                </p>
+            </div>
+            {%  endif %}
+
+            {% if project.brandChannelE != None %}
+            <div>
+                <h3>Brand Channel</h3>
+                <p>
+                    {{ project.brandChannelE }}
+                </p>
+            </div>
+            {%  endif %}
+
+            {% if project.managementTeamE != None %}
+            <div>
+                <h3>Management Team</h3>
+                <p>{{ project.managementTeamE }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.BusinesspartnersE != None %}
+            <div>
+                <h3>Business Partners</h3>
+                <p>{{ project.BusinesspartnersE }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.useOfProceedC != None %}
+            <div>
+                <h3>Use of Proceeds</h3>
+                <p>{{ project.useOfProceedC }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.financingHistoryE != None %}
+            <div>
+                <h3>Financing History</h3>
+                <p>{{ project.financingHistoryE }}</p>
+            </div>
+            {%  endif %}
+            
+            {% if project.operationalDataE != None %}
+            <div>
+                <h3>Operational Data</h3>
+                <p>{{ project.operationalDataE }}</p>
+            </div>
+            {%  endif %}
+
+
             <div style="margin-bottom: 24px;">
                 <div>
                     <h2>Financials</h2>
@@ -94,73 +167,7 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-bottom: 24px;">
-                <h2 style="margin: 16px 0px;">Details</h2>
-                <div>
-                    {% if project.targetMarketE != None %}
-                    <div>
-                        <h3>Target Market</h3>
-                        <p>
-                            {{ project.targetMarketE }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.productTechnologyE != None %}
-                    <div>
-                        <h3>Product/Technology</h3>
-                        <p>
-                            {{ project.productTechnologyE }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.businessModelE != None %}
-                    <div>
-                        <h3>Business Model</h3>
-                        <p>
-                            {{ project.businessModelE }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.brandChannelE != None %}
-                    <div>
-                        <h3>Brand Channel</h3>
-                        <p>
-                            {{ project.brandChannelE }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.managementTeamE != None %}
-                    <div>
-                        <h3>Management Team</h3>
-                        <p>{{ project.managementTeamE }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.BusinesspartnersE != None %}
-                    <div>
-                        <h3>Business Partners</h3>
-                        <p>{{ project.BusinesspartnersE }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.useOfProceedC != None %}
-                    <div>
-                        <h3>Use of Proceeds</h3>
-                        <p>{{ project.useOfProceedC }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.financingHistoryE != None %}
-                    <div>
-                        <h3>Financing History</h3>
-                        <p>{{ project.financingHistoryE }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.operationalDataE != None %}
-                    <div>
-                        <h3>Operational Data</h3>
-                        <p>{{ project.operationalDataE }}</p>
-                    </div>
-                    {%  endif %}
-                </div>
-            </div>
+
         </div>
     </div>
 </body>

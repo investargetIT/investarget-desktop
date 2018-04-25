@@ -59,16 +59,80 @@
                     <div>{{ project.p_introducteC }}</div>
                     <div>
                         {% for tag in project.tags %}
-                            <div data-show="true" class="ant-tag ant-tag-orange">
-                                <span class="ant-tag-text">{{ tag.nameC }}</span>
-                            </div>
+                        <div data-show="true" class="ant-tag ant-tag-orange">
+                            <span class="ant-tag-text">{{ tag.nameC }}</span>
+                        </div>
                         {% endfor %}
                     </div>
-
-
-
                 </div>
             </div>
+
+            {% if project.targetMarketC != None %}
+            <div>
+                <h3>目标市场</h3>
+                <p>{{ project.targetMarketC }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.productTechnologyC != None %}
+            <div>
+                <h3>核心产品</h3>
+                <p>{{ project.productTechnologyC }}</p>
+            </div>
+            {% endif %}
+
+            {% if project.businessModelC != None %}
+            <div>
+                <h3>商业模式</h3>
+                <p>{{ project.businessModelC }}</p>
+            </div>
+            {% endif %}
+
+            {% if project.brandChannelC != None %}
+            <div>
+                <h3>品牌渠道</h3>
+                <p>
+                    {{ project.brandChannelC }}
+                </p>
+            </div>
+            {%  endif %}
+
+            {% if project.managementTeamC != None %}
+            <div>
+                <h3>管理团队</h3>
+                <p>{{ project.managementTeamC }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.BusinesspartnersC != None %}
+            <div>
+                <h3>商业伙伴</h3>
+                <p>{{ project.BusinesspartnersC }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.useOfProceedC != None %}
+            <div>
+                <h3>资金用途</h3>
+                <p>{{ project.useOfProceedC }}</p>
+            </div>
+            {%  endif %}
+
+            {% if project.financingHistoryC != None %}
+            <div>
+                <h3>融资历史</h3>
+                <p>{{ project.financingHistoryC }}</p>
+            </div>
+            {%  endif %}
+            
+            {% if project.operationalDataC != None %}
+            <div>
+                <h3>经营数据</h3>
+                <p>{{ project.operationalDataC }}</p>
+            </div>
+            {%  endif %}
+
+
             <div style="margin-bottom: 24px;">
                 <div>
                     <h2>财务信息</h2>
@@ -98,73 +162,7 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-bottom: 24px;">
-                <h2 style="margin: 16px 0px;">项目详情</h2>
-                <div>
-                    {% if project.targetMarketC != None %}
-                    <div>
-                        <h3>目标市场</h3>
-                        <p>
-                            {{ project.targetMarketC }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.productTechnologyC != None %}
-                    <div>
-                        <h3>核心产品</h3>
-                        <p>
-                            {{ project.productTechnologyC }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.businessModelC != None %}
-                    <div>
-                        <h3>商业模式</h3>
-                        <p>
-                            {{ project.businessModelC }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.brandChannelC != None %}
-                    <div>
-                        <h3>品牌渠道</h3>
-                        <p>
-                            {{ project.brandChannelC }}
-                        </p>
-                    </div>
-                    {%  endif %}
-                    {% if project.managementTeamC != None %}
-                    <div>
-                        <h3>管理团队</h3>
-                        <p>{{ project.managementTeamC }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.BusinesspartnersC != None %}
-                    <div>
-                        <h3>商业伙伴</h3>
-                        <p>{{ project.BusinesspartnersC }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.useOfProceedC != None %}
-                    <div>
-                        <h3>资金用途</h3>
-                        <p>{{ project.useOfProceedC }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.financingHistoryC != None %}
-                    <div>
-                        <h3>融资历史</h3>
-                        <p>{{ project.financingHistoryC }}</p>
-                    </div>
-                    {%  endif %}
-                    {% if project.operationalDataC != None %}
-                    <div>
-                        <h3>经营数据</h3>
-                        <p>{{ project.operationalDataC }}</p>
-                    </div>
-                    {%  endif %}
-                </div>
-            </div>
+
         </div>
     </div>
 </body>
