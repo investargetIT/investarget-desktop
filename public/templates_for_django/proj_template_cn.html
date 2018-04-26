@@ -13,7 +13,7 @@
         <div class="ant-layout-content" style="background: rgb(255, 255, 255); padding: 24px; margin: 0px; min-height: 280px;">
             
             <div style="padding-left: 20px; background: rgb(0, 95, 175); color: white; line-height: 84px">
-                <h1>{{ project.projtitleC }}</h1>
+                <h1 style="font-family: sans-serif;font-weight: 100">{{ project.projtitleC }}</h1>
             </div>
 
             <div style="display: flex; justify-content: space-between">
@@ -46,8 +46,8 @@
                 </div>
             
                 <div style="position: relative;">
-                    <img src="{{ project.industries.0.url }}" style="width: 400px; height: 200px;">
-                    <div style="position: absolute;">
+                    <img src="{{ project.industries.0.url }}" style="width: 400px; height: 225px;">
+                    <div style="position: absolute;top: 10px;left: 10px">
                         {% for tag in project.tags %}
                         <div data-show="true" class="ant-tag ant-tag-orange">
                             <span class="ant-tag-text">{{ tag.nameC }}</span>
