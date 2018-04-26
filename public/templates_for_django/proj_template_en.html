@@ -8,17 +8,17 @@
     <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
 </head>
-<body>
-    <div class="ant-layout" style="padding: 0px 24px 24px;">
-        <div class="ant-layout-content" style="background: rgb(255, 255, 255); padding: 24px; margin: 0px; min-height: 280px;">
+<body style="margin: 0">
+    <div class="ant-layout">
+        <div class="ant-layout-content" style="background: rgb(255, 255, 255);margin: 0px; min-height: 280px;">
             
             <div style="padding-left: 20px; background: rgb(0, 95, 175); color: white; line-height: 84px">
-                <h1 style="font-family: sans-serif;font-weight: 100">{{ project.projtitleE }}</h1>
+                <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 200">{{ project.projtitleE }}</h1>
             </div>
 
-            <div style="display: flex; justify-content: space-between">
+            <div style="overflow: auto">
 
-                <div>
+                <div style="float: left">
                     <div style="display: flex;">
                         <span style="width: 150px;">Region : </span>
                         <span>{{ project.country.countryE }}</span>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             
-                <div style="position: relative;">
+                <div style="float: right;position: relative;">
                     <img src="{{ project.industries.0.url }}" style="width: 400px; height: 225px;">
                     <div style="position: absolute;top: 10px;left: 10px">
                         {% for tag in project.tags %}
