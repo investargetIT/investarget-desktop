@@ -267,9 +267,9 @@ class TimelineList extends React.Component {
       },
       { 
         title: i18n('timeline.transaction_status'), 
-        key: 'transationStatu', 
+        key: 'timeline_transationStatus__transationStatus', 
         dataIndex: 'transationStatu.transationStatus.name', 
-        // sorter: true, 
+        sorter: true, 
       },
       { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
