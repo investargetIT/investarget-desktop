@@ -7,6 +7,22 @@
     <title>多维海拓 Investarget</title>
     <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+        .info-container {
+            overflow: auto;
+            line-height: 24px;
+        }
+    
+        .info-label {
+            float: left;
+            width: 100px;
+            text-align: right;
+        }
+    
+        .info-content {
+            margin-left: 120px;
+        }
+    </style>
 </head>
 <body style="margin: 0">
     <div class="ant-layout">
@@ -16,33 +32,40 @@
                 <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 200">{{ project.projtitleE }}</h1>
             </div>
 
-            <div style="overflow: auto">
+            <div style="margin-top: 20px;overflow: auto">
 
                 <div style="float: left">
-                    <div style="display: flex;">
-                        <span style="width: 150px;">Region : </span>
-                        <span>{{ project.country.countryE }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">Type of Transaction</div>
+                        <div class="info-content">{{ project.transactionType.0.nameE }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">Industry : </span>
-                        <span>{{ project.industries.0.nameE }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">Industry</div>
+                        <div class="info-content">{{ project.industries.0.nameE }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">Type of Transaction : </span>
-                        <span>{{ project.transactionType.0.nameE }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">Region</div>
+                        <div class="info-content">{{ project.country.countryE }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">Engagement in Transaction: </span>
-                        <span>{{ project.character.characterE }} </span>
+
+                    <div class="info-container">
+                        <div class="info-label">TransactionSize</div>
+                        <div class="info-content">$ {{ project.financeAmount_USD }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">TransactionSize : </span>
-                        <span>$ {{ project.financeAmount_USD }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">Post Money Valuation</div>
+                        <div class="info-content">$ {{ project.companyValuation_USD }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">Post Money Valuation : </span>
-                        <span>$ {{ project.companyValuation_USD }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">Engagement in Transaction</div>
+                        <div class="info-content">{{ project.character.characterE }}</div>
                     </div>
+
                 </div>
             
                 <div style="float: right;position: relative;">

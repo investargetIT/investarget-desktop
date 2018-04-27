@@ -7,6 +7,20 @@
     <title>多维海拓 Investarget</title>
     <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+    .info-container {
+        overflow: auto;
+        line-height: 24px;
+    }
+    .info-label {
+        float: left;
+        width: 100px;
+        text-align: right;
+    }
+    .info-content {
+        margin-left: 120px;
+    }
+    </style>
 </head>
 <body style="margin: 0">
     <div class="ant-layout">
@@ -16,33 +30,40 @@
                 <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 200">{{ project.projtitleC }}</h1>
             </div>
 
-            <div style="overflow: auto">
+            <div style="margin-top: 20px;overflow: auto">
             
                 <div style="float: left">
-                    <div style="display: flex;">
-                        <span style="width: 150px;">项目地区 : </span>
-                        <span>{{ project.country.countryC }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">交易类型</div>
+                        <div class="info-content">{{ project.transactionType.0.nameC }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">项目行业 : </span>
-                        <span>{{ project.industries.0.nameC }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">行业</div>
+                        <div class="info-content">{{ project.industries.0.nameC }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">交易类型 : </span>
-                        <span>{{ project.transactionType.0.nameC }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">地区</div>
+                        <div class="info-content">{{ project.country.countryC }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">我的角色 : </span>
-                        <span>{{ project.character.characterC }} </span>
+
+                    <div class="info-container">
+                        <div class="info-label">交易规模</div>
+                        <div class="info-content">$ {{ project.financeAmount_USD }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">拟交易规模 : </span>
-                        <span>$ {{ project.financeAmount_USD }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">公司估值</div>
+                        <div class="info-content">$ {{ project.companyValuation_USD }}</div>
                     </div>
-                    <div style="display: flex;">
-                        <span style="width: 150px;">公司估值 : </span>
-                        <span>$ {{ project.companyValuation_USD }}</span>
+
+                    <div class="info-container">
+                        <div class="info-label">我的角色</div>
+                        <div class="info-content">{{ project.character.characterC }} </div>
                     </div>
+
                 </div>
             
                 <div style="position: relative;float: right">
