@@ -10,15 +10,21 @@
     <style>
     .info-container {
         overflow: auto;
-        line-height: 24px;
+        line-height: 20px;
+        font-family: sans-serif;
+        font-size: 14px;
+        color: black;
     }
     .info-label {
         float: left;
         width: 100px;
         text-align: right;
+        font-weight: 600;
     }
     .info-content {
+        font-size: 13px;
         margin-left: 120px;
+        font-weight: 100;
     }
     </style>
 </head>
@@ -30,7 +36,9 @@
                 <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 200">{{ project.projtitleC }}</h1>
             </div>
 
-            <div style="margin-top: 20px;overflow: auto">
+            <div style="padding: 20px">
+
+            <div style="overflow: auto">
             
                 <div style="float: left">
 
@@ -51,27 +59,45 @@
 
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
-                        <div class="info-content">$ {{ project.financeAmount_USD }}</div>
+                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
                     </div>
 
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
-                        <div class="info-content">$ {{ project.companyValuation_USD }}</div>
+                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                    </div>
+                    
+                    <div class="info-container">
+                        <div class="info-label">项目负责人</div>
+                        <div class="info-content">{{ project.contactPerson }}</div>
                     </div>
 
+                    <div class="info-container">
+                        <div class="info-label">手机</div>
+                        <div class="info-content">{{ project.phoneNumber }}</div>
+                    </div>
+
+                    <div class="info-container">
+                        <div class="info-label">邮箱</div>
+                        <div class="info-content">{{ project.email }}</div>
+                    </div>
+
+                   
+                    <!-- 
                     <div class="info-container">
                         <div class="info-label">我的角色</div>
                         <div class="info-content">{{ project.character.characterC }} </div>
                     </div>
+                    -->
 
                 </div>
             
                 <div style="position: relative;float: right">
-                    <img src="{{ project.industries.0.url }}" style="width: 400px; height: 225px;">
-                    <div style="position: absolute;top: 10px;left: 10px">
+                    <img src="{{ project.industries.0.url }}" style="width: 320px; height: 180px;">
+                    <div style="position: absolute;top: 4px;left: 10px">
                         {% for tag in project.tags %}
-                        <div data-show="true" class="ant-tag ant-tag-orange">
-                            <span class="ant-tag-text">{{ tag.nameC }}</span>
+                        <div data-show="true" class="ant-tag ant-tag">
+                            <span class="ant-tag-text" style="font-weight: 100">{{ tag.nameC }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -181,6 +207,7 @@
                                             </div>
 
         </div>
+</div>
     </div>
 </body>
 
