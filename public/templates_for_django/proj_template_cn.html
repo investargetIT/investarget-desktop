@@ -8,6 +8,9 @@
     <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
     <style>
+    p, h3 {
+        margin: 0;
+    }
     .info-container {
         overflow: auto;
         line-height: 20px;
@@ -21,10 +24,24 @@
         text-align: right;
         font-weight: 600;
     }
-    .info-content {
+    .info-content, .detail-content {
         font-size: 13px;
-        margin-left: 120px;
         font-weight: 100;
+    }
+    .detail-label {
+        font-weight: 600;
+        margin: 10px 0;
+        font-size: 15px;
+        line-height: 32px;
+        padding-left: 10px;
+        border-left: 2px solid rgb(0, 95, 175);
+    }
+    .info-content {
+        margin-left: 120px;
+    }
+    .detail-content {
+        margin-left: 10px;
+        line-height: 1.6;
     }
     </style>
 </head>
@@ -105,79 +122,77 @@
             
             </div>
 
-            <div>
-                <h3>项目简介</h2>
-                <p>{{ project.p_introducteC }}</p>
+            <div class="detail-container">
+                <h3 class="detail-label">项目简介</h2>
+                <p class="detail-content">{{ project.p_introducteC }}</p>
             </div>
 
             {% if project.targetMarketC != None %}
-            <div>
-                <h3>目标市场</h3>
-                <p>{{ project.targetMarketC }}</p>
+            <div class="detail-container">
+                <h3 class="detail-label">目标市场</h3>
+                <p class="detail-content">{{ project.targetMarketC }}</p>
             </div>
             {%  endif %}
 
             {% if project.productTechnologyC != None %}
-            <div>
-                <h3>核心产品</h3>
-                <p>{{ project.productTechnologyC }}</p>
+            <div class="detail-container">
+                <h3 class="detail-label">核心产品</h3>
+                <p class="detail-content">{{ project.productTechnologyC }}</p>
             </div>
             {% endif %}
 
             {% if project.businessModelC != None %}
-            <div>
-                <h3>商业模式</h3>
-                <p>{{ project.businessModelC }}</p>
+            <div class="detail-container">
+                <h3 class="detail-label">商业模式</h3>
+                <p class="detail-content">{{ project.businessModelC }}</p>
             </div>
             {% endif %}
 
             {% if project.brandChannelC != None %}
-            <div>
-                <h3>品牌渠道</h3>
-                <p>
-                    {{ project.brandChannelC }}
-                </p>
-            </div>
+            <!-- <div class="detail-container">
+                <h3 class="detail-label">品牌渠道</h3>
+                <p class="detail-content">{{ project.brandChannelC }}</p>
+            </div> -->
             {%  endif %}
 
             {% if project.managementTeamC != None %}
-            <div>
+            <!-- <div>
                 <h3>管理团队</h3>
                 <p>{{ project.managementTeamC }}</p>
-            </div>
+            </div> -->
             {%  endif %}
 
             {% if project.BusinesspartnersC != None %}
-            <div>
+            <!-- <div>
                 <h3>商业伙伴</h3>
                 <p>{{ project.BusinesspartnersC }}</p>
-            </div>
+            </div> -->
             {%  endif %}
 
             {% if project.useOfProceedC != None %}
-            <div>
+            <!-- <div>
                 <h3>资金用途</h3>
                 <p>{{ project.useOfProceedC }}</p>
-            </div>
+            </div> -->
             {%  endif %}
 
             {% if project.financingHistoryC != None %}
-            <div>
+            <!-- <div>
                 <h3>融资历史</h3>
                 <p>{{ project.financingHistoryC }}</p>
-            </div>
+            </div> -->
             {%  endif %}
             
             {% if project.operationalDataC != None %}
-            <div>
+            <!-- <div>
                 <h3>经营数据</h3>
                 <p>{{ project.operationalDataC }}</p>
-            </div>
+            </div> -->
             {%  endif %}
 
 
                 <div>
-                    <h3>财务数据</h3>
+                    <h3 class="detail-label">财务数据</h3>
                 
                     <div style="display: flex;">
                         <div style="font-weight: bolder">USD</div>
