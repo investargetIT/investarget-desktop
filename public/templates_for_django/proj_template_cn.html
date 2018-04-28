@@ -8,6 +8,12 @@
     <link rel="shortcut icon" href="/static/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/style.css" />
     <style>
+    body {
+        font-family: sans-serif;
+    }
+    td {
+        text-align: center;
+    }
     p, h3 {
         margin: 0;
     }
@@ -42,6 +48,15 @@
     .detail-content {
         margin-left: 10px;
         line-height: 1.6;
+    }
+    .even {
+        background: rgb(241, 241, 241);
+    }
+    .finance-value {
+        font-weight: 100;
+    }
+    .finance-label {
+        font-weight: 600;
     }
     </style>
 </head>
@@ -193,32 +208,100 @@
 
                 <div>
                     <h3 class="detail-label">财务数据</h3>
-                
-                    <div style="display: flex;">
-                        <div style="font-weight: bolder">USD</div>
-                        {% for item in finance %}
-                        <div>$ {{ item.fYear }}</div>
-                        {% endfor %}
-                    </div>
+                    
+                    <table style="width: 100%;border-collapse: collapse;font-size: 13px">
 
-                    <div style="height: 2px;background: rgb(0, 95, 175);"></div>
+                        <thead>
+                            <tr>
+                            <th style="width: 25%">USD</th>
+                            {% for item in finance %}
+                            <th>{{ item.fYear }}</th>
+                            {% endfor %}
+                            <tr>
+                        </thead>
+
+                        <tbody style="border: 1px solid rgb(0, 95, 175);border-left: none;border-right: none">
+                            <tr>
+                            <td class="finance-label">营业收入</td>
+                            {% for item in finance %}
+                            {% if item.revenue_USD %}
+                            <td class="finance-value">{{ item.revenue_USD }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %}
+                            {% endfor %}
+                            </tr>
+
+                            <tr class="even">
+                            <td class="finance-label">毛利润</td>
+                            {% for item in finance %}
+                              {% if item.grossProfit %}
+                              <td class="finance-value">{{ item.grossProfit }}</td>
+                              {% else %}
+                              <td class="finance-value">N/A</td>
+                              {% endif %}
+                            {% endfor %}
+                            </tr>
+
+                        <tr>
+                            <td class="finance-label">EBITDA</td>
+                            {% for item in finance %} {% if item.EBITDA %}
+                            <td class="finance-value">{{ item.EBITDA }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+
+                        <tr class="even">
+                            <td class="finance-label">净利润</td>
+                            {% for item in finance %} {% if item.netIncome_USD %}
+                            <td class="finance-value">{{ item.netIncome_USD }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+
+                        <tr>
+                            <td class="finance-label">总资产</td>
+                            {% for item in finance %} {% if item.totalAsset %}
+                            <td class="finance-value">{{ item.totalAsset }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+
+                        <tr class="even">
+                            <td class="finance-label">净资产</td>
+                            {% for item in finance %} {% if item.stockholdersEquity %}
+                            <td class="finance-value">{{ item.stockholdersEquity }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+
+                        <tr>
+                            <td class="finance-label">经营性现金流</td>
+                            {% for item in finance %} {% if item.operationalCashFlow %}
+                            <td class="finance-value">{{ item.operationalCashFlow }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+
+                        <tr class="even">
+                            <td class="finance-label">净现金流</td>
+                            {% for item in finance %} {% if item.grossMerchandiseValue %}
+                            <td class="finance-value">{{ item.grossMerchandiseValue }}</td>
+                            {% else %}
+                            <td class="finance-value">N/A</td>
+                            {% endif %} {% endfor %}
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                    
                 
-                    <div style="display: flex">
-                        <div style="font-weight: bolder">营业收入</div>
-                        {% for item in finance %}
-                        <div>$ {{ item.revenue_USD }}</div>
-                        {% endfor %}
-                    </div>
-                
-                    <!-- <div style="display: flex;"><span style="width: 150px;">净利润(美元)</span><span>$ {{ item.netIncome_USD }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">毛利润(美元)</span><span>$ {{ item.grossProfit }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">总资产(美元)</span><span>$ {{ item.totalAsset }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">净资产(美元)</span><span>$ {{ item.stockholdersEquity }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">净现金流(美元)</span><span>$ {{ item.grossMerchandiseValue }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">经营性现金流(美元)</span><span>$ {{ item.operationalCashFlow }}</span></div>
-                                                <div style="display: flex;"><span style="width: 150px;">息税折旧摊销前利润(美元)</span><span>$ {{ item.EBITDA }}</span></div> -->
-                
-                                                <div style="height: 1px;background: rgb(0, 95, 175);"></div>
                                             </div>
 
         </div>
