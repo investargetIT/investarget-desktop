@@ -590,7 +590,7 @@
         var page = 0;
         for (var a = 0; a < sections.length; a++) {
             var element = document.getElementById(sections[a]);
-            if (Math.floor((element.offsetTop + element.offsetHeight)/1096) > page) {
+            if (element.offsetTop + element.offsetHeight > 1096 - 40 - 20) {
                 page++;
                 document.getElementById('page-container-' + page).style.display = 'block';
                 for (var b = a; b < sections.length; b++) {
