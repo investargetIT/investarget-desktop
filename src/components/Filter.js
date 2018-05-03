@@ -1,6 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { 
+  i18n, 
+  hasPerm,
+} from '../utils/util';
 
 import { 
   Row, 
@@ -461,6 +464,7 @@ class OrganizationListFilter extends React.Component {
     tags: [],
     orgtypes: [],
     area: [],
+    orgstatus: hasPerm('org.admin_changeorg') ? [] : [2],
   }
 
   constructor(props) {
@@ -482,7 +486,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   render() {
-    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area } = this.state
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus } = this.state
     return (
       <div>
         <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
@@ -501,6 +505,9 @@ class OrganizationListFilter extends React.Component {
         <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
         {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
         <TabCheckboxOrgArea value={area} onChange={this.handleChange.bind(this, 'area')} />
+        { hasPerm('org.admin_changeorg') ?
+        <UserAuditFilter value={orgstatus} onChange={this.handleChange.bind(this, 'orgstatus')} />
+        : null }
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
