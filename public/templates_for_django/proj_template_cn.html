@@ -91,7 +91,7 @@
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
                         {% if project.financeAmount_USD %}
-                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                        <div class="info-content money">USD {{ project.financeAmount_USD }}</div>
                         {% else %}
                         <div class="info-content">N/A</div>
                         {% endif %}
@@ -100,7 +100,7 @@
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
                         {% if project.companyValuation_USD %}
-                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                        <div class="info-content money">USD {{ project.companyValuation_USD }}</div>
                         {% else %}
                         <div class="info-content">N/A</div>
                         {% endif %}
@@ -234,7 +234,7 @@
                             <td class="finance-label">营业收入</td>
                             {% for item in finance %}
                             {% if item.revenue_USD %}
-                            <td class="finance-value">{{ item.revenue_USD }}</td>
+                            <td class="finance-value money">{{ item.revenue_USD }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %}
@@ -245,7 +245,7 @@
                             <td class="finance-label">毛利润</td>
                             {% for item in finance %}
                               {% if item.grossProfit %}
-                              <td class="finance-value">{{ item.grossProfit }}</td>
+                              <td class="finance-value money">{{ item.grossProfit }}</td>
                               {% else %}
                               <td class="finance-value">N/A</td>
                               {% endif %}
@@ -255,7 +255,7 @@
                         <tr>
                             <td class="finance-label">EBITDA</td>
                             {% for item in finance %} {% if item.EBITDA %}
-                            <td class="finance-value">{{ item.EBITDA }}</td>
+                            <td class="finance-value money">{{ item.EBITDA }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -264,7 +264,7 @@
                         <tr class="even">
                             <td class="finance-label">净利润</td>
                             {% for item in finance %} {% if item.netIncome_USD %}
-                            <td class="finance-value">{{ item.netIncome_USD }}</td>
+                            <td class="finance-value money">{{ item.netIncome_USD }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -273,7 +273,7 @@
                         <tr>
                             <td class="finance-label">总资产</td>
                             {% for item in finance %} {% if item.totalAsset %}
-                            <td class="finance-value">{{ item.totalAsset }}</td>
+                            <td class="finance-value money">{{ item.totalAsset }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -282,7 +282,7 @@
                         <tr class="even">
                             <td class="finance-label">净资产</td>
                             {% for item in finance %} {% if item.stockholdersEquity %}
-                            <td class="finance-value">{{ item.stockholdersEquity }}</td>
+                            <td class="finance-value money">{{ item.stockholdersEquity }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -291,7 +291,7 @@
                         <tr>
                             <td class="finance-label">经营性现金流</td>
                             {% for item in finance %} {% if item.operationalCashFlow %}
-                            <td class="finance-value">{{ item.operationalCashFlow }}</td>
+                            <td class="finance-value money">{{ item.operationalCashFlow }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -300,7 +300,7 @@
                         <tr class="even">
                             <td class="finance-label">净现金流</td>
                             {% for item in finance %} {% if item.grossMerchandiseValue %}
-                            <td class="finance-value">{{ item.grossMerchandiseValue }}</td>
+                            <td class="finance-value money">{{ item.grossMerchandiseValue }}</td>
                             {% else %}
                             <td class="finance-value">N/A</td>
                             {% endif %} {% endfor %}
@@ -352,12 +352,20 @@
     
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
-                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                        {% if project.financeAmount_USD %}
+                        <div class="info-content money">USD {{ project.financeAmount_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
-                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                        {% if project.companyValuation_USD %}
+                        <div class="info-content money">USD {{ project.companyValuation_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
@@ -438,12 +446,20 @@
     
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
-                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                        {% if project.financeAmount_USD %}
+                        <div class="info-content money">USD {{ project.financeAmount_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
-                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                        {% if project.companyValuation_USD %}
+                        <div class="info-content money">USD {{ project.companyValuation_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
@@ -524,12 +540,20 @@
     
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
-                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                        {% if project.financeAmount_USD %}
+                        <div class="info-content money">USD {{ project.financeAmount_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
-                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                        {% if project.companyValuation_USD %}
+                        <div class="info-content money">USD {{ project.companyValuation_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
     
                     <div class="info-container">
@@ -593,6 +617,15 @@
         var businessModel = "{{ project.businessModelC|escapejs }}";
         businessModel = businessModel.replace(/\n/g, '<br/>')
         document.getElementById('businessModel').innerHTML = businessModel;
+
+        // 将所有美元金额格式化显示
+        var allMoney = document.getElementsByClassName('money');
+        for (var i = 0; i< allMoney.length; i++) {
+            var money = allMoney[i];
+            console.log(money.innerText);
+            var formattedMoney = money.innerText.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            money.innerText = formattedMoney;
+        }
 
         var sections = ['project-intro', 'target-market', 'core-product', 'business-mode', 'finance-data'];
         var page = 0;
