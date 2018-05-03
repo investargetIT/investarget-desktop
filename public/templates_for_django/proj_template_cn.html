@@ -113,7 +113,7 @@
 
                     <div class="info-container">
                         <div class="info-label">手机</div>
-                        <div class="info-content">{{ project.phoneNumber }}</div>
+                        <div class="info-content mobile">{{ project.phoneNumber }}</div>
                     </div>
 
                     <div class="info-container">
@@ -375,7 +375,7 @@
     
                     <div class="info-container">
                         <div class="info-label">手机</div>
-                        <div class="info-content">{{ project.phoneNumber }}</div>
+                        <div class="info-content mobile">{{ project.phoneNumber }}</div>
                     </div>
     
                     <div class="info-container">
@@ -469,7 +469,7 @@
     
                     <div class="info-container">
                         <div class="info-label">手机</div>
-                        <div class="info-content">{{ project.phoneNumber }}</div>
+                        <div class="info-content mobile">{{ project.phoneNumber }}</div>
                     </div>
     
                     <div class="info-container">
@@ -563,7 +563,7 @@
     
                     <div class="info-container">
                         <div class="info-label">手机</div>
-                        <div class="info-content">{{ project.phoneNumber }}</div>
+                        <div class="info-content mobile">{{ project.phoneNumber }}</div>
                     </div>
     
                     <div class="info-container">
@@ -625,6 +625,14 @@
             console.log(money.innerText);
             var formattedMoney = money.innerText.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             money.innerText = formattedMoney;
+        }
+
+        var allMobile = document.getElementsByClassName('mobile');
+        for (var j = 0; j < allMobile.length; j++) {
+            var mobile = allMobile[j];
+            if (mobile.innerText[0] ==='8') {
+                mobile.innerText = '+' + mobile.innerText;
+            }
         }
 
         var sections = ['project-intro', 'target-market', 'core-product', 'business-mode', 'finance-data'];
