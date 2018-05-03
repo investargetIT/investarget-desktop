@@ -90,12 +90,20 @@
 
                     <div class="info-container">
                         <div class="info-label">交易规模</div>
+                        {% if project.financeAmount_USD %}
                         <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
 
                     <div class="info-container">
                         <div class="info-label">公司估值</div>
+                        {% if project.companyValuation_USD %}
                         <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                        {% else %}
+                        <div class="info-content">N/A</div>
+                        {% endif %}
                     </div>
                     
                     <div class="info-container">
