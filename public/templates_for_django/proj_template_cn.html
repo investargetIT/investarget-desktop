@@ -310,13 +310,13 @@
     </div>
 
 
-    <div style="width: 773px;height: 1096px;overflow: hidden;" class="ant-layout">
+    <div id="page-container-1" style="width: 773px;height: 1096px;overflow: hidden;display: none;" class="ant-layout">
     
         <div style="padding-left: 20px; background: rgb(0, 95, 175); color: white; line-height: 84px">
             <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 300">{{ project.projtitleC }}</h1>
         </div>
     
-        <div id="second-page" style="padding: 20px">
+        <div id="page-1" style="padding: 20px">
     
             <div style="overflow: auto">
     
@@ -391,13 +391,94 @@
 
     </div>
 
-    <div style="width: 773px;height: 1096px;overflow: hidden;" class="ant-layout">
+    <div id="page-container-2" style="width: 773px;height: 1096px;overflow: hidden;display: none;" class="ant-layout">
     
         <div style="padding-left: 20px; background: rgb(0, 95, 175); color: white; line-height: 84px">
             <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 300">{{ project.projtitleC }}</h1>
         </div>
     
-        <div id="third-page" style="padding: 20px">
+        <div id="page-2" style="padding: 20px">
+    
+            <div style="overflow: auto">
+    
+                <div style="float: left">
+    
+                    <div class="info-container">
+                        <div class="info-label">交易类型</div>
+                        <div class="info-content">{{ project.transactionType.0.nameC }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">行业</div>
+                        <div class="info-content">{{ project.industries.0.nameC }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">地区</div>
+                        <div class="info-content">{{ project.country.countryC }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">交易规模</div>
+                        <div class="info-content">USD {{ project.financeAmount_USD }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">公司估值</div>
+                        <div class="info-content">USD {{ project.companyValuation_USD }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">项目负责人</div>
+                        <div class="info-content">{{ project.contactPerson }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">手机</div>
+                        <div class="info-content">{{ project.phoneNumber }}</div>
+                    </div>
+    
+                    <div class="info-container">
+                        <div class="info-label">邮箱</div>
+                        <div class="info-content">{{ project.email }}</div>
+                    </div>
+    
+    
+                    <!-- 
+                        <div class="info-container">
+                            <div class="info-label">我的角色</div>
+                            <div class="info-content">{{ project.character.characterC }} </div>
+                        </div>
+                        -->
+    
+                </div>
+    
+                <div style="position: relative;float: right">
+                    <img src="{{ project.industries.0.url }}" style="width: 320px; height: 180px;">
+                    <div style="position: absolute;top: 4px;left: 10px">
+                        {% for tag in project.tags %}
+                        <div data-show="true" class="ant-tag ant-tag">
+                            <span class="ant-tag-text" style="font-weight: 100">{{ tag.nameC }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+    
+            </div>
+    
+    
+    
+        </div>
+
+    </div>
+
+    <div id="page-container-3" style="width: 773px;height: 1096px;overflow: hidden;display: none;" class="ant-layout">
+    
+        <div style="padding-left: 20px; background: rgb(0, 95, 175); color: white; line-height: 84px">
+            <h1 style="margin: 0;font-family: sans-serif;font-size: 24px;font-weight: 300">{{ project.projtitleC }}</h1>
+        </div>
+    
+        <div id="page-3" style="padding: 20px">
     
             <div style="overflow: auto">
     
@@ -485,25 +566,19 @@
         businessModel = businessModel.replace(/\n/g, '<br/>')
         document.getElementById('businessModel').innerHTML = businessModel;
 
-        // var targetMarket = "{{ project.targetMarketC|escapejs }}";
-        // targetMarket = targetMarket.replace(/\n/g, '<br/>')
-        // document.getElementById('targetMarket').innerHTML = targetMarket;
-
         var sections = ['project-intro', 'target-market', 'core-product', 'business-mode', 'finance-data'];
-
-        var newParent = document.getElementById('second-page');
-        for (var index = 2; index < sections.length; index++) {
-            var element = sections[index];
-            var oldParent = document.getElementById(element);
-            newParent.appendChild(oldParent); 
+        var page = 0;
+        for (var a = 0; a < sections.length; a++) {
+            var element = document.getElementById(sections[a]);
+            if (Math.floor((element.offsetTop + element.offsetHeight)/1096) > page) {
+                page++;
+                document.getElementById('page-container-' + page).style.display = 'block';
+                for (var b = a; b < sections.length; b++) {
+                    var old = document.getElementById(sections[b]);
+                    document.getElementById('page-' + page).appendChild(old);
+                }
+            }
         }
-
-        var thirdPage = document.getElementById('third-page');
-        for (var index = 4; index < sections.length; index++){
-            var element = sections[index];
-            var oldParent = document.getElementById(element);
-            thirdPage.appendChild(oldParent);
-        }        
 
      </script>
 </body>
