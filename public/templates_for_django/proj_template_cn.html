@@ -13,6 +13,7 @@
     }
     td {
         text-align: center;
+        line-height: 22px;
     }
     p, h3 {
         margin: 0;
@@ -230,80 +231,80 @@
                             <tr>
                         </thead>
 
-                        <tbody style="border: 1px solid rgb(0, 95, 175);border-left: none;border-right: none">
-                            <tr>
-                            <td class="finance-label">营业收入</td>
-                            {% for item in finance %}
-                            {% if item.revenue_USD %}
-                            <td class="finance-value money">{{ item.revenue_USD }}</td>
-                            {% else %}
-                            <td class="finance-value">N/A</td>
-                            {% endif %}
-                            {% endfor %}
+                        <tbody id="finance-data-content" style="border: 1px solid rgb(0, 95, 175);border-left: none;border-right: none">
+                            <tr id="revenue-container">
+                              <td class="finance-label">营业收入</td>
+                              {% for item in finance %}
+                              {% if item.revenue_USD %}
+                              <td class="finance-value money revenue">{{ item.revenue_USD }}</td>
+                              {% else %}
+                              <td class="finance-value revenue">N/A</td>
+                              {% endif %}
+                              {% endfor %}
                             </tr>
 
-                            <tr class="even">
+                            <tr id="gross-profit-container">
                             <td class="finance-label">毛利润</td>
                             {% for item in finance %}
                               {% if item.grossProfit %}
-                              <td class="finance-value money">{{ item.grossProfit }}</td>
+                              <td class="finance-value money gross-profit">{{ item.grossProfit }}</td>
                               {% else %}
-                              <td class="finance-value">N/A</td>
+                              <td class="finance-value gross-profit">N/A</td>
                               {% endif %}
                             {% endfor %}
                             </tr>
 
-                        <tr>
+                        <tr id="ebitda-container">
                             <td class="finance-label">EBITDA</td>
                             {% for item in finance %} {% if item.EBITDA %}
-                            <td class="finance-value money">{{ item.EBITDA }}</td>
+                            <td class="finance-value money ebitda">{{ item.EBITDA }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value ebitda">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
 
-                        <tr class="even">
+                        <tr id="netincome-container">
                             <td class="finance-label">净利润</td>
                             {% for item in finance %} {% if item.netIncome_USD %}
-                            <td class="finance-value money">{{ item.netIncome_USD }}</td>
+                            <td class="finance-value money netincome">{{ item.netIncome_USD }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value netincome">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
 
-                        <tr>
+                        <tr id="total-asset-container">
                             <td class="finance-label">总资产</td>
                             {% for item in finance %} {% if item.totalAsset %}
-                            <td class="finance-value money">{{ item.totalAsset }}</td>
+                            <td class="finance-value money total-asset">{{ item.totalAsset }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value total-asset">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
 
-                        <tr class="even">
+                        <tr id="stockholder-container">
                             <td class="finance-label">净资产</td>
                             {% for item in finance %} {% if item.stockholdersEquity %}
-                            <td class="finance-value money">{{ item.stockholdersEquity }}</td>
+                            <td class="finance-value money stockholder">{{ item.stockholdersEquity }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value stockholder">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
 
-                        <tr>
+                        <tr id="operation-container">
                             <td class="finance-label">经营性现金流</td>
                             {% for item in finance %} {% if item.operationalCashFlow %}
-                            <td class="finance-value money">{{ item.operationalCashFlow }}</td>
+                            <td class="finance-value money operation">{{ item.operationalCashFlow }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value operation">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
 
-                        <tr class="even">
+                        <tr id="gross-merchan-container">
                             <td class="finance-label">净现金流</td>
                             {% for item in finance %} {% if item.grossMerchandiseValue %}
-                            <td class="finance-value money">{{ item.grossMerchandiseValue }}</td>
+                            <td class="finance-value money gross-merchan">{{ item.grossMerchandiseValue }}</td>
                             {% else %}
-                            <td class="finance-value">N/A</td>
+                            <td class="finance-value gross-merchan">N/A</td>
                             {% endif %} {% endfor %}
                         </tr>
                         </tbody>
@@ -628,6 +629,7 @@
             money.innerText = formattedMoney;
         }
 
+        // 联系方式前加上+号
         var allMobile = document.getElementsByClassName('mobile');
         for (var j = 0; j < allMobile.length; j++) {
             var mobile = allMobile[j];
@@ -635,6 +637,36 @@
                 mobile.innerText = '+' + mobile.innerText;
             }
         }
+
+        // 财务数据一行如果都为空的话整行不显示
+        var financeData = ['revenue', 'gross-profit', 'ebitda', 'netincome', 'total-asset', 'stockholder', 'operation', 'gross-merchan'];
+        var financeDataContainer = ['revenue-container', 'gross-profit-container', 'ebitda-container', 'netincome-container', 'total-asset-container', 'stockholder-container', 'operation-container', 'gross-merchan-container'];
+        for (var l = 0; l < financeData.length; l++) {
+            var allRevenue = document.getElementsByClassName(financeData[l]);
+            var revenueWithoutValueNum = 0;
+            for (var k = 0; k < allRevenue.length; k++) {
+                var revenue = allRevenue[k];
+                if (revenue.innerText === 'N/A') {
+                    revenueWithoutValueNum++;
+                }
+            }
+            if (revenueWithoutValueNum === allRevenue.length) {
+                var nodeToBeRemoved = document.getElementById(financeDataContainer[l]);
+                nodeToBeRemoved.parentNode.removeChild(nodeToBeRemoved);
+            }
+        }
+        // 如果所有都为空隐藏整个板块
+        var financeDataContent = document.getElementById('finance-data-content');
+        if (financeDataContent.children.length === 0) {
+            document.getElementById('finance-data').remove();
+        } else {
+            for (var m = 0; m < financeDataContent.children.length; m++) {
+                if ((m + 1) % 2 === 0) {
+                    financeDataContent.children[m].classList.add('even');
+                }
+            }
+        }
+
 
         var sections = ['project-intro', 'target-market', 'core-product', 'business-mode', 'finance-data'];
         var page = 0;
