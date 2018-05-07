@@ -658,7 +658,8 @@
         // 如果所有都为空隐藏整个板块
         var financeDataContent = document.getElementById('finance-data-content');
         if (financeDataContent.children.length === 0) {
-            document.getElementById('finance-data').remove();
+            var wholeFinanceData = document.getElementById('finance-data');
+            wholeFinanceData.parentNode.removeChild(wholeFinanceData);
         } else {
             for (var m = 0; m < financeDataContent.children.length; m++) {
                 if ((m + 1) % 2 === 0) {
@@ -672,6 +673,7 @@
         var page = 0;
         for (var a = 0; a < sections.length; a++) {
             var element = document.getElementById(sections[a]);
+            if (element === null) continue;
             if (element.offsetTop + element.offsetHeight > 1096 - 40 - 20) {
                 page++;
                 document.getElementById('page-container-' + page).style.display = 'block';
