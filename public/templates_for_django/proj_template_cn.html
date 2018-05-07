@@ -82,12 +82,12 @@
 
                     <div class="info-container">
                         <div class="info-label">行业</div>
-                        <div class="info-content">{{ project.industries.0.nameC }}</div>
+                        <div class="info-content">{{ project.industries.0.industry.Pindustry.industryC }} , {{ project.industries.0.nameC }}</div>
                     </div>
 
                     <div class="info-container">
                         <div class="info-label">地区</div>
-                        <div class="info-content">{{ project.country.countryC }}</div>
+                        <div class="info-content">{{ project.country.parent.countryC }} , {{ project.country.countryC }}</div>
                     </div>
 
                     <div class="info-container">
