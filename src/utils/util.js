@@ -396,7 +396,7 @@ export function isShowCNY(record, allArea) {
   const parentArea = allArea.filter(f => f.id === recordArea.parent)[0];
   const isRecordAreaChina = ['中国', 'China'].includes(recordArea.country);
   const isRecordParentAreaChina = parentArea ? ['中国', 'China'].includes(parentArea.country) : false;
-  return isRecordAreaChina || isRecordParentAreaChina && record.currency.id === 1;
+  return (isRecordAreaChina || isRecordParentAreaChina) && record.currency.id === 1;
 }
 
 export function checkRealMobile(mobile) {
