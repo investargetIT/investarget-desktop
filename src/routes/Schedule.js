@@ -36,7 +36,7 @@ class Schedule extends React.Component {
       visibleAdd: false,
       visibleEvent: false,
       visibleEdit: false,
-      selectedDate: null,
+      selectedDate: moment(),
       mode: 'month',
     }
   }
@@ -80,17 +80,24 @@ class Schedule extends React.Component {
   }
 
   onPanelChange = (date, mode) => {
-    this.setState({ mode })
+    this.setState({ mode, selectedDate: date }, () => mode === 'month' ? this.getEvents() : undefined);
   }
 
-  onSelect = (date, dateString) => {
+  onSelect = date => {
     if (this.state.mode == 'month' && date.diff(moment(), 'days') >= 0) {
       this.setState({ visibleAdd: true, selectedDate: date.startOf('hour') })
+    } else {
+      this.setState({ selectedDate: date });
     }
   }
 
   getEvents = () => {
-    api.getSchedule({ createuser: getCurrentUser() }).then(result => {
+    api.getSchedule({ 
+      createuser: getCurrentUser(), 
+      page_size: 100, 
+      date: this.state.selectedDate.format('YYYY-MM-DD'),
+    })
+    .then(result => {
       var { count: total, data: list } = result.data
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
@@ -207,6 +214,7 @@ class Schedule extends React.Component {
           monthCellRender={this.monthCellRender}
           onPanelChange={this.onPanelChange}
           onSelect={this.onSelect}
+          value={selectedDate}
         />
 
         <Modal
