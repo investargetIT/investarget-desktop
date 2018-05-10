@@ -843,3 +843,5 @@ export const deleteOrgManageFund = id => r(`/org/managefund/${id}/`, 'DELETE');
 export const deleteOrgInvestEvent = id => r(`/org/investevent/${id}/`, 'DELETE');
 export const deleteOrgCooperation = id => r(`/org/cooprelation/${id}/`, 'DELETE');
 export const deleteOrgBuyout = id => r(`/org/buyout/${id}/`, 'DELETE');
+
+export const sendProjPdfToWechatGroup = id => r(`/proj/sendpdf/${id}/`, 'POST');

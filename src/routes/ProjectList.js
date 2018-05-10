@@ -44,6 +44,7 @@ class ProjectList extends React.Component {
       status: null,
       sendEmail: false,
       confirmLoading: false,
+      sendWechat: false,
     }
   }
 
@@ -118,7 +119,7 @@ class ProjectList extends React.Component {
   // audit project modal
 
   openAuditProjectModal = (id, status) => {
-    this.setState({ visible: true, id, currentStatus: status, status, sendEmail: false })
+    this.setState({ visible: true, id, currentStatus: status, status, sendEmail: false, sendWechat: false })
   }
 
   handleStatusChange = (status) => {
@@ -129,19 +130,28 @@ class ProjectList extends React.Component {
     this.setState({ sendEmail })
   }
 
+  handleSendWechatChange = sendWechat => {
+    this.setState({ sendWechat });
+  }
+
   handleConfirmAudit = () => {
-    const { id, status, sendEmail } = this.state
+    const { id, status, sendEmail, sendWechat } = this.state
     this.setState({ confirmLoading: true })
-    api.editProj(id, { projstatus: status, isSendEmail: sendEmail }).then(result => {
-      this.setState({ visible: false, confirmLoading: false })
-      this.getProject()
-    }, error => {
-      this.setState({ visible: false, confirmLoading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error,
+    api.editProj(id, { projstatus: status, isSendEmail: sendEmail })
+      .then(result => {
+        this.setState({ visible: false, confirmLoading: false })
+        this.getProject()
+        if (sendWechat) {
+          api.sendProjPdfToWechatGroup(id);
+        }
       })
-    })
+      .catch(error => {
+        this.setState({ visible: false, confirmLoading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error,
+        })
+      })
   }
 
   handleCancelAudit = () => {
@@ -167,7 +177,7 @@ class ProjectList extends React.Component {
 
   render() {
     const { location } = this.props
-    const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading } = this.state
+    const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',width:'110px',textAlign:'left'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
@@ -366,6 +376,8 @@ class ProjectList extends React.Component {
           onSendEmailChange={this.handleSendEmailChange}
           onOk={this.handleConfirmAudit}
           onCancel={this.handleCancelAudit}
+          sendWechat={sendWechat}
+          onSendWechatChange={this.handleSendWechatChange}
         />
 
       </LeftRightLayout>

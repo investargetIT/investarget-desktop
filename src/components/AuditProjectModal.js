@@ -55,8 +55,12 @@ class AuditProjectModal extends React.Component {
     this.props.onSendEmailChange(e.target.checked)
   }
 
+  handleSendWechatChange = e => {
+    this.props.onSendWechatChange(e.target.checked);
+  }
+
   render() {
-    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
+    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel, sendWechat } = this.props
 
     return (
       <Modal title={i18n('project.modify_project_status')} visible={visible} onOk={onOk} onCancel={onCancel} confirmLoading={confirmLoading}>
@@ -65,11 +69,16 @@ class AuditProjectModal extends React.Component {
           <SelectProjectStatus style={{flexGrow: '1'}} status={currentStatus} value={status} onChange={onStatusChange} />
         </div>
         {
-          (status == 4 || status == 6) ? (
-            <div style={{textAlign: 'center', marginTop: '16px'}}>
+          status === 4 ? 
+          <div style={{ marginTop: 20, marginLeft: 170 }}>
+            <div>
               <Checkbox checked={sendEmail} onChange={this.handleSendEmailChange}>{i18n('project.is_send_email')}</Checkbox>
+            </div> 
+            <div style={{ marginTop: 6 }}>
+              <Checkbox checked={sendWechat} onChange={this.handleSendWechatChange}>是否分享到微信群？</Checkbox>
             </div>
-          ) : null
+          </div> 
+          : null
         }
       </Modal>
     )
