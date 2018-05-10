@@ -408,10 +408,12 @@ class DataRoom extends React.Component {
   }
 
   checkDataRoomStatus = () => {
-    api.checkDataRoomStatus(this.state.id, this.state.downloadUser && this.state.downloadUser.id)
+
+    const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
+
+    api.checkDataRoomStatus(this.state.id, this.state.downloadUser && this.state.downloadUser.id, water)
       .then(result => {
         if (result.data.code === 8005) {
-          clearInterval(this.pull);
           this.setState({ 
             loading: false, 
             downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id),
@@ -419,21 +421,19 @@ class DataRoom extends React.Component {
           });
           // 重置下载链接， 防止相同下载链接不执行
           setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+        } else {
+          this.setState({ loading: false });
+          Modal.info({
+            title: '请求已发送成功',
+            content: '请耐心等待并稍后重试', 
+          })
         }
       });
   }
 
   handleDownloadBtnClicked = () => {
     this.setState({ loading: true, visible: false });
-    const params = {
-      user: this.state.downloadUser && this.state.downloadUser.id,
-      water: this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null, 
-    }
-    api.makeDataRoomZip(this.state.id, params)
-    .then(result => {
-      echo('result', result);
-      this.pull = setInterval(this.checkDataRoomStatus, 3000);
-    })
+    this.checkDataRoomStatus();
   }
 
   render () {

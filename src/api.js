@@ -565,14 +565,8 @@ export const queryDataRoomDir = (id) => {
  * @param {Number} dataroomID - dataroom 的 id 
  * @param {Number} investorID - 投资人的 id
  */
-export const checkDataRoomStatus = (dataroomID, investorID) => {
-  let url = `/dataroom/checkzip/?path=dataroom_${dataroomID}`;
-  if (investorID) {
-    url = url + '_' + investorID;
-  }
-  url = url + '.zip';
-  return r(url);
-};
+export const checkDataRoomStatus = (dataroomID, investorID, water) => r(`/dataroom/checkzip/${dataroomID}/?user=${investorID}&water=${water}`);
+
 /**
  * 返回 DataRoom 打包下载的链接地址
  * @param {Number} dataroomID - dataroom 的 id
@@ -580,12 +574,7 @@ export const checkDataRoomStatus = (dataroomID, investorID) => {
  */
 export const downloadDataRoom = (dataroomID, investorID) => {
   const user = getCurrentUserInfo()
-  let url = `/dataroom/downzip/?path=dataroom_${dataroomID}`;
-  if (investorID) {
-    url = url + '_' + investorID;
-  }
-  url = url + '.zip&token=' + user.token;
-  echo(baseUrl + url);
+  let url = `/dataroom/downzip/${dataroomID}/?user=${investorID}&token=${user.token}`;
   return baseUrl + url;
 };
 /**
