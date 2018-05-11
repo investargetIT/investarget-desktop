@@ -464,7 +464,8 @@ class OrganizationListFilter extends React.Component {
     tags: [],
     orgtypes: [],
     area: [],
-    orgstatus: hasPerm('org.admin_changeorg') ? [] : [2],
+    // orgstatus: hasPerm('org.admin_changeorg') ? [] : [2],
+    orgstatus: [],
   }
 
   constructor(props) {
@@ -505,9 +506,9 @@ class OrganizationListFilter extends React.Component {
         <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
         {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
         <TabCheckboxOrgArea value={area} onChange={this.handleChange.bind(this, 'area')} />
-        { hasPerm('org.admin_changeorg') ?
+        {/* { hasPerm('org.admin_changeorg') ? */}
         <UserAuditFilter value={orgstatus} onChange={this.handleChange.bind(this, 'orgstatus')} />
-        : null }
+        {/* : null } */}
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
