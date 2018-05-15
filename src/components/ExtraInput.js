@@ -815,7 +815,7 @@ class CascaderIndustry extends React.Component {
 
   render() {
     const { disabled, options, industry2pIndustry, children, dispatch, value:industry, onChange, ...extraProps } = this.props
-    const industryId = typeof industry === 'object' ? industry.id : industry;
+    const industryId = (industry && typeof industry === 'object') ? industry.id : industry;
     const pIndustryId = industry2pIndustry[industryId]
     const value = pIndustryId ? [pIndustryId, industryId] : [industryId]
 
