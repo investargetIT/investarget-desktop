@@ -309,7 +309,7 @@ class ProjectBDList extends React.Component {
 
 
           </div>
-          { hasPerm('BD.manageProjectBD') ? 
+          { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
           <div>
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
             <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
