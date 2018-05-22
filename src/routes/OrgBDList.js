@@ -71,7 +71,7 @@ class OrgBDList extends React.Component {
         
     }
     api.getOrgBdList(params)
-    .then(result => { 
+    .then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
         if(item.bduser){
@@ -85,8 +85,33 @@ class OrgBDList extends React.Component {
         data.forEach((item,index)=>{
           list[index].hasRelation=item.data          
         })
+        let projOrgBasedList = {}
+        list.forEach((item, index) => {
+          let orgId = item.org ? item.org.id : -1
+          let projId = item.proj ? item.proj.id : -1
+          if (orgId < 0 || projId < 0) return;
+          if (!projOrgBasedList[orgId]) {
+            projOrgBasedList[orgId] = {}
+          }
+          if (!projOrgBasedList[orgId][projId]) {
+            projOrgBasedList[orgId][projId] = []
+          }
+          projOrgBasedList[orgId][projId].push(item)
+        })
+        let newList = []
+        for (let org of Object.values(projOrgBasedList)) {
+          for (let proj of Object.values(org)) {
+            newList.push({
+              org: proj[0].org,
+              proj: proj[0].proj,
+              id: proj[0].org.id * 10000 + proj[0].proj.id,
+              items: proj,
+            })
+          }
+        }
+        console.log(newList)
         this.setState({
-          list,
+          list: newList,
           total: result.data.count,
           loading: false,
         });
@@ -94,7 +119,7 @@ class OrgBDList extends React.Component {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
           this.setState({ comments });
         }
-    })
+      })
     })
   }
 
@@ -334,6 +359,12 @@ class OrgBDList extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
+        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
+      ]
+
+    const expandedRowRender = (record) => {
+      const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return <div >                  
@@ -343,17 +374,14 @@ class OrgBDList extends React.Component {
                                     {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
                                     : record.username}
                                     </span>                                  
-                                    </Popover> : '暂无'}                               
-                                 
-                 </div>
-        },sorter:true },
+                                    </Popover> : '暂无'}    
+                  </div>
+          },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return timeWithoutHour(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
         {title: i18n('org_bd.creator'), dataIndex:'createuser.username', key:'createuser', sorter:true},
         {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
-        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
         {title: i18n('org_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
         {
             title: i18n('org_bd.operation'), render: (text, record) => 
@@ -383,8 +411,20 @@ class OrgBDList extends React.Component {
               </div>)
             }
         },
-       
       ]
+
+      console.log(record)
+
+      return (
+        <Table
+          showHeader={false}
+          columns={columns}
+          dataSource={record.items}
+          rowKey={record=>record.id}
+          pagination={{pageSize: 3}}
+        />
+      );
+    }
 
     return (
       <LeftRightLayout 
@@ -415,6 +455,7 @@ class OrgBDList extends React.Component {
         <Table
           onChange={this.handleTableChange}
           columns={columns}
+          expandedRowRender={expandedRowRender}
           dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
