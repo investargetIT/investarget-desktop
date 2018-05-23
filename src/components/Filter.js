@@ -792,7 +792,7 @@ class OrgBDFilter extends React.Component {
     static defaultValue = {
       bd_status: null,
       manager: [],
-      org: null,
+      org: [],
     }
 
     constructor(props) {
@@ -819,7 +819,7 @@ class OrgBDFilter extends React.Component {
       return (
         <div>
           <BasicContainer label="机构">
-            <SelectMultiOrgs size="large" style={{ width: '60%' }} />
+            <SelectMultiOrgs size="large" style={{ width: '60%' }} onChange={this.handleChange.bind(this, 'org')} />
           </BasicContainer>
 
           <BasicContainer label={i18n('project_bd.bd_manager')}>

@@ -458,7 +458,7 @@ class OrgBDList extends React.Component {
       <LeftRightLayout 
         location={this.props.location} 
         name={i18n('menu.organization_bd')} 
-        title={i18n('menu.bd_manageament')}
+        title={i18n('menu.bd_management')}
         action={hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined}
       >
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   

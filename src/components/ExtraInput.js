@@ -1324,19 +1324,22 @@ class SelectMultiOrgs extends React.Component {
       data: [],
       fetching: false,
     });
+    this.props.onChange(value.map(m => m.key));
   }
   render() {
-    const { fetching, data, value } = this.state;
+    const { fetching, data } = this.state;
     return (
       <Select
+        allowClear
         mode="multiple"
+        style={this.props.style}
+        size={this.props.size}
         labelInValue
-        value={value}
+        value={this.state.value}
         notFoundContent={fetching ? <Spin size="small" /> : null}
         filterOption={false}
         onSearch={this.fetchOrg}
         onChange={this.handleChange}
-        {...this.props}
       >
         {data.map(d => <Option key={d.value}>{d.text}</Option>)}
       </Select>
