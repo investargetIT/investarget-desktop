@@ -777,6 +777,15 @@ export const getMobileUploadKey = () => r('/service/recordUpload');
 export const getQRCodeStatus = key => r('/service/selectUpload?record=' + key);
 export const cancelMobileUpload = record => r('/service/cancelUpload', 'POST', { record });
 
+export const getOrgBdBase = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r('/bd/orgbdbase/?' + qs.stringify(params))
+};
+
 export const getOrgBdList = params => {
   _.forIn(params, function(value, key) {
     if (Array.isArray(value)) {

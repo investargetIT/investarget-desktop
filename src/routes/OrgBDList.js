@@ -51,6 +51,7 @@ class OrgBDList extends React.Component {
         desc:undefined,
         source:this.props.location.query.status||0,
         userDetail:[],
+        expanded: [],
     }
   }
 
@@ -59,7 +60,7 @@ class OrgBDList extends React.Component {
   }
 
   getOrgBdList = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, expanded: [] });
     const { page, pageSize, search, filters, sort, desc } = this.state;
     const params = {
         page_index: page,
@@ -68,10 +69,32 @@ class OrgBDList extends React.Component {
         ...filters,
         sort,
         desc
-        
     }
-    api.getOrgBdList(params)
-    .then(result => {
+    api.getOrgBdBase(params)
+    .then(baseResult => {
+      let baseList = baseResult.data.data
+      api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
+      .then(result => {
+        let list = result.data.data
+        let orgList = {}
+        list.forEach(item => {orgList[item.id] = item})
+        this.setState({
+          list: baseList.map(item => ({
+            id: `${item.org}-${item.proj}`,
+            org: orgList[item.org], 
+            proj: {id: item.proj},
+            loaded: false,
+            items: []
+          })),
+          total: baseResult.data.count,
+          loading: false
+        });
+      })
+    })
+  }
+
+  getOrgBdListDetail = (org, proj) => {
+    api.getOrgBdList({org, proj: proj || "none"}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
         if(item.bduser){
@@ -85,35 +108,13 @@ class OrgBDList extends React.Component {
         data.forEach((item,index)=>{
           list[index].hasRelation=item.data          
         })
-        let projOrgBasedList = {}
-        list.forEach((item, index) => {
-          let orgId = item.org ? item.org.id : -1
-          let projId = item.proj ? item.proj.id : -1
-          if (orgId < 0 || projId < 0) return;
-          if (!projOrgBasedList[orgId]) {
-            projOrgBasedList[orgId] = {}
-          }
-          if (!projOrgBasedList[orgId][projId]) {
-            projOrgBasedList[orgId][projId] = []
-          }
-          projOrgBasedList[orgId][projId].push(item)
-        })
-        let newList = []
-        for (let org of Object.values(projOrgBasedList)) {
-          for (let proj of Object.values(org)) {
-            newList.push({
-              org: proj[0].org,
-              proj: proj[0].proj,
-              id: proj[0].org.id * 10000 + proj[0].proj.id,
-              items: proj,
-            })
-          }
-        }
-        console.log(newList)
+        let newList = this.state.list.map(item => 
+          item.id === `${org}-${proj}` ?
+            {...item, items: list, loaded: true} :
+            item
+        )
         this.setState({
           list: newList,
-          total: result.data.count,
-          loading: false,
         });
         if (this.state.currentBD) {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
@@ -353,14 +354,34 @@ class OrgBDList extends React.Component {
            </div>
   }
 
+  onExpand(expanded, record) {
+    let currentId = record.id
+
+    let newExpanded = this.state.expanded
+    let expandIndex = newExpanded.indexOf(currentId)
+
+    if (expandIndex < 0) {
+      newExpanded.push(currentId)
+      this.getOrgBdListDetail(record.org.id, record.proj.id)
+    } else {
+      newExpanded.splice(expandIndex, 1)
+    }
+
+    this.setState({ expanded: newExpanded })
+  }
+
+  handleAddNew(record) {
+    console.log(record)
+  }
+
   render() {
-    const { filters, search, page, pageSize, total, list, loading, source, managers } = this.state
+    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 
     const expandedRowRender = (record) => {
@@ -413,16 +434,22 @@ class OrgBDList extends React.Component {
         },
       ]
 
-      console.log(record)
-
       return (
-        <Table
-          showHeader={false}
-          columns={columns}
-          dataSource={record.items}
-          rowKey={record=>record.id}
-          pagination={{pageSize: 3}}
-        />
+        <div>
+          <Table
+            showHeader={false}
+            columns={columns}
+            dataSource={record.items}
+            size={"small"}
+            rowKey={record=>record.id}
+            pagination={false}
+            loading={!record.loaded}
+          />
+          <Button 
+            style={{float: 'right', margin: '15px 15px 0 0'}} 
+            onClick={()=>{this.handleAddNew(record)}}
+          >{i18n('org_bd.new_user')}</Button>
+        </div>
       );
     }
 
@@ -456,9 +483,12 @@ class OrgBDList extends React.Component {
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
+          expandRowByClick
           dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
+          onExpand={this.onExpand.bind(this)}
+          expandedRowKeys={expanded}
           pagination={false}
         />
                 
