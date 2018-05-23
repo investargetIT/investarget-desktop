@@ -546,6 +546,7 @@ class OrgBDList extends React.Component {
             onClick={this.handleAddNew.bind(this, record)}
           >{i18n('org_bd.new_user')}</Button>
         </div>
+
       );
     }
 
@@ -556,7 +557,7 @@ class OrgBDList extends React.Component {
         title={i18n('menu.bd_management')}
         action={hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined}
       >
-      {source!=0 ? <BDModal source={source} element='org'/> : null}   
+      {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         <OrgBDFilter
           defaultValue={filters}
