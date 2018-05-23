@@ -17,6 +17,7 @@ import {
   Modal, 
   Input, 
   Popover,
+  Checkbox,
   Row,
   Col
 } from 'antd';
@@ -28,7 +29,30 @@ import BDModal from '../components/BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-  
+import { SelectOrgUser, SelectTrader } from '../components/ExtraInput';
+
+class DBSelectOrgUser extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {value: props.value}
+  }
+  render() {
+    return (
+      <SelectOrgUser style={{width: "100%"}} org={this.props.org} type="investor" mode="single" optionFilterProp="children" value={this.state.value} onChange={value => this.setState({value})}/>
+  )}
+}
+
+class DBSelectTrador extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {value: props.value}
+  }
+  render() {
+    return (
+      <SelectTrader style={{ width: "100%" }} mode="single" value={this.state.value} onChange={value => this.setState({value})}/>
+  )}
+}
+
 class OrgBDList extends React.Component {
   
   constructor(props) {
@@ -371,7 +395,56 @@ class OrgBDList extends React.Component {
   }
 
   handleAddNew(record) {
-    console.log(record)
+    let key = Math.random()
+    let list = this.state.list.map(item => 
+      item.id === `${record.org.id}-${record.proj.id}` ?
+        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj})} :
+        item
+    )
+    this.setState({ list })
+  }
+
+  updateSelection(record, change) {
+    let list = this.state.list.map(line => 
+      line.id !== `${record.org.id}-${record.proj.id}` ?
+        line :
+        {...line, items: line.items.map(item => 
+          item.key !== record.key ?
+          item :
+          {...item, ...change}
+        )}
+    )
+    this.setState({ list })
+  }
+
+  saveNewBD(record) {
+    let body = {
+      'bduser': record.orgUser,
+      'manager': record.trader,
+      'org': record.org.id,
+      'proj': record.proj.id,
+      'isimportant':record.isimportant,
+      'bd_status': 1,
+    }
+    api.addOrgBD(body).then(result => {
+      if (result && result.data) {
+        let list = this.state.list.map(line => 
+          line.id !== `${record.org.id}-${record.proj.id}` ?
+            line :
+            {...line, items: line.items.filter(item => item.key !== record.key).concat([result.data])}
+        )
+        this.setState({ list })
+      }
+    })
+  }
+
+  discardNewBD(record) {
+    let list = this.state.list.map(line => 
+      line.id !== `${record.org.id}-${record.proj.id}` ?
+        line :
+        {...line, items: line.items.filter(item => item.key !== record.key)}
+    )
+    this.setState({ list })
   }
 
   render() {
@@ -388,48 +461,71 @@ class OrgBDList extends React.Component {
       const columns = [
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
-          return <div >                  
-                  {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-                  {record.username? <Popover  placement="topRight" content={this.content(record)}>
-                                    <span style={{color:'#428BCA'}}>
-                                    {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
-                                    : record.username}
-                                    </span>                                  
-                                    </Popover> : '暂无'}    
-                  </div>
+          return record.new ? 
+          <SelectOrgUser style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
+          : <div>                  
+              {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
+              {record.username? <Popover  placement="topRight" content={this.content(record)}>
+                              <span style={{color:'#428BCA'}}>
+                              {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
+                              : record.username}
+                              </span>                                  
+                              </Popover> : '暂无'}    
+            </div>
           },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
-            return timeWithoutHour(record.createdtime + record.timezone)
+            return record.new ? timeWithoutHour(new Date()) : timeWithoutHour(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
-        {title: i18n('org_bd.creator'), dataIndex:'createuser.username', key:'createuser', sorter:true},
-        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
-        {title: i18n('org_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
+        {title: i18n('org_bd.creator'), render: (text, record) => {
+          return record.new ? "You" : record.createuser.username
+        }, dataIndex:'createuser.username', key:'createuser', sorter:true},
+        {title: i18n('org_bd.manager'), render: (text, record) => {
+          return record.new ? 
+          <SelectTrader style={{ width: "100%" }} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : record.manager.username
+        }, dataIndex: 'manager.username', key:'manager', sorter:true},
+        {title: i18n('org_bd.status'), render: (text, record) => {
+          return record.new ? <Checkbox checked={record.isimportant} onChange={v=>{this.updateSelection(record, {isimportant: v.target.checked})}}>重点BD</Checkbox> : record.bd_status.name
+        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
         {
             title: i18n('org_bd.operation'), render: (text, record) => 
             {
-            const latestComment = record.BDComments && record.BDComments[0]
-            const comments = latestComment ? latestComment.comments : ''
-            return (
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-
-              { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.manager.id ? 
-              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
-                <div style={{marginRight:4}}>
-                <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
+            if (record.new) {
+              return (
+                <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
+                  <div style={{marginRight:4}}>
+                  <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
+                  &nbsp;&nbsp;
+                  <Popconfirm title="Sure to discard change?" onConfirm={this.discardNewBD.bind(this, record)}>
+                    <a style={buttonStyle} size="small">取消</a>
+                  </Popconfirm>
+                  </div>
                 </div>
-                <div>
-                <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
-                </div>
-              </div>
-              : null }
+              )
+            } else {
+              const latestComment = record.BDComments && record.BDComments[0]
+              const comments = latestComment ? latestComment.comments : ''
+              return (
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
 
-               { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
-                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
-                    <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
-                </Popconfirm>
+                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.manager.id ? 
+                <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
+                  <div style={{marginRight:4}}>
+                  <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
+                  </div>
+                  <div>
+                  <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
+                  </div>
+                </div>
                 : null }
 
-              </div>)
+                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
+                      <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
+                  </Popconfirm>
+                  : null }
+
+                </div>)
+              }
             }
         },
       ]
@@ -447,7 +543,7 @@ class OrgBDList extends React.Component {
           />
           <Button 
             style={{float: 'right', margin: '15px 15px 0 0'}} 
-            onClick={()=>{this.handleAddNew(record)}}
+            onClick={this.handleAddNew.bind(this, record)}
           >{i18n('org_bd.new_user')}</Button>
         </div>
       );
