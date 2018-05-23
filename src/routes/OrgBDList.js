@@ -10,6 +10,7 @@ import {
 } from '../utils/util';
 import * as api from '../api';
 import { 
+  message,
   Table, 
   Button, 
   Popconfirm, 
@@ -435,6 +436,10 @@ class OrgBDList extends React.Component {
         )
         this.setState({ list })
       }
+    }).catch(error => {
+      Modal.error({
+        content: '该用户正处于保护期，无法建立联系，因此暂时无法修改微信',
+      });
     })
   }
 
