@@ -10,6 +10,7 @@ import {
   Checkbox,
   Slider,
   Radio,
+  Spin,
 } from 'antd'
 const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
@@ -21,7 +22,8 @@ import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
 import { BasicContainer } from './Filter';
-import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'; 
+import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
+import debounce from 'lodash/debounce';
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -222,55 +224,55 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 /**
  * SelectOrganization
  */
-class SelectOrganization extends React.Component {
+// class SelectOrganization extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      org: [],
-    }
-  }
+//   constructor(props) {
+//     super(props)
+//     this.state = {
+//       org: [],
+//     }
+//   }
 
-  handleOrgChange = value => {
+//   handleOrgChange = value => {
 
-    if (value === '') {
-      this.setState({ org: [] })
-      return
-    } else if (value.length < 2) {
-      this.setState({ org: [] })
-      return
-    } else if (this.state.org.map(i => i.name).includes(value)) {
-      return
-    }
+//     if (value === '') {
+//       this.setState({ org: [] })
+//       return
+//     } else if (value.length < 2) {
+//       this.setState({ org: [] })
+//       return
+//     } else if (this.state.org.map(i => i.name).includes(value)) {
+//       return
+//     }
 
-    api.getOrg({search: value}).then(data => {
-      const org = data.data.data.map(item => {
-        return { id: item.id, name: item.orgname }
-      })
-      this.setState({ org: org })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
+//     api.getOrg({search: value}).then(data => {
+//       const org = data.data.data.map(item => {
+//         return { id: item.id, name: item.orgname }
+//       })
+//       this.setState({ org: org })
+//     }, error => {
+//       this.props.dispatch({
+//         type: 'app/findError',
+//         payload: error
+//       })
+//     })
+//   }
 
-  onChange = (value) => {
-    this.props.onChange(value)
-    this.handleOrgChange(value)
-  }
+//   onChange = (value) => {
+//     this.props.onChange(value)
+//     this.handleOrgChange(value)
+//   }
 
-  render() {
-    const { org } = this.state
-    return (
-      <Select size="large" mode="combobox" value={this.props.value} onChange={this.onChange}>
-        { org ? org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
-      </Select>
-    )
-  }
-}
-SelectOrganization = connect()(SelectOrganization)
+//   render() {
+//     const { org } = this.state
+//     return (
+//       <Select size="large" mode="combobox" value={this.props.value} onChange={this.onChange}>
+//         { org ? org.map(d => <Option key={d.id} value={d.name}>{d.name}</Option> ) : null }
+//       </Select>
+//     )
+//   }
+// }
+// SelectOrganization = connect()(SelectOrganization)
 
 /**
  * SelectExistOrganization
@@ -1289,6 +1291,58 @@ const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state
  */
 const RadioBDSource = withOptions(RadioGroup2, BDSourceOptions)
 
+class SelectMultiOrgs extends React.Component {
+  constructor(props) {
+    super(props);
+    this.lastFetchId = 0;
+    this.fetchUser = debounce(this.fetchOrg, 800);
+  }
+  state = {
+    data: [],
+    value: [],
+    fetching: false,
+  }
+  fetchOrg = (value) => {
+    this.lastFetchId += 1;
+    const fetchId = this.lastFetchId;
+    this.setState({ data: [], fetching: true });
+    api.getOrg({ search: value })
+      .then(body => {
+        if (fetchId !== this.lastFetchId) { // for fetch callback order
+          return;
+        }
+        const data = body.data.data.map(org => ({
+          text: org.orgname,
+          value: org.id,
+        }));
+        this.setState({ data, fetching: false });
+      });
+  }
+  handleChange = (value) => {
+    this.setState({
+      value,
+      data: [],
+      fetching: false,
+    });
+  }
+  render() {
+    const { fetching, data, value } = this.state;
+    return (
+      <Select
+        mode="multiple"
+        labelInValue
+        value={value}
+        notFoundContent={fetching ? <Spin size="small" /> : null}
+        filterOption={false}
+        onSearch={this.fetchOrg}
+        onChange={this.handleChange}
+        {...this.props}
+      >
+        {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+      </Select>
+    );
+  }
+}
 
 export {
   SelectNumber,
@@ -1301,7 +1355,7 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
-  SelectOrganization,
+  // SelectOrganization,
   SelectExistOrganization,
   SelectExistUser,
   SelectExistProject,
@@ -1345,4 +1399,5 @@ export {
   SelectService,
   TabCheckboxService,
   TabCheckboxProjStatus,
+  SelectMultiOrgs,
 }

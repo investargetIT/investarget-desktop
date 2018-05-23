@@ -45,6 +45,7 @@ import {
   TabCheckboxOrgArea, 
   TabCheckboxService,
   TabCheckboxProjStatus,
+  SelectMultiOrgs,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -791,6 +792,7 @@ class OrgBDFilter extends React.Component {
     static defaultValue = {
       bd_status: null,
       manager: [],
+      org: null,
     }
 
     constructor(props) {
@@ -812,16 +814,22 @@ class OrgBDFilter extends React.Component {
     }
 
     render() {
-      const { bd_status, source_type, location, manager } = this.state
+      const { bd_status, source_type, location, manager, org } = this.state;
 
       return (
         <div>
+          <BasicContainer label="机构">
+            <SelectMultiOrgs size="large" style={{ width: '60%' }} />
+          </BasicContainer>
+
+          <BasicContainer label={i18n('project_bd.bd_manager')}>
+            <SelectOrgUser style={{width:'60%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+          </BasicContainer>
+
           <BasicContainer label={i18n('project_bd.bd_status')}>
             <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
           </BasicContainer>
-          <BasicContainer label={i18n('project_bd.bd_manager')}>
-            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
-          </BasicContainer>
+
           <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
         </div>
       )
