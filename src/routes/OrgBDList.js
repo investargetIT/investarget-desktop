@@ -164,11 +164,11 @@ class OrgBDList extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrgBdList)
+    this.setState({ filters, page: 1, expanded: [] }, this.getOrgBdList)
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
+    this.setState({ filters, page: 1, search: null, expanded: [] }, this.getOrgBdList)
   }
 
   handleModifyStatusBtnClicked(bd) {
@@ -608,9 +608,9 @@ class OrgBDList extends React.Component {
             total={total}
             current={page}
             pageSize={pageSize}
-            onChange={page => this.setState({ page }, this.getOrgBdList)}
+            onChange={page => this.setState({ page, expanded: [] }, this.getOrgBdList)}
             showSizeChanger
-            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
+            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1, expanded: [] }, this.getOrgBdList)}
             showQuickJumper
             pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
