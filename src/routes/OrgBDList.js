@@ -85,7 +85,7 @@ class OrgBDList extends React.Component {
   }
 
   getOrgBdList = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, expanded: [] });
     const { page, pageSize, search, filters, sort, desc } = this.state;
     const params = {
         page_index: page,
@@ -115,12 +115,6 @@ class OrgBDList extends React.Component {
           })),
           total: baseResult.data.count,
           loading: false
-        })
-        this.state.expanded.forEach(key => {
-          let [org, proj] = key.split("-")
-          if (!parseInt(org, 10)) org = null;
-          if (!parseInt(proj, 10)) proj = null;
-          this.getOrgBdListDetail(org, proj)
         })
       })
     })
@@ -157,18 +151,18 @@ class OrgBDList extends React.Component {
     })
   }
 
-  handleDelete(id) {
-    api.deleteOrgBD(id)
-      .then(data => this.getOrgBdList())
+  handleDelete(record) {
+    api.deleteOrgBD(record.id)
+      .then(data => this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id))
       .catch(error => handleError(error));
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1, expanded: [] }, this.getOrgBdList)
+    this.setState({ filters, page: 1 }, this.getOrgBdList)
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null, expanded: [] }, this.getOrgBdList)
+    this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
   }
 
   handleModifyStatusBtnClicked(bd) {
@@ -239,7 +233,7 @@ class OrgBDList extends React.Component {
       .then(result => 
         {
           if (status !== 3 || this.state.currentBD.bd_status.id === 3){
-            this.setState({ visible: false }, this.getOrgBdList)
+            this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
           }
         }
         );
@@ -283,7 +277,7 @@ class OrgBDList extends React.Component {
         orgBD: this.state.currentBD.id,
         comments: `${i18n('user.wechat')}: ${wechat}`
       }).then(data=>{
-        this.setState({ visible: false }, this.getOrgBdList)
+        this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
       });
     // 如果机构BD不存在联系人
     } else {
@@ -311,7 +305,7 @@ class OrgBDList extends React.Component {
             investoruser: result.data.id,
             traderuser: this.state.currentBD.manager.id
           }).then(data=>{
-            this.setState({ visible: false }, this.getOrgBdList)
+            this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
           })
           });
         }
@@ -340,13 +334,13 @@ class OrgBDList extends React.Component {
       comments: this.state.newComment,
     };
     api.addOrgBDComment(body)
-      .then(data => this.setState({ newComment: '' }, this.getOrgBdList))
+      .then(data => this.setState({ newComment: '' }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id)))
       .catch(error => handleError(error));
   }
 
   handleDeleteComment = id => {
     api.deleteOrgBDComment(id)
-    .then(() => this.getOrgBdList())
+    .then(() => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
     .catch(error => handleError(error));
   }
   
@@ -532,7 +526,7 @@ class OrgBDList extends React.Component {
                 : null }
 
                 { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
-                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
                       <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
                   </Popconfirm>
                   : null }
@@ -608,9 +602,9 @@ class OrgBDList extends React.Component {
             total={total}
             current={page}
             pageSize={pageSize}
-            onChange={page => this.setState({ page, expanded: [] }, this.getOrgBdList)}
+            onChange={page => this.setState({ page }, this.getOrgBdList)}
             showSizeChanger
-            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1, expanded: [] }, this.getOrgBdList)}
+            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
             showQuickJumper
             pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
