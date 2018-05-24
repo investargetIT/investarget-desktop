@@ -825,7 +825,7 @@ class OrgBDFilter extends React.Component {
           </BasicContainer>
 
           <BasicContainer label="机构">
-            <SelectMultiOrgs size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} />
+            <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} />
           </BasicContainer>
 
           <BasicContainer label={i18n('project_bd.bd_manager')}>

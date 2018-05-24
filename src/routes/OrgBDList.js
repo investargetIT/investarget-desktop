@@ -93,7 +93,9 @@ class OrgBDList extends React.Component {
         search,
         ...filters,
         sort,
-        desc
+        desc,
+        org: filters.org.map(m => m.key),
+        proj: filters.proj || 'none',
     }
     api.getOrgBdBase(params)
     .then(baseResult => {
