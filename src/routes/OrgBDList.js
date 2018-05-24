@@ -85,7 +85,7 @@ class OrgBDList extends React.Component {
   }
 
   getOrgBdList = () => {
-    this.setState({ loading: true, expanded: [] });
+    this.setState({ loading: true });
     const { page, pageSize, search, filters, sort, desc } = this.state;
     const params = {
         page_index: page,
@@ -113,7 +113,13 @@ class OrgBDList extends React.Component {
           })),
           total: baseResult.data.count,
           loading: false
-        });
+        })
+        this.state.expanded.forEach(key => {
+          let [org, proj] = key.split("-")
+          if (!parseInt(org, 10)) org = null;
+          if (!parseInt(proj, 10)) proj = null;
+          this.getOrgBdListDetail(org, proj)
+        })
       })
     })
   }
@@ -438,7 +444,7 @@ class OrgBDList extends React.Component {
       }
     }).catch(error => {
       Modal.error({
-        content: '该用户正处于保护期，无法建立联系，因此暂时无法修改微信',
+        content: error.message || "未知错误",
       });
     })
   }
@@ -482,7 +488,7 @@ class OrgBDList extends React.Component {
             return record.new ? timeWithoutHour(new Date()) : timeWithoutHour(record.createdtime + record.timezone)
         }, key:'createdtime', sorter:true},
         {title: i18n('org_bd.creator'), render: (text, record) => {
-          return record.new ? "You" : record.createuser.username
+          return record.new ? isLogin().username : record.createuser.username
         }, dataIndex:'createuser.username', key:'createuser', sorter:true},
         {title: i18n('org_bd.manager'), render: (text, record) => {
           return record.new ? 
