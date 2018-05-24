@@ -46,6 +46,7 @@ import {
   TabCheckboxService,
   TabCheckboxProjStatus,
   SelectMultiOrgs,
+  SelectExistProject,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -793,6 +794,7 @@ class OrgBDFilter extends React.Component {
       bd_status: null,
       manager: [],
       org: [],
+      proj: null,
     }
 
     constructor(props) {
@@ -814,16 +816,20 @@ class OrgBDFilter extends React.Component {
     }
 
     render() {
-      const { bd_status, source_type, location, manager, org } = this.state;
+      const { bd_status, source_type, location, manager, org, proj } = this.state;
 
       return (
         <div>
+          <BasicContainer label="项目">
+            <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')}/>
+          </BasicContainer>
+
           <BasicContainer label="机构">
-            <SelectMultiOrgs size="large" style={{ width: '60%' }} onChange={this.handleChange.bind(this, 'org')} />
+            <SelectMultiOrgs size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} />
           </BasicContainer>
 
           <BasicContainer label={i18n('project_bd.bd_manager')}>
-            <SelectOrgUser style={{width:'60%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
           </BasicContainer>
 
           <BasicContainer label={i18n('project_bd.bd_status')}>
