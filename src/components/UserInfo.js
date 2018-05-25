@@ -85,6 +85,8 @@ class UserInfo extends React.Component {
         payload: error
       })
     })
+    api.getUserAttachment()
+      .then(result => echo('result', result))
   }
 
   render() {

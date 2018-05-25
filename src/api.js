@@ -508,6 +508,8 @@ export function deleteUserRemark(id) {
   return r('/user/remark/' + id + '/', 'DELETE')
 }
 
+export const getUserAttachment = params => r('/user/atta/?' + qs.stringify(params));
+
 /**
  * DataRoom
  */
