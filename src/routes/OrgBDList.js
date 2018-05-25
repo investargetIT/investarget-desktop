@@ -1,5 +1,6 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
+import moment from 'moment';
 import { 
   i18n, 
   timeWithoutHour, 
@@ -19,6 +20,7 @@ import {
   Input, 
   Popover,
   Checkbox,
+  DatePicker,
   Row,
   Col
 } from 'antd';
@@ -79,6 +81,8 @@ class OrgBDList extends React.Component {
         expanded: [],
     }
   }
+
+  disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
     this.getOrgBdList();
@@ -401,7 +405,7 @@ class OrgBDList extends React.Component {
     let key = Math.random()
     let list = this.state.list.map(item => 
       item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj})} :
+        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: null})} :
         item
     )
     this.setState({ list })
@@ -427,6 +431,7 @@ class OrgBDList extends React.Component {
       'org': record.org.id,
       'proj': record.proj.id,
       'isimportant':record.isimportant,
+      'expirationtime':record.expirationtime.format('YYYY-MM-DDTHH:mm:ss'),
       'bd_status': 1,
     }
     api.addOrgBD(body).then(result => {
@@ -481,7 +486,29 @@ class OrgBDList extends React.Component {
             </div>
           },sorter:true },
         {title: i18n('org_bd.created_time'), render: (text, record) => {
-            return record.new ? timeWithoutHour(new Date()) : timeWithoutHour(record.createdtime + record.timezone)
+            return record.new ? 
+            <div>
+              { timeWithoutHour(new Date()) + " - " }
+              <DatePicker 
+                placeholder="Expiration Date"
+                disabledDate={this.disabledDate}
+                // defaultValue={moment()}
+                showToday={false}
+                shape="circle"
+                value={record.expirationtime}
+                renderExtraFooter={() => {
+                  return <div>
+                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment()})}}>Now</Button>
+                    &nbsp;&nbsp;
+                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'weeks')})}}>Week</Button>
+                    &nbsp;&nbsp;
+                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'months')})}}>Month</Button>
+                  </div>
+                }}
+                onChange={v=>{this.updateSelection(record, {expirationtime: v})}}
+              />
+            </div>
+            : ( (timeWithoutHour(record.createdtime + record.timezone) + " - ") + (record.expirationtime ? timeWithoutHour(record.expirationtime + record.timezone) : "Now" ) )
         }, key:'createdtime', sorter:true},
         {title: i18n('org_bd.creator'), render: (text, record) => {
           return record.new ? isLogin().username : record.createuser.username
