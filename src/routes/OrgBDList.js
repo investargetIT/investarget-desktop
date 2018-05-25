@@ -431,7 +431,7 @@ class OrgBDList extends React.Component {
       'org': record.org.id,
       'proj': record.proj.id,
       'isimportant':record.isimportant,
-      'expirationtime':record.expirationtime.format('YYYY-MM-DDTHH:mm:ss'),
+      'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       'bd_status': 1,
     }
     api.addOrgBD(body).then(result => {
