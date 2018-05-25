@@ -140,11 +140,8 @@ class UserForm extends React.Component {
           <SelectTitle showSearch />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("user.institution")} name="org" >
-          {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
+        <BasicFormItem label={i18n("user.institution")} name="org" required>
             <SelectExistOrganization allowCreate formName="userform" size="large" />
-            {/*<Link to="/app/organization/add" target="_blank"><Button size="large" style={{marginLeft: '8px'}}>新增</Button></Link>*/}
-          {/*</div>*/}
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
