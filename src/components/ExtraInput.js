@@ -596,7 +596,11 @@ class SelectOrgUser extends React.Component {
       const options = traders.map(item => {
         return { label: item.username, value: item.id }
       })
-      this.setState({ options })
+      if (this.props.allowEmpty && !options.length) {
+        this.setState({ options: [{label: "暂无", value: -1}] })
+      } else {
+        this.setState({ options })
+      }
     })
   }
 

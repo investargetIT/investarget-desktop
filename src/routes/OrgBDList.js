@@ -60,6 +60,11 @@ class OrgBDList extends React.Component {
   
   constructor(props) {
     super(props);
+
+    this.ids = (this.props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
+    this.projId = parseInt(this.props.location.query.projId, 10);
+    this.projId = !isNaN(this.projId) ? this.projId : null;
+
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: null,
@@ -79,6 +84,7 @@ class OrgBDList extends React.Component {
         source:this.props.location.query.status||0,
         userDetail:[],
         expanded: [],
+        isAdd: this.props.location.query.ids ? true : false
     }
   }
 
@@ -86,6 +92,13 @@ class OrgBDList extends React.Component {
 
   componentDidMount() {
     this.getOrgBdList();
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.ids = (nextProps.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
+    this.projId = parseInt(nextProps.location.query.projId, 10);
+    this.projId = !isNaN(this.projId) ? this.projId : null;
+    this.setState({isAdd: nextProps.location.query.ids ? true : false});
   }
 
   getOrgBdList = () => {
@@ -101,7 +114,19 @@ class OrgBDList extends React.Component {
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     }
-    api.getOrgBdBase(params)
+
+    let requestApi = api.getOrgBdBase;
+    if (this.state.isAdd) {
+      requestApi = (params) => { 
+        return new Promise((resolve) => resolve({
+          data: {
+            data: this.ids.map(item => ({org: item, proj: this.projId}))
+          }
+        }))
+      }
+    }
+
+    requestApi(params)
     .then(baseResult => {
       let baseList = baseResult.data.data
       api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
@@ -426,7 +451,7 @@ class OrgBDList extends React.Component {
 
   saveNewBD(record) {
     let body = {
-      'bduser': record.orgUser,
+      'bduser': record.orgUser >= 0 ? record.orgUser : null,
       'manager': record.trader,
       'org': record.org.id,
       'proj': record.proj.id,
@@ -460,7 +485,7 @@ class OrgBDList extends React.Component {
   }
 
   render() {
-    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
+    const { isAdd, filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
@@ -474,7 +499,7 @@ class OrgBDList extends React.Component {
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
-          <SelectOrgUser style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
+          <SelectOrgUser allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
           : <div>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               {record.username? <Popover  placement="topRight" content={this.content(record)}>
@@ -587,28 +612,35 @@ class OrgBDList extends React.Component {
     return (
       <LeftRightLayout 
         location={this.props.location} 
-        name={i18n('menu.organization_bd')} 
+        name={i18n('menu.organization_bd') + (isAdd ? " / 新增BD": "")} 
         title={i18n('menu.bd_management')}
-        action={hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined}
+        action={
+          isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
+          : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
+        }
       >
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
-        <OrgBDFilter
-          defaultValue={filters}
-          onSearch={this.handleFilt}
-          onReset={this.handleReset}
-          onChange={this.handleFilt}
-        />
-        
-        <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
-          <Search
-            style={{ width: 200 }}
-            placeholder="联系人/机构/项目"
-            onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-            onChange={search => this.setState({ search })}
-            value={search}
+        { !isAdd ?
+          <OrgBDFilter
+            defaultValue={filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+            onChange={this.handleFilt}
           />
-        </div>
+        : null}
+        
+        { !isAdd ?
+          <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
+            <Search
+              style={{ width: 200 }}
+              placeholder="联系人/机构/项目"
+              onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
+              onChange={search => this.setState({ search })}
+              value={search}
+            />
+          </div>
+        : null}
 
         <Table
           onChange={this.handleTableChange}

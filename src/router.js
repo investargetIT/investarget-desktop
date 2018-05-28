@@ -60,6 +60,7 @@ import RecommendFriends from './components/RecommendFriends';
 import RecommendProjects from './components/RecommendProjects';
 import OrgBDList from './routes/OrgBDList';
 import AddOrgBD from './routes/AddOrgBD';
+import NewOrgBD from './routes/NewOrgBD';
 import TraderDetail from './routes/TraderDetail';
 import MeetingBDList from './routes/MeetingBDList';
 import AddMeetingBD from './routes/AddMeetingBD';
@@ -125,7 +126,8 @@ function RouterConfig({ history }) {
       <Route path="/app/schedule/list" component={ScheduleList} />
       <Route path="/password" component={ResetPassword} />
       <Route path="/app/org/bd" component={OrgBDList} />
-      <Route path="/app/orgbd/add" component={AddOrgBD} />
+      <Route path="/app/org/newbd" component={OrgBDList} />
+      <Route path="/app/orgbd/add" component={NewOrgBD} />
       <Route path="/app/trader/:id" component={TraderDetail} />
       <Route path="/app/meeting/bd" component={MeetingBDList} />
       <Route path="/app/meetingbd/add" component={AddMeetingBD} />
