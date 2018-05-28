@@ -33,6 +33,29 @@ import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgUser, SelectTrader } from '../components/ExtraInput';
+import { SwitchButton } from '../components/SelectOrgInvestorToBD';
+
+function displayUserWhenPopover(user) {
+  const photourl = user && user.photourl;
+  const tags = user && user.tags ? user.tags.map(item => item.name).join(',') : '';
+  return <div style={{ width: 180 }}>
+    <Row style={{ textAlign: 'center', margin: '10px 0' }}>
+      {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
+    </Row>
+    {/* <SimpleLine title={i18n('user.mobile')} value={user.mobile || '暂无'} /> */}
+    {/* <SimpleLine title={i18n('user.email')} value={user.email || '暂无'} /> */}
+    {/* <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}> */}
+      {/* <Col span={12}>{i18n('user.trader')}:</Col> */}
+      {/* <Col span={12} style={{ wordBreak: 'break-all' }}> */}
+        {/* <TraderForPopover investor={user.id} /> */}
+      {/* </Col> */}
+    {/* </Row> */}
+    <Row style={{ lineHeight: '24px' }}>
+      <Col span={12}>{i18n('user.tags') + '：'}</Col>
+      <Col span={12} style={{wordWrap: 'break-word'}}>{tags || '暂无'}</Col>
+    </Row>
+  </div>;
+}
 
 class DBSelectOrgUser extends React.Component {
   constructor(props) {
@@ -56,7 +79,7 @@ class DBSelectTrador extends React.Component {
   )}
 }
 
-class OrgBDList extends React.Component {
+class NewOrgBDList extends React.Component {
   
   constructor(props) {
     super(props);
@@ -83,8 +106,7 @@ class OrgBDList extends React.Component {
         desc:undefined,
         source:this.props.location.query.status||0,
         userDetail:[],
-        expanded: [],
-        isAdd: this.props.location.query.ids ? true : false
+        expanded: []
     }
   }
 
@@ -92,16 +114,6 @@ class OrgBDList extends React.Component {
 
   componentDidMount() {
     this.getOrgBdList();
-  }
-
-  componentWillReceiveProps(nextProps){
-    this.ids = (nextProps.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
-    this.projId = parseInt(nextProps.location.query.projId, 10);
-    this.projId = !isNaN(this.projId) ? this.projId : null;
-    this.setState({
-      pageSize: nextProps.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
-      isAdd: nextProps.location.query.ids ? true : false
-    });
   }
 
   getOrgBdList = () => {
@@ -118,18 +130,7 @@ class OrgBDList extends React.Component {
         proj: filters.proj || 'none',
     }
 
-    let requestApi = api.getOrgBdBase;
-    if (this.state.isAdd) {
-      requestApi = (params) => { 
-        return new Promise((resolve) => resolve({
-          data: {
-            data: this.ids.map(item => ({org: item, proj: this.projId}))
-          }
-        }))
-      }
-    }
-
-    requestApi(params)
+    api.getOrgBdBase(params)
     .then(baseResult => {
       let baseList = baseResult.data.data
       api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
@@ -152,9 +153,10 @@ class OrgBDList extends React.Component {
     })
   }
 
-  getOrgBdListDetail = (org, proj) => {
-    api.getOrgBdList({org, proj: proj || "none"}).then(result => {
+  getOrgBdListDetail = (org) => {
+    api.getOrgBdList({org, proj: this.projId || "none"}).then(result => {
       let list = result.data.data
+      let existUsers = list.map(bd=>bd.bduser)
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
@@ -167,42 +169,31 @@ class OrgBDList extends React.Component {
         data.forEach((item,index)=>{
           list[index].hasRelation=item.data          
         })
-        let newList = this.state.list.map(item => 
-          item.id === `${org}-${proj}` ?
-            {...item, items: list, loaded: true} :
-            item
-        )
-        this.setState({
-          list: newList,
-        });
         if (this.state.currentBD) {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
           this.setState({ comments });
         }
+        api.getUser({starmobile: true, org: [org]}).then(result => {
+            list = list.concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({
+              ...user,
+              bduser: user.id,
+              new: true,
+              proj: this.projId,
+              org: {id: org},
+              usermobile: user.mobile
+            })))
+            let newList = this.state.list.map(item => 
+              item.id === `${org}-${this.projId}` ?
+                {...item, items: list, loaded: true} :
+                item
+            )
+            console.log(list);
+            this.setState({
+              list: newList,
+            });
+        })
       })
     })
-  }
-
-  handleDelete(record) {
-    api.deleteOrgBD(record.id)
-      .then(data => this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id))
-      .catch(error => handleError(error));
-  }
-
-  handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrgBdList)
-  }
-
-  handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
-  }
-
-  handleModifyStatusBtnClicked(bd) {
-    this.setState({ 
-        visible: true, 
-        currentBD: bd,
-        status: bd.bd_status.id,
-    });
   }
 
   handleStatusChange = (status) => {
@@ -356,9 +347,6 @@ class OrgBDList extends React.Component {
       })
     }
   }
-  handleOpenModal = bd => {
-    this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
-  }
 
   handleAddComment = () => {
     const body = {
@@ -429,66 +417,51 @@ class OrgBDList extends React.Component {
     this.setState({ expanded: newExpanded })
   }
 
-  handleAddNew(record) {
-    let key = Math.random()
-    let list = this.state.list.map(item => 
-      item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: null})} :
-        item
-    )
-    this.setState({ list })
+  handleMore(record) {
+    // let key = Math.random()
+    // let list = this.state.list.map(item => 
+    //   item.id === `${record.org.id}-${record.proj.id}` ?
+    //     {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: null})} :
+    //     item
+    // )
+    // this.setState({ list })
   }
 
-  updateSelection(record, change) {
-    let list = this.state.list.map(line => 
-      line.id !== `${record.org.id}-${record.proj.id}` ?
-        line :
-        {...line, items: line.items.map(item => 
-          item.key !== record.key ?
-          item :
-          {...item, ...change}
-        )}
-    )
-    this.setState({ list })
-  }
-
-  saveNewBD(record) {
-    let body = {
-      'bduser': record.orgUser >= 0 ? record.orgUser : null,
-      'manager': record.trader,
-      'org': record.org.id,
-      'proj': record.proj.id,
-      'isimportant':record.isimportant,
-      'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
-      'bd_status': 1,
+  handleLoadTrader = investorUserRelation => {
+    this.investorTrader.push(investorUserRelation);
+    const listWithInvestor = this.state.list.filter(f => f.id !== null);
+    if (this.investorTrader.length === listWithInvestor.length) {
+      this.props.dispatch({
+        type: 'app/setSortedTrader',
+        payload: this.investorTrader, 
+      }); 
     }
-    api.addOrgBD(body).then(result => {
-      if (result && result.data) {
-        let list = this.state.list.map(line => 
-          line.id !== `${record.org.id}-${record.proj.id}` ?
-            line :
-            {...line, items: line.items.filter(item => item.key !== record.key).concat([result.data])}
-        )
-        this.setState({ list })
-      }
-    }).catch(error => {
-      Modal.error({
-        content: error.message || "未知错误",
-      });
-    })
   }
 
-  discardNewBD(record) {
-    let list = this.state.list.map(line => 
-      line.id !== `${record.org.id}-${record.proj.id}` ?
-        line :
-        {...line, items: line.items.filter(item => item.key !== record.key)}
-    )
-    this.setState({ list })
+  loadLabelByValue(type, value) {
+    console.log(value)
+    if (Array.isArray(value) && this.props.tag.length > 0) {
+      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+    } else if (typeof value === 'number') {
+      return this.props[type].filter(f => f.id === value)[0].name;
+    }
+  }
+
+  handleSwitchChange = (record, ifimportant) => {
+    let id=record.id+"_"+record.org.id
+    this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
+    const userList = this.props.value
+    const index = _.findIndex(userList, function(item) {
+      return item.investor+"_"+item.org == id
+    })
+    if (index > -1) {
+      userList[index].isimportant=ifimportant
+      this.props.onChange(userList)
+    }
   }
 
   render() {
-    const { isAdd, filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
+    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
@@ -499,114 +472,54 @@ class OrgBDList extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
-        render:(text,record)=>{
-          return record.new ? 
-          <SelectOrgUser allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
-          : <div>                  
-              {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-              {record.username? <Popover  placement="topRight" content={this.content(record)}>
-                              <span style={{color:'#428BCA'}}>
-                              {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
-                              : record.username}
-                              </span>                                  
-                              </Popover> : '暂无'}    
-            </div>
-          },sorter:true },
-        {title: i18n('org_bd.created_time'), render: (text, record) => {
-            return record.new ? 
-            <div>
-              { timeWithoutHour(new Date()) + " - " }
-              <DatePicker 
-                placeholder="Expiration Date"
-                disabledDate={this.disabledDate}
-                // defaultValue={moment()}
-                showToday={false}
-                shape="circle"
-                value={record.expirationtime}
-                renderExtraFooter={() => {
-                  return <div>
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment()})}}>Now</Button>
-                    &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'weeks')})}}>Week</Button>
-                    &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'months')})}}>Month</Button>
-                  </div>
-                }}
-                onChange={v=>{this.updateSelection(record, {expirationtime: v})}}
-              />
-            </div>
-            : ( (timeWithoutHour(record.createdtime + record.timezone) + " - ") + (record.expirationtime ? timeWithoutHour(record.expirationtime + record.timezone) : "Now" ) )
-        }, key:'createdtime', sorter:true},
-        {title: i18n('org_bd.creator'), render: (text, record) => {
-          return record.new ? isLogin().username : record.createuser.username
-        }, dataIndex:'createuser.username', key:'createuser', sorter:true},
-        {title: i18n('org_bd.manager'), render: (text, record) => {
-          return record.new ? 
-          <SelectTrader style={{ width: "100%" }} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : record.manager.username
-        }, dataIndex: 'manager.username', key:'manager', sorter:true},
-        {title: i18n('org_bd.status'), render: (text, record) => {
-          return record.new ? <Checkbox checked={record.isimportant} onChange={v=>{this.updateSelection(record, {isimportant: v.target.checked})}}>重点BD</Checkbox> : record.bd_status.name
-        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
         {
-            title: i18n('org_bd.operation'), render: (text, record) => 
-            {
-            if (record.new) {
-              return (
-                <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
-                  <div style={{marginRight:4}}>
-                  <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
-                  &nbsp;&nbsp;
-                  <Popconfirm title="Sure to discard change?" onConfirm={this.discardNewBD.bind(this, record)}>
-                    <a style={buttonStyle} size="small">取消</a>
-                  </Popconfirm>
-                  </div>
-                </div>
-              )
-            } else {
-              const latestComment = record.BDComments && record.BDComments[0]
-              const comments = latestComment ? latestComment.comments : ''
-              return (
-                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.manager.id ? 
-                <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
-                  <div style={{marginRight:4}}>
-                  <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
-                  </div>
-                  <div>
-                  <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
-                  </div>
-                </div>
-                : null }
-
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
-                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
-                      <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
-                  </Popconfirm>
-                  : null }
-
-                </div>)
-              }
-            }
+          title: i18n('user.name'), key: 'username', dataIndex: 'username',
+          render: (text, record) => <div>
+            {record.username ? <Popover placement="topLeft" content={displayUserWhenPopover(record)}>
+              <span style={{ color: '#428BCA' }}>{ record.username }</span>
+            </Popover> : '暂无投资人'}
+          </div>
         },
+        // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
+        // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
+        { title: i18n('mobile'), key: 'mobile', dataIndex: 'usermobile', render: text => text || '暂无' },
+        { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
+        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.bduser ? <Trader investor={record.bduser} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
+        
       ]
+      if(this.props.source!="meetingbd"){
+        columns.push({title:i18n('org_bd.important'), render:(text,record)=>{
+          if (record.new) return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
+          else return <div>{record.isimportant ? "是" : "否"}</div>
+        }})
+      }
+
+      const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: record => ({
+          disabled: record.new !== true,
+          name: record.name,
+        }),
+      };
 
       return (
         <div>
           <Table
-            showHeader={false}
+            // showHeader={false}
             columns={columns}
             dataSource={record.items}
-            size={"small"}
             rowKey={record=>record.id}
             pagination={false}
             loading={!record.loaded}
+            size={"small"}
+            rowSelection={rowSelection}
           />
           <Button 
             style={{float: 'right', margin: '15px 15px 0 0'}} 
-            onClick={this.handleAddNew.bind(this, record)}
-          >{i18n('org_bd.new_user')}</Button>
+            onClick={this.handleMore.bind(this, record)}
+          >{"展示更多"}</Button>
         </div>
 
       );
@@ -615,35 +528,11 @@ class OrgBDList extends React.Component {
     return (
       <LeftRightLayout 
         location={this.props.location} 
-        name={i18n('menu.organization_bd') + (isAdd ? " / 查看BD": "")} 
+        breadcrumb={' > ' + i18n('menu.organization_bd') + ' > ' + i18n('project.create_org_bd')}
         title={i18n('menu.bd_management')}
-        action={
-          isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
-          : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
-        }
+        action={{ name: '返回机构BD', link: '/app/org/bd' }}
       >
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
-
-        { !isAdd ?
-          <OrgBDFilter
-            defaultValue={filters}
-            onSearch={this.handleFilt}
-            onReset={this.handleReset}
-            onChange={this.handleFilt}
-          />
-        : null}
-        
-        { !isAdd ?
-          <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
-            <Search
-              style={{ width: 200 }}
-              placeholder="联系人/机构/项目"
-              onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-              onChange={search => this.setState({ search })}
-              value={search}
-            />
-          </div>
-        : null}
 
         <Table
           onChange={this.handleTableChange}
@@ -656,23 +545,8 @@ class OrgBDList extends React.Component {
           onExpand={this.onExpand.bind(this)}
           expandedRowKeys={expanded}
           pagination={false}
+          size={"middle"}
         />
-                
-        { !isAdd ?
-          <div style={{ margin: '16px 0' }} className="clearfix">
-            <Pagination
-              style={{ float: 'right' }}
-              total={total}
-              current={page}
-              pageSize={pageSize}
-              onChange={page => this.setState({ page }, this.getOrgBdList)}
-              showSizeChanger
-              onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
-              showQuickJumper
-              pageSizeOptions={PAGE_SIZE_OPTIONS}
-            />
-          </div>
-        : null }
 
         { this.state.visible ? 
         <ModalModifyOrgBDStatus 
@@ -706,7 +580,7 @@ class OrgBDList extends React.Component {
   }
 }
 
-export default OrgBDList;
+export default NewOrgBDList;
 
 export class Trader extends React.Component {
   state = {
@@ -714,6 +588,9 @@ export class Trader extends React.Component {
   }
   componentDidMount() {
     const param = { investoruser: this.props.investor}
+    api.queryUserGroup({ type: 'investor' }).then(data => {
+    this.investorGroupIds = data.data.data.map(item => item.id);
+    })
     api.getUserRelation(param).then(result => {
       echo(result);
       const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))

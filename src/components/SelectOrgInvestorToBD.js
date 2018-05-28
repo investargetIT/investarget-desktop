@@ -249,7 +249,7 @@ class SelectOrgInvestorToBD extends React.Component {
 
 }
 
-class SwitchButton extends React.Component{
+export class SwitchButton extends React.Component{
   constructor(props){
     super(props);
     this.state={
