@@ -69,7 +69,7 @@ class OrgBDList extends React.Component {
         filters: OrgBDFilter.defaultValue,
         search: null,
         page: 1,
-        pageSize: getUserInfo().page || 10,
+        pageSize: this.props.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
         total: 0,
         list: [],
         loading: false,
@@ -98,7 +98,10 @@ class OrgBDList extends React.Component {
     this.ids = (nextProps.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(nextProps.location.query.projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
-    this.setState({isAdd: nextProps.location.query.ids ? true : false});
+    this.setState({
+      pageSize: nextProps.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
+      isAdd: nextProps.location.query.ids ? true : false
+    });
   }
 
   getOrgBdList = () => {
@@ -655,19 +658,21 @@ class OrgBDList extends React.Component {
           pagination={false}
         />
                 
-        <div style={{ margin: '16px 0' }} className="clearfix">
-          <Pagination
-            style={{ float: 'right' }}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={page => this.setState({ page }, this.getOrgBdList)}
-            showSizeChanger
-            onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
-            showQuickJumper
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-          />
-        </div>
+        { !isAdd ?
+          <div style={{ margin: '16px 0' }} className="clearfix">
+            <Pagination
+              style={{ float: 'right' }}
+              total={total}
+              current={page}
+              pageSize={pageSize}
+              onChange={page => this.setState({ page }, this.getOrgBdList)}
+              showSizeChanger
+              onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
+              showQuickJumper
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
+            />
+          </div>
+        : null }
 
         { this.state.visible ? 
         <ModalModifyOrgBDStatus 
