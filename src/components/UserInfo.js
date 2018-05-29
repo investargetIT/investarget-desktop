@@ -2,8 +2,14 @@ import React from 'react'
 import { connect } from 'dva'
 import {Link} from 'dva/router'
 import { i18n } from '../utils/util'
-import { Row, Col } from 'antd'
+import { 
+  Row, 
+  Col,
+  Tabs,
+} from 'antd';
 import ImageViewer from './ImageViewer'
+
+const TabPane = Tabs.TabPane;
 
 const rowStyle = {
   //borderBottom: '1px dashed #eee',
@@ -87,31 +93,40 @@ class UserInfo extends React.Component {
     })
     api.getUserAttachment()
       .then(result => echo('result', result))
+    api.getUserInvestEvent({ user: userId })
+      .then(result => echo('event', result));
   }
 
   render() {
     const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
     return (
-      <div>
-        <Field title={i18n('user.cn_name')} value={username} />
-        <Field title={i18n('user.institution')} value={org} orgid={orgid}/>
-        <Field title={i18n('user.department')} value={''} />
-        <Field title={i18n('user.position')} value={title} />
-        <Field title={i18n('user.tags')} value={tags} />
-        <Field title={i18n('user.country')} value={country} />
-        <Field title={i18n('user.area')} value={''} />
-        <Field title={i18n('user.mobile')} value={mobile} />
-        <Field title={i18n('user.wechat')} value={wechat} />
-        <Field title={i18n('user.email')} value={email} />
-        <Field title={i18n('user.status')} value={userstatus} />
-        <Field title={i18n('user.card')} value={ cardUrl ? <ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer> : null } />
-        <Field title={i18n('project.favorite_projects')} value={''} />
-        <Field title={i18n('project.recommended_projects')} value={''} />
-        <Field title={i18n('project.interested_projects')} value={''} />
-        <Field title={i18n('user.target_demand')} value={targetdemand} />
-        <Field title={i18n('user.merges')} value={mergedynamic} />
-        <Field title={i18n('user.industry_fund')} value={ishasfundorplan} />
-      </div>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="基本信息" key="1">
+          <div>
+            <Field title={i18n('user.cn_name')} value={username} />
+            <Field title={i18n('user.institution')} value={org} orgid={orgid} />
+            <Field title={i18n('user.department')} value={''} />
+            <Field title={i18n('user.position')} value={title} />
+            <Field title={i18n('user.tags')} value={tags} />
+            <Field title={i18n('user.country')} value={country} />
+            <Field title={i18n('user.area')} value={''} />
+            <Field title={i18n('user.mobile')} value={mobile} />
+            <Field title={i18n('user.wechat')} value={wechat} />
+            <Field title={i18n('user.email')} value={email} />
+            <Field title={i18n('user.status')} value={userstatus} />
+            <Field title={i18n('user.card')} value={cardUrl ? <ImageViewer><img src={cardUrl} style={cardStyle} /></ImageViewer> : null} />
+            <Field title={i18n('project.favorite_projects')} value={''} />
+            <Field title={i18n('project.recommended_projects')} value={''} />
+            <Field title={i18n('project.interested_projects')} value={''} />
+            <Field title={i18n('user.target_demand')} value={targetdemand} />
+            <Field title={i18n('user.merges')} value={mergedynamic} />
+            <Field title={i18n('user.industry_fund')} value={ishasfundorplan} />
+          </div>
+        </TabPane>
+        <TabPane tab="投资事件" key="2">
+        
+        </TabPane>
+      </Tabs>
     )
   }
 }
