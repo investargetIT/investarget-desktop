@@ -75,7 +75,7 @@ class EditOrganization extends React.Component {
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.id) : []
       data.orgtype = data.orgtype && data.orgtype.id
       data.orgstatus = data.orgstatus && data.orgstatus.id
-
+      data.tags = data.tags ? data.tags.map(item => item.id) : [];
       const textFields = ['description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionMakingProcess']
       textFields.forEach(item => {
         if (data[item] == null) { data[item] = '' }

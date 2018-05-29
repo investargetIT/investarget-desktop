@@ -618,6 +618,7 @@ class OrgDetail extends React.Component {
     }).then(result => {
       let data = { ...result.data }
       data.currency = data.currency && data.currency.currency
+      data.tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : '';
       data.industry = data.industry && data.industry.industry
       data.orgstatus = data.orgstatus && data.orgstatus.name
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.name).join('/') : []
@@ -829,6 +830,7 @@ class OrgDetail extends React.Component {
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
       <Field title={i18n('organization.currency')} value={this.state.currency} />
       <Field title={i18n('organization.industry')} value={this.state.industry} />
+      <Field title={i18n('user.tags')} value={this.state.tags} />
       <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
       <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
       <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
