@@ -1,0 +1,19 @@
+:global .new-org-db-style tr.ant-table-expanded-row.ant-table-expanded-row-level-1:hover td {
+    background: none;
+}
+
+:global .new-org-db-style tr.ant-table-expanded-row.ant-table-expanded-row-level-1:hover tr:hover {
+    background: #f0f6fc;
+}
+
+:global .new-org-db-style tr.ant-table-expanded-row.ant-table-expanded-row-level-1>td {
+    padding: 0 0;
+}
+
+:global .new-org-db-style tr.ant-table-expanded-row.ant-table-expanded-row-level-1>td:first-child {
+    background: white;
+}
+
+:global .new-org-db-style tr.ant-table-expanded-row.ant-table-expanded-row-level-1 table {
+    padding: 0 0;
+}

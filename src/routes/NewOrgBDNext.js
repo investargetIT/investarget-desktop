@@ -22,6 +22,7 @@ import {
   Checkbox,
   DatePicker,
   Row,
+  Tag,
   Col
 } from 'antd';
 import { Link } from 'dva/router';
@@ -35,27 +36,9 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgUser, SelectTrader } from '../components/ExtraInput';
 import { SwitchButton } from '../components/SelectOrgInvestorToBD';
 
-function displayUserWhenPopover(user) {
-  const photourl = user && user.photourl;
-  const tags = user && user.tags ? user.tags.map(item => item.name).join(',') : '';
-  return <div style={{ width: 180 }}>
-    <Row style={{ textAlign: 'center', margin: '10px 0' }}>
-      {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
-    </Row>
-    {/* <SimpleLine title={i18n('user.mobile')} value={user.mobile || '暂无'} /> */}
-    {/* <SimpleLine title={i18n('user.email')} value={user.email || '暂无'} /> */}
-    {/* <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}> */}
-      {/* <Col span={12}>{i18n('user.trader')}:</Col> */}
-      {/* <Col span={12} style={{ wordBreak: 'break-all' }}> */}
-        {/* <TraderForPopover investor={user.id} /> */}
-      {/* </Col> */}
-    {/* </Row> */}
-    <Row style={{ lineHeight: '24px' }}>
-      <Col span={12}>{i18n('user.tags') + '：'}</Col>
-      <Col span={12} style={{wordWrap: 'break-word'}}>{tags || '暂无'}</Col>
-    </Row>
-  </div>;
-}
+import './NewOrgBDNext.css';
+
+var cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
 
 class DBSelectOrgUser extends React.Component {
   constructor(props) {
@@ -84,6 +67,8 @@ class NewOrgBDList extends React.Component {
   constructor(props) {
     super(props);
 
+    this.orgList = {}
+    this.userList = {}
     this.ids = (this.props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(this.props.location.query.projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
@@ -94,6 +79,7 @@ class NewOrgBDList extends React.Component {
         page: 1,
         pageSize: this.props.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
         total: 0,
+        manager: null,
         list: [],
         loading: false,
         visible: false,
@@ -102,11 +88,15 @@ class NewOrgBDList extends React.Component {
         newComment: '',
         status: null,
         commentVisible: false,
+        selectVisible: false,
         sort:undefined,
         desc:undefined,
         source:this.props.location.query.status||0,
-        userDetail:[],
-        expanded: []
+        expanded: [],
+        selectedKeys: [],
+        data: null,
+        expirationtime: null,
+        ifimportantMap: {}
     }
   }
 
@@ -136,12 +126,11 @@ class NewOrgBDList extends React.Component {
       api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
       .then(result => {
         let list = result.data.data
-        let orgList = {}
-        list.forEach(item => {orgList[item.id] = item})
+        list.forEach(item => {this.orgList[item.id] = item})
         this.setState({
           list: baseList.map(item => ({
             id: `${item.org}-${item.proj}`,
-            org: orgList[item.org], 
+            org: this.orgList[item.org], 
             proj: {id: item.proj},
             loaded: false,
             items: []
@@ -157,6 +146,7 @@ class NewOrgBDList extends React.Component {
     api.getOrgBdList({org, proj: this.projId || "none"}).then(result => {
       let list = result.data.data
       let existUsers = list.map(bd=>bd.bduser)
+      let existUsersDetail = {};
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
@@ -174,20 +164,14 @@ class NewOrgBDList extends React.Component {
           this.setState({ comments });
         }
         api.getUser({starmobile: true, org: [org]}).then(result => {
-            list = list.concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({
-              ...user,
-              bduser: user.id,
-              new: true,
-              proj: this.projId,
-              org: {id: org},
-              usermobile: user.mobile
-            })))
+            result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
+            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd})).filter(Boolean)
+                   .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null})))
             let newList = this.state.list.map(item => 
               item.id === `${org}-${this.projId}` ?
                 {...item, items: list, loaded: true} :
                 item
             )
-            console.log(list);
             this.setState({
               list: newList,
             });
@@ -378,13 +362,15 @@ class NewOrgBDList extends React.Component {
     const photourl=user.useinfo&&user.useinfo.photourl
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
     const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
-    return <div style={{minWidth: 180}}>
+    return <div style={{minWidth: 250}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
-          <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
-          <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
-          <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
+          <SimpleLine title={"项目名称"} value={user.proj || "暂无"} />
+          <SimpleLine title={"BD状态"} value={user.bd_status.name || "暂无"} />
+          <SimpleLine title={"到期日期"} value={user.expirationtime ? timeWithoutHour(user.expirationtime + user.timezone) : "未设定"} />
+          <SimpleLine title={"负责人"} value={user.manager.username || "暂无"} />
+          <SimpleLine title={"创建人"} value={user.createuser.username || "暂无"} />
           <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
             <Col span={12}>{i18n('user.trader')}:</Col>
             <Col span={12} style={{wordBreak: 'break-all'}}>
@@ -392,6 +378,7 @@ class NewOrgBDList extends React.Component {
             </Col>
           </Row>
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
+          <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
           <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
@@ -439,7 +426,6 @@ class NewOrgBDList extends React.Component {
   }
 
   loadLabelByValue(type, value) {
-    console.log(value)
     if (Array.isArray(value) && this.props.tag.length > 0) {
       return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
     } else if (typeof value === 'number') {
@@ -448,7 +434,7 @@ class NewOrgBDList extends React.Component {
   }
 
   handleSwitchChange = (record, ifimportant) => {
-    let id=record.id+"_"+record.org.id
+    let id=record.id
     this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
     const userList = this.props.value
     const index = _.findIndex(userList, function(item) {
@@ -458,6 +444,47 @@ class NewOrgBDList extends React.Component {
       userList[index].isimportant=ifimportant
       this.props.onChange(userList)
     }
+  }
+
+  handleDeleteUser(userKey) {
+    this.setState({ selectedKeys: this.state.selectedKeys.filter(key => key !== userKey) })
+  }
+
+  createOrgBD = () => {
+    this.setState({ selectVisible: false });
+    Promise.all(this.state.selectedKeys.map(userKey => {
+      let user = this.userList[userKey]
+      let body = {
+        bduser: userKey,
+        manager: this.state.manager,
+        org: user.org.id,
+        proj: this.projId,
+        isimportant:this.state.ifimportantMap[userKey] || false,
+        bd_status: 1,
+        expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
+      };
+      console.log(body)
+      return api.addOrgBD(body);
+    }))
+      .then(result => {
+        Modal.confirm({
+            title: i18n('timeline.message.create_success_title'),
+            content: i18n('create_orgbd_success'),
+            okText:"继续创建BD",
+            cancelText:"返回BD列表",
+            onOk: () => { this.props.history.push({ pathname: '/app/orgbd/add' }) },
+            onCancel: () => { this.props.history.push({ pathname: '/app/org/bd' }) }
+          })
+      })
+      .catch(error => {
+        Modal.error({
+          content: error.message
+        });
+      });
+  }
+ 
+  handleSelectUser = () => {
+    this.setState({ selectVisible: true });
   }
 
   render() {
@@ -475,31 +502,36 @@ class NewOrgBDList extends React.Component {
         {
           title: i18n('user.name'), key: 'username', dataIndex: 'username',
           render: (text, record) => <div>
-            {record.username ? <Popover placement="topLeft" content={displayUserWhenPopover(record)}>
+            {record.username ? (record.bd ? <Popover placement="topLeft" content={this.content(record.bd)}>
               <span style={{ color: '#428BCA' }}>{ record.username }</span>
-            </Popover> : '暂无投资人'}
+              </Popover> : record.username ) : '暂无投资人'}
           </div>
         },
         // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
         // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
-        { title: i18n('mobile'), key: 'mobile', dataIndex: 'usermobile', render: text => text || '暂无' },
+        { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
         { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
-        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.bduser ? <Trader investor={record.bduser} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
+        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
         
       ]
       if(this.props.source!="meetingbd"){
         columns.push({title:i18n('org_bd.important'), render:(text,record)=>{
-          if (record.new) return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
-          else return <div>{record.isimportant ? "是" : "否"}</div>
+          if (!record.bd) return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
+          else return <div>{record.bd.isimportant ? "是" : "否"}</div>
         }})
       }
 
+      let allKeys = record.items.map(user=>user.id)
       const rowSelection = {
+        selectedRowKeys: this.state.selectedKeys,
         onChange: (selectedRowKeys, selectedRows) => {
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          let selected = this.state.selectedKeys
+          selected = selected.filter(key => !allKeys.includes(key))
+          selected = selected.concat(selectedRowKeys.filter(key => !selected.includes(key)))
+          this.setState({ selectedKeys: selected })
         },
         getCheckboxProps: record => ({
-          disabled: record.new !== true,
+          disabled: Boolean(record.bd),
           name: record.name,
         }),
       };
@@ -516,10 +548,10 @@ class NewOrgBDList extends React.Component {
             size={"small"}
             rowSelection={rowSelection}
           />
-          <Button 
+          {/* <Button 
             style={{float: 'right', margin: '15px 15px 0 0'}} 
             onClick={this.handleMore.bind(this, record)}
-          >{"展示更多"}</Button>
+          >{"展示更多"}</Button> */}
         </div>
 
       );
@@ -535,6 +567,7 @@ class NewOrgBDList extends React.Component {
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         <Table
+          className="new-org-db-style"
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
@@ -547,6 +580,23 @@ class NewOrgBDList extends React.Component {
           pagination={false}
           size={"middle"}
         />
+
+        <div style={{ marginTop: 10, marginBottom: 10 }}>
+          {this.state.selectedKeys.map(user => 
+            <Tag 
+              key={this.userList[user].id} 
+              closable 
+              style={{ marginBottom: 8 }} 
+              onClose={this.handleDeleteUser.bind(this, user)}
+            >
+              {`${this.userList[user].org.orgfullname || "无机构"} - ${this.userList[user].username}`}
+            </Tag>
+          )}
+        </div>
+
+        <div style={{textAlign: 'right', padding: '0 16px'}}>
+          <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
+        </div>
 
         { this.state.visible ? 
         <ModalModifyOrgBDStatus 
@@ -573,6 +623,47 @@ class NewOrgBDList extends React.Component {
             onAdd={this.handleAddComment}
             onDelete={this.handleDeleteComment} 
           />
+        </Modal>
+
+        <Modal
+          title="创建BD"
+          visible={this.state.selectVisible}
+          footer={null}
+          onCancel={() => this.setState({ visible: false })}
+          closable={false}
+        >
+          <div style={{marginLeft: '15px'}}>
+            <p style={{fontSize: '13px', fontWeight: 'bolder', marginTop: '5px', marginBottom: '10px'}}> 1.选择交易师</p>
+            <SelectTrader
+              style={{ width: 300 }}
+              mode="single"
+              data={this.state.data}
+              value={this.state.manager}
+              onChange={manager => this.setState({ manager })} />
+            
+            <p style={{fontSize: '13px', fontWeight: 'bolder', marginTop: '15px', marginBottom: '10px'}}> 2.选择过期时间</p>
+            <DatePicker 
+                  style={{ marginBottom: '15px' }}
+                  placeholder="Expiration Date"
+                  disabledDate={this.disabledDate}
+                  // defaultValue={moment()}
+                  showToday={false}
+                  shape="circle"
+                  value={this.state.expirationtime}
+                  renderExtraFooter={() => {
+                    return <div>
+                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment()})}}>Now</Button>
+                      &nbsp;&nbsp;
+                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment().add(1, 'weeks')})}}>Week</Button>
+                      &nbsp;&nbsp;
+                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment().add(1, 'months')})}}>Month</Button>
+                    </div>
+                  }}
+                  onChange={v=>{this.setState({expirationtime: v})}}
+                />
+
+            <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+          </div>
         </Modal>
 
       </LeftRightLayout>
