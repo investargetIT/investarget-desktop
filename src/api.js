@@ -514,6 +514,7 @@ export const getUserInvestEvent = params => r('/user/event/?' + qs.stringify(par
 /**
  * DataRoom
  */
+export const getCompanyDataRoom = params => r('/dataroom/com/?' + qs.stringify(params));
 
 export const queryDataRoom = (param) => {
   return r('/dataroom/?' + qs.stringify(param))
