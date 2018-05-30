@@ -253,7 +253,7 @@ class DataRoomList extends React.Component {
     return (
       <LeftRightLayout 
         location={location} 
-        title="公司DataRoom"
+        title="公司文件"
         // right={<Search2 
         //   style={{width: 200}} 
         //   placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
