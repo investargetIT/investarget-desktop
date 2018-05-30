@@ -308,7 +308,44 @@ class SelectExistOrganization extends React.Component {
     )
   }
 }
- 
+
+/**
+ * SelectProjectLibrary
+ */
+class SelectProjectLibrary extends React.Component {
+
+  getData = params => {
+    return api.getLibProj({ ...params }).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { com_id: value, com_name: label } = item;
+        return { value, label };
+      })
+      return { total, list };
+    })
+  }
+
+  getOrgnameById = id => {
+    return api.getLibProj({ com_id: id }).then(result => {
+      return result.data.data[0].com_name;
+    })
+  }
+
+  render() {
+    const { value, onChange, allowCreate, ...extraProps } = this.props
+    return (
+      <Select2
+        getData={this.getData}
+        getNameById={this.getOrgnameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        allowCreate={this.props.allowCreate}
+        {...extraProps}
+      />
+    )
+  }
+}
+
 /**
  * SelectExistUser
  */
@@ -1318,6 +1355,7 @@ export {
   SelectOrgUser,
   SelectPartner,
   SelectLibIndustry,
+  SelectProjectLibrary,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,

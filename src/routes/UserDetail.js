@@ -5,14 +5,24 @@ import {
   Tabs,
   Icon,
   Modal,
+  Form,
+  DatePicker,
+  Input,
+  Button,
 } from 'antd';
+import { 
+  BasicFormItem,
+} from '../components/Form';
+import { SelectProjectLibrary } from '../components/ExtraInput';
 import LeftRightLayout from '../components/LeftRightLayout'
 import UserInfo from '../components/UserInfo'
 import TransactionInfo from '../components/TransactionInfo'
 import { UserRemarkList } from '../components/RemarkList'
 import { i18n } from '../utils/util'
+import PropTypes from 'prop-types';
 
 const TabPane = Tabs.TabPane
+const FormItem = Form.Item;
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -32,6 +42,76 @@ const Field = (props) => {
   )
 }
 
+class UserInvestEventForm extends React.Component {
+  
+  getChildContext() {
+    return {
+      form: this.props.form
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+
+        const com_id = isNaN(values.investTarget) ? undefined : parseInt(values.investTarget);
+        const comshortname = isNaN(values.investTarget) ? values.investTarget: undefined;
+        const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
+
+        const body = { 
+          user: this.props.user,
+          com_id,
+          comshortname,
+          investDate,
+        };
+        api.addUserInvestEvent(body)
+          .then(result => {
+            this.props.onAdd();
+          })
+      }
+    });
+  }
+
+  render() {
+
+    const { getFieldDecorator, getFieldsError } = this.props.form;
+
+    return (
+      <Form onSubmit={this.handleSubmit}>
+
+        <BasicFormItem label="投资项目" name="investTarget" >
+          <SelectProjectLibrary allowCreate formName="userform" />
+        </BasicFormItem>
+
+        <BasicFormItem label="投资时间" name="investDate" valueType="object">
+          <DatePicker format="YYYY-MM-DD" />
+        </BasicFormItem>
+
+        <FormItem style={{ marginLeft: 120 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+          >确定</Button>
+
+        </FormItem>
+
+      </Form>
+    );
+  }
+}
+
+UserInvestEventForm.childContextTypes = {
+  form: PropTypes.object
+};
+
+UserInvestEventForm = Form.create()(UserInvestEventForm);
+
+function hasErrors(fieldsError) {
+  return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 
 class UserDetail extends React.Component {
   constructor(props) {
@@ -79,33 +159,7 @@ class UserDetail extends React.Component {
             footer={null}
             onCancel={() => this.setState({ isShowForm: false })}
           >
-          <h1>add</h1>
-            {/* <Form onSubmit={this.handleSubmit}>
-
-              <BasicFormItem label="合作投资机构" name="cooperativeOrg" >
-                <SelectExistOrganization allowCreate formName="userform" />
-              </BasicFormItem>
-
-              <BasicFormItem label="投资时间" name="investDate" valueType="object">
-                <DatePicker format="YYYY-MM-DD" />
-              </BasicFormItem>
-
-              <BasicFormItem label="合作投资企业" name="comshortname">
-                <Input />
-              </BasicFormItem>
-
-              <FormItem style={{ marginLeft: 120 }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={hasErrors(getFieldsError())}
-                >
-                  确定
-  </Button>
-              </FormItem>
-
-            </Form> */}
-
+           <UserInvestEventForm user={userId} onAdd={() => this.setState({ isShowForm: false })} /> 
           </Modal>
           : null}
 
