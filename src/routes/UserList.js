@@ -228,7 +228,7 @@ class UserList extends React.Component {
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.orgname',
+        dataIndex: 'org.orgfullname',
         key: 'org',
         sorter:true,
       },

@@ -290,7 +290,7 @@ class SelectExistOrganization extends React.Component {
 
   getOrgnameById = (id) => {
     return api.getOrgDetailLang(id).then(result => {
-      return result.data.orgname
+      return result.data.orgfullname
     })
   }
 

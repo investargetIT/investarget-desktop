@@ -221,6 +221,20 @@ class EditUser extends React.Component {
     })
   }
 
+  handleOnBlur(accountType, evt) {
+    const account = evt.target.value;
+    if (!account) return
+    const mobileAndEmail = [this.state.data.email.value, this.state.data.mobile.value];
+    if (mobileAndEmail.includes(account)) return;
+    api.checkUserExist(account)
+    .then(data => {
+      const isExist = data.data.result
+      if (isExist) {
+        Modal.warning({ title: i18n('user.message.user_exist') })
+      }
+    })
+  }
+
   render () {
     const userId = Number(this.props.params.id)
     return (
@@ -235,7 +249,10 @@ class EditUser extends React.Component {
           onSelectMajorTrader={this.handleSelectTrader.bind(this, 'major')}
           onMajorTraderChange={this.handleMajorTraderChange}
           onSelectMinorTrader={this.handleSelectTrader.bind(this, 'minor')}
-          onDeselectMinorTrader={this.handleDeselectTrader} />
+          onDeselectMinorTrader={this.handleDeselectTrader}
+          mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
+          emailOnBlur={this.handleOnBlur.bind(this, 'email')} 
+        />
 
         <div style={{textAlign: 'center'}}>
           <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
