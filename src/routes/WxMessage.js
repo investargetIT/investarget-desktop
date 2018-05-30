@@ -12,6 +12,10 @@ import {
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
+const RegExps = {
+  jpg: /https\:\/\/o79atf82v\.qnssl\.com\/\w+\.jpg/,
+  url: /https\:\/\/(\S+\.)+\w{2,12}/,
+}
 
 class WxMessage extends React.Component {
 
@@ -77,7 +81,11 @@ class WxMessage extends React.Component {
       {title: '发布日期', key: 'createtime', render: (text, record) => {
         return record.createtime ? time(record.createtime + '+08:00') : ''
       }},
-      {title: '内容', dataIndex: 'content', width: 500},
+      {title: '内容', dataIndex: 'content', width: 500, render: (text, record) => {
+        if (RegExps.jpg.test(text)) return <a target="_blank" href={text}><img src={text} style={{height: 45}}></img></a>
+        else if (RegExps.url.test(text)) return <a href={text}>{text}</a>
+        else return text
+      }},
       {title: '微信群', dataIndex: 'group_name'},
       {title: '用户', dataIndex: 'name'},
       // {title: '状态', key: 'status', render: (text, record) => {
