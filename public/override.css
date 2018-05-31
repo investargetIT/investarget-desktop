@@ -346,14 +346,14 @@ button[disabled], html input[disabled] {
 
 /* 覆盖 Pagination 样式 */
 .ant-pagination-item {
-  min-width: 40px;
-  height: 40px;
-  line-height: 40px;
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
 }
 .ant-pagination-prev, .ant-pagination-next, .ant-pagination-jump-prev, .ant-pagination-jump-next {
-  min-width: 40px;
-  height: 40px;
-  line-height: 40px;
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
 }
 .ant-pagination-item {
   background-color: #ebf0f3;
