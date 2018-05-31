@@ -72,6 +72,7 @@ class NewOrgBDList extends React.Component {
     this.ids = (this.props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(this.props.location.query.projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
+    this.projDetail = {}
 
     this.state = {
         filters: OrgBDFilter.defaultValue,
@@ -103,41 +104,38 @@ class NewOrgBDList extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
-    this.getOrgBdList();
+    api.getProjDetail(this.projId)
+      .then(result => {
+        this.projDetail = result.data || {}
+        this.getOrgBdList()
+      })
+      .catch(error => {
+        this.getOrgBdList()
+      })
   }
 
   getOrgBdList = () => {
     this.setState({ loading: true, expanded: [] });
-    const { page, pageSize, search, filters, sort, desc } = this.state;
+    const { page, pageSize } = this.state;
     const params = {
-        page_index: page,
-        page_size: pageSize,
-        search,
-        ...filters,
-        sort,
-        desc,
-        org: filters.org.map(m => m.key),
-        proj: filters.proj || 'none',
+        page_size: 50,
+        ids: this.ids
     }
 
-    api.getOrgBdBase(params)
-    .then(baseResult => {
-      let baseList = baseResult.data.data
-      api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
-      .then(result => {
-        let list = result.data.data
-        list.forEach(item => {this.orgList[item.id] = item})
-        this.setState({
-          list: baseList.map(item => ({
-            id: `${item.org}-${item.proj}`,
-            org: this.orgList[item.org], 
-            proj: {id: item.proj},
-            loaded: false,
-            items: []
-          })),
-          total: baseResult.data.count,
-          loading: false
-        })
+    api.getOrg(params)
+    .then(result => {
+      let list = result.data.data
+      list.forEach(item => {this.orgList[item.id] = item})
+      this.setState({
+        list: list.map(item => ({
+          id: `${item.id}-${this.projId}`,
+          org: item, 
+          proj: {id: this.projId, name: this.projDetail.projtitleC},
+          loaded: false,
+          items: []
+        })),
+        total: result.data.count,
+        loading: false
       })
     })
   }
@@ -165,7 +163,7 @@ class NewOrgBDList extends React.Component {
         }
         api.getUser({starmobile: true, org: [org]}).then(result => {
             result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
-            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd})).filter(Boolean)
+            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd})).filter(Boolean).filter(user=>user.id)
                    .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null})))
             let newList = this.state.list.map(item => 
               item.id === `${org}-${this.projId}` ?
@@ -366,7 +364,7 @@ class NewOrgBDList extends React.Component {
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
-          <SimpleLine title={"项目名称"} value={user.proj || "暂无"} />
+          <SimpleLine title={"项目名称"} value={user.proj && user.proj.projtitle || "暂无"} />
           <SimpleLine title={"BD状态"} value={user.bd_status.name || "暂无"} />
           <SimpleLine title={"到期日期"} value={user.expirationtime ? timeWithoutHour(user.expirationtime + user.timezone) : "未设定"} />
           <SimpleLine title={"负责人"} value={user.manager.username || "暂无"} />
@@ -463,7 +461,6 @@ class NewOrgBDList extends React.Component {
         bd_status: 1,
         expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
       };
-      console.log(body)
       return api.addOrgBD(body);
     }))
       .then(result => {
@@ -494,7 +491,7 @@ class NewOrgBDList extends React.Component {
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
+        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
       ]
 
     const expandedRowRender = (record) => {
@@ -560,7 +557,7 @@ class NewOrgBDList extends React.Component {
     return (
       <LeftRightLayout 
         location={this.props.location} 
-        breadcrumb={' > ' + i18n('menu.organization_bd') + ' > ' + i18n('project.create_org_bd')}
+        breadcrumb={' > ' + i18n('menu.organization_bd') + ' > ' + i18n('project.create_org_bd') + ` > ${this.projDetail.projtitleC || "暂无项目"}`}
         title={i18n('menu.bd_management')}
         action={{ name: '返回机构BD', link: '/app/org/bd' }}
       >
