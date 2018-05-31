@@ -53,6 +53,7 @@ class FileMgmt extends React.Component {
       visible: false,
       action: null,
       loading: false,
+      downloadUrl: null,
     }
 
     // this.handleNameChange = this.handleNameChange.bind(this)
@@ -96,20 +97,20 @@ class FileMgmt extends React.Component {
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
     } else {
-      // if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
+      const type = file.filename.split('.')[1];
+      const officeFileType = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+      if (!officeFileType.includes(type)) {
         window.open(file.fileurl);
-      // } else {
-      //   const watermark = isLogin().email || 'Investarget'
-      //   const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
-      //     '&watermark=' + encodeURIComponent(watermark)
-      //   window.open(url)
-      // }
+      } else {
+        api.downloadUrl(file.bucket, file.realfilekey)
+          .then(result => {
+            this.setState({ downloadUrl: result.data });
+            setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+          })
+      }
     }
   }
-
-  // handleNameChange(unique, evt) {
-
-  // }
+  
 
   current = []
   parentFolderFunc (parentId) {
@@ -563,6 +564,7 @@ class FileMgmt extends React.Component {
 
         </Modal>
 
+        <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
       </div>
     )
   }
