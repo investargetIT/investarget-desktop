@@ -334,51 +334,51 @@ class FileMgmt extends React.Component {
       key: 'date',
       render: (date, record) => date && time(date+record.timezone),
     }]
-    if (isAdmin && !this.props.isClose) {
-      if (this.props.selectedUser) {
-        columns.push({
-          title: i18n('permission'),
-          key: 'visible',
-          render: (text, record) => {
-            const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
-            const visible = Boolean(file)
-            return record.isFile ? (
-              <Tooltip title={i18n('dataroom.click_toggle_visible')}>
-                {/* <Icon
-                  type={visible ? 'check' : 'close'}
-                  onClick={this.props.onToggleVisible.bind(this, record.id)}
-                  className={styles['visible']}
-                  style={{fontSize:24}} /> */}
-                <VisiblitySwitch vis={visible} onClick={this.props.onToggleVisible.bind(this, record.id)} />
-              </Tooltip>
-            ) : null
-          }
-        })
-      } else {
-        columns.push({
-          title: i18n('dataroom.visible_user'),
-          key: 'visible_user',
-          render: (text, record) => {
-            const fileId = record.id
-            const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
-            return record.isFile ? (
-              <Select
-                style={{width: '100%'}}
-                mode="multiple"
-                size="large"
-                optionLabelProp="children"
-                value={users}
-                onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
-                onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
-                {this.props.userOptions.map(option => (
-                  <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
-                ))}
-              </Select>
-            ) : null
-          }
-        })
-      }
-    }
+    // if (isAdmin && !this.props.isClose) {
+    //   if (this.props.selectedUser) {
+    //     columns.push({
+    //       title: i18n('permission'),
+    //       key: 'visible',
+    //       render: (text, record) => {
+    //         const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
+    //         const visible = Boolean(file)
+    //         return record.isFile ? (
+    //           <Tooltip title={i18n('dataroom.click_toggle_visible')}>
+    //             {/* <Icon
+    //               type={visible ? 'check' : 'close'}
+    //               onClick={this.props.onToggleVisible.bind(this, record.id)}
+    //               className={styles['visible']}
+    //               style={{fontSize:24}} /> */}
+    //             <VisiblitySwitch vis={visible} onClick={this.props.onToggleVisible.bind(this, record.id)} />
+    //           </Tooltip>
+    //         ) : null
+    //       }
+    //     })
+    //   } else {
+    //     columns.push({
+    //       title: i18n('dataroom.visible_user'),
+    //       key: 'visible_user',
+    //       render: (text, record) => {
+    //         const fileId = record.id
+    //         const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
+    //         return record.isFile ? (
+    //           <Select
+    //             style={{width: '100%'}}
+    //             mode="multiple"
+    //             size="large"
+    //             optionLabelProp="children"
+    //             value={users}
+    //             onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
+    //             onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
+    //             {this.props.userOptions.map(option => (
+    //               <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
+    //             ))}
+    //           </Select>
+    //         ) : null
+    //       }
+    //     })
+    //   }
+    // }
 
 
     this.current = []
