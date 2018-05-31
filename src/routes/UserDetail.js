@@ -55,23 +55,30 @@ class UserInvestEventForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-
-        const com_id = isNaN(values.investTarget) ? undefined : parseInt(values.investTarget);
-        const comshortname = isNaN(values.investTarget) ? values.investTarget: undefined;
-        const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
-
-        const body = { 
-          user: this.props.user,
-          com_id,
-          comshortname,
-          investDate,
-        };
-        api.addUserInvestEvent(body)
-          .then(result => {
-            this.props.onAdd();
-          })
+        this.addEvent(values);
       }
     });
+  }
+
+  addEvent = async values => {
+    const com_id = isNaN(values.investTarget) ? undefined : parseInt(values.investTarget);
+    let comshortname = isNaN(values.investTarget) ? values.investTarget: undefined;
+    const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
+
+    if (com_id !== undefined && comshortname === undefined) {
+      const result = await api.getLibProj({ com_id });
+      comshortname = result.data.data[0].com_name;
+    }
+    const body = { 
+      user: this.props.user,
+      com_id,
+      comshortname,
+      investDate,
+    };
+    return api.addUserInvestEvent(body)
+      .then(result => {
+        this.props.onAdd();
+      });
   }
 
   render() {
@@ -81,11 +88,11 @@ class UserInvestEventForm extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
 
-        <BasicFormItem label="投资项目" name="investTarget" >
+        <BasicFormItem label="投资项目" name="investTarget" required>
           <SelectProjectLibrary allowCreate formName="userform" />
         </BasicFormItem>
 
-        <BasicFormItem label="投资时间" name="investDate" valueType="object">
+        <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
           <DatePicker format="YYYY-MM-DD" />
         </BasicFormItem>
 
@@ -119,6 +126,7 @@ class UserDetail extends React.Component {
     this.state = {
       userId: Number(this.props.params.id),
       isShowForm: false,
+      hideUserInfo: false,
     }
   }
 
@@ -145,7 +153,7 @@ class UserDetail extends React.Component {
 
         <Row gutter={48}>
           <Col span={12}>
-            <UserInfo userId={userId} />
+            { this.state.hideUserInfo ? null : <UserInfo userId={userId} /> }
           </Col>
           <Col span={12}>
             <TransactionInfo userId={userId} />
@@ -159,7 +167,7 @@ class UserDetail extends React.Component {
             footer={null}
             onCancel={() => this.setState({ isShowForm: false })}
           >
-           <UserInvestEventForm user={userId} onAdd={() => this.setState({ isShowForm: false })} /> 
+           <UserInvestEventForm user={userId} onAdd={() => this.setState({ isShowForm: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false}))} /> 
           </Modal>
           : null}
 

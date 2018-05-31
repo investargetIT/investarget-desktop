@@ -1,13 +1,20 @@
 import React from 'react'
 import { connect } from 'dva'
 import {Link} from 'dva/router'
-import { i18n } from '../utils/util'
+import { 
+  i18n,
+  getUserInfo,
+} from '../utils/util';
 import { 
   Row, 
   Col,
   Tabs,
+  Table,
+  Popconfirm,
+  Pagination,
 } from 'antd';
 import ImageViewer from './ImageViewer'
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const TabPane = Tabs.TabPane;
 
@@ -16,6 +23,78 @@ const rowStyle = {
   padding: '12px 0',
   fontSize: '14px',
   marginLeft:'70px'
+}
+
+class InvestEvent extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    let buyout;
+    api.getUserInvestEvent({ user: this.props.user })
+    .then(result => {
+      this.setState({
+        total: result.data.count,
+        data: result.data.data,
+        loading: false,
+      });
+    });
+  }
+
+  delete(id) {
+    api.deleteUserInvestEvent(id)
+      .then(() => this.getData());
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '投资项目', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
+      {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
 }
 
 const Field = (props) => {
@@ -93,8 +172,7 @@ class UserInfo extends React.Component {
     })
     api.getUserAttachment()
       .then(result => echo('result', result))
-    api.getUserInvestEvent({ user: userId })
-      .then(result => echo('event', result));
+
   }
 
   render() {
@@ -124,7 +202,7 @@ class UserInfo extends React.Component {
           </div>
         </TabPane>
         <TabPane tab="投资事件" key="2">
-        
+          <InvestEvent user={this.props.userId} />
         </TabPane>
       </Tabs>
     )
