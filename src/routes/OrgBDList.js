@@ -494,7 +494,7 @@ class OrgBDList extends React.Component {
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
+        // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 
     const expandedRowRender = (record) => {

@@ -12,7 +12,7 @@ import {
 import * as api from '../api';
 import { 
   message,
-  Table, 
+  Table,
   Button, 
   Popconfirm, 
   Pagination, 
@@ -490,8 +490,16 @@ class NewOrgBDList extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
-        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
-        {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
+        {title: i18n('org_bd.org'), render: (text, record) => {
+          let org = record.org
+          if (!org) return "无效机构"
+          let selectedUsers = this.state.selectedKeys.filter(userid=>this.userList[userid].org.id === org.id)
+          return <div>
+                  {record.org.orgname}
+                  {(selectedUsers.length ? <Tag color="green" style={{marginLeft: 15}}>{`已选 ${selectedUsers.length} 人`}</Tag> : null)}
+                </div>
+        }, key:'org', sorter:true},
+        // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
       ]
 
     const expandedRowRender = (record) => {
