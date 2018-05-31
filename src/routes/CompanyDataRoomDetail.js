@@ -276,12 +276,8 @@ class DataRoom extends React.Component {
   }
 
   handleUploadFile(file, parentId) {
-    const newData = this.state.data
-    const parentIndex = newData.map(m => m.id).indexOf(parentId)
-    if (parentIndex < 0) return
-    const dataroom = newData[parentIndex].dataroom
     const body = {
-      dataroom: dataroom,
+      dataroom: parseInt(this.state.id),
       filename: file.name,
       isFile: true,
       orderNO: 1,
@@ -302,6 +298,7 @@ class DataRoom extends React.Component {
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = this.state.data;
       newData.push(newItem)
       this.setState({ data: newData })
     }).catch(error => {
