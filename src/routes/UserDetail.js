@@ -13,7 +13,10 @@ import {
 import { 
   BasicFormItem,
 } from '../components/Form';
-import { SelectProjectLibrary } from '../components/ExtraInput';
+import { 
+  SelectProjectLibrary,
+  SelectOrAddDate,
+} from '../components/ExtraInput';
 import LeftRightLayout from '../components/LeftRightLayout'
 import UserInfo from '../components/UserInfo'
 import TransactionInfo from '../components/TransactionInfo'
@@ -81,20 +84,24 @@ class UserInvestEventForm extends React.Component {
       });
   }
 
+  handleTargetChange = () => this.props.form.setFieldsValue({ investDate: null });
+  
   render() {
 
     const { getFieldDecorator, getFieldsError } = this.props.form;
-
+    const investarget = this.props.form.getFieldValue('investTarget');
     return (
       <Form onSubmit={this.handleSubmit}>
 
-        <BasicFormItem label="投资项目" name="investTarget" required>
-          <SelectProjectLibrary allowCreate formName="userform" />
+        <BasicFormItem label="投资项目" name="investTarget" required valueType="number" onChange={this.handleTargetChange}>
+          <SelectProjectLibrary />
         </BasicFormItem>
 
+        { investarget !== undefined ?
         <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
-          <DatePicker format="YYYY-MM-DD" />
+          <SelectOrAddDate com_id={investarget} />
         </BasicFormItem>
+        : null }
 
         <FormItem style={{ marginLeft: 120 }}>
           <Button
@@ -102,7 +109,6 @@ class UserInvestEventForm extends React.Component {
             htmlType="submit"
             disabled={hasErrors(getFieldsError())}
           >确定</Button>
-
         </FormItem>
 
       </Form>

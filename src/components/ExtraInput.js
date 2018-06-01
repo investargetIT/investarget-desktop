@@ -10,6 +10,7 @@ import {
   Checkbox,
   Slider,
   Radio,
+  DatePicker,
 } from 'antd'
 const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
@@ -22,6 +23,7 @@ import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser}
 import ITCheckboxGroup from './ITCheckboxGroup'
 import { BasicContainer } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'; 
+import moment from 'moment';
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -331,14 +333,20 @@ class SelectProjectLibrary extends React.Component {
     })
   }
 
+  handleChange = value => {
+    if (value !== this.props.value) {
+      this.props.onChange(value);
+    }
+  }
+
   render() {
     const { value, onChange, allowCreate, ...extraProps } = this.props
     return (
       <Select2
         getData={this.getData}
         getNameById={this.getOrgnameById}
-        value={this.props.value}
-        onChange={this.props.onChange}
+        value={value}
+        onChange={this.handleChange}
         allowCreate={this.props.allowCreate}
         {...extraProps}
       />
@@ -1326,6 +1334,44 @@ const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state
  */
 const RadioBDSource = withOptions(RadioGroup2, BDSourceOptions)
 
+class SelectOrAddDate extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: null,
+    }
+    this.com_id = this.props.com_id;
+  }
+
+  componentDidMount () {
+    this.getData();
+  }
+
+  getData = () => {
+    api.getLibEvent({ com_id: this.com_id, page_size: 100 })
+    .then(result => this.setState({ options: result.data.data.map(m => m.date)}));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.com_id !== this.props.com_id) {
+      this.com_id = nextProps.com_id;
+      this.setState({ options: null }, this.getData);
+    }
+  }
+
+  render() {
+    if (this.state.options === null) return null;
+
+    if (this.state.options.length > 0) {
+      return <Select style={{ width: 120 }} onChange={ value => this.props.onChange(moment(value)) }>
+        {this.state.options.map(m => <Option key={m} value={m}>{m}</Option>)}
+      </Select>;
+    }
+
+    return <DatePicker format="YYYY-MM-DD" onChange={this.props.onChange} />;
+  }
+}
 
 export {
   SelectNumber,
@@ -1356,6 +1402,7 @@ export {
   SelectPartner,
   SelectLibIndustry,
   SelectProjectLibrary,
+  SelectOrAddDate,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
