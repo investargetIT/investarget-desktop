@@ -378,7 +378,7 @@ export default class OrgBDListComponent extends React.Component {
     const photourl=user.useinfo&&user.useinfo.photourl
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
     const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
-    return <div style={{minWidth: 180}}>
+    return <div style={{minWidth: 180, maxWidth: 600}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
@@ -535,7 +535,12 @@ export default class OrgBDListComponent extends React.Component {
         }, dataIndex: 'manager.username', key:'manager', sorter:true},
         {title: i18n('org_bd.status'), render: (text, record) => {
           return record.new ? <Checkbox checked={record.isimportant} onChange={v=>{this.updateSelection(record, {isimportant: v.target.checked})}}>重点BD</Checkbox> : record.bd_status.name
-        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:true}]
+        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
+        {title: "最新备注", render: (text, record) => {
+          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
+
+          return record.new ? "暂无" : (latestComment ? <Popover content={<p style={{maxWidth: 400}}>{latestComment}</p>}><div style={{color: "#428bca"}}>{latestComment.substr(0, 10)}...</div></Popover> : "暂无")
+        }, key:'bd_latest_info'}]
         
         if (this.props.editable) columns.push({
             title: i18n('org_bd.operation'), render: (text, record) => 
@@ -583,7 +588,7 @@ export default class OrgBDListComponent extends React.Component {
       return (
         <div>
           <Table
-            showHeader={false}
+            showHeader
             columns={columns}
             dataSource={record.items}
             size={"small"}
