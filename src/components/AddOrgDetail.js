@@ -299,7 +299,7 @@ class InvestEventForm extends React.Component {
           <SelectProjectLibrary />
         </BasicFormItem>
 
-        <BasicFormItem label="行业分类" name="industrytype">
+        {/* <BasicFormItem label="行业分类" name="industrytype">
           <SelectLibIndustry />
         </BasicFormItem>
 
@@ -309,7 +309,7 @@ class InvestEventForm extends React.Component {
 
         <BasicFormItem label="投资人" name="investor">
           <Input />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         { investarget !== undefined ?
         <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
@@ -317,13 +317,13 @@ class InvestEventForm extends React.Component {
         </BasicFormItem>
         : null }
 
-        <BasicFormItem label="投资性质" name="investType">
+        {/* <BasicFormItem label="投资性质" name="investType">
           <Input />
         </BasicFormItem>
 
         <BasicFormItem label="投资金额" name="investSize">
           <Input />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         <FormItem style={{ marginLeft: 120 }}>
           <Button

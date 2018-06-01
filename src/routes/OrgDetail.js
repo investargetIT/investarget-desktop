@@ -335,13 +335,13 @@ class InvestEvent extends React.Component {
     const columns = [
       {title: '企业名称', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
       {title: '行业分类', dataIndex: 'industrytype'},
-      {
-        title: '地区', dataIndex: 'area', render: text => {
-          const area = this.state.area.filter(f => f.id === text);
-          return area && area.length > 0 ? area[0].country : '';
-        }
-      },
-      {title: '投资人', dataIndex: 'investor'},
+      // {
+      //   title: '地区', dataIndex: 'area', render: text => {
+      //     const area = this.state.area.filter(f => f.id === text);
+      //     return area && area.length > 0 ? area[0].country : '';
+      //   }
+      // },
+      // {title: '投资人', dataIndex: 'investor'},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '投资性质', dataIndex: 'investType'},
       {title: '投资金额', dataIndex: 'investSize'},
