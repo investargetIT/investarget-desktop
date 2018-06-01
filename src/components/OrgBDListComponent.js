@@ -21,7 +21,8 @@ import {
   Checkbox,
   DatePicker,
   Row,
-  Col
+  Col,
+  Icon,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -632,6 +633,7 @@ export default class OrgBDListComponent extends React.Component {
           </div>
         : null}
 
+        { this.state.filters.proj !== null ? 
         <Table
           className="new-org-db-style"
           onChange={this.handleTableChange}
@@ -646,9 +648,17 @@ export default class OrgBDListComponent extends React.Component {
           pagination={false}
           size={this.props.size || "middle"}
         />
+        : null }
 
-        { this.props.pagination ?    
+        { this.props.pagination && this.state.filters.proj !== null ?    
           <div style={{ margin: '16px 0' }} className="clearfix">
+            
+            { this.props.editable ? 
+            <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+              <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+            </Link>
+            : null } 
+
             <Pagination
               style={{ float: 'right' }}
               size={this.props.paginationSize || 'middle'}

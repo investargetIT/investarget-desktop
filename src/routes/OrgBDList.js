@@ -23,10 +23,11 @@ export default class OrgBDList extends React.Component {
         location={this.props.location} 
         name={i18n('menu.organization_bd') + (isAdd ? " / 查看BD": "")} 
         title={i18n('menu.bd_management')}
-        action={
-            isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
-            : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
-          }>
+        // action={
+        //   isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
+        //     : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
+        // }
+      >
         <OrgBDListComponent editable location={this.props.location} pagination={true}/>
       </LeftRightLayout>)
   }
