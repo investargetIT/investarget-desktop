@@ -723,6 +723,12 @@ const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(sta
   return { options }
 })
 
+const SelectOrgLevel = withOptionsAsync(RadioGroup2, ['orglv'], function(state) {
+  const { orglv } = state.app
+  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 /**
  * SelectBDSource
  */
@@ -1403,6 +1409,7 @@ export {
   SelectLibIndustry,
   SelectProjectLibrary,
   SelectOrAddDate,
+  SelectOrgLevel,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,

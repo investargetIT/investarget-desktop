@@ -20,6 +20,7 @@ import {
   RadioCurrencyType,
   RadioAudit,
   SelectTag,
+  SelectOrgLevel,
 } from '../components/ExtraInput'
 
 import {
@@ -199,6 +200,10 @@ class OrganizationForm extends React.Component {
 
         <BasicFormItem label={i18n('organization.decision_process')} name="decisionMakingProcess">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+        </BasicFormItem>
+
+        <BasicFormItem label="机构状态" name="orglevel" valueType="number">
+          <SelectOrgLevel />
         </BasicFormItem>
 
         { hasPerm('org.admin_addorg') ?

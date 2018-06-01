@@ -34,6 +34,7 @@ export default {
     tooNarrow: false,
     sortedTrader: [],
     group: [],
+    orglv: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
