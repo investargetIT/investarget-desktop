@@ -621,11 +621,11 @@ export default class OrgBDListComponent extends React.Component {
           />
         : null}
         
-        { this.props.editable ?
+        { this.props.editable && this.state.filters.proj !== null ?
           <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
             <Search
               style={{ width: 200 }}
-              placeholder="联系人/机构/项目"
+              placeholder="联系人/联系电话"
               onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
               onChange={search => this.setState({ search })}
               value={search}
@@ -669,7 +669,7 @@ export default class OrgBDListComponent extends React.Component {
               showSizeChanger
               onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
               showQuickJumper
-              pageSizeOptions={PAGE_SIZE_OPTIONS}
+              pageSizeOptions={['5', '10', '20', '30', '40', '50']}
             />
           </div>
         : null }
