@@ -317,7 +317,7 @@ class SelectExistOrganization extends React.Component {
 class SelectProjectLibrary extends React.Component {
 
   getData = params => {
-    return api.getLibProj({ ...params, com_name: params.search }).then(result => {
+    return api.getLibProjSimple({ ...params, com_name: params.search }).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
         const { com_id: value, com_name: label } = item;
@@ -328,7 +328,7 @@ class SelectProjectLibrary extends React.Component {
   }
 
   getOrgnameById = id => {
-    return api.getLibProj({ com_id: id }).then(result => {
+    return api.getLibProjSimple({ com_id: id }).then(result => {
       return result.data.data[0].com_name;
     })
   }

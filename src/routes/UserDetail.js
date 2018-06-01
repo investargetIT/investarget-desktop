@@ -69,7 +69,7 @@ class UserInvestEventForm extends React.Component {
     const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
 
     if (com_id !== undefined && comshortname === undefined) {
-      const result = await api.getLibProj({ com_id });
+      const result = await api.getLibProjSimple({ com_id });
       comshortname = result.data.data[0].com_name;
     }
     const body = { 
