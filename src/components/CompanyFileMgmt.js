@@ -307,9 +307,12 @@ class FileMgmt extends React.Component {
         <div>
             <img style={{ width: 26, verticalAlign: 'middle' }}
               src={!record.isFolder ? 
-                (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" : "/images/pdf.png" 
+                (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" :
+                (/\.(doc|docx)$/i).test(record.filename) ? "/images/doc.png" : 
+                (/\.(ppt|pptx)$/i).test(record.filename) ? "/images/ppt.png" : 
+                (/\.(xls|xlsx)$/i).test(record.filename) ? "/images/xls.png" : "/images/pdf.png" 
                 : 
-                ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png"}
+                (ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png")}
             />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
