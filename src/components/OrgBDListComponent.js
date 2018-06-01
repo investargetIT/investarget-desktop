@@ -539,7 +539,7 @@ export default class OrgBDListComponent extends React.Component {
         {title: "最新备注", render: (text, record) => {
           let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
 
-          return record.new ? "暂无" : (latestComment ? <Popover content={<p style={{maxWidth: 400}}>{latestComment}</p>}><div style={{color: "#428bca"}}>{latestComment.substr(0, 10)}...</div></Popover> : "暂无")
+          return record.new ? "暂无" : (latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{maxWidth: 400}}>{latestComment}</p>}><div style={{color: "#428bca"}}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment }</div></Popover> : "暂无")
         }, key:'bd_latest_info'}]
         
         if (this.props.editable) columns.push({
