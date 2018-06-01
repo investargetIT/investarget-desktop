@@ -272,6 +272,10 @@ class InvestEventForm extends React.Component {
       const result = await api.getLibProjSimple({ com_id });
       comshortname = result.data.data[0].com_name;
     }
+
+    const requestEvents = await api.getLibEvent({ com_id, page_size: 100 });
+    const event = requestEvents.data.data.filter(f => f.date === values.investDate.format('YYYY-MM-DD'))[0];
+
     const body = {
       ...values,
       org: this.props.org,
@@ -279,6 +283,9 @@ class InvestEventForm extends React.Component {
       comshortname,
       investDate,
       investTarget: undefined,
+      industrytype: event && event.com_sub_cat_name,
+      investType: event && event.round,
+      investSize: event && event.money,
     };
     return api.addOrgInvestEvent(body)
       .then(result => {
