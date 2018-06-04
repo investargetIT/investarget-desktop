@@ -205,7 +205,7 @@ class OrgUserList extends React.Component {
                   <Button style={buttonStyle} disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
                 </Link>
                 
-                <Link to={'/app/user/edit/' + record.id}>
+                <Link to={`/app/user/edit/${record.id}?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`}>
                   <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
                
