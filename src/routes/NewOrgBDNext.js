@@ -616,39 +616,12 @@ class NewOrgBDList extends React.Component {
           <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
         </div>
 
-        { this.state.visible ? 
-        <ModalModifyOrgBDStatus 
-          visible={this.state.visible} 
-          onCancel={() => this.setState({ visible: false })} 
-          status={this.state.status}
-          onStatusChange={this.handleStatusChange}
-          onOk={this.wechatConfirm}
-          bd={this.state.currentBD}
-        />
-        : null }
-
-        <Modal
-          title={i18n('remark.comment')}
-          visible={this.state.commentVisible}
-          footer={null}
-          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
-          maskClosable={false}
-        >
-          <BDComments
-            comments={this.state.comments}
-            newComment={this.state.newComment}
-            onChange={e => this.setState({ newComment: e.target.value })}
-            onAdd={this.handleAddComment}
-            onDelete={this.handleDeleteComment} 
-          />
-        </Modal>
-
         <Modal
           title="创建BD"
           visible={this.state.selectVisible}
           footer={null}
           onCancel={() => this.setState({ visible: false })}
-          closable={false}
+          closable={true}
         >
           <div style={{marginLeft: '15px'}}>
             <H3>1.选择交易师</H3>
