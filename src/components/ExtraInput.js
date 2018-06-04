@@ -1340,6 +1340,12 @@ const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state
  */
 const RadioBDSource = withOptions(RadioGroup2, BDSourceOptions)
 
+const RadioFamLv= withOptionsAsync(RadioGroup2, ['famlv'], function(state) {
+  const { famlv } = state.app
+  const options = famlv ? famlv.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+});
+
 class SelectOrAddDate extends React.Component {
 
   constructor(props) {
@@ -1433,6 +1439,7 @@ export {
   RadioAudit,
   RadioBDStatus,
   RadioBDSource,
+  RadioFamLv,
   CheckboxService,
   SelectService,
   TabCheckboxService,

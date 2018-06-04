@@ -29,6 +29,7 @@ import {
   RadioAudit,
   SelectTrader,
   SelectOrganizatonArea,
+  RadioFamLv,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
@@ -169,6 +170,13 @@ class UserForm extends React.Component {
             </BasicFormItem>
           ) : null
         }
+
+        { this.props.showFamlvRadio ? 
+        <BasicFormItem label="熟悉程度" name="famlv" valueType="number">
+          <RadioFamLv />
+        </BasicFormItem>
+        : null }
+
         {getFieldValue('onjob') !== undefined ?
           <FormItem {...formItemLayout} label="是否在职" name="onjob">
             {getFieldDecorator('onjob')(<Switch defaultChecked={getFieldValue('onjob')} />)}
