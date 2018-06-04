@@ -23,7 +23,8 @@ import {
   DatePicker,
   Row,
   Tag,
-  Col
+  Col,
+  Switch,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
@@ -102,7 +103,8 @@ class NewOrgBDList extends React.Component {
         selectedKeys: [],
         data: null,
         expirationtime: null,
-        ifimportantMap: {}
+        ifimportantMap: {},
+        isimportant: false,
     }
   }
 
@@ -453,40 +455,64 @@ class NewOrgBDList extends React.Component {
     this.setState({ selectedKeys: this.state.selectedKeys.filter(key => key !== userKey) })
   }
 
-  createOrgBD = () => {
-    this.setState({ selectVisible: false });
-    Promise.all(this.state.selectedKeys.map(userKey => {
-      let user = this.userList[userKey]
-      let body = {
-        bduser: userKey,
-        manager: this.state.manager,
-        org: user.org.id,
-        proj: this.projId,
-        isimportant:this.state.ifimportantMap[userKey] || false,
-        bd_status: 1,
-        expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
-      };
-      return api.addOrgBD(body);
-    }))
-      .then(result => {
-        Modal.confirm({
-            title: i18n('timeline.message.create_success_title'),
-            content: i18n('create_orgbd_success'),
-            okText:"继续创建BD",
-            cancelText:"返回BD列表",
-            onOk: () => { this.props.history.push({ pathname: '/app/orgbd/add' }) },
-            onCancel: () => { this.props.history.push({ pathname: '/app/org/bd' }) }
-          })
-      })
-      .catch(error => {
-        Modal.error({
-          content: error.message
-        });
-      });
-  }
+  // createOrgBD = () => {
+  //   this.setState({ selectVisible: false });
+  //   Promise.all(this.state.selectedKeys.map(userKey => {
+  //     let user = this.userList[userKey]
+  //     let body = {
+  //       bduser: userKey,
+  //       manager: this.state.manager,
+  //       org: user.org.id,
+  //       proj: this.projId,
+  //       isimportant:this.state.ifimportantMap[userKey] || false,
+  //       bd_status: 1,
+  //       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
+  //     };
+  //     return api.addOrgBD(body);
+  //   }))
+  //     .then(result => {
+  //       Modal.confirm({
+  //           title: i18n('timeline.message.create_success_title'),
+  //           content: i18n('create_orgbd_success'),
+  //           okText:"继续创建BD",
+  //           cancelText:"返回BD列表",
+  //           onOk: () => { this.props.history.push({ pathname: '/app/orgbd/add' }) },
+  //           onCancel: () => { this.props.history.push({ pathname: '/app/org/bd' }) }
+  //         })
+  //     })
+  //     .catch(error => {
+  //       Modal.error({
+  //         content: error.message
+  //       });
+  //     });
+  // }
  
   handleSelectUser = () => {
     this.setState({ selectVisible: true });
+  }
+
+  handleCreateBD = user => {
+    this.activeUser = user;
+    this.setState({ selectVisible: true });
+  }
+
+  createOrgBD = () => {
+    const user = this.activeUser;
+    this.setState({ selectVisible: false });
+    let body = {
+      bduser: user.id,
+      manager: this.state.manager,
+      org: user.org.id,
+      proj: this.projId,
+      isimportant: this.state.isimportant,
+      bd_status: 1,
+      expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
+    };
+    api.addOrgBD(body)
+      .then(result => {
+        this.setState({ manager: null, expirationtime: null, isimportant: false });
+        this.getOrgBdListDetail(user.org.id);
+      })
   }
 
   render() {
@@ -525,8 +551,8 @@ class NewOrgBDList extends React.Component {
         
       ]
       if(this.props.source!="meetingbd"){
-        columns.push({title:i18n('org_bd.important'), render:(text,record)=>{
-          if (!record.bd) return <SwitchButton onChange={this.handleSwitchChange.bind(this,record)} />
+        columns.push({title:i18n('org_bd.important') + '/操作', render:(text,record)=>{
+          if (!record.bd) return <Button onClick={this.handleCreateBD.bind(this, record)}>创建BD</Button>
           else return <div>{record.bd.isimportant ? "是" : "否"}</div>
         }})
       }
@@ -556,7 +582,7 @@ class NewOrgBDList extends React.Component {
             pagination={false}
             loading={!record.loaded}
             size={"small"}
-            rowSelection={rowSelection}
+            // rowSelection={rowSelection}
           />
           {/* <Button 
             style={{float: 'right', margin: '15px 15px 0 0'}} 
@@ -599,7 +625,7 @@ class NewOrgBDList extends React.Component {
           size={"middle"}
         />
 
-        <div style={{ marginTop: 10, marginBottom: 10 }}>
+        {/* <div style={{ marginTop: 10, marginBottom: 10 }}>
           {this.state.selectedKeys.map(user => 
             <Tag 
               key={this.userList[user].id} 
@@ -610,9 +636,9 @@ class NewOrgBDList extends React.Component {
               {`${this.userList[user].org.orgfullname || "无机构"} - ${this.userList[user].username}`}
             </Tag>
           )}
-        </div>
+        </div> */}
 
-        <div style={{textAlign: 'right', padding: '0 16px'}}>
+        <div style={{textAlign: 'right', padding: '0 16px', marginTop: 10 }}>
           <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
         </div>
 
@@ -620,8 +646,9 @@ class NewOrgBDList extends React.Component {
           title="创建BD"
           visible={this.state.selectVisible}
           footer={null}
-          onCancel={() => this.setState({ visible: false })}
+          onCancel={() => this.setState({ selectVisible: false })}
           closable={true}
+          maskClosable={false}
         >
           <div style={{marginLeft: '15px'}}>
             <H3>1.选择交易师</H3>
@@ -652,6 +679,11 @@ class NewOrgBDList extends React.Component {
                   }}
                   onChange={v=>{this.setState({expirationtime: v})}}
                 />
+              <span style={{ marginLeft: 40 }}>重点BD</span>
+              <Switch
+                defaultChecked={this.state.isimportant}
+                onChange={checked => this.setState({ isimportant: checked })}
+              />
 
             <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
           </div>
