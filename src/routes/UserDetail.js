@@ -72,11 +72,16 @@ class UserInvestEventForm extends React.Component {
       const result = await api.getLibProjSimple({ com_id });
       comshortname = result.data.data[0].com_name;
     }
+
+    const requestEvents = await api.getLibEvent({ com_id, page_size: 100 });
+    const event = requestEvents.data.data.filter(f => f.date === values.investDate.format('YYYY-MM-DD'))[0];
+
     const body = { 
       user: this.props.user,
       com_id,
       comshortname,
       investDate,
+      round: event && event.round,
     };
     return api.addUserInvestEvent(body)
       .then(result => {

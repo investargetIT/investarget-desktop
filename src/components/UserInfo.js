@@ -68,6 +68,7 @@ class InvestEvent extends React.Component {
     const columns = [
       {title: '投资项目', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
+      {title: '轮次', dataIndex: 'round', render: text => text || 'N/A'},
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
