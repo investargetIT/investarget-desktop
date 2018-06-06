@@ -42,7 +42,11 @@ class InvestEvent extends React.Component {
   getData = () => {
     this.setState({ loading: true });
     let buyout;
-    api.getUserInvestEvent({ user: this.props.user })
+    api.getUserInvestEvent({ 
+      user: this.props.user, 
+      page_size: this.state.pageSize, 
+      page_index: this.state.page 
+    })
     .then(result => {
       this.setState({
         total: result.data.count,
