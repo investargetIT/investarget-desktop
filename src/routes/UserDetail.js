@@ -21,7 +21,10 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import UserInfo from '../components/UserInfo'
 import TransactionInfo from '../components/TransactionInfo'
 import { UserRemarkList } from '../components/RemarkList'
-import { i18n } from '../utils/util'
+import { 
+  i18n,
+  handleError,
+} from '../utils/util';
 import PropTypes from 'prop-types';
 
 const TabPane = Tabs.TabPane
@@ -58,7 +61,7 @@ class UserInvestEventForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        this.addEvent(values);
+        this.addEvent(values).catch(handleError);
       }
     });
   }
