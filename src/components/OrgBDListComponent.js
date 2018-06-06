@@ -501,7 +501,7 @@ export default class OrgBDListComponent extends React.Component {
                               </span>                                  
                               </Popover> : '暂无'}    
             </div>
-          },sorter:true },
+          },sorter:false},
         {title: i18n('org_bd.created_time'), render: (text, record) => {
             return record.new ? 
             <div>
@@ -526,17 +526,17 @@ export default class OrgBDListComponent extends React.Component {
               />
             </div>
             : ( (timeWithoutHour(record.createdtime + record.timezone) + " - ") + (record.expirationtime ? timeWithoutHour(record.expirationtime + record.timezone) : "Now" ) )
-        }, key:'createdtime', sorter:true},
+        }, key:'createdtime', sorter:false},
         {title: i18n('org_bd.creator'), render: (text, record) => {
           return record.new ? isLogin().username : record.createuser.username
-        }, dataIndex:'createuser.username', key:'createuser', sorter:true},
+        }, dataIndex:'createuser.username', key:'createuser', sorter:false},
         {title: i18n('org_bd.manager'), render: (text, record) => {
           return record.new ? 
           <SelectTrader style={{ width: "100%" }} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : record.manager.username
-        }, dataIndex: 'manager.username', key:'manager', sorter:true},
+        }, dataIndex: 'manager.username', key:'manager', sorter:false},
         {title: i18n('org_bd.status'), render: (text, record) => {
           return record.new ? <Checkbox checked={record.isimportant} onChange={v=>{this.updateSelection(record, {isimportant: v.target.checked})}}>重点BD</Checkbox> : record.bd_status.name
-        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
+        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:false},
         {title: "最新备注", render: (text, record) => {
           let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
 
