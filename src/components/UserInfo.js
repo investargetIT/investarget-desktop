@@ -33,6 +33,8 @@ class InvestEvent extends React.Component {
     data: [],
     total: 0,
     loading: false,
+    sort: undefined,
+    desc: undefined,
   }
 
   componentDidMount() {
@@ -45,7 +47,9 @@ class InvestEvent extends React.Component {
     api.getUserInvestEvent({ 
       user: this.props.user, 
       page_size: this.state.pageSize, 
-      page_index: this.state.page 
+      page_index: this.state.page,
+      sort: this.state.sort,
+      desc: this.state.desc,
     })
     .then(result => {
       this.setState({
@@ -61,13 +65,23 @@ class InvestEvent extends React.Component {
       .then(() => this.getData());
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getData
+    );
+  }
+
   render() {
 
     const { page, pageSize, total } = this.state;
 
     const columns = [
       {title: '投资项目', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
-      {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
+      {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : '', sorter: true},
       {title: '轮次', dataIndex: 'round', render: text => text || 'N/A'},
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
@@ -87,6 +101,7 @@ class InvestEvent extends React.Component {
         rowKey={record => record.id}
         loading={this.state.loading}
         pagination={false}
+        onChange={this.handleTableChange}
       />
       <Pagination
         style={{ float: 'right', marginTop: 20 }}
