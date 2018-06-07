@@ -86,6 +86,7 @@ class ModalModifyOrgBDStatus extends React.Component {
     status: this.props.bd.response, 
     group: '', 
     mobileAreaCode: '86',
+    comment: '',
   }
 
   checkInvalid = () => {
@@ -108,7 +109,7 @@ class ModalModifyOrgBDStatus extends React.Component {
         confirmLoading={confirmLoading}
         footer={null}
       >
-        <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
+        <div style={{ width: '70%', margin: '0 auto', marginLeft: 50 }}>
           {this.state.isimportant!=null ?
           <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
@@ -124,7 +125,7 @@ class ModalModifyOrgBDStatus extends React.Component {
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
               <SelectNewBDStatus
-                style={{ width: 240 }}
+                style={{ width: '100%' }}
                 value={this.state.status}
                 onChange={status => this.setState({ status })}
               />
@@ -168,6 +169,13 @@ class ModalModifyOrgBDStatus extends React.Component {
               <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
             </Row>
             : null}
+
+          <Row style={{ marginTop: 10 }}>
+            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >备注 : </Col>
+            <Col span={16}>
+              <Input.TextArea rows={3} value={this.state.comment} onChange={e => this.setState({ comment: e.target.value })} />
+            </Col>
+          </Row>
 
           <Row style={{ marginTop: 10 }}>
             <Col span={8} />

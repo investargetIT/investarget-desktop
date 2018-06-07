@@ -231,6 +231,16 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleConfirmBtnClicked = state => {
+
+    // 添加备注
+    if (state.comment.length > 0) {
+      const body = {
+        orgBD: this.state.currentBD.id,
+        comments: state.comment,
+      };
+      api.addOrgBDComment(body);
+    }
+
     const react = this;
 
     if (state.status === 2 && this.state.currentBD.response !== 2) {
@@ -811,10 +821,10 @@ function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd } = props
   return (
     <div>
-      <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
+      {/* <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
         <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
         <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
-      </div>
+      </div> */}
       <div>
         {comments.length ? comments.map(comment => (
           <div key={comment.id} style={{marginBottom:8}}>
