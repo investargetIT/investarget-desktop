@@ -215,7 +215,8 @@ class OrgBDListComponent extends React.Component {
 
   wechatConfirm = state => {
     const react = this;
-    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 ) {
+    // 如果修改状态为2或者3即已签NDA或者正在看前期资料
+    if (state.status !== this.state.currentBD.response && [2, 3].includes(state.status)) {
       if (!this.state.currentBD.bduser) {
         this.checkExistence(state.mobile, state.email).then(ifExist => {
           if (ifExist) {
@@ -254,13 +255,13 @@ class OrgBDListComponent extends React.Component {
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
         {
-          if (status !== 3 || this.state.currentBD.bd_status.id === 3){
+          if (state.status === this.state.currentBD.response || ![2, 3].includes(state.status)) {
             this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
           }
         }
         );
 
-    if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
+    if (state.status === this.state.currentBD.response || ![2, 3].includes(state.status)) return;
 
     // 如果机构BD存在联系人
     if (this.state.currentBD.bduser) {

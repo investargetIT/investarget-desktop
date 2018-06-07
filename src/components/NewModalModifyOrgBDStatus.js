@@ -90,8 +90,8 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   checkInvalid = () => {
     const { username, mobile, wechat, email, status, group } = this.state;
-    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
-           || (wechat.length === 0 && status === 3 && this.props.bd.bduser !== null && this.props.bd.bd_status.id !== 3);
+    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && [2, 3].includes(status) && this.props.bd.bduser === null && ![2, 3].includes(this.props.bd.response))
+           || (wechat.length === 0 && [2, 3].includes(status) && this.props.bd.bduser !== null && ![2, 3].includes(this.props.bd.response));
   }
   checkProjectValid = () =>{
     const { username, mobile, email, status, group } = this.state;
@@ -130,7 +130,7 @@ class ModalModifyOrgBDStatus extends React.Component {
               />
             </Col>
           </Row>
-          { !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ? <div>
+          { !this.props.bd.bduser && this.props.bd.response !== 3 && this.state.status === 3 ? <div>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.role')} : </Col>
             <Col span={16}><SelectInvestorGroup value={this.state.group} onChange={value => this.setState({group: value})} /></Col>
@@ -162,7 +162,7 @@ class ModalModifyOrgBDStatus extends React.Component {
           : null }
 
           { /* 有联系人的BD成功时要求填写联系人微信号 */ }
-          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 &&!this.props.projectBD?
+          {this.props.bd.bduser && ![2, 3].includes(this.props.bd.response) && [2, 3].includes(this.state.status) && !this.props.projectBD ?
             <Row style={{ marginTop: 10 }}>
               <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
               <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
