@@ -687,7 +687,7 @@ const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(sta
 const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(state) {
   const { orgbdres } = state.app
   const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
-  return { options }
+  return { options, allowClear: true }
 })
 
 /**
