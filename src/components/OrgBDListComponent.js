@@ -36,17 +36,6 @@ import { SelectOrgUser, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 
-class DBSelectOrgUser extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {value: props.value}
-  }
-  render() {
-    return (
-      <SelectOrgUser style={{width: "100%"}} org={this.props.org} type="investor" mode="single" optionFilterProp="children" value={this.state.value} onChange={value => this.setState({value})}/>
-  )}
-}
-
 class DBSelectTrador extends React.Component {
   constructor(props) {
     super(props)
@@ -545,7 +534,7 @@ class OrgBDListComponent extends React.Component {
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
-          <SelectOrgUser allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
+          <SelectOrgUser allStatus allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
           : <div>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               {record.username? <Popover  placement="topRight" content={this.content(record)}>

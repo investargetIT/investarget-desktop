@@ -34,7 +34,7 @@ import BDModal from '../components/BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { SelectOrgUser, SelectTrader } from '../components/ExtraInput';
+import { SelectTrader } from '../components/ExtraInput';
 import { SwitchButton } from '../components/SelectOrgInvestorToBD';
 import OrgBDListComponent from '../components/OrgBDListComponent';
 
@@ -44,28 +44,6 @@ var cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
 
 class H3 extends React.Component {
   render() { return <p style={{fontSize: this.props.size || '13px', fontWeight: 'bolder', marginTop: '5px', marginBottom: '10px', ...this.props.style}}>{this.props.children}</p> }
-}
-
-class DBSelectOrgUser extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {value: props.value}
-  }
-  render() {
-    return (
-      <SelectOrgUser style={{width: "100%"}} org={this.props.org} type="investor" mode="single" optionFilterProp="children" value={this.state.value} onChange={value => this.setState({value})}/>
-  )}
-}
-
-class DBSelectTrador extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {value: props.value}
-  }
-  render() {
-    return (
-      <SelectTrader style={{ width: "100%" }} mode="single" value={this.state.value} onChange={value => this.setState({value})}/>
-  )}
 }
 
 class NewOrgBDList extends React.Component {
@@ -168,7 +146,11 @@ class NewOrgBDList extends React.Component {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
           this.setState({ comments });
         }
-        api.getUser({starmobile: true, org: [org]}).then(result => {
+        api.queryUserGroup({ type: 'investor' }).then(data => {
+          const groups = data.data.data.map(item => item.id)
+          return api.getUser({starmobile: true, org: [org], groups, page_size: 1000})
+        })
+       .then(result => {
             result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
             list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd})).filter(Boolean).filter(user=>user.id)
                    .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null})))
