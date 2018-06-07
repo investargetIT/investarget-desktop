@@ -213,6 +213,43 @@ class OrgBDListComponent extends React.Component {
     });
   }
 
+  addTimeline = () => {
+    const { proj, bduser, manager } = this.state.currentBD;
+    const params = {
+      timelinedata: {
+        'proj': proj.id,
+        'investor': bduser,
+        'trader': manager.id,
+      },
+      statusdata: {
+        'alertCycle': 7,
+        'transationStatus': 1,
+        'isActive': true
+      }
+    }
+    api.addTimeline(params);
+  }
+
+  handleConfirmBtnClicked = state => {
+    const react = this;
+
+    if (state.status === 2 && this.state.currentBD.response !== 2) {
+      Modal.confirm({
+        title: '是否同步创建时间轴？',
+        content: '',
+        onOk() {
+          react.addTimeline();
+          react.wechatConfirm(state);
+        },
+        onCancel() {
+          react.wechatConfirm(state);
+        },
+      });
+    } else {
+      react.wechatConfirm(state);
+    }
+  }
+
   wechatConfirm = state => {
     const react = this;
     // 如果修改状态为2或者3即已签NDA或者正在看前期资料
@@ -696,7 +733,7 @@ class OrgBDListComponent extends React.Component {
         <ModalModifyOrgBDStatus 
           visible={this.state.visible} 
           onCancel={() => this.setState({ visible: false })} 
-          onOk={this.wechatConfirm}
+          onOk={this.handleConfirmBtnClicked}
           bd={this.state.currentBD}
         />
         : null }
