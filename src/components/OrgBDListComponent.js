@@ -34,6 +34,7 @@ import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgUser, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
+import styles from './OrgBDListComponent.css';
 
 class DBSelectOrgUser extends React.Component {
   constructor(props) {
@@ -525,6 +526,10 @@ class OrgBDListComponent extends React.Component {
     this.setState({ list })
   }
 
+  handleRowClassName = (record, index) => {
+    return styles['bd-status-' + record.response];
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -661,6 +666,7 @@ class OrgBDListComponent extends React.Component {
             rowKey={record=>record.id}
             pagination={false}
             loading={!record.loaded}
+            rowClassName={this.handleRowClassName}
           />
           {this.props.editable ? 
             <Button 
