@@ -684,6 +684,12 @@ const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(sta
   return { options }
 })
 
+const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(state) {
+  const { orgbdres } = state.app
+  const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+})
+
 /**
  * SelectBDSource
  */
@@ -1379,6 +1385,7 @@ export {
   SelectUserGroup,
   SelectTitle,
   SelectBDStatus,
+  SelectNewBDStatus,
   SelectBDSource,
   SelectArea,
   SelectOrgUser,

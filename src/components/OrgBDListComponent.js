@@ -27,12 +27,13 @@ import {
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
 import { Search } from './Search';
-import ModalModifyOrgBDStatus from './ModalModifyOrgBDStatus';
+import ModalModifyOrgBDStatus from './NewModalModifyOrgBDStatus';
 import BDModal from './BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgUser, SelectTrader } from './ExtraInput';
+import { connect } from 'dva';
 
 class DBSelectOrgUser extends React.Component {
   constructor(props) {
@@ -56,7 +57,7 @@ class DBSelectTrador extends React.Component {
   )}
 }
 
-export default class OrgBDListComponent extends React.Component {
+class OrgBDListComponent extends React.Component {
   
   constructor(props) {
     super(props);
@@ -247,7 +248,7 @@ export default class OrgBDListComponent extends React.Component {
 
   handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode }, isModifyWechat) => {
     const body = {
-      bd_status: status,
+      response: status,
       isimportant: isimportant ? 1 : 0,
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
@@ -534,9 +535,25 @@ export default class OrgBDListComponent extends React.Component {
           return record.new ? 
           <SelectTrader style={{ width: "100%" }} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : record.manager.username
         }, dataIndex: 'manager.username', key:'manager', sorter:false},
-        {title: i18n('org_bd.status'), render: (text, record) => {
-          return record.new ? <Checkbox checked={record.isimportant} onChange={v=>{this.updateSelection(record, {isimportant: v.target.checked})}}>重点BD</Checkbox> : record.bd_status.name
-        }, dataIndex: 'bd_status.name', key:'bd_status', sorter:false},
+        {
+          title: i18n('org_bd.status'), 
+          render: (text, record) => {
+            if (record.new) {
+              return (
+                <Checkbox
+                  checked={record.isimportant}
+                  onChange={v => { this.updateSelection(record, { isimportant: v.target.checked }) }}>
+                  重点BD
+                </Checkbox>
+              );
+            } else {
+              return text && this.props.orgbdres.filter(f => f.id === text)[0].name;
+            }
+          }, 
+          dataIndex: 'response', 
+          key:'response', 
+          sorter:false
+        },
         {title: "最新备注", render: (text, record) => {
           let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
 
@@ -678,8 +695,6 @@ export default class OrgBDListComponent extends React.Component {
         <ModalModifyOrgBDStatus 
           visible={this.state.visible} 
           onCancel={() => this.setState({ visible: false })} 
-          status={this.state.status}
-          onStatusChange={this.handleStatusChange}
           onOk={this.wechatConfirm}
           bd={this.state.currentBD}
         />
@@ -705,6 +720,13 @@ export default class OrgBDListComponent extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+}
+
+export default connect(mapStateToProps)(OrgBDListComponent);
 
 export class Trader extends React.Component {
   state = {
