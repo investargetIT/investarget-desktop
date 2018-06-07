@@ -23,7 +23,7 @@ import {
   RadioTrueOrFalse,
   RadioAudit,
   RadioRole,
-  RadioBDStatus,
+  RadioNewBDStatus,
   RadioBDSource,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
@@ -791,10 +791,10 @@ class MeetBDFilter extends React.Component {
 class OrgBDFilter extends React.Component {
 
     static defaultValue = {
-      bd_status: null,
       manager: [],
       org: [],
       proj: null,
+      response: null,
     }
 
     constructor(props) {
@@ -816,7 +816,7 @@ class OrgBDFilter extends React.Component {
     }
 
     render() {
-      const { bd_status, source_type, location, manager, org, proj } = this.state;
+      const { response, source_type, location, manager, org, proj } = this.state;
 
       return (
         <div>
@@ -833,7 +833,7 @@ class OrgBDFilter extends React.Component {
           </BasicContainer>
 
           <BasicContainer label={i18n('project_bd.bd_status')}>
-            <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
+            <RadioNewBDStatus value={response} onChange={this.handleChange.bind(this, 'response')} />
           </BasicContainer>
 
           <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />

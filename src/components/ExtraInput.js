@@ -1290,6 +1290,12 @@ const RadioBDStatus = withOptionsAsync(RadioGroup2, ['bdStatus'], function(state
   return { options }
 })
 
+const RadioNewBDStatus = withOptionsAsync(RadioGroup2, ['orgbdres'], function(state) {
+  const { orgbdres } = state.app;
+  const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : [];
+  return { options };
+});
+
 /**
  * RadioBDSource
  */
@@ -1400,6 +1406,7 @@ export {
   RadioCurrencyType,
   RadioAudit,
   RadioBDStatus,
+  RadioNewBDStatus,
   RadioBDSource,
   CheckboxService,
   SelectService,
