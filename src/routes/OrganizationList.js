@@ -135,11 +135,14 @@ class OrganizationList extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { title: '全称', key: 'orgname',  
-      render:(text, record) =>{
-        return <Link to={'/app/organization/' + record.id}>
-                <div style={{color:"#428BCA"}}>{record.orgfullname}</div>
-              </Link>
-      }
+        render: (text, record) => <Link to={'/app/organization/' + record.id}>
+          <div style={{ color: "#428BCA" }}>
+            { [1, 2].includes(record.orglevel.id) ?
+            <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
+            : null}
+            {record.orgfullname}
+          </div>
+        </Link>,
       //sorter:true, 
       },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter:true, },

@@ -193,6 +193,9 @@ class SelectOrganization extends React.Component {
       { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname', 
         render: (text, record) => <div>
           <Popover placement="topLeft" content={this.popoverContent(record)}>
+            { [1, 2].includes(record.orglevel.id) ? 
+            <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
+            : null }
             <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>{text}</span>
           </Popover>
         </div>
