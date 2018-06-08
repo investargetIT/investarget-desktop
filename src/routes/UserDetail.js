@@ -71,9 +71,13 @@ class UserInvestEventForm extends React.Component {
     let comshortname = isNaN(values.investTarget) ? values.investTarget: undefined;
     const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
 
+    let industrytype, Pindustrytype;
     if (com_id !== undefined && comshortname === undefined) {
       const result = await api.getLibProjSimple({ com_id });
-      comshortname = result.data.data[0].com_name;
+      const { com_name, com_cat_name, com_sub_cat_name } = result.data.data[0];
+      comshortname = com_name;
+      industrytype = com_sub_cat_name;
+      Pindustrytype = com_cat_name; 
     }
 
     const requestEvents = await api.getLibEvent({ com_id, page_size: 100 });
@@ -85,6 +89,8 @@ class UserInvestEventForm extends React.Component {
       comshortname,
       investDate,
       round: event && event.round,
+      industrytype,
+      Pindustrytype,
     };
     return api.addUserInvestEvent(body)
       .then(result => {
