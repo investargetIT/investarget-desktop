@@ -170,7 +170,10 @@ class Remark extends React.Component {
         <div style={largeBlock}>
         <span style={userStyle}>{this.state.userName}</span>
         <div style={timeStyle}>
-          {createdtime}
+          {createdtime}&nbsp;&nbsp;
+          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
+            <img style={{ height: 18, cursor: 'pointer' }} src="/images/delete.png" />
+          </Popconfirm> 
         </div>
         </div>
         <p style={comStyle} dangerouslySetInnerHTML={comments}></p>
