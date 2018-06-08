@@ -56,9 +56,17 @@ class OrgBDListComponent extends React.Component {
     this.projId = parseInt(props.location.query.projId, 10)
     this.projId = !isNaN(this.projId) ? this.projId : null;
 
+    let filters = {...OrgBDFilter.defaultValue, proj: this.projId };
+    let search = null;
+    if (this.props.editable) {
+      const setting = this.readSetting();
+      filters = setting ? setting.filters : OrgBDFilter.defaultValue;
+      search = setting ? setting.search : null;
+    }
+
     this.state = {
-        filters: {...OrgBDFilter.defaultValue, proj: this.projId},
-        search: null,
+        filters,
+        search,
         page: 1,
         pageSize: this.props.pageSize || (this.ids.length ? this.ids.length + 1 : (getUserInfo().page || 10)),
         total: 0,
@@ -83,6 +91,17 @@ class OrgBDListComponent extends React.Component {
   componentDidMount() {
     this.getOrgBdList();
   }
+
+  readSetting = () => {
+    const data = localStorage.getItem('OrgBDList');
+    return data ? JSON.parse(data) : null;
+  };
+
+  writeSetting = () => {
+    const { filters, search } = this.state;
+    const data = { filters, search };
+    localStorage.setItem('OrgBDList', JSON.stringify(data));
+  };
 
   getOrgBdList = () => {
     this.setState({ loading: true, expanded: [] });
@@ -130,6 +149,11 @@ class OrgBDListComponent extends React.Component {
         })
       })
     })
+
+    if (this.props.editable) {
+      this.writeSetting();
+    }
+    
   }
 
   getOrgBdListDetail = (org, proj) => {
