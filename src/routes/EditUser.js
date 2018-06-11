@@ -47,7 +47,7 @@ class EditUser extends React.Component {
             .then(result => api.editUserRelation(
               [{
                 ...relation,
-                score: values.famlv,
+                familiar: values.famlv,
                 id: result.data.data[0].id,
                 relationtype: result.data.data[0].relationtype,
               }]
@@ -111,7 +111,7 @@ class EditUser extends React.Component {
     // 如果正在编辑我的投资人，获取并设置投资人和交易师的熟悉程度
     if (this.props.location.query.redirect === '/app/investor/my') {
       const relations = this.minorRelation.concat(this.majorRelation);
-      const famlv = relations.filter(f => f.investoruser.id === parseInt(this.props.params.id) && f.traderuser.id === isLogin().id)[0].score;
+      const famlv = relations.filter(f => f.investoruser.id === parseInt(this.props.params.id) && f.traderuser.id === isLogin().id)[0].familiar;
       _data['famlv'] = famlv;
     }
 
