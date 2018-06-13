@@ -153,6 +153,7 @@ class UserInfo extends React.Component {
       mergedynamic: '',
       targetdemand: '',
       orgid:'',
+      attachment: [],
     }
   }
 
@@ -190,9 +191,12 @@ class UserInfo extends React.Component {
         payload: error
       })
     })
-    api.getUserAttachment()
-      .then(result => echo('result', result))
 
+    api.getUserAttachment({ user: this.props.userId, page_size: 1000 })
+      .then(result => Promise.all(
+        result.data.data.map(m => api.downloadUrl(m.bucket, m.key))
+      ))
+      .then(result => this.setState({ attachment: result.map(m => m.data)}));
   }
 
   render() {
@@ -224,6 +228,13 @@ class UserInfo extends React.Component {
         <TabPane tab="投资事件" key="2">
           <InvestEvent user={this.props.userId} />
         </TabPane>
+
+        { this.state.attachment.length > 0 ?
+        <TabPane tab="附件" key="3">
+          { this.state.attachment.map(m => <ImageViewer key={m}><img src={m} style={cardStyle} /></ImageViewer>)}
+        </TabPane>
+        : null }
+
       </Tabs>
     )
   }
