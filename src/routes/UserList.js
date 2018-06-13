@@ -34,7 +34,7 @@ class UserList extends React.Component {
     this.state = {
       filters,
       search,
-      page: 1,
+      page,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
