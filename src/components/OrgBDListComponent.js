@@ -561,7 +561,7 @@ class OrgBDListComponent extends React.Component {
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgUser allStatus allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
-          : <div>                  
+          : <div style={{ width: 100 }}>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               {record.username? <Popover  placement="topRight" content={this.content(record)}>
                               <span style={{color:'#428BCA'}}>
@@ -637,7 +637,7 @@ class OrgBDListComponent extends React.Component {
                   <div style={{marginRight:4}}>
                   <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
                   &nbsp;&nbsp;
-                  <Popconfirm title="Sure to discard change?" onConfirm={this.discardNewBD.bind(this, record)}>
+                  <Popconfirm title="确定取消？" onConfirm={this.discardNewBD.bind(this, record)}>
                     <a style={buttonStyle} size="small">取消</a>
                   </Popconfirm>
                   </div>
