@@ -82,15 +82,29 @@ class OrgBDListComponent extends React.Component {
         desc:undefined,
         source: this.props.status||0,
         userDetail:[],
-        expanded: []
+        expanded: [],
+        traderList: [],
     }
+
+    this.allTrader = [];
   }
 
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
     this.getOrgBdList();
+    this.getAllTrader();
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
+  }
+
+  getAllTrader() {
+    api.queryUserGroup({ type: 'trader' })
+    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => {
+      this.allTrader = data.data.data; 
+      this.setState({ traderList: this.allTrader });
+    })
   }
 
   readSetting = () => {
@@ -504,6 +518,28 @@ class OrgBDListComponent extends React.Component {
         )}
     )
     this.setState({ list })
+    if(!change.orgUser) return;
+    const params = {
+      investoruser: change.orgUser,
+      page_size: 1000,
+    };
+    api.getUserRelation(params)
+      .then(result => {
+        const newTraderList = [];
+        result.data.data.forEach(element => {
+          const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].name;
+          const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
+          trader.username += ' ' + familiar;
+          trader.familiar = element.familiar;
+          newTraderList.push(trader);
+        });
+        this.allTrader.forEach(element => {
+          if (!newTraderList.map(m => m.id).includes(element.id)) {
+            newTraderList.push(element);
+          }
+        });
+        this.setState({ traderList: newTraderList });
+      })
   }
 
   saveNewBD(record) {
@@ -523,7 +559,7 @@ class OrgBDListComponent extends React.Component {
             line :
             {...line, items: line.items.filter(item => item.key !== record.key).concat([result.data])}
         )
-        this.setState({ list })
+        this.setState({ list, traderList: this.allTrader });
       }
     }).catch(error => {
       Modal.error({
@@ -538,7 +574,7 @@ class OrgBDListComponent extends React.Component {
         line :
         {...line, items: line.items.filter(item => item.key !== record.key)}
     )
-    this.setState({ list })
+    this.setState({ list, traderList: this.allTrader })
   }
 
   handleRowClassName = (record, index) => {
@@ -601,7 +637,7 @@ class OrgBDListComponent extends React.Component {
         }, dataIndex:'createuser.username', key:'createuser', sorter:false},
         {title: i18n('org_bd.manager'), render: (text, record) => {
           return record.new ? 
-          <SelectTrader style={{ width: "100%" }} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : record.manager.username
+          <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div style={{ width: 160 }}>{record.manager.username}</div>
         }, dataIndex: 'manager.username', key:'manager', sorter:false},
         {
           title: i18n('org_bd.status'), 
@@ -791,8 +827,8 @@ class OrgBDListComponent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { orgbdres } = state.app;
-  return { orgbdres };
+  const { orgbdres, famlv } = state.app;
+  return { orgbdres, famlv };
 }
 
 export default connect(mapStateToProps)(OrgBDListComponent);
