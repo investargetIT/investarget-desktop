@@ -90,6 +90,7 @@ class OrgBDListComponent extends React.Component {
 
   componentDidMount() {
     this.getOrgBdList();
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
   }
 
   readSetting = () => {
@@ -157,7 +158,8 @@ class OrgBDListComponent extends React.Component {
   }
 
   getOrgBdListDetail = (org, proj) => {
-    api.getOrgBdList({org, proj: proj || "none"}).then(result => {
+    const { manager, response } = this.state.filters;
+    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
         if(item.bduser){
