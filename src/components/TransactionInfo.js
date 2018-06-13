@@ -115,6 +115,8 @@ class TransactionInfo extends React.Component {
         payload: error
       })
     })
+
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
   }
 
   getTransactionInfo = (id) => {
@@ -143,6 +145,7 @@ class TransactionInfo extends React.Component {
 
   popoverContent(item) {
     const { traderuser: trader } = item;
+    const familiar = this.props.famlv.filter(f => f.id === item.familiar)[0].name;
     return <div style={{minWidth: 240}}>
       <SimpleLine title={i18n('user.name')} value={trader.username} />
       <SimpleLine title="公司" value={trader.org && trader.org.orgname} />
@@ -151,7 +154,7 @@ class TransactionInfo extends React.Component {
       <SimpleLine title={i18n('user.country')} value={trader.country && trader.country.country} />
       <SimpleLine title={i18n('user.mobile')} value={trader.mobile} />
       <SimpleLine title={i18n('user.email')} value={trader.email} />
-      <SimpleLine title={i18n('user.score')} value={item.score} />
+      <SimpleLine title="熟悉程度" value={familiar} />
     </div>
   }
 
@@ -183,4 +186,9 @@ class TransactionInfo extends React.Component {
   }
 }
 
-export default connect()(TransactionInfo)
+function mapStateToProps(state) {
+  const { famlv } = state.app;
+  return { famlv };
+}
+
+export default connect(mapStateToProps)(TransactionInfo);
