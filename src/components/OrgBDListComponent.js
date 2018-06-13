@@ -346,7 +346,7 @@ class OrgBDListComponent extends React.Component {
       api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
         .then(result => {
           // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
-          if (result.data || hasPerm('usersys.admin_changeuser') && isModifyWechat) {
+          if ((result.data || hasPerm('usersys.admin_changeuser')) && isModifyWechat) {
             api.editUser([this.state.currentBD.bduser], { wechat });
           } else {
             api.addUserRelation({
@@ -368,6 +368,8 @@ class OrgBDListComponent extends React.Component {
                 }
               });
           }
+          // 重新加载这条记录，保证修改了的微信能在鼠标hover时正确显示
+          this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id);
         });
 
       // 承做和投资人建立联系
