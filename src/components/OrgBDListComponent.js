@@ -274,17 +274,31 @@ class OrgBDListComponent extends React.Component {
     const react = this;
 
     if (state.status === 2 && this.state.currentBD.response !== 2) {
-      Modal.confirm({
-        title: '是否同步创建时间轴？',
-        content: '',
-        onOk() {
-          react.addTimeline();
-          react.wechatConfirm(state);
-        },
-        onCancel() {
-          react.wechatConfirm(state);
-        },
-      });
+      const { proj, bduser, manager } = this.state.currentBD;
+      const params = {
+        proj: proj.id,
+        investor: bduser,
+        trader: manager.id,
+        isClose: false,
+      };
+      api.getTimeline(params)
+        .then(result => {
+          if (result.data.count > 0) {
+            react.wechatConfirm(state);
+          } else {
+            Modal.confirm({
+              title: '是否同步创建时间轴？',
+              content: '',
+              onOk() {
+                react.addTimeline();
+                react.wechatConfirm(state);
+              },
+              onCancel() {
+                react.wechatConfirm(state);
+              },
+            });
+          }
+        });
     } else {
       react.wechatConfirm(state);
     }
