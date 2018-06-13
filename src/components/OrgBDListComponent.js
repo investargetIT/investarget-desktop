@@ -545,14 +545,17 @@ class OrgBDListComponent extends React.Component {
         result.data.data.forEach(element => {
           const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].name;
           const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
-          trader.username += ' ' + familiar;
+          trader.username += '-' + familiar;
           trader.familiar = element.familiar;
           newTraderList.push(trader);
         });
         this.allTrader.forEach(element => {
           if (!newTraderList.map(m => m.id).includes(element.id)) {
-            newTraderList.push(element);
+            newTraderList.push({ ...element, familiar: 0 });
           }
+        });
+        newTraderList.sort(function(a, b) {
+          return b.familiar - a.familiar;
         });
         this.setState({ traderList: newTraderList });
       })
