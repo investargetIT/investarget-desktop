@@ -45,6 +45,7 @@ import {
   TabCheckboxOrgArea, 
   TabCheckboxService,
   TabCheckboxProjStatus,
+  RadioFamLv,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -104,6 +105,14 @@ function UserAuditFilter(props) {
   return (
     <BasicContainer label={ i18n('filter.audit_status') }>
       <RadioAudit value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function FamLvFilter(props) {
+  return (
+    <BasicContainer label="熟悉程度">
+      <RadioFamLv value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
@@ -457,7 +466,8 @@ class MyInvestorListFilter extends React.Component {
     tags: [],
     currency: [],
     userstatus: null,
-    areas: []
+    areas: [],
+    familiar: null
   };
 
   state = this.props.defaultValue || MyInvestorListFilter.defaultValue;
@@ -476,7 +486,7 @@ class MyInvestorListFilter extends React.Component {
   }
 
   render() {
-    const { orgtransactionphases, tags, currency, userstatus, areas } = this.state;
+    const { orgtransactionphases, tags, currency, userstatus, areas, familiar } = this.state;
     return (
       <div>
         <TransactionPhaseFilter
@@ -488,12 +498,15 @@ class MyInvestorListFilter extends React.Component {
         <CurrencyFilter
           value={currency}
           onChange={this.onChange.bind(this, 'currency')} />
+        <FamLvFilter
+          value={familiar}
+          onChange={this.onChange.bind(this, 'familiar')} />
         <UserAuditFilter
           value={userstatus}
           onChange={this.onChange.bind(this, 'userstatus')} />
-        <OrganizationAreaFilter
+        {/* <OrganizationAreaFilter
           value={areas}
-          onChange={this.onChange.bind(this, 'areas')} />
+          onChange={this.onChange.bind(this, 'areas')} /> */}
         <FilterOperation
           onSearch={this.onFilter.bind(this)}
           onReset={this.onReset.bind(this)} />
