@@ -37,9 +37,9 @@ class MyPartner extends React.Component {
 
     let param
     if (this.props.type === "investor") {
-      param = { trader: isLogin().id}
+      param = { traderuser: isLogin().id}
     } else if (this.props.type == "trader") {
-      param = { investor: isLogin().id }
+      param = { investoruser: isLogin().id }
     }
     param.page_size = this.state.pageSize;
     param.page_index = this.state.pageIndex;
@@ -47,7 +47,7 @@ class MyPartner extends React.Component {
     
     const params = Object.assign({}, param, this.state.filters);
 
-    api.getUser(params)
+    api.getUserRelation(params)
       .then(result => {
         this.setState({
           list: result.data.data,
@@ -70,6 +70,7 @@ class MyPartner extends React.Component {
     this.getFriends();
 
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' }); 
     this.props.dispatch({ type: 'app/getGroup' });
   }
 
@@ -92,7 +93,7 @@ class MyPartner extends React.Component {
   }
 
   handleAddFriend(userID) {
-    const index = this.state.list.map(m => m.id).indexOf(userID)
+    const index = this.state.list.map(m => m.investoruser.id).indexOf(userID)
     if (index < 0) return
 
     api.addUserFriend([userID])
@@ -115,62 +116,53 @@ class MyPartner extends React.Component {
         title: i18n("user.name"),
         key: 'username',
         render:(text, record) =>{
-          return <Link to={'/app/user/' + record.id}>{record.username}</Link>
+          const { investoruser: investor } = record;
+          return <Link to={'/app/user/' + investor.id}>{investor.username}</Link>
         }
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.orgname',
+        dataIndex: 'investoruser.org.orgname',
         key: 'org'
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'title',
+        dataIndex: 'investoruser.title.name',
         key: 'title',
-        render: value => this.loadLabelByValue('title', value),
       },
       {
         title: i18n("user.tags"),
-        dataIndex: 'tags',
+        dataIndex: 'investoruser.tags',
         key: 'tags',
-        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null,
-      }
-    ]
-    if (this.props.type === 'investor') {
-      columns.push({
+        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags.map(m => m.id))}</span> : null,
+      },
+      {
+        title: '熟悉程度',
+        dataIndex: 'familiar',
+        key: 'familiar',
+        render: text => this.loadLabelByValue('famlv', text),
+      },
+      {
         title: i18n("user.status"),
-        dataIndex: 'userstatus',
+        dataIndex: 'investoruser.userstatus.id',
         key: 'userstatus',
         render: value => this.loadLabelByValue('audit', value),
-      })
-      columns.push({
+      },
+      {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
           <span>
-          <Link to={'/app/user/edit/' + record.id + '?redirect=' + this.redirect}>
+            <Link to={'/app/user/edit/' + record.investoruser.id + '?redirect=' + this.redirect}>
               <Button style={buttonStyle} size="small">{i18n("common.edit")}</Button>
             </Link>
-            &nbsp;
-            { this.props.type !== 'investor' ?
-          <Popconfirm title="Confirm to delete?" onConfirm={this.handleDeleteUser.bind(null, record.id)}>
-              <Button type="danger" size="small">{i18n("common.delete")}</Button>
-            </Popconfirm>
-            : null }
-            &nbsp;
-            {!this.state.friendList.includes(record.id) ? 
-            <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>
+            { !this.state.friendList.includes(record.investoruser.id) ?
+              <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.investoruser.id)} size="small">{i18n("add_friend")}</Button>
             : null}
           </span>
         )
-      })
-    } else {
-      columns.push({
-        title: i18n("common.operation"),
-        key: 'action',
-        render: (text, record) => <Button disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.id)} size="small">{i18n("add_friend")}</Button>,
-      })
-    }
+      }, 
+    ];
 
     const { list } = this.state
 
@@ -195,7 +187,7 @@ class MyPartner extends React.Component {
       {this.props.type === "trader" ? (
           <CardContainer gutter={28} cardWidth={240}>
             {list.map(item => {
-              return <Card key={item.id} {...item} />
+              return <Card key={item.traderuser.id} {...item.traderuser} />
             })}
           </CardContainer>
       ) : null}
@@ -227,8 +219,8 @@ class MyPartner extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { title, tag, audit } = state.app;
-  return { title, tag, audit };
+  const { title, tag, audit, famlv } = state.app;
+  return { title, tag, audit, famlv };
 }
 
 export default connect(mapStateToProps)(MyPartner);
