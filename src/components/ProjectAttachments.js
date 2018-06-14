@@ -17,6 +17,7 @@ import {
 } from 'antd'
 import QRCode from 'qrcode.react';
 import { baseUrl, mobileUploadUrl } from '../utils/request';
+import MobileUploader from './MobileUploader';
 
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
@@ -101,7 +102,6 @@ class ProjectAttachments extends React.Component {
       dirs: fixedDirs.slice(),
       activeDir: fixedDirs[0],
       newDir: '',
-      qrCodeValue: null,
       spinning: false,
       highlight: null,
       addNewDir: false,
@@ -311,39 +311,13 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  queryQrCodeStatus = () => {
-    api.getQRCodeStatus(this.qrCodeKey)
-    .then(result => {
-      const record = result.data[this.qrCodeKey];
-      if (record.key) {
-        clearInterval(this.pull);
-        this.setState({ qrCodeValue: null });
-        const file = {...record, filetype: this.state.activeDir};
-        this.addAttachment(file);
-      }
-    });
+  onMobileUploadSuccess(record) {
+    const file = {...record, filetype: this.state.activeDir};
+    this.addAttachment(file);
   }
 
-  handleMobileUploadBtnClicked = () => {
-    api.getMobileUploadKey()
-    .then(result => {
-      let record;
-      const object = result.data;
-      for (var key in object) {
-        if (object.hasOwnProperty(key)) {
-          record = key;
-        }
-      }
-      this.qrCodeKey = record;
-      this.setState({ qrCodeValue: mobileUploadUrl + '/upload?key=' + record });
-      this.pull = setInterval(this.queryQrCodeStatus, 1000);
-    }); 
-  }
-
-  handleCancelMobileUpload = () => {
-    this.setState({ qrCodeValue: null });
-    clearInterval(this.pull);
-    api.cancelMobileUpload(this.qrCodeKey);
+  handleMobileUploadBtnClicked() {
+    this.refs.uploader && this.refs.uploader.upload();
   }
 
   render() {
@@ -421,19 +395,10 @@ class ProjectAttachments extends React.Component {
           </div>
         </div>
 
-        { this.state.qrCodeValue ? 
-        <Modal
-          width={230}
-          visible={true}
-          footer={null}
-          onCancel={this.handleCancelMobileUpload}
-        >
-          <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
-            <QRCode value={this.state.qrCodeValue} />
-          </div>
-          <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
-        </Modal>
-        : null }
+        <MobileUploader
+          ref="uploader"
+          onSuccess={this.onMobileUploadSuccess.bind(this)}
+        />
 
       </div>
     )
