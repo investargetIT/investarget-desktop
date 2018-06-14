@@ -271,6 +271,54 @@ GroupFilter = connect()(GroupFilter)
 /*******************************/
 
 
+class FamiliarFilter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      familiar: [],
+    }
+  }
+
+  componentDidMount() {
+    api.getSource("famlv").then(result => {
+      const familiar = result.data.map(item => {
+        return { value: item.id, label: item.name }
+      })
+      this.setState({ familiar })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
+  handleChange = (e) => {
+    this.props.onChange(e.target.value)
+  }
+
+  render() {
+    return (
+      React.createElement(
+        this.props.hideLabel ? "div" : BasicContainer,
+        {label:"熟悉程度"},
+        <RadioGroup value={this.props.value} onChange={this.handleChange}>
+          {
+            this.state.familiar.map(item =>
+              <Radio key={item.value} value={item.value} style={ this.props.vertical ? {display: "block", marginBottom: 10} : {}}>{item.label}</Radio>
+            )
+          }
+        </RadioGroup>
+      )
+    )
+  }
+}
+FamiliarFilter = connect()(FamiliarFilter)
+
+
+/*******************************/
+
+
 
 class TimelineFilter extends React.Component {
 
@@ -887,5 +935,6 @@ module.exports = {
   ProjectBDFilter,
   WxMessageFilter,
   OrgBDFilter,
-  MeetBDFilter 
+  MeetBDFilter,
+  FamiliarFilter
 }

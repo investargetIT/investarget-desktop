@@ -5,7 +5,7 @@ import {
   isLogin, 
   getUserInfo, 
 } from '../utils/util';
-import { MyInvestorListFilter } from '../components/Filter'
+import { MyInvestorListFilter, FamiliarFilter } from '../components/Filter'
 import { Input, Table, Button, Popconfirm, Pagination, message, Modal } from 'antd'
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -17,6 +17,25 @@ import {
 import { connect } from 'dva'
 import CardContainer from '../components/CardContainer'
 import { Search } from './Search';
+
+const styles = {
+  groupModifyButton: {
+    position: "absolute",
+    marginTop: -34,
+    backgroundColor: "orange",
+  },
+  dialogBtnGroup: {
+    textAlign: "right",
+  },
+  dialogBtnGroupItem: {
+    marginLeft: 15,
+  },
+  radioGroup: {
+    textAlign: "center",
+    margin: "10px 0",
+  }
+}
+
 class MyPartner extends React.Component {
 
   state = {
@@ -26,8 +45,12 @@ class MyPartner extends React.Component {
     pageSize: getUserInfo().page || 10,
     pageIndex: 1,
     friendList: [], 
+    selectedRows: [],
+    selectedRowKeys: [],
+    showFamModifyDialog: false,
     search: '', 
     filters: null,
+    changedValue: null,
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
@@ -109,6 +132,28 @@ class MyPartner extends React.Component {
     .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
   }
 
+  submitModifyFamlv() {
+    if (this.state.changedValue === null) {
+      Modal.error({title: "错误", content: "您未勾选修改内容!"})
+    } else {
+      let params = {
+        familiar: this.state.changedValue
+      }
+      api.editUserRelation(
+        this.state.selectedRows.map(record => ({
+          familiar: this.state.changedValue,
+          id: record.id,
+          investoruser: record.investoruser.id,
+          traderuser: record.traderuser.id,
+        }))
+      ).then(result => {
+        Modal.success({title: "成功", content: "修改熟悉程度成功!"})
+        this.getPartner()
+        this.setState({ showFamModifyDialog: false, selectedRows: [], selectedRowKeys: [] })
+      })
+    }
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const columns = [
@@ -164,6 +209,14 @@ class MyPartner extends React.Component {
       }, 
     ];
 
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      selectedRows: this.state.selectedRows,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys, selectedRows })
+      },
+    };
+
     const { list } = this.state
 
     return (
@@ -198,6 +251,7 @@ class MyPartner extends React.Component {
             dataSource={this.state.list}
             loading={this.state.loading}
             rowKey={record => record.id}
+            rowSelection={rowSelection}
             pagination={false} />
         ) : null}
 
@@ -212,6 +266,41 @@ class MyPartner extends React.Component {
           pageSizeOptions={PAGE_SIZE_OPTIONS}
           onShowSizeChange={(current, pageSize) => this.setState({ pageSize, pageIndex: 1 }, this.getPartner)}
         />
+
+        {this.props.type === "investor" ? (
+            <Button 
+              style={styles.groupModifyButton}
+              disabled={this.state.selectedRows.length === 0}
+              onClick={()=>{this.setState({showFamModifyDialog: true, changedValue: null})}}
+            >批量修改熟悉程度</Button>
+        ) : null}
+
+        <Modal
+          title="批量修改熟悉程度"
+          visible={this.state.showFamModifyDialog}
+          onCancel={()=>{this.setState({showFamModifyDialog: false})}}
+          footer={null}
+        >
+          <div style={styles.radioGroup}>
+            <FamiliarFilter 
+              hideLabel
+              // vertical
+              value={this.state.changedValue} 
+              onChange={(v)=>{this.setState({changedValue: v})}}
+            />
+          </div>
+          <div style={styles.dialogBtnGroup}>
+            <Button 
+                type="primary"
+                onClick={this.submitModifyFamlv.bind(this)}
+                style={styles.dialogBtnGroupItem}
+              >确定</Button>
+            <Button
+                onClick={()=>{this.setState({showFamModifyDialog: false})}}
+                style={styles.dialogBtnGroupItem}
+              >取消</Button>
+          </div>
+        </Modal>
 
       </div>
     )
