@@ -51,6 +51,7 @@ class MyPartner extends React.Component {
     search: '', 
     filters: null,
     changedValue: null,
+    isSubmitting: false,
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
@@ -136,6 +137,7 @@ class MyPartner extends React.Component {
     if (this.state.changedValue === null) {
       Modal.error({title: "错误", content: "您未勾选修改内容!"})
     } else {
+      this.setState({isSubmitting: true})
       let params = {
         familiar: this.state.changedValue
       }
@@ -149,7 +151,10 @@ class MyPartner extends React.Component {
       ).then(result => {
         Modal.success({title: "成功", content: "修改熟悉程度成功!"})
         this.getPartner()
-        this.setState({ showFamModifyDialog: false, selectedRows: [], selectedRowKeys: [] })
+        this.setState({ showFamModifyDialog: false, selectedRows: [], selectedRowKeys: [], isSubmitting: false })
+      }).catch(error => {
+        Modal.success({title: "失败", content: "请求服务器失败, 请稍后再试!"})
+        this.setState({ isSubmitting: false })
       })
     }
   }
@@ -211,9 +216,13 @@ class MyPartner extends React.Component {
 
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      selectedRows: this.state.selectedRows,
       onChange: (selectedRowKeys, selectedRows) => {
-        this.setState({ selectedRowKeys, selectedRows })
+        this.setState({ 
+          selectedRowKeys, 
+          selectedRows: this.state.selectedRows
+                          .concat(selectedRows.filter(r=>!this.state.selectedRowKeys.includes(r.id)))
+                          .filter(r=>selectedRowKeys.includes(r.id))
+        })
       },
     };
 
@@ -294,6 +303,7 @@ class MyPartner extends React.Component {
                 type="primary"
                 onClick={this.submitModifyFamlv.bind(this)}
                 style={styles.dialogBtnGroupItem}
+                loading={this.state.isSubmitting}
               >确定</Button>
             <Button
                 onClick={()=>{this.setState({showFamModifyDialog: false})}}
