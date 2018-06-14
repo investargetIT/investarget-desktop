@@ -1,12 +1,11 @@
 import React from 'react'
-import LeftRightLayout from '../components/LeftRightLayout'
 import { 
   i18n, 
   isLogin, 
   getUserInfo, 
 } from '../utils/util';
 import { MyInvestorListFilter, FamiliarFilter } from '../components/Filter'
-import { Input, Table, Button, Popconfirm, Pagination, message, Modal } from 'antd'
+import { Tag, Table, Button, Pagination, Modal } from 'antd';
 import * as api from '../api'
 import { Link } from 'dva/router'
 import { 
@@ -35,6 +34,7 @@ const styles = {
     margin: "10px 0",
   }
 }
+const { CheckableTag } = Tag;
 
 class MyPartner extends React.Component {
 
@@ -52,6 +52,7 @@ class MyPartner extends React.Component {
     filters: null,
     changedValue: null,
     isSubmitting: false,
+    statistics: [],
   }
   investorList = []
   redirect = this.props.type === 'investor' && URI_12
@@ -76,7 +77,8 @@ class MyPartner extends React.Component {
         this.setState({
           list: result.data.data,
           loading: false, 
-          total: result.data.count
+          total: result.data.count,
+          statistics: result.data.familiar_count,
         })
       })
   }
@@ -225,6 +227,14 @@ class MyPartner extends React.Component {
         })
       },
     };
+    const famliarStatistics = this.state.statistics.map(m => {
+      const famObj = this.props.famlv.filter(f => f.id === m.familiar)[0];
+      if (famObj) {
+        return `${famObj.name}(${m.count})`;
+      } else {
+        return '';
+      }
+    });
 
     const { list } = this.state
 
@@ -245,6 +255,12 @@ class MyPartner extends React.Component {
           onChange={search => this.setState({ search })}
           onSearch={search => this.setState({ search, pageIndex: 1 }, this.getPartner)} />
       ) : null}
+
+      { this.props.type === "investor" ? 
+      <div style={{ float: 'right', lineHeight: '48px' }}>
+        {famliarStatistics.map(m => <Tag key={m}>{m}</Tag>)}
+      </div>
+      : null }
 
       {this.props.type === "trader" ? (
           <CardContainer gutter={28} cardWidth={240}>
