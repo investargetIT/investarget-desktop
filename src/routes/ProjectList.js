@@ -287,27 +287,27 @@ class ProjectList extends React.Component {
               <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
               <Link href={"/app/projects/recommend/" + record.id} target="_blank">
-                <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
+                <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
               <Link to={"/app/timeline/add?projId=" + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
               </Link>
 
               { record.action.canAddOrgBD ? 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_org_bd')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8)}>{i18n('project.create_org_bd')}</Button>
               </Link>
               : null }
 
               { record.action.canAddMeetBD ? 
               <Link to={"/app/meetingbd/add?projId=" + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7)}>{i18n('project.create_meeting_bd')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8)}>{i18n('project.create_meeting_bd')}</Button>
               </Link>
               : null }
 
               <Link to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 7) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
+                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
 
               <Link to={'/app/projects/edit/' + record.id}>

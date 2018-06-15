@@ -45,7 +45,7 @@ class AddDataRoom extends React.Component {
             return api.addUserDataRoom(param1);
           })
         }))
-        .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/list')))
+        .then(data => react.props.dispatch(routerRedux.replace('/app/dataroom/project/list')))
         .catch(e => react.props.dispatch({ type: 'app/findError', payload: e }))
       }
     })
