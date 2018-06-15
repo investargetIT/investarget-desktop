@@ -4,6 +4,7 @@ import {Link} from 'dva/router'
 import { 
   i18n,
   getUserInfo,
+  time,
 } from '../utils/util';
 import { 
   Row, 
@@ -23,6 +24,101 @@ const rowStyle = {
   padding: '12px 0',
   fontSize: '14px',
   marginLeft:'70px'
+}
+
+class AttachmentList extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+    sort: undefined,
+    desc: undefined,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    api.getUserAttachment({
+      user: this.props.user, 
+      page_size: this.state.pageSize, 
+      page_index: this.state.page,
+      sort: this.state.sort,
+      desc: this.state.desc,
+    }).then(result => {
+      let total = result.data.count
+      let data = result.data.data
+      let loading = false
+      
+      Promise.all(result.data.data.map(m => api.downloadUrl(m.bucket, m.key)))
+             .then(urlResult => {
+        data = data.map((v,i) => ({...v, url: urlResult[i].data}))
+        this.setState({total, data, loading})
+      })
+    })
+      
+  }
+
+  delete(id) {
+    api.deleteUserAttachment(id)
+      .then(() => this.getData());
+  }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getData
+    );
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '文件名称', dataIndex: 'filename', sorter: true},
+      {title: '展示', dataIndex: 'url', render: url => url ? <ImageViewer key={url} ><img src={url} style={{...cardStyle, height: "30px", maxHeight: "30px"}} /></ImageViewer> : 'N/A'},
+      {title: '创建时间', dataIndex: 'createdtime', render: text => time(text) || 'N/A', sorter: true},
+      {
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      },
+    ];
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+        onChange={this.handleTableChange}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
 }
 
 class InvestEvent extends React.Component {
@@ -191,12 +287,6 @@ class UserInfo extends React.Component {
         payload: error
       })
     })
-
-    api.getUserAttachment({ user: this.props.userId, page_size: 1000 })
-      .then(result => Promise.all(
-        result.data.data.map(m => api.downloadUrl(m.bucket, m.key))
-      ))
-      .then(result => this.setState({ attachment: result.map(m => m.data)}));
   }
 
   render() {
@@ -229,11 +319,9 @@ class UserInfo extends React.Component {
           <InvestEvent user={this.props.userId} />
         </TabPane>
 
-        { this.state.attachment.length > 0 ?
         <TabPane tab="附件" key="3">
-          { this.state.attachment.map(m => <ImageViewer key={m}><img src={m} style={cardStyle} /></ImageViewer>)}
+          <AttachmentList user={this.props.userId} />
         </TabPane>
-        : null }
 
       </Tabs>
     )
