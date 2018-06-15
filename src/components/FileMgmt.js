@@ -270,6 +270,20 @@ class FileMgmt extends React.Component {
     }
   }
 
+  findIconByFilename = filename => {
+    if (/\.(gif|jpg|jpeg|bmp|png|webp)$/i.test(filename)) {
+      return '/images/image.png';
+    } else if (/\.(doc|docx)$/i.test(filename)) {
+      return '/images/doc.png';
+    } else if (/\.(ppt|pptx)$/i.test(filename)) {
+      return '/images/ppt.png';
+    } else if (/\.(xls|xlsx)$/i.test(filename)) {
+      return '/images/xls.png';
+    } else {
+      return '/images/pdf.png';
+    }
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -306,7 +320,7 @@ class FileMgmt extends React.Component {
         <div>
             <img style={{ width: 26, verticalAlign: 'middle' }}
               src={!record.isFolder ? 
-                (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" : "/images/pdf.png" 
+                this.findIconByFilename(record.filename)
                 : 
                 ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png"}
             />
