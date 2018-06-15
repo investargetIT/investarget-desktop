@@ -153,11 +153,11 @@ class ProjectAttachments extends React.Component {
   }
 
   handleFileUploadDone = (file) => {
-
     file.bucket = 'file'
     file.key = file.response.result.key
     file.url = file.response.result.url
     file.realfilekey = file.response.result.realfilekey;
+    file.filename = file.name; 
     const index  = _.findIndex(this.state.fileList, function(item) {
       return item.filetype == file.filetype && item.filename == file.filename
     })
@@ -212,13 +212,13 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  addAttachment = (file) => {
+  addAttachment = file => {
     const projId = this.props.projId
     const data = {
       proj: this.props.projId,
       filetype: this.state.activeDir, 
       bucket: file.bucket,
-      filename: file.name,
+      filename: file.filename,
       key: file.key,
       realfilekey: file.realfilekey,
     }
