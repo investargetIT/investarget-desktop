@@ -11,6 +11,7 @@ import createLoading from 'dva-loading';
 import { message } from 'antd'
 import { hasPerm, getUserInfo } from './utils/util'
 import favicon from 'favicon.js'
+import { GlobalModal } from './components/GlobalComponents'
 
 // 推荐在入口文件全局设置 locale
 import moment from 'moment';
@@ -75,7 +76,10 @@ const App = app.start();
 ReactDOM.render(
   (<LocaleProvider locale={appLocale.antd}>
     <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
-      <App />
+      <div>
+        <GlobalModal />
+        <App />
+      </div>
     </IntlProvider>
   </LocaleProvider>),
   document.getElementById('root')

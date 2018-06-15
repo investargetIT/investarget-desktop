@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import {
-    Modal,
+    Modal as AntModal,
     Icon,
 } from 'antd';
 import QRCode from 'qrcode.react';
 import * as api from '../api';
 import { baseUrl, mobileUploadUrl } from '../utils/request';
+import { createThisTypeNode } from 'typescript';
 
 const urlPrefix = `${mobileUploadUrl}/upload?key=`;
+export let Modal = {};
 
-export default class MobileUploader extends Component {
+export class MobileUploader extends Component {
 
     constructor(props) {
         super(props);
@@ -43,11 +45,11 @@ export default class MobileUploader extends Component {
         this.stopPoll.apply(this);
         if (passOn) {
             this.props.onSuccess && this.props.onSuccess.apply(this, passOn);
-            this.definedCallback && this.definedCallback.apply(this, false, passOn);
+            this.definedCallback && this.definedCallback(false, passOn);
         } else {
             api.cancelMobileUpload(this.state.QRCodeKey);
             this.props.onCancel && this.props.onCancel.apply(this, passOn);
-            this.definedCallback && this.definedCallback.apply(this, true, passOn);
+            this.definedCallback && this.definedCallback(true, passOn);
         }
         this.setState({ QRCodeKey: null, show: false });
     }
@@ -59,7 +61,7 @@ export default class MobileUploader extends Component {
             const record = result.data[QRCodeKey];
             if (record.key) {
                 this.cancel({...record});
-                Modal.success({
+                AntModal.success({
                     title: "成功",
                     content: "上传文件成功!",
                 })
@@ -79,11 +81,11 @@ export default class MobileUploader extends Component {
     }
 
     render() {
-        return <Modal
+        return <AntModal
           width={230}
           visible={this.state.show}
           footer={null}
-          onCancel={this.cancel.bind(this)}
+          onCancel={this.cancel.bind(this, null)}
         >
             <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
                 {this.state.QRCodeKey === null
@@ -91,7 +93,31 @@ export default class MobileUploader extends Component {
                     : <QRCode value={urlPrefix + this.state.QRCodeKey} />}
             </div>
             <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
-        </Modal>
+        </AntModal>
+    }
+
+}
+
+export class GlobalModal extends Component {
+
+    constructor(props) { super(props); }
+
+    componentDidMount() {
+        Modal = {
+            get MobileUploader() { 
+                return {
+                    upload: this.refs.MobileUploader.upload.bind(this.refs.MobileUploader),
+                    cancel: this.refs.MobileUploader.cancel.bind(this.refs.MobileUploader, null),
+                }
+            }
+        };
+        Object.assign(Modal, this);
+    }
+
+    render() {
+        return <div>
+            <MobileUploader ref="MobileUploader"/>
+        </div>
     }
 
 }

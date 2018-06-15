@@ -17,7 +17,8 @@ import {
 } from 'antd'
 import QRCode from 'qrcode.react';
 import { baseUrl, mobileUploadUrl } from '../utils/request';
-import MobileUploader from './MobileUploader';
+// import { MobileUploader } from './GlobalComponents';
+import { Modal as GModal } from './GlobalComponents';
 
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
@@ -311,13 +312,13 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  onMobileUploadSuccess(record) {
+  onMobileUploadComplete(status, record) {
     const file = {...record, filetype: this.state.activeDir};
     this.addAttachment(file);
   }
 
   handleMobileUploadBtnClicked() {
-    this.refs.uploader && this.refs.uploader.upload();
+    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
   }
 
   render() {
@@ -394,11 +395,6 @@ class ProjectAttachments extends React.Component {
           }
           </div>
         </div>
-
-        <MobileUploader
-          ref="uploader"
-          onSuccess={this.onMobileUploadSuccess.bind(this)}
-        />
 
       </div>
     )
