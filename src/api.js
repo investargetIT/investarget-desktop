@@ -510,6 +510,8 @@ export function deleteUserRemark(id) {
 
 export const getUserAttachment = params => r('/user/atta/?' + qs.stringify(params));
 export const deleteUserAttachment = id => r('/user/atta/' + id + '/', 'DELETE');
+export const addUserAttachment = body => r('/user/atta/', 'POST', body);
+
 export const getUserInvestEvent = params => r('/user/event/?' + qs.stringify(params));
 export const addUserInvestEvent = body => r('/user/event/', 'POST', body);
 export const deleteUserInvestEvent = id => r('/user/event/' + id + '/', 'DELETE');
