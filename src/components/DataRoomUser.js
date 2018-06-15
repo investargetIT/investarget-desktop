@@ -59,26 +59,32 @@ function DataRoomUser(props) {
 }
 
 function DataRoomUserList(props) {
-  const { list, newUser, onSelectUser, onAddUser, onDeleteUser } = props
-  return list.length > 0 ? 
+  const { list } = props;
+  return (
+    <div>
 
-        <div><Row style={{ textAlign: 'center' }}>
-        {list.map(item => (
-          <div key={item.id} onClick={props.onChange.bind(this, item.user)} style={{ width: 50, overflow: 'hidden', position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer', border: '1px solid rgb(234, 238, 238)' }}>
-            <div><img style={{ width: 50, height: 50 }} src={item.user.photourl} /></div>
-            <div style={{ fontSize: 12}}>{item.user.username}</div>
-            {props.selectedUser && props.selectedUser.id === item.user.id ?
-              <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              <img style={{ width: 30 }} src="/images/check.png" />
-              </div>
-              : null}
-          </div>
-        ))}
+      {list.length > 0 ?
+        <Row style={{ textAlign: 'center' }}>
+          {list.map(item => (
+            <div key={item.id} onClick={props.onChange.bind(this, item.user)} style={{ width: 50, overflow: 'hidden', position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer', border: '1px solid rgb(234, 238, 238)' }}>
+              <div><img style={{ width: 50, height: 50 }} src={item.user.photourl} /></div>
+              <div style={{ fontSize: 12 }}>{item.user.username}</div>
+              {props.selectedUser && props.selectedUser.id === item.user.id ?
+                <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <img style={{ width: 30 }} src="/images/check.png" />
+                </div>
+                : null}
+            </div>
+          ))}
         </Row>
-        <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}><Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
-        </Row></div>
-      : <div>{i18n('dataroom.no_user')}</div>
-  
+        : null}
+
+      <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}>
+        <Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
+      </Row>
+
+    </div>
+  );
 }
 
 export {DataRoomUserList, DataRoomUser}

@@ -34,7 +34,7 @@ class DataRoom extends React.Component {
       selectedUser: null,
       targetUserFileList: [],
       downloadUrl: null,
-      downloadUser: null,
+      downloadUser: isLogin(),
       loading: false,
     }
   }
@@ -425,7 +425,8 @@ class DataRoom extends React.Component {
             content: '请耐心等待并稍后重试', 
           })
         }
-      });
+      })
+      .catch(error => this.setState({ loading: false }, () => handleError(error)));
   }
 
   handleDownloadBtnClicked = () => {
@@ -484,7 +485,7 @@ class DataRoom extends React.Component {
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
           <Modal
-            title={i18n('choose_investor_download')}
+            title="选择打包下载对象或者点击确定直接下载"
             footer={null}
             onCancel={this.hideModal}
             closable={false}
