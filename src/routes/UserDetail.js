@@ -9,6 +9,7 @@ import {
   DatePicker,
   Input,
   Button,
+  Upload,
 } from 'antd';
 import { 
   BasicFormItem,
@@ -26,6 +27,7 @@ import {
   handleError,
 } from '../utils/util';
 import PropTypes from 'prop-types';
+import { baseUrl } from '../utils/request';
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -147,6 +149,7 @@ class UserDetail extends React.Component {
       userId: Number(this.props.params.id),
       isShowForm: false,
       hideUserInfo: false,
+      isUploading: false,
     }
   }
 
@@ -157,8 +160,33 @@ class UserDetail extends React.Component {
     );
   }
 
+  handleFileChange = ({ file }) => {
+    this.setState({ isUploading: true });
+    if (file.status === 'done') {
+      this.handleFileUploadDone(file)
+    } 
+  }
+
+  handleFileUploadDone = file => {
+    file.bucket = 'file'
+    file.key = file.response.result.key
+    file.url = file.response.result.url
+    file.realfilekey = file.response.result.realfilekey;
+    file.filename = file.name;
+    this.addUserAttachment(file);
+  }
+
+  addUserAttachment = file => {
+    const { bucket, key, filename } = file;
+    api.addUserAttachment({ bucket, key, filename, user: this.state.userId })
+      .then(result => {
+        echo('reads', result);
+        this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
+      })
+  }
+
   render() {
-    const { userId } = this.state;
+    const { userId, isUploading } = this.state;
     return userId && (
       <LeftRightLayout location={this.props.location} title={i18n('menu.user_management')} name={i18n('user.user_detail')}>
         <UserRemarkList typeId={userId} />
@@ -169,6 +197,17 @@ class UserDetail extends React.Component {
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowForm: true })} 
           />
+          
+          <Upload
+            action={baseUrl + '/service/qiniubigupload?bucket=file'}
+            // accept={fileExtensions.join(',')}
+            onChange={this.handleFileChange}
+            // onRemove={this.handleFileRemoveConfirm}
+            showUploadList={false}
+          >
+            <Button loading={isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</Button>
+          </Upload>
+
         </h3>
 
         <Row gutter={48}>

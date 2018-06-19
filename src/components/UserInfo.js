@@ -13,11 +13,9 @@ import {
   Table,
   Popconfirm,
   Pagination,
-  Upload,
 } from 'antd';
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { baseUrl } from '../utils/request';
 
 const TabPane = Tabs.TabPane;
 
@@ -300,30 +298,7 @@ class UserInfo extends React.Component {
     })
   }
 
-  handleFileChange = ({ file }) => {
-    echo('handleFileChange', file);
-    if (file.status === 'done') {
-      this.handleFileUploadDone(file)
-    } 
-  }
 
-  handleFileUploadDone = file => {
-    echo('handleFileUploadDone', file);
-    file.bucket = 'file'
-    file.key = file.response.result.key
-    file.url = file.response.result.url
-    file.realfilekey = file.response.result.realfilekey;
-    file.filename = file.name;
-    this.addUserAttachment(file);
-  }
-
-  addUserAttachment = file => {
-    const { bucket, key, filename } = file;
-    api.addUserAttachment({ bucket, key, filename, user: this.props.userId })
-      .then(result => {
-        echo('reads', result);
-      })
-  }
 
   render() {
     const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
@@ -360,15 +335,6 @@ class UserInfo extends React.Component {
           <AttachmentList user={this.props.userId} />
         
 
-          <Upload
-            action={baseUrl + '/service/qiniubigupload?bucket=file'}
-            // accept={fileExtensions.join(',')}
-            onChange={this.handleFileChange}
-            // onRemove={this.handleFileRemoveConfirm}
-            showUploadList={false}
-          >
-            <div style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</div>
-          </Upload>
 
         </TabPane>
         {/* : null } */}
