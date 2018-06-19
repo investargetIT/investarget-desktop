@@ -313,6 +313,7 @@ class ProjectAttachments extends React.Component {
   }
 
   onMobileUploadComplete(status, record) {
+    if (!status) return;
     const file = {...record, filetype: this.state.activeDir};
     this.addAttachment(file);
   }

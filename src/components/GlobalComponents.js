@@ -45,11 +45,11 @@ export class MobileUploader extends Component {
         this.stopPoll.apply(this);
         if (passOn) {
             this.props.onSuccess && this.props.onSuccess.apply(this, passOn);
-            this.definedCallback && this.definedCallback(false, passOn);
+            this.definedCallback && this.definedCallback(true, passOn);
         } else {
             api.cancelMobileUpload(this.state.QRCodeKey);
             this.props.onCancel && this.props.onCancel.apply(this, passOn);
-            this.definedCallback && this.definedCallback(true, passOn);
+            this.definedCallback && this.definedCallback(false, passOn);
         }
         this.setState({ QRCodeKey: null, show: false });
     }

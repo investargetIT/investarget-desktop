@@ -28,6 +28,7 @@ import {
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
+import { Modal as GModal } from '../components/GlobalComponents';
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -160,6 +161,15 @@ class UserDetail extends React.Component {
     );
   }
 
+  onMobileUploadComplete(status, record) {
+    if(!status) return;
+    this.addUserAttachment(record);
+  }
+
+  handleMobileUploadBtnClicked() {
+    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  }
+
   handleFileChange = ({ file }) => {
     this.setState({ isUploading: true });
     if (file.status === 'done') {
@@ -180,7 +190,6 @@ class UserDetail extends React.Component {
     const { bucket, key, filename } = file;
     api.addUserAttachment({ bucket, key, filename, user: this.state.userId })
       .then(result => {
-        echo('reads', result);
         this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
       })
   }
@@ -205,8 +214,10 @@ class UserDetail extends React.Component {
             // onRemove={this.handleFileRemoveConfirm}
             showUploadList={false}
           >
-            <Button loading={isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</Button>
+            <Button loading={isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传附件</Button>
           </Upload>
+
+          <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
 
         </h3>
 
