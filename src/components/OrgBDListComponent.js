@@ -364,7 +364,7 @@ class OrgBDListComponent extends React.Component {
             api.editUser([this.state.currentBD.bduser], { wechat });
           } else {
             api.addUserRelation({
-              relationtype: false,
+              relationtype: true,
               investoruser: this.state.currentBD.bduser,
               traderuser: this.state.currentBD.manager.id
             })
@@ -417,7 +417,7 @@ class OrgBDListComponent extends React.Component {
         api.addUser(newUser)
           .then(result =>{
             api.addUserRelation({
-            relationtype: false,
+            relationtype: true,
             investoruser: result.data.id,
             traderuser: this.state.currentBD.manager.id
           }).then(data=>{
