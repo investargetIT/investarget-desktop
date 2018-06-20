@@ -48,6 +48,7 @@ import {
   TabCheckboxProjStatus,
   SelectMultiOrgs,
   SelectExistProject,
+  RadioFamLv,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -107,6 +108,14 @@ function UserAuditFilter(props) {
   return (
     <BasicContainer label={ i18n('filter.audit_status') }>
       <RadioAudit value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function FamLvFilter(props) {
+  return (
+    <BasicContainer label="熟悉程度">
+      <RadioFamLv value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
@@ -274,6 +283,54 @@ GroupFilter = connect()(GroupFilter)
 /*******************************/
 
 
+class FamiliarFilter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      familiar: [],
+    }
+  }
+
+  componentDidMount() {
+    api.getSource("famlv").then(result => {
+      const familiar = result.data.map(item => {
+        return { value: item.id, label: item.name }
+      })
+      this.setState({ familiar })
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
+  handleChange = (e) => {
+    this.props.onChange(e.target.value)
+  }
+
+  render() {
+    return (
+      React.createElement(
+        this.props.hideLabel ? "div" : BasicContainer,
+        {label:"熟悉程度"},
+        <RadioGroup value={this.props.value} onChange={this.handleChange}>
+          {
+            this.state.familiar.map(item =>
+              <Radio key={item.value} value={item.value} style={ this.props.vertical ? {display: "block", marginBottom: 10} : {}}>{item.label}</Radio>
+            )
+          }
+        </RadioGroup>
+      )
+    )
+  }
+}
+FamiliarFilter = connect()(FamiliarFilter)
+
+
+/*******************************/
+
+
 
 class TimelineFilter extends React.Component {
 
@@ -412,7 +469,8 @@ class MyInvestorListFilter extends React.Component {
     tags: [],
     currency: [],
     userstatus: null,
-    areas: []
+    areas: [],
+    familiar: null
   };
 
   state = this.props.defaultValue || MyInvestorListFilter.defaultValue;
@@ -431,7 +489,7 @@ class MyInvestorListFilter extends React.Component {
   }
 
   render() {
-    const { orgtransactionphases, tags, currency, userstatus, areas } = this.state;
+    const { orgtransactionphases, tags, currency, userstatus, areas, familiar } = this.state;
     return (
       <div>
         <TransactionPhaseFilter
@@ -443,12 +501,15 @@ class MyInvestorListFilter extends React.Component {
         <CurrencyFilter
           value={currency}
           onChange={this.onChange.bind(this, 'currency')} />
+        <FamLvFilter
+          value={familiar}
+          onChange={this.onChange.bind(this, 'familiar')} />
         <UserAuditFilter
           value={userstatus}
           onChange={this.onChange.bind(this, 'userstatus')} />
-        <OrganizationAreaFilter
+        {/* <OrganizationAreaFilter
           value={areas}
-          onChange={this.onChange.bind(this, 'areas')} />
+          onChange={this.onChange.bind(this, 'areas')} /> */}
         <FilterOperation
           onSearch={this.onFilter.bind(this)}
           onReset={this.onReset.bind(this)} />
@@ -902,5 +963,6 @@ module.exports = {
   ProjectBDFilter,
   WxMessageFilter,
   OrgBDFilter,
-  MeetBDFilter 
+  MeetBDFilter,
+  FamiliarFilter
 }

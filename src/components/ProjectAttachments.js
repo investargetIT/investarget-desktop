@@ -17,6 +17,8 @@ import {
 } from 'antd'
 import QRCode from 'qrcode.react';
 import { baseUrl, mobileUploadUrl } from '../utils/request';
+// import { MobileUploader } from './GlobalComponents';
+import { Modal as GModal } from './GlobalComponents';
 
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
@@ -101,7 +103,6 @@ class ProjectAttachments extends React.Component {
       dirs: fixedDirs.slice(),
       activeDir: fixedDirs[0],
       newDir: '',
-      qrCodeValue: null,
       spinning: false,
       highlight: null,
       addNewDir: false,
@@ -152,11 +153,11 @@ class ProjectAttachments extends React.Component {
   }
 
   handleFileUploadDone = (file) => {
-
     file.bucket = 'file'
     file.key = file.response.result.key
     file.url = file.response.result.url
     file.realfilekey = file.response.result.realfilekey;
+    file.filename = file.name; 
     const index  = _.findIndex(this.state.fileList, function(item) {
       return item.filetype == file.filetype && item.filename == file.filename
     })
@@ -211,13 +212,13 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  addAttachment = (file) => {
+  addAttachment = file => {
     const projId = this.props.projId
     const data = {
       proj: this.props.projId,
       filetype: this.state.activeDir, 
       bucket: file.bucket,
-      filename: file.name,
+      filename: file.filename,
       key: file.key,
       realfilekey: file.realfilekey,
     }
@@ -311,39 +312,14 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  queryQrCodeStatus = () => {
-    api.getQRCodeStatus(this.qrCodeKey)
-    .then(result => {
-      const record = result.data[this.qrCodeKey];
-      if (record.key) {
-        clearInterval(this.pull);
-        this.setState({ qrCodeValue: null });
-        const file = {...record, filetype: this.state.activeDir};
-        this.addAttachment(file);
-      }
-    });
+  onMobileUploadComplete(status, record) {
+    if (!status) return;
+    const file = {...record, filetype: this.state.activeDir};
+    this.addAttachment(file);
   }
 
-  handleMobileUploadBtnClicked = () => {
-    api.getMobileUploadKey()
-    .then(result => {
-      let record;
-      const object = result.data;
-      for (var key in object) {
-        if (object.hasOwnProperty(key)) {
-          record = key;
-        }
-      }
-      this.qrCodeKey = record;
-      this.setState({ qrCodeValue: mobileUploadUrl + '/upload?key=' + record });
-      this.pull = setInterval(this.queryQrCodeStatus, 1000);
-    }); 
-  }
-
-  handleCancelMobileUpload = () => {
-    this.setState({ qrCodeValue: null });
-    clearInterval(this.pull);
-    api.cancelMobileUpload(this.qrCodeKey);
+  handleMobileUploadBtnClicked() {
+    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
   }
 
   render() {
@@ -420,20 +396,6 @@ class ProjectAttachments extends React.Component {
           }
           </div>
         </div>
-
-        { this.state.qrCodeValue ? 
-        <Modal
-          width={230}
-          visible={true}
-          footer={null}
-          onCancel={this.handleCancelMobileUpload}
-        >
-          <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
-            <QRCode value={this.state.qrCodeValue} />
-          </div>
-          <p style={{ marginBottom: 10 }}>请使用手机扫描二维码上传附件</p>
-        </Modal>
-        : null }
 
       </div>
     )

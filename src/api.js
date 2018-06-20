@@ -508,9 +508,18 @@ export function deleteUserRemark(id) {
   return r('/user/remark/' + id + '/', 'DELETE')
 }
 
+export const getUserAttachment = params => r('/user/atta/?' + qs.stringify(params));
+export const deleteUserAttachment = id => r('/user/atta/' + id + '/', 'DELETE');
+export const addUserAttachment = body => r('/user/atta/', 'POST', body);
+
+export const getUserInvestEvent = params => r('/user/event/?' + qs.stringify(params));
+export const addUserInvestEvent = body => r('/user/event/', 'POST', body);
+export const deleteUserInvestEvent = id => r('/user/event/' + id + '/', 'DELETE');
+
 /**
  * DataRoom
  */
+export const getCompanyDataRoom = params => r('/dataroom/com/?' + qs.stringify(params));
 
 export const queryDataRoom = (param) => {
   return r('/dataroom/?' + qs.stringify(param))
@@ -668,6 +677,16 @@ export const getLibProj = (param) => {
     }
   })
   return r('/mongolog/proj?' + qs.stringify(param))
+}
+
+// 同样是获取项目全库，不同的是使用这个接口如果搜索结果为空的话服务端不会储存搜索内容
+export const getLibProjSimple = (param) => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
+  return r('/mongolog/proj/simple?' + qs.stringify(param))
 }
 
 export const getLibProjInfo = (param) => {

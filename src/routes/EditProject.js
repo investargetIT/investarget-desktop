@@ -53,7 +53,7 @@ function toFormData(data) {
       let keys = _.range(1, 1 + value.length)
       formData['industriesKeys'] = { 'value': keys }
       keys.forEach((key, index) => {
-        formData['industries-' + key] = { 'value': value[index].industry }
+        formData['industries-' + key] = { 'value': value[index].industry.id }
         formData['industries-image-' + key] = { 'value': value[index].key }
       })
     } else {
@@ -186,7 +186,7 @@ class EditProject extends React.Component {
   render() {
     const id = Number(this.props.params.id)
     const data = toFormData(this.state.project)
-
+    
     const FormAction = ({form}) => {
       return (
         <div style={actionStyle}>

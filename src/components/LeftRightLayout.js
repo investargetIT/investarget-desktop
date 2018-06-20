@@ -99,7 +99,7 @@ class LeftRightLayout extends React.Component {
                 {this.props.children}
               </div>
               <Draggable cancel=".text-area"><div style={style}>
-              <InstantMessage />
+              {/* <InstantMessage /> */}
               </div></Draggable>
             </div>
           </Content>

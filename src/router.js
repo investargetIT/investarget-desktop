@@ -65,6 +65,8 @@ import NewOrgBDNext from './routes/NewOrgBDNext';
 import TraderDetail from './routes/TraderDetail';
 import MeetingBDList from './routes/MeetingBDList';
 import AddMeetingBD from './routes/AddMeetingBD';
+import CompanyDataRoomList from './routes/CompanyDataRoomList';
+import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 
 function RouterConfig({ history }) {
   return (
@@ -103,8 +105,10 @@ function RouterConfig({ history }) {
       <Route path="/app/projects/recommend/:id" component={RecommendProject} />
       <Route path="/app/projects/:id" component={ProjectDetail} />
       <Route path={URI_14} component={PermList} />
-      <Route path="/app/dataroom/list" component={DataRoomList} />
+      <Route path="/app/dataroom/project/list" component={DataRoomList} />
+      <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
       <Route path="/app/dataroom/detail" component={DataRoom} />
+      <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />
       <Route path="/app/timeline/list" component={TimelineList} />
       <Route path="/app/email/list" component={EmailList} />
       <Route path="/app/email/detail/:id" component={EmailDetail} />

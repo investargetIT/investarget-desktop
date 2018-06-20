@@ -42,9 +42,17 @@ class ProjectLibrary extends React.Component {
   constructor(props) {
     super(props)
 
-    const setting = this.readSetting()
-    const filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue
-    const search = setting ? setting.search : null
+    // 根据是否从机构页面跳转而来设置相应的筛选条件
+    const { search: searchContent } = props.location.query;
+    let search, filters;
+    if (searchContent) {
+      search = searchContent;
+      filters = ProjectLibraryFilter.defaultValue;
+    } else {
+      const setting = this.readSetting();
+      filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue;
+      search = setting ? setting.search : null;
+    }
 
     this.state = {
       filters,
@@ -127,7 +135,7 @@ class ProjectLibrary extends React.Component {
   getAllProject = () => {
     const { filters, search } = this.state
     const param = { page_size: 500, com_name: search, ...filters }
-    api.getLibProj(param).then(result => {
+    api.getLibProjSimple(param).then(result => {
       const { data: list } = result.data;
       this.setState({ listForExport: list });
     });
@@ -137,7 +145,7 @@ class ProjectLibrary extends React.Component {
     var param = { ..._param }
     param['com_name'] = param['search']
     delete param['search']
-    return api.getLibProj(param)
+    return api.getLibProjSimple(param)
   }
   
   handleSelectChange = selectedIds => {
@@ -168,25 +176,13 @@ class ProjectLibrary extends React.Component {
     link.click()
   }
 
-  handleQuery = (location) => {
-    const { query } = location
-    if (query) {
-      let { search } = query
-      if (search) {
-        this.handleChangeSearch(search)
-        this.handleSearch(search)
-      }
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.handleQuery(nextProps.location)
+  // 目前在机构投资事件跳转到当前页面然后点击菜单栏的项目全库时会出发这个生命周期
+  componentWillReceiveProps() {
+    this.handleReset(ProjectLibraryFilter.defaultValue);
   }
 
   componentDidMount() {
-    this.getProject()
-    //this.getAllProject();
-    this.handleQuery(this.props.location)
+    this.getProject();
   }
 
   render() {

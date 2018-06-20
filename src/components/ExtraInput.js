@@ -11,6 +11,7 @@ import {
   Slider,
   Radio,
   Spin,
+  DatePicker,
 } from 'antd'
 const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
@@ -24,6 +25,7 @@ import ITCheckboxGroup from './ITCheckboxGroup'
 import { BasicContainer } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
 import debounce from 'lodash/debounce';
+import moment from 'moment';
 
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
@@ -310,7 +312,50 @@ class SelectExistOrganization extends React.Component {
     )
   }
 }
- 
+
+/**
+ * SelectProjectLibrary
+ */
+class SelectProjectLibrary extends React.Component {
+
+  getData = params => {
+    return api.getLibProjSimple({ ...params, com_name: params.search }).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { com_id: value, com_name: label } = item;
+        return { value, label };
+      })
+      return { total, list };
+    })
+  }
+
+  getOrgnameById = id => {
+    return api.getLibProjSimple({ com_id: id }).then(result => {
+      return result.data.data[0].com_name;
+    })
+  }
+
+  handleChange = value => {
+    if (value !== this.props.value) {
+      this.props.onChange(value);
+    }
+  }
+
+  render() {
+    const { value, onChange, allowCreate, ...extraProps } = this.props
+    return (
+      <Select2
+        getData={this.getData}
+        getNameById={this.getOrgnameById}
+        value={value}
+        onChange={this.handleChange}
+        allowCreate={this.props.allowCreate}
+        {...extraProps}
+      />
+    )
+  }
+}
+
 /**
  * SelectExistUser
  */
@@ -688,6 +733,11 @@ const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(
   const { orgbdres } = state.app
   const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
   return { options, allowClear: true }
+})
+const SelectOrgLevel = withOptionsAsync(RadioGroup2, ['orglv'], function(state) {
+  const { orglv } = state.app
+  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
 })
 
 /**
@@ -1361,6 +1411,50 @@ class SelectMultiOrgs extends React.Component {
     );
   }
 }
+const RadioFamLv= withOptionsAsync(RadioGroup2, ['famlv'], function(state) {
+  const { famlv } = state.app
+  const options = famlv ? famlv.map(item => ({value: item.id, label: item.name})) : []
+  return { options }
+});
+
+class SelectOrAddDate extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: null,
+    }
+    this.com_id = this.props.com_id;
+  }
+
+  componentDidMount () {
+    this.getData();
+  }
+
+  getData = () => {
+    api.getLibEvent({ com_id: this.com_id, page_size: 100 })
+    .then(result => this.setState({ options: result.data.data.map(m => m.date)}));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.com_id !== this.props.com_id) {
+      this.com_id = nextProps.com_id;
+      this.setState({ options: null }, this.getData);
+    }
+  }
+
+  render() {
+    if (this.state.options === null) return null;
+
+    if (this.state.options.length > 0) {
+      return <Select style={{ width: 120 }} onChange={ value => this.props.onChange(moment(value)) }>
+        {this.state.options.map(m => <Option key={m} value={m}>{m}</Option>)}
+      </Select>;
+    }
+
+    return <DatePicker format="YYYY-MM-DD" onChange={this.props.onChange} />;
+  }
+}
 
 export {
   SelectNumber,
@@ -1391,6 +1485,9 @@ export {
   SelectOrgUser,
   SelectPartner,
   SelectLibIndustry,
+  SelectProjectLibrary,
+  SelectOrAddDate,
+  SelectOrgLevel,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
@@ -1415,6 +1512,7 @@ export {
   RadioBDStatus,
   RadioNewBDStatus,
   RadioBDSource,
+  RadioFamLv,
   CheckboxService,
   SelectService,
   TabCheckboxService,

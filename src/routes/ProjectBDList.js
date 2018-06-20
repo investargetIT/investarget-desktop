@@ -279,18 +279,26 @@ class ProjectBDList extends React.Component {
       }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
-      {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
-      {title: i18n('project_bd.import_methods'), render: (text, record) => {
-        return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
-      }, key:'source_type', sorter:true},
+      // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
+      // {title: i18n('project_bd.import_methods'), render: (text, record) => {
+      //   return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
+      // }, key:'source_type', sorter:true},
       // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
       // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
       {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
-      {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
+      // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
+      {
+        title: '最新备注',
+        dataIndex: 'BDComments',
+        render: (text, record) => {
+          const comments = record.BDComments;
+          return comments && comments.length > 0 && comments[comments.length-1].comments;
+        },
+      },
       {title: i18n('project_bd.operation'), render: (text, record) => {
         return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>

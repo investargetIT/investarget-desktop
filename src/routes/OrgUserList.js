@@ -205,12 +205,12 @@ class OrgUserList extends React.Component {
                   <Button style={buttonStyle} disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
                 </Link>
                 
-                <Link to={'/app/user/edit/' + record.id}>
+                <Link to={`/app/user/edit/${record.id}?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`}>
                   <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
                 </Link>
                
               </div>
-                <Popconfirm title="Confirm to delete?" onConfirm={this.deleteUser.bind(null, record.id)}>
+                <Popconfirm title="确定删除吗？" onConfirm={this.deleteUser.bind(null, record.id)}>
                   <a type="danger" disabled={!record.action.delete} size="small">
                     <img style={imgStyle} src="/images/delete.png" />
                   </a>

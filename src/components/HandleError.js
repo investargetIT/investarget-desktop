@@ -100,6 +100,9 @@ class HandleError extends React.Component {
       case 2005:
         Modal.error({ title: i18n('wrong_verify_code')})
         break;
+      case 2026:
+        Modal.error({ title: '该投资人名下已存在相同投资事件' });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

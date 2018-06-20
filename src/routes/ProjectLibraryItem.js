@@ -118,7 +118,7 @@ class ProjectLibraryItem extends React.Component {
  
   componentDidMount() {
     const com_id = this.props.params.id
-    api.getLibProj({ com_id }).then(result => {
+    api.getLibProjSimple({ com_id }).then(result => {
       const proj = result.data.data[0]
       this.setState({ proj })
 

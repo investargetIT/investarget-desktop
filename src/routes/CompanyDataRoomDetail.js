@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
-import FileMgmt from '../components/FileMgmt'
+import CompanyFileMgmt from '../components/CompanyFileMgmt';
 import * as api from '../api'
 import { Modal } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
@@ -34,7 +34,7 @@ class DataRoom extends React.Component {
       selectedUser: null,
       targetUserFileList: [],
       downloadUrl: null,
-      downloadUser: isLogin(),
+      downloadUser: null,
       loading: false,
     }
   }
@@ -425,8 +425,7 @@ class DataRoom extends React.Component {
             content: '请耐心等待并稍后重试', 
           })
         }
-      })
-      .catch(error => this.setState({ loading: false }, () => handleError(error)));
+      });
   }
 
   handleDownloadBtnClicked = () => {
@@ -442,7 +441,7 @@ class DataRoom extends React.Component {
         name={this.state.title}
       >
       
-        {hasPerm('dataroom.admin_adddataroom') ?
+        {/* {hasPerm('dataroom.admin_adddataroom') ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
@@ -454,9 +453,9 @@ class DataRoom extends React.Component {
               onChange={this.handleSelectUser}
             />
           </div>
-          : null}
+          : null} */}
 
-        <FileMgmt
+        <CompanyFileMgmt
           location={this.props.location}
           isClose={this.state.isClose}
           data={this.state.data}
@@ -485,7 +484,7 @@ class DataRoom extends React.Component {
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
           <Modal
-            title="选择打包下载对象或者点击确定直接下载"
+            title={i18n('choose_investor_download')}
             footer={null}
             onCancel={this.hideModal}
             closable={false}

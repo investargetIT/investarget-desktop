@@ -8,7 +8,7 @@ export const URI_3 = "/app/organization/list"
 export const URI_4 = "/app/email/list"
 export const URI_5 = "/app/timeline/list"
 export const URI_6 = "/app/user/list"
-export const URI_7 = "/app/dataroom/list"
+export const URI_7 = "/app/dataroom/project/list"
 export const URI_8 = "/app/inbox/list"
 export const URI_9 = "/app/modify_password"
 export const URI_10 = "/app/personal_info"
@@ -30,7 +30,8 @@ export const KEY_TO_URI = {
   "email_management": URI_4,
   "timeline_management": URI_5,
   "user_management": URI_6,
-  "dataroom_management": URI_7,
+  "project_dataroom": URI_7,
+  "company_dataroom": "/app/dataroom/company/list",
   "reminder": URI_8,
   "interest_projects": URI_2,
   "myinvestor": URI_12,
@@ -66,7 +67,8 @@ export const URI_TO_KEY = {
   "/app/investor/my": "myinvestor",
   "/app/trader/my": "mytrader",
   "/app/timeline/list": "timeline_management",
-  "/app/dataroom/list": "dataroom_management",
+  "/app/dataroom/project/list": "project_dataroom",
+  "/app/dataroom/company/list": "company_dataroom",
   "/app/inbox/list": "reminder",
   "/app/modify_password": "change_password",
   "/app/personal_info": "profile",

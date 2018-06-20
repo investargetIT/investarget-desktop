@@ -24,6 +24,8 @@ import {
   SelectExistOrganization,
   CascaderCountry,
   SelectLibIndustry,
+  SelectOrAddDate,
+  SelectProjectLibrary,
 } from './ExtraInput';
 
 const FormItem = Form.Item;
@@ -256,28 +258,60 @@ class InvestEventForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        values.investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
-        const body = { ...values, org: this.props.org };
-        api.addOrgInvestEvent(body)
-          .then(result => {
-              this.props.onNewDetailAdded();
-            })
+        this.addEvent(values);
       }
     });
   }
 
+  addEvent = async values => {
+    const com_id = isNaN(values.investTarget) ? undefined : parseInt(values.investTarget);
+    let comshortname = isNaN(values.investTarget) ? values.investTarget: undefined;
+    const investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
+
+    let industrytype, Pindustrytype;
+    if (com_id !== undefined && comshortname === undefined) {
+      const result = await api.getLibProjSimple({ com_id });
+      const { com_name, com_cat_name, com_sub_cat_name } = result.data.data[0];
+      comshortname = com_name;
+      industrytype = com_sub_cat_name;
+      Pindustrytype = com_cat_name; 
+    }
+
+    const requestEvents = await api.getLibEvent({ com_id, page_size: 100 });
+    const event = requestEvents.data.data.filter(f => f.date === values.investDate.format('YYYY-MM-DD'))[0];
+
+    const body = {
+      ...values,
+      org: this.props.org,
+      com_id,
+      comshortname,
+      investDate,
+      investTarget: undefined,
+      investType: event && event.round,
+      investSize: event && event.money,
+      industrytype,
+      Pindustrytype,
+    };
+    return api.addOrgInvestEvent(body)
+      .then(result => {
+        this.props.onNewDetailAdded();
+      });
+  }
+
+  handleTargetChange = () => this.props.form.setFieldsValue({ investDate: null });
+
   render() {
 
     const { getFieldDecorator, getFieldsError } = this.props.form;
-
+    const investarget = this.props.form.getFieldValue('investTarget');
     return (
       <Form onSubmit={this.handleSubmit}>
 
-        <BasicFormItem label="企业名称" name="comshortname" >
-          <Input />
+        <BasicFormItem label="投资项目" name="investTarget" required valueType="number" onChange={this.handleTargetChange}>
+          <SelectProjectLibrary />
         </BasicFormItem>
 
-        <BasicFormItem label="行业分类" name="industrytype">
+        {/* <BasicFormItem label="行业分类" name="industrytype">
           <SelectLibIndustry />
         </BasicFormItem>
 
@@ -287,19 +321,21 @@ class InvestEventForm extends React.Component {
 
         <BasicFormItem label="投资人" name="investor">
           <Input />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
-        <BasicFormItem label="投资时间" name="investDate" valueType="object">
-          <DatePicker format="YYYY-MM-DD" />
+        { investarget !== undefined ?
+        <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
+          <SelectOrAddDate com_id={investarget} />
         </BasicFormItem>
+        : null }
 
-        <BasicFormItem label="投资性质" name="investType">
+        {/* <BasicFormItem label="投资性质" name="investType">
           <Input />
         </BasicFormItem>
 
         <BasicFormItem label="投资金额" name="investSize">
           <Input />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         <FormItem style={{ marginLeft: 120 }}>
           <Button

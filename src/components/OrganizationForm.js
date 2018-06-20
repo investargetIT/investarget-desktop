@@ -19,6 +19,8 @@ import {
   RadioTrueOrFalse,
   RadioCurrencyType,
   RadioAudit,
+  SelectTag,
+  SelectOrgLevel,
 } from '../components/ExtraInput'
 
 import {
@@ -102,6 +104,10 @@ class OrganizationForm extends React.Component {
 
         <BasicFormItem label={i18n('organization.industry')} name="industry" valueType="number">
           <CascaderIndustry disabled={[]} />
+        </BasicFormItem>
+
+        <BasicFormItem label="标签" name="tags" valueType="array">
+          <SelectTag mode="multiple" />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('organization.transaction_phase')} name="orgtransactionphase" valueType="array">
@@ -194,6 +200,10 @@ class OrganizationForm extends React.Component {
 
         <BasicFormItem label={i18n('organization.decision_process')} name="decisionMakingProcess">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
+        </BasicFormItem>
+
+        <BasicFormItem label="机构状态" name="orglevel" valueType="number">
+          <SelectOrgLevel />
         </BasicFormItem>
 
         { hasPerm('org.admin_addorg') ?

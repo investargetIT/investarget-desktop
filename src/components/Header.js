@@ -166,7 +166,7 @@ function Header(props) {
         { currentUser ? null : register }
         {/* { lang } */}
         { currentUser ? <UserProfile user={currentUser} onMenuClick={handleMenuClicked} /> : null }
-        { currentUser ? chat : null }
+        {/* { currentUser ? chat : null } */}
       </div>
       { props.tooNarrow ? 
       <Alert style={{ marginTop: 50 }} message="窗口宽度过窄，为保证使用体验，请调整窗口宽度" banner closable />

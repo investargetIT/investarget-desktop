@@ -30,7 +30,9 @@
     "schedule_management": "日程管理",
     "schedule_list": "日程列表",
     "my_schedule": "我的日程表",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "project_dataroom": "Data Room",
+    "company_dataroom": "公司文件" 
   },
   "account": {
     "login": "登录",

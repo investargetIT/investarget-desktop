@@ -29,6 +29,7 @@ import {
   RadioAudit,
   SelectTrader,
   SelectOrganizatonArea,
+  RadioFamLv,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
@@ -140,11 +141,8 @@ class UserForm extends React.Component {
           <SelectTitle showSearch />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("user.institution")} name="org" >
-          {/*<div style={{display: 'flex', alignItems: 'center'}}>*/}
+        <BasicFormItem label={i18n("user.institution")} name="org" required>
             <SelectExistOrganization allowCreate formName="userform" size="large" />
-            {/*<Link to="/app/organization/add" target="_blank"><Button size="large" style={{marginLeft: '8px'}}>新增</Button></Link>*/}
-          {/*</div>*/}
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
@@ -172,6 +170,13 @@ class UserForm extends React.Component {
             </BasicFormItem>
           ) : null
         }
+
+        { this.props.showFamlvRadio ? 
+        <BasicFormItem label="熟悉程度" name="famlv" valueType="number">
+          <RadioFamLv />
+        </BasicFormItem>
+        : null }
+
         {getFieldValue('onjob') !== undefined ?
           <FormItem {...formItemLayout} label="是否在职" name="onjob">
             {getFieldDecorator('onjob')(<Switch defaultChecked={getFieldValue('onjob')} />)}

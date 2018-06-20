@@ -35,6 +35,7 @@ export default {
     sortedTrader: [],
     group: [],
     orgbdres: [],
+    orglv: [],
     famlv: [],
   },
   reducers: {

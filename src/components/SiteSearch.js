@@ -124,7 +124,7 @@ class SiteSearch extends React.Component {
   reloadData = (search) => {
     this.setState({ page: 1, reloading: true })
     const param = { page_index: 1, page_size: 10, com_name: search }
-    api.getLibProj(param).then(result => {
+    api.getLibProjSimple(param).then(result => {
       const { count, data } = result.data
       this.setState({ total: count, results: data, reloading: false })
     }).catch(error => {
@@ -137,7 +137,7 @@ class SiteSearch extends React.Component {
     const nextPage = this.state.page + 1
     this.setState({ loading: true, page: nextPage })
     const param = { page_index: nextPage, page_size: 10, com_name: this.props.search }
-    api.getLibProj(param).then(result => {
+    api.getLibProjSimple(param).then(result => {
       const { count, data } = result.data
       this.setState({ results: [...this.state.results, ...data], loading: false }, () => {
         // this.isLoading = false

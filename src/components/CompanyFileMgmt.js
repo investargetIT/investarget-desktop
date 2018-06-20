@@ -53,6 +53,7 @@ class FileMgmt extends React.Component {
       visible: false,
       action: null,
       loading: false,
+      downloadUrl: null,
     }
 
     // this.handleNameChange = this.handleNameChange.bind(this)
@@ -96,20 +97,20 @@ class FileMgmt extends React.Component {
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
     } else {
-      if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
+      const type = file.filename.split('.')[1];
+      const officeFileType = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+      if (!officeFileType.includes(type)) {
         window.open(file.fileurl);
       } else {
-        const watermark = isLogin().email || 'Investarget'
-        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
-          '&watermark=' + encodeURIComponent(watermark)
-        window.open(url)
+        api.downloadUrl(file.bucket, file.realfilekey)
+          .then(result => {
+            this.setState({ downloadUrl: result.data });
+            setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+          })
       }
     }
   }
-
-  // handleNameChange(unique, evt) {
-
-  // }
+  
 
   current = []
   parentFolderFunc (parentId) {
@@ -270,20 +271,6 @@ class FileMgmt extends React.Component {
     }
   }
 
-  findIconByFilename = filename => {
-    if (/\.(gif|jpg|jpeg|bmp|png|webp)$/i.test(filename)) {
-      return '/images/image.png';
-    } else if (/\.(doc|docx)$/i.test(filename)) {
-      return '/images/doc.png';
-    } else if (/\.(ppt|pptx)$/i.test(filename)) {
-      return '/images/ppt.png';
-    } else if (/\.(xls|xlsx)$/i.test(filename)) {
-      return '/images/xls.png';
-    } else {
-      return '/images/pdf.png';
-    }
-  }
-
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -320,9 +307,12 @@ class FileMgmt extends React.Component {
         <div>
             <img style={{ width: 26, verticalAlign: 'middle' }}
               src={!record.isFolder ? 
-                this.findIconByFilename(record.filename)
+                (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" :
+                (/\.(doc|docx)$/i).test(record.filename) ? "/images/doc.png" : 
+                (/\.(ppt|pptx)$/i).test(record.filename) ? "/images/ppt.png" : 
+                (/\.(xls|xlsx)$/i).test(record.filename) ? "/images/xls.png" : "/images/pdf.png" 
                 : 
-                ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png"}
+                (ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png")}
             />
           { record.id && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
@@ -348,51 +338,51 @@ class FileMgmt extends React.Component {
       key: 'date',
       render: (date, record) => date && time(date+record.timezone),
     }]
-    if (isAdmin && !this.props.isClose) {
-      if (this.props.selectedUser) {
-        columns.push({
-          title: i18n('permission'),
-          key: 'visible',
-          render: (text, record) => {
-            const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
-            const visible = Boolean(file)
-            return record.isFile ? (
-              <Tooltip title={i18n('dataroom.click_toggle_visible')}>
-                {/* <Icon
-                  type={visible ? 'check' : 'close'}
-                  onClick={this.props.onToggleVisible.bind(this, record.id)}
-                  className={styles['visible']}
-                  style={{fontSize:24}} /> */}
-                <VisiblitySwitch vis={visible} onClick={this.props.onToggleVisible.bind(this, record.id)} />
-              </Tooltip>
-            ) : null
-          }
-        })
-      } else {
-        columns.push({
-          title: i18n('dataroom.visible_user'),
-          key: 'visible_user',
-          render: (text, record) => {
-            const fileId = record.id
-            const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
-            return record.isFile ? (
-              <Select
-                style={{width: '100%'}}
-                mode="multiple"
-                size="large"
-                optionLabelProp="children"
-                value={users}
-                onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
-                onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
-                {this.props.userOptions.map(option => (
-                  <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
-                ))}
-              </Select>
-            ) : null
-          }
-        })
-      }
-    }
+    // if (isAdmin && !this.props.isClose) {
+    //   if (this.props.selectedUser) {
+    //     columns.push({
+    //       title: i18n('permission'),
+    //       key: 'visible',
+    //       render: (text, record) => {
+    //         const file = this.props.targetUserFileList.filter(item => item.file == record.id)[0]
+    //         const visible = Boolean(file)
+    //         return record.isFile ? (
+    //           <Tooltip title={i18n('dataroom.click_toggle_visible')}>
+    //             {/* <Icon
+    //               type={visible ? 'check' : 'close'}
+    //               onClick={this.props.onToggleVisible.bind(this, record.id)}
+    //               className={styles['visible']}
+    //               style={{fontSize:24}} /> */}
+    //             <VisiblitySwitch vis={visible} onClick={this.props.onToggleVisible.bind(this, record.id)} />
+    //           </Tooltip>
+    //         ) : null
+    //       }
+    //     })
+    //   } else {
+    //     columns.push({
+    //       title: i18n('dataroom.visible_user'),
+    //       key: 'visible_user',
+    //       render: (text, record) => {
+    //         const fileId = record.id
+    //         const users = this.props.fileUserList.filter(item => item.file == fileId).map(item => String(item.user))
+    //         return record.isFile ? (
+    //           <Select
+    //             style={{width: '100%'}}
+    //             mode="multiple"
+    //             size="large"
+    //             optionLabelProp="children"
+    //             value={users}
+    //             onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
+    //             onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
+    //             {this.props.userOptions.map(option => (
+    //               <Select.Option key={option.value} value={String(option.value)}>{option.label}</Select.Option>
+    //             ))}
+    //           </Select>
+    //         ) : null
+    //       }
+    //     })
+    //   }
+    // }
 
 
     this.current = []
@@ -497,11 +487,11 @@ class FileMgmt extends React.Component {
           </Upload>
           : null }
 
-          { hasDownloadPerm ?
+          {/* { hasDownloadPerm ?
             <Button size="large" type="primary" style={buttonStyle} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>
               <img style={{marginRight: 4, marginBottom: 3}} src="/images/download.png" />{i18n('download_package')}
             </Button>
-          : null }
+          : null } */}
 
           { hasEnoughPerm ?
           <Button
@@ -558,7 +548,7 @@ class FileMgmt extends React.Component {
           columns={columns}
           rowKey={record => record.unique}
           rowSelection={rowSelection}
-          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName)}
+          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId)}
           loading={this.state.loading}
           pagination={false} />
 
@@ -577,6 +567,7 @@ class FileMgmt extends React.Component {
 
         </Modal>
 
+        <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
       </div>
     )
   }

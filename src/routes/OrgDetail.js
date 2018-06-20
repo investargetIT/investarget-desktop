@@ -335,13 +335,13 @@ class InvestEvent extends React.Component {
     const columns = [
       {title: '企业名称', dataIndex: 'comshortname', render: text => <Link to={"/app/projects/library?search=" + text}>{text}</Link>},
       {title: '行业分类', dataIndex: 'industrytype'},
-      {
-        title: '地区', dataIndex: 'area', render: text => {
-          const area = this.state.area.filter(f => f.id === text);
-          return area && area.length > 0 ? area[0].country : '';
-        }
-      },
-      {title: '投资人', dataIndex: 'investor'},
+      // {
+      //   title: '地区', dataIndex: 'area', render: text => {
+      //     const area = this.state.area.filter(f => f.id === text);
+      //     return area && area.length > 0 ? area[0].country : '';
+      //   }
+      // },
+      // {title: '投资人', dataIndex: 'investor'},
       {title: '投资时间', dataIndex: 'investDate', render: text => text ? text.substr(0, 10) : ''},
       {title: '投资性质', dataIndex: 'investType'},
       {title: '投资金额', dataIndex: 'investSize'},
@@ -618,6 +618,7 @@ class OrgDetail extends React.Component {
     }).then(result => {
       let data = { ...result.data }
       data.currency = data.currency && data.currency.currency
+      data.tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : '';
       data.industry = data.industry && data.industry.industry
       data.orgstatus = data.orgstatus && data.orgstatus.name
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.name).join('/') : []
@@ -829,6 +830,7 @@ class OrgDetail extends React.Component {
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
       <Field title={i18n('organization.currency')} value={this.state.currency} />
       <Field title={i18n('organization.industry')} value={this.state.industry} />
+      <Field title={i18n('user.tags')} value={this.state.tags} />
       <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
       <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
       <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
