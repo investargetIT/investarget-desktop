@@ -7,7 +7,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
@@ -141,6 +141,9 @@ class OrganizationList extends React.Component {
             <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
             : null}
             {record.orgfullname}
+            { [1, 2].includes(record.orglevel.id) ? 
+            <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
+            : null }
           </div>
         </Link>,
       //sorter:true, 
@@ -203,6 +206,11 @@ class OrganizationList extends React.Component {
             </div>
 
             <Table onChange={this.handleTableChange} style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
+            
+            <div style={{ fontSize: 13, marginTop: 14, float: 'left' }}>
+              <img style={{ width: 10 }} src="/images/certificate.svg" />表示Top机构，
+              <Icon type="user" />表示该机构下有联系方式的投资人数量
+            </div>
 
             <Pagination 
               style={paginationStyle} 

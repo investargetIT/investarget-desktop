@@ -19,6 +19,7 @@ import {
   Spin,
   Row,
   Col,
+  Icon,
 } from 'antd';
 import { OrganizationListFilter } from './Filter'
 import { Search } from './Search'
@@ -193,10 +194,17 @@ class SelectOrganization extends React.Component {
       { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname', 
         render: (text, record) => <div>
           <Popover placement="topLeft" content={this.popoverContent(record)}>
+
             { [1, 2].includes(record.orglevel.id) ? 
             <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
             : null }
+
             <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>{text}</span>
+
+            { [1, 2].includes(record.orglevel.id) ? 
+            <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
+            : null }
+
           </Popover>
         </div>
       },
@@ -214,7 +222,13 @@ class SelectOrganization extends React.Component {
     return (
       <div>
         <OrganizationListFilter defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
+
+        <div style={{ fontSize: 13, marginTop: 14 }}>
+          <img style={{ width: 10 }} src="/images/certificate.svg" />表示Top机构，
+          <Icon type="user" />表示该机构下有联系方式的投资人数量
+        </div>
+
         <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
           <Search
             style={{ width: 250 }}
