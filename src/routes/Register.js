@@ -297,7 +297,7 @@ class Register extends React.Component {
     const containerStyle = {
       position: 'relative',
       width: '100%',
-      height: '100%',
+      height: '100vh',
       overflow: 'hidden',
     }
     const wrapperStyle = {
