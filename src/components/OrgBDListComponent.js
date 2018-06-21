@@ -473,7 +473,7 @@ class OrgBDListComponent extends React.Component {
   content(user) {
     const photourl=user.useinfo&&user.useinfo.photourl
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
-    const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
+    const comments = user.BDComments || [];
     return <div style={{minWidth: 180, maxWidth: 600}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
@@ -491,7 +491,7 @@ class OrgBDListComponent extends React.Component {
           <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
-            {comments.length>0 ? comments.map(item=>{return (<p >{item}</p>)}) :'暂无'}
+            {comments.length > 0 ? comments.map(item=><p key={item.id}>{item.comments}</p>) :'暂无'}
             </Col>
           </Row>
            </div>
@@ -606,7 +606,7 @@ class OrgBDListComponent extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
-        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
+        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:false},
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 

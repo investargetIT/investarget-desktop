@@ -152,8 +152,8 @@ class NewOrgBDList extends React.Component {
         })
        .then(result => {
             result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
-            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd})).filter(Boolean).filter(user=>user.id)
-                   .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null})))
+            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd, key: `${bd.id}-${bd.bduser}`})).filter(Boolean).filter(user => user.id)
+                   .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null, key: `null-${user.id}`})))
             let newList = this.state.list.map(item => 
               item.id === `${org}-${this.projId}` ?
                 {...item, items: list, loaded: true} :
@@ -348,7 +348,7 @@ class NewOrgBDList extends React.Component {
   content(user) {
     const photourl=user.useinfo&&user.useinfo.photourl
     const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
-    const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
+    const comments = user.BDComments || [];
     return <div style={{minWidth: 250}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
@@ -369,7 +369,7 @@ class NewOrgBDList extends React.Component {
           <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
-            {comments.length>0 ? comments.map(item=>{return (<p >{item}</p>)}) :'暂无'}
+            {comments.length>0 ? comments.map(item => <p key={item.id} >{item.comments}</p>) :'暂无'}
             </Col>
           </Row>
            </div>
@@ -511,7 +511,7 @@ class NewOrgBDList extends React.Component {
                   {record.org.orgname}
                   {(selectedUsers.length ? <Tag color="green" style={{marginLeft: 15}}>{`已选 ${selectedUsers.length} 人`}</Tag> : null)}
                 </div>
-        }, key:'org', sorter:true},
+        }, key:'org', sorter:false},
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
       ]
 
@@ -560,7 +560,7 @@ class NewOrgBDList extends React.Component {
             // showHeader={false}
             columns={columns}
             dataSource={record.items}
-            rowKey={record=>record.id}
+            rowKey={record=>record.key}
             pagination={false}
             loading={!record.loaded}
             size={"small"}
@@ -620,9 +620,9 @@ class NewOrgBDList extends React.Component {
           )}
         </div> */}
 
-        <div style={{textAlign: 'right', padding: '0 16px', marginTop: 10 }}>
+        {/* <div style={{textAlign: 'right', padding: '0 16px', marginTop: 10 }}>
           <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
-        </div>
+        </div> */}
 
         <Modal
           title="创建BD"
@@ -688,7 +688,6 @@ export class Trader extends React.Component {
     this.investorGroupIds = data.data.data.map(item => item.id);
     })
     api.getUserRelation(param).then(result => {
-      echo(result);
       const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
       const list = []
       data.forEach(item => {
