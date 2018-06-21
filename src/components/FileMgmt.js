@@ -100,8 +100,9 @@ class FileMgmt extends React.Component {
         window.open(file.fileurl);
       } else {
         const watermark = isLogin().email || 'Investarget'
+        const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
         const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
-          '&watermark=' + encodeURIComponent(watermark)
+          '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org)
         window.open(url)
       }
     }

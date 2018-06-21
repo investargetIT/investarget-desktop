@@ -1,4 +1,5 @@
 var WATER_MARK = 'investarget@investarget.com'
+var ORG = '多维海拓'
 
 // 自定义函数
 
@@ -29,7 +30,7 @@ function wordCount(text) {
   return count;
 }
 
-function drawWatermark(ctx, text) {
+function drawWatermark(ctx, text, org) {
   var canvas = ctx.canvas;
 
   var fontSize = Math.floor(canvas.width * 0.8 / wordCount(text)); // 总长度为宽度的 0.8
@@ -52,13 +53,18 @@ function drawWatermark(ctx, text) {
   ctx.rotate(-Math.PI / 4);
   ctx.translate(-w/2, 0);
   ctx.fillText(text, 0, 0);
-
   ctx.translate(w/2, 0, 0);
+
   var timeStr = getTime();
   ctx.font = 'bold ' + fontSize / 2 + 'px Helvetica,Arial,STSong,SimSun';
   w = ctx.measureText(timeStr).width;
   ctx.translate(-w/2, fontSize);
   ctx.fillText(timeStr, 0, 0);
+  ctx.translate(w/2, -fontSize);
+
+  w = ctx.measureText(org).width;
+  ctx.translate(-w/2, -1.4*fontSize);
+  ctx.fillText(org, 0, 0);
 
   ctx.restore();
 }
@@ -1864,6 +1870,9 @@ function webViewerInitialized() {
   if (params.watermark) {
     WATER_MARK = params.watermark
   }
+  if (params.org) {
+    ORG = params.org;
+  }
   if (PDFViewerApplication.viewerPrefs['pdfBugEnabled']) {
     var hash = document.location.hash.substring(1);
     var hashParams = (0, _ui_utils.parseQueryString)(hash);
@@ -1959,7 +1968,7 @@ function webViewerInitialized() {
 
   PDFViewerApplication.eventBus.on('pagerendered', function(e) {
     var ctx = e.source.canvas.getContext('2d');
-    drawWatermark(ctx, WATER_MARK); // 记事：WATER_MARK 写错城 WATERMARK 导致 disableTextLayer 失效
+    drawWatermark(ctx, WATER_MARK, ORG); // 记事：WATER_MARK 写错城 WATERMARK 导致 disableTextLayer 失效
   });
 
 }
@@ -3527,7 +3536,7 @@ function renderPage(activeServiceOnEntry, pdfDocument, pageNumber, size) {
     return pdfPage.render(renderContext).promise;
   }).then(function () {
     // 添加水印
-    drawWatermark(ctx, WATER_MARK);
+    drawWatermark(ctx, WATER_MARK, ORG);
 
     return {
       width: width,
