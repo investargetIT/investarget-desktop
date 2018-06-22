@@ -102,6 +102,7 @@ class NewOrgBDList extends React.Component {
     
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
   }
 
   getOrgBdList = () => {
@@ -351,15 +352,17 @@ class NewOrgBDList extends React.Component {
   }
 
   content(user) {
-    const photourl=user.useinfo&&user.useinfo.photourl
-    const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
+    const photourl=user.userinfo&&user.userinfo.photourl
+    const tags=user.userinfo&&user.userinfo.tags ? user.userinfo.tags.map(item=>item.name).join(',') :''
     const comments = user.BDComments || [];
+    const orgbdres = user.response && this.props.orgbdres.filter(f => f.id === user.response)[0].name;
+    const wechat = user.userinfo && user.userinfo.wechat;
     return <div style={{minWidth: 250}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
           <SimpleLine title={"项目名称"} value={user.proj && user.proj.projtitle || "暂无"} />
-          <SimpleLine title={"BD状态"} value={user.bd_status.name || "暂无"} />
+          <SimpleLine title={"BD状态"} value={orgbdres || '暂无'} />
           <SimpleLine title={"到期日期"} value={user.expirationtime ? timeWithoutHour(user.expirationtime + user.timezone) : "未设定"} />
           <SimpleLine title={"负责人"} value={user.manager.username || "暂无"} />
           <SimpleLine title={"创建人"} value={user.createuser.username || "暂无"} />
@@ -370,7 +373,11 @@ class NewOrgBDList extends React.Component {
             </Col>
           </Row>
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
-          <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
+
+          { wechat ? 
+          <SimpleLine title={i18n('user.wechat')} value={wechat} />
+          : null }
+
           <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
@@ -723,8 +730,8 @@ class NewOrgBDList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { famlv } = state.app;
-  return { famlv };
+  const { famlv, orgbdres } = state.app;
+  return { famlv, orgbdres };
 }
 export default connect(mapStateToProps)(NewOrgBDList);
 
