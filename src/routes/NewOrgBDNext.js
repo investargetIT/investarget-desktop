@@ -37,7 +37,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectTrader } from '../components/ExtraInput';
 import { SwitchButton } from '../components/SelectOrgInvestorToBD';
 import OrgBDListComponent from '../components/OrgBDListComponent';
-
+import { connect } from 'dva';
 import './NewOrgBDNext.css';
 
 var cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
@@ -79,11 +79,13 @@ class NewOrgBDList extends React.Component {
         source:this.props.location.query.status||0,
         expanded: [],
         selectedKeys: [],
-        data: null,
         expirationtime: null,
         ifimportantMap: {},
         isimportant: false,
+        traderList: [],
     }
+
+    this.allTrader = [];
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -97,6 +99,9 @@ class NewOrgBDList extends React.Component {
       .catch(error => {
         this.getOrgBdList()
       })
+    
+    this.getAllTrader();
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
   }
 
   getOrgBdList = () => {
@@ -469,13 +474,54 @@ class NewOrgBDList extends React.Component {
   //     });
   // }
  
-  handleSelectUser = () => {
-    this.setState({ selectVisible: true });
-  }
+  // handleSelectUser = () => {
+  //   this.setState({ selectVisible: true });
+  // }
 
   handleCreateBD = user => {
     this.activeUser = user;
     this.setState({ selectVisible: true });
+    // 在为投资人分配IR时默认选中熟悉程度最高的交易师
+    this.setDefaultTrader();
+  }
+
+  setDefaultTrader = () => {
+    const params = {
+      investoruser: this.activeUser.id,
+      page_size: 1000,
+    };
+    api.getUserRelation(params)
+      .then(result => {
+        const newTraderList = [];
+        result.data.data.forEach(element => {
+          const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].score;
+          const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
+          trader.username += '(' + familiar + '分)';
+          trader.familiar = familiar;
+          newTraderList.push(trader);
+        });
+        this.allTrader.forEach(element => {
+          if (!newTraderList.map(m => m.id).includes(element.id)) {
+            newTraderList.push({ ...element, familiar: -1 });
+          }
+        });
+
+        // 按照熟悉程度排序
+        newTraderList.sort(function(a, b) {
+          return b.familiar - a.familiar;
+        });
+
+        this.setState({ traderList: newTraderList, manager: newTraderList[0].id.toString() });
+      })
+  }
+
+  getAllTrader() {
+    api.queryUserGroup({ type: 'trader' })
+    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => {
+      this.allTrader = data.data.data; 
+      this.setState({ traderList: this.allTrader });
+    })
   }
 
   createOrgBD = () => {
@@ -637,7 +683,7 @@ class NewOrgBDList extends React.Component {
             <SelectTrader
               style={{ width: 300 }}
               mode="single"
-              data={this.state.data}
+              data={this.state.traderList}
               value={this.state.manager}
               onChange={manager => this.setState({ manager })} />
             
@@ -676,7 +722,11 @@ class NewOrgBDList extends React.Component {
   }
 }
 
-export default NewOrgBDList;
+function mapStateToProps(state) {
+  const { famlv } = state.app;
+  return { famlv };
+}
+export default connect(mapStateToProps)(NewOrgBDList);
 
 export class Trader extends React.Component {
   state = {

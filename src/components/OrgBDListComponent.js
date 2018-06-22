@@ -556,21 +556,35 @@ class OrgBDListComponent extends React.Component {
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
-          const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].name;
+          const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].score;
           const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
-          trader.username += '-' + familiar;
-          trader.familiar = element.familiar;
+          trader.username += '(' + familiar + '分)';
+          trader.familiar = familiar;
           newTraderList.push(trader);
         });
         this.allTrader.forEach(element => {
           if (!newTraderList.map(m => m.id).includes(element.id)) {
-            newTraderList.push({ ...element, familiar: 0 });
+            newTraderList.push({ ...element, familiar: -1 });
           }
         });
+
+        // 按照熟悉程度排序
         newTraderList.sort(function(a, b) {
           return b.familiar - a.familiar;
         });
-        this.setState({ traderList: newTraderList });
+
+        // 找出熟悉程度最高的一个交易师
+        let newList = this.state.list.map(line => 
+          line.id !== `${record.org.id}-${record.proj.id}` ?
+            line :
+            {...line, items: line.items.map(item => 
+              item.key !== record.key ?
+              item :
+              {...item, trader: newTraderList[0].id.toString()}
+            )}
+        );
+
+        this.setState({ traderList: newTraderList, list: newList });
       })
   }
 
@@ -644,7 +658,7 @@ class OrgBDListComponent extends React.Component {
             <div>
               { timeWithoutHour(new Date()) + " - " }
               <DatePicker 
-                placeholder="Expiration Date"
+                placeholder="过期时间"
                 disabledDate={this.disabledDate}
                 // defaultValue={moment()}
                 showToday={false}
