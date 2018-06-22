@@ -199,7 +199,11 @@ class SelectOrganization extends React.Component {
             <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
             : null }
 
-            <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>{text}</span>
+            <a href={"/app/organization/" + record.id} target="_blank">
+              <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>
+                {text}
+              </span>
+            </a>
 
             { [1, 2].includes(record.orglevel.id) ? 
             <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
