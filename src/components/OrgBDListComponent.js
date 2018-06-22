@@ -471,16 +471,29 @@ class OrgBDListComponent extends React.Component {
   }
 
   content(user) {
-    const photourl=user.useinfo&&user.useinfo.photourl
-    const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
+    const photourl=user.userinfo&&user.userinfo.photourl
+    const tags=user.userinfo&&user.userinfo.tags ? user.userinfo.tags.map(item=>item.name).join(',') :''
     const comments = user.BDComments || [];
+    const mobile = user.userinfo && user.userinfo.mobile;
+    const email = user.userinfo && user.userinfo.email;
+    const wechat = user.userinfo && user.userinfo.wechat;
     return <div style={{minWidth: 180, maxWidth: 600}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
-          <SimpleLine title={i18n('user.mobile')} value={user.usermobile ||'暂无'} />
-          <SimpleLine title={i18n('user.wechat')} value={user.wechat||'暂无'} />
-          <SimpleLine title={i18n('user.email')} value={user.email||'暂无'} />
+
+          { mobile ? 
+          <SimpleLine title={i18n('user.mobile')} value={mobile} />
+          : null }
+
+          { wechat ? 
+          <SimpleLine title={i18n('user.wechat')} value={wechat} />
+          : null }
+
+          { email ? 
+          <SimpleLine title={i18n('user.email')} value={email} />
+          : null }
+
           <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
             <Col span={12}>{i18n('user.trader')}:</Col>
             <Col span={12} style={{wordBreak: 'break-all'}}>
