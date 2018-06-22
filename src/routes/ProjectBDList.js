@@ -129,10 +129,10 @@ class ProjectBDList extends React.Component {
     this.setState({ newComment: e.target.value })
   }
 
-  handleAddComment = () => {
+  handleAddComment = comments => {
     const param = {
       projectBD: this.state.currentBDId,
-      comments: this.state.newComment,
+      comments,
     }
     api.addProjBDCom(param).then(data => {
       this.setState({ newComment: '' })
@@ -140,6 +140,18 @@ class ProjectBDList extends React.Component {
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  handleEditComment = comments => {
+    echo('dasdasd', comments);
+    const body = {
+      comments,
+    }
+    api.editProjBDCom(this.state.currentBDId, body).then(data => {
+      this.getProjectBDList()
+    }).catch(error => {
+      handleError(error)
+    }) 
   }
 
   handleDeleteComment = (id) => {
@@ -369,6 +381,7 @@ class ProjectBDList extends React.Component {
             newComment={this.state.newComment}
             onChange={this.handleChangeComment}
             onAdd={this.handleAddComment}
+            onEdit={this.handleEditComment}
             onDelete={this.handleDeleteComment} />
         </Modal>
         
@@ -392,29 +405,70 @@ class ProjectBDList extends React.Component {
 export default ProjectBDList
 
 
-function BDComments(props) {
-  const { comments, newComment, onChange, onDelete, onAdd } = props
-  return (
-    <div>
-      <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
-        <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
-        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
-      </div>
+class BDComments extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      editContent: '',
+      isAdd: true,
+    };
+  }
+
+  onChange = e => {
+    const editContent = e.target.value;
+    this.setState({ editContent });
+  }
+
+  handleConfirmBtnClicked = () => {
+    if (this.state.isAdd) {
+      this.props.onAdd(this.state.editContent);
+    } else {
+      this.props.onEdit(this.state.editContent);
+    }
+    this.setState({ editContent: '', isAdd: true });
+  }
+
+  handleEditBtnClicked = comments => {
+    this.setState({ editContent: comments, isAdd: false });
+  }
+
+  handleCancelBtnClicked = () => {
+    this.setState({ editContent: '', isAdd: true });
+  }
+
+  render() {
+    const { comments, newComment, onChange, onDelete, onAdd } = this.props;
+    return (
       <div>
-        {comments.length ? comments.map(comment => (
-          <div key={comment.id} style={{marginBottom:8}}>
-            <p>
-              <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
-              { hasPerm('BD.manageProjectBD') ?
-              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                <a href="javascript:void(0)">{i18n('common.delete')}</a>
-              </Popconfirm>
-              : null }
-            </p>
-            <p dangerouslySetInnerHTML={{__html:comment.comments.replace(/\n/g,'<br>')}}></p>
-          </div>
-        )) : <p>{i18n('remark.no_comments')}</p>}
+        <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Input.TextArea rows={3} value={this.state.editContent} onChange={this.onChange} style={{ flex: 1, marginRight: 16 }} />
+          <Button onClick={this.handleConfirmBtnClicked} type="primary" disabled={this.state.editContent === ''}>确定</Button>
+          &nbsp;
+          <Button onClick={this.handleCancelBtnClicked}>取消</Button>
+        </div>
+
+        { this.state.isAdd ? 
+        <div>
+          {comments.length ? comments.map(comment => (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p>
+                <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+                <a href="javascript:void(0)" onClick={this.handleEditBtnClicked.bind(this, comment.comments, comment.id)}>编辑</a>
+                &nbsp;
+              {hasPerm('BD.manageProjectBD') ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                  </Popconfirm>
+                  : null}
+              </p>
+              <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
+            </div>
+          )) : <p>{i18n('remark.no_comments')}</p>}
+        </div>
+        : null }
+
       </div>
-    </div>
-  )
+    );
+  }
 }

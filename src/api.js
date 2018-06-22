@@ -751,6 +751,7 @@ export const addProjBDCom = (data) => {
 export const deleteProjBDCom = (id) => {
   return r('/bd/projbd/comment/' + id + '/', 'DELETE')
 }
+export const editProjBDCom = (id, body) => r('/bd/projbd/comment/' + id + '/', 'PUT', body);
 
 /**
  * News
