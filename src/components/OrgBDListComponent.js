@@ -160,8 +160,9 @@ class OrgBDListComponent extends React.Component {
             items: []
           })),
           total: baseResult.data.count,
-          loading: false
-        })
+          loading: false,
+          expanded: baseList.map(item => `${item.org}-${item.proj}`),
+        }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)));
       })
     })
 
