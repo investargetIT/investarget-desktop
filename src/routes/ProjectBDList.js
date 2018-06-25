@@ -142,16 +142,13 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  handleEditComment = comments => {
-    echo('dasdasd', comments);
+  handleEditComment = (id, content) => {
     const body = {
-      comments,
-    }
-    api.editProjBDCom(this.state.currentBDId, body).then(data => {
-      this.getProjectBDList()
-    }).catch(error => {
-      handleError(error)
-    }) 
+      comments: content,
+    };
+    api.editProjBDCom(id, body)
+      .then(this.getProjectBDList)
+      .catch(handleError);
   }
 
   handleDeleteComment = (id) => {
@@ -411,7 +408,7 @@ class BDComments extends React.Component {
     super(props);
     this.state = {
       editContent: '',
-      isAdd: true,
+      editComment: null,
     };
   }
 
@@ -421,20 +418,20 @@ class BDComments extends React.Component {
   }
 
   handleConfirmBtnClicked = () => {
-    if (this.state.isAdd) {
+    if (this.state.editComment === null) {
       this.props.onAdd(this.state.editContent);
     } else {
-      this.props.onEdit(this.state.editContent);
+      this.props.onEdit(this.state.editComment.id, this.state.editContent);
     }
-    this.setState({ editContent: '', isAdd: true });
+    this.setState({ editContent: '', editComment: null});
   }
 
-  handleEditBtnClicked = comments => {
-    this.setState({ editContent: comments, isAdd: false });
+  handleEditBtnClicked = comment => {
+    this.setState({ editContent: comment.comments, editComment: comment });
   }
 
   handleCancelBtnClicked = () => {
-    this.setState({ editContent: '', isAdd: true });
+    this.setState({ editContent: '', editComment: null});
   }
 
   render() {
@@ -448,13 +445,17 @@ class BDComments extends React.Component {
           <Button onClick={this.handleCancelBtnClicked}>取消</Button>
         </div>
 
-        { this.state.isAdd ? 
+        { !this.state.editComment ? 
         <div>
           {comments.length ? comments.map(comment => (
             <div key={comment.id} style={{ marginBottom: 8 }}>
               <p>
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
-                <a href="javascript:void(0)" onClick={this.handleEditBtnClicked.bind(this, comment.comments, comment.id)}>编辑</a>
+
+                { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
+                <a href="javascript:void(0)" onClick={this.handleEditBtnClicked.bind(this, comment)}>编辑</a>
+                : null }
+                
                 &nbsp;
               {hasPerm('BD.manageProjectBD') ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
