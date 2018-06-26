@@ -302,8 +302,8 @@ class OrgBDList extends React.Component {
   }
 
   content(user) {
-    const photourl=user.useinfo&&user.useinfo.photourl
-    const tags=user.useinfo&&user.useinfo.tags ? user.useinfo.tags.map(item=>item.name).join(',') :''
+    const photourl=user.userinfo&&user.userinfo.photourl
+    const tags=user.userinfo&&user.userinfo.tags ? user.userinfo.tags.map(item=>item.name).join(',') :''
     const comments=user.BDComments ? user.BDComments.map(item=>item.comments):[]
     return <div style={{minWidth: 180}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
