@@ -158,6 +158,7 @@ class NewOrgBDList extends React.Component {
           return api.getUser({starmobile: true, org: [org], groups, page_size: 1000})
         })
        .then(result => {
+         if (result.data.data.length > 0) {
             result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
             list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd, key: `${bd.id}-${bd.bduser}`})).filter(Boolean).filter(user => user.id)
                    .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null, key: `null-${user.id}`})))
@@ -169,6 +170,19 @@ class NewOrgBDList extends React.Component {
             this.setState({
               list: newList,
             });
+          } else {
+            list = list.map(bd => ({bd: bd, key: `${bd.id}-${bd.bduser}`, username: '暂无投资人'}))
+              .concat({ key: `null-null-${org}`, org: { id: org } });
+           //暂无联系人
+           let newList = this.state.list.map(item =>
+             item.id === `${org}-${this.projId}` ?
+               { ...item, items: list, loaded: true } :
+               item
+           )
+           this.setState({
+             list: newList,
+           });
+          }
         })
       })
     })
@@ -741,6 +755,7 @@ export class Trader extends React.Component {
     list: [], 
   }
   componentDidMount() {
+    if (this.props.investor === null) return;
     const param = { investoruser: this.props.investor}
     api.queryUserGroup({ type: 'investor' }).then(data => {
     this.investorGroupIds = data.data.data.map(item => item.id);
