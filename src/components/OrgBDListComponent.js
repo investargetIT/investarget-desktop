@@ -531,7 +531,7 @@ class OrgBDListComponent extends React.Component {
     let key = Math.random()
     let list = this.state.list.map(item => 
       item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: null})} :
+        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
         item
     )
     this.setState({ list })

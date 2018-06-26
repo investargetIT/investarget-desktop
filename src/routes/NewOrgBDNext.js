@@ -79,7 +79,7 @@ class NewOrgBDList extends React.Component {
         source:this.props.location.query.status||0,
         expanded: [],
         selectedKeys: [],
-        expirationtime: null,
+        expirationtime: moment().add(1, 'weeks'),
         ifimportantMap: {},
         isimportant: false,
         traderList: [],
@@ -546,7 +546,7 @@ class NewOrgBDList extends React.Component {
     };
     api.addOrgBD(body)
       .then(result => {
-        this.setState({ manager: null, expirationtime: null, isimportant: false });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false });
         this.getOrgBdListDetail(user.org.id);
       })
   }
@@ -682,7 +682,7 @@ class NewOrgBDList extends React.Component {
           title="创建BD"
           visible={this.state.selectVisible}
           footer={null}
-          onCancel={() => this.setState({ selectVisible: false })}
+          onCancel={() => this.setState({ selectVisible: false, expirationtime: moment().add(1, 'weeks'), })}
           closable={true}
           maskClosable={false}
         >
@@ -698,7 +698,7 @@ class NewOrgBDList extends React.Component {
             <H3>2.选择过期时间</H3>
             <DatePicker 
                   style={{ marginBottom: '15px' }}
-                  placeholder="Expiration Date"
+                  placeholder="过期时间"
                   disabledDate={this.disabledDate}
                   // defaultValue={moment()}
                   showToday={false}
