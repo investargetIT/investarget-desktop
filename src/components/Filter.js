@@ -49,6 +49,7 @@ import {
   SelectMultiOrgs,
   SelectExistProject,
   RadioFamLv,
+  SelectOrgLevel,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -124,6 +125,14 @@ function OrganizationAreaFilter(props) {
   return (
     <BasicContainer label={i18n('filter.area')}>
       <SelectOrganizatonArea style={{width: '400px'}} mode="multiple" allowClear optionFilterProp="children" tokenSeparators={[',']} value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
+function OrgLevelFilter(props) {
+  return (
+    <BasicContainer label="机构状态">
+      <SelectOrgLevel value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
@@ -530,6 +539,7 @@ class OrganizationListFilter extends React.Component {
     area: [],
     // orgstatus: hasPerm('org.admin_changeorg') ? [] : [2],
     orgstatus: [],
+    lv: null,
   }
 
   constructor(props) {
@@ -551,7 +561,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   render() {
-    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus } = this.state
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus, lv} = this.state
     return (
       <div>
         <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
@@ -573,6 +583,7 @@ class OrganizationListFilter extends React.Component {
         {/* { hasPerm('org.admin_changeorg') ? */}
         <UserAuditFilter value={orgstatus} onChange={this.handleChange.bind(this, 'orgstatus')} />
         {/* : null } */}
+        <OrgLevelFilter value={lv} onChange={this.handleChange.bind(this, 'lv')} /> 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
