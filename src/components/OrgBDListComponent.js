@@ -84,6 +84,8 @@ class OrgBDListComponent extends React.Component {
         userDetail:[],
         expanded: [],
         traderList: [],
+        makeUser: undefined, // 项目承做
+        takeUser: undefined, // 项目承揽
     }
 
     this.allTrader = [];
@@ -121,6 +123,19 @@ class OrgBDListComponent extends React.Component {
   getOrgBdList = () => {
     this.setState({ loading: true, expanded: [] });
     const { page, pageSize, search, filters, sort, desc } = this.state;
+
+    // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
+    const proj = filters.proj;
+    if (proj) {
+      api.getProjDetail(proj)
+      .then(result => {
+        const makeUser = result.data.makeUser && result.data.makeUser.id;
+        const takeUser = result.data.takeUser && result.data.takeUser.id;
+        this.setState({ makeUser, takeUser });
+      })
+      .catch(handleError);
+    }
+
     const params = {
         page_index: page,
         page_size: pageSize,
@@ -628,6 +643,20 @@ class OrgBDListComponent extends React.Component {
     return styles['bd-status-' + record.response];
   }
 
+  isAbleToCreateBD = () => {
+    if (hasPerm('BD.manageOrgBD')) {
+      return true;
+    }
+    if (hasPerm('BD.user_addOrgBD')) {
+      return true;
+    }
+    const currentUserID = getUserInfo().id;
+    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -766,11 +795,11 @@ class OrgBDListComponent extends React.Component {
             loading={!record.loaded}
             rowClassName={this.handleRowClassName}
           />
-          {this.props.editable ? 
+          {this.props.editable && this.isAbleToCreateBD() ? 
             <Button 
               style={{float: 'right', margin: '5px 15px 5px 0'}} 
               onClick={this.handleAddNew.bind(this, record)}
-            >{i18n('org_bd.new_user')}</Button> : null
+            >新增BD</Button> : null
           }
         </div>
 
@@ -822,7 +851,7 @@ class OrgBDListComponent extends React.Component {
         { this.props.pagination && this.state.filters.proj !== null ?    
           <div style={{ margin: '16px 0' }} className="clearfix">
             
-            { this.props.editable ? 
+            { this.props.editable && this.isAbleToCreateBD() ? 
             <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
               <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
             </Link>
