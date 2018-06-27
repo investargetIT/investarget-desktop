@@ -24,9 +24,12 @@ import {
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 
-function displayUserWhenPopover(user) {
+function displayUserWhenPopover(user, allTags) {
   const photourl = user && user.photourl;
-  const tags = user && user.tags ? user.tags.map(item => item.name).join(',') : '';
+  const tags = user && user.tags ? user.tags.map(item => {
+    const tag = allTags.filter(f => f.id === item)[0];
+    return tag.name;
+  }).join(',') : '';
   return <div style={{ width: 180 }}>
     <Row style={{ textAlign: 'center', margin: '10px 0' }}>
       {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
@@ -216,7 +219,7 @@ class SelectOrgInvestorToBD extends React.Component {
       {
         title: i18n('user.name'), key: 'username', dataIndex: 'username',
         render: (text, record) => <div>
-          {record.username ? <Popover placement="topLeft" content={displayUserWhenPopover(record)}>
+          {record.username ? <Popover placement="topLeft" content={displayUserWhenPopover(record, this.props.tag)}>
             <span style={{ color: '#428BCA' }}>{ record.username }</span>
           </Popover> : '暂无投资人'}
         </div>
@@ -339,8 +342,8 @@ class Trader extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { title } = state.app;
-  return { title };
+  const { title, tag } = state.app;
+  return { title, tag };
 }
 
 export default connect(mapStateToProps)(SelectOrgInvestorToBD);
