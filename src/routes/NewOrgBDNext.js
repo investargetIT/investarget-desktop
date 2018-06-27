@@ -103,6 +103,7 @@ class NewOrgBDList extends React.Component {
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
   }
 
   getOrgBdList = () => {
@@ -366,7 +367,26 @@ class NewOrgBDList extends React.Component {
     );
   }
 
-  content(user) {
+  content(record) {
+    if (record.bd === null) {
+      const tags = record.tags.map(m => {
+        const tagObj = this.props.tag.filter(f => f.id === m)[0];
+        return tagObj.name;
+      }).join(',');
+      return <div style={{minWidth: 250}}>
+        <Row style={{textAlign:'center',margin:'10px 0'}}>
+          {record.photourl ? <img src={record.photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
+        </Row>
+        <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
+        <Row style={{ lineHeight: '24px', borderBottom: '0px dashed #ccc' }}>
+          <Col span={12}>{i18n('user.trader')}:</Col>
+          <Col span={12} style={{wordBreak: 'break-all'}}>
+          <Trader investor={record.id} />
+          </Col>
+        </Row>
+      </div>; 
+    }
+    const user = record.bd;
     const photourl=user.userinfo&&user.userinfo.photourl
     const tags=user.userinfo&&user.userinfo.tags ? user.userinfo.tags.map(item=>item.name).join(',') :''
     const comments = user.BDComments || [];
@@ -588,9 +608,11 @@ class NewOrgBDList extends React.Component {
         {
           title: i18n('user.name'), key: 'username', dataIndex: 'username',
           render: (text, record) => <div>
-            {record.username ? (record.bd ? <Popover placement="topLeft" content={this.content(record.bd)}>
-              <span style={{ color: '#428BCA' }}>{ record.username }</span>
-              </Popover> : record.username ) : '暂无投资人'}
+            { record.username ? 
+              <Popover placement="topLeft" content={this.content(record)}>
+                <span style={{ color: '#428BCA' }}>{ record.username }</span>
+              </Popover> 
+             : '暂无投资人' }
           </div>
         },
         // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
@@ -745,8 +767,8 @@ class NewOrgBDList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { famlv, orgbdres } = state.app;
-  return { famlv, orgbdres };
+  const { famlv, orgbdres, tag } = state.app;
+  return { famlv, orgbdres, tag };
 }
 export default connect(mapStateToProps)(NewOrgBDList);
 
