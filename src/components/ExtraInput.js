@@ -1372,7 +1372,7 @@ class SelectMultiOrgs extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    api.getOrg({ search: value })
+    api.getOrg({ search: value, issub: false, page_size: 1000 })
       .then(body => {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;
