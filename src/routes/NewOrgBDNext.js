@@ -32,7 +32,10 @@ import { Search } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
-import { isLogin } from '../utils/util'
+import { 
+  isLogin, 
+  checkRealMobile,
+} from '../utils/util';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectTrader } from '../components/ExtraInput';
 import { SwitchButton } from '../components/SelectOrgInvestorToBD';
@@ -618,8 +621,18 @@ class NewOrgBDList extends React.Component {
         },
         // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
         // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
-        { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
-        { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
+        {
+          title: i18n('mobile'), 
+          key: 'mobile', 
+          dataIndex: 'mobile', 
+          render: text => !text || !checkRealMobile(text) ? '暂无' : text,
+        },
+        { 
+          title: i18n('account.email'), 
+          key: 'email', 
+          dataIndex: 'email',
+          render: text => !text || text.includes('@investarget') ? '暂无' : text,
+        },
         { 
           title: '标签', 
           key: 'tags', 
