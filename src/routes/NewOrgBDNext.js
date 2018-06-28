@@ -368,24 +368,6 @@ class NewOrgBDList extends React.Component {
   }
 
   content(record) {
-    if (record.bd === null) {
-      const tags = record.tags.map(m => {
-        const tagObj = this.props.tag.filter(f => f.id === m)[0];
-        return tagObj.name;
-      }).join(',');
-      return <div style={{minWidth: 250}}>
-        <Row style={{textAlign:'center',margin:'10px 0'}}>
-          {record.photourl ? <img src={record.photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
-        </Row>
-        <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
-        <Row style={{ lineHeight: '24px', borderBottom: '0px dashed #ccc' }}>
-          <Col span={12}>{i18n('user.trader')}:</Col>
-          <Col span={12} style={{wordBreak: 'break-all'}}>
-          <Trader investor={record.id} />
-          </Col>
-        </Row>
-      </div>; 
-    }
     const user = record.bd;
     const photourl=user.userinfo&&user.userinfo.photourl
     const tags=user.userinfo&&user.userinfo.tags ? user.userinfo.tags.map(item=>item.name).join(',') :''
@@ -396,29 +378,29 @@ class NewOrgBDList extends React.Component {
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
-          <SimpleLine title={"项目名称"} value={user.proj && user.proj.projtitle || "暂无"} />
+          {/* <SimpleLine title={"项目名称"} value={user.proj && user.proj.projtitle || "暂无"} /> */}
           <SimpleLine title={"BD状态"} value={orgbdres || '暂无'} />
           <SimpleLine title={"到期日期"} value={user.expirationtime ? timeWithoutHour(user.expirationtime + user.timezone) : "未设定"} />
           <SimpleLine title={"负责人"} value={user.manager.username || "暂无"} />
           <SimpleLine title={"创建人"} value={user.createuser.username || "暂无"} />
-          <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
+          {/* <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
             <Col span={12}>{i18n('user.trader')}:</Col>
             <Col span={12} style={{wordBreak: 'break-all'}}>
             <Trader investor={user.bduser} />
             </Col>
-          </Row>
-          <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
+          </Row> */}
+          {/* <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} /> */}
 
-          { wechat ? 
+          {/* { wechat ? 
           <SimpleLine title={i18n('user.wechat')} value={wechat} />
-          : null }
+          : null } */}
 
-          <Row style={{ lineHeight: '24px' }}>
+          {/* <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
             {comments.length>0 ? comments.map(item => <p key={item.id} >{item.comments}</p>) :'暂无'}
             </Col>
-          </Row>
+          </Row> */}
            </div>
   }
 
@@ -606,21 +588,55 @@ class NewOrgBDList extends React.Component {
     const expandedRowRender = (record) => {
       const columns = [
         {
-          title: i18n('user.name'), key: 'username', dataIndex: 'username',
-          render: (text, record) => <div>
-            { record.username ? 
-              <Popover placement="topLeft" content={this.content(record)}>
-                <span style={{ color: '#428BCA' }}>{ record.username }</span>
-              </Popover> 
-             : '暂无投资人' }
-          </div>
+          title: i18n('user.name'),
+          key: 'username',
+          dataIndex: 'username',
+          render: (text, record) => {
+            // 可以新建的暂无联系人的BD
+            if (!record.username) {
+              return '暂无投资人';
+            }
+            // 加载已经创建的BD
+            if (record.bd) {
+              return (
+                <Popover placement="topLeft" content={this.content(record)}>
+                  {record.id ?
+                    <a target="_blank" href={'/app/user/' + record.id}>
+                      <span style={{ color: '#428BCA' }}>{record.username}</span>
+                    </a>
+                    : <span style={{ color: '#428BCA' }}>{record.username}</span>}
+                </Popover>
+              );
+            }
+            // 可以新建的有联系人的BD
+            return (
+              <a target="_blank" href={'/app/user/' + record.id}>
+                <span style={{ color: '#428BCA' }}>{record.username}</span>
+              </a>
+            );
+          },
         },
         // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
         // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
         { title: i18n('mobile'), key: 'mobile', dataIndex: 'mobile', render: text => text || '暂无' },
         { title: i18n('account.email'), key: 'email', dataIndex: 'email', render: text => text || '暂无' },
-        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' } 
-        
+        { 
+          title: '标签', 
+          key: 'tags', 
+          dataIndex: 'tags', 
+          render: (text, record) => {
+            let tags;
+            if (record.tags) {
+              tags = record.tags.map(m => {
+                const tagObj = this.props.tag.filter(f => f.id === m)[0];
+                return tagObj.name;
+              }).join('、');
+            }
+            return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
+          },
+        },
+        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' }
+
       ]
       if(this.props.source!="meetingbd"){
         columns.push({title:i18n('org_bd.important') + '/操作', render:(text,record)=>{
