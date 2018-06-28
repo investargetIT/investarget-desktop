@@ -510,19 +510,22 @@ class OrgBDListComponent extends React.Component {
           <SimpleLine title={i18n('user.email')} value={email} />
           : null }
 
-          <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
+          <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
+
+          <Row style={{ lineHeight: '24px', borderBottom: '0px dashed #ccc' }}>
             <Col span={12}>{i18n('user.trader')}:</Col>
             <Col span={12} style={{wordBreak: 'break-all'}}>
             <Trader investor={user.bduser} />
             </Col>
           </Row>
-          <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
-          <Row style={{ lineHeight: '24px' }}>
+          
+          {/* <Row style={{ lineHeight: '24px' }}>
             <Col span={12}>{i18n('remark.remark')}:</Col>
             <Col span={12} style={{wordWrap: 'break-word'}}>
             {comments.length > 0 ? comments.map(item=><p key={item.id}>{item.comments}</p>) :'暂无'}
             </Col>
-          </Row>
+          </Row> */}
+          
            </div>
   }
 
@@ -675,12 +678,16 @@ class OrgBDListComponent extends React.Component {
           <SelectOrgUser allStatus allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
           : <div style={{ width: 100 }}>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
-              {record.username? <Popover  placement="topRight" content={this.content(record)}>
-                              <span style={{color:'#428BCA'}}>
-                              {record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
-                              : record.username}
-                              </span>                                  
-                              </Popover> : '暂无'}    
+              { record.username ? 
+              <Popover placement="topRight" content={this.content(record)}>
+                <span style={{color:'#428BCA'}}>
+                  {/* { record.hasRelation ? 
+                  <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
+                  : record.username } */}
+                  <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
+                </span>                                  
+              </Popover> 
+              : '暂无' }
             </div>
           },sorter:false},
         {title: i18n('org_bd.created_time'), render: (text, record) => {
