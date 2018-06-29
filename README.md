@@ -44,3 +44,9 @@ historyApiFallback: {
 
 ## favoritetype类型说明
 1-系统推荐，2-后台人员推荐，3-交易师推荐，4-主动收藏，5-感兴趣
+
+## Deploy
+```
+yarn build
+scp -r dist/* root@www.investarget.com:/var/www/investarget-web/investarget-desktop/
+```
