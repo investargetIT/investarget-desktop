@@ -64,11 +64,13 @@ class OrgBDListComponent extends React.Component {
       search = setting ? setting.search : null;
     }
 
+    const currentSession = getUserInfo();
+
     this.state = {
         filters,
         search,
         page: 1,
-        pageSize: this.props.pageSize || (this.ids.length ? this.ids.length + 1 : (getUserInfo().page || 10)),
+        pageSize: this.props.pageSize || (this.ids.length ? this.ids.length + 1 : (currentSession ? currentSession.page : 10)),
         total: 0,
         list: [],
         loading: false,
@@ -653,7 +655,7 @@ class OrgBDListComponent extends React.Component {
     if (hasPerm('BD.user_addOrgBD')) {
       return true;
     }
-    const currentUserID = getUserInfo().id;
+    const currentUserID = getUserInfo() && getUserInfo().id;
     if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
       return true;
     }
