@@ -58,7 +58,7 @@ class OrgBDListComponent extends React.Component {
 
     let filters = {...OrgBDFilter.defaultValue, proj: this.projId };
     let search = null;
-    if (this.props.editable) {
+    if (this.props.editable && this.projId === null) {
       const setting = this.readSetting();
       filters = setting ? setting.filters : OrgBDFilter.defaultValue;
       search = setting ? setting.search : null;
