@@ -185,11 +185,11 @@ class ResetPassword extends React.Component {
     }
 
     return (
-      <LoginContainer>
+      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
-            <h1 style={formTitleStyle}>重置密码</h1>
-            <p style={formSubtitleStyle}>输入手机号码，重置密码！</p>
+            <h1 style={formTitleStyle}>{i18n('account.reset_password')}</h1>
+            <p style={formSubtitleStyle}>{i18n('account.reset_info')}</p>
 
             <div style={{marginBottom: 8}}>
               {getFieldDecorator('mobileInfo', {
@@ -205,9 +205,9 @@ class ResetPassword extends React.Component {
                 <Col span={12}>
                   {getFieldDecorator("code", {
                     rules: [{
-                      required: true, message: '请输入验证码',
+                      required: true, message: i18n("account.input_the_code"),
                     }],
-                  })(<Input style={formInputStyle} placeholder="请输入验证码" />)}
+                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)}
                 </Col>
                 <Col span={12}>
                   <Button
@@ -231,14 +231,14 @@ class ResetPassword extends React.Component {
               </Row>
             </div>
 
-            {getFieldDecorator('password', { rules: [{required: true, message: '请输入新的密码'}] })(
-              <Input style={inputStyle} placeholder="请输入新的密码" type="password" />
+            {getFieldDecorator('password', { rules: [{required: true, message: i18n("account.input_new_password")}] })(
+              <Input style={inputStyle} placeholder={i18n("account.input_new_password")} type="password" />
             )}
 
-            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>提交</Button>
+            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n("common.submit")}</Button>
 
             <div style={{padding:8,paddingLeft:16}}>
-              已有账号？<Link to="/login" style={{textDecoration:'underline'}}>立即登录</Link>
+              {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
             </div>
 
           </div>

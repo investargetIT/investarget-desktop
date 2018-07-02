@@ -112,23 +112,45 @@ window.echo = function () {
 }
 
 // 使用 i18next 库来做国际化
-const lang = window.appLocale.lang || 'cn'
+let lang = window.appLocale.lang || 'cn'
 i18next.init({
   lng: lang,
   debug: true,
   resources: {
-    [lang]: {
+    en: {
+      translation: window.appLocale.messagesEn
+    },
+    cn: {
       translation: window.appLocale.messages
     }
   }
 })
 
+window.LANG = localStorage.getItem('APP_PREFERRED_LANG') || 'cn';
+changeLang(window.LANG);
+
+export function changeLang(lang='en') {
+  return new Promise((resolve, reject) => {
+    i18next.changeLanguage(lang, (err, t) => {
+      if (err) reject(err);
+      else {
+        window.LANG = lang;
+        localStorage.setItem('APP_PREFERRED_LANG', lang);
+        resolve(t);
+      }
+    });
+  });
+}
+
 function i18n(key, options=null) {
+  let ans;
   if (options) {
-    return i18next.t(key, options)
+    ans = i18next.t(key, options)
   } else {
-    return i18next.t(key)
+    ans = i18next.t(key)
   }
+  if (ans === key) return ans.substr(ans.lastIndexOf(".") + 1).split("_").map(w => w ? w[0].toLocaleUpperCase() + w.substr(1) : w).join(" ");
+  else return ans;
 }
 
 function time(dateFromServer) {

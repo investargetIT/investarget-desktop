@@ -26,7 +26,7 @@ if (['saas.investarget.net', 'saas.investarget.com'].includes(document.domain)) 
 const appLocale = window.appLocale
 addLocaleData(appLocale.data)
 const lang = appLocale.lang
-window.LANG = lang || 'cn'
+window.LANG = window.LANG || lang || 'cn'
 const basename = lang ? ('/' + lang) : ''
 
 // 侧边栏菜单状态，页面宽度小于1200时关闭，大于1200时为用户设置值

@@ -291,6 +291,7 @@ class Register extends React.Component {
   }
 
   render() {
+    const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
 
@@ -353,7 +354,7 @@ class Register extends React.Component {
     const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
 
     const selectWrapStyle = {display: 'flex',alignItems: 'center',backgroundColor: '#fff',marginBottom: 8,borderRadius: 4,height: 50}
-    const selectLabelStyle = {flexShrink: 0,fontSize: 16,paddingLeft: 16,width: 84,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
+    const selectLabelStyle = {flexShrink: 0,fontSize: 16,width: 110, textAlign:"center" ,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
     const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none'}
     const selectContentContainerStyle = {flexGrow:1,height:50}
 
@@ -367,16 +368,17 @@ class Register extends React.Component {
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
     const content = (
-      <LoginContainer>
+      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
 
             <div style={{marginTop:20,marginBottom:10}}>
-              <span style={{fontSize:22,marginLeft:24,marginRight:32}}>角色</span>
-              {getFieldDecorator('type', {rules: [{required: true, message: '请选择角色'}]})(
+              <span style={{fontSize:22,marginLeft:24,marginRight:32}}>{i18n('account.role')}</span>
+              {getFieldDecorator('type', {rules: [{required: true, message: i18n('account.select_role')}]})(
                 <RadioGroup size="large" className="it-login-radio">
-                  <Radio value={'investor'}>投资人</Radio>
-                  <Radio value={'trader'}>交易师</Radio>
+                  
+                  <Radio value={'investor'}>{i18n('account.investor')}</Radio>
+                  { foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio> }
                 </RadioGroup>
               )}
             </div>
@@ -395,9 +397,9 @@ class Register extends React.Component {
                 <Col span={12}>
                   {getFieldDecorator("code", {
                     rules: [{
-                      required: true, message: '请输入验证码',
+                      required: true, message: i18n("account.input_the_code"),
                     }],
-                  })(<Input style={formInputStyle} placeholder="请输入验证码" />)}
+                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)}
                 </Col>
                 <Col span={12}>
                   <Button
@@ -422,66 +424,65 @@ class Register extends React.Component {
             </div>
 
             <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">邮箱：</label>
-              {getFieldDecorator("email", { rules: [{required: true, message: '请输入邮箱'}, {type: 'email'}]})(
+              <label style={labelStyle} className="mb0">{i18n("account.email")}：</label>
+              {getFieldDecorator("email", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]})(
                 <Input style={inputStyle} />
               )}
             </div>
 
             <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">姓名：</label>
-              {getFieldDecorator("username", { rules: [{required: true, message: '请输入姓名'}]})(
+              <label style={labelStyle} className="mb0">{i18n("account.name")}：</label>
+              {getFieldDecorator("username", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.name")}]})(
                 <Input style={inputStyle} />
               )}
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">机&nbsp;&nbsp;&nbsp;&nbsp;构</label>
-              {getFieldDecorator("organization", { rules: [{required: true, message: '请选择或填写机构'}] })(
+              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
+              {getFieldDecorator("organization", { rules: [{required: true, message: i18n("account.please_select") + i18n("account.org")}] })(
                 <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
               )}
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">职&nbsp;&nbsp;&nbsp;&nbsp;位</label>
-              {getFieldDecorator("title", {rules: [{required: true, message: '请选择职位'}]})(
+              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Position" : "职 位"}</label>
+              {getFieldDecorator("title", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.position")}]})(
                 <SelectTitle showSearch className="it-login-select" />
               )}
             </div>
 
             <div style={selectWrapStyle}>
-              <label style={selectLabelStyle} className="mb0">标&nbsp;&nbsp;&nbsp;&nbsp;签</label>
-              {getFieldDecorator("tags", {rules: [{required: true, message: '请选择标签'}, {type: 'array'}]})(
+              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Tags" : "标 签"}</label>
+              {getFieldDecorator("tags", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]})(
                 <SelectTag mode="multiple" className="it-login-select-multiple" />
               )}
             </div>
 
             <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">密码：</label>
-              {getFieldDecorator("password", { rules: [{required: true, message: '请输入密码'}]})(
+              <label style={labelStyle} className="mb0">{i18n("account.password")}：</label>
+              {getFieldDecorator("password", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}]})(
                 <Input style={inputStyle} type="password" />
               )}
             </div>
 
             <div style={{...wrapStyle,marginBottom:0}}>
-              <label style={labelStyle} className="mb0">确认密码：</label>
-              {getFieldDecorator("confirm", { rules: [{required: true, message: '请输入密码'}, {validator: confirmValidator}]})(
+              <label style={labelStyle} className="mb0">{i18n("account.confirm_password")}：</label>
+              {getFieldDecorator("confirm", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]})(
                 <Input style={inputStyle} type="password" />
               )}
             </div>
 
             <div style={{padding:'8px 16px'}}>
-              {getFieldDecorator("agreement", { rules: [{required: true, message: '请阅读并接受免责声明'}, {type: 'boolean'}, {validator: checkAgreement}] })(
-                <Checkbox className="it" style={{color:'#fff'}}>已阅读并接受</Checkbox>
+              {getFieldDecorator("agreement", { rules: [{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}] })(
+                <Checkbox className="it" style={{color:'#fff'}}>{i18n('account.agreement1')}</Checkbox>
               )}
-              <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>“免责声明” “平台保密声明”...</Link>
+              <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>{i18n('account.agreement2')}</Link>
             </div>
 
-            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>提交</Button>
+            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
 
             <div style={{padding:'8px 16px'}}>
-              已有账号？
-              <Link to="/login" style={{textDecoration: 'underline', color:'#237ccc'}}>立即登录</Link>
+              {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
             </div>
 
           </div>

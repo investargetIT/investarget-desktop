@@ -87,11 +87,11 @@ class Register1 extends React.Component {
     }
 
     return (
-      <LoginContainer>
+      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <div style={formStyle}>
           <Form onSubmit={this.handleSubmit} className="it-login-form">
-            <h1 style={formTitleStyle}>手机注册</h1>
-            <p style={formSubtitleStyle}>输入正确的手机号码！</p>
+            <h1 style={formTitleStyle}>{i18n("account.register")}</h1>
+            <p style={formSubtitleStyle}>{i18n("account.input_phone_number")}</p>
 
               {getFieldDecorator('mobileInfo', {
                 rules: [{ required: true }, { type: 'object' }, { validator: check }],
@@ -100,10 +100,10 @@ class Register1 extends React.Component {
                 <GlobalMobile />
               )}
 
-            <Button style={submitStyle} type="primary" htmlType="submit">下一步</Button>
+            <Button style={submitStyle} type="primary" htmlType="submit">{i18n('common.next')}</Button>
 
             <div style={{padding:8}}>
-              已有账号？<Link to="/login" style={{textDecoration:'underline'}}>立即登录</Link>
+              {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
             </div>
           </Form>
         </div>

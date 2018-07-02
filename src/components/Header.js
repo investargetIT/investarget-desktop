@@ -4,7 +4,7 @@ import { Link } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
 import qs from 'qs'
-import { i18n } from '../utils/util'
+import { i18n, changeLang } from '../utils/util'
 import styles from './Header.css'
 import classNames from 'classnames'
 import SiteSearch from './SiteSearch'
@@ -106,9 +106,9 @@ function Header(props) {
         })
         break
       case "lang":
-        const url = location.basename === "/en" ? location.pathname : `/en${location.pathname}`
-        const query = qs.stringify(location.query)
-        window.location.href = url + (query.length > 0 ? '?' + query : '')
+        changeLang(window.LANG === 'en' ? 'cn' : 'en').then(lang => {
+          props.changeLang && props.changeLang();
+        })
         break
       case "toggle_menu":
         dispatch({
@@ -140,7 +140,7 @@ function Header(props) {
 
   const lang = (
     <div className={styles["nav-item"]} onClick={()=>{handleMenuClicked({key:'lang'})}}>
-      {location.basename === "/en" ? "中文" : "EN"}
+      {window.LANG === "en" ? "中文" : "EN"}
     </div>
   )
 
@@ -164,7 +164,7 @@ function Header(props) {
       <div style={{height: 50,float: 'right'}} className="clearfix">
         { currentUser ? null : login }
         { currentUser ? null : register }
-        {/* { lang } */}
+        { lang }
         { currentUser ? <UserProfile user={currentUser} onMenuClick={handleMenuClicked} /> : null }
         {/* { currentUser ? chat : null } */}
       </div>

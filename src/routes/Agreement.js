@@ -27,11 +27,11 @@ class Agreement extends React.Component {
   }
 
   render() {
-    const { basename } = this.props.location
+    // const { basename } = this.props.location
     return (
       <LeftRightLayout location={this.props.location} title={i18n('account.term_of_service')}>
         {
-          basename === "/en" ? (
+          window.LANG === "en" ? (
             <div>
               <h3 style={titleStyle}>Disclaimer</h3>
               <p style={boldParaStyle}>Solemn declaration: all the personal information that the company involves and collects will not open and provide to the third party without the client’s permission or authorization.</p>

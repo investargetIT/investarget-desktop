@@ -71,18 +71,18 @@ class Login extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <LoginContainer>
+      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
-            <h1 style={formTitleStyle}>立即登录</h1>
-            <p style={formSubtitleStyle}>登录访问您的账号！</p>
+            <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
+            <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
             <div style={{position:'relative', marginBottom:8}}>
               {getFieldDecorator('username', {
                 rules: [{ required: true, message: i18n('account.account_warning') }],
                 initialValue: this.username || '',
               })(
-                <Input placeholder="请输入用户名" style={formInputStyle} />
+                <Input placeholder={i18n('account.account_warning')} style={formInputStyle} />
               )}
               <div style={inputIconStyle}>
                 <img src="/images/sign-in-username.jpg" style={{verticalAlign:'top'}} />
@@ -94,7 +94,7 @@ class Login extends React.Component {
                 rules: [{ required: true, message: i18n('account.password_warning') }],
                 initialValue: this.password || '',
               })(
-                <Input placeholder="请输入密码" style={formInputStyle} type="password" />
+                <Input placeholder={i18n('account.password_warning')} style={formInputStyle} type="password" />
               )}
               <div style={inputIconStyle}>
                 <img src="/images/sign-in-password.jpg" style={{verticalAlign:'top'}} />
@@ -106,14 +106,14 @@ class Login extends React.Component {
                 valuePropName: 'checked',
                 initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
               })(
-                <Checkbox className="it" style={{color:'#fff'}}>下次自动登录</Checkbox>
+                <Checkbox className="it" style={{color:'#fff'}}>{i18n('account.auto_login')}</Checkbox>
               )}
               <Link style={{float:'right',textDecoration:'underline'}} to="/password">{i18n("account.forget_password")}</Link>
             </div>
 
-            <Button htmlType="submit" style={submitStyle}>登录</Button>
+            <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
             <div style={{padding:8}}>
-              还没有账号，<Link to="/register1" style={{textDecoration:'underline'}}>立即注册</Link>
+              {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{textDecoration:'underline'}}>{i18n('account.directly_register')}</Link>
             </div>
           </div>
         </Form>

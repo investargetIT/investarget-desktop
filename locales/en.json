@@ -30,10 +30,17 @@
     "schedule_management": "Schedule Management",
     "schedule_list": "Schedule List",
     "my_schedule": "My Schedule",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "project_dataroom": "Project Dataroom"
   },
   "account": {
     "login": "Login",
+    "directly_login": "Login",
+    "directly_register": "Register Here",
+    "login_message": "Please Login to Access Your Account!",
+    "dont_have_account_yet": "Don't Have Account Yet? ",
+    "have_account_already": "Already Have An Account? ",
+    "auto_login": "Remember My Account",
     "account_warning": "Please input account",
     "account": "Account",
     "password_warning": "Please input password",
@@ -42,10 +49,14 @@
     "forget_password": "Forget Password?",
     "register": "Sign up",
     "role": "Role",
+    "select_role": "Please Select Role",
     "mobile": "Mobile Phone",
     "code": "Verification code",
     "fetch_code": "Get code",
     "email": "Email",
+    "name": "Name",
+    "please_input": "Please Input Your ",
+    "please_select": "Please Select Your ",
     "username": "Full Name",
     "investor": "Investor",
     "trader": "Transaction Manager",
@@ -54,7 +65,9 @@
     "org": "Institution",
     "old_password": "Old Password",
     "confirm_password": "Confirm Password",
-    "agreement": "I am responsible for the authenticity, accuracy, legitimacy and non-misleading of the listing content above.",
+    "confirm_agreement": "Please Read and Confirm the Agreement",
+    "agreement1": "I am responsible for the ",
+    "agreement2": "authenticity, accuracy, and ...",
     "please_check_agreement": "Please read and agree to term of use!",
     "logout": "Logout",
     "modify_profile": "Modify Profile",
@@ -71,7 +84,11 @@
     "choose_tags": "Please choose your favorite tags!",
     "choose_position": "Please select your position",
     "reset_password": "Reset Password",
-    "password_reset_ok": "Password reset successfully, please login again"
+    "reset_info": "Enter Your Phone Number to Reset Password!",
+    "input_the_code": "Input Verification Code",
+    "input_new_password": "Please Enter Your New Password",
+    "password_reset_ok": "Password reset successfully, please login again",
+    "input_phone_number": "Please Enter Your Phone Number Below!"
   },
 
   "project_library": {

@@ -49,6 +49,10 @@ const actionStyle = {
 
 class LeftRightLayout extends React.Component {
 
+  reload() {
+    window.location.reload()
+  }
+
   render () {
 
     const content = (
@@ -63,12 +67,12 @@ class LeftRightLayout extends React.Component {
     const sideBarAndContent = (
       <Layout style={{}}>
 
-        <Header location={this.props.location} style={headStyle} />
+        <Header location={this.props.location} style={headStyle} changeLang={this.reload.bind(this)} />
 
         <Layout style={{marginTop: 50,paddingTop:20}}>
 
           <Sider width={240} style={siderStyle} collapsedWidth={50} trigger={null} collapsible collapsed={this.props.collapsed}>
-            <SiderMenu collapsed={this.props.collapsed} theme="dark" />
+            <SiderMenu ref="sidemenu" collapsed={this.props.collapsed} theme="dark" />
           </Sider>
 
           <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
