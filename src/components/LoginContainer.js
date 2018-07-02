@@ -44,7 +44,7 @@ class LoginContainer extends React.Component {
         <div style={headerStyle}>
           <img src={logo} style={logoStyle} />
           <div style={{float: "right", marginRight: 30, lineHeight: "80px"}}>
-            <a onClick={this.changeLang.bind(this, 'cn')}>中文</a> / <a onClick={this.changeLang.bind(this, 'en')}>English</a>
+            <a onClick={this.changeLang.bind(this, 'cn')} disabled={window.LANG!=="en"}>中文</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a onClick={this.changeLang.bind(this, 'en')} disabled={window.LANG==="en"}>English</a>
           </div>
         </div>
         <div style={bodyWrapStyle}>
