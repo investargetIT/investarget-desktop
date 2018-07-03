@@ -72,7 +72,8 @@ export default {
         userInfo
       })
 
-      yield put(routerRedux.replace('/recommend-friends'));
+      if (user.type !== 14) yield put(routerRedux.replace('/recommend-friends'));
+      else yield put(routerRedux.replace('/app/dataroom/project/list'));
     },
   }
 }

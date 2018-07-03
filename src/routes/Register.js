@@ -290,6 +290,10 @@ class Register extends React.Component {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
   }
 
+  componentWillUnmount() {
+    if (this.state.intervalId !== null) clearInterval(this.state.intervalId);
+  }
+
   render() {
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -377,7 +381,7 @@ class Register extends React.Component {
               {getFieldDecorator('type', {rules: [{required: true, message: i18n('account.select_role')}]})(
                 <RadioGroup size="large" className="it-login-radio">
                   
-                  <Radio value={'investor'}>{i18n('account.investor')}</Radio>
+                  <Radio value={ foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
                   { foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio> }
                 </RadioGroup>
               )}
