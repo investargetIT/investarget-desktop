@@ -20,8 +20,7 @@ class GlobalMobile extends React.Component {
   componentWillReceiveProps(nextProps) {
     if ('value' in nextProps && nextProps.value) {
       let { areaCode, mobile } = nextProps.value
-      let countryId = this.findCountryIDByAreaCode(areaCode)
-      this.setState({ countryId, areaCode, mobile })
+      this.setState({  areaCode, mobile });
     }
   }
 
