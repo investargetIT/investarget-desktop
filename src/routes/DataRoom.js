@@ -19,6 +19,7 @@ class DataRoom extends React.Component {
     const { id, isClose, projectID, projectTitle } = props.location.query
     this.state = {
       id: id,
+      projectID: projectID,
       isClose: isClose == 'true' ? true : false,
       title: decodeURIComponent(projectTitle),
       data: [],
@@ -40,6 +41,9 @@ class DataRoom extends React.Component {
   }
 
   componentDidMount() {
+    api.getProjLangDetail(this.state.projectID).then(res => {
+      this.setState({title: res.data.projtitle});
+    })
     this.getDataRoomFile()
     this.getAllUserFile()
   }
