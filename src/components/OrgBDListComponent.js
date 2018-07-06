@@ -495,6 +495,7 @@ class OrgBDListComponent extends React.Component {
     const mobile = user.userinfo && user.userinfo.mobile;
     const email = user.userinfo && user.userinfo.email;
     const wechat = user.userinfo && user.userinfo.wechat;
+    const title = user.usertitle && user.usertitle.name;
     return <div style={{minWidth: 180, maxWidth: 600}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
@@ -511,6 +512,8 @@ class OrgBDListComponent extends React.Component {
           { email ? 
           <SimpleLine title={i18n('user.email')} value={email} />
           : null }
+
+          <SimpleLine title={i18n('user.position')} value={title||'暂无'} />
 
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
 

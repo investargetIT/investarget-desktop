@@ -107,6 +107,7 @@ class NewOrgBDList extends React.Component {
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   getOrgBdList = () => {
@@ -633,6 +634,12 @@ class NewOrgBDList extends React.Component {
           dataIndex: 'email',
           render: text => !text || text.includes('@investarget') ? '暂无' : text,
         },
+        {
+          title: i18n('user.position'),
+          key: 'position',
+          dataIndex: 'title',
+          render: text => text && this.props.title.filter(f => f.id === text)[0].name,
+        },
         { 
           title: '标签', 
           key: 'tags', 
@@ -796,8 +803,8 @@ class NewOrgBDList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { famlv, orgbdres, tag } = state.app;
-  return { famlv, orgbdres, tag };
+  const { famlv, orgbdres, tag, title } = state.app;
+  return { famlv, orgbdres, tag, title };
 }
 export default connect(mapStateToProps)(NewOrgBDList);
 
