@@ -586,6 +586,7 @@ export const downloadDataRoom = (dataroomID, investorID) => {
   let url = `/dataroom/downzip/${dataroomID}/?user=${investorID}&token=${user.token}`;
   return baseUrl + url;
 };
+
 /**
  * 生成 Dataroom 压缩包
  * @param {Number} dataroomID - dataroom 的 id
@@ -863,3 +864,6 @@ export const deleteOrgCooperation = id => r(`/org/cooprelation/${id}/`, 'DELETE'
 export const deleteOrgBuyout = id => r(`/org/buyout/${id}/`, 'DELETE');
 
 export const sendProjPdfToWechatGroup = id => r(`/proj/sendpdf/${id}/`, 'POST');
+
+export const addOrgExport = body => r(`/org/excel/`, 'POST', body);
+export const getOrgExportDownloadUrl = filename => `${baseUrl}/org/excel/?filename=${filename}&token=${getCurrentUserInfo().token}`;

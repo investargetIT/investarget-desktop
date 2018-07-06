@@ -41,6 +41,8 @@ class OrganizationList extends React.Component {
       loading: false,
       sort:undefined,
       desc:undefined,
+      selectedIds: [],
+      downloadUrl: null,
     }
   }
 
@@ -130,6 +132,33 @@ class OrganizationList extends React.Component {
     this.getOrg()
   }
 
+  handleExportBtnClicked = () => {
+    echo(this.state.selectedIds);
+
+    // api.addOrgExport({ org: this.state.selectedIds })
+    //   .then(result => echo(result))
+
+    const downloadUrl = api.getOrgExportDownloadUrl('2018-07-05.xls'); 
+    this.setState({ downloadUrl });
+    setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+
+    return;
+
+    this.setState({ isLoadingExportData: true });
+    api.getProjLibraryForExport({ com_ids: this.state.selectedIds })
+      .then(data => {
+        const { proj, event } = data.data;
+        proj.forEach(element => {
+          const projEvent = event.filter(f => f.com_id === element.com_id);
+          element.event = projEvent;
+        });
+        this.setState(
+          { isLoadingExportData: false, listForExport: proj },
+          this.exportExcel,
+        );
+      })
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -179,53 +208,74 @@ class OrganizationList extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.organization_management')} action={action}>
+
         <div>
 
-          <div>
-            <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+          <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-            <div style={{ overflow: 'auto' }}>
+          <div style={{ overflow: 'auto' }}>
 
-              <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
-                <Search 
-                  style={{ width: 250 }} 
-                  placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')} 
-                  onSearch={() => this.setState({ page: 1 }, this.getOrg)}
-                  onChange={search => this.setState({ search })}
-                  value={search}
-                />
-              </div>
-
-              <div style={{ float: 'right' }}>
-                {i18n('common.sort_by_created_time')}
-                <Select size="large" style={{marginLeft: 8}} defaultValue="desc" onChange={this.handleSortChange}>
-                  <Option value="asc">{i18n('common.asc_order')}</Option>
-                  <Option value="desc">{i18n('common.dec_order')}</Option>
-                </Select>
-              </div>
+            <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
+              <Search
+                style={{ width: 250 }}
+                placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
+                onSearch={() => this.setState({ page: 1 }, this.getOrg)}
+                onChange={search => this.setState({ search })}
+                value={search}
+              />
             </div>
 
-            <Table onChange={this.handleTableChange} style={tableStyle} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-            
-            <div style={{ fontSize: 13, marginTop: 14, float: 'left' }}>
-              <img style={{ width: 10 }} src="/images/certificate.svg" />表示Top机构，
-              <Icon type="user" />表示该机构下有联系方式的投资人数量
+            <div style={{ float: 'right' }}>
+              {i18n('common.sort_by_created_time')}
+              <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
+                <Option value="asc">{i18n('common.asc_order')}</Option>
+                <Option value="desc">{i18n('common.dec_order')}</Option>
+              </Select>
             </div>
-
-            <Pagination 
-              style={paginationStyle} 
-              total={total} 
-              current={page} 
-              pageSize={pageSize} 
-              onChange={this.handlePageChange} 
-              showSizeChanger 
-              onShowSizeChange={this.handlePageSizeChange} 
-              showQuickJumper
-              pageSizeOptions={PAGE_SIZE_OPTIONS}
-            />
 
           </div>
+
+          <Table
+            onChange={this.handleTableChange}
+            style={tableStyle}
+            columns={columns}
+            dataSource={list}
+            rowKey={record => record.id}
+            loading={loading}
+            pagination={false}
+            rowSelection={{ onChange: selectedIds => this.setState({ selectedIds }) }}
+          />
+
+          <div style={{ fontSize: 13, marginTop: 0, float: 'left' }}>
+            {/* <Button
+              disabled={this.state.selectedIds.length == 0}
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              size="large"
+              loading={this.state.isLoadingExportData}
+              onClick={this.handleExportBtnClicked}>
+              {i18n('project_library.export_excel')}
+            </Button> */}
+            <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
+            <Icon type="user" />表示该机构下有联系方式的投资人数量
+          </div>
+
+          <Pagination
+            style={paginationStyle}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+
         </div>
+
+        <iframe style={{ display: 'none' }} src={this.state.downloadUrl}></iframe>
+
       </LeftRightLayout>
     )
 
