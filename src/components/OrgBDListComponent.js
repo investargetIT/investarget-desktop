@@ -662,6 +662,17 @@ class OrgBDListComponent extends React.Component {
     return false;
   }
 
+  isAbleToModifyStatus = record => {
+    if (hasPerm('BD.manageOrgBD')) {
+      return true;
+    }
+    const currentUserID = getUserInfo() && getUserInfo().id;
+    if ([this.state.makeUser, this.state.takeUser, record.manager.id, record.createuser.id].includes(currentUserID)) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -770,7 +781,7 @@ class OrgBDListComponent extends React.Component {
               return (
                 <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
 
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.manager.id ? 
+                { this.isAbleToModifyStatus(record) ? 
                 <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
                   <div style={{marginRight:4}}>
                   <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
