@@ -4,7 +4,8 @@ import {
   Popconfirm, 
   Row, 
   Col, 
-  Icon, 
+  Icon,
+  Popover,
 } from 'antd';
 import { SelectExistUser } from '../components/ExtraInput'
 import { 
@@ -19,6 +20,17 @@ const rowStyle = {
   marginBottom: 4,
   paddingBottom: 4,
   borderBottom: '1px dashed #f2f2f2',
+}
+
+function generatePopoverContent(item, onDeleteUser) {
+  return <div>
+    <div style={{ textAlign: 'center' }}>{item.user.username}</div>
+    <div style={{ textAlign: 'center', marginTop: 10 }}>
+      <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+        <Button type="danger">移除</Button>
+      </Popconfirm>
+    </div>
+  </div>;
 }
 
 function DataRoomUser(props) {
@@ -41,17 +53,14 @@ function DataRoomUser(props) {
 
     <Col span={ isAbleToAddUser ? 15 : 24 }>
       {list.map(item => (
-        <div key={item.id} onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
-          <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
-          {props.selectedUser === item.user.id ?
-            <div>
-              <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
-              <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
-                <div style={{ position: 'absolute', top: -12, right: -8, cursor: 'pointer' }}>x</div>
-              </Popconfirm>
-            </div>
-            : null}
-        </div>
+        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser)}>
+          <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
+            <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+            { props.selectedUser === item.user.id ?
+            <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
+            : null }
+          </div>
+        </Popover>
       ))}
     </Col>
 
