@@ -362,9 +362,12 @@ class DataRoom extends React.Component {
   }
 
   handleSelectUser = (value) => {
-    this.setState({ selectedUser: value })
-    const list = this.state.fileUserList.filter(item => item.user == value)
-    this.setState({ targetUserFileList: list })
+    if (value === this.state.selectedUser) {
+      this.setState({ selectedUser: null, targetUserFileList: [] });
+    } else {
+      const list = this.state.fileUserList.filter(item => item.user == value)
+      this.setState({ selectedUser: value, targetUserFileList: list });
+    }
   }
 
   handleToggleVisible = (id) => {
