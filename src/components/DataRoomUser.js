@@ -22,11 +22,14 @@ const rowStyle = {
   borderBottom: '1px dashed #f2f2f2',
 }
 
-function generatePopoverContent(item, onDeleteUser) {
+function generatePopoverContent(item, onDeleteUser, onSendEmail) {
   return <div>
     <div style={{ textAlign: 'center' }}>{item.user.username}</div>
     <div style={{ textAlign: 'center', marginTop: 10 }}>
-      <Popconfirm key={item.id} title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+      <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
+        <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+      </Popconfirm>
+      <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
         <Button type="danger">移除</Button>
       </Popconfirm>
     </div>
@@ -34,7 +37,7 @@ function generatePopoverContent(item, onDeleteUser) {
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
   return <Row>
@@ -53,11 +56,14 @@ function DataRoomUser(props) {
 
     <Col span={ isAbleToAddUser ? 15 : 24 }>
       {list.map(item => (
-        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser)}>
+        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail)}>
           <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
             <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
             { props.selectedUser === item.user.id ?
-            <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>{item.user.username}</div>
+            <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            {/* {item.user.username} */}
+              <img style={{ width: 20 }} src="/images/check.png" />
+            </div>
             : null }
           </div>
         </Popover>

@@ -361,6 +361,10 @@ class DataRoom extends React.Component {
     })
   }
 
+  handleSendEmail = item => {
+    // TODO
+  }
+
   handleSelectUser = (value) => {
     if (value === this.state.selectedUser) {
       this.setState({ selectedUser: null, targetUserFileList: [] });
@@ -459,6 +463,7 @@ class DataRoom extends React.Component {
               onDeleteUser={this.handleDeleteUser}
               selectedUser={this.state.selectedUser}
               onChange={this.handleSelectUser}
+              onSendEmail={this.handleSendEmail}
             />
           </div>
           : null}

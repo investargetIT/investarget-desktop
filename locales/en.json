@@ -458,7 +458,7 @@
     "visible": "Visible",
     "invisible": "Invisible",
     "click_toggle_visible": "Click to toggle visible",
-
+    "send_email_notification": "Send Email",
     "message": {
       "confirm_delete_files": "Delete those files?",
       "error_move_files": "不能将文件复制或移动到自身及子目录下",

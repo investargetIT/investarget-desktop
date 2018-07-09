@@ -489,7 +489,7 @@
     "visible": "可见",
     "invisible": "不可见",
     "click_toggle_visible": "点击切换可见状态",
-
+    "send_email_notification": "发送邮件通知",
     "message": {
       "confirm_delete_files": "确定删除吗？",
       "error_move_files": "不能将文件复制或移动到自身及子目录下",
