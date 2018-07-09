@@ -379,7 +379,7 @@ class IndexPage extends React.Component {
                 <Row name="board" style={{ backgroundColor: '#F08699', margin: '0 10px 10px'}}>
                   <Col span={8}>
                     <div style={{ height: hasPerm('BD.user_getOrgBD') || hasPerm('BD.manageOrgBD') ? 70 : 150, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>                      
-                      <img  style={{ margin: '0 auto' }} src="./images/calendar.png"/>
+                      <img  style={{ height: 40, margin: '0 auto' }} src="./images/calendar.png"/>
                     </div>
                   </Col>
                   <Col span={16}>
@@ -396,7 +396,7 @@ class IndexPage extends React.Component {
                 <Row name="board" style={{ backgroundColor: '#918DCE', margin: '0 10px'}}>
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                      <img  style={{  margin: '0 auto' }} src="./images/org.png"/>
+                      <img  style={{ height: 40, margin: '0 auto' }} src="./images/org.png"/>
                     </div>
                   </Col>
           <Link to="app/org/bd?status=3">
@@ -447,7 +447,7 @@ class IndexPage extends React.Component {
             <Row name="board" style={{ backgroundColor: '#E1C17A', margin: '0 10px'}}>
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <img  style={{ margin: '0 auto' }} src="./images/projBD.png"/>
+                  <img  style={{ height: 40, margin: '0 auto' }} src="./images/projBD.png"/>
                 </div>
               </Col>
           <Link to="/app/projects/bd?status=3">
