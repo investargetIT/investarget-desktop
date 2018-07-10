@@ -1361,7 +1361,7 @@ class SelectMultiOrgs extends React.Component {
   constructor(props) {
     super(props);
     this.lastFetchId = 0;
-    this.fetchUser = debounce(this.fetchOrg, 800);
+    this.fetchOrg = debounce(this.fetchOrg, 800);
   }
   state = {
     data: [],
@@ -1372,7 +1372,7 @@ class SelectMultiOrgs extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    api.getOrg({ search: value, issub: false, page_size: 1000 })
+    api.getOrg({ search: value, issub: false, page_size: 1000, proj: this.props.proj })
       .then(body => {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;

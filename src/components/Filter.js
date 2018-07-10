@@ -897,9 +897,11 @@ class OrgBDFilter extends React.Component {
             <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')}/>
           </BasicContainer>
 
+          { this.state.proj !== null ?
           <BasicContainer label="机构">
-            <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} />
+            <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
           </BasicContainer>
+          : null }
 
           <BasicContainer label={i18n('project_bd.bd_manager')}>
             <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
