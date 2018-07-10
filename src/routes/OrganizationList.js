@@ -133,30 +133,16 @@ class OrganizationList extends React.Component {
   }
 
   handleExportBtnClicked = () => {
-    echo(this.state.selectedIds);
-
-    // api.addOrgExport({ org: this.state.selectedIds })
-    //   .then(result => echo(result))
-
-    const downloadUrl = api.getOrgExportDownloadUrl('2018-07-05.xls'); 
-    this.setState({ downloadUrl });
-    setTimeout(() => this.setState({ downloadUrl: null }), 1000);
-
-    return;
-
-    this.setState({ isLoadingExportData: true });
-    api.getProjLibraryForExport({ com_ids: this.state.selectedIds })
-      .then(data => {
-        const { proj, event } = data.data;
-        proj.forEach(element => {
-          const projEvent = event.filter(f => f.com_id === element.com_id);
-          element.event = projEvent;
-        });
-        this.setState(
-          { isLoadingExportData: false, listForExport: proj },
-          this.exportExcel,
-        );
-      })
+    api.addOrgExport({ org: this.state.selectedIds.join(',') })
+      .then(() => Modal.success({
+          title: '请求已成功发送',
+          content: '请稍后在导出任务中进行下载',
+        })
+      )
+      .catch(error => this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      }));
   }
 
   render() {
@@ -247,7 +233,7 @@ class OrganizationList extends React.Component {
           />
 
           <div style={{ fontSize: 13, marginTop: 0, float: 'left' }}>
-            {/* <Button
+            <Button
               disabled={this.state.selectedIds.length == 0}
               style={{ backgroundColor: 'orange', border: 'none' }}
               type="primary"
@@ -255,7 +241,7 @@ class OrganizationList extends React.Component {
               loading={this.state.isLoadingExportData}
               onClick={this.handleExportBtnClicked}>
               {i18n('project_library.export_excel')}
-            </Button> */}
+            </Button>
             <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
             <Icon type="user" />表示该机构下有联系方式的投资人数量
           </div>
