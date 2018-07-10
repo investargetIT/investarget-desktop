@@ -32,7 +32,9 @@
     "my_schedule": "我的日程表",
     "dashboard": "Dashboard",
     "project_dataroom": "Data Room",
-    "company_dataroom": "公司文件" 
+    "company_dataroom": "公司文件",
+    "list_organization": "机构列表",
+    "exportexcel_organization": "导出任务"
   },
   "account": {
     "login": "登录",

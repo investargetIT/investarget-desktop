@@ -866,4 +866,5 @@ export const deleteOrgBuyout = id => r(`/org/buyout/${id}/`, 'DELETE');
 export const sendProjPdfToWechatGroup = id => r(`/proj/sendpdf/${id}/`, 'POST');
 
 export const addOrgExport = body => r(`/org/excel/`, 'POST', body);
-export const getOrgExportDownloadUrl = filename => `${baseUrl}/org/excel/?filename=${filename}&token=${getCurrentUserInfo().token}`;
+export const getOrgExportList = param => r(`/org/excel/?${qs.stringify(param)}`);
+export const getOrgExportDownloadUrl = id => `${baseUrl}/org/excel/${id}/?token=${getCurrentUserInfo().token}`;

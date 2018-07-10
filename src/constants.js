@@ -25,7 +25,7 @@ export const KEY_TO_URI = {
   "project_bd": "/app/projects/bd",
   "meeting_bd": "/app/meeting/bd",
   "platform_projects": URI_1,
-  "organization_management": URI_3,
+  "list_organization": URI_3,
   "organization_bd": "/app", // todo?
   "email_management": URI_4,
   "timeline_management": URI_5,
@@ -47,6 +47,7 @@ export const KEY_TO_URI = {
   "my_schedule": "/app/schedule",
   "dashboard": "/app",
   "organization_bd": "/app/org/bd",
+  "exportexcel_organization": "/app/org/export"
 }
 
 export const URI_TO_KEY = {

@@ -31,7 +31,9 @@
     "schedule_list": "Schedule List",
     "my_schedule": "My Schedule",
     "dashboard": "Dashboard",
-    "project_dataroom": "Project Dataroom"
+    "project_dataroom": "Project Dataroom",
+    "list_organization": "Organization List",
+    "exportexcel_organization": "Export List"
   },
   "account": {
     "login": "Login",

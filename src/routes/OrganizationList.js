@@ -145,6 +145,17 @@ class OrganizationList extends React.Component {
       }));
   }
 
+  handleRowSelectionChange = selectedIds => {
+    if (selectedIds.length > 300) {
+      Modal.error({
+        title: '无效操作',
+        content: '最多导出300家机构',
+      })
+      return;
+    }
+    this.setState({ selectedIds })
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -229,7 +240,7 @@ class OrganizationList extends React.Component {
             rowKey={record => record.id}
             loading={loading}
             pagination={false}
-            rowSelection={{ onChange: selectedIds => this.setState({ selectedIds }) }}
+            rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
           />
 
           <div style={{ fontSize: 13, marginTop: 0, float: 'left' }}>
