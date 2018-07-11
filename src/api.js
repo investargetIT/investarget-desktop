@@ -868,3 +868,4 @@ export const sendProjPdfToWechatGroup = id => r(`/proj/sendpdf/${id}/`, 'POST');
 export const addOrgExport = body => r(`/org/excel/`, 'POST', body);
 export const getOrgExportList = param => r(`/org/excel/?${qs.stringify(param)}`);
 export const getOrgExportDownloadUrl = id => `${baseUrl}/org/excel/${id}/?token=${getCurrentUserInfo().token}`;
+export const sendEmailToDataroomUser = id => r(`/dataroom/user/${id}/`, 'POST');

@@ -362,7 +362,13 @@ class DataRoom extends React.Component {
   }
 
   handleSendEmail = item => {
-    // TODO
+    api.sendEmailToDataroomUser(item.id)
+      .then(result => {
+        echo(result);
+        Modal.success({ title: '邮件发送成功' });
+      })
+      .catch(handleError);
+    
   }
 
   handleSelectUser = (value) => {
