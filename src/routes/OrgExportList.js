@@ -9,6 +9,7 @@ import * as api from '../api';
 import {
   Table,
   Pagination,
+  Popover,
 } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
@@ -27,6 +28,7 @@ class OrgExportList extends React.Component {
       total: 0,
       loading: false,
       downloadUrl: null,
+      orgList: {},
     }
   }
 
@@ -59,6 +61,26 @@ class OrgExportList extends React.Component {
     setTimeout(() => this.setState({ downloadUrl: null }), 1000);
   }
 
+  handleShowOrgList = orgIDList => {
+    if (this.state.orgList[orgIDList]) {
+      return;
+    }
+    const ids = orgIDList.split(',');
+    api.getOrg({
+      ids,
+      page_size: ids.length
+    })
+      .then(result => this.setState({ orgList: { ...this.state.orgList, [orgIDList]: result.data.data }}))
+  }
+
+  generatePopoverContent = idsString => {
+    if (this.state.orgList[idsString]) {
+      return this.state.orgList[idsString].map(m => m.orgname).join('，');
+    } else {
+      return '加载中...';
+    }
+  }
+
   render () {
     const { total, list, loading, page, pageSize } = this.state;
     const columns = [
@@ -84,6 +106,14 @@ class OrgExportList extends React.Component {
         key: 'status', 
         dataIndex: 'status', 
         render: text => this.props.exportStatus.filter(f => f.id === text)[0].name
+      },
+      {
+        title: '导出机构',
+        key: 'orglist',
+        dataIndex: 'orglist',
+        render: value => <Popover content={this.generatePopoverContent(value)}>
+          <a href="#" onMouseOver={this.handleShowOrgList.bind(this, value)}>查看</a>
+        </Popover>
       },
       {
         title: '操作',
