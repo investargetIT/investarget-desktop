@@ -171,7 +171,7 @@ class ProjectLibraryItem extends React.Component {
             <div>
               {events.length ? events.map(event => {
                 return (
-                  <div key={event.invse_id} style={{padding:'8px 0',borderBottom:'1px dashed #e1e8ee',display:'flex',alignItems:'center'}}>
+                  <div key={event.id} style={{padding:'8px 0',borderBottom:'1px dashed #e1e8ee',display:'flex',alignItems:'center'}}>
                     <div style={{width: '160px'}}>{event.date}</div>
                     <div style={{flex: 1}}>
                       <div style={{marginBottom:'4px'}}>
@@ -179,7 +179,11 @@ class ProjectLibraryItem extends React.Component {
                         <span style={{display:'inline-block', width:'40%'}}>{event.money}</span>
                       </div>
                       <div style={{}}>
-                        {event.invsest_with ? event.invsest_with.map((item,index) => <span key={index} style={{marginRight:'4px'}}>{item.invst_name}</span>) :null}
+                        { 
+                          event.investormerge === 1 ? 
+                          event.invsest_with ? event.invsest_with.map((item,index) => <span key={index} style={{marginRight:'4px'}}>{item.invst_name}</span>) : null
+                          : (event.merger_with || '') + (event.merger_with && event.merger_equity_ratio ? '，并购股份：' + event.merger_equity_ratio : '')
+                        }
                       </div>
                     </div>
                   </div>
