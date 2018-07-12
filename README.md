@@ -45,7 +45,15 @@ historyApiFallback: {
 ## favoritetype类型说明
 1-系统推荐，2-后台人员推荐，3-交易师推荐，4-主动收藏，5-感兴趣
 
-## Deploy
+## 发布
+
+### 测试环境
+```
+NODE_ENV=development yarn build
+scp -r dist/* summer@192.168.1.251:/var/www/investarget-web/investarget-desktop/
+```
+
+### 生产环境
 ```
 yarn build
 scp -r dist/* root@www.investarget.com:/var/www/investarget-web/investarget-desktop/
