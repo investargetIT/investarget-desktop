@@ -894,7 +894,7 @@ class OrgBDFilter extends React.Component {
       return (
         <div>
           <BasicContainer label="项目">
-            <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')}/>
+            <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} />
           </BasicContainer>
 
           { this.state.proj !== null ?

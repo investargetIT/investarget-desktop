@@ -535,6 +535,7 @@ class SelectExistProject extends React.Component {
     params = { ...params }
     params['skip_count'] = (params['page_index'] - 1) * params['page_size']
     params['max_size'] = params['page_size']
+    params['bdm'] = this.props.bdm;
     delete params['page_index']
     delete params['page_size']
     return api.getProj(params).then(result => {
