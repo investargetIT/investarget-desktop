@@ -824,7 +824,7 @@ export class Trader extends React.Component {
       data.forEach(item => {
         const trader = item.traderuser
         if (trader) {
-          list.push({ label: trader.username, value: trader.id, onjob: trader.onjob })
+          list.push({ label: trader.username, value: trader.id, onjob: trader.onjob, familiar: item.familiar });
         }
         this.setState({ list });
       })
@@ -836,12 +836,19 @@ export class Trader extends React.Component {
     })
   }
   render () {
-    const traders=this.state.list.length>0 ? this.state.list.map(m =>m.label).join(',') :'暂无'
     return <span>
-      {traders}
+      { this.state.list.length > 0 ? 
+        this.state.list.map(m => <span key={m.value}>
+          <span>{m.label}</span>
+          <span style={{ color: 'red' }}>
+            ({this.props.famlv.filter(f => f.id === m.familiar)[0].score})
+          </span>
+        </span>)
+      : '暂无' }
     </span>
   }
 }
+Trader = connect(mapStateToProps)(Trader);
 
 export function SimpleLine(props) {
   return (
