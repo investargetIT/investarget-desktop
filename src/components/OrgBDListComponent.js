@@ -134,6 +134,9 @@ class OrgBDListComponent extends React.Component {
         const makeUser = result.data.makeUser && result.data.makeUser.id;
         const takeUser = result.data.takeUser && result.data.takeUser.id;
         this.setState({ makeUser, takeUser });
+        if (this.props.editable) {
+          this.writeSetting();
+        }
       })
       .catch(handleError);
     }
@@ -160,10 +163,13 @@ class OrgBDListComponent extends React.Component {
       }
     }
 
+    let baseResult, baseList;
     requestApi(params)
-    .then(baseResult => {
-      let baseList = baseResult.data.data
-      api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
+      .then(result => {
+        baseResult = result;
+        baseList = baseResult.data.data;
+        return api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
+      })
       .then(result => {
         let list = result.data.data
         let orgList = {}
@@ -181,12 +187,7 @@ class OrgBDListComponent extends React.Component {
           expanded: baseList.map(item => `${item.org}-${item.proj}`),
         }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)));
       })
-    })
-
-    if (this.props.editable) {
-      this.writeSetting();
-    }
-    
+      .catch(handleError);
   }
 
   getOrgBdListDetail = (org, proj) => {
