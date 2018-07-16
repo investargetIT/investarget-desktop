@@ -27,7 +27,7 @@ class EditUser extends React.Component {
     this.state = {
       data: {}
     }
-    this.majorRelation = null
+    this.majorRelation = []
     this.minorRelation = []
   }
 
