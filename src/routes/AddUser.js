@@ -63,7 +63,7 @@ class AddUser extends React.Component {
         .then(result => {
           if (this.isTraderAddInvestor && result) {
             const body = {
-              relationtype: false,
+              relationtype: true,
               investoruser: result.data.id,
               traderuser: isLogin().id
             }
@@ -107,7 +107,7 @@ class AddUser extends React.Component {
   handleAddRelation = () => {
     this.setState({ confirmLoading: true })
     const body = {
-      relationtype: false,
+      relationtype: true,
       investoruser: this.state.user.id,
       traderuser: isLogin().id
     }
