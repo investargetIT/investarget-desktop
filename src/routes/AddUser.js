@@ -135,6 +135,7 @@ class AddUser extends React.Component {
         title={title}>
 
         <AddUserForm type="add"
+          isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
