@@ -199,7 +199,7 @@ class UserForm extends React.Component {
             <SelectTrader mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
               onDeselect={this.props.onDeselectMinorTrader}
-              disabled={!getFieldValue('major_trader')}
+              // disabled={!getFieldValue('major_trader')}
               disabledOption={getFieldValue('major_trader')} />
           </BasicFormItem>
         </div>

@@ -167,7 +167,7 @@ class EditUser extends React.Component {
       traderuser: value,
       relationtype: isSelectMajorTrader
     }
-    if (isSelectMajorTrader && this.majorRelation) {
+    if (isSelectMajorTrader && Array.isArray(this.majorRelation) && this.majorRelation) {
       api.editUserRelation([{ ...body, id: this.majorRelation.id }])
       .then(data => {
         this.majorRelation = data.data[0]
