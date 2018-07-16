@@ -677,13 +677,27 @@ class OrgBDListComponent extends React.Component {
     return false;
   }
 
+  handleAddInvestorBtnClicked = org => {
+    echo('org', org);
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
-        {title: i18n('org_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:false},
+        {
+          title: i18n('org_bd.org'),
+          key:'org', 
+          sorter: false, 
+          render: (text, record) => record.org ? 
+            <div>
+              {record.org.orgname}
+              <a style={{ marginLeft: 10 }} href="#" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a>
+            </div>
+            : null, 
+        },
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 
@@ -861,7 +875,7 @@ class OrgBDListComponent extends React.Component {
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
-          expandRowByClick
+          // expandRowByClick
           dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
