@@ -310,6 +310,12 @@ class ProjectList extends React.Component {
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
               </Link>
 
+              { record.projstatus.id >= 4 && record.projstatus.id < 8 && (hasPerm('BD.manageOrgBD') || hasPerm('BD.user_getOrgBD')) ?
+              <Link to={'/app/org/bd?projId=' + record.id}>
+                <Button style={buttonStyle}>查看机构BD</Button>
+              </Link>
+              : null }
+
               <Link to={'/app/projects/edit/' + record.id}>
                 <Button style={buttonStyle} disabled={!record.action.change}  >{i18n("common.edit")}</Button>
               </Link>
