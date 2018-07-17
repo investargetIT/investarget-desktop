@@ -767,10 +767,14 @@ class OrgBDListComponent extends React.Component {
               />
             </div>
           } else {
-            const ms = moment(record.expirationtime).diff(moment());
-            const d = moment.duration(ms);
-            const remainDays = Math.ceil(d.asDays());
-            return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+            if (record.expirationtime) {
+              const ms = moment(record.expirationtime).diff(moment());
+              const d = moment.duration(ms);
+              const remainDays = Math.ceil(d.asDays());
+              return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+            } else {
+              return '无过期时间';
+            }
           }
         }, key:'createdtime', sorter:false},
         {

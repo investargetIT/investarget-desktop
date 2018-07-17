@@ -863,59 +863,66 @@ class MeetBDFilter extends React.Component {
 
 class OrgBDFilter extends React.Component {
 
-    static defaultValue = {
-      manager: [],
-      org: [],
-      proj: null,
-      response: null,
-    }
-
-    constructor(props) {
-      super(props)
-      this.state = props.defaultValue || OrgBDFilter.defaultValue
-    }
-
-    handleChange = (key, value) => {
-      this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
-    }
-
-    handleSearch = () => {
-      this.props.onSearch({ ...this.state })
-    }
-
-    handleReset = () => {
-      this.setState({ ...OrgBDFilter.defaultValue })
-      this.props.onReset({ ...OrgBDFilter.defaultValue })
-    }
-
-    render() {
-      const { response, source_type, location, manager, org, proj } = this.state;
-
-      return (
-        <div>
-          <BasicContainer label="项目">
-            <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} />
-          </BasicContainer>
-
-          { this.state.proj !== null ?
-          <BasicContainer label="机构">
-            <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
-          </BasicContainer>
-          : null }
-
-          <BasicContainer label={i18n('project_bd.bd_manager')}>
-            <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
-          </BasicContainer>
-
-          <BasicContainer label={i18n('project_bd.bd_status')}>
-            <RadioNewBDStatus value={response} onChange={this.handleChange.bind(this, 'response')} />
-          </BasicContainer>
-
-          <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
-        </div>
-      )
-    }
+  static defaultValue = {
+    manager: [],
+    org: [],
+    proj: null,
+    response: [],
   }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || OrgBDFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrgBDFilter.defaultValue })
+    this.props.onReset({ ...OrgBDFilter.defaultValue })
+  }
+
+  render() {
+    const { response, source_type, location, manager, org, proj } = this.state;
+    const orgbdresOptions = this.props.orgbdres.map(m => ({ label: m.name, value: m.id }));
+    
+    return (
+      <div>
+        <BasicContainer label="项目">
+          <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} />
+        </BasicContainer>
+
+        { this.state.proj !== null ?
+        <BasicContainer label="机构">
+          <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
+        </BasicContainer>
+        : null }
+
+        <BasicContainer label={i18n('project_bd.bd_manager')}>
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+        </BasicContainer>
+
+        <BasicContainer label={i18n('project_bd.bd_status')}>
+          <ITCheckboxGroup options={orgbdresOptions} value={response} onChange={this.handleChange.bind(this, 'response')} />
+        </BasicContainer> 
+
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
+
+function mapStateToPropsForOrgBDFilter(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+}
+OrgBDFilter = connect(mapStateToPropsForOrgBDFilter)(OrgBDFilter);
 
 class WxMessageFilter extends React.Component {
 
