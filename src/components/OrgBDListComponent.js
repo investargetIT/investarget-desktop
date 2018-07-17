@@ -523,7 +523,7 @@ class OrgBDListComponent extends React.Component {
           <SimpleLine title={i18n('user.email')} value={email} />
           : null }
 
-          <SimpleLine title={i18n('user.position')} value={title||'暂无'} />
+          {/* <SimpleLine title={i18n('user.position')} value={title||'暂无'} /> */}
 
           <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} />
 
@@ -562,9 +562,10 @@ class OrgBDListComponent extends React.Component {
 
   handleAddNew(record) {
     let key = Math.random()
+    const id = Math.random();
     let list = this.state.list.map(item => 
       item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
+        {...item, items: item.items.concat({id, key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
         item
     )
     this.setState({ list })
@@ -730,6 +731,18 @@ class OrgBDListComponent extends React.Component {
               : '暂无' }
             </div>
           },sorter:false},
+          {
+            title: '职位',
+            key: 'title',
+            render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
+          },
+          {title: i18n('org_bd.creator'), render: (text, record) => {
+            return record.new ? isLogin().username : record.createuser.username
+          }, dataIndex:'createuser.username', key:'createuser', sorter:false},
+          {title: i18n('org_bd.manager'), render: (text, record) => {
+            return record.new ? 
+            <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div style={{ width: 160 }}>{record.manager.username}</div>
+          }, dataIndex: 'manager.username', key:'manager', sorter:false},
         {title: '任务时间', render: (text, record) => {
           if (record.new) {
             return <div>
@@ -754,19 +767,12 @@ class OrgBDListComponent extends React.Component {
               />
             </div>
           } else {
-            const ms = moment(record.expirationtime).diff(moment(record.createdtime));
+            const ms = moment(record.expirationtime).diff(moment());
             const d = moment.duration(ms);
-            const remainDays = Math.floor(d.asDays());
+            const remainDays = Math.ceil(d.asDays());
             return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
           }
         }, key:'createdtime', sorter:false},
-        {title: i18n('org_bd.creator'), render: (text, record) => {
-          return record.new ? isLogin().username : record.createuser.username
-        }, dataIndex:'createuser.username', key:'createuser', sorter:false},
-        {title: i18n('org_bd.manager'), render: (text, record) => {
-          return record.new ? 
-          <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div style={{ width: 160 }}>{record.manager.username}</div>
-        }, dataIndex: 'manager.username', key:'manager', sorter:false},
         {
           title: i18n('org_bd.status'), 
           render: (text, record) => {
