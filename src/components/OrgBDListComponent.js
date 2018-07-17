@@ -730,9 +730,9 @@ class OrgBDListComponent extends React.Component {
               : '暂无' }
             </div>
           },sorter:false},
-        {title: i18n('org_bd.created_time'), render: (text, record) => {
-            return record.new ? 
-            <div>
+        {title: '任务时间', render: (text, record) => {
+          if (record.new) {
+            return <div>
               { timeWithoutHour(new Date()) + " - " }
               <DatePicker 
                 placeholder="过期时间"
@@ -753,7 +753,12 @@ class OrgBDListComponent extends React.Component {
                 onChange={v=>{this.updateSelection(record, {expirationtime: v})}}
               />
             </div>
-            : ( (timeWithoutHour(record.createdtime + record.timezone) + " - ") + (record.expirationtime ? timeWithoutHour(record.expirationtime + record.timezone) : "Now" ) )
+          } else {
+            const ms = moment(record.expirationtime).diff(moment(record.createdtime));
+            const d = moment.duration(ms);
+            const remainDays = Math.floor(d.asDays());
+            return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+          }
         }, key:'createdtime', sorter:false},
         {title: i18n('org_bd.creator'), render: (text, record) => {
           return record.new ? isLogin().username : record.createuser.username
