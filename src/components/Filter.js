@@ -891,11 +891,11 @@ class OrgBDFilter extends React.Component {
   render() {
     const { response, source_type, location, manager, org, proj } = this.state;
     const orgbdresOptions = this.props.orgbdres.map(m => ({ label: m.name, value: m.id }));
-    
+
     return (
       <div>
         <BasicContainer label="项目">
-          <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} />
+          <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} />
         </BasicContainer>
 
         { this.state.proj !== null ?
