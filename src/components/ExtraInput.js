@@ -282,7 +282,7 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 class SelectExistOrganization extends React.Component {
 
   getOrg = (params) => {
-    return api.getOrg({...params, issub: false}).then(result => {
+    return api.getOrg({...params, issub: false, orgstatus: 2}).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
         const { id: value, orgfullname: label, description } = item
