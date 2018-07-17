@@ -61,6 +61,12 @@ class OrgBDListComponent extends React.Component {
     if (this.props.editable && this.projId === null) {
       const setting = this.readSetting();
       filters = setting ? setting.filters : OrgBDFilter.defaultValue;
+
+      // 为了兼容之前版本，过段时间可以将此段代码删除
+      if (!Array.isArray(filters.response)) {
+        filters.response = [];
+      }
+
       search = setting ? setting.search : null;
     }
 
@@ -767,14 +773,16 @@ class OrgBDListComponent extends React.Component {
               />
             </div>
           } else {
-            if (record.expirationtime) {
-              const ms = moment(record.expirationtime).diff(moment());
-              const d = moment.duration(ms);
-              const remainDays = Math.ceil(d.asDays());
-              return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-            } else {
+            if (record.response !== null) {
+              return '正常';
+            }
+            if (record.expirationtime === null) {
               return '无过期时间';
             }
+            const ms = moment(record.expirationtime).diff(moment());
+            const d = moment.duration(ms);
+            const remainDays = Math.ceil(d.asDays());
+            return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
           }
         }, key:'createdtime', sorter:false},
         {
