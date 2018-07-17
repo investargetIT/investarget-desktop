@@ -195,16 +195,25 @@ class OrgBDListComponent extends React.Component {
     api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
-        if(item.bduser){
-          return api.checkUserRelation(isLogin().id, item.bduser)
+        if(item.bduser && item.response === 2){
+          const params = {
+            proj: proj.id,
+            investor: item.bduser,
+            trader: item.manager.id,
+            isClose: false,
+          };
+          return api.getTimeline(params)
+        } else {
+          return { 
+            data: { count: 0 }
+          }
         }
-        else{
-          return {data:false}
-        }
-      })
+      });
       Promise.all(promises).then(data=>{
         data.forEach((item,index)=>{
-          list[index].hasRelation=item.data          
+          if (item.data.count > 0) {
+            list[index].timeline = item.data.data[0].id;  
+          }
         })
         let newList = this.state.list.map(item => 
           item.id === `${org}-${proj}` ?
@@ -694,7 +703,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => record.org ? 
             <div>
               {record.org.orgname}
-              <a style={{ marginLeft: 10 }} href="#" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a>
+              {/* <a style={{ marginLeft: 10 }} href="#" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a> */}
             </div>
             : null, 
         },
@@ -796,27 +805,29 @@ class OrgBDListComponent extends React.Component {
             } else {
               const latestComment = record.BDComments && record.BDComments[0]
               const comments = latestComment ? latestComment.comments : ''
-              return (
-                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              return <span>
 
+                { /* 修改状态和备注按钮 */ }
                 { this.isAbleToModifyStatus(record) ? 
-                <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
-                  <div style={{marginRight:4}}>
-                  <button style={buttonStyle} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
-                  </div>
-                  <div>
-                  <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
-                  </div>
-                </div>
+                <span>
+                  <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
+                  <a style={{ ...buttonStyle, marginRight: 4 }} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
+                </span>
                 : null }
 
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
-                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
-                      <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
-                  </Popconfirm>
-                  : null }
+                { /* 查看时间轴按钮 */ }
+                { record.timeline ? 
+                <Link to={'/app/timeline/' + record.timeline} style={{ ...buttonStyle, marginRight: 4 }}>查看时间轴</Link>
+                : null }
 
-                </div>)
+                { /* 删除按钮 */ }
+                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
+                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
+                  <a style={{ marginLeft: 4 }} type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
+                </Popconfirm>
+                : null }
+
+              </span>
               }
             }
         })
