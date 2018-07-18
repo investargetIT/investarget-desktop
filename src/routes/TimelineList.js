@@ -25,11 +25,17 @@ class TimelineList extends React.Component {
   constructor(props) {
     super(props)
 
-    const setting = this.readSetting()
-    const filters = setting ? setting.filters : TimelineFilter.defaultValue
-    const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
+    const { proj, investor } = props.location.query;
+
+    let filters, search;
+    if (proj && investor) {
+      filters = { investor, proj, isClose: null };
+    } else {
+      const setting = this.readSetting();
+      filters = setting ? setting.filters : TimelineFilter.defaultValue;
+      search = setting ? setting.search : null;
+    }
+
 
     this.state = {
       filters,
@@ -94,6 +100,9 @@ class TimelineList extends React.Component {
           })
         })
 
+      if (this.props.location.query.proj === undefined) {
+        this.writeSetting()
+      }
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -101,7 +110,6 @@ class TimelineList extends React.Component {
         payload: error
       })
     })
-    this.writeSetting()
   }
 
   deleteTimeline = (id) => {
