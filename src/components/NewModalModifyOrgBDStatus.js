@@ -91,8 +91,7 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   checkInvalid = () => {
     const { username, mobile, wechat, email, status, group } = this.state;
-    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && [3].includes(status) && this.props.bd.bduser === null && ![3].includes(this.props.bd.response))
-           || (wechat.length === 0 && [2, 3].includes(status) && this.props.bd.bduser !== null && ![2, 3].includes(this.props.bd.response));
+    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && [3].includes(status) && this.props.bd.bduser === null && ![3].includes(this.props.bd.response));
   }
   checkProjectValid = () =>{
     const { username, mobile, email, status, group } = this.state;

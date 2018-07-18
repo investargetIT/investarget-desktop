@@ -442,12 +442,16 @@ class OrgBDListComponent extends React.Component {
       // 承做和投资人建立联系
       this.addRelation(this.state.currentBD.bduser);
 
-      api.addOrgBDComment({
-        orgBD: this.state.currentBD.id,
-        comments: `${i18n('user.wechat')}: ${wechat}`
-      }).then(data=>{
-        this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
-      });
+      if (wechat.length > 0) {
+        api.addOrgBDComment({
+          orgBD: this.state.currentBD.id,
+          comments: `${i18n('user.wechat')}: ${wechat}`
+        }).then(data => {
+          this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
+        });
+      } else {
+        this.setState({ visible: false });
+      }
     // 如果机构BD不存在联系人
     } else {
       api.addOrgBDComment({
