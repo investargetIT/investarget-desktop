@@ -94,6 +94,7 @@ class OrgBDListComponent extends React.Component {
         traderList: [],
         makeUser: undefined, // 项目承做
         takeUser: undefined, // 项目承揽
+        statistic: [],
     }
 
     this.allTrader = [];
@@ -106,6 +107,18 @@ class OrgBDListComponent extends React.Component {
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
+    this.getStatisticData().then(data => this.setState({ statistic: data }));
+  }
+
+  getStatisticData = async () => {
+    const orgbdres = [1, 2, 3, 4, 5, 6]; // 所有的机构BD状态ID
+    const result = [];
+    for (let index = 0; index < orgbdres.length; index++) {
+      const element = orgbdres[index];
+      const response = await api.getOrgBDCount({ proj: this.projId, response: element });
+      result.push({ status: element, count: response.data.count });
+    }
+    return result;
   }
 
   getAllTrader() {
@@ -860,7 +873,7 @@ class OrgBDListComponent extends React.Component {
               }
             }
         })
-
+      
       return (
         <div>
           <Table
@@ -896,9 +909,19 @@ class OrgBDListComponent extends React.Component {
             onChange={this.handleFilt}
           />
         : null}
-        
+
         { this.props.editable && this.state.filters.proj !== null ?
-          <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
+        <div style={{ overflow: 'auto', marginBottom: 16 }}>
+
+          { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
+          <div style={{ float: 'left', lineHeight: '32px' }}>
+            {this.props.orgbdres.map(
+              m => `${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0].count})`
+            ).join('、')}
+          </div>
+          : null }
+
+          <div style={{ float: 'right' }} className="clearfix">
             <Search
               style={{ width: 200 }}
               placeholder="联系人/联系电话"
@@ -907,7 +930,9 @@ class OrgBDListComponent extends React.Component {
               value={search}
             />
           </div>
-        : null}
+
+        </div>
+        : null }
 
         { this.state.filters.proj !== null ? 
         <Table
