@@ -35,6 +35,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgUser, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
+import ModalAddUser from './ModalAddUser';
 
 class DBSelectTrador extends React.Component {
   constructor(props) {
@@ -95,6 +96,7 @@ class OrgBDListComponent extends React.Component {
         makeUser: undefined, // 项目承做
         takeUser: undefined, // 项目承揽
         statistic: [],
+        org: null, // 为哪个机构添加投资人
     }
 
     this.allTrader = [];
@@ -717,7 +719,7 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleAddInvestorBtnClicked = org => {
-    echo('org', org);
+    this.setState({ org });
   }
 
   render() {
@@ -733,7 +735,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => record.org ? 
             <div>
               {record.org.orgname}
-              {/* <a style={{ marginLeft: 10 }} href="#" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a> */}
+              {/* <a style={{ marginLeft: 10 }} onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a> */}
             </div>
             : null, 
         },
@@ -1003,6 +1005,13 @@ class OrgBDListComponent extends React.Component {
             onDelete={this.handleDeleteComment} 
           />
         </Modal>
+
+        {this.state.org ?
+        <ModalAddUser
+          onCancel={() => this.setState({ org: null })}
+          org={this.state.org}
+        />
+        :null}
 
       </div>
     );
