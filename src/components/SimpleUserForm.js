@@ -1,91 +1,81 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Form, Input, DatePicker } from 'antd'
-import moment from 'moment';
+import { 
+  Form, 
+  Input, 
+  Row,
+  Col,
+} from 'antd';
 import {
   BasicFormItem,
 } from '../components/Form'
 import {
-  SelectExistProject,
-  SelectExistInvestor,
-  SelectArea,
-  CascaderCountry,
-  SelectOrganizatonArea
+  SelectUserGroup,
 } from '../components/ExtraInput'
-import { i18n } from '../utils/util'
+import { 
+  i18n,
+  checkRealMobile, 
+} from '../utils/util';
 
-function range(start, end) {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-}
+const FormItem = Form.Item;
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
 
 class SimpleUserForm extends React.Component {
-
-  constructor(props) {
-    super(props)
-    const { getFieldDecorator } = this.props.form
-
-    if ('isAdd' in props) {
-      getFieldDecorator('scheduledtime', {
-        rules: [{required: true}], initialValue: props.date,
-      })
-      getFieldDecorator('country', { initialValue: props.country });
-    }
-  }
-
-  disabledDate = current => current && current < moment().startOf('day');
-  disabledTime = () => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) });
-
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
-    const countryObj = getFieldValue('country');
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form>
-        <BasicFormItem label={i18n('schedule.title')} name="comments" required>
-          <Input />
-        </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
-          <DatePicker
-            disabledDate={this.disabledDate}
-            disabledTime={this.disabledTime}
-            showTime={{
-              hideDisabledOptions: true,
-              format: 'HH:mm',
-            }}
-            showToday={false}
-            format="YYYY-MM-DD HH:mm" 
-          />
+
+        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
+          <SelectUserGroup type="investor" />
         </BasicFormItem>
 
-        <BasicFormItem 
-          label={i18n('user.country')} 
-          name="country" 
-          required 
-          valueType="object" 
-          getValueFromEvent={(id, detail) => detail}
-        >
-          <CascaderCountry size="large" isDetail />
-        </BasicFormItem>
+        <BasicFormItem label={i18n('account.name')} name="usernameC" required><Input /></BasicFormItem>
 
-        {['中国', 'China'].includes(countryObj && countryObj.label) ? 
-        <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-          <SelectOrganizatonArea showSearch />
-        </BasicFormItem>
-        : null }
-        <BasicFormItem label={i18n('schedule.address')} name="address" required>
-          <Input />
-        </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
-          <SelectExistProject />
-        </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
-          <SelectExistInvestor />
-        </BasicFormItem>
+        <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
+          <Row gutter={8}>
+            <Col span={6}>
+              <FormItem required>
+                {
+                  getFieldDecorator('mobileAreaCode', {
+                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                  })(
+                    <Input prefix="+" />
+                  )
+                }
+              </FormItem>
+            </Col>
+            <Col span={18}>
+              <FormItem required>
+                {
+                  getFieldDecorator('mobile', {
+                    rules: [
+                      { message: i18n('validation.not_empty'), required: true },
+                      { validator: (rule, value, callback) => value ? checkRealMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
+                    ]
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+            </Col>
+          </Row>
+        </FormItem>
+
+        <BasicFormItem label={i18n("user.email")} name="email" required valueType="email"><Input /></BasicFormItem>
+
+        <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
+
       </Form>
-    )
+    );
   }
 }
 

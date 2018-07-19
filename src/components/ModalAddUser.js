@@ -1,35 +1,18 @@
-import React from 'react'
-import { connect } from 'dva'
-import { 
-  i18n, 
-  checkMobile,
-} from '../utils/util';
+import React from 'react';
 import { 
   Modal, 
-  Select, 
-  Checkbox, 
-  Input, 
-  Row, 
-  Col, 
-  Switch, 
-  Button,
   Form,
 } from 'antd';
 import SimpleUserForm from './SimpleUserForm';
+import * as api from '../api';
+import { handleError } from '../utils/util';
 
 const AddUserForm = Form.create()(SimpleUserForm);
 
 class ModalAddUser extends React.Component {
 
   state = {
-    // username: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.username ||'', 
-    // mobile: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/,''):'',
-    // wechat: '', 
-    // email: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.useremail ||'', 
-    // isimportant: this.props.bd.isimportant||null, 
-    // status: this.props.bd.bd_status.id, 
-    // group: '', 
-    // mobileAreaCode: '86',
+    isLoading: false,
   }
 
   handleRef = (inst) => {
@@ -41,36 +24,32 @@ class ModalAddUser extends React.Component {
   handleSubmitBtnClicked = () => {
     this.addForm.validateFields((err, values) => {
       if (!err) {
-        echo('values', values);
-        // let param = toData(values)
-        // api.addSchedule(param).then(result => {
-        //   this.hideAddModal()
-        //   this.getEvents()
-        // }).catch(error => {
-        //   this.hideEditModal()
-        //   handleError(error)
-        // })
+        this.setState({ isLoading: true });
+        values.userstatus = 2; // 默认审核通过
+        values.registersource = 3; // 标记注册来源
+        values.org = this.props.org.id;
+        api.addUser(values)
+          .then(this.props.onCancel)
+          .catch(handleError)
+          .finally(() => this.setState({ isLoading: false }));
       }
     })
   }
+
   render() {
-    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
     return (
       <Modal
         title={`为 ${this.props.org.orgname} 添加投资人`}
         visible={true}
-        onCancel={onCancel}
-        confirmLoading={confirmLoading}
+        onCancel={this.props.onCancel}
+        confirmLoading={this.state.isLoading}
         onOk={this.handleSubmitBtnClicked}
       >
-       <AddUserForm
-         wrappedComponentRef={this.handleRef} 
-       /> 
+        <AddUserForm wrappedComponentRef={this.handleRef} />
       </Modal>
-    )
+    );
   }
 
 }
 
-
-export default ModalAddUser
+export default ModalAddUser;
