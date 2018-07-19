@@ -109,7 +109,6 @@ class OrgBDListComponent extends React.Component {
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
-    this.getStatisticData().then(data => this.setState({ statistic: data }));
   }
 
   getStatisticData = async () => {
@@ -117,7 +116,7 @@ class OrgBDListComponent extends React.Component {
     const result = [];
     for (let index = 0; index < orgbdres.length; index++) {
       const element = orgbdres[index];
-      const response = await api.getOrgBDCount({ proj: this.projId, response: element });
+      const response = await api.getOrgBDCount({ proj: this.state.filters.proj, response: element });
       result.push({ status: element, count: response.data.count });
     }
     return result;
@@ -209,6 +208,8 @@ class OrgBDListComponent extends React.Component {
         }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)));
       })
       .catch(handleError);
+
+      this.getStatisticData().then(data => this.setState({ statistic: data }));
   }
 
   getOrgBdListDetail = (org, proj) => {
