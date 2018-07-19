@@ -10,6 +10,7 @@ import {
 } from '../components/Form'
 import {
   SelectUserGroup,
+  SelectTitle,
 } from '../components/ExtraInput'
 import { 
   i18n,
@@ -34,7 +35,7 @@ class SimpleUserForm extends React.Component {
     return (
       <Form>
 
-        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
+        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />
         </BasicFormItem>
 
@@ -71,6 +72,10 @@ class SimpleUserForm extends React.Component {
         </FormItem>
 
         <BasicFormItem label={i18n("user.email")} name="email" required valueType="email"><Input /></BasicFormItem>
+
+        <BasicFormItem label={i18n("user.position")} name="title" valueType="number">
+          <SelectTitle showSearch />
+        </BasicFormItem>
 
         <BasicFormItem label={i18n("user.wechat")} name="wechat"><Input /></BasicFormItem>
 

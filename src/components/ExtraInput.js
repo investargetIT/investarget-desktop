@@ -690,28 +690,26 @@ class SelectUserGroup extends React.Component {
   }
 
   componentDidMount() {
-    api.queryUserGroup({ type: this.props.type, page_size: 100 }).then(result => {
-      const groups = result.data.data
-      const options = groups.map(item => ({ label: item.name, value: item.id }))
-      this.setState({ options })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    this.props.dispatch({ type: 'app/getGroup' });
   }
 
   render() {
     const { value, onChange, children, ...extraProps } = this.props
+    let roles = this.props.groups;
+    if (this.props.type) {
+      roles = this.props.groups.filter(f => f.permissions.map(m => m.codename).includes(`usersys.as_${this.props.type}`));
+    }
+    const options = roles.map(m => ({ label: m.name, value: m.id }));
     return (
       <SelectNumber
-      options={this.state.options}
+      options={options}
       value={value && value[0]} onChange={this.handleChange} {...extraProps} />
     )
   }
 }
-SelectUserGroup = connect()(SelectUserGroup)
+SelectUserGroup = connect(
+  state => ({ groups: state.app.group })
+)(SelectUserGroup);
 
 /**
  * SelectTitle

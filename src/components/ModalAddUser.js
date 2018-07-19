@@ -25,7 +25,7 @@ class ModalAddUser extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true });
-        values.userstatus = 2; // 默认审核通过
+        values.userstatus = 1; // 默认待审核
         values.registersource = 3; // 标记注册来源
         values.org = this.props.org.id;
         api.addUser(values)
