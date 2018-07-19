@@ -247,25 +247,9 @@ function TimelineStatusFilter(props) {
 }
 
 class GroupFilter extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      groups: [],
-    }
-  }
 
   componentDidMount() {
-    api.queryUserGroup({ page_size: 100 }).then(result => {
-      const groups = result.data.data.map(item => {
-        return { value: item.id, label: item.name }
-      })
-      this.setState({ groups })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    this.props.dispatch({ type: 'app/getGroup' });
   }
 
   handleChange = (e) => {
@@ -277,7 +261,7 @@ class GroupFilter extends React.Component {
       <BasicContainer label={i18n('filter.group')}>
          <RadioGroup value={this.props.value} onChange={this.handleChange}>
           {
-            this.state.groups.map(item =>
+            this.props.groups.map(item =>
               <Radio key={item.value} value={item.value}>{item.label}</Radio>
             )
           }
@@ -286,7 +270,9 @@ class GroupFilter extends React.Component {
     )
   }
 }
-GroupFilter = connect()(GroupFilter)
+GroupFilter = connect( state => (
+  { groups: state.app.group.map(m => ({ value: m.id, label: m.name })) }
+))(GroupFilter);
 
 
 /*******************************/

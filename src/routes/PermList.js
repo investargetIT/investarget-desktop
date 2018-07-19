@@ -129,7 +129,11 @@ class PermList extends React.Component {
   }
 
   setUserGroup() {
-    queryUserGroup().then(data => {
+    queryUserGroup({ page_size: 100 }).then(data => {
+      this.props.dispatch({
+        type: 'app/saveGroup',
+        payload: data.data.data
+      });
       const groupPerms = data.data.data.reduce((acc, val) => {
         const groupID = val.id
         acc = acc.concat(val.permissions.map(item => groupID + "-" + item.id))
