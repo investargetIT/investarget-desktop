@@ -736,7 +736,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => record.org ? 
             <div>
               {record.org.orgname}
-              {/* <a style={{ marginLeft: 10 }} onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a> */}
+              <a style={{ marginLeft: 10 }} onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a>
             </div>
             : null, 
         },

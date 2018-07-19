@@ -30,6 +30,7 @@ import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
 import { Search } from '../components/Search';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
+import ModalAddUser from '../components/ModalAddUser';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';
 import { 
@@ -86,6 +87,7 @@ class NewOrgBDList extends React.Component {
         ifimportantMap: {},
         isimportant: false,
         traderList: [],
+        org: null, // 为哪个机构添加投资人
     }
 
     this.allTrader = [];
@@ -584,6 +586,7 @@ class NewOrgBDList extends React.Component {
           return <div>
                   {record.org.orgname}
                   {(selectedUsers.length ? <Tag color="green" style={{marginLeft: 15}}>{`已选 ${selectedUsers.length} 人`}</Tag> : null)}
+                  <a style={{ marginLeft: 10 }} onClick={() => this.setState({ org: record.org })}>添加投资人</a>
                 </div>
         }, key:'org', sorter:false},
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
@@ -723,7 +726,7 @@ class NewOrgBDList extends React.Component {
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
-          expandRowByClick
+          // expandRowByClick
           dataSource={list}
           rowKey={record=>record.id}
           loading={loading}
@@ -796,6 +799,16 @@ class NewOrgBDList extends React.Component {
             <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
           </div>
         </Modal>
+
+        {this.state.org ?
+        <ModalAddUser
+          onCancel={() => {
+            this.getOrgBdListDetail(this.state.org.id);
+            this.setState({ org: null });
+          }}
+          org={this.state.org}
+        />
+        :null}
 
       </LeftRightLayout>
     );
