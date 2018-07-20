@@ -37,6 +37,17 @@ import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
 
+function tableToExcel(table, worksheetName) {
+  var uri = 'data:application/vnd.ms-excel;base64,'
+  var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+  var base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))); }
+  var format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+  var ctx = { worksheet: worksheetName, table: table.outerHTML }
+  var href = uri + base64(format(template, ctx))
+  return href
+}
+
 class DBSelectTrador extends React.Component {
   constructor(props) {
     super(props)
@@ -724,6 +735,14 @@ class OrgBDListComponent extends React.Component {
     this.setState({ org });
   }
 
+  handleExportBtnClicked = () => {
+    var link = document.createElement('a')
+    link.download = 'Investors.xls'
+    var table = document.querySelectorAll('table')[0];
+    link.href = tableToExcel(table, '投资人')
+    link.click()
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -966,7 +985,17 @@ class OrgBDListComponent extends React.Component {
             <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
               <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
             </Link>
-            : null } 
+            : null }
+
+            {/* <Button
+              // disabled={this.state.selectedIds.length == 0}
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              size="large"
+              // loading={this.state.isLoadingExportData}
+              onClick={this.handleExportBtnClicked}>
+              {i18n('project_library.export_excel')}
+            </Button> */}
 
             <Pagination
               style={{ float: 'right' }}
