@@ -136,234 +136,64 @@ class NewOrgBDList extends React.Component {
         total: result.data.count,
         loading: false,
         expanded: list.map(item => `${item.id}-${this.projId}`),
-      }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id)));
+      }, 
+      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org.id))
+    );
     })
   }
 
-  getOrgBdListDetail = (org) => {
-    api.getOrgBdList({org, proj: this.projId || "none"}).then(result => {
-      let list = result.data.data
-      let existUsers = list.map(bd=>bd.bduser)
-      let existUsersDetail = {};
-      let promises = list.map(item=>{
-        if(item.bduser){
-          return api.checkUserRelation(isLogin().id, item.bduser)
-        }
-        else{
-          return {data:false}
-        }
-      })
-      Promise.all(promises).then(data=>{
-        data.forEach((item,index)=>{
-          list[index].hasRelation=item.data          
-        })
-        if (this.state.currentBD) {
-          const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
-          this.setState({ comments });
-        }
-        api.queryUserGroup({ type: 'investor' }).then(data => {
-          const groups = data.data.data.map(item => item.id)
-          return api.getUser({starmobile: true, org: [org], groups, onjob: true, page_size: 1000})
-        })
-       .then(result => {
-         if (result.data.data.length > 0) {
-            result.data.data.forEach(user=>existUsersDetail[user.id]=this.userList[user.id]=user)
-            list = list.map(bd=>({...existUsersDetail[bd.bduser], bd: bd, key: `${bd.id}-${bd.bduser}`})).filter(Boolean).filter(user => user.id)
-                   .concat(result.data.data.filter(user=>!existUsers.includes(user.id)).map(user=>({...user, bd: null, key: `null-${user.id}`})))
-            let newList = this.state.list.map(item => 
-              item.id === `${org}-${this.projId}` ?
-                {...item, items: list, loaded: true} :
-                item
-            )
-            this.setState({
-              list: newList,
-            });
-          } else {
-            list = list.map(bd => ({bd: bd, key: `${bd.id}-${bd.bduser}`, username: '暂无投资人'}))
-              .concat({ key: `null-null-${org}`, org: { id: org } });
-           //暂无联系人
-           let newList = this.state.list.map(item =>
-             item.id === `${org}-${this.projId}` ?
-               { ...item, items: list, loaded: true } :
-               item
-           )
-           this.setState({
-             list: newList,
-           });
-          }
-        })
-      })
-    })
+  loadOrgBDListDetail = async list => {
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      const dataForSingleOrg = await this.loadDataForSingleOrg(element);
+      let newList = this.state.list.map(item => 
+        item.id === `${element}-${this.projId}` ?
+          {...item, items: dataForSingleOrg, loaded: true} :
+          item
+      );
+      this.setState({ list: newList }); 
+    }
   }
 
-  handleStatusChange = (status) => {
-    this.setState({ status })
-  }
+  loadDataForSingleOrg = async org => {
+    // 首先加载机构的所有符合要求的投资人
+    const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000});
+    if (reqUser.data.count === 0) {
+      // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
+      return [{ key: `null-null-${org}`, org: { id: org } }];
+    }
 
-  checkExistence = (mobile, email) => {
-    return new Promise((resolve, reject) => {
-      Promise.all([api.checkUserExist(mobile), api.checkUserExist(email)])
-        .then(result => {
-          for (let item of result) {
-            if (item.data.result === true)
-              resolve(true);
-          }
-          resolve(false);
-        })
-        .catch(err => reject(err));
+    const orgUser = reqUser.data.data;
+
+    //获取投资人的交易师
+    const orgUserRelation = await api.getUserRelation({
+      investoruser: orgUser.map(m => m.id),
+      page_size: 1000, 
     });
+    orgUser.forEach(element => {
+      const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+      element.traders = relations.map(m => ({
+        label: m.traderuser.username, 
+        value: m.traderuser.id, 
+        onjob: m.traderuser.onjob, 
+        familiar: m.familiar
+      }))
+    });
+
+    const reqBD = await api.getOrgBdList({org, proj: this.projId || "none"});
+    // 已经BD过的投资人
+    const regBDUser = reqBD.data.data.map(m => ({
+      ...orgUser.find(f => f.id === m.bduser),
+      bd: m,
+      key: `${m.id}-${m.bduser}`
+    }));
+    // 未BD过的投资人
+    const unBDUser = orgUser.filter(f => !reqBD.data.data.map(m => m.bduser).includes(f.id))
+      .map(m => ({ ...m, bd: null, key: `null-${m.id}`}));
+
+    return regBDUser.concat(unBDUser);
   }
 
-  wechatConfirm = state => {
-    const react = this;
-    if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 ) {
-      if (!this.state.currentBD.bduser) {
-        this.checkExistence(state.mobile, state.email).then(ifExist => {
-          if (ifExist) {
-            Modal.error({
-              content: i18n('user.message.user_exist')
-            });
-          } else {
-            this.handleConfirmAudit(state, true);
-          }
-        })
-      } else {
-        // 已经有联系人时
-        if (this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0) {
-          // 该联系人已经有微信
-          Modal.confirm({
-            title: '警告',
-            content: '联系人微信已存在，是否覆盖现有微信',
-            onOk: () => this.handleConfirmAudit(state, true), 
-            onCancel:  () => this.handleConfirmAudit(state),
-          });
-        } else {
-          // 该联系人没有微信
-          this.handleConfirmAudit(state, true);
-        }
-      }
-    } else {
-      this.handleConfirmAudit(state, true);
-    }
-  }
-
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode }, isModifyWechat) => {
-    const body = {
-      bd_status: status,
-      isimportant: isimportant ? 1 : 0,
-    }
-    api.modifyOrgBD(this.state.currentBD.id, body)
-      .then(result => 
-        {
-          if (status !== 3 || this.state.currentBD.bd_status.id === 3){
-            this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
-          }
-        }
-        );
-
-    if (status !== 3 || this.state.currentBD.bd_status.id === 3) return;
-
-    // 如果机构BD存在联系人
-    if (this.state.currentBD.bduser) {
-      // 首先检查经理和投资人的关联
-      api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
-        .then(result => {
-          // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
-          if (result.data || hasPerm('usersys.admin_changeuser') && isModifyWechat) {
-            api.editUser([this.state.currentBD.bduser], { wechat });
-          } else {
-            api.addUserRelation({
-              relationtype: false,
-              investoruser: this.state.currentBD.bduser,
-              traderuser: this.state.currentBD.manager.id
-            })
-              .then(result => {
-                if (isModifyWechat) {
-                  api.editUser([this.state.currentBD.bduser], { wechat });
-                }
-              })
-              .catch(error => {
-                if (!isModifyWechat) return;
-                if (error.code === 2025) {
-                  Modal.error({
-                    content: '该用户正处于保护期，无法建立联系，因此暂时无法修改微信',
-                  });
-                }
-              });
-          }
-        });
-
-      // 承做和投资人建立联系
-      this.addRelation(this.state.currentBD.bduser);
-
-      api.addOrgBDComment({
-        orgBD: this.state.currentBD.id,
-        comments: `${i18n('user.wechat')}: ${wechat}`
-      }).then(data=>{
-        this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
-      });
-    // 如果机构BD不存在联系人
-    } else {
-      api.addOrgBDComment({
-        orgBD: this.state.currentBD.id,
-        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`
-      });
-      const newUser = { mobile, wechat, email, mobileAreaCode, groups: [Number(group)], userstatus: 2 };
-      if (window.LANG === 'en') {
-        newUser.usernameE = username;
-      } else {
-        newUser.usernameC = username;
-      }
-      this.checkExistence(mobile,email).then(ifExist=>{
-        if(ifExist){
-          Modal.error({
-          content: i18n('user.message.user_exist')
-        });
-        }
-        else{
-        api.addUser(newUser)
-          .then(result =>{
-            api.addUserRelation({
-            relationtype: false,
-            investoruser: result.data.id,
-            traderuser: this.state.currentBD.manager.id
-          }).then(data=>{
-            this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
-          })
-          });
-        }
-      })
-      }
-    }
-  
-  // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
-  addRelation = investorID =>{
-    if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
-      api.addUserRelation({
-        relationtype: false,
-        investoruser: investorID,
-        traderuser: this.state.currentBD.makeUser,
-        proj: this.state.currentBD.proj.id,
-      })
-    }
-  }
-
-  handleAddComment = () => {
-    const body = {
-      orgBD: this.state.currentBD.id,
-      comments: this.state.newComment,
-    };
-    api.addOrgBDComment(body)
-      .then(data => this.setState({ newComment: '' }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id)))
-      .catch(error => handleError(error));
-  }
-
-  handleDeleteComment = id => {
-    api.deleteOrgBDComment(id)
-    .then(() => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
-    .catch(error => handleError(error));
-  }
-  
   handleTableChange = (pagination, filters, sorter) => {
     this.setState(
       { 
@@ -659,7 +489,7 @@ class NewOrgBDList extends React.Component {
             return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
           },
         },
-        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader investor={record.id} onLoadTrader={this.handleLoadTrader} /> : '暂无' }
+        { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
 
       ]
       if(this.props.source!="meetingbd"){
@@ -824,30 +654,30 @@ export default connect(mapStateToProps)(NewOrgBDList);
 
 export class Trader extends React.Component {
   state = {
-    list: [], 
+    list: this.props.traders || [], 
   }
   componentDidMount() {
-    if (this.props.investor === null) return;
-    const param = { investoruser: this.props.investor}
-    api.queryUserGroup({ type: 'investor' }).then(data => {
-    this.investorGroupIds = data.data.data.map(item => item.id);
-    })
-    api.getUserRelation(param).then(result => {
-      const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
-      const list = []
-      data.forEach(item => {
-        const trader = item.traderuser
-        if (trader) {
-          list.push({ label: trader.username, value: trader.id, onjob: trader.onjob, familiar: item.familiar });
-        }
-        this.setState({ list });
-      })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    // if (this.props.investor === null) return;
+    // const param = { investoruser: this.props.investor}
+    // // api.queryUserGroup({ type: 'investor' }).then(data => {
+    // // this.investorGroupIds = data.data.data.map(item => item.id);
+    // // })
+    // api.getUserRelation(param).then(result => {
+    //   const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
+    //   const list = []
+    //   data.forEach(item => {
+    //     const trader = item.traderuser
+    //     if (trader) {
+    //       list.push({ label: trader.username, value: trader.id, onjob: trader.onjob, familiar: item.familiar });
+    //     }
+    //     this.setState({ list });
+    //   })
+    // }, error => {
+    //   this.props.dispatch({
+    //     type: 'app/findError',
+    //     payload: error
+    //   })
+    // })
   }
   render () {
     return <span>
@@ -872,31 +702,3 @@ export function SimpleLine(props) {
     </Row>
   );
 }
-
-function BDComments(props) {
-  const { comments, newComment, onChange, onDelete, onAdd } = props
-  return (
-    <div>
-      <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
-        <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
-        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
-      </div>
-      <div>
-        {comments.length ? comments.map(comment => (
-          <div key={comment.id} style={{marginBottom:8}}>
-            <p>
-              <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
-              { hasPerm('BD.manageOrgBD') ?
-              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                <a href="javascript:void(0)">{i18n('common.delete')}</a>
-              </Popconfirm> 
-              : null}
-            </p>
-            <p dangerouslySetInnerHTML={{__html:comment.comments.replace(/\n/g,'<br>')}}></p>
-          </div>
-        )) : <p>{i18n('remark.no_comments')}</p>}
-      </div>
-    </div>
-  )
-}
-
