@@ -163,7 +163,7 @@ class NewOrgBDList extends React.Component {
         }
         api.queryUserGroup({ type: 'investor' }).then(data => {
           const groups = data.data.data.map(item => item.id)
-          return api.getUser({starmobile: true, org: [org], groups, page_size: 1000})
+          return api.getUser({starmobile: true, org: [org], groups, onjob: true, page_size: 1000})
         })
        .then(result => {
          if (result.data.data.length > 0) {

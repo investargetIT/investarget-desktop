@@ -749,7 +749,7 @@ class OrgBDListComponent extends React.Component {
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
-          <SelectOrgUser allStatus allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
+          <SelectOrgUser allStatus onjob allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
           : <div style={{ width: 100 }}>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               { record.username ? 

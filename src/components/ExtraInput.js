@@ -633,10 +633,10 @@ class SelectOrgUser extends React.Component {
   }
 
   componentDidMount() {
-    const { org, type, allStatus } = this.props
+    const { org, type, allStatus, onjob } = this.props
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
-      const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000 }
+      const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
       return api.getUser(param)
     }).then(data => {
       const traders = data.data.data
