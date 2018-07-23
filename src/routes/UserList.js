@@ -160,7 +160,7 @@ class UserList extends React.Component {
       relationtype: true
       }
       let weakTraders=[]
-      if(user.userstatus == 2){    //审核通过
+      if([2, 3].includes(user.userstatus)){    //审核通过
         return api.getUserRelation({investoruser: user.id})
         .then(result=>{         
           result.data.data.forEach(item=>{
