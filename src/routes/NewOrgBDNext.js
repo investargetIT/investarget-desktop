@@ -249,7 +249,7 @@ class NewOrgBDList extends React.Component {
 
     if (expandIndex < 0) {
       newExpanded.push(currentId)
-      this.getOrgBdListDetail(record.org.id, record.proj.id)
+      this.loadDataForSingleOrg(record.org.id, record.proj.id)
     } else {
       newExpanded.splice(expandIndex, 1)
     }
@@ -400,7 +400,7 @@ class NewOrgBDList extends React.Component {
     api.addOrgBD(body)
       .then(result => {
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false });
-        this.getOrgBdListDetail(user.org.id);
+        this.loadDataForSingleOrg(user.org.id);
       })
   }
 
@@ -634,7 +634,7 @@ class NewOrgBDList extends React.Component {
         {this.state.org ?
         <ModalAddUser
           onCancel={() => {
-            this.getOrgBdListDetail(this.state.org.id);
+            this.loadDataForSingleOrg(this.state.org.id);
             this.setState({ org: null });
           }}
           org={this.state.org}
