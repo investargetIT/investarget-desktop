@@ -108,6 +108,9 @@ class OrgBDListComponent extends React.Component {
         takeUser: undefined, // 项目承揽
         statistic: [],
         org: null, // 为哪个机构添加投资人
+        exportLoading: false,
+        listForExport: [],
+        expandedForExport: [],
     }
 
     this.allTrader = [];
@@ -736,11 +739,83 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleExportBtnClicked = () => {
-    var link = document.createElement('a')
-    link.download = 'Investors.xls'
+    this.setState({ exportLoading: true });
+    this.loadAllOrgBD()
+      .then(data => {
+        this.setState({ 
+          exportLoading: false,
+          listForExport: data,
+          expandedForExport: data.map(m => m.id),
+        }, this.downloadExportFile);
+      })
+  }
+
+  downloadExportFile = () => {
+    var link = document.createElement('a');
+    link.download = 'Investors.xls';
+
     var table = document.querySelectorAll('table')[0];
-    link.href = tableToExcel(table, '投资人')
-    link.click()
+    table.border = '1';
+
+    // 设置所有table显示边框
+    var allTables = table.querySelectorAll('table');
+    allTables.forEach(element => {
+      element.border = '1';
+    });
+
+    // 将机构名称列加粗居中显示
+    var allOrg = table.querySelectorAll("tbody tr:nth-child(odd) > td.orgname");
+    allOrg.forEach(element => {
+      element.style.textAlign = 'center';
+      element.style.fontWeight = 'bolder';
+    });
+
+    var expandIconTh = table.querySelectorAll('th.ant-table-expand-icon-th')[0];
+    expandIconTh.remove();
+
+    var expandIconCells = table.querySelectorAll("td.ant-table-row-expand-icon-cell");
+    expandIconCells.forEach(element => {
+      element.remove();
+    });
+
+    var elementRemove = table.querySelectorAll('tr.ant-table-expanded-row.ant-table-expanded-row-level-1>td:first-child');
+    elementRemove.forEach(element => {
+      element.remove();
+    });
+
+    link.href = tableToExcel(table, '机构BD');
+    link.click();
+  }
+
+  loadAllOrgBD = async () => {
+    const { search, filters } = this.state;
+    const params = {
+        page_size: 1000,
+        search,
+        ...filters,
+        org: filters.org.map(m => m.key),
+        proj: filters.proj || 'none',
+    };
+    let allOrgs = await api.getOrgBdBase(params);
+    allOrgs = allOrgs.data.data.map(item => ({
+      id: `${item.org}-${item.proj}`,
+      org: item.org,
+      proj: { id: item.proj },
+      loaded: false,
+      items: []
+    }));
+
+    const { manager, response } = this.state.filters;
+    for (let index = 0; index < allOrgs.length; index++) {
+      const element = allOrgs[index];
+      const orgBD = await api.getOrgBdList({org: element.org, proj: element.proj.id || "none", manager, response, search: this.state.search});
+      element.items = orgBD.data.data;
+      element.loaded = true;
+      if (orgBD.data.count > 0) {
+        element.org = orgBD.data.data[0].org;
+      }
+    }
+    return allOrgs;
   }
 
   render() {
@@ -762,6 +837,33 @@ class OrgBDListComponent extends React.Component {
         },
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
+
+    const columnsForExport = [{ title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname' }];
+
+    const expandedRowRenderForExport = record => {
+      const columns = [
+        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '30%'},
+        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', width: '30%'},
+        {
+          title: i18n('org_bd.status'), 
+          render: text => <div style={{ width: '30%' }}>{text && this.props.orgbdres.filter(f => f.id === text)[0].name}</div>, 
+          dataIndex: 'response', 
+          key:'response',
+          width: '40%', 
+        },
+      ];
+      return (
+        <Table
+          showHeader
+          columns={columns}
+          dataSource={record.items}
+          size={"small"}
+          rowKey={record => record.id}
+          pagination={false}
+          loading={!record.loaded}
+        />
+      );
+    };
 
     const expandedRowRender = (record) => {
       const columns = [
@@ -963,6 +1065,20 @@ class OrgBDListComponent extends React.Component {
 
         { this.state.filters.proj !== null ? 
         <Table
+          style={{ display: 'none' }}
+          className="new-org-db-style"
+          columns={columnsForExport}
+          expandedRowRender={expandedRowRenderForExport}
+          dataSource={this.state.listForExport}
+          rowKey={record=>record.id}
+          expandedRowKeys={this.state.expandedForExport}
+          pagination={false}
+          size="middle"
+        />
+        : null }
+
+        { this.state.filters.proj !== null ? 
+        <Table
           className="new-org-db-style"
           onChange={this.handleTableChange}
           columns={columns}
@@ -987,16 +1103,6 @@ class OrgBDListComponent extends React.Component {
             </Link>
             : null }
 
-            {/* <Button
-              // disabled={this.state.selectedIds.length == 0}
-              style={{ backgroundColor: 'orange', border: 'none' }}
-              type="primary"
-              size="large"
-              // loading={this.state.isLoadingExportData}
-              onClick={this.handleExportBtnClicked}>
-              {i18n('project_library.export_excel')}
-            </Button> */}
-
             <Pagination
               style={{ float: 'right' }}
               size={this.props.paginationSize || 'middle'}
@@ -1010,6 +1116,18 @@ class OrgBDListComponent extends React.Component {
               pageSizeOptions={['5', '10', '20', '30', '40', '50']}
             />
           </div>
+        : null }
+
+        { this.state.filters.proj !== null ? 
+        <Button
+          // disabled={this.state.selectedIds.length == 0}
+          style={{ backgroundColor: 'orange', border: 'none' }}
+          type="primary"
+          size="large"
+          loading={this.state.exportLoading}
+          onClick={this.handleExportBtnClicked}>
+          {i18n('project_library.export_excel')}
+        </Button>
         : null }
 
         { this.state.visible ? 
