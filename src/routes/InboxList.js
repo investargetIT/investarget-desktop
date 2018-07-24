@@ -82,8 +82,12 @@ class InboxList extends React.Component {
       const m = allMsg[index];
       m.created = m.createdtime ? m.createdtime.slice(0, 19).replace('T', ' ') : undefined;
       if (m.sourcetype === 'OrgBD') {
-        const bd = await getOrgBdDetail(m.sourceid);
-        m.content = <Link to={`/app/org/bd?projId=${bd.data.proj.id}&manager=${bd.data.manager.id}`}>{m.content}</Link>;
+        try {
+          const bd = await getOrgBdDetail(m.sourceid);
+          m.content = <Link to={`/app/org/bd?projId=${bd.data.proj.id}&manager=${bd.data.manager.id}`}>{m.content}</Link>;
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
     this.setState({
