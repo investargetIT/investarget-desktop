@@ -68,7 +68,10 @@ class OrgBDListComponent extends React.Component {
     this.projId = parseInt(props.location.query.projId, 10)
     this.projId = !isNaN(this.projId) ? this.projId : null;
 
-    let filters = {...OrgBDFilter.defaultValue, proj: this.projId };
+    this.manager = parseInt(props.location.query.manager, 10);
+    this.manager = !isNaN(this.manager) ? [this.manager] : [];
+
+    let filters = {...OrgBDFilter.defaultValue, proj: this.projId, manager: this.manager };
     let search = null;
     if (this.props.editable && this.projId === null) {
       const setting = this.readSetting();

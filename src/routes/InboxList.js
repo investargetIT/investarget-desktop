@@ -1,7 +1,16 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { Button, Table, Pagination } from 'antd'
-import { getMsg, readMsg } from '../api'
+import { 
+  Button, 
+  Table, 
+  Pagination,
+} from 'antd';
+import { Link } from 'dva/router';
+import { 
+  getMsg, 
+  readMsg, 
+  getOrgBdDetail,
+} from '../api';
 import { 
   i18n, 
   handleError,
@@ -61,23 +70,27 @@ class InboxList extends React.Component {
     this.setState({ pageSize, pageIndex: 1, selectedMsg: [] }, this.getMessageList)
   }
 
-  getMessageList = () => {
-    this.setState({ loading: true })
+  getMessageList = async () => {
+    this.setState({ loading: true });
     const param = {
       page_index: this.state.pageIndex,
       page_size: this.state.pageSize,
+    };
+    const allMsgRes = await getMsg(param);
+    const allMsg = allMsgRes.data.data;
+    for (let index = 0; index < allMsg.length; index++) {
+      const m = allMsg[index];
+      m.created = m.createdtime ? m.createdtime.slice(0, 19).replace('T', ' ') : undefined;
+      if (m.sourcetype === 'OrgBD') {
+        const bd = await getOrgBdDetail(m.sourceid);
+        m.content = <Link to={`/app/org/bd?projId=${bd.data.proj.id}&manager=${bd.data.manager.id}`}>{m.content}</Link>;
+      }
     }
-    getMsg(param).then(data => {
-      const list = data.data.data.map(m => {
-        m.created = m.createdtime ? m.createdtime.slice(0,19).replace('T', ' ') : undefined;
-        return m
-      })
-      this.setState({
-        data: list,
-        total: data.data.count,
-        loading: false,
-      })
-    })
+    this.setState({
+      data: allMsg,
+      total: allMsgRes.data.count,
+      loading: false,
+    });
   }
 
   handleReadMsg = () => {
