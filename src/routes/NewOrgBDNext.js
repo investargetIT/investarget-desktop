@@ -145,53 +145,59 @@ class NewOrgBDList extends React.Component {
   loadOrgBDListDetail = async list => {
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
-      const dataForSingleOrg = await this.loadDataForSingleOrg(element);
-      let newList = this.state.list.map(item => 
-        item.id === `${element}-${this.projId}` ?
-          {...item, items: dataForSingleOrg, loaded: true} :
-          item
-      );
-      this.setState({ list: newList }); 
+      await this.loadDataForSingleOrg(element);
     }
   }
 
   loadDataForSingleOrg = async org => {
+
+    let dataForSingleOrg;
+
     // 首先加载机构的所有符合要求的投资人
     const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000});
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
-      return [{ key: `null-null-${org}`, org: { id: org } }];
+      dataForSingleOrg = [{ key: `null-null-${org}`, org: { id: org } }];
+    } else {
+      const orgUser = reqUser.data.data;
+
+      //获取投资人的交易师
+      const orgUserRelation = await api.getUserRelation({
+        investoruser: orgUser.map(m => m.id),
+        page_size: 1000,
+      });
+      orgUser.forEach(element => {
+        const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+        element.traders = relations.map(m => ({
+          label: m.traderuser.username,
+          value: m.traderuser.id,
+          onjob: m.traderuser.onjob,
+          familiar: m.familiar
+        }))
+      });
+
+      const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
+      // 已经BD过的投资人
+      const regBDUser = reqBD.data.data.map(m => ({
+        ...orgUser.find(f => f.id === m.bduser),
+        bd: m,
+        key: `${m.id}-${m.bduser}`
+      }));
+      // 未BD过的投资人
+      const unBDUser = orgUser.filter(f => !reqBD.data.data.map(m => m.bduser).includes(f.id))
+        .map(m => ({ ...m, bd: null, key: `null-${m.id}` }));
+
+      dataForSingleOrg = regBDUser.concat(unBDUser);
     }
 
-    const orgUser = reqUser.data.data;
+    let newList = this.state.list.map(item => 
+      item.id === `${org}-${this.projId}` ?
+        {...item, items: dataForSingleOrg, loaded: true} :
+        item
+    );
+    this.setState({ list: newList }); 
 
-    //获取投资人的交易师
-    const orgUserRelation = await api.getUserRelation({
-      investoruser: orgUser.map(m => m.id),
-      page_size: 1000, 
-    });
-    orgUser.forEach(element => {
-      const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
-      element.traders = relations.map(m => ({
-        label: m.traderuser.username, 
-        value: m.traderuser.id, 
-        onjob: m.traderuser.onjob, 
-        familiar: m.familiar
-      }))
-    });
-
-    const reqBD = await api.getOrgBdList({org, proj: this.projId || "none"});
-    // 已经BD过的投资人
-    const regBDUser = reqBD.data.data.map(m => ({
-      ...orgUser.find(f => f.id === m.bduser),
-      bd: m,
-      key: `${m.id}-${m.bduser}`
-    }));
-    // 未BD过的投资人
-    const unBDUser = orgUser.filter(f => !reqBD.data.data.map(m => m.bduser).includes(f.id))
-      .map(m => ({ ...m, bd: null, key: `null-${m.id}`}));
-
-    return regBDUser.concat(unBDUser);
+    return dataForSingleOrg;
   }
 
   handleTableChange = (pagination, filters, sorter) => {

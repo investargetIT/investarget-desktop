@@ -394,7 +394,7 @@ class OrgBDListComponent extends React.Component {
         })
       } else {
         // 已经有联系人时
-        if (this.state.currentBD.wechat && this.state.currentBD.wechat.length > 0) {
+        if (this.state.currentBD.userinfo.wechat && this.state.currentBD.userinfo.wechat.length > 0 && state.wechat.length > 0) {
           // 该联系人已经有微信
           Modal.confirm({
             title: '警告',
@@ -420,14 +420,13 @@ class OrgBDListComponent extends React.Component {
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
         {
-          if (status === this.state.currentBD.response || ![2, 3].includes(status) || ([2, 3].includes(status) && [2, 3].includes(this.state.currentBD.response))) {
+          if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) {
             this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
           }
         }
         );
 
-    if (status === this.state.currentBD.response || ![2, 3].includes(status) || ([2, 3].includes(status) && [2, 3].includes(this.state.currentBD.response))) return;
-
+    if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) return;
     // 如果机构BD存在联系人
     if (this.state.currentBD.bduser) {
       // 首先检查经理和投资人的关联
@@ -435,7 +434,12 @@ class OrgBDListComponent extends React.Component {
         .then(result => {
           // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
           if ((result.data || hasPerm('usersys.admin_changeuser')) && isModifyWechat) {
-            api.editUser([this.state.currentBD.bduser], { wechat });
+            api.addUserRelation({
+              relationtype: true,
+              investoruser: this.state.currentBD.bduser,
+              traderuser: this.state.currentBD.manager.id
+            })
+            api.editUser([this.state.currentBD.bduser], { wechat: wechat === '' ? undefined : wechat });
           } else {
             api.addUserRelation({
               relationtype: true,
@@ -444,7 +448,7 @@ class OrgBDListComponent extends React.Component {
             })
               .then(result => {
                 if (isModifyWechat) {
-                  api.editUser([this.state.currentBD.bduser], { wechat });
+                  api.editUser([this.state.currentBD.bduser], { wechat: wechat === '' ? undefined : wechat });
                 }
               })
               .catch(error => {
