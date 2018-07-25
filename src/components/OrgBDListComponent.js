@@ -764,30 +764,10 @@ class OrgBDListComponent extends React.Component {
     var table = document.querySelectorAll('table')[0];
     table.border = '1';
 
-    // 设置所有table显示边框
-    var allTables = table.querySelectorAll('table');
-    allTables.forEach(element => {
-      element.border = '1';
-    });
-
-    // 将机构名称列加粗居中显示
-    var allOrg = table.querySelectorAll("tbody tr:nth-child(odd) > td.orgname");
-    allOrg.forEach(element => {
+    var cells = table.querySelectorAll('td, th');
+    cells.forEach(element => {
       element.style.textAlign = 'center';
-      element.style.fontWeight = 'bolder';
-    });
-
-    var expandIconTh = table.querySelectorAll('th.ant-table-expand-icon-th')[0];
-    expandIconTh.remove();
-
-    var expandIconCells = table.querySelectorAll("td.ant-table-row-expand-icon-cell");
-    expandIconCells.forEach(element => {
-      element.remove();
-    });
-
-    var elementRemove = table.querySelectorAll('tr.ant-table-expanded-row.ant-table-expanded-row-level-1>td:first-child');
-    elementRemove.forEach(element => {
-      element.remove();
+      element.style.verticalAlign = 'middle';
     });
 
     link.href = tableToExcel(table, '机构BD');
@@ -822,6 +802,9 @@ class OrgBDListComponent extends React.Component {
         element.org = orgBD.data.data[0].org;
       }
     }
+    
+    allOrgs = allOrgs.reduce((prev, cur) => prev.concat(cur.items), []);
+
     return allOrgs;
   }
 
@@ -845,32 +828,25 @@ class OrgBDListComponent extends React.Component {
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 
-    const columnsForExport = [{ title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname' }];
-
-    const expandedRowRenderForExport = record => {
-      const columns = [
-        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '30%'},
-        {title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', width: '30%'},
-        {
-          title: i18n('org_bd.status'), 
-          render: text => <div style={{ width: '30%' }}>{text && this.props.orgbdres.filter(f => f.id === text)[0].name}</div>, 
-          dataIndex: 'response', 
-          key:'response',
-          width: '40%', 
-        },
-      ];
-      return (
-        <Table
-          showHeader
-          columns={columns}
-          dataSource={record.items}
-          size={"small"}
-          rowKey={record => record.id}
-          pagination={false}
-          loading={!record.loaded}
-        />
-      );
-    };
+    const columnsForExport = [
+      { title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname', width: '20%' },
+      { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '15%' },
+      { title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', width: '15%' },
+      {
+        title: i18n('org_bd.status'), 
+        render: text => text && this.props.orgbdres.filter(f => f.id === text)[0].name, 
+        dataIndex: 'response', 
+        key:'response',
+        width: '20%', 
+      },
+      {
+        title: "最新备注", 
+        render: text => text && text.length && text[text.length - 1].comments || null,
+        key:'bd_latest_info',
+        width: '30%',
+        dataIndex: 'BDComments',
+      },
+    ];
 
     const expandedRowRender = (record) => {
       const columns = [
@@ -1075,10 +1051,8 @@ class OrgBDListComponent extends React.Component {
           style={{ display: 'none' }}
           className="new-org-db-style"
           columns={columnsForExport}
-          expandedRowRender={expandedRowRenderForExport}
           dataSource={this.state.listForExport}
           rowKey={record=>record.id}
-          expandedRowKeys={this.state.expandedForExport}
           pagination={false}
           size="middle"
         />
