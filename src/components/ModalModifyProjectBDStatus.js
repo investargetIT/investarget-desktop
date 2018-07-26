@@ -14,8 +14,6 @@ import {
   Switch, 
   Button, 
 } from 'antd';
-import { SelectNewBDStatus } from './ExtraInput';
-
 const InputGroup = Input.Group;
 const Option = Select.Option
 
@@ -75,7 +73,7 @@ class SelectInvestorGroup extends React.Component {
   }
 }
 
-class ModalModifyOrgBDStatus extends React.Component {
+class ModalModifyProjectBDStatus extends React.Component {
 
   state = {
     username: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.username ||'', 
@@ -83,15 +81,15 @@ class ModalModifyOrgBDStatus extends React.Component {
     wechat: '', 
     email: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.useremail ||'', 
     isimportant: this.props.bd.isimportant||null, 
-    status: this.props.bd.response, 
+    status: this.props.bd.bd_status.id, 
     group: '', 
     mobileAreaCode: '86',
-    comment: '',
   }
 
   checkInvalid = () => {
     const { username, mobile, wechat, email, status, group } = this.state;
-    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && [3].includes(status) && this.props.bd.bduser === null && ![3].includes(this.props.bd.response));
+    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
+           || (wechat.length === 0 && status === 3 && this.props.bd.bduser !== null && this.props.bd.bd_status.id !== 3);
   }
   checkProjectValid = () =>{
     const { username, mobile, email, status, group } = this.state;
@@ -99,7 +97,7 @@ class ModalModifyOrgBDStatus extends React.Component {
   }
  
   render() {
-    const { visible, currentStatus, status, sendEmail, confirmLoading, onSendEmailChange, onOk, onCancel } = this.props
+    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
     return (
       <Modal
         title={i18n('modify_bd_status')}
@@ -108,7 +106,7 @@ class ModalModifyOrgBDStatus extends React.Component {
         confirmLoading={confirmLoading}
         footer={null}
       >
-        <div style={{ width: '70%', margin: '0 auto', marginLeft: 50 }}>
+        <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
           {this.state.isimportant!=null ?
           <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
@@ -123,14 +121,14 @@ class ModalModifyOrgBDStatus extends React.Component {
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
-              <SelectNewBDStatus
-                style={{ width: '100%' }}
+              <SelectBDStatus
+                style={{ width: 120 }}
                 value={this.state.status}
                 onChange={status => this.setState({ status })}
               />
             </Col>
           </Row>
-          { !this.props.bd.bduser && this.props.bd.response !== 3 && this.state.status === 3 ? <div>
+          { !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ? <div>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.role')} : </Col>
             <Col span={16}><SelectInvestorGroup value={this.state.group} onChange={value => this.setState({group: value})} /></Col>
@@ -162,19 +160,12 @@ class ModalModifyOrgBDStatus extends React.Component {
           : null }
 
           { /* 有联系人的BD成功时要求填写联系人微信号 */ }
-          {this.props.bd.bduser && ![2, 3].includes(this.props.bd.response) && [2, 3].includes(this.state.status) && !this.props.projectBD ?
+          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 &&!this.props.projectBD?
             <Row style={{ marginTop: 10 }}>
               <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
               <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
             </Row>
             : null}
-
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >备注 : </Col>
-            <Col span={16}>
-              <Input.TextArea rows={3} value={this.state.comment} onChange={e => this.setState({ comment: e.target.value })} />
-            </Col>
-          </Row>
 
           <Row style={{ marginTop: 10 }}>
             <Col span={8} />
@@ -189,4 +180,4 @@ class ModalModifyOrgBDStatus extends React.Component {
 }
 
 
-export default ModalModifyOrgBDStatus
+export default ModalModifyProjectBDStatus

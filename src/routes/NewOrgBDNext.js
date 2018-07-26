@@ -29,7 +29,6 @@ import {
 import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
 import { Search } from '../components/Search';
-import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import ModalAddUser from '../components/ModalAddUser';
 import BDModal from '../components/BDModal';
 import { getUser } from '../api';

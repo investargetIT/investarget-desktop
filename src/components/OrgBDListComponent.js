@@ -27,7 +27,7 @@ import {
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
 import { Search } from './Search';
-import ModalModifyOrgBDStatus from './NewModalModifyOrgBDStatus';
+import ModalModifyOrgBDStatus from './ModalModifyOrgBDStatus';
 import BDModal from './BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'

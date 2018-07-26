@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, Table, Pagination, Input, Popconfirm, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { SelectBDStatus } from '../components/ModalModifyOrgBDStatus';
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
 import { 
@@ -16,7 +15,7 @@ import * as api from '../api'
 import { Link } from 'dva/router'
 import BDModal from '../components/BDModal';
 import { isLogin } from '../utils/util'
-import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
+import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 class ProjectBDList extends React.Component {
@@ -383,7 +382,7 @@ class ProjectBDList extends React.Component {
         </Modal>
         
         {this.state.isShowModifyStatusModal?
-        <ModalModifyOrgBDStatus 
+        <ModalModifyProjectBDStatus 
           visible={this.state.isShowModifyStatusModal} 
           onCancel={() => this.setState({ isShowModifyStatusModal: false })} 
           status={this.state.status}
