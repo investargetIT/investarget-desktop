@@ -17,6 +17,7 @@ import BDModal from '../components/BDModal';
 import { isLogin } from '../utils/util'
 import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import { connect } from 'dva';
 
 class ProjectBDList extends React.Component {
 
@@ -171,7 +172,7 @@ class ProjectBDList extends React.Component {
         .catch(err => reject(err));
     });
   }
-
+  
   handleConfirm =(state)=>{
     const react = this;
     if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && !this.state.currentBD.bduser){
@@ -181,6 +182,7 @@ class ProjectBDList extends React.Component {
               content: i18n('user.message.user_exist')
             });
           } else {
+            this.setState({ isShowModifyStatusModal: false });
             this.handleConfirmAudit(state);
           }
         })
@@ -224,15 +226,23 @@ class ProjectBDList extends React.Component {
         projectBD: this.state.currentBD.id,
         comments: `${i18n('account.username')}: ${usernameC} ${i18n('account.mobile')}: ${mobile} ${i18n('account.email')}: ${email}`
       });
-        api.addUser({...state, userstatus: 1, status: undefined})
+        const userBody = {...state, userstatus: 1};
+        delete userBody.status;
+        api.addUser(userBody)
           .then(result =>{
+            if (this.state.currentBD.username === null) {
+              api.editProjBD(this.state.currentBD.id, { bduser: result.data.id })
+                .then(data => {
+                  this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+                })
+            }
             api.addUserRelation({
-            relationtype: false,
-            investoruser: result.data.id,
-            traderuser: this.state.currentBD.manager.id
-          }).then(data=>{
-            this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
-          })
+              relationtype: false,
+              investoruser: result.data.id,
+              traderuser: this.state.currentBD.manager.id
+            }).then(data=>{
+              this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+            })
           });
       }
     }
@@ -249,6 +259,7 @@ class ProjectBDList extends React.Component {
 
   componentDidMount() {
     this.getProjectBDList()
+    this.props.dispatch({ type: 'app/getGroup' });
   }
 
   handleStatusChange =(status)=>{
@@ -366,7 +377,7 @@ class ProjectBDList extends React.Component {
             onEdit={this.handleEditComment}
             onDelete={this.handleDeleteComment} />
         </Modal>
-        
+
         {this.state.isShowModifyStatusModal?
         <ModalModifyProjectBDStatus 
           visible={this.state.isShowModifyStatusModal} 
@@ -381,7 +392,7 @@ class ProjectBDList extends React.Component {
   }
 }
 
-export default ProjectBDList
+export default connect()(ProjectBDList);
 
 
 class BDComments extends React.Component {

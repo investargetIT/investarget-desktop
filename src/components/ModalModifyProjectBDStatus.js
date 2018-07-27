@@ -9,10 +9,11 @@ import {
   Form,
 } from 'antd';
 import SimpleUserForm from './SimpleUserForm';
-import { forEachLeadingCommentRange } from '../../node_modules/typescript';
-
+function mapPropsToFields(props) {
+  return props.data;
+}
 const FormItem = Form.Item;
-const EditUserForm = Form.create({ mapPropsToFields: props => props.data })(SimpleUserForm);
+const EditUserForm = Form.create({ mapPropsToFields })(SimpleUserForm);
 const Option = Select.Option
 const formItemLayout = {
   labelCol: {
@@ -91,7 +92,6 @@ class ModalModifyProjectBDStatus extends React.Component {
       this.addForm.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          this.setState({ confirmLoading: true });
           this.props.onOk({ ...values, status });
         }
       });
@@ -108,7 +108,6 @@ class ModalModifyProjectBDStatus extends React.Component {
         title={i18n('modify_bd_status')}
         visible={visible}
         onCancel={onCancel}
-        confirmLoading={this.state.confirmLoading}
         onOk={this.handleConfirmBtnClicked}
       >
 
@@ -121,11 +120,11 @@ class ModalModifyProjectBDStatus extends React.Component {
         </FormItem>
 
         {!this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ?
-          <EditUserForm 
+          <EditUserForm
             wrappedComponentRef={this.handleRef}
             data={toFormData(this.props.bd)}
           />
-          : null}
+        : null} 
 
       </Modal>
     )
