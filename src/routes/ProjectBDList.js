@@ -190,7 +190,8 @@ class ProjectBDList extends React.Component {
     }
   }
 
-  handleConfirmAudit = ({ status,username, mobile, email, group }) => {
+  handleConfirmAudit = state => {
+    const { status, usernameC, mobile, email } = state;
     const body = {
       bd_status: status
     }
@@ -221,22 +222,9 @@ class ProjectBDList extends React.Component {
     } else {
       api.addProjBDCom({
         projectBD: this.state.currentBD.id,
-        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('account.email')}: ${email}`
+        comments: `${i18n('account.username')}: ${usernameC} ${i18n('account.mobile')}: ${mobile} ${i18n('account.email')}: ${email}`
       });
-      const newUser = { mobile, email, groups: [Number(group)], userstatus: 1 };
-      if (window.LANG === 'en') {
-        newUser.usernameE = username;
-      } else {
-        newUser.usernameC = username;
-      }
-      this.checkExistence(mobile,email).then(ifExist=>{
-        if(ifExist){
-          Modal.error({
-          content: i18n('user.message.user_exist')
-        });
-        }
-        else{
-        api.addUser(newUser)
+        api.addUser({...state, userstatus: 1, status: undefined})
           .then(result =>{
             api.addUserRelation({
             relationtype: false,
@@ -246,8 +234,6 @@ class ProjectBDList extends React.Component {
             this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
           })
           });
-        }
-      })
       }
     }
 
@@ -385,11 +371,8 @@ class ProjectBDList extends React.Component {
         <ModalModifyProjectBDStatus 
           visible={this.state.isShowModifyStatusModal} 
           onCancel={() => this.setState({ isShowModifyStatusModal: false })} 
-          status={this.state.status}
-          onStatusChange={this.handleStatusChange}
           onOk={this.handleConfirm}
           bd={this.state.currentBD}
-          projectBD
         />
         :null}
 

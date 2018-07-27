@@ -2,20 +2,28 @@ import React from 'react'
 import { connect } from 'dva'
 import { 
   i18n, 
-  checkMobile,
 } from '../utils/util';
 import { 
   Modal, 
   Select, 
-  Checkbox, 
-  Input, 
-  Row, 
-  Col, 
-  Switch, 
-  Button, 
+  Form,
 } from 'antd';
-const InputGroup = Input.Group;
+import SimpleUserForm from './SimpleUserForm';
+import { forEachLeadingCommentRange } from '../../node_modules/typescript';
+
+const FormItem = Form.Item;
+const EditUserForm = Form.create({ mapPropsToFields: props => props.data })(SimpleUserForm);
 const Option = Select.Option
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
 
 function SelectBDStatus(props) {
   const { value, onChange, options, ...extraProps } = props;
@@ -42,137 +50,83 @@ function mapStateToProps(state) {
 SelectBDStatus = connect(mapStateToProps)(SelectBDStatus);
 export { SelectBDStatus };
 
-class SelectInvestorGroup extends React.Component {
-
-  state = {
-    options: []
+function toFormData (bd) {
+  var formData = {
+    usernameC: bd.username,
+    email: bd.useremail,
+    title: bd.usertitle && bd.usertitle.id,
+  };
+  if (bd.usermobile) {
+    if (bd.usermobile.includes('-')) {
+      formData.mobile = bd.usermobile.split('-')[1];
+      if (bd.usermobile.split('-')[0] !== '') {
+        formData.mobileAreaCode = bd.usermobile.split('-')[0];
+      }
+    } else {
+      formData.mobile = bd.usermobile;
+    }
   }
-
-  componentDidMount() {
-    api.queryUserGroup({ type: 'investor' })
-      .then(result => {
-        echo('result', result.data.data);
-        const options = result.data.data.map(m => ({ label: m.name, value: m.id }));
-        echo(options);
-        this.setState({ options });
-      });
+  for (let prop in formData) {
+    formData[prop] = { value: formData[prop] };
   }
-
-  render() {
-    if (this.state.options.length === 0) return null;
-    return (
-      <Select 
-        size="large" 
-        value={this.props.value} 
-        style={{ width: 120, height: 32 }} 
-        onChange={this.props.onChange}
-      >
-        { this.state.options.map(m => <Option key={m.value} value={String(m.value)}>{m.label}</Option>) }
-      </Select>
-    )
-  }
+  return formData;
 }
 
 class ModalModifyProjectBDStatus extends React.Component {
 
   state = {
-    username: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.username ||'', 
-    mobile: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/,''):'',
-    wechat: '', 
-    email: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.useremail ||'', 
-    isimportant: this.props.bd.isimportant||null, 
-    status: this.props.bd.bd_status.id, 
-    group: '', 
-    mobileAreaCode: '86',
+    status: this.props.bd.bd_status.id,
+    confirmLoading: false,
   }
 
-  checkInvalid = () => {
-    const { username, mobile, wechat, email, status, group } = this.state;
-    return ((username.length === 0 || !checkMobile(mobile) || wechat.length === 0 || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
-           || (wechat.length === 0 && status === 3 && this.props.bd.bduser !== null && this.props.bd.bd_status.id !== 3);
+  handleRef = (inst) => {
+    if (inst) {
+      this.addForm = inst.props.form
+    }
   }
-  checkProjectValid = () =>{
-    const { username, mobile, email, status, group } = this.state;
-    return ((username.length === 0 || !checkMobile(mobile) || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
+
+  handleConfirmBtnClicked = () => {
+    const { status } = this.state;
+    if (this.addForm) {
+      this.addForm.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          this.setState({ confirmLoading: true });
+          this.props.onOk({ ...values, status });
+        }
+      });
+    } else {
+      this.setState({ confirmLoading: true });
+      this.props.onOk({ status });
+    }
   }
- 
+
   render() {
-    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel } = this.props
+    const { visible, onCancel } = this.props;
     return (
       <Modal
         title={i18n('modify_bd_status')}
         visible={visible}
         onCancel={onCancel}
-        confirmLoading={confirmLoading}
-        footer={null}
+        confirmLoading={this.state.confirmLoading}
+        onOk={this.handleConfirmBtnClicked}
       >
-        <div style={{ width: '60%', margin: '0 auto', marginLeft: 70 }}>
-          {this.state.isimportant!=null ?
-          <Row>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
-            <Col span={16}>
-              <Switch
-                defaultChecked={this.state.isimportant}
-                onChange={checked => this.setState({ isimportant: checked })}
-              />
-            </Col>
-          </Row>
-          :null}
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
-            <Col span={16}>
-              <SelectBDStatus
-                style={{ width: 120 }}
-                value={this.state.status}
-                onChange={status => this.setState({ status })}
-              />
-            </Col>
-          </Row>
-          { !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ? <div>
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.role')} : </Col>
-            <Col span={16}><SelectInvestorGroup value={this.state.group} onChange={value => this.setState({group: value})} /></Col>
-          </Row> 
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.username')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.username')} value={this.state.username} onChange={e => this.setState({ username: e.target.value })} /></Col>
-          </Row>
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.mobile')} : </Col>
-            <Col span={16}>
-                <InputGroup compact>
-                    <Input style={{ width: '20%', height: 32 }} value={this.state.mobileAreaCode} onChange={e => this.setState({ mobileAreaCode: e.target.value })} />
-                    <Input style={{ width: '80%', height: 32 }} placeholder={i18n('account.mobile')} value={this.state.mobile} onChange={e => this.setState({ mobile: e.target.value })} />
-                </InputGroup>
-            </Col>
-          </Row>
-          {!this.props.projectBD?
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
-          </Row>
-          :null}
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('account.email')} : </Col>
-            <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('account.email')} value={this.state.email} onChange={e => this.setState({ email: e.target.value })} /></Col>
-          </Row>
-          </div>
-          : null }
 
-          { /* 有联系人的BD成功时要求填写联系人微信号 */ }
-          {this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 &&!this.props.projectBD?
-            <Row style={{ marginTop: 10 }}>
-              <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('user.wechat')} : </Col>
-              <Col span={16}><Input style={{ height: 32 }} placeholder={i18n('user.wechat')} value={this.state.wechat} onChange={e => this.setState({ wechat: e.target.value })} /></Col>
-            </Row>
-            : null}
+        <FormItem {...formItemLayout} label="状态">
+          <SelectBDStatus
+            style={{ width: 160 }}
+            value={this.state.status}
+            onChange={status => this.setState({ status })}
+          />
+        </FormItem>
 
-          <Row style={{ marginTop: 10 }}>
-            <Col span={8} />
-            <Col span={16}><Button type="primary" onClick={() => onOk(this.state)} disabled={this.props.projectBD? this.checkProjectValid() : this.checkInvalid()}>{i18n('common.confirm')}</Button></Col>
-          </Row>
-        </div>
-        
+        {!this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ?
+          <EditUserForm 
+            wrappedComponentRef={this.handleRef}
+            data={toFormData(this.props.bd)}
+          />
+          : null}
+
       </Modal>
     )
   }
