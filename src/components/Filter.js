@@ -957,7 +957,7 @@ function mapStateToPropsForAudit(state) {
   return { auditOptions }
 }
 
-module.exports = {
+export {
   mapStateToPropsForAudit,
   MyInvestorListFilter,
   UserListFilter,

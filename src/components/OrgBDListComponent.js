@@ -32,7 +32,7 @@ import BDModal from './BDModal';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { SelectOrgUser, SelectTrader } from './ExtraInput';
+import { SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
@@ -70,7 +70,7 @@ class OrgBDListComponent extends React.Component {
 
     this.manager = parseInt(props.location.query.manager, 10);
     this.manager = !isNaN(this.manager) ? [this.manager] : [];
-
+    
     let filters = {...OrgBDFilter.defaultValue, proj: this.projId, manager: this.manager };
     let search = null;
     if (this.props.editable && this.projId === null) {
@@ -862,7 +862,18 @@ class OrgBDListComponent extends React.Component {
         {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
-          <SelectOrgUser allStatus onjob allowEmpty style={{width: "100%"}} type="investor" mode="single" optionFilterProp="children" org={record.org.id} value={record.orgUser} onChange={v=>{this.updateSelection(record, {orgUser: v})}}/>
+          <SelectOrgInvestor 
+            allStatus 
+            onjob 
+            allowEmpty 
+            style={{width: "100%"}} 
+            type="investor" 
+            mode="single" 
+            optionFilterProp="children" 
+            org={record.org.id} 
+            value={record.orgUser} 
+            onChange={v=>{this.updateSelection(record, {orgUser: v})}}
+          />
           : <div style={{ width: 100 }}>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               { record.username ? 

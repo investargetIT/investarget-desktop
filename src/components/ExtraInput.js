@@ -12,7 +12,14 @@ import {
   Radio,
   Spin,
   DatePicker,
+  Popover,
+  Row,
+  Col,
 } from 'antd'
+import { 
+  SimpleLine, 
+  Trader,
+} from './OrgBDListComponent';
 const Option = Select.Option
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -656,6 +663,103 @@ class SelectOrgUser extends React.Component {
     return <SelectNumber options={this.state.options} {...this.props} />
   }
 }
+
+class SelectOrgInvestor extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      options: []
+    }
+  }
+
+  componentDidMount() {
+
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
+
+    const { org, type, allStatus, onjob } = this.props
+    api.queryUserGroup({ type: type || 'trader'}).then(data => {
+      const groups = data.data.data.map(item => item.id)
+      const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
+      return api.getUser(param)
+    }).then(data => {
+      const traders = data.data.data
+      const options = traders.map(item => {
+        return { label: item.username, value: item.id, user: item }
+      })
+      if (this.props.allowEmpty && !options.length) {
+        this.setState({ options: [{label: "暂无", value: -1}] })
+      } else {
+        this.setState({ options })
+      }
+    })
+  }
+
+  handleChange = (value) => {
+    value = Array.isArray(value) ? value.map(item => Number(item)) : Number(value)
+    if (this.props.onChange) { this.props.onChange(value) }
+  }
+
+  content(user) {
+    const photourl=user.photourl
+    const tags=user.tags ? user.tags.map(m => this.props.tag.filter(f => f.id === m)[0].name).join(',') :''
+    const mobile = user.mobile;
+    const email = user.email;
+    const title = user.title && this.props.title.filter(f => f.id === user.title)[0].name;
+    return <div style={{minWidth: 180, maxWidth: 600}}>
+      <Row style={{ textAlign: 'center', margin: '10px 0' }}>
+        {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
+      </Row>
+
+      {mobile ?
+        <SimpleLine title={i18n('user.mobile')} value={mobile} />
+        : null}
+
+      {email ?
+        <SimpleLine title={i18n('user.email')} value={email} />
+        : null}
+
+      <SimpleLine title={i18n('user.position')} value={title || '暂无'} />
+
+      <SimpleLine title={i18n('user.tags')} value={tags || '暂无'} />
+
+      <Row style={{ lineHeight: '24px', borderBottom: '0px dashed #ccc' }}>
+        <Col span={12}>{i18n('user.trader')}:</Col>
+        <Col span={12} style={{ wordBreak: 'break-all' }}>
+          <Trader investor={user.id} />
+        </Col>
+      </Row>
+    </div>;
+  }
+
+  render() {
+    const {children, options, value, onChange, ...extraProps} = this.props
+    const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
+    let _value
+    if (value == undefined) {
+      _value = value
+    } else {
+      _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
+    }
+
+    return (
+      <Select value={_value} 
+      filterOption={(input, option) => option.props.children.indexOf(input) >= 0} 
+      onChange={this.handleChange}
+      dropdownStyle={{ zIndex: 0 }}
+      autoFocus
+      size="large" {...extraProps}>
+        {_options && _options.map((item, index) =>
+          <Option key={index} value={item.value}><Popover placement="right" content={this.content(item.user)}>{item.label}</Popover></Option>
+        )}
+      </Select>
+    )
+
+  }
+}
+
+SelectOrgInvestor = connect(state => ({ title: state.app.title, tag: state.app.tag }))(SelectOrgInvestor);
 
 /**
  * SelectTransactionStatus
@@ -1484,6 +1588,7 @@ export {
   SelectBDSource,
   SelectArea,
   SelectOrgUser,
+  SelectOrgInvestor,
   SelectPartner,
   SelectLibIndustry,
   SelectProjectLibrary,
