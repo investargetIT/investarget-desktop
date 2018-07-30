@@ -182,7 +182,7 @@ class ProjectBDList extends React.Component {
               content: i18n('user.message.user_exist')
             });
           } else {
-            this.setState({ isShowModifyStatusModal: false });
+            this.setState({ isShowModifyStatusModal: false }, () => this.setState({ loading: true }));
             this.handleConfirmAudit(state);
           }
         })
@@ -241,7 +241,7 @@ class ProjectBDList extends React.Component {
               investoruser: result.data.id,
               traderuser: this.state.currentBD.manager.id
             }).then(data=>{
-              this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+              this.setState({ isShowModifyStatusModal: false, loading: false });
             })
           });
       }
