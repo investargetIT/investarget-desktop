@@ -86,6 +86,9 @@ class OrgBDListComponent extends React.Component {
     }
 
     const currentSession = getUserInfo();
+    if (!currentSession.is_superuser && currentSession.permissions.includes('usersys.as_trader')) {
+      filters.manager = [currentSession.id];
+    }
 
     this.state = {
         filters,
@@ -156,7 +159,13 @@ class OrgBDListComponent extends React.Component {
 
   writeSetting = () => {
     const { filters, search } = this.state;
-    const data = { filters, search };
+    const saveFilters = {
+      proj: filters.proj,
+      manager: [],
+      org: [],
+      response: []
+    };
+    const data = { filters: saveFilters, search };
     localStorage.setItem('OrgBDList', JSON.stringify(data));
   };
 

@@ -34,8 +34,8 @@ export default {
     *login({ payload: { username, password, remember, redirect } }, { call, put }) {
       clearFilters()
       const { data } = yield call(api.login, { username, password })
-      const { token, user_info, menulist, permissions } = data
-      const userInfo = { ...user_info, token, menulist, permissions }
+      const { token, user_info, menulist, permissions, is_superuser } = data
+      const userInfo = { ...user_info, token, menulist, permissions, is_superuser }
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',
@@ -64,8 +64,8 @@ export default {
       yield call(api.register, {...user, registersource: 3}) // 标识注册来源
 
       const { data } = yield call(api.login, { username: user.email, password: user.password })
-      const { token, user_info, menulist, permissions } = data
-      const userInfo = { ...user_info, token, menulist, permissions }
+      const { token, user_info, menulist, permissions, is_superuser } = data;
+      const userInfo = { ...user_info, token, menulist, permissions, is_superuser };
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       yield put({
         type: 'save',
