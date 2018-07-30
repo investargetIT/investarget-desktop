@@ -269,12 +269,13 @@ class Select2 extends React.Component {
   }
 
   render() {
-    const { label, visible, search, list, reloading, loading } = this.state
+    const { label, visible, search, list, reloading, loading, total } = this.state;
     const content = (
       <div style={{ ...searchStyle }} ref="content">
         <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={this.props.placeholder} value={search} onChange={this.handleSearch} />
         <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
           { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
+          { !reloading && total === 0 ? <p style={tipStyle}>{this.props.noResult || '暂无'}</p> : null }
           <ul className={styles['list']}>
             {
               list.map(item =>

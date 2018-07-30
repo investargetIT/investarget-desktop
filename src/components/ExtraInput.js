@@ -564,6 +564,7 @@ class SelectExistProject extends React.Component {
         value={this.props.value}
         onChange={this.props.onChange}
         placeholder={this.props.placeholder}
+        noResult={this.props.noResult}
       />
     )
   }
