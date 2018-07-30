@@ -304,7 +304,7 @@ class ProjectBDList extends React.Component {
           return comments && comments.length > 0 && comments[comments.length-1].comments;
         },
       },
-      {title: i18n('project_bd.operation'), render: (text, record) => {
+      {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
         return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
             {hasPerm('BD.manageProjectBD') ?
@@ -312,18 +312,22 @@ class ProjectBDList extends React.Component {
                 <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
               </Link>
               :
+              getUserInfo().id === record.manager.id ?
               <div style={{ padding: '0 7px' }}>
                 <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</a>
-              </div>
+              </div> 
+              : null
             }
-              <div>
-                <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
-              </div>
+
+            {/* 备注按钮 */}
+            { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id ?
+            <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+            : null }
 
 
           </div>
           { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
-          <div>
+          <div style={{ marginLeft: 7 }}>
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
             <a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
           </Popconfirm>
