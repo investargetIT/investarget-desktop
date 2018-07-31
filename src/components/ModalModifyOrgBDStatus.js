@@ -109,7 +109,6 @@ class ModalModifyOrgBDStatus extends React.Component {
         footer={null}
       >
         <div style={{ width: '70%', margin: '0 auto', marginLeft: 50 }}>
-          {this.state.isimportant!=null ?
           <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
             <Col span={16}>
@@ -119,7 +118,6 @@ class ModalModifyOrgBDStatus extends React.Component {
               />
             </Col>
           </Row>
-          :null}
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
