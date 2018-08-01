@@ -6,6 +6,7 @@ import {
   i18n, 
   hasPerm,
   getUserInfo,
+  handleError,
 } from '../utils/util';
 import * as api from '../api'
 
@@ -95,18 +96,7 @@ class OrgUserList extends React.Component {
     this.getUser()
   }
 
-  deleteUser = (id) => {
-    this.setState({ loading: true })
-    api.deleteUser(id).then(result => {
-      this.getUser()
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'findError',
-        payload: error,
-      })
-    })
-  }
+  deleteUser = id => api.deleteUser(id).then(this.getUser).catch(handleError);
 
   showModal = (id, username) => {
     this.modal.showModal(id, username)
