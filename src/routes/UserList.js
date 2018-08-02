@@ -222,7 +222,12 @@ class UserList extends React.Component {
         dataIndex: 'username',
         key: 'username',
         render: (text, record) => {
-          return <Link to={'/app/user/' + record.id}>{record.username}</Link>
+          return <div style={{ display: 'flex' }}>
+            { record.mobiletrue ?
+            <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+            : null }
+            <Link to={'/app/user/' + record.id}>{record.username}</Link>
+            </div>
         }
         //sorter:true,
       },
@@ -353,7 +358,7 @@ class UserList extends React.Component {
         <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button>
         
         <Pagination
-          className="ant-table-pagination"
+          style={{ float: 'right' }}
           total={total}
           current={page}
           pageSize={pageSize}
@@ -363,6 +368,11 @@ class UserList extends React.Component {
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
+        </div>
+
+        <div style={{ display: 'flex' }}>
+          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+          表示该用户的联系方式可用
         </div>
 
       </LeftRightLayout>

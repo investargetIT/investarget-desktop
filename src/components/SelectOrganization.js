@@ -36,8 +36,14 @@ function Investor(props) {
   }
   return (
     <Row style={{ padding: '4px 0' }}>
-      <Col span={3}>{props.username}</Col>
-      <Col span={2}><div style={{ width: '80%', height: 20, background: checkRealMobile(props.mobile) ? 'green' : 'red' }} /></Col>
+      <Col span={5}>
+        <div style={{ display: 'flex' }}>
+          { props.mobiletrue ? 
+          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+          : null } 
+          {props.username}
+        </div>
+      </Col>
       <Col span={5}>
       { props.traderList.map(m => <span key={m.value} style={{ marginRight: 10, color: m.onjob ? 'rgb(34, 124, 205)' : 'rgb(165, 166, 167)' }}>{m.label}</span>) }
       </Col>
@@ -126,11 +132,8 @@ class SelectOrganization extends React.Component {
       if (investor.length > 0) {
         return <div style={{ width: 600 }}>
           <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>
-            <div style={{ width: 20, height: 20, background: 'green' }} />
-            <div>表示联系方式可用</div>
-            <div style={{ width: 20 }} />
-            <div style={{ width: 20, height: 20, background: 'red' }} />
-            <div>表示联系方式不可用或暂无联系方式</div>
+          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+          表示该用户的联系方式可用
           </div>
           {investor.map(m => <Investor key={m.id} {...m} />)}
         </div>;
