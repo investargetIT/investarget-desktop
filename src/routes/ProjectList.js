@@ -17,6 +17,7 @@ import { Search } from '../components/Search';
 
 import AuditProjectModal from '../components/AuditProjectModal'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import { ApiError } from '../utils/request';
 
 
 class ProjectList extends React.Component {
@@ -205,7 +206,10 @@ class ProjectList extends React.Component {
               </span>
             )
           } else {
-            return <span className="span-title">record.projtitle</span>
+            this.props.dispatch({
+              type: 'app/findError',
+              payload: new ApiError(3000),
+            });
           }
         }
       },
