@@ -70,14 +70,11 @@ class DataRoomList extends React.Component {
   constructor(props) {
     super(props)
 
-    const setting = this.readSetting()
-    const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
     const pageSize = 11
 
     this.state = {
-      search,
-      page,
+      search: null,
+      page: 1,
       pageSize,
       total: 0,
       list: [],
@@ -125,8 +122,6 @@ class DataRoomList extends React.Component {
     //     })
     //   })
     // }
-
-    this.writeSetting()
   }
 
 
@@ -153,17 +148,6 @@ class DataRoomList extends React.Component {
       this.setState({ loading: false })
       this.props.dispatch({ type: 'app/findError', payload: err })
     })
-  }
-
-  writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
-    localStorage.setItem('DataRooomList', JSON.stringify(data))
-  }
-
-  readSetting = () => {
-    var data = localStorage.getItem('DataRooomList')
-    return data ? JSON.parse(data) : null
   }
 
   componentDidMount() {
