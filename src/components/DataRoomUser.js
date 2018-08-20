@@ -12,6 +12,7 @@ import {
   i18n,
   hasPerm,
 } from '../utils/util';
+import { Link } from 'dva/router';
 
 const rowStyle = {
   display: 'flex',
@@ -24,7 +25,12 @@ const rowStyle = {
 
 function generatePopoverContent(item, onDeleteUser, onSendEmail) {
   return <div>
-    <div style={{ textAlign: 'center' }}>{item.user.username}</div>
+    <div style={{ textAlign: 'center' }}>
+      <Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link>&nbsp;
+      { item.user.org ? 
+      <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> 
+      : '暂无机构' }
+    </div>
     <div style={{ textAlign: 'center', marginTop: 10 }}>
       <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
         <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
