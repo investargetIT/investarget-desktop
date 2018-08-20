@@ -31,7 +31,12 @@ const imageFileTypes = [
   'image/webp', 
 ];
 
-const validFileTypes = officeFileTypes.concat(imageFileTypes);
+const videoFileTypes = [
+  'video/mp4',
+  'video/avi',
+];
+
+const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes);
 
 const buttonStyle = {
   backgroundColor: 'transparent', 
@@ -98,6 +103,10 @@ class FileMgmt extends React.Component {
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
         window.open(file.fileurl);
+      } else if ((/\.(mp4|avi)$/i).test(file.filename)) {
+        Modal.warning({
+          title: '该文件不支持在线预览',
+        });
       } else {
         const watermark = isLogin().email || 'Investarget'
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
@@ -280,6 +289,8 @@ class FileMgmt extends React.Component {
       return '/images/ppt.png';
     } else if (/\.(xls|xlsx)$/i.test(filename)) {
       return '/images/xls.png';
+    } else if (/\.(mp4|avi)$/i.test(filename)) {
+      return '/images/file-video-icon.png';
     } else {
       return '/images/pdf.png';
     }
@@ -445,7 +456,7 @@ class FileMgmt extends React.Component {
         if (!validFileTypes.includes(fileType)) {
           Modal.error({
             title: '不支持的文件类型',
-            content: '请上传 office 或 pdf 文档',
+            content: '请上传 office、pdf 或者后缀名为 mp4、avi 的视频文件',
           })
           return false
         }
