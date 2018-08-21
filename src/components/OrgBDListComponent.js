@@ -277,7 +277,7 @@ class OrgBDListComponent extends React.Component {
         )
         this.setState({
           list: newList,
-        });
+        }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
         if (this.state.currentBD) {
           const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
           this.setState({ comments });
