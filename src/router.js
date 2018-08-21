@@ -68,6 +68,7 @@ import AddMeetingBD from './routes/AddMeetingBD';
 import CompanyDataRoomList from './routes/CompanyDataRoomList';
 import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 import OrgExportList from './routes/OrgExportList';
+import OrgBDProjList from './routes/OrgBDProjList';
 
 function RouterConfig({ history }) {
   return (
@@ -138,6 +139,7 @@ function RouterConfig({ history }) {
       <Route path="/app/meeting/bd" component={MeetingBDList} />
       <Route path="/app/meetingbd/add" component={AddMeetingBD} />
       <Route path="/app/org/export" component={OrgExportList} />
+      <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
     </Router>
   )
 }
