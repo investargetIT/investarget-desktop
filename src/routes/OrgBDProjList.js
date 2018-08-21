@@ -145,7 +145,7 @@ class OrgBDProjList extends React.Component {
           </div>
 
           <Link to={dataroomUrl}>
-            <div className="dataroom-cell-banner-bg" style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 200 }} />
+            <div className="orgbd-cell-banner-bg" style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 200 }} />
           </Link>
 
         </Card>
