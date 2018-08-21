@@ -241,7 +241,7 @@ class OrgBDListComponent extends React.Component {
 
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
-    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search}).then(result => {
+    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
         if(item.bduser && item.response === 2){
