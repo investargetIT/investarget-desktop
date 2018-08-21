@@ -822,6 +822,15 @@ export const modifyOrgBD = (id, body) => r(`/bd/orgbd/${id}/`, 'PUT', body);
 
 export const addOrgBDComment = body => r('/bd/orgbd/comment/', 'POST', body);
 export const deleteOrgBDComment = id => r(`/bd/orgbd/comment/${id}/`, 'DELETE');
+export const getOrgBDProj = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r('/bd/orgbd/proj/?' + qs.stringify(params))
+};
+export const readOrgBD = body => r('/bd/orgbd/read/', 'POST', body);
 
 /**
 meeting

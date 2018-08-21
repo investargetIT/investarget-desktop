@@ -68,26 +68,37 @@ class OrgBDProjList extends React.Component {
     const { search, page, pageSize } = this.state;
     const params = {
       search,
-      skip_count: (page - 1) * pageSize, 
-      max_size: pageSize,
-      bdm: [],
-      projstatus: [4, 6, 7],
+      page_size: pageSize, 
+      page_index: page,
+      manager: [],
     };
     this.setState({ loading: true })
 
-    const reqProj = await api.getProj(params);
-    const { count: total, data: list } = reqProj.data;
+    // 首先请求所有以项目分组的机构BD
+    const reqProj = await api.getOrgBDProj(params);
+    const { count: total } = reqProj.data;
 
-    for (let index = 0; index < list.length; index++) {
-      const element = list[index];
-      const bdParams = {
-        proj: element.id,
-        isRead: false,
-        manager: [getCurrentUser()],
-      };
-      const reqBD = await api.getOrgBdBase(bdParams);
-      element.unReadOrgBDNum = reqBD.data.count;
-    }
+    // 其次根据项目ID获取项目详情
+    const reqProjList = await api.getProj({ 
+      ids: reqProj.data.data.filter(f => f.proj).map(m => m.proj), 
+      max_size: pageSize, 
+    });
+    const { data: list } = reqProjList.data;
+
+    // 最后请求当前用户的未读机构BD的统计数据
+    const reqUnreadOrgBD = await api.getOrgBDProj({
+      proj: list.map(m => m.id),
+      isRead: false,
+      manager: [getCurrentUser()],
+    });
+   
+    // 将未读机构BD项目与所有项目做匹配
+    list.forEach(element => {
+      const index = reqUnreadOrgBD.data.data.map(m => m.proj).indexOf(element.id);
+      if (index > -1) {
+        element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
+      }
+    });
 
     this.setState({ loading: false, total, list });
   }
