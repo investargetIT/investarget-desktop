@@ -77,6 +77,18 @@ class OrgBDProjList extends React.Component {
 
     const reqProj = await api.getProj(params);
     const { count: total, data: list } = reqProj.data;
+
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      const bdParams = {
+        proj: element.id,
+        isRead: false,
+        manager: [getCurrentUser()],
+      };
+      const reqBD = await api.getOrgBdBase(bdParams);
+      element.unReadOrgBDNum = reqBD.data.count;
+    }
+
     this.setState({ loading: false, total, list });
   }
 
@@ -108,6 +120,8 @@ class OrgBDProjList extends React.Component {
       const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
       // const dataroomTime = record.createdtime.slice(0, 16).replace('T', ' ')
       return (
+        <div style={{ padding: 10, position: 'relative' }}>
+
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
 
           <div style={{ ...cardImageStyle, backgroundImage: `url(${imgUrl})` }}></div>
@@ -124,6 +138,12 @@ class OrgBDProjList extends React.Component {
           </Link>
 
         </Card>
+
+        { record.unReadOrgBDNum > 0 ?
+        <div style={{ position: 'absolute', right: 0, top: 0, width: 20, height: 20, borderRadius: 10, background: 'red', color: 'white', textAlign: 'center' }}>{record.unReadOrgBDNum}</div>
+        : null }
+
+        </div>
       )
     }
 
@@ -133,7 +153,7 @@ class OrgBDProjList extends React.Component {
         title="机构BD列表"
         right={<Search2 
           style={{width: 200}} 
-          placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
+          placeholder="项目名称"
           defaultValue={search} 
           onSearch={this.handleSearch} 
         />}
