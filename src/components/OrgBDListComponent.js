@@ -244,7 +244,7 @@ class OrgBDListComponent extends React.Component {
     api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
-        if(item.bduser && item.response === 2){
+        if(item.bduser && [1, 2, 3].includes(item.response)) {
           const params = {
             proj: proj.id,
             investor: item.bduser,
@@ -304,7 +304,6 @@ class OrgBDListComponent extends React.Component {
     this.setState({ 
         visible: true, 
         currentBD: bd,
-        status: bd.bd_status.id,
     });
   }
 
@@ -326,21 +325,44 @@ class OrgBDListComponent extends React.Component {
     });
   }
 
-  addTimeline = () => {
+  syncTimeline = async state => {
+    const { proj, bduser, manager } = this.state.currentBD;
+    const params = {
+      proj: proj.id,
+      investor: bduser,
+      trader: manager.id,
+      isClose: false,
+    };
+    const checkTimeline = await api.getTimeline(params);
+
+    if (checkTimeline.data.count === 0) {
+      return await this.addTimeline(state.status);
+    } else {
+      const timeline = checkTimeline.data.data[0];
+      return await api.editTimeline(timeline.id, {
+        statusdata: {
+          transationStatus: state.status
+        }
+      });
+    }
+  }
+
+  addTimeline = status => {
     const { proj, bduser, manager } = this.state.currentBD;
     const params = {
       timelinedata: {
         'proj': proj.id,
         'investor': bduser,
         'trader': manager.id,
+        'createuser': manager.id,
       },
       statusdata: {
         'alertCycle': 7,
-        'transationStatus': 1,
+        'transationStatus': status,
         'isActive': true
       }
     }
-    api.addTimeline(params);
+    return api.addTimeline(params);
   }
 
   handleConfirmBtnClicked = state => {
@@ -354,36 +376,11 @@ class OrgBDListComponent extends React.Component {
       api.addOrgBDComment(body);
     }
 
-    const react = this;
-
-    if (state.status === 2 && this.state.currentBD.response !== 2) {
-      const { proj, bduser, manager } = this.state.currentBD;
-      const params = {
-        proj: proj.id,
-        investor: bduser,
-        trader: manager.id,
-        isClose: false,
-      };
-      api.getTimeline(params)
-        .then(result => {
-          if (result.data.count > 0) {
-            react.wechatConfirm(state);
-          } else {
-            Modal.confirm({
-              title: '是否同步创建时间轴？',
-              content: '',
-              onOk() {
-                react.addTimeline();
-                react.wechatConfirm(state);
-              },
-              onCancel() {
-                react.wechatConfirm(state);
-              },
-            });
-          }
-        });
+    // 如果状态改为了已见面、已签NDA或者正在看前期资料，则同步时间轴
+    if ([1, 2, 3].includes(state.status) && this.state.currentBD.response !== state.status) {
+      this.syncTimeline(state).then(() => this.wechatConfirm(state));
     } else {
-      react.wechatConfirm(state);
+      this.wechatConfirm(state);
     }
   }
 
@@ -484,7 +481,7 @@ class OrgBDListComponent extends React.Component {
           this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
         });
       } else {
-        this.setState({ visible: false });
+        this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
       }
     // 如果机构BD不存在联系人
     } else {
