@@ -988,7 +988,7 @@ class OrgBDListComponent extends React.Component {
 
                 { /* 查看时间轴按钮 */ }
                 { record.timeline ? 
-                <Link to={`/app/timeline/list?proj=${record.proj.id}&investor=${record.bduser}`} style={{ ...buttonStyle, marginRight: 4 }}>查看时间轴</Link>
+                <Link to={`/app/timeline/list?proj=${record.proj.id}&investor=${record.bduser}&trader=${record.manager.id}`} style={{ ...buttonStyle, marginRight: 4 }}>查看时间轴</Link>
                 : null }
 
                 { /* 删除按钮 */ }

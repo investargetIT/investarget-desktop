@@ -25,11 +25,11 @@ class TimelineList extends React.Component {
   constructor(props) {
     super(props)
 
-    const { proj, investor } = props.location.query;
+    const { proj, investor, trader } = props.location.query;
 
     let filters, search;
-    if (proj && investor) {
-      filters = { investor, proj, isClose: null };
+    if (proj && investor && trader) {
+      filters = { investor, proj, trader, isClose: null };
     } else {
       const setting = this.readSetting();
       filters = setting ? setting.filters : TimelineFilter.defaultValue;
