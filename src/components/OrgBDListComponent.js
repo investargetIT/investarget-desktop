@@ -64,6 +64,7 @@ class OrgBDListComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.showUnreadOnly = props.location.query.showUnreadOnly ? true : false,
     this.ids = (props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(props.location.query.projId, 10)
     this.projId = !isNaN(this.projId) ? this.projId : null;
@@ -72,6 +73,9 @@ class OrgBDListComponent extends React.Component {
     this.manager = !isNaN(this.manager) ? [this.manager] : [];
     
     let filters = {...OrgBDFilter.defaultValue, proj: this.projId, manager: this.manager };
+    if (this.showUnreadOnly) {
+      filters.isRead = false;
+    }
     let search = null;
     if (this.props.editable && this.projId === null) {
       const setting = this.readSetting();
@@ -91,6 +95,7 @@ class OrgBDListComponent extends React.Component {
     }
 
     this.state = {
+        showUnreadOnly: this.showUnreadOnly, // 是否只显示未读的机构BD任务
         filters,
         search,
         page: 1,
@@ -241,7 +246,7 @@ class OrgBDListComponent extends React.Component {
 
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
-    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100}).then(result => {
+    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100, isRead: this.state.showUnreadOnly ? false : undefined}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
         if(item.bduser && [1, 2, 3].includes(item.response)) {
@@ -1030,7 +1035,7 @@ class OrgBDListComponent extends React.Component {
       <div>
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
-        { this.props.editable ?
+        { this.props.editable && !this.state.showUnreadOnly ?
           <OrgBDFilter
             defaultValue={filters}
             onSearch={this.handleFilt}
@@ -1039,7 +1044,7 @@ class OrgBDListComponent extends React.Component {
           />
         : null}
 
-        { this.props.editable && this.state.filters.proj !== null ?
+        { this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly ?
         <div style={{ overflow: 'auto', marginBottom: 16 }}>
 
           { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
@@ -1116,7 +1121,7 @@ class OrgBDListComponent extends React.Component {
           </div>
         : null }
 
-        { this.state.filters.proj !== null ? 
+        { this.state.filters.proj !== null && !this.state.showUnreadOnly ? 
         <Button
           // disabled={this.state.selectedIds.length == 0}
           style={{ backgroundColor: 'orange', border: 'none' }}

@@ -127,7 +127,10 @@ class OrgBDProjList extends React.Component {
 
       const projId = record.id;
       const projTitle = record.projtitle
-      const dataroomUrl = `/app/org/bd?projId=${projId}`;
+      let dataroomUrl = `/app/org/bd?projId=${projId}`; 
+      if (record.unReadOrgBDNum > 0) {
+        dataroomUrl += '&showUnreadOnly=true';
+      }
       const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
       // const dataroomTime = record.createdtime.slice(0, 16).replace('T', ' ')
       return (
