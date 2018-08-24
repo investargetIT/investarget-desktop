@@ -255,7 +255,7 @@ class OrgBDListComponent extends React.Component {
     api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100, isRead: this.state.showUnreadOnly ? false : undefined}).then(result => {
       let list = result.data.data
       let promises = list.map(item=>{
-        if(item.bduser && [1, 2, 3].includes(item.response)) {
+        if(item.bduser && ![4, 5, 6, null].includes(item.response)) {
           const params = {
             proj: proj.id,
             investor: item.bduser,
