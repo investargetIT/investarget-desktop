@@ -379,7 +379,7 @@ class OrgBDListComponent extends React.Component {
   handleConfirmBtnClicked = state => {
 
     // 添加备注
-    if (state.comment.length > 0) {
+    if (state.comment.trim().length > 0) {
       const body = {
         orgBD: this.state.currentBD.id,
         comments: state.comment,
@@ -429,10 +429,11 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode }, isModifyWechat) => {
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode, comment }, isModifyWechat) => {
     const body = {
       response: status,
       isimportant: isimportant ? 1 : 0,
+      remark: comment,
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
