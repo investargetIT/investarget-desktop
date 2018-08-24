@@ -388,11 +388,11 @@ class OrgBDListComponent extends React.Component {
     }
 
     // 如果状态改为了已见面、已签NDA或者正在看前期资料，则同步时间轴
-    if ([1, 2, 3].includes(state.status) && this.state.currentBD.response !== state.status) {
-      this.syncTimeline(state).then(() => this.wechatConfirm(state));
-    } else {
+    // if ([1, 2, 3].includes(state.status) && this.state.currentBD.response !== state.status) {
+      // this.syncTimeline(state).then(() => this.wechatConfirm(state));
+    // } else {
       this.wechatConfirm(state);
-    }
+    // }
   }
 
   wechatConfirm = state => {
