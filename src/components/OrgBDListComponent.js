@@ -133,12 +133,17 @@ class OrgBDListComponent extends React.Component {
     this.getOrgBdList();
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getGroup' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
   }
 
-  getStatisticData = async () => {
-    const orgbdres = [1, 2, 3, 4, 5, 6]; // 所有的机构BD状态ID
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.orgbdres.length !== this.props.orgbdres.length) {
+      this.getStatisticData(nextProps.orgbdres).then(data => this.setState({ statistic: data }));
+    }
+  }
+
+  getStatisticData = async response => {
+    const orgbdres = response.map(m => m.id); // 所有的机构BD状态ID
     const result = [];
     for (let index = 0; index < orgbdres.length; index++) {
       const element = orgbdres[index];
@@ -240,8 +245,9 @@ class OrgBDListComponent extends React.Component {
         }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)));
       })
       .catch(handleError);
-
-      this.getStatisticData().then(data => this.setState({ statistic: data }));
+      if (this.props.orgbdres.length > 0) {
+        this.getStatisticData(this.props.orgbdres).then(data => this.setState({ statistic: data }));
+      }
   }
 
   getOrgBdListDetail = (org, proj) => {

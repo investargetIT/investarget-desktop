@@ -1302,6 +1302,25 @@ function mapStateToPropsTag(state) {
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
 
+class TabCheckboxOrgBDRes extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('project_bd.bd_status')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsOrgBDRes(state) {
+  const {orgbdres} = state.app
+  const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
+  return { options }  
+}
+TabCheckboxOrgBDRes = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes);
 
 class TabCheckboxService extends React.Component {
   componentDidMount() {
@@ -1624,4 +1643,5 @@ export {
   TabCheckboxService,
   TabCheckboxProjStatus,
   SelectMultiOrgs,
+  TabCheckboxOrgBDRes,
 }

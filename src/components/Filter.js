@@ -50,6 +50,7 @@ import {
   SelectExistProject,
   RadioFamLv,
   SelectOrgLevel,
+  TabCheckboxOrgBDRes,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -894,9 +895,7 @@ class OrgBDFilter extends React.Component {
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
         </BasicContainer>
 
-        <BasicContainer label={i18n('project_bd.bd_status')}>
-          <ITCheckboxGroup options={orgbdresOptions} value={response} onChange={this.handleChange.bind(this, 'response')} />
-        </BasicContainer> 
+        <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
