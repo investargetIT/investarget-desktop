@@ -285,14 +285,12 @@ class IndexPage extends React.Component {
       }
     });
 
-    const orgbdsuccessfilter={bd_status:3}
-    api.getOrgBDCount(orgbdsuccessfilter)
+    api.getOrgBDCount({ manager: isLogin().id })
     .then(result=>{
       this.setState({orgBDsuccess:result.data.count})
     })
 
-    const orgbdunsuccessfilter={bd_status:1}
-    api.getOrgBDCount(orgbdunsuccessfilter)
+    api.getOrgBDCount({ manager: isLogin().id, isRead: false })
     .then(result=>{
       this.setState({orgBDunsuccess:result.data.count})
     })
@@ -402,7 +400,7 @@ class IndexPage extends React.Component {
           <Link to="app/org/bd?status=3">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构BD成功</p>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>全部机构BD</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDsuccess}</p>
                     </div>
                   </Col>
@@ -410,7 +408,7 @@ class IndexPage extends React.Component {
           <Link to="app/org/bd?status=1">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>机构未BD</p>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>新增机构BD</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDunsuccess}</p>
                     </div>
                   </Col>
