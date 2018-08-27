@@ -90,6 +90,7 @@ class OrgBDProjList extends React.Component {
       proj: list.map(m => m.id),
       isRead: false,
       manager: [getCurrentUser()],
+      page_size: list.length,
     });
    
     // 将未读机构BD项目与所有项目做匹配
