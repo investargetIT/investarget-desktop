@@ -284,8 +284,11 @@ class IndexPage extends React.Component {
         this.setState({ secondSchedule: schedule });
       }
     });
-
-    api.getOrgBDCount({ manager: isLogin().id })
+    let orgBDParams;
+    if (!isLogin().is_superuser && isLogin().permissions.includes('usersys.as_trader')) {
+      orgBDParams = { manager: isLogin().id };
+    }
+    api.getOrgBDCount(orgBDParams)
     .then(result=>{
       this.setState({orgBDsuccess:result.data.count})
     })
