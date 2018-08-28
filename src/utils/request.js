@@ -2,11 +2,11 @@ require('es6-promise').polyfill();
 import fetch from 'dva/fetch';
 
 const prodUrl = 'https://api.investarget.com';
-let devUrl = "http://192.168.1.251:8080";
+let devUrl = "http://apitest.investarget.com";
 // devUrl = 'http://192.168.1.201:8000';
 // devUrl = prodUrl;
 const baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
-const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://192.168.1.113:3000' : 'https://m.investarget.com'; 
+const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://mtest.investarget.com' : 'https://m.investarget.com'; 
 export { baseUrl, mobileUploadUrl, prodUrl }
 
 export class ApiError extends Error {
