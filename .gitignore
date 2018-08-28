@@ -6,6 +6,11 @@
 # production
 /dist
 
+# 为测试环境打包编译生成的内容
+test 
+# 为生产环境打包编译生存的内容
+prod
+
 # misc
 .DS_Store
 npm-debug.log*
