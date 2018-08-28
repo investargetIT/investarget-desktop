@@ -400,7 +400,7 @@ class IndexPage extends React.Component {
                       <img  style={{ height: 40, width: 43, margin: 'auto' }} src="./images/org.png"/>
                     </div>
                   </Col>
-          <Link to="app/org/bd?status=3">
+          <Link to="/app/orgbd/project/list">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>全部机构BD</p>
@@ -408,7 +408,7 @@ class IndexPage extends React.Component {
                     </div>
                   </Col>
           </Link>
-          <Link to="app/org/bd?status=1">
+          <Link to="/app/orgbd/project/list">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
                       <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>新增机构BD</p>
