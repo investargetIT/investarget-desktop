@@ -134,6 +134,7 @@ class OrgBDListComponent extends React.Component {
     this.getAllTrader();
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
   }
 
   componentWillReceiveProps (nextProps) {
