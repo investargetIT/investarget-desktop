@@ -138,19 +138,13 @@ class OrgBDListComponent extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.orgbdres.length !== this.props.orgbdres.length) {
-      this.getStatisticData(nextProps.orgbdres).then(data => this.setState({ statistic: data }));
+      this.getStatisticData().then(data => this.setState({ statistic: data }));
     }
   }
 
-  getStatisticData = async response => {
-    const orgbdres = response.map(m => m.id); // 所有的机构BD状态ID
-    const result = [];
-    for (let index = 0; index < orgbdres.length; index++) {
-      const element = orgbdres[index];
-      const response = await api.getOrgBDCount({ proj: this.state.filters.proj, response: element });
-      result.push({ status: element, count: response.data.count });
-    }
-    return result;
+  getStatisticData = async () => {
+    const count = await api.getOrgBDCountNew({ proj: this.state.filters.proj });
+    return count.data.response_count.map(m => ({ status: m.response, count: m.count }));
   }
 
   getAllTrader() {
@@ -246,7 +240,7 @@ class OrgBDListComponent extends React.Component {
       })
       .catch(handleError);
       if (this.props.orgbdres.length > 0) {
-        this.getStatisticData(this.props.orgbdres).then(data => this.setState({ statistic: data }));
+        this.getStatisticData().then(data => this.setState({ statistic: data }));
       }
   }
 
@@ -1057,7 +1051,7 @@ class OrgBDListComponent extends React.Component {
           { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
           <div style={{ float: 'left', lineHeight: '32px' }}>
             {this.props.orgbdres.map(
-              m => `${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0].count})`
+              m => `${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`
             ).join('、')}
           </div>
           : null }

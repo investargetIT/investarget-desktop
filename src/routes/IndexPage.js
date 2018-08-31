@@ -288,12 +288,12 @@ class IndexPage extends React.Component {
     if (!isLogin().is_superuser && isLogin().permissions.includes('usersys.as_trader')) {
       orgBDParams = { manager: isLogin().id };
     }
-    api.getOrgBDCount(orgBDParams)
+    api.getOrgBDCountNew(orgBDParams)
     .then(result=>{
       this.setState({orgBDsuccess:result.data.count})
     })
 
-    api.getOrgBDCount({ manager: isLogin().id, isRead: false })
+    api.getOrgBDCountNew({ manager: isLogin().id, isRead: false })
     .then(result=>{
       this.setState({orgBDunsuccess:result.data.count})
     })

@@ -858,6 +858,8 @@ export const getOrgInvestEvent  = param => r('/org/investevent/?' + qs.stringify
 export const getOrgManageFund   = param => r('/org/managefund/?' + qs.stringify(param));   // 管理基金
 
 export const getOrgBDCount =  param => r('/bd/orgbd/count/?' + qs.stringify(param));
+export const getOrgBDCountNew = param => r('/bd/orgbd/response/?' + qs.stringify(param));
+
 export const getProjBDCount = param => r('/bd/projbd/count/?' + qs.stringify(param));
 
 export const addOrgContact = body => r('/org/contact/', 'POST', body);
