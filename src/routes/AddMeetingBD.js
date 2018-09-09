@@ -3,7 +3,7 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal, DatePicker, Input, Row, Col, upload, Icon, Upload, message } from 'antd'
+import { Button, Modal, DatePicker, Input, Row, Col, Switch, Icon, Upload, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
@@ -32,7 +32,8 @@ class AddMeetingBD extends React.Component{
       date:'',
       ifContinue:false,
       notes:null,
-      file:null
+      file:null,
+      isShow: false,
     }
     this.selectedUsers = []; // 选中准备BD的投资人或机构
   	}
@@ -53,7 +54,8 @@ class AddMeetingBD extends React.Component{
         'meet_date': this.state.date,
         'comments':this.state.notes || null,
         'attachment': this.state.file ? this.state.file.response.result.realfilekey :null,
-        'attachmentbucket':'file'      
+        'attachmentbucket':'file',
+        'isShow': this.state.isShow,  
       };
       return api.addMeetingBD(body);
     }))
@@ -160,6 +162,16 @@ class AddMeetingBD extends React.Component{
         <UploadFile setFile={this.setFile.bind(this)}/>
       </Col>
       </Row>
+
+          <Row gutter={24} style={{ marginBottom: 20 }}>
+            <Col span={6}>是否对投资人展示:</Col>
+            <Col span={18}>
+              <Switch
+                defaultChecked={this.state.isShow}
+                onChange={checked => this.setState({ isShow: checked })}
+              />
+            </Col>
+          </Row>
 
       <Button style={{ marginLeft: 10 }} disabled={manager === null||date == ''} type="primary" onClick={this.createMeetingBD}>{i18n('common.confirm')}</Button>
 
