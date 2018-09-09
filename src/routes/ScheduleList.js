@@ -1,9 +1,27 @@
 import React from 'react'
-import { Table, Pagination } from 'antd'
+import { 
+  Table, 
+  Pagination,
+  Modal,
+  DatePicker,
+  Input,
+  Form,
+  Upload,
+  Icon,
+  Button,
+} from 'antd';
 import { Link } from 'dva/router'
-
-import LeftRightLayout from '../components/LeftRightLayout'
-
+import { BasicFormItem } from '../components/Form';
+import moment from 'moment';
+import LeftRightLayout from '../components/LeftRightLayout';
+import { baseUrl } from '../utils/request';
+import {
+  SelectExistUser,
+  SelectExistProject,
+  CascaderCountry,
+  SelectOrganizatonArea,
+  SelectAllUser,
+} from '../components/ExtraInput';
 import { Search2 } from '../components/Search'
 import { 
   hasPerm, 
@@ -17,7 +35,77 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
+const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
 
+class ScheduleToMeetingBDForm extends React.Component {
+  onChange = info => {
+    if (info.file.status === 'done') {
+      if (info.fileList.length > 1) {
+        info.fileList.splice(0, 1)
+        this.props.removeFileAPI().then(data => {
+          this.props.onUploadFile(info.file)
+        })
+      } else {
+        this.props.onUploadFile(info.file)
+      }
+      info.fileList[0].url = info.fileList[0].response.result.url
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  }
+
+  render() {
+    const countryObj = this.props.form.getFieldValue('country');
+    return (
+      <Form>
+
+        <BasicFormItem label="联系人" name="user" valueType="number">
+          <SelectExistUser />
+        </BasicFormItem>
+
+        <BasicFormItem name="meet_date" label="会议时间" valueType="object">
+          <DatePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
+          <SelectExistProject />
+        </BasicFormItem>
+
+        <BasicFormItem 
+          label={i18n('user.country')} 
+          name="country" 
+          valueType="object" 
+          getValueFromEvent={(id, detail) => detail}
+        >
+          <CascaderCountry size="large" isDetail />
+        </BasicFormItem>
+
+        {['中国', 'China'].includes(countryObj && countryObj.label) ? 
+        <BasicFormItem label={i18n('project_bd.area')} name="location" valueType="number">
+          <SelectOrganizatonArea showSearch />
+        </BasicFormItem>
+        : null }
+
+        <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
+
+      </Form>
+    )
+  }
+}
+function mapPropsToFields(props){
+	return {
+    user:{value:props.data.user && props.data.user.id},
+    proj:{value:props.data.proj && props.data.proj.id},
+    meet_date:{value:moment(props.data.scheduledtime)},
+    country: {value:props.data.country && {label:props.data.country.country, value:props.data.country.id, areaCode:props.data.country.areaCode}},
+    location: {value:props.data.location && props.data.location.id},
+    manager: {value:props.data.createuser.id},
+	}
+} 
+const EditScheduleToMeetingBDForm = Form.create({mapPropsToFields})(ScheduleToMeetingBDForm)
 
 class ScheduleList extends React.Component {
 
@@ -32,6 +120,8 @@ class ScheduleList extends React.Component {
       loading: false,
       sort:undefined,
       desc:undefined,
+      showModal: false,
+      activeSchedule: null,
     }
   }
 
@@ -74,8 +164,18 @@ class ScheduleList extends React.Component {
     this.getSchedule()
   }
 
+  showModal(record) {
+    this.setState({ showModal: true, activeSchedule: record });
+  }
+
+  handleRef = (inst) => {
+    if (inst) {
+      this.form = inst.props.form
+    }
+  }
+
   render() {
-    const { total, list, loading, page, pageSize, search } = this.state
+    const { total, list, loading, page, pageSize, search, activeSchedule, showModal } = this.state
     const columns = [
       {title: i18n('schedule.schedule_time'), dataIndex: 'scheduledtime', render: (text, record) => {
         return time(text + record.timezone)
@@ -93,8 +193,11 @@ class ScheduleList extends React.Component {
       {title: i18n('user.country'), dataIndex: 'country.country', key:'country', sorter:true}, 
       {title: i18n('schedule.area'), dataIndex: 'location.name', key:'location', sorter:true},
       {title: i18n('schedule.address'), dataIndex: 'address', key:'address', sorter:true},
+      {
+        title: i18n('meeting_bd.operation'), 
+        render: (text, record) => <button style={buttonStyle} onClick={this.showModal.bind(this,record)}>转移到会议BD</button>,
+      },
     ]
-
     return (
       <LeftRightLayout location={this.props.location} title={i18n('schedule.schedule_list')}>
         <div style={{ marginBottom: '24px' }} className="clearfix">
@@ -120,6 +223,18 @@ class ScheduleList extends React.Component {
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
+
+        <Modal
+          title="转移到会议BD"
+          visible={showModal}
+          onOk={this.handleConfirm}
+          onCancel={() => this.setState({ showModal: false })}
+        >
+          <EditScheduleToMeetingBDForm
+            wrappedComponentRef={this.handleRef}
+            data={activeSchedule}
+          />
+        </Modal>
 
       </LeftRightLayout>
     )
