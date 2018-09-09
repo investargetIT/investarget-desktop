@@ -60,7 +60,7 @@ class ScheduleToMeetingBDForm extends React.Component {
     return (
       <Form>
 
-        <BasicFormItem label="联系人" name="user" valueType="number">
+        <BasicFormItem label="联系人" name="bduser" valueType="number">
           <SelectExistUser />
         </BasicFormItem>
 
@@ -97,7 +97,7 @@ class ScheduleToMeetingBDForm extends React.Component {
 }
 function mapPropsToFields(props){
 	return {
-    user:{value:props.data.user && props.data.user.id},
+    bduser:{value:props.data.user && props.data.user.id},
     proj:{value:props.data.proj && props.data.proj.id},
     meet_date:{value:moment(props.data.scheduledtime)},
     country: {value:props.data.country && {label:props.data.country.country, value:props.data.country.id, areaCode:props.data.country.areaCode}},
@@ -106,6 +106,16 @@ function mapPropsToFields(props){
 	}
 } 
 const EditScheduleToMeetingBDForm = Form.create({mapPropsToFields})(ScheduleToMeetingBDForm)
+
+function toData(formData) {
+  var data = {...formData}
+  data['meet_date'] = data['meet_date'].format('YYYY-MM-DDTHH:mm:ss')
+  if (!['中国', 'China'].includes(formData.country.label)) {
+    data['location'] = null;
+  }
+  data.country = formData.country.value;
+  return data
+}
 
 class ScheduleList extends React.Component {
 
@@ -122,6 +132,7 @@ class ScheduleList extends React.Component {
       desc:undefined,
       showModal: false,
       activeSchedule: null,
+      confirmLoading: false,
     }
   }
 
@@ -174,6 +185,33 @@ class ScheduleList extends React.Component {
     }
   }
 
+  handleConfirm = () => {
+    this.form.validateFields((err, values) => {
+      if (!err) {
+        this.setState({ confirmLoading: true });
+        const body = toData(values);
+        this.transferScheduleToMeetingBD(body)
+          .catch(error => handleError(error))
+          .finally(() => this.setState({ confirmLoading: false, showModal:false }, this.getSchedule));
+      }
+    })
+  }
+
+  transferScheduleToMeetingBD = async body => {
+    if (body.bduser) {
+      const reqUser = await api.getUserInfo(body.bduser);
+      if (reqUser.data.org) {
+        body.org = reqUser.data.org.id;
+      }
+    }
+    await api.addMeetingBD(body);
+    await api.deleteSchedule(this.state.activeSchedule.id);
+    Modal.success({
+      title: '已成功地转移到会议BD',
+      content: '请前往会议BD列表进行查看',
+    });
+  }
+
   render() {
     const { total, list, loading, page, pageSize, search, activeSchedule, showModal } = this.state
     const columns = [
@@ -224,17 +262,20 @@ class ScheduleList extends React.Component {
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
 
+        { showModal ? 
         <Modal
           title="转移到会议BD"
-          visible={showModal}
+          visible={true}
           onOk={this.handleConfirm}
           onCancel={() => this.setState({ showModal: false })}
+          confirmLoading={this.state.confirmLoading}
         >
           <EditScheduleToMeetingBDForm
             wrappedComponentRef={this.handleRef}
             data={activeSchedule}
           />
         </Modal>
+        : null }
 
       </LeftRightLayout>
     )
