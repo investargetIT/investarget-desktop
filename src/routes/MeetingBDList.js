@@ -314,6 +314,7 @@ class MeetingBDList extends React.Component{
 		{title: i18n('meeting_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
 		{title: i18n('meeting_bd.org'), render: (text, record) => record.org ? record.org.orgname : null, key:'org', sorter:true},
         {title: i18n('meeting_bd.project'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: text => text || '暂无'},
+        {title: i18n('schedule.address'), dataIndex: 'address', key:'address', sorter:true},
         {title: i18n('meeting_bd.operation'), render: (text, record) =>{
 		return <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
 		<button style={buttonStyle} onClick={this.showViewModal.bind(this,record)}>{i18n('common.view')}</button>
