@@ -9,6 +9,7 @@ import {
   Upload,
   Icon,
   Button,
+  Switch,
 } from 'antd';
 import { Link } from 'dva/router'
 import { BasicFormItem } from '../components/Form';
@@ -93,6 +94,10 @@ class ScheduleToMeetingBDForm extends React.Component {
 
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number">
           <SelectAllUser type="trader" />
+        </BasicFormItem>
+
+        <BasicFormItem label="是否对投资人展示" name="isShow" valueType="boolean" valuePropName="checked">
+          <Switch />
         </BasicFormItem>
 
       </Form>
@@ -269,6 +274,7 @@ class ScheduleList extends React.Component {
 
         { showModal ? 
         <Modal
+          width={600}
           title="转移到会议BD"
           visible={true}
           onOk={this.handleConfirm}

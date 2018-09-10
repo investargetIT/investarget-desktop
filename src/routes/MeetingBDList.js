@@ -16,7 +16,7 @@ import {
   Pagination, 
   Modal, 
   Input, 
-  Popover,
+  Switch,
   Row,
   Col,
   Form,
@@ -119,6 +119,10 @@ class EditForm extends React.Component{
 		
 		  <div></div>
 		</FormItem>
+
+      <BasicFormItem label="是否对投资人展示" name="isShow" valueType="boolean" valuePropName="checked">
+        <Switch />
+      </BasicFormItem>
 		</Form>
 	)
 }
@@ -126,7 +130,8 @@ class EditForm extends React.Component{
 function mapPropsToFields(props){
 	return {
 		comments:{value:props.data.comments},
-    meet_date:{value:moment(props.data.meet_date)}
+    meet_date:{value:moment(props.data.meet_date)},
+    isShow:{value:props.data.isShow},
 	}
 } 
 const EditMeetingForm = Form.create({mapPropsToFields})(EditForm)
@@ -327,6 +332,7 @@ class MeetingBDList extends React.Component{
         action={hasPerm('BD.manageMeetBD')||hasPerm('BD.user_addMeetBD') ? {name:i18n('add_meetbd'),link:'app/meetingbd/add'} : undefined}
         >
         <Modal
+         width={600}
          title={i18n('common.edit')}
          visible={visible}
          onOk={this.handleEdit}
