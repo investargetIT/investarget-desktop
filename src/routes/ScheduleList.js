@@ -87,6 +87,10 @@ class ScheduleToMeetingBDForm extends React.Component {
         </BasicFormItem>
         : null }
 
+        <BasicFormItem label={i18n('schedule.address')} name="address">
+          <Input />
+        </BasicFormItem>
+
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number">
           <SelectAllUser type="trader" />
         </BasicFormItem>
@@ -102,6 +106,7 @@ function mapPropsToFields(props){
     meet_date:{value:moment(props.data.scheduledtime)},
     country: {value:props.data.country && {label:props.data.country.country, value:props.data.country.id, areaCode:props.data.country.areaCode}},
     location: {value:props.data.location && props.data.location.id},
+    address: {value:props.data.address},
     manager: {value:props.data.createuser.id},
 	}
 } 
@@ -205,7 +210,7 @@ class ScheduleList extends React.Component {
       }
     }
     await api.addMeetingBD(body);
-    await api.deleteSchedule(this.state.activeSchedule.id);
+    // await api.deleteSchedule(this.state.activeSchedule.id);
     Modal.success({
       title: '已成功地转移到会议BD',
       content: '请前往会议BD列表进行查看',
