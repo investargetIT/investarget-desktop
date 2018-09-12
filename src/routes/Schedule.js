@@ -54,7 +54,7 @@ class Schedule extends React.Component {
       <ul className="events">
         {
           listData.map(item => (
-            <li className={styles['event']} key={item.id} onClick={this.handleClickEvent.bind(this, item.id)}>
+            <li className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]} key={item.id} onClick={this.handleClickEvent.bind(this, item.id)}>
               {item.comments}
             </li>
           ))
@@ -217,6 +217,16 @@ class Schedule extends React.Component {
           value={selectedDate}
         />
 
+        <div style={{ display: 'flex' }}>
+          <div>会议类型：</div>
+          <div style={{ width: 20, height: 20, backgroundColor: 'rgb(230, 168, 47)' }}></div>
+          <div style={{ marginLeft: 5 }}>路演会议</div>
+          <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: 'rgb(66, 175, 149)' }}></div>
+          <div style={{ marginLeft: 5 }}>约见公司</div>
+          <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: 'rgb(95, 163, 246)' }}></div>
+          <div style={{ marginLeft: 5 }}>约见投资人</div>
+        </div>
+
         <Modal
           title={i18n('schedule.add_event')}
           visible={visibleAdd}
@@ -283,6 +293,7 @@ function toFormData(data) {
     address: data.address,
     proj: data.proj && data.proj.id,
     user: data.user && data.user.id,
+    type: data.type || 3,
   }
   for (let prop in formData) {
     formData[prop] = { value: formData[prop] }

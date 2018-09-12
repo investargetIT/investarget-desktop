@@ -5,6 +5,27 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.event-type-1 {
+  background-color: rgb(230, 168, 47);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event-type-2 {
+  background-color: rgb(66, 175, 149);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event-type-3 {
+  background-color: rgb(95, 163, 246);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .event:hover {
   background-color: #FFF9C4;
 }
