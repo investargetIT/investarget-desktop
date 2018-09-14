@@ -255,7 +255,7 @@ class ScheduleList extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('schedule.schedule_list')}>
         <div style={{ marginBottom: '24px' }} className="clearfix">
-          <Search2 style={{ width: 250,float:'right' }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('schedule.creator_name'), i18n('schedule.creator_mobile')].join(' / ')} />
+          <Search2 style={{ width: 250,float:'right' }} defaultValue={search} onSearch={this.handleSearch} placeholder={[i18n('schedule.creator_name'), i18n('schedule.creator_mobile'), '项目名称'].join('/')} />
         </div>
         <Table
           onChange={this.handleTableChange}
