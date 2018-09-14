@@ -37,6 +37,11 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
 const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
+const ScheduleTypeOptions = [
+  { label: '路演会议', value: 1 },
+  { label: '约见公司', value: 2 },
+  { label: '约见投资人', value: 3 },
+];
 
 class ScheduleToMeetingBDForm extends React.Component {
   onChange = info => {
@@ -228,6 +233,7 @@ class ScheduleList extends React.Component {
       {title: i18n('schedule.schedule_time'), dataIndex: 'scheduledtime', render: (text, record) => {
         return time(text + record.timezone)
       },key:'scheduledtime', sorter:true},
+      {title: '类型', dataIndex: 'type', key: 'type', sorter: true, render: text => ScheduleTypeOptions.filter(f => f.value === text)[0].label},
       {title: i18n('schedule.creator'), dataIndex: 'createuser.username', key:'createuser', sorter:true},
       {title: i18n('schedule.project'), dataIndex: 'projtitle', render: (text, record) => {
         return record.proj ? <Link to={'/app/projects/' + record.proj.id} >{text}</Link> :{text}
