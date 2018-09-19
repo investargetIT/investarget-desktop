@@ -34,7 +34,10 @@ import { isLogin } from '../utils/util'
 import {BasicFormItem} from '../components/Form'
 import { baseUrl } from '../utils/request';
 import { PAGE_SIZE_OPTIONS } from '../constants';
- 
+import QRCode from 'qrcode.react';
+import { mobileUploadUrl } from '../utils/request';
+
+const urlPrefix = `${mobileUploadUrl}/upload?key=`;
 const { TextArea } = Input;
 const FormItem = Form.Item
 const formItemLayout = {
@@ -152,7 +155,10 @@ class MeetingBDList extends React.Component{
       needRefresh: false,
       viewModalVisible: false,
       currentBD: null,
-      currentFile:null
+      currentFile:null,
+      selectedIds: [],
+      show: false,
+      QRCodeKey: null,
 		}
 	}
 
@@ -305,6 +311,19 @@ class MeetingBDList extends React.Component{
     </div>
   );
 
+  handleRowSelectionChange = selectedIds => {
+    this.setState({ selectedIds })
+  }
+
+  handleShareBtnClicked = () => {
+    this.setState({ show: true });
+    setTimeout(() => this.setState({ QRCodeKey: 'adsd' }), 1000);
+  }
+
+  cancel () {
+    this.setState({ QRCodeKey: null, show: false });
+  }
+
 	render(){
 		const {page, pageSize, total, list, loading, search, filters, visible, currentBD, viewModalVisible} = this.state
 		const imgStyle={width:'15px',height:'20px'}
@@ -388,9 +407,19 @@ class MeetingBDList extends React.Component{
           rowKey={record=>record.id}
           loading={loading}
           pagination={false}
+          rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
         />
                 
         <div style={{ margin: '16px 0' }} className="clearfix">
+
+          <Button
+            disabled={this.state.selectedIds.length == 0}
+            type="primary"
+            size="large"
+            onClick={this.handleShareBtnClicked}>
+            分享
+          </Button>
+
           <Pagination
             style={{ float: 'right' }}
             total={total}
@@ -403,6 +432,21 @@ class MeetingBDList extends React.Component{
             pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
         </div>
+
+        <Modal
+          width={230}
+          visible={this.state.show}
+          footer={null}
+          onCancel={this.cancel.bind(this, null)}
+        >
+            <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
+                {this.state.QRCodeKey === null
+                    ? <Icon type="loading" />
+                    : <QRCode value={urlPrefix + this.state.QRCodeKey} />}
+            </div>
+            <p style={{ marginBottom: 10 }}>请使用手机微信扫描二维码分享会议BD</p>
+        </Modal>
+
         </LeftRightLayout>
 		)
 	}
