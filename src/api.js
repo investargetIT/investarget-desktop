@@ -847,6 +847,7 @@ export const addMeetingBD = body => r('/bd/meetbd/', 'POST', body);
 export const deleteMeetingBD = id => r(`/bd/meetbd/${id}/`, 'DELETE');
 export const deleteMeetingBDFile = id => r(`/bd/meetbd/delatt/${id}/`, 'POST');
 export const modifyMeetingBD = (id, body) => r(`/bd/meetbd/${id}/`, 'PUT', body);
+export const shareMeetingBD = body => r('/bd/meetbd/share/', 'POST', body);
 
 /**
  * 机构详情

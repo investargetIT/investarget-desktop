@@ -37,7 +37,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import QRCode from 'qrcode.react';
 import { mobileUploadUrl } from '../utils/request';
 
-const urlPrefix = `${mobileUploadUrl}/upload?key=`;
+const urlPrefix = `${mobileUploadUrl}/share/meeting?key=`;
 const { TextArea } = Input;
 const FormItem = Form.Item
 const formItemLayout = {
@@ -317,7 +317,9 @@ class MeetingBDList extends React.Component{
 
   handleShareBtnClicked = () => {
     this.setState({ show: true });
-    setTimeout(() => this.setState({ QRCodeKey: 'adsd' }), 1000);
+    api.shareMeetingBD({ meetings: this.state.selectedIds })
+      .then(result => this.setState({ QRCodeKey: result.data }))
+      .catch(handleError);
   }
 
   cancel () {
