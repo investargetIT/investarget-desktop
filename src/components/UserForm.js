@@ -4,7 +4,8 @@ import {
   i18n, 
   hasPerm, 
   intersection, 
-  checkMobile, 
+  checkMobile,
+  handleError,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -64,6 +65,7 @@ class UserForm extends React.Component {
 
     this.state = {
       investorGroup: [], // 投资人所在的用户组
+      isFetchingNumber: false, // 是否在获取随机号码
     }
     this.isEditUser = false
     let perm
@@ -82,6 +84,14 @@ class UserForm extends React.Component {
   componentDidMount() {
     api.queryUserGroup({ type: 'investor', page_size: 100 })
     .then(data => this.setState({ investorGroup: data.data.data.map(m => m.id) }))
+  }
+
+  handleUnknowPhoneButtonClicked = () => {
+    this.setState({ isFetchingNumber: true });
+    api.getRandomPhoneNumber()
+      .then(result => this.props.form.setFieldsValue({ mobile: result.data.toString() }))
+      .catch(handleError)
+      .finally(() => this.setState({ isFetchingNumber: false }));
   }
 
   render() {
@@ -110,7 +120,7 @@ class UserForm extends React.Component {
                 }
               </FormItem>
             </Col>
-            <Col span={18}>
+            <Col span={14}>
               <FormItem required>
                 {
                   getFieldDecorator('mobile', {
@@ -123,6 +133,9 @@ class UserForm extends React.Component {
                   )
                 }
               </FormItem>
+            </Col>
+            <Col span={4}>
+              <Button loading={this.state.isFetchingNumber} onClick={this.handleUnknowPhoneButtonClicked}>号码未知</Button>
             </Col>
           </Row>
         </FormItem>
