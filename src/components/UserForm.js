@@ -66,6 +66,7 @@ class UserForm extends React.Component {
     this.state = {
       investorGroup: [], // 投资人所在的用户组
       isFetchingNumber: false, // 是否在获取随机号码
+      isDsiablePhoneInput: false, // 获取随机号码后手机号码文本框禁止编辑
     }
     this.isEditUser = false
     let perm
@@ -89,7 +90,10 @@ class UserForm extends React.Component {
   handleUnknowPhoneButtonClicked = () => {
     this.setState({ isFetchingNumber: true });
     api.getRandomPhoneNumber()
-      .then(result => this.props.form.setFieldsValue({ mobile: result.data.toString() }))
+      .then(result => {
+        this.props.form.setFieldsValue({ mobile: result.data.toString(), mobileAreaCode: '86' });
+        this.setState({ isDsiablePhoneInput: true });
+      })
       .catch(handleError)
       .finally(() => this.setState({ isFetchingNumber: false }));
   }
@@ -115,7 +119,7 @@ class UserForm extends React.Component {
                   getFieldDecorator('mobileAreaCode', {
                     rules: [{ message: i18n('validation.not_empty'), required: true}], initialValue: '86'
                   })(
-                    <Input prefix="+" />
+                    <Input prefix="+" disabled={this.state.isDsiablePhoneInput} />
                   )
                 }
               </FormItem>
@@ -129,13 +133,13 @@ class UserForm extends React.Component {
                       { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
                     ]
                   })(
-                    <Input onBlur={this.props.mobileOnBlur} />
+                    <Input onBlur={this.props.mobileOnBlur} disabled={this.state.isDsiablePhoneInput} />
                   )
                 }
               </FormItem>
             </Col>
             <Col span={4}>
-              <Button loading={this.state.isFetchingNumber} onClick={this.handleUnknowPhoneButtonClicked}>号码未知</Button>
+              <Button style={{ width: '100%' }} loading={this.state.isFetchingNumber} onClick={this.handleUnknowPhoneButtonClicked}>号码未知</Button>
             </Col>
           </Row>
         </FormItem>
