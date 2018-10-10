@@ -403,7 +403,7 @@ export function handleError(error) {
 }
 
 export function getImageUrl(key) {
-  return 'https://o79atf82v.qnssl.com/' + key
+  return 'https://image.investarget.com/' + key
 }
 
 export { i18n, exchange, checkPerm, isLogin, getRandomInt, formatMoney, getUserInfo, hasPerm, getGroup, getCurrentUser, formatBytes, intersection, subtracting, time, timeForIM, getPdfUrl }

@@ -13,7 +13,7 @@ import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const RegExps = {
-  jpg: /https\:\/\/o79atf82v\.qnssl\.com\/\w+\.jpg/,
+  jpg: /https\:\/\/image\.investarget\.com\/\w+\.jpg/,
   url: /https\:\/\/(\S+\.)+\w{2,12}/,
 }
 

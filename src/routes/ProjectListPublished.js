@@ -96,7 +96,7 @@ class ProjectListPublished extends React.Component {
         render: (text, record) => {
           const country = record.country
           const countryName = country ? country.country : ''
-          const imgUrl = country ? ('https://o79atf82v.qnssl.com/' + country.key) : ''
+          const imgUrl = country ? ('https://image.investarget.com/' + country.key) : ''
           return (
             <span><img src={imgUrl} style={{width: '20px', height: '14px'}} />{countryName}</span>
           )
