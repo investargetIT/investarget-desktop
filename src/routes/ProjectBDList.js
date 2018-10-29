@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Input, Popconfirm, Modal } from 'antd'
+import { Button, Table, Pagination, Input, Popconfirm, Modal, Popover } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -301,7 +301,7 @@ class ProjectBDList extends React.Component {
         dataIndex: 'BDComments',
         render: (text, record) => {
           const comments = record.BDComments;
-          return comments && comments.length > 0 && comments[comments.length-1].comments;
+          return comments && comments.length > 0 && <Popover placement="left" title="全部备注" content={<ul style={{ listStyle: 'inside' }}>{comments.map(m => <li key={m.id}>{m.comments}</li>)}</ul>}><div style={{color: "#428bca"}}>{comments[comments.length-1].comments}</div></Popover>;
         },
       },
       {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
