@@ -301,7 +301,15 @@ class ProjectBDList extends React.Component {
         dataIndex: 'BDComments',
         render: (text, record) => {
           const comments = record.BDComments;
-          return comments && comments.length > 0 && <Popover placement="left" title="全部备注" content={<ul style={{ listStyle: 'inside' }}>{comments.map(m => <li key={m.id}>{m.comments}</li>)}</ul>}><div style={{color: "#428bca"}}>{comments[comments.length-1].comments}</div></Popover>;
+          return comments && comments.length > 0 && <Popover placement="left" title="全部备注" content={
+            <ul style={{ listStyle: 'outside', marginLeft: 20 }}>
+              {comments.map(m => <li key={m.id}>
+                {m.createdtime.substring(0, 16).replace('T', ' ')}
+                <br/>
+                {m.comments}
+                </li>)}
+            </ul>
+          }><div style={{ color: "#428bca" }}>{comments[0].comments}</div></Popover>;
         },
       },
       {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
