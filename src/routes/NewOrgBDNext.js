@@ -392,6 +392,7 @@ class NewOrgBDList extends React.Component {
 
   createOrgBD = () => {
     const user = this.activeUser;
+    const manager = this.state.traderList.filter(f => f.id === parseInt(this.state.manager, 10))[0];
     this.setState({ selectVisible: false });
     let body = {
       bduser: user.id,
@@ -404,6 +405,10 @@ class NewOrgBDList extends React.Component {
     };
     api.addOrgBD(body)
       .then(result => {
+        Modal.success({
+          title: '机构BD创建成功',
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} 的 ${user.username} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+        });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false });
         this.loadDataForSingleOrg(user.org.id);
       })
