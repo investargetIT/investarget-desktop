@@ -141,6 +141,9 @@ class OrgBDListComponent extends React.Component {
     if (nextProps.orgbdres.length !== this.props.orgbdres.length) {
       this.getStatisticData().then(data => this.setState({ statistic: data }));
     }
+    if (nextProps.refresh !== this.props.refresh) {
+      this.getOrgBdList();
+    }
   }
 
   getStatisticData = async () => {

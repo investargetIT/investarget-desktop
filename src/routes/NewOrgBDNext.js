@@ -87,6 +87,7 @@ class NewOrgBDList extends React.Component {
         isimportant: false,
         traderList: [],
         org: null, // 为哪个机构添加投资人
+        historyBDRefresh: 0,
     }
 
     this.allTrader = [];
@@ -409,7 +410,7 @@ class NewOrgBDList extends React.Component {
           title: '机构BD创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} 的 ${user.username} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
-        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org.id);
       })
   }
@@ -557,7 +558,7 @@ class NewOrgBDList extends React.Component {
         {this.projId ?
           <div>
             <H3 size="1.2em">○ 该项目的历史BD</H3>
-            <OrgBDListComponent location={this.props.location} pageSize={5} pagination />
+            <OrgBDListComponent refresh={this.state.historyBDRefresh} location={this.props.location} pageSize={5} pagination />
           </div>
         : null }
 
