@@ -745,7 +745,8 @@ class SelectOrgInvestor extends React.Component {
 
     return (
       <Select value={_value} 
-      filterOption={(input, option) => option.props.children.indexOf(input) >= 0} 
+      showSearch
+      filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
       onChange={this.handleChange}
       dropdownStyle={{ zIndex: 0 }}
       autoFocus
