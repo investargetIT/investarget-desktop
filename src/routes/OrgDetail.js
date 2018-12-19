@@ -842,7 +842,7 @@ class OrgDetail extends React.Component {
       <Field title={i18n('organization.transaction_phase')} value={this.state.orgtransactionphase} />
       <Field title={i18n('organization.audit_status')} value={this.state.orgstatus} />
       <Field title={i18n('organization.stock_code')} value={this.state.stockcode} />
-      <Field title={i18n('organization.invest_oversea_project')} value={this.state.investoverseasproject} />
+      <Field title={i18n('filter.invest_oversea')} value={this.state.investoverseasproject} />
       <Field title={i18n('organization.headquarters')} value={this.state.address} />
       <Field title={i18n('organization.description')} value={this.state.description} />
       <Field title={i18n('organization.typical_case')} value={this.state.typicalCase} />

@@ -118,7 +118,7 @@ class OrganizationForm extends React.Component {
           <Input />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('organization.invest_oversea_project')} name="investoverseasproject" valueType="boolean" initialValue={false}>
+        <BasicFormItem label={i18n('filter.invest_oversea')} name="investoverseasproject" valueType="boolean" initialValue={false}>
           <RadioTrueOrFalse />
         </BasicFormItem>
 
