@@ -47,10 +47,10 @@ class NewOrgBD extends React.Component {
 
   handleSelectOrg = (selectedOrgs, selectedOrgDetails) => {
 
-    if (selectedOrgs.length > 50) {
+    if (selectedOrgs.length > 100) {
       Modal.error({
         title: '无效操作',
-        content: '最多选择50家机构',
+        content: '最多选择100家机构',
       })
       return;
     }
