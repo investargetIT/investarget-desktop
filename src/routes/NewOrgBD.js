@@ -68,13 +68,9 @@ class NewOrgBD extends React.Component {
   }
 
   handleNext = () => {
-    this.props.history.push({
-      pathname: "/app/org/newbd",
-      query: {
-        ids: this.state.selectedOrgs.join(","),
-        projId: this.props.location.query.projId || null
-      }
-    })
+    const ids = this.state.selectedOrgs.join(',');
+    const projId = this.props.location.query.projId || null;
+    window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}`);
   }
 
   render() {
