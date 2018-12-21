@@ -3,7 +3,7 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal } from 'antd'
+import { Button, Modal, Checkbox } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 
@@ -22,7 +22,11 @@ class NewOrgBD extends React.Component {
       projId: Number(this.props.location.query.projId),
       projTitle: '',
       selectedOrgs: [],
-      selectedOrgDetails: [], 
+      selectedOrgDetails: [],
+      showFilterOptionModal: false,
+      removeInvestorWithoutRelatedTags: false,
+      removeOrgWithNoInvestor: false,
+      removeInvestorWithNoTrader: false,
     }
   }
 
@@ -68,9 +72,14 @@ class NewOrgBD extends React.Component {
   }
 
   handleNext = () => {
+    this.setState({ showFilterOptionModal: true });
+  }
+
+  confirmFilterOption = () => {
     const ids = this.state.selectedOrgs.join(',');
     const projId = this.props.location.query.projId || null;
-    window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}`);
+    const { removeInvestorWithNoTrader, removeInvestorWithoutRelatedTags, removeOrgWithNoInvestor } = this.state;
+    window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}&trader=${removeInvestorWithNoTrader}&tag=${removeInvestorWithoutRelatedTags}&investor=${removeOrgWithNoInvestor}`);
   }
 
   render() {
@@ -103,6 +112,32 @@ class NewOrgBD extends React.Component {
             <Button disabled={selectedOrgs.length == 0} type="primary" onClick={this.handleNext}>{i18n('common.next')}</Button>
           </div>
         </div>
+
+        <Modal
+          title="结果筛选"
+          visible={this.state.showFilterOptionModal}
+          onOk={this.confirmFilterOption}
+          onCancel={() => this.setState({ showFilterOptionModal: false })}
+        >
+          <div><Checkbox
+            checked={this.state.removeInvestorWithoutRelatedTags}
+            onChange={e => this.setState({ removeInvestorWithoutRelatedTags: e.target.checked })}
+          >
+            投资人是否匹配标签
+          </Checkbox></div>
+          <div><Checkbox
+            checked={this.state.removeOrgWithNoInvestor}
+            onChange={e => this.setState({ removeOrgWithNoInvestor: e.target.checked })}
+          >
+            去除暂无投资人数据
+          </Checkbox></div>
+          <div><Checkbox
+            checked={this.state.removeInvestorWithNoTrader}
+            onChange={e => this.setState({ removeInvestorWithNoTrader: e.target.checked })}
+          >
+            去除暂无交易师数据
+          </Checkbox></div>
+        </Modal>
           
       </LeftRightLayout>
     )
