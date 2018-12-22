@@ -117,7 +117,7 @@ class NewOrgBDList extends React.Component {
     this.setState({ loading: true, expanded: [] });
     const { page, pageSize } = this.state;
     const params = {
-        page_size: 50,
+        page_size: 100,
         ids: this.ids
     }
 
