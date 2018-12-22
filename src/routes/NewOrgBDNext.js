@@ -59,6 +59,9 @@ class NewOrgBDList extends React.Component {
     this.ids = (this.props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(this.props.location.query.projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
+    this.filterInvestorWithoutTrader = this.props.location.query.trader === 'true' ? true : false;
+    this.filterInvestorWithoutRelatedTags = this.props.location.query.tag === 'true' ? true : false;
+    this.filterOrgWithoutInvestor = this.props.location.query.investor === 'true' ? true : false;
     this.projDetail = {}
 
     this.state = {
@@ -195,6 +198,12 @@ class NewOrgBDList extends React.Component {
         {...item, items: dataForSingleOrg, loaded: true} :
         item
     );
+
+    echo(newList);
+    if (this.filterOrgWithoutInvestor) {
+      newList = newList.filter(f => f.items.length > 1 || !f.items[0].key.startsWith('null-null'));
+    }
+
     this.setState({ list: newList }); 
 
     return dataForSingleOrg;
