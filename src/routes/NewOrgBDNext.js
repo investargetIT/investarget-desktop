@@ -7,7 +7,8 @@ import {
   time, 
   handleError, 
   hasPerm, 
-  getUserInfo, 
+  getUserInfo,
+  intersection, 
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -211,6 +212,14 @@ class NewOrgBDList extends React.Component {
       });
     }
 
+    if (this.filterInvestorWithoutRelatedTags) {
+      const projectTags = this.projDetail.tags ? this.projDetail.tags.map(m => m.id) : [];
+      newList = newList.map(item => {
+        const newItems = item.items.filter(f => !(f.tags && intersection(f.tags, projectTags).length === 0));
+        return { ...item, items: newItems };
+      });
+    }
+    newList = newList.filter(f => !(f.loaded && f.items.length === 0));
     this.setState({ list: newList }); 
 
     return dataForSingleOrg;
