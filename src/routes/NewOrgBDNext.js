@@ -201,7 +201,7 @@ class NewOrgBDList extends React.Component {
 
     echo(newList);
     if (this.filterOrgWithoutInvestor) {
-      newList = newList.filter(f => f.items.length > 1 || !f.items[0].key.startsWith('null-null'));
+      newList = newList.filter(f => !(f.items.length === 1 && f.items[0].key.startsWith('null-null')));
     }
 
     this.setState({ list: newList }); 
