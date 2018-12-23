@@ -204,6 +204,13 @@ class NewOrgBDList extends React.Component {
       newList = newList.filter(f => !(f.items.length === 1 && f.items[0].key.startsWith('null-null')));
     }
 
+    if (this.filterInvestorWithoutTrader) {
+      newList = newList.map(item => {
+        const newItems = item.items.filter(f => !(f.traders && f.traders.length === 0));
+        return {...item, items: newItems};
+      });
+    }
+
     this.setState({ list: newList }); 
 
     return dataForSingleOrg;
