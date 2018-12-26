@@ -77,6 +77,9 @@ class SelectOrganization extends React.Component {
 
   handleFilt = (filters) => {
     this.setState({ filters, page: 1 }, this.getOrg)
+    if (this.props.onFilterChange) {
+      this.props.onFilterChange(filters);
+    }
   }
 
   handleReset = (filters) => {

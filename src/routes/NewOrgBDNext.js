@@ -63,6 +63,7 @@ class NewOrgBDList extends React.Component {
     this.filterInvestorWithoutTrader = this.props.location.query.trader === 'true' ? true : false;
     this.filterInvestorWithoutRelatedTags = this.props.location.query.tag === 'true' ? true : false;
     this.filterOrgWithoutInvestor = this.props.location.query.investor === 'true' ? true : false;
+    this.tags = (this.props.location.query.tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
     this.projDetail = {}
 
     this.state = {
@@ -211,11 +212,9 @@ class NewOrgBDList extends React.Component {
         return {...item, items: newItems};
       });
     }
-
-    if (this.filterInvestorWithoutRelatedTags) {
-      const projectTags = this.projDetail.tags ? this.projDetail.tags.map(m => m.id) : [];
+    if (this.filterInvestorWithoutRelatedTags && this.tags.length > 0) {
       newList = newList.map(item => {
-        const newItems = item.items.filter(f => !(f.tags && intersection(f.tags, projectTags).length === 0));
+        const newItems = item.items.filter(f => !(f.tags && intersection(f.tags, this.tags).length === 0));
         return { ...item, items: newItems };
       });
     }

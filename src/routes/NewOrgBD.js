@@ -17,6 +17,8 @@ class NewOrgBD extends React.Component {
     const userId = getCurrentUser()
     const traderId = (!hasPerm('usersys.as_admin') && hasPerm('usersys.as_trader')) ? userId : null
 
+    this.tags = [];
+
     this.state = {
       traderId,
       projId: Number(this.props.location.query.projId),
@@ -79,7 +81,11 @@ class NewOrgBD extends React.Component {
     const ids = this.state.selectedOrgs.join(',');
     const projId = this.props.location.query.projId || null;
     const { removeInvestorWithNoTrader, removeInvestorWithoutRelatedTags, removeOrgWithNoInvestor } = this.state;
-    window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}&trader=${removeInvestorWithNoTrader}&tag=${removeInvestorWithoutRelatedTags}&investor=${removeOrgWithNoInvestor}`);
+    window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}&trader=${removeInvestorWithNoTrader}&tag=${removeInvestorWithoutRelatedTags}&investor=${removeOrgWithNoInvestor}&tags=${encodeURIComponent(this.tags.join(','))}`);
+  }
+
+  handleFilterChange = filters => {
+    this.tags = filters.tags;
   }
 
   render() {
@@ -105,7 +111,13 @@ class NewOrgBD extends React.Component {
           </div>
   
           <div style={{padding: '16px'}}>
-            <SelectOrganization traderId={this.props.bd ? undefined : traderId} value={selectedOrgs} details={selectedOrgDetails} onChange={this.handleSelectOrg} />
+            <SelectOrganization
+              traderId={this.props.bd ? undefined : traderId}
+              value={selectedOrgs} 
+              details={selectedOrgDetails} 
+              onChange={this.handleSelectOrg} 
+              onFilterChange={this.handleFilterChange}
+            />
           </div>
 
           <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
