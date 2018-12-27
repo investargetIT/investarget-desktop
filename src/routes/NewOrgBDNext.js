@@ -241,8 +241,8 @@ class NewOrgBDList extends React.Component {
         }))
       });
 
-      const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
-      // const reqBD = this.getOrgBD(org);
+      // const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
+      const reqBD = this.getOrgBD(org);
       // 已经BD过的投资人
       const regBDUser = reqBD.data.data.map(m => ({
         ...orgUser.find(f => f.id === m.bduser),
