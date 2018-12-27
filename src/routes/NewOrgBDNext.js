@@ -96,6 +96,9 @@ class NewOrgBDList extends React.Component {
     }
 
     this.allTrader = [];
+    this.reqUser = {};
+    this.orgUserRelation = {};
+    this.reqBD = {};
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -148,6 +151,27 @@ class NewOrgBDList extends React.Component {
   }
 
   loadOrgBDListDetail = async list => {
+    const reqUser = await api.getUser({
+      starmobile: true,
+      org: list, 
+      onjob: true, 
+      page_size: 10000
+    });
+    console.log('reqUser', reqUser);
+    this.reqUser = reqUser;
+
+    const orgUser = reqUser.data.data;
+    const orgUserRelation = await api.getUserRelation({
+      investoruser: orgUser.map(m => m.id),
+      page_size: 100000,
+    });
+    console.log('orgUserRelation', orgUserRelation);
+    this.orgUserRelation = orgUserRelation;
+
+    const reqBD = await api.getOrgBdList({ org: list, proj: this.projId || "none" });
+    console.log('reqBD', reqBD);
+    this.reqBD = reqBD;
+
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
       await this.loadDataForSingleOrg(element);
