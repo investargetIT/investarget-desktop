@@ -96,9 +96,9 @@ class NewOrgBDList extends React.Component {
     }
 
     this.allTrader = [];
-    this.reqUser = {};
-    this.orgUserRelation = {};
-    this.reqBD = {};
+    // this.reqUser = {};
+    // this.orgUserRelation = {};
+    // this.reqBD = {};
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -151,26 +151,26 @@ class NewOrgBDList extends React.Component {
   }
 
   loadOrgBDListDetail = async list => {
-    const reqUser = await api.getUser({
-      starmobile: true,
-      org: list, 
-      onjob: true, 
-      page_size: 10000
-    });
-    console.log('reqUser', reqUser);
-    this.reqUser = reqUser;
+    // const reqUser = await api.getUser({
+    //   starmobile: true,
+    //   org: list, 
+    //   onjob: true, 
+    //   page_size: 10000
+    // });
+    // console.log('reqUser', reqUser);
+    // this.reqUser = reqUser;
 
-    const orgUser = reqUser.data.data;
-    const orgUserRelation = await api.getUserRelation({
-      investoruser: orgUser.map(m => m.id),
-      page_size: 100000,
-    });
-    console.log('orgUserRelation', orgUserRelation);
-    this.orgUserRelation = orgUserRelation;
+    // const orgUser = reqUser.data.data;
+    // const orgUserRelation = await api.getUserRelation({
+    //   investoruser: orgUser.map(m => m.id),
+    //   page_size: 100000,
+    // });
+    // console.log('orgUserRelation', orgUserRelation);
+    // this.orgUserRelation = orgUserRelation;
 
-    const reqBD = await api.getOrgBdList({ org: list, proj: this.projId || "none" });
-    console.log('reqBD', reqBD);
-    this.reqBD = reqBD;
+    // const reqBD = await api.getOrgBdList({ org: list, proj: this.projId || "none" });
+    // console.log('reqBD', reqBD);
+    // this.reqBD = reqBD;
 
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
@@ -178,47 +178,47 @@ class NewOrgBDList extends React.Component {
     }
   }
 
-  getUser = org => {
-    const users = this.reqUser.data.data.filter(f => f.org && f.org.id === org);
-    const result = { data: {
-      count: users.length,
-      data: users
-    }};
-    // echo('getUserResult', org, result);
-    return result;
-  }
+  // getUser = org => {
+  //   const users = this.reqUser.data.data.filter(f => f.org && f.org.id === org);
+  //   const result = { data: {
+  //     count: users.length,
+  //     data: users
+  //   }};
+  //   // echo('getUserResult', org, result);
+  //   return result;
+  // }
 
-  getUserRelation = investorUserArr => {
-    const userRelation = this.orgUserRelation.data.data.filter(f => investorUserArr.includes(f.investoruser.id));
-    const result = {
-      data: {
-        count: userRelation.length,
-        data: userRelation
-      }
-    }
-    // echo('getUserRelation', investorUserArr, result);
-    return result;
-  }
+  // getUserRelation = investorUserArr => {
+  //   const userRelation = this.orgUserRelation.data.data.filter(f => investorUserArr.includes(f.investoruser.id));
+  //   const result = {
+  //     data: {
+  //       count: userRelation.length,
+  //       data: userRelation
+  //     }
+  //   }
+  //   // echo('getUserRelation', investorUserArr, result);
+  //   return result;
+  // }
 
-  getOrgBD = org => {
-    const bdList = this.reqBD.data.data.filter(f => f.org.id === org);
-    const result = {
-      data: {
-        count: bdList.length,
-        data: bdList
-      }
-    }
-    // echo('getOrgBD', org, result);
-    return result;
-  }
+  // getOrgBD = org => {
+  //   const bdList = this.reqBD.data.data.filter(f => f.org.id === org);
+  //   const result = {
+  //     data: {
+  //       count: bdList.length,
+  //       data: bdList
+  //     }
+  //   }
+  //   // echo('getOrgBD', org, result);
+  //   return result;
+  // }
 
   loadDataForSingleOrg = async org => {
 
     let dataForSingleOrg;
 
     // 首先加载机构的所有符合要求的投资人
-    // const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000});
-    const reqUser = this.getUser(org);
+    const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000});
+    // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
       dataForSingleOrg = [{ key: `null-null-${org}`, org: { id: org } }];
@@ -226,11 +226,11 @@ class NewOrgBDList extends React.Component {
       const orgUser = reqUser.data.data;
 
       //获取投资人的交易师
-      // const orgUserRelation = await api.getUserRelation({
-      //   investoruser: orgUser.map(m => m.id),
-      //   page_size: 1000,
-      // });
-      const orgUserRelation = this.getUserRelation(orgUser.map(m => m.id));
+      const orgUserRelation = await api.getUserRelation({
+        investoruser: orgUser.map(m => m.id),
+        page_size: 1000,
+      });
+      // const orgUserRelation = this.getUserRelation(orgUser.map(m => m.id));
       orgUser.forEach(element => {
         const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
         element.traders = relations.map(m => ({
@@ -241,8 +241,8 @@ class NewOrgBDList extends React.Component {
         }))
       });
 
-      // const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
-      const reqBD = this.getOrgBD(org);
+      const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
+      // const reqBD = this.getOrgBD(org);
       // 已经BD过的投资人
       const regBDUser = reqBD.data.data.map(m => ({
         ...orgUser.find(f => f.id === m.bduser),
@@ -262,7 +262,6 @@ class NewOrgBDList extends React.Component {
         item
     );
 
-    echo(newList);
     if (this.filterOrgWithoutInvestor) {
       newList = newList.filter(f => !(f.items.length === 1 && f.items[0].key.startsWith('null-null')));
     }
