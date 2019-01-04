@@ -1296,16 +1296,25 @@ class TabCheckboxTag extends React.Component {
   }
   render() {
     const { options, value, onChange } = this.props
-    return (
-      <BasicContainer label={i18n('filter.tag')}>
-        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
-      </BasicContainer>
-    )
+    if (options.filter(item => item.children != null).length > 0) {
+      return <TabCheckbox options={options} value={value} onChange={onChange} />
+    } else {
+      return <CheckboxGroup options={options} value={value} onChange={onChange} />
+    }
   }
 }
 function mapStateToPropsTag(state) {
   const {tag} = state.app
-  const options = tag ? tag.map(item => ({value: item.id, label: item.name})) : []
+  let options = [];
+  tag.forEach(element => {
+    if (!options.includes(element.scopeName)) {
+      options.push(element.scopeName);
+    }
+  });
+  options = options.map(m => ({ label: m, value: encodeURIComponent(m) }));
+  options.forEach(element => {
+    element.children = tag.filter(f => f.scopeName === element.label).map(m => ({ label: m.name, value: m.id }));
+  });
   return { options }  
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);

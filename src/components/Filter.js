@@ -154,6 +154,14 @@ function IndustryFilter(props) {
   )
 }
 
+function TagFilter(props) {
+  return (
+    <BasicContainer label={i18n('filter.tag')}>
+      <TabCheckboxTag value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  )
+}
+
 function OrganizationTypeFilter(props) {
   return (
     <BasicContainer label={i18n('filter.org_type')}>
@@ -562,7 +570,7 @@ class OrganizationListFilter extends React.Component {
         </BasicContainer>
         <IndustryFilter value={industrys} onChange={this.handleChange.bind(this, 'industrys')} />
         {/* <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} /> */}
-        <TabCheckboxTag value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         {/* <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} /> */}
         <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
         {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
