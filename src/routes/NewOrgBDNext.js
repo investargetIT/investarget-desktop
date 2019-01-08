@@ -432,8 +432,12 @@ class NewOrgBDList extends React.Component {
   handleCreateBD = user => {
     this.activeUser = user;
     this.setState({ selectVisible: true });
-    // 在为投资人分配IR时默认选中熟悉程度最高的交易师
-    this.setDefaultTrader();
+    if (this.activeUser.id) {
+      // 在为投资人分配IR时默认选中熟悉程度最高的交易师
+      this.setDefaultTrader();
+    } else {
+      this.setState({ traderList: this.allTrader, manager: this.allTrader[0].id.toString() });
+    }
   }
 
   setDefaultTrader = () => {
