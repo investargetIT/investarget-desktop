@@ -82,14 +82,6 @@ function TransactionPhaseFilter(props) {
   )
 }
 
-function TagFilter(props) {
-  return (
-    <BasicContainer label={i18n('filter.tag')}>
-      <CheckboxTag value={props.value} onChange={props.onChange} />
-    </BasicContainer>
-  )
-}
-
 function ServiceFilter(props) {
   return (
     <BasicContainer label={i18n('filter.service_type')}>
@@ -642,7 +634,7 @@ class ProjectListFilter extends React.Component {
     const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
     return (
       <div>
-        <TabCheckboxTag value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <CountryFilter value={country} onChange={this.handleChange.bind(this, 'country')} />
         <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
         { ismarketplace ? null : (
