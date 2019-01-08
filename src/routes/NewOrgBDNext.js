@@ -99,6 +99,7 @@ class NewOrgBDList extends React.Component {
     // this.reqUser = {};
     // this.orgUserRelation = {};
     // this.reqBD = {};
+    this.investorGroup = [];
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -129,7 +130,11 @@ class NewOrgBDList extends React.Component {
         ids: this.ids
     }
 
-    api.getOrg(params)
+    api.queryUserGroup({ type: 'investor' })
+    .then(result => {
+      this.investorGroup = result.data.data.map(item => item.id);
+      return api.getOrg(params);
+    })
     .then(result => {
       let list = result.data.data
       list.forEach(item => {this.orgList[item.id] = item})
@@ -217,7 +222,7 @@ class NewOrgBDList extends React.Component {
     let dataForSingleOrg;
 
     // 首先加载机构的所有符合要求的投资人
-    const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000});
+    const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000, groups: this.investorGroup});
     // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
