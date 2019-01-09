@@ -15,6 +15,7 @@ import {
   Popover,
   Row,
   Col,
+  TreeSelect,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -1319,6 +1320,56 @@ function mapStateToPropsTag(state) {
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
 
+const SHOW_PARENT = TreeSelect.SHOW_PARENT;
+const treeData = [{
+  title: 'Node1',
+  value: '0-0',
+  key: '0-0',
+  children: [{
+    title: 'Child Node1',
+    value: '0-0-0',
+    key: '0-0-0',
+  }],
+}, {
+  title: 'Node2',
+  value: '0-1',
+  key: '0-1',
+  children: [{
+    title: 'Child Node3',
+    value: '0-1-0',
+    key: '0-1-0',
+  }, {
+    title: 'Child Node4',
+    value: '0-1-1',
+    key: '0-1-1',
+  }, {
+    title: 'Child Node5',
+    value: '0-1-2',
+    key: '0-1-2',
+  }],
+}];
+class TreeSelectTag extends React.Component {
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
+  }
+  
+  render() {
+    const tProps = {
+      treeData,
+      // value: ['0-0-0'],
+      // onChange: this.onChange,
+      treeCheckable: true,
+      showCheckedStrategy: SHOW_PARENT,
+      searchPlaceholder: 'Please select',
+      size: 'large',
+    };
+    return <TreeSelect {...tProps} />;
+  }
+}
+
+TreeSelectTag = connect()(TreeSelectTag);
+
 class TabCheckboxOrgBDRes extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
@@ -1662,4 +1713,5 @@ export {
   TabCheckboxProjStatus,
   SelectMultiOrgs,
   TabCheckboxOrgBDRes,
+  TreeSelectTag,
 }

@@ -31,6 +31,7 @@ import {
   SelectTrader,
   SelectOrganizatonArea,
   RadioFamLv,
+  TreeSelectTag,
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
@@ -173,7 +174,8 @@ class UserForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
-          <SelectTag mode="multiple" />
+          {/* <SelectTag mode="multiple" /> */}
+          <TreeSelectTag />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('user.target_demand')} name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
