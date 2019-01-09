@@ -1320,34 +1320,6 @@ function mapStateToPropsTag(state) {
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
 
-const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-const treeData = [{
-  title: 'Node1',
-  value: '0-0',
-  key: '0-0',
-  children: [{
-    title: 'Child Node1',
-    value: '0-0-0',
-    key: '0-0-0',
-  }],
-}, {
-  title: 'Node2',
-  value: '0-1',
-  key: '0-1',
-  children: [{
-    title: 'Child Node3',
-    value: '0-1-0',
-    key: '0-1-0',
-  }, {
-    title: 'Child Node4',
-    value: '0-1-1',
-    key: '0-1-1',
-  }, {
-    title: 'Child Node5',
-    value: '0-1-2',
-    key: '0-1-2',
-  }],
-}];
 class TreeSelectTag extends React.Component {
 
   componentDidMount() {
@@ -1355,20 +1327,36 @@ class TreeSelectTag extends React.Component {
   }
   
   render() {
+    const { options, value, onChange } = this.props;
     const tProps = {
-      treeData,
-      // value: ['0-0-0'],
-      // onChange: this.onChange,
+      treeData: options,
+      value: value && value.map(m => m.toString()),
+      onChange,
       treeCheckable: true,
-      showCheckedStrategy: SHOW_PARENT,
-      searchPlaceholder: 'Please select',
+      allowClear: true,
       size: 'large',
+      treeNodeFilterProp: 'title',
     };
     return <TreeSelect {...tProps} />;
   }
 }
 
-TreeSelectTag = connect()(TreeSelectTag);
+function mapStateToPropsTreeSelectTag(state) {
+  const {tag} = state.app
+  let options = [];
+  tag.forEach(element => {
+    if (!options.includes(element.scopeName)) {
+      options.push(element.scopeName);
+    }
+  });
+  options = options.map(m => ({ title: m, value: encodeURIComponent(m) }));
+  options.forEach(element => {
+    element.children = tag.filter(f => f.scopeName === element.title).map(m => ({ title: m.name, value: m.id.toString() }));
+  });
+  return { options };
+}
+
+TreeSelectTag = connect(mapStateToPropsTreeSelectTag)(TreeSelectTag);
 
 class TabCheckboxOrgBDRes extends React.Component {
   componentDidMount() {
