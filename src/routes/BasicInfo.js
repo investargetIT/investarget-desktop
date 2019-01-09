@@ -12,7 +12,7 @@ import { editUser } from '../api'
 import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
 import { UploadImage } from '../components/Upload'
-import {SelectTag} from '../components/ExtraInput'
+import { TreeSelectTag } from '../components/ExtraInput';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option;
@@ -121,7 +121,7 @@ class BasicInfo extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
-          <SelectTag mode="multiple" />
+          <TreeSelectTag />
         </BasicFormItem>
         <UploadAvatar name="card" photoKey={this.props.currentUser.cardKey} avatarUrl={this.state.cardUrl} onUploaded={this.handleCardUploaded.bind(this)} />
         <Submit />

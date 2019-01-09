@@ -17,7 +17,6 @@ import {
 } from '../components/Form'
 
 import {
-  SelectTag,
   SelectRole,
   SelectYear,
   SelectTransactionType,

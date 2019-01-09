@@ -21,7 +21,6 @@ import {
   BasicFormItem,
 } from '../components/Form'
 import {
-  SelectTag,
   SelectTitle,
   SelectYear,
   CascaderCountry,
@@ -174,7 +173,6 @@ class UserForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
-          {/* <SelectTag mode="multiple" /> */}
           <TreeSelectTag />
         </BasicFormItem>
 

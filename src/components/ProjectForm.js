@@ -18,7 +18,7 @@ import {
 } from '../components/Form'
  
 import {
-  SelectTag,
+  TreeSelectTag,
   SelectRole,
   SelectYear,
   SelectTransactionType,
@@ -72,7 +72,7 @@ class ProjectBaseForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
-          <SelectTag mode="multiple" />
+          <TreeSelectTag />
         </BasicFormItem>
 
         <IndustryDynamicFormItem industry={this.props.industry} />
