@@ -306,10 +306,12 @@ class ProjectBDList extends React.Component {
               {comments.map(m => <li key={m.id}>
                 {m.createdtime.substring(0, 16).replace('T', ' ')}
                 <br/>
-                {m.comments}
+                <p dangerouslySetInnerHTML={{ __html: m.comments.replace(/\n/g, '<br>') }} />
                 </li>)}
             </ul>
-          }><div style={{ color: "#428bca" }}>{comments[0].comments}</div></Popover>;
+          }>
+            <div style={{ color: "#428bca" }} dangerouslySetInnerHTML={{ __html: comments[0].comments.replace(/\n/g, '<br>') }} />
+          </Popover>;
         },
       },
       {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
