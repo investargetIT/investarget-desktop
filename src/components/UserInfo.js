@@ -84,8 +84,7 @@ class AttachmentList extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '文件名称', dataIndex: 'filename', sorter: true},
-      {title: '展示', dataIndex: 'url', render: url => url ? <ImageViewer key={url} ><img src={url} style={{...cardStyle, height: "30px", maxHeight: "30px"}} /></ImageViewer> : 'N/A'},
+      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
       {title: '创建时间', dataIndex: 'createdtime', render: text => time(text) || 'N/A', sorter: true},
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
