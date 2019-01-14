@@ -412,8 +412,9 @@ class SelectExistInvestor extends React.Component {
     return api.getUserRelation(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => item.investoruser).map(item => {
-        const { id: value, username: label } = item
-        return { value, label }
+        const { id: value, username: label, org, mobile, email } = item;
+        const description = [org ? org.orgname : '暂无机构', mobile, email].join('\n');
+        return { value, label, description };
       })
       return { total, list }
     })

@@ -279,7 +279,7 @@ class Select2 extends React.Component {
           <ul className={styles['list']}>
             {
               list.map(item =>
-              <Tooltip key={item.value} title={item.description}>
+              <Tooltip key={item.value} title={item.description && <div dangerouslySetInnerHTML={{ __html: item.description.replace(/\n/g, '<br>') }} />}>
                 <li key={item.value} className={styles['item']} onClick={this.handleSelect.bind(this, {label:item.label, value: item.value})}>{item.label}</li>
               </Tooltip>
               )

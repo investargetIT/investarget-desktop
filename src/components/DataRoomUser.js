@@ -7,7 +7,7 @@ import {
   Icon,
   Popover,
 } from 'antd';
-import { SelectExistUser } from '../components/ExtraInput'
+import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
   i18n,
   hasPerm,
@@ -51,7 +51,7 @@ function DataRoomUser(props) {
     {isAbleToAddUser ?
       <Col span={8}>
         <Row>
-          <Col span={16}><SelectExistUser value={newUser} onChange={onSelectUser} /></Col>
+          <Col span={16}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></Col>
           <Col span={1} />
           <Col span={7}><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></Col>
         </Row>
