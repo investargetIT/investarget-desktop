@@ -23,6 +23,7 @@ import {
 } from 'antd';
 import { OrganizationListFilter } from './Filter'
 import { Search } from './Search'
+import PropTypes from 'prop-types';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -273,5 +274,12 @@ class SelectOrganization extends React.Component {
   }
 
 }
+SelectOrganization.propTypes = {
+  value: PropTypes.array,
+  details: PropTypes.array,
+  onFilterChange: PropTypes.func,
+  onChange: PropTypes.func,
+  onReset: PropTypes.func, // 用户点击了清空按钮
+};
 
 export default connect()(SelectOrganization)
