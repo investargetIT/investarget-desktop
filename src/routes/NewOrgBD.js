@@ -117,6 +117,7 @@ class NewOrgBD extends React.Component {
               details={selectedOrgDetails} 
               onChange={this.handleSelectOrg} 
               onFilterChange={this.handleFilterChange}
+              onReset={() => this.setState({ selectedOrgs: [], selectedOrgDetails: [] })}
             />
           </div>
 

@@ -252,6 +252,7 @@ class SelectOrganization extends React.Component {
 
         {/* 选中的机构以 Tag 的形式展现在表格上方，方便用户随时查看自己选中的机构，避免在分页中迷失 */}
         <div style={{ marginBottom: 10 }}>
+          { this.props.details.length > 1 && <Button style={{ marginRight: 10 }} type="danger" onClick={this.props.onReset}>清空</Button> }
           {this.props.details.map(m => 
             <Tag 
               key={m.id} 
