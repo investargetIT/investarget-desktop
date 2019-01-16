@@ -226,7 +226,7 @@ class ProjectBDForm extends React.Component {
 
           </div>
         )}
-        {hasPerm('proj.admin_changeproj') ?
+        {hasPerm('BD.manageProjectBD') ?
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number" required>
           <SelectAllUser type="trader" /> 
         </BasicFormItem> :null}
