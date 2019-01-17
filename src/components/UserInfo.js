@@ -85,7 +85,7 @@ class AttachmentList extends React.Component {
 
     const columns = [
       {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
-      {title: '创建时间', dataIndex: 'createdtime', render: text => time(text) || 'N/A', sorter: true},
+      {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
