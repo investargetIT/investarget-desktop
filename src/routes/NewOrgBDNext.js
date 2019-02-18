@@ -477,7 +477,12 @@ class NewOrgBDList extends React.Component {
 
   getAllTrader() {
     api.queryUserGroup({ type: 'trader' })
-    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => api.getUser({ 
+      groups: data.data.data.map(m => m.id), 
+      userstatus: 2, 
+      page_size: 1000, 
+      org: !hasPerm('BD.manageOrgBD') ? [isLogin().org.id] : undefined, 
+    }))
     .then(data => {
       this.allTrader = data.data.data; 
       this.setState({ traderList: this.allTrader });
