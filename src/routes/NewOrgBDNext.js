@@ -455,10 +455,13 @@ class NewOrgBDList extends React.Component {
         const newTraderList = [];
         result.data.data.forEach(element => {
           const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].score;
-          const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
-          trader.username += '(' + familiar + '分)';
-          trader.familiar = familiar;
-          newTraderList.push(trader);
+          // 由于#274，交易师列表并不一定包含所有交易师，所以这里要加上判断条件以免报错
+          if (this.allTrader.filter(f => f.id === element.traderuser.id).length > 0) {
+            const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0] };
+            trader.username += '(' + familiar + '分)';
+            trader.familiar = familiar;
+            newTraderList.push(trader);
+          }
         });
         this.allTrader.forEach(element => {
           if (!newTraderList.map(m => m.id).includes(element.id)) {
