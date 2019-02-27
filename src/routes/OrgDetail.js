@@ -7,6 +7,7 @@ import {
   hasPerm, 
   isLogin,
   getUserInfo,
+  time,
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
@@ -23,12 +24,15 @@ import {
   Tabs,
   Table,
   Pagination,
+  Upload,
 } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import AddOrgDetail from '../components/AddOrgDetail';
+import { baseUrl } from '../utils/request';
+import { Modal as GModal } from '../components/GlobalComponents';
 
 const TabPane = Tabs.TabPane;
 
@@ -550,6 +554,101 @@ class Buyout extends React.Component {
 
 const currencyMap = {'1': 'CNY', '2': 'USD', '3': 'CNY'}
 
+class AttachmentList extends React.Component {
+
+  state = {
+    page: 1,
+    pageSize: getUserInfo().page || 10,
+    data: [],
+    total: 0,
+    loading: false,
+    sort: undefined,
+    desc: undefined,
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    this.setState({ loading: true });
+    api.getOrgAttachment({
+      org: this.props.org, 
+      page_size: this.state.pageSize, 
+      page_index: this.state.page,
+      sort: this.state.sort,
+      desc: this.state.desc,
+    }).then(result => {
+      let total = result.data.count
+      let data = result.data.data
+      let loading = false
+      
+      Promise.all(result.data.data.map(m => api.downloadUrl(m.bucket, m.key)))
+             .then(urlResult => {
+        data = data.map((v,i) => ({...v, url: urlResult[i].data}))
+        this.setState({total, data, loading})
+      })
+    })
+      
+  }
+
+  delete(id) {
+    api.deleteOrgAttachment(id)
+      .then(() => this.getData());
+  }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      { 
+        sort: sorter.columnKey, 
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      }, 
+      this.getData
+    );
+  }
+
+  render() {
+
+    const { page, pageSize, total } = this.state;
+
+    const columns = [
+      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
+      {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
+    ];
+    if (hasPerm('org.admin_manageorgattachment')) {
+      columns.push({
+        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
+            <a type="danger">
+              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
+            </a>
+          </Popconfirm>
+        ),
+      });
+    }
+
+    return <div>
+      <Table
+        columns={columns}
+        dataSource={this.state.data}
+        rowKey={record => record.id}
+        loading={this.state.loading}
+        pagination={false}
+        onChange={this.handleTableChange}
+      />
+      <Pagination
+        style={{ float: 'right', marginTop: 20 }}
+        total={total}
+        current={page}
+        pageSize={pageSize}
+        onChange={ page => this.setState({ page }, this.getData)}
+        showSizeChanger
+        onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getData)}
+        showQuickJumper
+        pageSizeOptions={PAGE_SIZE_OPTIONS} />
+    </div>;
+  }
+}
 
 class OrgDetail extends React.Component {
 
@@ -592,6 +691,7 @@ class OrgDetail extends React.Component {
       buyout: [],
       reloading: false,
       isShowOrgDetailForm: false,
+      isUploading: false,
     }
 
     this.id = props.params.id;
@@ -817,12 +917,45 @@ class OrgDetail extends React.Component {
     });
   }
 
+  onMobileUploadComplete(status, record) {
+    if(!status) return;
+    this.addUserAttachment(record);
+  }
+
+  handleMobileUploadBtnClicked() {
+    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  }
+
+  handleFileChange = ({ file }) => {
+    this.setState({ isUploading: true });
+    if (file.status === 'done') {
+      this.handleFileUploadDone(file)
+    } 
+  }
+
+  handleFileUploadDone = file => {
+    file.bucket = 'file'
+    file.key = file.response.result.key
+    file.url = file.response.result.url
+    file.realfilekey = file.response.result.realfilekey;
+    file.filename = file.name;
+    this.addOrgAttachment(file);
+  }
+
+  addOrgAttachment = file => {
+    const { bucket, key, filename } = file;
+    api.addOrgAttachment({ bucket, key, filename, org: this.id })
+      .then(result => {
+        this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
+      })
+  }
+
   render() {
     const id = this.props.params.id
 
     const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
       || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
-      || this.state.buyout.length > 0 || this.state.data.length > 0;
+      || this.state.buyout.length > 0 || this.state.data.length > 0 || !this.state.hideUserInfo;
 
     const basic = <div>
       <Field title="全称" value={this.state.orgfullname} />
@@ -865,6 +998,19 @@ class OrgDetail extends React.Component {
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowOrgDetailForm: true })} 
           />
+          {hasPerm('org.admin_manageorgattachment') ? <span>
+            <Upload
+              action={baseUrl + '/service/qiniubigupload?bucket=file'}
+              // accept={fileExtensions.join(',')}
+              onChange={this.handleFileChange}
+              // onRemove={this.handleFileRemoveConfirm}
+              showUploadList={false}
+            >
+              <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传附件</Button>
+            </Upload>
+
+            <Button loading={this.state.isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
+          </span> : null }
         </h3>
 
           {isShowTabs ?
@@ -922,6 +1068,10 @@ class OrgDetail extends React.Component {
                 <Buyout id={this.id} />
               </TabPane>
               : null }
+
+              <TabPane tab="附件" key="7">
+                <AttachmentList org={this.id} />
+              </TabPane>
 
             </Tabs>
             : basic}

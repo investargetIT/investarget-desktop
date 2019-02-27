@@ -117,6 +117,10 @@ export function getOrgRemark(param) {
   return r('/org/remark/?' + qs.stringify(param))
 }
 
+export const getOrgAttachment = params => r('/org/atta/?' + qs.stringify(params));
+export const deleteOrgAttachment = id => r('/org/atta/' + id + '/', 'DELETE');
+export const addOrgAttachment = body => r('/org/atta/', 'POST', body);
+
 export function getOrgRemarkDetail(id) {
   return r('/org/remark/' + id + '/')
 }
