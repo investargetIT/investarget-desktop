@@ -919,7 +919,7 @@ class OrgDetail extends React.Component {
 
   onMobileUploadComplete(status, record) {
     if(!status) return;
-    this.addUserAttachment(record);
+    this.addOrgAttachment(record);
   }
 
   handleMobileUploadBtnClicked() {
