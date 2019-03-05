@@ -385,7 +385,7 @@ function getToken() {
 
 function getPdfUrl(id) {
   const token = getToken()
-  return baseUrl + '/proj/pdf/' + id + '/?acw_tk=' + token
+  return `${baseUrl}/proj/pdf/${id}/?acw_tk=${token}&lang=${window.LANG}`;
 }
 
 
