@@ -34,7 +34,7 @@ class ProjectListPublished extends React.Component {
 
   getProjectList = () => {
     const { page, pageSize } = this.state
-    const params = { supportUser: isLogin().id, page_index: page, page_size: pageSize }
+    const params = { supportUser: isLogin().id, skip_count: (page-1)*pageSize, max_size: pageSize };
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
