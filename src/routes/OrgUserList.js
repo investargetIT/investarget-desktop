@@ -166,7 +166,7 @@ class OrgUserList extends React.Component {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? this.loadLabelByValue('tag', tags) : null
+        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null
       },
       {
         title: i18n("account.role"),
