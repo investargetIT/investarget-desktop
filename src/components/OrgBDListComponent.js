@@ -1059,7 +1059,7 @@ class OrgBDListComponent extends React.Component {
 
           { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
           <div style={{ float: 'left', lineHeight: '32px' }}>
-            {this.props.orgbdres.map(
+            {this.props.orgbdres.concat({ id: null, name: '暂无状态' }).map(
               m => `${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`
             ).join('、')}
           </div>
