@@ -17,7 +17,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 const Option = Select.Option
 
 const tableStyle = { marginBottom: '24px' }
-const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
+const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
 
 class OrganizationList extends React.Component {
@@ -243,7 +243,7 @@ class OrganizationList extends React.Component {
             rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
           />
 
-          <div style={{ fontSize: 13, marginTop: 0, float: 'left' }}>
+          <div style={{ fontSize: 13, marginTop: 0, float: window.innerWidth > 1200 ? 'left' : undefined }}>
             <Button
               disabled={this.state.selectedIds.length == 0}
               style={{ backgroundColor: 'orange', border: 'none' }}
