@@ -1040,7 +1040,7 @@ class OrgBDListComponent extends React.Component {
 
       );
     }
-
+    
     return (
       <div>
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
@@ -1059,9 +1059,12 @@ class OrgBDListComponent extends React.Component {
 
           { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
           <div style={{ float: 'left', lineHeight: '32px' }}>
-            {this.props.orgbdres.concat({ id: null, name: '暂无状态' }).map(
-              m => `${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`
-            ).join('、')}
+            {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
+              (m, index) => <span key={m.id}>
+                <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
+                <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
+              </span>
+            )}
           </div>
           : null }
 
