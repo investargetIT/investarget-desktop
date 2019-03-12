@@ -259,6 +259,9 @@ class NewOrgBDList extends React.Component {
         .map(m => ({ ...m, bd: null, key: `null-${m.id}` }));
 
       dataForSingleOrg = regBDUser.concat(unBDUser);
+
+      // 过滤掉重复的投资人
+      dataForSingleOrg = dataForSingleOrg.filter((f, pos, arr) => arr.map(m => m.id).indexOf(f.id) === pos);
     }
 
     let newList = this.state.list.map(item => 
