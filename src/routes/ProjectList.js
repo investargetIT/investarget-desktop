@@ -179,7 +179,7 @@ class ProjectList extends React.Component {
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',width:'110px',textAlign:'left'}
+    const buttonStyle={textDecoration:'underline',border:'none',background:'none',width:'110px',textAlign:'left'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       {

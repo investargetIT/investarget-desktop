@@ -9,7 +9,7 @@ button[disabled], html input[disabled] {
 
 /* Buttons */
 .ant-btn {
-  color: #636e7b;
+  color: #428BCA;
   background-color: #e4e7ea;
   border-color: #ccc;
 }
