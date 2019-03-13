@@ -162,7 +162,7 @@ class MyPartner extends React.Component {
   }
 
   render() {
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const columns = [
       {
         title: i18n("user.name"),

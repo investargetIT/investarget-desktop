@@ -187,7 +187,7 @@ class ProjectLibrary extends React.Component {
 
   render() {
     const { filters, search, page, pageSize, total, list, loading, listForExport } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const comNameStyle={color:'#d24914'}
     const rowSelection = {
       onChange: this.handleSelectChange,

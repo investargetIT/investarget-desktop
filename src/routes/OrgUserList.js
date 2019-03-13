@@ -136,7 +136,7 @@ class OrgUserList extends React.Component {
 
   render() {
     const { selectedUsers, filters, search, list, total, page, pageSize, loading } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
 
 
