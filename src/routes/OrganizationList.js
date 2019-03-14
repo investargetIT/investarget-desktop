@@ -190,9 +190,9 @@ class OrganizationList extends React.Component {
             </Link>
 
             <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <a type="danger" disabled={!record.action.delete} >
-                <img style={imgStyle} src="/images/delete.png" />
-              </a>
+              <Button style={buttonStyle} size="small" disabled={!record.action.delete} >
+                <Icon type="delete" />
+              </Button>
             </Popconfirm>
           </span>
         ),
