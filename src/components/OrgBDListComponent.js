@@ -1249,19 +1249,27 @@ function BDComments(props) {
         <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
       </div>
       <div>
-        {comments.length ? comments.map(comment => (
-          <div key={comment.id} style={{marginBottom:8}}>
-            <p>
-              <span style={{marginRight: 8}}>{time(comment.createdtime + comment.timezone)}</span>
-              { hasPerm('BD.manageOrgBD') ?
-              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                <a href="javascript:void(0)">{i18n('common.delete')}</a>
-              </Popconfirm> 
-              : null}
-            </p>
-            <p dangerouslySetInnerHTML={{__html:comment.comments.replace(/\n/g,'<br>')}}></p>
-          </div>
-        )) : <p>{i18n('remark.no_comments')}</p>}
+        {comments.length ? comments.map(comment => {
+          let content = comment.comments;
+          const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+          if (oldStatusMatch) {
+            const oldStatus = oldStatusMatch[0];
+            content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+          }
+          return (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p>
+                <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+                {hasPerm('BD.manageOrgBD') ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                  </Popconfirm>
+                  : null}
+              </p>
+              <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+            </div>
+          );
+        }) : <p>{i18n('remark.no_comments')}</p>}
       </div>
     </div>
   )
