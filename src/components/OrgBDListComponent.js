@@ -380,12 +380,19 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleConfirmBtnClicked = state => {
-
+    let comments = '';
+    // 由非空状态变为不跟进，记录之前状态，相关issue #285
+    if (state.status === 6 && ![6, null].includes(this.state.currentBD.response)) {
+      const oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
+      comments = [state.comment.trim(), `之前状态${oldStatus}`].filter(f => f !== '').join('，');
+    } else {
+      comments = state.comment.trim();
+    }
     // 添加备注
-    if (state.comment.trim().length > 0) {
+    if (comments.length > 0) {
       const body = {
         orgBD: this.state.currentBD.id,
-        comments: state.comment,
+        comments,
       };
       api.addOrgBDComment(body);
     }
