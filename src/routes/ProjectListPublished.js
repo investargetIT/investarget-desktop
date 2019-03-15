@@ -8,7 +8,7 @@ import {
   isShowCNY, 
   getUserInfo, 
 } from '../utils/util';
-import { Table, Pagination, Button, Popconfirm, message } from 'antd'
+import { Table, Pagination, Button, Popconfirm, message, Icon } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 
 
@@ -132,9 +132,9 @@ class ProjectListPublished extends React.Component {
             </Link>
             &nbsp;
             <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
-              <a type="danger" disabled={!record.action.delete} >
-                <img style={imgStyle} src="/images/delete.png" />
-              </a>
+              <Button style={buttonStyle} disabled={!record.action.delete} size="small">
+                <Icon type="delete" />
+              </Button>
             </Popconfirm>
           </span>
         )

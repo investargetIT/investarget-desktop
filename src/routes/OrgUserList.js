@@ -201,9 +201,9 @@ class OrgUserList extends React.Component {
                
               </div>
                 <Popconfirm title="确定删除吗？" onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <a type="danger" disabled={!record.action.delete} size="small">
-                    <img style={imgStyle} src="/images/delete.png" />
-                  </a>
+                  <Button style={buttonStyle} disabled={!record.action.delete} size="small">
+                    <Icon type="delete" />
+                  </Button>
                 </Popconfirm>
               </span>
         )

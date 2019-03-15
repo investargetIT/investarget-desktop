@@ -279,9 +279,9 @@ class ProjectList extends React.Component {
             </div>
             <div>
               <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(null, record.id)}>
-                <a type="danger" disabled={!record.action.delete} >
-                  <img style={imgStyle} src="/images/delete.png" />
-                </a>
+                <Button size="small" style={buttonStyle} disabled={!record.action.delete} >
+                  <Icon type="delete" />
+                </Button>
               </Popconfirm>
             </div>
             </span>
@@ -326,9 +326,9 @@ class ProjectList extends React.Component {
             </div>
             <div>
               <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(null, record.id)}>
-                <a type="danger" disabled={!record.action.delete} >
-                  <img style={imgStyle} src="/images/delete.png" />
-                </a>
+                <Button size="small" style={buttonStyle} disabled={!record.action.delete}>
+                  <Icon type="delete" />
+                </Button>
               </Popconfirm>
             </div>
             </span>

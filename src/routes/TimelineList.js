@@ -301,7 +301,9 @@ class TimelineList extends React.Component {
             </div>
             <div>
             <Popconfirm title={i18n("message.confirm_delete")} onConfirm={this.deleteTimeline.bind(null, record.id)}>
-              <a type="danger" size="small" disabled={!record.action.delete}><img style={imgStyle} src="/images/delete.png" /></a>
+              <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
+                <Icon type="delete" />
+              </Button>
             </Popconfirm>
             </div>
           </span>

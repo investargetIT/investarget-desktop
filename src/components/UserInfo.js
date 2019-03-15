@@ -13,6 +13,8 @@ import {
   Table,
   Popconfirm,
   Pagination,
+  Icon,
+  Button,
 } from 'antd';
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -25,7 +27,7 @@ const rowStyle = {
   fontSize: '14px',
   marginLeft:'70px'
 }
-
+const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
 class AttachmentList extends React.Component {
 
   state = {
@@ -89,9 +91,9 @@ class AttachmentList extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <a type="danger">
-              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
-            </a>
+            <Button size="small" style={buttonStyle}>
+              <Icon type="delete" />
+            </Button>
           </Popconfirm>
         ),
       },
@@ -190,9 +192,9 @@ class InvestEvent extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <a type="danger">
-              <img style={{ width: '15px', height: '20px' }} src="/images/delete.png" />
-            </a>
+            <Button size="small" style={buttonStyle}>
+              <Icon type="delete" />
+            </Button>
           </Popconfirm>
         ),
       },

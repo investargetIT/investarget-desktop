@@ -341,7 +341,9 @@ class MeetingBDList extends React.Component{
 		<button style={buttonStyle} onClick={this.showViewModal.bind(this,record)}>{i18n('common.view')}</button>
 		{hasPerm('BD.manageMeetBD')?
 		<Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
-        	<a type="danger"><img style={imgStyle} src="/images/delete.png" /></a>
+        	<Button size="small" style={{ ...buttonStyle, color: undefined }}>
+            <Icon type="delete" />
+          </Button>
        	</Popconfirm>:null}
        	</div>
         }}
