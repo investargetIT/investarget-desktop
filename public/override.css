@@ -426,3 +426,7 @@ button[disabled], html input[disabled] {
 .ant-tabs-nav .ant-tabs-tab {
   margin-right: 0;
 }
+
+.ant-fullcalendar-header .ant-select-selection__rendered {
+  margin-right: 20px;
+}
