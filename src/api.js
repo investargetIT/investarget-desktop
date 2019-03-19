@@ -24,7 +24,8 @@ function r(url, method, body) {
       "Content-Type": "application/json",
       "clienttype": "3",
       "source": source
-    }
+    },
+    // credentials: 'include'
   }
 
   const user = getCurrentUserInfo()
@@ -887,3 +888,5 @@ export const getOrgExportDownloadUrl = id => `${baseUrl}/org/excel/${id}/?token=
 export const sendEmailToDataroomUser = id => r(`/dataroom/user/${id}/`, 'POST');
 
 export const getRandomPhoneNumber = () => r('/user/mobile');
+
+export const getUserSession = () => r('/user/session/');

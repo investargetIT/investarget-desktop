@@ -715,20 +715,22 @@ class OrgBDListComponent extends React.Component {
       'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       'bd_status': 1,
     }
-    api.addOrgBD(body).then(result => {
-      if (result && result.data) {
-        let list = this.state.list.map(line => 
-          line.id !== `${record.org.id}-${record.proj.id}` ?
-            line :
-            {...line, items: line.items.filter(item => item.key !== record.key).concat([result.data])}
-        )
-        this.setState({ list, traderList: this.allTrader });
-      }
-    }).catch(error => {
-      Modal.error({
-        content: error.message || "未知错误",
-      });
-    })
+    api.getUserSession()
+      .then(() => api.addOrgBD(body))
+      .then(result => {
+        if (result && result.data) {
+          let list = this.state.list.map(line =>
+            line.id !== `${record.org.id}-${record.proj.id}` ?
+              line :
+              { ...line, items: line.items.filter(item => item.key !== record.key).concat([result.data]) }
+          )
+          this.setState({ list, traderList: this.allTrader });
+        }
+      }).catch(error => {
+        Modal.error({
+          content: error.message || "未知错误",
+        });
+      })
   }
 
   discardNewBD(record) {
