@@ -25,7 +25,7 @@ function r(url, method, body) {
       "clienttype": "3",
       "source": source
     },
-    // credentials: 'include'
+    credentials: 'include'
   }
 
   const user = getCurrentUserInfo()

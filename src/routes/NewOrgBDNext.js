@@ -508,7 +508,8 @@ class NewOrgBDList extends React.Component {
       bd_status: 1,
       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
     };
-    api.addOrgBD(body)
+    api.getUserSession()
+      .then(() => api.addOrgBD(body))
       .then(result => {
         Modal.success({
           title: '机构BD创建成功',
@@ -516,6 +517,11 @@ class NewOrgBDList extends React.Component {
         });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org.id);
+      })
+      .catch(error => {
+        Modal.error({
+          content: error.message || "未知错误",
+        });
       })
   }
 
