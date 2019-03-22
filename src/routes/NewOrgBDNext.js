@@ -517,12 +517,7 @@ class NewOrgBDList extends React.Component {
         });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org.id);
-      })
-      .catch(error => {
-        Modal.error({
-          content: error.message || "未知错误",
-        });
-      })
+      });
   }
 
   render() {

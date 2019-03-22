@@ -726,11 +726,7 @@ class OrgBDListComponent extends React.Component {
           )
           this.setState({ list, traderList: this.allTrader });
         }
-      }).catch(error => {
-        Modal.error({
-          content: error.message || "未知错误",
-        });
-      })
+      });
   }
 
   discardNewBD(record) {
