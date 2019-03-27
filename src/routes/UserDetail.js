@@ -161,9 +161,20 @@ class UserDetail extends React.Component {
     );
   }
 
-  onMobileUploadComplete(status, record) {
+  onMobileUploadComplete(status, records) {
     if(!status) return;
-    this.addUserAttachment(record);
+    this.addUserAttachments(records);
+  }
+
+  addUserAttachments = files => {
+    const requests = files.map(file =>{
+      const { bucket, key, filename } = file;
+      return api.addUserAttachment({ bucket, key, filename, user: this.state.userId });
+    });
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
+      });
   }
 
   handleMobileUploadBtnClicked() {

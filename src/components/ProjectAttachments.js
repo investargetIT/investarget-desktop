@@ -314,8 +314,27 @@ class ProjectAttachments extends React.Component {
 
   onMobileUploadComplete(status, record) {
     if (!status) return;
-    const file = {...record, filetype: this.state.activeDir};
-    this.addAttachment(file);
+    const files = record.map(m => ({ ...m, filetype: this.state.activeDir }));
+    this.addAttachments(files);
+  }
+
+  addAttachments = (files) => {
+    const requests = files.map((file) => {
+      const data = {
+        proj: this.props.projId,
+        filetype: this.state.activeDir,
+        bucket: file.bucket,
+        filename: file.filename,
+        key: file.key,
+        realfilekey: file.realfilekey,
+      };
+      return api.addProjAttachment(data);
+    });
+    return Promise.all(requests).then(() => {
+      this.getAttachment();
+    }, (error) => {
+      this.handleError(error);
+    });
   }
 
   handleMobileUploadBtnClicked() {

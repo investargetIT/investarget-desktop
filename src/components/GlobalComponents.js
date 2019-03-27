@@ -60,7 +60,8 @@ export class MobileUploader extends Component {
         .then(result => {
             const record = result.data[QRCodeKey];
             if (record.key) {
-                this.cancel({...record});
+                const files = record.files;
+                this.cancel([...files]);
                 AntModal.success({
                     title: "成功",
                     content: "上传文件成功!",

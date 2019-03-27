@@ -917,9 +917,20 @@ class OrgDetail extends React.Component {
     });
   }
 
-  onMobileUploadComplete(status, record) {
+  onMobileUploadComplete(status, records) {
     if(!status) return;
-    this.addOrgAttachment(record);
+    this.addOrgAttachments(records);
+  }
+  
+  addOrgAttachments = (files) => {
+    const requests = files.map((file) => {
+      const { bucket, key, filename } = file;
+      return api.addOrgAttachment({ bucket, key, filename, org: this.id });
+    });
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
+      });
   }
 
   handleMobileUploadBtnClicked() {
