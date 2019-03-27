@@ -59,7 +59,7 @@ export class MobileUploader extends Component {
         api.getQRCodeStatus(QRCodeKey)
         .then(result => {
             const record = result.data[QRCodeKey];
-            if (record.key) {
+            if (record.files && record.files.length > 0) {
                 const files = record.files;
                 this.cancel([...files]);
                 AntModal.success({
