@@ -11,7 +11,9 @@ import { URI_12 } from '../constants'
 
 
 function onValuesChange(props, values) {
-  console.log(values)
+  if (values.org) {
+    props.onOrgChange(values.org);
+  }
 }
 const AddUserForm = Form.create({ onValuesChange })(UserForm)
 
@@ -124,6 +126,16 @@ class AddUser extends React.Component {
 
   handleCancel = () => this.setState({ visible: false })
 
+  handleOrgChange(org) {
+    const usernameC = this.form.getFieldValue('usernameC');
+    if (usernameC) {
+      this.checkIfExistsUserWithSameNameInThisOrg(org, usernameC);
+    }
+  }
+
+  checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
+    console.log('check if exists user with same name in this org', org, username);
+  };
 
   render () {
     const title = (this.isTraderAddInvestor || this.isAdminAddInvestor)
@@ -137,6 +149,7 @@ class AddUser extends React.Component {
         <AddUserForm type="add"
           isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
+          onOrgChange={this.handleOrgChange.bind(this)}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
