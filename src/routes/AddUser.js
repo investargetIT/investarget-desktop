@@ -106,6 +106,14 @@ class AddUser extends React.Component {
     })
   }
 
+  handleCnNameOnBlur(evt) {
+    const name = evt.target.value;
+    const org = this.form.getFieldValue('org');
+    if (name && org) {
+      this.checkIfExistsUserWithSameNameInThisOrg(org, name);
+    }
+  }
+
   handleAddRelation = () => {
     this.setState({ confirmLoading: true })
     const body = {
@@ -135,6 +143,7 @@ class AddUser extends React.Component {
 
   checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
     console.log('check if exists user with same name in this org', org, username);
+    api.getUser({ org, usernameC: username });
   };
 
   render () {
@@ -151,6 +160,7 @@ class AddUser extends React.Component {
           wrappedComponentRef={this.handleRef}
           onOrgChange={this.handleOrgChange.bind(this)}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
+          cnNameOnBlur={this.handleCnNameOnBlur.bind(this)}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
         <div style={{textAlign: 'center'}}>
