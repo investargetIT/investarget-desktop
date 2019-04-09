@@ -142,8 +142,19 @@ class AddUser extends React.Component {
   }
 
   checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
-    console.log('check if exists user with same name in this org', org, username);
-    api.getUser({ org, usernameC: username });
+    const react = this;
+    api.getUser({ org, usernameC: username })
+      .then(result => {
+        if (result.data.count > 0) {
+          Modal.confirm({
+            title: '该机构已有同名投资人，是否跳转？',
+            onOk() {
+              const userID = result.data.data[0].id;
+              react.props.history.push('/app/user/' + userID);
+            }
+          });
+        }
+      });
   };
 
   render () {
