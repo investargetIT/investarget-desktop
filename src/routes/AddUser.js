@@ -143,18 +143,27 @@ class AddUser extends React.Component {
 
   checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
     const react = this;
+    let userID;
     api.getUser({ org, usernameC: username })
       .then(result => {
         if (result.data.count > 0) {
-          Modal.confirm({
-            title: '该机构已有同名投资人，是否跳转？',
-            onOk() {
-              const userID = result.data.data[0].id;
-              react.props.history.push('/app/user/' + userID);
-            }
-          });
+          userID = result.data.data[0].id;
+          return api.checkUserRelation(userID, isLogin().id);
         }
-      });
+      })
+      .then(result => {
+        if (result === undefined) return;
+        let editable = '';
+        if (result.data || hasPerm('usersys.admin_changeuser')) {
+          editable = 'edit/';
+        }
+        Modal.confirm({
+          title: '该机构已有同名投资人，是否跳转？',
+          onOk() {
+            react.props.history.push(`/app/user/${editable}${userID}`);
+          }
+        });
+      })
   };
 
   render () {
