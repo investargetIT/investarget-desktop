@@ -157,8 +157,9 @@ class AddUser extends React.Component {
         if (result.data || hasPerm('usersys.admin_changeuser')) {
           editable = 'edit/';
         }
-        Modal.confirm({
-          title: '该机构已有同名投资人，是否跳转？',
+        Modal.warning({
+          title: '该机构已有同名投资人',
+          okText: '确定',
           onOk() {
             react.props.history.push(`/app/user/${editable}${userID}`);
           }
