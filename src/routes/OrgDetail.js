@@ -583,8 +583,15 @@ class AttachmentList extends React.Component {
       let data = result.data.data
       let loading = false
       
-      Promise.all(result.data.data.map(m => api.downloadUrl(m.bucket, m.key)))
-             .then(urlResult => {
+      Promise.all(result.data.data.map(m => {
+        let key = m.realkey;
+        if (key === null) {
+          const originalKeyWithoutSuffix = m.key.split('.')[0];
+          const fileSuffix = m.filename.split('.')[1];
+          key = [originalKeyWithoutSuffix, fileSuffix].join('.');
+        }
+        return api.downloadUrl(m.bucket, key);
+      })).then(urlResult => {
         data = data.map((v,i) => ({...v, url: urlResult[i].data}))
         this.setState({total, data, loading})
       })
@@ -924,8 +931,8 @@ class OrgDetail extends React.Component {
   
   addOrgAttachments = (files) => {
     const requests = files.map((file) => {
-      const { bucket, key, filename } = file;
-      return api.addOrgAttachment({ bucket, key, filename, org: this.id });
+      const { bucket, key, filename, realfilekey } = file;
+      return api.addOrgAttachment({ bucket, key, filename, org: this.id, realkey: realfilekey });
     });
     Promise.all(requests)
       .then(() => {
@@ -954,8 +961,8 @@ class OrgDetail extends React.Component {
   }
 
   addOrgAttachment = file => {
-    const { bucket, key, filename } = file;
-    api.addOrgAttachment({ bucket, key, filename, org: this.id })
+    const { bucket, key, filename, realfilekey } = file;
+    api.addOrgAttachment({ bucket, key, filename, org: this.id, realkey: realfilekey })
       .then(result => {
         this.setState({ isUploading: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false }));
       })
