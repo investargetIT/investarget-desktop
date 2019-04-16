@@ -141,4 +141,4 @@ export const KEY_TO_ICON = {
   'log': 'fa fa-search',
 }
 
-export const PAGE_SIZE_OPTIONS = ['10', '20', '30', '40', '50'];
+export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];
