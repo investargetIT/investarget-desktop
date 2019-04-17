@@ -96,7 +96,10 @@ class EditOrganization extends React.Component {
   render() {
     const id = Number(this.props.params.id)
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('organization.edit_org')}>
+      <LeftRightLayout 
+        location={this.props.location}
+        title={i18n('organization.edit_org')} 
+        action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
         <div>
 
           <div style={formStyle}>
