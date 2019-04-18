@@ -15,7 +15,10 @@ function onValuesChange(props, values) {
     props.onOrgChange(values.org);
   }
 }
-const AddUserForm = Form.create({ onValuesChange })(UserForm)
+function mapPropsToFields(props) {
+  return props.data;
+}
+const AddUserForm = Form.create({ onValuesChange, mapPropsToFields })(UserForm);
 
 
 class AddUser extends React.Component {
@@ -28,6 +31,8 @@ class AddUser extends React.Component {
   isTraderAddInvestor = this.props.location.query.redirect === URI_12
   isAdminAddInvestor = this.props.location.query.redirect ?
     this.props.location.query.redirect.startsWith('/app/orguser/list') : false;
+
+  orgID = this.props.location.query.redirect ? this.props.location.query.redirect.split('?')[1].split('=')[1] : null;
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
@@ -182,6 +187,7 @@ class AddUser extends React.Component {
           onOrgChange={this.handleOrgChange.bind(this)}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           cnNameOnBlur={this.handleCnNameOnBlur.bind(this)}
+          data={{ org: { value: this.orgID } }}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
         <div style={{textAlign: 'center'}}>
