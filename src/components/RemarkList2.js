@@ -105,7 +105,7 @@ class RemarkList extends React.Component {
             key={item.id}
             comments={item.remark}
             createdtime={item.createdtime}
-            userid={item.createuser_id||item.createuser.id||item.createuser}     //for project remark or user remark or org remark
+            userid={item.createuser_id || (item.createuser && item.createuser.id) || item.createuser}     //for project remark or user remark or org remark
             timezone={item.timezone}
             onEdit={this.props.onEdit.bind(this, item.id)}
             onDelete={this.props.onDelete.bind(this, item.id)}
