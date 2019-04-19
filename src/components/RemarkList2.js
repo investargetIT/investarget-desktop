@@ -105,10 +105,12 @@ class RemarkList extends React.Component {
             key={item.id}
             comments={item.remark}
             createdtime={item.createdtime}
+            lastmodifytime={item.lastmodifytime}
             userid={item.createuser_id || (item.createuser && item.createuser.id) || item.createuser}     //for project remark or user remark or org remark
             timezone={item.timezone}
             onEdit={this.props.onEdit.bind(this, item.id)}
             onDelete={this.props.onDelete.bind(this, item.id)}
+            type={this.props.type}
           />
         ))}
       </div>
@@ -162,6 +164,7 @@ class Remark extends React.Component {
   
   render() {
     const createdtime = time(this.props.createdtime + this.props.timezone)
+    const lastmodifytime = time(this.props.lastmodifytime + this.props.timezone);
     const photourl=this.state.photoURL
     const comments={__html:this.props.comments.replace(/\n/g,'<br>')}
     return ( 
@@ -171,16 +174,33 @@ class Remark extends React.Component {
         <span style={userStyle}>{this.state.userName}</span>
         <div style={timeStyle}>
           {createdtime}&nbsp;&nbsp;
+          {['user', 'org'].includes(this.props.type) ? 
+          <Button onClick={this.handleEdit} size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}>
+            <Icon type="edit" />
+          </Button>
+          : null}
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
             <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}>
               <Icon type="delete" />
             </Button>
-          </Popconfirm> 
+          </Popconfirm>
         </div>
         </div>
-        <p style={comStyle} dangerouslySetInnerHTML={comments}></p>
-        
-      </div>    
+        {['user', 'org'].includes(this.props.type) ? 
+        <div style={{ marginLeft: 86, marginTop: 10, fontSize: 12, color: '#999' }}>最新编辑时间：{lastmodifytime}</div>
+        : null}
+        {this.state.isEditing ? (
+          <div style={{ marginLeft: 70, marginTop: 10 }}>
+            <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
+            <span>
+              <a href="javascript:void(0)" onClick={this.handleSave} disabled={this.state.comments == ''} style={{ marginRight: 4 }}>{i18n('common.save')}</a>
+              <a href="javascript:void(0)" onClick={this.handleCancel}>{i18n('common.cancel')}</a>
+            </span>
+          </div>
+        ) : (
+          <p style={comStyle} dangerouslySetInnerHTML={comments} />
+        )}
+      </div>
       // <div style={{marginBottom:8}}>
       //   <p style={{fontSize:13,lineHeight:2}}>
       //     <span style={{marginRight:8}}>{createdtime}</span>

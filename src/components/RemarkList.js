@@ -201,7 +201,7 @@ function remarkListWithApi(type) {
     }
 
     editRemark = (editId, remark) => {
-      const params = { [type]: this.props.typeId, remark }
+      const params = { remark };
       editApi(editId, params).then(result => {
         this.getRemarkList()
       }, error => {
@@ -248,6 +248,7 @@ function remarkListWithApi(type) {
         onAdd={this.addRemark}
         onEdit={this.editRemark}
         onDelete={this.deleteRemark}
+        type={type}
       />
       <div style={divStyle}>
               {list.length <= initComNum ? null :
