@@ -304,10 +304,15 @@ class LibProjRemarkList extends React.Component {
   }
 
   getRemarkList = () => {
-    const { com_id } = this.props
+    const { com_id, com_name } = this.props;
     const params = { com_id }
     const {initComNum,list,currentList,currentListNum}=this.state
-    api.getLibProjRemark(params).then(result => {
+    Promise.all([
+      api.getLibProjRemark(params),
+      api.getProjBDList({ search: com_name }),
+    ]).then(result => {
+      window.echo('result', result);
+      return;
       const list = result.data.data.map(item => {
         return {
           ...item,
