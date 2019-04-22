@@ -23,10 +23,17 @@ class ProjectBDList extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const setting = this.readSetting()
+    const filters = setting ? setting.filters : ProjectBDFilter.defaultValue;
+    const search = setting ? setting.search : null
+    const page = setting ? setting.page : 1
+    const pageSize = setting ? setting.pageSize: 10
+
     this.state = {
-      filters: ProjectBDFilter.defaultValue,
-      search: null,
-      page: 1,
+      filters,
+      search,
+      page,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -76,7 +83,7 @@ class ProjectBDList extends React.Component {
       ...filters,
 
     }
-    
+    this.writeSetting();
     this.setState({ loading: true })
     return api.getProjBDList(param).then(result => {
       let { count: total, data: list } = result.data
@@ -103,6 +110,17 @@ class ProjectBDList extends React.Component {
       handleError(error)
       this.setState({ loading: false })
     })
+  }
+
+  writeSetting = () => {
+    const { filters, search, page, pageSize } = this.state;
+    const data = { filters, search, page, pageSize };
+    localStorage.setItem('ProjectBDList', JSON.stringify(data));
+  }
+
+  readSetting = () => {
+    const data = localStorage.getItem('ProjectBDList');
+    return data ? JSON.parse(data) : null;
   }
 
   handleDelete = (id) => {
