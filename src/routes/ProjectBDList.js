@@ -300,7 +300,9 @@ class ProjectBDList extends React.Component {
                 </Link> : record.username}</div>
                 )
       }},
-      {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true},
+      {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
+        render: (text, record) => record.source_type === 0 ? <a target="_blank" href={"/app/projects/library?search=" + text}>{text}</a> : text
+      },
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', sorter:true},
       // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
       // {title: i18n('project_bd.import_methods'), render: (text, record) => {
