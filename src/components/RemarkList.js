@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
-import { handleError, getCurrentUser, time, i18n } from '../utils/util'
+import { handleError, time, i18n, hasPerm, getUserInfo } from '../utils/util';
 import * as api from '../api'
 import RemarkList2 from './RemarkList2'
 
@@ -327,25 +327,26 @@ class LibProjRemarkList extends React.Component {
     }, error => {
       handleError(error)
     })
+    if (!hasPerm('usersys.as_investor') || getUserInfo().is_superuser) {
+      api.getProjBDList({ search: com_name })
+        .then((result) => {
+          const list = result.data.data.map(m => m.BDComments)
+            .reduce((prev, curr) => prev.concat(curr), [])
+            .filter(f => f !== null)
+            .map(m => ({ ...m, remark: m.comments }))
+            .concat(this.state.list);
 
-    api.getProjBDList({ search: com_name })
-      .then((result) => {
-        const list = result.data.data.map(m => m.BDComments)
-          .reduce((prev, curr) => prev.concat(curr), [])
-          .filter(f => f !== null)
-          .map(m => ({ ...m, remark: m.comments }))
-          .concat(this.state.list);
+          sortByTime(list);
+          this.setState({ list });
 
-        sortByTime(list);
-        this.setState({ list });
-
-        if (currentListNum > initComNum) {
-          this.setState({ currentList: list.slice(0, currentListNum) });
-        } else {
-          this.setState({ currentList: list.slice(0, initComNum), currentListNum: initComNum });
-        }
-      })
-      .catch(handleError);
+          if (currentListNum > initComNum) {
+            this.setState({ currentList: list.slice(0, currentListNum) });
+          } else {
+            this.setState({ currentList: list.slice(0, initComNum), currentListNum: initComNum });
+          }
+        })
+        .catch(handleError);
+    }
   }
 
   addRemark = (remark) => {
