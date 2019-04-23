@@ -112,13 +112,16 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        api.addSchedule(param).then(result => {
-          this.hideAddModal()
-          this.getEvents()
-        }).catch(error => {
-          this.hideEditModal()
-          handleError(error)
-        })
+        api.getUserSession()
+          .then(() => api.addSchedule(param))
+          .then(result => {
+            this.hideAddModal()
+            this.getEvents()
+          })
+          .catch(error => {
+            this.hideEditModal()
+            handleError(error)
+          });
       }
     })
   }
