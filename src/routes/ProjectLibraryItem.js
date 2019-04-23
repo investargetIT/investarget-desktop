@@ -1,8 +1,8 @@
 import React from 'react'
 import { Pagination, Tabs, Row, Col } from 'antd'
-
+import { connect } from 'dva';
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { routerRedux } from 'dva/router';
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { LibProjRemarkList } from '../components/RemarkList'
@@ -122,6 +122,10 @@ class ProjectLibraryItem extends React.Component {
     const search = isNaN(this.props.params.id) ? { com_name: id } : { com_id: id };
     api.getLibProjSimple(search).then(result => {
       const proj = result.data.data[0]
+      if (proj === undefined) {
+        this.props.dispatch(routerRedux.replace('/app/projects/bd'));
+        return;
+      }
       this.setState({ proj })
       const { com_id } = proj;
       api.getLibProjInfo({ com_id }).then(result=>{
@@ -223,7 +227,7 @@ class ProjectLibraryItem extends React.Component {
   }
 }
 
-export default ProjectLibraryItem
+export default connect()(ProjectLibraryItem);
 
 
 const itemStyle = {
