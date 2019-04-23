@@ -307,19 +307,14 @@ class LibProjRemarkList extends React.Component {
     const { com_id, com_name } = this.props;
     const params = { com_id }
     const {initComNum,list,currentList,currentListNum}=this.state
-    Promise.all([
-      api.getLibProjRemark(params),
-      api.getProjBDList({ search: com_name }),
-    ]).then(result => {
-      window.echo('result', result);
-      return;
+    api.getLibProjRemark(params).then(result => {
       const list = result.data.data.map(item => {
         return {
           ...item,
           createdtime: item.date,
           timezone: '+08:00',
         }
-      })
+      }).concat(this.state.list);
       sortByTime(list)
       this.setState({ list })
       
@@ -332,6 +327,25 @@ class LibProjRemarkList extends React.Component {
     }, error => {
       handleError(error)
     })
+
+    api.getProjBDList({ search: com_name })
+      .then((result) => {
+        const list = result.data.data.map(m => m.BDComments)
+          .reduce((prev, curr) => prev.concat(curr), [])
+          .filter(f => f !== null)
+          .map(m => ({ ...m, remark: m.comments }))
+          .concat(this.state.list);
+
+        sortByTime(list);
+        this.setState({ list });
+
+        if (currentListNum > initComNum) {
+          this.setState({ currentList: list.slice(0, currentListNum) });
+        } else {
+          this.setState({ currentList: list.slice(0, initComNum), currentListNum: initComNum });
+        }
+      })
+      .catch(handleError);
   }
 
   addRemark = (remark) => {
