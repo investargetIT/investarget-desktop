@@ -117,11 +117,18 @@ class ProjectLibraryItem extends React.Component {
   }
  
   componentDidMount() {
-    const com_id = this.props.params.id
-    api.getLibProjSimple({ com_id }).then(result => {
+    // const com_id = this.props.params.id
+    const id = this.props.params.id
+    const search = isNaN(this.props.params.id) ? { com_name: id } : { com_id: id };
+    api.getLibProjSimple(search).then(result => {
       const proj = result.data.data[0]
       this.setState({ proj })
-
+      const { com_id } = proj;
+      api.getLibProjInfo({ com_id }).then(result=>{
+        if(result){
+          this.setState({projInfo:result.data})
+        }
+      });
       return api.getLibEvent({ com_id }).then(result => {
         const { data } = result.data
         this.setState({ events: data })
@@ -130,12 +137,6 @@ class ProjectLibraryItem extends React.Component {
     }).catch(error => {
       handleError(error)
     })
-    api.getLibProjInfo( {com_id} ).then(result=>{
-      if(result){
-        this.setState({projInfo:result.data})
-      }
-    })
-
   }
 
 
