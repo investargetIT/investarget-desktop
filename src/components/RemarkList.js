@@ -359,13 +359,19 @@ class LibProjRemarkList extends React.Component {
     })
   }
 
-  editRemark = (id, remark) => {
-    const params = { remark }
-    api.editLibProjRemark(id, params).then(result => {
-      this.getRemarkList()
-    }, error => {
-      handleError(error)
-    })
+  editRemark = (remark, content) => {
+    this.asyncEdit(remark, content).catch(handleError);
+  }
+
+  asyncEdit = async (remark, content) => {
+    if (remark.com_id) {
+      const params = { remark: content };
+      await api.editLibProjRemark(remark.id, params);
+    } else {
+      const body = { comments: content };
+      await api.editProjBDCom(remark.id, body);
+    }
+    this.setState({ list: [] }, this.getRemarkList);
   }
 
   deleteRemark = (id) => {
@@ -399,6 +405,7 @@ class LibProjRemarkList extends React.Component {
 
   render() {
     const {initComNum,list,currentList,currentListNum}=this.state
+    console.log('state', this.state);
     return (
       // <RemarkList
       //   list={this.state.currentList}
@@ -412,10 +419,13 @@ class LibProjRemarkList extends React.Component {
         onAdd={this.addRemark}
         onEdit={this.editRemark}
         onDelete={this.deleteRemark}
+        type="library"
       />
       <div style={divStyle}>
-      {list.length<=initComNum?null:(currentListNum===list.length?<a onClick={this.collapseAll}>{i18n('common.collapse')}</a>:
-      <a onClick={this.displayMore}>{i18n('common.view_more')}</a>)}
+          {list.length <= initComNum ? null : (
+            currentListNum === list.length ? <a onClick={this.collapseAll}>{i18n('common.collapse')}</a> :
+              <a onClick={this.displayMore}>{i18n('common.view_more')}</a>
+          )}
       </div>
       </div>
     )

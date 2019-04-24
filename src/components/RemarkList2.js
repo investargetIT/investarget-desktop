@@ -87,6 +87,14 @@ class RemarkList extends React.Component {
     this.setState({ comments: '' })
   }
 
+  handleEdit(remark, content) {
+    let param1 = remark.id;
+    if (this.props.type === 'library') {
+      param1 = remark;
+    }
+    this.props.onEdit(param1, content);
+  }
+
   render() {
     const {visible}=this.state
     return (
@@ -108,7 +116,7 @@ class RemarkList extends React.Component {
             lastmodifytime={item.lastmodifytime}
             userid={item.createuser_id || (item.createuser && item.createuser.id) || item.createuser}     //for project remark or user remark or org remark
             timezone={item.timezone}
-            onEdit={this.props.onEdit.bind(this, item.id)}
+            onEdit={this.handleEdit.bind(this, item)}
             onDelete={this.props.onDelete.bind(this, item.id)}
             type={this.props.type}
           />
@@ -177,7 +185,7 @@ class Remark extends React.Component {
         <span style={userStyle}>{this.state.userName}</span>
         <div style={timeStyle}>
           {createdtime}&nbsp;&nbsp;
-          {['user', 'org'].includes(this.props.type) ? 
+          {['user', 'org', 'library'].includes(this.props.type) ? 
           <Button onClick={this.handleEdit} size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}>
             <Icon type="edit" />
           </Button>
