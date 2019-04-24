@@ -1136,7 +1136,7 @@ class OrgBDListComponent extends React.Component {
               showSizeChanger
               onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
               showQuickJumper
-              pageSizeOptions={['5', '10', '20', '30', '40', '50']}
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
             />
           </div>
         : null }
