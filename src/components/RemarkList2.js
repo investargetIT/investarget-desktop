@@ -99,7 +99,10 @@ class RemarkList extends React.Component {
     const {visible}=this.state
     return (
       <div>
-        <h3 style={remarkTitleStyle}>{i18n('remark.comments')}<Icon type={visible?"minus":"plus"} style={addIconStyle} onClick={this.toggleNewComment} /></h3>
+        <h3 style={remarkTitleStyle}>
+          {i18n('remark.comments')}
+          {this.props.type !== 'library' && <Icon type={visible ? 'minus' : 'plus'} style={addIconStyle} onClick={this.toggleNewComment} />}
+        </h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
           <Input.TextArea style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
