@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input, Button, Popconfirm, Icon } from 'antd'
-import { time, i18n } from '../utils/util'
+import { time, i18n, hasPerm, getUserInfo } from '../utils/util'
 
 
 const addIconStyle = {
@@ -189,12 +189,16 @@ class Remark extends React.Component {
         <div style={timeStyle}>
           {createdtime}&nbsp;&nbsp;
           {['user', 'org', 'library'].includes(this.props.type) ? 
-          <Button onClick={this.handleEdit} size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}>
+          <Button onClick={this.handleEdit} size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
+            disabled={this.props.type === 'library' && !hasPerm('BD.manageProjectBD') && getUserInfo().id !== this.props.userid}
+          >
             <Icon type="edit" />
           </Button>
           : null}
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
-            <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}>
+            <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
+              disabled={this.props.type === 'library' && !hasPerm('BD.manageProjectBD') && getUserInfo().id !== this.props.userid}
+            >
               <Icon type="delete" />
             </Button>
           </Popconfirm>

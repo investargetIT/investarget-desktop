@@ -375,13 +375,18 @@ class LibProjRemarkList extends React.Component {
   }
 
   deleteRemark = (id) => {
-    api.deleteLibProjRemark(id).then(result => {
-      this.getRemarkList()
-    }, error => {
-      handleError(error)
-    })
+    this.asyncDelete(id).catch(handleError);
   }
-  
+
+  asyncDelete = async (id) => {
+    if (isNaN(id)) {
+      await api.deleteLibProjRemark(id);
+    } else {
+      await api.deleteProjBDCom(id);
+    }
+    this.setState({ list: [] }, this.getRemarkList);
+  }
+
   displayMore = () =>{
     const {initComNum,list,currentList,currentListNum,displayNum}=this.state  
     if(list.length-currentList.length>=displayNum)
