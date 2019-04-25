@@ -32,7 +32,7 @@ class AddUser extends React.Component {
   isAdminAddInvestor = this.props.location.query.redirect ?
     this.props.location.query.redirect.startsWith('/app/orguser/list') : false;
 
-  orgID = this.props.location.query.redirect ? this.props.location.query.redirect.split('?')[1].split('=')[1] : null;
+  orgID = this.props.location.query.redirect && this.props.location.query.redirect.indexOf('?') !== -1 ? this.props.location.query.redirect.split('?')[1].split('=')[1] : null;
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
