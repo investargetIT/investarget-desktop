@@ -1087,7 +1087,7 @@ class OrgDetail extends React.Component {
               </TabPane>
               : null }
 
-              <TabPane tab="附件" key="7">
+              <TabPane tab="附件" key="8">
                 <AttachmentList org={this.id} />
               </TabPane>
 
