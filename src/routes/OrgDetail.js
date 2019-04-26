@@ -699,6 +699,7 @@ class OrgDetail extends React.Component {
       reloading: false,
       isShowOrgDetailForm: false,
       isUploading: false,
+      hideUserInfo: false,
     }
 
     this.id = props.params.id;
@@ -971,9 +972,9 @@ class OrgDetail extends React.Component {
   render() {
     const id = this.props.params.id
 
-    const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
-      || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
-      || this.state.buyout.length > 0 || this.state.data.length > 0 || !this.state.hideUserInfo;
+    // const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
+    //   || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
+    //   || this.state.buyout.length > 0 || this.state.data.length > 0 || !this.state.hideUserInfo;
 
     const basic = <div>
       <Field title="全称" value={this.state.orgfullname} />
@@ -1031,7 +1032,7 @@ class OrgDetail extends React.Component {
           </span> : null }
         </h3>
 
-          {isShowTabs ?
+          {!this.state.hideUserInfo &&
             <Tabs defaultActiveKey="1" >
 
               <TabPane tab={i18n('project.basics')} key="1">
@@ -1092,7 +1093,7 @@ class OrgDetail extends React.Component {
               </TabPane>
 
             </Tabs>
-            : basic}
+          }
 
 
         <Modal visible={this.state.chooseModalVisible} title="请选择" footer={null} onCancel={this.handleCancelChoose}>
