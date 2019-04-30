@@ -181,6 +181,15 @@ class Remark extends React.Component {
     }
     const photourl=this.state.photoURL
     const comments={__html:this.props.comments.replace(/\n/g,'<br>')}
+    const currentUser = getUserInfo();
+    const isSuperAdmin = currentUser.is_superuser;
+    const isOwner = currentUser.id === this.props.userid;
+    let hasPermission = false;
+    if (this.props.type === 'library') {
+      hasPermission = hasPerm('BD.manageProjectBD') || isOwner;
+    } else {
+      hasPermission = isSuperAdmin || isOwner;
+    }
     return ( 
       <div style={{marginBottom:'16px',borderBottom:'1px solid #eee',paddingBottom:'16px'}}>
         <div style={smallBlock}><img style={imgStyle} src={photourl}/></div>
@@ -190,14 +199,14 @@ class Remark extends React.Component {
           {createdtime}&nbsp;&nbsp;
           {['user', 'org', 'library'].includes(this.props.type) ? 
           <Button onClick={this.handleEdit} size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
-            disabled={this.props.type === 'library' && !hasPerm('BD.manageProjectBD') && getUserInfo().id !== this.props.userid}
+            disabled={!hasPermission}
           >
             <Icon type="edit" />
           </Button>
           : null}
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
             <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
-              disabled={this.props.type === 'library' && !hasPerm('BD.manageProjectBD') && getUserInfo().id !== this.props.userid}
+              disabled={!hasPermission}
             >
               <Icon type="delete" />
             </Button>
