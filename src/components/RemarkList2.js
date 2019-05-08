@@ -177,7 +177,9 @@ class Remark extends React.Component {
     const createdtime = time(this.props.createdtime + this.props.timezone)
     let lastmodifytime = null;
     if (['user', 'org'].includes(this.props.type)) {
-      lastmodifytime = time(this.props.lastmodifytime + this.props.timezone);
+      const lastTime = this.props.lastmodifytime || this.props.createdtime;
+      const timezone = this.props.timezone || '+08:00';
+      lastmodifytime = time(lastTime + timezone);
     }
     const photourl=this.state.photoURL
     const comments={__html:this.props.comments.replace(/\n/g,'<br>')}
