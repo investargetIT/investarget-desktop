@@ -26,6 +26,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.event-type-4 {
+  background-color: red;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .event:hover {
   background-color: #FFF9C4;
 }

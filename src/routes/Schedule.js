@@ -228,6 +228,8 @@ class Schedule extends React.Component {
           <div style={{ marginLeft: 5 }}>约见公司</div>
           <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: 'rgb(95, 163, 246)' }}></div>
           <div style={{ marginLeft: 5 }}>约见投资人</div>
+          <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: 'red' }}></div>
+          <div style={{ marginLeft: 5 }}>视频会议</div>
         </div>
 
         <Modal
