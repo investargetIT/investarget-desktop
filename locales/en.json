@@ -508,7 +508,8 @@
     "address": "Address",
     "event": "Event",
     "add_event": "New Event",
-    "edit_event": "Edit Event"
+    "edit_event": "Edit Event",
+    "trader": "Trader"
   },
 
   "filter": {

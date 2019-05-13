@@ -11,7 +11,8 @@ import {
   SelectArea,
   CascaderCountry,
   SelectOrganizatonArea,
-  SelectScheduleType
+  SelectScheduleType,
+  SelectTrader,
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
 
@@ -90,6 +91,9 @@ class ScheduleForm extends React.Component {
         </BasicFormItem>
         <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
+        </BasicFormItem>
+        <BasicFormItem label={i18n('schedule.trader')} name="trader" valueType="array">
+          <SelectTrader mode="multiple" />
         </BasicFormItem>
       </Form>
     )
