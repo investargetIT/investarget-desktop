@@ -890,3 +890,5 @@ export const sendEmailToDataroomUser = id => r(`/dataroom/user/${id}/`, 'POST');
 export const getRandomPhoneNumber = () => r('/user/mobile');
 
 export const getUserSession = () => r('/user/session/');
+
+export const addWebexMeeting = body => r('/msg/webex/meeting/', 'POST', body);

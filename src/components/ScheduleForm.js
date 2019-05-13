@@ -45,6 +45,7 @@ class ScheduleForm extends React.Component {
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
+    const scheduleType = getFieldValue('type');
     return (
       <Form>
 
@@ -92,9 +93,11 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
         </BasicFormItem>
+        { scheduleType === 4 && 
         <BasicFormItem label={i18n('schedule.trader')} name="trader" valueType="array">
           <SelectTrader mode="multiple" />
         </BasicFormItem>
+        }
       </Form>
     )
   }

@@ -113,7 +113,19 @@ class Schedule extends React.Component {
       if (!err) {
         let param = toData(values)
         api.getUserSession()
-          .then(() => api.addSchedule(param))
+          .then(() => api.addSchedule(param)) // 如果是视频会议还需要调这个接口吗？
+          .then(() => {
+            if (param.type === 4) {
+              const body = {
+                startDate: param.scheduledtime,
+                duration: 20, // 目前没有设置的地方
+                title: param.comments,
+                agenda: 'Test', // 没有设置的地方
+                password: '123456', // 同样没有设置的地方
+              };
+              return api.addWebexMeeting(body);
+            }
+          })
           .then(result => {
             this.hideAddModal()
             this.getEvents()
