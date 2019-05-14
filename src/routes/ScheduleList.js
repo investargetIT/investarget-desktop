@@ -41,6 +41,7 @@ const ScheduleTypeOptions = [
   { label: '路演会议', value: 1 },
   { label: '约见公司', value: 2 },
   { label: '约见投资人', value: 3 },
+  { label: '视频会议', value: 4 },
 ];
 
 class ScheduleToMeetingBDForm extends React.Component {
