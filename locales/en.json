@@ -509,7 +509,8 @@
     "event": "Event",
     "add_event": "New Event",
     "edit_event": "Edit Event",
-    "trader": "Trader"
+    "attendee": "Attendees",
+    "password": "Password"
   },
 
   "filter": {

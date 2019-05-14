@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker } from 'antd'
+import { Form, Input, DatePicker, InputNumber } from 'antd'
 import moment from 'moment';
 import {
   BasicFormItem,
@@ -15,6 +15,8 @@ import {
   SelectTrader,
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
+
+const FormItem = Form.Item;
 
 function range(start, end) {
   const result = [];
@@ -46,6 +48,10 @@ class ScheduleForm extends React.Component {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
     const scheduleType = getFieldValue('type');
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 14 },
+    };
     return (
       <Form>
 
@@ -93,10 +99,24 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
         </BasicFormItem>
-        { scheduleType === 4 && 
-        <BasicFormItem label={i18n('schedule.trader')} name="trader" valueType="array">
-          <SelectTrader mode="multiple" />
-        </BasicFormItem>
+        { scheduleType === 4 &&
+        <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
+          <BasicFormItem label={i18n('schedule.password')} name="password">
+            <Input />
+          </BasicFormItem>
+          <FormItem
+            {...formItemLayout}
+            label="持续时间"
+          >
+            {getFieldDecorator('duration', { initialValue: 60 })(
+              <InputNumber min={1} max={100} />
+            )}
+            <span className="ant-form-text">分钟</span>
+          </FormItem>
+          <BasicFormItem label={i18n('schedule.attendee')} name="attendee" valueType="array">
+            <SelectTrader mode="multiple" />
+          </BasicFormItem>
+        </div>
         }
       </Form>
     )

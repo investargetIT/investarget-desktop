@@ -540,7 +540,8 @@
     "event": "事件",
     "add_event": "新建事件",
     "edit_event": "编辑事件",
-    "trader": "交易师"
+    "attendee": "与会者",
+    "password": "密码"
   },
 
   "filter": {
