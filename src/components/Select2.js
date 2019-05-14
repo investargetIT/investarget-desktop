@@ -229,11 +229,13 @@ class Select2 extends React.Component {
       })
       }
     } else {
-      this.getLabelByValue(value).then(name => {
-        this.setState({ label: name })
-      }, error => {
-        this.handleError(error)
-      })
+      if (value !== this.props.value) {
+        this.getLabelByValue(value).then(name => {
+          this.setState({ label: name })
+        }, error => {
+          this.handleError(error)
+        })
+      }
     }
   }
 
