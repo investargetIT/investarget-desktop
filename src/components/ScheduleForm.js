@@ -58,6 +58,48 @@ class ScheduleForm extends React.Component {
         sm: { span: 20, offset: 6 },
       },
     };
+
+    getFieldDecorator('keys', { initialValue: ['item-1', 'item-2'] });
+    const keys = getFieldValue('keys');
+    const attendeeFormItems = keys.map(k => {
+      return (
+        <FormItem {...formItemLayoutWithOutLabel} key={k}>
+          <Row gutter={8} style={{ width: '79%' }}>
+            <Col span={7}>
+              <FormItem required>
+                {
+                  getFieldDecorator('mobileAreaCode', {
+                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+            </Col>
+            <Col span={15}>
+              <FormItem required>
+                {
+                  getFieldDecorator('mobile', {
+                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: 'test@investarget.com'
+                  })(
+                    <Input />
+                  )
+                }
+              </FormItem>
+            </Col>
+            <Col span={2}>
+              <Icon
+                className="dynamic-delete-button"
+                type="minus-circle-o"
+                // disabled={keys.length === 1}
+                onClick={() => this.remove(k)}
+              />
+            </Col>
+          </Row>
+        </FormItem>
+      );
+    });
+   
     return (
       <Form>
 
@@ -122,40 +164,9 @@ class ScheduleForm extends React.Component {
           <BasicFormItem label="参会人" name="attendee" valueType="array">
             <SelectTrader mode="multiple" />
           </BasicFormItem>
-          <FormItem {...formItemLayoutWithOutLabel}>
-            <Row gutter={8} style={{ width: '79%' }}>
-              <Col span={7}>
-                <FormItem required>
-                  {
-                    getFieldDecorator('mobileAreaCode', {
-                      rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
-                    })(
-                      <Input />
-                    )
-                  }
-                </FormItem>
-              </Col>
-              <Col span={15}>
-                <FormItem required>
-                  {
-                    getFieldDecorator('mobile', {
-                      rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: 'test@investarget.com'
-                    })(
-                      <Input />
-                    )
-                  }
-                </FormItem>
-              </Col>
-              <Col span={2}>
-                <Icon
-                  className="dynamic-delete-button"
-                  type="minus-circle-o"
-                  // disabled={keys.length === 1}
-                  onClick={() => this.remove(k)}
-                />
-              </Col>
-            </Row>
-          </FormItem>
+
+          { attendeeFormItems }
+
           <FormItem {...formItemLayoutWithOutLabel}>
             <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
               <Icon type="plus" /> 添加参会人 
