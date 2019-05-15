@@ -119,7 +119,7 @@ class ScheduleForm extends React.Component {
             )}
             <span className="ant-form-text">分钟</span>
           </FormItem>
-          <BasicFormItem label={i18n('schedule.attendee')} name="attendee" valueType="array">
+          <BasicFormItem label="参会人" name="attendee" valueType="array">
             <SelectTrader mode="multiple" />
           </BasicFormItem>
           <FormItem {...formItemLayoutWithOutLabel}>
@@ -158,7 +158,7 @@ class ScheduleForm extends React.Component {
           </FormItem>
           <FormItem {...formItemLayoutWithOutLabel}>
             <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
-              <Icon type="plus" /> 添加与会者 
+              <Icon type="plus" /> 添加参会人 
             </Button>
           </FormItem>
         </div>
