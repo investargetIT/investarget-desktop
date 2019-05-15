@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker, InputNumber } from 'antd'
+import { Form, Input, DatePicker, InputNumber, Button, Icon, Row, Col } from 'antd'
 import moment from 'moment';
 import {
   BasicFormItem,
@@ -51,6 +51,12 @@ class ScheduleForm extends React.Component {
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
+    };
+    const formItemLayoutWithOutLabel = {
+      wrapperCol: {
+        xs: { span: 24, offset: 0 },
+        sm: { span: 20, offset: 6 },
+      },
     };
     return (
       <Form>
@@ -116,6 +122,45 @@ class ScheduleForm extends React.Component {
           <BasicFormItem label={i18n('schedule.attendee')} name="attendee" valueType="array">
             <SelectTrader mode="multiple" />
           </BasicFormItem>
+          <FormItem {...formItemLayoutWithOutLabel}>
+            <Row gutter={8} style={{ width: '79%' }}>
+              <Col span={7}>
+                <FormItem required>
+                  {
+                    getFieldDecorator('mobileAreaCode', {
+                      rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                    })(
+                      <Input />
+                    )
+                  }
+                </FormItem>
+              </Col>
+              <Col span={15}>
+                <FormItem required>
+                  {
+                    getFieldDecorator('mobile', {
+                      rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: 'test@investarget.com'
+                    })(
+                      <Input />
+                    )
+                  }
+                </FormItem>
+              </Col>
+              <Col span={2}>
+                <Icon
+                  className="dynamic-delete-button"
+                  type="minus-circle-o"
+                  // disabled={keys.length === 1}
+                  onClick={() => this.remove(k)}
+                />
+              </Col>
+            </Row>
+          </FormItem>
+          <FormItem {...formItemLayoutWithOutLabel}>
+            <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
+              <Icon type="plus" /> 添加与会者 
+            </Button>
+          </FormItem>
         </div>
         }
       </Form>
