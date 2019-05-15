@@ -487,7 +487,7 @@ class NewOrgBDList extends React.Component {
       groups: data.data.data.map(m => m.id), 
       userstatus: 2, 
       page_size: 1000, 
-      org: !hasPerm('BD.manageOrgBD') ? [isLogin().org.id] : undefined, 
+      // org: !hasPerm('BD.manageOrgBD') ? [isLogin().org.id] : undefined, 
     }))
     .then(data => {
       this.allTrader = data.data.data; 
