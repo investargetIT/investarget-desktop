@@ -98,9 +98,9 @@ class ScheduleForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator(`name-${k}`, {
-                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
+                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: ''
                   })(
-                    <Input />
+                    <Input placeholder="姓名" />
                   )
                 }
               </FormItem>
@@ -109,9 +109,9 @@ class ScheduleForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator(`email-${k}`, {
-                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: 'test@investarget.com'
+                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: ''
                   })(
-                    <Input />
+                    <Input placeholder="邮箱" />
                   )
                 }
               </FormItem>
