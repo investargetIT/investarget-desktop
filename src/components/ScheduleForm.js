@@ -39,10 +39,39 @@ class ScheduleForm extends React.Component {
       getFieldDecorator('country', { initialValue: props.country });
       getFieldDecorator('type', { initialValue: 3 });
     }
+    this.manualAttendeeNum = 0;
   }
 
   disabledDate = current => current && current < moment().startOf('day');
   disabledTime = () => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) });
+
+  addAttendeeFormItem = () => {
+    this.manualAttendeeNum = this.manualAttendeeNum + 1;
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    const nextKeys = keys.concat(`items-${this.manualAttendeeNum}`);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    form.setFieldsValue({
+      keys: nextKeys,
+    });
+  }
+
+  removeAttendeeFormItem = (k) => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('keys');
+    // We need at least one passenger
+    // if (keys.length === 1) {
+    //   return;
+    // }
+
+    // can use data-binding to set
+    form.setFieldsValue({
+      keys: keys.filter(key => key !== k),
+    });
+  }
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
@@ -59,7 +88,7 @@ class ScheduleForm extends React.Component {
       },
     };
 
-    getFieldDecorator('keys', { initialValue: ['item-1', 'item-2'] });
+    getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
     const attendeeFormItems = keys.map(k => {
       return (
@@ -68,7 +97,7 @@ class ScheduleForm extends React.Component {
             <Col span={7}>
               <FormItem required>
                 {
-                  getFieldDecorator('mobileAreaCode', {
+                  getFieldDecorator(`name-${k}`, {
                     rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
                   })(
                     <Input />
@@ -79,7 +108,7 @@ class ScheduleForm extends React.Component {
             <Col span={15}>
               <FormItem required>
                 {
-                  getFieldDecorator('mobile', {
+                  getFieldDecorator(`email-${k}`, {
                     rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: 'test@investarget.com'
                   })(
                     <Input />
@@ -92,7 +121,7 @@ class ScheduleForm extends React.Component {
                 className="dynamic-delete-button"
                 type="minus-circle-o"
                 // disabled={keys.length === 1}
-                onClick={() => this.remove(k)}
+                onClick={() => this.removeAttendeeFormItem(k)}
               />
             </Col>
           </Row>
