@@ -1593,6 +1593,63 @@ class SelectMultiOrgs extends React.Component {
     );
   }
 }
+
+class SelectMultiUsers extends React.Component {
+  constructor(props) {
+    super(props);
+    this.lastFetchId = 0;
+    this.fetchData = debounce(this.fetchData, 800);
+  }
+  state = {
+    data: [],
+    value: [],
+    fetching: false,
+  }
+  fetchData = (value) => {
+    this.lastFetchId += 1;
+    const fetchId = this.lastFetchId;
+    this.setState({ data: [], fetching: true });
+    api.getUser({ search: value })
+      .then(body => {
+        if (fetchId !== this.lastFetchId) { // for fetch callback order
+          return;
+        }
+        const data = body.data.data.map(user => ({
+          text: user.username,
+          value: user.id,
+          email: user.email,
+        }));
+        this.setState({ data, fetching: false });
+      });
+  }
+  handleChange = (value) => {
+    this.setState({
+      data: [],
+      fetching: false,
+    });
+    this.props.onChange(value);
+  }
+  render() {
+    const { fetching, data } = this.state;
+    return (
+      <Select
+        allowClear
+        mode="multiple"
+        style={this.props.style}
+        size={this.props.size}
+        labelInValue
+        value={this.props.value}
+        notFoundContent={fetching ? <Spin size="small" /> : null}
+        filterOption={false}
+        onSearch={this.fetchData}
+        onChange={this.handleChange}
+      >
+        {data.map(d => <Option key={d.value}>{`${d.text} ${d.email}`}</Option>)}
+      </Select>
+    );
+  }
+}
+
 const RadioFamLv= withOptionsAsync(RadioGroup2, ['famlv'], function(state) {
   const { famlv } = state.app
   const options = famlv ? famlv.map(item => ({value: item.id, label: item.name})) : []
@@ -1702,6 +1759,7 @@ export {
   TabCheckboxService,
   TabCheckboxProjStatus,
   SelectMultiOrgs,
+  SelectMultiUsers,
   TabCheckboxOrgBDRes,
   TreeSelectTag,
 }

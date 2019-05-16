@@ -14,6 +14,7 @@ import {
   SelectScheduleType,
   SelectMultiOrgs,
   SelectTrader,
+  SelectMultiUsers,
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
 
@@ -192,7 +193,7 @@ class ScheduleForm extends React.Component {
             <span className="ant-form-text">分钟</span>
           </FormItem>
           <BasicFormItem label="参会人" name="attendee" valueType="array">
-            <SelectMultiOrgs />
+            <SelectMultiUsers />
           </BasicFormItem>
 
           { attendeeFormItems }
