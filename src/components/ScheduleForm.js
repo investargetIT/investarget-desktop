@@ -12,6 +12,7 @@ import {
   CascaderCountry,
   SelectOrganizatonArea,
   SelectScheduleType,
+  SelectMultiOrgs,
   SelectTrader,
 } from '../components/ExtraInput'
 import { i18n } from '../utils/util'
@@ -37,7 +38,7 @@ class ScheduleForm extends React.Component {
         rules: [{required: true}], initialValue: props.date,
       })
       getFieldDecorator('country', { initialValue: props.country });
-      getFieldDecorator('type', { initialValue: 3 });
+      getFieldDecorator('type', { initialValue: 4 });
     }
     this.manualAttendeeNum = 0;
   }
@@ -191,7 +192,7 @@ class ScheduleForm extends React.Component {
             <span className="ant-form-text">分钟</span>
           </FormItem>
           <BasicFormItem label="参会人" name="attendee" valueType="array">
-            <SelectTrader mode="multiple" />
+            <SelectMultiOrgs />
           </BasicFormItem>
 
           { attendeeFormItems }

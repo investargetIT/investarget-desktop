@@ -112,6 +112,8 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
+        window.echo('param', param);
+        return;
         api.getUserSession()
           .then(() => api.addSchedule(param)) // 如果是视频会议还需要调这个接口吗？
           .then(() => {
