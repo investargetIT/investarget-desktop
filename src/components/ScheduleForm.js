@@ -52,7 +52,7 @@ class ScheduleForm extends React.Component {
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    const nextKeys = keys.concat(`items-${this.manualAttendeeNum}`);
+    const nextKeys = keys.concat(`${this.manualAttendeeNum}`);
     // can use data-binding to set
     // important! notify form to detect changes
     form.setFieldsValue({

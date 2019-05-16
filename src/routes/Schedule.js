@@ -112,18 +112,18 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        window.echo('param', param);
+        const attendee = this.formatAttendee(param);
+        window.echo('param', attendee);
         return;
         api.getUserSession()
-          .then(() => api.addSchedule(param)) // 如果是视频会议还需要调这个接口吗？
+          .then(() => api.addSchedule(param))
           .then(() => {
             if (param.type === 4) {
               const body = {
                 startDate: param.scheduledtime,
-                duration: 20, // 目前没有设置的地方
+                duration: param.duration,
                 title: param.comments,
-                agenda: 'Test', // 没有设置的地方
-                password: '123456', // 同样没有设置的地方
+                password: param.password,
               };
               return api.addWebexMeeting(body);
             }
@@ -138,6 +138,23 @@ class Schedule extends React.Component {
           });
       }
     })
+  }
+
+  formatAttendee = param => {
+    const existAttendees = param.attendee.map(m => {
+      const user = parseInt(m.key, 10);
+      const nameAndEmail = m.label.split(' ');
+      const name = nameAndEmail[0];
+      const email = nameAndEmail[1];
+      return { user, name, email };
+    });
+    const manualAttendees = Object.keys(param).filter(f => f.startsWith('name')).map(m => {
+      const name = param[m];
+      const emailKey = `email-${m.split('-')[1]}`;
+      const email = param[emailKey];
+      return { name, email };
+    })
+    return existAttendees.concat(manualAttendees);
   }
 
   editEvent = () => {
