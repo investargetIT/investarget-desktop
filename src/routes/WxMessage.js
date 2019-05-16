@@ -82,7 +82,7 @@ class WxMessage extends React.Component {
         return record.createtime ? time(record.createtime + '+08:00') : ''
       }},
       {title: '内容', dataIndex: 'content', width: 500, render: (text, record) => {
-        if (RegExps.jpg.test(text)) return <a target="_blank" href={text}><img src={text} style={{height: 45}}></img></a>
+        if (RegExps.jpg.test(text)) return <a target="_blank" href={text}><img src={text} style={{ maxHeight: 45, maxWidth: 500 }}></img></a>
         else if (RegExps.url.test(text)) return <a href={text}>{text}</a>
         else return text
       }},
