@@ -112,9 +112,6 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        const attendee = this.formatAttendee(param);
-        window.echo('param', attendee);
-        return;
         api.getUserSession()
           .then(() => api.addSchedule(param))
           .then(() => {
@@ -127,6 +124,12 @@ class Schedule extends React.Component {
               };
               return api.addWebexMeeting(body);
             }
+          })
+          .then(result => {
+            const { id: meeting, meetingKey } = result.data;
+            const attendee = this.formatAttendee(param);
+            const body = attendee.map(m => ({ ...m, meeting, meetingKey }));
+            return api.addWebexUser(body);
           })
           .then(result => {
             this.hideAddModal()

@@ -39,7 +39,7 @@ class ScheduleForm extends React.Component {
         rules: [{required: true}], initialValue: props.date,
       })
       getFieldDecorator('country', { initialValue: props.country });
-      getFieldDecorator('type', { initialValue: 4 });
+      getFieldDecorator('type', { initialValue: 3 });
     }
     this.manualAttendeeNum = 0;
   }
