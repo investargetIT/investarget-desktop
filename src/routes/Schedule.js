@@ -273,6 +273,7 @@ class Schedule extends React.Component {
           onCancel={this.hideAddModal}
           style={modalStyle}
           maskStyle={maskStyle}
+          maskClosable={false}
         >
           { visibleAdd ? 
             <AddScheduleForm 
@@ -300,6 +301,7 @@ class Schedule extends React.Component {
           onOk={this.editEvent}
           onCancel={this.hideEditModal}
           maskStyle={maskStyle}
+          maskClosable={false}
         >
           <EditScheduleForm wrappedComponentRef={this.handleRef2} data={toFormData(this.state.event)} />
         </Modal>
