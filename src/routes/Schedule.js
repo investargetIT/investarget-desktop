@@ -112,25 +112,7 @@ class Schedule extends React.Component {
     this.addForm.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
-        api.getUserSession()
-          .then(() => api.addSchedule(param))
-          .then(() => {
-            if (param.type === 4) {
-              const body = {
-                startDate: param.scheduledtime,
-                duration: param.duration,
-                title: param.comments,
-                password: param.password,
-              };
-              return api.addWebexMeeting(body);
-            }
-          })
-          .then(result => {
-            const { id: meeting, meetingKey } = result.data;
-            const attendee = this.formatAttendee(param);
-            const body = attendee.map(m => ({ ...m, meeting, meetingKey }));
-            return api.addWebexUser(body);
-          })
+        this.addEventAsync(param)
           .then(result => {
             this.hideAddModal()
             this.getEvents()
@@ -141,6 +123,24 @@ class Schedule extends React.Component {
           });
       }
     })
+  }
+
+  addEventAsync = async (param) => {
+    if (param.type === 4) {
+      const body = {
+        startDate: param.scheduledtime,
+        duration: param.duration,
+        title: param.comments,
+        password: param.password,
+      };
+      const meetingResult = await api.addWebexMeeting(body);
+      const { id: meeting, meetingKey } = meetingResult.data;
+      const attendee = this.formatAttendee(param);
+      const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
+      await api.addWebexUser(userBody);
+    }
+    await api.getUserSession();
+    await api.addSchedule(param);
   }
 
   formatAttendee = param => {
