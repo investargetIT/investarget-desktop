@@ -90,6 +90,9 @@ class ScheduleForm extends React.Component {
       },
     };
 
+    getFieldDecorator('investor-attendee', { initialValue: [] });
+    getFieldDecorator('trader-attendee', { initialValue: [] });
+
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
     const attendeeFormItems = keys.map(k => {

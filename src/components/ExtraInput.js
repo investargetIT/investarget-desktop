@@ -1645,7 +1645,7 @@ class SelectMultiUsers extends React.Component {
         onSearch={this.fetchData}
         onChange={this.handleChange}
       >
-        {data.map(d => <Option key={d.value}>{`${d.text} ${d.email}`}</Option>)}
+        {data.map(d => <Option key={d.value}>{`${d.text}\n${d.email}`}</Option>)}
       </Select>
     );
   }
