@@ -1609,7 +1609,8 @@ class SelectMultiUsers extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    api.getUser({ search: value })
+    api.queryUserGroup({ type: this.props.type || 'investor' })
+      .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
       .then(body => {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;

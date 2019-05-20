@@ -144,7 +144,7 @@ class Schedule extends React.Component {
   }
 
   formatAttendee = param => {
-    const existAttendees = param.attendee.map(m => {
+    const existAttendees = param['investor-attendee'].concat(param['trader-attendee']).map(m => {
       const user = parseInt(m.key, 10);
       const nameAndEmail = m.label.split(' ');
       const name = nameAndEmail[0];

@@ -175,9 +175,13 @@ class ScheduleForm extends React.Component {
         <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
           <SelectExistProject />
         </BasicFormItem>
+
+        { scheduleType !== 4 &&
         <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
         </BasicFormItem>
+        }
+
         { scheduleType === 4 &&
         <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
           <BasicFormItem label={i18n('schedule.password')} name="password">
@@ -192,8 +196,13 @@ class ScheduleForm extends React.Component {
             )}
             <span className="ant-form-text">分钟</span>
           </FormItem>
-          <BasicFormItem label="参会人" name="attendee" valueType="array">
-            <SelectMultiUsers />
+
+          <BasicFormItem label="投资人" name="investor-attendee" valueType="array">
+            <SelectMultiUsers type="investor" />
+          </BasicFormItem>
+
+          <BasicFormItem label="交易师" name="trader-attendee" valueType="array">
+            <SelectMultiUsers type="trader" />
           </BasicFormItem>
 
           { attendeeFormItems }
