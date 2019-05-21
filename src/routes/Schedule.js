@@ -126,21 +126,21 @@ class Schedule extends React.Component {
   }
 
   addEventAsync = async (param) => {
+    const body = { ...param, title: param.comments };
+    await api.getUserSession();
+    const meetingResult = await api.addSchedule([body]);
     if (param.type === 4) {
-      const body = {
-        startDate: param.scheduledtime,
-        duration: param.duration,
-        title: param.comments,
-        password: param.password,
-      };
-      const meetingResult = await api.addWebexMeeting(body);
-      const { id: meeting, meetingKey } = meetingResult.data;
+      const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
       const attendee = this.formatAttendee(param);
       const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
       await api.addWebexUser(userBody);
+
+      // 为在库里的参会人创建日程
+      const existAttendees = attendee.filter(f => f.user !== undefined);
+      const attendeeBody = existAttendees.map(m => ({ ...body, comments: '参加视频会议', user: m.user, meeting }));
+      await api.getUserSession();
+      await api.addSchedule(attendeeBody);
     }
-    await api.getUserSession();
-    await api.addSchedule(param);
   }
 
   formatAttendee = param => {
