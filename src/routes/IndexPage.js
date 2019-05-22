@@ -264,7 +264,7 @@ class IndexPage extends React.Component {
     api.getInvestorStatistic()
     .then(data => this.setState({ investorStatistic: data.data }))
 
-    api.getSchedule({ time: formatDate(new Date()), createuser: isLogin().id, sort: 'scheduledtime', desc: 0 })
+    api.getSchedule({ time: formatDate(new Date()), manager: isLogin().id, sort: 'scheduledtime', desc: 0 })
     .then(result => {
       if (result.data.count > 0) {
         const schedule = result.data.data[0];
@@ -277,7 +277,7 @@ class IndexPage extends React.Component {
     const dayAfterTomorrow = new Date();
     dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
 
-    api.getSchedule({ time: formatDate(dayAfterTomorrow), createuser: isLogin().id,  sort: 'scheduledtime', desc: 0  })
+    api.getSchedule({ time: formatDate(dayAfterTomorrow), manager: isLogin().id,  sort: 'scheduledtime', desc: 0  })
     .then(result => {
       if (result.data.count > 0) {
         const schedule = result.data.data[0];

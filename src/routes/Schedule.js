@@ -93,7 +93,7 @@ class Schedule extends React.Component {
 
   getEvents = () => {
     api.getSchedule({ 
-      user: getCurrentUser(), 
+      manager: getCurrentUser(), 
       page_size: 100, 
       date: this.state.selectedDate.format('YYYY-MM-DD'),
     })
@@ -137,7 +137,7 @@ class Schedule extends React.Component {
 
       // 为在库里的参会人创建日程
       const existAttendees = attendee.filter(f => f.user !== undefined);
-      const attendeeBody = existAttendees.map(m => ({ ...body, comments: '参加视频会议', user: m.user, meeting }));
+      const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
       await api.getUserSession();
       await api.addSchedule(attendeeBody);
     }
