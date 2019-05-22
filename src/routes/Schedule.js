@@ -345,9 +345,19 @@ function toFormData(data) {
 }
 
 class Event extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      attendees: '',
+    };
+  }
   componentDidMount() {
     if (this.props.type === 4) {
-      api.getWebexUser({ meeting: this.props.meeting.id });
+      api.getWebexUser({ meeting: this.props.meeting.id })
+        .then(data => {
+          const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
+          this.setState({ attendees: content });
+        });
     }
   }
   render() {
@@ -366,6 +376,7 @@ class Event extends React.Component {
           <div>
             <Field title="密码" content={props.meeting.password} />
             <Field title="持续时间" content={`${props.meeting.duration}分钟`} />
+            <Field title="参会人" content={this.state.attendees} />
           </div>
         }
       </div>
@@ -393,7 +404,7 @@ const Field = (props) => {
         <div style={{textAlign: 'right'}}>{props.title}</div>
       </Col>
       <Col span={18} style={rightStyle}>
-        <div>{props.content}</div>
+        <div dangerouslySetInnerHTML={{ __html: props.content && props.content.replace(/\n/g, '<br>') }} />
       </Col>
     </Row>
   )
