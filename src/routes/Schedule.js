@@ -93,7 +93,7 @@ class Schedule extends React.Component {
 
   getEvents = () => {
     api.getSchedule({ 
-      createuser: getCurrentUser(), 
+      user: getCurrentUser(), 
       page_size: 100, 
       date: this.state.selectedDate.format('YYYY-MM-DD'),
     })
@@ -285,6 +285,7 @@ class Schedule extends React.Component {
           : null }
         </Modal>
 
+        {visibleEvent &&
         <Modal
           title={eventTitle}
           visible={visibleEvent}
@@ -294,6 +295,7 @@ class Schedule extends React.Component {
         >
           <Event {...this.state.event} />
         </Modal>
+        }
 
         <Modal
           title={i18n('schedule.edit_event')}
@@ -342,18 +344,33 @@ function toFormData(data) {
   return formData
 }
 
-function Event(props) {
-  return (
-    <div>
-      <Field title={i18n('schedule.title')} content={props.comments} />
-      <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
-      <Field title={i18n('user.country')} content={props.country&&props.country.country} />
-      {props.location?<Field title={i18n('schedule.area')} content={props.location.name} />:null}
-      <Field title={i18n('schedule.address')} content={props.address} />
-      <Field title={i18n('schedule.project')} content={props.projtitle} />
-      <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
-    </div>
-  )
+class Event extends React.Component {
+  componentDidMount() {
+    if (this.props.type === 4) {
+      api.getWebexUser({ meeting: this.props.meeting.id });
+    }
+  }
+  render() {
+    const props = this.props;
+    return (
+      <div>
+        <Field title={i18n('schedule.title')} content={props.comments} />
+        <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
+        <Field title={i18n('user.country')} content={props.country && props.country.country} />
+        {props.location ? <Field title={i18n('schedule.area')} content={props.location.name} /> : null}
+        <Field title={i18n('schedule.address')} content={props.address} />
+        <Field title={i18n('schedule.project')} content={props.projtitle} />
+        {props.type !== 4 ?
+          <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
+          :
+          <div>
+            <Field title="密码" content={props.meeting.password} />
+            <Field title="持续时间" content={`${props.meeting.duration}分钟`} />
+          </div>
+        }
+      </div>
+    );
+  }
 }
 
 
