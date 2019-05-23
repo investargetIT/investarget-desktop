@@ -1615,7 +1615,7 @@ class SelectMultiUsers extends React.Component {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;
         }
-        const data = body.data.data.map(user => ({
+        const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
           text: user.username,
           value: user.id,
           email: user.email,
