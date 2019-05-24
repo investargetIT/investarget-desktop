@@ -352,7 +352,7 @@ class Event extends React.Component {
     };
   }
   componentDidMount() {
-    if (this.props.type === 4) {
+    if (this.props.type === 4 && this.props.meeting) {
       api.getWebexUser({ meeting: this.props.meeting.id })
         .then(data => {
           const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
@@ -370,7 +370,7 @@ class Event extends React.Component {
         {props.location ? <Field title={i18n('schedule.area')} content={props.location.name} /> : null}
         <Field title={i18n('schedule.address')} content={props.address} />
         <Field title={i18n('schedule.project')} content={props.projtitle} />
-        {props.type !== 4 ?
+        {props.type !== 4 || !props.meeting ?
           <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
           :
           <div>
