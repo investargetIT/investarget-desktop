@@ -187,7 +187,7 @@ class ScheduleForm extends React.Component {
 
         { scheduleType === 4 &&
         <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
-          <BasicFormItem label={i18n('schedule.password')} name="password">
+          <BasicFormItem label="会议密码" name="password">
             <Input />
           </BasicFormItem>
           <FormItem

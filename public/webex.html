@@ -6,16 +6,22 @@
 
 <body>
   <div id="root">
-    <form action="https://investarget.webex.com.cn/investarget/p.php" method="post">
+    <form id="webexform" action="https://investarget.webex.com.cn/investarget/p.php" method="post">
       <input name="AT" Type="text" value="LI" size="30" /><br>
       <input name="WID" Type="text" value="summer.xia@investarget.com" size="30" /><br>
       <input name="PW" Type="text" value="P@ss1234" size="30" /><br>
-      <input name="MU" Type="text" value="https://investarget.webex.com.cn/investarget/m.php?AT=HM&MK=186399183"
+      <input id="behavior" name="MU" Type="text" value="https://investarget.webex.com.cn/investarget/m.php?AT=HM&MK=186399183"
         size="75" /><br>
       <input type="submit" text="submit" />
     </form>
   </div>
   <script>
+      var url_string = window.location.href;
+      var url = new URL(url_string);
+      var mk = url.searchParams.get('mk');
+      var input = document.getElementById('behavior');
+      input.value = `https://investarget.webex.com.cn/investarget/m.php?AT=HM&MK=${mk}`;
+      document.getElementById('webexform').submit();
   </script>
 </body>
 

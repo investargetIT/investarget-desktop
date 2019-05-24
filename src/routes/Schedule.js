@@ -380,14 +380,22 @@ class Event extends React.Component {
           <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
           :
           <div>
-            <Field title="密码" content={props.meeting.password} />
+            <Field title="会议密码" content={props.meeting.password} />
             <Field title="持续时间" content={`${props.meeting.duration}分钟`} />
             <Field title="参会人" content={this.state.attendees} />
-            <Field title="主持人密钥" content={props.meeting.hostKey} />
+            {props.manager === props.meeting.createuser && <Field title="主持人密钥" content={props.meeting.hostKey} />}
             <Field title="音频连接" content="4006140081 China2(400)" />
             <Field title="会议号" content={props.meeting.meetingKey} />
-            <Field title="主持人会议链接" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
-            <Field title="参会人会议链接" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
+            {props.manager === props.meeting.createuser ?
+              <Field title="主持人会议链接" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
+              :
+              <Field title="参会人会议链接" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
+            }
+            {props.manager === props.meeting.createuser ?
+              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
+              :
+              <Button value="加入会议" />
+            }
           </div>
         }
       </div>
