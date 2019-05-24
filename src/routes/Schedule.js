@@ -355,6 +355,10 @@ class Event extends React.Component {
     super(props);
     this.state = {
       attendees: '',
+      currentAttendee: {
+        name: '',
+        email: '',
+      },
     };
   }
   componentDidMount() {
@@ -362,7 +366,8 @@ class Event extends React.Component {
       api.getWebexUser({ meeting: this.props.meeting.id })
         .then(data => {
           const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
-          this.setState({ attendees: content });
+          const currentAttendee = data.data.data.filter(f => f.user === getCurrentUser())[0];
+          this.setState({ attendees: content, currentAttendee });
         });
     }
   }
@@ -394,7 +399,7 @@ class Event extends React.Component {
             {props.manager === props.meeting.createuser ?
               <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
               :
-              <Button value="加入会议" />
+              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${props.meeting.meetingKey}&AN=${this.state.currentAttendee.name}&AE=${this.state.currentAttendee.email}`}><Button size="large" type="primary">加入会议</Button></a></Col></Row>
             }
           </div>
         }
