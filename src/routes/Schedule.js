@@ -2,7 +2,7 @@ import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
-import { handleError, time, i18n, getCurrentUser } from '../utils/util'
+import { handleError, time, i18n, getCurrentUser, getUserInfo } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
 const Option = Select.Option
@@ -136,7 +136,7 @@ class Schedule extends React.Component {
       await api.addWebexUser(userBody);
 
       // 为在库里的参会人创建日程
-      const existAttendees = attendee.filter(f => f.user !== undefined);
+      const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
       const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
       await api.getUserSession();
       await api.addSchedule(attendeeBody);
@@ -156,8 +156,14 @@ class Schedule extends React.Component {
       const emailKey = `email-${m.split('-')[1]}`;
       const email = param[emailKey];
       return { name, email };
-    })
-    return existAttendees.concat(manualAttendees);
+    });
+    const currentUser = getUserInfo();
+    const meetingHost = {
+      user: currentUser.id,
+      name: currentUser.username,
+      email: currentUser.email,
+    };
+    return existAttendees.concat(meetingHost, manualAttendees);
   }
 
   editEvent = () => {
