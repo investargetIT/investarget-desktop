@@ -15,8 +15,9 @@ import {
   SelectMultiOrgs,
   SelectTrader,
   SelectMultiUsers,
+  SelectScheduleTypeWithoutMeeting,
 } from '../components/ExtraInput'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm } from '../utils/util';
 
 const FormItem = Form.Item;
 
@@ -138,7 +139,7 @@ class ScheduleForm extends React.Component {
       <Form>
 
         <BasicFormItem label="日程类型" name="type" required valueType="number">
-          <SelectScheduleType />
+          {hasPerm('usersys.as_trader') ? <SelectScheduleType /> : <SelectScheduleTypeWithoutMeeting />}
         </BasicFormItem>
 
         <BasicFormItem label={i18n('schedule.title')} name="comments" required>

@@ -162,6 +162,7 @@ class Schedule extends React.Component {
       user: currentUser.id,
       name: currentUser.username,
       email: currentUser.email,
+      meetingRole: true,
     };
     return existAttendees.concat(meetingHost, manualAttendees);
   }
@@ -390,11 +391,11 @@ class Event extends React.Component {
             <Field title="参会人" content={this.state.attendees} />
             {props.manager === props.meeting.createuser && <Field title="主持人密钥" content={props.meeting.hostKey} />}
             <Field title="音频连接" content="4006140081 China2(400)" />
-            <Field title="会议号" content={props.meeting.meetingKey} />
+            <Field title="会议号" content={`<span style="color: red;font-weight: bold">${props.meeting.meetingKey}</span>`} />
             {props.manager === props.meeting.createuser ?
-              <Field title="主持人会议链接" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
+              <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
               :
-              <Field title="参会人会议链接" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
+              <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
             }
             {props.manager === props.meeting.createuser ?
               <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>

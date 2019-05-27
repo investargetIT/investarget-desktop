@@ -865,6 +865,13 @@ const ScheduleTypeOptions = [
 ];
 const SelectScheduleType = withOptions(SelectNumber, ScheduleTypeOptions);
 
+const ScheduleTypeOptionsWithoutMeeting = [
+  { label: '路演会议', value: 1 },
+  { label: '约见公司', value: 2 },
+  { label: '约见投资人', value: 3 },
+];
+const SelectScheduleTypeWithoutMeeting = withOptions(SelectNumber, ScheduleTypeOptionsWithoutMeeting);
+
 /**
  * SelectArea
  */
@@ -1763,4 +1770,5 @@ export {
   SelectMultiUsers,
   TabCheckboxOrgBDRes,
   TreeSelectTag,
+  SelectScheduleTypeWithoutMeeting,
 }
