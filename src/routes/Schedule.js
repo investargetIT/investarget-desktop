@@ -50,6 +50,7 @@ class Schedule extends React.Component {
       selectedDate: moment(),
       mode: 'month',
       proj: undefined, // 新增时选中的项目
+      oldSelectedProj: undefined, // 新增时原来选中的项目
     }
   }
 
@@ -243,34 +244,53 @@ class Schedule extends React.Component {
 
   handleProjChange = (projID) => {
     window.echo('proj', projID);
+    // TODO: call project detail api and get contact info
     this.setState({
       proj: {
         id: projID,
         contactUsername: '测试',
         contactEmail: 'testtt@errr.com',
       },
+      oldSelectedProj: this.state.proj,
     });
   }
 
   setAddFormData() {
-    window.echo('addd form', this.addForm);
     let maxKey = 0;
     let keys = [];
     if (this.addForm) {
       keys = this.addForm.getFieldValue('keys');
       maxKey = keys.length > 0 ? Math.max(...keys) : 0;
-      window.echo('keys maxKey', keys, maxKey);
       const originValues = this.addForm.getFieldsValue();
-      window.echo('origin', originValues);
-
-      if (this.state.proj) {
-        const result = { keys: { value: keys.concat(maxKey + 1) }, type: { value: 4 } };
-        result[`name-${maxKey + 1}`] = { value: this.state.proj.contactUsername };
-        result[`email-${maxKey + 1}`] = { value: this.state.proj.contactEmail };
-        // return { ...result, ...originValues };
-        return result;
+      const data = {};
+      for (let prop in originValues) {
+        data[prop] = { value: originValues[prop] }
       }
-      // return originValues;
+
+      // 剔除原来选中的项目的联系人姓名和邮箱
+      if (this.state.oldSelectedProj) {
+        const oldContact = Object.keys(originValues)
+          .filter(f => f.startsWith('email'))
+          .map(m => {
+            const key = m.split('-')[1]; 
+            return {
+              email: originValues[m],
+              key,
+            };
+          })
+          .filter(f => f.email === this.state.oldSelectedProj.contactEmail);
+        if (oldContact.length > 0) {
+          keys = keys.filter(f => f !== oldContact[0].key);
+        }
+      }
+
+      // 增加现在新选中的项目的联系人姓名和邮箱
+      if (this.state.proj) {
+        data.keys = { value: keys.concat(`${maxKey + 1}`) };
+        data[`name-${maxKey + 1}`] = { value: this.state.proj.contactUsername };
+        data[`email-${maxKey + 1}`] = { value: this.state.proj.contactEmail };
+      }
+      return data;
     }
   }
 
