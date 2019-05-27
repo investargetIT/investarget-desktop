@@ -14,7 +14,18 @@ import ScheduleForm from '../components/ScheduleForm'
 function mapPropsToFields(props) {
   return props.data
 }
-const AddScheduleForm = Form.create()(ScheduleForm)
+function onValuesChange(props, values) {
+  window.echo('props', props);
+  window.echo('values', values);
+  if (values.proj) {
+    props.onProjChange(values.proj);
+  }
+}
+function mapAddPropsToFields(props) {
+  window.echo('map to fields', props);
+  return props.data;
+}
+const AddScheduleForm = Form.create({ onValuesChange, mapPropsToFields: mapAddPropsToFields })(ScheduleForm);
 const EditScheduleForm = Form.create({ mapPropsToFields })(ScheduleForm)
  
 const eventTitleStyle = {
@@ -38,6 +49,7 @@ class Schedule extends React.Component {
       visibleEdit: false,
       selectedDate: moment(),
       mode: 'month',
+      proj: undefined, // 新增时选中的项目
     }
   }
 
@@ -229,6 +241,39 @@ class Schedule extends React.Component {
     this.getEvents()
   }
 
+  handleProjChange = (projID) => {
+    window.echo('proj', projID);
+    this.setState({
+      proj: {
+        id: projID,
+        contactUsername: '测试',
+        contactEmail: 'testtt@errr.com',
+      },
+    });
+  }
+
+  setAddFormData() {
+    window.echo('addd form', this.addForm);
+    let maxKey = 0;
+    let keys = [];
+    if (this.addForm) {
+      keys = this.addForm.getFieldValue('keys');
+      maxKey = keys.length > 0 ? Math.max(...keys) : 0;
+      window.echo('keys maxKey', keys, maxKey);
+      const originValues = this.addForm.getFieldsValue();
+      window.echo('origin', originValues);
+
+      if (this.state.proj) {
+        const result = { keys: { value: keys.concat(maxKey + 1) }, type: { value: 4 } };
+        result[`name-${maxKey + 1}`] = { value: this.state.proj.contactUsername };
+        result[`email-${maxKey + 1}`] = { value: this.state.proj.contactEmail };
+        // return { ...result, ...originValues };
+        return result;
+      }
+      // return originValues;
+    }
+  }
+
   render() {
     const modalStyle = {
     }
@@ -273,6 +318,7 @@ class Schedule extends React.Component {
           <div style={{ marginLeft: 5 }}>视频会议</div>
         </div>
 
+        {visibleAdd &&
         <Modal
           title={i18n('schedule.add_event')}
           visible={visibleAdd}
@@ -288,9 +334,12 @@ class Schedule extends React.Component {
               isAdd 
               date={selectedDate}
               country={{ label: 'China', value: 42 }}
+              onProjChange={this.handleProjChange}
+              data={this.setAddFormData()}
             /> 
           : null }
         </Modal>
+        }
 
         {visibleEvent &&
         <Modal

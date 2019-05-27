@@ -1616,19 +1616,26 @@ class SelectMultiUsers extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    api.queryUserGroup({ type: this.props.type || 'investor' })
-      .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
-      .then(body => {
-        if (fetchId !== this.lastFetchId) { // for fetch callback order
-          return;
-        }
-        const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
-          text: user.username,
-          value: user.id,
-          email: user.email,
-        }));
-        this.setState({ data, fetching: false });
-      });
+    // api.queryUserGroup({ type: this.props.type || 'investor' })
+    //   .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
+    //   .then(body => {
+    //     if (fetchId !== this.lastFetchId) { // for fetch callback order
+    //       return;
+    //     }
+    //     const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
+    //       text: user.username,
+    //       value: user.id,
+    //       email: user.email,
+    //     }));
+    //     this.setState({ data, fetching: false });
+    //   });
+      api.getOrgBdList({ proj: 513 })
+        .then(body => {
+          if (fetchId !== this.lastFetchId) { // for fetch callback order
+            return;
+          }
+          window.echo('body', body);
+        })
   }
   handleChange = (value) => {
     this.setState({
