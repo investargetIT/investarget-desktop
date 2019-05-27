@@ -1616,26 +1616,37 @@ class SelectMultiUsers extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    // api.queryUserGroup({ type: this.props.type || 'investor' })
-    //   .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
-    //   .then(body => {
-    //     if (fetchId !== this.lastFetchId) { // for fetch callback order
-    //       return;
-    //     }
-    //     const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
-    //       text: user.username,
-    //       value: user.id,
-    //       email: user.email,
-    //     }));
-    //     this.setState({ data, fetching: false });
-    //   });
-      api.getOrgBdList({ proj: 513 })
+    if (!this.props.proj) {
+      api.queryUserGroup({ type: this.props.type || 'investor' })
+        .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
         .then(body => {
           if (fetchId !== this.lastFetchId) { // for fetch callback order
             return;
           }
-          window.echo('body', body);
-        })
+          const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
+            text: user.username,
+            value: user.id,
+            email: user.email,
+          }));
+          this.setState({ data, fetching: false });
+        });
+    } else {
+      api.getOrgBdList({ proj: this.props.proj })
+        .then(response => Promise.all(
+          response.data.data.map(m => api.getUserInfo(m.bduser))
+        ))
+        .then(body => {
+          if (fetchId !== this.lastFetchId) { // for fetch callback order
+            return;
+          }
+          const data = body.map(m => ({
+            text: m.data.username,
+            value: m.data.id,
+            email: m.data.email,
+          })).filter(f => f.text.includes(value));
+          this.setState({ data, fetching: false });
+        });
+    }
   }
   handleChange = (value) => {
     this.setState({

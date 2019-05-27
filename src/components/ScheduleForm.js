@@ -83,6 +83,7 @@ class ScheduleForm extends React.Component {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
     const scheduleType = getFieldValue('type');
+    const proj = getFieldValue('proj');
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -205,7 +206,7 @@ class ScheduleForm extends React.Component {
           </FormItem>
 
           <BasicFormItem label="投资人" name="investor-attendee" valueType="array">
-            <SelectMultiUsers type="investor" />
+            <SelectMultiUsers type="investor" proj={proj} />
           </BasicFormItem>
 
           <BasicFormItem label="交易师" name="trader-attendee" valueType="array">
