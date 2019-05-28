@@ -141,10 +141,12 @@ class RemarkList extends React.Component {
 
 function sortByTime(list) {
   list.sort((a, b) => {
-    a = new Date(a.createdtime)
-    b = new Date(b.createdtime)
-    return a < b
-  })
+    const aTimezone = a.timezone || '+08:00';
+    const bTimezone = b.timezone || '+08:00';
+    const aTimestamp = Date.parse(a.createdtime + aTimezone);
+    const bTimeStamp = Date.parse(b.createdtime + bTimezone);
+    return bTimeStamp - aTimestamp;
+  });
 }
 
 // HOC
