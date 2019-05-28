@@ -196,15 +196,27 @@ class Schedule extends React.Component {
     })
   }
 
+  /**
+   * 删除日程，现在的逻辑是这样的
+   * 如果是非视频会议日程正常删除
+   * 如果是视频会议日程且当前用户是参会人，也是正常删除
+   * 如果是视频会议日程且当前用户是主持人，调用删除会议接口，服务端应该会把相关日程、参会人员等一起删除
+   */
+  deleteEventAsync = async () => {
+    if (this.state.event.type === 4 && this.state.event.createuser.id === getCurrentUser()) {
+      const meetingID = this.state.event.meeting.id;
+      await api.deleteWebexMeeting(meetingID);
+    } else {
+      const scheduleID = this.state.event.id;
+      await api.deleteSchedule(scheduleID);
+    }
+  }
+
   deleteEvent = () => {
-    let id = this.state.event.id
-    api.deleteSchedule(id).then(result => {
-      this.hideEventModal()
-      this.getEvents()
-    }).catch(error => {
-      this.hideEventModal()
-      handleError(error)
-    })
+    this.deleteEventAsync()
+      .then(this.getEvents)
+      .catch(handleError)
+      .finally(this.hideEventModal);
   }
 
   hideAddModal = () => {
