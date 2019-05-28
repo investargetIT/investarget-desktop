@@ -220,7 +220,7 @@ class Schedule extends React.Component {
   }
 
   hideAddModal = () => {
-    this.setState({ visibleAdd: false })
+    this.setState({ visibleAdd: false, proj: undefined, oldSelectedProj: undefined });
   }
 
   hideEventModal = () => {
@@ -271,13 +271,13 @@ class Schedule extends React.Component {
   setAddFormData() {
     let maxKey = 0;
     let keys = [];
-    if (this.addForm) {
+    if (this.addForm && this.addForm.getFieldValue('keys')) {
       keys = this.addForm.getFieldValue('keys');
       maxKey = keys.length > 0 ? Math.max(...keys) : 0;
       const originValues = this.addForm.getFieldsValue();
       const data = {};
       for (let prop in originValues) {
-        data[prop] = { value: originValues[prop] }
+        data[prop] = { value: originValues[prop] };
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱

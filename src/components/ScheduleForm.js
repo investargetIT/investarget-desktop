@@ -220,6 +220,9 @@ class ScheduleForm extends React.Component {
               <Icon type="plus" /> 添加参会人 
             </Button>
           </FormItem>
+          <BasicFormItem label="" name="keys" valueType="array">
+            <Input type="hidden" />
+          </BasicFormItem>
         </div>
         }
       </Form>
