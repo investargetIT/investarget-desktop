@@ -428,6 +428,7 @@ function toData(formData) {
 }
 
 function toFormData(data) {
+  window.echo('dddata', data);
   var formData = {
     comments: data.comments,
     scheduledtime: data.scheduledtime && moment(data.scheduledtime),
@@ -437,6 +438,10 @@ function toFormData(data) {
     proj: data.proj && data.proj.id,
     user: data.user && data.user.id,
     type: data.type || 3,
+  }
+  if (data.type === 4) {
+    formData.password = data.meeting.password;
+    formData.duration = data.meeting.duration;
   }
   for (let prop in formData) {
     formData[prop] = { value: formData[prop] }
