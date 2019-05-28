@@ -1631,7 +1631,7 @@ class SelectMultiUsers extends React.Component {
           this.setState({ data, fetching: false });
         });
     } else {
-      api.getOrgBdList({ proj: this.props.proj })
+      api.getOrgBdList({ proj: this.props.proj, page_size: 1000 })
         .then(response => Promise.all(
           response.data.data.map(m => api.getUserInfo(m.bduser))
         ))
