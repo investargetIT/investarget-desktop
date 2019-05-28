@@ -243,16 +243,17 @@ class Schedule extends React.Component {
   }
 
   handleProjChange = (projID) => {
-    window.echo('proj', projID);
-    // TODO: call project detail api and get contact info
-    this.setState({
-      proj: {
-        id: projID,
-        contactUsername: '测试',
-        contactEmail: 'testtt@errr.com',
-      },
-      oldSelectedProj: this.state.proj,
-    });
+    api.getProjDetail(projID)
+      .then((response) => {
+        this.setState({
+          proj: {
+            id: projID,
+            contactUsername: response.data.contactPerson,
+            contactEmail: response.data.email,
+          },
+          oldSelectedProj: this.state.proj,
+        });
+      });
   }
 
   setAddFormData() {
