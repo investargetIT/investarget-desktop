@@ -307,6 +307,17 @@ class Schedule extends React.Component {
     }
   }
 
+  isEventEditable = () => {
+    if (moment(this.state.event.scheduledtime + this.state.event.timezone) < moment().startOf('day')){
+      return false;
+    }
+    const isMeetingSchedule = this.state.event.type === 4;
+    const isCurrentUserAttendee = isMeetingSchedule && this.state.event.createuser.id !== getCurrentUser();
+    if (isCurrentUserAttendee) {
+      return false;
+    }
+    return true;
+  }
   render() {
     const modalStyle = {
     }
@@ -322,7 +333,7 @@ class Schedule extends React.Component {
         <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteEvent}>
           <a href="javascript:void(0)" style={eventTitleStyle}>{i18n('common.delete')}</a>
         </Popconfirm>
-        { moment(this.state.event.scheduledtime + this.state.event.timezone) < moment().startOf('day') ? null : 
+        { this.isEventEditable() && 
         <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
         }
       </div>
