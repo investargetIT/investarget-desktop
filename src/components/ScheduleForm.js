@@ -78,6 +78,15 @@ class ScheduleForm extends React.Component {
     });
   }
 
+  passwordValidator = (rule, value, callback) => {
+    window.echo('11', value);
+    if (value.length >= 4) {
+      callback();
+    } else {
+      callback('密码长度至少为四位');
+    }
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
@@ -191,7 +200,7 @@ class ScheduleForm extends React.Component {
 
         { scheduleType === 4 &&
         <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
-          <BasicFormItem label="会议密码" name="password">
+          <BasicFormItem label="会议密码" name="password" required validator={this.passwordValidator}>
             <Input />
           </BasicFormItem>
           <FormItem
