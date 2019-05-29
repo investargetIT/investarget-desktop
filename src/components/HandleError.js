@@ -103,6 +103,9 @@ class HandleError extends React.Component {
       case 2026:
         Modal.error({ title: '该投资人名下已存在相同投资事件' });
         break;
+      case 8006:
+        Modal.error({ title: '视频会议时间冲突', content: '已存在结束时间处于本次创建会议持续期间的会议' });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

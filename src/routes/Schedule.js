@@ -130,10 +130,7 @@ class Schedule extends React.Component {
             this.hideAddModal()
             this.getEvents()
           })
-          .catch(error => {
-            this.hideEditModal()
-            handleError(error)
-          });
+          .catch(handleError);
       }
     })
   }
