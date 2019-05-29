@@ -183,15 +183,29 @@ class Schedule extends React.Component {
   editEvent = () => {
     this.editForm.validateFields((err, values) => {
       if (!err) {
-        let param = toData(values)
-        let id = this.state.event.id
-        api.editSchedule(id, param).then(result => {
-          this.hideEditModal()
-          this.getEvents()
-        }).catch(error => {
-          this.hideEditModal()
-          handleError(error)
-        })
+        if (values.type !== 4) {
+          let param = toData(values)
+          let id = this.state.event.id
+          api.editSchedule(id, param).then(result => {
+            this.hideEditModal()
+            this.getEvents()
+          }).catch(error => {
+            this.hideEditModal()
+            handleError(error)
+          })
+        } else {
+          const meetingID = this.state.event.meeting.id;
+          const startDate = values.scheduledtime.format('YYYY-MM-DDTHH:mm:ss');
+          const { password, duration, comments: title } = values;
+          const body = { password, duration, title, startDate };
+          api.editWebexMeeting(meetingID, body).then(result => {
+            this.hideEditModal()
+            this.getEvents()
+          }).catch(error => {
+            this.hideEditModal()
+            handleError(error)
+          })
+        }
       }
     })
   }
@@ -439,7 +453,7 @@ function toFormData(data) {
     user: data.user && data.user.id,
     type: data.type || 3,
   }
-  if (data.type === 4) {
+  if (data.type === 4 && data.meeting) {
     formData.password = data.meeting.password;
     formData.duration = data.meeting.duration;
   }

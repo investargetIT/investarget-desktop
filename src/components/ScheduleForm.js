@@ -91,6 +91,7 @@ class ScheduleForm extends React.Component {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
     const scheduleType = getFieldValue('type');
+    const disabledOrHide = scheduleType === 4 && !this.props.isAdd;
     const proj = getFieldValue('proj');
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -151,7 +152,7 @@ class ScheduleForm extends React.Component {
       <Form>
 
         <BasicFormItem label="日程类型" name="type" required valueType="number">
-          {hasPerm('usersys.as_trader') ? <SelectScheduleType /> : <SelectScheduleTypeWithoutMeeting />}
+          {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={disabledOrHide} /> : <SelectScheduleTypeWithoutMeeting />}
         </BasicFormItem>
 
         <BasicFormItem label={i18n('schedule.title')} name="comments" required>
@@ -170,6 +171,7 @@ class ScheduleForm extends React.Component {
           />
         </BasicFormItem>
 
+        {!disabledOrHide &&
         <BasicFormItem 
           label={i18n('user.country')} 
           name="country" 
@@ -179,20 +181,26 @@ class ScheduleForm extends React.Component {
         >
           <CascaderCountry size="large" isDetail />
         </BasicFormItem>
+        }
 
-        {['中国', 'China'].includes(countryObj && countryObj.label) ? 
+        {['中国', 'China'].includes(countryObj && countryObj.label) && !disabledOrHide ?
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
           <SelectOrganizatonArea showSearch />
         </BasicFormItem>
         : null }
+
+        {!disabledOrHide &&
         <BasicFormItem label={i18n('schedule.address')} name="address">
           <Input />
         </BasicFormItem>
+        }
+        {!disabledOrHide &&
         <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
           <SelectExistProject />
         </BasicFormItem>
+        }
 
-        { scheduleType !== 4 &&
+        { !disabledOrHide && scheduleType !== 4 &&
         <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
           <SelectExistInvestor />
         </BasicFormItem>
@@ -213,21 +221,28 @@ class ScheduleForm extends React.Component {
             <span className="ant-form-text">分钟</span>
           </FormItem>
 
+          {this.props.isAdd &&
           <BasicFormItem label="投资人" name="investor-attendee" valueType="array">
             <SelectMultiUsers type="investor" proj={proj} />
           </BasicFormItem>
+          }
 
+          {this.props.isAdd &&
           <BasicFormItem label="交易师" name="trader-attendee" valueType="array">
             <SelectMultiUsers type="trader" />
           </BasicFormItem>
+          }
 
           { attendeeFormItems }
 
+          {this.props.isAdd &&
           <FormItem {...formItemLayoutWithOutLabel}>
             <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
               <Icon type="plus" /> 添加参会人 
             </Button>
           </FormItem>
+          }
+
           <BasicFormItem label="" name="keys" valueType="array">
             <Input type="hidden" />
           </BasicFormItem>
