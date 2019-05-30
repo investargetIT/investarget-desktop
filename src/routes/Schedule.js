@@ -481,6 +481,17 @@ class Event extends React.Component {
         });
     }
   }
+
+  getWID = (url) => {
+    const wid = url.match(/WID=(.*)&/)[1];
+    return wid;
+  }
+
+  getPW = (url) => {
+    const pw = url.match(/PW=(.*)/)[1];
+    return pw;
+  }
+
   render() {
     const props = this.props;
     return (
@@ -507,7 +518,7 @@ class Event extends React.Component {
               <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
             }
             {props.manager === props.meeting.createuser ?
-              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
+              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?wid=${this.getWID(props.meeting.url)}&pw=${this.getPW(props.meeting.url)}&mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
               :
               <Row><Col span={6} /><Col span={18}><a target="_blank" href={`https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${props.meeting.meetingKey}&AN=${this.state.currentAttendee.name}&AE=${this.state.currentAttendee.email}`}><Button size="large" type="primary">加入会议</Button></a></Col></Row>
             }
