@@ -79,8 +79,7 @@ class ScheduleForm extends React.Component {
   }
 
   passwordValidator = (rule, value, callback) => {
-    window.echo('11', value);
-    if (value.length >= 4) {
+    if (value && value.length >= 4) {
       callback();
     } else {
       callback('密码长度至少为四位');
@@ -128,7 +127,7 @@ class ScheduleForm extends React.Component {
               <FormItem required>
                 {
                   getFieldDecorator(`email-${k}`, {
-                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: ''
+                    rules: [{ message: '请输入正确的邮箱地址', required: true, type: 'email' }], initialValue: ''
                   })(
                     <Input placeholder="邮箱" />
                   )
