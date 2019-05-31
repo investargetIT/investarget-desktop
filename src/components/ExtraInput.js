@@ -1618,7 +1618,7 @@ class SelectMultiUsers extends React.Component {
     this.setState({ data: [], fetching: true });
     if (!this.props.proj) {
       api.queryUserGroup({ type: this.props.type || 'investor' })
-        .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id) }))
+        .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id), page_size: 100 }))
         .then(body => {
           if (fetchId !== this.lastFetchId) { // for fetch callback order
             return;
