@@ -268,6 +268,7 @@ class Schedule extends React.Component {
   handleProjChange = (projID) => {
     api.getProjDetail(projID)
       .then((response) => {
+        if (!response.data.email) return;
         this.setState({
           proj: {
             id: projID,
