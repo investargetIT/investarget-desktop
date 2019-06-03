@@ -891,6 +891,7 @@ export const getRandomPhoneNumber = () => r('/user/mobile');
 
 export const getUserSession = () => r('/user/session/');
 
+export const getWebexMeeting = param => r(`/msg/webex/meeting/?${qs.stringify(param)}`);
 export const addWebexMeeting = body => r('/msg/webex/meeting/', 'POST', body);
 export const deleteWebexMeeting = id => r(`/msg/webex/meeting/${id}/`, 'DELETE');
 export const editWebexMeeting = (id, body) => r(`/msg/webex/meeting/${id}/`, 'PUT', body);

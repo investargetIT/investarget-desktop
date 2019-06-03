@@ -310,6 +310,11 @@ class IndexPage extends React.Component {
       this.setState({projBDunsuccess:result.data.count})
     })
 
+    api.getWebexMeeting()
+      .then(result => {
+        window.echo('getWebexMeeting', result);
+      });
+
   }
 
   closeCard(widgetName) {
