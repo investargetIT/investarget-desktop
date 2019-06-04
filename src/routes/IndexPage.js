@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Button, Icon, Card, Col, Popconfirm, Carousel, Row, Tooltip as Tooltips } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Carousel, Row, Tooltip as Tooltips, Timeline } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { 
   i18n, 
@@ -190,6 +190,7 @@ class IndexPage extends React.Component {
       orgBDunsuccess:null,
       projBDsuccess:null,
       projBDunsuccess:null,
+      videoMeetings: [],
     }
 
     this.closeCard = this.closeCard.bind(this)
@@ -310,11 +311,23 @@ class IndexPage extends React.Component {
       this.setState({projBDunsuccess:result.data.count})
     })
 
-    api.getWebexMeeting()
-      .then(result => {
-        window.echo('getWebexMeeting', result);
-      });
+    this.getWebexMeeting().then((result) => {
+      window.echo('result', result);
+      this.setState({ videoMeetings: result });
+    });
+  }
 
+  getWebexMeeting = async () => {
+    const getMeetingRes = await api.getWebexMeeting();
+    const { data: meetingArr } = getMeetingRes.data;
+    const uniqueCreateUserIDArr = meetingArr.map(m => m.createuser)
+      .filter((value, index, self) => self.indexOf(value) === index);
+    const getUserRes = await Promise.all(uniqueCreateUserIDArr.map(m => api.getUserInfo(m)));
+    const createUsers = getUserRes.map(m => m.data);
+    return meetingArr.map((m) => {
+      const createuser = createUsers.filter(f => f.id === m.createuser)[0];
+      return { ...m, createuser };
+    });
   }
 
   closeCard(widgetName) {
@@ -479,6 +492,10 @@ class IndexPage extends React.Component {
         </Row>
 
         <div style={{ height: 30 }} />
+
+        <Timeline>
+          {this.state.videoMeetings.map(m => <Timeline.Item key={m.id}>{`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}</Timeline.Item>)}
+        </Timeline>
 
         <News onClose={this.closeCard} />
             { this.state.investEvent ? <InvestBarChart data={this.state.investEvent} /> : null }
