@@ -432,10 +432,10 @@ export default Schedule
 function toData(formData) {
   var data = {...formData}
   data['scheduledtime'] = data['scheduledtime'].format('YYYY-MM-DDTHH:mm:ss')
-  if (!['中国', 'China'].includes(formData.country.label)) {
+  if (!['中国', 'China'].includes(formData.country && formData.country.label)) {
     data['location'] = null;
   }
-  data.country = formData.country.value;
+  data.country = formData.country && formData.country.value;
   return data
 }
 

@@ -170,7 +170,7 @@ class ScheduleForm extends React.Component {
           />
         </BasicFormItem>
 
-        {!disabledOrHide &&
+        {!disabledOrHide && scheduleType !== 4 &&
         <BasicFormItem 
           label={i18n('user.country')} 
           name="country" 
@@ -182,7 +182,7 @@ class ScheduleForm extends React.Component {
         </BasicFormItem>
         }
 
-        {['中国', 'China'].includes(countryObj && countryObj.label) && !disabledOrHide ?
+        {['中国', 'China'].includes(countryObj && countryObj.label) && !disabledOrHide && scheduleType !== 4 ?
         <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
           <SelectOrganizatonArea showSearch />
         </BasicFormItem>
