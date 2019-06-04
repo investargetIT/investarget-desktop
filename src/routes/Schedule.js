@@ -105,6 +105,7 @@ class Schedule extends React.Component {
   }
 
   getEvents = () => {
+    window.echo(this.props.location.query.mid);
     api.getSchedule({ 
       manager: getCurrentUser(), 
       page_size: 100, 
@@ -499,7 +500,7 @@ class Event extends React.Component {
       <div>
         <Field title={i18n('schedule.title')} content={props.comments} />
         <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
-        <Field title={i18n('user.country')} content={props.country && props.country.country} />
+        {props.type !== 4 && <Field title={i18n('user.country')} content={props.country && props.country.country} />}
         {props.location ? <Field title={i18n('schedule.area')} content={props.location.name} /> : null}
         <Field title={i18n('schedule.address')} content={props.address} />
         <Field title={i18n('schedule.project')} content={props.projtitle} />

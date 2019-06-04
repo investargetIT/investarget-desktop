@@ -494,7 +494,9 @@ class IndexPage extends React.Component {
         <div style={{ height: 30 }} />
 
         <Timeline>
-          {this.state.videoMeetings.map(m => <Timeline.Item key={m.id}>{`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}</Timeline.Item>)}
+          {this.state.videoMeetings.map(m => <Timeline.Item key={m.id}>
+            <Link to={`/app/schedule?mid=${m.id}`}>{`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}</Link>
+          </Timeline.Item>)}
         </Timeline>
 
         <News onClose={this.closeCard} />
