@@ -47,7 +47,7 @@ class Schedule extends React.Component {
       visibleAdd: false,
       visibleEvent: false,
       visibleEdit: false,
-      selectedDate: moment(),
+      selectedDate: props.location.query.date ? moment(props.location.query.date) : moment(),
       mode: 'month',
       proj: undefined, // 新增时选中的项目
       oldSelectedProj: undefined, // 新增时原来选中的项目
@@ -116,7 +116,17 @@ class Schedule extends React.Component {
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       })
-      this.setState({ total, list })
+      let visibleEvent = false;
+      let event = {};
+      if (this.props.location.query.mid) {
+        const meetingId = this.props.location.query.mid;
+        const relatedEvent = list.filter(f => f.meeting && f.meeting.id === parseInt(meetingId, 10));
+        if (relatedEvent.length > 0) {
+          visibleEvent = true;
+          event = relatedEvent[0];
+        }
+      }
+      this.setState({ total, list, visibleEvent, event });
     }).catch(error => {
       handleError(error)
     })
@@ -237,7 +247,9 @@ class Schedule extends React.Component {
 
   hideEventModal = () => {
     this.setState({ visibleEvent: false });
-    this.eventEl.classList.remove('event-selected')
+    if (this.eventEl) {
+      this.eventEl.classList.remove('event-selected');
+    }
   }
 
   showEditModal = () => {
