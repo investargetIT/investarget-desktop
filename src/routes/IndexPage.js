@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { Button, Icon, Card, Col, Popconfirm, Carousel, Row, Tooltip as Tooltips, Timeline } from 'antd'
+import { Button, Icon, Card, Col, Popconfirm, Carousel, Row, Tooltip as Tooltips, Timeline, Modal } from 'antd'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { 
   i18n, 
@@ -11,7 +11,8 @@ import {
   parseDate, 
   parseTime, 
   isLogin, 
-  timeSlapFromNow, 
+  timeSlapFromNow,
+  getCurrentUser, 
 } from '../utils/util';
 import createG2 from '../g2-react';
 import { Stat, Frame } from 'g2';
@@ -191,6 +192,7 @@ class IndexPage extends React.Component {
       projBDsuccess:null,
       projBDunsuccess:null,
       videoMeetings: [],
+      showVideoMeeting: false,
     }
 
     this.closeCard = this.closeCard.bind(this)
@@ -318,6 +320,7 @@ class IndexPage extends React.Component {
   }
 
   getWebexMeeting = async () => {
+    // const param = { sort: 'startDate', desc: 1 };
     const getMeetingRes = await api.getWebexMeeting();
     const { data: meetingArr } = getMeetingRes.data;
     const uniqueCreateUserIDArr = meetingArr.map(m => m.createuser)
@@ -377,6 +380,10 @@ class IndexPage extends React.Component {
       node.onmouseout=()=>{
         node.style.boxShadow=''
       }
+    }
+    let latestMeeting = null;
+    if (this.state.videoMeetings.length > 0) {
+      latestMeeting = this.state.videoMeetings[this.state.videoMeetings.length - 1];
     }
     return (
       <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
@@ -493,17 +500,37 @@ class IndexPage extends React.Component {
 
         <div style={{ height: 30 }} />
 
-        <Timeline>
-          {this.state.videoMeetings.map(m => <Timeline.Item key={m.id}>
-            <Link to={`/app/schedule?mid=${m.id}&date=${encodeURIComponent(m.startDate + m.timezone)}`}>{`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}</Link>
-          </Timeline.Item>)}
-        </Timeline>
+        {latestMeeting &&
+        <div style={{ margin: '0 10px', display: 'flex', alignItems: 'center' }} onClick={() => this.setState({ showVideoMeeting: true })}>
+          <img style={{ width: 30, height: 30, marginRight: 10 }} src="/images/video_meeting.jpg" alt="视频会议" />
+          <a>{`最近视频会议时间：${latestMeeting.startDate}，主持人(创建人)：${latestMeeting.createuser.username}，会议标题：${latestMeeting.title}`}</a>
+        </div>
+        }
+
+        <div style={{ height: 30 }} />
 
         <News onClose={this.closeCard} />
             { this.state.investEvent ? <InvestBarChart data={this.state.investEvent} /> : null }
             { this.state.investRound ? <PopulationByAge data={ this.state.investRound} /> : null }
             { this.state.investDegree ? <IndustryDegree data={this.state.investDegree} /> : null }
             { this.state.investAddr ? <EventArea data={this.state.investAddr} /> : null }
+
+        <Modal
+          title="视频会议"
+          visible={this.state.showVideoMeeting}
+          onOk={() => this.setState({ showVideoMeeting: false })}
+          onCancel={() => this.setState({ showVideoMeeting: false })}
+        >
+          <Timeline>
+            {this.state.videoMeetings.map(m => <Timeline.Item key={m.id} color={m.status.status === 0 ? 'green' : 'blue'}>
+              { hasPerm('msg.manageMeeting') || (m.createuser && m.createuser.id === getCurrentUser()) ?
+                <Link to={`/app/schedule?mid=${m.id}&date=${encodeURIComponent(m.startDate + m.timezone)}`}>
+                  {`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}
+                </Link>
+                : `会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}` }
+            </Timeline.Item>)}
+          </Timeline>
+        </Modal>
 
       </LeftRightLayout>
     )
