@@ -526,16 +526,18 @@ class Event extends React.Component {
             {props.manager === props.meeting.createuser && <Field title="主持人密钥" content={props.meeting.hostKey} />}
             <Field title="音频连接" content="4006140081 China2(400)" />
             <Field title="会议号" content={`<span style="color: red;font-weight: bold">${props.meeting.meetingKey}</span>`} />
-            {props.manager === props.meeting.createuser ?
-              <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
-              :
-              <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
-            }
-            {props.manager === props.meeting.createuser ?
-              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?wid=${this.getWID(props.meeting.url)}&pw=${this.getPW(props.meeting.url)}&mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
-              :
-              <Row><Col span={6} /><Col span={18}><a target="_blank" href={`https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${props.meeting.meetingKey}&AN=${this.state.currentAttendee.name}&AE=${this.state.currentAttendee.email}`}><Button size="large" type="primary">加入会议</Button></a></Col></Row>
-            }
+            {props.meeting.status && props.meeting.status.status !== 0 && <div>
+              {props.manager === props.meeting.createuser ?
+                <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
+                :
+                <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
+              }
+              {props.manager === props.meeting.createuser ?
+                <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?wid=${this.getWID(props.meeting.url)}&pw=${this.getPW(props.meeting.url)}&mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
+                :
+                <Row><Col span={6} /><Col span={18}><a target="_blank" href={`https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${props.meeting.meetingKey}&AN=${this.state.currentAttendee.name}&AE=${this.state.currentAttendee.email}`}><Button size="large" type="primary">加入会议</Button></a></Col></Row>
+              }
+            </div>}
           </div>
         }
       </div>

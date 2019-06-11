@@ -555,8 +555,8 @@ class IndexPage extends React.Component {
         <Modal
           title="视频会议"
           visible={this.state.showVideoMeeting}
-          onOk={() => this.setState({ showVideoMeeting: false })}
           onCancel={() => this.setState({ showVideoMeeting: false })}
+          footer={null}
         >
           <Timeline>
             {this.state.videoMeetings.map(m => <Timeline.Item key={m.id} color={m.status.status === 0 ? 'green' : 'blue'}>
