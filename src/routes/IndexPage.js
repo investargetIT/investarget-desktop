@@ -320,9 +320,43 @@ class IndexPage extends React.Component {
   }
 
   getWebexMeeting = async () => {
-    // const param = { sort: 'startDate', desc: 1 };
-    const getMeetingRes = await api.getWebexMeeting();
-    const { data: meetingArr } = getMeetingRes.data;
+    const getMeetingParams = [
+      {
+        status: 0,
+        desc: 1,
+        page_size: 5,
+      },
+      {
+        status: 1,
+        desc: 0,
+        page_size: 5,
+      },
+      {
+        status: 2,
+        desc: 0,
+        page_size: 5,
+      },
+      {
+        status: 3,
+        desc: 0,
+        page_size: 5,
+      },
+    ];
+    const getMeetingRes = await Promise.all(getMeetingParams.map(m => api.getWebexMeeting(m)));
+    const [past, now, going, future] = getMeetingRes;
+    let ongoingMeeting = now.data.data;
+    if (ongoingMeeting.length < 5) {
+      ongoingMeeting = ongoingMeeting.concat(going.data.data);
+      if (ongoingMeeting.length < 5) {
+        ongoingMeeting = ongoingMeeting.concat(future.data.data);
+      }
+    }
+    ongoingMeeting = ongoingMeeting.slice(0, 4);
+    if (ongoingMeeting.length > 0) {
+      ongoingMeeting[0].isNearest = true;
+    }
+    const meetingArr = past.data.data.reverse().concat(ongoingMeeting);
+
     const uniqueCreateUserIDArr = meetingArr.map(m => m.createuser)
       .filter((value, index, self) => self.indexOf(value) === index);
     const getUserRes = await Promise.all(uniqueCreateUserIDArr.map(m => api.getUserInfo(m)));
@@ -383,7 +417,10 @@ class IndexPage extends React.Component {
     }
     let latestMeeting = null;
     if (this.state.videoMeetings.length > 0) {
-      latestMeeting = this.state.videoMeetings[this.state.videoMeetings.length - 1];
+      const nearestMeeting = this.state.videoMeetings.filter(f => f.isNearest);
+      if (nearestMeeting.length > 0) {
+        latestMeeting = nearestMeeting[0];
+      }
     }
     return (
       <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
@@ -503,7 +540,7 @@ class IndexPage extends React.Component {
         {latestMeeting &&
         <div style={{ margin: '0 10px', display: 'flex', alignItems: 'center' }} onClick={() => this.setState({ showVideoMeeting: true })}>
           <img style={{ width: 30, height: 30, marginRight: 10 }} src="/images/video_meeting.jpg" alt="视频会议" />
-          <a>{`最近视频会议时间：${latestMeeting.startDate}，主持人(创建人)：${latestMeeting.createuser.username}，会议标题：${latestMeeting.title}`}</a>
+          <a>{`即将开始的视频会议时间：${latestMeeting.startDate.replace('T', ' ')}，主持人(创建人)：${latestMeeting.createuser.username}，会议标题：${latestMeeting.title}`}</a>
         </div>
         }
 
@@ -525,9 +562,9 @@ class IndexPage extends React.Component {
             {this.state.videoMeetings.map(m => <Timeline.Item key={m.id} color={m.status.status === 0 ? 'green' : 'blue'}>
               { hasPerm('msg.manageMeeting') || (m.createuser && m.createuser.id === getCurrentUser()) ?
                 <Link to={`/app/schedule?mid=${m.id}&date=${encodeURIComponent(m.startDate + m.timezone)}`}>
-                  {`会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}
+                  {`会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}
                 </Link>
-                : `会议时间：${m.startDate}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}` }
+                : `会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}` }
             </Timeline.Item>)}
           </Timeline>
         </Modal>
