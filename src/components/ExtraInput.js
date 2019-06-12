@@ -1616,38 +1616,46 @@ class SelectMultiUsers extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    if (!this.props.proj) {
-      api.queryUserGroup({ type: this.props.type || 'investor' })
-        .then(data => api.getUser({ search: value, groups: data.data.data.map(m => m.id), page_size: 100 }))
-        .then(body => {
-          if (fetchId !== this.lastFetchId) { // for fetch callback order
-            return;
-          }
-          const data = body.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
-            text: user.username,
-            value: user.id,
-            email: user.email,
-          }));
-          this.setState({ data, fetching: false });
-        });
+    this.asyncFetchData(value).then(data => {
+      if (fetchId !== this.lastFetchId) { // for fetch callback order
+        return;
+      }
+      this.setState({ data, fetching: false });
+    })
+  }
+
+  asyncFetchData = async value => {
+    if (this.props.proj) {
+      const getOrgBdListReq = await api.getOrgBdList({ proj: this.props.proj, page_size: 1000 });
+      const { count: orgBdListCount } = getOrgBdListReq.data;
+      if (orgBdListCount > 0) {
+        const { data: orgBdListData } = getOrgBdListReq.data;
+        const getUserInfoReq = await Promise.all(
+          orgBdListData.map(m => api.getUserInfo(m.bduser))
+        );
+        return getUserInfoReq.map(m => ({
+          text: m.data.username,
+          value: m.data.id,
+          email: m.data.email,
+        })).filter(f => f.text.includes(value));
+      } else {
+        return await this.asyncFetchAllInvestor(value);
+      }
     } else {
-      api.getOrgBdList({ proj: this.props.proj, page_size: 1000 })
-        .then(response => Promise.all(
-          response.data.data.map(m => api.getUserInfo(m.bduser))
-        ))
-        .then(body => {
-          if (fetchId !== this.lastFetchId) { // for fetch callback order
-            return;
-          }
-          const data = body.map(m => ({
-            text: m.data.username,
-            value: m.data.id,
-            email: m.data.email,
-          })).filter(f => f.text.includes(value));
-          this.setState({ data, fetching: false });
-        });
+      return await this.asyncFetchAllInvestor(value);
     }
   }
+
+  asyncFetchAllInvestor = async value => {
+    const reqUserGroup = await api.queryUserGroup({ type: this.props.type || 'investor' });
+    const reqUsers = await api.getUser({ search: value, groups: reqUserGroup.data.data.map(m => m.id), page_size: 100 });
+    return reqUsers.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
+      text: user.username,
+      value: user.id,
+      email: user.email,
+    }));
+  }
+
   handleChange = (value) => {
     this.setState({
       data: [],
