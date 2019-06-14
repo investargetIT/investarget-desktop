@@ -855,20 +855,29 @@ class OrgBDListComponent extends React.Component {
       ]
 
     const columnsForExport = [
-      { title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname', width: '20%' },
-      { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '15%' },
-      { title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', width: '15%' },
+      { title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname', width: '15%' },
+      { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '10%' },
+      { title: i18n('org_bd.manager'), dataIndex: 'manager.username', key:'manager', width: '10%' },
       {
         title: i18n('org_bd.status'), 
         render: text => text && this.props.orgbdres.filter(f => f.id === text)[0].name, 
         dataIndex: 'response', 
         key:'response',
-        width: '20%', 
+        width: '10%', 
       },
       {
         title: "最新备注", 
         render: text => text && text.length && text[text.length - 1].comments || null,
         key:'bd_latest_info',
+        width: '25%',
+        dataIndex: 'BDComments',
+      },
+      {
+        title: "全部备注", 
+        render: comments => comments ? comments.map(m => (
+          `创建人：${m.createuser && m.createuser.username}，创建时间：${m.createdtime.slice(0, 16).replace('T', ' ')}，备注内容：${m.comments}`
+        )).join('\r\n') : null,
+        key:'bd_all_comments',
         width: '30%',
         dataIndex: 'BDComments',
       },
