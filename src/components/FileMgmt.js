@@ -463,10 +463,11 @@ class FileMgmt extends React.Component {
         if(files.some(item=>{
           return item.name==file.name
         })){
-          Modal.error({
-            title: '不支持的文件名字',
-            content: '已存在相同的文件名字',
-          })
+          // Modal.error({
+          //   title: '不支持的文件名字',
+          //   content: '已存在相同的文件名字',
+          // })
+          message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
           return false
         }
 
@@ -477,6 +478,11 @@ class FileMgmt extends React.Component {
           console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
+          if (!info.file.name || !info.file.size) {
+            const file = info.fileList.filter(f => f.status === 'done' && f.uid === info.file.uid)[0];
+            info.file.name = file.name;
+            info.file.size = file.size;
+          }
           message.success(`${info.file.name} file uploaded successfully`)
           react.setState({ loading: false })
           react.props.onUploadFile(info.file, react.state.parentId)
