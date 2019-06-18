@@ -69,6 +69,7 @@ class FileMgmt extends React.Component {
     this.handleOk = this.handleOk.bind(this)
     this.handleCancelModal = this.handleCancelModal.bind(this)
     this.onSelect = this.onSelect.bind(this)
+    this.uploadDir = null; // 上传目录
   }
 
   componentDidMount() {
@@ -296,6 +297,10 @@ class FileMgmt extends React.Component {
     }
   }
 
+  handleUploadBtnClicked = () => {
+    this.uploadDir = this.state.parentId;
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -485,7 +490,7 @@ class FileMgmt extends React.Component {
           }
           message.success(`${info.file.name} file uploaded successfully`)
           react.setState({ loading: false })
-          react.props.onUploadFile(info.file, react.state.parentId)
+          react.props.onUploadFile(info.file, react.uploadDir);
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
           react.setState({ loading: false })
@@ -509,7 +514,7 @@ class FileMgmt extends React.Component {
 
           { hasEnoughPerm ?
           <Upload {...props}>
-            <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}}>
+            <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}} onClick={this.handleUploadBtnClicked}>
             <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload')}
             </Button>
           </Upload>
