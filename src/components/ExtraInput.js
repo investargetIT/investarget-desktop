@@ -1275,6 +1275,45 @@ class TabCheckboxCountry extends React.Component {
 }
 TabCheckboxCountry = connect(mapStateToPropsCountry)(TabCheckboxCountry)
 
+class TabCheckboxAbroad extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
+  }
+
+  render() {
+    if (this.props.options.filter(item => item.children != null).length > 0) {
+      return <TabCheckbox options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
+    } else {
+      return <CheckboxGroup options={this.props.options} value={this.props.value} onChange={this.props.onChange} />
+    }
+  }
+}
+TabCheckboxAbroad = connect(mapStateToPropsAbroad)(TabCheckboxAbroad);
+
+function mapStateToPropsAbroad(state) {
+  const { country } = state.app
+  var list = country.filter(item => item.level === 3);
+  window.echo('list', list);
+  const abroadCountry = ['香港', '澳门', '台湾', '其他', 'HongKong', 'Macao', 'Taiwan', 'Others'];
+  const options = [
+    {
+      label: '国内',
+      value: -1,
+      children: list.filter(f => !abroadCountry.includes(f.country)).map(m => ({ label: m.country, value: m.country, areaCode: m.areaCode })),
+    }, {
+      label: '国外',
+      value: -2,
+      children: list.filter(f => abroadCountry.includes(f.country)).map(m => ({ label: m.country, value: m.country, areaCode: m.areaCode })),
+    }
+  ];
+
+  return { options };
+}
+
 /**
  * TabCheckboxIndustry
  */
@@ -1776,6 +1815,7 @@ export {
   CheckboxAreaString,
   CheckboxYear,
   TabCheckboxCountry,
+  TabCheckboxAbroad,
   TabCheckboxIndustry,
   TabCheckboxTag, 
   TabCheckboxOrgType, 

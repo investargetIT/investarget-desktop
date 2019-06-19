@@ -51,6 +51,7 @@ import {
   RadioFamLv,
   SelectOrgLevel,
   TabCheckboxOrgBDRes,
+  TabCheckboxAbroad,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -714,7 +715,7 @@ class ProjectLibraryFilter extends React.Component {
           <CheckboxYear end={2000-1} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.area')}>
-          <CheckboxAreaString value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
+          <TabCheckboxAbroad value={com_addr} onChange={this.handleChange.bind(this, 'com_addr')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.investment_round')}>
           <ITCheckboxGroup options={fundStatusOptions} value={invse_round_id} onChange={this.handleChange.bind(this, 'invse_round_id')} />
