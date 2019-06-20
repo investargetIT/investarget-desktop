@@ -356,15 +356,11 @@ class IndexPage extends React.Component {
       ongoingMeeting[0].isNearest = true;
     }
     const meetingArr = past.data.data.reverse().concat(ongoingMeeting);
-
-    const uniqueCreateUserIDArr = meetingArr.map(m => m.createuser)
-      .filter((value, index, self) => self.indexOf(value) === index);
-    const getUserRes = await Promise.all(uniqueCreateUserIDArr.map(m => api.getUserInfo(m)));
-    const createUsers = getUserRes.map(m => m.data);
-    return meetingArr.map((m) => {
-      const createuser = createUsers.filter(f => f.id === m.createuser)[0];
-      return { ...m, createuser };
-    });
+    const meetingUser = await Promise.all(meetingArr.map(m => api.getWebexUser({ meeting: m.id })));
+    const formatMeetingUser = meetingUser.map(m => m.data.data);
+    const currentUser = formatMeetingUser.map(m => m.filter(f => f.user === getCurrentUser())[0]);
+    const host = formatMeetingUser.map(m => m.filter(f => f.meetingRole)[0]);
+    return meetingArr.map((m, i) => ({ ...m, users: formatMeetingUser[i], currentUser: currentUser[i], host: host[i] }));
   }
 
   closeCard(widgetName) {
@@ -540,7 +536,7 @@ class IndexPage extends React.Component {
         {latestMeeting &&
         <div style={{ margin: '0 10px', display: 'flex', alignItems: 'center' }} onClick={() => this.setState({ showVideoMeeting: true })}>
           <img style={{ width: 30, height: 30, marginRight: 10 }} src="/images/video_meeting.jpg" alt="视频会议" />
-          <a>{`即将开始的视频会议时间：${latestMeeting.startDate.replace('T', ' ')}，主持人(创建人)：${latestMeeting.createuser.username}，会议标题：${latestMeeting.title}`}</a>
+          <a>{`即将开始的视频会议时间：${latestMeeting.startDate.replace('T', ' ')}，主持人(创建人)：${latestMeeting.host && latestMeeting.host.name}，会议标题：${latestMeeting.title}`}</a>
         </div>
         }
 
@@ -560,11 +556,11 @@ class IndexPage extends React.Component {
         >
           <Timeline>
             {this.state.videoMeetings.map(m => <Timeline.Item key={m.id} color={m.status.status === 0 ? 'green' : 'blue'}>
-              { hasPerm('msg.manageMeeting') || (m.createuser && m.createuser.id === getCurrentUser()) ?
+              { m.currentUser ?
                 <Link to={`/app/schedule?mid=${m.id}&date=${encodeURIComponent(m.startDate + m.timezone)}`}>
-                  {`会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}`}
+                  {`会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.host && m.host.name}，会议标题：${m.title}`}
                 </Link>
-                : `会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.createuser.username}，会议标题：${m.title}` }
+                : `会议时间：${m.startDate.replace('T', ' ')}，主持人(创建人)：${m.host && m.host.name}，会议标题：${m.title}` }
             </Timeline.Item>)}
           </Timeline>
         </Modal>
