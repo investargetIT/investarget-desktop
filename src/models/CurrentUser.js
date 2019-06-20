@@ -41,7 +41,12 @@ export default {
         type: 'save',
         userInfo
       })
-      const url = redirect ? decodeURIComponent(redirect) : '/app'
+      let url = '/app';
+      if (redirect) {
+        url = decodeURIComponent(redirect);
+      } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
+        url = '/app/dataroom/project/list';
+      }
       yield put(routerRedux.replace(url))
       // 存储用户名和密码？
       if (remember) {
