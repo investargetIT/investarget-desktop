@@ -82,6 +82,7 @@ class DataRoomList extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      hint: '',
     }
   }
 
@@ -105,7 +106,7 @@ class DataRoomList extends React.Component {
     // if (hasPerm('usersys.as_admin')) {
       api.queryDataRoom(params).then(result => {
         const { count: total, data: list } = result.data
-        this.setState({ loading: false, total, list })
+        this.setState({ loading: false, total, list, hint: total === 0 ? '暂无对您开放的DataRoom' : '' });
       }).catch(error => {
         this.setState({ loading: false })
         this.props.dispatch({
@@ -261,6 +262,7 @@ class DataRoomList extends React.Component {
           onSearch={this.handleSearch} 
         />}
       >
+        <div>{this.state.hint}</div>
         <div>
           <div className="ant-spin-nested-loading">
             {/* Loading effect copied from antd Table Component */}
@@ -299,7 +301,7 @@ class DataRoomList extends React.Component {
               }
             </div>
           </div>
-
+          { total > 0 &&
           <Pagination
             style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
             total={total}
@@ -307,6 +309,7 @@ class DataRoomList extends React.Component {
             pageSize={pageSize}
             onChange={this.handlePageChange}
           />
+          }
         </div>
       </LeftRightLayout>
     )
