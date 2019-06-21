@@ -351,7 +351,7 @@ class IndexPage extends React.Component {
         ongoingMeeting = ongoingMeeting.concat(future.data.data);
       }
     }
-    ongoingMeeting = ongoingMeeting.slice(0, 4);
+    ongoingMeeting = ongoingMeeting.slice(0, 5);
     if (ongoingMeeting.length > 0) {
       ongoingMeeting[0].isNearest = true;
     }
