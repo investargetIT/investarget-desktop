@@ -125,6 +125,13 @@ class Schedule extends React.Component {
           visibleEvent = true;
           event = relatedEvent[0];
         }
+      } else if (this.props.location.query.eventId) {
+        const eventId = this.props.location.query.eventId;
+        const relatedEvent = list.filter(f => f.id === parseInt(eventId, 10));
+        if (relatedEvent.length > 0) {
+          visibleEvent = true;
+          event = relatedEvent[0];
+        }
       }
       this.setState({ total, list, visibleEvent, event });
     }).catch(error => {

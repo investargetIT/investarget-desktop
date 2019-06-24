@@ -418,6 +418,19 @@ class IndexPage extends React.Component {
         latestMeeting = nearestMeeting[0];
       }
     }
+    let firstScheduleLink = '/app/schedule';
+    let secondScheduleLink = '/app/schedule';
+    const { firstSchedule, secondSchedule } = this.state;
+    if (firstSchedule) {
+      const { id, scheduledtime, timezone } = firstSchedule;
+      const firstDate = scheduledtime + timezone;
+      firstScheduleLink += `?eventId=${id}&date=${encodeURIComponent(firstDate)}`;
+    }
+    if (secondSchedule) {
+      const { id, scheduledtime, timezone } = secondSchedule;
+      const secondDate = scheduledtime + timezone;
+      secondScheduleLink += `?eventId=${id}&date=${encodeURIComponent(secondDate)}`;
+    }
     return (
       <LeftRightLayout style={{ backgroundColor: '#fff', padding: 30, margin: '0 auto' }} location={this.props.location} title="Dashboard">
 
@@ -433,7 +446,7 @@ class IndexPage extends React.Component {
             </div>
           </Col>
           <Col span={8} style={{ height: '100%' }}>
-          <Link to="/app/schedule">
+          <Link to={firstScheduleLink}>
           <Tooltips title={this.state.firstSchedule? this.state.firstSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.firstSchedule.comments : ''}>
                 <Row name="board" style={{ backgroundColor: '#F08699', margin: '0 10px 10px'}}>
                   <Col span={8}>
@@ -481,7 +494,7 @@ class IndexPage extends React.Component {
           </Col>
           <Col span={8} style={{ height: '100%' }}>
 
-          <Link to="/app/schedule">
+          <Link to={secondScheduleLink}>
           <Tooltips title={this.state.secondSchedule? this.state.secondSchedule.scheduledtime.split('T').join(' ') + ' ' + this.state.secondSchedule.comments : ''}>
           <Row name="board" style={{ backgroundColor: '#93C575', margin: '0 10px 10px' }}>
                   <Col span={8}>
