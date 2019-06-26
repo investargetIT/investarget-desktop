@@ -15,7 +15,8 @@ import {
   SelectPartner, 
   SelectAllUser, 
   SelectOrganizatonArea, 
-  CascaderCountry, 
+  CascaderCountry,
+  SelectIndustryGroup, 
 } from './ExtraInput'
 import { 
   i18n, 
@@ -135,6 +136,10 @@ class ProjectBDForm extends React.Component {
 
         <BasicFormItem label={i18n('project_bd.bd_status')} name="bd_status" required valueType="number">
           <SelectBDStatus />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project_bd.industry_group')} name="industry_group" required valueType="number">
+          <SelectIndustryGroup />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project_bd.import_methods')} name="source_type" required valueType="number">

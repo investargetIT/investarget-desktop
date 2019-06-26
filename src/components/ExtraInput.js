@@ -837,6 +837,15 @@ const SelectBDStatus = withOptionsAsync(SelectNumber, ['bdStatus'], function(sta
   return { options }
 })
 
+/**
+ * 选择行业组
+ */
+const SelectIndustryGroup = withOptionsAsync(SelectNumber, ['industryGroup'], function(state) {
+  const { industryGroup } = state.app;
+  const options = industryGroup ? industryGroup.map(item => ({value: item.id, label: item.name})) : [];
+  return { options };
+})
+
 const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(state) {
   const { orgbdres } = state.app
   const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
@@ -1791,6 +1800,7 @@ export {
   SelectUserGroup,
   SelectTitle,
   SelectBDStatus,
+  SelectIndustryGroup,
   SelectNewBDStatus,
   SelectBDSource,
   SelectArea,

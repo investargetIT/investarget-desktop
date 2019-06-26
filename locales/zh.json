@@ -122,6 +122,7 @@
 
   "project_bd": {
     "project_bd": "项目BD",
+    "industry_group": "行业组",
     "add_project_bd": "新增项目BD",
     "edit_project_bd": "修改项目BD",
     "bd_status": "BD状态",

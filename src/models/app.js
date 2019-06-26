@@ -24,6 +24,7 @@ export default {
     orgtype: [],
     character: [],
     bdStatus: [],
+    industryGroup: [],
     showChat: false,
     projstatus: [],
     error: null,
