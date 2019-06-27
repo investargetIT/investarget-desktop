@@ -2,10 +2,10 @@ import React from 'react'
 import { Form, Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva';
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, exchange, getCurrencyFromId } from '../utils/util'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-
+import moment from 'moment';
 import ProjectBDForm from '../components/ProjectBDForm'
 
 function onValuesChange(props, values) {
@@ -20,7 +20,7 @@ const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
 
 function toFormData(data) {
-  var formData = {...data}
+  var formData = { ...data, expirationtime: data.expirationtime && moment(data.expirationtime) };
 
   for (let prop in formData) {
     let value = formData[prop]
@@ -104,9 +104,23 @@ class EditProjectBD extends React.Component {
 
   componentDidMount() {
     const { id } = this.state
+    let bd, financeValue;
     api.getProjBD(id).then(result => {
-      this.setState({ bd: result.data })
-    }).catch(error => {
+      bd = result.data;
+      if (result.data['financeCurrency'] && result.data['financeAmount']) {
+        const currency = result.data['financeCurrency'];
+        financeValue = result.data['financeAmount'];
+        return exchange(getCurrencyFromId(currency));
+      } else {
+        this.setState({ bd: result.data });
+      }
+    }).then(rate => {
+      if (rate) {
+        bd.financeAmount_USD = Math.round(financeValue * rate);
+        this.setState({ bd });
+      }
+    })
+    .catch(error => {
       handleError(error)
     })
     this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
