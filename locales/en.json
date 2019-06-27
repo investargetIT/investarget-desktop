@@ -132,7 +132,12 @@
     "mobile": "Mobile",
     "manager": "Manager",
     "created_time": "Created Time",
-    "operation": "Operations"
+    "operation": "Operations",
+    "email": "Email",
+    "contractors": "Contractor",
+    "finance_currency": "Currency",
+    "finance_amount": "Amount",
+    "expirationtime": "Expiration Time"
   },
 
   "org_bd": {

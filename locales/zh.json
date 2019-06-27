@@ -139,7 +139,11 @@
     "created_time": "创建时间",
     "operation": "操作",
     "source": "来源",
-    "email": "邮箱"
+    "email": "邮箱",
+    "contractors": "签约负责人",
+    "finance_currency": "融资金额货币类型",
+    "finance_amount": "融资金额",
+    "expirationtime": "BD过期时间"
   },
 
   "org_bd": {

@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes, { func } from 'prop-types'
-import {hasPerm} from '../utils/util'
-import { Form, Input, Radio, Checkbox, Row, Col } from 'antd'
+import {hasPerm, getCurrencyFromId, exchange} from '../utils/util'
+import { Form, Input, Radio, Checkbox, Row, Col, DatePicker } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const TextArea = Input.TextArea
 
-import { BasicFormItem } from './Form'
+import { BasicFormItem, CurrencyFormItem } from './Form'
 import {
   SelectBDStatus,
   SelectBDSource,
@@ -16,7 +16,8 @@ import {
   SelectAllUser, 
   SelectOrganizatonArea, 
   CascaderCountry,
-  SelectIndustryGroup, 
+  SelectIndustryGroup,
+  SelectCurrencyType,
 } from './ExtraInput'
 import { 
   i18n, 
@@ -24,6 +25,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva';
+import moment from 'moment';
 
 const formItemLayout = {
   labelCol: {
@@ -35,7 +37,13 @@ const formItemLayout = {
     sm: { span: 14 },
   },
 }
-
+function range(start, end) {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+}
 class ProjectBDForm extends React.Component {
 
   static childContextTypes = {
@@ -121,6 +129,26 @@ class ProjectBDForm extends React.Component {
     });
   }
 
+  // 处理货币相关表单联动
+  handleCurrencyTypeChange = (currencyId) => {
+    const { getFieldValue, setFieldsValue } = this.props.form
+    const currency = getCurrencyFromId(currencyId)
+    exchange(currency).then((rate) => {
+      const fields = ['financeAmount'];
+      const values = {};
+      fields.forEach(field => {
+        let value = getFieldValue(field)
+        values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
+      })
+      setFieldsValue(values)
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form
     const countryObj = getFieldValue('country');
@@ -138,7 +166,30 @@ class ProjectBDForm extends React.Component {
           <SelectBDStatus />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project_bd.industry_group')} name="industry_group" required valueType="number">
+        <BasicFormItem label={i18n('project_bd.contractors')} name="contractors" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project_bd.finance_currency')} name="financeCurrency" valueType="number" onChange={this.handleCurrencyTypeChange}>
+          <SelectCurrencyType />
+        </BasicFormItem>
+
+        <CurrencyFormItem label={i18n('project_bd.finance_amount')} name="financeAmount" currencyType={getFieldValue('financeCurrency')} />
+
+        <BasicFormItem label={i18n('project_bd.expirationtime')} name="expirationtime" valueType="object">
+          <DatePicker
+            disabledDate={current => current && current < moment().startOf('day')}
+            disabledTime={() => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) })}
+            showTime={{
+              hideDisabledOptions: true,
+              format: 'HH:mm',
+            }}
+            showToday={false}
+            format="YYYY-MM-DD HH:mm" 
+          />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
         </BasicFormItem>
 
