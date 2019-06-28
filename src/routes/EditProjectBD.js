@@ -24,7 +24,7 @@ function toFormData(data) {
 
   for (let prop in formData) {
     let value = formData[prop]
-    if (['bd_status', 'location', 'usertitle', 'manager'].includes(prop)) {
+    if (['bd_status', 'location', 'usertitle', 'manager', 'financeCurrency', 'contractors'].includes(prop)) {
       formData[prop] = value && value.id
     }
   }
@@ -108,7 +108,7 @@ class EditProjectBD extends React.Component {
     api.getProjBD(id).then(result => {
       bd = result.data;
       if (result.data['financeCurrency'] && result.data['financeAmount']) {
-        const currency = result.data['financeCurrency'];
+        const currency = result.data['financeCurrency'].id;
         financeValue = result.data['financeAmount'];
         return exchange(getCurrencyFromId(currency));
       } else {

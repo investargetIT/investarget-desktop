@@ -315,9 +315,14 @@ class ProjectBDList extends React.Component {
       // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key:'financeAmount', sorter:true, render: (text, record) => {
-        return text && formatMoney(text, 'CNY');
+        const currency = record.financeCurrency ? record.financeCurrency.currency : '';
+        if (text && record.financeCurrency && record.financeCurrency.id === 1) {
+          return `${currency} ${formatMoney(text, 'CNY')}`;
+        } else {
+          return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
+        }
       }},
-      {title: i18n('project_bd.contractors'), dataIndex: 'contractors', key:'contractors', sorter:true},
+      {title: i18n('project_bd.contractors'), dataIndex: 'contractors.username', key:'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
