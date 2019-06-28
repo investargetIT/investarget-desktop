@@ -10,6 +10,7 @@ import {
   i18n, 
   hasPerm,
   getUserInfo,
+  formatMoney,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -313,11 +314,15 @@ class ProjectBDList extends React.Component {
       {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
       // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
+      {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key:'financeAmount', sorter:true, render: (text, record) => {
+        return text && formatMoney(text, 'CNY');
+      }},
+      {title: i18n('project_bd.contractors'), dataIndex: 'contractors', key:'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
       {
-        title: '最新备注',
+        title: '行动计划',
         dataIndex: 'BDComments',
         render: (text, record) => {
           const comments = record.BDComments;
