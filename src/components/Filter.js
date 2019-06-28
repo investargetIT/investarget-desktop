@@ -52,6 +52,7 @@ import {
   SelectOrgLevel,
   TabCheckboxOrgBDRes,
   TabCheckboxAbroad,
+  TabCheckboxIndustryGroup,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -769,7 +770,8 @@ class ProjectBDFilter extends React.Component {
     source_type: null,
     location: [],
     manager: [],
-    country:[],
+    country: [],
+    indGroup: [],
   }
 
   constructor(props) {
@@ -792,7 +794,8 @@ class ProjectBDFilter extends React.Component {
   }
 
   render() {
-    const { bd_status, source_type, location, manager, country } = this.state
+    const { bd_status, source_type, location, manager, country, indGroup } = this.state
+    window.echo('ind group', indGroup);
     return (
       <div>
         <BasicContainer label={i18n('project_bd.bd_status')}>
@@ -801,6 +804,7 @@ class ProjectBDFilter extends React.Component {
         <BasicContainer label={i18n('project_bd.import_methods')}>
           <RadioBDSource value={source_type} onChange={this.handleChange.bind(this, 'source_type')} />
         </BasicContainer>
+        <TabCheckboxIndustryGroup value={indGroup} onChange={this.handleChange.bind(this, 'indGroup')} />
         <CountryFilter source="projBD" value={country} onChange={this.handleChange.bind(this, 'country')} />
         <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         

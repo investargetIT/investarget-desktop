@@ -1476,7 +1476,25 @@ function mapStateToPropsProjStatus(state) {
 }
 TabCheckboxProjStatus = connect(mapStateToPropsProjStatus)(TabCheckboxProjStatus);
 
-
+class TabCheckboxIndustryGroup extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industryGroup'] });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer label={i18n('filter.industry_group')}>
+        <ITCheckboxGroup options={options} value={value} onChange={onChange} />
+      </BasicContainer>
+    )
+  }
+}
+function mapStateToPropsIndustryGroup(state) {
+  const { industryGroup } = state.app;
+  const options = industryGroup ? industryGroup.map(item => ({value: item.id, label: item.name})) : [];
+  return { options }
+}
+TabCheckboxIndustryGroup = connect(mapStateToPropsIndustryGroup)(TabCheckboxIndustryGroup);
 
 class TabCheckboxOrgType extends React.Component {
   componentDidMount() {
@@ -1829,7 +1847,8 @@ export {
   TabCheckboxIndustry,
   TabCheckboxTag, 
   TabCheckboxOrgType, 
-  TabCheckboxOrgArea, 
+  TabCheckboxOrgArea,
+  TabCheckboxIndustryGroup,
   SliderMoney,
   RadioTrueOrFalse,
   RadioCurrencyType,

@@ -25,7 +25,7 @@ class ProjectBDList extends React.Component {
     super(props)
 
     const setting = this.readSetting()
-    const filters = setting ? setting.filters : ProjectBDFilter.defaultValue;
+    const filters = ProjectBDFilter.defaultValue;
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
