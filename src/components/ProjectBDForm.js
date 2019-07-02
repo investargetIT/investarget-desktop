@@ -176,7 +176,7 @@ class ProjectBDForm extends React.Component {
 
         <CurrencyFormItem label={i18n('project_bd.finance_amount')} name="financeAmount" currencyType={getFieldValue('financeCurrency')} />
 
-        <BasicFormItem label={i18n('project_bd.expirationtime')} name="expirationtime" valueType="object" initialValue={moment().startOf('hour')}>
+        {/* <BasicFormItem label={i18n('project_bd.expirationtime')} name="expirationtime" valueType="object" initialValue={moment().startOf('hour')}>
           <DatePicker
             disabledDate={current => current && current < moment().startOf('day')}
             disabledTime={() => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) })}
@@ -187,7 +187,7 @@ class ProjectBDForm extends React.Component {
             showToday={false}
             format="YYYY-MM-DD HH:mm" 
           />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
