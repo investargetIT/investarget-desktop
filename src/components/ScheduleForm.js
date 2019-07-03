@@ -215,7 +215,7 @@ class ScheduleForm extends React.Component {
             label="持续时间"
           >
             {getFieldDecorator('duration', { initialValue: 60 })(
-              <InputNumber min={1} max={100} />
+              <InputNumber min={1} max={120} />
             )}
             <span className="ant-form-text">分钟</span>
           </FormItem>
