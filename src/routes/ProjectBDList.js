@@ -430,7 +430,7 @@ class ProjectBDList extends React.Component {
           />
         </div>
 
-        <Modal title={i18n('remark.comment')} visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false}>
+        <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false}>
           <BDComments
             comments={this.state.comments}
             newComment={this.state.newComment}
@@ -521,7 +521,7 @@ class BDComments extends React.Component {
               </p>
               <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
             </div>
-          )) : <p>{i18n('remark.no_comments')}</p>}
+          )) : <p>暂无行动计划</p>}
         </div>
         : null }
 
