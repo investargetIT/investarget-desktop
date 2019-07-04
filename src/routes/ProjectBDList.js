@@ -305,12 +305,12 @@ class ProjectBDList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
-      {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
-        return (<div>{record&&record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>
-                {record.username}
-                </Link> : record.username}</div>
-                )
-      }},
+      // {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
+      //   return (<div>{record&&record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>
+      //           {record.username}
+      //           </Link> : record.username}</div>
+      //           )
+      // }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
         render: (text, record) => record.source_type === 0 ? <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a> : text
       },
@@ -321,7 +321,7 @@ class ProjectBDList extends React.Component {
       // }, key:'source_type', sorter:true},
       // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
       // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
-      {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', width: 120, sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
+      // {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', width: 120, sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
       // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {title: i18n('project_bd.manager'), dataIndex: 'manager.username', key:'manager', sorter:true},
       {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key:'financeAmount', width: 170, sorter:true, render: (text, record) => {
@@ -354,40 +354,48 @@ class ProjectBDList extends React.Component {
           </Popover>;
         },
       },
-      {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
-        return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
-            {hasPerm('BD.manageProjectBD') ?
-              <Link to={'/app/projects/bd/edit/' + record.id}>
-                <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
-              </Link>
-              :
-              getUserInfo().id === record.manager.id ?
-              <div style={{ padding: '0 7px' }}>
-                <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</a>
-              </div> 
-              : null
-            }
+    ];
 
-            {/* 备注按钮 */}
-            { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id ?
-            <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+    const allCreateUser = list.map(m => m.createuser);
+    const allContractor = list.filter(f => f.contractors).map(m => m.contractors.id);
+    const allManager = list.filter(f => f.manager).map(m => m.manager.id);
+    if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
+      columns.push(
+        {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
+          return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
+              {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
+                <Link to={'/app/projects/bd/edit/' + record.id}>
+                  <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
+                </Link>
+                :
+                getUserInfo().id === record.manager.id || (record.contractors && getUserInfo().id === record.contractors.id) ?
+                <div style={{ padding: '0 7px' }}>
+                  <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</a>
+                </div> 
+                : null
+              }
+  
+              {/* 备注按钮 */}
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id ?
+              <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+              : null }
+  
+  
+            </div>
+            { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
+            <div style={{ marginLeft: 7 }}>
+            <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
+              <Button size="small" style={{ ...buttonStyle, color: undefined }}>
+                <Icon type="delete" />
+              </Button>
+            </Popconfirm>
+            </div>
             : null }
-
-
-          </div>
-          { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
-          <div style={{ marginLeft: 7 }}>
-          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
-            <Button size="small" style={{ ...buttonStyle, color: undefined }}>
-              <Icon type="delete" />
-            </Button>
-          </Popconfirm>
-          </div>
-          : null }
-        </span>)
-      }},
-    ]
+          </span>)
+        }}
+      );
+    }
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>

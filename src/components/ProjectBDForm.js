@@ -166,9 +166,11 @@ class ProjectBDForm extends React.Component {
           <SelectBDStatus />
         </BasicFormItem>
 
+        {hasPerm('BD.manageProjectBD') &&
         <BasicFormItem label={i18n('project_bd.contractors')} name="contractors" valueType="number">
           <SelectAllUser type="trader" />
         </BasicFormItem>
+        }
 
         <BasicFormItem label={i18n('project_bd.finance_currency')} name="financeCurrency" valueType="number" onChange={this.handleCurrencyTypeChange}>
           <SelectCurrencyType />
