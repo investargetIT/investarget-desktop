@@ -302,7 +302,7 @@ class ProjectBDList extends React.Component {
 
   render() {
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       // {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
@@ -361,24 +361,22 @@ class ProjectBDList extends React.Component {
     const allManager = list.filter(f => f.manager).map(m => m.manager.id);
     if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
       columns.push(
-        {title: i18n('project_bd.operation'), width: 140, render: (text, record) => {
+        {title: i18n('project_bd.operation'), width: 160, render: (text, record) => {
           return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
+            <div>
               {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
                   <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
                 </Link>
                 :
                 getUserInfo().id === record.manager.id || (record.contractors && getUserInfo().id === record.contractors.id) ?
-                <div style={{ padding: '0 7px' }}>
-                  <a style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</a>
-                </div> 
+                <Button style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
                 : null
               }
   
               {/* 备注按钮 */}
               { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id ?
-              <a style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>{i18n('remark.comment')}</a>
+              <Button style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
               : null }
   
   

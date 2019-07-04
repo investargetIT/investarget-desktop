@@ -191,7 +191,7 @@ class ProjectBDForm extends React.Component {
           />
         </BasicFormItem> */}
 
-        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
+        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number" required>
           <SelectIndustryGroup />
         </BasicFormItem>
 

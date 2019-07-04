@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, getCurrentUser, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { withRouter } from 'dva/router'
 
@@ -23,6 +23,10 @@ function toData(formData) {
     formData['location'] = null;
   }
   formData.country = formData.country.value;
+  if (!hasPerm('BD.manageProjectBD')) {
+    formData.manager = getCurrentUser();
+    formData.contractors = getCurrentUser();
+  }
   return formData
 }
 
