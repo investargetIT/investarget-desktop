@@ -9,11 +9,15 @@ import {
   Form,
 } from 'antd';
 import SimpleUserForm from './SimpleUserForm';
+import ContactForm from './ContactForm';
+
 function mapPropsToFields(props) {
   return props.data;
 }
 const FormItem = Form.Item;
 const EditUserForm = Form.create({ mapPropsToFields })(SimpleUserForm);
+const EditContactForm = Form.create({ mapPropsToFields })(ContactForm);
+
 const Option = Select.Option
 const formItemLayout = {
   labelCol: {
@@ -73,6 +77,28 @@ function toFormData (bd) {
   return formData;
 }
 
+function toContactFormData(bd) {
+  var formData = {
+    username: bd.username,
+    email: bd.useremail,
+    usertitle: bd.usertitle && bd.usertitle.id,
+  };
+  if (bd.usermobile) {
+    if (bd.usermobile.includes('-')) {
+      formData.mobile = bd.usermobile.split('-')[1];
+      if (bd.usermobile.split('-')[0] !== '') {
+        formData.mobileAreaCode = bd.usermobile.split('-')[0];
+      }
+    } else {
+      formData.mobile = bd.usermobile;
+    }
+  }
+  for (let prop in formData) {
+    formData[prop] = { value: formData[prop] };
+  }
+  return formData;
+}
+
 class ModalModifyProjectBDStatus extends React.Component {
 
   state = {
@@ -83,6 +109,12 @@ class ModalModifyProjectBDStatus extends React.Component {
   handleRef = (inst) => {
     if (inst) {
       this.addForm = inst.props.form
+    }
+  }
+
+  handleContactFormRef = (inst) => {
+    if (inst) {
+      this.contactForm = inst.props.form
     }
   }
 
@@ -124,7 +156,14 @@ class ModalModifyProjectBDStatus extends React.Component {
             wrappedComponentRef={this.handleRef}
             data={toFormData(this.props.bd)}
           />
-        : null} 
+        : null}
+        {/* 项目BD状态改为已见面或已联系(对应id为6,7)时需要填写联系人信息, 详细需求见bugClose#340 */}
+        {![6, 7].includes(this.props.bd.bd_status.id) && [6, 7].includes(this.state.status) &&
+        <EditContactForm
+          wrappedComponentRef={this.handleContactFormRef}
+          data={toContactFormData(this.props.bd)}
+        />
+        }
 
       </Modal>
     )
