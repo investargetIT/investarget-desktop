@@ -120,7 +120,13 @@ class ModalModifyProjectBDStatus extends React.Component {
 
   handleConfirmBtnClicked = () => {
     const { status } = this.state;
-    if (this.addForm) {
+    if (this.isShowContactForm()) {
+      this.contactForm.validateFields((err, values) => {
+        if (!err) {
+          this.props.onUpdateContact({ ...values, bd_status: status });
+        }
+      });
+    } else if (this.isShowUserForm()) {
       this.addForm.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
@@ -131,6 +137,15 @@ class ModalModifyProjectBDStatus extends React.Component {
       this.setState({ confirmLoading: true });
       this.props.onOk({ status });
     }
+  }
+
+  isShowUserForm = () => {
+    return !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3;
+  }
+
+  // 项目BD状态改为已见面或已联系(对应id为6,7)时需要填写联系人信息, 详细需求见bugClose#340
+  isShowContactForm = () => {
+    return ![6, 7].includes(this.props.bd.bd_status.id) && [6, 7].includes(this.state.status);
   }
 
   render() {
@@ -151,18 +166,17 @@ class ModalModifyProjectBDStatus extends React.Component {
           />
         </FormItem>
 
-        {!this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3 ?
+        {this.isShowUserForm() &&
           <EditUserForm
             wrappedComponentRef={this.handleRef}
             data={toFormData(this.props.bd)}
           />
-        : null}
-        {/* 项目BD状态改为已见面或已联系(对应id为6,7)时需要填写联系人信息, 详细需求见bugClose#340 */}
-        {![6, 7].includes(this.props.bd.bd_status.id) && [6, 7].includes(this.state.status) &&
-        <EditContactForm
-          wrappedComponentRef={this.handleContactFormRef}
-          data={toContactFormData(this.props.bd)}
-        />
+        }
+        {this.isShowContactForm() &&
+          <EditContactForm
+            wrappedComponentRef={this.handleContactFormRef}
+            data={toContactFormData(this.props.bd)}
+          />
         }
 
       </Modal>

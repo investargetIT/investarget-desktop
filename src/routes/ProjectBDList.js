@@ -211,6 +211,16 @@ class ProjectBDList extends React.Component {
     }
   }
 
+  handleUpdateContact = (formData) => {
+    const usermobile = (formData.mobileAreaCode && formData.mobile) ? formData.mobileAreaCode + '-' + formData.mobile : formData.mobile;
+    const body = { ...formData, usermobile };
+    api.editProjBD(this.state.currentBD.id, body).then(result => {
+      this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList);
+    }).catch(error => {
+      handleError(error)
+    })
+  }
+
   handleConfirmAudit = state => {
     const { status, usernameC, mobile, email } = state;
     const body = {
@@ -429,6 +439,7 @@ class ProjectBDList extends React.Component {
           visible={this.state.isShowModifyStatusModal} 
           onCancel={() => this.setState({ isShowModifyStatusModal: false })} 
           onOk={this.handleConfirm}
+          onUpdateContact={this.handleUpdateContact}
           bd={this.state.currentBD}
         />
         :null}
