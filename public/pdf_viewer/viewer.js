@@ -930,7 +930,7 @@ var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 function configure(PDFJS) {
   PDFJS.imageResourcesPath = './images/';
   PDFJS.workerSrc = 'pdf_viewer/pdf.worker.min.js';
-  PDFJS.cMapUrl = './cmaps/';
+  PDFJS.cMapUrl = 'pdf_viewer/cmaps/';
   PDFJS.cMapPacked = true;
 }
 var DefaultExternalServices = {
