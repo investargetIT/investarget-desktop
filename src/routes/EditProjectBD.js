@@ -82,18 +82,31 @@ class EditProjectBD extends React.Component {
     this.props.router.goBack()
   }
 
-  editProjectBD = () => {
-    const { id } = this.state
+  handleFormSubmit = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        let param = toData(values)
-        api.editProjBD(id, param).then(result => {
-          this.props.router.goBack()
-        }).catch(error => {
-          handleError(error)
-        })
+        this.editProjectBD(values).then(this.props.router.goBack).catch(handleError);
       }
     })
+  }
+
+  editProjectBD = async (values) => {
+    const param = toData(values);
+    const { bd_status: status } = param;
+    // 状态改为暂不BD后，详细需求见bugClose #344
+    if (status === 4 && this.state.bd.bd_status.id !== 4) {
+      param.contractors = null;
+    }
+    const { id } = this.state;
+    await api.editProjBD(id, param);
+    // 状态改为暂不BD后，详细需求见bugClose #344
+    if (status === 4 && this.state.bd.bd_status.id !== 4) {
+      const { bd_status, contractors } = this.state.bd;
+      await api.addProjBDCom({
+        projectBD: this.state.bd.id,
+        comments: `之前状态：${bd_status.name}，签约负责人: ${contractors ? contractors.username : '无'}`,
+      });
+    }
   }
 
   handleRef = (inst) => {
@@ -141,7 +154,7 @@ class EditProjectBD extends React.Component {
           <EditProjectBDForm wrappedComponentRef={this.handleRef} data={data} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProjectBD}>{i18n('common.submit')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleFormSubmit}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
