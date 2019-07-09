@@ -226,6 +226,15 @@ class ProjectBDList extends React.Component {
     const body = {
       bd_status: status
     }
+    // 状态改为暂不BD后，详细需求见bugClose #344
+    if (status === 4 && this.state.currentBD.bd_status.id !== 4) {
+      const { bd_status, contractors } = this.state.currentBD;
+      api.addProjBDCom({
+        projectBD: this.state.currentBD.id,
+        comments: `之前状态：${bd_status.name}，签约负责人: ${ contractors ? contractors.username : '无' }`,
+      });
+      body.contractors = null;
+    }
     api.editProjBD(this.state.currentBD.id, body)
       .then(result => 
         {
