@@ -5,6 +5,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, handleError, getCurrentUser, hasPerm } from '../utils/util'
 import * as api from '../api'
 import { withRouter } from 'dva/router'
+import FormError from '../utils/FormError';
 
 import ProjectBDForm from '../components/ProjectBDForm'
 
@@ -47,17 +48,22 @@ class AddProjectBD extends React.Component {
     this.props.router.goBack()
   }
 
-  addProjectBD = () => {
+  handleSubmitBtnClicked = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        let param = toData(values)
-        api.addProjBD(param).then(result => {
-          this.props.router.goBack()
-        }).catch(error => {
-          handleError(error)
-        })
+        this.addProjBD(values).then(this.props.router.goBack).catch(handleError);
       }
-    })
+    });
+  }
+
+  addProjBD = async (values) => {
+    const param = toData(values);
+    const { com_name } = param;
+    const getProjBD = await api.getProjBDList({ search: com_name });
+    if (getProjBD.data.count > 0) {
+      throw new FormError('已存在项目名称相同的BD任务，无法创建');
+    }
+    await api.addProjBD(param);
   }
 
   handleRef = (inst) => {
@@ -75,7 +81,7 @@ class AddProjectBD extends React.Component {
           <AddProjectBDForm isAdd comName={comName} wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProjectBD}>{i18n('common.submit')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClicked}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
