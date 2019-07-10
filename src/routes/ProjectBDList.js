@@ -211,14 +211,20 @@ class ProjectBDList extends React.Component {
     }
   }
 
-  handleUpdateContact = (formData) => {
+  handleUpdateContact = async (formData) => {
     const usermobile = (formData.mobileAreaCode && formData.mobile) ? formData.mobileAreaCode + '-' + formData.mobile : formData.mobile;
     const body = { ...formData, usermobile };
-    api.editProjBD(this.state.currentBD.id, body).then(result => {
+    try {
+      await api.editProjBD(this.state.currentBD.id, body);
+      const { username, usermobile: mobile, email } = body;
+      await api.addProjBDCom({
+        projectBD: this.state.currentBD.id,
+        comments: `联系人姓名：${username}，电话：${mobile}，邮箱：${email || '暂无'}`,
+      });
       this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList);
-    }).catch(error => {
-      handleError(error)
-    })
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   handleConfirmAudit = state => {
