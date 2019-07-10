@@ -44,7 +44,7 @@ class ProjectBDList extends React.Component {
       currentBDId: null,
       comments: [],
       newComment: '',
-      sort: 'updatedtime',
+      sort: 'lastmodifytime',
       desc: 1,
       source:this.props.location.query.status||0, 
       status: null, 
