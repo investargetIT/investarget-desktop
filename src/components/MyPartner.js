@@ -16,6 +16,7 @@ import {
 import { connect } from 'dva'
 import CardContainer from '../components/CardContainer'
 import { Search } from './Search';
+import { withRouter } from 'dva/router';
 
 const styles = {
   groupModifyButton: {
@@ -38,24 +39,30 @@ const { CheckableTag } = Tag;
 
 class MyPartner extends React.Component {
 
-  state = {
-    list: [],
-    loading: false,
-    total: 0,
-    pageSize: getUserInfo().page || 10,
-    pageIndex: 1,
-    friendList: [], 
-    selectedRows: [],
-    selectedRowKeys: [],
-    showFamModifyDialog: false,
-    search: '', 
-    filters: null,
-    changedValue: null,
-    isSubmitting: false,
-    statistics: [],
+  constructor(props) {
+    super(props);
+
+    const { page } = props.location.query;
+
+    this.state = {
+      list: [],
+      loading: false,
+      total: 0,
+      pageSize: getUserInfo().page || 10,
+      pageIndex: parseInt(page, 10) || 1,
+      friendList: [],
+      selectedRows: [],
+      selectedRowKeys: [],
+      showFamModifyDialog: false,
+      search: '',
+      filters: null,
+      changedValue: null,
+      isSubmitting: false,
+      statistics: [],
+    }
+    this.investorList = []
+    this.redirect = this.props.type === 'investor' && URI_12
   }
-  investorList = []
-  redirect = this.props.type === 'investor' && URI_12
 
   getPartner = () => {
     this.setState({ loading: true })
@@ -100,6 +107,14 @@ class MyPartner extends React.Component {
     this.props.dispatch({ type: 'app/getGroup' });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage } = nextProps.location.query;
+    const { page: currentPage } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ pageIndex: parseInt(nextPage, 10) }, this.getPartner);
+    }
+  }
+
   loadLabelByValue(type, value) {
     if (Array.isArray(value) && this.props.tag.length > 0) {
       return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
@@ -112,7 +127,10 @@ class MyPartner extends React.Component {
     console.log(userID)
   }
 
-  handlePageChange = pageIndex => this.setState({ pageIndex }, this.getPartner)
+  handlePageChange = pageIndex => {
+    this.props.router.push(`/app/investor/my?page=${pageIndex}`);
+    // this.setState({ pageIndex }, this.getPartner);
+  }
 
   handleShowSizeChange(pageSize) {
     console.log(pageSize)
@@ -338,7 +356,7 @@ function mapStateToProps(state) {
   return { title, tag, audit, famlv };
 }
 
-export default connect(mapStateToProps)(MyPartner);
+export default connect(mapStateToProps)(withRouter(MyPartner));
 
 
 function Card(props) {

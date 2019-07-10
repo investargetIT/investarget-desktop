@@ -12,7 +12,7 @@ function MyInvestor(props) {
 
   return (
     <LeftRightLayout location={props.location} title={i18n("user.myinvestor")} action={action}>
-      <MyPartner type="investor" />
+      <MyPartner type="investor" location={props.location} />
     </LeftRightLayout>
   )
 }
