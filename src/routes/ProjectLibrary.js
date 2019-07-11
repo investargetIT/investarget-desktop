@@ -3,7 +3,7 @@ import { Button, Table, Pagination, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
-import { Link } from 'dva/router'
+import { Link, withRouter } from 'dva/router';
 import { 
   i18n, 
   handleError, 
@@ -12,6 +12,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import qs from 'qs';
 
 
 const iconStyle = {
@@ -43,7 +44,7 @@ class ProjectLibrary extends React.Component {
     super(props)
 
     // 根据是否从机构页面跳转而来设置相应的筛选条件
-    const { search: searchContent } = props.location.query;
+    const { search: searchContent, page } = props.location.query;
     let search, filters;
     if (searchContent) {
       search = searchContent;
@@ -57,7 +58,7 @@ class ProjectLibrary extends React.Component {
     this.state = {
       filters,
       search,
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -96,7 +97,10 @@ class ProjectLibrary extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getProject)
+    const { search } = this.props.location.query;
+    const parameters = { search, page };
+    this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
+    // this.setState({ page }, this.getProject)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -177,8 +181,14 @@ class ProjectLibrary extends React.Component {
   }
 
   // 目前在机构投资事件跳转到当前页面然后点击菜单栏的项目全库时会出发这个生命周期
-  componentWillReceiveProps() {
-    this.handleReset(ProjectLibraryFilter.defaultValue);
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage, search: nextSearch } = nextProps.location.query;
+    const { page: currentPage, search: currentSearch } = this.props.location.query;
+    if (currentSearch && !nextSearch) {
+      this.handleReset(ProjectLibraryFilter.defaultValue);
+    } else if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) }, this.getProject);
+    }
   }
 
   componentDidMount() {
@@ -289,4 +299,4 @@ class ProjectLibrary extends React.Component {
   }
 }
 
-export default ProjectLibrary
+export default withRouter(ProjectLibrary);
