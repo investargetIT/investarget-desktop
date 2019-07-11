@@ -243,7 +243,8 @@ class DataRoom extends React.Component {
         const index = newData.map(m => m.id).indexOf(d)
         newData.splice(index, 1)
       })
-      this.setState({ data: newData })
+      const newFileUserList = this.state.fileUserList.filter(f => !idArr.includes(f.file));
+      this.setState({ data: newData, fileUserList: newFileUserList });
     }).catch(error => {
       this.props.dispatch({
         type: 'app/findError',
