@@ -111,7 +111,7 @@ class MyPartner extends React.Component {
     const { page: nextPage } = nextProps.location.query;
     const { page: currentPage } = this.props.location.query;
     if (nextPage !== currentPage) {
-      this.setState({ pageIndex: parseInt(nextPage, 10) }, this.getPartner);
+      this.setState({ pageIndex: parseInt(nextPage, 10) || 1 }, this.getPartner);
     }
   }
 

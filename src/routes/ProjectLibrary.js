@@ -187,7 +187,7 @@ class ProjectLibrary extends React.Component {
     if (currentSearch && !nextSearch) {
       this.handleReset(ProjectLibraryFilter.defaultValue);
     } else if (nextPage !== currentPage) {
-      this.setState({ page: parseInt(nextPage, 10) }, this.getProject);
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProject);
     }
   }
 
