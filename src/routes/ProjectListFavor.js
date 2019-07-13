@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { withRouter } from 'dva/router';
 import FavoriteProjectList from '../components/FavoriteProjectList'
 import { 
   i18n, 
@@ -11,9 +11,12 @@ import {
 class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
+    
+    const { page } = props.location.query;
+
     this.state = {
       favoritetype: 4,
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -22,7 +25,8 @@ class ProjectListRecommend extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getProjectList)
+    this.props.router.push(`/app/projects/list/favor?page=${page}`);
+    // this.setState({ page }, this.getProjectList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -49,6 +53,14 @@ class ProjectListRecommend extends React.Component {
     this.getProjectList()
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage } = nextProps.location.query;
+    const { page: currentPage } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
+    }
+  }
+
   render() {
     const { location } = this.props
     const { page, pageSize, total, list, loading } = this.state
@@ -64,4 +76,4 @@ class ProjectListRecommend extends React.Component {
 
 
 
-export default connect()(ProjectListRecommend)
+export default connect()(withRouter(ProjectListRecommend));
