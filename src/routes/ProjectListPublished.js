@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Link } from 'dva/router'
+import { Link, withRouter } from 'dva/router';
 import { 
   i18n, 
   isLogin, 
@@ -15,8 +15,9 @@ import LeftRightLayout from '../components/LeftRightLayout'
 class ProjectListPublished extends React.Component {
   constructor(props) {
     super(props)
+    const { page } = props.location.query;
     this.state = {
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -25,7 +26,8 @@ class ProjectListPublished extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getProjectList)
+    this.props.router.push(`/app/projects/published?page=${page}`);
+    // this.setState({ page }, this.getProjectList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -63,6 +65,14 @@ class ProjectListPublished extends React.Component {
   componentDidMount() {
     this.getProjectList()
     this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage } = nextProps.location.query;
+    const { page: currentPage } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
+    }
   }
 
   render() {
@@ -157,4 +167,4 @@ function mapStateToProps(state) {
   return { country }
 }
 
-export default connect(mapStateToProps)(ProjectListPublished)
+export default connect(mapStateToProps)(withRouter(ProjectListPublished));
