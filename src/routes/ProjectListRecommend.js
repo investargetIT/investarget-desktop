@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Link } from 'dva/router'
+import { withRouter } from 'dva/router';
 import { 
   i18n,
   showError, 
   getUserInfo, 
   hasPerm, 
 } from '../utils/util';
+import qs from 'qs';
 
 import { Input, Icon, Button, Radio } from 'antd'
 
@@ -19,9 +20,12 @@ const RadioGroup = Radio.Group
 class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
+
+    const { page, type } = props.location.query;
+
     this.state = {
-      favoritetype: 3, // default 交易师推荐
-      page: 1,
+      favoritetype: parseInt(type, 10) || 3, // default 交易师推荐
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -30,7 +34,10 @@ class ProjectListRecommend extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getProjectList)
+    const { type } = this.props.location.query;
+    const parameters = { type, page };
+    this.props.router.push(`/app/projects/list/recommend?${qs.stringify(parameters)}`);
+    // this.setState({ page }, this.getProjectList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -39,9 +46,10 @@ class ProjectListRecommend extends React.Component {
 
   handleFavorChange = (e) => {
     const favoritetype = e.target.value
-    this.setState({ favoritetype }, this.getProjectList)
+    // this.setState({ favoritetype }, this.getProjectList)
+    this.props.router.push(`/app/projects/list/recommend?type=${favoritetype}`);
   }
-
+ 
   getProjectList = () => {
     const { favoritetype, page, pageSize } = this.state
     var params = { page_index: page, page_size: pageSize, favoritetype }
@@ -61,6 +69,16 @@ class ProjectListRecommend extends React.Component {
 
   componentDidMount() {
     this.getProjectList()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage, type: nextType } = nextProps.location.query;
+    const { page: currentPage, type: currentType } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
+    } else if (nextType !== currentType) {
+      this.setState({ favoritetype: parseInt(nextType, 10) || 3 }, this.getProjectList);
+    }
   }
 
   render() {
@@ -92,4 +110,4 @@ class ProjectListRecommend extends React.Component {
   }
 }
 
-export default connect()(ProjectListRecommend)
+export default connect()(withRouter(ProjectListRecommend));
