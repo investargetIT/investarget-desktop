@@ -11,7 +11,7 @@ import {
   Button,
   Switch,
 } from 'antd';
-import { Link } from 'dva/router'
+import { Link, withRouter } from 'dva/router'
 import { BasicFormItem } from '../components/Form';
 import moment from 'moment';
 import LeftRightLayout from '../components/LeftRightLayout';
@@ -137,11 +137,14 @@ class ScheduleList extends React.Component {
 
   constructor(props) {
     super(props)
+
+    const { page } = props.location.query;
+
     this.state = {
       search: null,
       total: 0,
       list: [],
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       loading: false,
       sort:undefined,
@@ -157,7 +160,8 @@ class ScheduleList extends React.Component {
   }
 
   handleChangePage = (page) => {
-    this.setState({ page }, this.getSchedule)
+    this.props.router.push(`/app/schedule/list?page=${page}`);
+    // this.setState({ page }, this.getSchedule)
   }
 
   handleChangePageSize = (current, pageSize) => {
@@ -189,6 +193,14 @@ class ScheduleList extends React.Component {
 
   componentDidMount() {
     this.getSchedule()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage } = nextProps.location.query;
+    const { page: currentPage } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getSchedule);
+    }
   }
 
   showModal(record) {
@@ -300,4 +312,4 @@ class ScheduleList extends React.Component {
   }
 }
 
-export default ScheduleList
+export default withRouter(ScheduleList);
