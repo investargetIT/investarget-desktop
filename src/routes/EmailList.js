@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Link } from 'dva/router'
+import { Link, withRouter } from 'dva/router'
 import { 
   i18n, 
   getUserInfo, 
@@ -17,14 +17,16 @@ class EmailList extends React.Component {
   constructor(props) {
     super(props)
 
+    const { page } = props.location.query;
+
     const setting = this.readSetting()
     const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
+    // const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize : 10
 
     this.state = {
       search,
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page,
       total: 0,
       list: [],
@@ -37,7 +39,8 @@ class EmailList extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getEmailList)
+    this.props.router.push(`/app/email/list?page=${page}`);
+    // this.setState({ page }, this.getEmailList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -74,6 +77,14 @@ class EmailList extends React.Component {
 
   componentDidMount() {
     this.getEmailList()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage } = nextProps.location.query;
+    const { page: currentPage } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getEmailList);
+    }
   }
 
   render() {
@@ -121,4 +132,4 @@ class EmailList extends React.Component {
   }
 }
 
-export default connect()(EmailList)
+export default connect()(withRouter(EmailList));
