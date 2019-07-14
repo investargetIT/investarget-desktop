@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Link } from 'dva/router'
+import { Link, withRouter } from 'dva/router';
 import { 
   i18n, 
   hasPerm, 
@@ -10,7 +10,7 @@ import {
 
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import qs from 'qs';
 import { TimelineFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search } from '../components/Search'
@@ -25,7 +25,7 @@ class TimelineList extends React.Component {
   constructor(props) {
     super(props)
 
-    const { proj, investor, trader } = props.location.query;
+    const { proj, investor, trader, page } = props.location.query;
 
     let filters, search;
     if (proj && investor && trader) {
@@ -40,7 +40,7 @@ class TimelineList extends React.Component {
     this.state = {
       filters,
       search,
-      page: 1,
+      page: parseInt(page, 10) || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -66,7 +66,10 @@ class TimelineList extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getTimeline)
+    const { proj, investor, trader } = this.props.location.query;
+    const parameters = { proj, investor, trader, page };
+    this.props.router.push(`/app/timeline/list?${qs.stringify(parameters)}`);
+    // this.setState({ page }, this.getTimeline)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -219,6 +222,16 @@ class TimelineList extends React.Component {
     this.getTimeline()
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { page: nextPage, proj: nextProj } = nextProps.location.query;
+    const { page: currentPage, proj: currentProj } = this.props.location.query;
+    if (nextPage !== currentPage) {
+      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getTimeline);
+    } else if (nextProj !== currentProj) {
+      this.setState({ filters: TimelineFilter.defaultValue, page: 1, search: null }, this.getTimeline);
+    }
+  }
+
   handleTableChange = (pagination, filters, sorter) => {
     this.setState(
       { 
@@ -359,6 +372,4 @@ class TimelineList extends React.Component {
   }
 }
 
-export default connect()(TimelineList)
-
-
+export default connect()(withRouter(TimelineList));

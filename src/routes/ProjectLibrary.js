@@ -81,7 +81,10 @@ class ProjectLibrary extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProject)
+    const { search } = this.props.location.query;
+    const parameters = { search, page: 1 };
+    this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
+    // this.setState({ filters, page: 1 }, this.getProject)
   }
 
   handleReset = (filters) => {
