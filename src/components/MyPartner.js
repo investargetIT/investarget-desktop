@@ -17,6 +17,7 @@ import { connect } from 'dva'
 import CardContainer from '../components/CardContainer'
 import { Search } from './Search';
 import { withRouter } from 'dva/router';
+import qs from 'qs';
 
 const styles = {
   groupModifyButton: {
@@ -42,13 +43,13 @@ class MyPartner extends React.Component {
   constructor(props) {
     super(props);
 
-    const { page } = props.location.query;
+    const { page, pageSize } = props.location.query;
 
     this.state = {
       list: [],
       loading: false,
       total: 0,
-      pageSize: getUserInfo().page || 10,
+      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       pageIndex: parseInt(page, 10) || 1,
       friendList: [],
       selectedRows: [],
@@ -108,10 +109,14 @@ class MyPartner extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { page: nextPage } = nextProps.location.query;
-    const { page: currentPage } = this.props.location.query;
-    if (nextPage !== currentPage) {
-      this.setState({ pageIndex: parseInt(nextPage, 10) || 1 }, this.getPartner);
+    const { search: nextSearch } = nextProps.location;
+    const { search: currentSearch } = this.props.location;
+    if (nextSearch !== currentSearch) {
+      const { page, pageSize } = nextProps.location.query;
+      this.setState({
+        pageIndex: parseInt(page, 10) || 1,
+        pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+      }, this.getPartner);
     }
   }
 
@@ -128,8 +133,16 @@ class MyPartner extends React.Component {
   }
 
   handlePageChange = pageIndex => {
-    this.props.router.push(`/app/investor/my?page=${pageIndex}`);
+    const { pageSize } = this.props.location.query;
+    const parameters = { page: pageIndex, pageSize };
+    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageIndex }, this.getPartner);
+  }
+
+  handlePageSizeChange = (current, pageSize) => {
+    const parameters = { page: 1, pageSize };
+    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    // this.setState({ pageSize, pageIndex: 1 }, this.getPartner);
   }
 
   handleShowSizeChange(pageSize) {
@@ -307,7 +320,7 @@ class MyPartner extends React.Component {
           showSizeChanger
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
-          onShowSizeChange={(current, pageSize) => this.setState({ pageSize, pageIndex: 1 }, this.getPartner)}
+          onShowSizeChange={this.handlePageSizeChange}
         />
 
         {this.props.type === "investor" ? (
