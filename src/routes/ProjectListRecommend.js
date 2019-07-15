@@ -75,7 +75,7 @@ class ProjectListRecommend extends React.Component {
     const { page: nextPage, type: nextType } = nextProps.location.query;
     const { page: currentPage, type: currentType } = this.props.location.query;
     if (nextType !== currentType) {
-      this.setState({ favoritetype: parseInt(nextType, 10) || 3 }, this.getProjectList);
+      this.setState({ favoritetype: parseInt(nextType, 10) || 3, page: 1 }, this.getProjectList);
     } else if (nextPage !== currentPage) {
       this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
     }
