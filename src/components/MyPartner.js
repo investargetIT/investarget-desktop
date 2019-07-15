@@ -43,7 +43,12 @@ class MyPartner extends React.Component {
   constructor(props) {
     super(props);
 
-    const { page, pageSize, search } = props.location.query;
+    const { page, pageSize, search, filters } = props.location.query;
+
+    let nextFilters = null;
+    if (filters) {
+      nextFilters = JSON.parse(decodeURIComponent(filters));
+    }
 
     this.state = {
       list: [],
@@ -56,7 +61,7 @@ class MyPartner extends React.Component {
       selectedRowKeys: [],
       showFamModifyDialog: false,
       search: search || '',
-      filters: null,
+      filters: nextFilters,
       changedValue: null,
       isSubmitting: false,
       statistics: [],
@@ -165,6 +170,10 @@ class MyPartner extends React.Component {
     const parameters = { filters: encodeURIComponent(stringfy), search, page: 1, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ filters, pageIndex: 1 }, this.getPartner);
+  }
+
+  handleFilterReset = filters => {
+    this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)
   }
 
   handleShowSizeChange(pageSize) {
@@ -289,14 +298,15 @@ class MyPartner extends React.Component {
       }
     });
 
-    const { list } = this.state
+    const { list, filters } = this.state;
 
     return (
       <div>
 
       {this.props.type === "investor" ? (
-        <MyInvestorListFilter 
-          onReset={filters => this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)}
+        <MyInvestorListFilter
+          defaultValue={filters}
+          onReset={this.handleFilterReset}
           onFilter={this.handleFilter} />
       ) : null}
 
