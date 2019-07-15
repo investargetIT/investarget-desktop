@@ -305,7 +305,7 @@ class MyPartner extends React.Component {
 
       {this.props.type === "investor" ? (
         <MyInvestorListFilter
-          defaultValue={filters}
+          value={filters}
           onReset={this.handleFilterReset}
           onFilter={this.handleFilter} />
       ) : null}

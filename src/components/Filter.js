@@ -471,7 +471,7 @@ class MyInvestorListFilter extends React.Component {
     familiar: null
   };
 
-  state = this.props.defaultValue || MyInvestorListFilter.defaultValue;
+  state = this.props.value || MyInvestorListFilter.defaultValue;
 
   onChange(key, value) {
     this.setState({ [key]: value },this.onFilter)
@@ -484,6 +484,18 @@ class MyInvestorListFilter extends React.Component {
 
   onFilter() {
     this.props.onFilter(Object.assign({}, this.state))
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { value: nextValue } = nextProps;
+    const { value: currentValue } = this.props;
+    /**
+     * 只有当filters被清空时在这里setDefaultState
+     * 暂时没想到其他需要在这里setState的情况
+     */
+    if (!nextValue && currentValue) {
+      this.setState({ ...MyInvestorListFilter.defaultValue });
+    }
   }
 
   render() {
