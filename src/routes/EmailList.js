@@ -17,17 +17,17 @@ class EmailList extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page } = props.location.query;
+    // const { page } = props.location.query;
 
     const setting = this.readSetting()
     const search = setting ? setting.search : null
-    // const page = setting ? setting.page : 1
+    const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize : 10
 
     this.state = {
       search,
-      page: parseInt(page, 10) || 1,
-      pageSize: getUserInfo().page,
+      page,
+      pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -39,8 +39,8 @@ class EmailList extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.props.router.push(`/app/email/list?page=${page}`);
-    // this.setState({ page }, this.getEmailList)
+    // this.props.router.push(`/app/email/list?page=${page}`);
+    this.setState({ page }, this.getEmailList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -66,7 +66,7 @@ class EmailList extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search };
+    const data = { filters, search, page };
     localStorage.setItem('EmailList', JSON.stringify(data))
   }
 
@@ -79,13 +79,13 @@ class EmailList extends React.Component {
     this.getEmailList()
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { page: nextPage } = nextProps.location.query;
-    const { page: currentPage } = this.props.location.query;
-    if (nextPage !== currentPage) {
-      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getEmailList);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { page: nextPage } = nextProps.location.query;
+  //   const { page: currentPage } = this.props.location.query;
+  //   if (nextPage !== currentPage) {
+  //     this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getEmailList);
+  //   }
+  // }
 
   render() {
     const { location } = this.props
