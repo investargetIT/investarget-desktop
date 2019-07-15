@@ -21,12 +21,12 @@ class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page, type } = props.location.query;
+    const { page, type, pageSize } = props.location.query;
 
     this.state = {
       favoritetype: parseInt(type, 10) || 3, // default 交易师推荐
       page: parseInt(page, 10) || 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
