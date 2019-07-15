@@ -43,7 +43,7 @@ class MyPartner extends React.Component {
   constructor(props) {
     super(props);
 
-    const { page, pageSize } = props.location.query;
+    const { page, pageSize, search } = props.location.query;
 
     this.state = {
       list: [],
@@ -55,7 +55,7 @@ class MyPartner extends React.Component {
       selectedRows: [],
       selectedRowKeys: [],
       showFamModifyDialog: false,
-      search: '',
+      search: search || '',
       filters: null,
       changedValue: null,
       isSubmitting: false,
@@ -112,10 +112,11 @@ class MyPartner extends React.Component {
     const { search: nextSearch } = nextProps.location;
     const { search: currentSearch } = this.props.location;
     if (nextSearch !== currentSearch) {
-      const { page, pageSize } = nextProps.location.query;
+      const { search, page, pageSize } = nextProps.location.query;
       this.setState({
         pageIndex: parseInt(page, 10) || 1,
         pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+        search: search || '',
       }, this.getPartner);
     }
   }
@@ -133,16 +134,24 @@ class MyPartner extends React.Component {
   }
 
   handlePageChange = pageIndex => {
-    const { pageSize } = this.props.location.query;
-    const parameters = { page: pageIndex, pageSize };
+    const { search, pageSize } = this.props.location.query;
+    const parameters = { search, page: pageIndex, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageIndex }, this.getPartner);
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    const parameters = { page: 1, pageSize };
+    const { search } = this.props.location.query;
+    const parameters = { search, page: 1, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageSize, pageIndex: 1 }, this.getPartner);
+  }
+
+  handleSearch = search => {
+    const { pageSize } = this.props.location.query;
+    const parameters = { search, page: 1, pageSize };
+    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    // this.setState({ search, pageIndex: 1 }, this.getPartner);
   }
 
   handleShowSizeChange(pageSize) {
@@ -284,7 +293,7 @@ class MyPartner extends React.Component {
           style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
           value={this.state.search}
           onChange={search => this.setState({ search })}
-          onSearch={search => this.setState({ search, pageIndex: 1 }, this.getPartner)} />
+          onSearch={this.handleSearch} />
       ) : null}
 
       { this.props.type === "investor" ? 
