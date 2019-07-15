@@ -34,20 +34,22 @@ class ProjectListRecommend extends React.Component {
   }
 
   handlePageChange = (page) => {
-    const { type } = this.props.location.query;
-    const parameters = { type, page };
+    const { type, pageSize } = this.props.location.query;
+    const parameters = { type, page, pageSize };
     this.props.router.push(`/app/projects/list/recommend?${qs.stringify(parameters)}`);
-    // this.setState({ page }, this.getProjectList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getProjectList)
+    const { type } = this.props.location.query;
+    const parameters = { type, pageSize };
+    this.props.router.push(`/app/projects/list/recommend?${qs.stringify(parameters)}`);
   }
 
   handleFavorChange = (e) => {
     const favoritetype = e.target.value
-    // this.setState({ favoritetype }, this.getProjectList)
-    this.props.router.push(`/app/projects/list/recommend?type=${favoritetype}`);
+    const { pageSize } = this.props.location.query;
+    const parameters = { type: favoritetype, pageSize };
+    this.props.router.push(`/app/projects/list/recommend?${qs.stringify(parameters)}`);
   }
  
   getProjectList = () => {
@@ -72,10 +74,12 @@ class ProjectListRecommend extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { page: nextPage, type: nextType } = nextProps.location.query;
-    const { page: currentPage, type: currentType } = this.props.location.query;
+    const { page: nextPage, type: nextType, pageSize: nextPageSize } = nextProps.location.query;
+    const { page: currentPage, type: currentType, pageSize: currentPageSize } = this.props.location.query;
     if (nextType !== currentType) {
       this.setState({ favoritetype: parseInt(nextType, 10) || 3, page: 1 }, this.getProjectList);
+    } else if (nextPageSize !== currentPageSize) {
+      this.setState({ pageSize: parseInt(nextPageSize, 10) || getUserInfo().page || 10, page: 1 }, this.getProjectList);
     } else if (nextPage !== currentPage) {
       this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
     }
