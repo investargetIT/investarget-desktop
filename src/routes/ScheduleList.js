@@ -33,6 +33,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import qs from 'qs';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -138,14 +139,14 @@ class ScheduleList extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page } = props.location.query;
+    const { page, pageSize, search } = props.location.query;
 
     this.state = {
-      search: null,
+      search: search || null,
       total: 0,
       list: [],
       page: parseInt(page, 10) || 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       loading: false,
       sort:undefined,
       desc:undefined,
@@ -156,16 +157,24 @@ class ScheduleList extends React.Component {
   }
 
   handleSearch = (search) => {
-    this.setState({ search }, this.getSchedule)
+    const { pageSize } = this.props.location.query;
+    const parameters = { search, page: 1, pageSize };
+    this.props.router.push(`/app/schedule/list?${qs.stringify(parameters)}`);
+    // this.setState({ search }, this.getSchedule)
   }
 
   handleChangePage = (page) => {
-    this.props.router.push(`/app/schedule/list?page=${page}`);
+    const { search, pageSize } = this.props.location.query;
+    const parameters = { search, page, pageSize };
+    this.props.router.push(`/app/schedule/list?${qs.stringify(parameters)}`);
     // this.setState({ page }, this.getSchedule)
   }
 
   handleChangePageSize = (current, pageSize) => {
-    this.setState({ page: 1, pageSize }, this.getSchedule)
+    const { search } = this.props.location.query;
+    const parameters = { search, page: 1, pageSize };
+    this.props.router.push(`/app/schedule/list?${qs.stringify(parameters)}`);
+    // this.setState({ page: 1, pageSize }, this.getSchedule)
   }
 
   getSchedule = () => {
@@ -195,11 +204,24 @@ class ScheduleList extends React.Component {
     this.getSchedule()
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   const { page: nextPage } = nextProps.location.query;
+  //   const { page: currentPage } = this.props.location.query;
+  //   if (nextPage !== currentPage) {
+  //     this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getSchedule);
+  //   }
+  // }
+
   componentWillReceiveProps(nextProps) {
-    const { page: nextPage } = nextProps.location.query;
-    const { page: currentPage } = this.props.location.query;
-    if (nextPage !== currentPage) {
-      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getSchedule);
+    const { search: nextSearch } = nextProps.location;
+    const { search: currentSearch } = this.props.location;
+    if (nextSearch !== currentSearch) {
+      const { search, page, pageSize } = nextProps.location.query;
+      this.setState({
+        search: search || null,
+        page: parseInt(page, 10) || 1,
+        pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+      }, this.getSchedule);
     }
   }
 
