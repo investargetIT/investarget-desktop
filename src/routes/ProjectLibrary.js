@@ -44,8 +44,8 @@ class ProjectLibrary extends React.Component {
     super(props)
 
     // 根据是否从机构页面跳转而来设置相应的筛选条件
-    const { search: searchContent, page } = props.location.query;
-    let search, filters;
+    const { search: searchContent } = props.location.query;
+    let search, filters, page;
     if (searchContent) {
       search = searchContent;
       filters = ProjectLibraryFilter.defaultValue;
@@ -53,12 +53,13 @@ class ProjectLibrary extends React.Component {
       const setting = this.readSetting();
       filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue;
       search = setting ? setting.search : null;
+      page = setting ? setting.page : 1;
     }
 
     this.state = {
       filters,
       search,
-      page: parseInt(page, 10) || 1,
+      page: page || 1,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -70,8 +71,8 @@ class ProjectLibrary extends React.Component {
   }
 
   writeSetting = () => {
-    const { filters, search } = this.state;
-    const data = { filters, search };
+    const { filters, search, page } = this.state;
+    const data = { filters, search, page };
     localStorage.setItem('ProjectLibrary', JSON.stringify(data));
   }
 
@@ -81,10 +82,10 @@ class ProjectLibrary extends React.Component {
   }
 
   handleFilt = (filters) => {
-    const { search } = this.props.location.query;
-    const parameters = { search, page: 1 };
-    this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
-    // this.setState({ filters, page: 1 }, this.getProject)
+    // const { search } = this.props.location.query;
+    // const parameters = { search, page: 1 };
+    // this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
+    this.setState({ filters, page: 1 }, this.getProject)
   }
 
   handleReset = (filters) => {
@@ -100,10 +101,10 @@ class ProjectLibrary extends React.Component {
   }
 
   handlePageChange = (page) => {
-    const { search } = this.props.location.query;
-    const parameters = { search, page };
-    this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
-    // this.setState({ page }, this.getProject)
+    // const { search } = this.props.location.query;
+    // const parameters = { search, page };
+    // this.props.router.push(`/app/projects/library?${qs.stringify(parameters)}`);
+    this.setState({ page }, this.getProject)
   }
 
   handlePageSizeChange = (current, pageSize) => {
