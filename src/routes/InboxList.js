@@ -5,7 +5,7 @@ import {
   Table, 
   Pagination,
 } from 'antd';
-import { Link } from 'dva/router';
+import { Link, withRouter } from 'dva/router';
 import { 
   getMsg, 
   readMsg, 
@@ -17,6 +17,7 @@ import {
   getUserInfo,
 } from '../utils/util';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import qs from 'qs';
 
 
 const tableStyle = { marginBottom: '24px' }
@@ -32,13 +33,15 @@ class InboxList extends React.Component {
   constructor(props) {
     super(props)
 
+    const { page, pageSize } = props.location.query;
+
     this.state = {
       showDetail: false,
       data: [],
       total: 0,
       loading: false,
-      pageIndex: 1,
-      pageSize: getUserInfo().page || 10,
+      pageIndex: parseInt(page, 10) || 1,
+      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       selectedMsg: [],
       currentMsg: null,
     }
@@ -46,6 +49,19 @@ class InboxList extends React.Component {
 
   componentDidMount() {
     this.getMessageList()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { search: nextSearch } = nextProps.location;
+    const { search: currentSearch } = this.props.location;
+    if (nextSearch !== currentSearch) {
+      const { page, pageSize } = nextProps.location.query;
+      this.setState({
+        selectedMsg: [],
+        pageIndex: parseInt(page, 10) || 1,
+        pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+      }, this.getMessageList);
+    }
   }
 
   handleItemClicked = (record) => {
@@ -63,11 +79,16 @@ class InboxList extends React.Component {
   // pageIndex, pageSize 变化时，重置 selectedMsg
 
   handlePageChange = (page) => {
-    this.setState({ pageIndex: page, selectedMsg: [] }, this.getMessageList)
+    const { pageSize } = this.props.location.query;
+    const parameters = { page, pageSize };
+    this.props.router.push(`/app/inbox/list?${qs.stringify(parameters)}`);
+    // this.setState({ pageIndex: page, selectedMsg: [] }, this.getMessageList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, pageIndex: 1, selectedMsg: [] }, this.getMessageList)
+    const parameters = { page: 1, pageSize };
+    this.props.router.push(`/app/inbox/list?${qs.stringify(parameters)}`);
+    // this.setState({ pageSize, pageIndex: 1, selectedMsg: [] }, this.getMessageList)
   }
 
   getMessageList = async () => {
@@ -182,4 +203,4 @@ class InboxList extends React.Component {
   }
 }
 
-export default InboxList
+export default withRouter(InboxList);
