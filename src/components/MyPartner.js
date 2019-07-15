@@ -112,11 +112,16 @@ class MyPartner extends React.Component {
     const { search: nextSearch } = nextProps.location;
     const { search: currentSearch } = this.props.location;
     if (nextSearch !== currentSearch) {
-      const { search, page, pageSize } = nextProps.location.query;
+      const { filters, search, page, pageSize } = nextProps.location.query;
+      let nextFilters = null;
+      if (filters) {
+        nextFilters = JSON.parse(decodeURIComponent(filters));
+      }
       this.setState({
         pageIndex: parseInt(page, 10) || 1,
         pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
         search: search || '',
+        filters: nextFilters,
       }, this.getPartner);
     }
   }
@@ -134,24 +139,32 @@ class MyPartner extends React.Component {
   }
 
   handlePageChange = pageIndex => {
-    const { search, pageSize } = this.props.location.query;
-    const parameters = { search, page: pageIndex, pageSize };
+    const { search, pageSize, filters } = this.props.location.query;
+    const parameters = { filters, search, page: pageIndex, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageIndex }, this.getPartner);
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    const { search } = this.props.location.query;
-    const parameters = { search, page: 1, pageSize };
+    const { search, filters } = this.props.location.query;
+    const parameters = { filters, search, page: 1, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageSize, pageIndex: 1 }, this.getPartner);
   }
 
   handleSearch = search => {
-    const { pageSize } = this.props.location.query;
-    const parameters = { search, page: 1, pageSize };
+    const { pageSize, filters } = this.props.location.query;
+    const parameters = { filters, search, page: 1, pageSize };
     this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ search, pageIndex: 1 }, this.getPartner);
+  }
+
+  handleFilter = filters => {
+    const stringfy = JSON.stringify(filters);
+    const { search, pageSize } = this.props.location.query;
+    const parameters = { filters: encodeURIComponent(stringfy), search, page: 1, pageSize };
+    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    // this.setState({ filters, pageIndex: 1 }, this.getPartner);
   }
 
   handleShowSizeChange(pageSize) {
@@ -284,7 +297,7 @@ class MyPartner extends React.Component {
       {this.props.type === "investor" ? (
         <MyInvestorListFilter 
           onReset={filters => this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)}
-          onFilter={filters => this.setState({ filters, pageIndex: 1 }, this.getPartner)} />
+          onFilter={this.handleFilter} />
       ) : null}
 
       {this.props.type === "investor" ? (
