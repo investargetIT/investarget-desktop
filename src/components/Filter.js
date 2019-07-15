@@ -489,12 +489,9 @@ class MyInvestorListFilter extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { value: nextValue } = nextProps;
     const { value: currentValue } = this.props;
-    /**
-     * 只有当filters被清空时在这里setDefaultState
-     * 暂时没想到其他需要在这里setState的情况
-     */
-    if (!nextValue && currentValue) {
-      this.setState({ ...MyInvestorListFilter.defaultValue });
+    if (JSON.stringify(nextValue) !== JSON.stringify(currentValue)) {
+      const value = nextValue || MyInvestorListFilter.defaultValue;
+      this.setState({ ...value });
     }
   }
 

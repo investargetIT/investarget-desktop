@@ -173,7 +173,14 @@ class MyPartner extends React.Component {
   }
 
   handleFilterReset = filters => {
-    this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)
+    let search = '';
+    const { pageSize } = this.props.location.query;
+    if (pageSize) {
+      const parameters = { pageSize };
+      search = `?${qs.stringify(parameters)}`;
+    }
+    this.props.router.push(`/app/investor/my${search}`);
+    // this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)
   }
 
   handleShowSizeChange(pageSize) {
