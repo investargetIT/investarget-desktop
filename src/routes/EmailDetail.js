@@ -16,16 +16,16 @@ class EmailDetail extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page } = props.location.query;
+    // const { page } = props.location.query;
 
     const setting = this.readSetting()
     const search = setting ? setting.search : null
-    // const page = setting ? setting.page : 1
+    const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize : 10
 
     this.state = {
       search,
-      page: parseInt(page, 10) || 1,
+      page,
       pageSize: getUserInfo().page || 10,
       total: 0,
       list: [],
@@ -41,9 +41,9 @@ class EmailDetail extends React.Component {
   }
 
   handlePageChange = (page) => {
-    const id = Number(this.props.params.id)
-    this.props.router.push(`/app/email/detail/${id}?page=${page}`);
-    // this.setState({ page }, this.getUserList)
+    // const id = Number(this.props.params.id)
+    // this.props.router.push(`/app/email/detail/${id}?page=${page}`);
+    this.setState({ page }, this.getUserList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -89,7 +89,7 @@ class EmailDetail extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search };
+    const data = { filters, search, page };
     localStorage.setItem('EmailDetail', JSON.stringify(data))
   }
 
@@ -102,13 +102,13 @@ class EmailDetail extends React.Component {
     this.getUserList()
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { page: nextPage } = nextProps.location.query;
-    const { page: currentPage } = this.props.location.query;
-    if (nextPage !== currentPage) {
-      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getUserList);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { page: nextPage } = nextProps.location.query;
+  //   const { page: currentPage } = this.props.location.query;
+  //   if (nextPage !== currentPage) {
+  //     this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getUserList);
+  //   }
+  // }
 
   handleTableChange = (pagination, filters, sorter) => {
     this.setState(
