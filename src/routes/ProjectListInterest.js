@@ -7,7 +7,7 @@ import {
   getUserInfo, 
   hasPerm, 
 } from '../utils/util';
-
+import qs from 'qs';
 import { Radio } from 'antd'
 const RadioGroup = Radio.Group
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -18,11 +18,11 @@ class ProjectListRecommend extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page } = props.location.query;
+    const { page, pageSize } = props.location.query;
 
     this.state = {
       page: parseInt(page, 10) || 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       total: 0,
       list: [],
       loading: false,
@@ -30,12 +30,16 @@ class ProjectListRecommend extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.props.router.push(`/app/projects/list/interest?page=${page}`);
+    const { pageSize } = this.props.location.query;
+    const parameters = { page, pageSize };
+    this.props.router.push(`/app/projects/list/interest?${qs.stringify(parameters)}`);
     // this.setState({ page }, this.getProjectList)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getProjectList)
+    const parameters = { page: 1, pageSize };
+    this.props.router.push(`/app/projects/list/interest?${qs.stringify(parameters)}`);
+    // this.setState({ pageSize, page: 1 }, this.getProjectList)
   }
 
   getProjectList = () => {
@@ -61,10 +65,14 @@ class ProjectListRecommend extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { page: nextPage } = nextProps.location.query;
-    const { page: currentPage } = this.props.location.query;
-    if (nextPage !== currentPage) {
-      this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProjectList);
+    const { search: nextSearch } = nextProps.location;
+    const { search: currentSearch } = this.props.location;
+    if (nextSearch !== currentSearch) {
+      const { page, pageSize } = nextProps.location.query;
+      this.setState({
+        page: parseInt(page, 10) || 1,
+        pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+      }, this.getProjectList);
     }
   }
 
