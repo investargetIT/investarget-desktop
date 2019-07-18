@@ -721,7 +721,7 @@ class ProjectLibraryFilter extends React.Component {
         <BasicContainer label={i18n('filter.industry')}>
           <TabCheckbox options={industryOptions} value={com_sub_cat_name} onChange={this.handleChange.bind(this, 'com_sub_cat_name')} />
         </BasicContainer>
-        <BasicContainer label={i18n('project_library.established_time')}>
+        <BasicContainer label={i18n('project_library.financing_time')}>
           <CheckboxYear end={2000-1} value={com_born_date} onChange={this.handleChange.bind(this, 'com_born_date')} />
         </BasicContainer>
         <BasicContainer label={i18n('project_library.area')}>
