@@ -117,7 +117,7 @@ class ITCheckboxGroup extends React.Component {
       <div style={containerStyle} onMouseLeave={this.handleMouseLeave}>
         <ul ref={el => {this.listEl = el}} className="clearfix" style={this.state.expand ? expandListStyle : listStyle}>
 
-          <Item label="不限" checked={value.length == 0} onCheck={this.handleClear} closable={false} />
+          <Item label="不限" checked={!value || value.length == 0} onCheck={this.handleClear} closable={false} />
 
           {options.map(item => {
             const isChecked = value.includes(item.value)
