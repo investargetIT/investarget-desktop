@@ -51,7 +51,8 @@ class ProjectLibrary extends React.Component {
       filters = ProjectLibraryFilter.defaultValue;
     } else {
       const setting = this.readSetting();
-      filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue;
+      // filters = setting ? setting.filters : ProjectLibraryFilter.defaultValue;
+      filters = ProjectLibraryFilter.defaultValue;
       search = setting ? setting.search : null;
       page = setting ? setting.page : 1;
     }
