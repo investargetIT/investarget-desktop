@@ -73,11 +73,11 @@ class ProjectLibrary extends React.Component {
   writeSetting = () => {
     const { filters, search, page } = this.state;
     const data = { filters, search, page };
-    localStorage.setItem('ProjectLibrary', JSON.stringify(data));
+    localStorage.setItem('ProjectLibrary1', JSON.stringify(data));
   }
 
   readSetting = () => {
-    var data = localStorage.getItem('ProjectLibrary');
+    var data = localStorage.getItem('ProjectLibrary1');
     return data ? JSON.parse(data) : null;
   }
 
