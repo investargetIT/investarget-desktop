@@ -41,7 +41,6 @@ class Schedule extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      total: 0,
       list: [],
       event: {},
       visibleAdd: false,
@@ -110,13 +109,17 @@ class Schedule extends React.Component {
 
   getEvents = () => {
     window.echo(this.props.location.query.mid);
-    api.getSchedule({ 
+    // 加载前后三个月的日程
+    const lastMonth = this.state.selectedDate.clone().subtract(1, 'M');
+    const nextMonth = this.state.selectedDate.clone().add(1, 'M');
+    const requestThreeMonthsSchedule = [lastMonth, this.state.selectedDate, nextMonth].map(m => api.getSchedule({
       manager: getCurrentUser(), 
       page_size: 100, 
-      date: this.state.selectedDate.format('YYYY-MM-DD'),
-    })
+      date: m.format('YYYY-MM-DD'),
+    }));
+    Promise.all(requestThreeMonthsSchedule)
     .then(result => {
-      var { count: total, data: list } = result.data
+      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       })
@@ -137,7 +140,7 @@ class Schedule extends React.Component {
           event = relatedEvent[0];
         }
       }
-      this.setState({ total, list, visibleEvent, event });
+      this.setState({ list, visibleEvent, event });
     }).catch(error => {
       handleError(error)
     })
