@@ -98,7 +98,11 @@ class Schedule extends React.Component {
 
   onSelect = date => {
     if (this.state.mode == 'month' && date.diff(moment(), 'days') >= 0) {
-      this.setState({ visibleAdd: true, selectedDate: date.startOf('hour') })
+      let callback = undefined;
+      if (date.month() !== this.state.selectedDate.month()) {
+        callback = this.getEvents;
+      }
+      this.setState({ visibleAdd: true, selectedDate: date.startOf('hour') }, callback);
     } else {
       this.setState({ selectedDate: date });
     }
