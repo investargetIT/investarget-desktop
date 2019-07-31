@@ -9,7 +9,7 @@ function MyTrader(props) {
       location={props.location}
       title={i18n("user.mytrader")}
       action={{ name: i18n("user.add_trader"), link: "/app/trader/add" }}>
-      <MyPartner type="trader" />
+      <MyPartner type="trader" location={props.location} />
     </LeftRightLayout>
   )
 }
