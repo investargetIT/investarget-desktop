@@ -297,12 +297,6 @@ class ProjectDetail extends React.Component {
 
     this.getFavorProject()
 
-    if (hasPerm('proj.admin_getfavorite')) {
-      api.getFavoriteProj({ favoritetype: 5, proj: this.state.id })
-      .then(data => this.setState({ userListWithInterest: data.data.data }, this.updateDimensions))
-      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
-    }
-
     // 获取投资人的交易师
     if (hasPerm('usersys.as_investor')) {
       api.getUserRelation({ investoruser: isLogin() && isLogin().id }).then(result => {
@@ -454,7 +448,7 @@ function ProjectImage({ project, height }) {
   )
 }
 
-class InterestedPeople extends React.Component {
+class InterestedPeople1 extends React.Component {
 
   constructor(props) {
     super(props)
@@ -465,8 +459,16 @@ class InterestedPeople extends React.Component {
 
   componentDidMount() {
     api.getFavoriteProj({ favoritetype: 5, proj: this.props.projId })
-      .then(data => this.setState({ userListWithInterest: data.data.data }))
-      .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+      .then(data => {
+        const allUsers = data.data.data.map(m => m.user);
+        const allUserIds = allUsers.map(m => m.id);
+        const allUniqueUserIds = allUserIds.filter((f, i) => allUserIds.indexOf(f) === i);
+        const userListWithInterest = allUniqueUserIds.map(m => allUsers.filter(f => f.id === m)[0]);
+        this.setState({ userListWithInterest });
+      })
+      .catch(error => {
+        this.props.dispatch({ type: 'app/findError', payload: error })
+      })
   }
 
   render() {
@@ -480,8 +482,8 @@ class InterestedPeople extends React.Component {
         <div>
           {userListWithInterest.length > 0 ? (
               userListWithInterest.map(m =>
-                <Link key={m.id} to={'/app/user/' + m.user.id}>
-                  <img style={{ width: 40, height: 40, verticalAlign: 'top', marginRight: 16, marginBottom: 16 }} src={m.user.photourl} />
+                <Link key={m.id} to={'/app/user/' + m.id}>
+                  <img style={{ width: 40, height: 40, verticalAlign: 'top', marginRight: 16, marginBottom: 16 }} src={m.photourl} />
                 </Link>
               )
             ) : (
@@ -494,6 +496,8 @@ class InterestedPeople extends React.Component {
     )
   }
 }
+
+const InterestedPeople = connect()(InterestedPeople1)
 
 function Icon2(props) {
   return <i style={props.style || iconStyle} className={'fa fa-' + props.type} aria-hidden="true"></i>
