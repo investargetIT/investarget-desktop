@@ -92,7 +92,7 @@ class LeftRightLayout extends React.Component {
                   : null}
                 
                 { this.props.action ? (
-                    <Link style={actionStyle} to={this.props.action.link}>{this.props.action.name}</Link>
+                    <Link style={{ ...actionStyle, ...this.props.action.style }} to={this.props.action.link}>{this.props.action.name}</Link>
                 ) : null }
                 { this.props.right ? (
                   <div style={{float:'right'}}>{this.props.right}</div>
