@@ -363,6 +363,7 @@ class FileMgmt extends React.Component {
       title: i18n('dataroom.modified_time'),
       dataIndex: 'date',
       key: 'date',
+      sorter: (a, b) => new Date(a.date + a.timezone).getTime() - new Date(b.date + b.timezone).getTime(),
       render: (date, record) => date && time(date+record.timezone),
     }]
     if (isAdmin && !this.props.isClose) {
