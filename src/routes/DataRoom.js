@@ -452,6 +452,16 @@ class DataRoom extends React.Component {
     this.checkDataRoomStatus();
   }
 
+  handleSaveTemplate = item => {
+    const { dataroom: { id: dataroom }, id: dataroomUserFile, user: { id: user } } = item;
+    const body = { dataroomUserFile, dataroom, user };
+    window.echo('body', body);
+  }
+
+  handleApplyTemplate = () => {
+    window.echo('handle apply template');
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -471,6 +481,8 @@ class DataRoom extends React.Component {
               selectedUser={this.state.selectedUser}
               onChange={this.handleSelectUser}
               onSendEmail={this.handleSendEmail}
+              onSaveTemplate={this.handleSaveTemplate}
+              onApplyTemplate={this.handleApplyTemplate}
             />
           </div>
           : null}
