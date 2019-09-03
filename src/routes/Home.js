@@ -39,9 +39,33 @@ class Home extends React.Component {
     window.location.href = '/login';
   }
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+
     if(isLogin()) {
       this.props.dispatch(routerRedux.push('/app'))
+    } else {
+      this.setSource();
+      if (localStorage.getItem('source')) {
+        window.location.href = '/login';
+      }
+    }
+  }
+
+  setSource() {
+    switch (window.location.host) {
+      case 'saas.investarget.com':
+        localStorage.setItem('source', 1);
+        break;
+      case 'saastest.investarget.com':
+        localStorage.setItem('source', 1);
+        break;
+      case '39.107.14.53:802':
+        localStorage.setItem('source', 2);
+        break;
+      case 'aura.investarget.com':
+        localStorage.setItem('source', 3);
+        break;
     }
   }
 

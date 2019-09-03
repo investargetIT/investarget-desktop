@@ -29,7 +29,7 @@ class Login extends React.Component {
         console.error(e.message)
       }
     }
-    if (!localStorage.getItem('source')) {
+    if (!localStorage.getItem('source') && this.props.location.query.source) {
       localStorage.setItem('source', Number(this.props.location.query.source));
     }
   }
@@ -63,7 +63,7 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.currentUser) {
+    if (this.props.currentUser || !localStorage.getItem('source')) {
       this.props.dispatch(routerRedux.replace('/'))
     }
   }
