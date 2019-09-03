@@ -28,6 +28,9 @@ class LoginContainer extends React.Component {
     } else if (source === 2) {
       logo = '/images/autospace.png';
       bg = 'url(/images/bg_autospace.png)';
+    } else if (source === 3) {
+      logo = '/images/aura_logo.png';
+      bg = 'url(/images/aura.jpeg)';
     }
     const bodyWrapStyle = {
       margin: '0 auto', 
