@@ -163,11 +163,11 @@ class OrganizationList extends React.Component {
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
           <div style={{ color: "#428BCA" }}>
-            { [1, 2].includes(record.orglevel.id) ?
+            { record.orglevel && [1, 2].includes(record.orglevel.id) ?
             <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
             : null}
             {record.orgfullname}
-            { [1, 2].includes(record.orglevel.id) ? 
+            { record.orglevel && [1, 2].includes(record.orglevel.id) ? 
             <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
             : null }
           </div>
