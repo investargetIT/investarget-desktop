@@ -11,7 +11,7 @@ class GlobalMobile extends React.Component {
     const { areaCode, mobile } = props
     const countryId = this.findCountryIDByAreaCode(areaCode)
     this.state = {
-      countryId: countryId == 'unknown' ? 42 : countryId,
+      countryId: countryId == 'unknown' ? '' : countryId,
       areaCode: areaCode || '86',
       mobile: mobile || '',
     }
@@ -65,11 +65,22 @@ class GlobalMobile extends React.Component {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
   }
 
+  findChina = () => {
+    if (this.props.country.length === 0) {
+      return '';
+    }
+    const filterChina = this.props.country.filter(f => f.areaCode === '86');
+    if (filterChina.length > 0) {
+      return filterChina[0].id + '';
+    }
+    return '';
+  }
+
   render() {
     const { countryId, areaCode, mobile } = this.state
     return (
       <Input.Group compact className="it-mobile" style={{display: 'flex'}}>
-        <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId + ''}>
+        <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId ? countryId + '' : this.findChina()}>
           {this.props.country.map(c => {
             return c.key ?<Option key={c.id} value={c.id + ''}>
             <img src={c.url} style={{ width: 40, height: 28, marginLeft: 6, verticalAlign: 'top' }} />
