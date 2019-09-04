@@ -422,7 +422,7 @@ export function login(values) {
   const param = {
     account: values.username,
     password: values.password,
-    datasource: 1
+    // datasource: 1
   }
   return r('/user/login/', 'POST', param)
 }
