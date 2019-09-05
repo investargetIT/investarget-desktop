@@ -22,7 +22,6 @@ const officeFileTypes = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
 ];
-
 const imageFileTypes = [
   'image/jpeg', 
   'image/gif', 
@@ -30,13 +29,17 @@ const imageFileTypes = [
   'image/bmp', 
   'image/webp', 
 ];
-
 const videoFileTypes = [
   'video/mp4',
   'video/avi',
 ];
-
-const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes);
+const audioFileTypes = [
+  'audio/mpeg',
+  'audio/m4a',
+  'audio/x-m4a',
+  'audio/mp3',
+];
+const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes).concat(audioFileTypes);
 
 const buttonStyle = {
   backgroundColor: 'transparent', 
@@ -104,7 +107,7 @@ class FileMgmt extends React.Component {
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
         window.open(file.fileurl);
-      } else if ((/\.(mp4|avi)$/i).test(file.filename)) {
+      } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(file.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
         });
@@ -292,6 +295,8 @@ class FileMgmt extends React.Component {
       return '/images/xls.png';
     } else if (/\.(mp4|avi)$/i.test(filename)) {
       return '/images/file-video-icon.png';
+    } else if (/\.(mp3|m4a)$/i.test(filename)) {
+      return '/images/audio.png';
     } else {
       return '/images/pdf.png';
     }
@@ -462,7 +467,7 @@ class FileMgmt extends React.Component {
         if (!validFileTypes.includes(fileType)) {
           Modal.error({
             title: '不支持的文件类型',
-            content: '请上传 office、pdf 或者后缀名为 mp4、avi 的视频文件',
+            content: '请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件',
           })
           return false
         }
