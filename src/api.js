@@ -899,3 +899,4 @@ export const addWebexUser = body => r('/msg/webex/user/', 'POST', body);
 export const getWebexUser = param => r('/msg/webex/user/?' + qs.stringify(param));
 
 export const addDataroomTemp = body => r('/dataroom/temp/', 'POST', body);
+export const getDataroomTemp = param => r(`/dataroom/temp/?${qs.stringify(param)}`);

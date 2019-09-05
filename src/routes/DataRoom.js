@@ -46,6 +46,14 @@ class DataRoom extends React.Component {
     })
     this.getDataRoomFile()
     this.getAllUserFile()
+    this.getDataRoomTemp();
+  }
+
+  getDataRoomTemp = () => {
+    const dataroom = this.state.id;
+    api.getDataroomTemp({ dataroom }).then(res => {
+      window.echo('reeees', res);
+    })
   }
 
   formatData = (data) => {
