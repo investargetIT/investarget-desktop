@@ -587,7 +587,7 @@ class FileMgmt extends React.Component {
           columns={columns}
           rowKey={record => record.unique}
           rowSelection={rowSelection}
-          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName)}
+          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile)).sort(sortByFileTypeAndName)}
           loading={this.state.loading}
           pagination={false} />
 
