@@ -456,6 +456,9 @@ class DataRoom extends React.Component {
     const { dataroom: { id: dataroom }, id: dataroomUserFile, user: { id: user } } = item;
     const body = { dataroomUserFile, dataroom, user };
     window.echo('body', body);
+    api.addDataroomTemp(body).then(res => {
+      window.echo('res', res);
+    });
   }
 
   handleApplyTemplate = () => {

@@ -897,3 +897,5 @@ export const deleteWebexMeeting = id => r(`/msg/webex/meeting/${id}/`, 'DELETE')
 export const editWebexMeeting = (id, body) => r(`/msg/webex/meeting/${id}/`, 'PUT', body);
 export const addWebexUser = body => r('/msg/webex/user/', 'POST', body);
 export const getWebexUser = param => r('/msg/webex/user/?' + qs.stringify(param));
+
+export const addDataroomTemp = body => r('/dataroom/temp/', 'POST', body);
