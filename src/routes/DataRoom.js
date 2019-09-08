@@ -191,7 +191,8 @@ class DataRoom extends React.Component {
         const unique = item.id
         const isFolder = !item.isFile
         const date = item.lastmodifytime || item.createdtime
-        const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+        const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
+        const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
         newData.push(newItem)
         this.setState({ data: newData })
       }).catch(error => {
