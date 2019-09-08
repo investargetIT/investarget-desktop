@@ -3,13 +3,15 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal } from 'antd'
+import { Modal, Select } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
   DataRoomUserList, 
 } from '../components/DataRoomUser';
 import Tree from 'antd/lib/tree';
+
+const { Option } = Select;
 
 class DataRoom extends React.Component {
 
@@ -39,6 +41,7 @@ class DataRoom extends React.Component {
       loading: false,
 
       showDataRoomTempModal: false,
+      dataRoomTemp: [],
     }
   }
 
@@ -54,7 +57,7 @@ class DataRoom extends React.Component {
   getDataRoomTemp = () => {
     const dataroom = this.state.id;
     api.getDataroomTemp({ dataroom }).then(res => {
-      window.echo('reeees', res);
+      this.setState({ dataRoomTemp: res.data.data });
     })
   }
 
@@ -550,6 +553,13 @@ class DataRoom extends React.Component {
             onConfirm={this.handleConfirmSelectDataroomTemp}
             onCancel={() => this.setState({ showDataRoomTempModal: false })}
           >
+            <Select
+              defaultValue={this.state.dataRoomTemp.length > 0 ? this.state.dataRoomTemp[0].id : undefined}
+              style={{ width: 120 }}
+              onChange={value => this.setState({ value })}
+            >
+              { this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id}>{m.user}</Option>) }
+            </Select>
           </Modal>
         }
 
