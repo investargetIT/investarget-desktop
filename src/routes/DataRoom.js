@@ -462,8 +462,8 @@ class DataRoom extends React.Component {
   }
 
   handleSaveTemplate = item => {
-    const { dataroom: { id: dataroom }, id: dataroomUserFile, user: { id: user } } = item;
-    const body = { dataroomUserFile, dataroom, user };
+    const { dataroom: { id: dataroom }, id: dataroomUserfile, user: { id: user } } = item;
+    const body = { dataroomUserfile, dataroom, user };
     window.echo('body', body);
     api.addDataroomTemp(body).then(res => {
       window.echo('res', res);
