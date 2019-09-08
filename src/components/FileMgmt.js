@@ -306,6 +306,17 @@ class FileMgmt extends React.Component {
     this.uploadDir = this.state.parentId;
   }
 
+  getTableDataSource = () => {
+    const { is_superuser, permissions } = isLogin();
+    if (!is_superuser && permissions.includes('usersys.as_investor')) {
+      // 对于投资人，隐藏空目录，除非是刚新建的目录
+      return this.props.data.filter(
+        f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile || !f.id || f.justCreated)
+      ).sort(sortByFileTypeAndName);
+    }
+    return this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName);
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -587,7 +598,7 @@ class FileMgmt extends React.Component {
           columns={columns}
           rowKey={record => record.unique}
           rowSelection={rowSelection}
-          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile)).sort(sortByFileTypeAndName)}
+          dataSource={this.getTableDataSource()}
           loading={this.state.loading}
           pagination={false} />
 
