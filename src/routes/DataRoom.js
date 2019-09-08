@@ -37,6 +37,8 @@ class DataRoom extends React.Component {
       downloadUrl: null,
       downloadUser: isLogin(),
       loading: false,
+
+      showDataRoomTempModal: false,
     }
   }
 
@@ -471,7 +473,7 @@ class DataRoom extends React.Component {
   }
 
   handleApplyTemplate = () => {
-    window.echo('handle apply template');
+    this.setState({ showDataRoomTempModal: true });
   }
 
   render () {
@@ -540,6 +542,17 @@ class DataRoom extends React.Component {
               onConfirm={this.handleDownloadBtnClicked}
               />
           </Modal>
+
+        {this.state.showDataRoomTempModal &&
+          <Modal
+            title="选择Dataroom模版"
+            visible={true}
+            onConfirm={this.handleConfirmSelectDataroomTemp}
+            onCancel={() => this.setState({ showDataRoomTempModal: false })}
+          >
+          </Modal>
+        }
+
       </LeftRightLayout>
     )
   }
