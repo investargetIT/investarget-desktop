@@ -42,7 +42,7 @@ class DataRoom extends React.Component {
 
       showDataRoomTempModal: false,
       dataRoomTemp: [],
-      selectedDataroomTemp: null,
+      selectedDataroomTemp: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -54,7 +54,10 @@ class DataRoom extends React.Component {
     })
     this.getDataRoomFile()
     this.getAllUserFile()
-    this.getDataRoomTemp().then(dataRoomTemp => this.setState({ dataRoomTemp }));
+    this.getDataRoomTemp().then(dataRoomTemp => this.setState({
+      dataRoomTemp,
+      selectedDataroomTemp: dataRoomTemp.length > 0 ? '' + dataRoomTemp[0].id : '',
+    }));
   }
 
   getDataRoomTemp = async () => {
@@ -570,6 +573,7 @@ class DataRoom extends React.Component {
               defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
               style={{ width: 120 }}
               onChange={value => this.setState({ selectedDataroomTemp: value })}
+              value={this.state.selectedDataroomTemp + ''}
             >
               { this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>) }
             </Select>
