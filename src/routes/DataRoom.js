@@ -42,7 +42,10 @@ class DataRoom extends React.Component {
 
       showDataRoomTempModal: false,
       dataRoomTemp: [],
+      selectedDataroomTemp: null,
     }
+
+    this.dataRoomTempModalUserId = null;
   }
 
   componentDidMount() {
@@ -51,14 +54,15 @@ class DataRoom extends React.Component {
     })
     this.getDataRoomFile()
     this.getAllUserFile()
-    this.getDataRoomTemp();
+    this.getDataRoomTemp().then(dataRoomTemp => this.setState({ dataRoomTemp }));
   }
 
-  getDataRoomTemp = () => {
+  getDataRoomTemp = async () => {
     const dataroom = this.state.id;
-    api.getDataroomTemp({ dataroom }).then(res => {
-      this.setState({ dataRoomTemp: res.data.data });
-    })
+    const reqDataroomTemp = await api.getDataroomTemp({ dataroom });
+    const allReq = reqDataroomTemp.data.data.map(m => api.getUserInfo(m.user));
+    const reqUserInfo = await Promise.all(allReq);
+    return reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: reqUserInfo[i].data }));
   }
 
   formatData = (data) => {
@@ -475,8 +479,17 @@ class DataRoom extends React.Component {
     });
   }
 
-  handleApplyTemplate = () => {
+  handleApplyTemplate = (item) => {
+    const { user: { id: userId } } = item;
+    this.dataRoomTempModalUserId = userId;
     this.setState({ showDataRoomTempModal: true });
+  }
+
+  handleConfirmSelectDataroomTemp = () => {
+    const body = { user: this.dataRoomTempModalUserId };
+    api.applyDataroomTemp(this.state.selectedDataroomTemp, body).then(res => {
+      window.echo('apply', res);
+    });
   }
 
   render () {
@@ -550,15 +563,15 @@ class DataRoom extends React.Component {
           <Modal
             title="选择Dataroom模版"
             visible={true}
-            onConfirm={this.handleConfirmSelectDataroomTemp}
+            onOk={this.handleConfirmSelectDataroomTemp}
             onCancel={() => this.setState({ showDataRoomTempModal: false })}
           >
             <Select
-              defaultValue={this.state.dataRoomTemp.length > 0 ? this.state.dataRoomTemp[0].id : undefined}
+              defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
               style={{ width: 120 }}
-              onChange={value => this.setState({ value })}
+              onChange={value => this.setState({ selectedDataroomTemp: value })}
             >
-              { this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id}>{m.user}</Option>) }
+              { this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>) }
             </Select>
           </Modal>
         }

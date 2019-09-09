@@ -31,7 +31,7 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
       <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> 
       : '暂无机构' }
       &nbsp;
-      <Button onClick={onApplyTemplate}>应用模版</Button>
+      <Button onClick={onApplyTemplate.bind(this, item)}>应用模版</Button>
     </div>
     <div style={{ textAlign: 'center', marginTop: 10 }}>
       <Button onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>
