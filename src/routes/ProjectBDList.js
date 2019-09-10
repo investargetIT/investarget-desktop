@@ -408,7 +408,7 @@ class ProjectBDList extends React.Component {
               }
   
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id ?
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id || (record.contractors && getUserInfo().id === record.contractors.id) ?
               <Button style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
               : null }
   
