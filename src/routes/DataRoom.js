@@ -43,6 +43,7 @@ class DataRoom extends React.Component {
       showDataRoomTempModal: false,
       dataRoomTemp: [],
       selectedDataroomTemp: '',
+      hasPermissionForDataroomTemp: false,
     }
 
     this.dataRoomTempModalUserId = null;
@@ -50,7 +51,17 @@ class DataRoom extends React.Component {
 
   componentDidMount() {
     api.getProjLangDetail(this.state.projectID).then(res => {
-      this.setState({title: res.data.projtitle});
+      const isMakeUser = res.data.makeUser && res.data.makeUser.id === isLogin().id;
+      const isTakeUser = res.data.takeUser && res.data.takeUser.id === isLogin().id;
+      const isSuperUser = isLogin().is_superuser;
+      if (isMakeUser || isTakeUser || isSuperUser) {
+        this.setState({
+          title: res.data.projtitle,
+          hasPermissionForDataroomTemp: true,
+        });
+      } else {
+        this.setState({ title: res.data.projtitle });
+      }
     })
     this.getDataRoomFile()
     this.getAllUserFile()
@@ -513,8 +524,8 @@ class DataRoom extends React.Component {
               selectedUser={this.state.selectedUser}
               onChange={this.handleSelectUser}
               onSendEmail={this.handleSendEmail}
-              onSaveTemplate={this.handleSaveTemplate}
-              onApplyTemplate={this.handleApplyTemplate}
+              onSaveTemplate={this.state.hasPermissionForDataroomTemp ? this.handleSaveTemplate : undefined}
+              onApplyTemplate={this.state.hasPermissionForDataroomTemp ? this.handleApplyTemplate : undefined}
             />
           </div>
           : null}
