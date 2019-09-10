@@ -106,6 +106,9 @@ class HandleError extends React.Component {
       case 8006:
         Modal.error({ title: '视频会议时间冲突', content: msg });
         break;
+      case 2004:
+        Modal.error({ title: '保存模版失败', content: msg });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

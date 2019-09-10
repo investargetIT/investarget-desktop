@@ -473,13 +473,12 @@ class DataRoom extends React.Component {
     this.checkDataRoomStatus();
   }
 
-  handleSaveTemplate = item => {
+  handleSaveTemplate = (item) => {
     const { dataroom: { id: dataroom }, id: dataroomUserfile, user: { id: user } } = item;
     const body = { dataroomUserfile, dataroom, user };
-    window.echo('body', body);
-    api.addDataroomTemp(body).then(res => {
-      window.echo('res', res);
-    });
+    api.addDataroomTemp(body).then(() => {
+      Modal.success({ title: '成功', content: '模版保存成功!' });
+    }).catch(handleError);
   }
 
   handleApplyTemplate = (item) => {
