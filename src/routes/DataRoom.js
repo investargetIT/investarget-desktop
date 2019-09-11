@@ -65,10 +65,7 @@ class DataRoom extends React.Component {
     })
     this.getDataRoomFile()
     this.getAllUserFile()
-    this.getDataRoomTemp().then(dataRoomTemp => this.setState({
-      dataRoomTemp,
-      selectedDataroomTemp: dataRoomTemp.length > 0 ? '' + dataRoomTemp[0].id : '',
-    }));
+    this.getDataRoomTemp();
   }
 
   getDataRoomTemp = async () => {
@@ -76,7 +73,11 @@ class DataRoom extends React.Component {
     const reqDataroomTemp = await api.getDataroomTemp({ dataroom });
     const allReq = reqDataroomTemp.data.data.map(m => api.getUserInfo(m.user));
     const reqUserInfo = await Promise.all(allReq);
-    return reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: reqUserInfo[i].data }));
+    const dataRoomTemp = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: reqUserInfo[i].data }));
+    this.setState({
+      dataRoomTemp,
+      selectedDataroomTemp: dataRoomTemp.length > 0 ? '' + dataRoomTemp[0].id : '',
+    })
   }
 
   formatData = (data) => {
@@ -489,6 +490,7 @@ class DataRoom extends React.Component {
     const body = { dataroomUserfile, dataroom, user };
     api.addDataroomTemp(body).then(() => {
       Modal.success({ title: '成功', content: '模版保存成功!' });
+      this.getDataRoomTemp();
     }).catch(handleError);
   }
 
