@@ -95,7 +95,7 @@ class EditProjectBD extends React.Component {
     const { bd_status: status } = param;
     // 状态改为暂不BD后，详细需求见bugClose #344
     if (status === 4 && this.state.bd.bd_status.id !== 4) {
-      param.contractors = null;
+      // param.contractors = null;
     }
     const { id } = this.state;
     await api.editProjBD(id, param);
