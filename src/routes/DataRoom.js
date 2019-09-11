@@ -387,9 +387,14 @@ class DataRoom extends React.Component {
     })
   }
 
-  handleDeleteUser = (id) => {
-    api.deleteUserDataRoom(id).then(result => {
+  handleDeleteUser = (item) => {
+    const { id: dataroomUserId, user: { id: userId } } = item;
+    const userDataroomTemp = this.state.dataRoomTemp.filter(f => f.user === userId);
+    api.deleteUserDataRoom(dataroomUserId).then(result => {
       this.getAllUserFile()
+      if (userDataroomTemp.length > 0) {
+        api.deleteDataroomTemp(userDataroomTemp[0].id);
+      }
     }).catch(error => {
       handleError(error)
     })

@@ -902,3 +902,4 @@ export const addDataroomTemp = body => r('/dataroom/temp/', 'POST', body);
 export const getDataroomTemp = param => r(`/dataroom/temp/?${qs.stringify(param)}`);
 // export const editDataroomTemp = (id, body) => r(`/dataroom/temp/${id}/`, 'PUT', body);
 export const applyDataroomTemp = (id, body) => r(`/dataroom/temp/${id}/`, 'POST', body);
+export const deleteDataroomTemp = id => r(`/dataroom/temp/${id}/`, 'DELETE');

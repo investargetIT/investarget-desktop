@@ -40,7 +40,7 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
       <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
         <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
       </Popconfirm>
-      <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item.id)}>
+      <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
         <Button type="danger">移除</Button>
       </Popconfirm>
     </div>
