@@ -526,6 +526,7 @@ class DataRoom extends React.Component {
               onSendEmail={this.handleSendEmail}
               onSaveTemplate={this.state.hasPermissionForDataroomTemp ? this.handleSaveTemplate : undefined}
               onApplyTemplate={this.state.hasPermissionForDataroomTemp ? this.handleApplyTemplate : undefined}
+              dataRoomTemp={this.state.dataRoomTemp}
             />
           </div>
           : null}
