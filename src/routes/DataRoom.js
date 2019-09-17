@@ -44,6 +44,7 @@ class DataRoom extends React.Component {
       dataRoomTemp: [],
       selectedDataroomTemp: '',
       hasPermissionForDataroomTemp: false,
+      dataRoomTempModalUserId: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -129,7 +130,13 @@ class DataRoom extends React.Component {
         userDataroomMap[userId] = userDataroomIds[index]
       })
       const userOptions = users.map(item => ({ label: item.username, value: item.id }))
-      this.setState({ list, userOptions, userDataroomIds, userDataroomMap })
+      this.setState({
+        list,
+        dataRoomTempModalUserId: list.length > 0 ? '' + list[0].user.id : '',
+        userOptions,
+        userDataroomIds,
+        userDataroomMap,
+      });
       if (this.state.selectedUser && !userIds.includes(this.state.selectedUser)) {
         this.setState({ selectedUser: null })
       }
@@ -500,13 +507,13 @@ class DataRoom extends React.Component {
   }
 
   handleApplyTemplate = (item) => {
-    const { user: { id: userId } } = item;
-    this.dataRoomTempModalUserId = userId;
+    // const { user: { id: userId } } = item;
+    // this.dataRoomTempModalUserId = userId;
     this.setState({ showDataRoomTempModal: true });
   }
 
   handleConfirmSelectDataroomTemp = () => {
-    const body = { user: this.dataRoomTempModalUserId };
+    const body = { user: this.state.dataRoomTempModalUserId };
     api.applyDataroomTemp(this.state.selectedDataroomTemp, body).then(() => {
       this.setState({ showDataRoomTempModal: false }, this.getAllUserFile);
     });
@@ -587,14 +594,29 @@ class DataRoom extends React.Component {
             onOk={this.handleConfirmSelectDataroomTemp}
             onCancel={() => this.setState({ showDataRoomTempModal: false })}
           >
-            <Select
-              defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
-              style={{ width: 120 }}
-              onChange={value => this.setState({ selectedDataroomTemp: value })}
-              value={this.state.selectedDataroomTemp + ''}
-            >
-              { this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>) }
-            </Select>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div>
+                <Select
+                  defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
+                  style={{ width: 120 }}
+                  onChange={value => this.setState({ selectedDataroomTemp: value })}
+                  value={this.state.selectedDataroomTemp + ''}
+                >
+                  {this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>)}
+                </Select>
+              </div>
+              <div style={{ margin: '0 10px' }}>应用到</div>
+              <div>
+                <Select
+                  defaultValue={this.state.list.length > 0 ? '' + this.state.list[0].user.id : undefined}
+                  style={{ width: 120 }}
+                  onChange={value => this.setState({ dataRoomTempModalUserId: value })}
+                  value={this.state.dataRoomTempModalUserId + ''}
+                >
+                  {this.state.list.map(m => m.user).map(m => <Option key={m.id} value={m.id + ''}>{m.username}</Option>)}
+                </Select>
+              </div>
+            </div>
           </Modal>
         }
 

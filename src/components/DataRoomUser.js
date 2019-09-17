@@ -33,7 +33,7 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
       <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> 
       : '暂无机构' }
       &nbsp;
-      {onApplyTemplate && <Button onClick={onApplyTemplate.bind(this, item)}>应用模版</Button>}
+      {/* {onApplyTemplate && <Button onClick={onApplyTemplate.bind(this, item)}>应用模版</Button>} */}
     </div>
     <div style={{ textAlign: 'center', marginTop: 10 }}>
       {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>}
@@ -65,7 +65,10 @@ function DataRoomUser(props) {
 
     { isAbleToAddUser ? <Col span={1} /> : null }
 
-    <Col span={ isAbleToAddUser ? 15 : 24 }>
+    {onApplyTemplate && <Col span={2}><Button onClick={onApplyTemplate}>应用模版</Button></Col>}
+    {onApplyTemplate && <Col span={1} />}
+
+    <Col span={ isAbleToAddUser ? 12 : 21 }>
       {list.map(item => (
         <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp)}>
           <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
