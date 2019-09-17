@@ -36,7 +36,7 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
       {/* {onApplyTemplate && <Button onClick={onApplyTemplate.bind(this, item)}>应用模版</Button>} */}
     </div>
     <div style={{ textAlign: 'center', marginTop: 10 }}>
-      {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>}
+      {/* {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>} */}
       <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
         <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
       </Popconfirm>

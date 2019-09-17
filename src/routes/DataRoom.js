@@ -389,6 +389,11 @@ class DataRoom extends React.Component {
     api.addUserDataRoom(param).then(result => {
       this.setState({ newUser: null })
       this.getAllUserFile()
+      const { id: dataroomUserfile, dataroom, user } = result.data;
+      const body = { dataroomUserfile, dataroom, user };
+      if (this.state.hasPermissionForDataroomTemp) {
+        this.handleSaveTemplate(body);
+      }
     }).catch(error => {
       handleError(error)
     })
@@ -497,11 +502,11 @@ class DataRoom extends React.Component {
     this.checkDataRoomStatus();
   }
 
-  handleSaveTemplate = (item) => {
-    const { dataroom: { id: dataroom }, id: dataroomUserfile, user: { id: user } } = item;
-    const body = { dataroomUserfile, dataroom, user };
+  handleSaveTemplate = (body) => {
+    // const { dataroom: { id: dataroom }, id: dataroomUserfile, user: { id: user } } = item;
+    // const body = { dataroomUserfile, dataroom, user };
     api.addDataroomTemp(body).then(() => {
-      Modal.success({ title: '成功', content: '模版保存成功!' });
+      // Modal.success({ title: '成功', content: '模版保存成功!' });
       this.getDataRoomTemp();
     }).catch(handleError);
   }
