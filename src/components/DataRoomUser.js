@@ -51,27 +51,26 @@ function DataRoomUser(props) {
     const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
-  return <Row>
+  return <div style={{ display: 'flex', alignItems: 'center' }}>
 
     {isAbleToAddUser ?
-      <Col span={8}>
-        <Row>
-          <Col span={16}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></Col>
-          <Col span={1} />
-          <Col span={7}><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></Col>
-        </Row>
-      </Col>
+      <div style={{ marginRight: 10 }}>
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: 160, marginRight: 8 }}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></div>
+          <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></div>
+        </div>
+      </div>
       : null}
 
-    { isAbleToAddUser ? <Col span={1} /> : null }
+    {/* { isAbleToAddUser ? <Col span={1} /> : null } */}
 
-    {onApplyTemplate && <Col span={2}><Button onClick={onApplyTemplate}>应用模版</Button></Col>}
-    {onApplyTemplate && <Col span={1} />}
+    {onApplyTemplate && <div style={{ marginRight: 6 }}><Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button></div>}
+    {/* {onApplyTemplate && <Col span={1} />} */}
 
-    <Col span={ isAbleToAddUser ? 12 : 21 }>
+    <div>
       {list.map(item => (
         <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp)}>
-          <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', marginRight: 15, marginBottom: 10, cursor: 'pointer' }}>
+          <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
             <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
             { props.selectedUser === item.user.id ?
             <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
@@ -82,9 +81,9 @@ function DataRoomUser(props) {
           </div>
         </Popover>
       ))}
-    </Col>
+    </div>
 
-  </Row>;
+  </div>;
 }
 
 function DataRoomUserList(props) {
