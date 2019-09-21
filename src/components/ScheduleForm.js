@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker, InputNumber, Button, Icon, Row, Col } from 'antd'
+import { Form, Input, DatePicker, InputNumber, Button, Icon, Row, Col, Checkbox } from 'antd'
 import moment from 'moment';
 import {
   BasicFormItem,
@@ -18,6 +18,19 @@ import {
   SelectScheduleTypeWithoutMeeting,
 } from '../components/ExtraInput'
 import { i18n, hasPerm } from '../utils/util';
+
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 14,
+      offset: 6,
+    },
+  },
+}
 
 const FormItem = Form.Item;
 
@@ -92,6 +105,7 @@ class ScheduleForm extends React.Component {
     const scheduleType = getFieldValue('type');
     const disabledOrHide = scheduleType === 4 && !this.props.isAdd;
     const proj = getFieldValue('proj');
+    const sendEmail = getFieldValue('sendEmail');
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -247,6 +261,19 @@ class ScheduleForm extends React.Component {
           </BasicFormItem>
         </div>
         }
+
+        {scheduleType !== 4 &&
+          <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean">
+            <Checkbox>是否发送邮件提醒？</Checkbox>
+          </BasicFormItem>
+        }
+
+        {sendEmail &&
+          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
+            <Input size="large" />
+          </BasicFormItem>
+        }
+
       </Form>
     )
   }
