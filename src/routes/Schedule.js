@@ -20,6 +20,9 @@ function onValuesChange(props, values) {
   if (values.proj) {
     props.onProjChange(values.proj);
   }
+  if (values.user) {
+    props.onUserChange(values.user);
+  }
 }
 function mapAddPropsToFields(props) {
   window.echo('map to fields', props);
@@ -307,6 +310,13 @@ class Schedule extends React.Component {
       });
   }
 
+  handleUserChange = (userId) => {
+    api.getUserInfo(userId).then(res => {
+      const { email } = res.data;
+      this.setState({ targetEmail: email });
+    });
+  }
+
   setAddFormData() {
     let maxKey = 0;
     let keys = [];
@@ -317,6 +327,11 @@ class Schedule extends React.Component {
       const data = {};
       for (let prop in originValues) {
         data[prop] = { value: originValues[prop] };
+      }
+
+      // 自动设置发送邮件提醒的目标邮箱为选中的投资人邮箱
+      if (this.state.targetEmail) {
+        data.targetEmail = { value: this.state.targetEmail };
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱
@@ -418,6 +433,7 @@ class Schedule extends React.Component {
               date={selectedDate}
               country={{ label: 'China', value: 42 }}
               onProjChange={this.handleProjChange}
+              onUserChange={this.handleUserChange}
               data={this.setAddFormData()}
             /> 
           : null }

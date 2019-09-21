@@ -264,15 +264,15 @@ class ScheduleForm extends React.Component {
 
         {scheduleType !== 4 &&
           <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean">
-            <Checkbox>是否发送邮件提醒？</Checkbox>
+            <Checkbox>发送提醒邮件</Checkbox>
           </BasicFormItem>
         }
 
-        {sendEmail &&
+        <div style={{ display: sendEmail ? 'block' : 'none' }}>
           <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
             <Input size="large" />
           </BasicFormItem>
-        }
+        </div> 
 
       </Form>
     )
