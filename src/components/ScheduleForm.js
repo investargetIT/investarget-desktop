@@ -269,7 +269,7 @@ class ScheduleForm extends React.Component {
         }
 
         <div style={{ display: sendEmail ? 'block' : 'none' }}>
-          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
+          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email">
             <Input size="large" />
           </BasicFormItem>
         </div> 
