@@ -167,6 +167,28 @@ class Schedule extends React.Component {
     const body = { ...param, title: param.comments };
     await api.getUserSession();
     const meetingResult = await api.addSchedule([body]);
+    const { sendEmail } = body;
+    if (sendEmail) {
+      const {
+        targetEmail: destination,
+        scheduledtime: startDate,
+        comments: summary,
+        address: location,
+        scheduledtimeOrigin,
+      } = body;
+      const sendEmailBody = {
+        destination,
+        html: 'html内容',
+        subject: '日程邮件推送',
+        startDate,
+        endDate: scheduledtimeOrigin.add(1, 'h').format('YYYY-MM-DDTHH:mm:ss'),
+        summary,
+        description: 'Description内容',
+        location,
+      };
+      const sendEmailRes = await api.sendScheduleReminderEmail(sendEmailBody);
+      window.echo('sendEmailRes', sendEmailRes);
+    }
     if (param.type === 4) {
       const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
       const attendee = this.formatAttendee(param);
@@ -474,6 +496,7 @@ export default Schedule
 
 function toData(formData) {
   var data = {...formData}
+  data['scheduledtimeOrigin'] = data.scheduledtime.clone();
   data['scheduledtime'] = data['scheduledtime'].format('YYYY-MM-DDTHH:mm:ss')
   if (!['中国', 'China'].includes(formData.country && formData.country.label)) {
     data['location'] = null;
