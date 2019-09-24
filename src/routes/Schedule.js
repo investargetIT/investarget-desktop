@@ -179,7 +179,7 @@ class Schedule extends React.Component {
       } = body;
       const sendEmailBody = {
         destination,
-        html: `${this.state.user.username}，您好 ${summary}${startDate.replace('T', ' ')}`,
+        html: `<div><p>${this.state.user.username}，您好</p><p>标题：${summary}</p><p>时间：${startDate.replace('T', ' ')}</p></div>`,
         subject: '日程邮件推送',
         startDate,
         endDate: scheduledtimeOrigin.add(1, 'h').format('YYYY-MM-DDTHH:mm:ss'),
