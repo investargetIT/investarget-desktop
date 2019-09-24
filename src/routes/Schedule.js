@@ -53,6 +53,7 @@ class Schedule extends React.Component {
       mode: 'month',
       proj: undefined, // 新增时选中的项目
       oldSelectedProj: undefined, // 新增时原来选中的项目
+      user: null,
     }
   }
 
@@ -178,16 +179,15 @@ class Schedule extends React.Component {
       } = body;
       const sendEmailBody = {
         destination,
-        html: 'html内容',
+        html: `${this.state.user.username}，您好 ${summary}${startDate.replace('T', ' ')}`,
         subject: '日程邮件推送',
         startDate,
         endDate: scheduledtimeOrigin.add(1, 'h').format('YYYY-MM-DDTHH:mm:ss'),
         summary,
-        description: 'Description内容',
+        description: summary,
         location,
       };
-      const sendEmailRes = await api.sendScheduleReminderEmail(sendEmailBody);
-      window.echo('sendEmailRes', sendEmailRes);
+      await api.sendScheduleReminderEmail(sendEmailBody);
     }
     if (param.type === 4) {
       const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
@@ -335,7 +335,7 @@ class Schedule extends React.Component {
   handleUserChange = (userId) => {
     api.getUserInfo(userId).then(res => {
       const { email } = res.data;
-      this.setState({ targetEmail: email });
+      this.setState({ user: res.data, targetEmail: email });
     });
   }
 
