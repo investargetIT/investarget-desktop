@@ -106,6 +106,7 @@ class ScheduleForm extends React.Component {
     const disabledOrHide = scheduleType === 4 && !this.props.isAdd;
     const proj = getFieldValue('proj');
     const sendEmail = getFieldValue('sendEmail');
+    const user = getFieldValue('user');
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -268,8 +269,14 @@ class ScheduleForm extends React.Component {
           </BasicFormItem>
         }
 
+        {sendEmail && !user &&
+          <BasicFormItem label="姓名" name="username" required>
+            <Input />
+          </BasicFormItem>
+        }
+
         <div style={{ display: sendEmail ? 'block' : 'none' }}>
-          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email">
+          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required={sendEmail}>
             <Input size="large" />
           </BasicFormItem>
         </div> 
