@@ -53,7 +53,8 @@ class Schedule extends React.Component {
       mode: 'month',
       proj: undefined, // 新增时选中的项目
       oldSelectedProj: undefined, // 新增时原来选中的项目
-      user: null,
+      targetEmail: '', // 目标邮箱，发送提醒邮件的邮箱地址
+      user: null, // 选择的投资人
     }
   }
 
@@ -281,7 +282,13 @@ class Schedule extends React.Component {
   }
 
   hideAddModal = () => {
-    this.setState({ visibleAdd: false, proj: undefined, oldSelectedProj: undefined });
+    this.setState({
+      visibleAdd: false,
+      proj: undefined,
+      oldSelectedProj: undefined,
+      user: null,
+      targetEmail: '',
+    });
   }
 
   hideEventModal = () => {
