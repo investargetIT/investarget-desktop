@@ -212,7 +212,7 @@ class ProjectBDList extends React.Component {
   }
 
   handleUpdateContact = async (formData) => {
-    const usermobile = (formData.mobileAreaCode && formData.mobile) ? formData.mobileAreaCode + '-' + formData.mobile : formData.mobile;
+    const usermobile = (formData.mobileAreaCode && formData.mobile) ? `+${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
     const body = { ...formData, usermobile };
     try {
       await api.editProjBD(this.state.currentBD.id, body);
