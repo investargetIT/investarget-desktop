@@ -1016,9 +1016,9 @@ class OrgBDListComponent extends React.Component {
                 : null }
 
                 { /* 查看时间轴按钮 */ }
-                { record.timeline ? 
+                {/* { record.timeline ? 
                 <Link to={`/app/timeline/list?proj=${record.proj.id}&investor=${record.bduser}&trader=${record.manager.id}`} style={{ ...buttonStyle, marginRight: 4 }}>查看时间轴</Link>
-                : null }
+                : null } */}
 
                 { /* 删除按钮 */ }
                 { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
