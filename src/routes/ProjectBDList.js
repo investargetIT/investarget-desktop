@@ -315,6 +315,14 @@ class ProjectBDList extends React.Component {
     this.setState({ isShowModifyStatusModal: true, status: bd.bd_status.id });
   }
 
+  showPhoneNumber = item => {
+    const { usermobile } = item;
+    if (!usermobile) return '暂无';
+    const { bduser } = item;
+    if (bduser || usermobile.startsWith('+')) return usermobile;
+    return `+${usermobile}`;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
@@ -332,7 +340,7 @@ class ProjectBDList extends React.Component {
             <div>
               <div>{`姓名：${record.username || '暂无'}`}</div>
               <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-              <div>{`电话：${record.usermobile || '暂无'}`}</div>
+              <div>{`电话：${this.showPhoneNumber(record)}`}</div>
               <div>{`邮箱：${record.useremail || '暂无'}`}</div>
             </div>
           }><a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a></Popover> : 
@@ -340,7 +348,7 @@ class ProjectBDList extends React.Component {
             <div>
               <div>{`姓名：${record.username || '暂无'}`}</div>
               <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-              <div>{`电话：${record.usermobile || '暂无'}`}</div>
+              <div>{`电话：${this.showPhoneNumber(record)}`}</div>
               <div>{`邮箱：${record.useremail || '暂无'}`}</div>
             </div>
           }>
