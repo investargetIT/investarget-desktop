@@ -488,9 +488,13 @@ class DataRoom extends React.Component {
           setTimeout(() => this.setState({ downloadUrl: null }), 1000);
         } else {
           this.setState({ loading: false });
+          let waitingTime = '';
+          if (result.data.seconds) {
+            waitingTime = `${result.data.seconds}秒`
+          }
           Modal.info({
             title: '请求已发送成功',
-            content: '请耐心等待并稍后重试', 
+            content: `请耐心等待${waitingTime || '一段时间'}后重试`, 
           })
         }
       })
