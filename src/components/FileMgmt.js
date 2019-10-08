@@ -266,7 +266,7 @@ class FileMgmt extends React.Component {
   }
 
   handleDownloadBtnClicked = () => {
-    this.props.onDownloadBtnClicked();
+    this.props.onDownloadBtnClicked(this.state.selectedRows);
   }
 
   ifContainFiles = (file) => {

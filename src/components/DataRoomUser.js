@@ -109,6 +109,7 @@ function DataRoomUserList(props) {
 
       <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}>
         <Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">{i18n('common.confirm')}</Button>
+        <Button style={{ marginLeft: 10 }} onClick={props.onDownloadSelectedFiles}>下载选中的文件</Button>
       </Row>
 
     </div>

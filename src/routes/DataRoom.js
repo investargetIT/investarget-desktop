@@ -45,6 +45,8 @@ class DataRoom extends React.Component {
       selectedDataroomTemp: '',
       hasPermissionForDataroomTemp: false,
       dataRoomTempModalUserId: '',
+
+      selectedFiles: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -472,11 +474,17 @@ class DataRoom extends React.Component {
     this.editUserFileList(selectedUser, list2)
   }
 
-  checkDataRoomStatus = () => {
-
+  checkDataRoomStatus = isDownloadingSelectedFiles => {
+    const user = this.state.downloadUser && this.state.downloadUser.id;
     const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
-
-    api.checkDataRoomStatus(this.state.id, this.state.downloadUser && this.state.downloadUser.id, water)
+    const files = this.state.selectedFiles.map(m => m.id).join(',');
+    const params = { water };
+    if (isDownloadingSelectedFiles) {
+      params.files = files;
+    } else {
+      params.user = user;
+    }
+    api.createAndCheckDataroomZip(this.state.id, params)
       .then(result => {
         if (result.data.code === 8005) {
           this.setState({ 
@@ -504,6 +512,11 @@ class DataRoom extends React.Component {
   handleDownloadBtnClicked = () => {
     this.setState({ loading: true, visible: false });
     this.checkDataRoomStatus();
+  }
+
+  handleDownloadSelectedFilesBtnClicked = () => {
+    this.setState({ loading: true, visible: false });
+    this.checkDataRoomStatus(true);
   }
 
   handleSaveTemplate = (body) => {
@@ -577,8 +590,8 @@ class DataRoom extends React.Component {
           onToggleVisible={this.handleToggleVisible}
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
-          onDownloadBtnClicked={() => this.setState({ visible: true})}
-           />
+          onDownloadBtnClicked={(selectedFiles) => this.setState({ visible: true, selectedFiles })}
+        />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
@@ -593,6 +606,7 @@ class DataRoom extends React.Component {
               selectedUser={this.state.downloadUser}
               onChange={user => this.setState({ downloadUser: user })}
               onConfirm={this.handleDownloadBtnClicked}
+              onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked} 
               />
           </Modal>
 

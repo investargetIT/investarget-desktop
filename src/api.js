@@ -581,6 +581,8 @@ export const queryDataRoomDir = (id) => {
  */
 export const checkDataRoomStatus = (dataroomID, investorID, water) => r(`/dataroom/checkzip/${dataroomID}/?user=${investorID}&water=${water}`);
 
+export const createAndCheckDataroomZip = (dataroomId, params) => r(`/dataroom/checkzip/${dataroomId}/?${qs.stringify(params)}`);
+
 /**
  * 返回 DataRoom 打包下载的链接地址
  * @param {Number} dataroomID - dataroom 的 id
