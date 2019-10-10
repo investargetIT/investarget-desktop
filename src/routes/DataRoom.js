@@ -490,7 +490,7 @@ class DataRoom extends React.Component {
           this.setState({ 
             loading: false, 
             downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id),
-            downloadUser: null
+            downloadUser: isLogin(),
           });
           // 重置下载链接， 防止相同下载链接不执行
           setTimeout(() => this.setState({ downloadUrl: null }), 1000);
@@ -596,7 +596,7 @@ class DataRoom extends React.Component {
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
           <Modal
-            title="选择打包下载对象或者点击确定直接下载"
+            title="请选择全部下载或者选中文件下载"
             footer={null}
             onCancel={this.hideModal}
             closable={false}
@@ -606,7 +606,8 @@ class DataRoom extends React.Component {
               selectedUser={this.state.downloadUser}
               onChange={user => this.setState({ downloadUser: user })}
               onConfirm={this.handleDownloadBtnClicked}
-              onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked} 
+              onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
+              disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
               />
           </Modal>
 
