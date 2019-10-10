@@ -85,8 +85,10 @@ class FileMgmt extends React.Component {
   componentWillReceiveProps(nextProps) {
     const parentId = this.props.location.query.parentID
     const parentId2 = nextProps.location.query.parentID
+    window.echo('component will receive', parentId, parentId2);
     if (parentId !== parentId2) {
       // 切换目录时，清空选中的行
+      window.echo('component will receive props');
       this.setState({ selectedRows: [] })
     }
   }
@@ -103,6 +105,7 @@ class FileMgmt extends React.Component {
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: file.id })
       // 切换目录时，清空选中的行
+      window.echo('folder clicked');
       this.setState({ selectedRows: [] })
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
@@ -317,14 +320,18 @@ class FileMgmt extends React.Component {
     return this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName);
   }
 
+  handleSelectChanged = (selectedRowKeys, selectedRows) => {
+    window.echo('selectedRowKeys', selectedRowKeys);
+    window.echo('selectedRows', selectedRows);
+    window.echo('state', [ ...this.state.selectedRows ]);
+    this.setState({ selectedRows: selectedRowKeys.map(m => this.props.data.filter(f => f.id === m)[0]) })
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
     const rowSelection = isAdmin ? {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        this.setState({ selectedRows: selectedRowKeys.map(m => this.props.data.filter(f => f.id === m)[0]) })
-      },
+      onChange: this.handleSelectChanged, 
       selectedRowKeys: this.state.selectedRows.map(m => m.id),
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User',    // Column configuration not to be checked
