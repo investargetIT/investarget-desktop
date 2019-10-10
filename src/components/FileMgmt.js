@@ -1,6 +1,6 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
@@ -85,10 +85,10 @@ class FileMgmt extends React.Component {
   componentWillReceiveProps(nextProps) {
     const parentId = this.props.location.query.parentID
     const parentId2 = nextProps.location.query.parentID
-    window.echo('component will receive', parentId, parentId2);
+    // window.echo('component will receive', parentId, parentId2);
     if (parentId !== parentId2) {
       // 切换目录时，清空选中的行
-      window.echo('component will receive props');
+      // window.echo('component will receive props');
       this.setState({ selectedRows: [] })
     }
   }
@@ -105,8 +105,8 @@ class FileMgmt extends React.Component {
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: file.id })
       // 切换目录时，清空选中的行
-      window.echo('folder clicked');
-      this.setState({ selectedRows: [] })
+      // window.echo('folder clicked');
+      // this.setState({ selectedRows: [] })
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
         window.open(file.fileurl);
@@ -321,10 +321,46 @@ class FileMgmt extends React.Component {
   }
 
   handleSelectChanged = (selectedRowKeys, selectedRows) => {
-    window.echo('selectedRowKeys', selectedRowKeys);
-    window.echo('selectedRows', selectedRows);
-    window.echo('state', [ ...this.state.selectedRows ]);
-    this.setState({ selectedRows: selectedRowKeys.map(m => this.props.data.filter(f => f.id === m)[0]) })
+    let newSelectedRows = [...this.state.selectedRows];
+    // window.echo('selectedRowKeys', selectedRowKeys);
+    // window.echo('selectedRows', selectedRows);
+    // window.echo('state', [ ...this.state.selectedRows ]);
+    const oldFileIds = [...this.state.selectedRows].map(m => m.id);
+    // window.echo('oldFileIds', oldFileIds);
+    const newFileIds = selectedRowKeys;
+    // window.echo('newFileIds', newFileIds);
+    const addedFiles = subtracting(newFileIds, oldFileIds);
+    // window.echo('addedfiles', addedFiles);
+    const addedFilesChildren = addedFiles.map(m => this.props.data.filter(f => f.id === m)[0])
+      .filter(f => f.isFolder)
+      .map(m => this.findAllChildren(m.id))
+      .reduce((prev, curr) => prev.concat(curr), []);
+    // window.echo('added file children', addedFilesChildren);
+    newSelectedRows = newSelectedRows
+      .concat(addedFiles.map(m => this.props.data.filter(f => f.id === m)[0]))
+      .concat(addedFilesChildren)
+
+    const deletedFiles = subtracting(oldFileIds, newFileIds);
+    // window.echo('deletefiles', deletedFiles);
+    const deletedFilesChildren = deletedFiles.map(m => this.props.data.filter(f => f.id === m)[0])
+      .filter(f => f.isFolder)
+      .map(m => this.findAllChildren(m.id))
+      .reduce((prev, curr) => prev.concat(curr), []);
+    newSelectedRows = newSelectedRows.filter(f => !deletedFilesChildren.map(m => m.id).concat(deletedFiles).includes(f.id));
+    
+    this.setState({ selectedRows: newSelectedRows });
+  }
+
+  findAllChildren = (folderId) => {
+    let allChildren = [];
+    const react = this;
+    function findChildren (id) {
+      const children = react.props.data.filter(f => f.parent === id);
+      allChildren = allChildren.concat(children);
+      children.map(m => findChildren(m.id));
+      return allChildren;
+    }
+    return findChildren(folderId);
   }
 
   render () {
