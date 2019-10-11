@@ -502,7 +502,7 @@ class DataRoom extends React.Component {
           }
           Modal.info({
             title: '请求已发送成功',
-            content: `请耐心等待${waitingTime || '一段时间'}后重试`, 
+            content: <div>请耐心等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>，稍后重试</div>, 
           })
         }
       })
