@@ -150,7 +150,7 @@ class NewOrgBDList extends React.Component {
         loading: false,
         expanded: list.map(item => `${item.id}-${this.projId}`),
       }, 
-      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org.id))
+      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
     );
     })
   }
@@ -217,8 +217,9 @@ class NewOrgBDList extends React.Component {
   //   return result;
   // }
 
-  loadDataForSingleOrg = async org => {
+  loadDataForSingleOrg = async orgDetail => {
 
+    const { id: org, orgname, orgfullname } = orgDetail;
     let dataForSingleOrg;
 
     // 首先加载机构的所有符合要求的投资人
@@ -226,7 +227,7 @@ class NewOrgBDList extends React.Component {
     // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
-      dataForSingleOrg = [{ key: `null-null-${org}`, org: { id: org } }];
+      dataForSingleOrg = [{ key: `null-null-${org}`, org: { id: org, orgname, orgfullname } }];
     } else {
       const orgUser = reqUser.data.data;
 
@@ -347,7 +348,7 @@ class NewOrgBDList extends React.Component {
 
     if (expandIndex < 0) {
       newExpanded.push(currentId)
-      this.loadDataForSingleOrg(record.org.id, record.proj.id)
+      this.loadDataForSingleOrg(record.org, record.proj.id)
     } else {
       newExpanded.splice(expandIndex, 1)
     }
@@ -513,11 +514,12 @@ class NewOrgBDList extends React.Component {
       .then(result => {
         Modal.success({
           title: '机构BD创建成功',
-          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} 的 ${user.username} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
-        this.loadDataForSingleOrg(user.org.id);
-      });
+        this.loadDataForSingleOrg(user.org);
+      })
+      .catch(handleError);
   }
 
   render() {
@@ -750,7 +752,7 @@ class NewOrgBDList extends React.Component {
         {this.state.org ?
         <ModalAddUser
           onCancel={() => {
-            this.loadDataForSingleOrg(this.state.org.id);
+            this.loadDataForSingleOrg(this.state.org);
             this.setState({ org: null });
           }}
           org={this.state.org}
