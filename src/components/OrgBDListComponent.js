@@ -726,7 +726,8 @@ class OrgBDListComponent extends React.Component {
           )
           this.setState({ list, traderList: this.allTrader });
         }
-      });
+      })
+      .catch(handleError);
   }
 
   discardNewBD(record) {

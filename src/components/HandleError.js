@@ -109,6 +109,12 @@ class HandleError extends React.Component {
       case 2004:
         Modal.error({ title: '保存模版失败', content: msg });
         break;
+      case 5006:
+        Modal.error({ title: '机构BD创建失败', content: msg });
+        break;
+      case 3008:
+        Modal.error({ title: '系统繁忙，请稍后再试', content: msg });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }
