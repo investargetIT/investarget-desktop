@@ -106,7 +106,7 @@ if (!Array.prototype.find) {
 
 window.echo = function () {
   const args = [...arguments];
-  args.unshift('%cLOG', 'color: white; font-weight: bold; background-color: black; padding: 3px')
+  args.unshift('%cLOG', 'color: white; font-weight: bold; background-color: red; padding: 3px')
   console.log.apply(console, args);
   // TODO: add caller position including file name and line number
 }
