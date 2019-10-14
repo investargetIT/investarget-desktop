@@ -754,7 +754,11 @@ class SelectOrgInvestor extends React.Component {
       autoFocus
       size="large" {...extraProps}>
         {_options && _options.map((item, index) =>
-          <Option key={index} value={item.value}><Popover placement="right" content={this.content(item.user)}>{item.label}</Popover></Option>
+          <Option key={index} value={item.value}>
+            {item.user ?
+              <Popover placement="right" content={this.content(item.user)}>{item.label}</Popover>
+              : item.label}
+          </Option>
         )}
       </Select>
     )
