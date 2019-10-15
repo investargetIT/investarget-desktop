@@ -598,7 +598,7 @@ class DataRoom extends React.Component {
             title="请选择全部下载或者选中文件下载"
             footer={null}
             onCancel={this.hideModal}
-            closable={false}
+            closable={true}
             visible={this.state.visible}>
           <DataRoomUserList
               list={this.state.list.filter(f => this.state.fileUserList.map(m => m.user).includes(f.user.id))}
