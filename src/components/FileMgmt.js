@@ -597,11 +597,11 @@ class FileMgmt extends React.Component {
             <Button onClick={this.handleDelete} size="large" style={buttonStyle}>{i18n('dataroom.delete')}</Button>
           : null}
 
-          {selectMoreThanOneRow ?
+          {isAdmin && selectMoreThanOneRow ?
             <Button onClick={this.handleRename} size="large" style={buttonStyle} disabled={selectMoreThanTwoRow}>{i18n('dataroom.rename')}</Button>
           : null}
 
-          {selectMoreThanOneRow ?
+          {isAdmin && selectMoreThanOneRow ?
             <Button onClick={this.handleMove} size="large" style={buttonStyle}>{i18n('dataroom.move_to')}</Button>
           : null}
         </div>
