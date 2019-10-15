@@ -487,10 +487,10 @@ class DataRoom extends React.Component {
     api.createAndCheckDataroomZip(this.state.id, params)
       .then(result => {
         if (result.data.code === 8005) {
-          const ispart = isDownloadingSelectedFiles ? 1 : 0;
+          const part = isDownloadingSelectedFiles ? 1 : 0;
           this.setState({ 
             loading: false, 
-            downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, ispart),
+            downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part),
             downloadUser: isLogin(),
           });
           // 重置下载链接， 防止相同下载链接不执行
