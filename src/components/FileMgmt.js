@@ -366,13 +366,13 @@ class FileMgmt extends React.Component {
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
-    const rowSelection = isAdmin ? {
+    const rowSelection = {
       onChange: this.handleSelectChanged, 
       selectedRowKeys: this.state.selectedRows.map(m => m.id),
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User',    // Column configuration not to be checked
       }),
-    } : null
+    }
 
     const columns = [{
       title: i18n('dataroom.filename'),
