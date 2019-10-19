@@ -375,6 +375,10 @@ class FileMgmt extends React.Component {
     }
 
     const columns = [{
+      title: <Checkbox indeterminate={false} />,
+      key: 'choose',
+      render: () => <Checkbox />,
+    }, {
       title: i18n('dataroom.filename'),
       dataIndex: 'name',
       key: 'name',
@@ -640,7 +644,7 @@ class FileMgmt extends React.Component {
           size="small"
           columns={columns}
           rowKey={record => record.unique}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           dataSource={this.getTableDataSource()}
           loading={this.state.loading}
           pagination={false} />
