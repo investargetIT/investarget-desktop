@@ -322,7 +322,7 @@ class FileMgmt extends React.Component {
 
   handleSelectChanged = (selectedRowKeys, selectedRows) => {
     let newSelectedRows = [...this.state.selectedRows];
-    // window.echo('selectedRowKeys', selectedRowKeys);
+    // window.echo('selectedRowKeys', newSelectedRowKeys);
     // window.echo('selectedRows', selectedRows);
     // window.echo('state', [ ...this.state.selectedRows ]);
     const oldFileIds = [...this.state.selectedRows].map(m => m.id);
@@ -363,6 +363,18 @@ class FileMgmt extends React.Component {
     return findChildren(folderId);
   }
 
+  handleItemCheckChange = (item, e) => {
+    const { checked } = e.target;
+    const { id } = item;
+    let newSelectedRows;
+    if (checked) {
+      newSelectedRows = this.state.selectedRows.map(m => m.id).concat(id);
+    } else {
+      newSelectedRows = this.state.selectedRows.map(m => m.id).filter(f => f !== id);
+    }
+    this.handleSelectChanged(newSelectedRows);
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -377,7 +389,12 @@ class FileMgmt extends React.Component {
     const columns = [{
       title: <Checkbox indeterminate={false} />,
       key: 'choose',
-      render: () => <Checkbox />,
+      render: (text, record) => (
+        <Checkbox
+          checked={this.state.selectedRows.map(m => m.id).includes(record.id)}
+          onChange={this.handleItemCheckChange.bind(this, record)}
+        />
+      ),
     }, {
       title: i18n('dataroom.filename'),
       dataIndex: 'name',
