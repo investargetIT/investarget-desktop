@@ -401,6 +401,13 @@ class FileMgmt extends React.Component {
     return inCurrentNotInAll.length < currentData.length;
   }
 
+  isItemCheckboxIndeterminate = item => {
+    if (this.state.selectedRows.map(m => m.id).includes(item.id)) return false;
+    const allChildren = this.findAllChildren(item.id);
+    const allSelectedData = this.state.selectedRows.map(m => m.id);
+    if (allChildren.map(m => m.id).filter(f => allSelectedData.includes(f)).length > 0) return true;
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -424,6 +431,7 @@ class FileMgmt extends React.Component {
       key: 'choose',
       render: (text, record) => (
         <Checkbox
+          indeterminate={this.isItemCheckboxIndeterminate(record)}
           checked={this.state.selectedRows.map(m => m.id).includes(record.id)}
           onChange={this.handleItemCheckChange.bind(this, record)}
         />
