@@ -393,6 +393,14 @@ class FileMgmt extends React.Component {
     return subtracting(currentData, allSelectedData).length === 0;
   }
 
+  isGroupCheckboxIndeterminate = () => {
+    if (this.isGroupCheckboxChecked()) return false;
+    const currentData = this.getTableDataSource().map(m => m.id);
+    const allSelectedData = this.state.selectedRows.map(m => m.id);
+    const inCurrentNotInAll = subtracting(currentData, allSelectedData);
+    return inCurrentNotInAll.length < currentData.length;
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -406,8 +414,9 @@ class FileMgmt extends React.Component {
 
     const columns = [{
       title: (
+        this.getTableDataSource().length > 0 && 
         <Checkbox
-          indeterminate={false}
+          indeterminate={this.isGroupCheckboxIndeterminate()}
           onChange={this.handleAllCheckChange}
           checked={this.isGroupCheckboxChecked()}
         />
