@@ -375,6 +375,18 @@ class FileMgmt extends React.Component {
     this.handleSelectChanged(newSelectedRows);
   }
 
+  handleAllCheckChange = event => {
+    const { checked } = event.target;
+    const ids = this.getTableDataSource().map(m => m.id);
+    let newSelectedRows;
+    if (checked) {
+      newSelectedRows = this.state.selectedRows.map(m => m.id).concat(ids);
+    } else {
+      newSelectedRows = this.state.selectedRows.map(m => m.id).filter(f => !ids.includes(f));
+    }
+    this.handleSelectChanged(newSelectedRows);
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -387,7 +399,7 @@ class FileMgmt extends React.Component {
     }
 
     const columns = [{
-      title: <Checkbox indeterminate={false} />,
+      title: <Checkbox indeterminate={false} onChange={this.handleAllCheckChange} />,
       key: 'choose',
       render: (text, record) => (
         <Checkbox
