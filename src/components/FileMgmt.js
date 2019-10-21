@@ -385,6 +385,21 @@ class FileMgmt extends React.Component {
     return findParents(fileId);
   }
 
+  // findParentsNeedCheck = (fileId) => {
+  //   let allNeedCheckParents = [];
+  //   const react = this;
+  //   function findParentCheckAuto (id) {
+  //     const currentFile = react.props.data.filter(f => f.id === id)[0];
+  //     const parent = react.props.data.filter(f => f.id === currentFile.parent);
+  //     if (parent.length > 0) {
+  //       const curParent = parent[0];
+  //       const allChildren = react.props.data.filter(f => f.parent === curParent.id);
+  //       const notSelect = subs allChildren.map(m => m.id)
+  //     }
+
+  //   }
+  // }
+
   handleItemCheckChange = (item, e) => {
     const { checked } = e.target;
     const { id } = item;
