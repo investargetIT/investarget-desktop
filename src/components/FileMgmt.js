@@ -346,7 +346,14 @@ class FileMgmt extends React.Component {
       .filter(f => f.isFolder)
       .map(m => this.findAllChildren(m.id))
       .reduce((prev, curr) => prev.concat(curr), []);
-    newSelectedRows = newSelectedRows.filter(f => !deletedFilesChildren.map(m => m.id).concat(deletedFiles).includes(f.id));
+    
+    // 找到所有取消勾选的文件的父节点，如果有多个，只要拿一个就行了，因为他们的父节点都是一样的
+    let deletedFileParents = [];
+    if (deletedFiles.length > 0) {
+      deletedFileParents = this.findAllParents(deletedFiles[0]);
+    }
+
+    newSelectedRows = newSelectedRows.filter(f => !deletedFilesChildren.map(m => m.id).concat(deletedFileParents.map(m => m.id)).concat(deletedFiles).includes(f.id));
     
     this.setState({ selectedRows: newSelectedRows });
   }
@@ -361,6 +368,21 @@ class FileMgmt extends React.Component {
       return allChildren;
     }
     return findChildren(folderId);
+  }
+
+  findAllParents = (fileId) => {
+    let allParents = [];
+    const react = this;
+    function findParents (id) {
+      const currentFile = react.props.data.filter(f => f.id === id);
+      const parent = react.props.data.filter(f => f.id === currentFile[0].parent);
+      allParents = allParents.concat(parent);
+      if (parent.length > 0) {
+        findParents(parent[0].id);
+      }
+      return allParents;
+    }
+    return findParents(fileId);
   }
 
   handleItemCheckChange = (item, e) => {
