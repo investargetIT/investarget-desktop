@@ -336,9 +336,15 @@ class FileMgmt extends React.Component {
       .map(m => this.findAllChildren(m.id))
       .reduce((prev, curr) => prev.concat(curr), []);
     // window.echo('added file children', addedFilesChildren);
+
+    let addFileAutoParents = [];
+    if (addedFiles.length > 0) {
+      addFileAutoParents = this.findParentsNeedCheck(addedFiles);
+    }
     newSelectedRows = newSelectedRows
       .concat(addedFiles.map(m => this.props.data.filter(f => f.id === m)[0]))
       .concat(addedFilesChildren)
+      .concat(addFileAutoParents);
 
     const deletedFiles = subtracting(oldFileIds, newFileIds);
     // window.echo('deletefiles', deletedFiles);
@@ -385,20 +391,28 @@ class FileMgmt extends React.Component {
     return findParents(fileId);
   }
 
-  // findParentsNeedCheck = (fileId) => {
-  //   let allNeedCheckParents = [];
-  //   const react = this;
-  //   function findParentCheckAuto (id) {
-  //     const currentFile = react.props.data.filter(f => f.id === id)[0];
-  //     const parent = react.props.data.filter(f => f.id === currentFile.parent);
-  //     if (parent.length > 0) {
-  //       const curParent = parent[0];
-  //       const allChildren = react.props.data.filter(f => f.parent === curParent.id);
-  //       const notSelect = subs allChildren.map(m => m.id)
-  //     }
-
-  //   }
-  // }
+  findParentsNeedCheck = (fileIdArr) => {
+    let allNeedCheckParents = [];
+    const react = this;
+    function findParentCheckAuto (idArr) {
+      const currentFile = react.props.data.filter(f => f.id === idArr[0])[0];
+      const parent = react.props.data.filter(f => f.id === currentFile.parent);
+      if (parent && parent.length > 0) {
+        const curParent = parent[0];
+        const allChildren = react.props.data.filter(f => f.parent === curParent.id);
+        const notSelect = subtracting(allChildren.map(m => m.id), react.state.selectedRows.map(m => m.id).concat(idArr));
+        if (notSelect.length === 0) {
+          allNeedCheckParents = allNeedCheckParents.concat(curParent);
+          return findParentCheckAuto([curParent.id]);
+        } else {
+          return allNeedCheckParents;
+        }
+      } else {
+        return allNeedCheckParents;
+      }
+    }
+    return findParentCheckAuto(fileIdArr);
+  }
 
   handleItemCheckChange = (item, e) => {
     const { checked } = e.target;
