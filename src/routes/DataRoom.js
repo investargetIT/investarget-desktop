@@ -175,6 +175,8 @@ class DataRoom extends React.Component {
       parentId: parentId,
       rename: i18n('dataroom.new_folder'),
       unique: maxKey + 1,
+      id: maxKey + 1,
+      isCreatingFolder: true,
     })
     this.setState({ data: newData, name: i18n('dataroom.new_folder') })
   }
@@ -200,7 +202,7 @@ class DataRoom extends React.Component {
     const index = newData.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.state.data[index]
-    if (!value.id) {
+    if (value.isCreatingFolder) {
       // Create new folder
       const parentIndex = newData.map(m => m.id).indexOf(value.parentId)
       
@@ -266,7 +268,7 @@ class DataRoom extends React.Component {
     if (index < 0) return
     const value = newData[index]
     const name = value.name
-    if (!value.id) {
+    if (value.isCreatingFolder) {
       newData.splice(index, 1)
       this.setState({ data: newData })
     } else {

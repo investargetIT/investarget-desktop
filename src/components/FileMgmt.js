@@ -151,7 +151,7 @@ class FileMgmt extends React.Component {
     const index = this.props.data.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.props.data[index]
-    if (value.id) {
+    if (value.id && !value.isCreatingFolder) {
       const newRenameRows = this.state.renameRows.slice()
       const rowIndex = newRenameRows.indexOf(value.id)
       newRenameRows.splice(rowIndex, 1)
@@ -165,7 +165,7 @@ class FileMgmt extends React.Component {
     const index = this.props.data.map(m => m.unique).indexOf(unique)
     if (index < 0) return
     const value = this.props.data[index]
-    if (value.id) {
+    if (value.id && !value.isCreatingFolder) {
       const newRenameRows = this.state.renameRows.slice()
       const rowIndex = newRenameRows.indexOf(value.id)
       newRenameRows.splice(rowIndex, 1)
@@ -513,7 +513,7 @@ class FileMgmt extends React.Component {
                 : 
                 ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png"}
             />
-          { record.id && !this.state.renameRows.includes(record.id) ?
+          { !record.isCreatingFolder && !this.state.renameRows.includes(record.id) ?
               <span onClick={this.folderClicked.bind(this, record)} style={{ cursor: 'pointer', verticalAlign: 'middle', marginLeft: 10 }}>{text}</span>
               : (<span>
               <Input
