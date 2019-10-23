@@ -188,7 +188,7 @@ class FileMgmt extends React.Component {
         react.state.selectedRows.map(m => react.deleteContent(m.id))
         const deleteContents = react.contents.concat(react.state.selectedRows.map(m => m.id))
         // Server is responsible for recrusive
-        react.props.onDeleteFiles(react.state.selectedRows.map(m => m.id))
+        react.props.onDeleteFiles(react.state.selectedRows.filter(f => f.parentId === react.state.parentId).map(m => m.id))
         react.setState({ selectedRows: [] })
       }
     })
