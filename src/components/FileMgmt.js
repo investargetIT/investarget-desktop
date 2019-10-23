@@ -176,7 +176,7 @@ class FileMgmt extends React.Component {
 
   handleRename() {
     this.setState({
-      renameRows: this.state.selectedRows.map(m => m.id)
+      renameRows: this.state.selectedRows.filter(f => f.parentId === this.state.parentId).map(m => m.id)
     })
   }
 
@@ -677,7 +677,7 @@ class FileMgmt extends React.Component {
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
     const selectMoreThanOneRow = this.state.selectedRows.length > 0
-    const selectMoreThanTwoRow = this.state.selectedRows.length > 1
+    const selectMoreThanTwoRow = this.state.selectedRows.filter(f => f.parentId === this.state.parentId).length > 1
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
 
     const operation = () => {
