@@ -93,6 +93,9 @@ class OrgBDListComponent extends React.Component {
     if (!currentSession.is_superuser && currentSession.permissions.includes('usersys.as_trader')) {
       filters.manager = [currentSession.id];
     }
+    if (props.allManager) {
+      filters.manager = [];
+    }
 
     this.state = {
         showUnreadOnly: this.showUnreadOnly, // 是否只显示未读的机构BD任务

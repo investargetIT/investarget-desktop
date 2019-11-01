@@ -665,7 +665,7 @@ class NewOrgBDList extends React.Component {
         {this.projId ?
           <div>
             <H3 size="1.2em">○ 该项目的历史BD</H3>
-            <OrgBDListComponent refresh={this.state.historyBDRefresh} location={this.props.location} pageSize={10} pagination />
+            <OrgBDListComponent allManager refresh={this.state.historyBDRefresh} location={this.props.location} pageSize={10} pagination />
           </div>
         : null }
 
