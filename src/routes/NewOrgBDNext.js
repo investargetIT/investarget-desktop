@@ -68,11 +68,12 @@ class NewOrgBDList extends React.Component {
 
     this.state = {
         filters: OrgBDFilter.defaultValue,
-        search: null,
+        search: '',
         page: 1,
         pageSize: this.props.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
         total: 0,
         manager: null,
+        originalList: [],
         list: [],
         loading: false,
         visible: false,
@@ -288,7 +289,7 @@ class NewOrgBDList extends React.Component {
       });
     }
     newList = newList.filter(f => !(f.loaded && f.items.length === 0));
-    this.setState({ list: newList }); 
+    this.setState({ list: newList, originalList: newList }); 
 
     return dataForSingleOrg;
   }
@@ -522,6 +523,26 @@ class NewOrgBDList extends React.Component {
       .catch(handleError);
   }
 
+  handleSearch = async () => {
+    if (!this.state.search) {
+      this.setState({ list: this.state.originalList });
+      return;
+    }
+    this.setState({ loading: true });
+    const reqSearch = await api.getUser({ page_size: 1000, search: this.state.search });
+    this.setState({ loading: false });
+    const searchResult = reqSearch.data.data.map(m => m.username);
+    const newList = this.state.originalList.filter(f1 => 
+      f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
+    );
+    this.setState({ list: newList.map(m => 
+      ({
+        ...m,
+        items: m.items.filter(f => searchResult.includes(f.username)) 
+      })
+    )});
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -670,6 +691,14 @@ class NewOrgBDList extends React.Component {
         : null }
 
         <H3 size="1.2em" style={{marginTop: "2em"}}>○ 选择机构列表</H3>
+
+        <Search
+          size="large"
+          style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
+          value={search}
+          onChange={search => this.setState({ search })}
+          onSearch={this.handleSearch} />
+
         <Table
           className="new-org-db-style"
           onChange={this.handleTableChange}
