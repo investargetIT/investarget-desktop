@@ -690,14 +690,15 @@ class NewOrgBDList extends React.Component {
           </div>
         : null }
 
-        <H3 size="1.2em" style={{marginTop: "2em"}}>○ 选择机构列表</H3>
-
-        <Search
-          size="large"
-          style={{ width: 200, marginBottom: '16px', marginTop: '10px' }}
-          value={search}
-          onChange={search => this.setState({ search })}
-          onSearch={this.handleSearch} />
+        <div style={{ marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <H3 size="1.2em" style={{ marginTop: 'unset', marginBottom: 'unset' }}>○ 选择机构列表</H3>
+          <Search
+            size="large"
+            style={{ width: 200 }}
+            value={search}
+            onChange={search => this.setState({ search })}
+            onSearch={this.handleSearch} />
+        </div>
 
         <Table
           className="new-org-db-style"
