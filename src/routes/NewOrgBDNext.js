@@ -529,7 +529,7 @@ class NewOrgBDList extends React.Component {
       return;
     }
     this.setState({ loading: true });
-    const reqSearch = await api.getUser({ page_size: 1000, search: this.state.search });
+    const reqSearch = await api.getUser({ page_size: 1000, org: this.ids, search: this.state.search });
     this.setState({ loading: false });
     const searchResult = reqSearch.data.data.map(m => m.username);
     const newList = this.state.originalList.filter(f1 => 
@@ -695,6 +695,7 @@ class NewOrgBDList extends React.Component {
           <Search
             size="large"
             style={{ width: 200 }}
+            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
             value={search}
             onChange={search => this.setState({ search })}
             onSearch={this.handleSearch} />
