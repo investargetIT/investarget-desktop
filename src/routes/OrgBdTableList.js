@@ -252,10 +252,33 @@ class TimelineList extends React.Component {
     );
   };
 
+  isAbleToModifyStatus = record => {
+    if (hasPerm('BD.manageOrgBD')) {
+      return true;
+    }
+    const currentUserID = getUserInfo() && getUserInfo().id;
+    if ([this.state.makeUser, this.state.takeUser, record.manager.id, record.createuser.id].includes(currentUserID)) {
+      return true;
+    }
+    return false;
+  }
+
+  handleModifyStatusBtnClicked(bd) {
+    this.setState({ 
+        visible: true, 
+        currentBD: bd,
+    });
+  }
+
+  handleOpenModal = bd => {
+    this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
+  }
+
   render() {
 
     const { location } = this.props
-    const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
+    // const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
+    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { 
@@ -290,7 +313,7 @@ class TimelineList extends React.Component {
       },
       {
         title: "最新备注",
-        key:'bd_latest_info',
+        key: 'bd_latest_info',
         render: (text, record) => {
           let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
           return latestComment ?
@@ -301,42 +324,18 @@ class TimelineList extends React.Component {
             : "暂无";
         },
       },
-      // { 
-      //   title: i18n('timeline.transaction_status'), 
-      //   key: 'timeline_transationStatus__transationStatus', 
-      //   dataIndex: 'transationStatu.transationStatus.name', 
-      //   sorter: true, 
-      // },
-      // { title: i18n('timeline.latest_remark'), key: 'remark', dataIndex: 'latestremark.remark' },
-      // { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-      //     <span className="span-operation" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-      //       <div style={{display:'flex',flexWrap:'wrap',maxWidth:'100px'}}>
-      //       {
-      //         record.isClose ? (
-      //           <Button style={buttonStyle} size="small" onClick={this.showOpenTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.open')}</Button>
-      //         ) : (
-      //           <Button style={buttonStyle} size="small" onClick={this.showCloseTimelineModal.bind(this, record.id)} disabled={!record.action.change}>{i18n('common.close')}</Button>
-      //         )
-      //       }
-
-      //       <Link to={'/app/timeline/' + record.id}>
-      //         <Button style={buttonStyle} size="small" disabled={!record.action.get}>{i18n("common.view")}</Button>
-      //       </Link>
-
-      //       <Link to={'/app/timeline/edit/' + record.id}>
-      //         <Button style={buttonStyle} size="small" disabled={!record.action.change || record.isClose}>{i18n("common.edit")}</Button>
-      //       </Link>
-      //       </div>
-      //       <div>
-      //       <Popconfirm title={i18n("message.confirm_delete")} onConfirm={this.deleteTimeline.bind(null, record.id)}>
-      //         <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
-      //           <Icon type="delete" />
-      //         </Button>
-      //       </Popconfirm>
-      //       </div>
-      //     </span>
-      //   )
-      // },
+      {
+        title: i18n('org_bd.operation'),
+        key: 'operation',
+        render: (text, record) => {
+          return this.isAbleToModifyStatus(record) ?
+            <span>
+              <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
+              <a style={{ ...buttonStyle, marginRight: 4 }} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
+            </span>
+            : null;
+        },
+      },
     ]
 
     const { filters, search, total, list, loading, page, pageSize, visible, id, reason } = this.state
