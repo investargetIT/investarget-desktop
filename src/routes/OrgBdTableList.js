@@ -67,14 +67,11 @@ class TimelineList extends React.Component {
   }
 
   handlePageChange = (page) => {
-    // const { proj, investor, trader } = this.props.location.query;
-    // const parameters = { proj, investor, trader, page };
-    // this.props.router.push(`/app/timeline/list?${qs.stringify(parameters)}`);
-    this.setState({ page }, this.getTimeline);
+    this.setState({ page }, this.getOrgBdList);
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getTimeline)
+    this.setState({ pageSize, page: 1 }, this.getOrgBdList)
   }
 
   getTimeline = () => {
@@ -220,26 +217,18 @@ class TimelineList extends React.Component {
   }
 
   componentDidMount() {
-    // this.getTimeline()
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getOrgBdList();
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { page: nextPage, proj: nextProj } = nextProps.location.query;
-  //   const { page: currentPage, proj: currentProj } = this.props.location.query;
-  //   if (nextPage !== currentPage) {
-  //     this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getTimeline);
-  //   } else if (nextProj !== currentProj) {
-  //     this.setState({ filters: TimelineFilter.defaultValue, page: 1, search: null }, this.getTimeline);
-  //   }
-  // }
-
   getOrgBdList = async () => {
-    const res = await api.getOrgBdList();
+    const { filters, search, page, pageSize, sort, desc } = this.state
+    const params = { page_index: page, page_size: pageSize };
+    this.setState({ loading: true });
+    const res = await api.getOrgBdList(params);
     window.echo('req', res);
-    const { data } = res.data;
-    this.setState({ list: data });
+    const { data: list, count: total } = res.data;
+    this.setState({ list, total, loading: false });
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -309,7 +298,7 @@ class TimelineList extends React.Component {
         title: i18n('org_bd.status'), 
         key: 'response',
         dataIndex: 'response',
-        render: text => text && this.props.orgbdres.filter(f => f.id === text)[0].name,
+        render: text => text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name,
       },
       {
         title: "最新备注",
