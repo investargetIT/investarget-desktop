@@ -171,6 +171,7 @@ class InboxList extends React.Component {
               <h3 style={detailTimeStyle}>{currentMsg.created}</h3>
               <div style={lineStyle}></div>
               <p>{currentMsg.content}</p>
+              <div dangerouslySetInnerHTML={{ __html: currentMsg.html ? currentMsg.html.replace(/\n/g, '<br>') : '' }} />
             </div>
           ) : (
             <div>
