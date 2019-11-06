@@ -25,7 +25,7 @@ import ProjectListFavor from './routes/ProjectListFavor'
 import ProjectListInterest from './routes/ProjectListInterest'
 import ProjectListPublished from './routes/ProjectListPublished'
 import ProjectDetail from './routes/ProjectDetail'
-import TimelineList from './routes/TimelineList'
+import OrgBdTableList from './routes/OrgBdTableList';
 import DataRoomList from './routes/DataRoomList'
 import EmailList from './routes/EmailList'
 import EmailDetail from './routes/EmailDetail'
@@ -111,7 +111,7 @@ function RouterConfig({ history }) {
       <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
       <Route path="/app/dataroom/detail" component={DataRoom} />
       <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />
-      <Route path="/app/timeline/list" component={TimelineList} />
+      <Route path="/app/timeline/list" component={OrgBdTableList} />
       <Route path="/app/email/list" component={EmailList} />
       <Route path="/app/email/detail/:id" component={EmailDetail} />
       <Route path="/app/user/edit/:id" component={EditUser} />
