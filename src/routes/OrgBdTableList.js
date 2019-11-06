@@ -8,7 +8,7 @@ import {
   getUserInfo,
 } from '../utils/util';
 
-import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination } from 'antd'
+import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import qs from 'qs';
 import { TimelineFilter } from '../components/Filter'
@@ -221,6 +221,7 @@ class TimelineList extends React.Component {
 
   componentDidMount() {
     // this.getTimeline()
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getOrgBdList();
   }
 
@@ -281,15 +282,25 @@ class TimelineList extends React.Component {
         dataIndex: 'manager.username', 
         // sorter: true, 
       },
-      // { 
-      //   title: i18n('timeline.remaining_day'), 
-      //   key: 'remainingAlertDay', 
-      //   render: (text, record) => {
-      //     let day = Number(record.transationStatu.remainingAlertDay)
-      //     day = day > 0 ? Math.ceil(day) : 0
-      //     return day
-      //   },
-      // },
+      { 
+        title: i18n('org_bd.status'), 
+        key: 'response',
+        dataIndex: 'response',
+        render: text => text && this.props.orgbdres.filter(f => f.id === text)[0].name,
+      },
+      {
+        title: "最新备注",
+        key:'bd_latest_info',
+        render: (text, record) => {
+          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
+          return latestComment ?
+            <Popover placement="leftTop" title="最新备注" content={<p style={{maxWidth: 400}}>{latestComment}</p>}>
+              <div style={{color: "#428bca"}}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment }
+              </div>
+            </Popover>
+            : "暂无";
+        },
+      },
       // { 
       //   title: i18n('timeline.transaction_status'), 
       //   key: 'timeline_transationStatus__transationStatus', 
@@ -375,5 +386,8 @@ class TimelineList extends React.Component {
     )
   }
 }
-
-export default connect()(withRouter(TimelineList));
+function mapStateToProps(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+}
+export default connect(mapStateToProps)(withRouter(TimelineList));
