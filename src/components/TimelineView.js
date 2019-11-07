@@ -62,7 +62,6 @@ class TimelineView extends React.Component {
     };
     const res = await api.getOrgBdList(params);
     const { data: list } = res.data;
-    window.echo ('list', list);
     this.setState({ list });
   }
 
@@ -206,8 +205,12 @@ class ViewInvestors extends React.Component{
               <div style={{ position: 'absolute', width: this.state.list.length > 4 ? 200 : 'inherit', zIndex: 99 }}>
                 <div style={{border: '1px solid rgb(203, 204, 205)'}}>
                 {this.state.list.map(item => 
-                <Popover key={item.investor.id} content={this.popoverContent(item.investor)}>
-                <img key={item.investor.id} style={imgStyle} src={item.investor.photourl} />
+                <Popover key={item.id} content={this.popoverContent({
+                  photourl: item.userinfo && item.userinfo.photourl,
+                  username: item.username,
+                  title: item.usertitle,
+                })}>
+                <img key={item.id} style={imgStyle} src={item.userinfo && item.userinfo.photourl} />
                 </Popover>
                 )}
                 </div>
