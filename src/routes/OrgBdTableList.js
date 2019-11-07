@@ -230,7 +230,7 @@ class TimelineList extends React.Component {
 
   getOrgBdList = async () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { page_index: page, page_size: pageSize, search };
+    const params = { page_index: page, page_size: pageSize, search, sort, desc };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
     const { data: list, count: total } = res.data;
@@ -247,7 +247,7 @@ class TimelineList extends React.Component {
         sort: sorter.columnKey, 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getTimeline
+      this.getOrgBdList
     );
   };
 
@@ -485,31 +485,32 @@ class TimelineList extends React.Component {
       { 
         title: i18n('timeline.project_name'), 
         key: 'proj', 
-        render: (text, record) => <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>, 
-        // sorter: true, 
+        render: (text, record) => record.proj && <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>, 
+        sorter: true,
       },
       { 
         title: i18n('timeline.investor'), 
         key: 'username', 
         dataIndex: 'username', 
-        // sorter: true, 
+        sorter: true,
       },
       {
         title: i18n('user.position'),
-        key: 'position',
-        dataIndex: 'usertitle.name'
-        // sorter: true, 
+        key: 'usertitle',
+        dataIndex: 'usertitle.name',
+        sorter: true, 
       },
       { 
         title: i18n('org_bd.manager'), 
         key: 'manager', 
         dataIndex: 'manager.username', 
-        // sorter: true, 
+        sorter: true,
       },
       { 
         title: i18n('org_bd.status'), 
         key: 'response',
         dataIndex: 'response',
+        sorter: true,
         render: text => text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name,
       },
       {
