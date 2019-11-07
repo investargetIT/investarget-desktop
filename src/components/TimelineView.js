@@ -47,6 +47,7 @@ class TimelineView extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] })
     // this.getAllTimeline()
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     api.getSource('orgbdres').then(res => {
       this.orgBdRes = res.data;
       this.getAllOrgBD();
@@ -65,10 +66,21 @@ class TimelineView extends React.Component {
     this.setState({ list });
   }
 
+  findRelatedStatusName = tranStatusName => {
+    switch (tranStatusName) {
+      case '获取项目概要':
+        return '已见面';
+      case '获取投资备忘录':
+        return '正在看前期资料';
+      case '签署保密协议':
+        return '已签NDA';
+      default:
+        return tranStatusName;
+    }
+  }
 
   render() {
-    const { transactionStatus }  = this.props
-
+    const { transactionStatus, orgbdres }  = this.props
     return (
 
       <div className={styles['timeline']}>
@@ -77,7 +89,12 @@ class TimelineView extends React.Component {
          
         {
           transactionStatus.map((status, index) => {
-            const list = this.state.list.filter(item => item.status == status.index)
+            const list = this.state.list.filter(item => {
+              const response = orgbdres.filter(f => f.id === item.response);
+              if (response.length === 0) return false;
+              const curRes = response[0];
+              return curRes.name === this.findRelatedStatusName(status.name);
+            })
             const step = index + 1
             const odd = step % 2 // 奇偶
             const colorList = ['#FD8B3B', '#2AA0AE', '#5649B9', '#F94545', '#0B87C1', '#F5C12D', '#EB090A', '#2AA0AE', '#855DC7', '#FF9B25', '#10458F']
@@ -139,8 +156,8 @@ class TimelineView extends React.Component {
 
 
 function mapStateToProps(state) {
-  const { transactionStatus } = state.app
-  return { transactionStatus }
+  const { transactionStatus, orgbdres } = state.app
+  return { transactionStatus, orgbdres }
 }
 
 class ViewInvestors extends React.Component{
