@@ -27,6 +27,7 @@ class TimelineView extends React.Component {
       list: [],
       showInvestorStep: null,
     }
+    this.orgBdRes = [];
   }
 
   getAllTimeline = () => {
@@ -45,7 +46,23 @@ class TimelineView extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] })
-    this.getAllTimeline()
+    // this.getAllTimeline()
+    api.getSource('orgbdres').then(res => {
+      this.orgBdRes = res.data;
+      this.getAllOrgBD();
+    })
+  }
+
+  getAllOrgBD = async () => {
+    const params = {
+      proj: this.props.projId,
+      page_size: 1000,
+      response: this.orgBdRes.map(m => m.id)
+    };
+    const res = await api.getOrgBdList(params);
+    const { data: list } = res.data;
+    window.echo ('list', list);
+    this.setState({ list });
   }
 
 
