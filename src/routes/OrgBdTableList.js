@@ -7,7 +7,7 @@ import {
   getCurrentUser,
   getUserInfo,
 } from '../utils/util';
-
+import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import qs from 'qs';
@@ -51,6 +51,7 @@ class TimelineList extends React.Component {
       reason: '',
       desc: undefined,
       sort: undefined,
+      currentBD: null,
     }
   }
 
@@ -263,6 +264,192 @@ class TimelineList extends React.Component {
     this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
   }
 
+  handleConfirmBtnClicked = state => {
+    let comments = '';
+    // 由非空状态变为不跟进，记录之前状态，相关issue #285
+    if (state.status === 6 && ![6, null].includes(this.state.currentBD.response)) {
+      const oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
+      comments = [state.comment.trim(), `之前状态${oldStatus}`].filter(f => f !== '').join('，');
+    } else {
+      comments = state.comment.trim();
+    }
+    // 添加备注
+    if (comments.length > 0) {
+      const body = {
+        orgBD: this.state.currentBD.id,
+        comments,
+      };
+      api.addOrgBDComment(body);
+    }
+
+    // 如果状态改为了已见面、已签NDA或者正在看前期资料，则同步时间轴
+    // if ([1, 2, 3].includes(state.status) && this.state.currentBD.response !== state.status) {
+      // this.syncTimeline(state).then(() => this.wechatConfirm(state));
+    // } else {
+      this.wechatConfirm(state);
+    // }
+  }
+
+  wechatConfirm = state => {
+    const react = this;
+    // 如果修改状态为2或者3即已签NDA或者正在看前期资料
+    if (state.status !== this.state.currentBD.response && [2, 3].includes(state.status) && ![2, 3].includes(this.state.currentBD.response)) {
+      if (!this.state.currentBD.bduser) {
+        this.checkExistence(state.mobile, state.email).then(ifExist => {
+          if (ifExist) {
+            Modal.error({
+              content: i18n('user.message.user_exist')
+            });
+          } else {
+            this.handleConfirmAudit(state, true);
+          }
+        })
+      } else {
+        // 已经有联系人时
+        if (this.state.currentBD.userinfo.wechat && this.state.currentBD.userinfo.wechat.length > 0 && state.wechat.length > 0) {
+          // 该联系人已经有微信
+          Modal.confirm({
+            title: '警告',
+            content: '联系人微信已存在，是否覆盖现有微信',
+            onOk: () => this.handleConfirmAudit(state, true), 
+            onCancel:  () => this.handleConfirmAudit(state),
+          });
+        } else {
+          // 该联系人没有微信
+          this.handleConfirmAudit(state, true);
+        }
+      }
+    } else {
+      this.handleConfirmAudit(state, true);
+    }
+  }
+
+  checkExistence = (mobile, email) => {
+    return new Promise((resolve, reject) => {
+      Promise.all([api.checkUserExist(mobile), api.checkUserExist(email)])
+        .then(result => {
+          for (let item of result) {
+            if (item.data.result === true)
+              resolve(true);
+          }
+          resolve(false);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode, comment }, isModifyWechat) => {
+    const body = {
+      response: status,
+      isimportant: isimportant ? 1 : 0,
+      remark: comment,
+    }
+    api.modifyOrgBD(this.state.currentBD.id, body)
+      .then(result => {
+        if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) {
+          this.setState({ visible: false }, this.getOrgBdList);
+        }
+      }
+      );
+
+    if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) return;
+    // 如果机构BD存在联系人
+    if (this.state.currentBD.bduser) {
+      // 首先检查经理和投资人的关联
+      api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
+        .then(result => {
+          // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
+          if ((result.data || hasPerm('usersys.admin_changeuser')) && isModifyWechat) {
+            api.addUserRelation({
+              relationtype: true,
+              investoruser: this.state.currentBD.bduser,
+              traderuser: this.state.currentBD.manager.id
+            })
+            api.editUser([this.state.currentBD.bduser], { wechat: wechat === '' ? undefined : wechat });
+          } else {
+            api.addUserRelation({
+              relationtype: true,
+              investoruser: this.state.currentBD.bduser,
+              traderuser: this.state.currentBD.manager.id
+            })
+              .then(result => {
+                if (isModifyWechat) {
+                  api.editUser([this.state.currentBD.bduser], { wechat: wechat === '' ? undefined : wechat });
+                }
+              })
+              .catch(error => {
+                if (!isModifyWechat) return;
+                if (error.code === 2025) {
+                  Modal.error({
+                    content: '该用户正处于保护期，无法建立联系，因此暂时无法修改微信',
+                  });
+                }
+              });
+          }
+          this.getOrgBdList();
+          // 重新加载这条记录，保证修改了的微信能在鼠标hover时正确显示
+          // this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id);
+        });
+
+      // 承做和投资人建立联系
+      this.addRelation(this.state.currentBD.bduser);
+
+      if (wechat.length > 0) {
+        api.addOrgBDComment({
+          orgBD: this.state.currentBD.id,
+          comments: `${i18n('user.wechat')}: ${wechat}`
+        }).then(data => {
+          this.setState({ visible: false }, this.getOrgBdList)
+        });
+      } else {
+        this.setState({ visible: false }, this.getOrgBdList)
+      }
+      // 如果机构BD不存在联系人
+    } else {
+      api.addOrgBDComment({
+        orgBD: this.state.currentBD.id,
+        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`
+      });
+      const newUser = { mobile, wechat, email, mobileAreaCode, groups: [Number(group)], userstatus: 2 };
+      if (window.LANG === 'en') {
+        newUser.usernameE = username;
+      } else {
+        newUser.usernameC = username;
+      }
+      this.checkExistence(mobile, email).then(ifExist => {
+        if (ifExist) {
+          Modal.error({
+            content: i18n('user.message.user_exist')
+          });
+        }
+        else {
+          api.addUser(newUser)
+            .then(result => {
+              api.addUserRelation({
+                relationtype: true,
+                investoruser: result.data.id,
+                traderuser: this.state.currentBD.manager.id
+              }).then(data => {
+                this.setState({ visible: false }, this.getOrgBdList)
+              })
+            });
+        }
+      })
+    }
+  }
+
+  // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
+  addRelation = investorID => {
+    if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
+      api.addUserRelation({
+        relationtype: false,
+        investoruser: investorID,
+        traderuser: this.state.currentBD.makeUser,
+        proj: this.state.currentBD.proj.id,
+      })
+    }
+  }
+
   render() {
 
     const { location } = this.props
@@ -369,7 +556,14 @@ class TimelineList extends React.Component {
           </div>
         </div>
 
-        <CloseTimelineModal visible={visible} id={id} reason={reason} onChange={this.handleReasonChange} onOk={this.handleConfirmClose} onCancel={this.handleCancelClose} />
+        {this.state.visible ?
+          <ModalModifyOrgBDStatus
+            visible={this.state.visible}
+            onCancel={() => this.setState({ visible: false })}
+            onOk={this.handleConfirmBtnClicked}
+            bd={this.state.currentBD}
+          />
+          : null}
       </LeftRightLayout>
     )
   }
