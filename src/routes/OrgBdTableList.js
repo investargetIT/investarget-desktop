@@ -6,6 +6,8 @@ import {
   hasPerm, 
   getCurrentUser,
   getUserInfo,
+  time,
+  handleError,
 } from '../utils/util';
 import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
@@ -53,6 +55,9 @@ class TimelineList extends React.Component {
       desc: undefined,
       sort: undefined,
       currentBD: null,
+      commentVisible: false,
+      comments: [],
+      newComment: '',
     }
   }
 
@@ -228,9 +233,12 @@ class TimelineList extends React.Component {
     const params = { page_index: page, page_size: pageSize, search };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
-    window.echo('req', res);
     const { data: list, count: total } = res.data;
-    this.setState({ list, total, loading: false });
+    let comments = [];
+    if (this.state.currentBD) {
+      comments = list.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
+    }
+    this.setState({ list, total, loading: false, comments });
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -451,6 +459,22 @@ class TimelineList extends React.Component {
     }
   }
 
+  handleAddComment = () => {
+    const body = {
+      orgBD: this.state.currentBD.id,
+      comments: this.state.newComment,
+    };
+    api.addOrgBDComment(body)
+      .then(data => this.setState({ newComment: '' }, this.getOrgBdList))
+      .catch(handleError);
+  }
+
+  handleDeleteComment = id => {
+    api.deleteOrgBDComment(id)
+    .then(this.getOrgBdList)
+    .catch(handleError);
+  }
+
   render() {
 
     const { location } = this.props
@@ -565,10 +589,63 @@ class TimelineList extends React.Component {
             bd={this.state.currentBD}
           />
           : null}
+
+        <Modal
+          title={i18n('remark.comment')}
+          visible={this.state.commentVisible}
+          footer={null}
+          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
+          maskClosable={false}
+        >
+          <BDComments
+            comments={this.state.comments}
+            newComment={this.state.newComment}
+            onChange={e => this.setState({ newComment: e.target.value })}
+            onAdd={this.handleAddComment}
+            onDelete={this.handleDeleteComment}
+          />
+        </Modal>
+
       </LeftRightLayout>
     )
   }
 }
+
+function BDComments(props) {
+  const { comments, newComment, onChange, onDelete, onAdd } = props
+  return (
+    <div>
+      <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
+        <Input.TextArea rows={3} value={newComment} onChange={onChange} style={{flex:1,marginRight:16}} />
+        <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
+      </div>
+      <div>
+        {comments.length ? comments.map(comment => {
+          let content = comment.comments;
+          const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+          if (oldStatusMatch) {
+            const oldStatus = oldStatusMatch[0];
+            content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+          }
+          return (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p>
+                <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+                {hasPerm('BD.manageOrgBD') ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                  </Popconfirm>
+                  : null}
+              </p>
+              <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+            </div>
+          );
+        }) : <p>{i18n('remark.no_comments')}</p>}
+      </div>
+    </div>
+  )
+}
+
 function mapStateToProps(state) {
   const { orgbdres } = state.app;
   return { orgbdres };
