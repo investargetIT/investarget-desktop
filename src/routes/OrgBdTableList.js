@@ -63,7 +63,7 @@ class TimelineList extends React.Component {
   }
 
   handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getTimeline)
+    this.setState({ search, page: 1 }, this.getOrgBdList);
   }
 
   handlePageChange = (page) => {
@@ -223,7 +223,7 @@ class TimelineList extends React.Component {
 
   getOrgBdList = async () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { page_index: page, page_size: pageSize };
+    const params = { page_index: page, page_size: pageSize, search };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
     window.echo('req', res);
