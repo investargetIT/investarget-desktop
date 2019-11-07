@@ -59,6 +59,7 @@ class TimelineList extends React.Component {
       comments: [],
       newComment: '',
     }
+    this.orgBdRes = [];
   }
 
   handleFilt = (filters) => {
@@ -225,12 +226,20 @@ class TimelineList extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
-    this.getOrgBdList();
+    api.getSource('orgbdres').then(res => {
+      this.orgBdRes = res.data;
+      this.getOrgBdList();
+    })
   }
 
   getOrgBdList = async () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { page_index: page, page_size: pageSize, search, sort, desc };
+    const params = {
+      page_index: page,
+      page_size: pageSize,
+      search, sort, desc,
+      response: this.orgBdRes.map(m => m.id)
+    };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
     const { data: list, count: total } = res.data;
