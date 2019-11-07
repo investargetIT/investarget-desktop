@@ -31,7 +31,8 @@ class TimelineList extends React.Component {
     if (proj && investor && trader) {
       filters = { investor, proj, trader, isClose: null };
     } else {
-      const setting = this.readSetting();
+      // const setting = this.readSetting();
+      const setting = null;
       filters = setting ? setting.filters : TimelineFilter.defaultValue;
       search = setting ? setting.search : null;
       page = setting ? setting.page : 1;
