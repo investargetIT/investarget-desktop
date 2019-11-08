@@ -13,7 +13,7 @@ import ModalModifyOrgBDStatus from '../components/ModalModifyOrgBDStatus';
 import { Input, Icon, Button, Popconfirm, Modal, Table, Pagination, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import qs from 'qs';
-import { TimelineFilter } from '../components/Filter'
+import { OrgBdTableListFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -35,7 +35,7 @@ class TimelineList extends React.Component {
     } else {
       // const setting = this.readSetting();
       const setting = null;
-      filters = setting ? setting.filters : TimelineFilter.defaultValue;
+      filters = setting ? setting.filters : OrgBdTableListFilter.defaultValue;
       search = setting ? setting.search : null;
       page = setting ? setting.page : 1;
     }
@@ -555,7 +555,12 @@ class TimelineList extends React.Component {
       <LeftRightLayout location={location} title={i18n('menu.timeline_management')}>
         <div>
           <div>
-            {/* <TimelineFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
+
+            <OrgBdTableListFilter
+              defaultValue={filters}
+              onSearch={this.handleFilt}
+              onReset={this.handleReset}
+            />
 
             <div style={{ marginBottom: 24, textAlign: 'right' }} className="clearfix">
               <Search

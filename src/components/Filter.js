@@ -365,6 +365,40 @@ class TimelineFilter extends React.Component {
   }
 }
 
+class OrgBdTableListFilter extends React.Component {
+
+  static defaultValue = {
+    response: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || OrgBdTableListFilter.defaultValue;
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value },this.handleSearch)
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrgBdTableListFilter.defaultValue })
+    this.props.onReset({ ...OrgBdTableListFilter.defaultValue })
+  }
+
+  render() {
+    const { response } = this.state
+    return (
+      <div>
+        <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
 
 class UserListFilter extends React.Component {
 
@@ -978,6 +1012,7 @@ export {
   OrganizationListFilter,
   ProjectListFilter,
   TimelineFilter,
+  OrgBdTableListFilter,
   ProjectLibraryFilter,
   ProjectBDFilter,
   WxMessageFilter,
