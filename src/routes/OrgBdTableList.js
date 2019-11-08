@@ -63,11 +63,11 @@ class TimelineList extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getTimeline)
+    this.setState({ filters, page: 1 }, this.getOrgBdList)
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getTimeline)
+    this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
   }
 
   handleSearch = (search) => {
@@ -238,7 +238,7 @@ class TimelineList extends React.Component {
       page_index: page,
       page_size: pageSize,
       search, sort, desc,
-      response: this.orgBdRes.map(m => m.id)
+      response: filters.response.length === 0 ? this.orgBdRes.map(m => m.id) : filters.response,
     };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
