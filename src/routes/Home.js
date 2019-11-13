@@ -12,6 +12,7 @@ const options = [
   { label: <img style={{ height: 24, verticalAlign: 'middle', background: '#10458F' }} src="/images/investarget.png" />, value: 1 },
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />, value: 2 },
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/aura_logo.png" />, value: 3 },
+  { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_delova_biotech.png" />, value: 4 },
 ]
 let source
 
@@ -65,6 +66,9 @@ class Home extends React.Component {
         break;
       case 'aura.investarget.com':
         localStorage.setItem('source', 3);
+        break;
+      case 'delova.investarget.com':
+        localStorage.setItem('source', 4);
         break;
     }
   }

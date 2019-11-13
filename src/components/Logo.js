@@ -23,6 +23,9 @@ function Logo(props) {
   return (
     <div style={{...logoStyle, ...props.style}}>
       <Link to={ currentUser ? "/app" : "/" }>
+        {source === 4 ?
+          <img style={{...logoImgStyle, padding: 10}} src="/images/logo_delova_biotech.png" />
+          : null }
         {source === 3 ?
           <img style={{...logoImgStyle, padding: 10}} src="/images/aura_logo.png" />
           : null }

@@ -31,6 +31,9 @@ class LoginContainer extends React.Component {
     } else if (source === 3) {
       logo = '/images/aura_logo.png';
       bg = 'url(/images/aura.jpeg)';
+    } else if (source === 4) {
+      logo = '/images/logo_delova_biotech.png';
+      bg = 'url(/images/bg_delova_biotech.jpeg)';
     }
     const bodyWrapStyle = {
       margin: '0 auto', 
