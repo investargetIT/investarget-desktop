@@ -556,7 +556,7 @@ class DataRoom extends React.Component {
               list={this.state.list}
               newUser={this.state.newUser}
               onSelectUser={this.handleChangeUser}
-              onAddUser={this.handleAddUser}
+              onAddUser={this.state.hasPermissionForDataroomTemp ? this.handleAddUser : undefined}
               onDeleteUser={this.handleDeleteUser}
               selectedUser={this.state.selectedUser}
               onChange={this.handleSelectUser}
