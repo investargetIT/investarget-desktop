@@ -67,7 +67,7 @@ class Home extends React.Component {
       case 'aura.investarget.com':
         localStorage.setItem('source', 3);
         break;
-      case 'delova.investarget.com':
+      case 'delovabio.investarget.com':
         localStorage.setItem('source', 4);
         break;
     }
