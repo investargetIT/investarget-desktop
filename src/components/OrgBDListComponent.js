@@ -889,7 +889,7 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', 
+        {title: i18n('org_bd.contact'), width: '10%', dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
@@ -921,16 +921,17 @@ class OrgBDListComponent extends React.Component {
           {
             title: '职位',
             key: 'title',
+            width: '10%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
-          {title: i18n('org_bd.creator'), render: (text, record) => {
+          {title: i18n('org_bd.creator'), width: '10%', render: (text, record) => {
             return record.new ? isLogin().username : record.createuser.username
           }, dataIndex:'createuser.username', key:'createuser', sorter:false},
-          {title: i18n('org_bd.manager'), render: (text, record) => {
+          {title: i18n('org_bd.manager'), width: '10%', render: (text, record) => {
             return record.new ? 
-            <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div style={{ width: 160 }}>{record.manager.username}</div>
+            <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div>{record.manager.username}</div>
           }, dataIndex: 'manager.username', key:'manager', sorter:false},
-        {title: '任务时间', render: (text, record) => {
+        {title: '任务时间', width: '10%', render: (text, record) => {
           if (record.new) {
             return <div>
               { timeWithoutHour(new Date()) + " - " }
@@ -967,7 +968,8 @@ class OrgBDListComponent extends React.Component {
           }
         }, key:'createdtime', sorter:false},
         {
-          title: i18n('org_bd.status'), 
+          title: i18n('org_bd.status'),
+          width: '10%',
           render: (text, record) => {
             if (record.new) {
               return (
@@ -985,14 +987,14 @@ class OrgBDListComponent extends React.Component {
           key:'response', 
           sorter:false
         },
-        {title: "最新备注", render: (text, record) => {
+        {title: "最新备注", width: '20%', render: (text, record) => {
           let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
 
           return record.new ? "暂无" : (latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{maxWidth: 400}}>{latestComment}</p>}><div style={{color: "#428bca"}}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment }</div></Popover> : "暂无")
         }, key:'bd_latest_info'}]
         
         if (this.props.editable) columns.push({
-            title: i18n('org_bd.operation'), render: (text, record) => 
+            title: i18n('org_bd.operation'), width: '20%', render: (text, record) => 
             {
             if (record.new) {
               return (
@@ -1041,7 +1043,7 @@ class OrgBDListComponent extends React.Component {
       return (
         <div>
           <Table
-            showHeader
+            showHeader={false}
             columns={columns}
             dataSource={record.items}
             size={"small"}
@@ -1127,6 +1129,7 @@ class OrgBDListComponent extends React.Component {
           expandedRowKeys={expanded}
           pagination={false}
           size={this.props.size || "middle"}
+          showHeader={true}
         />
         : null }
 
