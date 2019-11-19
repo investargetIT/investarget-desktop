@@ -855,6 +855,34 @@ class OrgBDListComponent extends React.Component {
             </div>
             : null, 
         },
+        // {
+        //   title: '职位',
+        //   width: '10%',
+        // },
+        // {
+        //   title: '职位',
+        //   width: '10%',
+        // },
+        // {
+        //   title: '职位',
+        //   width: '10%',
+        // },
+        // {
+        //   title: '职位',
+        //   width: '10%',
+        // },
+        // {
+        //   title: '职位',
+        //   width: '10%',
+        // },
+        // {
+        //   title: '最新备注',
+        //   width: '20%',
+        // },
+        // {
+        //   title: '操作',
+        //   width: '20%',
+        // }
         // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
       ]
 
@@ -1115,6 +1143,18 @@ class OrgBDListComponent extends React.Component {
         />
         : null }
 
+        <div style={{ padding: '10px 8px', backgroundColor: '#E9F1F3', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+          <div style={{ width: 40 }} />
+          <div style={{ flex: 1, padding: '6px 8px' }}>联系人</div>
+          <div style={{ flex: 1, padding: '6px 8px' }}>职位</div>
+          <div style={{ flex: 1, padding: '6px 8px' }}>创建人</div>
+          <div style={{ flex: 1, padding: '6px 8px' }}>负责人</div>
+          <div style={{ flex: 1, padding: '6px 8px' }}>任务时间</div>
+          <div style={{ flex: 1, padding: '6px 8px' }}>状态</div>
+          <div style={{ flex: 2, padding: '6px 8px' }}>最新备注</div>
+          <div style={{ flex: 2, padding: '6px 8px' }}>操作</div>
+        </div>
+
         { this.state.filters.proj !== null ? 
         <Table
           className="new-org-db-style"
@@ -1129,7 +1169,7 @@ class OrgBDListComponent extends React.Component {
           expandedRowKeys={expanded}
           pagination={false}
           size={this.props.size || "middle"}
-          showHeader={true}
+          showHeader={false}
         />
         : null }
 
