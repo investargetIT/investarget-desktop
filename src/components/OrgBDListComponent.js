@@ -23,6 +23,7 @@ import {
   Row,
   Col,
   Icon,
+  Transfer,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -36,6 +37,7 @@ import { SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
+import debounce from 'lodash/debounce';
 
 function tableToExcel(table, worksheetName) {
   var uri = 'data:application/vnd.ms-excel;base64,'
@@ -125,9 +127,13 @@ class OrgBDListComponent extends React.Component {
         exportLoading: false,
         listForExport: [],
         expandedForExport: [],
+        showBlackList: false,
+        orgBlackListDataSource: [],
+        orgBlackListTargetKeys: [],
     }
 
     this.allTrader = [];
+    this.searchOrg = debounce(this.searchOrg, 800);
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -838,6 +844,21 @@ class OrgBDListComponent extends React.Component {
     return allOrgs;
   }
 
+  handleOrgBlackListChange = (targetKeys, direction, moveKeys) => {
+    window.echo('handleOrgBlackListChange', targetKeys, direction, moveKeys);
+  }
+
+  handleOrgBlackListSearchChange = (direction, event) => {
+    const { value } = event.target;
+    this.searchOrg(value);
+  }
+
+  searchOrg = async (content) => {
+    const res = await api.getOrg({ search: content });
+    const { data } = res.data;
+    this.setState({ orgBlackListDataSource: data });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1095,6 +1116,8 @@ class OrgBDListComponent extends React.Component {
       <div>
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
+        <Button onClick={() => this.setState({ showBlackList: true })}>添加黑名单</Button>
+
         { this.props.editable && !this.state.showUnreadOnly ?
           <OrgBDFilter
             defaultValue={filters}
@@ -1240,6 +1263,25 @@ class OrgBDListComponent extends React.Component {
           org={this.state.org}
         />
         :null}
+
+
+        <Modal
+          title="机构BD黑名单"
+          visible={this.state.showBlackList}
+          footer={null}
+          onCancel={() => this.setState({ showBlackList: false })}
+          maskClosable={false}
+        >
+          <Transfer
+            showSearch
+            rowKey={record => record.id}
+            dataSource={this.state.orgBlackListDataSource}
+            targetKeys={this.state.orgBlackListTargetKeys}
+            onChange={this.handleOrgBlackListChange}
+            render={item => item.orgname}
+            onSearchChange={this.handleOrgBlackListSearchChange}
+          />
+        </Modal>
 
       </div>
     );
