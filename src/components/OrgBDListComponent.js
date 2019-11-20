@@ -127,7 +127,6 @@ class OrgBDListComponent extends React.Component {
         exportLoading: false,
         listForExport: [],
         expandedForExport: [],
-        showBlackList: false,
         orgBlackListDataSource: [],
         orgBlackList: [],
         showReasonForBlacklist: false,
@@ -1163,8 +1162,6 @@ class OrgBDListComponent extends React.Component {
       <div>
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
-        <Button onClick={() => this.setState({ showBlackList: true })}>添加黑名单</Button>
-
         { this.props.editable && !this.state.showUnreadOnly ?
           <OrgBDFilter
             defaultValue={filters}
@@ -1314,9 +1311,9 @@ class OrgBDListComponent extends React.Component {
 
         <Modal
           title="机构BD黑名单"
-          visible={this.state.showBlackList}
+          visible={this.props.showBlacklistModal}
           footer={null}
-          onCancel={() => this.setState({ showBlackList: false })}
+          onCancel={this.props.onCloseBlacklistModal}
           maskClosable={false}
         >
           <Transfer

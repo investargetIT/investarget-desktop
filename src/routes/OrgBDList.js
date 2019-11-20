@@ -9,11 +9,16 @@ import {
 } from '../utils/util';
 import LeftRightLayout from '../components/LeftRightLayout';
 import OrgBDListComponent from '../components/OrgBDListComponent';
+import { Button } from 'antd';
 
 export default class OrgBDList extends React.Component {
   
   constructor(props) {
     super(props);
+
+    this.state = {
+      showBlacklist: false,
+    };
   }
 
   render() {
@@ -27,8 +32,15 @@ export default class OrgBDList extends React.Component {
         //   isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
         //     : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
         // }
+        right={<Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button>}
       >
-        <OrgBDListComponent editable location={this.props.location} pagination={true}/>
+        <OrgBDListComponent
+          editable
+          location={this.props.location}
+          pagination={true}
+          showBlacklistModal={this.state.showBlacklist}
+          onCloseBlacklistModal={() => this.setState({ showBlacklist: false })}
+        />
       </LeftRightLayout>)
   }
 
