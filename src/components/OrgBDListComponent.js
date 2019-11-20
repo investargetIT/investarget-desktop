@@ -129,7 +129,7 @@ class OrgBDListComponent extends React.Component {
         expandedForExport: [],
         showBlackList: false,
         orgBlackListDataSource: [],
-        orgBlackListTargetKeys: [],
+        orgBlackList: [],
         showReasonForBlacklist: false,
         reasonForBlacklist: '',
     }
@@ -849,7 +849,6 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleOrgBlackListChange = (targetKeys, direction, moveKeys) => {
-    window.echo('handleOrgBlackListChange', targetKeys, direction, moveKeys);
     this.selectedOrgForBlacklist = moveKeys;
     this.setState({ showReasonForBlacklist: true });
   }
@@ -862,7 +861,8 @@ class OrgBDListComponent extends React.Component {
   searchOrg = async (content) => {
     const res = await api.getOrg({ search: content });
     const { data } = res.data;
-    this.setState({ orgBlackListDataSource: data });
+    const newDataSource = this.state.orgBlackList.concat(data);
+    this.setState({ orgBlackListDataSource: newDataSource});
   }
 
   getOrgBlacklist = async () => {
@@ -870,7 +870,7 @@ class OrgBDListComponent extends React.Component {
     const { data: blacklist } = getRes.data;
     this.setState({
       orgBlackListDataSource: blacklist.map(m => m.org),
-      orgBlackListTargetKeys: blacklist.map(m => m.org.id),
+      orgBlackList: blacklist.map(m => m.org),
     });
   }
 
@@ -880,18 +880,15 @@ class OrgBDListComponent extends React.Component {
       proj: this.projId,
       reason: this.state.reasonForBlacklist,
     };
-    window.echo('body', body);
     const addRes = await api.addOrgBDBlacklist(body);
-    window.echo('res', addRes);
     const getRes = await api.getOrgBDBlacklist();
-    window.echo('getRes', getRes);
     const { data: blacklist } = getRes.data;
     // const newBlackListDataSource = blacklist.map(m => m.org);
 
     this.setState({
       showReasonForBlacklist: false,
       reasonForBlacklist: '',
-      orgBlackListTargetKeys: blacklist.map(m => m.org.id),
+      orgBlackList: blacklist.map(m => m.org),
     });
   }
 
@@ -1316,7 +1313,7 @@ class OrgBDListComponent extends React.Component {
             showSearch
             rowKey={record => record.id}
             dataSource={this.state.orgBlackListDataSource}
-            targetKeys={this.state.orgBlackListTargetKeys}
+            targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
             render={item => item.orgname}
             onSearchChange={this.handleOrgBlackListSearchChange}
