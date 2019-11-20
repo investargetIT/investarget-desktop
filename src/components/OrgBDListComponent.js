@@ -866,7 +866,7 @@ class OrgBDListComponent extends React.Component {
   }
 
   getOrgBlacklist = async () => {
-    const getRes = await api.getOrgBDBlacklist();
+    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
     this.setState({
       orgBlackListDataSource: blacklist.map(m => m.org),
