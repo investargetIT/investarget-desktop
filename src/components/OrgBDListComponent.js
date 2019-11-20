@@ -850,7 +850,11 @@ class OrgBDListComponent extends React.Component {
 
   handleOrgBlackListChange = (targetKeys, direction, moveKeys) => {
     this.selectedOrgForBlacklist = moveKeys;
-    this.setState({ showReasonForBlacklist: true });
+    if (direction === 'right') {
+      this.setState({ showReasonForBlacklist: true });
+    } else {
+      this.handleRemoveOrgFromBlacklist();
+    }
   }
 
   handleOrgBlackListSearchChange = (direction, event) => {
@@ -870,7 +874,7 @@ class OrgBDListComponent extends React.Component {
     const { data: blacklist } = getRes.data;
     this.setState({
       orgBlackListDataSource: blacklist.map(m => m.org),
-      orgBlackList: blacklist.map(m => m.org),
+      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })),
     });
   }
 
@@ -880,16 +884,23 @@ class OrgBDListComponent extends React.Component {
       proj: this.projId,
       reason: this.state.reasonForBlacklist,
     };
-    const addRes = await api.addOrgBDBlacklist(body);
-    const getRes = await api.getOrgBDBlacklist();
+    await api.addOrgBDBlacklist(body);
+    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
-    // const newBlackListDataSource = blacklist.map(m => m.org);
 
     this.setState({
       showReasonForBlacklist: false,
       reasonForBlacklist: '',
-      orgBlackList: blacklist.map(m => m.org),
+      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })),
     });
+  }
+
+  handleRemoveOrgFromBlacklist = async () => {
+    const selectTableIds = this.selectedOrgForBlacklist.map(m => this.state.orgBlackList.filter(f => f.id === m)[0].tableId);
+    await Promise.all(selectTableIds.map(m => api.deleteOrgBDBlacklist(m)));
+    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
+    const { data: blacklist } = getRes.data;
+    this.setState({ orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })) });
   }
 
   handleCancelAddBlacklist = () => {
