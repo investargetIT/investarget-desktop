@@ -130,9 +130,12 @@ class OrgBDListComponent extends React.Component {
         showBlackList: false,
         orgBlackListDataSource: [],
         orgBlackListTargetKeys: [],
+        showReasonForBlacklist: false,
+        reasonForBlacklist: '',
     }
 
     this.allTrader = [];
+    this.selectedOrgForBlacklist = [];
     this.searchOrg = debounce(this.searchOrg, 800);
   }
 
@@ -846,6 +849,8 @@ class OrgBDListComponent extends React.Component {
 
   handleOrgBlackListChange = (targetKeys, direction, moveKeys) => {
     window.echo('handleOrgBlackListChange', targetKeys, direction, moveKeys);
+    this.selectedOrgForBlacklist = moveKeys;
+    this.setState({ showReasonForBlacklist: true });
   }
 
   handleOrgBlackListSearchChange = (direction, event) => {
@@ -857,6 +862,18 @@ class OrgBDListComponent extends React.Component {
     const res = await api.getOrg({ search: content });
     const { data } = res.data;
     this.setState({ orgBlackListDataSource: data });
+  }
+
+  handleConfirmAddBlacklist = () => {
+    this.setState({
+      showReasonForBlacklist: false,
+      reasonForBlacklist: '',
+      orgBlackListTargetKeys: this.selectedOrgForBlacklist,
+    });
+  }
+
+  handleCancelAddBlacklist = () => {
+    this.setState({ showReasonForBlacklist: false, reasonForBlacklist: '' });
   }
 
   render() {
@@ -1282,6 +1299,21 @@ class OrgBDListComponent extends React.Component {
             onSearchChange={this.handleOrgBlackListSearchChange}
           />
         </Modal>
+
+        <Modal
+          title="请填写将该机构加入黑名单的理由"
+          visible={this.state.showReasonForBlacklist}
+          onOk={this.handleConfirmAddBlacklist}
+          onCancel={this.handleCancelAddBlacklist}
+        >
+          <Input
+            type="textarea"
+            rows={4}
+            value={this.state.reasonForBlacklist}
+            onChange={e => this.setState({ reasonForBlacklist: e.target.value })}
+          />
+        </Modal>
+
 
       </div>
     );
