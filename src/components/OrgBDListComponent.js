@@ -879,12 +879,11 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleConfirmAddBlacklist = async () => {
-    const body = {
-      org: this.selectedOrgForBlacklist[0],
+    await Promise.all(this.selectedOrgForBlacklist.map(m => api.addOrgBDBlacklist({
+      org: m,
       proj: this.projId,
       reason: this.state.reasonForBlacklist,
-    };
-    await api.addOrgBDBlacklist(body);
+    })));
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
 
