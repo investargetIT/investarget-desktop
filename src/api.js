@@ -839,6 +839,10 @@ export const getOrgBDProj = params => {
 };
 export const readOrgBD = body => r('/bd/orgbd/read/', 'POST', body);
 
+export const getOrgBDBlacklist = params => r(`/bd/orgbd/black/?${qs.stringify(params)}`);
+export const addOrgBDBlacklist = body => r('/bd/orgbd/black/', 'POST', body);
+export const deleteOrgBDBlacklist = id => r(`/bd/orgbd/black/${id}/`, 'DELETE');
+
 /**
 meeting
 **/

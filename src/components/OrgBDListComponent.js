@@ -144,6 +144,7 @@ class OrgBDListComponent extends React.Component {
   componentDidMount() {
     this.getOrgBdList();
     this.getAllTrader();
+    this.getOrgBlacklist();
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
@@ -864,11 +865,33 @@ class OrgBDListComponent extends React.Component {
     this.setState({ orgBlackListDataSource: data });
   }
 
-  handleConfirmAddBlacklist = () => {
+  getOrgBlacklist = async () => {
+    const getRes = await api.getOrgBDBlacklist();
+    const { data: blacklist } = getRes.data;
+    this.setState({
+      orgBlackListDataSource: blacklist.map(m => m.org),
+      orgBlackListTargetKeys: blacklist.map(m => m.org.id),
+    });
+  }
+
+  handleConfirmAddBlacklist = async () => {
+    const body = {
+      org: this.selectedOrgForBlacklist[0],
+      proj: this.projId,
+      reason: this.state.reasonForBlacklist,
+    };
+    window.echo('body', body);
+    const addRes = await api.addOrgBDBlacklist(body);
+    window.echo('res', addRes);
+    const getRes = await api.getOrgBDBlacklist();
+    window.echo('getRes', getRes);
+    const { data: blacklist } = getRes.data;
+    // const newBlackListDataSource = blacklist.map(m => m.org);
+
     this.setState({
       showReasonForBlacklist: false,
       reasonForBlacklist: '',
-      orgBlackListTargetKeys: this.selectedOrgForBlacklist,
+      orgBlackListTargetKeys: blacklist.map(m => m.org.id),
     });
   }
 
