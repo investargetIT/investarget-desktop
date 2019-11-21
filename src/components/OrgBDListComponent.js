@@ -1190,12 +1190,14 @@ class OrgBDListComponent extends React.Component {
           : null }
 
             {this.props.editable && this.isAbleToCreateBD() ?
-              <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
-              </Link>
-              : null }
+              <div style={{ float: 'left', marginTop: 30 }}>
+                <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                  <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+                </Link>
+              </div>
+              : null}
 
-          <div style={{ float: 'right' }} className="clearfix">
+          <div style={{ float: 'right', marginTop: 30 }} className="clearfix">
             <Search
               style={{ width: 200 }}
               placeholder="联系人/联系电话"
