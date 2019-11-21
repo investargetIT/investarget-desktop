@@ -1020,17 +1020,17 @@ class OrgBDListComponent extends React.Component {
           {
             title: '职位',
             key: 'title',
-            width: '10%',
+            width: '7%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
-          {title: i18n('org_bd.creator'), width: '10%', render: (text, record) => {
+          {title: i18n('org_bd.creator'), width: '7%', render: (text, record) => {
             return record.new ? isLogin().username : record.createuser.username
           }, dataIndex:'createuser.username', key:'createuser', sorter:false},
           {title: i18n('org_bd.manager'), width: '10%', render: (text, record) => {
             return record.new ? 
             <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div>{record.manager.username}</div>
           }, dataIndex: 'manager.username', key:'manager', sorter:false},
-        {title: '任务时间', width: '10%', render: (text, record) => {
+        {title: '任务时间', width: '16%', render: (text, record) => {
           if (record.new) {
             return <div>
               { timeWithoutHour(new Date()) + " - " }
@@ -1224,14 +1224,14 @@ class OrgBDListComponent extends React.Component {
 
         <div style={{ padding: '10px 8px', backgroundColor: '#E9F1F3', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
           <div style={{ width: 40 }} />
-          <div style={{ flex: 1, padding: '6px 8px' }}>联系人</div>
-          <div style={{ flex: 1, padding: '6px 8px' }}>职位</div>
-          <div style={{ flex: 1, padding: '6px 8px' }}>创建人</div>
-          <div style={{ flex: 1, padding: '6px 8px' }}>负责人</div>
-          <div style={{ flex: 1, padding: '6px 8px' }}>任务时间</div>
-          <div style={{ flex: 1, padding: '6px 8px' }}>状态</div>
-          <div style={{ flex: 2, padding: '6px 8px' }}>最新备注</div>
-          <div style={{ flex: 2, padding: '6px 8px' }}>操作</div>
+          <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
+          <div style={{ flex: 7, padding: '6px 8px' }}>职位</div>
+          <div style={{ flex: 7, padding: '6px 8px' }}>创建人</div>
+          <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
+          <div style={{ flex: 16, padding: '6px 8px' }}>任务时间</div>
+          <div style={{ flex: 10, padding: '6px 8px' }}>状态</div>
+          <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
+          <div style={{ flex: 20, padding: '6px 8px' }}>操作</div>
         </div>
 
         { this.state.filters.proj !== null ? 
