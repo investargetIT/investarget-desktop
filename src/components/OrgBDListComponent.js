@@ -869,6 +869,7 @@ class OrgBDListComponent extends React.Component {
     const res = await api.getOrg({ search: content });
     const { data } = res.data;
     const newDataSource = this.state.orgBlackList.concat(data);
+    // Todo: remove duplicate ones
     this.setState({ orgBlackListDataSource: newDataSource});
   }
 
@@ -876,8 +877,8 @@ class OrgBDListComponent extends React.Component {
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
     this.setState({
-      orgBlackListDataSource: blacklist.map(m => m.org),
-      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })),
+      orgBlackListDataSource: blacklist.map(m => ({ ...m.org, reason: m.reason })),
+      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id, reason: m.reason })),
     });
   }
 
@@ -890,10 +891,14 @@ class OrgBDListComponent extends React.Component {
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
 
+    // Todo: update data source, add reason to the ones which have juse been added to blacklist
+    const newDatasource = [...this.state.orgBlackListDataSource];
+
     this.setState({
       showReasonForBlacklist: false,
       reasonForBlacklist: '',
-      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })),
+      orgBlackListDataSource: newDatasource, 
+      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id, reason: m.reason })),
     });
   }
 
@@ -902,7 +907,14 @@ class OrgBDListComponent extends React.Component {
     await Promise.all(selectTableIds.map(m => api.deleteOrgBDBlacklist(m)));
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
-    this.setState({ orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id })) });
+
+    // Todo: update data source, remove reason to those which have juse been removed from blacklist
+    const newDatasource = [...this.state.orgBlackListDataSource];
+
+    this.setState({
+      orgBlackListDataSource: newDatasource,
+      orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id, reason: m.reason })),
+    });
   }
 
   handleCancelAddBlacklist = () => {
@@ -1330,11 +1342,15 @@ class OrgBDListComponent extends React.Component {
         >
           <Transfer
             showSearch
+            filterOption={() => true}
             rowKey={record => record.id}
+            titles={['机构列表', '该项目黑名单']}
+            notFoundContent="没有找到"
+            searchPlaceholder="机构名称"
             dataSource={this.state.orgBlackListDataSource}
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
-            render={item => item.orgname}
+            render={item => item.reason ? <Popover placement="top" title="加入黑名单的理由" content={item.reason}>{item.orgname}</Popover> : item.orgname}
             onSearchChange={this.handleOrgBlackListSearchChange}
           />
         </Modal>
