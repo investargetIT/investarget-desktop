@@ -430,3 +430,16 @@ button[disabled], html input[disabled] {
 .ant-fullcalendar-header .ant-select-selection__rendered {
   margin-right: 20px;
 }
+.ant-transfer-list-header {
+  padding: 7px 6px;
+}
+.ant-transfer-list-header .ant-checkbox-wrapper {
+  display: none;
+}
+.ant-transfer-list-header-selected span:first-of-type {
+  display: none;
+}
+.ant-transfer-list-header-title {
+  position: relative;
+  right: unset;
+}
