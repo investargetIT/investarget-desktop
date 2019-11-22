@@ -868,9 +868,13 @@ class OrgBDListComponent extends React.Component {
   searchOrg = async (content) => {
     const res = await api.getOrg({ search: content });
     const { data } = res.data;
-    const newDataSource = this.state.orgBlackList.concat(data);
-    // Todo: remove duplicate ones
-    this.setState({ orgBlackListDataSource: newDataSource});
+    let newDataSource = this.state.orgBlackList.concat(data);
+
+    // remove duplicate ones
+    newDataSource = newDataSource.filter((value, index, self) =>
+      self.map(m => m.id).indexOf(value.id) === index);
+
+    this.setState({ orgBlackListDataSource: newDataSource });
   }
 
   getOrgBlacklist = async () => {
@@ -891,13 +895,18 @@ class OrgBDListComponent extends React.Component {
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
 
-    // Todo: update data source, add reason to the ones which have juse been added to blacklist
+    // update data source, add reason to the ones which have juse been added to blacklist
     const newDatasource = [...this.state.orgBlackListDataSource];
+    newDatasource.forEach((element) => {
+      if (this.selectedOrgForBlacklist.includes(element.id)) {
+        element.reason = this.state.reasonForBlacklist;
+      }
+    });
 
     this.setState({
       showReasonForBlacklist: false,
       reasonForBlacklist: '',
-      orgBlackListDataSource: newDatasource, 
+      orgBlackListDataSource: newDatasource,
       orgBlackList: blacklist.map(m => ({ ...m.org, tableId: m.id, reason: m.reason })),
     });
   }
@@ -908,8 +917,13 @@ class OrgBDListComponent extends React.Component {
     const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
     const { data: blacklist } = getRes.data;
 
-    // Todo: update data source, remove reason to those which have juse been removed from blacklist
+    // update data source, remove reason to those which have juse been removed from blacklist
     const newDatasource = [...this.state.orgBlackListDataSource];
+    newDatasource.forEach((element) => {
+      if (this.selectedOrgForBlacklist.includes(element.id)) {
+        element.reason = null;
+      }
+    });
 
     this.setState({
       orgBlackListDataSource: newDatasource,
