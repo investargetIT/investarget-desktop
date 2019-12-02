@@ -6,6 +6,7 @@ import {
   Col, 
   Icon,
   Popover,
+  Input,
 } from 'antd';
 import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
@@ -106,6 +107,13 @@ function DataRoomUserList(props) {
           ))}
         </Row>
         : null}
+      
+      <div style={{ margin: '0 auto', display: 'grid', width: 250, gridTemplateColumns: '1fr 180px' }}>
+        <div style={{ alignSelf: 'center' }}>编辑密码</div>
+        <Input placeholder="密码" />
+        <div style={{ gridColumn: 2, fontSize: 12, fontStyle: 'oblique' }}>该密码仅针对pdf文件有效</div>
+      </div>
+      
 
       <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}>
         <Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">下载全部文件</Button>
