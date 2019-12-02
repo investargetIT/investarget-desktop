@@ -47,6 +47,8 @@ class DataRoom extends React.Component {
       dataRoomTempModalUserId: '',
 
       selectedFiles: [],
+      isMakeUser: false,
+      isTakeUser: false,
     }
 
     this.dataRoomTempModalUserId = null;
@@ -60,6 +62,8 @@ class DataRoom extends React.Component {
       if (isMakeUser || isTakeUser || isSuperUser) {
         this.setState({
           title: res.data.projtitle,
+          isMakeUser,
+          isTakeUser,
           hasPermissionForDataroomTemp: true,
         });
       } else {
@@ -550,7 +554,7 @@ class DataRoom extends React.Component {
         name={this.state.title}
       >
       
-        {hasPerm('dataroom.admin_adddataroom') ?
+        {hasPerm('dataroom.admin_adddataroom') || this.state.isMakeUser || this.state.isTakeUser ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
