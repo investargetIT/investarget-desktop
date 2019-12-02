@@ -49,6 +49,8 @@ class DataRoom extends React.Component {
       selectedFiles: [],
       isMakeUser: false,
       isTakeUser: false,
+
+      pdfPassword: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -546,6 +548,10 @@ class DataRoom extends React.Component {
     });
   }
 
+  handlePasswordChange = e => {
+    this.setState({ pdfPassword: e.target.value });
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -613,6 +619,8 @@ class DataRoom extends React.Component {
               onConfirm={this.handleDownloadBtnClicked}
               onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
               disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
+              password={this.state.pdfPassword}
+              passwordChange={this.handlePasswordChange}
               />
           </Modal>
 
