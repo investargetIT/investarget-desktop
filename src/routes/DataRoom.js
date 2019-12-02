@@ -486,7 +486,8 @@ class DataRoom extends React.Component {
     const user = this.state.downloadUser && this.state.downloadUser.id;
     const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
     const files = this.state.selectedFiles.map(m => m.id).join(',');
-    const params = { water, user };
+    const password = this.state.pdfPassword;
+    const params = { water, user, password };
     if (isDownloadingSelectedFiles) {
       params.files = files;
     }
