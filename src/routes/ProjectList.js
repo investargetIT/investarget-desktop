@@ -388,6 +388,7 @@ class ProjectList extends React.Component {
         </div>
 
         <AuditProjectModal
+          projId={this.state.id}
           visible={visible}
           currentStatus={currentStatus}
           status={status}
