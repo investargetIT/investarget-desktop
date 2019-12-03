@@ -51,6 +51,7 @@ class DataRoom extends React.Component {
       isTakeUser: false,
 
       pdfPassword: '',
+      disableEditPassword: false,
     }
 
     this.dataRoomTempModalUserId = null;
@@ -501,9 +502,9 @@ class DataRoom extends React.Component {
             downloadUser: isLogin(),
           });
           // 重置下载链接， 防止相同下载链接不执行
-          setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+          setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
         } else {
-          this.setState({ loading: false });
+          this.setState({ loading: false, disableEditPassword: true });
           let waitingTime = '';
           if (result.data.seconds) {
             waitingTime = `${result.data.seconds}秒`
@@ -614,15 +615,16 @@ class DataRoom extends React.Component {
             closable={true}
             visible={this.state.visible}>
           <DataRoomUserList
-              list={this.state.list.filter(f => this.state.fileUserList.map(m => m.user).includes(f.user.id))}
-              selectedUser={this.state.downloadUser}
-              onChange={user => this.setState({ downloadUser: user })}
-              onConfirm={this.handleDownloadBtnClicked}
-              onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
-              disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
-              password={this.state.pdfPassword}
-              passwordChange={this.handlePasswordChange}
-              />
+            list={this.state.list.filter(f => this.state.fileUserList.map(m => m.user).includes(f.user.id))}
+            selectedUser={this.state.downloadUser}
+            onChange={user => this.setState({ downloadUser: user })}
+            onConfirm={this.handleDownloadBtnClicked}
+            onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
+            disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
+            password={this.state.pdfPassword}
+            passwordChange={this.handlePasswordChange}
+            disableEditPassword={this.state.disableEditPassword}
+          />
           </Modal>
 
         {this.state.showDataRoomTempModal &&

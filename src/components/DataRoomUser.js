@@ -88,7 +88,7 @@ function DataRoomUser(props) {
 }
 
 function DataRoomUserList(props) {
-  const { list, password, passwordChange } = props;
+  const { list, password, passwordChange, disableEditPassword } = props;
   return (
     <div>
 
@@ -110,7 +110,7 @@ function DataRoomUserList(props) {
       
       <div style={{ margin: '0 auto', display: 'grid', width: 250, gridTemplateColumns: '1fr 180px' }}>
         <div style={{ alignSelf: 'center' }}>编辑密码</div>
-        <Input placeholder="密码" value={password} onChange={passwordChange} />
+        <Input placeholder="密码" value={password} onChange={passwordChange} disabled={disableEditPassword} />
         <div style={{ gridColumn: 2, fontSize: 12, fontStyle: 'oblique' }}>该密码仅针对pdf文件有效</div>
       </div>
       
