@@ -773,6 +773,34 @@ class OrgBDListComponent extends React.Component {
     return false;
   }
 
+  isAbleToAddBlacklist = () => {
+    if (hasPerm('BD.manageOrgBDBlack')) {
+      return true;
+    }
+    if (hasPerm('BD.addOrgBDBlack')) {
+      return true;
+    }
+    const currentUserID = getUserInfo() && getUserInfo().id;
+    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+      return true;
+    }
+    return false;
+  }
+
+  isAbleToRemoveBlacklist = () => {
+    if (hasPerm('BD.manageOrgBDBlack')) {
+      return true;
+    }
+    if (hasPerm('BD.delOrgBDBlack')) {
+      return true;
+    }
+    const currentUserID = getUserInfo() && getUserInfo().id;
+    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+      return true;
+    }
+    return false;
+  }
+
   isAbleToModifyStatus = record => {
     if (hasPerm('BD.manageOrgBD')) {
       return true;
@@ -887,6 +915,12 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleConfirmAddBlacklist = async () => {
+    if (!this.state.reasonForBlacklist) {
+      Modal.error({
+        content: '理由不能为空',
+      });
+      return;
+    }
     await Promise.all(this.selectedOrgForBlacklist.map(m => api.addOrgBDBlacklist({
       org: m,
       proj: this.projId,
@@ -1366,13 +1400,14 @@ class OrgBDListComponent extends React.Component {
           maskClosable={false}
         >
           <Transfer
-            showSearch={this.isAbleToCreateBD()}
+            showSearch={this.isAbleToAddBlacklist}
             filterOption={() => true}
             rowKey={record => record.id}
             titles={['机构列表', '该项目黑名单']}
             notFoundContent="没有找到"
             searchPlaceholder="机构名称"
-            dataSource={this.isAbleToCreateBD() ? this.state.orgBlackListDataSource : this.state.orgBlackListDataSource.map(m => ({ ...m, disabled: true }))}
+            dataSource={this.state.orgBlackListDataSource.map(m => ({ ...m,
+              disabled: (m.reason && !this.isAbleToRemoveBlacklist) || (!m.reason && !this.isAbleToAddBlacklist) ? true : false }))}
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
             render={this.renderBlacklistItem}
