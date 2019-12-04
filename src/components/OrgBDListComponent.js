@@ -935,6 +935,17 @@ class OrgBDListComponent extends React.Component {
     this.setState({ showReasonForBlacklist: false, reasonForBlacklist: '' });
   }
 
+  renderBlacklistItem = (item) => {
+    let label = item.orgname;
+    if (item.reason) {
+      label = <Popover placement="top" title="加入黑名单的理由" content={item.reason}>{item.orgname}</Popover>;
+    }
+    return {
+      label,
+      value: item.orgname,
+    };
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1364,7 +1375,7 @@ class OrgBDListComponent extends React.Component {
             dataSource={this.state.orgBlackListDataSource}
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
-            render={item => item.reason ? <Popover placement="top" title="加入黑名单的理由" content={item.reason}>{item.orgname}</Popover> : item.orgname}
+            render={this.renderBlacklistItem}
             onSearchChange={this.handleOrgBlackListSearchChange}
           />
         </Modal>
