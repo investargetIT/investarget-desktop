@@ -1366,13 +1366,13 @@ class OrgBDListComponent extends React.Component {
           maskClosable={false}
         >
           <Transfer
-            showSearch
+            showSearch={this.isAbleToCreateBD()}
             filterOption={() => true}
             rowKey={record => record.id}
             titles={['机构列表', '该项目黑名单']}
             notFoundContent="没有找到"
             searchPlaceholder="机构名称"
-            dataSource={this.state.orgBlackListDataSource}
+            dataSource={this.isAbleToCreateBD() ? this.state.orgBlackListDataSource : this.state.orgBlackListDataSource.map(m => ({ ...m, disabled: true }))}
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
             render={this.renderBlacklistItem}
