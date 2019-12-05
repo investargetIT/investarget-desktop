@@ -322,7 +322,7 @@ class ProjectList extends React.Component {
               : null }
 
               <Link to={'/app/dataroom/add?projectID=' + record.id}>
-                <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.user_adddataroom'))}>{i18n('project.create_dataroom')}</Button>
+                <Button style={buttonStyle} disabled={!record.action.canAddDataroom}>{i18n('project.create_dataroom')}</Button>
               </Link>
 
               { record.projstatus.id >= 4 && record.projstatus.id < 8 && (hasPerm('BD.manageOrgBD') || hasPerm('BD.user_getOrgBD')) ?
