@@ -1425,14 +1425,14 @@ class OrgBDListComponent extends React.Component {
           maskClosable={false}
         >
           <Transfer
-            showSearch={this.isAbleToAddBlacklist}
+            showSearch={this.isAbleToAddBlacklist()}
             filterOption={() => true}
             rowKey={record => record.id}
             titles={['机构列表', '该项目黑名单']}
             notFoundContent="没有找到"
             searchPlaceholder="机构名称"
             dataSource={this.state.orgBlackListDataSource.map(m => ({ ...m,
-              disabled: (m.reason && !this.isAbleToRemoveBlacklist) || (!m.reason && !this.isAbleToAddBlacklist) ? true : false }))}
+              disabled: (m.reason && !this.isAbleToRemoveBlacklist()) || (!m.reason && !this.isAbleToAddBlacklist()) ? true : false }))}
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
             render={this.renderBlacklistItem}
