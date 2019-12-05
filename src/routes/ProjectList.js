@@ -305,9 +305,9 @@ class ProjectList extends React.Component {
                 <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
-              <Link to={"/app/timeline/add?projId=" + record.id}>
+              {/* <Link to={"/app/timeline/add?projId=" + record.id}>
                 <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
-              </Link>
+              </Link> */}
 
               { record.action.canAddOrgBD ? 
               <Link to={"/app/orgbd/add?projId=" + record.id}>
