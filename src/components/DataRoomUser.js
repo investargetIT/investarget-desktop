@@ -108,7 +108,7 @@ function DataRoomUserList(props) {
         </Row>
         : null}
       
-      <div style={{ margin: '0 auto', display: 'grid', width: 250, gridTemplateColumns: '1fr 180px' }}>
+      <div style={{ margin: '0 auto', display: 'grid', width: 300, gridTemplateColumns: '1fr 230px' }}>
         <div style={{ alignSelf: 'center' }}>编辑密码</div>
         <Input placeholder="不输入密码PDF文件将不加密" value={password} onChange={passwordChange} disabled={disableEditPassword} />
         <div style={{ gridColumn: 2, fontSize: 12, fontStyle: 'oblique' }}>该密码仅针对pdf文件有效</div>

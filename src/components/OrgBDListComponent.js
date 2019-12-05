@@ -413,12 +413,37 @@ class OrgBDListComponent extends React.Component {
       api.addOrgBDComment(body);
     }
 
+    this.askForCreatingDataroom(state.status, this.state.currentBD.bduser);
     // 如果状态改为了已见面、已签NDA或者正在看前期资料，则同步时间轴
     // if ([1, 2, 3].includes(state.status) && this.state.currentBD.response !== state.status) {
       // this.syncTimeline(state).then(() => this.wechatConfirm(state));
     // } else {
       this.wechatConfirm(state);
     // }
+  }
+
+  askForCreatingDataroom = (status, investor) => {
+    if (status === 7 && this.state.currentBD.response !== status) {
+      const react = this;
+      Modal.confirm({
+        title: '是否同步创建DataRoom？',
+        okText: '创建',
+        cancelText: '不创建',
+        onOk() {
+          const body = {
+            proj: react.projId,
+            isPublic: false,
+          };
+          api.createDataRoom(body).then((result) => {
+            if (investor) {
+              const { id } = result.data;
+              const param1 = { dataroom: id, user: investor };
+              return api.addUserDataRoom(param1);
+            }
+          });
+        },
+      });
+    }
   }
 
   wechatConfirm = state => {
