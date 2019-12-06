@@ -315,7 +315,7 @@ class AuditProjectModal extends React.Component {
           </div> 
           : null
         }
-        {status === 7 &&
+        {/* {status === 7 &&
           <div style={{ position: 'relative' }}>
             <DirectoryCell
               name="term sheet"
@@ -329,7 +329,7 @@ class AuditProjectModal extends React.Component {
               </div>
             }
           </div>
-        }
+        } */}
       </Modal>
     )
   }
