@@ -607,6 +607,8 @@ class DataRoom extends React.Component {
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
           onDownloadBtnClicked={(selectedFiles) => this.setState({ visible: true, selectedFiles })}
+          isMakeUser={this.state.isMakeUser}
+          isTakeUser={this.state.isTakeUser}
         />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
