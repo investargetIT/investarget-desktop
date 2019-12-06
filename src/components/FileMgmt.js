@@ -685,7 +685,7 @@ class FileMgmt extends React.Component {
       return (
         <div style={{ textAlign: 'right' }}>
 
-          { hasPerm('dataroom.admin_adddataroom') || this.props.isMakeUser || this.props.isTakeUser ?
+          { hasEnoughPerm || this.props.isMakeUser || this.props.isTakeUser ?
           <Upload {...props}>
             <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}} onClick={this.handleUploadBtnClicked}>
             <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload')}
@@ -699,7 +699,7 @@ class FileMgmt extends React.Component {
             </Button>
           : null }
 
-          { hasEnoughPerm ?
+          { hasEnoughPerm || this.props.isMakeUser || this.props.isTakeUser ?
           <Button
             size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
