@@ -22,6 +22,28 @@ const confirm = Modal.confirm
 import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
+export class Trader extends React.Component {
+  state = {
+    list: this.props.traders || [], 
+  }
+  render () {
+    return <span>
+      { this.state.list.length > 0 ? 
+        this.state.list.map(m => <span key={m.value}>
+          <span>{m.label}</span>
+          <span style={{ color: 'red' }}>
+            ({this.props.famlv.filter(f => f.id === m.familiar)[0].score})
+          </span>
+        </span>)
+      : '暂无' }
+    </span>
+  }
+}
+function mapStateToProps1(state) {
+  const { famlv, orgbdres, tag, title } = state.app;
+  return { famlv, orgbdres, tag, title };
+}
+Trader = connect(mapStateToProps1)(Trader);
 
 class OrgUserList extends React.Component {
 
@@ -66,29 +88,44 @@ class OrgUserList extends React.Component {
     this.setState({ pageSize, page: 1 }, this.getUser)
   }
 
-  getUser = () => {
+  getUser = async () => {
     const { filters, search, page, pageSize } = this.state
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
 
     // 机构所有用户
     const org = parseInt(this.props.location.query.org)
-    if (org) {
+    if (!org) return;
+
+    try {
       params['org'] = org
       params['groups'] = this.investorGroupIds
       this.setState({ loading: true })
-      api.getUser(params).then(result => {
-        const { count: total, data: list } = result.data
-        this.setState({ total, list, loading: false })
-      }, error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
-      })
-      this.writeSetting()
-    }
+      const reqUser = await api.getUser(params);
+      const { count: total, data: orgUser } = reqUser.data;
 
+      //获取投资人的交易师
+      const orgUserRelation = await api.getUserRelation({
+        investoruser: orgUser.map(m => m.id),
+        page_size: 1000,
+      });
+      orgUser.forEach(element => {
+        const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+        element.traders = relations.map(m => ({
+          label: m.traderuser.username,
+          value: m.traderuser.id,
+          onjob: m.traderuser.onjob,
+          familiar: m.familiar,
+        }))
+      });
+      this.setState({ total, list: orgUser, loading: false });
+      this.setState({ loading: false })
+    } catch (error) {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      });
+    }
+    this.writeSetting();
   }
 
   handleSortChange = value => {
@@ -124,6 +161,7 @@ class OrgUserList extends React.Component {
     })
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
     this.props.dispatch({ type: 'app/getGroup' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
   }
 
   loadLabelByValue(type, value) {
@@ -150,6 +188,16 @@ class OrgUserList extends React.Component {
         title: i18n("user.name"),
         dataIndex: 'username',
         key: 'username'
+      },
+      {
+        title: i18n('mobile'),
+        dataIndex: 'mobile',
+        key: 'mobile',
+      },
+      {
+        title: i18n('account.email'),
+        dataIndex: 'email',
+        key: 'email',
       },
       {
         title: i18n("organization.org"),
@@ -183,7 +231,9 @@ class OrgUserList extends React.Component {
       {
         title: i18n("user.trader"),
         dataIndex: 'trader_relation.traderuser.username',
-        key: 'trader'
+        key: 'trader',
+        width: 200,
+        render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
       },
       {
         title: i18n("common.operation"),
