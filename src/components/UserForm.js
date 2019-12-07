@@ -160,8 +160,8 @@ class UserForm extends React.Component {
           <SelectTitle showSearch />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("user.institution")} name="org" required={!this.props.isTraderAddInvestor} valueType={this.props.isTraderAddInvestor ? 'number' : 'string'}>
-            <SelectExistOrganization allowCreate={!this.props.isTraderAddInvestor} formName="userform" size="large" />
+        <BasicFormItem label={i18n("user.institution")} name="org" required={!this.props.isTraderAddInvestor}>
+          <SelectExistOrganization allowCreate formName="userform" size="large" />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
