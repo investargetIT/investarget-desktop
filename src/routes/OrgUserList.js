@@ -189,16 +189,16 @@ class OrgUserList extends React.Component {
         dataIndex: 'username',
         key: 'username'
       },
-      {
-        title: i18n('mobile'),
-        dataIndex: 'mobile',
-        key: 'mobile',
-      },
-      {
-        title: i18n('account.email'),
-        dataIndex: 'email',
-        key: 'email',
-      },
+      // {
+      //   title: i18n('mobile'),
+      //   dataIndex: 'mobile',
+      //   key: 'mobile',
+      // },
+      // {
+      //   title: i18n('account.email'),
+      //   dataIndex: 'email',
+      //   key: 'email',
+      // },
       {
         title: i18n("organization.org"),
         dataIndex: 'org.orgname',
@@ -232,8 +232,8 @@ class OrgUserList extends React.Component {
         title: i18n("user.trader"),
         dataIndex: 'trader_relation.traderuser.username',
         key: 'trader',
-        width: 200,
-        render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
+        // width: 200,
+        // render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
       },
       {
         title: i18n("common.operation"),
