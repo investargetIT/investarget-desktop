@@ -13,6 +13,18 @@ import Tree from 'antd/lib/tree';
 
 const { Option } = Select;
 
+const disableSelect = {
+  padding: 30,
+  backgroundColor: '#fff',
+  WebkitTouchCallout: 'none',
+  WebkitUserSelect: 'none', /* Safari */
+  khtmlUserSelect: 'none', /* Konqueror HTML */
+  MozUserSelect: 'none', /* Old versions of Firefox */
+  msUserSelect: 'none', /* Internet Explorer/Edge */
+  userSelect: 'none', /* Non-prefixed version, currently
+                                supported by Chrome, Opera and Firefox */
+};
+
 class DataRoom extends React.Component {
 
   constructor(props) {
@@ -563,6 +575,7 @@ class DataRoom extends React.Component {
         location={this.props.location}
         title={i18n('dataroom.project_name')} 
         name={this.state.title}
+        style={disableSelect}
       >
       
         {hasPerm('dataroom.admin_adddataroom') || this.state.isMakeUser || this.state.isTakeUser ?
