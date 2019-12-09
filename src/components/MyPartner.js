@@ -274,12 +274,12 @@ class MyPartner extends React.Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={'/app/user/edit/' + record.investoruser.id + '?redirect=' + this.redirect}>
+            <Link to={'/app/user/edit/' + record.investoruser.id + '?redirect=' + this.redirect} target="_blank">
               <Button style={buttonStyle} size="small">{i18n("common.edit")}</Button>
             </Link>
-            { !this.state.friendList.includes(record.investoruser.id) ?
+            {/* { !this.state.friendList.includes(record.investoruser.id) ?
               <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.investoruser.id)} size="small">{i18n("add_friend")}</Button>
-            : null}
+            : null} */}
           </span>
         )
       }, 
