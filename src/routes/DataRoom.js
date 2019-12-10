@@ -569,8 +569,10 @@ class DataRoom extends React.Component {
     this.setState({ pdfPassword: e.target.value });
   }
 
-  handleDataroomSearch = (content) => {
+  handleDataroomSearch = async (content) => {
     window.echo('search', content);
+    const req = await api.searchDataroom(this.state.id, content);
+    window.echo('req', req);
   }
 
   render () {

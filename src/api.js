@@ -911,3 +911,5 @@ export const applyDataroomTemp = (id, body) => r(`/dataroom/temp/${id}/`, 'POST'
 export const deleteDataroomTemp = id => r(`/dataroom/temp/${id}/`, 'DELETE');
 
 export const sendScheduleReminderEmail = body => r('/msg/icsmail', 'POST', body);
+
+export const searchDataroom = (dataroomId, searchContent) => r(`/dataroom/filepath/?dataroom=${dataroomId}&search=${searchContent}`);
