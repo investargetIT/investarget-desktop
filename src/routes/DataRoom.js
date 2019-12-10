@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select } from 'antd'
+import { Modal, Select, Input } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
@@ -64,6 +64,8 @@ class DataRoom extends React.Component {
 
       pdfPassword: '',
       disableEditPassword: false,
+
+      pdfPasswordForTemp: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -666,28 +668,42 @@ class DataRoom extends React.Component {
             onOk={this.handleConfirmSelectDataroomTemp}
             onCancel={() => this.setState({ showDataRoomTempModal: false })}
           >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div>
-                <Select
-                  defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
-                  style={{ width: 120 }}
-                  onChange={value => this.setState({ selectedDataroomTemp: value })}
-                  value={this.state.selectedDataroomTemp + ''}
-                >
-                  {this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>)}
-                </Select>
+            <div>
+
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div>
+                  <Select
+                    defaultValue={this.state.dataRoomTemp.length > 0 ? '' + this.state.dataRoomTemp[0].id : undefined}
+                    style={{ width: 120 }}
+                    onChange={value => this.setState({ selectedDataroomTemp: value })}
+                    value={this.state.selectedDataroomTemp + ''}
+                  >
+                    {this.state.dataRoomTemp.map(m => <Option key={m.id} value={m.id + ''}>{m.userInfo.username}</Option>)}
+                  </Select>
+                </div>
+                <div style={{ margin: '0 10px' }}>应用到</div>
+                <div>
+                  <Select
+                    defaultValue={this.state.list.length > 0 ? '' + this.state.list[0].user.id : undefined}
+                    style={{ width: 120 }}
+                    onChange={value => this.setState({ dataRoomTempModalUserId: value })}
+                    value={this.state.dataRoomTempModalUserId + ''}
+                  >
+                    {this.state.list.map(m => m.user).map(m => <Option key={m.id} value={m.id + ''}>{m.username}</Option>)}
+                  </Select>
+                </div>
               </div>
-              <div style={{ margin: '0 10px' }}>应用到</div>
-              <div>
-                <Select
-                  defaultValue={this.state.list.length > 0 ? '' + this.state.list[0].user.id : undefined}
-                  style={{ width: 120 }}
-                  onChange={value => this.setState({ dataRoomTempModalUserId: value })}
-                  value={this.state.dataRoomTempModalUserId + ''}
-                >
-                  {this.state.list.map(m => m.user).map(m => <Option key={m.id} value={m.id + ''}>{m.username}</Option>)}
-                </Select>
+
+              <div style={{ marginTop: 20, display: 'grid', width: 400, gridTemplateColumns: 'auto 1fr' }}>
+                <div style={{ alignSelf: 'center', marginRight: 10 }}>设置pdf默认编辑密码</div>
+                <Input
+                  placeholder="不输入该密码，pdf文件将默认不加密"
+                  value={this.state.pdfPasswordForTemp}
+                  onChange={e => this.setState({ pdfPasswordForTemp: e.target.value })}
+                />
+                <div style={{ gridColumn: 2, fontSize: 12, fontStyle: 'oblique' }}>该密码仅针对pdf文件有效</div>
               </div>
+
             </div>
           </Modal>
         }
