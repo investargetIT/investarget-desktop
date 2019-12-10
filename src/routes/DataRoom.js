@@ -9,7 +9,7 @@ import {
   DataRoomUser, 
   DataRoomUserList, 
 } from '../components/DataRoomUser';
-import Tree from 'antd/lib/tree';
+import { Search2 } from '../components/Search';
 
 const { Option } = Select;
 
@@ -569,6 +569,10 @@ class DataRoom extends React.Component {
     this.setState({ pdfPassword: e.target.value });
   }
 
+  handleDataroomSearch = (content) => {
+    window.echo('search', content);
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -595,6 +599,14 @@ class DataRoom extends React.Component {
             />
           </div>
           : null}
+
+        <div style={{ marginBottom: '16px' }} className="clearfix">
+          <Search2
+            style={{ width: 200, float: 'right' }}
+            placeholder="文件/目录"
+            onSearch={this.handleDataroomSearch}
+          />
+        </div>
 
         <FileMgmt
           location={this.props.location}
