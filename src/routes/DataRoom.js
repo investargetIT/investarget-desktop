@@ -581,7 +581,7 @@ class DataRoom extends React.Component {
         location={this.props.location}
         title={i18n('dataroom.project_name')} 
         name={this.state.title}
-        style={disableSelect}
+        // style={disableSelect}
       >
       
         {hasPerm('dataroom.admin_adddataroom') || this.state.isMakeUser || this.state.isTakeUser ?
