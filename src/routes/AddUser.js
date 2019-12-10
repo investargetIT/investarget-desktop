@@ -36,6 +36,7 @@ class AddUser extends React.Component {
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
+      window.echo('ddd', values);
       if(!err) {
         console.log('Received values of form: ', values)
         if (this.isTraderAddInvestor) {
@@ -59,7 +60,11 @@ class AddUser extends React.Component {
           } else {
             values['registersource'] = 3 // 标识注册来源
             if(isNaN(values.org)&&values.org!=undefined){
-              return api.addOrg({orgnameC:values.org})
+              const body = { orgnameC: values.org };
+              // if (values.cardKey) {
+              //   body.orgstatus = 2;
+              // }
+              return api.addOrg(body);
             }      
           }
         })
