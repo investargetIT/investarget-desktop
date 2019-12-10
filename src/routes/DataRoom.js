@@ -602,13 +602,13 @@ class DataRoom extends React.Component {
           </div>
           : null}
 
-        <div style={{ marginBottom: '16px' }} className="clearfix">
+        {/* <div style={{ marginBottom: '16px' }} className="clearfix">
           <Search2
             style={{ width: 200, float: 'right' }}
             placeholder="文件/目录"
             onSearch={this.handleDataroomSearch}
           />
-        </div>
+        </div> */}
 
         <FileMgmt
           location={this.props.location}
