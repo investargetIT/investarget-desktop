@@ -101,8 +101,8 @@ class DataRoom extends React.Component {
     this.setState({
       dataRoomTemp,
       selectedDataroomTemp: dataRoomTemp.length > 0 ? '' + dataRoomTemp[0].id : '',
-      pdfPassword: dataRoomTemp.length > 0 ? dataRoomTemp[0].password : '',
-    })
+      pdfPasswordForTemp: dataRoomTemp.length > 0 ? dataRoomTemp[0].password : '',
+    });
   }
 
   formatData = (data) => {
