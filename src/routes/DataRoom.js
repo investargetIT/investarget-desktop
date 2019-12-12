@@ -69,6 +69,7 @@ class DataRoom extends React.Component {
     }
 
     this.dataRoomTempModalUserId = null;
+    this.allDataroomFiles = [];
   }
 
   componentDidMount() {
@@ -119,12 +120,26 @@ class DataRoom extends React.Component {
     })
   }
 
+  formatSearchData = (data) => {
+    return data.map(item => {
+      const parentId = -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+    })
+  }
+
   getDataRoomFile = () => {
     const id = this.state.id
     let param = { dataroom: id }
     api.queryDataRoomFile(param).then(result => {
       var { count, data } = result.data
       data = this.formatData(data)
+      this.allDataroomFiles = data;
       this.setState({ data })
     }).catch(error => {
       this.investorGetDataRoomFile();
@@ -578,9 +593,14 @@ class DataRoom extends React.Component {
   }
 
   handleDataroomSearch = async (content) => {
-    window.echo('search', content);
+    if (!content) {
+      this.setState({ data: this.allDataroomFiles });
+      return;
+    }
+    this.setState({ loading: true });
     const req = await api.searchDataroom(this.state.id, content);
-    window.echo('req', req);
+    const { data } = req.data;
+    this.setState({ loading: false, data: this.formatSearchData(data) });
   }
 
   render () {
