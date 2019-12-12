@@ -70,7 +70,12 @@ class AddUser extends React.Component {
         })
         .then(data=>{
           if (data) values.org = data.data.id;
-          if (!isUserExist) return api.addUser(values);
+          if (!isUserExist) {
+            if (values.cardKey) {
+              values.cardBucket = 'image';
+            }
+            return api.addUser(values);
+          }
         })
         .then(result => {
           if (this.isTraderAddInvestor && result) {

@@ -58,10 +58,10 @@ class UserForm extends React.Component {
   constructor(props) {
     super(props)
 
-    const { getFieldDecorator } = this.props.form
-    getFieldDecorator('cardBucket', {
-      rules: [{required: true}], initialValue: 'image'
-    })
+    // const { getFieldDecorator } = this.props.form
+    // getFieldDecorator('cardBucket', {
+    //   rules: [{required: true}], initialValue: 'image'
+    // })
 
     this.state = {
       investorGroup: [], // 投资人所在的用户组
