@@ -12,6 +12,7 @@ import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
   i18n,
   hasPerm,
+  isLogin,
 } from '../utils/util';
 import { Link } from 'dva/router';
 
@@ -109,7 +110,7 @@ function DataRoomUserList(props) {
         </Row>
         : null}
 
-      {!hasPerm('usersys.as_investor') &&
+      {(hasPerm('usersys.as_trader') || isLogin().is_superuser) &&
       <div style={{ margin: '0 auto', display: 'grid', width: 300, gridTemplateColumns: '1fr 230px' }}>
         <div style={{ alignSelf: 'center' }}>编辑密码</div>
         <Input placeholder="不输入密码PDF文件将不加密" value={password} onChange={passwordChange} disabled={disableEditPassword} />
