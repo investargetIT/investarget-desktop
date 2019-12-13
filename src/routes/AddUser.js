@@ -74,7 +74,8 @@ class AddUser extends React.Component {
             if (values.cardKey) {
               values.cardBucket = 'image';
             }
-            return api.addUser(values);
+            const registersource = this.isTraderAddInvestor ? 8 : 3;
+            return api.addUser(values, registersource);
           }
         })
         .then(result => {

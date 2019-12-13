@@ -404,8 +404,8 @@ export function getUser(param) {
   return r('/user/?' + qs.stringify(param))
 }
 
-export function addUser(param) {
-  return r('/user/', 'POST', param)
+export function addUser(param, registersource = 3) {
+  return r('/user/', 'POST', { ...param, registersource });
 }
 
 export function editUser(idArr, param) {
