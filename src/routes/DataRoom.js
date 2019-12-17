@@ -9,7 +9,7 @@ import {
   DataRoomUser, 
   DataRoomUserList, 
 } from '../components/DataRoomUser';
-import { Search2 } from '../components/Search';
+import { Search } from '../components/Search';
 
 const { Option } = Select;
 
@@ -66,6 +66,7 @@ class DataRoom extends React.Component {
       disableEditPassword: false,
 
       pdfPasswordForTemp: '',
+      searchContent: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -603,6 +604,13 @@ class DataRoom extends React.Component {
     this.setState({ loading: false, data: this.formatSearchData(data) });
   }
 
+  handleClickAllFilesBtn = () => {
+    this.setState(
+      { searchContent: '' },
+      () => this.handleDataroomSearch(this.state.searchContent),
+    );
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -631,10 +639,12 @@ class DataRoom extends React.Component {
           : null}
 
         <div style={{ marginBottom: '16px' }} className="clearfix">
-          <Search2
+          <Search
             style={{ width: 200, float: 'right' }}
             placeholder="文件/目录"
             onSearch={this.handleDataroomSearch}
+            onChange={searchContent => this.setState({ searchContent })}
+            value={this.state.searchContent}
           />
         </div>
 
@@ -664,6 +674,7 @@ class DataRoom extends React.Component {
           onDownloadBtnClicked={(selectedFiles) => this.setState({ visible: true, selectedFiles })}
           isMakeUser={this.state.isMakeUser}
           isTakeUser={this.state.isTakeUser}
+          onClickAllFilesBtn={this.handleClickAllFilesBtn}
         />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
