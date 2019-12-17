@@ -14,6 +14,7 @@ function onValuesChange(props, values) {
   if (values.org) {
     props.onOrgChange(values.org);
   }
+  props.onValuesChange(values);
 }
 function mapPropsToFields(props) {
   return props.data;
@@ -35,6 +36,8 @@ class AddUser extends React.Component {
   orgID = this.props.location.query.redirect && this.props.location.query.redirect.indexOf('?') !== -1 ? this.props.location.query.redirect.split('?')[1].split('=')[1] : null;
 
   existingUser = null;
+
+  formData = { org: { value: this.orgID } };
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
@@ -118,13 +121,14 @@ class AddUser extends React.Component {
         if (!this.isTraderAddInvestor) {
           Modal.warning({ title: i18n('user.message.user_exist') })
         } else {
-          const { user } = data.data;
-          this.existingUser = user;
-          Modal.confirm({
-            title: i18n('user.message.user_exist'),
-            content: i18n('user.message.user_add_relation', {'username': user && user.username}),
-            onOk: this.handleAddRelation,
-          })
+          this.setState({ visible: true, user: data.data.user });
+          // const { user } = data.data;
+          // this.existingUser = user;
+          // Modal.confirm({
+          //   title: i18n('user.message.user_exist'),
+          //   content: i18n('user.message.user_add_relation', {'username': user && user.username}),
+          //   onOk: this.handleAddRelation,
+          // })
         }
       }
     })
@@ -139,19 +143,19 @@ class AddUser extends React.Component {
   }
 
   handleAddRelation = () => {
-    // this.setState({ confirmLoading: true })
+    this.setState({ confirmLoading: true })
     const body = {
       relationtype: true,
-      investoruser: this.existingUser.id,
+      investoruser: this.state.user.id,
       traderuser: isLogin().id
     }
     api.addUserRelation(body)
     .then(data => {
-      // this.setState({ visible: false, confirmLoading: false })
+      this.setState({ visible: false, confirmLoading: false })
       this.props.dispatch(routerRedux.replace(this.props.location.query.redirect))
     })
     .catch(err => {
-      // this.setState({ visible: false, confirmLoading: false })
+      this.setState({ visible: false, confirmLoading: false })
       this.props.dispatch({ type: 'app/findError', payload: err })
     })
   }
@@ -191,6 +195,13 @@ class AddUser extends React.Component {
       })
   };
 
+  handleAddFormValuesChange = values => {
+    window.echo('aa props value changes', values);
+    for (const prop in values) {
+      this.formData[prop] = { value: values[prop] };
+    }
+  }
+
   render () {
     const title = (this.isTraderAddInvestor || this.isAdminAddInvestor)
                   ? i18n("user.add_investor")
@@ -203,10 +214,11 @@ class AddUser extends React.Component {
         <AddUserForm type="add"
           isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
+          onValuesChange={this.handleAddFormValuesChange}
           onOrgChange={this.handleOrgChange.bind(this)}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           cnNameOnBlur={this.handleCnNameOnBlur.bind(this)}
-          data={{ org: { value: this.orgID } }}
+          data={this.formData}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
         <div style={{textAlign: 'center'}}>
