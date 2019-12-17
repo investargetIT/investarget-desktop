@@ -86,6 +86,7 @@ class FileMgmt extends React.Component {
 
   folderClicked(file) {
     if (!file) {
+      this.props.onClickAllFilesBtn();
       this.props.location.query.parentID = undefined
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: -999 })

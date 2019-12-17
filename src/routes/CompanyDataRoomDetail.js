@@ -10,6 +10,7 @@ import {
   DataRoomUserList, 
 } from '../components/DataRoomUser';
 import Tree from 'antd/lib/tree';
+import { Search } from '../components/Search';
 
 class DataRoom extends React.Component {
 
@@ -36,7 +37,11 @@ class DataRoom extends React.Component {
       downloadUrl: null,
       downloadUser: null,
       loading: false,
+
+      searchContent: '',
     }
+
+    this.allDataroomFiles = [];
   }
 
   componentDidMount() {
@@ -57,12 +62,26 @@ class DataRoom extends React.Component {
     })
   }
 
+  formatSearchData = (data) => {
+    return data.map(item => {
+      const parentId = -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+    })
+  }
+
   getDataRoomFile = () => {
     const id = this.state.id
     let param = { dataroom: id }
     api.queryDataRoomFile(param).then(result => {
       var { count, data } = result.data
       data = this.formatData(data)
+      this.allDataroomFiles = data;
       this.setState({ data })
     }).catch(error => {
       this.investorGetDataRoomFile();
@@ -433,6 +452,24 @@ class DataRoom extends React.Component {
     this.checkDataRoomStatus();
   }
 
+  handleDataroomSearch = async (content) => {
+    if (!content) {
+      this.setState({ data: this.allDataroomFiles });
+      return;
+    }
+    this.setState({ loading: true });
+    const req = await api.searchDataroom(this.state.id, content);
+    const { data } = req.data;
+    this.setState({ loading: false, data: this.formatSearchData(data) });
+  }
+
+  handleClickAllFilesBtn = () => {
+    this.setState(
+      { searchContent: '' },
+      () => this.handleDataroomSearch(this.state.searchContent),
+    );
+  }
+
   render () {
     return (
       <LeftRightLayout
@@ -454,6 +491,16 @@ class DataRoom extends React.Component {
             />
           </div>
           : null} */}
+
+        <div style={{ marginBottom: '16px' }} className="clearfix">
+          <Search
+            style={{ width: 200, float: 'right' }}
+            placeholder="文件/目录"
+            onSearch={this.handleDataroomSearch}
+            onChange={searchContent => this.setState({ searchContent })}
+            value={this.state.searchContent}
+          />
+        </div>
 
         <CompanyFileMgmt
           location={this.props.location}
@@ -479,6 +526,7 @@ class DataRoom extends React.Component {
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
           onDownloadBtnClicked={() => this.setState({ visible: true})}
+          onClickAllFilesBtn={this.handleClickAllFilesBtn}
            />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
