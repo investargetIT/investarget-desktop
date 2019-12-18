@@ -90,7 +90,7 @@ function DataRoomUser(props) {
 }
 
 function DataRoomUserList(props) {
-  const { list, password, passwordChange, disableEditPassword } = props;
+  const { list, password, passwordChange, disableEditPassword, displayEditPasswordField } = props;
   return (
     <div>
 
@@ -110,7 +110,7 @@ function DataRoomUserList(props) {
         </Row>
         : null}
 
-      {(hasPerm('usersys.as_trader') || isLogin().is_superuser) &&
+      {displayEditPasswordField &&
       <div style={{ margin: '0 auto', display: 'grid', width: 300, gridTemplateColumns: '1fr 230px' }}>
         <div style={{ alignSelf: 'center' }}>编辑密码</div>
         <Input placeholder="不输入密码PDF文件将不加密" value={password} onChange={passwordChange} disabled={disableEditPassword} />

@@ -692,6 +692,7 @@ class DataRoom extends React.Component {
             onConfirm={this.handleDownloadBtnClicked}
             onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
             disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
+            displayEditPasswordField={(hasPerm('usersys.as_trader') || isLogin().is_superuser) || this.state.isMakeUser || this.state.isTakeUser}
             password={this.state.pdfPassword}
             passwordChange={this.handlePasswordChange}
             disableEditPassword={this.state.disableEditPassword}
