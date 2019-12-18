@@ -93,6 +93,7 @@ class FileMgmt extends React.Component {
       return
     }
     if (file.isFolder) {
+      this.props.onClickFolder(file);
       this.props.location.query.parentID = file.id
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
       this.setState({ parentId: file.id })
@@ -396,14 +397,14 @@ class FileMgmt extends React.Component {
     this.data = this.props.data
     // this.copyContents = []
 
-    const currentFolder = this.props.data.filter(f => f.id === this.state.parentId)[0]
-    let parentFolder = null
-    if (this.state.parentId !== -999) {
-      const parentFolderArr = this.props.data.filter(f => f.id === currentFolder.parentId)
-      if (parentFolderArr.length > 0) {
-        parentFolder = parentFolderArr[0]
-      }
-    }
+    // const currentFolder = this.props.data.filter(f => f.id === this.state.parentId)[0]
+    // let parentFolder = null
+    // if (this.state.parentId !== -999) {
+    //   const parentFolderArr = this.props.data.filter(f => f.id === currentFolder.parentId)
+    //   if (parentFolderArr.length > 0) {
+    //     parentFolder = parentFolderArr[0]
+    //   }
+    // }
     const base = (
       <span>
         {/* <a onClick={this.folderClicked.bind(this, parentFolder)}>{i18n('dataroom.back')}</a>

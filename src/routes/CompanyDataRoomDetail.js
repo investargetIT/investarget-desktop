@@ -39,6 +39,8 @@ class DataRoom extends React.Component {
       loading: false,
 
       searchContent: '',
+
+      parentId: parseInt(props.location.query.parentID, 10) || -999,
     }
 
     this.allDataroomFiles = [];
@@ -64,7 +66,7 @@ class DataRoom extends React.Component {
 
   formatSearchData = (data) => {
     return data.map(item => {
-      const parentId = -999
+      const parentId = this.state.parentId; 
       const name = item.filename
       const rename = item.filename
       const unique = item.id
@@ -460,7 +462,14 @@ class DataRoom extends React.Component {
     this.setState({ loading: true });
     const req = await api.searchDataroom(this.state.id, content);
     const { data } = req.data;
-    this.setState({ loading: false, data: this.formatSearchData(data) });
+
+    let newData = this.formatSearchData(data);
+    if (this.state.parentId !== -999) {
+      const allParents = this.findAllParents(this.state.parentId);
+      const parentFolder = this.allDataroomFiles.filter(f => f.id === this.state.parentId);
+      newData = newData.concat(allParents).concat(parentFolder);
+    }
+    this.setState({ loading: false, data: newData })
   }
 
   handleClickAllFilesBtn = () => {
@@ -468,6 +477,25 @@ class DataRoom extends React.Component {
       { searchContent: '' },
       () => this.handleDataroomSearch(this.state.searchContent),
     );
+  }
+
+  handleClickFolder = file => {
+    this.setState({ parentId: file.id });
+  }
+
+  findAllParents = (fileId) => {
+    let allParents = [];
+    const react = this;
+    function findParents (id) {
+      const currentFile = react.allDataroomFiles.filter(f => f.id === id);
+      const parent = react.allDataroomFiles.filter(f => f.id === currentFile[0].parent);
+      allParents = allParents.concat(parent);
+      if (parent.length > 0) {
+        findParents(parent[0].id);
+      }
+      return allParents;
+    }
+    return findParents(fileId);
   }
 
   render () {
@@ -527,6 +555,7 @@ class DataRoom extends React.Component {
           onMultiInvisible={this.handleMultiInvisible}
           onDownloadBtnClicked={() => this.setState({ visible: true})}
           onClickAllFilesBtn={this.handleClickAllFilesBtn}
+          onClickFolder={this.handleClickFolder}
            />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
