@@ -615,7 +615,7 @@ class DataRoom extends React.Component {
 
   handleClickAllFilesBtn = () => {
     this.setState(
-      { searchContent: '' },
+      { searchContent: '', parentId: -999 },
       () => this.handleDataroomSearch(this.state.searchContent),
     );
   }
