@@ -116,12 +116,26 @@ class AddUser extends React.Component {
     if (!account) return;
     const data = await api.checkUserExist(account);
     const { result: isExist } = data.data;
-    if (!isExist) return;
+    if (!isExist) {
+      if (accountType === 'mobile' && account.length === 11) {
+        this.getPhoneAddress(account);
+      }
+      return;
+    }
     if (!this.isTraderAddInvestor) {
       Modal.warning({ title: i18n('user.message.user_exist') });
     } else {
       this.setState({ visible: true, user: data.data.user });
     }
+  }
+
+  getPhoneAddress = async (mobile) => {
+    const res = await api.getPhoneAddress(mobile);
+    const { data: result } = res;
+    window.echo('get phone address result', result);
+    this.formData.orgarea = { value: 1 };
+    this.formData.country = { value: 42 };
+    this.forceUpdate();
   }
 
   handleCnNameOnBlur(evt) {
