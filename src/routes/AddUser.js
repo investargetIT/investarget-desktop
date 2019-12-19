@@ -111,27 +111,17 @@ class AddUser extends React.Component {
     }
   }
 
-  handleOnBlur(accountType, evt) {
-    const account = evt.target.value
-    if (!account) return
-    api.checkUserExist(account)
-    .then(data => {
-      const isExist = data.data.result
-      if (isExist) {
-        if (!this.isTraderAddInvestor) {
-          Modal.warning({ title: i18n('user.message.user_exist') })
-        } else {
-          this.setState({ visible: true, user: data.data.user });
-          // const { user } = data.data;
-          // this.existingUser = user;
-          // Modal.confirm({
-          //   title: i18n('user.message.user_exist'),
-          //   content: i18n('user.message.user_add_relation', {'username': user && user.username}),
-          //   onOk: this.handleAddRelation,
-          // })
-        }
-      }
-    })
+  async handleOnBlur(accountType, evt) {
+    const account = evt.target.value;
+    if (!account) return;
+    const data = await api.checkUserExist(account);
+    const { result: isExist } = data.data;
+    if (!isExist) return;
+    if (!this.isTraderAddInvestor) {
+      Modal.warning({ title: i18n('user.message.user_exist') });
+    } else {
+      this.setState({ visible: true, user: data.data.user });
+    }
   }
 
   handleCnNameOnBlur(evt) {
