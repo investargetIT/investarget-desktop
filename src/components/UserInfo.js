@@ -249,6 +249,7 @@ class UserInfo extends React.Component {
       title: '',
       tags: '',
       country: '',
+      area: '',
       org: '',
       mobile: '',
       wechat: '',
@@ -272,6 +273,7 @@ class UserInfo extends React.Component {
       const title = data.title ? data.title.name : ''
       const tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : ''
       const country = data.country ? data.country.country : ''
+      const area = data.orgarea ? data.orgarea.name : '';
       const org = data.org ? data.org.orgname : ''
       const mobile = (data.mobile && data.mobileAreaCode) ? (`+${data.mobileAreaCode} ${data.mobile}`) : ''
       const wechat = data.wechat
@@ -284,7 +286,7 @@ class UserInfo extends React.Component {
       const targetdemand = data.targetdemand
       const orgid=data.org ? data.org.id : ''
       this.setState({
-        username, title, tags, country, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
+        username, title, tags, country, area, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
       })
       if (cardBucket && cardKey) {
         api.downloadUrl(cardBucket, cardKey).then(result => {
@@ -302,7 +304,7 @@ class UserInfo extends React.Component {
 
 
   render() {
-    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
+    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
@@ -313,7 +315,7 @@ class UserInfo extends React.Component {
             <Field title={i18n('user.position')} value={title} />
             <Field title={i18n('user.tags')} value={tags} />
             <Field title={i18n('user.country')} value={country} />
-            <Field title={i18n('user.area')} value={''} />
+            <Field title={i18n('user.area')} value={area} />
             <Field title={i18n('user.mobile')} value={mobile} />
             <Field title={i18n('user.wechat')} value={wechat} />
             <Field title={i18n('user.email')} value={email} />
