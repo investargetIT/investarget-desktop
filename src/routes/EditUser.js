@@ -256,8 +256,39 @@ class EditUser extends React.Component {
       const isExist = data.data.result
       if (isExist) {
         Modal.warning({ title: i18n('user.message.user_exist') })
+      } else {
+        if (accountType === 'mobile' && account.length === 11) {
+          this.getPhoneAddress(account);
+        }
       }
     })
+  }
+
+  getPhoneAddress = async (mobile) => {
+    window.echo('org area', this.props.orgarea);
+    window.echo('country', this.props.country);
+    const res = await api.getPhoneAddress(mobile);
+    const { data: result } = res;
+    const { att } = result;
+    if (!att) return;
+    const [country, province, city] = att.split(',');
+    const countryIndex = this.props.country.map(m => m.country).indexOf(country);
+    if (countryIndex > -1) {
+      const countryId = this.props.country[countryIndex].id;
+      this.form.setFieldsValue({ country: countryId });
+    }
+    const cityIndex = this.props.orgarea.map(m => m.name).indexOf(city);
+    const provinceIndex = this.props.orgarea.map(m => m.name).indexOf(province);
+    if (cityIndex > -1) {
+      const cityId = this.props.orgarea[cityIndex].id;
+      this.form.setFieldsValue({ orgarea: cityId });
+    } else if (provinceIndex > -1) {
+      const provinceId = this.props.orgarea[provinceIndex].id;
+      this.form.setFieldsValue({ orgarea: provinceId });
+    }
+    // if (countryIndex > -1 || cityIndex > -1 || provinceIndex > -1) {
+    //   this.forceUpdate();
+    // }
   }
 
   render () {
@@ -291,4 +322,9 @@ class EditUser extends React.Component {
   }
 }
 
-export default connect()(EditUser)
+function mapStateToProps(state) {
+  const { country, orgarea } = state.app;
+  return { country, orgarea };
+}
+
+export default connect(mapStateToProps)(EditUser);
