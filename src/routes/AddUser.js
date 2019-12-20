@@ -132,10 +132,26 @@ class AddUser extends React.Component {
   getPhoneAddress = async (mobile) => {
     const res = await api.getPhoneAddress(mobile);
     const { data: result } = res;
-    window.echo('get phone address result', result);
-    this.formData.orgarea = { value: 1 };
-    this.formData.country = { value: 42 };
-    this.forceUpdate();
+    const { att } = result;
+    if (!att) return;
+    const [country, province, city] = att.split(',');
+    const countryIndex = this.props.country.map(m => m.country).indexOf(country);
+    if (countryIndex > -1) {
+      const countryId = this.props.country[countryIndex].id;
+      this.formData.country = { value: countryId };
+    }
+    const cityIndex = this.props.orgarea.map(m => m.name).indexOf(city);
+    const provinceIndex = this.props.orgarea.map(m => m.name).indexOf(province);
+    if (cityIndex > -1) {
+      const cityId = this.props.orgarea[cityIndex].id;
+      this.formData.orgarea = { value: cityId };
+    } else if (provinceIndex > -1) {
+      const provinceId = this.props.orgarea[provinceIndex].id;
+      this.formData.orgarea = { value: provinceId };
+    }
+    if (countryIndex > -1 || cityIndex > -1 || provinceIndex > -1) {
+      this.forceUpdate();
+    }
   }
 
   handleCnNameOnBlur(evt) {
@@ -242,4 +258,9 @@ class AddUser extends React.Component {
   }
 }
 
-export default connect()(AddUser)
+function mapStateToProps(state) {
+  const { country, orgarea } = state.app;
+  return { country, orgarea };
+}
+
+export default connect(mapStateToProps)(AddUser);
