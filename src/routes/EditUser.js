@@ -250,7 +250,12 @@ class EditUser extends React.Component {
     const account = evt.target.value;
     if (!account) return
     const mobileAndEmail = [this.state.data.email.value, this.state.data.mobile.value];
-    if (mobileAndEmail.includes(account)) return;
+    if (mobileAndEmail.includes(account)) {
+      if (accountType === 'mobile' && account.length === 11) {
+        this.getPhoneAddress(account);
+      }
+      return;
+    }
     api.checkUserExist(account)
     .then(data => {
       const isExist = data.data.result
