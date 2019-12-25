@@ -101,7 +101,7 @@ class SelectOrganization extends React.Component {
 
   getOrg = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false}
+    const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false, orgstatus: 2 };
     // if (this.props.traderId) {
     //   params['trader'] = this.props.traderId
     // }
