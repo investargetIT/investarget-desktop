@@ -7,7 +7,7 @@ import { Button, Modal, Checkbox } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 
-import SelectOrganization from '../components/SelectOrganization'
+import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
 
 class NewOrgBD extends React.Component {
 
@@ -111,7 +111,7 @@ class NewOrgBD extends React.Component {
           </div>
   
           <div style={{padding: '16px'}}>
-            <SelectOrganization
+            <SelectOrganizationForOrgBd
               traderId={this.props.bd ? undefined : traderId}
               value={selectedOrgs} 
               details={selectedOrgDetails} 

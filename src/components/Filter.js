@@ -630,6 +630,72 @@ function mapStateToPropsForRounds(state) {
 }
 OrganizationListFilter = connect(mapStateToPropsForRounds)(OrganizationListFilter);
 
+class OrgFilterForOrgBd extends React.Component {
+
+  static defaultValue = {
+    investoverseasproject: null,
+    currencys: [],
+    orgtransactionphases: [],
+    industrys: [],
+    tags: [],
+    orgtypes: [],
+    area: [],
+    lv: null,
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = props.defaultValue || OrgFilterForOrgBd.defaultValue;
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value }, this.handleSearch);
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrgFilterForOrgBd.defaultValue })
+    this.props.onReset({ ...OrgFilterForOrgBd.defaultValue })
+  }
+
+  render() {
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, lv} = this.state
+    return (
+      <div>
+        <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
+        {/* <CurrencyFilter value={currencys} onChange={this.handleChange.bind(this, 'currencys')} /> */}
+        <BasicContainer label={i18n('filter.currency')}>
+          <ITCheckboxGroup options={this.props.currencys} value={currencys} onChange={this.handleChange.bind(this, 'currencys')} />
+        </BasicContainer> 
+        {/* <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} /> */}
+        <BasicContainer label={i18n('filter.investment_rounds')}>
+          <ITCheckboxGroup options={this.props.orgtransactionphases} value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        </BasicContainer>
+        <IndustryFilter value={industrys} onChange={this.handleChange.bind(this, 'industrys')} />
+        {/* <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} /> */}
+        <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
+        {/* <OrganizationTypeFilter value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} /> */}
+        <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
+        {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
+        <TabCheckboxOrgArea value={area} onChange={this.handleChange.bind(this, 'area')} />
+        <OrgLevelFilter value={lv} onChange={this.handleChange.bind(this, 'lv')} /> 
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+
+}
+function mapStateToPropsForOrgBD(state) {
+  const { transactionPhases, currencyType } = state.app;
+  const orgtransactionphases = transactionPhases ? transactionPhases.map(item =>({value: item.id, label: item.name})) : []
+  const currencys = currencyType ? currencyType.map(item =>({value: item.id, label: item.currency})) : []
+  return { orgtransactionphases, currencys }
+}
+OrgFilterForOrgBd = connect(mapStateToPropsForOrgBD)(OrgFilterForOrgBd);
+
 class ProjectListFilter extends React.Component {
 
   static defaultValue = {
@@ -1010,6 +1076,7 @@ export {
   UserListFilter,
   OrgUserListFilter,
   OrganizationListFilter,
+  OrgFilterForOrgBd,
   ProjectListFilter,
   TimelineFilter,
   OrgBdTableListFilter,

@@ -21,7 +21,7 @@ import {
   Col,
   Icon,
 } from 'antd';
-import { OrganizationListFilter } from './Filter'
+import { OrgFilterForOrgBd } from './Filter'
 import { Search } from './Search'
 import PropTypes from 'prop-types';
 
@@ -65,7 +65,7 @@ class SelectOrganization extends React.Component {
     super(props)
 
     this.state = {
-      filters: OrganizationListFilter.defaultValue,
+      filters: OrgFilterForOrgBd.defaultValue,
       search: null,
       page: 1,
       pageSize: getUserInfo().page || 10,
@@ -101,7 +101,7 @@ class SelectOrganization extends React.Component {
 
   getOrg = () => {
     const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false };
+    const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false, orgstatus: 2 };
     // if (this.props.traderId) {
     //   params['trader'] = this.props.traderId
     // }
@@ -232,7 +232,7 @@ class SelectOrganization extends React.Component {
  
     return (
       <div>
-        <OrganizationListFilter defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
+        <OrgFilterForOrgBd defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
 
         <div style={{ fontSize: 13, marginTop: 14 }}>
