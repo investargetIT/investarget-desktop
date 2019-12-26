@@ -69,6 +69,9 @@ class DataRoom extends React.Component {
       searchContent: '',
 
       parentId: parseInt(props.location.query.parentID, 10) || -999,
+
+      newDataroomFile: [],
+      showNewFileModal: false,
     }
 
     this.dataRoomTempModalUserId = null;
@@ -94,6 +97,15 @@ class DataRoom extends React.Component {
     this.getDataRoomFile()
     this.getAllUserFile()
     this.getDataRoomTemp();
+    this.getNewDataRoomFile();
+  }
+
+  getNewDataRoomFile = async () => {
+    const res = await api.getNewDataroomFile(this.state.id, isLogin().id);
+    window.echo('get new dataroom file', res);
+    const { data } = res;
+    if (data.length === 0) return;
+    this.setState({ newDataroomFile: data, showNewFileModal: true });
   }
 
   getDataRoomTemp = async () => {
@@ -774,6 +786,20 @@ class DataRoom extends React.Component {
             </div>
           </Modal>
         }
+
+        <Modal
+          title="新文件"
+          footer={null}
+          onCancel={() => this.setState({ showNewFileModal: false })}
+          closable
+          visible={this.state.showNewFileModal}
+        >
+          {this.state.newDataroomFile.map(m => {
+            return (
+              <li><a href={m.fileurl} target="_blank">{m.filename}</a></li>
+            );
+          })}
+        </Modal>
 
       </LeftRightLayout>
     )
