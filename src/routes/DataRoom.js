@@ -3,15 +3,17 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select, Input } from 'antd'
+import { Modal, Select, Input, Tree } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
   DataRoomUserList, 
 } from '../components/DataRoomUser';
 import { Search } from '../components/Search';
+import _ from 'lodash';
 
 const { Option } = Select;
+const { TreeNode } = Tree;
 
 const disableSelect = {
   padding: 30,
@@ -71,6 +73,7 @@ class DataRoom extends React.Component {
       parentId: parseInt(props.location.query.parentID, 10) || -999,
 
       newDataroomFile: [],
+      newDataroomFileWithParentDir: [],
       showNewFileModal: false,
     }
 
@@ -170,6 +173,7 @@ class DataRoom extends React.Component {
       return api.queryUserDataRoomFile(data.id).then(result => {
         const files = result.data.files
         const data = [...this.state.data, ...files]
+        this.allDataroomFiles = data;
         this.setState({ data: this.formatData(data) })
       })
     })
@@ -653,7 +657,40 @@ class DataRoom extends React.Component {
     return findParents(fileId);
   }
 
+  tree = (data, id) => data.filter(f => f.parentId === id).map(item => {
+    const children = data.filter(f => f.parentId === item.id)
+    if (children.length > 0) {
+      return (
+        <TreeNode key={item.unique} title={item.name}>
+          {this.tree(data, item.id)}
+        </TreeNode>
+      )
+    }
+    let title = item.name;
+    if (item.fileurl) {
+      title = <a href={item.fileurl} target="_blank">{item.name}</a>;
+    }
+    return <TreeNode key={item.unique} title={title} />;
+  })
+
+  onSelect = (key, e) => {
+    window.echo('key', key);
+    window.echo('e', e);
+    const item = this.state.data.filter(f => f.id === parseInt(key[0], 10))[0];
+    const { fileurl } = item;
+    window.open(fileurl);
+  }
+
   render () {
+    window.echo('all dataroom files', this.allDataroomFiles);
+    const newDataroomFileParentDir = this.state.newDataroomFile.map(m => this.findAllParents(m.id));
+    window.echo('new dataroom file parent', newDataroomFileParentDir);
+    const newDataroomFileParentDirInOneArray = newDataroomFileParentDir.reduce((pre, cur) => pre.concat(cur), []);
+    window.echo('one array', newDataroomFileParentDirInOneArray);
+    const uniqueParents = _.uniqBy(newDataroomFileParentDirInOneArray, 'id');
+    window.echo('unique', uniqueParents);
+    const newDataroomFileWithParentDir = uniqueParents.concat(this.state.data.filter(f => this.state.newDataroomFile.map(m => m.id).includes(f.id)));
+    console.log('new dataroom file with', newDataroomFileWithParentDir);
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -796,11 +833,12 @@ class DataRoom extends React.Component {
           closable
           visible={this.state.showNewFileModal}
         >
-          {this.state.newDataroomFile.map(m => {
+          {/* {this.state.newDataroomFile.map(m => {
             return (
               <li key={m.id}><a href={m.fileurl} target="_blank">{m.filename}</a></li>
             );
-          })}
+          })} */}
+          <Tree onSelect={this.onSelect}>{this.tree(newDataroomFileWithParentDir, -999)}</Tree>
         </Modal>
 
       </LeftRightLayout>
