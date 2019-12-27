@@ -102,7 +102,6 @@ class DataRoom extends React.Component {
 
   getNewDataRoomFile = async () => {
     const res = await api.getNewDataroomFile(this.state.id, isLogin().id);
-    window.echo('get new dataroom file', res);
     const { data } = res;
     if (data.length === 0) return;
     this.setState({ newDataroomFile: data, showNewFileModal: true });
@@ -796,7 +795,7 @@ class DataRoom extends React.Component {
         >
           {this.state.newDataroomFile.map(m => {
             return (
-              <li><a href={m.fileurl} target="_blank">{m.filename}</a></li>
+              <li key={m.id}><a href={m.fileurl} target="_blank">{m.filename}</a></li>
             );
           })}
         </Modal>
