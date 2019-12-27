@@ -97,7 +97,9 @@ class DataRoom extends React.Component {
     this.getDataRoomFile()
     this.getAllUserFile()
     this.getDataRoomTemp();
-    this.getNewDataRoomFile();
+    if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+      this.getNewDataRoomFile();
+    }
   }
 
   getNewDataRoomFile = async () => {
