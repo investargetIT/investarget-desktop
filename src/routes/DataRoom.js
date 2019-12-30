@@ -668,17 +668,22 @@ class DataRoom extends React.Component {
     }
     let title = item.name;
     if (item.fileurl) {
-      title = <a href={item.fileurl} target="_blank">{item.name}</a>;
+      title = (
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span style={{ color: '#237ccc', cursor: 'pointer' }}>{item.name}</span>
+          <span style={{ marginLeft: 20 }}>文件上传时间：{item.createdtime.slice(0, 16).replace('T', ' ')}</span>
+        </div>
+      );
     }
     return <TreeNode key={item.unique} title={title} />;
   })
 
   onSelect = (key, e) => {
-    window.echo('key', key);
-    window.echo('e', e);
     const item = this.state.data.filter(f => f.id === parseInt(key[0], 10))[0];
     const { fileurl } = item;
-    window.open(fileurl);
+    if (fileurl) {
+      window.open(fileurl);
+    }
   }
 
   render () {
