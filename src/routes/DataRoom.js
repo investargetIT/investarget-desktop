@@ -534,10 +534,10 @@ class DataRoom extends React.Component {
     this.editUserFileList(selectedUser, list2)
   }
 
-  checkDataRoomStatus = isDownloadingSelectedFiles => {
+  checkDataRoomStatus = (isDownloadingSelectedFiles, files) => {
     const user = this.state.downloadUser && this.state.downloadUser.id;
     const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
-    const files = this.state.selectedFiles.map(m => m.id).join(',');
+    // const files = this.state.selectedFiles.map(m => m.id).join(',');
     const password = this.state.pdfPassword;
     const params = { water, user };
     if (password) {
@@ -579,7 +579,14 @@ class DataRoom extends React.Component {
 
   handleDownloadSelectedFilesBtnClicked = () => {
     this.setState({ loading: true, visible: false });
-    this.checkDataRoomStatus(true);
+    const files = this.state.selectedFiles.map(m => m.id).join(',');
+    this.checkDataRoomStatus(true, files);
+  }
+
+  handleDownloadNewFiles = () => {
+    this.setState({ loading: true, visible: false });
+    const files = this.state.newDataroomFile.map(m => m.id).join(',');
+    this.checkDataRoomStatus(true, files);
   }
 
   handleSaveTemplate = (body) => {
@@ -781,6 +788,8 @@ class DataRoom extends React.Component {
             password={this.state.pdfPassword}
             passwordChange={this.handlePasswordChange}
             disableEditPassword={this.state.disableEditPassword}
+            disableDownloadNewFilesButton={this.state.newDataroomFile.length === 0}
+            onDownloadNewFiles={this.handleDownloadNewFiles}
           />
           </Modal>
 

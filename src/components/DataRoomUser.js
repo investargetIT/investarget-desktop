@@ -122,6 +122,9 @@ function DataRoomUserList(props) {
       <Row style={{ marginTop: 30, marginBottom: 10, textAlign: 'center' }}>
         <Button disabled={!props.selectedUser} onClick={props.onConfirm} type="primary">下载全部文件</Button>
         <Button disabled={props.disableDownloadSelectedFilesButton} style={{ marginLeft: 10 }} onClick={props.onDownloadSelectedFiles}>下载选中的文件</Button>
+        {!isLogin().is_superuser && hasPerm('usersys.as_investor') &&
+          <Button disabled={props.disableDownloadNewFilesButton} style={{ marginLeft: 10 }} onClick={props.onDownloadNewFiles}>下载新文件</Button>
+        }
       </Row>
 
     </div>
