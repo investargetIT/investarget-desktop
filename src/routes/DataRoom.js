@@ -75,6 +75,8 @@ class DataRoom extends React.Component {
       newDataroomFile: [],
       newDataroomFileWithParentDir: [],
       showNewFileModal: false,
+
+      userWithNewDataroomFile: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -184,6 +186,7 @@ class DataRoom extends React.Component {
       const list = result.data.data
       const users = list.map(item => item.user)
       const userIds = users.map(item => item.id)
+      this.checkUserNewFile(userIds);
       const userDataroomIds = list.map(item => item.id)
       var userDataroomMap = {}
       userIds.forEach((userId, index) => {
@@ -221,6 +224,18 @@ class DataRoom extends React.Component {
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  checkUserNewFile = async (userIds) => {
+    const res = await Promise.all(userIds.map(m => api.getNewDataroomFile(this.state.id, m)));
+    let result = [];
+    for (let index = 0; index < res.length; index++) {
+      const element = res[index];
+      if (element.data.length > 0) {
+        result.push(userIds[index]);
+      }
+    }
+    this.setState({ userWithNewDataroomFile: result });
   }
 
   handleCreateNewFolder(parentId) {
@@ -483,6 +498,14 @@ class DataRoom extends React.Component {
       .catch(handleError);
     
   }
+  handleSendNewFileEmail = item => {
+    api.sendNewFileEmail(item.id)
+      .then(result => {
+        echo(result);
+        Modal.success({ title: '邮件发送成功' });
+      })
+      .catch(handleError);
+  }
 
   handleSelectUser = (value) => {
     if (value === this.state.selectedUser) {
@@ -715,6 +738,7 @@ class DataRoom extends React.Component {
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
+              userWithNewDataroomFile={this.state.userWithNewDataroomFile}
               newUser={this.state.newUser}
               onSelectUser={this.handleChangeUser}
               onAddUser={this.state.hasPermissionForDataroomTemp ? this.handleAddUser : undefined}
@@ -725,6 +749,7 @@ class DataRoom extends React.Component {
               onSaveTemplate={this.state.hasPermissionForDataroomTemp ? this.handleSaveTemplate : undefined}
               onApplyTemplate={this.state.hasPermissionForDataroomTemp ? this.handleApplyTemplate : undefined}
               dataRoomTemp={this.state.dataRoomTemp}
+              onSendNewFileEmail={this.handleSendNewFileEmail}
             />
           </div>
           : null}

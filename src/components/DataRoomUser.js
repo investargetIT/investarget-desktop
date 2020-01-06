@@ -25,7 +25,7 @@ const rowStyle = {
   borderBottom: '1px dashed #f2f2f2',
 }
 
-function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp) {
+function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile) {
   const { user: { id: userId }} = item;
   const userIdsWithDataroomTemp = dataRoomTemp.map(m => m.user);
   return <div>
@@ -43,6 +43,9 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
       <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
         <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
       </Popconfirm>
+      <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={onSendNewFileEmail.bind(this, item)}>
+        <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+      </Popconfirm>
       <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
         <Button type="danger">移除</Button>
       </Popconfirm>
@@ -51,7 +54,7 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
   return <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -72,7 +75,7 @@ function DataRoomUser(props) {
 
     <div>
       {list.map(item => (
-        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp)}>
+        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile)}>
           <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
             <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
             { props.selectedUser === item.user.id ?

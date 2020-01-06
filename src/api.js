@@ -915,3 +915,4 @@ export const sendScheduleReminderEmail = body => r('/msg/icsmail', 'POST', body)
 
 export const searchDataroom = (dataroomId, searchContent) => r(`/dataroom/filepath/?dataroom=${dataroomId}&search=${searchContent}`);
 export const getNewDataroomFile = (dataroomId, userId) => r(`/dataroom/userfile/update/?dataroom=${dataroomId}&user=${userId}`);
+export const sendNewFileEmail = dataroomUserId => r(`/dataroom/userfile/update/${dataroomUserId}/`, 'POST');
