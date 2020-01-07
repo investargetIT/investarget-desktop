@@ -408,7 +408,7 @@ class SelectExistUser extends React.Component {
 class SelectExistInvestor extends React.Component {
 
   getInvestor = (params) => {
-    params = { ...params, traderuser: getCurrentUser() } // 审核通过
+    params = { ...params, traderuser: getCurrentUser(), sort: 'createdtime', desc: 1 } // 审核通过
     return api.getUserRelation(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => item.investoruser).map(item => {
