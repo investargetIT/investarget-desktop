@@ -82,6 +82,8 @@ class MyPartner extends React.Component {
     param.page_size = this.state.pageSize;
     param.page_index = this.state.pageIndex;
     param.search = this.state.search;
+    param.sort = 'createdtime';
+    param.desc = 1;
     
     const params = Object.assign({}, param, this.state.filters);
 
