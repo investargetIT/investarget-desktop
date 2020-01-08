@@ -729,15 +729,10 @@ class DataRoom extends React.Component {
   }
 
   render () {
-    window.echo('all dataroom files', this.allDataroomFiles);
     const newDataroomFileParentDir = this.state.newDataroomFile.map(m => this.findAllParents(m.id));
-    window.echo('new dataroom file parent', newDataroomFileParentDir);
     const newDataroomFileParentDirInOneArray = newDataroomFileParentDir.reduce((pre, cur) => pre.concat(cur), []);
-    window.echo('one array', newDataroomFileParentDirInOneArray);
     const uniqueParents = _.uniqBy(newDataroomFileParentDirInOneArray, 'id');
-    window.echo('unique', uniqueParents);
     const newDataroomFileWithParentDir = uniqueParents.concat(this.state.data.filter(f => this.state.newDataroomFile.map(m => m.id).includes(f.id)));
-    console.log('new dataroom file with', newDataroomFileWithParentDir);
     return (
       <LeftRightLayout
         location={this.props.location}
