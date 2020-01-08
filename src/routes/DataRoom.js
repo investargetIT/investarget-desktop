@@ -361,7 +361,12 @@ class DataRoom extends React.Component {
         newData.splice(index, 1)
       })
       const newFileUserList = this.state.fileUserList.filter(f => !idArr.includes(f.file));
-      this.setState({ data: newData, fileUserList: newFileUserList });
+      const newTargetUserFileList = this.state.targetUserFileList.filter(f => !idArr.includes(f.file));
+      this.setState({
+        data: newData,
+        fileUserList: newFileUserList,
+        targetUserFileList: newTargetUserFileList,
+      });
     }).catch(error => {
       this.props.dispatch({
         type: 'app/findError',
