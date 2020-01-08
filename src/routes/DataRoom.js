@@ -710,9 +710,21 @@ class DataRoom extends React.Component {
 
   onSelect = (key, e) => {
     const item = this.state.data.filter(f => f.id === parseInt(key[0], 10))[0];
-    const { fileurl } = item;
+    const { fileurl, filename } = item;
     if (fileurl) {
-      window.open(fileurl);
+      if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(filename)) {
+        window.open(fileurl);
+      } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(filename)) {
+        Modal.warning({
+          title: '该文件不支持在线预览',
+        });
+      } else {
+        const watermark = isLogin().email || 'Investarget';
+        const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
+        const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileurl) +
+          '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
+        window.open(url);
+      }
     }
   }
 
