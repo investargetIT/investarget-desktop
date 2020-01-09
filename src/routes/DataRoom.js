@@ -455,7 +455,10 @@ class DataRoom extends React.Component {
   editUserFileList = (user, files) => {
     const id = this.state.userDataroomMap[user]
     api.editUserDataRoomFile(id, {files}).then(result => {
-      this.getAllUserFile()
+      // this.getAllUserFile()
+      const newTargetUserFileList = files.map(m => ({ file: m, user }));
+      const newFileUserList = this.state.fileUserList.filter(f => f.user !== user).concat(newTargetUserFileList);
+      this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
     }).catch(error => {
       handleError(error)
     })
