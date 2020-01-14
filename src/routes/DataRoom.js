@@ -203,16 +203,27 @@ class DataRoom extends React.Component {
       if (this.state.selectedUser && !userIds.includes(this.state.selectedUser)) {
         this.setState({ selectedUser: null })
       }
+      
+      // return Promise.all(list.map(item => {
+      //   return api.queryUserDataRoomFile(item.id).then(result => {
+      //     window.echo('query user data room file', result);
+      //     const { files, user } = result.data
+      //     return files.map(item => {
+      //       return { file: item.id, user }
+      //     })
+      //   })
+      // }))
 
-      return Promise.all(list.map(item => {
-        return api.queryUserDataRoomFile(item.id).then(result => {
-          const { files, user } = result.data
-          return files.map(item => {
-            return { file: item.id, user }
-          })
-        })
-      })).
-      then(results => {
+      return Promise.all(list.map((item) => {
+        return api.getUserDataroomFile(this.state.id, item.user.id).then((result1) => {
+          const { data } = result1.data;
+          return data.map((m) => {
+            return { id: m.id, file: m.file.id, user: item.user.id };
+          });
+        });
+      }))
+
+      .then(results => {
         const list = results.reduce((a,b) => a.concat(b), [])
         this.setState({ fileUserList: list })
         if (this.state.selectedUser) {
