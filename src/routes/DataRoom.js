@@ -218,7 +218,7 @@ class DataRoom extends React.Component {
         return api.getUserDataroomFile(this.state.id, item.user.id).then((result1) => {
           const { data } = result1.data;
           return data.map((m) => {
-            return { id: m.id, file: m.file.id, user: item.user.id };
+            return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
           });
         });
       }))
@@ -473,6 +473,24 @@ class DataRoom extends React.Component {
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  toggleUserDataroomFiles = async (data, isAdd) => {
+    if (!isAdd) {
+      await Promise.all(data.map(m => api.deleteUserDataroomFile(m.id)));
+      const removedFiles = data.map(m => m.file);
+      const user = data[0].user;
+      const newTargetUserFileList = this.state.targetUserFileList.filter(f => removedFiles.includes(f.file));
+      const newFileUserList = this.state.fileUserList.filter(f => f.user !== user || !removedFiles.includes(f.file));
+      this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
+      return;
+    }
+    // const res = await Promise.all(data.map(m => {
+    //   const body = {
+    //     dataroom: this.state.id,
+    //     dataroomUs
+    //   }
+    // }))
   }
 
   handleChangeUser = (value) => {

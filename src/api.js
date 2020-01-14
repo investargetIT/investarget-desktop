@@ -917,3 +917,5 @@ export const searchDataroom = (dataroomId, searchContent) => r(`/dataroom/filepa
 export const getNewDataroomFile = (dataroomId, userId) => r(`/dataroom/userfile/update/?dataroom=${dataroomId}&user=${userId}`);
 export const sendNewFileEmail = dataroomUserId => r(`/dataroom/userfile/update/${dataroomUserId}/`, 'POST');
 export const getUserDataroomFile = (dataroomId, userId) => r(`/dataroom/userfile/?dataroom=${dataroomId}&user=${userId}`);
+export const addUserDataroomFile = body => r('/dataroom/userfile/', 'POST', body);
+export const deleteUserDataroomFile = id => r(`/dataroom/userfile/${id}/`, 'DELETE');
