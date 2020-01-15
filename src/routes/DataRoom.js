@@ -448,19 +448,25 @@ class DataRoom extends React.Component {
   }
 
   handleSelectFileUser = (file, user) => {
-    const list = [...this.state.fileUserList, {file, user}]
-    this.setState({ fileUserList: list })
-    const files = list.filter(item => item.user == user).map(item => item.file)
-    this.editUserFileList(user, files)
+    // const list = [...this.state.fileUserList, {file, user}]
+    // this.setState({ fileUserList: list })
+    // const files = list.filter(item => item.user == user).map(item => item.file)
+    // this.editUserFileList(user, files)
+
+    const data = { file };
+    this.toggleUserDataroomFiles(user, [data], true);
   }
 
   handleDeselectFileUser = (file, user) => {
-    const list = this.state.fileUserList.filter(item => {
-      return !(item.file == file && item.user == user)
-    })
-    this.setState({ fileUserList: list })
-    const files = list.filter(item => item.user == user).map(item => item.file)
-    this.editUserFileList(user, files)
+    // const list = this.state.fileUserList.filter(item => {
+    //   return !(item.file == file && item.user == user)
+    // })
+    // this.setState({ fileUserList: list })
+    // const files = list.filter(item => item.user == user).map(item => item.file)
+    // this.editUserFileList(user, files)
+
+    const removedFiles = this.state.fileUserList.filter(item => item.file === file && item.user === user);
+    this.toggleUserDataroomFiles(user, removedFiles, false);
   }
 
   editUserFileList = (user, files) => {
@@ -482,7 +488,7 @@ class DataRoom extends React.Component {
     if (!isAdd) {
       await Promise.all(data.map(m => api.deleteUserDataroomFile(m.id)));
       const removedFiles = data.map(m => m.file);
-      const newTargetUserFileList = this.state.targetUserFileList.filter(f => removedFiles.includes(f.file));
+      const newTargetUserFileList = this.state.targetUserFileList.filter(f => !removedFiles.includes(f.file));
       const newFileUserList = this.state.fileUserList.filter(f => f.user !== user || !removedFiles.includes(f.file));
       this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
       return;
@@ -497,12 +503,10 @@ class DataRoom extends React.Component {
       };
       return api.addUserDataroomFile(body);
     }));
-    window.echo('add user dataroom file', res);
     const newFiles = res.map(m => {
-      const { id, file, dataroomUserfile } = m;
-      return { id, file, dataroomUserfileId: dataroomUserfile, user };
+      const { id, file, dataroomUserfile: dataroomUserfileId } = m.data;
+      return { id, file, dataroomUserfileId, user };
     });
-    window.echo('new files', newFiles);
     const newTargetUserFileList = this.state.targetUserFileList.concat(newFiles);
     const newFileUserList = this.state.fileUserList.concat(newFiles);
     this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
@@ -575,38 +579,49 @@ class DataRoom extends React.Component {
     var index = list.indexOf(id)
     if (index > -1) {
       list = [...list.slice(0, index), ...list.slice(index + 1)]
+
+      const data = this.state.fileUserList.filter(f => f.user === selectedUser && f.file === id);
+      this.toggleUserDataroomFiles(selectedUser, data, false);
     } else {
       list = [...list, id]
+
+      const data = { file: id, user: selectedUser };
+      this.toggleUserDataroomFiles(selectedUser, [data], true);
     }
 
-    this.editUserFileList(selectedUser, list)
+    // this.editUserFileList(selectedUser, list)
   }
 
   handleMultiVisible = (ids) => {
-    const { selectedUser, targetUserFileList } = this.state
-    var list = targetUserFileList.map(item => item.file)
-    var list2 = [...list]
-    ids.forEach(id => {
-      if (!list2.includes(id)) {
-        list2.push(id)
-      }
-    })
-    this.editUserFileList(selectedUser, list2)
+    // const { selectedUser, targetUserFileList } = this.state
+    // var list = targetUserFileList.map(item => item.file)
+    // var list2 = [...list]
+    // ids.forEach(id => {
+    //   if (!list2.includes(id)) {
+    //     list2.push(id)
+    //   }
+    // })
+    // this.editUserFileList(selectedUser, list2)
+
+    this.toggleUserDataroomFiles(this.state.selectedUser, ids.map(m => ({ file: m })), true);
   }
 
   handleMultiInvisible = (ids) => {
-    const { selectedUser, targetUserFileList } = this.state
-    var list = targetUserFileList.map(item => item.file)
+    // const { selectedUser, targetUserFileList } = this.state
+    // var list = targetUserFileList.map(item => item.file)
 
-    var list2 = [...list]
-    ids.forEach(id => {
-      if (list.includes(id)) {
-        let index = list2.indexOf(id)
-        list2 = [...list2.slice(0,index), ...list2.slice(index + 1)]
-      }
-    })
+    // var list2 = [...list]
+    // ids.forEach(id => {
+    //   if (list.includes(id)) {
+    //     let index = list2.indexOf(id)
+    //     list2 = [...list2.slice(0,index), ...list2.slice(index + 1)]
+    //   }
+    // })
 
-    this.editUserFileList(selectedUser, list2)
+    // this.editUserFileList(selectedUser, list2)
+
+    const data = this.state.fileUserList.filter(f => f.user === this.state.selectedUser && ids.includes(f.file));
+    this.toggleUserDataroomFiles(this.state.selectedUser, data, false);
   }
 
   checkDataRoomStatus = (isDownloadingSelectedFiles, files) => {
