@@ -476,21 +476,36 @@ class DataRoom extends React.Component {
   }
 
   toggleUserDataroomFiles = async (data, isAdd) => {
+    const user = data[0].user;
+
+    // Delete
     if (!isAdd) {
       await Promise.all(data.map(m => api.deleteUserDataroomFile(m.id)));
       const removedFiles = data.map(m => m.file);
-      const user = data[0].user;
       const newTargetUserFileList = this.state.targetUserFileList.filter(f => removedFiles.includes(f.file));
       const newFileUserList = this.state.fileUserList.filter(f => f.user !== user || !removedFiles.includes(f.file));
       this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
       return;
     }
-    // const res = await Promise.all(data.map(m => {
-    //   const body = {
-    //     dataroom: this.state.id,
-    //     dataroomUs
-    //   }
-    // }))
+
+    // Add
+    const res = await Promise.all(data.map((m) => {
+      const body = {
+        dataroom: this.state.id,
+        dataroomUserfile: m.dataroomUserfileId,
+        file: m.file,
+      };
+      return api.addUserDataroomFile(body);
+    }));
+    window.echo('add user dataroom file', res);
+    const newFiles = res.map(m => {
+      const { id, file, dataroomUserfile } = m;
+      return { id, file, dataroomUserfileId: dataroomUserfile, user };
+    });
+    window.echo('new files', newFiles);
+    const newTargetUserFileList = this.state.targetUserFileList.concat(newFiles);
+    const newFileUserList = this.state.fileUserList.concat(newFiles);
+    this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
   }
 
   handleChangeUser = (value) => {
