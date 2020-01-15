@@ -475,8 +475,8 @@ class DataRoom extends React.Component {
     })
   }
 
-  toggleUserDataroomFiles = async (data, isAdd) => {
-    const user = data[0].user;
+  toggleUserDataroomFiles = async (user, data, isAdd) => {
+    const dataroomUserfile = this.state.userDataroomMap[user];
 
     // Delete
     if (!isAdd) {
@@ -492,7 +492,7 @@ class DataRoom extends React.Component {
     const res = await Promise.all(data.map((m) => {
       const body = {
         dataroom: this.state.id,
-        dataroomUserfile: m.dataroomUserfileId,
+        dataroomUserfile,
         file: m.file,
       };
       return api.addUserDataroomFile(body);
