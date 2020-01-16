@@ -111,6 +111,17 @@ class DataRoom extends React.Component {
     const res = await api.getNewDataroomFile(this.state.id, isLogin().id);
     const { data } = res;
     if (data.length === 0) return;
+
+    // const newFiles = data.map((m) => {
+    //   const userFile = this.state.fileUserList.filter(f => f.id === m.id);
+    //   if (userFile.length > 0) {
+    //     return userFile[0].file;
+    //   } else {
+    //     return null;
+    //   }
+    // });
+    // this.setState({ newDataroomFile: newFiles.filter(f => f !== null), showNewFileModal: true });
+
     this.setState({ newDataroomFile: data, showNewFileModal: true });
   }
 
@@ -510,6 +521,12 @@ class DataRoom extends React.Component {
     const newTargetUserFileList = this.state.targetUserFileList.concat(newFiles);
     const newFileUserList = this.state.fileUserList.concat(newFiles);
     this.setState({ fileUserList: newFileUserList, targetUserFileList: newTargetUserFileList });
+
+    // check new file
+    const res1 = await api.getNewDataroomFile(this.state.id, user);
+    if (res1.data.length > 0) {
+      this.setState({ userWithNewDataroomFile: this.state.userWithNewDataroomFile.concat(user) });
+    }
   }
 
   handleChangeUser = (value) => {
