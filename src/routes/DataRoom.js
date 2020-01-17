@@ -228,7 +228,7 @@ class DataRoom extends React.Component {
       return Promise.all(list.map((item) => {
         return api.getUserDataroomFile(this.state.id, item.user.id).then((result1) => {
           const { data } = result1.data;
-          return data.map((m) => {
+          return data.filter(f => f.file !== null).map((m) => {
             return { id: m.id, dataroomUserfileId: item.id, file: m.file.id, user: item.user.id };
           });
         });
