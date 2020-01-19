@@ -312,6 +312,7 @@ class FileMgmt extends React.Component {
   }
 
   getTableDataSource = () => {
+    if (!isLogin()) return [];
     const { is_superuser, permissions } = isLogin();
     if (!is_superuser && permissions.includes('usersys.as_investor')) {
       // 对于投资人，隐藏空目录，除非是刚新建的目录
