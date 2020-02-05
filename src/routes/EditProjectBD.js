@@ -24,8 +24,19 @@ function toFormData(data) {
 
   for (let prop in formData) {
     let value = formData[prop]
-    if (['bd_status', 'location', 'usertitle', 'manager', 'financeCurrency', 'contractors'].includes(prop)) {
+    if (['bd_status', 'location', 'usertitle', 'financeCurrency', 'contractors'].includes(prop)) {
       formData[prop] = value && value.id
+    }
+    if (prop === 'manager') {
+      const { main, normal } = value;
+      let allManagers = [];
+      if (main) {
+        allManagers.push(main.id.toString());
+      }
+      if (normal) {
+        allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+      }
+      formData.manager = allManagers;
     }
   }
 
