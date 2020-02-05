@@ -18,6 +18,7 @@ import {
   CascaderCountry,
   SelectIndustryGroup,
   SelectCurrencyType,
+  SelectTrader,
 } from './ExtraInput'
 import { 
   i18n, 
@@ -285,8 +286,8 @@ class ProjectBDForm extends React.Component {
           </div>
         )}
         {hasPerm('BD.manageProjectBD') ?
-        <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="number" required>
-          <SelectAllUser type="trader" /> 
+        <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="array" required>
+          <SelectTrader mode="multiple" />
         </BasicFormItem> :null}
 
         {'isAdd' in this.props ? (
