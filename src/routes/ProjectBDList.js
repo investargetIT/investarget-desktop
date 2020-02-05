@@ -368,7 +368,17 @@ class ProjectBDList extends React.Component {
         title: i18n('project_bd.manager'),
         key: 'manager',
         sorter: true,
-        render: (text, record) => record.manager.map(m => m.username).join('、'),
+        render: (text, record) => {
+          const { main, normal } = record.manager;
+          let allManagers = [];
+          if (main) {
+            allManagers.push(main.username);
+          }
+          if (normal) {
+            allManagers = allManagers.concat(normal.map(m => m.manager.username));
+          }
+          return allManagers.join('、');
+        },
       },
       {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key:'financeAmount', width: 170, sorter:true, render: (text, record) => {
         const currency = record.financeCurrency ? record.financeCurrency.currency : '';
