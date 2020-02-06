@@ -919,3 +919,6 @@ export const sendNewFileEmail = dataroomUserId => r(`/dataroom/userfile/update/$
 export const getUserDataroomFile = (dataroomId, userId) => r(`/dataroom/userfile/?dataroom=${dataroomId}&user=${userId}`);
 export const addUserDataroomFile = body => r('/dataroom/userfile/', 'POST', body);
 export const deleteUserDataroomFile = id => r(`/dataroom/userfile/${id}/`, 'DELETE');
+
+export const deleteProjectBdRelatedManager = id => r(`/bd/projbd/relatemanager/${id}`, 'DELETE');
+export const addProjectBdRelatedManager = body => r('/bd/projbd/relatemanager/', 'POST', body);
