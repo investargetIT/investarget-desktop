@@ -335,25 +335,34 @@ class ProjectBDList extends React.Component {
       //           )
       // }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
-        render: (text, record) => record.source_type === 0 ? 
-          <Popover title="项目方联系方式" content={
-            <div>
-              <div>{`姓名：${record.username || '暂无'}`}</div>
-              <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-              <div>{`电话：${this.showPhoneNumber(record)}`}</div>
-              <div>{`邮箱：${record.useremail || '暂无'}`}</div>
-            </div>
-          }><a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a></Popover> : 
-          <Popover title="项目方联系方式" content={
-            <div>
-              <div>{`姓名：${record.username || '暂无'}`}</div>
-              <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-              <div>{`电话：${this.showPhoneNumber(record)}`}</div>
-              <div>{`邮箱：${record.useremail || '暂无'}`}</div>
-            </div>
-          }>
-          <div style={{ color: "#428bca" }}>{text}</div>
-          </Popover>
+        render: (text, record) => (
+          <div style={{ position: 'relative' }}>
+            {record.isimportant ? <img style={{ position: 'absolute', height:'10px',width:'10px',marginTop:'-5px',marginLeft:'-5px'}} src="/images/important.png" /> : null}
+            {record.source_type === 0 ?
+              <Popover title="项目方联系方式" content={
+                <div>
+                  <div>{`姓名：${record.username || '暂无'}`}</div>
+                  <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
+                  <div>{`电话：${this.showPhoneNumber(record)}`}</div>
+                  <div>{`邮箱：${record.useremail || '暂无'}`}</div>
+                </div>
+              }>
+                <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
+              </Popover>
+              :
+              <Popover title="项目方联系方式" content={
+                <div>
+                  <div>{`姓名：${record.username || '暂无'}`}</div>
+                  <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
+                  <div>{`电话：${this.showPhoneNumber(record)}`}</div>
+                  <div>{`邮箱：${record.useremail || '暂无'}`}</div>
+                </div>
+              }>
+                <div style={{ color: "#428bca" }}>{text}</div>
+              </Popover>
+            }
+          </div>
+        )
       },
       {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', width: 80, sorter:true},
       // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
