@@ -423,10 +423,25 @@ class ProjectBDList extends React.Component {
 
     const allCreateUser = list.map(m => m.createuser);
     const allContractor = list.filter(f => f.contractors).map(m => m.contractors.id);
-    const allManager = list.filter(f => f.manager).map(m => m.manager.id);
+    const allManager = list.filter(f => f.manager).map(m => {
+      const { main, normal } = m.manager;
+      const { id: mainManagerId } = main;
+      let normalManagerIds = [];
+      if (normal) {
+        normalManagerIds = normal.map(m => m.manager.id);
+      }
+      return normalManagerIds.concat(mainManagerId);
+    }).reduce((prev, curr) => prev.concat(curr), []);
+
     if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
       columns.push(
         {title: i18n('project_bd.operation'), width: 160, render: (text, record) => {
+          
+          let normalManagerIds = [];
+          if (record.manager.normal) {
+            normalManagerIds = record.manager.normal.map(m => m.manager.id);
+          }
+
           return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div>
               {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
@@ -434,13 +449,13 @@ class ProjectBDList extends React.Component {
                   <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
                 </Link>
                 :
-                getUserInfo().id === record.manager.id || (record.contractors && getUserInfo().id === record.contractors.id) ?
+                getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
                 <Button style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
                 : null
               }
   
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.id || (record.contractors && getUserInfo().id === record.contractors.id) ?
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
               <Button style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
               : null }
   
