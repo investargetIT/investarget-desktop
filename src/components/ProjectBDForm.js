@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes, { func } from 'prop-types'
 import {hasPerm, getCurrencyFromId, exchange} from '../utils/util'
-import { Form, Input, Radio, Checkbox, Row, Col, DatePicker } from 'antd'
+import { Form, Input, Radio, Checkbox, Row, Col, DatePicker, Switch } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const TextArea = Input.TextArea
@@ -295,6 +295,11 @@ class ProjectBDForm extends React.Component {
             <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
           </BasicFormItem>
         ) : null}
+
+        <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
+          <Switch />
+        </BasicFormItem>
+
       </Form>
     )
   }
