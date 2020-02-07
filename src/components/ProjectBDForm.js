@@ -159,6 +159,10 @@ class ProjectBDForm extends React.Component {
     }
     return (
       <Form>
+        <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
+          <Switch />
+        </BasicFormItem>
+
         <BasicFormItem label={i18n('project_bd.project_name')} name="com_name" required initialValue={this.props.comName}>
           <Input />
         </BasicFormItem>
@@ -295,10 +299,6 @@ class ProjectBDForm extends React.Component {
             <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
           </BasicFormItem>
         ) : null}
-
-        <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
-          <Switch />
-        </BasicFormItem>
 
       </Form>
     )

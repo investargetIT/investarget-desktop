@@ -44,7 +44,7 @@ class ProjectBDList extends React.Component {
       currentBDId: null,
       comments: [],
       newComment: '',
-      sort: 'lastmodifytime',
+      sort: 'isimportant',
       desc: 1,
       source:this.props.location.query.status||0, 
       status: null, 
@@ -294,7 +294,7 @@ class ProjectBDList extends React.Component {
   handleTableChange = (pagination, filters, sorter) => {
     this.setState(
       { 
-        sort: sorter.columnKey, 
+        sort: sorter.columnKey || 'isimportant', 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
       this.getProjectBDList
