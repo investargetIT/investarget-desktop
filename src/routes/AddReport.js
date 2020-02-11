@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n } from '../utils/util'
+import { i18n, getCurrentUser } from '../utils/util'
 
 
 import { Form, Button, message } from 'antd'
@@ -53,17 +53,17 @@ class AddReport extends React.Component {
   addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        window.echo('add report values', values);
-        return;
-        let param = toData(values)
-        api.createProj(param).then(result => {
-          this.props.router.replace('/app/projects/published')
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
-          })
-        })
+        const { proj, bduser, org } = values;
+        const body = {
+          bduser,
+          manager: getCurrentUser(),
+          org,
+          proj,
+          // 'isimportant':m.isimportant,
+          // 'bd_status': 1,
+        };
+        api.getUserSession()
+        .then(() => api.addOrgBD(body));
       }
     })
   }

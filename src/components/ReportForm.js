@@ -64,19 +64,19 @@ class ProjectBaseForm extends React.Component {
 
             <div>
               <div>本周工作</div>
-              <BasicFormItem label="机构" name="buyoutorg" >
+              <BasicFormItem label="机构" name="org" >
                 <SelectExistOrganization allowCreate formName="userform" />
               </BasicFormItem>
-              <BasicFormItem label="投资人" name="supportUser" valueType="number">
+              <BasicFormItem label="投资人" name="bduser" valueType="number">
                 <SelectExistUser />
               </BasicFormItem>
             </div>
 
             <div>
               <div>下周计划</div>
-              <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" whitespace>
+              {/* <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" whitespace>
                 <Input />
-              </BasicFormItem>
+              </BasicFormItem> */}
             </div>
           </div>
 
