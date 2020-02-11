@@ -9,7 +9,7 @@ import { i18n } from '../utils/util'
 import { Form, Button, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
-import ProjectBaseForm from '../components/ProjectBaseForm'
+import ReportForm from '../components/ReportForm'
 
 
 const actionStyle = {textAlign: 'center'}
@@ -19,7 +19,7 @@ const actionBtnStyle = {margin: '0 8px'}
 function onValuesChange(props, values) {
   console.log(values)
 }
-const AddProjectForm = Form.create({onValuesChange})(ProjectBaseForm)
+const AddReportForm = Form.create({onValuesChange})(ReportForm)
 
 
 function toData(formData) {
@@ -40,7 +40,7 @@ function toData(formData) {
 }
 
 
-class AddProject extends React.Component {
+class AddReport extends React.Component {
 
   constructor(props) {
     super(props)
@@ -50,7 +50,7 @@ class AddProject extends React.Component {
     this.props.router.goBack()
   }
 
-  addProject = () => {
+  addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
         let param = toData(values)
@@ -76,10 +76,10 @@ class AddProject extends React.Component {
     return(
       <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
         <div>
-          <AddProjectForm wrappedComponentRef={this.handleRef} />
+          <AddReportForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>{i18n('common.submit')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addReport}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
@@ -88,4 +88,4 @@ class AddProject extends React.Component {
 
 }
 
-export default connect()(withRouter(AddProject))
+export default connect()(withRouter(AddReport))
