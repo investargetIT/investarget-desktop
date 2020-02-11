@@ -74,7 +74,7 @@ class ProjectBaseForm extends React.Component {
 
             <div>
               <div>下周计划</div>
-              <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" required whitespace>
+              <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" whitespace>
                 <Input />
               </BasicFormItem>
             </div>
@@ -82,52 +82,6 @@ class ProjectBaseForm extends React.Component {
 
         </div>
 
-        <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
-          <TreeSelectTag />
-        </BasicFormItem>
-
-        <IndustryDynamicFormItem industry={this.props.industry} />
-
-        <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
-          <CascaderCountry size="large" />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
-          <SelectRole />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.transaction_type')} name="transactionType" required valueType="array">
-          <SelectTransactionType mode="multiple" />
-        </BasicFormItem>
-
-        <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
-          <SelectService mode="multiple" />
-        </BasicFormItem>
-
-        { hasPerm('proj.admin_addproj') ? 
-        <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
-           <SelectExistUser />
-        </BasicFormItem>
-        : null }
-
-        <div style={{textAlign: 'center'}}>
-          <div style={paraStyle}>
-            <FormItem style={{'display': 'inline'}}>
-              {
-                getFieldDecorator('isAgreed', {
-                  valuePropName: 'checked',
-                  rules: [{type: 'boolean'}, {required: true}, {validator: (rule, value, callback) => {
-                    if (value) { callback() } else { callback('Please check the agreement') }
-                  }}],
-                  initialValue: true,
-                })(
-                  <Checkbox><Link to="/app/agreement" target="_blank">{i18n('project.agreement')}</Link></Checkbox>
-                )
-              }
-            </FormItem>
-          </div>
-          <p style={paraStyle}>{i18n('project.agreement_tip')}</p>
-        </div>
       </Form>
     )
   }

@@ -53,6 +53,8 @@ class AddReport extends React.Component {
   addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
+        window.echo('add report values', values);
+        return;
         let param = toData(values)
         api.createProj(param).then(result => {
           this.props.router.replace('/app/projects/published')
