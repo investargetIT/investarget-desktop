@@ -70,10 +70,10 @@ class ProjectBaseForm extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <Form>
-        <div style={{ border: '1px solid #CCCCCC' }}>
-          <div style={{ backgroundColor: '#F8F8F8' }}>进行中项目工作汇报</div>
+        <div>
+          <div style={{ paddingLeft: 10, lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216' }}>进行中项目工作汇报</div>
 
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
 
             <div style={{ width: 200 }}>
               <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
@@ -84,37 +84,56 @@ class ProjectBaseForm extends React.Component {
             <div style={{ flex: 1 }}>
               <div>
                 <div>本周工作</div>
+
                 <div style={{ display: 'flex' }}>
+                  <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex' }}>
                       <div>机构：</div>
                       <div style={{ flex: 1 }}>
-                        <BasicFormItem label="" name="org" layout="formItemLayoutWithOutLabel" >
-                          <SelectExistOrganization allowCreate formName="userform" />
+                        <BasicFormItem name="org" layout>
+                          <SelectExistOrganization formName="userform" />
                         </BasicFormItem>
                       </div>
                     </div>
                   </div>
+
                   <div style={{ flex: 1 }}>
-                    <BasicFormItem label="投资人" name="bduser" valueType="number">
-                      <SelectExistUser />
-                    </BasicFormItem>
+                    <div style={{ display: 'flex' }}>
+                      <div>投资人：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="bduser" valueType="number" layout>
+                          <SelectExistUser />
+                        </BasicFormItem>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
+
                 <div style={{ display: 'flex' }}>
                   <div style={{ flex: 1 }}>
-                    <BasicFormItem label="其他" name="others" layout={formItemLayout}>
-                      <Input.TextArea />
-                    </BasicFormItem>
+                    <div style={{ display: 'flex' }}>
+                      <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                      <div>其他：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="others" layout>
+                          <Input.TextArea />
+                        </BasicFormItem>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
               <div>
                 <div>下周计划</div>
-                <BasicFormItem label="下周计划" name="next_plan" whitespace>
-                  <Input.TextArea />
-                </BasicFormItem>
+                <div style={{ marginLeft: 82 }}>
+                  <BasicFormItem name="next_plan" layout>
+                    <Input.TextArea />
+                  </BasicFormItem>
+                </div>
               </div>
             </div>
           </div>
