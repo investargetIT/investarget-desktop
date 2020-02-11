@@ -23,6 +23,8 @@ import {
   RadioTrueOrFalse,
   SelectService, 
   SelectExistUser, 
+  SelectExistProject,
+  SelectExistOrganization,
 } from './ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -54,23 +56,30 @@ class ProjectBaseForm extends React.Component {
       <Form>
         <div style={{ border: ' 1px solid #CCCCCC' }}>
           <div style={{ backgroundColor: '#F8F8F8' }}>进行中项目工作汇报</div>
+          
           <div>
-            <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean" initialValue={false}>
-              <RadioTrueOrFalse />
+            <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
+              <SelectExistProject />
             </BasicFormItem>
 
-            <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
-              <Input />
-            </BasicFormItem>
+            <div>
+              <div>本周工作</div>
+              <BasicFormItem label="机构" name="buyoutorg" >
+                <SelectExistOrganization allowCreate formName="userform" />
+              </BasicFormItem>
+              <BasicFormItem label="投资人" name="supportUser" valueType="number">
+                <SelectExistUser />
+              </BasicFormItem>
+            </div>
 
-            <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" required whitespace>
-              <Input />
-            </BasicFormItem>
-
-            <BasicFormItem label={i18n('project.real_name')} name="realname" required whitespace>
-              <Input />
-            </BasicFormItem>
+            <div>
+              <div>下周计划</div>
+              <BasicFormItem label={i18n('project.project_english_name')} name="projtitleE" required whitespace>
+                <Input />
+              </BasicFormItem>
+            </div>
           </div>
+
         </div>
 
         <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
