@@ -70,20 +70,28 @@ class ProjectBaseForm extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <Form>
-        <div>
-          <div style={{ paddingLeft: 10, lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216' }}>进行中项目工作汇报</div>
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
+            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加项目</div>
+          </div>
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
 
             <div style={{ width: 200 }}>
-              <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
+              <div style={{ textAlign: 'center' }}>
+                <span>选择已有项目</span>
+                <span>或</span>
+                <span>添加新项目</span>
+              </div>
+              <BasicFormItem name="proj" valueType="number" layout>
                 <SelectExistProject />
               </BasicFormItem>
             </div>
 
             <div style={{ flex: 1 }}>
               <div>
-                <div>本周工作</div>
+                <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>本周工作</div>
 
                 <div style={{ display: 'flex' }}>
                   <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
@@ -128,7 +136,7 @@ class ProjectBaseForm extends React.Component {
               </div>
 
               <div>
-                <div>下周计划</div>
+                <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
                 <div style={{ marginLeft: 82 }}>
                   <BasicFormItem name="next_plan" layout>
                     <Input.TextArea />
@@ -139,6 +147,57 @@ class ProjectBaseForm extends React.Component {
           </div>
 
         </div>
+
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
+            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加机构</div>
+          </div>
+
+          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+
+            <div style={{ width: 200 }}>
+              <div style={{ textAlign: 'center' }}>
+                <span>选择机构</span>
+              </div>
+              <BasicFormItem name="proj" valueType="number" layout>
+                <SelectExistProject />
+              </BasicFormItem>
+            </div>
+
+            <div style={{ flex: 1, marginLeft: 40 }}>
+              <ul>
+                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
+                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
+                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
+              </ul>
+              <BasicFormItem name="next_plan" layout>
+                    <Input.TextArea />
+                  </BasicFormItem>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
+          </div>
+          <BasicFormItem name="summary" layout>
+            <Input.TextArea />
+          </BasicFormItem>
+        </div>
+
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
+          </div>
+          <BasicFormItem name="suggestion" layout>
+            <Input.TextArea />
+          </BasicFormItem>
+        </div>
+
       </Form>
     )
   }
