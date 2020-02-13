@@ -135,7 +135,7 @@ class ProjectBaseForm extends React.Component {
 
     getFieldDecorator('proj_1_orgbd_keys', { initialValue: [] });
     const proj1OrgBDKeys = getFieldValue('proj_1_orgbd_keys');
-    const proj1OrgBDFormItems = proj1OrgBDKeys.map(m => (
+    const proj1OrgBDFormItems = proj1OrgBDKeys.map((m, i) => (
       <div key={m} style={{ display: 'flex' }}>
 
       <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
@@ -144,7 +144,7 @@ class ProjectBaseForm extends React.Component {
         <div style={{ display: 'flex' }}>
           <div>机构：</div>
           <div style={{ flex: 1 }}>
-            <BasicFormItem name="org1" layout valueType="number">
+            <BasicFormItem name={`proj_existing_org_${i}`} layout valueType="number">
               <SelectExistOrganization />
             </BasicFormItem>
           </div>
@@ -155,7 +155,7 @@ class ProjectBaseForm extends React.Component {
         <div style={{ display: 'flex' }}>
           <div>投资人：</div>
           <div style={{ flex: 1 }}>
-            <BasicFormItem name="bduser" valueType="number" layout>
+            <BasicFormItem name={`proj_existing_bduser_${i}`} valueType="number" layout>
               <SelectExistUser />
             </BasicFormItem>
           </div>
@@ -166,7 +166,7 @@ class ProjectBaseForm extends React.Component {
         <div style={{ display: 'flex' }}>
           <div>状态：</div>
           <div style={{ flex: 1 }}>
-            <BasicFormItem name="bdstatus" valueType="number" layout>
+            <BasicFormItem name={`proj_existing_bdstatus_${i}`} valueType="number" layout>
               <SelectNewBDStatus />
             </BasicFormItem>
           </div>
