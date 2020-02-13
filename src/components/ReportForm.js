@@ -156,24 +156,43 @@ class ProjectBaseForm extends React.Component {
 
           <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
 
-            <div style={{ width: 200 }}>
-              <div style={{ textAlign: 'center' }}>
-                <span>选择机构</span>
+            <div style={{ width: 200, paddingLeft: 8 }}>测试机构的机构名称</div>
+
+            <div style={{ flex: 1, marginLeft: 40 }}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 20, fontSize: 16 }}>•</div>
+                <div style={{ flex: 1 }}>测试第一条之前添加的机构备注</div>
               </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 20, fontSize: 16 }}>•</div>
+                <div style={{ flex: 1 }}>测试第二条之前添加的机构备注</div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 20, fontSize: 16 }}>•</div>
+                <div style={{ flex: 1 }}>
+                  <BasicFormItem name="next_plan" layout>
+                    <Input.TextArea placeholder="添加新的机构备注" />
+                  </BasicFormItem>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+         <hr style={{ borderTop: '2px dashed #ccc' }} /> 
+
+          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+
+            <div style={{ width: 200 }}>
               <BasicFormItem name="proj" valueType="number" layout>
-                <SelectExistProject />
+                <SelectExistOrganization placeholder="选择机构" />
               </BasicFormItem>
             </div>
 
             <div style={{ flex: 1, marginLeft: 40 }}>
-              <ul>
-                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
-                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
-                <li style={{ listStyle: 'disc' }}>测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是，测试数据，如果是很长也没关系呀！我是</li>
-              </ul>
               <BasicFormItem name="next_plan" layout>
-                    <Input.TextArea />
-                  </BasicFormItem>
+                <Input.TextArea placeholder="机构备注" />
+              </BasicFormItem>
             </div>
 
           </div>
