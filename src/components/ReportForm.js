@@ -91,8 +91,8 @@ class ProjectBaseForm extends React.Component {
         <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name="proj" valueType="number" layout>
-              <SelectExistOrganization placeholder="选择机构" />
+            <BasicFormItem name="org" layout>
+              <SelectExistOrganization allCreate placeholder="选择机构" formName="userform" />
             </BasicFormItem>
           </div>
 
@@ -108,7 +108,7 @@ class ProjectBaseForm extends React.Component {
     return (
       <Form>
         <div style={{ marginBottom: 40 }}>
-          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
             <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加项目</div>
           </div>
@@ -162,8 +162,8 @@ class ProjectBaseForm extends React.Component {
                     <div style={{ display: 'flex' }}>
                       <div>机构：</div>
                       <div style={{ flex: 1 }}>
-                        <BasicFormItem name="org" layout>
-                          <SelectExistOrganization formName="userform" />
+                        <BasicFormItem name="org1" layout valueType="number">
+                          <SelectExistOrganization />
                         </BasicFormItem>
                       </div>
                     </div>
@@ -290,7 +290,7 @@ class ProjectBaseForm extends React.Component {
         </div>
 
         <div style={{ marginBottom: 40 }}>
-          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
             <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addOrgFormItem}>添加机构</div>
           </div>
@@ -325,7 +325,7 @@ class ProjectBaseForm extends React.Component {
         </div>
 
         <div style={{ marginBottom: 40 }}>
-          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
           <BasicFormItem name="summary" layout>
@@ -334,7 +334,7 @@ class ProjectBaseForm extends React.Component {
         </div>
 
         <div style={{ marginBottom: 40 }}>
-          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
           <BasicFormItem name="suggestion" layout>
