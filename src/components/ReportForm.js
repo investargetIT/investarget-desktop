@@ -112,20 +112,20 @@ class ProjectBaseForm extends React.Component {
 
     getFieldDecorator('org_keys', { initialValue: [] });
     const orgKeys = getFieldValue('org_keys');
-    const orgFormItems = orgKeys.map(m => (
+    const orgFormItems = orgKeys.map((m, i) => (
       <div key={m}>
         <hr style={{ borderTop: '2px dashed #ccc' }} />
         <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name="org" layout>
-              <SelectExistOrganization allCreate placeholder="选择机构" formName="userform" />
+            <BasicFormItem name={`org_new_org_${i}`} layout valueType="number">
+              <SelectExistOrganization placeholder="选择机构" />
             </BasicFormItem>
           </div>
 
           <div style={{ flex: 1, marginLeft: 40 }}>
-            <BasicFormItem name="next_plan" layout>
-              <Input.TextArea placeholder="机构备注" />
+            <BasicFormItem name={`org_new_remark_${i}`} layout>
+              <Input.TextArea autosize={{ minRows: 4 }} placeholder="机构备注" />
             </BasicFormItem>
           </div>
 
@@ -380,7 +380,7 @@ class ProjectBaseForm extends React.Component {
                 <div style={{ width: 20, fontSize: 16 }}>•</div>
                 <div style={{ flex: 1 }}>
                   <BasicFormItem name="next_plan" layout>
-                    <Input.TextArea placeholder="添加新的机构备注" />
+                    <Input.TextArea autosize={{ minRows: 4 }} placeholder="添加新的机构备注" />
                   </BasicFormItem>
                 </div>
               </div>
@@ -397,7 +397,7 @@ class ProjectBaseForm extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
           <BasicFormItem name="summary" layout>
-            <Input.TextArea />
+            <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
           </BasicFormItem>
         </div>
 
@@ -406,7 +406,7 @@ class ProjectBaseForm extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
           <BasicFormItem name="suggestion" layout>
-            <Input.TextArea />
+            <Input.TextArea autosize={{ minRows: 6 }} placeholder="其他事项/工作建议（如果有）" />
           </BasicFormItem>
         </div>
 
