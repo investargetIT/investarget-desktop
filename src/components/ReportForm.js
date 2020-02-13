@@ -47,6 +47,7 @@ const formItemLayoutWithOutLabel = {
   }
 }
 
+let uuid = 0;
 class ProjectBaseForm extends React.Component {
 
   static childContextTypes = {
@@ -66,8 +67,43 @@ class ProjectBaseForm extends React.Component {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
   }
 
+  addOrgFormItem = () => {
+    uuid++;
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue('org_keys');
+    const nextKeys = keys.concat(uuid);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    form.setFieldsValue({
+      org_keys: nextKeys,
+    });
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    getFieldDecorator('org_keys', { initialValue: [] });
+    const orgKeys = getFieldValue('org_keys');
+    const orgFormItems = orgKeys.map(m => (
+      <div key={m}>
+        <hr style={{ borderTop: '2px dashed #ccc' }} />
+        <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+
+          <div style={{ width: 200 }}>
+            <BasicFormItem name="proj" valueType="number" layout>
+              <SelectExistOrganization placeholder="选择机构" />
+            </BasicFormItem>
+          </div>
+
+          <div style={{ flex: 1, marginLeft: 40 }}>
+            <BasicFormItem name="next_plan" layout>
+              <Input.TextArea placeholder="机构备注" />
+            </BasicFormItem>
+          </div>
+
+        </div>
+      </div>
+    ));
     return (
       <Form>
         <div style={{ marginBottom: 40 }}>
@@ -151,7 +187,7 @@ class ProjectBaseForm extends React.Component {
         <div style={{ marginBottom: 40 }}>
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: 'rgb(225, 239, 216', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
-            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加机构</div>
+            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addOrgFormItem}>添加机构</div>
           </div>
 
           <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
@@ -179,23 +215,7 @@ class ProjectBaseForm extends React.Component {
 
           </div>
 
-         <hr style={{ borderTop: '2px dashed #ccc' }} /> 
-
-          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
-
-            <div style={{ width: 200 }}>
-              <BasicFormItem name="proj" valueType="number" layout>
-                <SelectExistOrganization placeholder="选择机构" />
-              </BasicFormItem>
-            </div>
-
-            <div style={{ flex: 1, marginLeft: 40 }}>
-              <BasicFormItem name="next_plan" layout>
-                <Input.TextArea placeholder="机构备注" />
-              </BasicFormItem>
-            </div>
-
-          </div>
+          {orgFormItems}
 
         </div>
 
