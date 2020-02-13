@@ -81,8 +81,21 @@ class ProjectBaseForm extends React.Component {
     });
   }
 
+  addProjOrgBdFormItem = (key) => {
+    const { form } = this.props;
+    // can use data-binding to get
+    const keys = form.getFieldValue(key);
+    const nextKeys = keys.concat(keys.length + 1);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    const obj = {};
+    obj[key] = nextKeys;
+    form.setFieldsValue(obj);
+  }
+
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
+
     getFieldDecorator('org_keys', { initialValue: [] });
     const orgKeys = getFieldValue('org_keys');
     const orgFormItems = orgKeys.map(m => (
@@ -105,6 +118,49 @@ class ProjectBaseForm extends React.Component {
         </div>
       </div>
     ));
+
+    getFieldDecorator('proj_1_orgbd_keys', { initialValue: [] });
+    const proj1OrgBDKeys = getFieldValue('proj_1_orgbd_keys');
+    const proj1OrgBDFormItems = proj1OrgBDKeys.map(m => (
+      <div key={m} style={{ display: 'flex' }}>
+
+      <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex' }}>
+          <div>机构：</div>
+          <div style={{ flex: 1 }}>
+            <BasicFormItem name="org1" layout valueType="number">
+              <SelectExistOrganization />
+            </BasicFormItem>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex' }}>
+          <div>投资人：</div>
+          <div style={{ flex: 1 }}>
+            <BasicFormItem name="bduser" valueType="number" layout>
+              <SelectExistUser />
+            </BasicFormItem>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex' }}>
+          <div>状态：</div>
+          <div style={{ flex: 1 }}>
+            <BasicFormItem name="bdstatus" valueType="number" layout>
+              <SelectNewBDStatus />
+            </BasicFormItem>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    ));
     return (
       <Form>
         <div style={{ marginBottom: 40 }}>
@@ -119,7 +175,10 @@ class ProjectBaseForm extends React.Component {
 
             <div style={{ flex: 1 }}>
               <div>
-                <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>本周工作</div>
+                <div style={{ lineHeight: 3 }}>
+                  <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
+                  <span onClick={() => this.addProjOrgBdFormItem('proj_1_orgbd_keys')} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
+                </div>
 
                 <div style={{ display: 'flex' }}>
 
@@ -192,6 +251,8 @@ class ProjectBaseForm extends React.Component {
                   </div>
 
                 </div>
+
+                {proj1OrgBDFormItems}
 
                 <div style={{ display: 'flex' }}>
                   <div style={{ flex: 1 }}>
