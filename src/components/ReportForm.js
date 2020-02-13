@@ -25,6 +25,7 @@ import {
   SelectExistUser, 
   SelectExistProject,
   SelectExistOrganization,
+  SelectNewBDStatus,
 } from './ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -114,14 +115,118 @@ class ProjectBaseForm extends React.Component {
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
 
-            <div style={{ width: 200 }}>
-              <div style={{ textAlign: 'center' }}>
-                <span>选择已有项目</span>
-                <span>或</span>
-                <span>添加新项目</span>
+            <div style={{ width: 200 }}>测试项目</div>
+
+            <div style={{ flex: 1 }}>
+              <div>
+                <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>本周工作</div>
+
+                <div style={{ display: 'flex' }}>
+
+                  <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>机构：</div>
+                      <div style={{ flex: 1 }}>
+                        测试机构
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>投资人：</div>
+                      <div style={{ flex: 1 }}>
+                        测试投资人
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>状态：</div>
+                      <div style={{ flex: 1 }}>
+                        已见面
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{ display: 'flex' }}>
+
+                  <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>机构：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="org" layout>
+                          <SelectExistOrganization formName="userform" />
+                        </BasicFormItem>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>投资人：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="bduser" valueType="number" layout>
+                          <SelectExistUser />
+                        </BasicFormItem>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div>状态：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="bdstatus" valueType="number" layout>
+                          <SelectNewBDStatus />
+                        </BasicFormItem>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{ display: 'flex' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex' }}>
+                      <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                      <div>其他：</div>
+                      <div style={{ flex: 1 }}>
+                        <BasicFormItem name="others" layout>
+                          <Input.TextArea />
+                        </BasicFormItem>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
+              <div>
+                <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
+                <div style={{ marginLeft: 82 }}>
+                  <BasicFormItem name="next_plan" layout>
+                    <Input.TextArea />
+                  </BasicFormItem>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr style={{ borderTop: '2px dashed #ccc' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+
+            <div style={{ width: 200 }}>
               <BasicFormItem name="proj" valueType="number" layout>
-                <SelectExistProject />
+                <SelectExistProject placeholder="选择项目" />
               </BasicFormItem>
             </div>
 
