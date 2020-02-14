@@ -1,7 +1,7 @@
 import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import { withRouter } from 'dva/router'
 import { handleError, time, i18n, getCurrentUser, getUserInfo } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
@@ -83,6 +83,12 @@ class Schedule extends React.Component {
   handleClickEvent = (id, e) => {
     e.stopPropagation()
     const event = this.state.list.filter(item => item.id == id)[0] || {}
+
+    if (event.type === 5) {
+      this.props.router.push('/app/report/add');
+      return;
+    }
+
     this.setState({visibleEvent:true, event })
     this.eventEl = e.target
     this.eventEl.classList.add('event-selected')
@@ -124,7 +130,15 @@ class Schedule extends React.Component {
     }));
     Promise.all(requestThreeMonthsSchedule)
     .then(result => {
-      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
+
+      const reportEvent = {
+        id: 'report-1',
+        scheduledtime: '2020-02-21',
+        type: 5,
+        comments: '简报',
+      };
+
+      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), [reportEvent]);
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       })
@@ -499,7 +513,7 @@ class Schedule extends React.Component {
 
 
 
-export default Schedule
+export default withRouter(Schedule);
 
 
 function toData(formData) {
@@ -514,7 +528,6 @@ function toData(formData) {
 }
 
 function toFormData(data) {
-  window.echo('dddata', data);
   var formData = {
     comments: data.comments,
     scheduledtime: data.scheduledtime && moment(data.scheduledtime),
