@@ -25,7 +25,7 @@ function toData(formData) {
   }
   formData.country = formData.country.value;
   if (!hasPerm('BD.manageProjectBD')) {
-    formData.manager = getCurrentUser();
+    // formData.manager = getCurrentUser();
     formData.contractors = getCurrentUser();
   }
   return formData
