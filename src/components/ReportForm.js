@@ -50,7 +50,7 @@ const formItemLayoutWithOutLabel = {
 
 let uuid = 0;
 let ppid = 0;
-class ProjectBaseForm extends React.Component {
+class ReportForm extends React.Component {
 
   static childContextTypes = {
     form: PropTypes.object
@@ -75,7 +75,7 @@ class ProjectBaseForm extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] });
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getOrgBd();
     this.getOrgRemark();
   }
@@ -384,7 +384,9 @@ class ProjectBaseForm extends React.Component {
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex' }}>
                         <div>状态：</div>
-                        <div style={{ flex: 1 }}>已见面</div>
+                        <div style={{ flex: 1 }}>
+                          {m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
+                        </div>
                       </div>
                     </div>
 
@@ -508,9 +510,9 @@ class ProjectBaseForm extends React.Component {
 
 }
 
-function mapStateToPropsIndustry(state) {
-  const { industry } = state.app
-  return { industry }
+function mapStateToProps(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres }
 }
 
-export default connect(mapStateToPropsIndustry)(ProjectBaseForm)
+export default connect(mapStateToProps)(ReportForm)
