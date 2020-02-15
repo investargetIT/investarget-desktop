@@ -404,7 +404,7 @@ class ReportForm extends React.Component {
                       <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
                       <div>其他：</div>
                       <div style={{ flex: 1 }}>
-                        <BasicFormItem name="others" layout>
+                        <BasicFormItem name={`proj_existing_other_${i}`} layout>
                           <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
                         </BasicFormItem>
                       </div>
@@ -417,7 +417,7 @@ class ReportForm extends React.Component {
               <div>
                 <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
                 <div style={{ marginLeft: 82 }}>
-                  <BasicFormItem name="next_plan" layout>
+                  <BasicFormItem name={`proj_exising_next_plan_${i}`} layout>
                     <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
                   </BasicFormItem>
                 </div>
