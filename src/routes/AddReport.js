@@ -65,6 +65,8 @@ class AddReport extends React.Component {
         window.echo('values', values);
         const result = this.getExistingOrgBdInfo(values);
         window.echo('getExistingOrgBdInfo', result);
+        const newOrgBd = this.getNewOrgBdInfo(values);
+        window.echo('get new orgbd info', newOrgBd);
         return;
         const { proj, bduser, org } = values;
         const body = {
@@ -94,6 +96,43 @@ class AddReport extends React.Component {
         orgBdInfos.push(o);
       }
     }
+    const projIds = orgBdInfos.map(m => m.proj);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueProjIds.forEach(e => {
+      const thisProj = orgBdInfos.filter(f => f.proj === e);
+      const indexIds = thisProj.map(m => m.index);
+      const uniqueKeyIds = indexIds.filter((v, i, a) => a.indexOf(v) === i);
+      uniqueKeyIds.forEach(e1 => {
+        const thisProjItem = thisProj.filter(f => f.index === e1);
+        const proj = e;
+        const org = thisProjItem.filter(f => f.key === 'org')[0].value;
+        const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
+        const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
+        result.push({ proj, org, bduser, bdstatus });
+      })
+    });
+    return result;
+  }
+
+  getNewOrgBdInfo = values => {
+    let orgBdInfos = [];
+    for (const property in values) {
+      if (property.startsWith('neworgbd')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const projIndex = parseInt(infos[1]);
+        const projValueKey = `newproj_${projIndex}`;
+        const proj = values[projValueKey];
+        const key = infos[2];
+        const index = `${infos[1]}_${infos[3]}`;
+        const o = { proj, key, index, value };
+        orgBdInfos.push(o);
+      }
+    }
+
+    orgBdInfos = orgBdInfos.filter(f => f.proj);
+
     const projIds = orgBdInfos.map(m => m.proj);
     const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
     const result = [];
