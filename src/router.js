@@ -70,6 +70,7 @@ import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 import OrgExportList from './routes/OrgExportList';
 import OrgBDProjList from './routes/OrgBDProjList';
 import AddReport from './routes/AddReport';
+import ReportList from './routes/ReportList';
 
 function RouterConfig({ history }) {
   return (
@@ -142,6 +143,7 @@ function RouterConfig({ history }) {
       <Route path="/app/org/export" component={OrgExportList} />
       <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
       <Route path="/app/report/add" component={AddReport} />
+      <Route path="/app/report/list" component={ReportList} />
     </Router>
   )
 }
