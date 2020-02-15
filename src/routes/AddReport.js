@@ -63,6 +63,8 @@ class AddReport extends React.Component {
     this.form.validateFields((err, values) => {
       if (!err) {
         window.echo('values', values);
+        const result = this.getExistingOrgBdInfo(values);
+        window.echo('getExistingOrgBdInfo', result);
         return;
         const { proj, bduser, org } = values;
         const body = {
@@ -77,6 +79,38 @@ class AddReport extends React.Component {
         .then(() => api.addOrgBD(body));
       }
     })
+  }
+
+  getExistingOrgBdInfo = values => {
+    const orgBdInfos = [];
+    for (const property in values) {
+      const value = values[property];
+      if (property.startsWith('orgbd')) {
+        const infos = property.split('_');
+        const proj = parseInt(infos[1]);
+        const key = infos[2];
+        const index = infos[3];
+        const o = { proj, key, index, value };
+        orgBdInfos.push(o);
+      }
+    }
+    const projIds = orgBdInfos.map(m => m.proj);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueProjIds.forEach(e => {
+      const thisProj = orgBdInfos.filter(f => f.proj === e);
+      const indexIds = thisProj.map(m => m.index);
+      const uniqueKeyIds = indexIds.filter((v, i, a) => a.indexOf(v) === i);
+      uniqueKeyIds.forEach(e1 => {
+        const thisProjItem = thisProj.filter(f => f.index === e1);
+        const proj = e;
+        const org = thisProjItem.filter(f => f.key === 'org')[0].value;
+        const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
+        const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
+        result.push({ proj, org, bduser, bdstatus });
+      })
+    });
+    return result;
   }
 
   handleRef = (inst) => {
