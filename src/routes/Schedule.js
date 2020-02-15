@@ -138,7 +138,10 @@ class Schedule extends React.Component {
         comments: '简报',
       };
 
-      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), [reportEvent]);
+      let initialValue = [];
+      // initialValue = [reportEvent];
+
+      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), initialValue);
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       })
