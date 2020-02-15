@@ -62,25 +62,32 @@ class AddReport extends React.Component {
   addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        window.echo('values', values);
-        const result = this.getExistingOrgBdInfo(values);
-        window.echo('getExistingOrgBdInfo', result);
+        const existingOrgBd = this.getExistingOrgBdInfo(values);
         const newOrgBd = this.getNewOrgBdInfo(values);
-        window.echo('get new orgbd info', newOrgBd);
-        return;
-        const { proj, bduser, org } = values;
-        const body = {
-          bduser,
-          manager: getCurrentUser(),
-          org,
-          proj,
-          // 'isimportant':m.isimportant,
-          // 'bd_status': 1,
-        };
-        api.getUserSession()
-        .then(() => api.addOrgBD(body));
+        const allOrgBds = existingOrgBd.concat(newOrgBd);
+        this.addOrgBd(allOrgBds);
       }
     })
+  }
+
+  addOrgBd = async (data) => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      await api.getUserSession();
+      const { bduser, org, proj, bdstatus: bd_status } = element;
+      const body = {
+        bduser,
+        org,
+        proj,
+        bd_status,
+        manager: getCurrentUser(),
+      };
+      try {
+        await api.addOrgBD(body);
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 
   getExistingOrgBdInfo = values => {
