@@ -301,10 +301,11 @@ class ReportForm extends React.Component {
 
     const projExistingOrgBds = this.state.projOrgBds.map((m, i) => {
 
-      getFieldDecorator('proj_1_orgbd_keys', { initialValue: [] });
-      const proj1OrgBDKeys = getFieldValue('proj_1_orgbd_keys');
-      const proj1OrgBDFormItems = proj1OrgBDKeys.map((m, i) => (
-        <div key={m} style={{ display: 'flex' }}>
+      const newOrgBdKey = `proj_existing_${i}`;
+      getFieldDecorator(newOrgBdKey, { initialValue: [] });
+      const proj1OrgBDKeys = getFieldValue(newOrgBdKey);
+      const proj1OrgBDFormItems = proj1OrgBDKeys.map((m1, i1) => (
+        <div key={m1} style={{ display: 'flex' }}>
 
           <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
 
@@ -312,7 +313,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>机构：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_org_${i}`} layout valueType="number">
+                <BasicFormItem name={`proj_existing_${m.proj.id}_org_${i1}`} layout valueType="number">
                   <SelectExistOrganization />
                 </BasicFormItem>
               </div>
@@ -323,7 +324,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_bduser_${i}`} valueType="number" layout>
+                <BasicFormItem name={`proj_existing_${m.proj.id}_bduser_${i1}`} valueType="number" layout>
                   <SelectExistUser />
                 </BasicFormItem>
               </div>
@@ -334,7 +335,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>状态：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_bdstatus_${i}`} valueType="number" layout>
+                <BasicFormItem name={`proj_existing_${m.proj.id}_bdstatus_${i1}`} valueType="number" layout>
                   <SelectNewBDStatus />
                 </BasicFormItem>
               </div>
@@ -342,7 +343,7 @@ class ReportForm extends React.Component {
           </div>
 
           <div style={{ width: 50, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('proj_1_orgbd_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem(newOrgBdKey, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
@@ -361,7 +362,7 @@ class ReportForm extends React.Component {
               <div>
                 <div style={{ lineHeight: 3 }}>
                   <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
-                  <span onClick={() => this.addProjOrgBdFormItem('proj_1_orgbd_keys')} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
+                  <span onClick={() => this.addProjOrgBdFormItem(newOrgBdKey)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
                 </div>
 
                 {m.orgBds.map(m => (
