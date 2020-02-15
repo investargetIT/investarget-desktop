@@ -62,6 +62,8 @@ class AddReport extends React.Component {
   addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
+        window.echo('values', values);
+        return;
         const { proj, bduser, org } = values;
         const body = {
           bduser,

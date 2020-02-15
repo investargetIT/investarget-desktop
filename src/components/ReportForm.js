@@ -115,7 +115,6 @@ class ReportForm extends React.Component {
       const bds = orgBds.filter(f => f.proj.id === m);
       return { proj, orgBds: bds };
     });
-    window.echo('proj Org bds', projOrgBds);
     this.setState({ projOrgBds });
   }
 
@@ -249,7 +248,7 @@ class ReportForm extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name="proj" valueType="number" layout>
+            <BasicFormItem name={`proj_new_proj_${i}`} valueType="number" layout>
               <SelectExistProject placeholder="选择项目" />
             </BasicFormItem>
           </div>
