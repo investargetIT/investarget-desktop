@@ -4,11 +4,11 @@ import { i18n, getCurrentUser, hasPerm } from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
-
-import { Form, Input, Radio, Checkbox } from 'antd'
+import moment from 'moment';
+import { Form, Input, Radio, Checkbox, DatePicker } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
-
+const { RangePicker } = DatePicker;
 import {
   BasicFormItem,
   IndustryDynamicFormItem,
@@ -296,6 +296,15 @@ class ProjectBaseForm extends React.Component {
 
     return (
       <Form>
+
+        <div style={{ textAlign: 'right', marginBottom: 20 }}>
+          <RangePicker
+            size="large"
+            defaultValue={[moment('2015-06-06'), moment('2015-06-06')]}
+            disabled
+          />
+        </div>
+
         <div style={{ marginBottom: 40 }}>
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
