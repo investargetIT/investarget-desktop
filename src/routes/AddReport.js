@@ -62,12 +62,58 @@ class AddReport extends React.Component {
   addReport = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
+        window.echo('values', values);
+
         const existingOrgBd = this.getExistingOrgBdInfo(values);
         const newOrgBd = this.getNewOrgBdInfo(values);
         const allOrgBds = existingOrgBd.concat(newOrgBd);
         this.addOrgBd(allOrgBds);
+        
+        const existingOrgRemark = this.getExistingOrgRemark(values);
+        const newOrgRemark = this.getNewOrgRemark(values);
+        const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
+        this.addOrgRemark(allOrgRemarks);
       }
     })
+  }
+
+  addOrgRemark = data => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      api.addOrgRemark(element);
+    }
+  }
+
+  getNewOrgRemark = values => {
+    let result = [];
+    for (const property in values) {
+      if (property.startsWith('org_new_remark')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const orgIndex = parseInt(infos[3]);
+        const orgValueKey = `org_new_org_${orgIndex}`;
+        const org = values[orgValueKey];
+        const o = { org, remark: value };
+        result.push(o);
+      }
+    }
+    result = result.filter(f => f.org && f.remark);
+    return result;
+  }
+
+  getExistingOrgRemark = values => {
+    let result = [];
+    for (const property in values) {
+      const value = values[property];
+      if (property.startsWith('org_existing')) {
+        const infos = property.split('_');
+        const org = parseInt(infos[2]);
+        const o = { org, remark: value };
+        result.push(o);
+      }
+    }
+    result = result.filter(f => f.org && f.remark);
+    return result;
   }
 
   addOrgBd = async (data) => {
