@@ -82,6 +82,14 @@ class ProjectBaseForm extends React.Component {
     });
   }
 
+  removeOrgFormItem = (k) => {
+    const { form } = this.props;
+    const keys = form.getFieldValue('org_keys');
+    form.setFieldsValue({
+      org_keys: keys.filter(key => key !== k),
+    });
+  }
+
   addProjFormItem = () => {
     ppid++;
     const { form } = this.props;
@@ -127,6 +135,10 @@ class ProjectBaseForm extends React.Component {
             <BasicFormItem name={`org_new_remark_${i}`} layout>
               <Input.TextArea autosize={{ minRows: 4 }} placeholder="机构备注" />
             </BasicFormItem>
+          </div>
+
+          <div style={{ width: 100, textAlign: 'center' }}>
+            <img onClick={() => this.removeOrgFormItem(m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
