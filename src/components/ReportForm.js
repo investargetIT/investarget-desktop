@@ -66,6 +66,7 @@ class ProjectBaseForm extends React.Component {
 
     this.state = {
       orgRemarks: [],
+      projOrgBds: [],
     };
   }
 
@@ -95,17 +96,27 @@ class ProjectBaseForm extends React.Component {
       const orgRemarks = remarks.filter(f => f.org === m.id);
       return { ...m, remarks: orgRemarks };
     });
-    window.echo('org with remarks', orgWithRemarks);
     this.setState({ orgRemarks: orgWithRemarks });
   }
 
-  getOrgBd = () => {
+  getOrgBd = async () => {
     const manager = getCurrentUser();
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
     const params = { manager, stimeM, etimeM, page_size };
-    api.getOrgBdList(params);
+    const res = await api.getOrgBdList(params);
+    const { data: orgBds } = res.data;
+    const projs = orgBds.map(m => m.proj);
+    const projIds = projs.map(m => m.id);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const projOrgBds = uniqueProjIds.map(m => {
+      const proj = projs.filter(f => f.id === m)[0];
+      const bds = orgBds.filter(f => f.proj.id === m);
+      return { proj, orgBds: bds };
+    });
+    window.echo('proj Org bds', projOrgBds);
+    this.setState({ projOrgBds });
   }
 
   addOrgFormItem = () => {
