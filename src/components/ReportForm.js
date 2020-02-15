@@ -426,35 +426,41 @@ class ProjectBaseForm extends React.Component {
         </div>
 
         <div style={{ marginBottom: 40 }}>
+
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
             <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addOrgFormItem}>添加机构</div>
           </div>
 
-          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+          {this.state.orgRemarks.map((m, i) => (
+            <div key={m.id}>
 
-            <div style={{ width: 200, paddingLeft: 8 }}>测试机构的机构名称</div>
+              {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
 
-            <div style={{ flex: 1, marginLeft: 40 }}>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: 20, fontSize: 16 }}>•</div>
-                <div style={{ flex: 1 }}>测试第一条之前添加的机构备注</div>
-              </div>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: 20, fontSize: 16 }}>•</div>
-                <div style={{ flex: 1 }}>测试第二条之前添加的机构备注</div>
-              </div>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: 20, fontSize: 16 }}>•</div>
-                <div style={{ flex: 1 }}>
-                  <BasicFormItem name="next_plan" layout>
-                    <Input.TextArea autosize={{ minRows: 4 }} placeholder="添加新的机构备注" />
-                  </BasicFormItem>
+              <div key={m.id} style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+
+                <div style={{ width: 200, paddingLeft: 8 }}>{m.orgname}</div>
+
+                <div style={{ flex: 1, marginLeft: 40 }}>
+                  {m.remarks.map(m => (
+                    <div key={m.id} style={{ display: 'flex' }}>
+                      <div style={{ width: 20, fontSize: 16 }}>•</div>
+                      <div style={{ flex: 1 }}>{m.remark}</div>
+                    </div>
+                  ))}
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ width: 20, fontSize: 16 }}>•</div>
+                    <div style={{ flex: 1 }}>
+                      <BasicFormItem name={`org_existing_${m.id}`} layout>
+                        <Input.TextArea autosize={{ minRows: 4 }} placeholder="添加新的机构备注" />
+                      </BasicFormItem>
+                    </div>
+                  </div>
                 </div>
+
               </div>
             </div>
-
-          </div>
+          ))}
 
           {orgFormItems}
 
