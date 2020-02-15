@@ -13,7 +13,7 @@ import {
   BasicFormItem,
   IndustryDynamicFormItem,
 } from './Form'
-
+import * as api from '../api';
 import {
   TreeSelectTag,
   SelectRole,
@@ -59,6 +59,10 @@ class ProjectBaseForm extends React.Component {
   constructor(props) {
     super(props)
     window.form = props.form
+    const time = this.props.form.getFieldValue('time');
+    const [ start, end ] = time;
+    this.startDate = start.format('YYYY-MM-DD');
+    this.endDate = end.format('YYYY-MM-DD');
   }
 
   getChildContext() {
@@ -66,7 +70,27 @@ class ProjectBaseForm extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] });
+    this.getOrgRemark();
+    this.getOrgBd();
+  }
+
+  getOrgRemark = () => {
+    const createuser = getCurrentUser();
+    const stimeM = this.startDate;
+    const etimeM = this.endDate;
+    const page_size = 1000;
+    const params = { createuser, stimeM, etimeM, page_size };
+    api.getOrgRemark(params);
+  }
+
+  getOrgBd = () => {
+    const manager = getCurrentUser();
+    const stimeM = this.startDate;
+    const etimeM = this.endDate;
+    const page_size = 1000;
+    const params = { manager, stimeM, etimeM, page_size };
+    api.getOrgBdList(params);
   }
 
   addOrgFormItem = () => {
