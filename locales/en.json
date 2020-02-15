@@ -33,7 +33,8 @@
     "dashboard": "Dashboard",
     "project_dataroom": "Project Dataroom",
     "list_organization": "Organization List",
-    "exportexcel_organization": "Export List"
+    "exportexcel_organization": "Export List",
+    "weekly_report": "Weekly Report"
   },
   "account": {
     "login": "Login",
