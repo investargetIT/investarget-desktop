@@ -297,12 +297,10 @@ class ProjectBaseForm extends React.Component {
     return (
       <Form>
 
-        <div style={{ textAlign: 'right', marginBottom: 20 }}>
-          <RangePicker
-            size="large"
-            defaultValue={[moment('2015-06-06'), moment('2015-06-06')]}
-            disabled
-          />
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <BasicFormItem name="time" valueType="array" layout>
+            <RangePicker disabled />
+          </BasicFormItem>
         </div>
 
         <div style={{ marginBottom: 40 }}>

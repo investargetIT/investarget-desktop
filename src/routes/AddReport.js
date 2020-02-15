@@ -4,7 +4,7 @@ import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
 import { i18n, getCurrentUser } from '../utils/util'
-
+import moment from 'moment';
 
 import { Form, Button, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -19,7 +19,10 @@ const actionBtnStyle = {margin: '0 8px'}
 function onValuesChange(props, values) {
   console.log(values)
 }
-const AddReportForm = Form.create({onValuesChange})(ReportForm)
+function mapPropsToFields(props) {
+  return props.data
+}
+const AddReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
 
 
 function toData(formData) {
@@ -44,6 +47,12 @@ class AddReport extends React.Component {
 
   constructor(props) {
     super(props)
+
+    this.initialFormData = {
+      time: {
+        value: [moment('2011-02-02'), moment('2018-01-03')]
+      }
+    };
   }
 
   goBack = () => {
@@ -78,7 +87,7 @@ class AddReport extends React.Component {
     return(
       <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
         <div>
-          <AddReportForm wrappedComponentRef={this.handleRef} />
+          <AddReportForm wrappedComponentRef={this.handleRef} data={this.initialFormData} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addReport}>{i18n('common.submit')}</Button>
