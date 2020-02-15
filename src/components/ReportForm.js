@@ -211,7 +211,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>机构：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_new_org_${i}_${i1}`} layout valueType="number">
+                <BasicFormItem name={`neworgbd_${i}_org_${i1}`} layout valueType="number">
                   <SelectExistOrganization />
                 </BasicFormItem>
               </div>
@@ -222,7 +222,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_new_bduser_${i}_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`neworgbd_${i}_bduser_${i1}`} valueType="number" layout>
                   <SelectExistUser />
                 </BasicFormItem>
               </div>
@@ -233,7 +233,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>状态：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_new_bdstatus_${i}_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`neworgbd_${i}_bdstatus_${i1}`} valueType="number" layout>
                   <SelectNewBDStatus />
                 </BasicFormItem>
               </div>
@@ -248,7 +248,7 @@ class ReportForm extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name={`proj_new_proj_${i}`} valueType="number" layout>
+            <BasicFormItem name={`newproj_${i}`} valueType="number" layout>
               <SelectExistProject placeholder="选择项目" />
             </BasicFormItem>
           </div>
@@ -312,7 +312,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>机构：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_${m.proj.id}_org_${i1}`} layout valueType="number">
+                <BasicFormItem name={`orgbd_${m.proj.id}_org_${i1}`} layout valueType="number">
                   <SelectExistOrganization />
                 </BasicFormItem>
               </div>
@@ -323,7 +323,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_${m.proj.id}_bduser_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`orgbd_${m.proj.id}_bduser_${i1}`} valueType="number" layout>
                   <SelectExistUser />
                 </BasicFormItem>
               </div>
@@ -334,7 +334,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>状态：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`proj_existing_${m.proj.id}_bdstatus_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${i1}`} valueType="number" layout>
                   <SelectNewBDStatus />
                 </BasicFormItem>
               </div>
@@ -387,7 +387,7 @@ class ReportForm extends React.Component {
                       <div style={{ display: 'flex' }}>
                         <div>状态：</div>
                         <div style={{ flex: 1 }}>
-                          {m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
+                          {m.response && this.props.orgbdres.length > 0 ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
                         </div>
                       </div>
                     </div>
