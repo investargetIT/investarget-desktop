@@ -63,6 +63,10 @@ class ProjectBaseForm extends React.Component {
     const [ start, end ] = time;
     this.startDate = start.format('YYYY-MM-DD');
     this.endDate = end.format('YYYY-MM-DD');
+
+    this.state = {
+      orgRemarks: [],
+    };
   }
 
   getChildContext() {
@@ -71,17 +75,28 @@ class ProjectBaseForm extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] });
-    this.getOrgRemark();
     this.getOrgBd();
+    this.getOrgRemark();
   }
 
-  getOrgRemark = () => {
+  getOrgRemark = async () => {
     const createuser = getCurrentUser();
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
     const params = { createuser, stimeM, etimeM, page_size };
-    api.getOrgRemark(params);
+    const resRemark = await api.getOrgRemark(params);
+    const { data: remarks } = resRemark.data;
+    const orgIds = remarks.map(m => m.org);
+    const uniqueOrgIds = orgIds.filter((v, i, a) => a.indexOf(v) === i);
+    const orgsRes = await api.getOrg({ ids: uniqueOrgIds });
+    const { data: orgs } = orgsRes.data;
+    const orgWithRemarks = orgs.map(m => {
+      const orgRemarks = remarks.filter(f => f.org === m.id);
+      return { ...m, remarks: orgRemarks };
+    });
+    window.echo('org with remarks', orgWithRemarks);
+    this.setState({ orgRemarks: orgWithRemarks });
   }
 
   getOrgBd = () => {
