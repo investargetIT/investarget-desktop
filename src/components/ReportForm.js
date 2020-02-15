@@ -195,52 +195,7 @@ class ReportForm extends React.Component {
       </div>
     ));
 
-    getFieldDecorator('proj_1_orgbd_keys', { initialValue: [] });
-    const proj1OrgBDKeys = getFieldValue('proj_1_orgbd_keys');
-    const proj1OrgBDFormItems = proj1OrgBDKeys.map((m, i) => (
-      <div key={m} style={{ display: 'flex' }}>
-
-        <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
-
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex' }}>
-            <div>机构：</div>
-            <div style={{ flex: 1 }}>
-              <BasicFormItem name={`proj_existing_org_${i}`} layout valueType="number">
-                <SelectExistOrganization />
-              </BasicFormItem>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex' }}>
-            <div>投资人：</div>
-            <div style={{ flex: 1 }}>
-              <BasicFormItem name={`proj_existing_bduser_${i}`} valueType="number" layout>
-                <SelectExistUser />
-              </BasicFormItem>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex' }}>
-            <div>状态：</div>
-            <div style={{ flex: 1 }}>
-              <BasicFormItem name={`proj_existing_bdstatus_${i}`} valueType="number" layout>
-                <SelectNewBDStatus />
-              </BasicFormItem>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ width: 50, textAlign: 'center' }}>
-          <img onClick={() => this.removeFormItem('proj_1_orgbd_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
-        </div>
-
-      </div>
-    ));
+   
 
     getFieldDecorator('proj_keys', { initialValue: [] });
     const projKeys = getFieldValue('proj_keys');
@@ -345,6 +300,53 @@ class ReportForm extends React.Component {
     });
 
     const projExistingOrgBds = this.state.projOrgBds.map((m, i) => {
+
+      getFieldDecorator('proj_1_orgbd_keys', { initialValue: [] });
+      const proj1OrgBDKeys = getFieldValue('proj_1_orgbd_keys');
+      const proj1OrgBDFormItems = proj1OrgBDKeys.map((m, i) => (
+        <div key={m} style={{ display: 'flex' }}>
+
+          <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex' }}>
+              <div>机构：</div>
+              <div style={{ flex: 1 }}>
+                <BasicFormItem name={`proj_existing_org_${i}`} layout valueType="number">
+                  <SelectExistOrganization />
+                </BasicFormItem>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex' }}>
+              <div>投资人：</div>
+              <div style={{ flex: 1 }}>
+                <BasicFormItem name={`proj_existing_bduser_${i}`} valueType="number" layout>
+                  <SelectExistUser />
+                </BasicFormItem>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex' }}>
+              <div>状态：</div>
+              <div style={{ flex: 1 }}>
+                <BasicFormItem name={`proj_existing_bdstatus_${i}`} valueType="number" layout>
+                  <SelectNewBDStatus />
+                </BasicFormItem>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ width: 50, textAlign: 'center' }}>
+            <img onClick={() => this.removeFormItem('proj_1_orgbd_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+          </div>
+
+        </div>
+      ));
 
       return (
         <div key={m.proj.id}>
