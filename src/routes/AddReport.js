@@ -73,16 +73,16 @@ class AddReport extends React.Component {
   addOrgBd = async (data) => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      await api.getUserSession();
-      const { bduser, org, proj, bdstatus: bd_status } = element;
+      const { bduser, org, proj, bdstatus: response } = element;
       const body = {
         bduser,
         org,
         proj,
-        bd_status,
+        response,
         manager: getCurrentUser(),
       };
       try {
+        await api.getUserSession();
         await api.addOrgBD(body);
       } catch (e) {
         console.error(e);
