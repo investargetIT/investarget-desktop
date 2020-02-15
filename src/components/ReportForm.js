@@ -82,12 +82,12 @@ class ProjectBaseForm extends React.Component {
     });
   }
 
-  removeOrgFormItem = (k) => {
+  removeFormItem = (key, value) => {
     const { form } = this.props;
-    const keys = form.getFieldValue('org_keys');
-    form.setFieldsValue({
-      org_keys: keys.filter(key => key !== k),
-    });
+    const keyValues = form.getFieldValue(key);
+    const body = {};
+    body[key] = keyValues.filter(k => k !== value);
+    form.setFieldsValue(body);
   }
 
   addProjFormItem = () => {
@@ -138,7 +138,7 @@ class ProjectBaseForm extends React.Component {
           </div>
 
           <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeOrgFormItem(m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem('org_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
@@ -279,7 +279,13 @@ class ProjectBaseForm extends React.Component {
                 </BasicFormItem>
               </div>
             </div>
+
           </div>
+
+          <div style={{ width: 100, textAlign: 'center' }}>
+            <img onClick={() => this.removeFormItem('proj_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+          </div>
+
         </div>
       </div>);
   });
