@@ -59,7 +59,7 @@ class AddReport extends React.Component {
     this.props.router.goBack()
   }
 
-  addReport = () => {
+  handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
         window.echo('values', values);
@@ -73,8 +73,27 @@ class AddReport extends React.Component {
         const newOrgRemark = this.getNewOrgRemark(values);
         const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
         this.addOrgRemark(allOrgRemarks);
+
+        this.addReport(values);
       }
     })
+  }
+
+  addReport = async data => {
+    const { time: startEndMoment, summary: marketMsg, suggestion: others } = data;
+    const [ startMoment, endMoment ] = startEndMoment;
+    const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
+    const endTime = endMoment.format('YYYY-MM-DDTHH:mm:ss');
+    const body = {
+      marketMsg,
+      others,
+      startTime,
+      endTime,
+      user: getCurrentUser(),
+    };
+    const res = await api.addWorkReport(body);
+    const { id: reportId } = res.data;
+    window.echo('report id', reportId);
   }
 
   addOrgRemark = data => {
@@ -218,7 +237,7 @@ class AddReport extends React.Component {
           <AddReportForm wrappedComponentRef={this.handleRef} data={this.initialFormData} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addReport}>{i18n('common.submit')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
