@@ -342,26 +342,18 @@ class ProjectBaseForm extends React.Component {
 
         </div>
       </div>);
-  });
+    });
 
-    return (
-      <Form>
+    const projExistingOrgBds = this.state.projOrgBds.map((m, i) => {
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <BasicFormItem name="time" valueType="array" layout>
-            <RangePicker disabled />
-          </BasicFormItem>
-        </div>
+      return (
+        <div key={m.proj.id}>
 
-        <div style={{ marginBottom: 40 }}>
-          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
-            <div onClick={this.addProjFormItem} style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加项目</div>
-          </div>
+          {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
 
-            <div style={{ width: 200 }}>测试项目</div>
+            <div style={{ width: 200 }}>{m.proj.projtitle}</div>
 
             <div style={{ flex: 1 }}>
               <div>
@@ -370,38 +362,34 @@ class ProjectBaseForm extends React.Component {
                   <span onClick={() => this.addProjOrgBdFormItem('proj_1_orgbd_keys')} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
                 </div>
 
-                <div style={{ display: 'flex' }}>
+                {m.orgBds.map(m => (
+                  <div key={m.id} style={{ display: 'flex' }}>
 
-                  <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                    <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
 
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex' }}>
-                      <div>机构：</div>
-                      <div style={{ flex: 1 }}>
-                        测试机构
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex' }}>
+                        <div>机构：</div>
+                        <div style={{ flex: 1 }}>{m.org ? m.org.orgname : '暂无'}</div>
                       </div>
                     </div>
-                  </div>
 
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex' }}>
-                      <div>投资人：</div>
-                      <div style={{ flex: 1 }}>
-                        测试投资人
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex' }}>
+                        <div>投资人：</div>
+                        <div style={{ flex: 1 }}>{m.username}</div>
                       </div>
                     </div>
-                  </div>
 
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex' }}>
-                      <div>状态：</div>
-                      <div style={{ flex: 1 }}>
-                        已见面
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex' }}>
+                        <div>状态：</div>
+                        <div style={{ flex: 1 }}>已见面</div>
                       </div>
                     </div>
-                  </div>
 
-                </div>
+                  </div>
+                ))}
 
                 {proj1OrgBDFormItems}
 
@@ -431,7 +419,26 @@ class ProjectBaseForm extends React.Component {
               </div>
             </div>
           </div>
+        </div>
+      );
+    });
 
+    return (
+      <Form>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <BasicFormItem name="time" valueType="array" layout>
+            <RangePicker disabled />
+          </BasicFormItem>
+        </div>
+
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
+            <div onClick={this.addProjFormItem} style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加项目</div>
+          </div>
+
+          {projExistingOrgBds}
           {projFormItems}
 
         </div>
