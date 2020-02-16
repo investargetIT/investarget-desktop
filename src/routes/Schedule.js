@@ -139,7 +139,7 @@ class Schedule extends React.Component {
       };
 
       let initialValue = [];
-      initialValue = [reportEvent];
+      // initialValue = [reportEvent];
 
       const list = result.reduce((prev, curr) => prev.concat(curr.data.data), initialValue);
       list.sort((a, b) => {
