@@ -240,6 +240,17 @@ class ReportForm extends React.Component {
             </div>
           </div>
 
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex' }}>
+              <div>备注：</div>
+              <div style={{ flex: 1 }}>
+                <BasicFormItem name={`neworgbd_${i}_comments_${i1}`} layout>
+                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+                </BasicFormItem>
+              </div>
+            </div>
+          </div>
+
         </div>
       ));
 

@@ -212,7 +212,7 @@ class AddReport extends React.Component {
   addOrgBd = async (data) => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      const { bduser, org, proj, bdstatus: response } = element;
+      const { bduser, org, proj, bdstatus: response, comments } = element;
       const body = {
         bduser,
         org,
@@ -224,7 +224,11 @@ class AddReport extends React.Component {
       };
       try {
         await api.getUserSession();
-        await api.addOrgBD(body);
+        const res = await api.addOrgBD(body);
+        const { id: orgBD} = res.data;
+        if (comments && comments.length > 0) {
+          await api.addOrgBDComment({ orgBD, comments });
+        }
       } catch (e) {
         console.error(e);
       }
@@ -295,7 +299,8 @@ class AddReport extends React.Component {
         const org = thisProjItem.filter(f => f.key === 'org')[0].value;
         const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
         const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
-        result.push({ proj, org, bduser, bdstatus });
+        const comments = thisProj.filter(f => f.key === 'comments')[0].value;
+        result.push({ proj, org, bduser, bdstatus, comments });
       })
     });
     return result;
