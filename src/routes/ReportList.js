@@ -31,7 +31,6 @@ class ReportList extends React.Component {
     this.setState({ loading: true })
     api.getWorkReport(params).then(result => {
       const { count: total, data: list } = result.data
-      window.echo('data', list);
       this.setState({ total, list, loading: false })
     }, error => {
       this.setState({ loading: false })
@@ -61,7 +60,7 @@ class ReportList extends React.Component {
         title: '操作', key: 'operation', render: (text, record) => {
           return (
             <div>
-              <Link>
+              <Link to={`/app/report/${record.id}`}>
                 <Icon type="eye-o" style={{ fontSize: '16px' }} />
               </Link>
               <Link style={{ margin: '0 10px' }}>
