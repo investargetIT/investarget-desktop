@@ -75,7 +75,11 @@ class ReportList extends React.Component {
       },
     ]
     return (
-      <LeftRightLayout location={location} title="工作报告列表">
+      <LeftRightLayout
+        location={location}
+        title="工作报告列表"
+        action={{name: '填写周报', link: "/app/report/add" }}
+      >
         <Table
           columns={columns}
           dataSource={list}
