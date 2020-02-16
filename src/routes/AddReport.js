@@ -257,7 +257,8 @@ class AddReport extends React.Component {
         const org = thisProjItem.filter(f => f.key === 'org')[0].value;
         const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
         const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
-        result.push({ proj, org, bduser, bdstatus });
+        const comments = thisProj.filter(f => f.key === 'comments')[0].value;
+        result.push({ proj, org, bduser, bdstatus, comments });
       })
     });
     return result;

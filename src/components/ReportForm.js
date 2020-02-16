@@ -341,6 +341,17 @@ class ReportForm extends React.Component {
             </div>
           </div>
 
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex' }}>
+              <div>备注：</div>
+              <div style={{ flex: 1 }}>
+                <BasicFormItem name={`orgbd_${m.proj.id}_comments_${i1}`} layout>
+                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+                </BasicFormItem>
+              </div>
+            </div>
+          </div>
+
           <div style={{ width: 50, textAlign: 'center' }}>
             <img onClick={() => this.removeFormItem(newOrgBdKey, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
