@@ -923,5 +923,6 @@ export const deleteUserDataroomFile = id => r(`/dataroom/userfile/${id}/`, 'DELE
 export const deleteProjectBdRelatedManager = id => r(`/bd/projbd/relatemanager/${id}`, 'DELETE');
 export const addProjectBdRelatedManager = body => r('/bd/projbd/relatemanager/', 'POST', body);
 
+export const getWorkReport = params => r(`/bd/workreport/?${qs.stringify(params)}`);
 export const addWorkReport = body => r('/bd/workreport/', 'POST', body);
 export const addWorkReportProjInfo = body => r('/bd/workreport/proj/', 'POST', body);
