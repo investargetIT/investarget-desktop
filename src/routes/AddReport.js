@@ -74,7 +74,7 @@ class AddReport extends React.Component {
         const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
         this.addOrgRemark(allOrgRemarks);
 
-        this.addReport(values);
+        // this.addReport(values);
       }
     })
   }
