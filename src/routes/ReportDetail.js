@@ -459,18 +459,18 @@ class ReportDetail extends React.Component {
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
-          {/* <BasicFormItem name="summary" layout> */}
-          <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
-          {/* </BasicFormItem> */}
+          <div style={{ padding: '0 10px' }}>
+            {this.state.report && this.state.report.marketMsg || '未填写'}
+          </div>
         </div>
 
         <div style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
-          {/* <BasicFormItem name="suggestion" layout> */}
-          <Input.TextArea autosize={{ minRows: 6 }} placeholder="其他事项/工作建议（如果有）" />
-          {/* </BasicFormItem> */}
+          <div style={{ padding: '0 10px' }}>
+            {this.state.report && this.state.report.others || '未填写'}
+          </div>
         </div>
 
       </LeftRightLayout>
