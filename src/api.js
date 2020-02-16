@@ -924,3 +924,4 @@ export const deleteProjectBdRelatedManager = id => r(`/bd/projbd/relatemanager/$
 export const addProjectBdRelatedManager = body => r('/bd/projbd/relatemanager/', 'POST', body);
 
 export const addWorkReport = body => r('/bd/workreport/', 'POST', body);
+export const addWorkReportProjInfo = body => r('/bd/workreport/proj/', 'POST', body);

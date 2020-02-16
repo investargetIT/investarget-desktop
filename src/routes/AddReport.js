@@ -62,7 +62,7 @@ class AddReport extends React.Component {
   handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        window.echo('values', values);
+        // window.echo('values', values);
 
         const existingOrgBd = this.getExistingOrgBdInfo(values);
         const newOrgBd = this.getNewOrgBdInfo(values);
@@ -74,10 +74,7 @@ class AddReport extends React.Component {
         const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
         this.addOrgRemark(allOrgRemarks);
 
-        // this.addReport(values);
-        const existingProjInfo = this.getPlanForExistingProj(values);
-        const newProjReportInfo = this.getPlanForNewProj(values);
-        const allProjReportInfos = existingProjInfo.concat(newProjReportInfo);
+        this.addReport(values);
       }
     })
   }
@@ -96,7 +93,20 @@ class AddReport extends React.Component {
     };
     const res = await api.addWorkReport(body);
     const { id: reportId } = res.data;
-    window.echo('report id', reportId);
+
+    const existingProjInfo = this.getPlanForExistingProj(data);
+    const newProjReportInfo = this.getPlanForNewProj(data);
+    const allProjReportInfos = existingProjInfo.concat(newProjReportInfo);
+
+    this.addReportProjInfo(reportId, allProjReportInfos);
+    this.props.router.replace('/app/report/list');
+  }
+
+  addReportProjInfo = (reportId, data) => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      api.addWorkReportProjInfo({ ...element, report: reportId });
+    }
   }
 
   getPlanForNewProj = values => {
