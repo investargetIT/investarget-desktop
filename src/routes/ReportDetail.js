@@ -15,6 +15,7 @@ import {
   SelectNewBDStatus,
 } from '../components/ExtraInput'
 import LeftRightLayout from '../components/LeftRightLayout';
+import moment from 'moment';
 
 
 let uuid = 0;
@@ -50,6 +51,7 @@ class ReportDetail extends React.Component {
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
+    window.echo('report detail', res.data);
     this.setState({ report: res.data });
     const { startTime, endTime } = res.data;
     this.getOrgRemark(startTime, endTime);
@@ -194,10 +196,10 @@ class ReportDetail extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {/* <BasicFormItem name="time" valueType="array" layout> */}
-          <RangePicker disabled />
-          {/* </BasicFormItem> */}
+        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'flex-end' }}>
+          {this.state.report &&
+            <RangePicker disabled value={[moment(this.state.report.startTime), moment(this.state.report.endTime)]} />
+          }
         </div>
 
         <div style={{ marginBottom: 40 }}>
