@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, getCurrentUser } from '../utils/util'
+import { i18n, getCurrentUser, handleError } from '../utils/util'
 import moment from 'moment';
 
 import { Form, Button, message } from 'antd'
@@ -65,28 +65,31 @@ class AddReport extends React.Component {
     this.form.validateFields((err, values) => {
       if (!err) {
         // window.echo('values', values);
-
-        const { time: startEndMoment } = values;
-        const [startMoment, endMoment] = startEndMoment;
-        const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
-        let endTime = endMoment.format('YYYY-MM-DD');
-        endTime += 'T23:59:59';
-        this.startTime = startTime;
-        this.endTime = endTime;
-
-        const existingOrgBd = this.getExistingOrgBdInfo(values);
-        const newOrgBd = this.getNewOrgBdInfo(values);
-        const allOrgBds = existingOrgBd.concat(newOrgBd);
-        this.addOrgBd(allOrgBds);
-        
-        const existingOrgRemark = this.getExistingOrgRemark(values);
-        const newOrgRemark = this.getNewOrgRemark(values);
-        const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
-        this.addOrgRemark(allOrgRemarks);
-
-        this.addReport(values);
+        this.addData(values);
       }
     })
+  }
+
+  addData = async values => {
+    const { time: startEndMoment } = values;
+    const [startMoment, endMoment] = startEndMoment;
+    const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
+    let endTime = endMoment.format('YYYY-MM-DD');
+    endTime += 'T23:59:59';
+    this.startTime = startTime;
+    this.endTime = endTime;
+
+    const existingOrgBd = this.getExistingOrgBdInfo(values);
+    const newOrgBd = this.getNewOrgBdInfo(values);
+    const allOrgBds = existingOrgBd.concat(newOrgBd);
+    await this.addOrgBd(allOrgBds);
+    
+    const existingOrgRemark = this.getExistingOrgRemark(values);
+    const newOrgRemark = this.getNewOrgRemark(values);
+    const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
+    this.addOrgRemark(allOrgRemarks);
+
+    this.addReport(values).catch(handleError);
   }
 
   addReport = async data => {
