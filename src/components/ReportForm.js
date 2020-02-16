@@ -386,36 +386,47 @@ class ReportForm extends React.Component {
                   <span onClick={() => this.addProjOrgBdFormItem(newOrgBdKey)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
                 </div>
 
-                {m.orgBds.map(m => (
-                  <div key={m.id} style={{ display: 'flex' }}>
+                {m.orgBds.map(m => {
+                  return (
+                    <div key={m.id} style={{ display: 'flex' }}>
 
-                    <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                      <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
 
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex' }}>
-                        <div>机构：</div>
-                        <div style={{ flex: 1 }}>{m.org ? m.org.orgname : '暂无'}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex' }}>
-                        <div>投资人：</div>
-                        <div style={{ flex: 1 }}>{m.username}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex' }}>
-                        <div>状态：</div>
-                        <div style={{ flex: 1 }}>
-                          {m.response && this.props.orgbdres.length > 0 ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex' }}>
+                          <div>机构：</div>
+                          <div style={{ flex: 1 }}>{m.org ? m.org.orgname : '暂无'}</div>
                         </div>
                       </div>
-                    </div>
 
-                  </div>
-                ))}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex' }}>
+                          <div>投资人：</div>
+                          <div style={{ flex: 1 }}>{m.username}</div>
+                        </div>
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex' }}>
+                          <div>状态：</div>
+                          <div style={{ flex: 1 }}>
+                            {m.response && this.props.orgbdres.length > 0 ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex' }}>
+                          <div>备注：</div>
+                          <div style={{ flex: 1 }}>
+                            {m.BDComments ? m.BDComments.map(m => m.comments).join('；') : '暂无'}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  )
+                })}
 
                 {proj1OrgBDFormItems}
 
