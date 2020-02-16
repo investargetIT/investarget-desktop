@@ -51,7 +51,6 @@ class ReportDetail extends React.Component {
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
-    window.echo('report detail', res.data);
     this.setState({ report: res.data });
     const { startTime, endTime } = res.data;
     this.getOrgRemark(startTime, endTime);
@@ -80,7 +79,7 @@ class ReportDetail extends React.Component {
   }
 
   getOrgRemark = async (startDate, endDate) => {
-    const createuser = getCurrentUser();
+    const createuser = this.state.report.user.id;
     const stimeM = startDate;
     const etimeM = endDate;
     const page_size = 1000;
@@ -99,7 +98,7 @@ class ReportDetail extends React.Component {
   }
 
   getOrgBd = async (startDate, endDate) => {
-    const manager = getCurrentUser();
+    const manager = this.state.report.user.id;
     const stimeM = startDate;
     const etimeM = endDate;
     const page_size = 1000;
@@ -114,7 +113,6 @@ class ReportDetail extends React.Component {
       const bds = orgBds.filter(f => f.proj.id === m);
       return { proj, orgBds: bds };
     });
-    window.echo('get org bd', projOrgBds);
     this.setState({ projOrgBds });
   }
 
