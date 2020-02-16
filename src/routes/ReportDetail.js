@@ -46,16 +46,35 @@ class ReportDetail extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getReportDetail();
-    
   }
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
-    window.echo('report', res.data);
     this.setState({ report: res.data });
     const { startTime, endTime } = res.data;
     this.getOrgRemark(startTime, endTime);
-    this.getOrgBd(startTime, endTime);
+    await this.getOrgBd(startTime, endTime);
+    this.getReportProj();
+  }
+
+  getReportProj = async () => {
+    const params = {
+      report: this.reportId,
+      page_size: 1000,
+    };
+    const res = await api.getWorkReportProjInfo(params);
+    const { data: reportProj } = res.data;
+    const orgBds = [...this.state.projOrgBds];
+    reportProj.forEach(element => {
+      const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
+      if (index > -1) {
+        orgBds[index].thisPlan = element.thisPlan;
+        orgBds[index].nextPlan = element.nextPlan;
+      } else {
+        orgBds.push({ ...element, orgBds: [] });
+      }
+    });
+    this.setState({ projOrgBds: orgBds });
   }
 
   getOrgRemark = async (startDate, endDate) => {
@@ -153,9 +172,7 @@ class ReportDetail extends React.Component {
                       <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
                       <div>其他：</div>
                       <div style={{ flex: 1 }}>
-                        {/* <BasicFormItem name={`existingproj_${m.proj.id}_thisplan`} layout> */}
-                          <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
-                        {/* </BasicFormItem> */}
+                        {m.thisPlan}
                       </div>
                     </div>
                   </div>
@@ -166,9 +183,7 @@ class ReportDetail extends React.Component {
               <div>
                 <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
                 <div style={{ marginLeft: 82 }}>
-                  {/* <BasicFormItem name={`existingproj_${m.proj.id}_nextplan`} layout> */}
-                    <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
-                  {/* </BasicFormItem> */}
+                  {m.nextPlan}
                 </div>
               </div>
             </div>
