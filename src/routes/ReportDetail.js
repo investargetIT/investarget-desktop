@@ -14,6 +14,7 @@ import {
   SelectExistOrganization,
   SelectNewBDStatus,
 } from '../components/ExtraInput'
+import LeftRightLayout from '../components/LeftRightLayout';
 
 
 let uuid = 0;
@@ -399,11 +400,10 @@ class ReportDetail extends React.Component {
     // });
 
     return (
-      <Form>
-
+      <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           {/* <BasicFormItem name="time" valueType="array" layout> */}
-            <RangePicker disabled />
+          <RangePicker disabled />
           {/* </BasicFormItem> */}
         </div>
 
@@ -422,7 +422,6 @@ class ReportDetail extends React.Component {
 
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
-            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addOrgFormItem}>添加机构</div>
           </div>
 
           {this.state.orgRemarks.map((m, i) => (
@@ -441,14 +440,6 @@ class ReportDetail extends React.Component {
                       <div style={{ flex: 1 }}>{m.remark}</div>
                     </div>
                   ))}
-                  <div style={{ display: 'flex' }}>
-                    <div style={{ width: 20, fontSize: 16 }}>•</div>
-                    <div style={{ flex: 1 }}>
-                      {/* <BasicFormItem name={`org_existing_${m.id}`} layout> */}
-                        <Input.TextArea autosize={{ minRows: 4 }} placeholder="添加新的机构备注" />
-                      {/* </BasicFormItem> */}
-                    </div>
-                  </div>
                 </div>
 
               </div>
@@ -464,7 +455,7 @@ class ReportDetail extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
           {/* <BasicFormItem name="summary" layout> */}
-            <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
+          <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
           {/* </BasicFormItem> */}
         </div>
 
@@ -473,11 +464,11 @@ class ReportDetail extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
           {/* <BasicFormItem name="suggestion" layout> */}
-            <Input.TextArea autosize={{ minRows: 6 }} placeholder="其他事项/工作建议（如果有）" />
+          <Input.TextArea autosize={{ minRows: 6 }} placeholder="其他事项/工作建议（如果有）" />
           {/* </BasicFormItem> */}
         </div>
 
-      </Form>
+      </LeftRightLayout>
     )
   }
 
