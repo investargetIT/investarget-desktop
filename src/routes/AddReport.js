@@ -50,9 +50,11 @@ class AddReport extends React.Component {
 
     this.initialFormData = {
       time: {
-        value: [moment().startOf('week'), moment().startOf('week').add('days', 6)]
+        value: [moment().startOf('week'), moment().startOf('week').add('days', 4)]
       }
     };
+    this.startTime = null;
+    this.endTime = null;
   }
 
   goBack = () => {
@@ -63,6 +65,14 @@ class AddReport extends React.Component {
     this.form.validateFields((err, values) => {
       if (!err) {
         // window.echo('values', values);
+
+        const { time: startEndMoment } = values;
+        const [startMoment, endMoment] = startEndMoment;
+        const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
+        let endTime = endMoment.format('YYYY-MM-DD');
+        endTime += 'T23:59:59';
+        this.startTime = startTime;
+        this.endTime = endTime;
 
         const existingOrgBd = this.getExistingOrgBdInfo(values);
         const newOrgBd = this.getNewOrgBdInfo(values);
@@ -80,15 +90,12 @@ class AddReport extends React.Component {
   }
 
   addReport = async data => {
-    const { time: startEndMoment, summary: marketMsg, suggestion: others } = data;
-    const [ startMoment, endMoment ] = startEndMoment;
-    const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
-    const endTime = endMoment.format('YYYY-MM-DDTHH:mm:ss');
+    const { summary: marketMsg, suggestion: others } = data;
     const body = {
       marketMsg,
       others,
-      startTime,
-      endTime,
+      startTime: this.startTime,
+      endTime: this.endTime,
       user: getCurrentUser(),
     };
     const res = await api.addWorkReport(body);
@@ -163,7 +170,7 @@ class AddReport extends React.Component {
   addOrgRemark = data => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      api.addOrgRemark(element);
+      api.addOrgRemark({ ...element, lastmodifytime: this.startTime });
     }
   }
 
@@ -209,6 +216,8 @@ class AddReport extends React.Component {
         proj,
         response,
         manager: getCurrentUser(),
+        lastmodifytime: this.startTime,
+
       };
       try {
         await api.getUserSession();
