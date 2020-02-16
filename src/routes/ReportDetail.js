@@ -196,7 +196,8 @@ class ReportDetail extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
-        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>报告人：{this.state.report && this.state.report.user.username}</div>
           {this.state.report &&
             <RangePicker disabled value={[moment(this.state.report.startTime), moment(this.state.report.endTime)]} />
           }
