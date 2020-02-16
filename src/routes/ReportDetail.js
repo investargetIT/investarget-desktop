@@ -36,26 +36,31 @@ class ReportDetail extends React.Component {
     // this.endDate = end.format('YYYY-MM-DD');
     
     this.state = {
-      reportId: Number(props.params.id),
+      report: null,
       orgRemarks: [],
       projOrgBds: [],
     };
-  }
-
-  getChildContext() {
-    return { form: this.props.form }
+    this.reportId = Number(props.params.id);
   }
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.getReportDetail();
     this.getOrgBd();
-    this.getOrgRemark();
   }
 
-  getOrgRemark = async () => {
+  getReportDetail = async () => {
+    const res = await api.getWorkReportDetail(this.reportId);
+    window.echo('report', res.data);
+    this.setState({ report: res.data });
+    const { startTime, endTime } = res.data;
+    this.getOrgRemark(startTime, endTime);
+  }
+
+  getOrgRemark = async (startDate, endDate) => {
     const createuser = getCurrentUser();
-    const stimeM = this.startDate;
-    const etimeM = this.endDate;
+    const stimeM = startDate;
+    const etimeM = endDate;
     const page_size = 1000;
     const params = { createuser, stimeM, etimeM, page_size };
     const resRemark = await api.getOrgRemark(params);
