@@ -26,6 +26,7 @@ import {
   SelectExistProject,
   SelectExistOrganization,
   SelectNewBDStatus,
+  SelectOrgInvestor,
 } from './ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -223,7 +224,15 @@ class ReportForm extends React.Component {
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
                 <BasicFormItem name={`neworgbd_${i}_bduser_${i1}`} valueType="number" layout>
-                  <SelectExistUser />
+                  <SelectOrgInvestor
+                    allStatus
+                    onjob
+                    style={{ width: "100%" }}
+                    type="investor"
+                    mode="single"
+                    optionFilterProp="children"
+                    org={getFieldValue(`neworgbd_${i}_org_${i1}`)}
+                  />
                 </BasicFormItem>
               </div>
             </div>
@@ -335,7 +344,15 @@ class ReportForm extends React.Component {
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
                 <BasicFormItem name={`orgbd_${m.proj.id}_bduser_${i1}`} valueType="number" layout>
-                  <SelectExistUser />
+                  <SelectOrgInvestor
+                    allStatus
+                    onjob
+                    style={{ width: "100%" }}
+                    type="investor"
+                    mode="single"
+                    optionFilterProp="children"
+                    org={getFieldValue(`orgbd_${m.proj.id}_org_${i1}`)}
+                  />
                 </BasicFormItem>
               </div>
             </div>
