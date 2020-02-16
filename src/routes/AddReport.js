@@ -75,6 +75,8 @@ class AddReport extends React.Component {
         this.addOrgRemark(allOrgRemarks);
 
         // this.addReport(values);
+        const existingProjInfo = this.getPlanForExistingProj(values);
+        window.echo('existing proj info', existingProjInfo);
       }
     })
   }
@@ -94,6 +96,30 @@ class AddReport extends React.Component {
     const res = await api.addWorkReport(body);
     const { id: reportId } = res.data;
     window.echo('report id', reportId);
+  }
+
+  getPlanForExistingProj = values => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('existingproj')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const proj = parseInt(infos[1]);
+        const key = infos[2];
+        const o = { proj, key, value };
+        result1.push(o);
+      }
+    }
+
+    const projIds = result1.map(m => m.proj);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueProjIds.forEach(e => {
+      const thisPlan = result1.filter(f => f.proj === e && f.key === 'thisplan')[0].value;
+      const nextPlan = result1.filter(f => f.proj === e && f.key === 'nextplan')[0].value;
+      result.push({ proj: e, thisPlan, nextPlan });
+    })
+    return result;
   }
 
   addOrgRemark = data => {
