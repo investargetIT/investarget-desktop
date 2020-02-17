@@ -85,9 +85,10 @@ class ReportDetail extends React.Component {
     const page_size = 1000;
     const params = { createuser, stimeM, etimeM, page_size };
     const resRemark = await api.getOrgRemark(params);
-    const { data: remarks } = resRemark.data;
+    let { data: remarks } = resRemark.data;
+    remarks = remarks.filter(f => f.org && f.remark);
     const orgIds = remarks.map(m => m.org);
-    const uniqueOrgIds = orgIds.filter((v, i, a) => v && a.indexOf(v) === i);
+    const uniqueOrgIds = orgIds.filter((v, i, a) => a.indexOf(v) === i);
     let orgWithRemarks = []; 
     if (uniqueOrgIds.length > 0) {
       const orgsRes = await api.getOrg({ ids: uniqueOrgIds });
