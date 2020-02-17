@@ -163,6 +163,15 @@ class ReportDetail extends React.Component {
                       </div>
                     </div>
 
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex' }}>
+                        <div>备注：</div>
+                        <div style={{ flex: 1 }}>
+                          {m.BDComments ? m.BDComments.map(m => m.comments).join('；') : '暂无'}
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 ))}
 
