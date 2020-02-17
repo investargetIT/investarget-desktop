@@ -91,12 +91,15 @@ class ReportForm extends React.Component {
     const { data: remarks } = resRemark.data;
     const orgIds = remarks.map(m => m.org);
     const uniqueOrgIds = orgIds.filter((v, i, a) => v && a.indexOf(v) === i);
-    const orgsRes = await api.getOrg({ ids: uniqueOrgIds });
-    const { data: orgs } = orgsRes.data;
-    const orgWithRemarks = orgs.map(m => {
-      const orgRemarks = remarks.filter(f => f.org === m.id);
-      return { ...m, remarks: orgRemarks };
-    });
+    let orgWithRemarks = []; 
+    if (uniqueOrgIds.length > 0) {
+      const orgsRes = await api.getOrg({ ids: uniqueOrgIds });
+      const { data: orgs } = orgsRes.data;
+      orgWithRemarks = orgs.map(m => {
+        const orgRemarks = remarks.filter(f => f.org === m.id);
+        return { ...m, remarks: orgRemarks };
+      });
+    }
     this.setState({ orgRemarks: orgWithRemarks });
   }
 
