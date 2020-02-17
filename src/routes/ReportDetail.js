@@ -66,13 +66,17 @@ class ReportDetail extends React.Component {
     const res = await api.getWorkReportProjInfo(params);
     const { data: reportProj } = res.data;
     const orgBds = [...this.state.projOrgBds];
-    reportProj.forEach(element => {
-      const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
-      if (index > -1) {
-        orgBds[index].thisPlan = element.thisPlan;
-        orgBds[index].nextPlan = element.nextPlan;
+    reportProj.forEach((element, index) => {
+      if (element.proj) {
+        const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
+        if (index > -1) {
+          orgBds[index].thisPlan = element.thisPlan;
+          orgBds[index].nextPlan = element.nextPlan;
+        } else {
+          orgBds.push({ ...element, orgBds: [] });
+        }
       } else {
-        orgBds.push({ ...element, orgBds: [] });
+        orgBds.push({ ...element, orgBds: [], proj: { projtitle: element.projTitle, id: `-${index}` }})
       }
     });
     this.setState({ projOrgBds: orgBds });
