@@ -107,8 +107,11 @@ class AddReport extends React.Component {
     const existingProjInfo = this.getPlanForExistingProj(data);
     const newProjReportInfo = this.getPlanForNewProj(data);
     const allProjReportInfos = existingProjInfo.concat(newProjReportInfo);
-
     this.addReportProjInfo(reportId, allProjReportInfos);
+
+    const textProjectInfo = this.getPlanForTextProj(data);
+    this.addReportProjInfo(reportId, textProjectInfo);
+
     this.props.router.replace('/app/report/list');
   }
 
@@ -117,6 +120,32 @@ class AddReport extends React.Component {
       const element = data[index];
       api.addWorkReportProjInfo({ ...element, report: reportId });
     }
+  }
+
+  getPlanForTextProj = values => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('newproject')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const projKey = `text_project_${infos[1]}`;
+        const projTitle = values[projKey];
+        const key = infos[2];
+        const o = { projTitle, key, value };
+        result1.push(o);
+      }
+    }
+
+    result1 = result1.filter(f => f.projTitle);
+    const projTitles = result1.map(m => m.projTitle);
+    const uniqueProjTitles = projTitles.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueProjTitles.forEach(e => {
+      const thisPlan = result1.filter(f => f.projTitle === e && f.key === 'thisplan')[0].value;
+      const nextPlan = result1.filter(f => f.projTitle === e && f.key === 'nextplan')[0].value;
+      result.push({ projTitle: e, thisPlan, nextPlan });
+    });
+    return result;
   }
 
   getPlanForNewProj = values => {

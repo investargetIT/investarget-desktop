@@ -161,10 +161,10 @@ class ReportForm extends React.Component {
   addNewProjFormItem = () => {
     ppid2++;
     const { form } = this.props;
-    const keys = form.getFieldValue('newproject_keys');
+    const keys = form.getFieldValue('textproject_keys');
     const nextKeys = keys.concat(ppid2);
     form.setFieldsValue({
-      newproject_keys: nextKeys,
+      textproject_keys: nextKeys,
     });
   }
 
@@ -333,8 +333,8 @@ class ReportForm extends React.Component {
       </div>);
     });
 
-    getFieldDecorator('newproject_keys', { initialValue: [] });
-    const newProjKeys = getFieldValue('newproject_keys');
+    getFieldDecorator('textproject_keys', { initialValue: [] });
+    const newProjKeys = getFieldValue('textproject_keys');
     const newProjFormItems = newProjKeys.map((m, i) => {
 
       return (<div key={m}>
@@ -342,7 +342,7 @@ class ReportForm extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name={`newproj_${i}`} layout>
+            <BasicFormItem name={`text_project_${i}`} layout>
               <Input placeholder="项目名称" />
             </BasicFormItem>
           </div>
@@ -360,7 +360,7 @@ class ReportForm extends React.Component {
                     <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
                     <div>其他：</div>
                     <div style={{ flex: 1 }}>
-                      <BasicFormItem name={`newreport_${i}_thisplan`} layout>
+                      <BasicFormItem name={`newproject_${i}_thisplan`} layout>
                         <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
                       </BasicFormItem>
                     </div>
@@ -373,7 +373,7 @@ class ReportForm extends React.Component {
             <div>
               <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
               <div style={{ marginLeft: 82 }}>
-                <BasicFormItem name={`newreport_${i}_nextplan`} layout>
+                <BasicFormItem name={`newproject_${i}_nextplan`} layout>
                   <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
                 </BasicFormItem>
               </div>
@@ -382,7 +382,7 @@ class ReportForm extends React.Component {
           </div>
 
           <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('newproject_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem('textproject_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
