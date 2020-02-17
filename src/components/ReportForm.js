@@ -51,6 +51,7 @@ const formItemLayoutWithOutLabel = {
 
 let uuid = 0;
 let ppid = 0;
+let ppid2 = 0;
 class ReportForm extends React.Component {
 
   static childContextTypes = {
@@ -154,6 +155,16 @@ class ReportForm extends React.Component {
     // important! notify form to detect changes
     form.setFieldsValue({
       proj_keys: nextKeys,
+    });
+  }
+
+  addNewProjFormItem = () => {
+    ppid2++;
+    const { form } = this.props;
+    const keys = form.getFieldValue('newproject_keys');
+    const nextKeys = keys.concat(ppid2);
+    form.setFieldsValue({
+      newproject_keys: nextKeys,
     });
   }
 
@@ -316,6 +327,62 @@ class ReportForm extends React.Component {
 
           <div style={{ width: 100, textAlign: 'center' }}>
             <img onClick={() => this.removeFormItem('proj_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+          </div>
+
+        </div>
+      </div>);
+    });
+
+    getFieldDecorator('newproject_keys', { initialValue: [] });
+    const newProjKeys = getFieldValue('newproject_keys');
+    const newProjFormItems = newProjKeys.map((m, i) => {
+
+      return (<div key={m}>
+        <hr style={{ borderTop: '2px dashed #ccc' }} />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+
+          <div style={{ width: 200 }}>
+            <BasicFormItem name={`newproj_${i}`} layout>
+              <Input placeholder="项目名称" />
+            </BasicFormItem>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <div>
+
+              <div style={{ lineHeight: 3 }}>
+                <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
+              </div>
+
+              <div style={{ display: 'flex' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                    <div>其他：</div>
+                    <div style={{ flex: 1 }}>
+                      <BasicFormItem name={`newreport_${i}_thisplan`} layout>
+                        <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
+                      </BasicFormItem>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div>
+              <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
+              <div style={{ marginLeft: 82 }}>
+                <BasicFormItem name={`newreport_${i}_nextplan`} layout>
+                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
+                </BasicFormItem>
+              </div>
+            </div>
+
+          </div>
+
+          <div style={{ width: 100, textAlign: 'center' }}>
+            <img onClick={() => this.removeFormItem('newproject_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
@@ -493,11 +560,15 @@ class ReportForm extends React.Component {
         <div style={{ marginBottom: 40 }}>
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>进行中项目工作汇报</div>
-            <div onClick={this.addProjFormItem} style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>添加项目</div>
+            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }}>
+              <span onClick={this.addProjFormItem}>添加已有项目</span>
+              <span onClick={this.addNewProjFormItem} style={{ marginLeft: 10 }}>添加新项目</span>
+            </div>
           </div>
 
           {projExistingOrgBds}
           {projFormItems}
+          {newProjFormItems}
 
         </div>
 
