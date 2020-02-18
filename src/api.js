@@ -926,5 +926,6 @@ export const addProjectBdRelatedManager = body => r('/bd/projbd/relatemanager/',
 export const getWorkReport = params => r(`/bd/workreport/?${qs.stringify(params)}`);
 export const addWorkReport = body => r('/bd/workreport/', 'POST', body);
 export const getWorkReportDetail = id => r(`/bd/workreport/${id}/`);
+export const deleteWorkReport = id => r(`/bd/workreport/${id}/`, 'DELETE');
 export const addWorkReportProjInfo = body => r('/bd/workreport/proj/', 'POST', body);
 export const getWorkReportProjInfo = params => r(`/bd/workreport/proj/?${qs.stringify(params)}`);

@@ -1,9 +1,9 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
-import { getUserInfo } from '../utils/util';
+import { getUserInfo, i18n, handleError } from '../utils/util';
 import { connect } from 'dva';
-import { Icon, Table, Pagination } from 'antd';
+import { Icon, Table, Pagination, Popconfirm } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link } from 'dva/router';
 
@@ -49,6 +49,10 @@ class ReportList extends React.Component {
     this.setState({ pageSize, page: 1 }, this.getReportList);
   }
 
+  deleteReportItem = async item => {
+    api.deleteWorkReport(item.id).then(this.getReportList).catch(handleError);
+  }
+
   render() {
     const { location } = this.props;
     const { total, list, loading, page, pageSize } = this.state;
@@ -66,9 +70,11 @@ class ReportList extends React.Component {
               <Link style={{ margin: '0 10px' }}>
                 <Icon type="edit" style={{ fontSize: '16px' }} />
               </Link>
-              <Link>
-                <Icon type="delete" style={{ fontSize: '16px' }} />
-              </Link>
+              <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
+                <Link>
+                  <Icon type="delete" style={{ fontSize: '16px' }} />
+                </Link>
+              </Popconfirm>
             </div>
           );
         }
