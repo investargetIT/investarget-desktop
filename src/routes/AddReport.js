@@ -259,7 +259,7 @@ class AddReport extends React.Component {
           await api.addOrgBDComment({ orgBD, comments });
         }
       } catch (e) {
-        console.error(e);
+        handleError(e);
       }
     }
   }
