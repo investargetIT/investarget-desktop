@@ -50,7 +50,7 @@ class AddReport extends React.Component {
 
     this.initialFormData = {
       time: {
-        // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
+        // value: [moment().startOf('week'), moment().startOf('week').add('days', 6)],
         value: [moment('2020-02-10'), moment('2020-02-16')],
       }
     };
@@ -203,7 +203,7 @@ class AddReport extends React.Component {
   addOrgRemark = data => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      api.addOrgRemark({ ...element, lastmodifytime: this.startTime });
+      api.addOrgRemark({ ...element, lastmodifytime: this.startTime, createdtime: this.startTime });
     }
   }
 
@@ -250,7 +250,7 @@ class AddReport extends React.Component {
         response,
         manager: getCurrentUser(),
         lastmodifytime: this.startTime,
-
+        createdtime: this.startTime,
       };
       try {
         await api.getUserSession();

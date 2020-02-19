@@ -84,10 +84,12 @@ class ReportForm extends React.Component {
 
   getOrgRemark = async () => {
     const createuser = getCurrentUser();
+    const stime = this.startDate;
+    const etime = this.endDate;
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
-    const params = { createuser, stimeM, etimeM, page_size };
+    const params = { createuser, stimeM, etimeM, stime, etime, page_size };
     const resRemark = await api.getOrgRemark(params);
     let { data: remarks } = resRemark.data;
     remarks = remarks.filter(f => f.org && f.remark);
@@ -107,10 +109,12 @@ class ReportForm extends React.Component {
 
   getOrgBd = async () => {
     const manager = getCurrentUser();
+    const stime = this.startDate;
+    const etime = this.endDate;
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
-    const params = { manager, stimeM, etimeM, page_size };
+    const params = { manager, stimeM, etimeM, stime, etime, page_size };
     const res = await api.getOrgBdList(params);
     const { data: orgBds } = res.data;
     const projs = orgBds.map(m => m.proj);
