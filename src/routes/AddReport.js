@@ -50,7 +50,8 @@ class AddReport extends React.Component {
 
     this.initialFormData = {
       time: {
-        value: [moment().startOf('week'), moment().startOf('week').add('days', 4)]
+        // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
+        value: [moment('2020-02-10'), moment('2020-02-16')],
       }
     };
     this.startTime = null;
