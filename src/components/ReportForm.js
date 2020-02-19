@@ -198,19 +198,19 @@ class ReportForm extends React.Component {
 
     getFieldDecorator('org_keys', { initialValue: [] });
     const orgKeys = getFieldValue('org_keys');
-    const orgFormItems = orgKeys.map((m, i) => (
+    const orgFormItems = orgKeys.map(m => (
       <div key={m} id={`org-form-items-${m}`}>
         <hr style={{ borderTop: '2px dashed #ccc' }} />
         <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name={`org_new_org_${i}`} layout valueType="number">
+            <BasicFormItem name={`org_new_org_${m}`} layout valueType="number">
               <SelectExistOrganization placeholder="选择机构" />
             </BasicFormItem>
           </div>
 
           <div style={{ flex: 1, marginLeft: 40 }}>
-            <BasicFormItem name={`org_new_remark_${i}`} layout>
+            <BasicFormItem name={`org_new_remark_${m}`} layout>
               <Input.TextArea autosize={{ minRows: 4 }} placeholder="机构备注" />
             </BasicFormItem>
           </div>
