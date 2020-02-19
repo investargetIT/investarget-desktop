@@ -50,6 +50,7 @@ const formItemLayoutWithOutLabel = {
 }
 
 let uuid = 0;
+let uuid2 = 0;
 let ppid = 0;
 let ppid2 = 0;
 class ReportForm extends React.Component {
@@ -182,10 +183,11 @@ class ReportForm extends React.Component {
   }
 
   addProjOrgBdFormItem = (key) => {
+    uuid2++;
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue(key);
-    const nextKeys = keys.concat(keys.length + 1);
+    const nextKeys = keys.concat(uuid2);
     // can use data-binding to set
     // important! notify form to detect changes
     const obj = {};
@@ -228,11 +230,11 @@ class ReportForm extends React.Component {
     getFieldDecorator('proj_keys', { initialValue: [] });
     const projKeys = getFieldValue('proj_keys');
     const projFormItems = projKeys.map((m, i) => {
-      const orgBDKeys = `proj_keys_orgbd_${i}`;
+      const orgBDKeys = `proj_keys_orgbd_${m}`;
       getFieldDecorator(orgBDKeys, { initialValue: [] });
       const projOrgBDKeys = getFieldValue(orgBDKeys);
-      const orgBdFormItems = projOrgBDKeys.map((m, i1) => (
-        <div key={m} style={{ display: 'flex' }}>
+      const orgBdFormItems = projOrgBDKeys.map((m1, i1) => (
+        <div key={m1} style={{ display: 'flex' }}>
 
           <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
 
@@ -240,7 +242,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>机构：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${i}_org_${i1}`} layout valueType="number">
+                <BasicFormItem name={`neworgbd_${m}_org_${m1}`} layout valueType="number">
                   <SelectExistOrganization />
                 </BasicFormItem>
               </div>
@@ -251,7 +253,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${i}_bduser_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`neworgbd_${m}_bduser_${m1}`} valueType="number" layout>
                   <SelectOrgInvestor
                     allStatus
                     onjob
@@ -259,7 +261,7 @@ class ReportForm extends React.Component {
                     type="investor"
                     mode="single"
                     optionFilterProp="children"
-                    org={getFieldValue(`neworgbd_${i}_org_${i1}`)}
+                    org={getFieldValue(`neworgbd_${m}_org_${m1}`)}
                   />
                 </BasicFormItem>
               </div>
@@ -270,7 +272,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>状态：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${i}_bdstatus_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="number" layout>
                   <SelectNewBDStatus />
                 </BasicFormItem>
               </div>
@@ -281,11 +283,15 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>备注：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${i}_comments_${i1}`} layout>
+                <BasicFormItem name={`neworgbd_${m}_comments_${m1}`} layout>
                   <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
                 </BasicFormItem>
               </div>
             </div>
+          </div>
+
+          <div style={{ width: 50, textAlign: 'center' }}>
+            <img onClick={() => this.removeFormItem(orgBDKeys, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
