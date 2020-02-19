@@ -296,7 +296,7 @@ class ReportForm extends React.Component {
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
           <div style={{ width: 200 }}>
-            <BasicFormItem name={`newproj_${i}`} valueType="number" layout>
+            <BasicFormItem name={`newproj_${m}`} valueType="number" layout>
               <SelectExistProject placeholder="选择项目" />
             </BasicFormItem>
           </div>
@@ -317,7 +317,7 @@ class ReportForm extends React.Component {
                     <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
                     <div>其他：</div>
                     <div style={{ flex: 1 }}>
-                      <BasicFormItem name={`newreport_${i}_thisplan`} layout>
+                      <BasicFormItem name={`newreport_${m}_thisplan`} layout>
                         <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
                       </BasicFormItem>
                     </div>
@@ -330,7 +330,7 @@ class ReportForm extends React.Component {
             <div>
               <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
               <div style={{ marginLeft: 82 }}>
-                <BasicFormItem name={`newreport_${i}_nextplan`} layout>
+                <BasicFormItem name={`newreport_${m}_nextplan`} layout>
                   <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
                 </BasicFormItem>
               </div>
