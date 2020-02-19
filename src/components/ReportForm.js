@@ -422,7 +422,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>机构：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`orgbd_${m.proj.id}_org_${i1}`} layout valueType="number">
+                <BasicFormItem name={`orgbd_${m.proj.id}_org_${m1}`} layout valueType="number">
                   <SelectExistOrganization />
                 </BasicFormItem>
               </div>
@@ -433,7 +433,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>投资人：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`orgbd_${m.proj.id}_bduser_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`orgbd_${m.proj.id}_bduser_${m1}`} valueType="number" layout>
                   <SelectOrgInvestor
                     allStatus
                     onjob
@@ -441,7 +441,7 @@ class ReportForm extends React.Component {
                     type="investor"
                     mode="single"
                     optionFilterProp="children"
-                    org={getFieldValue(`orgbd_${m.proj.id}_org_${i1}`)}
+                    org={getFieldValue(`orgbd_${m.proj.id}_org_${m1}`)}
                   />
                 </BasicFormItem>
               </div>
@@ -452,7 +452,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>状态：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${i1}`} valueType="number" layout>
+                <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${m1}`} valueType="number" layout>
                   <SelectNewBDStatus />
                 </BasicFormItem>
               </div>
@@ -463,7 +463,7 @@ class ReportForm extends React.Component {
             <div style={{ display: 'flex' }}>
               <div>备注：</div>
               <div style={{ flex: 1 }}>
-                <BasicFormItem name={`orgbd_${m.proj.id}_comments_${i1}`} layout>
+                <BasicFormItem name={`orgbd_${m.proj.id}_comments_${m1}`} layout>
                   <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
                 </BasicFormItem>
               </div>
