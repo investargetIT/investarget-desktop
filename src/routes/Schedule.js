@@ -71,7 +71,11 @@ class Schedule extends React.Component {
       <ul className="events">
         {
           listData.map(item => (
-            <li className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]} key={item.id} onClick={this.handleClickEvent.bind(this, item.id)}>
+            <li
+              className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
+              key={`${item.type}-${item.id}`}
+              onClick={this.handleClickEvent.bind(this, item.id)}
+            >
               {item.comments}
             </li>
           ))
@@ -165,7 +169,8 @@ class Schedule extends React.Component {
       const reportList = requestReport.data.data.map(m => {
         const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
         const comments = '周报';
-        return { ...m, scheduledtime, comments };
+        const type = 5; // 5 means already filled weekly report
+        return { ...m, scheduledtime, comments, type };
       });
       const newList = list.concat(reportList);
       newList.sort((a, b) => {
