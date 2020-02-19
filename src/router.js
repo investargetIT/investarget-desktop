@@ -72,6 +72,7 @@ import OrgBDProjList from './routes/OrgBDProjList';
 import AddReport from './routes/AddReport';
 import ReportList from './routes/ReportList';
 import ReportDetail from './routes/ReportDetail';
+import EditReport from './routes/EditReport';
 
 function RouterConfig({ history }) {
   return (
@@ -146,6 +147,7 @@ function RouterConfig({ history }) {
       <Route path="/app/report/add" component={AddReport} />
       <Route path="/app/report/list" component={ReportList} />
       <Route path="/app/report/:id" component={ReportDetail} />
+      <Route path="/app/report/edit/:id" component={EditReport} />
     </Router>
   )
 }
