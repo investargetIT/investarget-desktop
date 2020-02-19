@@ -135,6 +135,9 @@ class ReportForm extends React.Component {
     form.setFieldsValue({
       org_keys: nextKeys,
     });
+    setTimeout(() => {
+      document.getElementById(`org-form-items-${uuid}`).scrollIntoView();
+    }, 100);
   }
 
   removeFormItem = (key, value) => {
@@ -156,6 +159,9 @@ class ReportForm extends React.Component {
     form.setFieldsValue({
       proj_keys: nextKeys,
     });
+    setTimeout(() => {
+      document.getElementById(`project-form-items-${ppid}`).scrollIntoView();
+    }, 100);
   }
 
   addNewProjFormItem = () => {
@@ -166,6 +172,9 @@ class ReportForm extends React.Component {
     form.setFieldsValue({
       textproject_keys: nextKeys,
     });
+    setTimeout(() => {
+      document.getElementById(`textproject-form-items-${ppid2}`).scrollIntoView();
+    }, 100);
   }
 
   addProjOrgBdFormItem = (key) => {
@@ -186,7 +195,7 @@ class ReportForm extends React.Component {
     getFieldDecorator('org_keys', { initialValue: [] });
     const orgKeys = getFieldValue('org_keys');
     const orgFormItems = orgKeys.map((m, i) => (
-      <div key={m}>
+      <div key={m} id={`org-form-items-${m}`}>
         <hr style={{ borderTop: '2px dashed #ccc' }} />
         <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
 
@@ -278,7 +287,7 @@ class ReportForm extends React.Component {
         </div>
       ));
 
-      return (<div key={m}>
+      return (<div key={m} id={`project-form-items-${m}`}>
         <hr style={{ borderTop: '2px dashed #ccc' }} />
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
@@ -337,7 +346,7 @@ class ReportForm extends React.Component {
     const newProjKeys = getFieldValue('textproject_keys');
     const newProjFormItems = newProjKeys.map((m, i) => {
 
-      return (<div key={m}>
+      return (<div key={m} id={`textproject-form-items-${m}`}>
         <hr style={{ borderTop: '2px dashed #ccc' }} />
         <div style={{ display: 'flex', alignItems: 'center' }}>
 
