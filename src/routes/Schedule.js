@@ -172,6 +172,26 @@ class Schedule extends React.Component {
         const type = 5; // 5 means already filled weekly report
         return { ...m, scheduledtime, comments, type };
       });
+     
+      const day1 = 5;
+      const result1 = [];
+      const current1 = firstDayOfLastMonth.clone();
+      result1.push(current1.clone().day(day1));
+      while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
+        result1.push(current1.clone());
+      }
+      result1.forEach((element, index) => {
+        const dateStr = element.format('YYYY-MM-DD');
+        if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
+          list.push({
+            scheduledtime: dateStr,
+            comments: '周报',
+            type: 6,
+            id: index,
+          });
+        }
+      });
+
       const newList = list.concat(reportList);
       newList.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)

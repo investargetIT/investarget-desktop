@@ -40,6 +40,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.event-type-6 {
+  background-color: rgb(245, 96, 108);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .event:hover {
   background-color: #FFF9C4;
 }
