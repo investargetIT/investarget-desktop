@@ -139,6 +139,7 @@ class ReportDetail extends React.Component {
     this.setState({
       current: e.key,
     });
+    document.getElementById(e.key).scrollIntoView();
   }
 
   render() {
@@ -266,7 +267,7 @@ class ReportDetail extends React.Component {
 
         </div>
 
-        <div style={{ marginBottom: 40 }}>
+        <div id="mail" style={{ marginBottom: 40 }}>
 
           <div style={{ padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>投资机构日常沟通汇报</div>
@@ -296,7 +297,7 @@ class ReportDetail extends React.Component {
 
         </div>
 
-        <div style={{ marginBottom: 40 }}>
+        <div id="app" style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
@@ -305,7 +306,7 @@ class ReportDetail extends React.Component {
           </div>
         </div>
 
-        <div style={{ marginBottom: 40 }}>
+        <div id="alipay" style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
