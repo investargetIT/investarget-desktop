@@ -2,7 +2,7 @@ import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { withRouter } from 'dva/router'
-import { handleError, time, i18n, getCurrentUser, getUserInfo } from '../utils/util'
+import { handleError, time, i18n, getCurrentUser, getUserInfo, hasPerm } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
 const Option = Select.Option
@@ -71,7 +71,11 @@ class Schedule extends React.Component {
       <ul className="events">
         {
           listData.map(item => (
-            <li className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]} key={item.id} onClick={this.handleClickEvent.bind(this, item.id)}>
+            <li
+              className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
+              key={`${item.type}-${item.id}`}
+              onClick={this.handleClickEvent.bind(this, item)}
+            >
               {item.comments}
             </li>
           ))
@@ -80,15 +84,28 @@ class Schedule extends React.Component {
     );
   }
 
-  handleClickEvent = (id, e) => {
+  handleClickEvent = (item, e) => {
     e.stopPropagation()
-    const event = this.state.list.filter(item => item.id == id)[0] || {}
 
-    if (event.type === 5) {
-      this.props.router.push('/app/report/add');
+    const { id, type, scheduledtime } = item;
+
+    if (hasPerm('BD.admin_getWorkReport') && (type === 5 || type === 6)) {
+      const url = `/app/report/list?date=${scheduledtime}`;
+      this.props.router.push(url);
+      return;
+    }
+    if (type === 5) {
+      const url = `/app/report/${id}`;
+      this.props.router.push(url);
+      return;
+    }
+    if (type === 6) {
+      const url = `/app/report/add?date=${scheduledtime}`;
+      this.props.router.push(url);
       return;
     }
 
+    const event = this.state.list.filter(item => item.id == id)[0] || {}
     this.setState({visibleEvent:true, event })
     this.eventEl = e.target
     this.eventEl.classList.add('event-selected')
@@ -118,7 +135,7 @@ class Schedule extends React.Component {
     }
   }
 
-  getEvents = () => {
+  getEvents = async () => {
     window.echo(this.props.location.query.mid);
     // 加载前后三个月的日程
     const lastMonth = this.state.selectedDate.clone().subtract(1, 'M');
@@ -128,20 +145,10 @@ class Schedule extends React.Component {
       page_size: 100, 
       date: m.format('YYYY-MM-DD'),
     }));
-    Promise.all(requestThreeMonthsSchedule)
-    .then(result => {
 
-      const reportEvent = {
-        id: 'report-1',
-        scheduledtime: '2020-02-21',
-        type: 5,
-        comments: '简报',
-      };
-
-      let initialValue = [];
-      // initialValue = [reportEvent];
-
-      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), initialValue);
+    try {
+      const result = await Promise.all(requestThreeMonthsSchedule);
+      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
       list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       })
@@ -162,10 +169,50 @@ class Schedule extends React.Component {
           event = relatedEvent[0];
         }
       }
-      this.setState({ list, visibleEvent, event });
-    }).catch(error => {
+
+      const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
+      const firstDayOfNextTwoMonths = this.state.selectedDate.clone().add(2, 'M').startOf('month');
+      const params = {
+        user: getCurrentUser(),
+        startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
+        endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
+        page_size: 1000
+      };
+      const requestReport = await api.getWorkReport(params);
+      const reportList = requestReport.data.data.map(m => {
+        const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
+        const comments = '周报';
+        const type = 5; // 5 means already filled weekly report
+        return { ...m, scheduledtime, comments, type };
+      });
+     
+      const day1 = 5;
+      const result1 = [];
+      const current1 = firstDayOfLastMonth.clone();
+      result1.push(current1.clone().day(day1));
+      while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
+        result1.push(current1.clone());
+      }
+      result1.forEach((element, index) => {
+        const dateStr = element.format('YYYY-MM-DD');
+        if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
+          list.push({
+            scheduledtime: dateStr,
+            comments: '周报',
+            type: 6,
+            id: index,
+          });
+        }
+      });
+
+      const newList = list.concat(reportList);
+      newList.sort((a, b) => {
+        return new Date(a.scheduledtime) - new Date(b.scheduledtime)
+      });
+      this.setState({ list: newList, visibleEvent, event });
+    } catch (error) {
       handleError(error)
-    })
+    }
   }
 
   addEvent = () => {

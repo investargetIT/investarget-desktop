@@ -4,7 +4,7 @@ import {
   i18n, 
   hasPerm,
 } from '../utils/util';
-
+import moment from 'moment';
 import { 
   Row, 
   Col, 
@@ -12,10 +12,12 @@ import {
   Checkbox, 
   Select, 
   Radio, 
-  Icon, 
+  Icon,
+  DatePicker,
 } from 'antd'
 const RadioGroup = Radio.Group
 const CheckboxGroup = Checkbox.Group
+const { RangePicker } = DatePicker;
 
 import TabCheckbox from './TabCheckbox'
 import {
@@ -1061,6 +1063,42 @@ class WxMessageFilter extends React.Component {
   }
 }
 
+class WorkReportFilter extends React.Component {
+
+  static defaultValue = {
+    startEndDate: [moment().startOf('week'), moment().startOf('week').add('days', 6)]
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = this.props.defaultValue || WorkReportFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value },this.handleSearch)
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...WorkReportFilter.defaultValue })
+    this.props.onReset({ ...WorkReportFilter.defaultValue })
+  }
+
+  render() {
+    const { startEndDate } = this.state
+    return (
+      <div>
+        <BasicContainer label="起止时间">
+          <RangePicker onChange={this.handleChange.bind(this, 'startEndDate')} value={startEndDate} />
+        </BasicContainer>
+        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+      </div>
+    )
+  }
+}
 
 
 ///// used in AddUser.js TODO:// refractor
@@ -1083,6 +1121,7 @@ export {
   ProjectLibraryFilter,
   ProjectBDFilter,
   WxMessageFilter,
+  WorkReportFilter,
   OrgBDFilter,
   MeetBDFilter,
   FamiliarFilter

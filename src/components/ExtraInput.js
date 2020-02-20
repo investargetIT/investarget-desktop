@@ -679,8 +679,12 @@ class SelectOrgInvestor extends React.Component {
 
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
     this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
+    this.getData(this.props);
+  }
 
-    const { org, type, allStatus, onjob } = this.props
+  getData = (props) => {
+    const { org, type, allStatus, onjob } = props
+    if (!org) return;
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
       const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
@@ -696,6 +700,12 @@ class SelectOrgInvestor extends React.Component {
         this.setState({ options })
       }
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.org !== nextProps.org) {
+      this.getData(nextProps);
+    }
   }
 
   handleChange = (value) => {

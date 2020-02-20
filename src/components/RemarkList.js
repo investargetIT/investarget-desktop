@@ -174,6 +174,7 @@ function remarkListWithApi(type) {
     getRemarkList = () => {
       const param = {
         [type]: this.props.typeId,
+        page_size: 1000,
       }
       const {initComNum,list,currentList,currentListNum}=this.state
       getApi(param).then(result => {

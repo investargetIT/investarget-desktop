@@ -34,7 +34,8 @@
     "project_dataroom": "Data Room",
     "company_dataroom": "公司文件",
     "list_organization": "机构列表",
-    "exportexcel_organization": "导出任务"
+    "exportexcel_organization": "导出任务",
+    "weekly_report": "周报"
   },
   "account": {
     "login": "登录",

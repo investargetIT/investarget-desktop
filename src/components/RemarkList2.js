@@ -182,7 +182,7 @@ class Remark extends React.Component {
       lastmodifytime = time(lastTime + timezone);
     }
     const photourl=this.state.photoURL
-    const comments={__html:this.props.comments.replace(/\n/g,'<br>')}
+    const comments={__html: this.props.comments ? this.props.comments.replace(/\n/g,'<br>') : ''}
     const currentUser = getUserInfo();
     const isSuperAdmin = currentUser.is_superuser;
     const isOwner = currentUser.id === this.props.userid;
