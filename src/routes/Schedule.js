@@ -74,7 +74,7 @@ class Schedule extends React.Component {
             <li
               className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
               key={`${item.type}-${item.id}`}
-              onClick={this.handleClickEvent.bind(this, item.id)}
+              onClick={this.handleClickEvent.bind(this, item)}
             >
               {item.comments}
             </li>
@@ -84,15 +84,21 @@ class Schedule extends React.Component {
     );
   }
 
-  handleClickEvent = (id, e) => {
+  handleClickEvent = (item, e) => {
     e.stopPropagation()
-    const event = this.state.list.filter(item => item.id == id)[0] || {}
 
-    if (event.type === 5) {
-      this.props.router.push('/app/report/add');
+    const { id, type, scheduledtime } = item;
+    if (type === 5) {
+      const url = `/app/report/${id}`;
+      this.props.router.push(url);
+      return;
+    } else if (type === 6) {
+      const url = `/app/report/add?date=${scheduledtime}`;
+      this.props.router.push(url);
       return;
     }
 
+    const event = this.state.list.filter(item => item.id == id)[0] || {}
     this.setState({visibleEvent:true, event })
     this.eventEl = e.target
     this.eventEl.classList.add('event-selected')
