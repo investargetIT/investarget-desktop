@@ -228,7 +228,7 @@ class ReportDetail extends React.Component {
     });
 
     return (
-      <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
+      <LeftRightLayout location={this.props.location} title="工作周报">
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             {this.state.photourl && <img style={{ marginRight: 10, width: 26, height: 26 }} src={this.state.photourl} />}

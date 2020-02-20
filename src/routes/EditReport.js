@@ -358,7 +358,7 @@ class EditReport extends React.Component {
 
   render() {
     return(
-      <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
+      <LeftRightLayout location={this.props.location} title="工作周报">
         <div>
           <AddReportForm wrappedComponentRef={this.handleRef} data={this.initialFormData} />
           <div style={actionStyle}>
