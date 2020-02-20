@@ -7,11 +7,19 @@ import { Icon, Table, Pagination, Popconfirm } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
+import moment from 'moment';
 
 class ReportList extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const { date } = props.location.query;
+    let filters = WorkReportFilter.defaultValue;
+    if (date) {
+      const startEndDate = [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)];
+      filters = { startEndDate };
+    }
 
     this.state = {
       page: 1,
@@ -19,7 +27,7 @@ class ReportList extends React.Component {
       total: 0,
       list: [],
       loading: false,
-      filters: WorkReportFilter.defaultValue,
+      filters,
     }
   }
 
