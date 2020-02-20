@@ -64,12 +64,12 @@ class ReportList extends React.Component {
         title: '操作', key: 'operation', render: (text, record) => {
           return (
             <div>
-              <Link to={`/app/report/${record.id}`}>
+              <Link to={`/app/report/${record.id}`} style={{ marginRight: 10 }}>
                 <Icon type="eye-o" style={{ fontSize: '16px' }} />
               </Link>
-              <Link style={{ margin: '0 10px' }}>
+              {/* <Link style={{ marginRight: 10 }}>
                 <Icon type="edit" style={{ fontSize: '16px' }} />
-              </Link>
+              </Link> */}
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
                 <Link>
                   <Icon type="delete" style={{ fontSize: '16px' }} />
