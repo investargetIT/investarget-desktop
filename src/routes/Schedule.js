@@ -2,7 +2,7 @@ import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { withRouter } from 'dva/router'
-import { handleError, time, i18n, getCurrentUser, getUserInfo } from '../utils/util'
+import { handleError, time, i18n, getCurrentUser, getUserInfo, hasPerm } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
 const Option = Select.Option
@@ -88,11 +88,18 @@ class Schedule extends React.Component {
     e.stopPropagation()
 
     const { id, type, scheduledtime } = item;
+
+    if (hasPerm('BD.admin_getWorkReport') && (type === 5 || type === 6)) {
+      const url = `/app/report/list?date=${scheduledtime}`;
+      this.props.router.push(url);
+      return;
+    }
     if (type === 5) {
       const url = `/app/report/${id}`;
       this.props.router.push(url);
       return;
-    } else if (type === 6) {
+    }
+    if (type === 6) {
       const url = `/app/report/add?date=${scheduledtime}`;
       this.props.router.push(url);
       return;
