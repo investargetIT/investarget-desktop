@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { i18n, getCurrentUser, hasPerm } from '../utils/util'
 import { connect } from 'dva'
-import { Form, Input, DatePicker } from 'antd'
+import { Form, Input, DatePicker, Menu } from 'antd'
 const { RangePicker } = DatePicker;
 import {
   BasicFormItem,
@@ -41,6 +41,7 @@ class ReportDetail extends React.Component {
       orgRemarks: [],
       projOrgBds: [],
       photourl: null,
+      current: null,
     };
     this.reportId = Number(props.params.id);
   }
@@ -132,6 +133,12 @@ class ReportDetail extends React.Component {
       return { proj, orgBds: bds };
     });
     this.setState({ projOrgBds });
+  }
+
+  handleClick = (e) => {
+    this.setState({
+      current: e.key,
+    });
   }
 
   render() {
@@ -226,6 +233,25 @@ class ReportDetail extends React.Component {
             {this.state.photourl && <img style={{ marginRight: 10, width: 26, height: 26 }} src={this.state.photourl} />}
             {this.state.report && this.state.report.user.username}
           </div>
+
+          <div>
+            <Menu
+              onClick={this.handleClick}
+              selectedKeys={[this.state.current]}
+              mode="horizontal"
+            >
+              <Menu.Item key="mail">
+                投资机构日常沟通汇报
+              </Menu.Item>
+              <Menu.Item key="app">
+                市场信息和项目信息汇报 
+              </Menu.Item>
+              <Menu.Item key="alipay">
+                其他事项/工作建议
+              </Menu.Item>
+            </Menu>
+          </div>
+
           {this.state.report &&
             <RangePicker disabled value={[moment(this.state.report.startTime), moment(this.state.report.endTime)]} />
           }
