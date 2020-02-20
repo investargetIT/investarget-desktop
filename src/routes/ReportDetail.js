@@ -40,6 +40,7 @@ class ReportDetail extends React.Component {
       report: null,
       orgRemarks: [],
       projOrgBds: [],
+      photourl: null,
     };
     this.reportId = Number(props.params.id);
   }
@@ -52,7 +53,12 @@ class ReportDetail extends React.Component {
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
     this.setState({ report: res.data });
-    const { startTime, endTime } = res.data;
+    const { startTime, endTime, user } = res.data;
+
+    const resUser = await api.getUserInfo(user.id);
+    const { photourl } = resUser.data;
+    this.setState({ photourl });
+
     this.getOrgRemark(startTime, endTime);
     await this.getOrgBd(startTime, endTime);
     this.getReportProj();
@@ -216,7 +222,10 @@ class ReportDetail extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title="投行业务岗位工作周报">
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>报告人：{this.state.report && this.state.report.user.username}</div>
+          <div>
+            {this.state.photourl && <img style={{ marginRight: 10, width: 26, height: 26 }} src={this.state.photourl} />}
+            {this.state.report && this.state.report.user.username}
+          </div>
           {this.state.report &&
             <RangePicker disabled value={[moment(this.state.report.startTime), moment(this.state.report.endTime)]} />
           }
