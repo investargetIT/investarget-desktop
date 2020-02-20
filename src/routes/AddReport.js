@@ -48,10 +48,12 @@ class AddReport extends React.Component {
   constructor(props) {
     super(props)
 
+    const { date } = props.location.query;
+
     this.initialFormData = {
       time: {
-        // value: [moment().startOf('week'), moment().startOf('week').add('days', 6)],
-        value: [moment('2020-02-10'), moment('2020-02-16')],
+        value: [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)],
+        // value: [moment('2020-02-10'), moment('2020-02-16')],
       }
     };
     this.startTime = null;
