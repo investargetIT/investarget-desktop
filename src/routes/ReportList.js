@@ -1,11 +1,12 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
-import { getUserInfo, i18n, handleError } from '../utils/util';
+import { getUserInfo, i18n, handleError, hasPerm } from '../utils/util';
 import { connect } from 'dva';
 import { Icon, Table, Pagination, Popconfirm } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link } from 'dva/router';
+import { WorkReportFilter } from '../components/Filter';
 
 class ReportList extends React.Component {
 
@@ -18,6 +19,7 @@ class ReportList extends React.Component {
       total: 0,
       list: [],
       loading: false,
+      filters: WorkReportFilter.defaultValue,
     }
   }
 
@@ -26,8 +28,15 @@ class ReportList extends React.Component {
   }
 
   getReportList = () => {
-    const { page, pageSize } = this.state
-    const params = { page_index: page, page_size: pageSize }
+    const { page, pageSize, filters } = this.state;
+    const startTime = filters.startEndDate[0].format('YYYY-MM-DD');
+    const endTime = filters.startEndDate[1].format('YYYY-MM-DD');
+    const params = {
+      startTime: hasPerm('BD.admin_getWorkReport') ? `${startTime}T00:00:00` : undefined,
+      endTime: hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
+      page_index: page,
+      page_size: pageSize
+    };
     this.setState({ loading: true })
     api.getWorkReport(params).then(result => {
       const { count: total, data: list } = result.data
@@ -51,6 +60,14 @@ class ReportList extends React.Component {
 
   deleteReportItem = async item => {
     api.deleteWorkReport(item.id).then(this.getReportList).catch(handleError);
+  }
+
+  handleFilt = (filters) => {
+    this.setState({ filters, page: 1 }, this.getReportList);
+  }
+
+  handleReset = (filters) => {
+    this.setState({ filters, page: 1 }, this.getReportList);
   }
 
   render() {
@@ -86,6 +103,15 @@ class ReportList extends React.Component {
         title="工作报告列表"
         action={{name: '填写周报', link: "/app/report/add" }}
       >
+
+        {hasPerm('BD.admin_getWorkReport') &&
+          <WorkReportFilter
+            defaultValue={this.state.filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+          />
+        }
+
         <Table
           columns={columns}
           dataSource={list}
