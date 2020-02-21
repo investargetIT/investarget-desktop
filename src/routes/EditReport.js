@@ -51,6 +51,10 @@ class EditReport extends React.Component {
     this.startTime = null;
     this.endTime = null;
     this.reportId = Number(props.params.id);
+
+    this.state = {
+      report: null,
+    };
   }
 
   componentDidMount() {
@@ -58,11 +62,20 @@ class EditReport extends React.Component {
   }
 
   getFormData = () => {
+    if (!this.state.report) return {
+      time: {
+          // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
+        value: [moment('2020-02-10'), moment('2020-02-16')],
+      }
+    }; 
+    const { marketMsg, others } = this.state.report;
     return {
       time: {
         // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
         value: [moment('2020-02-10'), moment('2020-02-16')],
-      }
+      },
+      summary: { value: marketMsg },
+      suggestion: { value: others },
     };
   }
 
