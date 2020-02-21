@@ -22,7 +22,7 @@ function onValuesChange(props, values) {
 function mapPropsToFields(props) {
   return props.data
 }
-const AddReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
+const EditReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
 
 
 function toData(formData) {
@@ -48,12 +48,6 @@ class EditReport extends React.Component {
   constructor(props) {
     super(props)
 
-    this.initialFormData = {
-      time: {
-        // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
-        value: [moment('2020-02-10'), moment('2020-02-16')],
-      }
-    };
     this.startTime = null;
     this.endTime = null;
     this.reportId = Number(props.params.id);
@@ -63,13 +57,44 @@ class EditReport extends React.Component {
     this.getReportDetail();
   }
 
+  getFormData = () => {
+    return {
+      time: {
+        // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
+        value: [moment('2020-02-10'), moment('2020-02-16')],
+      }
+    };
+  }
+
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
     this.setState({ report: res.data });
     const { startTime, endTime } = res.data;
-    this.getOrgRemark(startTime, endTime);
-    await this.getOrgBd(startTime, endTime);
-    this.getReportProj();
+    // this.getReportProj();
+  }
+
+  getReportProj = async () => {
+    const params = {
+      report: this.reportId,
+      page_size: 1000,
+    };
+    const res = await api.getWorkReportProjInfo(params);
+    const { data: reportProj } = res.data;
+    const orgBds = [...this.state.projOrgBds];
+    reportProj.forEach((element, index) => {
+      if (element.proj) {
+        const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
+        if (index > -1) {
+          orgBds[index].thisPlan = element.thisPlan;
+          orgBds[index].nextPlan = element.nextPlan;
+        } else {
+          orgBds.push({ ...element, orgBds: [] });
+        }
+      } else {
+        orgBds.push({ ...element, orgBds: [], proj: { projtitle: element.projTitle, id: `-${index}` }})
+      }
+    });
+    this.setState({ projOrgBds: orgBds });
   }
 
   goBack = () => {
@@ -360,7 +385,7 @@ class EditReport extends React.Component {
     return(
       <LeftRightLayout location={this.props.location} title="工作周报">
         <div>
-          <AddReportForm wrappedComponentRef={this.handleRef} data={this.initialFormData} />
+          <EditReportForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
