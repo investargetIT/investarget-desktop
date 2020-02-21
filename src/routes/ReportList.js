@@ -92,9 +92,9 @@ class ReportList extends React.Component {
               <Link to={`/app/report/${record.id}`} style={{ marginRight: 10 }}>
                 <Icon type="eye-o" style={{ fontSize: '16px' }} />
               </Link>
-              {/* <Link style={{ marginRight: 10 }}>
+              <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
                 <Icon type="edit" style={{ fontSize: '16px' }} />
-              </Link> */}
+              </Link>
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
                 <Link>
                   <Icon type="delete" style={{ fontSize: '16px' }} />
