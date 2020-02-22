@@ -579,7 +579,7 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>备注：</div>
                           <div style={{ flex: 1 }}>
-                            {m.BDComments.map(m1 => (
+                            {m.BDComments && m.BDComments.map(m1 => (
                               <BasicFormItem key={m1.id} name={`oldorgbd-comments_${m.id}_${m1.id}`} layout>
                                 <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
                               </BasicFormItem>
