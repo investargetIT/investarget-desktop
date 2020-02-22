@@ -121,9 +121,16 @@ class ReportForm extends React.Component {
 
     const { getFieldDecorator, setFieldsValue } = this.props.form;
     orgBds.forEach(element => {
-      const { id, response } = element;
+      const { id, response, BDComments } = element;
       getFieldDecorator(`oldorgbd_${id}_bdstatus`, { initialValue: undefined });
       setFieldsValue({ [`oldorgbd_${id}_bdstatus`] : response });
+      if (BDComments) {
+        BDComments.forEach(element => {
+          const { id: commentId, comments } = element;
+          getFieldDecorator(`oldorgbd_${id}_comments_${commentId}`, { initialValue: ''});
+          setFieldsValue({ [`oldorgbd_${id}_comments_${commentId}`]: comments });
+        });
+      }
     });
 
     const projs = orgBds.map(m => m.proj);
@@ -536,7 +543,11 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>备注：</div>
                           <div style={{ flex: 1 }}>
-                            {m.BDComments ? m.BDComments.map(m => m.comments).join('；') : '暂无'}
+                            {m.BDComments.map(m1 => (
+                              <BasicFormItem key={m1.id} name={`oldorgbd_${m.id}_comments_${m1.id}`} layout>
+                                <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+                              </BasicFormItem>
+                            ))}
                           </div>
                         </div>
                       </div>
