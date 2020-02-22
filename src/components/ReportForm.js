@@ -219,8 +219,14 @@ class ReportForm extends React.Component {
   updateOrgBdComments = async data => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      const { id, comments } = element;
-      await api.editOrgBDComment(id, { comments });
+      const { id, comments, orgBD } = element;
+      if (id !== 0) {
+        await api.editOrgBDComment(id, { comments });
+      } else {
+        if (comments) {
+          await api.addOrgBDComment({ orgBD, comments });
+        }
+      }
     }
   }
 
@@ -239,7 +245,7 @@ class ReportForm extends React.Component {
         const value = values[property];
         const infos = property.split('_');
         const commentId = infos[2];
-        const o = { id: parseInt(commentId), comments: value };
+        const o = { id: parseInt(commentId), comments: value, orgBD: orgBdId };
         result.push(o);
       }
     }
