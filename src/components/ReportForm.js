@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
 import moment from 'moment';
-import { Form, Input, Radio, Checkbox, DatePicker, Button } from 'antd'
+import { Form, Input, Radio, Checkbox, DatePicker, Button, message } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const { RangePicker } = DatePicker;
@@ -214,7 +214,14 @@ class ReportForm extends React.Component {
     window.echo('confirm', orgBdId);
     this.props.form.validateFields((err, values) => {
       window.echo('aaa', values);
+      this.updateOrgBd(values, orgBdId);
     });
+  }
+
+  updateOrgBd = async (values, orgBdId) => {
+    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
+    await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    message.success('机构BD已更新');
   }
 
   render() {
