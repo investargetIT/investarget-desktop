@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
 import moment from 'moment';
-import { Form, Input, Radio, Checkbox, DatePicker } from 'antd'
+import { Form, Input, Radio, Checkbox, DatePicker, Button } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const { RangePicker } = DatePicker;
@@ -208,6 +208,10 @@ class ReportForm extends React.Component {
     const obj = {};
     obj[key] = nextKeys;
     form.setFieldsValue(obj);
+  }
+
+  handleConfirmBtnClick = orgBdId => {
+    window.echo('confirm', orgBdId);
   }
 
   render() {
@@ -551,6 +555,14 @@ class ReportForm extends React.Component {
                           </div>
                         </div>
                       </div>
+
+                      <Button
+                        style={{ margin: '0 10px' }}
+                        size="small"
+                        onClick={() => this.handleConfirmBtnClick(m.id)}
+                      >
+                        确定
+                      </Button>
 
                     </div>
                   )
