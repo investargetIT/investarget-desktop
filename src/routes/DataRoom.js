@@ -714,6 +714,10 @@ class DataRoom extends React.Component {
   handleConfirmSelectDataroomTemp = () => {
     const body = { user: this.state.dataRoomTempModalUserId };
     api.applyDataroomTemp(this.state.selectedDataroomTemp, body).then(() => {
+      Modal.success({
+        title: i18n('success'),
+        content: '应用模版成功',
+      });
       this.setState({ showDataRoomTempModal: false }, this.getAllUserFile);
     });
     api.editDataroomTemp(
