@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n, getCurrentUser, hasPerm } from '../utils/util'
+import { i18n, getCurrentUser, hasPerm, handleError} from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
@@ -211,17 +211,39 @@ class ReportForm extends React.Component {
   }
 
   handleConfirmBtnClick = orgBdId => {
-    window.echo('confirm', orgBdId);
     this.props.form.validateFields((err, values) => {
-      window.echo('aaa', values);
-      this.updateOrgBd(values, orgBdId);
+      this.updateOrgBd(values, orgBdId).catch(handleError);
     });
+  }
+
+  updateOrgBdComments = async data => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      const { id, comments } = element;
+      await api.editOrgBDComment(id, { comments });
+    }
   }
 
   updateOrgBd = async (values, orgBdId) => {
     const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
     await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const comments = this.getOldOrgBdComments(values, orgBdId);
+    await this.updateOrgBdComments(comments);
     message.success('机构BD已更新');
+  }
+
+  getOldOrgBdComments = (values, orgBdId) => {
+    const result = [];
+    for (const property in values) {
+      if (property.startsWith(`oldorgbd-comments_${orgBdId}`)) {
+        const value = values[property];
+        const infos = property.split('_');
+        const commentId = infos[2];
+        const o = { id: parseInt(commentId), comments: value };
+        result.push(o);
+      }
+    }
+    return result;
   }
 
   render() {
