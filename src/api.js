@@ -830,6 +830,7 @@ export const modifyOrgBD = (id, body) => r(`/bd/orgbd/${id}/`, 'PUT', body);
 
 export const addOrgBDComment = body => r('/bd/orgbd/comment/', 'POST', body);
 export const deleteOrgBDComment = id => r(`/bd/orgbd/comment/${id}/`, 'DELETE');
+export const editOrgBDComment = (id, body) => r(`/bd/orgbd/comment/${id}/`, 'PUT', body);
 export const getOrgBDProj = params => {
   _.forIn(params, function(value, key) {
     if (Array.isArray(value)) {

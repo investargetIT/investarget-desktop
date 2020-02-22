@@ -122,13 +122,13 @@ class ReportForm extends React.Component {
     const { getFieldDecorator, setFieldsValue } = this.props.form;
     orgBds.forEach(element => {
       const { id, response, BDComments } = element;
-      getFieldDecorator(`oldorgbd_${id}_bdstatus`, { initialValue: undefined });
-      setFieldsValue({ [`oldorgbd_${id}_bdstatus`] : response });
+      getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
+      setFieldsValue({ [`oldorgbd-bdstatus_${id}`] : response });
       if (BDComments) {
         BDComments.forEach(element => {
           const { id: commentId, comments } = element;
-          getFieldDecorator(`oldorgbd_${id}_comments_${commentId}`, { initialValue: ''});
-          setFieldsValue({ [`oldorgbd_${id}_comments_${commentId}`]: comments });
+          getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: ''});
+          setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
         });
       }
     });
@@ -212,6 +212,9 @@ class ReportForm extends React.Component {
 
   handleConfirmBtnClick = orgBdId => {
     window.echo('confirm', orgBdId);
+    this.props.form.validateFields((err, values) => {
+      window.echo('aaa', values);
+    });
   }
 
   render() {
@@ -536,7 +539,7 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
-                            <BasicFormItem name={`oldorgbd_${m.id}_bdstatus`} valueType="number" layout>
+                            <BasicFormItem name={`oldorgbd-bdstatus_${m.id}`} valueType="number" layout>
                               <SelectNewBDStatus />
                             </BasicFormItem>
                           </div>
@@ -548,7 +551,7 @@ class ReportForm extends React.Component {
                           <div>备注：</div>
                           <div style={{ flex: 1 }}>
                             {m.BDComments.map(m1 => (
-                              <BasicFormItem key={m1.id} name={`oldorgbd_${m.id}_comments_${m1.id}`} layout>
+                              <BasicFormItem key={m1.id} name={`oldorgbd-comments_${m.id}_${m1.id}`} layout>
                                 <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
                               </BasicFormItem>
                             ))}
