@@ -62,17 +62,10 @@ class EditReport extends React.Component {
   }
 
   getFormData = () => {
-    if (!this.state.report) return {
-      time: {
-          // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
-        value: [moment('2020-02-10'), moment('2020-02-16')],
-      }
-    }; 
-    const { marketMsg, others } = this.state.report;
+    const { startTime, endTime, marketMsg, others } = this.state.report;
     return {
       time: {
-        // value: [moment().startOf('week'), moment().startOf('week').add('days', 4)],
-        value: [moment('2020-02-10'), moment('2020-02-16')],
+        value: [moment(startTime), moment(endTime)],
       },
       summary: { value: marketMsg },
       suggestion: { value: others },
@@ -82,7 +75,6 @@ class EditReport extends React.Component {
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
     this.setState({ report: res.data });
-    const { startTime, endTime } = res.data;
     // this.getReportProj();
   }
 
@@ -398,7 +390,7 @@ class EditReport extends React.Component {
     return(
       <LeftRightLayout location={this.props.location} title="工作周报">
         <div>
-          <EditReportForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />
+          { this.state.report && <EditReportForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />}
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
