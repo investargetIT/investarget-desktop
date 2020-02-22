@@ -118,6 +118,14 @@ class ReportForm extends React.Component {
     const params = { manager, stimeM, etimeM, stime, etime, page_size };
     const res = await api.getOrgBdList(params);
     const { data: orgBds } = res.data;
+
+    const { getFieldDecorator, setFieldsValue } = this.props.form;
+    orgBds.forEach(element => {
+      const { id, response } = element;
+      getFieldDecorator(`oldorgbd_${id}_bdstatus`, { initialValue: undefined });
+      setFieldsValue({ [`oldorgbd_${id}_bdstatus`] : response });
+    });
+
     const projs = orgBds.map(m => m.proj);
     const projIds = projs.map(m => m.id);
     const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
@@ -517,7 +525,9 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
-                            {m.response && this.props.orgbdres.length > 0 ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}
+                            <BasicFormItem name={`oldorgbd_${m.id}_bdstatus`} valueType="number" layout>
+                              <SelectNewBDStatus />
+                            </BasicFormItem>
                           </div>
                         </div>
                       </div>
