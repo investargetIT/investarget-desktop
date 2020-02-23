@@ -117,11 +117,9 @@ class EditReport extends React.Component {
     };
     const res = await api.getWorkReportProjInfo(params);
     const { data: reportProj } = res.data;
-    window.echo('report proj', reportProj);
     this.setState({ textProj: reportProj.filter(f => f.projTitle && !f.proj) });
 
     const projId = await this.getOrgBdProjId();
-    window.echo('proj id', projId);
     this.setState({
       existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)),
       newProj: reportProj.filter(f => f.proj && !f.projTitle && !projId.includes(f.proj.id)),
@@ -153,7 +151,6 @@ class EditReport extends React.Component {
   handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        // window.echo('values', values);
         this.addData(values);
       }
     })
@@ -378,8 +375,8 @@ class EditReport extends React.Component {
         const proj = e;
         const org = thisProjItem.filter(f => f.key === 'org')[0].value;
         const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
-        const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
-        const comments = thisProj.filter(f => f.key === 'comments')[0].value;
+        const bdstatus = thisProjItem.filter(f => f.key === 'bdstatus')[0].value;
+        const comments = thisProjItem.filter(f => f.key === 'comments')[0].value;
         result.push({ proj, org, bduser, bdstatus, comments });
       })
     });
@@ -416,8 +413,8 @@ class EditReport extends React.Component {
         const proj = e;
         const org = thisProjItem.filter(f => f.key === 'org')[0].value;
         const bduser = thisProjItem.filter(f => f.key === 'bduser')[0].value;
-        const bdstatus = thisProj.filter(f => f.key === 'bdstatus')[0].value;
-        const comments = thisProj.filter(f => f.key === 'comments')[0].value;
+        const bdstatus = thisProjItem.filter(f => f.key === 'bdstatus')[0].value;
+        const comments = thisProjItem.filter(f => f.key === 'comments')[0].value;
         result.push({ proj, org, bduser, bdstatus, comments });
       })
     });
