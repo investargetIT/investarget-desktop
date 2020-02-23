@@ -56,6 +56,7 @@ class EditReport extends React.Component {
       report: null,
       textProj: [],
       existProj: [],
+      newProj: [],
     };
   }
 
@@ -66,7 +67,8 @@ class EditReport extends React.Component {
   getFormData = () => {
     const { startTime, endTime, marketMsg, others } = this.state.report;
     const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
-    
+    const newProjKeys = this.state.newProj.map(m => `newsproj${m.id}`);
+
     const formData = {
       time: {
         value: [moment(startTime), moment(endTime)],
@@ -74,6 +76,7 @@ class EditReport extends React.Component {
       summary: { value: marketMsg },
       suggestion: { value: others },
       textproject_keys: { value: textProjKeys },
+      proj_keys: { value: newProjKeys },
     };
 
     this.state.textProj.forEach(element => {
@@ -86,6 +89,13 @@ class EditReport extends React.Component {
     this.state.existProj.forEach(m => {
       formData[`existingproj_${m.proj.id}_thisplan`] = { value: m.thisPlan };
       formData[`existingproj_${m.proj.id}_nextplan`] = { value: m.nextPlan };
+    });
+
+    this.state.newProj.forEach(element => {
+      const m = `newsproj${element.id}`;
+      formData[`newproj_${m}`] = { value: element.proj.id };
+      formData[`newreport_${m}_thisplan`] = { value: element.thisPlan };
+      formData[`newreport_${m}_nextplan`] = { value: element.nextPlan };
     });
 
     return formData;
@@ -112,7 +122,10 @@ class EditReport extends React.Component {
 
     const projId = await this.getOrgBdProjId();
     window.echo('proj id', projId);
-    this.setState({ existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)) })
+    this.setState({
+      existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)),
+      newProj: reportProj.filter(f => f.proj && !f.projTitle && !projId.includes(f.proj.id)),
+    });
   }
 
   getOrgBdProjId = async () => {
