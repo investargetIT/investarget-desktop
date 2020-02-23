@@ -54,6 +54,7 @@ class EditReport extends React.Component {
 
     this.state = {
       report: null,
+      allProj: [],
       textProj: [],
       existProj: [],
       newProj: [],
@@ -118,7 +119,10 @@ class EditReport extends React.Component {
     };
     const res = await api.getWorkReportProjInfo(params);
     const { data: reportProj } = res.data;
-    this.setState({ textProj: reportProj.filter(f => f.projTitle && !f.proj) });
+    this.setState({
+      allProj: reportProj,
+      textProj: reportProj.filter(f => f.projTitle && !f.proj),
+    });
 
     const projId = await this.getOrgBdProjId(this.userId);
     this.setState({
@@ -175,10 +179,10 @@ class EditReport extends React.Component {
     const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
     this.addOrgRemark(allOrgRemarks);
 
-    this.addReport(values).catch(handleError);
+    this.editReport(values).catch(handleError);
   }
 
-  addReport = async data => {
+  editReport = async data => {
     const { summary: marketMsg, suggestion: others } = data;
     const body = {
       marketMsg,
@@ -186,26 +190,17 @@ class EditReport extends React.Component {
       user: this.state.report.user.id,
     };
     const res = await api.editWorkReport(this.reportId, body);
-    window.echo('resss', res);
-    return;
     const { id: reportId } = res.data;
+
+    await Promise.all(this.state.allProj.map(m => api.deleteWorkReportProjInfo(m.id)));
 
     const existingProjInfo = this.getPlanForExistingProj(data);
     const newProjReportInfo = this.getPlanForNewProj(data);
-    const allProjReportInfos = existingProjInfo.concat(newProjReportInfo);
-    this.addReportProjInfo(reportId, allProjReportInfos);
-
     const textProjectInfo = this.getPlanForTextProj(data);
-    this.addReportProjInfo(reportId, textProjectInfo);
-
+    const allProjReportInfos = existingProjInfo.concat(newProjReportInfo).concat(textProjectInfo);
+    await Promise.all(allProjReportInfos.map(m => api.addWorkReportProjInfo({ ...m, report: reportId })));
+    
     this.props.router.replace('/app/report/list');
-  }
-
-  addReportProjInfo = (reportId, data) => {
-    for (let index = 0; index < data.length; index++) {
-      const element = data[index];
-      api.addWorkReportProjInfo({ ...element, report: reportId });
-    }
   }
 
   getPlanForTextProj = values => {

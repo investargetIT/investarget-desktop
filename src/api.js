@@ -931,3 +931,4 @@ export const getWorkReportDetail = id => r(`/bd/workreport/${id}/`);
 export const deleteWorkReport = id => r(`/bd/workreport/${id}/`, 'DELETE');
 export const addWorkReportProjInfo = body => r('/bd/workreport/proj/', 'POST', body);
 export const getWorkReportProjInfo = params => r(`/bd/workreport/proj/?${qs.stringify(params)}`);
+export const deleteWorkReportProjInfo = id => r(`/bd/workreport/proj/${id}/`, 'DELETE');
