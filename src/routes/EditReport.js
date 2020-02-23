@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, getCurrentUser, handleError } from '../utils/util'
+import { i18n, handleError } from '../utils/util'
 import moment from 'moment';
 
 import { Form, Button, message } from 'antd'
@@ -103,9 +103,10 @@ class EditReport extends React.Component {
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
-    const { startTime, endTime } = res.data;
+    const { startTime, endTime, user } = res.data;
     this.startDate = startTime;
     this.endDate = endTime;
+    this.userId = user.id;
     await this.getReportProj();
     this.setState({ report: res.data });
   }
@@ -119,15 +120,14 @@ class EditReport extends React.Component {
     const { data: reportProj } = res.data;
     this.setState({ textProj: reportProj.filter(f => f.projTitle && !f.proj) });
 
-    const projId = await this.getOrgBdProjId();
+    const projId = await this.getOrgBdProjId(this.userId);
     this.setState({
       existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)),
       newProj: reportProj.filter(f => f.proj && !f.projTitle && !projId.includes(f.proj.id)),
     });
   }
 
-  getOrgBdProjId = async () => {
-    const manager = getCurrentUser();
+  getOrgBdProjId = async manager => {
     const stime = this.startDate;
     const etime = this.endDate;
     const stimeM = this.startDate;
@@ -183,11 +183,11 @@ class EditReport extends React.Component {
     const body = {
       marketMsg,
       others,
-      startTime: this.startTime,
-      endTime: this.endTime,
-      user: getCurrentUser(),
+      user: this.state.report.user.id,
     };
-    const res = await api.addWorkReport(body);
+    const res = await api.editWorkReport(this.reportId, body);
+    window.echo('resss', res);
+    return;
     const { id: reportId } = res.data;
 
     const existingProjInfo = this.getPlanForExistingProj(data);
@@ -333,7 +333,7 @@ class EditReport extends React.Component {
         org,
         proj,
         response,
-        manager: getCurrentUser(),
+        manager: this.state.report.user.id,
         lastmodifytime: this.startTime,
 
       };
