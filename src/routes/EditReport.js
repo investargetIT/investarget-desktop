@@ -54,6 +54,7 @@ class EditReport extends React.Component {
 
     this.state = {
       report: null,
+      textProj: [],
     };
   }
 
@@ -63,19 +64,31 @@ class EditReport extends React.Component {
 
   getFormData = () => {
     const { startTime, endTime, marketMsg, others } = this.state.report;
-    return {
+    const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
+    
+    const formData = {
       time: {
         value: [moment(startTime), moment(endTime)],
       },
       summary: { value: marketMsg },
       suggestion: { value: others },
+      textproject_keys: { value: textProjKeys },
     };
+
+    this.state.textProj.forEach(element => {
+      const m = `textproj${element.id}`;
+      formData[`text_project_${m}`] = { value: element.projTitle };
+      formData[`newproject_${m}_thisplan`] = { value: element.thisPlan };
+      formData[`newproject_${m}_nextplan`] = { value: element.nextPlan };
+    });
+
+    return formData;
   }
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
     this.setState({ report: res.data });
-    // this.getReportProj();
+    this.getReportProj();
   }
 
   getReportProj = async () => {
@@ -85,21 +98,23 @@ class EditReport extends React.Component {
     };
     const res = await api.getWorkReportProjInfo(params);
     const { data: reportProj } = res.data;
-    const orgBds = [...this.state.projOrgBds];
-    reportProj.forEach((element, index) => {
-      if (element.proj) {
-        const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
-        if (index > -1) {
-          orgBds[index].thisPlan = element.thisPlan;
-          orgBds[index].nextPlan = element.nextPlan;
-        } else {
-          orgBds.push({ ...element, orgBds: [] });
-        }
-      } else {
-        orgBds.push({ ...element, orgBds: [], proj: { projtitle: element.projTitle, id: `-${index}` }})
-      }
-    });
-    this.setState({ projOrgBds: orgBds });
+    window.echo('report proj', reportProj);
+    this.setState({ textProj: reportProj.filter(f => f.projTitle && !f.proj) });
+    // const orgBds = [...this.state.projOrgBds];
+    // reportProj.forEach((element, index) => {
+    //   if (element.proj) {
+    //     const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
+    //     if (index > -1) {
+    //       orgBds[index].thisPlan = element.thisPlan;
+    //       orgBds[index].nextPlan = element.nextPlan;
+    //     } else {
+    //       orgBds.push({ ...element, orgBds: [] });
+    //     }
+    //   } else {
+    //     orgBds.push({ ...element, orgBds: [], proj: { projtitle: element.projTitle, id: `-${index}` }})
+    //   }
+    // });
+    // this.setState({ projOrgBds: orgBds });
   }
 
   goBack = () => {
