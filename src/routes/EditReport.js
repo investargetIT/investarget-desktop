@@ -55,6 +55,7 @@ class EditReport extends React.Component {
     this.state = {
       report: null,
       textProj: [],
+      existProj: [],
     };
   }
 
@@ -82,13 +83,21 @@ class EditReport extends React.Component {
       formData[`newproject_${m}_nextplan`] = { value: element.nextPlan };
     });
 
+    this.state.existProj.forEach(m => {
+      formData[`existingproj_${m.proj.id}_thisplan`] = { value: m.thisPlan };
+      formData[`existingproj_${m.proj.id}_nextplan`] = { value: m.nextPlan };
+    });
+
     return formData;
   }
 
   getReportDetail = async () => {
     const res = await api.getWorkReportDetail(this.reportId);
+    const { startTime, endTime } = res.data;
+    this.startDate = startTime;
+    this.endDate = endTime;
+    await this.getReportProj();
     this.setState({ report: res.data });
-    this.getReportProj();
   }
 
   getReportProj = async () => {
@@ -100,21 +109,28 @@ class EditReport extends React.Component {
     const { data: reportProj } = res.data;
     window.echo('report proj', reportProj);
     this.setState({ textProj: reportProj.filter(f => f.projTitle && !f.proj) });
-    // const orgBds = [...this.state.projOrgBds];
-    // reportProj.forEach((element, index) => {
-    //   if (element.proj) {
-    //     const index = orgBds.map(m => m.proj.id).indexOf(element.proj.id);
-    //     if (index > -1) {
-    //       orgBds[index].thisPlan = element.thisPlan;
-    //       orgBds[index].nextPlan = element.nextPlan;
-    //     } else {
-    //       orgBds.push({ ...element, orgBds: [] });
-    //     }
-    //   } else {
-    //     orgBds.push({ ...element, orgBds: [], proj: { projtitle: element.projTitle, id: `-${index}` }})
-    //   }
-    // });
-    // this.setState({ projOrgBds: orgBds });
+
+    const projId = await this.getOrgBdProjId();
+    window.echo('proj id', projId);
+    this.setState({ existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)) })
+  }
+
+  getOrgBdProjId = async () => {
+    const manager = getCurrentUser();
+    const stime = this.startDate;
+    const etime = this.endDate;
+    const stimeM = this.startDate;
+    const etimeM = this.endDate;
+    const page_size = 1000;
+    const params = { manager, stimeM, etimeM, stime, etime, page_size };
+    const res = await api.getOrgBdList(params);
+    const { data: orgBds } = res.data;
+
+
+    const projs = orgBds.map(m => m.proj);
+    const projIds = projs.map(m => m.id);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    return uniqueProjIds;
   }
 
   goBack = () => {
