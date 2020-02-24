@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
 import moment from 'moment';
-import { Form, Input, Radio, Checkbox, DatePicker, Button, message } from 'antd'
+import { Form, Input, Radio, Checkbox, DatePicker, Button, message, Modal } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const { RangePicker } = DatePicker;
@@ -214,6 +214,18 @@ class ReportForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       this.updateOrgBd(values, orgBdId).catch(handleError);
     });
+  }
+
+  handleDeleteBtnClick = orgBdId => {
+    Modal.confirm({
+      title: '是否确定删除该机构BD',
+      content: '一旦确定，无法撤回',
+      onOk: this.handleConfirmRemoveOrgBd.bind(this, orgBdId),
+    });
+  }
+
+  handleConfirmRemoveOrgBd = orgBdId => {
+    window.echo('confirm remove', orgBdId);
   }
 
   updateOrgBdComments = async data => {
@@ -604,6 +616,15 @@ class ReportForm extends React.Component {
                         onClick={() => this.handleConfirmBtnClick(m.id)}
                       >
                         确定
+                      </Button>
+
+                      <Button
+                        style={{ margin: '0 10px' }}
+                        size="small"
+                        type="danger"
+                        onClick={() => this.handleDeleteBtnClick(m.id)}
+                      >
+                        删除 
                       </Button>
 
                     </div>
