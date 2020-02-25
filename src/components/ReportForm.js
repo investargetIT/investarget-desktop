@@ -227,7 +227,9 @@ class ReportForm extends React.Component {
       const bdstatus = values[`orgbd_${projId}_bdstatus_${index}`];
       const comments = values[`orgbd_${projId}_comments_${index}`];
       const orgbd = [{ bduser, org, proj: projId, bdstatus, comments }];
-      this.addOrgBd(orgbd).catch(handleError);
+      this.addOrgBd(orgbd)
+        .then(() => this.removeFormItem(`proj_existing_${projId}`, index))
+        .catch(handleError);
     });
   }
 
@@ -535,7 +537,7 @@ class ReportForm extends React.Component {
 
     const projExistingOrgBds = this.state.projOrgBds.map((m, i) => {
 
-      const newOrgBdKey = `proj_existing_${i}`;
+      const newOrgBdKey = `proj_existing_${m.proj.id}`;
       getFieldDecorator(newOrgBdKey, { initialValue: [] });
       const proj1OrgBDKeys = getFieldValue(newOrgBdKey);
       const proj1OrgBDFormItems = proj1OrgBDKeys.map((m1, i1) => (
