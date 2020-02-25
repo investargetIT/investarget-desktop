@@ -216,6 +216,25 @@ class ReportForm extends React.Component {
     });
   }
 
+  handleConfirmAddNewOrgBdFBtnClick = (projIndex, orgBdIndex) => {
+    this.props.form.validateFields((err, values) => {
+      const projId = values[`newproj_${projIndex}`];
+      if (!projId) {
+        Modal.warning({ title: '项目不能为空' });
+        return;
+      }
+      const org = values[`neworgbd_${projIndex}_org_${orgBdIndex}`];
+      const bduser = values[`neworgbd_${projIndex}_bduser_${orgBdIndex}`];
+      if (!org || !bduser) {
+        Modal.warning({ title: '机构和投资人不能为空' });
+        return;
+      }
+      const bdstatus = values[`neworgbd_${projIndex}_bdstatus_${orgBdIndex}`];
+      const comments = values[`neworgbd_${projIndex}_comments_${orgBdIndex}`];
+      const orgbd = { bduser, org, proj: projId, bdstatus, comments };
+    });
+  }
+
   handleConfirmAddOrgBdBtnClick = (projId, index) => {
     this.props.form.validateFields((err, values) => {
       const org = values[`orgbd_${projId}_org_${index}`];
@@ -438,6 +457,14 @@ class ReportForm extends React.Component {
               </div>
             </div>
           </div>
+
+          <Button
+            style={{ margin: '0 10px' }}
+            size="small"
+            onClick={() => this.handleConfirmAddNewOrgBdFBtnClick(m, m1)}
+          >
+            确定
+          </Button>
 
           <div style={{ width: 50, textAlign: 'center' }}>
             <img onClick={() => this.removeFormItem(orgBDKeys, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
