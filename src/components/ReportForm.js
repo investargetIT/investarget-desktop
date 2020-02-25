@@ -228,7 +228,28 @@ class ReportForm extends React.Component {
       const comments = values[`orgbd_${projId}_comments_${index}`];
       const orgbd = { bduser, org, proj: projId, bdstatus, comments };
       this.addOrgBd(orgbd)
-        .then(newOrgBd => window.echo('new orgbd', newOrgBd))
+        .then(newOrgBd => {
+          const projIds = this.state.projOrgBds.map(m => m.proj.id);
+          const projIndex = projIds.indexOf(newOrgBd.proj.id);
+          if (projIndex > -1) {
+            const newProjOrgBds = [...this.state.projOrgBds];
+            newProjOrgBds[projIndex].orgBds.push(newOrgBd);
+            this.setState({ projOrgBds: newProjOrgBds });
+
+            // Set form data
+            const { getFieldDecorator, setFieldsValue } = this.props.form;
+            const { id, response, BDComments } = newOrgBd;
+            getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
+            setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
+            if (BDComments) {
+              BDComments.forEach(element => {
+                const { id: commentId, comments } = element;
+                getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: '' });
+                setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
+              });
+            }
+          }
+        })
         .then(() => this.removeFormItem(`proj_existing_${projId}`, index))
         .catch(handleError);
     });
