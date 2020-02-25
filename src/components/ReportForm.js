@@ -224,22 +224,26 @@ class ReportForm extends React.Component {
     });
   }
 
-  handleConfirmRemoveOrgBd = orgBdId => {
-    // TODO: call endpoint to delete the org bd
-    let projIndex = -1;
-    let orgBdIndex = -1;
-    this.state.projOrgBds.forEach((e, i) => {
-      const orgBdIds = e.orgBds.map(m => m.id);
-      const index = orgBdIds.indexOf(orgBdId);
-      if (index > -1) {
-        projIndex = i;
-        orgBdIndex = index;
+  handleConfirmRemoveOrgBd = async orgBdId => {
+    try {
+      await api.deleteOrgBD(orgBdId);
+      let projIndex = -1;
+      let orgBdIndex = -1;
+      this.state.projOrgBds.forEach((e, i) => {
+        const orgBdIds = e.orgBds.map(m => m.id);
+        const index = orgBdIds.indexOf(orgBdId);
+        if (index > -1) {
+          projIndex = i;
+          orgBdIndex = index;
+        }
+      });
+      if (projIndex > -1 && orgBdIndex > -1) {
+        const newProjOrgBds = [...this.state.projOrgBds];
+        newProjOrgBds[projIndex].orgBds.splice(orgBdIndex, 1);
+        this.setState({ projOrgBds: newProjOrgBds });
       }
-    });
-    if (projIndex > -1 && orgBdIndex > -1) {
-      const newProjOrgBds = [...this.state.projOrgBds];
-      newProjOrgBds[projIndex].orgBds.splice(orgBdIndex, 1);
-      this.setState({ projOrgBds: newProjOrgBds });
+    } catch (err) {
+      handleError(err);
     }
   }
 
