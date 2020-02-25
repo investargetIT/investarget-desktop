@@ -67,7 +67,6 @@ class AddReport extends React.Component {
   handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        // window.echo('values', values);
         this.addData(values);
       }
     })
@@ -86,6 +85,8 @@ class AddReport extends React.Component {
     const newOrgBd = this.getNewOrgBdInfo(values);
     const allOrgBds = existingOrgBd.concat(newOrgBd);
     await this.addOrgBd(allOrgBds);
+
+    this.updateOrgBds(values);
     
     const existingOrgRemark = this.getExistingOrgRemark(values);
     const newOrgRemark = this.getNewOrgRemark(values);
@@ -93,6 +94,56 @@ class AddReport extends React.Component {
     this.addOrgRemark(allOrgRemarks);
 
     this.addReport(values).catch(handleError);
+  }
+
+  updateOrgBds = (values) => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('oldorgbd')) {
+        const infos = property.split('_');
+        const id = parseInt(infos[1]);
+        result1.push(id);
+      }
+    }
+    const uniqueIds = result1.filter((v, i, a) => a.indexOf(v) === i);
+    uniqueIds.forEach(e => {
+      this.updateOrgBd(values, e);
+    });
+  }
+
+  updateOrgBd = async (values, orgBdId) => {
+    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
+    await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const comments = this.getOldOrgBdComments(values, orgBdId);
+    await this.updateOrgBdComments(comments);
+  }
+
+  getOldOrgBdComments = (values, orgBdId) => {
+    const result = [];
+    for (const property in values) {
+      if (property.startsWith(`oldorgbd-comments_${orgBdId}`)) {
+        const value = values[property];
+        const infos = property.split('_');
+        const commentId = infos[2];
+        const o = { id: parseInt(commentId), comments: value, orgBD: orgBdId };
+        result.push(o);
+      }
+    }
+    return result;
+  }
+
+  updateOrgBdComments = async data => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      const { id, comments, orgBD } = element;
+      if (id !== 0) {
+        await api.editOrgBDComment(id, { comments });
+      } else {
+        if (comments) {
+          await api.addOrgBDComment({ orgBD, comments });
+        }
+      }
+    }
   }
 
   addReport = async data => {
