@@ -216,6 +216,43 @@ class ReportForm extends React.Component {
     });
   }
 
+  handleConfirmAddOrgBdBtnClick = (projId, index) => {
+    this.props.form.validateFields((err, values) => {
+      const org = values[`orgbd_${projId}_org_${index}`];
+      const bduser = values[`orgbd_${projId}_bduser_${index}`];
+      if (!org || !bduser) {
+        Modal.warning({ title: '机构和投资人不能为空' });
+        return;
+      }
+      const bdstatus = values[`orgbd_${projId}_bdstatus_${index}`];
+      const comments = values[`orgbd_${projId}_comments_${index}`];
+      const orgbd = [{ bduser, org, proj: projId, bdstatus, comments }];
+      this.addOrgBd(orgbd).catch(handleError);
+    });
+  }
+
+  addOrgBd = async (data) => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      const { bduser, org, proj, bdstatus: response, comments } = element;
+      const body = {
+        bduser,
+        org,
+        proj,
+        response,
+        manager: getCurrentUser(),
+        lastmodifytime: this.startDate,
+        createdtime: this.startDate,
+      };
+      await api.getUserSession();
+      const res = await api.addOrgBD(body);
+      const { id: orgBD } = res.data;
+      if (comments && comments.length > 0) {
+        await api.addOrgBDComment({ orgBD, comments });
+      }
+    }
+  }
+
   handleDeleteBtnClick = orgBdId => {
     Modal.confirm({
       title: '是否确定删除该机构BD',
@@ -557,6 +594,14 @@ class ReportForm extends React.Component {
               </div>
             </div>
           </div>
+
+          <Button
+            style={{ margin: '0 10px' }}
+            size="small"
+            onClick={() => this.handleConfirmAddOrgBdBtnClick(m.proj.id, m1)}
+          >
+            确定
+          </Button>
 
           <div style={{ width: 50, textAlign: 'center' }}>
             <img onClick={() => this.removeFormItem(newOrgBdKey, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
