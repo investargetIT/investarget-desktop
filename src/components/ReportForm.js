@@ -226,16 +226,15 @@ class ReportForm extends React.Component {
       }
       const bdstatus = values[`orgbd_${projId}_bdstatus_${index}`];
       const comments = values[`orgbd_${projId}_comments_${index}`];
-      const orgbd = [{ bduser, org, proj: projId, bdstatus, comments }];
+      const orgbd = { bduser, org, proj: projId, bdstatus, comments };
       this.addOrgBd(orgbd)
+        .then(newOrgBd => window.echo('new orgbd', newOrgBd))
         .then(() => this.removeFormItem(`proj_existing_${projId}`, index))
         .catch(handleError);
     });
   }
 
-  addOrgBd = async (data) => {
-    for (let index = 0; index < data.length; index++) {
-      const element = data[index];
+  addOrgBd = async element => {
       const { bduser, org, proj, bdstatus: response, comments } = element;
       const body = {
         bduser,
@@ -248,11 +247,13 @@ class ReportForm extends React.Component {
       };
       await api.getUserSession();
       const res = await api.addOrgBD(body);
-      const { id: orgBD } = res.data;
+      const { data: newOrgBd } = res;
+      const { id: orgBD } = newOrgBd;
       if (comments && comments.length > 0) {
-        await api.addOrgBDComment({ orgBD, comments });
+        const resCom = await api.addOrgBDComment({ orgBD, comments });
+        newOrgBd.BDComments = [resCom.data];
       }
-    }
+      return newOrgBd;
   }
 
   handleDeleteBtnClick = orgBdId => {
