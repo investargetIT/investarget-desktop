@@ -711,6 +711,7 @@ class ProjectListFilter extends React.Component {
     projstatus: [],
     ismarketplace: null,
     service: [],
+    indGroup: [],
   }
 
   constructor(props) {
@@ -744,7 +745,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace, indGroup } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -764,7 +765,8 @@ class ProjectListFilter extends React.Component {
           <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         )}
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
+        {/* <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} /> */}
+        <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
