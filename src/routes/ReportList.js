@@ -1,7 +1,7 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
-import { getUserInfo, i18n, handleError, hasPerm } from '../utils/util';
+import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../utils/util';
 import { connect } from 'dva';
 import { Icon, Table, Pagination, Popconfirm } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -92,9 +92,11 @@ class ReportList extends React.Component {
               <Link to={`/app/report/${record.id}`} style={{ marginRight: 10 }}>
                 <Icon type="eye-o" style={{ fontSize: '16px' }} />
               </Link>
-              <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
-                <Icon type="edit" style={{ fontSize: '16px' }} />
-              </Link>
+              {record.user.id === getCurrentUser() &&
+                <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
+                  <Icon type="edit" style={{ fontSize: '16px' }} />
+                </Link>
+              }
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
                 <Link>
                   <Icon type="delete" style={{ fontSize: '16px' }} />
