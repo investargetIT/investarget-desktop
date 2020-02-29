@@ -382,7 +382,7 @@ class EditReport extends React.Component {
         response,
         manager: this.state.report.user.id,
         lastmodifytime: this.startTime,
-
+        createdtime: this.startTime,
       };
       try {
         await api.getUserSession();
