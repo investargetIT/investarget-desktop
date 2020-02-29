@@ -712,6 +712,7 @@ class ProjectListFilter extends React.Component {
     ismarketplace: null,
     service: [],
     indGroup: [],
+    manager: [],
   }
 
   constructor(props) {
@@ -745,7 +746,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace, indGroup } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace, indGroup, manager } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -767,6 +768,9 @@ class ProjectListFilter extends React.Component {
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
         {/* <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} /> */}
         <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
+        <BasicContainer label="承揽承做">
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager || []} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+        </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
