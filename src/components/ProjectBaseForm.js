@@ -22,7 +22,8 @@ import {
   CascaderIndustry,
   RadioTrueOrFalse,
   SelectService, 
-  SelectExistUser, 
+  SelectExistUser,
+  SelectIndustryGroup,
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -88,6 +89,10 @@ class ProjectBaseForm extends React.Component {
 
         <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
           <SelectService mode="multiple" />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number" required>
+          <SelectIndustryGroup />
         </BasicFormItem>
 
         { hasPerm('proj.admin_addproj') ? 
