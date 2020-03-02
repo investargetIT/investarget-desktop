@@ -79,6 +79,10 @@ class AddReport extends React.Component {
     this.remainingTime = this.remainingTime - 1;
   }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   goBack = () => {
     this.props.router.goBack()
   }
