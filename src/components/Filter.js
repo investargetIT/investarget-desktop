@@ -766,11 +766,11 @@ class ProjectListFilter extends React.Component {
           <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         )}
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        {/* <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} /> */}
-        <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
+        <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
+        {/* <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
         <BasicContainer label="承揽承做">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager || []} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
-        </BasicContainer>
+        </BasicContainer> */}
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )

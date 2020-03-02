@@ -91,9 +91,9 @@ class ProjectBaseForm extends React.Component {
           <SelectService mode="multiple" />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number" required>
+        {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number" required>
           <SelectIndustryGroup />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         { hasPerm('proj.admin_addproj') ? 
         <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
