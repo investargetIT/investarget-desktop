@@ -889,6 +889,7 @@ class ProjectBDFilter extends React.Component {
     manager: [],
     country: [],
     indGroup: [],
+    relateManager: [],
   }
 
   constructor(props) {
@@ -899,6 +900,10 @@ class ProjectBDFilter extends React.Component {
   handleChange = (key, value) => {
     console.log(value)
     this.setState({ [key]: value },this.handleSearch)
+  }
+
+  handleManagerChange = value => {
+    this.setState({ manager: value, relateManager: value }, this.handleSearch);
   }
 
   handleSearch = () => {
@@ -926,7 +931,7 @@ class ProjectBDFilter extends React.Component {
         <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} />
         
         <BasicContainer label={i18n('project_bd.bd_manager')}>
-          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleManagerChange} optionFilterProp="children" />
         </BasicContainer>
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
