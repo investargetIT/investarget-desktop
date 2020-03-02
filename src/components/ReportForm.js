@@ -212,7 +212,34 @@ class ReportForm extends React.Component {
 
   handleConfirmBtnClick = orgBdId => {
     this.props.form.validateFields((err, values) => {
-      this.updateOrgBd(values, orgBdId).catch(handleError);
+      this.updateOrgBd(values, orgBdId)
+        .then(newOrgBd => {
+          window.echo('update org bd', orgBd);
+          const projIds = this.state.projOrgBds.map(m => m.proj.id);
+          const projIndex = projIds.indexOf(newOrgBd.proj.id);
+          if (projIndex > -1) {
+            const newProjOrgBds = [...this.state.projOrgBds];
+            const orgBdIndex = newProjOrgBds[projIndex].orgBds.map(m => m.id).indexOf(newOrgBd.id);
+            if (orgBdIndex > -1) {
+              newProjOrgBds[projIndex].orgBds[orgBdIndex] = newOrgBd;
+              this.setState({ projOrgBds: newProjOrgBds });
+
+              // Set form data
+              const { getFieldDecorator, setFieldsValue } = this.props.form;
+              const { id, response, BDComments } = newOrgBd;
+              getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
+              setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
+              if (BDComments) {
+                BDComments.forEach(element => {
+                  const { id: commentId, comments } = element;
+                  getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: '' });
+                  setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
+                });
+              }
+            }
+          }
+        })
+        .catch(handleError);
     });
   }
 
@@ -357,25 +384,34 @@ class ReportForm extends React.Component {
   }
 
   updateOrgBdComments = async data => {
+    const result = [];
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
       const { id, comments, orgBD } = element;
       if (id !== 0) {
-        await api.editOrgBDComment(id, { comments });
+        const updateCommentRes = await api.editOrgBDComment(id, { comments });
+        result.push(updateCommentRes.data);
       } else {
         if (comments) {
-          await api.addOrgBDComment({ orgBD, comments });
+          const newCommentRes = await api.addOrgBDComment({ orgBD, comments });
+          result.push(newCommentRes.data);
         }
       }
     }
+    return result;
   }
 
   updateOrgBd = async (values, orgBdId) => {
     const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
-    await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const orgBdRes = await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const { data: updatedOrgBd } = orgBdRes;
+    window.echo('updated orgbd', updatedOrgBd);
     const comments = this.getOldOrgBdComments(values, orgBdId);
-    await this.updateOrgBdComments(comments);
+    const bdComments = await this.updateOrgBdComments(comments);
+    window.echo('bd comments', bdComments);
+    updatedOrgBd.BDComments = bdComments;
     message.success('机构BD已更新');
+    return updatedOrgBd;
   }
 
   getOldOrgBdComments = (values, orgBdId) => {
