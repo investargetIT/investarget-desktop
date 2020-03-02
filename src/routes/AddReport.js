@@ -58,6 +58,22 @@ class AddReport extends React.Component {
     };
     this.startTime = null;
     this.endTime = null;
+
+    this.remainingTime = 60;
+    this.interval = setInterval(this.checkInterval, 1000);
+  }
+
+  checkInterval = () => {
+    window.echo('check interval');
+    if (this.remainingTime === 0) {
+      clearInterval(this.interval);
+      this.handleSubmitBtnClick();
+      return;
+    }
+    if (this.remainingTime === 10) {
+      window.echo('remain 10 seconds');
+    }
+    this.remainingTime = this.remainingTime - 1;
   }
 
   goBack = () => {
