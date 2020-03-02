@@ -214,7 +214,6 @@ class ReportForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       this.updateOrgBd(values, orgBdId)
         .then(newOrgBd => {
-          window.echo('update org bd', orgBd);
           const projIds = this.state.projOrgBds.map(m => m.proj.id);
           const projIndex = projIds.indexOf(newOrgBd.proj.id);
           if (projIndex > -1) {
@@ -405,10 +404,8 @@ class ReportForm extends React.Component {
     const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
     const orgBdRes = await api.modifyOrgBD(orgBdId, { response: newBdStatus });
     const { data: updatedOrgBd } = orgBdRes;
-    window.echo('updated orgbd', updatedOrgBd);
     const comments = this.getOldOrgBdComments(values, orgBdId);
     const bdComments = await this.updateOrgBdComments(comments);
-    window.echo('bd comments', bdComments);
     updatedOrgBd.BDComments = bdComments;
     message.success('机构BD已更新');
     return updatedOrgBd;
