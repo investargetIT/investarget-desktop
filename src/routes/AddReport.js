@@ -6,7 +6,7 @@ import * as api from '../api'
 import { i18n, getCurrentUser, handleError } from '../utils/util'
 import moment from 'moment';
 
-import { Form, Button, message } from 'antd'
+import { Form, Button, message, notification } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import ReportForm from '../components/ReportForm'
@@ -64,14 +64,17 @@ class AddReport extends React.Component {
   }
 
   checkInterval = () => {
-    window.echo('check interval');
+    window.echo('剩余时间', this.remainingTime);
     if (this.remainingTime === 0) {
       clearInterval(this.interval);
       this.handleSubmitBtnClick();
       return;
     }
     if (this.remainingTime === 10) {
-      window.echo('remain 10 seconds');
+      notification.open({
+        message: '当前表单将于10秒后自动提交',
+        description: '为了防止数据丢书，当前表单将于10秒后自动提交',
+      });
     }
     this.remainingTime = this.remainingTime - 1;
   }
