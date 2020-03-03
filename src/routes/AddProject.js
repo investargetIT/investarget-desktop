@@ -74,7 +74,7 @@ class AddProject extends React.Component {
 
   render() {
     return(
-      <LeftRightLayout location={this.props.location} title={i18n('project.upload_project')} action={{name: i18n('project.upload_marketplace'), link: "/app/marketplace/add" }}>
+      <LeftRightLayout location={this.props.location} title={i18n('project.upload_project')}>
         <div>
           <AddProjectForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>

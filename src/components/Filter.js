@@ -709,7 +709,6 @@ class ProjectListFilter extends React.Component {
     grossProfit_F: -200000000,
     grossProfit_T: 200000000,
     projstatus: [],
-    ismarketplace: null,
     service: [],
     indGroup: [],
     manager: [],
@@ -729,11 +728,6 @@ class ProjectListFilter extends React.Component {
       this.setState({ [key]: value },this.handleSearch)
     }
 
-    if (key == 'ismarketplace' && value == true) {
-      ['netIncome_USD_F', 'netIncome_USD_T', 'grossProfit_F', 'grossProfit_T', 'service'].forEach(item => {
-        this.setState({ [item]: ProjectListFilter.defaultValue[item] },this.handleSearch)
-      })
-    }
   }
 
   handleSearch = () => {
@@ -746,27 +740,20 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, ismarketplace, indGroup, manager } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, manager } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         <CountryFilter value={country} onChange={this.handleChange.bind(this, 'country')} />
         <IndustryFilter value={industries} onChange={this.handleChange.bind(this, 'industries')} />
-        { ismarketplace ? null : (
-          <RevenueFilter
-            value={[netIncome_USD_F, netIncome_USD_T]}
-            onChange={this.handleChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
-        )}
-        { ismarketplace ? null : (
-          <ProfitFilter
-            value={[grossProfit_F, grossProfit_T]}
-            onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
-          )}
-        { ismarketplace ? null : (
-          <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
-        )}
+        <RevenueFilter
+          value={[netIncome_USD_F, netIncome_USD_T]}
+          onChange={this.handleChange.bind(this, ['netIncome_USD_F', 'netIncome_USD_T'])} />
+        <ProfitFilter
+          value={[grossProfit_F, grossProfit_T]}
+          onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
+        <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        <ProjectTypeFilter value={ismarketplace} onChange={this.handleChange.bind(this, 'ismarketplace')} />
         {/* <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
         <BasicContainer label="承揽承做">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager || []} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />

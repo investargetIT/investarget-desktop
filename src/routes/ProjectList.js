@@ -211,9 +211,7 @@ class ProjectList extends React.Component {
           if (record.action.get) {
             return (
               <span className="span-title">
-                {record.ismarketplace ?
-                <Link to={'/app/marketplace/' + record.id}>{record.projtitle}</Link> :
-                <Link to={'/app/projects/' + record.id}>{record.projtitle}</Link>}
+                <Link to={'/app/projects/' + record.id}>{record.projtitle}</Link>
               </span>
             )
           } else {
@@ -279,24 +277,7 @@ class ProjectList extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
-          return record.ismarketplace ? (
-            <span className="span-operation" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-            <div>
-              <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
-
-              <Link to={'/app/marketplace/edit/' + record.id}>
-                <Button style={buttonStyle} disabled={!record.action.change} >{i18n("common.edit")}</Button>
-              </Link>
-            </div>
-            <div>
-              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(null, record.id)}>
-                <Button size="small" style={buttonStyle} disabled={!record.action.delete} >
-                  <Icon type="delete" />
-                </Button>
-              </Popconfirm>
-            </div>
-            </span>
-          ) : (
+          return (
             <span  style={{display:'flex',alignItems:'center'}}>
             <div style={{display:'flex',flexWrap:"wrap",maxWidth:'250px'}}>
               <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
