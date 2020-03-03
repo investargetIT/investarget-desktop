@@ -341,12 +341,41 @@ class ReportForm extends React.Component {
         createdtime: this.startDate,
       };
       await api.getUserSession();
-      const res = await api.addOrgBD(body);
+
+      let res = null;
+      try {
+        res = await api.addOrgBD(body);
+      } catch (error) {
+        if (error.code === 5006) {
+          const getOrgBdRes = await api.getOrgBdList({
+            bduser,
+            org,
+            proj,
+            manager: getCurrentUser(),
+          });
+          window.echo('get org bd res', getOrgBdRes);
+          const { data: orgBdList } = getOrgBdRes.data;
+          if (orgBdList.length > 0) {
+            const orgBd = orgBdList[0];
+            res = await api.modifyOrgBD(orgBd.id, { response });
+            window.echo('update org bd', res);
+          } else {
+            console.error('OrgBd Not Found!');
+          }
+        } else {
+          throw error;
+        }
+      }
       const { data: newOrgBd } = res;
-      const { id: orgBD } = newOrgBd;
+      const { id: orgBD, BDComments } = newOrgBd;
+      window.echo('bd comments', BDComments);
       if (comments && comments.length > 0) {
         const resCom = await api.addOrgBDComment({ orgBD, comments });
-        newOrgBd.BDComments = [resCom.data];
+        if (BDComments) {
+          newOrgBd.BDComments = [resCom.data].concat(BDComments);
+        } else {
+          newOrgBd.BDComments = [resCom.data];
+        }
       }
       return newOrgBd;
   }
