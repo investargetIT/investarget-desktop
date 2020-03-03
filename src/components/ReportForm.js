@@ -357,7 +357,7 @@ class ReportForm extends React.Component {
           const { data: orgBdList } = getOrgBdRes.data;
           if (orgBdList.length > 0) {
             const orgBd = orgBdList[0];
-            res = await api.modifyOrgBD(orgBd.id, { response });
+            res = await api.modifyOrgBD(orgBd.id, { response, lastmodifytime: this.startDate, createdtime: this.startDate });
             window.echo('update org bd', res);
           } else {
             console.error('OrgBd Not Found!');
