@@ -252,6 +252,7 @@ class ProjectConnectForm extends React.Component {
           hasPerm('proj.admin_changeproj') ?
             <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="number">
               <SelectAllUser type="trader" />
+              {/* <SelectTrader mode="multiple" /> */}
             </BasicFormItem>
             :
             <BasicFormItem label={i18n('project.make_user')} name="makeUserName">
