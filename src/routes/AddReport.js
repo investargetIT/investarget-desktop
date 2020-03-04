@@ -330,7 +330,28 @@ class AddReport extends React.Component {
       };
       try {
         await api.getUserSession();
-        const res = await api.addOrgBD(body);
+        let res = null;
+        try {
+          res = await api.addOrgBD(body);
+        } catch (error) {
+          if (error.code === 5006) {
+            const getOrgBdRes = await api.getOrgBdList({
+              bduser,
+              org,
+              proj,
+              manager: getCurrentUser(),
+            });
+            const { data: orgBdList } = getOrgBdRes.data;
+            if (orgBdList.length > 0) {
+              const orgBd = orgBdList[0];
+              res = await api.modifyOrgBD(orgBd.id, { response, lastmodifytime: this.startTime, createdtime: this.startTime });
+            } else {
+              console.error('OrgBd Not Found!');
+            }
+          } else {
+            throw error;
+          }
+        }
         const { id: orgBD} = res.data;
         if (comments && comments.length > 0) {
           await api.addOrgBDComment({ orgBD, comments });
