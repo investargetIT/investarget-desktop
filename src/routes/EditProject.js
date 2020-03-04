@@ -58,6 +58,12 @@ function toFormData(data) {
       })
     } else if (prop == 'indGroup' && data[prop]) {
       formData[prop] = { 'value': data[prop].id }
+    } else if (prop == 'makeUser') {
+      if (!data[prop]) {
+        formData[prop] = { 'value': [] }
+      } else {
+        formData[prop] = { 'value': data[prop] }
+      }
     } else {
       formData[prop] = { 'value': data[prop] }
     }
