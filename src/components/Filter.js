@@ -711,7 +711,8 @@ class ProjectListFilter extends React.Component {
     projstatus: [],
     service: [],
     indGroup: [],
-    manager: [],
+    takeUser: [],
+    // makeUser: [],
   }
 
   constructor(props) {
@@ -740,7 +741,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, manager } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -754,10 +755,16 @@ class ProjectListFilter extends React.Component {
           onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
         <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        {/* <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
-        <BasicContainer label="承揽承做">
-          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager || []} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
+        <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
+
+        <BasicContainer label="承揽">
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={takeUser || []} onChange={this.handleChange.bind(this, 'takeUser')}  optionFilterProp="children" />
+        </BasicContainer>
+
+        {/* <BasicContainer label="承做">
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={makeUser || []} onChange={this.handleChange.bind(this, 'makeUser')}  optionFilterProp="children" />
         </BasicContainer> */}
+
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
