@@ -31,6 +31,8 @@ import {
   SelectService,
   SelectExistUser,
   SelectAllUser, 
+  SelectTrader,
+  SelectIndustryGroup,
 } from '../components/ExtraInput'
 
 
@@ -91,6 +93,10 @@ class ProjectBaseForm extends React.Component {
 
         <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
           <SelectService mode="multiple" />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
+          <SelectIndustryGroup />
         </BasicFormItem>
 
       </Form>
