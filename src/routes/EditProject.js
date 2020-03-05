@@ -56,8 +56,8 @@ function toFormData(data) {
         formData['industries-' + key] = { 'value': value[index].industry.id }
         formData['industries-image-' + key] = { 'value': value[index].key }
       })
-    } else if (prop == 'indGroup' && data[prop]) {
-      formData[prop] = { 'value': data[prop].id }
+    // } else if (prop == 'indGroup' && data[prop]) {
+    //   formData[prop] = { 'value': data[prop].id }
     } else {
       formData[prop] = { 'value': data[prop] }
     }

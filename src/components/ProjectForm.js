@@ -95,9 +95,9 @@ class ProjectBaseForm extends React.Component {
           <SelectService mode="multiple" />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
+        {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
       </Form>
     )

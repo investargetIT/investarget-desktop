@@ -710,7 +710,7 @@ class ProjectListFilter extends React.Component {
     grossProfit_T: 200000000,
     projstatus: [],
     service: [],
-    indGroup: [],
+    // indGroup: [],
     takeUser: [],
     makeUser: [],
   }
@@ -755,7 +755,7 @@ class ProjectListFilter extends React.Component {
           onChange={this.handleChange.bind(this, ['grossProfit_F', 'grossProfit_T'])} />
         <TabCheckboxService value={service} onChange={this.handleChange.bind(this, 'service')} />
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} />
+        {/* <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} /> */}
 
         <BasicContainer label="承揽">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={takeUser || []} onChange={this.handleChange.bind(this, 'takeUser')}  optionFilterProp="children" />
