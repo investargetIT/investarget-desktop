@@ -59,29 +59,29 @@ class AddReport extends React.Component {
     this.startTime = null;
     this.endTime = null;
 
-    this.remainingTime = 60;
-    this.interval = setInterval(this.checkInterval, 1000);
+    // this.remainingTime = 60;
+    // this.interval = setInterval(this.checkInterval, 1000);
   }
 
-  checkInterval = () => {
-    window.echo('剩余时间', this.remainingTime);
-    if (this.remainingTime === 0) {
-      clearInterval(this.interval);
-      this.handleSubmitBtnClick();
-      return;
-    }
-    if (this.remainingTime === 10) {
-      notification.open({
-        message: '当前表单将于10秒后自动提交',
-        description: '为了防止数据丢书，当前表单将于10秒后自动提交',
-      });
-    }
-    this.remainingTime = this.remainingTime - 1;
-  }
+  // checkInterval = () => {
+  //   window.echo('剩余时间', this.remainingTime);
+  //   if (this.remainingTime === 0) {
+  //     clearInterval(this.interval);
+  //     this.handleSubmitBtnClick();
+  //     return;
+  //   }
+  //   if (this.remainingTime === 10) {
+  //     notification.open({
+  //       message: '当前表单将于10秒后自动提交',
+  //       description: '为了防止数据丢书，当前表单将于10秒后自动提交',
+  //     });
+  //   }
+  //   this.remainingTime = this.remainingTime - 1;
+  // }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
+  // componentWillUnmount() {
+  //   clearInterval(this.interval);
+  // }
 
   goBack = () => {
     this.props.router.goBack()
