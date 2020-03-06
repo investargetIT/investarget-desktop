@@ -1222,7 +1222,7 @@ class OrgBDListComponent extends React.Component {
                 : null } */}
 
                 { /* 删除按钮 */ }
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id ?
+                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ?
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
                   <Button style={{ ...buttonStyle, color: undefined }}>
                     <Icon type="delete" />
