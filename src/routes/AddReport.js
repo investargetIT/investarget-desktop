@@ -59,6 +59,11 @@ class AddReport extends React.Component {
     this.startTime = null;
     this.endTime = null;
 
+    const startMoment = moment(date).startOf('week');
+    const endMoment = moment(date).startOf('week').add('days', 6);
+    this.startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
+    this.endTime = `${endMoment.format('YYYY-MM-DD')}T23:59:59`;
+
     // this.remainingTime = 60;
     // this.interval = setInterval(this.checkInterval, 1000);
   }
@@ -82,6 +87,22 @@ class AddReport extends React.Component {
   // componentWillUnmount() {
   //   clearInterval(this.interval);
   // }
+
+  async componentDidMount() {
+    try {
+      const body = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        user: getCurrentUser(),
+      };
+      const res = await api.addWorkReport(body);
+      const { id: reportId } = res.data;
+      this.props.router.replace(`/app/report/edit/${reportId}`);
+    } catch (error) {
+      handleError(error);
+      this.props.router.goBack();
+    }
+  }
 
   goBack = () => {
     this.props.router.goBack()
@@ -442,13 +463,13 @@ class AddReport extends React.Component {
   render() {
     return(
       <LeftRightLayout location={this.props.location} title="工作周报">
-        <div>
+        {/* <div>
           <AddReportForm wrappedComponentRef={this.handleRef} data={this.initialFormData} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
           </div>
-        </div>
+        </div> */}
       </LeftRightLayout>
     )
   }
