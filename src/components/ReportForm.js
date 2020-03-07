@@ -28,6 +28,7 @@ import {
   SelectNewBDStatus,
   SelectOrgInvestor,
 } from './ExtraInput'
+import _ from 'lodash';
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
 
@@ -115,9 +116,15 @@ class ReportForm extends React.Component {
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
-    const params = { manager, stimeM, etimeM, stime, etime, page_size };
-    const res = await api.getOrgBdList(params);
-    const { data: orgBds } = res.data;
+
+    const params1 = { manager, stimeM, etimeM, page_size };
+    const params2 = { manager, stime, etime, page_size };
+    const res = await Promise.all([
+      api.getOrgBdList(params1),
+      api.getOrgBdList(params2),
+    ]);
+    const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+    const orgBds =  _.uniqBy(allOrgBds, 'id');
 
     const { getFieldDecorator, setFieldsValue } = this.props.form;
     orgBds.forEach(element => {

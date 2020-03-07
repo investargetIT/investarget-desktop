@@ -5,7 +5,7 @@ import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
 import { i18n, handleError } from '../utils/util'
 import moment from 'moment';
-
+import _ from 'lodash';
 import { Form, Button, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -137,10 +137,16 @@ class EditReport extends React.Component {
     const stimeM = this.startDate;
     const etimeM = this.endDate;
     const page_size = 1000;
-    const params = { manager, stimeM, etimeM, stime, etime, page_size };
-    const res = await api.getOrgBdList(params);
-    const { data: orgBds } = res.data;
 
+
+    const params1 = { manager, stimeM, etimeM, page_size };
+    const params2 = { manager, stime, etime, page_size };
+    const res = await Promise.all([
+      api.getOrgBdList(params1),
+      api.getOrgBdList(params2),
+    ]);
+    const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+    const orgBds =  _.uniqBy(allOrgBds, 'id');
 
     const projs = orgBds.map(m => m.proj);
     const projIds = projs.map(m => m.id);

@@ -16,7 +16,7 @@ import {
 } from '../components/ExtraInput'
 import LeftRightLayout from '../components/LeftRightLayout';
 import moment from 'moment';
-
+import _ from 'lodash';
 
 let uuid = 0;
 let ppid = 0;
@@ -121,9 +121,16 @@ class ReportDetail extends React.Component {
     const stimeM = startDate;
     const etimeM = endDate;
     const page_size = 1000;
-    const params = { manager, stimeM, etimeM, stime, etime, page_size };
-    const res = await api.getOrgBdList(params);
-    const { data: orgBds } = res.data;
+
+    const params1 = { manager, stimeM, etimeM, page_size };
+    const params2 = { manager, stime, etime, page_size };
+    const res = await Promise.all([
+      api.getOrgBdList(params1),
+      api.getOrgBdList(params2),
+    ]);
+    const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+    const orgBds =  _.uniqBy(allOrgBds, 'id');
+
     const projs = orgBds.map(m => m.proj);
     const projIds = projs.map(m => m.id);
     const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
