@@ -96,9 +96,20 @@ class ReportDetail extends React.Component {
     const stimeM = startDate;
     const etimeM = endDate;
     const page_size = 1000;
-    const params = { createuser, stimeM, etimeM, stime, etime, page_size };
-    const resRemark = await api.getOrgRemark(params);
-    let { data: remarks } = resRemark.data;
+
+    // const params = { createuser, stimeM, etimeM, stime, etime, page_size };
+    // const resRemark = await api.getOrgRemark(params);
+    // let { data: remarks } = resRemark.data;
+
+    const params1 = { createuser, stimeM, etimeM, page_size };
+    const params2 = { createuser, stime, etime, page_size };
+    const res = await Promise.all([
+      api.getOrgRemark(params1),
+      api.getOrgRemark(params2),
+    ]);
+    const allOrgRemarks = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+    let remarks =  _.uniqBy(allOrgRemarks, 'id');
+
     remarks = remarks.filter(f => f.org && f.remark);
     const orgIds = remarks.map(m => m.org);
     const uniqueOrgIds = orgIds.filter((v, i, a) => a.indexOf(v) === i);
