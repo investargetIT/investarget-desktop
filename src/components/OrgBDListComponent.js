@@ -1401,6 +1401,7 @@ class OrgBDListComponent extends React.Component {
           maskClosable={false}
         >
           <BDComments
+            bd={this.state.currentBD}
             comments={this.state.comments}
             newComment={this.state.newComment}
             onChange={e => this.setState({ newComment: e.target.value })}
@@ -1509,7 +1510,7 @@ export function SimpleLine(props) {
 }
 
 function BDComments(props) {
-  const { comments, newComment, onChange, onDelete, onAdd } = props
+  const { comments, newComment, onChange, onDelete, onAdd, bd } = props
   return (
     <div>
       <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -1528,7 +1529,7 @@ function BDComments(props) {
             <div key={comment.id} style={{ marginBottom: 8 }}>
               <p>
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
-                {hasPerm('BD.manageOrgBD') ?
+                {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
                     <a href="javascript:void(0)">{i18n('common.delete')}</a>
                   </Popconfirm>
