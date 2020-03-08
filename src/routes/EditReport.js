@@ -182,17 +182,17 @@ class EditReport extends React.Component {
     const allOrgBds = existingOrgBd.concat(newOrgBd);
     await this.addOrgBd(allOrgBds);
    
-    this.updateOrgBds(values);
+    await this.updateOrgBds(values);
 
     const existingOrgRemark = this.getExistingOrgRemark(values);
     const newOrgRemark = this.getNewOrgRemark(values);
     const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
-    this.addOrgRemark(allOrgRemarks);
+    await this.addOrgRemark(allOrgRemarks);
 
     await this.editReport(values).catch(handleError);
   }
 
-  updateOrgBds = (values) => {
+  updateOrgBds = async (values) => {
     let result1 = [];
     for (const property in values) {
       if (property.startsWith('oldorgbd')) {
@@ -202,9 +202,7 @@ class EditReport extends React.Component {
       }
     }
     const uniqueIds = result1.filter((v, i, a) => a.indexOf(v) === i);
-    uniqueIds.forEach(e => {
-      this.updateOrgBd(values, e);
-    });
+    await Promise.all(uniqueIds.map(m => this.updateOrgBd(values, m)));
   }
 
   updateOrgBd = async (values, orgBdId) => {
@@ -339,10 +337,10 @@ class EditReport extends React.Component {
     return result;
   }
 
-  addOrgRemark = data => {
+  addOrgRemark = async data => {
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
-      api.addOrgRemark({ ...element, lastmodifytime: this.startTime });
+      await api.addOrgRemark({ ...element, lastmodifytime: this.startTime });
     }
   }
 
