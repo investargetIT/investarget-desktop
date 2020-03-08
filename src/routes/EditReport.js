@@ -6,7 +6,7 @@ import * as api from '../api'
 import { i18n, handleError } from '../utils/util'
 import moment from 'moment';
 import _ from 'lodash';
-import { Form, Button, message } from 'antd'
+import { Form, Button, message, Spin, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import ReportForm from '../components/ReportForm'
@@ -161,7 +161,17 @@ class EditReport extends React.Component {
   handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
+        const ref = Modal.info({
+          title: '正在保存周报',
+          content: (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Spin /> 
+            </div>
+          ),
+          okText: '保存中...',
+        });
         this.addData(values).then(() => {
+          ref.destroy();
           this.props.router.replace('/app/report/list');
         });
       }
