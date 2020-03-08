@@ -161,7 +161,9 @@ class EditReport extends React.Component {
   handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        this.addData(values);
+        this.addData(values).then(() => {
+          this.props.router.replace('/app/report/list');
+        });
       }
     })
   }
@@ -187,7 +189,7 @@ class EditReport extends React.Component {
     const allOrgRemarks = existingOrgRemark.concat(newOrgRemark);
     this.addOrgRemark(allOrgRemarks);
 
-    this.editReport(values).catch(handleError);
+    await this.editReport(values).catch(handleError);
   }
 
   updateOrgBds = (values) => {
@@ -258,7 +260,6 @@ class EditReport extends React.Component {
     const allProjReportInfos = existingProjInfo.concat(newProjReportInfo).concat(textProjectInfo);
     await Promise.all(allProjReportInfos.map(m => api.addWorkReportProjInfo({ ...m, report: reportId })));
     
-    this.props.router.replace('/app/report/list');
   }
 
   getPlanForTextProj = values => {
