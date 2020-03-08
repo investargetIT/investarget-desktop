@@ -59,10 +59,24 @@ class EditReport extends React.Component {
       existProj: [],
       newProj: [],
     };
+
+    // this.interval = setInterval(this.updateReport, 30 * 1000);
   }
 
   componentDidMount() {
     this.getReportDetail();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  updateReport = () => {
+    this.form.validateFields((err, values) => {
+      if (!err) {
+        this.addData(values).then(this.getReportDetail);
+      }
+    });
   }
 
   getFormData = () => {
