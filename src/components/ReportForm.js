@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
 import moment from 'moment';
-import { Form, Input, Radio, Checkbox, DatePicker, Button, message, Modal } from 'antd'
+import { Form, Input, Radio, Checkbox, DatePicker, Button, message, Modal, Icon } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
 const { RangePicker } = DatePicker;
@@ -429,6 +429,43 @@ class ReportForm extends React.Component {
     }
   }
 
+  handleDeleteCommentBtnClick = (orgBdId, commentId) => {
+    Modal.confirm({
+      title: '是否确定删除该机构BD备注',
+      content: '一旦确定，无法撤回',
+      onOk: this.handleConfirmDeleteComment.bind(this, orgBdId, commentId),
+    });
+  }
+
+  handleConfirmDeleteComment = async (orgBdId, commentId) => {
+    try {
+      await api.deleteOrgBDComment(commentId);
+      let projIndex = -1;
+      let orgBdIndex = -1;
+      let commentIndex = -1;
+      this.state.projOrgBds.forEach((e, i) => {
+        const orgBdIds = e.orgBds.map(m => m.id);
+        const index = orgBdIds.indexOf(orgBdId);
+        if (index > -1) {
+          projIndex = i;
+          orgBdIndex = index;
+          const orgBdCommentsIds = e.orgBds[orgBdIndex].BDComments.map(m => m.id);
+          const comIndex = orgBdCommentsIds.indexOf(commentId);
+          if (comIndex > -1) {
+            commentIndex = comIndex;
+          }
+        }
+      });
+      if (projIndex > -1 && orgBdIndex > -1 && commentIndex > -1) {
+        const newProjOrgBds = [...this.state.projOrgBds];
+        newProjOrgBds[projIndex].orgBds[orgBdIndex].BDComments.splice(commentIndex, 1);
+        this.setState({ projOrgBds: newProjOrgBds });
+      }
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
   updateOrgBdComments = async data => {
     const result = [];
     for (let index = 0; index < data.length; index++) {
@@ -821,10 +858,13 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>备注：</div>
                           <div style={{ flex: 1 }}>
-                            {m.BDComments ? m.BDComments.map(m1 => (
-                              <BasicFormItem key={m1.id} name={`oldorgbd-comments_${m.id}_${m1.id}`} layout>
-                                <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
-                              </BasicFormItem>
+                            {m.BDComments && m.BDComments.length > 0 ? m.BDComments.map(m1 => (
+                              <div key={m1.id} style={{ display: 'flex', alignItems: 'center' }}>
+                                <BasicFormItem name={`oldorgbd-comments_${m.id}_${m1.id}`} layout>
+                                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+                                </BasicFormItem>
+                                <Icon style={{ marginLeft: 4, cursor: 'pointer' }} onClick={() => this.handleDeleteCommentBtnClick(m.id, m1.id)} type="delete" />
+                              </div>
                             )) : (
                               <BasicFormItem name={`oldorgbd-comments_${m.id}_0`} layout>
                                 <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
