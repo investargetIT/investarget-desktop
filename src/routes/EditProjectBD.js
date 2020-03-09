@@ -103,40 +103,42 @@ class EditProjectBD extends React.Component {
 
   editProjectBD = async (values) => {
     const param = toData(values);
-    const { manager: newManager } = param;
-    const { manager: oldManager, id: projectBdId } = this.state.bd;
-    let { main: oldMainManager, normal: oldNormalManager } = oldManager;
-    let newNormalManager = [];
-    if (newManager.includes(oldMainManager.id.toString())) {
-      param.manager = oldMainManager.id;
-      newNormalManager = newManager.filter(f => f !== oldMainManager.id.toString());
-    } else {
-      param.manager = newManager[0];
-      newNormalManager = newManager.slice(1);
+
+    if (param.manager) {
+      const { manager: newManager } = param;
+      const { manager: oldManager, id: projectBdId } = this.state.bd;
+      let { main: oldMainManager, normal: oldNormalManager } = oldManager;
+      let newNormalManager = [];
+      if (newManager.includes(oldMainManager.id.toString())) {
+        param.manager = oldMainManager.id;
+        newNormalManager = newManager.filter(f => f !== oldMainManager.id.toString());
+      } else {
+        param.manager = newManager[0];
+        newNormalManager = newManager.slice(1);
+      }
+
+      if (oldNormalManager === null) {
+        oldNormalManager = [];
+      }
+
+      const oldNormalManagerIds = oldNormalManager.map(m => m.manager.id);
+      const newNormalManagerIds = newNormalManager.map(m => parseInt(m));
+
+      const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
+      await Promise.all(normalManagerToDel.map(m => {
+        const relateManagerId = oldNormalManager.filter(f => f.manager.id === m)[0].id;
+        return api.deleteProjectBdRelatedManager(relateManagerId);
+      }));
+      const normalManagerToAdd = subtracting(newNormalManagerIds, oldNormalManagerIds);
+      await Promise.all(normalManagerToAdd.map(m => {
+        const body = {
+          manager: m,
+          projectBD: projectBdId,
+        };
+        return api.addProjectBdRelatedManager(body);
+      }));
     }
 
-    if (oldNormalManager === null) {
-      oldNormalManager = [];
-    }
-
-    const oldNormalManagerIds = oldNormalManager.map(m => m.manager.id);
-    const newNormalManagerIds = newNormalManager.map(m => parseInt(m));
-    
-    const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
-    await Promise.all(normalManagerToDel.map(m => {
-      const relateManagerId = oldNormalManager.filter(f => f.manager.id === m)[0].id;
-      return api.deleteProjectBdRelatedManager(relateManagerId);
-    }));
-    const normalManagerToAdd = subtracting(newNormalManagerIds, oldNormalManagerIds);
-    await Promise.all(normalManagerToAdd.map(m => {
-      const body = {
-        manager: m,
-        projectBD: projectBdId,
-      };
-      return api.addProjectBdRelatedManager(body);
-    }));
-
-    // return;
     const { bd_status: status } = param;
     // 状态改为暂不BD后，详细需求见bugClose #344
     if (status === 4 && this.state.bd.bd_status.id !== 4) {
