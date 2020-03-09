@@ -320,7 +320,7 @@ class ReportDetail extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
           <div style={{ padding: '0 10px' }}>
-            {this.state.report && this.state.report.marketMsg || '未填写'}
+            {this.state.report && this.state.report.marketMsg.replace(/\n/g, '<br/>') || '未填写'}
           </div>
         </div>
 
@@ -329,7 +329,7 @@ class ReportDetail extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>其他事项/工作建议（如果有）</div>
           </div>
           <div style={{ padding: '0 10px' }}>
-            {this.state.report && this.state.report.others || '未填写'}
+            {this.state.report && this.state.report.others.replace(/\n/g, '<br/>') || '未填写'}
           </div>
         </div>
 
