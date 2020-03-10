@@ -84,6 +84,7 @@ class EditReport extends React.Component {
   autoSaveTextProj = values => {
     const textProj = this.getAutoSaveTextProj(values);
     window.echo('autosave text proj', textProj);
+    textProj.forEach(e => api.editWorkReportProjInfo(e.reportProjId, e));
   }
 
   getAutoSaveTextProj = values => {
@@ -106,6 +107,7 @@ class EditReport extends React.Component {
     }
 
     result1 = result1.filter(f => f.reportProjId);
+
     const projTitles = result1.map(m => m.reportProjId);
     const uniqueProjTitles = projTitles.filter((v, i, a) => a.indexOf(v) === i);
     const result = [];
