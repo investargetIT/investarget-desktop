@@ -60,7 +60,7 @@ class EditReport extends React.Component {
       newProj: [],
     };
 
-    // this.interval = setInterval(this.autoSave, 30 * 1000);
+    this.interval = setInterval(this.autoSave, 60 * 1000);
   }
 
   componentDidMount() {
