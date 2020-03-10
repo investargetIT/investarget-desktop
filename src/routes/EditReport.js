@@ -75,6 +75,7 @@ class EditReport extends React.Component {
     this.form.validateFields((err, values) => {
       if (!err) {
         this.autoSaveWorkReport(values);
+        this.autoSaveOrgBds(values);
       }
     });
   }
@@ -87,6 +88,50 @@ class EditReport extends React.Component {
       user: this.state.report.user.id,
     };
     api.editWorkReport(this.reportId, body);
+  }
+
+  autoSaveOrgBds = async (values) => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('oldorgbd')) {
+        const infos = property.split('_');
+        const id = parseInt(infos[1]);
+        result1.push(id);
+      }
+    }
+    const uniqueIds = result1.filter((v, i, a) => a.indexOf(v) === i);
+    await Promise.all(uniqueIds.map(m => this.updateOrgBd1(values, m)));
+  }
+
+  updateOrgBd1 = async (values, orgBdId) => {
+    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
+    await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const comments = this.getOldOrgBdComments1(values, orgBdId);
+    await this.updateOrgBdComments1(comments);
+  }
+
+  getOldOrgBdComments1 = (values, orgBdId) => {
+    const result = [];
+    for (const property in values) {
+      if (property.startsWith(`oldorgbd-comments_${orgBdId}`)) {
+        const value = values[property];
+        const infos = property.split('_');
+        const commentId = infos[2];
+        const o = { id: parseInt(commentId), comments: value, orgBD: orgBdId };
+        result.push(o);
+      }
+    }
+    return result;
+  }
+
+  updateOrgBdComments1 = async data => {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      const { id, comments, orgBD } = element;
+      if (id !== 0) {
+        await api.editOrgBDComment(id, { comments });
+      }
+    }
   }
 
   getFormData = () => {
