@@ -76,8 +76,46 @@ class EditReport extends React.Component {
       if (!err) {
         this.autoSaveWorkReport(values);
         this.autoSaveOrgBds(values);
+        this.autoSaveTextProj(values);
       }
     });
+  }
+
+  autoSaveTextProj = values => {
+    const textProj = this.getAutoSaveTextProj(values);
+    window.echo('autosave text proj', textProj);
+  }
+
+  getAutoSaveTextProj = values => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('newproject')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const projKey = `text_project_${infos[1]}`;
+        const projTitle = values[projKey];
+        const key = infos[2];
+        let reportProjId = null;
+        if (infos[1].startsWith('textproj')) {
+          reportProjId = infos[1].substring(8);
+          window.echo('find edit report text proj id', reportProjId);
+        }
+        const o = { projTitle, key, value, reportProjId };
+        result1.push(o);
+      }
+    }
+
+    result1 = result1.filter(f => f.reportProjId);
+    const projTitles = result1.map(m => m.reportProjId);
+    const uniqueProjTitles = projTitles.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueProjTitles.forEach(e => {
+      const projTitle = result1.filter(f => f.reportProjId === e)[0].projTitle;
+      const thisPlan = result1.filter(f => f.reportProjId === e && f.key === 'thisplan')[0].value;
+      const nextPlan = result1.filter(f => f.reportProjId === e && f.key === 'nextplan')[0].value;
+      result.push({ reportProjId: e, projTitle, thisPlan, nextPlan });
+    });
+    return result;
   }
 
   autoSaveWorkReport = (data) => {
