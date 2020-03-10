@@ -60,7 +60,7 @@ class EditReport extends React.Component {
       newProj: [],
     };
 
-    // this.interval = setInterval(this.updateReport, 30 * 1000);
+    // this.interval = setInterval(this.autoSave, 30 * 1000);
   }
 
   componentDidMount() {
@@ -71,12 +71,22 @@ class EditReport extends React.Component {
     clearInterval(this.interval);
   }
 
-  updateReport = () => {
+  autoSave = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        this.addData(values).then(this.getReportDetail);
+        this.autoSaveWorkReport(values);
       }
     });
+  }
+
+  autoSaveWorkReport = (data) => {
+    const { summary: marketMsg, suggestion: others } = data;
+    const body = {
+      marketMsg,
+      others,
+      user: this.state.report.user.id,
+    };
+    api.editWorkReport(this.reportId, body);
   }
 
   getFormData = () => {
