@@ -471,3 +471,12 @@ export function isShowCNY(record, allArea) {
 export function checkRealMobile(mobile) {
   return /^(13[0-9]|14[579]|15[0-3,5-9]|17[0135678]|18[0-9])[\d*]{8}$/.test(mobile);
 }
+
+export function getUserGroupIdByName(allGroups, name) {
+  const group = allGroups.filter(f => f.name === name);
+  if (group.length > 0) {
+    return group[0].id;
+  } else {
+    throw new Error('Group Not Found!!!');
+  }
+}

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, intersection, subtracting, hasPerm, isLogin } from '../utils/util'
+import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
@@ -56,6 +56,19 @@ class EditUser extends React.Component {
 
 
         let body = values
+
+        // #426
+        if (body.userstatus === 2) {
+          const juniorInvestorGroupId = getUserGroupIdByName(this.props.group, '初级投资人');
+          const juniorTraderGroupId = getUserGroupIdByName(this.props.group, '初级交易师');
+          if (body.groups[0] === juniorInvestorGroupId) {
+            const investorGroupId = getUserGroupIdByName(this.props.group, '用户');
+            body.groups = [investorGroupId];
+          } else if (body.groups[0] === juniorTraderGroupId) {
+            const traderGroupId = getUserGroupIdByName(this.props.group, '交易师');
+            body.groups = [traderGroupId];
+          }
+        }
 
         if (!hasPerm('usersys.admin_changeuser')) {
           body = { ...values, groups: undefined}
@@ -328,8 +341,8 @@ class EditUser extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { country, orgarea } = state.app;
-  return { country, orgarea };
+  const { country, orgarea, group } = state.app;
+  return { country, orgarea, group };
 }
 
 export default connect(mapStateToProps)(EditUser);
