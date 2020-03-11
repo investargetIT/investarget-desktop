@@ -183,7 +183,7 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n('user.industry_fund')} name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
 
         {
-          this.hasPerm ? (
+          this.hasPerm && !this.props.isTraderAddInvestor ? (
             <BasicFormItem label={i18n("user.status")} name="userstatus" valueType="number" initialValue={2}>
               <RadioAudit />
             </BasicFormItem>
