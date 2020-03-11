@@ -184,21 +184,21 @@ class ReportDetail extends React.Component {
 
                     <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
 
-                    <div style={{ flex: 1 }}>
+                    <div style={{ width: 160 }}>
                       <div style={{ display: 'flex' }}>
                         <div>机构：</div>
                         <div style={{ flex: 1 }}>{m.org ? m.org.orgname : '暂无'}</div>
                       </div>
                     </div>
 
-                    <div style={{ flex: 1 }}>
+                    <div style={{ width: 150 }}>
                       <div style={{ display: 'flex' }}>
                         <div>投资人：</div>
                         <div style={{ flex: 1 }}>{m.username}</div>
                       </div>
                     </div>
 
-                    <div style={{ flex: 1 }}>
+                    <div style={{ width: 180 }}>
                       <div style={{ display: 'flex' }}>
                         <div>状态：</div>
                         <div style={{ flex: 1 }}>
