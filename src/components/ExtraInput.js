@@ -1424,6 +1424,10 @@ function mapStateToPropsTreeSelectTag(state) {
   options.forEach(element => {
     element.children = tag.filter(f => f.scopeName === element.title).map(m => ({ title: m.name, value: m.id.toString() }));
   });
+  options = options.map(m => {
+    const value = JSON.stringify(m.children.map(m => m.value));
+    return { ...m, value };
+  });
   return { options };
 }
 
