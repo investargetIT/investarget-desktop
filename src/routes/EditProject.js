@@ -58,6 +58,14 @@ function toFormData(data) {
       })
     // } else if (prop == 'indGroup' && data[prop]) {
     //   formData[prop] = { 'value': data[prop].id }
+    } else if (prop === 'projTraders') {
+      const { projTraders } = data;
+      const takeUser = projTraders.filter(f => f.type === 0);
+      const makeUser = projTraders.filter(f => f.type === 1);
+      formData.takeUser = { value: takeUser.map(m => m.user.id) };
+      formData.makeUser = { value: makeUser.map(m => m.user.id) };
+      formData.takeUserName = { value: takeUser.map(m => m.user.usernameC).join('、') };
+      formData.makeUserName = { value: makeUser.map(m => m.user.usernameC).join('、') };
     } else {
       formData[prop] = { 'value': data[prop] }
     }
@@ -114,10 +122,10 @@ class EditProject extends React.Component {
       data.supportUserName = result.data.supportUser && (window.LANG === 'en' ? result.data.supportUser.usernameE : result.data.supportUser.usernameC);
       data.tags = result.data.tags ? result.data.tags.map(item => item.id) : []
       data.transactionType = result.data.transactionType ? result.data.transactionType.map(item => item.id) : []
-      data.takeUser = result.data.takeUser === undefined ? undefined : (result.data.takeUser === null ? null : result.data.takeUser.id);
-      data.takeUserName = result.data.takeUser && (window.LANG === 'en' ? result.data.takeUser.usernameE : result.data.takeUser.usernameC);
-      data.makeUser = result.data.makeUser === undefined ? undefined : (result.data.makeUser === null ? null : result.data.makeUser.id);
-      data.makeUserName = result.data.makeUser && (window.LANG === 'en' ? result.data.makeUser.usernameE : result.data.makeUser.usernameC);
+      // data.takeUser = result.data.takeUser === undefined ? undefined : (result.data.takeUser === null ? null : result.data.takeUser.id);
+      // data.takeUserName = result.data.takeUser && (window.LANG === 'en' ? result.data.takeUser.usernameE : result.data.takeUser.usernameC);
+      // data.makeUser = result.data.makeUser === undefined ? undefined : (result.data.makeUser === null ? null : result.data.makeUser.id);
+      // data.makeUserName = result.data.makeUser && (window.LANG === 'en' ? result.data.makeUser.usernameE : result.data.makeUser.usernameC);
       data.service = result.data.service ? result.data.service.map(m => m.id) : []
       // `value` prop on `textarea` should not be null.
       let textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
