@@ -58,12 +58,12 @@ function toFormData(data) {
       })
     // } else if (prop == 'indGroup' && data[prop]) {
     //   formData[prop] = { 'value': data[prop].id }
-    } else if (prop === 'projTraders') {
+    } else if (prop === 'projTraders' && data[prop]) {
       const { projTraders } = data;
       const takeUser = projTraders.filter(f => f.type === 0);
       const makeUser = projTraders.filter(f => f.type === 1);
-      formData.takeUser = { value: takeUser.map(m => m.user.id) };
-      formData.makeUser = { value: makeUser.map(m => m.user.id) };
+      formData.takeUser = { value: takeUser.map(m => m.user.id.toString()) };
+      formData.makeUser = { value: makeUser.map(m => m.user.id.toString()) };
       formData.takeUserName = { value: takeUser.map(m => m.user.usernameC).join('、') };
       formData.makeUserName = { value: makeUser.map(m => m.user.usernameC).join('、') };
     } else {
@@ -113,6 +113,8 @@ class EditProject extends React.Component {
     const id = Number(this.props.params.id)
     api.getProjDetail(id).then(result => {
       let data = Object.assign({}, result.data);
+      delete data.makeUser
+      delete data.takeUser 
       echo(result.data)
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
