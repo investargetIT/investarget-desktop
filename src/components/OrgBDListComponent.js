@@ -120,8 +120,7 @@ class OrgBDListComponent extends React.Component {
         userDetail:[],
         expanded: [],
         traderList: [],
-        makeUser: undefined, // 项目承做
-        takeUser: undefined, // 项目承揽
+        projTradersIds: [], // 项目承揽或承做
         statistic: [],
         org: null, // 为哪个机构添加投资人
         exportLoading: false,
@@ -203,9 +202,10 @@ class OrgBDListComponent extends React.Component {
     if (proj) {
       api.getProjDetail(proj)
       .then(result => {
-        const makeUser = result.data.makeUser && result.data.makeUser.id;
-        const takeUser = result.data.takeUser && result.data.takeUser.id;
-        this.setState({ makeUser, takeUser });
+        const { projTraders } = result.data;
+        if (projTraders) {
+          this.setState({ projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id) });
+        }
         if (this.props.editable) {
           this.writeSetting();
         }
@@ -792,7 +792,7 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+    if (this.state.projTradersIds.includes(currentUserID)) {
       return true;
     }
     return false;
@@ -806,7 +806,7 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+    if (this.state.projTradersIds.includes(currentUserID)) {
       return true;
     }
     return false;
@@ -820,7 +820,7 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.makeUser, this.state.takeUser].includes(currentUserID)) {
+    if (this.state.projTradersIds.includes(currentUserID)) {
       return true;
     }
     return false;
@@ -831,7 +831,7 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.makeUser, this.state.takeUser, record.manager.id, record.createuser.id].includes(currentUserID)) {
+    if ([...this.state.projTradersIds, record.manager.id, record.createuser.id].includes(currentUserID)) {
       return true;
     }
     return false;
