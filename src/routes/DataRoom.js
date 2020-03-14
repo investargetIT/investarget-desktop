@@ -61,8 +61,7 @@ class DataRoom extends React.Component {
       dataRoomTempModalUserId: '',
 
       selectedFiles: [],
-      isMakeUser: false,
-      isTakeUser: false,
+      isProjTrader: false,
 
       pdfPassword: '',
       disableEditPassword: false,
@@ -85,14 +84,13 @@ class DataRoom extends React.Component {
 
   componentDidMount() {
     api.getProjLangDetail(this.state.projectID).then(res => {
-      const isMakeUser = res.data.makeUser && res.data.makeUser.id === isLogin().id;
-      const isTakeUser = res.data.takeUser && res.data.takeUser.id === isLogin().id;
+      const { projTraders } = res.data;
+      const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
       const isSuperUser = isLogin().is_superuser;
-      if (isMakeUser || isTakeUser || isSuperUser) {
+      if (isProjTrader || isSuperUser) {
         this.setState({
           title: res.data.projtitle,
-          isMakeUser,
-          isTakeUser,
+          isProjTrader,
           hasPermissionForDataroomTemp: true,
         });
       } else {
@@ -829,7 +827,7 @@ class DataRoom extends React.Component {
         // style={disableSelect}
       >
       
-        {hasPerm('dataroom.admin_adddataroom') || this.state.isMakeUser || this.state.isTakeUser ?
+        {hasPerm('dataroom.admin_adddataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
@@ -883,8 +881,7 @@ class DataRoom extends React.Component {
           onMultiVisible={this.handleMultiVisible}
           onMultiInvisible={this.handleMultiInvisible}
           onDownloadBtnClicked={(selectedFiles) => this.setState({ visible: true, selectedFiles })}
-          isMakeUser={this.state.isMakeUser}
-          isTakeUser={this.state.isTakeUser}
+          isProjTrader={this.state.isProjTrader}
           onClickAllFilesBtn={this.handleClickAllFilesBtn}
           onClickFolder={this.handleClickFolder}
         />
@@ -904,7 +901,7 @@ class DataRoom extends React.Component {
             onConfirm={this.handleDownloadBtnClicked}
             onDownloadSelectedFiles={this.handleDownloadSelectedFilesBtnClicked}
             disableDownloadSelectedFilesButton={this.state.selectedFiles.filter(f => f.isFile).length === 0}
-            displayEditPasswordField={(hasPerm('usersys.as_trader') || (isLogin() && isLogin().is_superuser)) || this.state.isMakeUser || this.state.isTakeUser}
+            displayEditPasswordField={(hasPerm('usersys.as_trader') || (isLogin() && isLogin().is_superuser)) || this.state.isProjTrader}
             password={this.state.pdfPassword}
             passwordChange={this.handlePasswordChange}
             disableEditPassword={this.state.disableEditPassword}
