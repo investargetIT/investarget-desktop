@@ -711,8 +711,9 @@ class ProjectListFilter extends React.Component {
     projstatus: [],
     service: [],
     // indGroup: [],
-    takeUser: [],
-    makeUser: [],
+    // takeUser: [],
+    // makeUser: [],
+    projTraders: [],
   }
 
   constructor(props) {
@@ -741,7 +742,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, projTraders } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -757,12 +758,16 @@ class ProjectListFilter extends React.Component {
         <TabCheckboxProjStatus value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
         {/* <TabCheckboxIndustryGroup value={indGroup || []} onChange={this.handleChange.bind(this, 'indGroup')} /> */}
 
-        <BasicContainer label="承揽">
+        {/* <BasicContainer label="承揽">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={takeUser || []} onChange={this.handleChange.bind(this, 'takeUser')}  optionFilterProp="children" />
         </BasicContainer>
 
         <BasicContainer label="承做">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={makeUser || []} onChange={this.handleChange.bind(this, 'makeUser')}  optionFilterProp="children" />
+        </BasicContainer> */}
+
+        <BasicContainer label="承揽承做">
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={projTraders || []} onChange={this.handleChange.bind(this, 'projTraders')}  optionFilterProp="children" />
         </BasicContainer>
 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
