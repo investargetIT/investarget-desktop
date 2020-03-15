@@ -242,7 +242,19 @@ class TimelineList extends React.Component {
     };
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
-    const { data: list, count: total } = res.data;
+    let { data: list, count: total } = res.data;
+
+    // get project detail for projTraders
+    const projIds = list.filter(f => f.proj).map(m => m.proj.id);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const resProj = await Promise.all(uniqueProjIds.map(m => api.getProjDetail(m)));
+    const allProjDetails = resProj.map(m => m.data);
+    list = list.map(m => {
+      const { proj: { id } } = m;
+      const projDetail = allProjDetails.filter(f => f.id === id)[0];
+      return { ...m, projDetail };
+    });
+
     let comments = [];
     if (this.state.currentBD) {
       comments = list.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
