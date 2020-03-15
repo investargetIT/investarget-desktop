@@ -504,6 +504,18 @@ function Icon2(props) {
 }
 
 function SecretInfo({ project }) {
+  let takeUsersName = '';
+  let makeUsersName = '';
+  if (project.projTraders) {
+    const takeUsers = project.projTraders.filter(f => f.type === 0);
+    const makeUsers = project.projTraders.filter(f => f.type === 1);
+    if (takeUsers.length > 0) {
+      takeUsersName = takeUsers.map(m => m.user.username).join('、');
+    }
+    if (makeUsers.length > 0) {
+      makeUsersName = makeUsers.map(m => m.user.username).join('、');
+    }
+  }
   const spanStyle={width:'40%',minWidth:120,marginRight:16,display:'inline-block',verticalAlign:'top'}
   const contentStyle={verticalAlign:'top'}
   return (
@@ -521,10 +533,10 @@ function SecretInfo({ project }) {
           </div>
           <div>
             <span style={spanStyle}>{i18n('project.uploader')}：{project.supportUser ? project.supportUser.username : i18n('common.none')}</span>
-            <span style={contentStyle}>{i18n('project.take_user')}：{project.takeUser ? project.takeUser.username : i18n('common.none')}</span>
+            <span style={contentStyle}>{i18n('project.take_user')}：{takeUsersName || i18n('common.none')}</span>
           </div>
           <div>
-            <span style={spanStyle}>{i18n('project.make_user')}：{project.makeUser ? project.makeUser.username : i18n('common.none')}</span>
+            <span style={spanStyle}>{i18n('project.make_user')}：{makeUsersName || i18n('common.none')}</span>
             <span style={contentStyle}></span>
           </div>
         </div>
