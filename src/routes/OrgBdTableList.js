@@ -276,8 +276,13 @@ class TimelineList extends React.Component {
     if (hasPerm('BD.manageOrgBD')) {
       return true;
     }
+    let projTradersIds = [];
+    const { projDetail: { projTraders } } = record;
+    if (projTraders) {
+      projTradersIds = projTraders.map(m => m.user.id);
+    }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.makeUser, this.state.takeUser, record.manager.id, record.createuser.id].includes(currentUserID)) {
+    if (projTradersIds.concat([record.manager.id, record.createuser.id]).includes(currentUserID)) {
       return true;
     }
     return false;
