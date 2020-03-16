@@ -17,6 +17,7 @@ import { OrgBdTableListFilter } from '../components/Filter'
 import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import * as api from '../api';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -474,14 +475,21 @@ class TimelineList extends React.Component {
   }
 
   // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
-  addRelation = investorID => {
-    if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
-      api.addUserRelation({
-        relationtype: false,
-        investoruser: investorID,
-        traderuser: this.state.currentBD.makeUser,
-        proj: this.state.currentBD.proj.id,
-      })
+  addRelation = (investorID) => {
+    let projMakeUserIds = [];
+    const { projDetail: { projTraders } } = this.state.currentBD;
+    if (projTraders) {
+      projMakeUserIds = projTraders.filter(f => f.type === 1).map(m => m.user.id);
+    }
+    if (this.state.currentBD.proj) {
+      projMakeUserIds.forEach((userId) => {
+        api.addUserRelation({
+          relationtype: false,
+          investoruser: investorID,
+          traderuser: userId,
+          proj: this.state.currentBD.proj.id,
+        });
+      });
     }
   }
 

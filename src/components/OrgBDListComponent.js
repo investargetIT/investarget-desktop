@@ -121,6 +121,7 @@ class OrgBDListComponent extends React.Component {
         expanded: [],
         traderList: [],
         projTradersIds: [], // 项目承揽或承做
+        makeUserIds: [],
         statistic: [],
         org: null, // 为哪个机构添加投资人
         exportLoading: false,
@@ -204,7 +205,10 @@ class OrgBDListComponent extends React.Component {
       .then(result => {
         const { projTraders } = result.data;
         if (projTraders) {
-          this.setState({ projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id) });
+          this.setState({
+            projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
+            makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
+          });
         }
         if (this.props.editable) {
           this.writeSetting();
@@ -581,14 +585,16 @@ class OrgBDListComponent extends React.Component {
     }
   
   // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
-  addRelation = investorID =>{
-    if (this.state.currentBD.makeUser && this.state.currentBD.proj) {
-      api.addUserRelation({
-        relationtype: false,
-        investoruser: investorID,
-        traderuser: this.state.currentBD.makeUser,
-        proj: this.state.currentBD.proj.id,
-      })
+  addRelation = (investorID) => {
+    if (this.state.currentBD.proj) {
+      this.state.makeUserIds.forEach((userId) => {
+        api.addUserRelation({
+          relationtype: false,
+          investoruser: investorID,
+          traderuser: userId,
+          proj: this.state.currentBD.proj.id,
+        });
+      });
     }
   }
   handleOpenModal = bd => {
