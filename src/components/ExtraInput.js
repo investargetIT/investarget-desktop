@@ -1605,6 +1605,12 @@ const RadioTrueOrFalse = withOptions(RadioGroup2, [
   { value: false, label: i18n('common.no') },
 ])
 
+const RadioProjTraderType = withOptions(RadioGroup2, [
+  { value: null, label: '不限' },
+  { value: 0, label: '承揽' },
+  { value: 1, label: '承做' },
+]);
+
 /**
  * RadioCurrencyType
  */
@@ -1900,4 +1906,5 @@ export {
   TabCheckboxOrgBDRes,
   TreeSelectTag,
   SelectScheduleTypeWithoutMeeting,
+  RadioProjTraderType,
 }

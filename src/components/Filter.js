@@ -28,6 +28,7 @@ import {
   RadioNewBDStatus,
   RadioBDStatus,
   RadioBDSource,
+  RadioProjTraderType,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
   CheckboxTag,
@@ -108,6 +109,14 @@ function UserAuditFilter(props) {
       <RadioAudit value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
+}
+
+function ProjTraderTypeFilter(props) {
+  return (
+    <BasicContainer label="交易师类型">
+      <RadioProjTraderType value={props.value} onChange={props.onChange} />
+    </BasicContainer>
+  );
 }
 
 function FamLvFilter(props) {
@@ -713,7 +722,8 @@ class ProjectListFilter extends React.Component {
     // indGroup: [],
     // takeUser: [],
     // makeUser: [],
-    projTraders: [],
+    type: null,
+    user: [],
   }
 
   constructor(props) {
@@ -742,7 +752,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, projTraders } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, type } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -766,8 +776,11 @@ class ProjectListFilter extends React.Component {
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={makeUser || []} onChange={this.handleChange.bind(this, 'makeUser')}  optionFilterProp="children" />
         </BasicContainer> */}
 
-        <BasicContainer label="承揽承做">
-          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={projTraders || []} onChange={this.handleChange.bind(this, 'projTraders')}  optionFilterProp="children" />
+
+        <ProjTraderTypeFilter value={type} onChange={this.handleChange.bind(this, 'type')} />
+
+        <BasicContainer label="交易师">
+          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={user || []} onChange={this.handleChange.bind(this, 'user')}  optionFilterProp="children" />
         </BasicContainer>
 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
