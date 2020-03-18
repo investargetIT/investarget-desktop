@@ -722,7 +722,7 @@ class ProjectListFilter extends React.Component {
     // indGroup: [],
     // takeUser: [],
     // makeUser: [],
-    type: null,
+    usertype: null,
     user: [],
   }
 
@@ -752,7 +752,7 @@ class ProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, type } = this.state
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, usertype } = this.state
     return (
       <div>
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
@@ -777,7 +777,7 @@ class ProjectListFilter extends React.Component {
         </BasicContainer> */}
 
 
-        <ProjTraderTypeFilter value={type} onChange={this.handleChange.bind(this, 'type')} />
+        <ProjTraderTypeFilter value={usertype} onChange={this.handleChange.bind(this, 'usertype')} />
 
         <BasicContainer label="交易师">
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={user || []} onChange={this.handleChange.bind(this, 'user')}  optionFilterProp="children" />
