@@ -188,8 +188,8 @@ class ProjectLibrary extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { page: nextPage, search: nextSearch } = nextProps.location.query;
     const { page: currentPage, search: currentSearch } = this.props.location.query;
-    if (currentSearch && !nextSearch) {
-      this.handleReset(ProjectLibraryFilter.defaultValue);
+    if (currentSearch !== nextSearch) {
+      this.setState({ filters: ProjectLibraryFilter.defaultValue, page: 1, search: nextSearch }, this.getProject);
     } else if (nextPage !== currentPage) {
       this.setState({ page: parseInt(nextPage, 10) || 1 }, this.getProject);
     }
