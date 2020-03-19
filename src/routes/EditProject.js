@@ -81,6 +81,14 @@ function toData(formData) {
     if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && 'industriesKeys' !== prop) {
       data[prop] = formData[prop]
     }
+    if (prop === 'makeUser') {
+      const value = formData.makeUser;
+      data.makeUser = value.map(m => parseInt(m, 10));
+    }
+    if (prop === 'takeUser') {
+      const value = formData.takeUser;
+      data.takeUser = value.map(m => parseInt(m, 10));
+    }
   }
 
   if ('industriesKeys' in formData) {
