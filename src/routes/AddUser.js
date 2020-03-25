@@ -11,9 +11,6 @@ import { URI_12 } from '../constants'
 
 
 function onValuesChange(props, values) {
-  if (values.org) {
-    props.onOrgChange(values.org);
-  }
   props.onValuesChange(values);
 }
 function mapPropsToFields(props) {
@@ -156,9 +153,8 @@ class AddUser extends React.Component {
 
   handleCnNameOnBlur(evt) {
     const name = evt.target.value;
-    const org = this.form.getFieldValue('org');
-    if (name && org) {
-      this.checkIfExistsUserWithSameNameInThisOrg(org, name);
+    if (name) {
+      this.checkIfExistsUserWithSameName(name);
     }
   }
 
@@ -182,38 +178,62 @@ class AddUser extends React.Component {
 
   handleCancel = () => this.setState({ visible: false })
 
-  handleOrgChange(org) {
-    const usernameC = this.form.getFieldValue('usernameC');
-    if (usernameC) {
-      this.checkIfExistsUserWithSameNameInThisOrg(org, usernameC);
-    }
-  }
+  // handleOrgChange(org) {
+  //   const usernameC = this.form.getFieldValue('usernameC');
+  //   if (usernameC) {
+  //     this.checkIfExistsUserWithSameNameInThisOrg(org, usernameC);
+  //   }
+  // }
 
-  checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
+  // checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
+  //   const react = this;
+  //   let userID;
+  //   api.getUser({ org, usernameC: username })
+  //     .then(result => {
+  //       if (result.data.count > 0) {
+  //         userID = result.data.data[0].id;
+  //         return api.checkUserRelation(userID, isLogin().id);
+  //       }
+  //     })
+  //     .then(result => {
+  //       if (result === undefined) return;
+  //       let editable = '';
+  //       if (result.data || hasPerm('usersys.admin_changeuser')) {
+  //         editable = 'edit/';
+  //       }
+  //       Modal.warning({
+  //         title: '该机构已有同名投资人',
+  //         okText: '确定',
+  //         onOk() {
+  //           react.props.history.push(`/app/user/${editable}${userID}`);
+  //         }
+  //       });
+  //     })
+  // };
+
+  checkIfExistsUserWithSameName = async (username) => {
+    const resUser = await api.getUser({ usernameC: username });
+    const { count, data } = resUser.data;
+    if (count === 0) return;
+
+    const userID = data[0].id;
+    const resRelation = await api.checkUserRelation(userID, isLogin().id);
+    const { data: hasRelation } = resRelation;
+
+    let editable = '';
+    if (hasRelation || hasPerm('usersys.admin_changeuser')) {
+      editable = 'edit/';
+    }
+
     const react = this;
-    let userID;
-    api.getUser({ org, usernameC: username })
-      .then(result => {
-        if (result.data.count > 0) {
-          userID = result.data.data[0].id;
-          return api.checkUserRelation(userID, isLogin().id);
-        }
-      })
-      .then(result => {
-        if (result === undefined) return;
-        let editable = '';
-        if (result.data || hasPerm('usersys.admin_changeuser')) {
-          editable = 'edit/';
-        }
-        Modal.warning({
-          title: '该机构已有同名投资人',
-          okText: '确定',
-          onOk() {
-            react.props.history.push(`/app/user/${editable}${userID}`);
-          }
-        });
-      })
-  };
+    Modal.warning({
+      title: '已有同名投资人',
+      okText: '确定',
+      onOk() {
+        react.props.history.push(`/app/user/${editable}${userID}`);
+      },
+    });
+  }
 
   handleAddFormValuesChange = values => {
     window.echo('aa props value changes', values);
@@ -235,7 +255,6 @@ class AddUser extends React.Component {
           isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
           onValuesChange={this.handleAddFormValuesChange}
-          onOrgChange={this.handleOrgChange.bind(this)}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           cnNameOnBlur={this.handleCnNameOnBlur.bind(this)}
           data={this.formData}
