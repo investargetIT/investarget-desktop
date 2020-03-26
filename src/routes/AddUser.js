@@ -226,9 +226,11 @@ class AddUser extends React.Component {
     }
 
     const react = this;
-    Modal.warning({
+    Modal.confirm({
       title: '已有同名投资人',
-      okText: '确定',
+      content: '点击确定查看该投资人',
+      okText: '查看',
+      cancelText: '继续编辑',
       onOk() {
         react.props.history.push(`/app/user/${editable}${userID}`);
       },
