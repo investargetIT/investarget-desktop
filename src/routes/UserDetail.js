@@ -224,7 +224,19 @@ class UserDetail extends React.Component {
   }
 
   handleMergeUser = isMinorToMajor => {
-    window.echo('is minor to major', isMinorToMajor);
+    let msg = '右边用户的相关信息将合并入左边的用户中';
+    if (!isMinorToMajor) {
+      msg = '左边用户的相关信息将合并入右边的用户中'; 
+    }
+    Modal.confirm({
+      title: '是否确定合并用户？',
+      content: msg,
+      onOk: this.handleConfirmMergeUser,
+    });
+  }
+
+  handleConfirmMergeUser = () => {
+    window.echo('confirm merge user');
   }
 
   render() {
