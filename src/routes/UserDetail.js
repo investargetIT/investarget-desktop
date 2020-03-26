@@ -29,6 +29,7 @@ import {
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
+import * as api from '../api';
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -151,6 +152,8 @@ class UserDetail extends React.Component {
       isShowForm: false,
       hideUserInfo: false,
       isUploading: false,
+      username: '',
+      userIdWithSameName: null,
     }
   }
 
@@ -205,6 +208,25 @@ class UserDetail extends React.Component {
       })
   }
 
+  handleGetUsername = (username) => {
+    this.setState({ username });
+  }
+
+  handleSearchUserWithSameNameClick = async () => {
+    const resUser = await api.getUser({ usernameC: this.state.username });
+    const { count, data } = resUser.data;
+    if (count > 1) {
+      const userWithSameName = data.filter(f => f.id !== this.state.userId);
+      this.setState({ userIdWithSameName: userWithSameName[0].id });
+    } else {
+      Modal.warning({ title: '未查到同名用户' });
+    }
+  }
+
+  handleMergeUser = isMinorToMajor => {
+    window.echo('is minor to major', isMinorToMajor);
+  }
+
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
@@ -233,11 +255,21 @@ class UserDetail extends React.Component {
         </h3>
 
         <Row gutter={48}>
-          <Col span={12}>
-            { this.state.hideUserInfo ? null : <UserInfo userId={userId} /> }
+          <Col span={11}>
+            { this.state.hideUserInfo ? null : <UserInfo userId={userId} onGetUsername={this.handleGetUsername} /> }
           </Col>
-          <Col span={12}>
-            <TransactionInfo userId={userId} />
+
+          {this.state.userIdWithSameName &&
+            <Col span={2} style={{ marginTop: 100 }}>
+              <div style={{ marginBottom: 20 }} onClick={() => this.handleMergeUser(false)}><Icon type="double-right" style={{ fontSize: 18, cursor: 'pointer' }} /></div>
+              <div onClick={() => this.handleMergeUser(true)}><Icon type="double-left" style={{ fontSize: 18, cursor: 'pointer' }} /></div>
+            </Col>
+          }
+
+          <Col span={11}>
+            { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
+            { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
+            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} /> }
           </Col>
         </Row>
 
