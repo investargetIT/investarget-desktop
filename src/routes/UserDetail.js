@@ -228,36 +228,41 @@ class UserDetail extends React.Component {
     }
   }
 
-  handleMergeUser = isMinorToMajor => {
+  handleMergeUser = (isMinorToMajor) => {
     let msg = '右边用户的相关信息将合并入左边的用户中';
-    let deleteUserId = this.userIdWithSameName;
-    let mergeUserId = this.userId;
+    this.deleteUserId = this.state.userIdWithSameName;
+    this.mergeUserId = this.state.userId;
     if (!isMinorToMajor) {
       msg = '左边用户的相关信息将合并入右边的用户中';
-      deleteUserId = this.userId;
-      mergeUserId = this.userIdWithSameName;
+      this.deleteUserId = this.state.userId;
+      this.mergeUserId = this.state.userIdWithSameName;
     }
-    this.confirmModal = Modal.confirm({
-      title: '是否确定合并用户？',
-      content: msg,
-      onOk: () => this.handleConfirmMergeUser(deleteUserId, mergeUserId),
-    });
+    // this.confirmModal = Modal.confirm({
+    //   title: '是否确定合并用户？',
+    //   content: msg,
+    //   onOk: () => this.handleConfirmMergeUser(deleteUserId, mergeUserId),
+    // });
+    this.setState({ confirmMergeModal: true, mergeUserMessage: msg });
+  }
+
+  handleConfirmMerge = () => {
+    this.handleConfirmMergeUser(this.deleteUserId, this.mergeUserId);
   }
 
   handleConfirmMergeUser = async (deleteUserId, mergeUserId) => {
-    this.confirmModal.destroy();
-    this.setState({ isMergingUser: true, mergingMsg: '开始合并用户' });
+    // this.confirmModal.destroy();
+    this.setState({ confirmMergeModal: false, mergingModal: true, mergeUserMessage: '开始合并用户' });
     await sleep(1000);
 
-    this.setState({ mergingMsg: '正在合并投资事件' });
-    await this.mergeInvestEvent(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并投资事件' });
+    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergingMsg: '合并用户已完成' });
+    this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.userId) {
       this.setState(
-        { isMergingUser: false, mergingMsg: '', userIdWithSameName: null, hideUserInfo: true },
+        { mergingModal: false, mergeUserMessage: '', userIdWithSameName: null, hideUserInfo: true },
         () => this.setState({ hideUserInfo: false }),
       );
     } else {
@@ -335,15 +340,20 @@ class UserDetail extends React.Component {
           </Modal>
           : null}
 
-        {this.state.isMergingUser &&
+        {(this.state.confirmMergeModal || this.state.mergingModal) &&
           <Modal
-            title="合并用户"
+            title={this.state.confirmMergeModal ? '是否确定合并用户？' : '正在合并用户'}
             visible
-            footer={null}
             maskClosable={false}
             closable={false}
+            footer={[
+              <Button key="back" size="large" disabled={this.state.mergingModal} onClick={() => this.setState({ confirmMergeModal: false })}>取消</Button>,
+              <Button key="submit" type="primary" size="large" loading={this.state.mergingModal} onClick={this.handleConfirmMerge}>
+                {this.state.confirmMergeModal ? '确定' : '合并中'}
+              </Button>,
+            ]}
           >
-            <p>{this.state.mergingMsg}</p>
+            <p>{this.state.mergeUserMessage}</p>
           </Modal>
         }
 
