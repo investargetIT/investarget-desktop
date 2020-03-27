@@ -480,3 +480,7 @@ export function getUserGroupIdByName(allGroups, name) {
     throw new Error('Group Not Found!!!');
   }
 }
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

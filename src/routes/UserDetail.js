@@ -25,6 +25,7 @@ import { UserRemarkList } from '../components/RemarkList'
 import { 
   i18n,
   handleError,
+  sleep,
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
@@ -154,6 +155,8 @@ class UserDetail extends React.Component {
       isUploading: false,
       username: '',
       userIdWithSameName: null,
+      isMergingUser: false,
+      mergingMsg: '',
     }
   }
 
@@ -228,15 +231,20 @@ class UserDetail extends React.Component {
     if (!isMinorToMajor) {
       msg = '左边用户的相关信息将合并入右边的用户中'; 
     }
-    Modal.confirm({
+    this.confirmModal = Modal.confirm({
       title: '是否确定合并用户？',
       content: msg,
       onOk: this.handleConfirmMergeUser,
     });
   }
 
-  handleConfirmMergeUser = () => {
-    window.echo('confirm merge user');
+  handleConfirmMergeUser = async () => {
+    this.confirmModal.destroy();
+    this.setState({ isMergingUser: true, mergingMsg: '开始合并用户' });
+    await sleep(2000);
+    this.setState({ mergingMsg: '合并用户已完成' });
+    await sleep(1000);
+    this.setState({ isMergingUser: false, mergingMsg: '', userIdWithSameName: null });
   }
 
   render() {
@@ -295,6 +303,18 @@ class UserDetail extends React.Component {
            <UserInvestEventForm user={userId} onAdd={() => this.setState({ isShowForm: false, hideUserInfo: true }, () => this.setState({ hideUserInfo: false}))} /> 
           </Modal>
           : null}
+
+        {this.state.isMergingUser &&
+          <Modal
+            title="合并用户"
+            visible
+            footer={null}
+            maskClosable={false}
+            closable={false}
+          >
+            <p>{this.state.mergingMsg}</p>
+          </Modal>
+        }
 
       </LeftRightLayout>
     )
