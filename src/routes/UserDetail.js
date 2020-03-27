@@ -31,6 +31,8 @@ import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
 import * as api from '../api';
+import { connect } from 'dva';
+import { withRouter } from 'dva/router';
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -228,23 +230,52 @@ class UserDetail extends React.Component {
 
   handleMergeUser = isMinorToMajor => {
     let msg = '右边用户的相关信息将合并入左边的用户中';
+    let deleteUserId = this.userIdWithSameName;
+    let mergeUserId = this.userId;
     if (!isMinorToMajor) {
-      msg = '左边用户的相关信息将合并入右边的用户中'; 
+      msg = '左边用户的相关信息将合并入右边的用户中';
+      deleteUserId = this.userId;
+      mergeUserId = this.userIdWithSameName;
     }
     this.confirmModal = Modal.confirm({
       title: '是否确定合并用户？',
       content: msg,
-      onOk: this.handleConfirmMergeUser,
+      onOk: () => this.handleConfirmMergeUser(deleteUserId, mergeUserId),
     });
   }
 
-  handleConfirmMergeUser = async () => {
+  handleConfirmMergeUser = async (deleteUserId, mergeUserId) => {
     this.confirmModal.destroy();
     this.setState({ isMergingUser: true, mergingMsg: '开始合并用户' });
-    await sleep(2000);
+    await sleep(1000);
+
+    this.setState({ mergingMsg: '正在合并投资事件' });
+    await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergingMsg: '合并用户已完成' });
     await sleep(1000);
-    this.setState({ isMergingUser: false, mergingMsg: '', userIdWithSameName: null });
+    if (mergeUserId === this.userId) {
+      this.setState(
+        { isMergingUser: false, mergingMsg: '', userIdWithSameName: null, hideUserInfo: true },
+        () => this.setState({ hideUserInfo: false }),
+      );
+    } else {
+      this.props.router.replace(`/app/user/${mergeUserId}`);
+    }
+  }
+
+  mergeInvestEvent = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getUserInvestEvent({
+      user: deleteUserId,
+    });
+    const { count } = resCount.data;
+    const resData = await api.getUserInvestEvent({
+      user: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    await Promise.all(data.map(m => api.editUserInvestEvent(m.id, { user: mergeUserId })));
   }
 
   render() {
@@ -321,4 +352,4 @@ class UserDetail extends React.Component {
   }
 }
 
-export default UserDetail
+export default connect()(withRouter(UserDetail));
