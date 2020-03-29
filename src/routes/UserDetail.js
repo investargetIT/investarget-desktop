@@ -157,16 +157,30 @@ class UserDetail extends React.Component {
       isUploading: false,
       username: '',
       userIdWithSameName: null,
-      isMergingUser: false,
-      mergingMsg: '',
+      mergingModal: false,
+      confirmMergeModal: false,
+      mergeUserMessage: '',
     }
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState(
-      { userId: null }, 
-      () => this.setState({ userId: Number( newProps.params.id )}), 
-    );
+    if (newProps.params.id !== this.props.params.id) {
+      this.setState(
+        {
+          userId: Number(newProps.params.id),
+          isShowForm: false,
+          isUploading: false,
+          username: '',
+          mergingModal: false,
+          mergeUserMessage: '',
+          userIdWithSameName: null,
+          hideUserInfo: true,
+        },
+        () => {
+          this.setState({ hideUserInfo: false });
+        },
+      );
+    }
   }
 
   onMobileUploadComplete(status, records) {
@@ -260,7 +274,7 @@ class UserDetail extends React.Component {
 
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
-    if (mergeUserId === this.userId) {
+    if (mergeUserId === this.state.userId) {
       this.setState(
         { mergingModal: false, mergeUserMessage: '', userIdWithSameName: null, hideUserInfo: true },
         () => this.setState({ hideUserInfo: false }),
@@ -287,7 +301,7 @@ class UserDetail extends React.Component {
     const { userId, isUploading } = this.state;
     return userId && (
       <LeftRightLayout location={this.props.location} title={i18n('menu.user_management')} name={i18n('user.user_detail')}>
-        <UserRemarkList typeId={userId} />
+        {!this.state.hideUserInfo && <UserRemarkList typeId={userId} />}
 
         <h3 style={detailStyle}>{i18n('user.detail')}:          
           <Icon 
