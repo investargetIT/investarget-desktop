@@ -268,9 +268,9 @@ class UserDetail extends React.Component {
     this.setState({ confirmMergeModal: false, mergingModal: true, mergeUserMessage: '开始合并用户' });
     await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并投资事件' });
-    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并投资事件' });
+    await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    await sleep(1000);
 
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
@@ -289,6 +289,9 @@ class UserDetail extends React.Component {
       user: deleteUserId,
     });
     const { count } = resCount.data;
+    if (count === 0) {
+      return;
+    }
     const resData = await api.getUserInvestEvent({
       user: deleteUserId,
       page_size: count,
