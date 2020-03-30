@@ -324,12 +324,17 @@ class UserDetail extends React.Component {
           </Upload>
 
           <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
-
+          <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>
         </h3>
 
         <Row gutter={48}>
           <Col span={11}>
-            { this.state.hideUserInfo ? null : <UserInfo userId={userId} onGetUsername={this.handleGetUsername} /> }
+            {!this.state.hideUserInfo &&
+              <div>
+                <UserInfo userId={userId} onGetUsername={this.handleGetUsername} />
+                {this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={userId} /></div>}
+              </div>
+            }
           </Col>
 
           {this.state.userIdWithSameName &&
@@ -341,8 +346,9 @@ class UserDetail extends React.Component {
 
           <Col span={11}>
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
-            { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
+            {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
             { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} /> }
+            { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} /></div> }
           </Col>
         </Row>
 
