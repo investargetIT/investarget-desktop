@@ -165,11 +165,12 @@ class TransactionInfo extends React.Component {
 
     const { company, title, tags, country, mobile, email, score } = this.state
     console.log(list)
+    const { style } = this.props;
     return list.length > 0 ?
       (<div>
       <Row >
         <Col span={6}>
-          <div style={traderInfoStyle}>{i18n('user.trader_info')}</div>
+          <div style={{ ...traderInfoStyle, ...style }}>{i18n('user.trader_info')}</div>
         </Col>
         <Col span={18}>
         <div style={traderStyle}>

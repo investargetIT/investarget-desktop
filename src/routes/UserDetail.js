@@ -352,7 +352,7 @@ class UserDetail extends React.Component {
             {!this.state.hideUserInfo &&
               <div>
                 <UserInfo userId={userId} onGetUsername={this.handleGetUsername} />
-                {this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={userId} /></div>}
+                {this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={userId} style={{ float: 'none' }} /></div>}
               </div>
             }
           </Col>
@@ -368,7 +368,7 @@ class UserDetail extends React.Component {
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
             { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} /> }
-            { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} /></div> }
+            { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }
           </Col>
         </Row>
 
