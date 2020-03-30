@@ -340,6 +340,22 @@ class UserDetail extends React.Component {
     await Promise.all(data.map(m => api.editUserAttachment(m.id, { user: mergeUserId })));
   }
 
+  mergeUserRelation = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getUserRelation({
+      investoruser: deleteUserId,
+    });
+    const { count } = resCount.data;
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.getUserRelation({
+      investoruser: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    await Promise.all(data.map(m => api.modifySingleUserRelation(m.id, { investoruser: mergeUserId })));
+  }
+
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
