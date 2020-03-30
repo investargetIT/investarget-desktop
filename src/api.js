@@ -514,6 +514,7 @@ export function deleteUserRemark(id) {
 }
 
 export const getUserAttachment = params => r('/user/atta/?' + qs.stringify(params));
+export const editUserAttachment = (id, body) => r(`/user/atta/${id}/`, 'PUT', body);
 export const deleteUserAttachment = id => r('/user/atta/' + id + '/', 'DELETE');
 export const addUserAttachment = body => r('/user/atta/', 'POST', body);
 

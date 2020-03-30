@@ -276,6 +276,10 @@ class UserDetail extends React.Component {
     await this.mergeUserRemark(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ mergeUserMessage: '正在合并用户附件' });
+    await this.mergeUserAttachment(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.state.userId) {
@@ -318,6 +322,22 @@ class UserDetail extends React.Component {
     });
     const { data } = resData.data;
     await Promise.all(data.map(m => api.editUserRemark(m.id, { user: mergeUserId })));
+  }
+
+  mergeUserAttachment = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getUserAttachment({
+      user: deleteUserId,
+    });
+    const { count } = resCount.data;
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.getUserAttachment({
+      user: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    await Promise.all(data.map(m => api.editUserAttachment(m.id, { user: mergeUserId })));
   }
 
   render() {
