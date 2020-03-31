@@ -380,7 +380,6 @@ class UserDetail extends React.Component {
       investoruser: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('count', count);
     if (count === 0) {
       return;
     }
@@ -389,13 +388,12 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('data', data);
     for (let index = 0; index < data.length; index++) {
       const m = data[index];
       try {
         await api.editUserRelation([{ ...m, investoruser: mergeUserId, traderuser: m.traderuser.id }]);
       } catch (error) {
-        console.warn(error);
+        await api.deleteUserRelation([m.id]);
       }
     }
   }
