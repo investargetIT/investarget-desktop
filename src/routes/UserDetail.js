@@ -299,9 +299,9 @@ class UserDetail extends React.Component {
     // await this.mergeProjectBd(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并机构BD' });
-    // await this.mergeOrgBd(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并机构BD' });
+    await this.mergeOrgBd(deleteUserId, mergeUserId);
+    await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并会议BD' });
     // await this.mergeMeetingBd(deleteUserId, mergeUserId);
@@ -458,7 +458,7 @@ class UserDetail extends React.Component {
     });
     const { data } = resData.data;
     window.echo('org bd data', data);
-    await Promise.all(data.map(m => api.modifyOrgBD(m.id, { bduser: mergeUserId })));
+    // await Promise.all(data.map(m => api.modifyOrgBD(m.id, { bduser: mergeUserId })));
   }
 
   mergeMeetingBd = async (deleteUserId, mergeUserId) => {
