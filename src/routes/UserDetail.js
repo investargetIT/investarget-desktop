@@ -284,13 +284,16 @@ class UserDetail extends React.Component {
     // await this.mergeUserRelation(deleteUserId, mergeUserId);
     // await sleep(1000);
 
+    // this has to be done first, otherwise there will be an error
+    // when calling next endpoint
     this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
     await this.mergeUserDataroom(deleteUserId, mergeUserId);
     await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
-    // await this.mergeDataroomTemp(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    // Merge dataroom user first, then dataroom template
+    this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
+    await this.mergeDataroomTemp(deleteUserId, mergeUserId);
+    await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并项目BD' });
     // await this.mergeProjectBd(deleteUserId, mergeUserId);
@@ -411,7 +414,6 @@ class UserDetail extends React.Component {
       user: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('dataroom temp count', count);
     if (count === 0) {
       return;
     }
@@ -420,7 +422,6 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('dataroom temp data', data);
     await Promise.all(data.map(m => api.editDataroomTemp(m.id, { user: mergeUserId })));
   }
 
