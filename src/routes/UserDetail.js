@@ -307,12 +307,12 @@ class UserDetail extends React.Component {
     // await this.mergeMeetingBd(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并用户项目' });
-    await this.mergeUserProject(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并用户项目' });
+    // await this.mergeUserProject(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并承揽承做' });
-    // await this.mergeProjectTraders(deleteUserId, mergeUserId);
+    // await this.mergeProjectTrader(deleteUserId, mergeUserId);
     // await sleep(1000);
 
     this.setState({ mergeUserMessage: '合并用户已完成' });
@@ -503,7 +503,6 @@ class UserDetail extends React.Component {
       user: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('project traders count', count);
     if (count === 0) {
       return;
     }
@@ -512,7 +511,6 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('project traders data', data);
     await Promise.all(data.map(m => api.editProjectTrader(m.id, { user: mergeUserId })));
   }
 
