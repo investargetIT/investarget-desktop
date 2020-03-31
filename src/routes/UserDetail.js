@@ -280,9 +280,9 @@ class UserDetail extends React.Component {
     // await this.mergeUserAttachment(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并交易师关系' });
-    await this.mergeUserRelation(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并交易师关系' });
+    // await this.mergeUserRelation(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     // // this has to be done first, otherwise there will be an error
     // // when calling next endpoint
@@ -295,9 +295,9 @@ class UserDetail extends React.Component {
     // await this.mergeDataroomTemp(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并项目BD' });
-    // await this.mergeProjectBd(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并项目BD' });
+    await this.mergeProjectBd(deleteUserId, mergeUserId);
+    await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并机构BD' });
     // await this.mergeOrgBd(deleteUserId, mergeUserId);
@@ -435,7 +435,6 @@ class UserDetail extends React.Component {
       bduser: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('project bd count', count);
     if (count === 0) {
       return;
     }
@@ -444,8 +443,7 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('project bd data', data);
-    // await Promise.all(data.map(m => api.editProjBD(m.id, { bduser: mergeUserId })));
+    await Promise.all(data.map(m => api.editProjBD(m.id, { bduser: mergeUserId })));
   }
 
   mergeOrgBd = async (deleteUserId, mergeUserId) => {
