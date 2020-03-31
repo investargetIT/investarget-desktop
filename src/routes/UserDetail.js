@@ -304,6 +304,10 @@ class UserDetail extends React.Component {
     await this.mergeMeetingBd(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ mergeUserMessage: '正在合并用户项目' });
+    await this.mergeUserProject(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.state.userId) {
@@ -474,6 +478,24 @@ class UserDetail extends React.Component {
     const { data } = resData.data;
     window.echo('meeting bd data', data);
     await Promise.all(data.map(m => api.modifyMeetingBD(m.id, { bduser: mergeUserId })));
+  }
+
+  mergeUserProject = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getProj({
+      supportUser: deleteUserId,
+    });
+    const { count } = resCount.data;
+    window.echo('user project count', count);
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.getProj({
+      supportUser: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    window.echo('user project data', data);
+    await Promise.all(data.map(m => api.editProj(m.id, { supportUser: mergeUserId })));
   }
 
   render() {
