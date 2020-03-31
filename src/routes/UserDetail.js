@@ -296,6 +296,10 @@ class UserDetail extends React.Component {
     await this.mergeProjectBd(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ mergeUserMessage: '正在合并机构BD' });
+    await this.mergeOrgBd(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.state.userId) {
@@ -430,6 +434,24 @@ class UserDetail extends React.Component {
     const { data } = resData.data;
     window.echo('project bd data', data);
     await Promise.all(data.map(m => api.editProjBD(m.id, { bduser: mergeUserId })));
+  }
+
+  mergeOrgBd = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getOrgBdList({
+      bduser: deleteUserId,
+    });
+    const { count } = resCount.data;
+    window.echo('org bd count', count);
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.getOrgBdList({
+      bduser: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    window.echo('org bd data', data);
+    await Promise.all(data.map(m => api.modifyOrgBD(m.id, { bduser: mergeUserId })));
   }
 
   render() {
