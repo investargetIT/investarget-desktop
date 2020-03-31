@@ -268,45 +268,45 @@ class UserDetail extends React.Component {
     this.setState({ confirmMergeModal: false, mergingModal: true, mergeUserMessage: '开始合并用户' });
     await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并投资事件' });
-    await this.mergeInvestEvent(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并投资事件' });
+    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并用户备注' });
-    await this.mergeUserRemark(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并用户备注' });
+    // await this.mergeUserRemark(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并用户附件' });
-    await this.mergeUserAttachment(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并用户附件' });
+    // await this.mergeUserAttachment(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并交易师关系' });
-    await this.mergeUserRelation(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并交易师关系' });
+    // await this.mergeUserRelation(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
     await this.mergeUserDataroom(deleteUserId, mergeUserId);
     await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
-    await this.mergeDataroomTemp(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
+    // await this.mergeDataroomTemp(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并项目BD' });
-    await this.mergeProjectBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并项目BD' });
+    // await this.mergeProjectBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并机构BD' });
-    await this.mergeOrgBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并机构BD' });
+    // await this.mergeOrgBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并会议BD' });
-    await this.mergeMeetingBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并会议BD' });
+    // await this.mergeMeetingBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并用户项目' });
-    await this.mergeUserProject(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并用户项目' });
+    // await this.mergeUserProject(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
@@ -395,7 +395,6 @@ class UserDetail extends React.Component {
       user: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('dataroom count', count);
     if (count === 0) {
       return;
     }
@@ -404,7 +403,6 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('dataroom data', data);
     await Promise.all(data.map(m => api.editUserDataRoom(m.id, { user: mergeUserId })));
   }
 
