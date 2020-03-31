@@ -359,7 +359,11 @@ class UserDetail extends React.Component {
     });
     const { data } = resData.data;
     window.echo('data', data);
-    // TODO: update user relation
+    try {
+      await api.editUserRelation(data.map(m => ({ ...m, investoruser: mergeUserId, traderuser: m.traderuser.id })));
+    } catch (error) {
+      console.warn(error);
+    }
   }
 
   render() {
