@@ -386,10 +386,13 @@ class UserDetail extends React.Component {
     });
     const { data } = resData.data;
     window.echo('data', data);
-    try {
-      await api.editUserRelation(data.map(m => ({ ...m, investoruser: mergeUserId, traderuser: m.traderuser.id })));
-    } catch (error) {
-      console.warn(error);
+    for (let index = 0; index < data.length; index++) {
+      const m = data[index];
+      try {
+        await api.editUserRelation([{ ...m, investoruser: mergeUserId, traderuser: m.traderuser.id }]);
+      } catch (error) {
+        console.warn(error);
+      }
     }
   }
 
