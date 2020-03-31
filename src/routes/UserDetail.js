@@ -280,9 +280,9 @@ class UserDetail extends React.Component {
     // await this.mergeUserAttachment(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并交易师关系' });
-    // await this.mergeUserRelation(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并交易师关系' });
+    await this.mergeUserRelation(deleteUserId, mergeUserId);
+    await sleep(1000);
 
     // // this has to be done first, otherwise there will be an error
     // // when calling next endpoint
@@ -299,9 +299,9 @@ class UserDetail extends React.Component {
     // await this.mergeProjectBd(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并机构BD' });
-    await this.mergeOrgBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并机构BD' });
+    // await this.mergeOrgBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并会议BD' });
     // await this.mergeMeetingBd(deleteUserId, mergeUserId);
