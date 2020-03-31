@@ -288,6 +288,10 @@ class UserDetail extends React.Component {
     await this.mergeUserDataroom(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
+    await this.mergeDataroomTemp(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.state.userId) {
@@ -386,6 +390,24 @@ class UserDetail extends React.Component {
     const { data } = resData.data;
     window.echo('dataroom data', data);
     await Promise.all(data.map(m => api.editUserDataRoom(m.id, { user: mergeUserId })));
+  }
+
+  mergeDataroomTemp = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.getDataroomTemp({
+      user: deleteUserId,
+    });
+    const { count } = resCount.data;
+    window.echo('dataroom temp count', count);
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.getDataroomTemp({
+      user: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    window.echo('dataroom temp data', data);
+    await Promise.all(data.map(m => api.editDataroomTemp(m.id, { user: mergeUserId })));
   }
 
   render() {
