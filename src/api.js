@@ -545,6 +545,7 @@ export const deleteDataRoom = (id) => {
 export const queryUserDataRoom = (param) => {
   return r('/dataroom/user/?' + qs.stringify(param))
 }
+export const editUserDataRoom = (id, body) => r(`/dataroom/user/${id}/`, 'PUT', body);
 export const addUserDataRoom = (param) => {
   return r('/dataroom/user/', 'POST', param)
 }

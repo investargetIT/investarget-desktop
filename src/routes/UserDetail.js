@@ -284,6 +284,10 @@ class UserDetail extends React.Component {
     await this.mergeUserRelation(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
+    await this.mergeUserDataroom(deleteUserId, mergeUserId);
+    await sleep(1000);
+
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
     if (mergeUserId === this.state.userId) {
@@ -364,6 +368,24 @@ class UserDetail extends React.Component {
     } catch (error) {
       console.warn(error);
     }
+  }
+
+  mergeUserDataroom = async (deleteUserId, mergeUserId) => {
+    const resCount = await api.queryUserDataRoom({
+      user: deleteUserId,
+    });
+    const { count } = resCount.data;
+    window.echo('dataroom count', count);
+    if (count === 0) {
+      return;
+    }
+    const resData = await api.queryUserDataRoom({
+      user: deleteUserId,
+      page_size: count,
+    });
+    const { data } = resData.data;
+    window.echo('dataroom data', data);
+    await Promise.all(data.map(m => api.editUserDataRoom(m.id, { user: mergeUserId })));
   }
 
   render() {
