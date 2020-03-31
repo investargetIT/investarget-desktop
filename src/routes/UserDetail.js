@@ -284,16 +284,16 @@ class UserDetail extends React.Component {
     // await this.mergeUserRelation(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    // this has to be done first, otherwise there will be an error
-    // when calling next endpoint
-    this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
-    await this.mergeUserDataroom(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // // this has to be done first, otherwise there will be an error
+    // // when calling next endpoint
+    // this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
+    // await this.mergeUserDataroom(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
-    // Merge dataroom user first, then dataroom template
-    this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
-    await this.mergeDataroomTemp(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // // Merge dataroom user first, then dataroom template
+    // this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
+    // await this.mergeDataroomTemp(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并项目BD' });
     // await this.mergeProjectBd(deleteUserId, mergeUserId);
@@ -440,7 +440,7 @@ class UserDetail extends React.Component {
     });
     const { data } = resData.data;
     window.echo('project bd data', data);
-    await Promise.all(data.map(m => api.editProjBD(m.id, { bduser: mergeUserId })));
+    // await Promise.all(data.map(m => api.editProjBD(m.id, { bduser: mergeUserId })));
   }
 
   mergeOrgBd = async (deleteUserId, mergeUserId) => {
