@@ -471,7 +471,6 @@ class UserDetail extends React.Component {
       bduser: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('meeting bd count', count);
     if (count === 0) {
       return;
     }
@@ -480,8 +479,7 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('meeting bd data', data);
-    // await Promise.all(data.map(m => api.modifyMeetingBD(m.id, { bduser: mergeUserId })));
+    await Promise.all(data.map(m => api.modifyMeetingBD(m.id, { bduser: mergeUserId })));
   }
 
   mergeUserProject = async (deleteUserId, mergeUserId) => {
