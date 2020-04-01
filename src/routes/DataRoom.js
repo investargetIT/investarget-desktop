@@ -755,6 +755,14 @@ class DataRoom extends React.Component {
   }
 
   handleClickFolder = file => {
+    const start1 = Date.now();
+    window.echo('handle click folder start', start1);
+    this.setState({ parentId: file.id }, () => {
+      const end1 = Date.now();
+      window.echo('handle click folder end', end1);
+      const diff1 = end1 - start1;
+      window.echo('cost time', diff1 / 1000);
+    })
     this.setState({ parentId: file.id });
   }
 

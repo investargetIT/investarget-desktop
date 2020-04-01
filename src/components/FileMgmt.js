@@ -105,7 +105,15 @@ class FileMgmt extends React.Component {
       this.props.onClickFolder(file);
       this.props.location.query.parentID = file.id
       history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
-      this.setState({ parentId: file.id })
+      const start2 = Date.now();
+      window.echo('current page start', start2);
+      this.setState({ parentId: file.id }, () => {
+        const end2 = Date.now();
+        window.echo('current page end', end2);
+        const diff2 = end2 - start2;
+        window.echo('current page cost time', diff2);
+      });
+      // this.setState({ parentId: file.id })
       // 切换目录时，清空选中的行
       // window.echo('folder clicked');
       // this.setState({ selectedRows: [] })
