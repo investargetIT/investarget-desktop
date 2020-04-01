@@ -260,7 +260,7 @@ class UserDetail extends React.Component {
   }
 
   handleConfirmMerge = () => {
-    this.handleConfirmMergeUser(this.deleteUserId, this.mergeUserId);
+    this.handleConfirmMergeUser(this.deleteUserId, this.mergeUserId).catch(handleError);
   }
 
   handleConfirmMergeUser = async (deleteUserId, mergeUserId) => {
@@ -268,52 +268,56 @@ class UserDetail extends React.Component {
     this.setState({ confirmMergeModal: false, mergingModal: true, mergeUserMessage: '开始合并用户' });
     await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并投资事件' });
-    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并投资事件' });
+    await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并用户备注' });
-    // await this.mergeUserRemark(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并用户备注' });
+    await this.mergeUserRemark(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并用户附件' });
-    // await this.mergeUserAttachment(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并用户附件' });
+    await this.mergeUserAttachment(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并交易师关系' });
-    // await this.mergeUserRelation(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并交易师关系' });
+    await this.mergeUserRelation(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // // this has to be done first, otherwise there will be an error
-    // // when calling next endpoint
-    // this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
-    // await this.mergeUserDataroom(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    // this has to be done first, otherwise there will be an error
+    // when calling next endpoint
+    this.setState({ mergeUserMessage: '正在合并用户Dataroom' });
+    await this.mergeUserDataroom(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // // Merge dataroom user first, then dataroom template
-    // this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
-    // await this.mergeDataroomTemp(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    // Merge dataroom user first, then dataroom template
+    this.setState({ mergeUserMessage: '正在合并Dataroom模版' });
+    await this.mergeDataroomTemp(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并项目BD' });
-    // await this.mergeProjectBd(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并项目BD' });
+    await this.mergeProjectBd(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并机构BD' });
-    // await this.mergeOrgBd(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并机构BD' });
+    await this.mergeOrgBd(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并会议BD' });
-    // await this.mergeMeetingBd(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并会议BD' });
+    await this.mergeMeetingBd(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并用户项目' });
-    // await this.mergeUserProject(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并用户项目' });
+    await this.mergeUserProject(deleteUserId, mergeUserId);
+    await sleep(1000);
 
-    // this.setState({ mergeUserMessage: '正在合并承揽承做' });
-    // await this.mergeProjectTrader(deleteUserId, mergeUserId);
-    // await sleep(1000);
+    this.setState({ mergeUserMessage: '正在合并承揽承做' });
+    await this.mergeProjectTrader(deleteUserId, mergeUserId);
+    await sleep(1000);
+
+    this.setState({ mergeUserMessage: '正在删除用户' });
+    await api.deleteUser(deleteUserId);
+    await sleep(1000);
 
     this.setState({ mergeUserMessage: '合并用户已完成' });
     await sleep(1000);
@@ -485,7 +489,6 @@ class UserDetail extends React.Component {
       supportUser: deleteUserId,
     });
     const { count } = resCount.data;
-    window.echo('user project count', count);
     if (count === 0) {
       return;
     }
@@ -494,8 +497,7 @@ class UserDetail extends React.Component {
       page_size: count,
     });
     const { data } = resData.data;
-    window.echo('user project data', data);
-    // await Promise.all(data.map(m => api.editProj(m.id, { supportUser: mergeUserId })));
+    await Promise.all(data.map(m => api.editProj(m.id, { supportUser: mergeUserId })));
   }
 
   mergeProjectTrader = async (deleteUserId, mergeUserId) => {
