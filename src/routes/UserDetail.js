@@ -303,9 +303,9 @@ class UserDetail extends React.Component {
     // await this.mergeOrgBd(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并会议BD' });
-    await this.mergeMeetingBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并会议BD' });
+    // await this.mergeMeetingBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     // this.setState({ mergeUserMessage: '正在合并用户项目' });
     // await this.mergeUserProject(deleteUserId, mergeUserId);
@@ -314,6 +314,12 @@ class UserDetail extends React.Component {
     // this.setState({ mergeUserMessage: '正在合并承揽承做' });
     // await this.mergeProjectTrader(deleteUserId, mergeUserId);
     // await sleep(1000);
+
+    const deleteUserPhoneNumber = '1111111111';
+    await api.addUserRemark({
+      user: mergeUserId,
+      remark: `被合并的用户手机号为${deleteUserPhoneNumber}`,
+    });
 
     // this.setState({ mergeUserMessage: '正在删除用户' });
     // await api.deleteUser(deleteUserId);
