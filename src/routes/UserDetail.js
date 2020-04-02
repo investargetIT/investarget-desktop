@@ -160,6 +160,8 @@ class UserDetail extends React.Component {
       mergingModal: false,
       confirmMergeModal: false,
       mergeUserMessage: '',
+      mainUserMobile: '',
+      minorUserMobile: '',
     }
   }
 
@@ -175,6 +177,8 @@ class UserDetail extends React.Component {
           mergeUserMessage: '',
           userIdWithSameName: null,
           hideUserInfo: true,
+          mainUserMobile: '',
+          minorUserMobile: '',
         },
         () => {
           this.setState({ hideUserInfo: false });
@@ -231,6 +235,14 @@ class UserDetail extends React.Component {
     this.setState({ username });
   }
 
+  handleMainUserGetMobile = (mobile) => {
+    this.setState({ mainUserMobile: mobile });
+  }
+
+  handleMinorUserGetMobile = (mobile) => {
+    this.setState({ minorUserMobile: mobile });
+  }
+
   handleSearchUserWithSameNameClick = async () => {
     const resUser = await api.getUser({ usernameC: this.state.username });
     const { count, data } = resUser.data;
@@ -246,10 +258,14 @@ class UserDetail extends React.Component {
     let msg = '右边用户的相关信息将合并入左边的用户中';
     this.deleteUserId = this.state.userIdWithSameName;
     this.mergeUserId = this.state.userId;
+    this.deleteUserMobile = this.state.minorUserMobile;
+    this.mergeUserMobile = this.state.mainUserMobile;
     if (!isMinorToMajor) {
       msg = '左边用户的相关信息将合并入右边的用户中';
       this.deleteUserId = this.state.userId;
       this.mergeUserId = this.state.userIdWithSameName;
+      this.deleteUserMobile = this.state.mainUserMobile;
+      this.mergeUserMobile = this.state.minorUserMobile;
     }
     // this.confirmModal = Modal.confirm({
     //   title: '是否确定合并用户？',
@@ -315,10 +331,9 @@ class UserDetail extends React.Component {
     // await this.mergeProjectTrader(deleteUserId, mergeUserId);
     // await sleep(1000);
 
-    const deleteUserPhoneNumber = '1111111111';
     await api.addUserRemark({
       user: mergeUserId,
-      remark: `被合并的用户手机号为${deleteUserPhoneNumber}`,
+      remark: `被合并的用户手机号为${this.deleteUserMobile}`,
     });
 
     // this.setState({ mergeUserMessage: '正在删除用户' });
@@ -551,7 +566,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             {!this.state.hideUserInfo &&
               <div>
-                <UserInfo userId={userId} onGetUsername={this.handleGetUsername} />
+                <UserInfo userId={userId} onGetUsername={this.handleGetUsername} onGetMobile={this.handleMainUserGetMobile} />
                 {this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={userId} style={{ float: 'none' }} /></div>}
               </div>
             }
@@ -567,7 +582,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
-            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} /> }
+            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} /> }
             { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }
           </Col>
         </Row>
