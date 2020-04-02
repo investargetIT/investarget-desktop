@@ -145,7 +145,7 @@ class TransactionInfo extends React.Component {
 
   popoverContent(item) {
     const { traderuser: trader } = item;
-    const familiar = this.props.famlv.filter(f => f.id === item.familiar)[0].name;
+    const familiar = this.props.famlv && this.props.famlv.filter(f => f.id === item.familiar)[0].name;
     return <div style={{minWidth: 240}}>
       <SimpleLine title={i18n('user.name')} value={trader.username} />
       <SimpleLine title="公司" value={trader.org && trader.org.orgname} />
