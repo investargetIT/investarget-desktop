@@ -26,6 +26,7 @@ import {
   i18n,
   handleError,
   sleep,
+  hasPerm,
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
@@ -567,7 +568,7 @@ class UserDetail extends React.Component {
           </Upload>
 
           <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
-          <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>
+          {hasPerm('usersys.admin_getuser') && hasPerm('usersys.as_trader') && <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
         </h3>
 
         <Row gutter={48}>
