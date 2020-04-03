@@ -493,13 +493,13 @@ class OrgBDListComponent extends React.Component {
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
         {
-          if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) {
+          if (!status || [4, 5, 6].includes(status)) {
             this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
           }
         }
         );
 
-    if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) return;
+    if (!status || [4, 5, 6].includes(status)) return;
     // 如果机构BD存在联系人
     if (this.state.currentBD.bduser) {
       // 首先检查经理和投资人的关联
