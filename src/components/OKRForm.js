@@ -33,8 +33,8 @@ const paraStyle = {lineHeight: 2, marginBottom: '8px'}
 
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
+    xs: { span: 24 },
+    sm: { span: 14, offset: 6 },
   },
 };
 
@@ -77,24 +77,24 @@ class OKRForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator, getFieldValue } = this.props.form
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
     const formItems = keys.map((k, index) => {
       return (
-        <div key={k}>
-          <BasicFormItem label="关键结果" name={`krs_${k}`}>
-            <Input />
-          </BasicFormItem>
-          <BasicFormItem label="信心指数" name={`confidence_${k}`} valueType="number">
-            <InputNumber min={1} max={100} />
-          </BasicFormItem>
-          <Icon
-            className="dynamic-delete-button"
-            type="minus-circle-o"
-            disabled={keys.length === 1}
-            onClick={() => this.remove(k)}
-          />
+        <div key={k} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', margin: '20px 0', position: 'relative' }}>
+            <BasicFormItem label="关键结果" name={`krs_${k}`}>
+              <Input />
+            </BasicFormItem>
+            <BasicFormItem label="信心指数" name={`confidence_${k}`} valueType="number">
+              <InputNumber min={1} max={100} />
+            </BasicFormItem>
+            <Icon
+              style={{ position: 'absolute', top: 20, right: 20 }}
+              className="dynamic-delete-button"
+              type="delete"
+              onClick={() => this.remove(k)}
+            />
         </div>
       );
     });
@@ -120,7 +120,7 @@ class OKRForm extends React.Component {
         {formItems}
         
         <FormItem {...formItemLayoutWithOutLabel}>
-          <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+          <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
             <Icon type="plus" /> 添加关键结果及信心指数 
           </Button>
         </FormItem>

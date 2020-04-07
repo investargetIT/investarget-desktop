@@ -74,7 +74,7 @@ class AddProject extends React.Component {
 
   render() {
     return(
-      <LeftRightLayout location={this.props.location} title={i18n('project.upload_project')}>
+      <LeftRightLayout location={this.props.location} title="编辑OKR">
         <div>
           <AddOKRForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
