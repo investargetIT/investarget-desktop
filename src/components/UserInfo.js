@@ -288,6 +288,12 @@ class UserInfo extends React.Component {
       this.setState({
         username, title, tags, country, area, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
       })
+      if (this.props.onGetUsername) {
+        this.props.onGetUsername(username);
+      }
+      if (this.props.onGetMobile) {
+        this.props.onGetMobile(mobile);
+      }
       if (cardBucket && cardKey) {
         api.downloadUrl(cardBucket, cardKey).then(result => {
           this.setState({ cardUrl: result.data })

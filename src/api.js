@@ -514,10 +514,12 @@ export function deleteUserRemark(id) {
 }
 
 export const getUserAttachment = params => r('/user/atta/?' + qs.stringify(params));
+export const editUserAttachment = (id, body) => r(`/user/atta/${id}/`, 'PUT', body);
 export const deleteUserAttachment = id => r('/user/atta/' + id + '/', 'DELETE');
 export const addUserAttachment = body => r('/user/atta/', 'POST', body);
 
 export const getUserInvestEvent = params => r('/user/event/?' + qs.stringify(params));
+export const editUserInvestEvent = (id, body) => r(`/user/event/${id}/`, 'PUT', body);
 export const addUserInvestEvent = body => r('/user/event/', 'POST', body);
 export const deleteUserInvestEvent = id => r('/user/event/' + id + '/', 'DELETE');
 
@@ -543,6 +545,7 @@ export const deleteDataRoom = (id) => {
 export const queryUserDataRoom = (param) => {
   return r('/dataroom/user/?' + qs.stringify(param))
 }
+export const editUserDataRoom = (id, body) => r(`/dataroom/user/${id}/`, 'PUT', body);
 export const addUserDataRoom = (param) => {
   return r('/dataroom/user/', 'POST', param)
 }
@@ -933,3 +936,6 @@ export const addWorkReportProjInfo = body => r('/bd/workreport/proj/', 'POST', b
 export const editWorkReportProjInfo = (id, body) => r(`/bd/workreport/proj/${id}/`, 'PUT', body);
 export const getWorkReportProjInfo = params => r(`/bd/workreport/proj/?${qs.stringify(params)}`);
 export const deleteWorkReportProjInfo = id => r(`/bd/workreport/proj/${id}/`, 'DELETE');
+
+export const getProjectTraders = params => r(`/proj/traders?${qs.stringify(params)}`);
+export const editProjectTrader = (id, body) => r(`/proj/traders/${id}/`, 'PUT', body);
