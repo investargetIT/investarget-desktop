@@ -148,10 +148,10 @@ class Schedule extends React.Component {
 
     try {
       const result = await Promise.all(requestThreeMonthsSchedule);
-      const list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
-      list.sort((a, b) => {
-        return new Date(a.scheduledtime) - new Date(b.scheduledtime)
-      })
+      let list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
+      // list.sort((a, b) => {
+      //   return new Date(a.scheduledtime) - new Date(b.scheduledtime)
+      // })
       let visibleEvent = false;
       let event = {};
       if (this.props.location.query.mid) {
@@ -170,46 +170,49 @@ class Schedule extends React.Component {
         }
       }
 
-      const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
-      const firstDayOfNextTwoMonths = this.state.selectedDate.clone().add(2, 'M').startOf('month');
-      const params = {
-        user: getCurrentUser(),
-        startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
-        endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
-        page_size: 1000
-      };
-      const requestReport = await api.getWorkReport(params);
-      const reportList = requestReport.data.data.map(m => {
-        const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
-        const comments = '周报';
-        const type = 5; // 5 means already filled weekly report
-        return { ...m, scheduledtime, comments, type };
-      });
-     
-      const day1 = 5;
-      const result1 = [];
-      const current1 = firstDayOfLastMonth.clone();
-      result1.push(current1.clone().day(day1));
-      while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
-        result1.push(current1.clone());
-      }
-      result1.forEach((element, index) => {
-        const dateStr = element.format('YYYY-MM-DD');
-        if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
-          list.push({
-            scheduledtime: dateStr,
-            comments: '周报',
-            type: 6,
-            id: index,
-          });
-        }
-      });
+      // 周报相关逻辑
+      if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
+        const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
+        const firstDayOfNextTwoMonths = this.state.selectedDate.clone().add(2, 'M').startOf('month');
+        const params = {
+          user: getCurrentUser(),
+          startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
+          endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
+          page_size: 1000
+        };
+        const requestReport = await api.getWorkReport(params);
+        const reportList = requestReport.data.data.map(m => {
+          const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
+          const comments = '周报';
+          const type = 5; // 5 means already filled weekly report
+          return { ...m, scheduledtime, comments, type };
+        });
 
-      const newList = list.concat(reportList);
-      newList.sort((a, b) => {
+        const day1 = 5;
+        const result1 = [];
+        const current1 = firstDayOfLastMonth.clone();
+        result1.push(current1.clone().day(day1));
+        while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
+          result1.push(current1.clone());
+        }
+        result1.forEach((element, index) => {
+          const dateStr = element.format('YYYY-MM-DD');
+          if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
+            list.push({
+              scheduledtime: dateStr,
+              comments: '周报',
+              type: 6,
+              id: index,
+            });
+          }
+        });
+        list = list.concat(reportList);
+      }
+
+      list.sort((a, b) => {
         return new Date(a.scheduledtime) - new Date(b.scheduledtime)
       });
-      this.setState({ list: newList, visibleEvent, event });
+      this.setState({ list, visibleEvent, event });
     } catch (error) {
       handleError(error)
     }
