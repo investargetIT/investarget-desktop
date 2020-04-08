@@ -40,30 +40,37 @@ function toData(formData) {
 }
 
 
-class AddProject extends React.Component {
+class AddOKR extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   goBack = () => {
-    this.props.router.goBack()
+    this.props.router.goBack();
   }
 
-  addProject = () => {
+  handleSubmitBtnClick = () => {
     this.form.validateFields((err, values) => {
       if (!err) {
-        let param = toData(values)
-        api.createProj(param).then(result => {
-          this.props.router.replace('/app/projects/published')
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
+        // let param = toData(values)
+        this.addOKR(values)
+          .then(() => {
+            this.props.router.goBack();
           })
-        })
+          .catch((error) => {
+            this.props.dispatch({
+              type: 'app/findError',
+              payload: error,
+            });
+          });
       }
-    })
+    });
+  }
+
+  addOKR = async (values) => {
+    const res = await api.addOKR(values);
+    window.echo('add okr', res);
   }
 
   handleRef = (inst) => {
@@ -73,13 +80,13 @@ class AddProject extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <LeftRightLayout location={this.props.location} title="编辑OKR">
         <div>
           <AddOKRForm wrappedComponentRef={this.handleRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>{i18n('common.submit')}</Button>
+            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
@@ -88,4 +95,4 @@ class AddProject extends React.Component {
 
 }
 
-export default connect()(withRouter(AddProject))
+export default connect()(withRouter(AddOKR));

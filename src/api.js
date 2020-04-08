@@ -939,3 +939,12 @@ export const deleteWorkReportProjInfo = id => r(`/bd/workreport/proj/${id}/`, 'D
 
 export const getProjectTraders = params => r(`/proj/traders?${qs.stringify(params)}`);
 export const editProjectTrader = (id, body) => r(`/proj/traders/${id}/`, 'PUT', body);
+
+export const getOKRList = params => r(`/bd/okr/?${qs.stringify(params)}`);
+export const addOKR = body => r('/bd/okr/', 'POST', body);
+export const editOKR = (id, body) => r(`/bd/okr/${id}/`, 'PUT', body);
+export const deleteOKR = id => r(`/bd/okr/${id}/`, 'DELETE');
+export const addOKRResult = body => r(`/bd/okr/krs/`, 'POST', body);
+export const getOKRResult = params => r(`/bd/okr/krs/?${qs.stringify(params)}`);
+export const editOKRResult = (id, body) => r(`/bd/okr/krs/${id}/`, 'PUT', body);
+export const deleteOKRResult = id => r(`/bd/okr/krs/${id}/`, 'DELETE');

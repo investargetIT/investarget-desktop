@@ -74,6 +74,7 @@ import ReportList from './routes/ReportList';
 import ReportDetail from './routes/ReportDetail';
 import EditReport from './routes/EditReport';
 import AddOKR from './routes/AddOKR';
+import OKRList from './routes/OKRList';
 
 function RouterConfig({ history }) {
   return (
@@ -150,6 +151,7 @@ function RouterConfig({ history }) {
       <Route path="/app/report/:id" component={ReportDetail} />
       <Route path="/app/report/edit/:id" component={EditReport} />
       <Route path="/app/okr/add" component={AddOKR} />
+      <Route path="/app/okr/list" component={OKRList} />
     </Router>
   )
 }
