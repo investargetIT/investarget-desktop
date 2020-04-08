@@ -186,7 +186,7 @@ class OKRList extends React.Component {
             <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
               <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
               <br />
-              <span style={{ fontSize: '16px', color: '#656565' }}>{i18n('dataroom.create_dataroom')}</span>
+              <span style={{ fontSize: '16px', color: '#656565' }}>编辑OKR</span>
             </div>
           </Link>
         </Card>
@@ -208,13 +208,13 @@ class OKRList extends React.Component {
     return (
       <LeftRightLayout 
         location={location} 
-        title={i18n('dataroom.dataroom_list')} 
-        right={<Search2 
-          style={{width: 200}} 
-          placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
-          defaultValue={search} 
-          onSearch={this.handleSearch} 
-        />}
+        title="OKR"
+        // right={<Search2 
+        //   style={{width: 200}} 
+        //   placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
+        //   defaultValue={search} 
+        //   onSearch={this.handleSearch} 
+        // />}
       >
         <div>{this.state.hint}</div>
         <div>
