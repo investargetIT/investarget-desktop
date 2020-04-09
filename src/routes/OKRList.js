@@ -241,7 +241,10 @@ class OKRList extends React.Component {
                         } else {
                           let index = cols * row + col - 1 // -1 减去 AddCard
                           let record = list[index]
-                          return record ? <Col span={24/cols} key={col}><OKRCard record={record} /></Col> : null
+                          return record ? <Col span={24/cols} key={col}>
+                            <Link to={`/app/okr/edit/${record.id}`}>
+                            <OKRCard record={record} />
+                              </Link></Col> : null
                         }
                       })
                     }

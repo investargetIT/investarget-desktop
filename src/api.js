@@ -941,6 +941,7 @@ export const getProjectTraders = params => r(`/proj/traders?${qs.stringify(param
 export const editProjectTrader = (id, body) => r(`/proj/traders/${id}/`, 'PUT', body);
 
 export const getOKRList = params => r(`/bd/okr/?${qs.stringify(params)}`);
+export const getOKRDetail = id => r(`/bd/okr/${id}/`);
 export const addOKR = body => r('/bd/okr/', 'POST', body);
 export const editOKR = (id, body) => r(`/bd/okr/${id}/`, 'PUT', body);
 export const deleteOKR = id => r(`/bd/okr/${id}/`, 'DELETE');
