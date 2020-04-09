@@ -68,7 +68,7 @@ class AddOKR extends React.Component {
     const res = await api.addOKR(values);
     window.echo('add okr', res);
     const { id } = res.data;
-    const okrResult = api.getOKRResult(values);
+    const okrResult = this.getOKRResultFormData(values);
     window.echo('okrResult', okrResult);
     await Promise.all(okrResult.map(m => api.addOKRResult({ ...m, okr: id })));
   }

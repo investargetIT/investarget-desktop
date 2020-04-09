@@ -221,7 +221,7 @@ class OKRList extends React.Component {
                 </div>
                 <div style={{ marginTop: 10, color: '#333' }}>{target}</div>
                 {okrResult.map(m => (
-                  <div key={m.id}>
+                  <div key={m.id} style={{ marginTop: 6, color: '#333' }}>
                     <span>目标：</span>
                     <span>{m.krs}</span>
                     <span style={{ marginLeft: 10 }}>信心：</span>

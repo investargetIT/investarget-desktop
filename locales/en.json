@@ -34,7 +34,8 @@
     "project_dataroom": "Project Dataroom",
     "list_organization": "Organization List",
     "exportexcel_organization": "Export List",
-    "weekly_report": "Weekly Report"
+    "weekly_report": "Weekly Report",
+    "OKR": "OKR"
   },
   "account": {
     "login": "Login",

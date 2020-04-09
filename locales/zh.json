@@ -35,7 +35,8 @@
     "company_dataroom": "公司文件",
     "list_organization": "机构列表",
     "exportexcel_organization": "导出任务",
-    "weekly_report": "周报"
+    "weekly_report": "周报",
+    "OKR": "OKR"
   },
   "account": {
     "login": "登录",
