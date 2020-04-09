@@ -105,8 +105,13 @@ class OKRList extends React.Component {
     try {
       const result = await api.getOKRList(params);
       const { count: total, data: list } = result.data;
-      // const okrResult = await Promise.all(list.map(m => api.getOKRResult({ okr: m.id })));
-
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+        const okrResult = await api.getOKRResult({ okr: element.id });
+        const userDetail = await api.getUserInfo(element.createUser);
+        element.okrResult = okrResult.data.data;
+        element.userDetail = userDetail.data;
+      }
       this.setState({ total, list });
     } catch (error) {
       this.props.dispatch({
@@ -160,7 +165,11 @@ class OKRList extends React.Component {
   }
 
   componentDidMount() {
-    this.getOKRList()
+    this.getOKRList();
+  }
+
+  handleDeleteBtnClick = (record) => {
+    window.echo('delete okr', record);
   }
 
   render() {
@@ -193,14 +202,31 @@ class OKRList extends React.Component {
       );
     };
 
-    const OKRCard = ({ record }) => {
-      const { year, quarter, okrType, target } = record;
+    const OKRCard = ({ record, onDelete }) => {
+      const { year, quarter, okrType, target, okrResult, userDetail } = record;
+      const { username, photourl } = userDetail;
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
-          <div>{year}</div>
-          <div>{quarter}</div>
-          <div>{okrType}</div>
-          <div>{target}</div>
+          <div style={{ display: 'flex' }}>
+            <div><img style={{ width: 40, height: 40 }} src={photourl} /></div>
+            <div>
+              <div>
+                <span>{username}</span>
+                <span>{year}</span>
+                <span>{quarter}</span>
+              </div>
+              <div>{target}</div>
+              {okrResult.map(m => (
+                <div key={m.id}>
+                  <span>目标：</span>
+                  <span>{m.krs}</span>
+                  <span style={{ marginLeft: 10 }}>信心：</span>
+                  <span>{m.confidence}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 2 }} onClick={() => onDelete(record)}>删除</div>
         </Card>
       );
     };
@@ -243,7 +269,7 @@ class OKRList extends React.Component {
                           let record = list[index]
                           return record ? <Col span={24/cols} key={col}>
                             <Link to={`/app/okr/edit/${record.id}`}>
-                            <OKRCard record={record} />
+                            <OKRCard record={record} onDelete={this.handleDeleteBtnClick} />
                               </Link></Col> : null
                         }
                       })
