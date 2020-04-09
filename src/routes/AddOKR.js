@@ -21,25 +21,6 @@ function onValuesChange(props, values) {
 }
 const AddOKRForm = Form.create({onValuesChange})(OKRForm);
 
-
-function toData(formData) {
-  var data = {}
-  for (let prop in formData) {
-    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed') {
-      data[prop] = formData[prop]
-    }
-  }
-  data['industries'] = formData['industriesKeys'].map(key => {
-    return {
-      industry: formData['industries-' + key],
-      bucket: 'image',
-      key: formData['industries-image-' + key],
-    }
-  })
-  return data
-}
-
-
 class AddOKR extends React.Component {
 
   constructor(props) {
@@ -68,9 +49,28 @@ class AddOKR extends React.Component {
     });
   }
 
+  getOKRResultFormData = (values) => {
+    const result = [];
+    for (const property in values) {
+      if (property.startsWith('krs')) {
+        const krs = values[property];
+        const infos = property.split('_');
+        const key = infos[1];
+        const confidence = values[`confidence_${key}`];
+        const o = { krs, confidence };
+        result.push(o);
+      }
+    }
+    return result;
+  }
+
   addOKR = async (values) => {
     const res = await api.addOKR(values);
     window.echo('add okr', res);
+    const { id } = res.data;
+    const okrResult = api.getOKRResult(values);
+    window.echo('okrResult', okrResult);
+    await Promise.all(okrResult.map(m => api.addOKRResult({ ...m, okr: id })));
   }
 
   handleRef = (inst) => {
