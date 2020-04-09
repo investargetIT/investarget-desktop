@@ -71,7 +71,7 @@ class EditOKR extends React.Component {
       if (!err) {
         this.editOKR(values)
           .then(this.props.router.goBack)
-          .error(handleError);
+          .catch(handleError);
       }
     });
   }

@@ -108,7 +108,7 @@ class OKRList extends React.Component {
       for (let index = 0; index < list.length; index++) {
         const element = list[index];
         const okrResult = await api.getOKRResult({ okr: element.id });
-        const userDetail = await api.getUserInfo(element.createUser);
+        const userDetail = await api.getUserInfo(element.createuser);
         element.okrResult = okrResult.data.data;
         element.userDetail = userDetail.data;
       }
@@ -168,7 +168,8 @@ class OKRList extends React.Component {
     this.getOKRList();
   }
 
-  handleDeleteBtnClick = (record) => {
+  handleDeleteBtnClick = (record, e) => {
+    e.preventDefault();
     window.echo('delete okr', record);
   }
 
@@ -207,26 +208,30 @@ class OKRList extends React.Component {
       const { username, photourl } = userDetail;
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
-          <div style={{ display: 'flex' }}>
-            <div><img style={{ width: 40, height: 40 }} src={photourl} /></div>
-            <div>
-              <div>
-                <span>{username}</span>
-                <span>{year}</span>
-                <span>{quarter}</span>
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex' }}>
+              <div style={{ width: 80 }}>
+                <img style={{ width: 40, height: 40, margin: '20px auto', display: 'block', borderRadius: '50%' }} src={photourl} />
               </div>
-              <div>{target}</div>
-              {okrResult.map(m => (
-                <div key={m.id}>
-                  <span>目标：</span>
-                  <span>{m.krs}</span>
-                  <span style={{ marginLeft: 10 }}>信心：</span>
-                  <span>{m.confidence}</span>
+              <div style={{ flex: 1, paddingTop: 20, paddingRight: 20, paddingBottom: 20 }}>
+                <div style={{ color: 'black', fontWeight: 'bold' }}>
+                  <span>{username}</span>
+                  <span style={{ marginLeft: 10 }}>{year}年</span>
+                  {quarter && <span style={{ marginLeft: 10 }}>第{quarter}季度</span>}
                 </div>
-              ))}
+                <div style={{ marginTop: 10, color: '#333' }}>{target}</div>
+                {okrResult.map(m => (
+                  <div key={m.id}>
+                    <span>目标：</span>
+                    <span>{m.krs}</span>
+                    <span style={{ marginLeft: 10 }}>信心：</span>
+                    <span>{m.confidence}</span>
+                  </div>
+                ))}
+              </div>
             </div>
+            <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3 }} onClick={(e) => onDelete(record, e)}>删除</div>
           </div>
-          <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 2 }} onClick={() => onDelete(record)}>删除</div>
         </Card>
       );
     };
