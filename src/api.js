@@ -939,3 +939,5 @@ export const deleteWorkReportProjInfo = id => r(`/bd/workreport/proj/${id}/`, 'D
 
 export const getProjectTraders = params => r(`/proj/traders?${qs.stringify(params)}`);
 export const editProjectTrader = (id, body) => r(`/proj/traders/${id}/`, 'PUT', body);
+
+export const searchOrg = params => r(`/org/search/?${qs.stringify(params)}`);

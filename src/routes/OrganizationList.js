@@ -88,6 +88,32 @@ class OrganizationList extends React.Component {
     this.writeSetting()
   }
 
+  searchOrg = () => {
+    const { filters, search: text, page, pageSize, sort, desc } = this.state
+    if (!text) {
+      this.getOrg();
+      return;
+    }
+    // const orgstatus = [];
+    // if (!hasPerm('org.admin_changeorg')) {
+    //   orgstatus.push(2); // 审核通过 
+    // }
+    const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false }
+    this.setState({ loading: true })
+    console.log(params)
+    api.searchOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+    this.writeSetting()
+  }
+
   // 按创建时间排序
   handleSortChange = value => {
     const desc = value === 'desc' ? 1 : 0;
@@ -216,7 +242,7 @@ class OrganizationList extends React.Component {
               <Search
                 style={{ width: 250 }}
                 placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
-                onSearch={() => this.setState({ page: 1 }, this.getOrg)}
+                onSearch={() => this.setState({ page: 1 }, this.searchOrg)}
                 onChange={search => this.setState({ search })}
                 value={search}
               />
