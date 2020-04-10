@@ -18,15 +18,6 @@ function mapPropsToFields(props) {
 const EditOKRForm = Form.create({ onValuesChange, mapPropsToFields })(OKRForm);
 
 
-function toFormData(data) {
-  var formData = {}
-  for (let prop in data) {
-    formData[prop] = { 'value': data[prop] }
-  }
-  return formData
-}
-
-
 class EditOKR extends React.Component {
   constructor(props) {
     super(props);
@@ -81,12 +72,32 @@ class EditOKR extends React.Component {
     await api.editOKR(id, values);
   }
 
+  getFormData = () => {
+    const formData = {};
+
+    const { data: okr } = this.state;
+    for (const prop in okr) {
+      formData[prop] = { value: okr[prop] };
+    }
+
+    const krsKeys = this.state.result.map(m => `id-${m.id}`);
+    formData.keys = krsKeys;
+
+    this.state.result.forEach((element) => {
+      const m = `id-${element.id}`;
+      formData[`krs_${m}`] = { value: element.krs };
+      formData[`confidence_${m}`] = { value: element.confidence };
+    });
+
+    window.echo('get form data', formData);
+    return formData;
+  }
+
   render() {
-    const data = toFormData(this.state.data);
     return (
       <LeftRightLayout location={this.props.location} title="编辑OKR">
         <div>
-          <EditOKRForm wrappedComponentRef={this.handleRef} data={data} />
+          <EditOKRForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />
           <div style={{ textAlign: 'center' }}>
             <Button style={{ margin: '0 8px' }} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
             <Button style={{ margin: '0 8px' }} size="large" onClick={this.handleCancel}>{i18n('common.cancel')}</Button>
