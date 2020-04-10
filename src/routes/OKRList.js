@@ -124,37 +124,6 @@ class OKRList extends React.Component {
   }
 
 
-  deleteDataRoom (dataroom) {
-    this.setState({ loading: true })
-    const id = dataroom.id
-    api.deleteDataRoom(id)
-      .then(data => this.getOKRList())
-      .catch(err => {
-        this.setState({ loading: false })
-        this.props.dispatch({ type: 'app/findError', payload: err })
-      })
-  }
-
-  handleCloseDateRoom (dataroom) {
-    this.setState({ loading: true })
-    const id = dataroom.id
-    const body = {
-      isClose: !dataroom.isClose,
-    }
-    api.editDataRoom(id, body)
-    .then(data => this.getOKRList())
-    .catch(err => {
-      this.setState({ loading: false })
-      this.props.dispatch({ type: 'app/findError', payload: err })
-    })
-  }
-
-  writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
-    localStorage.setItem('DataRooomList', JSON.stringify(data))
-  }
-
   readSetting = () => {
     var data = localStorage.getItem('DataRooomList')
     return data ? JSON.parse(data) : null
