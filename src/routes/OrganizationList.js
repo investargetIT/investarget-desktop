@@ -250,10 +250,9 @@ class OrganizationList extends React.Component {
 
           <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 
-          <div style={{ overflow: 'auto' }}>
+          <div style={{ marginBottom: '24px', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center' }}>
-
+            <div>
               <RadioGroup onChange={this.handleLikeChange} defaultValue={1} value={this.state.like}>
                 <Radio value={0}>精确查询</Radio>
                 <Radio value={1}>模糊查询</Radio>
@@ -268,7 +267,7 @@ class OrganizationList extends React.Component {
               />
             </div>
 
-            <div style={{ float: 'right' }}>
+            <div>
               {i18n('common.sort_by_created_time')}
               <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
                 <Option value="asc">{i18n('common.asc_order')}</Option>
