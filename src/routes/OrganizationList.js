@@ -7,7 +7,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
@@ -15,6 +15,7 @@ import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option
+const RadioGroup = Radio.Group;
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
@@ -43,6 +44,7 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
+      like: 1,
     }
   }
 
@@ -89,7 +91,7 @@ class OrganizationList extends React.Component {
   }
 
   searchOrg = () => {
-    const { filters, search: text, page, pageSize, sort, desc } = this.state
+    const { filters, search: text, page, pageSize, sort, desc, like } = this.state;
     if (!text) {
       this.getOrg();
       return;
@@ -98,9 +100,15 @@ class OrganizationList extends React.Component {
     // if (!hasPerm('org.admin_changeorg')) {
     //   orgstatus.push(2); // 审核通过 
     // }
-    const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false }
+    let params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, like, issub: false };
     this.setState({ loading: true })
     console.log(params)
+    params = {
+      text,
+      page_size: pageSize,
+      page_index: page,
+      like,
+    };
     api.searchOrg(params).then(result => {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false })
@@ -182,6 +190,12 @@ class OrganizationList extends React.Component {
     this.setState({ selectedIds })
   }
 
+  handleLikeChange = (e) => {
+    this.setState({
+      like: e.target.value,
+    });
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -238,9 +252,15 @@ class OrganizationList extends React.Component {
 
           <div style={{ overflow: 'auto' }}>
 
-            <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
+            <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center' }}>
+
+              <RadioGroup onChange={this.handleLikeChange} defaultValue={1} value={this.state.like}>
+                <Radio value={0}>精确查询</Radio>
+                <Radio value={1}>模糊查询</Radio>
+              </RadioGroup>
+
               <Search
-                style={{ width: 250 }}
+                style={{ width: 250, marginLeft: 10 }}
                 placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
                 onSearch={() => this.setState({ page: 1 }, this.searchOrg)}
                 onChange={search => this.setState({ search })}
