@@ -116,7 +116,7 @@ class EditOKR extends React.Component {
     }
 
     const krsKeys = this.state.result.map(m => `id-${m.id}`);
-    formData.keys = krsKeys;
+    formData.keys = { value: krsKeys };
 
     this.state.result.forEach((element) => {
       const m = `id-${element.id}`;
@@ -124,7 +124,6 @@ class EditOKR extends React.Component {
       formData[`confidence_${m}`] = { value: element.confidence };
     });
 
-    window.echo('get form data', formData);
     return formData;
   }
 
