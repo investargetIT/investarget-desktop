@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, subtracting } from '../utils/util';
 import { Form, Button, InputNumber, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -22,6 +22,7 @@ class EditOKR extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       data: {},
       result: [],
     };
@@ -60,16 +61,50 @@ class EditOKR extends React.Component {
   handleSubmit = () => {
     this.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        this.setState({ loading: true });
         this.editOKR(values)
           .then(this.props.router.goBack)
-          .catch(handleError);
+          .catch(handleError)
+          .finally(() => this.setState({ loading: false }));
       }
     });
   }
 
   editOKR = async (values) => {
     const id = Number(this.props.params.id);
-    await api.editOKR(id, values);
+    const res = await api.editOKR(id, values);
+    const { id: okrId } = res.data;
+
+    const krs = this.getOKRResultFormData(values);
+
+    const newKrs = krs.filter(f => !f.key.startsWith('id'));
+    await Promise.all(newKrs.map(m => api.addOKRResult({ ...m, okr: okrId })));
+
+    const oldKrs = krs.filter(f => f.key.startsWith('id'));
+    await Promise.all(oldKrs.map((m) => {
+      const krsId = parseInt(m.key.split('-')[1], 10);
+      return api.editOKRResult(krsId, m);
+    }));
+
+    const oldKrsIds = oldKrs.map(m => parseInt(m.key.split('-')[1], 10));
+    const originalKrsIds = this.state.result.map(m => m.id);
+    const toDeleteIds = subtracting(originalKrsIds, oldKrsIds);
+    await Promise.all(toDeleteIds.map(m => api.deleteOKRResult(m)));
+  }
+
+  getOKRResultFormData = (values) => {
+    const result = [];
+    for (const property in values) {
+      if (property.startsWith('krs')) {
+        const krs = values[property];
+        const infos = property.split('_');
+        const key = infos[1];
+        const confidence = values[`confidence_${key}`];
+        const o = { key, krs, confidence };
+        result.push(o);
+      }
+    }
+    return result;
   }
 
   getFormData = () => {
@@ -99,7 +134,7 @@ class EditOKR extends React.Component {
         <div>
           <EditOKRForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />
           <div style={{ textAlign: 'center' }}>
-            <Button style={{ margin: '0 8px' }} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
+            <Button style={{ margin: '0 8px' }} loading={this.state.loading} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
             <Button style={{ margin: '0 8px' }} size="large" onClick={this.handleCancel}>{i18n('common.cancel')}</Button>
           </div>
         </div>
