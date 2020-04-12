@@ -131,6 +131,7 @@ class OrgBDListComponent extends React.Component {
         orgBlackList: [],
         showReasonForBlacklist: false,
         reasonForBlacklist: '',
+        projectDetails: null,
     }
 
     this.allTrader = [];
@@ -155,6 +156,11 @@ class OrgBDListComponent extends React.Component {
     }
     if (nextProps.refresh !== this.props.refresh) {
       this.getOrgBdList();
+    }
+    if (nextProps.location.query.projId !== this.props.location.query.projId) {
+      if (this.props.onProjChange) {
+        this.props.onProjChange();
+      }
     }
   }
 
@@ -203,6 +209,7 @@ class OrgBDListComponent extends React.Component {
     if (proj) {
       api.getProjDetail(proj)
       .then(result => {
+        this.setState({ projectDetails: result.data });
         const { projTraders } = result.data;
         if (projTraders) {
           this.setState({
@@ -1263,11 +1270,17 @@ class OrgBDListComponent extends React.Component {
 
       );
     }
-    
+
     return (
       <div>
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
+        {this.props.editable && this.state.projectDetails && this.state.projectDetails.lastProject &&
+          <div style={{ marginBottom: 20, textAlign: 'center' }}>
+            上一轮项目：
+            <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
+          </div>
+        }
         { this.props.editable && !this.state.showUnreadOnly ?
           <OrgBDFilter
             defaultValue={filters}
