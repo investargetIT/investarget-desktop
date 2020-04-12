@@ -29,6 +29,7 @@ class OrganizationList extends React.Component {
     const setting = this.readSetting()
     const filters = setting ? setting.filters : OrganizationListFilter.defaultValue
     const search = setting ? setting.search : null
+    const like = setting ? (setting.like === 0 ? 0 : 1) : 1
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
 
@@ -44,7 +45,7 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
-      like: 1,
+      like,
     }
   }
 
@@ -142,8 +143,8 @@ class OrganizationList extends React.Component {
   }
 
   writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const { filters, search, like, page, pageSize } = this.state
+    const data = { filters, search, like, page, pageSize }
     localStorage.setItem('OrganizationList', JSON.stringify(data))
   }
 
@@ -163,7 +164,12 @@ class OrganizationList extends React.Component {
   }
 
   componentDidMount() {
-    this.getOrg()
+    const { search } = this.state;
+    if (search) {
+      this.searchOrg();
+    } else {
+      this.getOrg();
+    }
   }
 
   handleExportBtnClicked = () => {
