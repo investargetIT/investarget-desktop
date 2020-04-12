@@ -33,6 +33,7 @@ import {
   SelectAllUser, 
   SelectTrader,
   SelectIndustryGroup,
+  SelectExistProject,
 } from '../components/ExtraInput'
 
 
@@ -98,6 +99,10 @@ class ProjectBaseForm extends React.Component {
         {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
         </BasicFormItem> */}
+
+        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
+          <SelectExistProject />
+        </BasicFormItem>
 
       </Form>
     )

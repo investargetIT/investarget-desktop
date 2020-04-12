@@ -66,6 +66,8 @@ function toFormData(data) {
       formData.makeUser = { value: makeUser.map(m => m.user.id.toString()) };
       formData.takeUserName = { value: takeUser.map(m => m.user.usernameC).join('、') };
       formData.makeUserName = { value: makeUser.map(m => m.user.usernameC).join('、') };
+    } else if (prop === 'lastProject' && data[prop]) {
+      formData.lastProject = { value: data.lastProject.id };
     } else {
       formData[prop] = { 'value': data[prop] }
     }
