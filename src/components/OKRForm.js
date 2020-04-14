@@ -88,13 +88,13 @@ class OKRForm extends React.Component {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const formItems = keys.map((m) => {
+    const formItems = keys.map((m, mIndex) => {
       const krsKeys = `okr_${m}`;
       getFieldDecorator(krsKeys, { initialValue: [] });
       const allKrsKeys = getFieldValue(krsKeys);
       const krsFormItems = allKrsKeys.map((k) => {
         return (
-          <div key={k} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', margin: '20px 0', position: 'relative' }}>
+          <div key={k} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', paddingBottom: 0, margin: '20px 0', position: 'relative', borderTop: '1px dashed grey' }}>
             <BasicFormItem label="关键结果" name={`${krsKeys}_krs_${k}`}>
               <Input />
             </BasicFormItem>
@@ -112,7 +112,17 @@ class OKRForm extends React.Component {
       });
 
       return (
-        <div>
+        <div key={m} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', paddingTop: 0, margin: '20px 0', position: 'relative' }}>
+          
+          <div style={{ marginBottom: 20, backgroundColor: 'lightgrey', lineHeight: '32px', textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
+            <span>目标{mIndex + 1}</span>
+            <Icon
+              style={{ cursor: 'pointer', marginLeft: 10 }}
+              type="delete"
+              onClick={() => this.removeFormItem('keys', m)}
+            />
+          </div>
+          
           <BasicFormItem label="目标" name={`okr_${m}_target`}>
             <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
           </BasicFormItem>
@@ -125,12 +135,6 @@ class OKRForm extends React.Component {
             </Button>
           </FormItem>
 
-          <Icon
-            style={{ position: 'absolute', top: 20, right: 20 }}
-            className="dynamic-delete-button"
-            type="delete"
-            onClick={() => this.removeFormItem('keys', m)}
-          />
         </div>
       );
     });
@@ -146,9 +150,11 @@ class OKRForm extends React.Component {
           <Switch />
         </BasicFormItem>
 
-        <BasicFormItem label="季度" name="quarter" valueType="number">
-          <SelectSeason />
-        </BasicFormItem>
+        {!getFieldValue('okrType') &&
+          <BasicFormItem label="季度" name="quarter" valueType="number">
+            <SelectSeason />
+          </BasicFormItem>
+        }
 
         {formItems}
 
