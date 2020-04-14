@@ -105,6 +105,10 @@ class AuditProjectModal extends React.Component {
     this.props.onSendEmailChange(e.target.checked)
   }
 
+  handleDiscloseFinanceChange = (e) => {
+    this.props.onDiscloseFinanceChange(e.target.checked);
+  }
+
   handleSendWechatChange = e => {
     this.props.onSendWechatChange(e.target.checked);
   }
@@ -287,7 +291,7 @@ class AuditProjectModal extends React.Component {
   }
 
   render() {
-    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel, sendWechat } = this.props
+    const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel, sendWechat, discloseFinance } = this.props
 
     const uploadProps = {
       action: baseUrl + "/service/qiniubigupload?bucket=file",
@@ -307,6 +311,9 @@ class AuditProjectModal extends React.Component {
           status === 4 ? 
           <div style={{ marginTop: 20, marginLeft: 170 }}>
             <div>
+              <Checkbox checked={discloseFinance} onChange={this.handleDiscloseFinanceChange}>是否公开财务信息？</Checkbox>
+            </div>
+            <div style={{ marginTop: 6 }}>
               <Checkbox checked={sendEmail} onChange={this.handleSendEmailChange}>{i18n('project.is_send_email')}</Checkbox>
             </div> 
             <div style={{ marginTop: 6 }}>
