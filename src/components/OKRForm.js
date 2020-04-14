@@ -39,6 +39,7 @@ const formItemLayoutWithOutLabel = {
 };
 
 let uuid = 0;
+let ppid = 0;
 class OKRForm extends React.Component {
 
   static childContextTypes = {
@@ -54,10 +55,6 @@ class OKRForm extends React.Component {
     return { form: this.props.form }
   }
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })
-  }
-
   add = () => {
     uuid++;
     const { form } = this.props;
@@ -68,36 +65,76 @@ class OKRForm extends React.Component {
     });
   }
 
-  remove = (k) => {
+  addKrs = (key) => {
+    window.echo('add krs', key);
+    ppid++;
     const { form } = this.props;
-    const keys = form.getFieldValue('keys');
+    const keys = form.getFieldValue(key);
+    const nextKeys = keys.concat(ppid);
     form.setFieldsValue({
-      keys: keys.filter(key => key !== k),
+      [key]: nextKeys,
     });
   }
 
+  removeFormItem = (key, value) => {
+    const { form } = this.props;
+    const keyValues = form.getFieldValue(key);
+    const body = {};
+    body[key] = keyValues.filter(k => k !== value);
+    form.setFieldsValue(body);
+  }
+
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
+    const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const formItems = keys.map((k, index) => {
-      return (
-        <div key={k} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', margin: '20px 0', position: 'relative' }}>
-            <BasicFormItem label="关键结果" name={`krs_${k}`}>
+    const formItems = keys.map((m) => {
+      const krsKeys = `okr_${m}`;
+      getFieldDecorator(krsKeys, { initialValue: [] });
+      const allKrsKeys = getFieldValue(krsKeys);
+      const krsFormItems = allKrsKeys.map((k) => {
+        return (
+          <div key={k} style={{ backgroundColor: '#f8f8f8', padding: '20px 0', margin: '20px 0', position: 'relative' }}>
+            <BasicFormItem label="关键结果" name={`${krsKeys}_krs_${k}`}>
               <Input />
             </BasicFormItem>
-            <BasicFormItem label="信心指数" name={`confidence_${k}`} valueType="number">
+            <BasicFormItem label="信心指数" name={`${krsKeys}_confidence_${k}`} valueType="number">
               <InputNumber min={1} max={100} />
             </BasicFormItem>
             <Icon
               style={{ position: 'absolute', top: 20, right: 20 }}
               className="dynamic-delete-button"
               type="delete"
-              onClick={() => this.remove(k)}
+              onClick={() => this.removeFormItem(krsKeys, k)}
             />
+          </div>
+        );
+      });
+
+      return (
+        <div>
+          <BasicFormItem label="目标" name={`okr_${m}_target`}>
+            <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
+          </BasicFormItem>
+
+          {krsFormItems}
+
+          <FormItem {...formItemLayoutWithOutLabel}>
+            <Button type="dashed" onClick={() => this.addKrs(krsKeys)} style={{ width: '100%' }}>
+              <Icon type="plus" /> 添加关键结果及信心指数
+            </Button>
+          </FormItem>
+
+          <Icon
+            style={{ position: 'absolute', top: 20, right: 20 }}
+            className="dynamic-delete-button"
+            type="delete"
+            onClick={() => this.removeFormItem('keys', m)}
+          />
         </div>
       );
     });
+
     return (
       <Form>
 
@@ -113,27 +150,19 @@ class OKRForm extends React.Component {
           <SelectSeason />
         </BasicFormItem>
 
-        <BasicFormItem label="总体目标" name="target">
-          <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-
         {formItems}
-        
+
         <FormItem {...formItemLayoutWithOutLabel}>
           <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
-            <Icon type="plus" /> 添加关键结果及信心指数 
+            <Icon type="plus" /> 添加目标
           </Button>
         </FormItem>
 
       </Form>
-    )
+    );
   }
 
 }
 
-function mapStateToPropsIndustry(state) {
-  const { industry } = state.app
-  return { industry }
-}
 
-export default connect(mapStateToPropsIndustry)(OKRForm)
+export default connect()(OKRForm);
