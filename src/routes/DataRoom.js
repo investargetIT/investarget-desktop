@@ -625,7 +625,10 @@ class DataRoom extends React.Component {
     // })
     // this.editUserFileList(selectedUser, list2)
     const uniqueIds = ids.filter((v, i, a) => a.indexOf(v) === i);
-    this.toggleUserDataroomFiles(this.state.selectedUser, uniqueIds.map(m => ({ file: m })), true);
+    const userFileList = this.state.fileUserList.filter(f => f.user === this.state.selectedUser);
+    const userFileIdList = userFileList.map(m => m.file);
+    const fileIds = uniqueIds.filter(f => !userFileIdList.includes(f));
+    this.toggleUserDataroomFiles(this.state.selectedUser, fileIds.map(m => ({ file: m })), true);
   }
 
   handleMultiInvisible = (ids) => {
