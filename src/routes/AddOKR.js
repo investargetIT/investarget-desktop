@@ -64,6 +64,43 @@ class AddOKR extends React.Component {
     return result;
   }
 
+  getOKR = (values) => {
+    let result1 = [];
+    for (const property in values) {
+      if (property.startsWith('okr')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const key = infos[1];
+        const fieldName = infos[2];
+        const krsKey = infos[3];
+        const o = { key, fieldName, krsKey, value };
+        result1.push(o);
+      }
+    }
+
+    result1 = result1.filter(f => f.fieldName === 'target' && !f.value);
+    window.echo('result1', result1);
+
+    const okrKeys = result1.map(m => m.key);
+    const uniqueOkrKeys = okrKeys.filter((v, i, a) => a.indexOf(v) === i);
+    const result = [];
+    uniqueOkrKeys.forEach((e) => {
+      const krsArr = [];
+      const target = result1.filter(f => f.key === e && f.fieldName === 'target')[0].value;
+      const krsData = result1.filter(f => f.key === e && f.krsKey);
+      const krsKeys = krsData.map(m => m.krsKey);
+      const uniqueKrsKeys = krsKeys.filter((v, i, a) => a.indexOf(v) === i);
+      uniqueKrsKeys.forEach((g) => {
+        const krs = krsData.filter(f => f.krsKey === g && f.fieldName === 'krs')[0].value;
+        const confidence = krsData.filter(f => f.krsKey === g && f.fieldName === 'confidence')[0].value;
+        krsArr.push({ krs, confidence });
+      });
+      result.push({ target, krsArr });
+    });
+    
+    return result;
+  }
+
   addOKR = async (values) => {
     const res = await api.addOKR(values);
     window.echo('add okr', res);
