@@ -504,14 +504,21 @@ class DataRoom extends React.Component {
     }
 
     // Add
-    const res = await Promise.all(data.map((m) => {
+    const res = [];
+    for (let index = 0; index < data.length; index++) {
+      const m = data[index];
       const body = {
         dataroom: this.state.id,
         dataroomUserfile,
         file: m.file,
       };
-      return api.addUserDataroomFile(body);
-    }));
+      try {
+        const addFileToUser = await api.addUserDataroomFile(body);
+        res.push(addFileToUser);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     const newFiles = res.map(m => {
       const { id, file, dataroomUserfile: dataroomUserfileId } = m.data;
       return { id, file, dataroomUserfileId, user };
@@ -617,8 +624,8 @@ class DataRoom extends React.Component {
     //   }
     // })
     // this.editUserFileList(selectedUser, list2)
-
-    this.toggleUserDataroomFiles(this.state.selectedUser, ids.map(m => ({ file: m })), true);
+    const uniqueIds = ids.filter((v, i, a) => a.indexOf(v) === i);
+    this.toggleUserDataroomFiles(this.state.selectedUser, uniqueIds.map(m => ({ file: m })), true);
   }
 
   handleMultiInvisible = (ids) => {
