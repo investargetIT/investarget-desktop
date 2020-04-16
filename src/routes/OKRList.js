@@ -109,7 +109,8 @@ class OKRList extends React.Component {
     const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
     return uniqueUserIds.map((m) => {
       const okr = allOkr.filter(f => f.createuser === m);
-      return { user: m, okr };
+      const { year, quarter } = okr[0];
+      return { user: m, year, quarter, okr };
     });
   }
 
@@ -213,7 +214,7 @@ class OKRList extends React.Component {
     };
 
     const OKRCard = ({ record, onDelete }) => {
-      const { year, quarter, okrType, target, okrResult, userDetail } = record;
+      const { year, quarter, userDetail, okr } = record;
       const { username, photourl } = userDetail;
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
@@ -228,15 +229,23 @@ class OKRList extends React.Component {
                   <span style={{ marginLeft: 10 }}>{year}年</span>
                   {quarter && <span style={{ marginLeft: 10 }}>第{quarter}季度</span>}
                 </div>
-                <div style={{ marginTop: 10, color: '#333' }}>{target}</div>
-                {okrResult.map(m => (
-                  <div key={m.id} style={{ marginTop: 6, color: '#333' }}>
-                    <span>目标：</span>
-                    <span>{m.krs}</span>
-                    <span style={{ marginLeft: 10 }}>信心：</span>
-                    <span>{m.confidence}</span>
-                  </div>
-                ))}
+                {okr.map((n) => {
+                  return (
+                    <div key={n.id}>
+                      <div style={{ marginTop: 10, color: '#333' }}>{n.target}</div>
+                      {
+                        n.okrResult.map(m => (
+                          <div key={m.id} style={{ marginTop: 6, color: '#333' }}>
+                            <span>关键结果：</span>
+                            <span>{m.krs}</span>
+                            <span style={{ marginLeft: 10 }}>信心指数：</span>
+                            <span>{m.confidence}</span>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  );
+                })}
               </div>
             </div>
             <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3 }} onClick={(e) => onDelete(record, e)}>删除</div>
