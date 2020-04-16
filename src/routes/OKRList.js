@@ -178,9 +178,13 @@ class OKRList extends React.Component {
 
   handleConfirmDeleteOKR = async (record) => {
     this.setState({ loading: true });
-    await Promise.all(record.okrResult.map(m => api.deleteOKRResult(m.id)));
-    await api.deleteOKR(record.id);
-    this.getOKRList();
+    const { okr } = record;
+    for (let index = 0; index < okr.length; index++) {
+      const element = okr[index];
+      await Promise.all(element.okrResult.map(m => api.deleteOKRResult(m.id)));
+      await api.deleteOKR(element.id);
+    }
+    this.tryToGetOKRList();
   }
 
   render() {
