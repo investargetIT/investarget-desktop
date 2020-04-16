@@ -98,21 +98,43 @@ class OKRList extends React.Component {
   //   this.setState({ pageSize, page: 1 }, this.getOKRList)
   // }
 
+  getOkrByUser = async () => {
+    const result = await api.getOKRList();
+    const { count: total } = result.data;
+    const allOkr = await api.getOKRList({ page_size: total });
+    const allUserIds = allOkr.map(m => m.createuser);
+    const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
+    return uniqueUserIds.map((m) => {
+      const okr = allOkr.filter(f => f.createuser === m);
+      return { user: m, okr };
+    });
+  }
+
   getOKRList = async () => {
-    const { search, page, pageSize } = this.state;
-    const params = { search, page_index: page, page_size: pageSize };
-    this.setState({ loading: true });
-    try {
-      const result = await api.getOKRList(params);
-      const { count: total, data: list } = result.data;
-      for (let index = 0; index < list.length; index++) {
-        const element = list[index];
-        const okrResult = await api.getOKRResult({ okr: element.id });
-        const userDetail = await api.getUserInfo(element.createuser);
-        element.okrResult = okrResult.data.data;
-        element.userDetail = userDetail.data;
+    const okrByUser = await this.getOkrByUser();
+
+    for (let index = 0; index < okrByUser.length; index++) {
+      const element = okrByUser[index];
+
+      const userDetail = await api.getUserInfo(element.user);
+      element.userDetail = userDetail.data;
+
+      for (let index1 = 0; index1 < element.okr.length; index1++) {
+        const element1 = element.okr[index1];
+        const okrResult = await api.getOKRResult({ okr: element1.id });
+        const { count } = okrResult.data;
+        const okrResult1 = await api.getOKRResult({ okr: element1.id, page_size: count });
+        element1.okrResult = okrResult1.data.data;
       }
-      this.setState({ total, list });
+    }
+    window.echo('okr by user', okrByUser);
+    this.setState({ list: okrByUser });
+  }
+
+  tryToGetOKRList = async () => {
+    try {
+      this.setState({ loading: true });
+      await this.getOKRList();
     } catch (error) {
       this.props.dispatch({
         type: 'app/findError',
@@ -122,7 +144,6 @@ class OKRList extends React.Component {
       this.setState({ loading: false });
     }
   }
-
 
   readSetting = () => {
     var data = localStorage.getItem('DataRooomList')
