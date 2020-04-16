@@ -159,11 +159,16 @@ class OKRList extends React.Component {
   }
 
   handleAddOKRCardClick = () => {
-    this.props.router.push('/app/okr/add');
+    const index = this.state.list.map(m => m.user).indexOf(getCurrentUser());
+    if (index > -1) {
+      this.props.router.push(`/app/okr/edit/${getCurrentUser()}`);
+    } else {
+      this.props.router.push('/app/okr/add');
+    }
   }
 
   componentDidMount() {
-    this.getOKRList();
+    this.tryToGetOKRList();
   }
 
   handleDeleteBtnClick = (record, e) => {
