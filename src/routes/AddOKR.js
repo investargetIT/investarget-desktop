@@ -102,12 +102,18 @@ class AddOKR extends React.Component {
   }
 
   addOKR = async (values) => {
-    const res = await api.addOKR(values);
-    window.echo('add okr', res);
-    const { id } = res.data;
-    const okrResult = this.getOKRResultFormData(values);
-    window.echo('okrResult', okrResult);
-    await Promise.all(okrResult.map(m => api.addOKRResult({ ...m, okr: id })));
+    const { year, okrType, quarter } = values;
+    const allOkr = this.getOKR(values);
+    for (let index = 0; index < allOkr.length; index++) {
+      const element = allOkr[index];
+      const { target, krsArr } = element;
+      const res = await api.addOKR({ year, okrType, quarter, target });
+      const { id } = res.data;
+      for (let index1 = 0; index1 < krsArr.length; index1++) {
+        const element1 = krsArr[index1];
+        await api.addOKRResult({ ...element1, okr: id });
+      }
+    }
   }
 
   handleRef = (inst) => {
