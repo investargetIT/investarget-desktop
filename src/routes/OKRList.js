@@ -101,6 +101,9 @@ class OKRList extends React.Component {
   getOkrByUser = async () => {
     const result = await api.getOKRList();
     const { count: total } = result.data;
+    if (total === 0) {
+      return [];
+    }
     const allOkr = await api.getOKRList({ page_size: total });
     const allUserIds = allOkr.map(m => m.createuser);
     const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
@@ -123,8 +126,12 @@ class OKRList extends React.Component {
         const element1 = element.okr[index1];
         const okrResult = await api.getOKRResult({ okr: element1.id });
         const { count } = okrResult.data;
-        const okrResult1 = await api.getOKRResult({ okr: element1.id, page_size: count });
-        element1.okrResult = okrResult1.data.data;
+        if (count === 0) {
+          element1.okrResult = [];
+        } else {
+          const okrResult1 = await api.getOKRResult({ okr: element1.id, page_size: count });
+          element1.okrResult = okrResult1.data.data;
+        }
       }
     }
     window.echo('okr by user', okrByUser);
