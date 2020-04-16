@@ -78,12 +78,14 @@ class OrgBDProjList extends React.Component {
     const reqProj = await api.getOrgBDProj(params);
     const { count: total } = reqProj.data;
 
-    // 其次根据项目ID获取项目详情
-    const reqProjList = await api.getProj({ 
-      ids: reqProj.data.data.filter(f => f.proj).map(m => m.proj), 
-      max_size: pageSize, 
-    });
-    const { data: list } = reqProjList.data;
+    // // 其次根据项目ID获取项目详情
+    // const reqProjList = await api.getProj({ 
+    //   ids: reqProj.data.data.filter(f => f.proj).map(m => m.proj), 
+    //   max_size: pageSize, 
+    // });
+    // const { data: list } = reqProjList.data;
+
+    const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
 
     // 最后请求当前用户的未读机构BD的统计数据
     const reqUnreadOrgBD = await api.getOrgBDProj({
