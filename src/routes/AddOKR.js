@@ -37,7 +37,7 @@ class AddOKR extends React.Component {
         // let param = toData(values)
         this.addOKR(values)
           .then(() => {
-            this.props.router.goBack();
+            this.props.router.replace('/app/okr/list');
           })
           .catch((error) => {
             this.props.dispatch({
@@ -78,10 +78,10 @@ class AddOKR extends React.Component {
       }
     }
 
-    result1 = result1.filter(f => f.fieldName === 'target' && !f.value);
-    window.echo('result1', result1);
+    const result2 = result1.filter(f => f.fieldName === 'target' && f.value);
+    window.echo('result2', result1);
 
-    const okrKeys = result1.map(m => m.key);
+    const okrKeys = result2.map(m => m.key);
     const uniqueOkrKeys = okrKeys.filter((v, i, a) => a.indexOf(v) === i);
     const result = [];
     uniqueOkrKeys.forEach((e) => {

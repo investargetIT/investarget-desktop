@@ -104,7 +104,8 @@ class OKRList extends React.Component {
     if (total === 0) {
       return [];
     }
-    const allOkr = await api.getOKRList({ page_size: total });
+    const allOkrRes = await api.getOKRList({ page_size: total });
+    const { data: allOkr } = allOkrRes.data;
     const allUserIds = allOkr.map(m => m.createuser);
     const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
     return uniqueUserIds.map((m) => {
@@ -211,13 +212,11 @@ class OKRList extends React.Component {
     const AddCard = (props) => {
       return (
         <Card style={addCardStyle} bodyStyle={addCardBodyStyle} onClick={props.onClick}>
-          <Link to={'/app/projects/list'}>
-            <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
-              <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
-              <br />
-              <span style={{ fontSize: '16px', color: '#656565' }}>编辑OKR</span>
-            </div>
-          </Link>
+          <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
+            <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
+            <br />
+            <span style={{ fontSize: '16px', color: '#656565' }}>编辑OKR</span>
+          </div>
         </Card>
       );
     };
@@ -257,7 +256,7 @@ class OKRList extends React.Component {
                 })}
               </div>
             </div>
-            <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3 }} onClick={(e) => onDelete(record, e)}>删除</div>
+            <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3, cursor: 'pointer' }} onClick={(e) => onDelete(record, e)}>删除</div>
           </div>
         </Card>
       );
@@ -300,9 +299,10 @@ class OKRList extends React.Component {
                           let index = cols * row + col - 1 // -1 减去 AddCard
                           let record = list[index]
                           return record ? <Col span={24/cols} key={col}>
-                            <Link to={`/app/okr/edit/${record.id}`}>
+                            {/* <Link to={`/app/okr/edit/${record.id}`}> */}
                             <OKRCard record={record} onDelete={this.handleDeleteBtnClick} />
-                              </Link></Col> : null
+                              {/* </Link> */}
+                              </Col> : null
                         }
                       })
                     }
