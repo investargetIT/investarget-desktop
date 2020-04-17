@@ -213,12 +213,12 @@ class EditOKR extends React.Component {
 
     this.state.okr.forEach(element => {
       const m = `id-${element.id}`;
-      formData[`okr_${m}`] = element.okrResult.map(m1 => `id-${m1.id}`);
+      formData[`okr_${m}`] = { value: element.okrResult.map(m1 => `id-${m1.id}`) };
       formData[`okr_${m}_target`] = { value: element.target };
       element.okrResult.forEach(e2 => {
         const n = `id-${e2.id}`;
-        formData[`${m}_krs_${n}`] = { value: e2.krs };
-        formData[`${m}_confidence_${n}`] = { value: e2.confidence };
+        formData[`okr_${m}_krs_${n}`] = { value: e2.krs };
+        formData[`okr_${m}_confidence_${n}`] = { value: e2.confidence };
       });
     });
 
