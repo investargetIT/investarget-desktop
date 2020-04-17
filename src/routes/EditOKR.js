@@ -60,7 +60,6 @@ class EditOKR extends React.Component {
         element1.okrResult = okrResult1.data.data;
       }
     }
-    window.echo('okr', okr);
     this.setState({ okr, data: { year, okrType, quarter } });
   }
 
@@ -176,10 +175,9 @@ class EditOKR extends React.Component {
       }
     }
 
-    result1 = result1.filter(f => f.fieldName === 'target' && !f.value);
-    window.echo('result1', result1);
+    const result2 = result1.filter(f => f.fieldName === 'target' && f.value);
 
-    const okrKeys = result1.map(m => m.key);
+    const okrKeys = result2.map(m => m.key);
     const uniqueOkrKeys = okrKeys.filter((v, i, a) => a.indexOf(v) === i);
     const result = [];
     uniqueOkrKeys.forEach((e) => {
