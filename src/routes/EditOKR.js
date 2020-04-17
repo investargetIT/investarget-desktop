@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
 import { i18n, handleError, subtracting } from '../utils/util';
-import { Form, Button, InputNumber, Modal } from 'antd'
+import { Form, Button, Spin, Modal } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import OKRForm from '../components/OKRForm';
@@ -78,16 +78,25 @@ class EditOKR extends React.Component {
   handleSubmit = () => {
     this.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.setState({ loading: true });
+        const ref = Modal.info({
+          title: '正在保存OKR',
+          content: (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Spin />
+            </div>
+          ),
+          okText: '保存中...',
+        });
+
         this.editOKR(values)
           .then(this.props.router.goBack)
           .catch(handleError)
-          .finally(() => this.setState({ loading: false }));
+          .finally(() => ref.destroy());
       }
     });
   }
 
-  addOKR = async (values, allOkr) => {
+  addNewOKR = async (values, allOkr) => {
     const { year, okrType, quarter } = values;
     for (let index = 0; index < allOkr.length; index++) {
       const element = allOkr[index];
@@ -105,47 +114,52 @@ class EditOKR extends React.Component {
     const { year, okrType, quarter } = values;
     for (let index = 0; index < allOkr.length; index++) {
       const element = allOkr[index];
-      const { target, krsArr } = element;
-      const res = await api.editOKR(id, { year, okrType, quarter, target });
+      const { key, target, krsArr } = element;
+      const okrId = parseInt(key.split('-')[1], 10);
+      const res = await api.editOKR(okrId, { year, okrType, quarter, target });
       const { id } = res.data;
 
+      // 新增krs
       const newKrs = krsArr.filter(f => !f.key.startsWith('id'));
       await Promise.all(newKrs.map(m => api.addOKRResult({ ...m, okr: id })));
 
+      // 编辑krs
       const oldKrs = krsArr.filter(f => f.key.startsWith('id'));
       await Promise.all(oldKrs.map((m) => {
         const krsId = parseInt(m.key.split('-')[1], 10);
         return api.editOKRResult(krsId, m);
       }));
 
-      // TODO
+      // 删除krs
       const oldKrsIds = oldKrs.map(m => parseInt(m.key.split('-')[1], 10));
-      const originalKrsIds = this.state.result.map(m => m.id);
+      const originalOkr = this.state.okr.filter(f => f.id === okrId)[0];
+      const originalKrsIds = originalOkr.okrResult.map(m => m.id);
       const toDeleteIds = subtracting(originalKrsIds, oldKrsIds);
       await Promise.all(toDeleteIds.map(m => api.deleteOKRResult(m)));
     }
   }
 
   editOKR = async (values) => {
-    // const id = Number(this.props.params.id);
-    // const res = await api.editOKR(id, values);
-    // const { id: okrId } = res.data;
-
     const okr = this.getOKRFormData(values);
 
+    // 新增okr
     const newOkr = okr.filter(f => !f.key.startsWith('id'));
-    await this.addOKR(values, newOkr);
+    await this.addNewOKR(values, newOkr);
 
-    const oldKrs = okr.filter(f => f.key.startsWith('id'));
-    await Promise.all(oldKrs.map((m) => {
-      const krsId = parseInt(m.key.split('-')[1], 10);
-      return api.editOKRResult(krsId, m);
-    }));
+    // 编辑okr
+    const oldOkr = okr.filter(f => f.key.startsWith('id'));
+    await this.editOldOKR(values, oldOkr);
 
-    const oldKrsIds = oldKrs.map(m => parseInt(m.key.split('-')[1], 10));
-    const originalKrsIds = this.state.result.map(m => m.id);
-    const toDeleteIds = subtracting(originalKrsIds, oldKrsIds);
-    await Promise.all(toDeleteIds.map(m => api.deleteOKRResult(m)));
+    // 删除okr
+    const oldOkrIds = oldOkr.map(m => parseInt(m.key.split('-')[1], 10));
+    const originalOkrIds = this.state.okr.map(m => m.id);
+    const toDeleteIds = subtracting(originalOkrIds, oldOkrIds);
+    for (let index = 0; index < toDeleteIds.length; index++) {
+      const element = toDeleteIds[index];
+      const deleteOkr = this.state.okr.filter(f => f.id === element)[0];
+      await Promise.all(deleteOkr.okrResult.map(m => api.deleteOKRResult(m.id)));
+      await api.deleteOKR(element);
+    }
   }
 
   getOKRFormData = (values) => {
