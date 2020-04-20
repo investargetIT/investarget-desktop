@@ -33,6 +33,7 @@ import {
   SelectAllUser, 
   SelectTrader,
   SelectIndustryGroup,
+  SelectExistProject,
 } from '../components/ExtraInput'
 
 
@@ -99,6 +100,10 @@ class ProjectBaseForm extends React.Component {
           <SelectIndustryGroup />
         </BasicFormItem> */}
 
+        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
+          <SelectExistProject />
+        </BasicFormItem>
+
       </Form>
     )
   }
@@ -161,9 +166,9 @@ class ProjectFinanceForm extends React.Component {
 
         <CurrencyFormItem label={i18n('project.company_valuation')} name="companyValuation" currencyType={getFieldValue('currency')} />
 
-        <BasicFormItem label={i18n('project.disclose_financials')} name="financeIsPublic" valueType="boolean" valuePropName="checked">
+        {/* <BasicFormItem label={i18n('project.disclose_financials')} name="financeIsPublic" valueType="boolean" valuePropName="checked">
           <Switch checkedChildren={'ON'} unCheckedChildren={'OFF'} />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
 
       </Form>

@@ -48,6 +48,7 @@ class ProjectList extends React.Component {
       sendEmail: false,
       confirmLoading: false,
       sendWechat: false,
+      discloseFinance: false,
     }
   }
 
@@ -123,11 +124,15 @@ class ProjectList extends React.Component {
   // audit project modal
 
   openAuditProjectModal = (id, status) => {
-    this.setState({ visible: true, id, currentStatus: status, status, sendEmail: false, sendWechat: false })
+    this.setState({ visible: true, id, currentStatus: status, status, sendEmail: false, sendWechat: false, discloseFinance: false })
   }
 
   handleStatusChange = (status) => {
     this.setState({ status })
+  }
+
+  handleDiscloseFinanceChange = (discloseFinance) => {
+    this.setState({ discloseFinance });
   }
 
   handleSendEmailChange = (sendEmail) => {
@@ -139,9 +144,9 @@ class ProjectList extends React.Component {
   }
 
   handleConfirmAudit = () => {
-    const { id, status, sendEmail, sendWechat } = this.state
+    const { id, status, sendEmail, sendWechat, discloseFinance } = this.state
     this.setState({ confirmLoading: true })
-    api.editProj(id, { projstatus: status, isSendEmail: sendEmail })
+    api.editProj(id, { projstatus: status, isSendEmail: sendEmail, financeIsPublic: discloseFinance })
       .then(result => {
         this.setState({ visible: false, confirmLoading: false })
         this.getProject()
@@ -189,7 +194,7 @@ class ProjectList extends React.Component {
 
   render() {
     const { location } = this.props
-    const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat } = this.state
+    const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
     const buttonStyle={textDecoration:'underline',border:'none',background:'none',width:'110px',textAlign:'left'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
@@ -381,6 +386,8 @@ class ProjectList extends React.Component {
           onCancel={this.handleCancelAudit}
           sendWechat={sendWechat}
           onSendWechatChange={this.handleSendWechatChange}
+          discloseFinance={discloseFinance}
+          onDiscloseFinanceChange={this.handleDiscloseFinanceChange}
         />
 
       </LeftRightLayout>

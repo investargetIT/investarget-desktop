@@ -18,7 +18,12 @@ export default class OrgBDList extends React.Component {
 
     this.state = {
       showBlacklist: false,
+      displayContent: true,
     };
+  }
+
+  handleProjChange = () => {
+    this.setState({ displayContent: false }, () => this.setState({ displayContent: true }));
   }
 
   render() {
@@ -34,13 +39,16 @@ export default class OrgBDList extends React.Component {
         // }
         right={<Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button>}
       >
-        <OrgBDListComponent
-          editable
-          location={this.props.location}
-          pagination={true}
-          showBlacklistModal={this.state.showBlacklist}
-          onCloseBlacklistModal={() => this.setState({ showBlacklist: false })}
-        />
+        {this.state.displayContent &&
+          <OrgBDListComponent
+            editable
+            location={this.props.location}
+            pagination={true}
+            showBlacklistModal={this.state.showBlacklist}
+            onCloseBlacklistModal={() => this.setState({ showBlacklist: false })}
+            onProjChange={this.handleProjChange}
+          />
+        }
       </LeftRightLayout>)
   }
 

@@ -24,6 +24,7 @@ import {
   SelectService, 
   SelectExistUser,
   SelectIndustryGroup,
+  SelectExistProject,
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -100,6 +101,10 @@ class ProjectBaseForm extends React.Component {
            <SelectExistUser />
         </BasicFormItem>
         : null }
+
+        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
+          <SelectExistProject />
+        </BasicFormItem>
 
         <div style={{textAlign: 'center'}}>
           <div style={paraStyle}>
