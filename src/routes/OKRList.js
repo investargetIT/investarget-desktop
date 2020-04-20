@@ -223,7 +223,7 @@ class OKRList extends React.Component {
 
     const OKRCard = ({ record, onDelete }) => {
       const { year, quarter, userDetail, okr } = record;
-      const { username, photourl } = userDetail;
+      const { username, photourl, id: userId } = userDetail;
       return (
         <Card style={cardStyle} bodyStyle={cardBodyStyle}>
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -259,7 +259,7 @@ class OKRList extends React.Component {
                 })}
               </div>
             </div>
-            <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3, cursor: 'pointer' }} onClick={(e) => onDelete(record, e)}>删除</div>
+            {userId === getCurrentUser() && <div style={{ backgroundColor: '#f8f8f8', textAlign: 'center', lineHeight: 3, cursor: 'pointer' }} onClick={(e) => onDelete(record, e)}>删除</div>}
           </div>
         </Card>
       );
