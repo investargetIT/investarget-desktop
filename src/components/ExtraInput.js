@@ -895,6 +895,14 @@ const ScheduleTypeOptionsWithoutMeeting = [
 ];
 const SelectScheduleTypeWithoutMeeting = withOptions(SelectNumber, ScheduleTypeOptionsWithoutMeeting);
 
+const seasons = [
+  { label: '第一季度', value: 1 },
+  { label: '第二季度', value: 2 },
+  { label: '第三季度', value: 3 },
+  { label: '第四季度', value: 4 },
+];
+const SelectSeason = withOptions(SelectNumber, seasons);
+
 /**
  * SelectArea
  */
@@ -1869,6 +1877,7 @@ export {
   SelectProjectLibrary,
   SelectScheduleType,
   SelectOrAddDate,
+  SelectSeason,
   SelectOrgLevel,
   CascaderCountry,
   CascaderIndustry,
