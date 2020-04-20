@@ -240,14 +240,17 @@ class OKRList extends React.Component {
                 {okr.map((n) => {
                   return (
                     <div key={n.id}>
-                      <div style={{ marginTop: 10, color: '#333' }}>{n.target}</div>
+                      <div
+                        style={{ marginTop: 10, color: '#333' }}
+                        dangerouslySetInnerHTML={{ __html: n.target ? n.target.replace(/\n/g, '<br>') : '' }}
+                      />
                       {
                         n.okrResult.map(m => (
                           <div key={m.id} style={{ marginTop: 6, color: '#333' }}>
                             <span>关键结果：</span>
                             <span>{m.krs}</span>
                             <span style={{ marginLeft: 10 }}>信心指数：</span>
-                            <span>{m.confidence}</span>
+                            <span>{m.confidence}%</span>
                           </div>
                         ))
                       }

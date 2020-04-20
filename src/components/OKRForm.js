@@ -98,8 +98,8 @@ class OKRForm extends React.Component {
             <BasicFormItem label="关键结果" name={`${krsKeys}_krs_${k}`}>
               <Input />
             </BasicFormItem>
-            <BasicFormItem label="信心指数" name={`${krsKeys}_confidence_${k}`} valueType="number">
-              <InputNumber min={1} max={100} />
+            <BasicFormItem label="信心指数(%)" name={`${krsKeys}_confidence_${k}`} valueType="number">
+              <InputNumber min={0} max={100} />
             </BasicFormItem>
             <Icon
               style={{ position: 'absolute', top: 20, right: 20 }}
