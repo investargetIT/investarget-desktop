@@ -241,7 +241,7 @@ class OKRList extends React.Component {
                   return (
                     <div key={n.id}>
                       <div
-                        style={{ marginTop: 10, color: '#333' }}
+                        style={{ marginTop: 10, color: '#333', fontWeight: 'bold' }}
                         dangerouslySetInnerHTML={{ __html: n.target ? n.target.replace(/\n/g, '<br>') : '' }}
                       />
                       {
