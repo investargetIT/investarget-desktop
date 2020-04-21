@@ -97,7 +97,7 @@ class OrgBDProjList extends React.Component {
    
     // 将未读机构BD项目与所有项目做匹配
     list.forEach(element => {
-      const index = reqUnreadOrgBD.data.data.map(m => m.proj).indexOf(element.id);
+      const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
       if (index > -1) {
         element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
       }
