@@ -546,7 +546,7 @@ class IndexPage extends React.Component {
 
         <div style={{ height: 30 }} />
 
-        {latestMeeting &&
+        {latestMeeting && (isLogin().is_superuser || !hasPerm('usersys.as_investor')) &&
         <div style={{ margin: '0 10px', display: 'flex', alignItems: 'center' }} onClick={() => this.setState({ showVideoMeeting: true })}>
           <img style={{ width: 30, height: 30, marginRight: 10 }} src="/images/video_meeting.jpg" alt="视频会议" />
           <a>{`即将开始的视频会议时间：${latestMeeting.startDate.replace('T', ' ')}，主持人(创建人)：${latestMeeting.host && latestMeeting.host.name}，会议标题：${latestMeeting.title}`}</a>
