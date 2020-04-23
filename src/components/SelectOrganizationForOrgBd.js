@@ -232,7 +232,7 @@ class SelectOrganization extends React.Component {
  
     return (
       <div>
-        <OrgFilterForOrgBd defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
+        {/* <OrgFilterForOrgBd defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
 
         <div style={{ fontSize: 13, marginTop: 14 }}>
@@ -249,7 +249,7 @@ class SelectOrganization extends React.Component {
             value={search}
           />
         </Popover>
-        </div>
+        </div> */}
 
         {/* 选中的机构以 Tag 的形式展现在表格上方，方便用户随时查看自己选中的机构，避免在分页中迷失 */}
         <div style={{ marginBottom: 10 }}>
@@ -265,7 +265,7 @@ class SelectOrganization extends React.Component {
             </Tag>
           )}
         </div>
-
+        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
         <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
         <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
       </div>

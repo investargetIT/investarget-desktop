@@ -122,14 +122,14 @@ class NewOrgBD extends React.Component {
             <h3 style={{lineHeight: 2}}>{i18n('timeline.project_name')} : {this.state.projTitle}</h3>
             : null}
 
-          <div style={{padding: '8px 0'}}>
+          {/* <div style={{padding: '8px 0'}}>
             <p style={{fontSize: '13px'}}>
               <span style={{fontWeight: 'bold', color: 'black'}}>1. {i18n('timeline.select_institution')}</span>
             </p>
-          </div>
+          </div> */}
 
           <div>
-            <Steps current={this.state.current}>
+            <Steps style={{ margin: '20px 0' }} current={this.state.current}>
               {steps.map(item => <Step key={item.title} title={item.title} />)}
             </Steps>
             {this.state.current === 0 &&
@@ -149,22 +149,10 @@ class NewOrgBD extends React.Component {
                 />
               </div>
             }
-            <div className="steps-action">
-              {
-                this.state.current < steps.length - 1
-                &&
-                <Button type="primary" onClick={() => this.next()}>下一步</Button>
-              }
-              {
-                this.state.current === steps.length - 1
-                &&
-                <Button type="primary" disabled={selectedOrgs.length === 0} onClick={this.handleNext}>完成</Button>
-              }
-              {
-                this.state.current > 0
-                &&
-                <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>上一步</Button>
-              }
+            <div className="steps-action" style={{ textAlign: 'right' }}>
+              {this.state.current > 0 && <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>上一步</Button>}
+              {this.state.current < steps.length - 1 && <Button type="primary" onClick={() => this.next()}>下一步</Button>}
+              {this.state.current === steps.length - 1 && <Button style={{ marginLeft: 10 }} type="primary" disabled={selectedOrgs.length === 0} onClick={this.handleNext}>完成</Button>}
             </div>
           </div>
 
