@@ -3,11 +3,19 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal, Checkbox } from 'antd'
+import { Button, Modal, Checkbox, Steps } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 
 import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
+
+const Step = Steps.Step;
+
+const steps = [{
+  title: '机构筛选',
+}, {
+  title: '机构列表',
+}];
 
 class NewOrgBD extends React.Component {
 
@@ -29,6 +37,7 @@ class NewOrgBD extends React.Component {
       removeInvestorWithoutRelatedTags: false,
       removeOrgWithNoInvestor: false,
       removeInvestorWithNoTrader: false,
+      current: 0,
     }
   }
 
@@ -88,6 +97,15 @@ class NewOrgBD extends React.Component {
     this.tags = filters.tags;
   }
 
+  next() {
+    const current = this.state.current + 1;
+    this.setState({ current });
+  }
+  prev() {
+    const current = this.state.current - 1;
+    this.setState({ current });
+  }
+
   render() {
 
     const { location }  = this.props
@@ -109,21 +127,50 @@ class NewOrgBD extends React.Component {
               <span style={{fontWeight: 'bold', color: 'black'}}>1. {i18n('timeline.select_institution')}</span>
             </p>
           </div>
-  
-          <div style={{padding: '16px'}}>
-            <SelectOrganizationForOrgBd
-              traderId={this.props.bd ? undefined : traderId}
-              value={selectedOrgs} 
-              details={selectedOrgDetails} 
-              onChange={this.handleSelectOrg} 
-              onFilterChange={this.handleFilterChange}
-              onReset={() => this.setState({ selectedOrgs: [], selectedOrgDetails: [] })}
-            />
+
+          <div>
+            <Steps current={this.state.current}>
+              {steps.map(item => <Step key={item.title} title={item.title} />)}
+            </Steps>
+            {this.state.current === 0 &&
+              <div className="steps-content">
+                Form
+              </div>
+            }
+            {this.state.current === 1 &&
+              <div style={{ padding: '16px' }}>
+                <SelectOrganizationForOrgBd
+                  traderId={this.props.bd ? undefined : traderId}
+                  value={selectedOrgs}
+                  details={selectedOrgDetails}
+                  onChange={this.handleSelectOrg}
+                  onFilterChange={this.handleFilterChange}
+                  onReset={() => this.setState({ selectedOrgs: [], selectedOrgDetails: [] })}
+                />
+              </div>
+            }
+            <div className="steps-action">
+              {
+                this.state.current < steps.length - 1
+                &&
+                <Button type="primary" onClick={() => this.next()}>下一步</Button>
+              }
+              {
+                this.state.current === steps.length - 1
+                &&
+                <Button type="primary" disabled={selectedOrgs.length === 0} onClick={this.handleNext}>完成</Button>
+              }
+              {
+                this.state.current > 0
+                &&
+                <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>上一步</Button>
+              }
+            </div>
           </div>
 
-          <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
+          {/* <div style={{textAlign: 'right', padding: '0 16px', marginTop: '-16px'}}>
             <Button disabled={selectedOrgs.length == 0} type="primary" onClick={this.handleNext}>{i18n('common.next')}</Button>
-          </div>
+          </div> */}
         </div>
 
         <Modal
