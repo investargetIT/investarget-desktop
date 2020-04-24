@@ -6,7 +6,7 @@ import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal, Checkbox, Steps } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
-
+import { OrgLevelFilter } from '../components/Filter';
 import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
 
 const Step = Steps.Step;
@@ -38,6 +38,7 @@ class NewOrgBD extends React.Component {
       removeOrgWithNoInvestor: false,
       removeInvestorWithNoTrader: false,
       current: 0,
+      lv: null,
     }
   }
 
@@ -134,7 +135,7 @@ class NewOrgBD extends React.Component {
             </Steps>
             {this.state.current === 0 &&
               <div className="steps-content">
-                Form
+                <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
               </div>
             }
             {this.state.current === 1 &&

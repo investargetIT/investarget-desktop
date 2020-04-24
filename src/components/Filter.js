@@ -135,7 +135,7 @@ function OrganizationAreaFilter(props) {
   )
 }
 
-function OrgLevelFilter(props) {
+export function OrgLevelFilter(props) {
   return (
     <BasicContainer label="机构状态">
       <SelectOrgLevel value={props.value} onChange={props.onChange} />
