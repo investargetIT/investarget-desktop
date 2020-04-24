@@ -56,6 +56,7 @@ import {
   TabCheckboxOrgBDRes,
   TabCheckboxAbroad,
   TabCheckboxIndustryGroup,
+  SelectProjectForOrgBd,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -1016,7 +1017,7 @@ class OrgBDFilter extends React.Component {
     return (
       <div>
         <BasicContainer label="项目">
-          <SelectExistProject value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构BD项目" />
+          <SelectProjectForOrgBd value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构BD项目" />
         </BasicContainer>
 
         { this.state.proj !== null ?

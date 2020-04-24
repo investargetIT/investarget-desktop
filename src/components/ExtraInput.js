@@ -579,6 +579,44 @@ class SelectExistProject extends React.Component {
   }
 }
 
+class SelectProjectForOrgBd extends React.Component {
+
+  getProject = (params) => {
+    // 首先请求所有以项目分组的机构BD
+    params = { ...params };
+    params.manager = [];
+    return api.getOrgBDProj(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.filter(f => f.proj)
+      list = list.map(item => {
+        const { id: value, projtitle: label } = item.proj
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  getProjectNameById = (id) => {
+    return api.getProjLangDetail(id).then(result => {
+      return result.data.projtitle
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getProject}
+        getNameById={this.getProjectNameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+        noResult={this.props.noResult}
+      />
+    )
+  }
+}
+
 /**
  * SelectTrader
  */
@@ -1858,6 +1896,7 @@ export {
   SelectExistOrganization,
   SelectExistUser,
   SelectExistProject,
+  SelectProjectForOrgBd,
   SelectExistInvestor,
   SelectTrader,
   SelectAllUser,

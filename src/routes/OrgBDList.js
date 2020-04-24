@@ -17,6 +17,7 @@ export default class OrgBDList extends React.Component {
     super(props);
 
     this.state = {
+      isProj: true,
       showBlacklist: false,
       displayContent: true,
     };
@@ -37,7 +38,7 @@ export default class OrgBDList extends React.Component {
         //   isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
         //     : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
         // }
-        right={<Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button>}
+        right={this.state.isProj ? <Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button> : null}
       >
         {this.state.displayContent &&
           <OrgBDListComponent
@@ -47,6 +48,7 @@ export default class OrgBDList extends React.Component {
             showBlacklistModal={this.state.showBlacklist}
             onCloseBlacklistModal={() => this.setState({ showBlacklist: false })}
             onProjChange={this.handleProjChange}
+            onProjExistChange={isProj => this.setState({ isProj })}
           />
         }
       </LeftRightLayout>)

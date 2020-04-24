@@ -207,6 +207,9 @@ class OrgBDListComponent extends React.Component {
     // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
     const proj = filters.proj;
     if (proj) {
+      if (this.props.onProjExistChange) {
+        this.props.onProjExistChange(true);
+      }
       api.getProjDetail(proj)
       .then(result => {
         this.setState({ projectDetails: result.data });
@@ -222,6 +225,11 @@ class OrgBDListComponent extends React.Component {
         }
       })
       .catch(handleError);
+    } else {
+      if (this.props.onProjExistChange) {
+        this.props.onProjExistChange(false);
+      }
+      this.setState({ projectDetails: null, projTradersIds: [], makeUserIds: [] });
     }
 
     const params = {
@@ -334,10 +342,12 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleFilt = (filters) => {
+    this.projId = filters.proj;
     this.setState({ filters, page: 1 }, this.getOrgBdList)
   }
 
   handleReset = (filters) => {
+    this.projId = filters.proj;
     this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
   }
 
