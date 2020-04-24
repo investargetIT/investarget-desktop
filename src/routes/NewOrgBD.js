@@ -3,13 +3,15 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal, Checkbox, Steps } from 'antd'
+import { Button, Modal, Checkbox, Steps, Radio } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 import { OrgLevelFilter } from '../components/Filter';
 import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
+import { Search } from '../components/Search';
 
 const Step = Steps.Step;
+const RadioGroup = Radio.Group;
 
 const steps = [{
   title: '机构筛选',
@@ -39,6 +41,8 @@ class NewOrgBD extends React.Component {
       removeInvestorWithNoTrader: false,
       current: 0,
       lv: null,
+      search: '',
+      like: 1,
     }
   }
 
@@ -136,6 +140,18 @@ class NewOrgBD extends React.Component {
             {this.state.current === 0 &&
               <div className="steps-content">
                 <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
+                <div>
+                  <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
+                    <Radio value={0}>精确查询</Radio>
+                    <Radio value={1}>模糊查询</Radio>
+                  </RadioGroup>
+                  <Search
+                    style={{ width: 250, marginLeft: 10 }}
+                    placeholder="备注以及附件内文字"
+                    onChange={search => this.setState({ search })}
+                    value={this.state.search}
+                  />
+                </div>
               </div>
             }
             {this.state.current === 1 &&
