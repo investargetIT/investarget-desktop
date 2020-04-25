@@ -70,14 +70,14 @@ class OrgBDProjList extends React.Component {
     const { search } = this.state;
     const reqProj1 = await api.getOrgBDProj({
       search,
-      manager: [getCurrentUser()],
+      manager: [],
       page_size: 100,
     });
     const { count: count1, data: list1 } = reqProj1.data;
     if (count1 > 100) {
       const reqProj2 = await api.getOrgBDProj({
         search,
-        manager: [getCurrentUser()],
+        manager: [],
         page_size: count1,
       });
       list = list.concat(reqProj2.data.data);
