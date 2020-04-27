@@ -113,15 +113,15 @@ class OrgBDProjList extends React.Component {
     const { search, page, pageSize } = this.state;
     const params = {
       search,
-      page_size: pageSize, 
+      page_size: pageSize,
       page_index: page,
-      manager: [],
+      // manager: [],
     };
     this.setState({ loading: true })
 
     // 首先请求所有以项目分组的机构BD
-    // const reqProj = await api.getOrgBDProj(params);
-    // const { count: total } = reqProj.data;
+    const reqProj = await api.getOrgBDProj(params);
+    const { count: total } = reqProj.data;
 
     // // 其次根据项目ID获取项目详情
     // const reqProjList = await api.getProj({ 
@@ -130,8 +130,8 @@ class OrgBDProjList extends React.Component {
     // });
     // const { data: list } = reqProjList.data;
 
-    // const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
-    const list = await this.getAllOrgBdProjects();
+    const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
+    // const list = await this.getAllOrgBdProjects();
 
     // 最后请求当前用户的未读机构BD的统计数据
     const reqUnreadOrgBD = await api.getOrgBDProj({
@@ -149,7 +149,7 @@ class OrgBDProjList extends React.Component {
       }
     });
 
-    this.setState({ loading: false, total: list.length, list });
+    this.setState({ loading: false, total, list });
   }
 
   componentDidMount() {
@@ -251,13 +251,13 @@ class OrgBDProjList extends React.Component {
             </div>
           </div>
 
-          {/* <Pagination
+          <Pagination
             style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
             total={total}
             current={page}
             pageSize={pageSize}
             onChange={this.handlePageChange}
-          /> */}
+          />
         </div>
       </LeftRightLayout>
     )
