@@ -298,11 +298,14 @@ class OrgBDListComponent extends React.Component {
       this.setState({ projectDetails: null, projTradersIds: [], makeUserIds: [] });
     }
 
+    const { manager } = filters;
     const params = {
         page_index: page,
         page_size: pageSize,
         search,
         ...filters,
+        createuser: manager,
+        andfields: 'manager,createuser',
         sort,
         desc,
         org: filters.org.map(m => m.key),
@@ -321,10 +324,9 @@ class OrgBDListComponent extends React.Component {
     }
 
     let baseResult, baseList;
-    // requestApi(params)
-    this.getOrgBdOrg()
+    // this.getOrgBdOrg()
+    requestApi(params)
       .then(result => {
-        window.echo('get org bd base', result);
         baseResult = result;
         baseList = baseResult.data.data;
         const ids = baseList.map(item => item.org).filter(item => item);
@@ -411,8 +413,18 @@ class OrgBDListComponent extends React.Component {
 
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
-    // api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100, isRead: this.state.showUnreadOnly ? false : undefined})
-    this.getOrgBdRefactorDetail(org, proj)
+    // this.getOrgBdRefactorDetail(org, proj)
+    api.getOrgBdList({
+      org, 
+      proj: proj || "none",
+      manager,
+      createuser: manager,
+      andfields: 'manager,createuser',
+      response, 
+      search: this.state.search, 
+      page_size: 100, 
+      isRead: this.state.showUnreadOnly ? false : undefined
+    })
     .then(result => {
       let list = result.data.data.sort((a, b) => {
         const aImportant = a.isimportant ? 1 : 0;
@@ -1513,7 +1525,7 @@ class OrgBDListComponent extends React.Component {
             </Link>
             : null }
 
-            {/* <Pagination
+            <Pagination
               style={{ float: 'right' }}
               size={this.props.paginationSize || 'middle'}
               total={total}
@@ -1524,7 +1536,7 @@ class OrgBDListComponent extends React.Component {
               onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
               showQuickJumper
               pageSizeOptions={PAGE_SIZE_OPTIONS}
-            /> */}
+            />
           </div>
         : null }
 
