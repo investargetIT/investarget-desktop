@@ -584,7 +584,6 @@ class SelectProjectForOrgBd extends React.Component {
   getProject = (params) => {
     // 首先请求所有以项目分组的机构BD
     params = { ...params };
-    params.manager = [];
     return api.getOrgBDProj(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.filter(f => f.proj)

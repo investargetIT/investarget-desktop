@@ -298,20 +298,23 @@ class OrgBDListComponent extends React.Component {
       this.setState({ projectDetails: null, projTradersIds: [], makeUserIds: [] });
     }
 
-    const { manager } = filters;
     const params = {
         page_index: page,
         page_size: pageSize,
         search,
         ...filters,
-        createuser: manager,
-        andfields: 'manager,createuser',
+        manager: undefined,
         sort,
         desc,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     }
-
+    const { manager } = filters;
+    if (manager && manager.length > 0) {
+      params.manager = manager;
+      params.createuser = manager;
+      params.unionFields = 'manager,createuser';
+    }
     let requestApi = api.getOrgBdBase;
     if (this.state.isAdd) {
       requestApi = (params) => { 
@@ -414,17 +417,20 @@ class OrgBDListComponent extends React.Component {
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
     // this.getOrgBdRefactorDetail(org, proj)
-    api.getOrgBdList({
-      org, 
+    const param1 = {
+      org,
       proj: proj || "none",
-      manager,
-      createuser: manager,
-      andfields: 'manager,createuser',
-      response, 
-      search: this.state.search, 
-      page_size: 100, 
-      isRead: this.state.showUnreadOnly ? false : undefined
-    })
+      response,
+      search: this.state.search,
+      page_size: 100,
+      isRead: this.state.showUnreadOnly ? false : undefined,
+    };
+    if (manager && manager.length > 0) {
+      param1.manager = manager;
+      param1.createuser = manager;
+      param1.unionFields = 'manager,createuser';
+    }
+    api.getOrgBdList(param1)
     .then(result => {
       let list = result.data.data.sort((a, b) => {
         const aImportant = a.isimportant ? 1 : 0;
