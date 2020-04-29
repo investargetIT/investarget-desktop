@@ -310,7 +310,7 @@ class OrgBDListComponent extends React.Component {
         proj: filters.proj || 'none',
     }
     const { manager } = filters;
-    if (manager && manager.length > 0) {
+    if (hasPerm('BD.manageOrgBD') && manager && manager.length > 0) {
       params.manager = manager;
       params.createuser = manager;
       params.unionFields = 'manager,createuser';
@@ -425,7 +425,7 @@ class OrgBDListComponent extends React.Component {
       page_size: 100,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
-    if (manager && manager.length > 0) {
+    if (hasPerm('BD.manageOrgBD') && manager && manager.length > 0) {
       param1.manager = manager;
       param1.createuser = manager;
       param1.unionFields = 'manager,createuser';
