@@ -1026,9 +1026,11 @@ class OrgBDFilter extends React.Component {
         </BasicContainer>
         : null }
 
-        <BasicContainer label={i18n('project_bd.bd_manager')}>
-          <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')}  optionFilterProp="children" />
-        </BasicContainer>
+        {hasPerm('BD.manageOrgBD') &&
+          <BasicContainer label={i18n('project_bd.bd_manager')}>
+            <SelectOrgUser style={{ width: '100%' }} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+          </BasicContainer>
+        }
 
         <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
 
