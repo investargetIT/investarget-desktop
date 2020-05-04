@@ -4,6 +4,7 @@ import {
   Table, 
   Modal, 
 } from 'antd';
+import { hasPerm, getCurrentUser } from '../utils/util';
 
 
 class BDModal extends React.Component{
@@ -37,6 +38,9 @@ class BDModal extends React.Component{
   }
   getBdList = () =>{
     let param={bd_status:this.state.source}
+    if (!hasPerm('BD.manageOrgBD')) {
+      param.manager = getCurrentUser();
+    }
     if(this.state.element=='org'){
       api.getOrgBDCount(param).then(result=>{
         this.setState({managers:result.data.manager_count},this.mapIdToManager)
