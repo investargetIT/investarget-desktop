@@ -166,7 +166,11 @@ class OrgBDListComponent extends React.Component {
   }
 
   getStatisticData = async () => {
-    const count = await api.getOrgBDCountNew({ proj: this.state.filters.proj });
+    const params = { proj: this.state.filters.proj };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params.manager = getCurrentUser();
+    }
+    const count = await api.getOrgBDCountNew(params);
     return count.data.response_count.map(m => ({ status: m.response, count: m.count }));
   }
 
