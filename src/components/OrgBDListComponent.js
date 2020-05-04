@@ -374,57 +374,57 @@ class OrgBDListComponent extends React.Component {
       }
   }
 
-  getOrgBdRefactorDetail = async (org, proj) => {
-    const { manager, response } = this.state.filters;
-    const param = {
-      org,
-      proj: proj || "none",
-      manager,
-      response,
-      search: this.state.search,
-      isRead: this.state.showUnreadOnly ? false : undefined,
-      page_size: 100,
-    };
+  // getOrgBdRefactorDetail = async (org, proj) => {
+  //   const { manager, response } = this.state.filters;
+  //   const param = {
+  //     org,
+  //     proj: proj || "none",
+  //     manager,
+  //     response,
+  //     search: this.state.search,
+  //     isRead: this.state.showUnreadOnly ? false : undefined,
+  //     page_size: 100,
+  //   };
 
-    let list = [];
-    const reqProj1 = await api.getOrgBdList({
-      param,
-    });
-    const { count: count1, data: list1 } = reqProj1.data;
-    if (count1 > 100) {
-      const reqProj2 = await api.getOrgBdList({
-        ...param,
-        page_size: count1,
-      });
-      list = list.concat(reqProj2.data.data);
-    } else {
-      list = list.concat(list1);
-    }
+  //   let list = [];
+  //   const reqProj1 = await api.getOrgBdList({
+  //     param,
+  //   });
+  //   const { count: count1, data: list1 } = reqProj1.data;
+  //   if (count1 > 100) {
+  //     const reqProj2 = await api.getOrgBdList({
+  //       ...param,
+  //       page_size: count1,
+  //     });
+  //     list = list.concat(reqProj2.data.data);
+  //   } else {
+  //     list = list.concat(list1);
+  //   }
 
-    const reqProj3 = await api.getOrgBdList({
-      ...param,
-      createuser: [getCurrentUser()],
-    });
-    const { count: count3, data: list3 } = reqProj3.data;
-    if (count3 > 100) {
-      const reqProj4 = await api.getOrgBdList({
-        ...param, 
-        createuser: [getCurrentUser()],
-        page_size: count3,
-      });
-      list = list.concat(reqProj4.data.data);
-    } else {
-      list = list.concat(list3);
-    }
+  //   const reqProj3 = await api.getOrgBdList({
+  //     ...param,
+  //     createuser: [getCurrentUser()],
+  //   });
+  //   const { count: count3, data: list3 } = reqProj3.data;
+  //   if (count3 > 100) {
+  //     const reqProj4 = await api.getOrgBdList({
+  //       ...param, 
+  //       createuser: [getCurrentUser()],
+  //       page_size: count3,
+  //     });
+  //     list = list.concat(reqProj4.data.data);
+  //   } else {
+  //     list = list.concat(list3);
+  //   }
 
-    list = list.filter(f => f.id);
-    const projId = list.map(m => m.id);
-    const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
+  //   list = list.filter(f => f.id);
+  //   const projId = list.map(m => m.id);
+  //   const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
 
-    const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.id === m)[0]);
-    window.echo('unique org bd', uniqueOrg);
-    return { data: { count: uniqueOrg.length, data: uniqueOrg } };
-  }
+  //   const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.id === m)[0]);
+  //   window.echo('unique org bd', uniqueOrg);
+  //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
+  // }
 
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
