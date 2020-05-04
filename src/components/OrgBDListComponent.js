@@ -201,70 +201,70 @@ class OrgBDListComponent extends React.Component {
     localStorage.setItem('OrgBDList', JSON.stringify(data));
   };
 
-  getOrgBdOrg = async () => {
-    let list = [];
-    const { search, filters, sort, desc } = this.state;
+  // getOrgBdOrg = async () => {
+  //   let list = [];
+  //   const { search, filters, sort, desc } = this.state;
 
-    const reqProj1 = await api.getOrgBdBase({
-      search,
-      ...filters,
-      sort,
-      desc,
-      org: filters.org.map(m => m.key),
-      proj: filters.proj || 'none',
-      page_size: 100,
-    });
-    const { count: count1, data: list1 } = reqProj1.data;
-    if (count1 > 100) {
-      const reqProj2 = await api.getOrgBdBase({
-        search,
-        ...filters,
-        sort,
-        desc,
-        org: filters.org.map(m => m.key),
-        proj: filters.proj || 'none',
-        page_size: count1,
-      });
-      list = list.concat(reqProj2.data.data);
-    } else {
-      list = list.concat(list1);
-    }
+  //   const reqProj1 = await api.getOrgBdBase({
+  //     search,
+  //     ...filters,
+  //     sort,
+  //     desc,
+  //     org: filters.org.map(m => m.key),
+  //     proj: filters.proj || 'none',
+  //     page_size: 100,
+  //   });
+  //   const { count: count1, data: list1 } = reqProj1.data;
+  //   if (count1 > 100) {
+  //     const reqProj2 = await api.getOrgBdBase({
+  //       search,
+  //       ...filters,
+  //       sort,
+  //       desc,
+  //       org: filters.org.map(m => m.key),
+  //       proj: filters.proj || 'none',
+  //       page_size: count1,
+  //     });
+  //     list = list.concat(reqProj2.data.data);
+  //   } else {
+  //     list = list.concat(list1);
+  //   }
 
-    const reqProj3 = await api.getOrgBdBase({
-      search,
-      ...filters,
-      sort,
-      desc,
-      org: filters.org.map(m => m.key),
-      proj: filters.proj || 'none',
-      createuser: [getCurrentUser()],
-      page_size: 100,
-    });
-    const { count: count3, data: list3 } = reqProj3.data;
-    if (count3 > 100) {
-      const reqProj4 = await api.getOrgBdBase({
-        search,
-        ...filters,
-        sort,
-        desc,
-        org: filters.org.map(m => m.key),
-        proj: filters.proj || 'none',
-        createuser: [getCurrentUser()],
-        page_size: count3,
-      });
-      list = list.concat(reqProj4.data.data);
-    } else {
-      list = list.concat(list3);
-    }
+  //   const reqProj3 = await api.getOrgBdBase({
+  //     search,
+  //     ...filters,
+  //     sort,
+  //     desc,
+  //     org: filters.org.map(m => m.key),
+  //     proj: filters.proj || 'none',
+  //     createuser: [getCurrentUser()],
+  //     page_size: 100,
+  //   });
+  //   const { count: count3, data: list3 } = reqProj3.data;
+  //   if (count3 > 100) {
+  //     const reqProj4 = await api.getOrgBdBase({
+  //       search,
+  //       ...filters,
+  //       sort,
+  //       desc,
+  //       org: filters.org.map(m => m.key),
+  //       proj: filters.proj || 'none',
+  //       createuser: [getCurrentUser()],
+  //       page_size: count3,
+  //     });
+  //     list = list.concat(reqProj4.data.data);
+  //   } else {
+  //     list = list.concat(list3);
+  //   }
 
-    list = list.filter(f => f.org);
-    const projId = list.map(m => m.org);
-    const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
+  //   list = list.filter(f => f.org);
+  //   const projId = list.map(m => m.org);
+  //   const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
 
-    const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.org === m)[0]);
-    window.echo('unique org', uniqueOrg);
-    return { data: { count: uniqueOrg.length, data: uniqueOrg } };
-  }
+  //   const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.org === m)[0]);
+  //   window.echo('unique org', uniqueOrg);
+  //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
+  // }
 
   getOrgBdList = async () => {
     this.setState({ loading: true, expanded: [] });
