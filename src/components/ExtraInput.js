@@ -586,6 +586,8 @@ class SelectProjectForOrgBd extends React.Component {
     params = { ...params };
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
+      params.createuser = getCurrentUser();
+      params.unionFields = 'manager,createuser';
     }
     return api.getOrgBDProj(params).then(result => {
       var { count: total, data: list } = result.data

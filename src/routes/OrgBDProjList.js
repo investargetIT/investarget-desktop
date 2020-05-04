@@ -118,6 +118,8 @@ class OrgBDProjList extends React.Component {
     };
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
+      params.createuser = getCurrentUser();
+      params.unionFields = 'manager,createuser';
     }
     this.setState({ loading: true })
 
