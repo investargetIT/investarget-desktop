@@ -64,50 +64,50 @@ class OrgBDProjList extends React.Component {
     this.getData().catch(handleError);
   }
 
-  getAllOrgBdProjects = async () => {
-    let list = [];
+  // getAllOrgBdProjects = async () => {
+  //   let list = [];
 
-    const { search } = this.state;
-    const reqProj1 = await api.getOrgBDProj({
-      search,
-      manager: [],
-      page_size: 100,
-    });
-    const { count: count1, data: list1 } = reqProj1.data;
-    if (count1 > 100) {
-      const reqProj2 = await api.getOrgBDProj({
-        search,
-        manager: [],
-        page_size: count1,
-      });
-      list = list.concat(reqProj2.data.data);
-    } else {
-      list = list.concat(list1);
-    }
+  //   const { search } = this.state;
+  //   const reqProj1 = await api.getOrgBDProj({
+  //     search,
+  //     manager: [],
+  //     page_size: 100,
+  //   });
+  //   const { count: count1, data: list1 } = reqProj1.data;
+  //   if (count1 > 100) {
+  //     const reqProj2 = await api.getOrgBDProj({
+  //       search,
+  //       manager: [],
+  //       page_size: count1,
+  //     });
+  //     list = list.concat(reqProj2.data.data);
+  //   } else {
+  //     list = list.concat(list1);
+  //   }
 
-    const reqProj3 = await api.getOrgBDProj({
-      search,
-      createuser: [getCurrentUser()],
-      page_size: 100,
-    });
-    const { count: count3, data: list3 } = reqProj3.data;
-    if (count3 > 100) {
-      const reqProj4 = await api.getOrgBDProj({
-        search,
-        createuser: [getCurrentUser()],
-        page_size: count3,
-      });
-      list = list.concat(reqProj4.data.data);
-    } else {
-      list = list.concat(list3);
-    }
+  //   const reqProj3 = await api.getOrgBDProj({
+  //     search,
+  //     createuser: [getCurrentUser()],
+  //     page_size: 100,
+  //   });
+  //   const { count: count3, data: list3 } = reqProj3.data;
+  //   if (count3 > 100) {
+  //     const reqProj4 = await api.getOrgBDProj({
+  //       search,
+  //       createuser: [getCurrentUser()],
+  //       page_size: count3,
+  //     });
+  //     list = list.concat(reqProj4.data.data);
+  //   } else {
+  //     list = list.concat(list3);
+  //   }
 
-    list = list.filter(f => f.proj).map(m => m.proj);
-    const projId = list.map(m => m.id);
-    const uniqueProjId = projId.filter((v, i, a) => a.indexOf(v) === i);
+  //   list = list.filter(f => f.proj).map(m => m.proj);
+  //   const projId = list.map(m => m.id);
+  //   const uniqueProjId = projId.filter((v, i, a) => a.indexOf(v) === i);
 
-    return uniqueProjId.map(m => list.filter(f => f.id === m)[0]);
-  }
+  //   return uniqueProjId.map(m => list.filter(f => f.id === m)[0]);
+  // }
 
   getData = async () => {
     const { search, page, pageSize } = this.state;
@@ -115,8 +115,10 @@ class OrgBDProjList extends React.Component {
       search,
       page_size: pageSize,
       page_index: page,
-      // manager: [],
     };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params.manager = getCurrentUser();
+    }
     this.setState({ loading: true })
 
     // 首先请求所有以项目分组的机构BD
