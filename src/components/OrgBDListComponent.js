@@ -266,21 +266,23 @@ class OrgBDListComponent extends React.Component {
     return { data: { count: uniqueOrg.length, data: uniqueOrg } };
   }
 
-  getOrgBdList = () => {
+  getOrgBdList = async () => {
     this.setState({ loading: true, expanded: [] });
     const { page, pageSize, search, filters, sort, desc } = this.state;
 
     // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
     const proj = filters.proj;
+    let projMakeTakeTraderIds = [];
     if (proj) {
       if (this.props.onProjExistChange) {
         this.props.onProjExistChange(true);
       }
-      api.getProjDetail(proj)
-      .then(result => {
-        this.setState({ projectDetails: result.data });
-        const { projTraders } = result.data;
+      try {
+        const projResult = await api.getProjDetail(proj);
+        this.setState({ projectDetails: projResult.data });
+        const { projTraders } = projResult.data;
         if (projTraders) {
+          projMakeTakeTraderIds = projTraders.filter(f => f.user).map(m => m.user.id);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
             makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
@@ -289,8 +291,9 @@ class OrgBDListComponent extends React.Component {
         if (this.props.editable) {
           this.writeSetting();
         }
-      })
-      .catch(handleError);
+      } catch (error) {
+        handleError(error);
+      }
     } else {
       if (this.props.onProjExistChange) {
         this.props.onProjExistChange(false);
@@ -308,11 +311,16 @@ class OrgBDListComponent extends React.Component {
         desc,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
-    }
+    };
     const { manager } = filters;
-    if (hasPerm('BD.manageOrgBD') && manager && manager.length > 0) {
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || projMakeTakeTraderIds.includes(getCurrentUser())) {
       params.manager = manager;
       params.createuser = manager;
+      params.unionFields = 'manager,createuser';
+    } else {
+      params.manager = [getCurrentUser()];
+      params.createuser = [getCurrentUser()];
       params.unionFields = 'manager,createuser';
     }
     let requestApi = api.getOrgBdBase;
@@ -425,9 +433,15 @@ class OrgBDListComponent extends React.Component {
       page_size: 100,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
-    if (hasPerm('BD.manageOrgBD') && manager && manager.length > 0) {
+    window.echo('承揽承做id数组', this.state.projTradersIds);
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
       param1.manager = manager;
       param1.createuser = manager;
+      param1.unionFields = 'manager,createuser';
+    } else {
+      param1.manager = [getCurrentUser()];
+      param1.createuser = [getCurrentUser()];
       param1.unionFields = 'manager,createuser';
     }
     api.getOrgBdList(param1)
