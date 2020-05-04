@@ -1058,9 +1058,19 @@ class OrgBDListComponent extends React.Component {
         page_size: 1000,
         search,
         ...filters,
+        manager: undefined,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     };
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      params.manager = manager;
+      params.createuser = manager;
+      params.unionFields = 'manager,createuser';
+    } else {
+      params.manager = getCurrentUser();
+      params.createuser = getCurrentUser();
+      params.unionFields = 'manager,createuser';
+    }
     let allOrgs = await api.getOrgBdBase(params);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
