@@ -1087,7 +1087,17 @@ class OrgBDListComponent extends React.Component {
     const { manager, response } = this.state.filters;
     for (let index = 0; index < allOrgs.length; index++) {
       const element = allOrgs[index];
-      const orgBD = await api.getOrgBdList({org: element.org, proj: element.proj.id || "none", manager, response, search: this.state.search});
+      const params2 = { org: element.org, proj: element.proj.id || "none", response, search: this.state.search };
+      if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+        params2.manager = manager;
+        params2.createuser = manager;
+        params2.unionFields = 'manager,createuser';
+      } else {
+        params2.manager = getCurrentUser();
+        params2.createuser = getCurrentUser();
+        params2.unionFields = 'manager,createuser';
+      }
+      const orgBD = await api.getOrgBdList(params2);
       element.items = orgBD.data.data;
       element.loaded = true;
       if (orgBD.data.count > 0) {

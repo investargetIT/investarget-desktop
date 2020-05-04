@@ -1782,7 +1782,13 @@ class SelectMultiUsers extends React.Component {
 
   asyncFetchData = async value => {
     if (this.props.proj) {
-      const getOrgBdListReq = await api.getOrgBdList({ proj: this.props.proj, page_size: 1000 });
+      const params = { proj: this.props.proj, page_size: 1000 };
+      if (!hasPerm('BD.manageOrgBD')) {
+        params.manager = getCurrentUser();
+        // params.createuser = getCurrentUser();
+        // params.unionFields = 'manager,createuser';
+      }
+      const getOrgBdListReq = await api.getOrgBdList(params);
       const { count: orgBdListCount } = getOrgBdListReq.data;
       if (orgBdListCount > 0) {
         const { data: orgBdListData } = getOrgBdListReq.data;

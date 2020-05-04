@@ -4,7 +4,7 @@ import { Link } from 'dva/router'
 import { Button,Popover } from 'antd'
 import styles from './TimelineView.css'
 import classNames from 'classnames'
-import { i18n } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser } from '../utils/util'
 
 const titleStyle = {
   padding: '8px 0'
@@ -60,6 +60,9 @@ class TimelineView extends React.Component {
       page_size: 1000,
       response: this.orgBdRes.map(m => m.id)
     };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params.manager = getCurrentUser();
+    }
     const res = await api.getOrgBdList(params);
     const { data: list } = res.data;
     this.setState({ list });
