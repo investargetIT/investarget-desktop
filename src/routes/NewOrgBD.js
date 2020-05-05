@@ -3,7 +3,7 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal, Checkbox, Steps, Radio } from 'antd'
+import { Button, Modal, Checkbox, Steps, Radio, Tag } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 import { OrgLevelFilter } from '../components/Filter';
@@ -111,6 +111,13 @@ class NewOrgBD extends React.Component {
     this.setState({ current });
   }
 
+  handleDeleteOrgTag(tag, e) {
+    const newOrg = this.state.selectedOrgs.filter(f => f !== tag.id);
+    const newOrgDetails = this.state.selectedOrgDetails.filter(f => f.id !== tag.id);
+    // this.props.onChange(newOrg, newOrgDetails);
+    this.handleSelectOrg(newOrg, newOrgDetails);
+  }
+
   render() {
 
     const { location }  = this.props
@@ -132,6 +139,20 @@ class NewOrgBD extends React.Component {
               <span style={{fontWeight: 'bold', color: 'black'}}>1. {i18n('timeline.select_institution')}</span>
             </p>
           </div> */}
+
+          <div style={{ marginBottom: 10 }}>
+            {selectedOrgDetails.length > 1 && <Button style={{ marginRight: 10 }} type="danger" onClick={() => this.setState({ selectedOrgs: [], selectedOrgDetails: [] })}>清空</Button>}
+            {selectedOrgDetails.map(m =>
+              <Tag
+                key={m.id}
+                closable
+                style={{ marginBottom: 8 }}
+                onClose={this.handleDeleteOrgTag.bind(this, m)}
+              >
+                {m.orgfullname}
+              </Tag>
+            )}
+          </div>
 
           <div>
             <Steps style={{ margin: '20px 0' }} current={this.state.current}>
@@ -157,6 +178,7 @@ class NewOrgBD extends React.Component {
             {this.state.current === 1 &&
               <div style={{ padding: '16px' }}>
                 <SelectOrganizationForOrgBd
+                  query={{ lv: this.state.lv, like: this.state.like, search: this.state.search }}
                   traderId={this.props.bd ? undefined : traderId}
                   value={selectedOrgs}
                   details={selectedOrgDetails}
