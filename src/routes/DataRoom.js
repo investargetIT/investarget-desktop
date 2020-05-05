@@ -678,10 +678,13 @@ class DataRoom extends React.Component {
           if (result.data.seconds) {
             waitingTime = `${result.data.seconds}秒`
           }
-          Modal.info({
+          const ref = Modal.info({
             title: '请求已发送成功',
-            content: <div>请耐心等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>，稍后重试</div>, 
-          })
+            content: <div>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>,
+          });
+          setTimeout(() => {
+            ref.destroy();
+          }, 3000);
         }
       })
       .catch(error => this.setState({ loading: false }, () => handleError(error)));

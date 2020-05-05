@@ -6,7 +6,8 @@ import {
   time, 
   handleError, 
   hasPerm, 
-  getUserInfo, 
+  getUserInfo,
+  getCurrentUser,
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -165,7 +166,11 @@ class OrgBDListComponent extends React.Component {
   }
 
   getStatisticData = async () => {
-    const count = await api.getOrgBDCountNew({ proj: this.state.filters.proj });
+    const params = { proj: this.state.filters.proj };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params.manager = getCurrentUser();
+    }
+    const count = await api.getOrgBDCountNew(params);
     return count.data.response_count.map(m => ({ status: m.response, count: m.count }));
   }
 
@@ -200,18 +205,88 @@ class OrgBDListComponent extends React.Component {
     localStorage.setItem('OrgBDList', JSON.stringify(data));
   };
 
-  getOrgBdList = () => {
+  // getOrgBdOrg = async () => {
+  //   let list = [];
+  //   const { search, filters, sort, desc } = this.state;
+
+  //   const reqProj1 = await api.getOrgBdBase({
+  //     search,
+  //     ...filters,
+  //     sort,
+  //     desc,
+  //     org: filters.org.map(m => m.key),
+  //     proj: filters.proj || 'none',
+  //     page_size: 100,
+  //   });
+  //   const { count: count1, data: list1 } = reqProj1.data;
+  //   if (count1 > 100) {
+  //     const reqProj2 = await api.getOrgBdBase({
+  //       search,
+  //       ...filters,
+  //       sort,
+  //       desc,
+  //       org: filters.org.map(m => m.key),
+  //       proj: filters.proj || 'none',
+  //       page_size: count1,
+  //     });
+  //     list = list.concat(reqProj2.data.data);
+  //   } else {
+  //     list = list.concat(list1);
+  //   }
+
+  //   const reqProj3 = await api.getOrgBdBase({
+  //     search,
+  //     ...filters,
+  //     sort,
+  //     desc,
+  //     org: filters.org.map(m => m.key),
+  //     proj: filters.proj || 'none',
+  //     createuser: [getCurrentUser()],
+  //     page_size: 100,
+  //   });
+  //   const { count: count3, data: list3 } = reqProj3.data;
+  //   if (count3 > 100) {
+  //     const reqProj4 = await api.getOrgBdBase({
+  //       search,
+  //       ...filters,
+  //       sort,
+  //       desc,
+  //       org: filters.org.map(m => m.key),
+  //       proj: filters.proj || 'none',
+  //       createuser: [getCurrentUser()],
+  //       page_size: count3,
+  //     });
+  //     list = list.concat(reqProj4.data.data);
+  //   } else {
+  //     list = list.concat(list3);
+  //   }
+
+  //   list = list.filter(f => f.org);
+  //   const projId = list.map(m => m.org);
+  //   const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
+
+  //   const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.org === m)[0]);
+  //   window.echo('unique org', uniqueOrg);
+  //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
+  // }
+
+  getOrgBdList = async () => {
     this.setState({ loading: true, expanded: [] });
     const { page, pageSize, search, filters, sort, desc } = this.state;
 
     // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
     const proj = filters.proj;
+    let projMakeTakeTraderIds = [];
     if (proj) {
-      api.getProjDetail(proj)
-      .then(result => {
-        this.setState({ projectDetails: result.data });
-        const { projTraders } = result.data;
+      if (this.props.onProjExistChange) {
+        this.props.onProjExistChange(true);
+      }
+      try {
+        const projResult = await api.getProjDetail(proj);
+        this.setState({ projectDetails: projResult.data });
+        const { projTraders } = projResult.data;
         if (projTraders) {
+          projMakeTakeTraderIds = projTraders.filter(f => f.user).map(m => m.user.id);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
             makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
@@ -220,8 +295,14 @@ class OrgBDListComponent extends React.Component {
         if (this.props.editable) {
           this.writeSetting();
         }
-      })
-      .catch(handleError);
+      } catch (error) {
+        handleError(error);
+      }
+    } else {
+      if (this.props.onProjExistChange) {
+        this.props.onProjExistChange(false);
+      }
+      this.setState({ projectDetails: null, projTradersIds: [], makeUserIds: [] });
     }
 
     const params = {
@@ -229,12 +310,23 @@ class OrgBDListComponent extends React.Component {
         page_size: pageSize,
         search,
         ...filters,
+        manager: undefined,
         sort,
         desc,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
+    };
+    const { manager } = filters;
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || projMakeTakeTraderIds.includes(getCurrentUser())) {
+      params.manager = manager;
+      params.createuser = manager;
+      params.unionFields = 'manager,createuser';
+    } else {
+      params.manager = [getCurrentUser()];
+      params.createuser = [getCurrentUser()];
+      params.unionFields = 'manager,createuser';
     }
-
     let requestApi = api.getOrgBdBase;
     if (this.state.isAdd) {
       requestApi = (params) => { 
@@ -247,11 +339,17 @@ class OrgBDListComponent extends React.Component {
     }
 
     let baseResult, baseList;
+    // this.getOrgBdOrg()
     requestApi(params)
       .then(result => {
         baseResult = result;
         baseList = baseResult.data.data;
-        return api.getOrg({ids: baseList.map(item => item.org).filter(item => item), page_size: pageSize})
+        const ids = baseList.map(item => item.org).filter(item => item);
+        if (ids.length > 0) {
+          return api.getOrg({ ids, page_size: ids.length });
+        } else {
+          return { data: { data: [] } };
+        }
       })
       .then(result => {
         let list = result.data.data
@@ -276,9 +374,82 @@ class OrgBDListComponent extends React.Component {
       }
   }
 
+  // getOrgBdRefactorDetail = async (org, proj) => {
+  //   const { manager, response } = this.state.filters;
+  //   const param = {
+  //     org,
+  //     proj: proj || "none",
+  //     manager,
+  //     response,
+  //     search: this.state.search,
+  //     isRead: this.state.showUnreadOnly ? false : undefined,
+  //     page_size: 100,
+  //   };
+
+  //   let list = [];
+  //   const reqProj1 = await api.getOrgBdList({
+  //     param,
+  //   });
+  //   const { count: count1, data: list1 } = reqProj1.data;
+  //   if (count1 > 100) {
+  //     const reqProj2 = await api.getOrgBdList({
+  //       ...param,
+  //       page_size: count1,
+  //     });
+  //     list = list.concat(reqProj2.data.data);
+  //   } else {
+  //     list = list.concat(list1);
+  //   }
+
+  //   const reqProj3 = await api.getOrgBdList({
+  //     ...param,
+  //     createuser: [getCurrentUser()],
+  //   });
+  //   const { count: count3, data: list3 } = reqProj3.data;
+  //   if (count3 > 100) {
+  //     const reqProj4 = await api.getOrgBdList({
+  //       ...param, 
+  //       createuser: [getCurrentUser()],
+  //       page_size: count3,
+  //     });
+  //     list = list.concat(reqProj4.data.data);
+  //   } else {
+  //     list = list.concat(list3);
+  //   }
+
+  //   list = list.filter(f => f.id);
+  //   const projId = list.map(m => m.id);
+  //   const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
+
+  //   const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.id === m)[0]);
+  //   window.echo('unique org bd', uniqueOrg);
+  //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
+  // }
+
   getOrgBdListDetail = (org, proj) => {
     const { manager, response } = this.state.filters;
-    api.getOrgBdList({org, proj: proj || "none", manager, response, search: this.state.search, page_size: 100, isRead: this.state.showUnreadOnly ? false : undefined}).then(result => {
+    // this.getOrgBdRefactorDetail(org, proj)
+    const param1 = {
+      org,
+      proj: proj || "none",
+      response,
+      search: this.state.search,
+      page_size: 100,
+      isRead: this.state.showUnreadOnly ? false : undefined,
+    };
+    window.echo('承揽承做id数组', this.state.projTradersIds);
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      param1.manager = manager;
+      param1.createuser = manager;
+      param1.unionFields = 'manager,createuser';
+    } else {
+      param1.manager = [getCurrentUser()];
+      param1.createuser = [getCurrentUser()];
+      param1.unionFields = 'manager,createuser';
+    }
+    api.getOrgBdList(param1)
+    .then(result => {
       let list = result.data.data.sort((a, b) => {
         const aImportant = a.isimportant ? 1 : 0;
         const bImportant = b.isimportant ? 1 : 0;
@@ -334,10 +505,12 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleFilt = (filters) => {
+    this.projId = filters.proj;
     this.setState({ filters, page: 1 }, this.getOrgBdList)
   }
 
   handleReset = (filters) => {
+    this.projId = filters.proj;
     this.setState({ filters, page: 1, search: null }, this.getOrgBdList)
   }
 
@@ -889,9 +1062,19 @@ class OrgBDListComponent extends React.Component {
         page_size: 1000,
         search,
         ...filters,
+        manager: undefined,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     };
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      params.manager = manager;
+      params.createuser = manager;
+      params.unionFields = 'manager,createuser';
+    } else {
+      params.manager = getCurrentUser();
+      params.createuser = getCurrentUser();
+      params.unionFields = 'manager,createuser';
+    }
     let allOrgs = await api.getOrgBdBase(params);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
@@ -904,7 +1087,17 @@ class OrgBDListComponent extends React.Component {
     const { manager, response } = this.state.filters;
     for (let index = 0; index < allOrgs.length; index++) {
       const element = allOrgs[index];
-      const orgBD = await api.getOrgBdList({org: element.org, proj: element.proj.id || "none", manager, response, search: this.state.search});
+      const params2 = { org: element.org, proj: element.proj.id || "none", response, search: this.state.search };
+      if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+        params2.manager = manager;
+        params2.createuser = manager;
+        params2.unionFields = 'manager,createuser';
+      } else {
+        params2.manager = getCurrentUser();
+        params2.createuser = getCurrentUser();
+        params2.unionFields = 'manager,createuser';
+      }
+      const orgBD = await api.getOrgBdList(params2);
       element.items = orgBD.data.data;
       element.loaded = true;
       if (orgBD.data.count > 0) {

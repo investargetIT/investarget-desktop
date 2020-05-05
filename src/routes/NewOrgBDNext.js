@@ -36,6 +36,7 @@ import { getUser } from '../api';
 import { 
   isLogin, 
   checkRealMobile,
+  getCurrentUser,
 } from '../utils/util';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectTrader } from '../components/ExtraInput';
@@ -248,7 +249,13 @@ class NewOrgBDList extends React.Component {
         }))
       });
 
-      const reqBD = await api.getOrgBdList({ org, proj: this.projId || "none" });
+      const params = { org, proj: this.projId || "none" };
+      if (!hasPerm('BD.manageOrgBD')) {
+        params.manager = getCurrentUser();
+        // params.createuser = getCurrentUser();
+        // params.unionFields = 'manager,createuser';
+      }
+      const reqBD = await api.getOrgBdList(params);
       // const reqBD = this.getOrgBD(org);
       // 已经BD过的投资人
       const regBDUser = reqBD.data.data.map(m => ({

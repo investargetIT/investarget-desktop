@@ -27,6 +27,7 @@ import {
   handleError,
   sleep,
   hasPerm,
+  getCurrentUser,
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
@@ -473,17 +474,23 @@ class UserDetail extends React.Component {
   }
 
   mergeOrgBd = async (deleteUserId, mergeUserId) => {
-    const resCount = await api.getOrgBdList({
-      bduser: deleteUserId,
-    });
+    const params1 = { bduser: deleteUserId };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params1.manager = getCurrentUser();
+    }
+    const resCount = await api.getOrgBdList(params1);
     const { count } = resCount.data;
     if (count === 0) {
       return;
     }
-    const resData = await api.getOrgBdList({
+    const params2 = {
       bduser: deleteUserId,
       page_size: count,
-    });
+    };
+    if (!hasPerm('BD.manageOrgBD')) {
+      params2.manager = getCurrentUser();
+    }
+    const resData = await api.getOrgBdList(params2);
     const { data } = resData.data;
     // await Promise.all(data.map(m => api.modifyOrgBD(m.id, { bduser: mergeUserId })));
     for (let index = 0; index < data.length; index++) {
