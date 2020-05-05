@@ -76,27 +76,27 @@ class SelectOrganization extends React.Component {
     }
   }
 
-  handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrg)
-    if (this.props.onFilterChange) {
-      this.props.onFilterChange(filters);
-    }
-  }
+  // handleFilt = (filters) => {
+  //   this.setState({ filters, page: 1 }, this.getOrg)
+  //   if (this.props.onFilterChange) {
+  //     this.props.onFilterChange(filters);
+  //   }
+  // }
 
-  handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getOrg)
-  }
+  // handleReset = (filters) => {
+  //   this.setState({ filters, page: 1, search: null }, this.getOrg)
+  // }
 
-  handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getOrg)
-  }
+  // handleSearch = (search) => {
+  //   this.setState({ search, page: 1 }, this.getOrg)
+  // }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getOrg)
+    this.setState({ page }, this.searchOrg);
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getOrg)
+    this.setState({ pageSize, page: 1 }, this.searchOrg);
   }
 
   getOrg = () => {
@@ -118,8 +118,32 @@ class SelectOrganization extends React.Component {
     })
   }
 
+  searchOrg = () => {
+    const { page, pageSize } = this.state;
+    const { search: text, like, lv } = this.props.query;
+    const params = {
+      lv,
+      text,
+      page_size: pageSize,
+      page_index: page,
+      like,
+    };
+    this.setState({ loading: true });
+    api.searchOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   componentDidMount() {
-    this.getOrg()
+    // this.getOrg()
+    this.searchOrg();
   }
 
   // 用户删除了某个机构 Tag，模拟取消选中那个机构产生的 onChange 事件

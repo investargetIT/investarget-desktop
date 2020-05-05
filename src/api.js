@@ -949,3 +949,5 @@ export const addOKRResult = body => r(`/bd/okr/krs/`, 'POST', body);
 export const getOKRResult = params => r(`/bd/okr/krs/?${qs.stringify(params)}`);
 export const editOKRResult = (id, body) => r(`/bd/okr/krs/${id}/`, 'PUT', body);
 export const deleteOKRResult = id => r(`/bd/okr/krs/${id}/`, 'DELETE');
+
+export const searchOrg = params => r(`/org/search/?${qs.stringify(params)}`);
