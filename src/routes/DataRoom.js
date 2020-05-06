@@ -76,6 +76,9 @@ class DataRoom extends React.Component {
       showNewFileModal: false,
 
       userWithNewDataroomFile: [],
+
+      displayDownloadingModal: false,
+      waitingTime: '',
     }
 
     this.dataRoomTempModalUserId = null;
@@ -678,12 +681,14 @@ class DataRoom extends React.Component {
           if (result.data.seconds) {
             waitingTime = `${result.data.seconds}秒`
           }
-          const ref = Modal.info({
-            title: '请求已发送成功',
-            content: <div>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>,
-          });
+          // const ref = Modal.info({
+          //   title: '请求已发送成功',
+          //   content: <div>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>,
+          // });
+          this.setState({ displayDownloadingModal: true, waitingTime });
           setTimeout(() => {
-            ref.destroy();
+            // ref.destroy();
+            this.setState({ displayDownloadingModal: false, waitingTime: '' });
           }, 3000);
         }
       })
@@ -984,6 +989,17 @@ class DataRoom extends React.Component {
           })} */}
           <Tree onSelect={this.onSelect}>{this.tree(newDataroomFileWithParentDir, -999)}</Tree>
         </Modal>
+
+        {this.state.displayDownloadingModal &&
+          <Modal
+            title="请求已发送成功"
+            visible
+            footer={null}
+            closable={false}
+          >
+            <div style={{ padding: '20px 0' }}>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{this.state.waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>
+          </Modal>
+        }
 
       </LeftRightLayout>
     )
