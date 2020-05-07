@@ -169,6 +169,8 @@ class OrgBDListComponent extends React.Component {
     const params = { proj: this.state.filters.proj };
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
+      params.createuser = getCurrentUser();
+      params.unionFields = 'manager,createuser';
     }
     const count = await api.getOrgBDCountNew(params);
     return count.data.response_count.map(m => ({ status: m.response, count: m.count }));
