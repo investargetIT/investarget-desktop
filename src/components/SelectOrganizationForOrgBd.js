@@ -92,11 +92,88 @@ class SelectOrganization extends React.Component {
   // }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.searchOrg);
+    this.setState({ page }, this.tryToLoadData);
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.searchOrg);
+    this.setState({ pageSize, page: 1 }, this.tryToLoadData);
+  }
+
+  getAllOrg = async () => {
+    const { searchOrgName: search } = this.props.query;
+    const param = {
+      search,
+      page_size: 100,
+    };
+
+    let list = [];
+    const req1 = await api.getOrg(param);
+
+    const { count: count1, data: list1 } = req1.data;
+    if (count1 > 100) {
+      const req2 = await api.getOrg({
+        ...param,
+        page_size: count1,
+      });
+      list = list.concat(req2.data.data);
+    } else {
+      list = list.concat(list1);
+    }
+    return list;
+  }
+
+  searchAllOrg = async () => {
+    let list = [];
+    const { search: text, like, lv } = this.props.query;
+    const param2 = {
+      lv,
+      text,
+      like,
+      page_size: 100,
+    };
+    const req3 = await api.searchOrg(param2);
+    const { count: count3, data: list3 } = req3.data;
+    if (count3 > 100) {
+      const req4 = await api.searchOrg({
+        ...param2,
+        page_size: count3,
+      });
+      list = list.concat(req4.data.data);
+    } else {
+      list = list.concat(list3);
+    }
+    return list;
+  }
+
+  combineAllOrg = async () => {
+    let list = [];
+
+    const allGetOrg = await this.getAllOrg();
+    list = list.concat(allGetOrg);
+    const allSearchOrg = await this.searchAllOrg();
+    list = list.concat(allSearchOrg);
+
+    list = list.filter(f => f.id);
+    const orgId = list.map(m => m.id);
+    const uniqueOrgId = orgId.filter((v, i, a) => a.indexOf(v) === i);
+
+    const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.id === m)[0]);
+    window.echo('unique org', uniqueOrg);
+    return { data: { count: uniqueOrg.length, data: uniqueOrg } };
+  }
+
+  getAndSearchAllOrg = () => {
+    this.setState({ loading: true });
+    this.combineAllOrg().then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   getOrg = () => {
@@ -143,7 +220,26 @@ class SelectOrganization extends React.Component {
 
   componentDidMount() {
     // this.getOrg()
-    this.searchOrg();
+    // this.searchOrg();
+    this.tryToLoadData();
+  }
+
+  tryToLoadData = () => {
+    const { search, searchOrgName } = this.props.query;
+    if (search && searchOrgName) {
+      this.getAndSearchAllOrg();
+      return;
+    }
+    if (searchOrgName) {
+      this.searchOrg();
+      return;
+    }
+    this.getOrg();
+  }
+
+  isHidePagination = () => {
+    const { search, searchOrgName } = this.props.query;
+    return search && searchOrgName;
   }
 
   // 用户删除了某个机构 Tag，模拟取消选中那个机构产生的 onChange 事件
@@ -256,7 +352,7 @@ class SelectOrganization extends React.Component {
  
     return (
       <div>
-        {/* <OrgFilterForOrgBd defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} />
+        {/* <OrgFilterForOrgBd defaultValue={filters} onChange={this.handleFilt} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
 
         <div style={{ fontSize: 13, marginTop: 14 }}>
@@ -264,7 +360,7 @@ class SelectOrganization extends React.Component {
           <Icon type="user" />表示该机构下有联系方式的投资人数量
         </div>
 
-        <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
+        {/* <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
           <Search
             style={{ width: 250 }}
             placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
@@ -272,8 +368,8 @@ class SelectOrganization extends React.Component {
             onChange={search => this.setState({ search })}
             value={search}
           />
-        </Popover>
-        </div> */}
+        </Popover> */}
+        </div> 
 
         {/* 选中的机构以 Tag 的形式展现在表格上方，方便用户随时查看自己选中的机构，避免在分页中迷失 */}
         {/* <div style={{ marginBottom: 10 }}>
@@ -289,9 +385,43 @@ class SelectOrganization extends React.Component {
             </Tag>
           )}
         </div> */}
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
-        <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={list} rowKey={record=>record.id} loading={loading} pagination={false} />
-        <Pagination style={paginationStyle} total={total} current={page} pageSize={pageSize} onChange={this.handlePageChange} showSizeChanger onShowSizeChange={this.handlePageSizeChange} showQuickJumper pageSizeOptions={PAGE_SIZE_OPTIONS} />
+        {!(this.props.search && this.props.searchOrgName) &&
+          <Pagination
+            style={paginationStyle}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        }
+
+        <Table
+          style={tableStyle}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={list}
+          rowKey={record=>record.id}
+          loading={loading}
+          pagination={false}
+        />
+
+        {!(this.props.search && this.props.searchOrgName) &&
+          <Pagination
+            style={paginationStyle}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        }
       </div>
     )
 

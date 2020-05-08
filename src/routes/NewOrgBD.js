@@ -3,7 +3,7 @@ import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
-import { Button, Modal, Checkbox, Steps, Radio, Tag } from 'antd'
+import { Button, Modal, Checkbox, Steps, Radio, Tag, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 import { OrgLevelFilter } from '../components/Filter';
@@ -160,6 +160,15 @@ class NewOrgBD extends React.Component {
             </Steps>
             {this.state.current === 0 &&
               <div className="steps-content">
+                <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
+                  <Search
+                    style={{ width: 250 }}
+                    placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
+                    // onSearch={this.handleSearch}
+                    onChange={search => this.setState({ searchOrgName: search })}
+                    value={this.state.searchOrgName}
+                  />
+                </Popover>
                 <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
                 <div>
                   <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
@@ -178,7 +187,7 @@ class NewOrgBD extends React.Component {
             {this.state.current === 1 &&
               <div style={{ padding: '16px' }}>
                 <SelectOrganizationForOrgBd
-                  query={{ lv: this.state.lv, like: this.state.like, search: this.state.search }}
+                  query={{ lv: this.state.lv, like: this.state.like, search: this.state.search, searchOrgName: this.state.searchOrgName }}
                   traderId={this.props.bd ? undefined : traderId}
                   value={selectedOrgs}
                   details={selectedOrgDetails}
