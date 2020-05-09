@@ -195,6 +195,27 @@ class SelectOrganization extends React.Component {
     })
   }
 
+  getOrgFromQuery = () => {
+    const { page, pageSize } = this.state;
+    const { searchOrgName: search } = this.props.query;
+    const params = {
+      search,
+      page_size: pageSize,
+      page_index: page,
+    };
+    this.setState({ loading: true });
+    api.getOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   searchOrg = () => {
     const { page, pageSize } = this.state;
     const { search: text, like, lv } = this.props.query;
@@ -230,11 +251,11 @@ class SelectOrganization extends React.Component {
       this.getAndSearchAllOrg();
       return;
     }
-    if (searchOrgName) {
+    if (search) {
       this.searchOrg();
       return;
     }
-    this.getOrg();
+    this.getOrgFromQuery();
   }
 
   isHidePagination = () => {
@@ -385,7 +406,7 @@ class SelectOrganization extends React.Component {
             </Tag>
           )}
         </div> */}
-        {!(this.props.search && this.props.searchOrgName) &&
+        {!(this.props.query.search && this.props.query.searchOrgName) &&
           <Pagination
             style={paginationStyle}
             total={total}
@@ -409,7 +430,7 @@ class SelectOrganization extends React.Component {
           pagination={false}
         />
 
-        {!(this.props.search && this.props.searchOrgName) &&
+        {!(this.props.query.search && this.props.query.searchOrgName) &&
           <Pagination
             style={paginationStyle}
             total={total}
