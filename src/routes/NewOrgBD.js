@@ -160,18 +160,24 @@ class NewOrgBD extends React.Component {
             </Steps>
             {this.state.current === 0 &&
               <div className="steps-content">
-              <div style={{ marginBottom: 16 }}>
-                <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
-                  <Search
-                    style={{ width: 250 }}
-                    placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
-                    // onSearch={this.handleSearch}
-                    onChange={search => this.setState({ searchOrgName: search })}
-                    value={this.state.searchOrgName}
-                  />
-                </Popover>
-              </div>
-                <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
+
+                <div style={{ marginBottom: 16, display: 'flex'}}>
+                  <div style={{ }}>
+                    <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
+                      <Search
+                        style={{ width: 250 }}
+                        placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
+                        // onSearch={this.handleSearch}
+                        onChange={search => this.setState({ searchOrgName: search })}
+                        value={this.state.searchOrgName}
+                      />
+                    </Popover>
+                  </div>
+                  <div style={{ marginLeft: 20, flex: 1 }}>
+                    <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
+                  </div>
+                </div>
+
                 <div>
                   <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
                     <Radio value={0}>精确查询</Radio>
