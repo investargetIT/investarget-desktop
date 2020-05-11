@@ -5,7 +5,7 @@ import { browserHistory, withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n } from '../utils/util'
 import { Button, Modal, Checkbox, Steps, Radio, Tag, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { SelectTrader } from '../components/ExtraInput';
+import { SelectTrader, SelectOrgLevel } from '../components/ExtraInput';
 import { OrgLevelFilter } from '../components/Filter';
 import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
 import { Search } from '../components/Search';
@@ -161,8 +161,8 @@ class NewOrgBD extends React.Component {
             {this.state.current === 0 &&
               <div className="steps-content">
 
-                <div style={{ marginBottom: 16, display: 'flex'}}>
-                  <div style={{ }}>
+                <div style={{ marginBottom: 16, display: 'flex' }}>
+                  <div>
                     <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
                       <Search
                         style={{ width: 250 }}
@@ -173,8 +173,10 @@ class NewOrgBD extends React.Component {
                       />
                     </Popover>
                   </div>
-                  <div style={{ marginLeft: 20, flex: 1 }}>
-                    <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} />
+                  <div style={{ marginLeft: 20 }}>机构状态：</div>
+                  <div style={{ flex: 1 }}>
+                    {/* <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} /> */}
+                    <SelectOrgLevel value={this.state.lv} onChange={value => this.setState({ lv: value })} />
                   </div>
                 </div>
 
