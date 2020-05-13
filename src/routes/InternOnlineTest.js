@@ -57,6 +57,7 @@ export default class InternOnlineTest extends React.Component {
             <p style={{ paddingLeft: 20 }}>▶ 客户留存说明：请确认每个客户首次下单的月份，计算出每个月新增客户数量，以及这些新增客户在后续月份的数量留存变化</p>
           </div>
         </div>
+        <div><a>附件下载：公司订单数据（模版）.xlsx</a></div>
       </LeftRightLayout>
     );
   }
