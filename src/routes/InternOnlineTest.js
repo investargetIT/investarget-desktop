@@ -1,11 +1,66 @@
 import React from 'react';
+import { Upload, Button, Modal } from 'antd';
+import { withRouter } from 'dva/router';
 import LeftRightLayout from '../components/LeftRightLayout';
+import { baseUrl } from '../utils/request';
+import * as api from '../api';
+import { getCurrentUser } from '../utils/util';
 
-export default class InternOnlineTest extends React.Component {
+class InternOnlineTest extends React.Component {
 
-  // constructor(props) {
-  //   super(props);
-  // }
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isUploading: false,
+    };
+    this.testId = null;
+  }
+
+  async componentDidMount() {
+    const resOnlineTest = await api.getOnlineTest();
+    const { data, count } = resOnlineTest.data;
+    if (count === 0) {
+      const resStartTest = await api.startOnlineTest({ user: getCurrentUser() });
+      this.testId = resStartTest.data.id;
+      return;
+    }
+    const test = data[0];
+    if (!test.endTime) {
+      this.testId = test.id;
+      return;
+    }
+    const react = this;
+    Modal.warning({
+      title: '你已经答过题了',
+      onOk() {
+        react.props.router.goBack();
+      },
+    });
+  }
+
+  handleFileChange = ({ file }) => {
+    this.setState({ isUploading: true });
+    if (file.status === 'done') {
+      this.handleFileUploadDone(file);
+    } 
+  }
+
+  handleFileUploadDone = file => {
+    file.bucket = 'file'
+    file.key = file.response.result.key
+    file.url = file.response.result.url
+    file.realfilekey = file.response.result.realfilekey;
+    file.filename = file.name;
+    this.submitAnswer(file);
+  }
+
+  submitAnswer = async (file) => {
+    const { bucket, key, filename } = file;
+    await api.endOnlineTest(this.state.testId, { key, bucket, filename });
+    this.setState({ isUploading: false });
+    this.props.router.goBack();
+  }
 
   render() {
     return (
@@ -57,10 +112,20 @@ export default class InternOnlineTest extends React.Component {
             <p style={{ paddingLeft: 20 }}>▶ 客户留存说明：请确认每个客户首次下单的月份，计算出每个月新增客户数量，以及这些新增客户在后续月份的数量留存变化</p>
           </div>
         </div>
-        <div><a>附件下载：公司订单数据（模版）.xlsx</a></div>
+        <div style={{ margin: '20px 0' }}><a>附件下载：公司订单数据（模版）.xlsx</a></div>
+        <Upload
+          action={`${baseUrl}/service/qiniubigupload?bucket=file`}
+          // accept={fileExtensions.join(',')}
+          onChange={this.handleFileChange}
+          // onRemove={this.handleFileRemoveConfirm}
+          showUploadList={false}
+        >
+          <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传答案</Button>
+        </Upload>
       </LeftRightLayout>
     );
   }
 
 }
 
+export default withRouter(InternOnlineTest);

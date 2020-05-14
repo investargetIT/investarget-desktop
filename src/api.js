@@ -949,3 +949,7 @@ export const addOKRResult = body => r(`/bd/okr/krs/`, 'POST', body);
 export const getOKRResult = params => r(`/bd/okr/krs/?${qs.stringify(params)}`);
 export const editOKRResult = (id, body) => r(`/bd/okr/krs/${id}/`, 'PUT', body);
 export const deleteOKRResult = id => r(`/bd/okr/krs/${id}/`, 'DELETE');
+
+export const getOnlineTest = () => r('/msg/internTest/');
+export const startOnlineTest = body => r('/msg/internTest/', 'POST', body);
+export const endOnlineTest = (id, body) => r(`/msg/internTest/${id}`, 'PUT', body);
