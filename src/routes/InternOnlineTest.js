@@ -13,15 +13,21 @@ class InternOnlineTest extends React.Component {
 
     this.state = {
       isUploading: false,
+      attachmentUrl: null,
     };
     this.testId = null;
   }
 
   async componentDidMount() {
+    api.downloadUrl('file', '公司订单数据（模版）.xlsx')
+      .then((result) => {
+        this.setState({ attachmentUrl: result.data });
+      });
+
     const resOnlineTest = await api.getOnlineTest();
     const { data, count } = resOnlineTest.data;
     if (count === 0) {
-      const resStartTest = await api.startOnlineTest({ user: getCurrentUser() });
+      const resStartTest = await api.startOnlineTest();
       this.testId = resStartTest.data.id;
       return;
     }
@@ -57,7 +63,7 @@ class InternOnlineTest extends React.Component {
 
   submitAnswer = async (file) => {
     const { bucket, key, filename } = file;
-    await api.endOnlineTest(this.state.testId, { key, bucket, filename });
+    await api.endOnlineTest(this.testId, { key, bucket, filename });
     this.setState({ isUploading: false });
     this.props.router.goBack();
   }
@@ -112,7 +118,11 @@ class InternOnlineTest extends React.Component {
             <p style={{ paddingLeft: 20 }}>▶ 客户留存说明：请确认每个客户首次下单的月份，计算出每个月新增客户数量，以及这些新增客户在后续月份的数量留存变化</p>
           </div>
         </div>
-        <div style={{ margin: '20px 0' }}><a>附件下载：公司订单数据（模版）.xlsx</a></div>
+
+        <div style={{ margin: '20px 0' }}>
+          <a href={this.state.attachmentUrl} target="_blank">附件下载：公司订单数据（模版）.xlsx</a>
+        </div>
+
         <Upload
           action={`${baseUrl}/service/qiniubigupload?bucket=file`}
           // accept={fileExtensions.join(',')}

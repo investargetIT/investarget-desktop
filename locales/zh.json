@@ -36,7 +36,8 @@
     "list_organization": "机构列表",
     "exportexcel_organization": "导出任务",
     "weekly_report": "周报",
-    "OKR": "OKR"
+    "OKR": "OKR",
+    "onlineTest": "在线测试"
   },
   "account": {
     "login": "登录",
