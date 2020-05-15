@@ -104,6 +104,7 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   92: '视频会议管理',
   96: '机构BD黑名单',
   100: '工作报表管理',
+  36: '在线测试管理',
 } 
 : 
 {
@@ -129,6 +130,7 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   92: '视频会议管理',
   96: '机构BD黑名单',
   100: '工作报表管理',
+  36: '在线测试管理',
 }
 
 export const KEY_TO_ICON = {
