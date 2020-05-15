@@ -19,7 +19,7 @@ class InternOnlineTest extends React.Component {
   }
 
   async componentDidMount() {
-    api.downloadUrl('file', '公司订单数据（模版）.xlsx')
+    api.downloadUrl('file', 'Order template.xlsx')
       .then((result) => {
         this.setState({ attachmentUrl: result.data });
       });
