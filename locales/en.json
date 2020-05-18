@@ -35,7 +35,8 @@
     "list_organization": "Organization List",
     "exportexcel_organization": "Export List",
     "weekly_report": "Weekly Report",
-    "OKR": "OKR"
+    "OKR": "OKR",
+    "onlineTest": "Online Test"
   },
   "account": {
     "login": "Login",

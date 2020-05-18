@@ -50,6 +50,7 @@ export const KEY_TO_URI = {
   "exportexcel_organization": "/app/org/export",
   "weekly_report": "/app/report/list",
   "OKR": "/app/okr/list",
+  "onlineTest": "/app/online-test",
 }
 
 export const URI_TO_KEY = {
@@ -103,6 +104,7 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   92: '视频会议管理',
   96: '机构BD黑名单',
   100: '工作报表管理',
+  104: '在线测试管理',
 } 
 : 
 {
@@ -128,6 +130,7 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   92: '视频会议管理',
   96: '机构BD黑名单',
   100: '工作报表管理',
+  104: '在线测试管理',
 }
 
 export const KEY_TO_ICON = {
@@ -147,6 +150,7 @@ export const KEY_TO_ICON = {
   'user_center': 'fa fa-cogs',
   'permission_management': 'fa fa-sitemap',
   'log': 'fa fa-search',
+  'onlineTest': 'fa fa-pencil',
 }
 
 export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];
