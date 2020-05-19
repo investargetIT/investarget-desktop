@@ -71,7 +71,17 @@ class InternOnlineTest extends React.Component {
   render() {
     return (
       <LeftRightLayout location={this.props.location} title="笔试">
-        <div style={{ lineHeight: '28px', fontWeight: 'bold' }}>1.请根据以下材料，整理1-2页介绍公司情况的PPT（可对材料进行筛选，无需呈现全部内容）</div>
+        <div style={{ lineHeight: '28px', fontWeight: 'bold' }}>1.请将下文意译为中文：</div>
+        <div style={{ lineHeight: '24px', paddingLeft: 20 }}>
+          <p style={{ margin: '10px 0' }}>Millennials Make Big Push For B2B Personalization</p>
+          <p style={{ margin: '10px 0' }}>Many of the complexities regarding B2B eCommerce stem from the fact that each business customer has a unique set of rules related to a purchase, and thus each customer needs a personalized experience on a B2B eCommerce platform. Unlike consumer online shopping, businesses procuring goods from a manufacturer need to see their unique contractual agreements, pricing agreements, availability, credit terms, shipping options and more.</p>
+          <p style={{ margin: '10px 0' }}>“Everyone wants to do eCommerce,” said Corevist Co-Founder and CEO Dr. Sam Bayer, Ph.D., of the manufacturing industry’s adoption of digital tools. “The thing that’s slowing people down is all of those complicated rules.”</p>
+          <p style={{ margin: '10px 0' }}>B2B eCommerce platforms can struggle to adhere to those unique rules on a client-by-client basis, he added, leading to a displeasing online shopping experience that can cause a business buyer to go back to the legacy method of calling up a customer representative on the phone.</p>
+          <p style={{ margin: '10px 0' }}>In many points of B2B friction, the solution can be found in data integration. Bayer noted that such integration was the motivation behind Corevist’s recent integration with electronic payments company Delego. Both companies are integrated with the SAP ERP system, as well as with one another.</p>
+          <p style={{ margin: '10px 0' }}>That integration allows Corevist to automatically display the unique business rules that are stored within the SAP ERP system for each customer on a manufacturer’s online storefront. Integrating with Delego enables electronic bill presentment and payment acceptance, while offering both the pay-at-checkout and invoice payment options that can trip up B2B eCommerce experiences.</p>
+          <p style={{ margin: '10px 0' }}>The stereotype of B2B eCommerce’s digitization journey has been one to mimic the rise of Amazon and provide a “consumer-like” shopping experience for businesses — yet the complexities of the industry show that mentality is an oversimplification. Even so, Amazon has been steadily moving into the business-to-business market via Amazon Business.</p>
+        </div>
+        <div style={{ marginTop: 20, lineHeight: '28px', fontWeight: 'bold' }}>2.请根据以下材料，整理1-2页介绍公司情况的PPT（可对材料进行筛选，无需呈现全部内容）</div>
         <div style={{ lineHeight: '28px', paddingLeft: 20 }}>
           <p>- 公司帮助中小企业代为管理物流业务，现阶段聚焦于为中小企业提供中长途运输业务代管服务</p>
           <p>- 目前拥有700+客户，2017-2019年收入年复合增长率150%，分拨中心55个，分布在25个城市，合作的运力供应商100+，2019年营收约1亿元，预计2020年营收可达2.5亿元，毛利率25%，远超行业平均水平</p>
@@ -108,7 +118,7 @@ class InternOnlineTest extends React.Component {
           </div>
         </div>
         <div style={{ marginTop: 20, lineHeight: '28px' }}>
-          <p style={{ fontWeight: 'bold' }}>2.“公司历史订单数据”tab中提供了公司在2019年的订单数据，包括：下单客户名称，下单金额，根据运输方式区分的两种承运类型（分为A、B类），下单时间。请根据以上数据计算分析如下指标：</p>
+          <p style={{ fontWeight: 'bold' }}>3.“公司历史订单数据”tab中提供了公司在2019年的订单数据，包括：下单客户名称，下单金额，根据运输方式区分的两种承运类型（分为A、B类），下单时间。请根据以上数据计算分析如下指标：</p>
           <div style={{ paddingLeft: 20 }}>
             <p>- 2019年前十大客户及对应购买金额（模板在“运营指标分析”）</p>
             <p>- 每一类承运类型在每个月的下单金额、订单数量及每单平均金额（模板在“运营指标分析”）</p>
