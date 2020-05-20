@@ -951,3 +951,6 @@ export const editOKRResult = (id, body) => r(`/bd/okr/krs/${id}/`, 'PUT', body);
 export const deleteOKRResult = id => r(`/bd/okr/krs/${id}/`, 'DELETE');
 
 export const searchOrg = params => r(`/org/search/?${qs.stringify(params)}`);
+export const getOnlineTest = () => r('/msg/internTest/');
+export const startOnlineTest = body => r('/msg/internTest/', 'POST', body);
+export const endOnlineTest = (id, body) => r(`/msg/internTest/${id}/`, 'PUT', body);
