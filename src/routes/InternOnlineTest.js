@@ -27,6 +27,9 @@ class InternOnlineTest extends React.Component {
     const resOnlineTest = await api.getOnlineTest();
     const { data, count } = resOnlineTest.data;
     if (count === 0) {
+      Modal.info({
+        title: '答题时间：2小时。超时提交将酌情扣分。',
+      });
       const resStartTest = await api.startOnlineTest();
       this.testId = resStartTest.data.id;
       return;
@@ -65,21 +68,27 @@ class InternOnlineTest extends React.Component {
     const { bucket, key, filename } = file;
     await api.endOnlineTest(this.testId, { key, bucket, filename });
     this.setState({ isUploading: false });
-    this.props.router.goBack();
+    const react = this;
+    Modal.success({
+      title: '答题已完成，谢谢',
+      onOk() {
+        react.props.router.goBack();
+      },
+    });
   }
 
   render() {
     return (
       <LeftRightLayout location={this.props.location} title="笔试">
-        <div style={{ lineHeight: '28px', fontWeight: 'bold' }}>1.请将下文意译为中文：</div>
+        <div style={{ lineHeight: '28px', fontWeight: 'bold' }}>1.请将下文意译为英文：</div>
         <div style={{ lineHeight: '24px', paddingLeft: 20 }}>
-          <p style={{ margin: '10px 0' }}>Millennials Make Big Push For B2B Personalization</p>
-          <p style={{ margin: '10px 0' }}>Many of the complexities regarding B2B eCommerce stem from the fact that each business customer has a unique set of rules related to a purchase, and thus each customer needs a personalized experience on a B2B eCommerce platform. Unlike consumer online shopping, businesses procuring goods from a manufacturer need to see their unique contractual agreements, pricing agreements, availability, credit terms, shipping options and more.</p>
-          <p style={{ margin: '10px 0' }}>“Everyone wants to do eCommerce,” said Corevist Co-Founder and CEO Dr. Sam Bayer, Ph.D., of the manufacturing industry’s adoption of digital tools. “The thing that’s slowing people down is all of those complicated rules.”</p>
-          <p style={{ margin: '10px 0' }}>B2B eCommerce platforms can struggle to adhere to those unique rules on a client-by-client basis, he added, leading to a displeasing online shopping experience that can cause a business buyer to go back to the legacy method of calling up a customer representative on the phone.</p>
-          <p style={{ margin: '10px 0' }}>In many points of B2B friction, the solution can be found in data integration. Bayer noted that such integration was the motivation behind Corevist’s recent integration with electronic payments company Delego. Both companies are integrated with the SAP ERP system, as well as with one another.</p>
-          <p style={{ margin: '10px 0' }}>That integration allows Corevist to automatically display the unique business rules that are stored within the SAP ERP system for each customer on a manufacturer’s online storefront. Integrating with Delego enables electronic bill presentment and payment acceptance, while offering both the pay-at-checkout and invoice payment options that can trip up B2B eCommerce experiences.</p>
-          <p style={{ margin: '10px 0' }}>The stereotype of B2B eCommerce’s digitization journey has been one to mimic the rise of Amazon and provide a “consumer-like” shopping experience for businesses — yet the complexities of the industry show that mentality is an oversimplification. Even so, Amazon has been steadily moving into the business-to-business market via Amazon Business.</p>
+          <p>随着数字经济社会的蓬勃发展，世界各国都将数字创新作为实现技术突破、经济发展的重中之重。从国家到社会，从企业到个人，都应在各自的领域和层面作出贡献，共同促进数字经济社会的协同发展。</p>
+          <p style={{ paddingLeft: 10 }}>- 国家层面：加大基础科学研究的投入力度，掌握核心技术，通过相关政策法规的制定，为高校、企业大胆践行数字创新提供宽松的制度环境。</p>
+          <p style={{ paddingLeft: 10 }}>- 产业层面：知识与信息作为数字经济社会的基本生产要素，对全社会的数字化水平提出了更高的要求。产业界应充分利用云计算、大数据、人工智能等前沿技术，大力推动数字化升级与改造。</p>
+          <p style={{ marginTop: 10 }}>信息与知识在促进数字经济社会发展所扮演的角色越来越重要，许多专注于信息和知识收集、存储、编辑、共享、分享的知识管理场景的APP开始流行。</p>
+          <p style={{ paddingLeft: 10 }}>- 从个人层面来看，作为数字经济时代下的每一个个体，都应当具有与时俱进的思想意识，保持进步，为国家实现跨越式发展做好知识与技能的储备。在数字时代海量的碎片化信息中有效地找到高价值信息，并将相关信息体系化结构化，建立知识图谱、形成个人的知识体系，将极大地提升个人在数字时代的学习能力，紧跟时代发展的步伐。</p>
+          <p style={{ paddingLeft: 10 }}>- 从企业和团队层面来看，利用数字创新提高生产效率，积极打造学习型组织，为员工打造高效协同的办公环境，建立企业特有的知识库，为业务创新提供完整的知识储备。数字时代下对于团队高效协作的需求越来越大，将个人知识有效转化为团队知识，挖掘企业独特场景、提升团队协作效率，会加快企业和团队的发展速度，推动数字经济发展。</p>
+          <p style={{ marginTop: 10 }}>科技进步一直是人类文化文明发展的推动力，纵观人类历史，每次文化内容生产的大爆发背后都是革命性的技术创新。源自中华民族的印刷术，成为人类近代文明的先导，为知识的广泛传播、交流创造了条件。20世纪以来电影、广播、电视的出现，带来更多、更丰富的内容，推动了人类文明的发展与进步。21世纪的互联网技术，特别是移动互联网以及4G的普及，使得内容生产更便捷，文化传播更广泛、迅速。</p>
         </div>
         <div style={{ marginTop: 20, lineHeight: '28px', fontWeight: 'bold' }}>2.请根据以下材料，整理1-2页介绍公司情况的PPT（可对材料进行筛选，无需呈现全部内容）</div>
         <div style={{ lineHeight: '28px', paddingLeft: 20 }}>
@@ -133,15 +142,18 @@ class InternOnlineTest extends React.Component {
           <a href={this.state.attachmentUrl} target="_blank">附件下载：公司订单数据（模版）.xlsx</a>
         </div>
 
-        <Upload
-          action={`${baseUrl}/service/qiniubigupload?bucket=file`}
-          // accept={fileExtensions.join(',')}
-          onChange={this.handleFileChange}
-          // onRemove={this.handleFileRemoveConfirm}
-          showUploadList={false}
-        >
-          <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传答案</Button>
-        </Upload>
+        <div>
+          <Upload
+            action={`${baseUrl}/service/qiniubigupload?bucket=file`}
+            // accept={fileExtensions.join(',')}
+            onChange={this.handleFileChange}
+            // onRemove={this.handleFileRemoveConfirm}
+            showUploadList={false}
+          >
+            <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传答案</Button>
+          </Upload>
+          <span style={{ marginLeft: 10 }}>请将完成的Word、PPT、Excel文件一起打包压缩成rar或zip格式，上传附件。</span>
+        </div>
       </LeftRightLayout>
     );
   }
