@@ -39,13 +39,13 @@ class InternOnlineTest extends React.Component {
       this.testId = test.id;
       return;
     }
-    const react = this;
-    Modal.warning({
-      title: '你已经答过题了',
-      onOk() {
-        react.props.router.goBack();
-      },
-    });
+    // const react = this;
+    // Modal.warning({
+    //   title: '你已经答过题了',
+    //   onOk() {
+    //     react.props.router.goBack();
+    //   },
+    // });
   }
 
   handleFileChange = ({ file }) => {
@@ -152,7 +152,7 @@ class InternOnlineTest extends React.Component {
           >
             <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传答案</Button>
           </Upload>
-          <span style={{ marginLeft: 10 }}>请将完成的Word、PPT、Excel文件一起打包压缩成rar或zip格式，上传附件。</span>
+          <span style={{ marginLeft: 10, color: 'red' }}>请将完成的Word、PPT、Excel文件一起打包压缩成rar或zip格式，上传附件。</span>
         </div>
       </LeftRightLayout>
     );
