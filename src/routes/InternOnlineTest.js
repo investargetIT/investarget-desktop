@@ -28,7 +28,7 @@ class InternOnlineTest extends React.Component {
     const { data, count } = resOnlineTest.data;
     if (count === 0) {
       Modal.info({
-        title: '答题时间：2小时。超时提交将酌情扣分。',
+        title: '答题时间：2.5小时。超时提交将酌情扣分。',
       });
       const resStartTest = await api.startOnlineTest();
       this.testId = resStartTest.data.id;
@@ -39,13 +39,13 @@ class InternOnlineTest extends React.Component {
       this.testId = test.id;
       return;
     }
-    // const react = this;
-    // Modal.warning({
-    //   title: '你已经答过题了',
-    //   onOk() {
-    //     react.props.router.goBack();
-    //   },
-    // });
+    const react = this;
+    Modal.warning({
+      title: '答题已结束，谢谢参与',
+      onOk() {
+        react.props.router.goBack();
+      },
+    });
   }
 
   handleFileChange = ({ file }) => {
