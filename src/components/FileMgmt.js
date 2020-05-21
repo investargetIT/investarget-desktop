@@ -574,6 +574,7 @@ class FileMgmt extends React.Component {
                 mode="multiple"
                 size="large"
                 optionLabelProp="children"
+                filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
                 value={users}
                 onSelect={(userId) => {this.props.onSelectFileUser(fileId, Number(userId))}}
                 onDeselect={(userId) => {this.props.onDeselectFileUser(fileId, Number(userId))}}>
