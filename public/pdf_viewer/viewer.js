@@ -69,6 +69,41 @@ function drawWatermark(ctx, text, org) {
   ctx.restore();
 }
 
+// function drawWatermark(ctx, text, org) {
+//   var canvas = ctx.canvas;
+//   var canvasWidth = canvas.width;
+//   var canvasHeight = canvas.height;
+//   var x = canvasWidth / 2;
+//   var y = canvasHeight / 2;
+//   var fontSize = 12;
+//   var verticalGap = 30;
+//   var horizontalGap = 30;
+
+//   ctx.save();
+
+//   ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
+//   ctx.fillStyle = 'rgba(66, 66, 66, 0.15)';
+
+//   var emailTextWidth = ctx.measureText(text).width;
+//   var orgTextWidth = ctx.measureText(org).width;
+//   var timeStr = getTime();
+//   var timeTextWidth = ctx.measureText(timeStr).width;
+
+//   var horizontalDrawTimes = canvasWidth * 2 / (emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap);
+//   var verticalDrawTimes = canvasHeight * 2 / (fontSize + verticalGap);
+
+//   ctx.translate(x, y);
+//   ctx.rotate(-Math.PI / 4);
+
+//   for (var i = 0; i <= verticalDrawTimes; i++) {
+//     var yPosition = -canvasHeight;
+//     for (var j = 0; j <= horizontalDrawTimes; j++) {
+
+//     }
+//   }
+
+//   ctx.restore();
+// }
 
 /* Copyright 2017 Mozilla Foundation
  *
