@@ -30,80 +30,83 @@ function wordCount(text) {
   return count;
 }
 
-function drawWatermark(ctx, text, org) {
-  var canvas = ctx.canvas;
-
-  var fontSize = Math.floor(canvas.width * 0.8 / wordCount(text)); // 总长度为宽度的 0.8
-  fontSize = Math.floor(fontSize / 4) * 4; // 字体大小设为 4 的倍数
-  if (fontSize > canvas.width / 8) {
-    fontSize = canvas.width / 8;
-  } else if (fontSize < canvas.width / 16) {
-    fontSize = canvas.width / 16;
-  }
-
-  ctx.save();
-
-  ctx.fillStyle = 'rgba(66, 66, 66, 0.15)';
-  ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
-  var w = ctx.measureText(text).width;
-  var x = canvas.width / 2;
-  var y = canvas.height / 2;
-
-  ctx.translate(x, y);
-  ctx.rotate(-Math.PI / 4);
-  ctx.translate(-w/2, 0);
-  ctx.fillText(text, 0, 0);
-  ctx.translate(w/2, 0, 0);
-
-  var timeStr = getTime();
-  ctx.font = 'bold ' + fontSize / 2 + 'px Helvetica,Arial,STSong,SimSun';
-  w = ctx.measureText(timeStr).width;
-  ctx.translate(-w/2, fontSize);
-  ctx.fillText(timeStr, 0, 0);
-  ctx.translate(w/2, -fontSize);
-
-  w = ctx.measureText(org).width;
-  ctx.translate(-w/2, -1.4*fontSize);
-  ctx.fillText(org, 0, 0);
-
-  ctx.restore();
-}
-
 // function drawWatermark(ctx, text, org) {
 //   var canvas = ctx.canvas;
-//   var canvasWidth = canvas.width;
-//   var canvasHeight = canvas.height;
-//   var x = canvasWidth / 2;
-//   var y = canvasHeight / 2;
-//   var fontSize = 12;
-//   var verticalGap = 30;
-//   var horizontalGap = 30;
+
+//   var fontSize = Math.floor(canvas.width * 0.8 / wordCount(text)); // 总长度为宽度的 0.8
+//   fontSize = Math.floor(fontSize / 4) * 4; // 字体大小设为 4 的倍数
+//   if (fontSize > canvas.width / 8) {
+//     fontSize = canvas.width / 8;
+//   } else if (fontSize < canvas.width / 16) {
+//     fontSize = canvas.width / 16;
+//   }
 
 //   ctx.save();
 
-//   ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
 //   ctx.fillStyle = 'rgba(66, 66, 66, 0.15)';
-
-//   var emailTextWidth = ctx.measureText(text).width;
-//   var orgTextWidth = ctx.measureText(org).width;
-//   var timeStr = getTime();
-//   var timeTextWidth = ctx.measureText(timeStr).width;
-
-//   var horizontalDrawTimes = canvasWidth * 2 / (emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap);
-//   var verticalDrawTimes = canvasHeight * 2 / (fontSize + verticalGap);
+//   ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
+//   var w = ctx.measureText(text).width;
+//   var x = canvas.width / 2;
+//   var y = canvas.height / 2;
 
 //   ctx.translate(x, y);
 //   ctx.rotate(-Math.PI / 4);
+//   ctx.translate(-w/2, 0);
+//   ctx.fillText(text, 0, 0);
+//   ctx.translate(w/2, 0, 0);
 
-//   for (var i = 0; i <= verticalDrawTimes; i++) {
-//     var yPosition = -canvasHeight;
-//     for (var j = 0; j <= horizontalDrawTimes; j++) {
+//   var timeStr = getTime();
+//   ctx.font = 'bold ' + fontSize / 2 + 'px Helvetica,Arial,STSong,SimSun';
+//   w = ctx.measureText(timeStr).width;
+//   ctx.translate(-w/2, fontSize);
+//   ctx.fillText(timeStr, 0, 0);
+//   ctx.translate(w/2, -fontSize);
 
-//     }
-//   }
+//   w = ctx.measureText(org).width;
+//   ctx.translate(-w/2, -1.4*fontSize);
+//   ctx.fillText(org, 0, 0);
 
 //   ctx.restore();
 // }
+
+function drawWatermark(ctx, text, org) {
+  var canvas = ctx.canvas;
+  var canvasWidth = canvas.width;
+  var canvasHeight = canvas.height;
+  var x = canvasWidth / 2;
+  var y = canvasHeight / 2;
+  var fontSize = 20;
+  var verticalGap = 30;
+  var horizontalGap = 60;
+
+  ctx.save();
+
+  ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
+  ctx.fillStyle = 'rgba(66, 66, 66, 0.15)';
+
+  var emailTextWidth = ctx.measureText(text).width;
+  var orgTextWidth = ctx.measureText(org).width;
+  var timeStr = getTime();
+  var timeTextWidth = ctx.measureText(timeStr).width;
+  var allHorizontalWidth = emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap;
+
+  var horizontalDrawTimes = canvasWidth * 2 / (emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap);
+  var verticalDrawTimes = canvasHeight * 2 / (fontSize + verticalGap);
+
+  ctx.translate(x, y);
+  ctx.rotate(-Math.PI / 4);
+
+  for (var i = 0; i <= verticalDrawTimes; i++) {
+    var yPosition = -canvasHeight + (fontSize + horizontalGap) * i;
+    for (var j = 0; j <= horizontalDrawTimes; j++) {
+      ctx.fillText(text, -canvasWidth + allHorizontalWidth * j, yPosition);
+      ctx.fillText(org, -canvasWidth + emailTextWidth + horizontalGap + allHorizontalWidth * j, yPosition);
+      ctx.fillText(timeStr, -canvasWidth + emailTextWidth + horizontalGap + orgTextWidth + horizontalGap + allHorizontalWidth * j, yPosition);
+    }
+  }
+
+  ctx.restore();
+}
 
 /* Copyright 2017 Mozilla Foundation
  *
