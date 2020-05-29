@@ -74,9 +74,9 @@ class LoginContainer extends React.Component {
                     <img className={headerStyles['loginImg']} src="/images/btn_sign_in.png" alt="" />
                   </a></li>
                   <li className={headerStyles['textT']}>
-                    <span className={headerStyles['textCh']}>中文</span>
+                    <span className={`${headerStyles['textCh']}${window.LANG !== 'en' ? ` ${headerStyles['disabled']}` : ''}`} onClick={this.changeLang.bind(this, 'cn')} disabled={window.LANG !== "en"}>中文</span>
                     <span className={headerStyles['textLine']}>|</span>
-                    <span className={headerStyles['textEnglish']}>EN</span></li>
+                    <span className={`${headerStyles['textEnglish']}${window.LANG === 'en' ? ` ${headerStyles['disabled']}` : ''}`} onClick={this.changeLang.bind(this, 'en')} disabled={window.LANG === "en"}>EN</span></li>
                 </ul>
               </div>
             </div>
