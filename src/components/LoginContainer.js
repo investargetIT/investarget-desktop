@@ -48,36 +48,40 @@ class LoginContainer extends React.Component {
     };
     return (
       <div style={containerStyle}>
-        {/* <div style={headerStyle}>
-          <img src={logo} style={logoStyle} />
-          <div style={{float: "right", marginRight: 30, lineHeight: "80px"}}>
-            <a onClick={this.changeLang.bind(this, 'cn')} disabled={window.LANG!=="en"}>中文</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a onClick={this.changeLang.bind(this, 'en')} disabled={window.LANG==="en"}>English</a>
+        {source !== 1 && (
+          <div style={headerStyle}>
+            <img src={logo} style={logoStyle} />
+            <div style={{ float: "right", marginRight: 30, lineHeight: "80px" }}>
+              <a onClick={this.changeLang.bind(this, 'cn')} disabled={window.LANG !== "en"}>中文</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a onClick={this.changeLang.bind(this, 'en')} disabled={window.LANG === "en"}>English</a>
+            </div>
           </div>
-        </div> */}
+        )}
 
-        <div className={headerStyles.head}>
-          <div className={`${headerStyles['row']} ${headerStyles['row01']}`}>
-            <div className={headerStyles['text-right']}>
-              <img className={headerStyles['logoHead']} src="/images/investarget_new_logo.png" alt="" />
-            </div>
-            <div className={headerStyles['col-lg-offset-1']} style={{ flex: 0.7, textAlign: 'right' }}>
-              <ul className={`list-inline ${headerStyles.headText}`}>
-                <li><a href="../pages/index.html">主页</a></li>
-                <li><a href="../pages/index2.html">精品投行</a></li>
-                <li><a href="../pages/index3.html">产业投资</a></li>
-                <li><a href="../pages/index4.html">产业发展</a></li>
-                <li><a href="../pages/index5.html">联系我们</a></li>
-                <li><a href="./logoin.html">
-                  <img className={headerStyles['loginImg']} src="/images/btn_sign_in.png" alt="" />
-                </a></li>
-                <li className={headerStyles['textT']}>
-                  <span className={headerStyles['textCh']}>中文</span>
-                  <span className={headerStyles['textLine']}>|</span>
-                  <span className={headerStyles['textEnglish']}>EN</span></li>
-              </ul>
+        {source === 1 && (
+          <div className={headerStyles.head}>
+            <div className={`${headerStyles['row']} ${headerStyles['row01']}`}>
+              <div className={headerStyles['text-right']}>
+                <img className={headerStyles['logoHead']} src="/images/investarget_new_logo.png" alt="" />
+              </div>
+              <div className={headerStyles['col-lg-offset-1']} style={{ flex: 0.7, textAlign: 'right' }}>
+                <ul className={`list-inline ${headerStyles.headText}`}>
+                  <li><a href="../pages/index.html">主页</a></li>
+                  <li><a href="../pages/index2.html">精品投行</a></li>
+                  <li><a href="../pages/index3.html">产业投资</a></li>
+                  <li><a href="../pages/index4.html">产业发展</a></li>
+                  <li><a href="../pages/index5.html">联系我们</a></li>
+                  <li><a href="./logoin.html">
+                    <img className={headerStyles['loginImg']} src="/images/btn_sign_in.png" alt="" />
+                  </a></li>
+                  <li className={headerStyles['textT']}>
+                    <span className={headerStyles['textCh']}>中文</span>
+                    <span className={headerStyles['textLine']}>|</span>
+                    <span className={headerStyles['textEnglish']}>EN</span></li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div style={bodyWrapStyle}>
           <div style={bodyStyle}>
