@@ -70,7 +70,7 @@ class LoginContainer extends React.Component {
                   <li><a href="../pages/index3.html">产业投资</a></li>
                   <li><a href="../pages/index4.html">产业发展</a></li>
                   <li><a href="../pages/index5.html">联系我们</a></li>
-                  <li><a href="./logoin.html">
+                  <li><a href="/login">
                     <img className={headerStyles['loginImg']} src="/images/btn_sign_in.png" alt="" />
                   </a></li>
                   <li className={headerStyles['textT']}>
