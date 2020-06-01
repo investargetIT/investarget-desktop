@@ -6,12 +6,26 @@ import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
 
-const formStyle = {width:418,height:360,padding:'0 19px',background:'rgba(47,48,49,.8)',position:'absolute',top:196,right:20,zIndex:1,color:'#fff'}
-const formTitleStyle = {padding:'24px 0 18px',fontSize:22,fontWeight:400,textAlign:'center',color:'#fff',borderBottom:'2px solid #fff'}
+const formStyle = {width:418,height:360,padding:'0 19px',background:'white',position:'absolute',top:196,right:20,zIndex:1,color:'#666'}
+const formTitleStyle = {padding:'24px 0 18px',fontSize:22,fontWeight:400,textAlign:'center',color:'#666',borderBottom:'2px solid #666'}
 const formSubtitleStyle = {fontSize:16,padding:'12px 16px',fontWeight:200}
-const formInputStyle = {border:'none',fontSize:16,fontWeight:200,color:'#989898',padding:'12px 16px',paddingRight:40,height:'auto'}
-const inputIconStyle = {width:18,height:18,lineHeight:'18x',textAlign:'center',position:'absolute',top:15,right:16}
-const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200}
+const formInputStyle = {
+  border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
+  background: '#F0F0F0',
+  border: '1px solid #ccc',
+  borderRadius: 4,
+  fontSize: 14,
+  padding: '5px 20px',
+  color: '#555',
+};
+const inputIconStyle = {width:18,height:18,lineHeight:'18x',textAlign:'center',position:'absolute',top:15,right:16, display: 'none'}
+const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200,
+  fontSize: 16,
+  background: '#13356C',
+  borderRadius: 6,
+  fontWeight: 'normal',
+  height: 43,
+};
 
 
 class Login extends React.Component {
@@ -106,7 +120,7 @@ class Login extends React.Component {
                 valuePropName: 'checked',
                 initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
               })(
-                <Checkbox className="it" style={{color:'#fff'}}>{i18n('account.auto_login')}</Checkbox>
+                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.auto_login')}</Checkbox>
               )}
               <Link style={{float:'right',textDecoration:'underline'}} to="/password">{i18n("account.forget_password")}</Link>
             </div>

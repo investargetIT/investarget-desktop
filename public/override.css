@@ -193,7 +193,7 @@ button[disabled], html input[disabled] {
 
 .it .ant-checkbox .ant-checkbox-inner, .it .ant-checkbox-checked .ant-checkbox-inner {
   background-color: transparent;
-  border-color: #fff;
+  border-color: #666;
 }
 .it .ant-checkbox-checked .ant-checkbox-inner:after {
   border-color: #237ccc;
