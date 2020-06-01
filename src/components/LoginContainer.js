@@ -25,7 +25,7 @@ class LoginContainer extends React.Component {
     let logo, bg;
     if (source === 1) {
       logo = '/images/logo.png';
-      bg = 'url(/images/background.jpg)';
+      bg = 'url(/images/investarget_bg.png)';
     } else if (source === 2) {
       logo = '/images/autospace.png';
       bg = 'url(/images/bg_autospace.png)';
