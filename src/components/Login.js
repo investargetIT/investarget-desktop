@@ -6,7 +6,7 @@ import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
 
-const formStyle = {width:500,padding:20,background:'white',zIndex:1,color:'#666', 
+const formStyle = {width:418,padding:20,background:'white',zIndex:1,color:'#666', 
   border: '1px solid rgba(0, 0, 0, .2)',
   borderRadius: 6,
   boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
@@ -19,7 +19,7 @@ const formInputStyle = {
   border: '1px solid #ccc',
   borderRadius: 4,
   fontSize: 14,
-  padding: '5px 20px',
+  // padding: '5px 20px',
   color: '#555',
 };
 const inputIconStyle = {width:18,height:18,lineHeight:'18x',textAlign:'center',position:'absolute',top:15,right:16, display: 'none'}
@@ -28,7 +28,7 @@ const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35
   background: '#13356C',
   borderRadius: 6,
   fontWeight: 'normal',
-  height: 43,
+  // height: 43,
 };
 
 
@@ -92,7 +92,7 @@ class Login extends React.Component {
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
-            <div style={{ width: '60%', margin: '0 auto' }}>
+            <div style={{ margin: '0 auto' }}>
               <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
               <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
