@@ -6,9 +6,13 @@ import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
 
-const formStyle = {width:418,height:360,padding:'0 19px',background:'white',position:'absolute',top:196,right:20,zIndex:1,color:'#666'}
-const formTitleStyle = {padding:'24px 0 18px',fontSize:22,fontWeight:400,textAlign:'center',color:'#666',borderBottom:'2px solid #666'}
-const formSubtitleStyle = {fontSize:16,padding:'12px 16px',fontWeight:200}
+const formStyle = {width:500,padding:20,background:'white',zIndex:1,color:'#666', 
+  border: '1px solid rgba(0, 0, 0, .2)',
+  borderRadius: 6,
+  boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
+};
+const formTitleStyle = {fontSize:30,fontWeight:400,textAlign:'center',color:'#666'}
+const formSubtitleStyle = {fontSize:14,color: '#666',padding:'12px 16px', marginBottom: 30, textAlign: 'center'}
 const formInputStyle = {
   border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
   background: '#F0F0F0',
@@ -88,46 +92,48 @@ class Login extends React.Component {
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
-            <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
-            <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
+            <div style={{ width: '60%', margin: '0 auto' }}>
+              <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
+              <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
-            <div style={{position:'relative', marginBottom:8}}>
-              {getFieldDecorator('username', {
-                rules: [{ required: true, message: i18n('account.account_warning') }],
-                initialValue: this.username || '',
-              })(
-                <Input placeholder={i18n('account.account_warning')} style={formInputStyle} />
-              )}
-              <div style={inputIconStyle}>
-                <img src="/images/sign-in-username.jpg" style={{verticalAlign:'top'}} />
+              <div style={{ position: 'relative', marginBottom: 20, }}>
+                {getFieldDecorator('username', {
+                  rules: [{ required: true, message: i18n('account.account_warning') }],
+                  initialValue: this.username || '',
+                })(
+                  <Input placeholder={i18n('account.account_warning')} style={formInputStyle} />
+                )}
+                <div style={inputIconStyle}>
+                  <img src="/images/sign-in-username.jpg" style={{ verticalAlign: 'top' }} />
+                </div>
               </div>
-            </div>
 
-            <div style={{position:'relative'}}>
-              {getFieldDecorator('password', {
-                rules: [{ required: true, message: i18n('account.password_warning') }],
-                initialValue: this.password || '',
-              })(
-                <Input placeholder={i18n('account.password_warning')} style={formInputStyle} type="password" />
-              )}
-              <div style={inputIconStyle}>
-                <img src="/images/sign-in-password.jpg" style={{verticalAlign:'top'}} />
+              <div style={{ position: 'relative' }}>
+                {getFieldDecorator('password', {
+                  rules: [{ required: true, message: i18n('account.password_warning') }],
+                  initialValue: this.password || '',
+                })(
+                  <Input placeholder={i18n('account.password_warning')} style={formInputStyle} type="password" />
+                )}
+                <div style={inputIconStyle}>
+                  <img src="/images/sign-in-password.jpg" style={{ verticalAlign: 'top' }} />
+                </div>
               </div>
-            </div>
 
-            <div style={{padding:'8px 16px'}}>
-              {getFieldDecorator('remember', {
-                valuePropName: 'checked',
-                initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
-              })(
-                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.auto_login')}</Checkbox>
-              )}
-              <Link style={{float:'right',textDecoration:'underline'}} to="/password">{i18n("account.forget_password")}</Link>
-            </div>
+              <div style={{ padding: '10px 16px' }}>
+                {getFieldDecorator('remember', {
+                  valuePropName: 'checked',
+                  initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
+                })(
+                  <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.auto_login')}</Checkbox>
+                )}
+                <Link style={{ float: 'right', textDecoration: 'underline' }} to="/password">{i18n("account.forget_password")}</Link>
+              </div>
 
-            <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
-            <div style={{padding:8}}>
-              {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{textDecoration:'underline'}}>{i18n('account.directly_register')}</Link>
+              <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
+              <div style={{ marginTop: 10, padding: 8, textAlign: 'center' }}>
+                {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ textDecoration: 'underline' }}>{i18n('account.directly_register')}</Link>
+              </div>
             </div>
           </div>
         </Form>

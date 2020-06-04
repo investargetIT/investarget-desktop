@@ -4,7 +4,11 @@ import headerStyles from './LoginContainerHeader.css';
 const containerStyle = {background:'#fff'}
 const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
 const logoStyle = {height: 70, padding: '10px 0'}
-const bodyStyle = {width: 1200, height: '100%', margin: '0 auto', position: 'relative'}
+const bodyStyle = {width: 1200, height: '100%', margin: '0 auto', position: 'relative', 
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
 const footerStyle = {width: 1200, height: 100, margin: '0 auto', backgroundColor: '#fff'}
 const copyrightStyle = {textAlign:'center',height:20,lineHeight:'20px',paddingTop:40,fontSize:16,color:'#989898'}
 
