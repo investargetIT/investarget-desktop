@@ -94,7 +94,7 @@ class LoginContainer extends React.Component {
         </div>
         <div style={footerStyle}>
           <p style={copyrightStyle}>
-            &copy; 2018.All Rights Reserved. Investarget
+            &copy; 2020.All Rights Reserved. Investarget
           </p>
         </div>
       </div>
