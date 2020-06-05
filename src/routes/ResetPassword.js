@@ -20,7 +20,7 @@ const titleStyle = {
   textAlign: 'center',
   lineHeight: 4
 }
-const formStyle = {width:500,padding:20,background:'white',zIndex:1,color:'#666', 
+const formStyle = {width:418,padding:20,background:'white',zIndex:1,color:'#666', 
   border: '1px solid rgba(0, 0, 0, .2)',
   borderRadius: 6,
   boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
@@ -33,17 +33,22 @@ const formInputStyle = {
   border: '1px solid #ccc',
   borderRadius: 4,
   fontSize: 14,
-  padding: '5px 20px',
+  // padding: '5px 20px',
   color: '#555',
 };
 const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
-const inputStyle = {border:'none',fontSize:16,fontWeight:200,padding:'12px 16px',height:50,marginBottom:8}
+const inputStyle = {border:'none',fontSize:16,fontWeight:200,height:50,marginBottom:8, 
+  background: '#F0F0F0',
+  border: '1px solid #ccc',
+  borderRadius: 4,
+};
 const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200,
   fontSize: 16,
   background: '#13356C',
   borderRadius: 6,
   fontWeight: 'normal',
-  height: 43,
+  // height: 43,
+  marginTop: 8,
 };
 
 class ResetPassword extends React.Component {
@@ -208,7 +213,7 @@ class ResetPassword extends React.Component {
             <h1 style={formTitleStyle}>{i18n('account.reset_password')}</h1>
             <p style={formSubtitleStyle}>{i18n('account.reset_info')}</p>
 
-            <div style={formInputStyle}>
+            <div style={inputStyle}>
               {getFieldDecorator('mobileInfo', {
                 rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
                 initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
@@ -254,7 +259,7 @@ class ResetPassword extends React.Component {
 
             <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n("common.submit")}</Button>
 
-            <div style={{padding:8,paddingLeft:16}}>
+            <div style={{padding:8,paddingLeft:16, textAlign: 'center'}}>
               {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
             </div>
 
