@@ -306,7 +306,6 @@ class Register extends React.Component {
       overflow: 'hidden',
     }
     const wrapperStyle = {
-      position: 'absolute',
       zIndex: 1,
       width: '300%',
       height: '100%',
@@ -353,16 +352,40 @@ class Register extends React.Component {
       }
     }
 
-    const formStyle = {width:418,height:712,padding:'0 19px',background:'rgba(47,48,49,.8)',position:'absolute',top:19,right:20,zIndex:1,color:'#fff'}
-    const formInputStyle = {border:'none',fontSize:14,padding:'12px 16px',paddingRight:40,height:50}
+    const formStyle = {
+      width: 418, padding: 20, background: 'white', zIndex: 1, color: '#666',
+      border: '1px solid rgba(0, 0, 0, .2)',
+      borderRadius: 6,
+      boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
+    };
+    const formInputStyle = {
+      border: 'none', fontSize: 14, padding: '12px 16px', paddingRight: 40, height: 50,
+      background: '#F0F0F0',
+      border: '1px solid #ccc',
+      borderRadius: 4,
+      fontSize: 14,
+      color: '#555'
+    };
     const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
 
-    const selectWrapStyle = {display: 'flex',alignItems: 'center',backgroundColor: '#fff',marginBottom: 8,borderRadius: 4,height: 50}
+    const selectWrapStyle = {
+      display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
+      border: 'none', fontSize: 16, fontWeight: 200, height: 50, marginBottom: 8,
+      background: '#F0F0F0',
+      border: '1px solid #ccc',
+      borderRadius: 4,
+    };
     const selectLabelStyle = {flexShrink: 0,fontSize: 16,width: 110, textAlign:"center" ,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
-    const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none'}
+    const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none',backgroundColor: 'inherit'}
     const selectContentContainerStyle = {flexGrow:1,height:50}
 
-    const wrapStyle = {backgroundColor:'#fff',borderRadius:4,height:50,display:'flex',alignItems:'center',marginBottom:8}
+    const wrapStyle = {
+      backgroundColor: '#fff', borderRadius: 4, height: 50, display: 'flex', alignItems: 'center', marginBottom: 8,
+      border: 'none', fontSize: 16, fontWeight: 200, height: 50, marginBottom: 8,
+      background: '#F0F0F0',
+      border: '1px solid #ccc',
+      borderRadius: 4,
+    };
     const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
     const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0}
 
@@ -372,7 +395,7 @@ class Register extends React.Component {
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
     const content = (
-      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
+      <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
 
@@ -387,7 +410,7 @@ class Register extends React.Component {
               )}
             </div>
 
-            <div style={{marginBottom: 8}}>
+            <div style={wrapStyle}>
             {getFieldDecorator('mobileInfo', {
               rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
               initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },

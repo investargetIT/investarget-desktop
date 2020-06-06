@@ -87,7 +87,7 @@ class LoginContainer extends React.Component {
           </div>
         )}
 
-        <div style={bodyWrapStyle}>
+        <div style={{ ...bodyWrapStyle, ...this.props.bodyWrapStyle }}>
           <div style={bodyStyle}>
             {props.children}
           </div>
