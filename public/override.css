@@ -309,12 +309,15 @@ button[disabled], html input[disabled] {
   height: 20px;
   line-height: 20px;
 }
+.it-login-select-multiple.ant-select-lg .ant-select-selection--multiple .ant-select-selection__rendered li.ant-select-selection__choice {
+  background-color: #ccc;
+}
 .it-login-select-multiple .ant-select-selection--multiple .ant-select-selection__choice__content {
   font-size: 12px;
 }
 
 .it-login-radio.ant-radio-group .ant-radio-wrapper {
-  color: #fff;
+  color: #666;
   font-size: 18px;
   margin-right: 18px;
 }

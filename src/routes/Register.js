@@ -370,7 +370,7 @@ class Register extends React.Component {
 
     const selectWrapStyle = {
       display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
-      border: 'none', fontSize: 16, fontWeight: 200, height: 50, marginBottom: 8,
+      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
       background: '#F0F0F0',
       border: '1px solid #ccc',
       borderRadius: 4,
@@ -381,15 +381,21 @@ class Register extends React.Component {
 
     const wrapStyle = {
       backgroundColor: '#fff', borderRadius: 4, height: 50, display: 'flex', alignItems: 'center', marginBottom: 8,
-      border: 'none', fontSize: 16, fontWeight: 200, height: 50, marginBottom: 8,
+      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
       background: '#F0F0F0',
       border: '1px solid #ccc',
       borderRadius: 4,
     };
     const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
-    const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0}
+    const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0,backgroundColor: '#F0F0F0'}
 
-    const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200}
+    const submitStyle = {
+      width: '100%', height: 50, fontSize: 20, backgroundColor: 'rgba(35,126,205,.8)', border: 'none', color: '#fff', fontWeight: 200,
+      fontSize: 16,
+      background: '#13356C',
+      borderRadius: 6,
+      fontWeight: 'normal',
+    };
 
 
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
@@ -501,14 +507,14 @@ class Register extends React.Component {
 
             <div style={{padding:'8px 16px'}}>
               {getFieldDecorator("agreement", { rules: [{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}] })(
-                <Checkbox className="it" style={{color:'#fff'}}>{i18n('account.agreement1')}</Checkbox>
+                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.agreement1')}</Checkbox>
               )}
               <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>{i18n('account.agreement2')}</Link>
             </div>
 
             <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
 
-            <div style={{padding:'8px 16px'}}>
+            <div style={{padding:'8px 16px', textAlign: 'center'}}>
               {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
             </div>
 
