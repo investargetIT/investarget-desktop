@@ -157,7 +157,7 @@ function Header(props) {
   return (
     <div style={{backgroundColor:'#fff', ...props.style}}>
 
-      <Logo style={{float: 'left', width: 240}} />
+      <Logo style={{float: 'left'}} />
 
       <SiteSearch />
 
