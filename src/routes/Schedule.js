@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm } from 'antd'
+import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { withRouter } from 'dva/router'
 import { handleError, time, i18n, getCurrentUser, getUserInfo, hasPerm } from '../utils/util'
@@ -65,6 +65,13 @@ class Schedule extends React.Component {
     })
   }
 
+  // getEventPopoverContent = (item) => {
+  //   window.echo('get event item', item);
+  //   return (
+  //     <div>WebEx</div>
+  //   );
+  // }
+
   dateCellRender = (value) => {
     const listData = this.getListData(value);
     return (
@@ -72,11 +79,17 @@ class Schedule extends React.Component {
         {
           listData.map(item => (
             <li
+              style={{ lineHeight: '20px' }}
               className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
               key={`${item.type}-${item.id}`}
               onClick={this.handleClickEvent.bind(this, item)}
             >
-              {item.comments}
+              {item.type === 4 ?
+                <span>
+                  <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="Webex" />
+                  <span>{item.comments}</span>
+                </span>
+                : item.comments}
             </li>
           ))
         }
@@ -509,8 +522,8 @@ class Schedule extends React.Component {
           <div style={{ marginLeft: 5 }}>约见公司</div>
           <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: 'rgb(95, 163, 246)' }}></div>
           <div style={{ marginLeft: 5 }}>约见投资人</div>
-          <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: '#EF5350' }}></div>
-          <div style={{ marginLeft: 5 }}>视频会议</div>
+          {/* <div style={{ marginLeft: 20, width: 20, height: 20, backgroundColor: '#EF5350' }}></div>
+          <div style={{ marginLeft: 5 }}>视频会议</div> */}
         </div>
 
         {visibleAdd &&
