@@ -84,9 +84,13 @@ class Schedule extends React.Component {
               key={`${item.type}-${item.id}`}
               onClick={this.handleClickEvent.bind(this, item)}
             >
-              {item.type === 4 ?
+              {item.type === 4 || item.type === 7 ?
                 <span>
-                  <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="Webex" />
+                  <img
+                    style={{ marginRight: 8, width: 20 }}
+                    src={item.type === 4 ? '/images/webex.png' : '/images/zoom.png'}
+                    alt=""
+                  />
                   <span>{item.comments}</span>
                 </span>
                 : item.comments}
@@ -220,6 +224,28 @@ class Schedule extends React.Component {
           }
         });
         list = list.concat(reportList);
+      }
+
+      // 获取 zoom 视频会议列表
+      if (hasPerm('usersys.as_trader')) {
+        const requestZoom = await api.getZoomMeetingList();
+        window.echo(requestZoom);
+        const { data: zoomMeetingList } = requestZoom;
+
+        let zoomList = [];
+        for (const email in zoomMeetingList) {
+          // skip loop if the property is from prototype
+          if (!zoomMeetingList.hasOwnProperty(email)) continue;
+          const listForThisEmail = zoomMeetingList[email];
+          zoomList = zoomList.concat(listForThisEmail.map(m => ({
+            ...m,
+            email,
+            scheduledtime: m.start_time.slice(0, 10),
+            comments: m.topic,
+            type: 7,
+          })));
+        }
+        window.echo('zoom list', zoomList);
       }
 
       list.sort((a, b) => {

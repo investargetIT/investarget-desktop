@@ -954,3 +954,5 @@ export const searchOrg = params => r(`/org/search/?${qs.stringify(params)}`);
 export const getOnlineTest = () => r('/msg/internTest/');
 export const startOnlineTest = body => r('/msg/internTest/', 'POST', body);
 export const endOnlineTest = (id, body) => r(`/msg/internTest/${id}/`, 'PUT', body);
+
+export const getZoomMeetingList = () => r('/service/zoom/meetings/?type=upcoming');
