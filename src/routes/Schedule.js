@@ -228,8 +228,27 @@ class Schedule extends React.Component {
 
       // 获取 zoom 视频会议列表
       if (hasPerm('usersys.as_trader')) {
-        const requestZoom = await api.getZoomMeetingList();
-        window.echo(requestZoom);
+        // const requestZoom = await api.getZoomMeetingList();
+        const requestZoom = {
+          data: {
+            'hulk.wang@investarget.com': [],
+            'summer.xia@investarget.com': [],
+            'di.you@investarget.com': [
+              {
+                created_at: '2020-06-04T05:06:03Z',
+                uuid: 'dsadasnjkcndsjadasd',
+                start_time: '2020-06-25T02:00:00Z',
+                topic: 'Test Topic',
+                timezone: 'Asia/Shanghai',
+                duration: 90,
+                host_id: 'dsad-fdsfnjksfdsf-fsdfjks',
+                join_url: 'https://zoom.com.cn/j/793828193',
+                type: 2,
+                id: 3213789324,
+              },
+            ],
+          },
+        };
         const { data: zoomMeetingList } = requestZoom;
 
         let zoomList = [];
@@ -240,12 +259,13 @@ class Schedule extends React.Component {
           zoomList = zoomList.concat(listForThisEmail.map(m => ({
             ...m,
             email,
-            scheduledtime: m.start_time.slice(0, 10),
+            scheduledtime: m.start_time.slice(0, 19),
+            timezone: '+08:00',
             comments: m.topic,
             type: 7,
           })));
         }
-        window.echo('zoom list', zoomList);
+        list = list.concat(zoomList);
       }
 
       list.sort((a, b) => {
