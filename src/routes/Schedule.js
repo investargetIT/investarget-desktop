@@ -65,12 +65,12 @@ class Schedule extends React.Component {
     })
   }
 
-  // getEventPopoverContent = (item) => {
-  //   window.echo('get event item', item);
-  //   return (
-  //     <div>WebEx</div>
-  //   );
-  // }
+  getWebexPopoverContent= (item) => {
+    window.echo('get event item', item);
+    return (
+      <div>WebEx</div>
+    );
+  }
 
   getZoomPopoverContent = (item) => {
     return (
@@ -97,10 +97,12 @@ class Schedule extends React.Component {
             >
               {/* Webex */}
               {item.type === 4 &&
-                <span>
-                  <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
-                  <span>{item.comments}</span>
-                </span>
+                <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
+                  <span>
+                    <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
+                    <span>{item.comments}</span>
+                  </span>
+                </Popover>
               }
               {/* Zoom */}
               {item.type === 7 &&
