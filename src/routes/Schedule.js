@@ -67,6 +67,14 @@ class Schedule extends React.Component {
 
   getWebexPopoverContent= (item) => {
     window.echo('get event item', item);
+    if (item.type === 4 && item.meeting) {
+      // const data = await api.getWebexUser({ meeting: item.meeting.id })
+      // window.echo('data', data);
+      // const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
+      // const currentAttendee = data.data.data.filter(f => f.user === getCurrentUser())[0];
+      // this.setState({ attendees: content, currentAttendee });
+    }
+
     return (
       <div>WebEx</div>
     );
