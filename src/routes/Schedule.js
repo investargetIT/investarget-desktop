@@ -72,6 +72,17 @@ class Schedule extends React.Component {
   //   );
   // }
 
+  getZoomPopoverContent = (item) => {
+    return (
+      <div>
+        <div>邮箱：{item.email}</div>
+        <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
+        <div>主题：{item.comments}</div>
+        <div>加入链接：<a href={item.join_url} target="_blank">{item.join_url}</a></div>
+      </div>
+    );
+  }
+
   dateCellRender = (value) => {
     const listData = this.getListData(value);
     return (
@@ -93,10 +104,12 @@ class Schedule extends React.Component {
               }
               {/* Zoom */}
               {item.type === 7 &&
-                <span>
-                  <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
-                  <span>{item.comments}</span>
-                </span>
+                <Popover title="Zoom视频会议" content={this.getZoomPopoverContent(item)}>
+                  <span>
+                    <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
+                    <span>{item.comments}</span>
+                  </span>
+                </Popover>
               }
               {/* Others */}
               {item.type !== 4 && item.type !== 7 && item.comments}
