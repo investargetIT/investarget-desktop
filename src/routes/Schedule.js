@@ -84,16 +84,22 @@ class Schedule extends React.Component {
               key={`${item.type}-${item.id}`}
               onClick={this.handleClickEvent.bind(this, item)}
             >
-              {item.type === 4 || item.type === 7 ?
+              {/* Webex */}
+              {item.type === 4 &&
                 <span>
-                  <img
-                    style={{ marginRight: 8, width: 20 }}
-                    src={item.type === 4 ? '/images/webex.png' : '/images/zoom.png'}
-                    alt=""
-                  />
+                  <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
                   <span>{item.comments}</span>
                 </span>
-                : item.comments}
+              }
+              {/* Zoom */}
+              {item.type === 7 &&
+                <span>
+                  <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
+                  <span>{item.comments}</span>
+                </span>
+              }
+              {/* Others */}
+              {item.type !== 4 && item.type !== 7 && item.comments}
             </li>
           ))
         }
