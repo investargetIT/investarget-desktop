@@ -65,19 +65,35 @@ class Schedule extends React.Component {
     })
   }
 
-  getWebexPopoverContent= (item) => {
-    window.echo('get event item', item);
-    if (item.type === 4 && item.meeting) {
-      // const data = await api.getWebexUser({ meeting: item.meeting.id })
-      // window.echo('data', data);
-      // const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
-      // const currentAttendee = data.data.data.filter(f => f.user === getCurrentUser())[0];
-      // this.setState({ attendees: content, currentAttendee });
-    }
+  getWID = (url) => {
+    const wid = url.match(/WID=(.*)&/)[1];
+    return wid;
+  }
 
-    return (
-      <div>WebEx</div>
-    );
+  getPW = (url) => {
+    const pw = url.match(/PW=(.*)/)[1];
+    return pw;
+  }
+
+  getWebexPopoverContent= (item) => {
+    if (item.type === 4 && item.meeting) {
+      const isHost = item.currentAttendee.meetingRole;
+      let joinUrl = '';
+      if (isHost) {
+        joinUrl = `${window.location.protocol}//${window.location.host}/webex.html?wid=${this.getWID(item.meeting.url)}&pw=${this.getPW(item.meeting.url)}&mk=${item.meeting.meetingKey}`;
+      } else {
+        joinUrl = `https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${item.meeting.meetingKey}&AN=${item.currentAttendee.name}&AE=${item.currentAttendee.email}`;
+      }
+      return (
+        <div>
+          <div>邮箱：{item.currentAttendee.email}</div>
+          <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
+          <div>主题：{item.comments}</div>
+          <div>加入链接：<a href={joinUrl} target="_blank">{joinUrl}</a></div>
+        </div>
+      );
+    }
+    return null;
   }
 
   getZoomPopoverContent = (item) => {
@@ -216,6 +232,18 @@ class Schedule extends React.Component {
         }
       }
 
+      // Webex 相关逻辑
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+        if (element.type === 4 && element.meeting) {
+          const webexUser = await api.getWebexUser({ meeting: element.meeting.id });
+          // const content = webexUser.data.data.map(m => `${m.name} ${m.email}`).join('\n');
+          const currentAttendee = webexUser.data.data.filter(f => f.user === getCurrentUser())[0];
+          // element.webexContent = content;
+          element.currentAttendee = currentAttendee;
+        }
+      }
+
       // 周报相关逻辑
       if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
         const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
@@ -255,46 +283,50 @@ class Schedule extends React.Component {
         list = list.concat(reportList);
       }
 
-      // 获取 zoom 视频会议列表
-      if (hasPerm('usersys.as_trader')) {
-        // const requestZoom = await api.getZoomMeetingList();
-        const requestZoom = {
-          data: {
-            'hulk.wang@investarget.com': [],
-            'summer.xia@investarget.com': [],
-            'di.you@investarget.com': [
-              {
-                created_at: '2020-06-04T05:06:03Z',
-                uuid: 'dsadasnjkcndsjadasd',
-                start_time: '2020-06-25T02:00:00Z',
-                topic: 'Test Topic',
-                timezone: 'Asia/Shanghai',
-                duration: 90,
-                host_id: 'dsad-fdsfnjksfdsf-fsdfjks',
-                join_url: 'https://zoom.com.cn/j/793828193',
-                type: 2,
-                id: 3213789324,
-              },
-            ],
-          },
-        };
-        const { data: zoomMeetingList } = requestZoom;
+      try {
+        // 获取 zoom 视频会议列表
+        if (hasPerm('usersys.as_trader')) {
+          const requestZoom = await api.getZoomMeetingList();
+          // const requestZoom = {
+          //   data: {
+          //     'hulk.wang@investarget.com': [],
+          //     'summer.xia@investarget.com': [],
+          //     'di.you@investarget.com': [
+          //       {
+          //         created_at: '2020-06-04T05:06:03Z',
+          //         uuid: 'dsadasnjkcndsjadasd',
+          //         start_time: '2020-06-25T02:00:00Z',
+          //         topic: 'Test Topic',
+          //         timezone: 'Asia/Shanghai',
+          //         duration: 90,
+          //         host_id: 'dsad-fdsfnjksfdsf-fsdfjks',
+          //         join_url: 'https://zoom.com.cn/j/793828193',
+          //         type: 2,
+          //         id: 3213789324,
+          //       },
+          //     ],
+          //   },
+          // };
+          const { data: zoomMeetingList } = requestZoom;
 
-        let zoomList = [];
-        for (const email in zoomMeetingList) {
-          // skip loop if the property is from prototype
-          if (!zoomMeetingList.hasOwnProperty(email)) continue;
-          const listForThisEmail = zoomMeetingList[email];
-          zoomList = zoomList.concat(listForThisEmail.map(m => ({
-            ...m,
-            email,
-            scheduledtime: m.start_time.slice(0, 19),
-            timezone: '+08:00',
-            comments: m.topic,
-            type: 7,
-          })));
+          let zoomList = [];
+          for (const email in zoomMeetingList) {
+            // skip loop if the property is from prototype
+            if (!zoomMeetingList.hasOwnProperty(email)) continue;
+            const listForThisEmail = zoomMeetingList[email];
+            zoomList = zoomList.concat(listForThisEmail.map(m => ({
+              ...m,
+              email,
+              scheduledtime: m.start_time.slice(0, 19),
+              timezone: '+08:00',
+              comments: m.topic,
+              type: 7,
+            })));
+          }
+          list = list.concat(zoomList);
         }
-        list = list.concat(zoomList);
+      } catch (error) {
+        console.error(error);
       }
 
       list.sort((a, b) => {
