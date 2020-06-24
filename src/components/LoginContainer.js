@@ -69,11 +69,21 @@ class LoginContainer extends React.Component {
               </div>
               <div className={headerStyles['col-lg-offset-1']} style={{ flex: 0.7, textAlign: 'right' }}>
                 <ul className={`list-inline ${headerStyles.headText}`}>
-                  <li><a href="http://test.investarget.com/pages/index.html">主页</a></li>
-                  <li><a href="http://test.investarget.com/pages/index2.html">精品投行</a></li>
-                  <li><a href="http://test.investarget.com/pages/index3.html">产业投资</a></li>
-                  <li><a href="http://test.investarget.com/pages/index4.html">产业发展</a></li>
-                  <li><a href="http://test.investarget.com/pages/index5.html">联系我们</a></li>
+                  <li><a
+                    // href="http://test.investarget.com/pages/index.html"
+                  >主页</a></li>
+                  <li><a
+                    // href="http://test.investarget.com/pages/index2.html"
+                  >精品投行</a></li>
+                  <li><a
+                    // href="http://test.investarget.com/pages/index3.html"
+                  >产业投资</a></li>
+                  <li><a
+                    // href="http://test.investarget.com/pages/index4.html"
+                  >产业发展</a></li>
+                  <li><a
+                    // href="http://test.investarget.com/pages/index5.html"
+                  >联系我们</a></li>
                   <li><a href="/login">
                     <img className={headerStyles['loginImg']} src="/images/btn_sign_in.png" alt="" />
                   </a></li>
