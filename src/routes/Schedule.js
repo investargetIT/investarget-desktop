@@ -102,6 +102,7 @@ class Schedule extends React.Component {
         <div>邮箱：{item.email}</div>
         <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
         <div>主题：{item.comments}</div>
+        <div>会议ID：{item.id}</div>
         <div>加入链接：<a href={item.join_url} target="_blank">{item.join_url}</a></div>
       </div>
     );
