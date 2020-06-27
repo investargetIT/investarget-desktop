@@ -155,26 +155,67 @@ class EditProject extends React.Component {
     })
   }
 
-  editProject = (formStr, ifBack) => {
-    const form = this[formStr]
-    const id = Number(this.props.params.id)
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        let params = toData(values)
-        api.editProj(id, params).then(result => {
-          this.getProject()
-          if(ifBack){
-            this.goBack()
-          }
-          else{
-            message.success(i18n('project.message.project_updated'), 2)
-          }
+  // editProject = (formStr, ifBack) => {
+  //   const form = this[formStr]
+  //   const id = Number(this.props.params.id)
+  //   form.validateFieldsAndScroll((err, values) => {
+  //     if (!err) {
+  //       let params = toData(values)
+  //       api.editProj(id, params).then(result => {
+  //         this.getProject()
+  //         if(ifBack){
+  //           this.goBack()
+  //         }
+  //         else{
+  //           message.success(i18n('project.message.project_updated'), 2)
+  //         }
           
-        }, error => {
-         this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+  //       }, error => {
+  //        this.props.dispatch({
+  //         type: 'app/findError',
+  //         payload: error
+  //       })
+  //       })
+  //     }
+  //   })
+  // }
+
+  editProject = (formStr, ifBack) => {
+    const react = this;
+    const baseForm = react.baseForm;
+    const id = Number(this.props.params.id)
+    baseForm.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const baseFormParams = toData(values);
+        window.echo('base', baseFormParams);
+        window.echo('react', react);
+        const financeForm = react.financeForm;
+        financeForm.validateFieldsAndScroll((err1, values1) => {
+          if (!err1) {
+            const financeFormParams = toData(values1);
+            window.echo('finance', financeFormParams);
+            const connectForm = react.connectForm;
+            connectForm.validateFieldsAndScroll((err2, values2) => {
+              if (!err2) {
+                const connectFormParams = toData(values2);
+                window.echo('connect', connectFormParams);
+                const detailForm = react.detailForm;
+                detailForm.validateFieldsAndScroll((err3, values3) => {
+                  if (!err3) {
+                    const detailFormParams = toData(values3);
+                    window.echo('detail', detailFormParams);
+                    const params = {
+                      ...baseFormParams,
+                      ...financeFormParams,
+                      ...connectFormParams,
+                      ...detailFormParams,
+                    };
+                    window.echo('params', params);
+                  }
+                })
+              }
+            })
+          }
         })
       }
     })
@@ -206,6 +247,9 @@ class EditProject extends React.Component {
   }
 
   render() {
+    if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
+      return null;
+    }
     const id = Number(this.props.params.id)
     const data = toFormData(this.state.project)
     
@@ -223,14 +267,14 @@ class EditProject extends React.Component {
         <div>
 
           <Tabs defaultActiveKey="1">
-            <TabPane tab={i18n('project.basics')} key="1">
+            <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
                 <BaseForm wrappedComponentRef={this.handleBaseFormRef} data={data} />
                 <FormAction form="baseForm" />
               </div>
             </TabPane>
 
-            <TabPane tab={i18n('project.financials')} key="2">
+            <TabPane tab={i18n('project.financials')} key="2" forceRender>
               <div style={formStyle}>
                 <FinanceForm wrappedComponentRef={this.handleFinanceFormRef} data={data} />
                 <FormAction form="financeForm" />
@@ -241,14 +285,14 @@ class EditProject extends React.Component {
               <ProjectYearFinance projId={id} currencyType={this.state.project.currency} />
             </TabPane>
 
-            <TabPane tab={i18n('project.contact')} key="3">
+            <TabPane tab={i18n('project.contact')} key="3" forceRender>
               <div style={formStyle}>
                 <ConnectForm wrappedComponentRef={this.handleConnectFormRef} data={data} />
                 <FormAction form="connectForm" />
               </div>
             </TabPane>
 
-            <TabPane tab={i18n('project.details')} key="4">
+            <TabPane tab={i18n('project.details')} key="4" forceRender>
               <div style={formStyle}>
                 <DetailForm wrappedComponentRef={this.handleDetailFormRef} data={data} />
                 <FormAction form="detailForm" />
