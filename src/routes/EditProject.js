@@ -187,30 +187,24 @@ class EditProject extends React.Component {
     baseForm.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const baseFormParams = toData(values);
-        window.echo('base', baseFormParams);
-        window.echo('react', react);
         const financeForm = react.financeForm;
         financeForm.validateFieldsAndScroll((err1, values1) => {
           if (!err1) {
             const financeFormParams = toData(values1);
-            window.echo('finance', financeFormParams);
             const connectForm = react.connectForm;
             connectForm.validateFieldsAndScroll((err2, values2) => {
               if (!err2) {
                 const connectFormParams = toData(values2);
-                window.echo('connect', connectFormParams);
                 const detailForm = react.detailForm;
                 detailForm.validateFieldsAndScroll((err3, values3) => {
                   if (!err3) {
                     const detailFormParams = toData(values3);
-                    window.echo('detail', detailFormParams);
                     const params = {
                       ...baseFormParams,
                       ...financeFormParams,
                       ...connectFormParams,
                       ...detailFormParams,
                     };
-                    window.echo('params', params);
                     api.editProj(id, params).then(result => {
                       this.getProject()
                       if (ifBack) {
