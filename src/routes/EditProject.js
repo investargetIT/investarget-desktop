@@ -225,12 +225,20 @@ class EditProject extends React.Component {
                         payload: error
                       })
                     })
+                  } else {
+                    message.error('项目详情内容有误，请检查', 2);
                   }
                 })
+              } else {
+                message.error('联系方式内容有误，请检查', 2);
               }
             })
+          } else {
+            message.error('财务信息内容有误，请检查', 2);
           }
         })
+      } else {
+        message.error('基本信息内容有误，请检查', 2);
       }
     })
   }
