@@ -211,6 +211,20 @@ class EditProject extends React.Component {
                       ...detailFormParams,
                     };
                     window.echo('params', params);
+                    api.editProj(id, params).then(result => {
+                      this.getProject()
+                      if (ifBack) {
+                        this.goBack()
+                      }
+                      else {
+                        message.success(i18n('project.message.project_updated'), 2)
+                      }
+                    }, error => {
+                      this.props.dispatch({
+                        type: 'app/findError',
+                        payload: error
+                      })
+                    })
                   }
                 })
               }
