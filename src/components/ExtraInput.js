@@ -1514,7 +1514,7 @@ class TabCheckboxOrgBDRes extends React.Component {
 }
 function mapStateToPropsOrgBDRes(state) {
   const {orgbdres} = state.app
-  const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
+  const options = orgbdres ? [{ value: 'none', label: '暂无状态' }].concat(orgbdres.map(item => ({value: item.id, label: item.name}))) : []
   return { options }  
 }
 TabCheckboxOrgBDRes = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes);
