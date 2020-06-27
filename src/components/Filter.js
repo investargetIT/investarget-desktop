@@ -987,6 +987,7 @@ class OrgBDFilter extends React.Component {
 
   static defaultValue = {
     manager: [],
+    createuser: [],
     org: [],
     proj: null,
     response: [],
@@ -1011,7 +1012,7 @@ class OrgBDFilter extends React.Component {
   }
 
   render() {
-    const { response, source_type, location, manager, org, proj } = this.state;
+    const { response, source_type, location, manager, org, proj, createuser } = this.state;
     const orgbdresOptions = this.props.orgbdres.map(m => ({ label: m.name, value: m.id }));
 
     return (
@@ -1028,6 +1029,10 @@ class OrgBDFilter extends React.Component {
 
         <BasicContainer label={i18n('project_bd.bd_manager')}>
           <SelectOrgUser style={{ width: '100%' }} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+        </BasicContainer>
+
+        <BasicContainer label="BD创建人">
+          <SelectOrgUser style={{ width: '100%' }} type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
         </BasicContainer>
 
         <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />

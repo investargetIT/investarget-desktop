@@ -313,17 +313,18 @@ class OrgBDListComponent extends React.Component {
         search,
         ...filters,
         manager: undefined,
+        createuser: undefined,
         sort,
         desc,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     };
-    const { manager } = filters;
+    const { manager, createuser } = filters;
     // 管理员承揽承做才可以筛选负责人
     if (hasPerm('BD.manageOrgBD') || projMakeTakeTraderIds.includes(getCurrentUser())) {
       params.manager = manager;
-      params.createuser = manager;
-      params.unionFields = 'manager,createuser';
+      params.createuser = createuser;
+      // params.unionFields = 'manager,createuser';
     } else {
       params.manager = [getCurrentUser()];
       params.createuser = [getCurrentUser()];
@@ -429,7 +430,7 @@ class OrgBDListComponent extends React.Component {
   // }
 
   getOrgBdListDetail = (org, proj) => {
-    const { manager, response } = this.state.filters;
+    const { manager, response, createuser } = this.state.filters;
     // this.getOrgBdRefactorDetail(org, proj)
     const param1 = {
       org,
@@ -443,8 +444,8 @@ class OrgBDListComponent extends React.Component {
     // 管理员承揽承做才可以筛选负责人
     if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
       param1.manager = manager;
-      param1.createuser = manager;
-      param1.unionFields = 'manager,createuser';
+      param1.createuser = createuser;
+      // param1.unionFields = 'manager,createuser';
     } else {
       param1.manager = [getCurrentUser()];
       param1.createuser = [getCurrentUser()];
