@@ -868,7 +868,7 @@ class DataRoom extends React.Component {
         <div style={{ marginBottom: '16px' }} className="clearfix">
           <Search
             style={{ width: 200, float: 'right' }}
-            placeholder="文件/目录"
+            placeholder="文件名/文件内容"
             onSearch={this.handleDataroomSearch}
             onChange={searchContent => this.setState({ searchContent })}
             value={this.state.searchContent}
