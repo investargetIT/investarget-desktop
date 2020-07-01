@@ -233,6 +233,19 @@ class Schedule extends React.Component {
         }
       }
 
+      // Webex 单独请求
+      // let webexData = [];
+      // const webexReq = await api.getWebexMeeting({ page_size: 50 });
+      // const { count, data: data1 } = webexReq.data;
+      // if (count > 50) {
+      //   const webexReq2 = await api.getWebexMeeting({ page_size: count });
+      //   webexData = webexReq2.data.data;
+      // } else {
+      //   webexData = data1;
+      // }
+      // window.echo('webex req', webexData);
+      // list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: { id: m.id } })));
+
       // Webex 相关逻辑
       for (let index = 0; index < list.length; index++) {
         const element = list[index];
