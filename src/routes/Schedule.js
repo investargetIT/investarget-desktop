@@ -75,26 +75,26 @@ class Schedule extends React.Component {
     return pw;
   }
 
-  getWebexPopoverContent= (item) => {
-    if (item.type === 4 && item.meeting) {
-      const isHost = item.currentAttendee.meetingRole;
-      let joinUrl = '';
-      if (isHost) {
-        joinUrl = `${window.location.protocol}//${window.location.host}/webex.html?wid=${this.getWID(item.meeting.url)}&pw=${this.getPW(item.meeting.url)}&mk=${item.meeting.meetingKey}`;
-      } else {
-        joinUrl = `https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${item.meeting.meetingKey}&AN=${item.currentAttendee.name}&AE=${item.currentAttendee.email}`;
-      }
-      return (
-        <div>
-          <div>邮箱：{item.currentAttendee.email}</div>
-          <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
-          <div>主题：{item.comments}</div>
-          <div>加入链接：<a href={joinUrl} target="_blank">{joinUrl}</a></div>
-        </div>
-      );
-    }
-    return null;
-  }
+  // getWebexPopoverContent= (item) => {
+  //   if (item.type === 4 && item.meeting) {
+  //     const isHost = item.currentAttendee.meetingRole;
+  //     let joinUrl = '';
+  //     if (isHost) {
+  //       joinUrl = `${window.location.protocol}//${window.location.host}/webex.html?wid=${this.getWID(item.meeting.url)}&pw=${this.getPW(item.meeting.url)}&mk=${item.meeting.meetingKey}`;
+  //     } else {
+  //       joinUrl = `https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${item.meeting.meetingKey}&AN=${item.currentAttendee.name}&AE=${item.currentAttendee.email}`;
+  //     }
+  //     return (
+  //       <div>
+  //         <div>邮箱：{item.currentAttendee.email}</div>
+  //         <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
+  //         <div>主题：{item.comments}</div>
+  //         <div>加入链接：<a href={joinUrl} target="_blank">{joinUrl}</a></div>
+  //       </div>
+  //     );
+  //   }
+  //   return null;
+  // }
 
   getZoomPopoverContent = (item) => {
     return (
@@ -122,12 +122,12 @@ class Schedule extends React.Component {
             >
               {/* Webex */}
               {item.type === 4 &&
-                <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
+                // <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
                   <span>
                     <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
                     <span>{item.comments}</span>
                   </span>
-                </Popover>
+                // </Popover>
               }
               {/* Zoom */}
               {item.type === 7 &&
@@ -233,30 +233,32 @@ class Schedule extends React.Component {
         }
       }
 
-      // Webex 单独请求
-      // let webexData = [];
-      // const webexReq = await api.getWebexMeeting({ page_size: 50 });
-      // const { count, data: data1 } = webexReq.data;
-      // if (count > 50) {
-      //   const webexReq2 = await api.getWebexMeeting({ page_size: count });
-      //   webexData = webexReq2.data.data;
-      // } else {
-      //   webexData = data1;
-      // }
-      // window.echo('webex req', webexData);
-      // list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: { id: m.id } })));
+      list = list.filter(f => f.type !== 4);
 
-      // Webex 相关逻辑
-      for (let index = 0; index < list.length; index++) {
-        const element = list[index];
-        if (element.type === 4 && element.meeting) {
-          const webexUser = await api.getWebexUser({ meeting: element.meeting.id });
-          // const content = webexUser.data.data.map(m => `${m.name} ${m.email}`).join('\n');
-          const currentAttendee = webexUser.data.data.filter(f => f.user === getCurrentUser())[0];
-          // element.webexContent = content;
-          element.currentAttendee = currentAttendee;
-        }
+      // Webex 单独请求
+      let webexData = [];
+      const webexReq = await api.getWebexMeeting({ page_size: 50 });
+      const { count, data: data1 } = webexReq.data;
+      if (count > 50) {
+        const webexReq2 = await api.getWebexMeeting({ page_size: count });
+        webexData = webexReq2.data.data;
+      } else {
+        webexData = data1;
       }
+      // window.echo('webex req', webexData);
+      list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: m })));
+
+      // // Webex 相关逻辑
+      // for (let index = 0; index < list.length; index++) {
+      //   const element = list[index];
+      //   if (element.type === 4 && element.meeting) {
+      //     const webexUser = await api.getWebexUser({ meeting: element.meeting.id });
+      //     // const content = webexUser.data.data.map(m => `${m.name} ${m.email}`).join('\n');
+      //     const currentAttendee = webexUser.data.data.filter(f => f.user === getCurrentUser())[0];
+      //     // element.webexContent = content;
+      //     element.currentAttendee = currentAttendee;
+      //   }
+      // }
 
       // 周报相关逻辑
       if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
@@ -769,7 +771,7 @@ class Event extends React.Component {
   }
 
   render() {
-    const isHost = this.state.currentAttendee.meetingRole;
+    const isHost = this.state.currentAttendee && this.state.currentAttendee.meetingRole;
     const props = this.props;
     return (
       <div>
@@ -789,7 +791,7 @@ class Event extends React.Component {
             {props.manager === props.meeting.createuser && <Field title="主持人密钥" content={props.meeting.hostKey} />}
             <Field title="音频连接" content="4006140081 China2(400)" />
             <Field title="会议号" content={`<span style="color: red;font-weight: bold">${props.meeting.meetingKey}</span>`} />
-            {props.meeting.status && props.meeting.status.status !== 0 && <div>
+            {props.meeting.status && props.meeting.status.status !== 0 && this.state.currentAttendee && <div>
               {isHost ?
                 <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
                 :
