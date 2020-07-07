@@ -75,26 +75,31 @@ class Schedule extends React.Component {
     return pw;
   }
 
-  // getWebexPopoverContent= (item) => {
-  //   if (item.type === 4 && item.meeting) {
-  //     const isHost = item.currentAttendee.meetingRole;
-  //     let joinUrl = '';
-  //     if (isHost) {
-  //       joinUrl = `${window.location.protocol}//${window.location.host}/webex.html?wid=${this.getWID(item.meeting.url)}&pw=${this.getPW(item.meeting.url)}&mk=${item.meeting.meetingKey}`;
-  //     } else {
-  //       joinUrl = `https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${item.meeting.meetingKey}&AN=${item.currentAttendee.name}&AE=${item.currentAttendee.email}`;
-  //     }
-  //     return (
-  //       <div>
-  //         <div>邮箱：{item.currentAttendee.email}</div>
-  //         <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
-  //         <div>主题：{item.comments}</div>
-  //         <div>加入链接：<a href={joinUrl} target="_blank">{joinUrl}</a></div>
-  //       </div>
-  //     );
-  //   }
-  //   return null;
-  // }
+  getWebexPopoverContent = (item) => {
+    if (item.meeting) {
+      const isHost = item.currentAttendee.meetingRole;
+      let joinUrl = '';
+      if (isHost) {
+        joinUrl = `${window.location.protocol}//${window.location.host}/webex.html?wid=${this.getWID(item.meeting.url)}&pw=${this.getPW(item.meeting.url)}&mk=${item.meeting.meetingKey}`;
+      } else {
+        joinUrl = `https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${item.meeting.meetingKey}&AN=${item.currentAttendee.name}&AE=${item.currentAttendee.email}`;
+      }
+      return (
+        <div>
+          <div>邮箱：{item.currentAttendee.email}</div>
+          <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
+          <div>主题：{item.comments}</div>
+          <div>加入链接：<a href={joinUrl} target="_blank">{joinUrl}</a></div>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <div>开始时间：{item.scheduledtime.replace('T', ' ')}</div>
+        <div>主题：{item.comments}</div>
+      </div>
+    );
+  }
 
   getZoomPopoverContent = (item) => {
     return (
@@ -122,12 +127,12 @@ class Schedule extends React.Component {
             >
               {/* Webex */}
               {item.type === 4 &&
-                // <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
+                <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
                   <span>
                     <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
                     <span>{item.comments}</span>
                   </span>
-                // </Popover>
+                </Popover>
               }
               {/* Zoom */}
               {item.type === 7 &&
@@ -151,6 +156,13 @@ class Schedule extends React.Component {
     e.stopPropagation()
 
     const { id, type, scheduledtime } = item;
+    if (type === 7) {
+      return;
+    }
+
+    if (type === 4 && !item.meeting) {
+      return;
+    }
 
     if (hasPerm('BD.admin_getWorkReport') && (type === 5 || type === 6)) {
       const url = `/app/report/list?date=${scheduledtime}`;
@@ -233,32 +245,29 @@ class Schedule extends React.Component {
         }
       }
 
-      list = list.filter(f => f.type !== 4);
+      // list = list.filter(f => f.type !== 4);
 
-      // Webex 单独请求
-      let webexData = [];
-      const webexReq = await api.getWebexMeeting({ page_size: 50 });
-      const { count, data: data1 } = webexReq.data;
-      if (count > 50) {
-        const webexReq2 = await api.getWebexMeeting({ page_size: count });
-        webexData = webexReq2.data.data;
-      } else {
-        webexData = data1;
-      }
-      // window.echo('webex req', webexData);
-      list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: m })));
-
-      // // Webex 相关逻辑
-      // for (let index = 0; index < list.length; index++) {
-      //   const element = list[index];
-      //   if (element.type === 4 && element.meeting) {
-      //     const webexUser = await api.getWebexUser({ meeting: element.meeting.id });
-      //     // const content = webexUser.data.data.map(m => `${m.name} ${m.email}`).join('\n');
-      //     const currentAttendee = webexUser.data.data.filter(f => f.user === getCurrentUser())[0];
-      //     // element.webexContent = content;
-      //     element.currentAttendee = currentAttendee;
-      //   }
+      // // Webex 单独请求
+      // let webexData = [];
+      // const webexReq = await api.getWebexMeeting({ page_size: 50 });
+      // const { count, data: data1 } = webexReq.data;
+      // if (count > 50) {
+      //   const webexReq2 = await api.getWebexMeeting({ page_size: count });
+      //   webexData = webexReq2.data.data;
+      // } else {
+      //   webexData = data1;
       // }
+      // list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: m })));
+
+      // Webex 相关逻辑
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+        if (element.type === 4 && element.meeting) {
+          const webexUser = await api.getWebexUser({ meeting: element.meeting.id });
+          const currentAttendee = webexUser.data.data.filter(f => f.user === getCurrentUser())[0];
+          element.currentAttendee = currentAttendee;
+        }
+      }
 
       // 周报相关逻辑
       if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
