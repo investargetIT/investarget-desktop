@@ -259,6 +259,24 @@ class Schedule extends React.Component {
       // }
       // list = list.concat(webexData.map(m => ({ ...m, scheduledtime: m.startDate, comments: m.title, type: 4, meeting: m })));
 
+      const startFrom = 1;
+      const maximumNum = 100;
+      const listMethod = 'AND';
+      const orderBy = 'STARTTIME';
+      const orderAD = 'ASC';
+      const startDateStart = lastMonth.format('MM/DD/YYYY hh:mm:ss');
+      const endDateEnd = nextMonth.format('MM/DD/YYYY hh:mm:ss');
+
+      const webExReqBody = { startFrom, maximumNum, listMethod, orderBy, orderAD, startDateStart, endDateEnd };
+      const webexReq = await api.getWebexMeetingList(webExReqBody);
+      const webexData = webexReq.data.meetings;
+      list = list.concat(webexData.map(m => ({
+        id: m.meetingUUID,
+        comments: m.confName,
+        type: 4,
+        scheduledtime: moment(m.startDate, 'MM/DD/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss'),
+      })));
+
       // Webex 相关逻辑
       for (let index = 0; index < list.length; index++) {
         const element = list[index];

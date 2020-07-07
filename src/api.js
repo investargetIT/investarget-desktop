@@ -956,3 +956,5 @@ export const startOnlineTest = body => r('/msg/internTest/', 'POST', body);
 export const endOnlineTest = (id, body) => r(`/msg/internTest/${id}/`, 'PUT', body);
 
 export const getZoomMeetingList = () => r('/service/zoom/meetings/?type=upcoming');
+
+export const getWebexMeetingList = body => r('/msg/webexAPI/meeting/', 'POST', body);
