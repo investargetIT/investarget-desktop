@@ -245,6 +245,9 @@ class Schedule extends React.Component {
         }
       }
 
+      const webexFromSchedule = list.filter(f => f.type === 4 && f.meeting);
+      const webexScheduleMeetingKeys = webexFromSchedule.map(m => m.meeting.meetingKey);
+
       // list = list.filter(f => f.type !== 4);
 
       // // Webex 单独请求
@@ -264,18 +267,19 @@ class Schedule extends React.Component {
       const listMethod = 'AND';
       const orderBy = 'STARTTIME';
       const orderAD = 'ASC';
-      const startDateStart = lastMonth.format('MM/DD/YYYY hh:mm:ss');
-      const endDateEnd = nextMonth.format('MM/DD/YYYY hh:mm:ss');
+      const startDateStart = lastMonth.format('MM/DD/YYYY HH:mm:ss');
+      const endDateEnd = nextMonth.format('MM/DD/YYYY HH:mm:ss');
 
       const webExReqBody = { startFrom, maximumNum, listMethod, orderBy, orderAD, startDateStart, endDateEnd };
       const webexReq = await api.getWebexMeetingList(webExReqBody);
       const webexData = webexReq.data.meetings;
-      list = list.concat(webexData.map(m => ({
-        id: m.meetingUUID,
-        comments: m.confName,
-        type: 4,
-        scheduledtime: moment(m.startDate, 'MM/DD/YYYY hh:mm:ss').format('YYYY-MM-DD hh:mm:ss'),
-      })));
+      list = list.concat(
+        webexData.filter(f => !webexScheduleMeetingKeys.includes(f.meetingKey)).map(m => ({
+          id: m.meetingUUID,
+          comments: m.confName,
+          type: 4,
+          scheduledtime: moment(m.startDate, 'MM/DD/YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
+        })));
 
       // Webex 相关逻辑
       for (let index = 0; index < list.length; index++) {
