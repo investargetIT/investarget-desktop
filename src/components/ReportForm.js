@@ -54,6 +54,7 @@ let uuid = 0;
 let uuid2 = 0;
 let ppid = 0;
 let ppid2 = 0;
+let summaryFormItemId = 0;
 class ReportForm extends React.Component {
 
   static childContextTypes = {
@@ -176,6 +177,16 @@ class ReportForm extends React.Component {
     setTimeout(() => {
       document.getElementById(`org-form-items-${uuid}`).scrollIntoView();
     }, 100);
+  }
+
+  addSummaryFormItem = () => {
+    summaryFormItemId++;
+    const { form } = this.props;
+    const keys = form.getFieldValue('summary_keys');
+    const nextKeys = keys.concat(summaryFormItemId);
+    form.setFieldsValue({
+      summary_keys: nextKeys,
+    });
   }
 
   removeFormItem = (key, value) => {
@@ -539,7 +550,23 @@ class ReportForm extends React.Component {
       </div>
     ));
 
-   
+    getFieldDecorator('summary_keys', { initialValue: [] });
+    const summaryKeys = getFieldValue('summary_keys');
+    const summaryFormItems = summaryKeys.map((m, i) => (
+      <div key={m} id={`summary-form-items-${m}`}>
+        {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
+        <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, marginLeft: 40 }}>
+            <BasicFormItem name={`summary_${m}`} layout>
+              <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
+            </BasicFormItem>
+          </div>
+          <div style={{ width: 100, textAlign: 'center' }}>
+            <img onClick={() => this.removeFormItem('summary_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+          </div>
+        </div>
+      </div>
+    ));
 
     getFieldDecorator('proj_keys', { initialValue: [] });
     const projKeys = getFieldValue('proj_keys');
@@ -995,10 +1022,9 @@ class ReportForm extends React.Component {
         <div style={{ marginBottom: 40 }}>
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
+            <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addSummaryFormItem}>添加市场信息和项目信息</div>
           </div>
-          <BasicFormItem name="summary" layout>
-            <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
-          </BasicFormItem>
+          {summaryFormItems}
         </div>
 
         <div style={{ marginBottom: 40 }}>
