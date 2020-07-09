@@ -58,6 +58,7 @@ class EditReport extends React.Component {
       textProj: [],
       existProj: [],
       newProj: [],
+      marketMsg: [],
     };
 
     this.interval = setInterval(this.autoSave, 60 * 1000);
@@ -218,6 +219,7 @@ class EditReport extends React.Component {
     const { startTime, endTime, marketMsg, others } = this.state.report;
     const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
     const newProjKeys = this.state.newProj.map(m => `newsproj${m.id}`);
+    // const summaryKeys = this.state.marketMsg.map(m => `summary${m.id}`);
 
     const formData = {
       time: {
@@ -227,6 +229,7 @@ class EditReport extends React.Component {
       suggestion: { value: others },
       textproject_keys: { value: textProjKeys },
       proj_keys: { value: newProjKeys },
+      // summary_keys: { value: summaryKeys },
     };
 
     this.state.textProj.forEach(element => {
@@ -248,6 +251,11 @@ class EditReport extends React.Component {
       formData[`newreport_${m}_nextplan`] = { value: element.nextPlan };
     });
 
+    // this.state.marketMsg.forEach(element => {
+    //   const m = `summary${element.id}`;
+    //   formData[`summary_${m}`] = { value: element.content };
+    // });
+
     return formData;
   }
 
@@ -258,6 +266,7 @@ class EditReport extends React.Component {
     this.endDate = endTime;
     this.userId = user.id;
     await this.getReportProj();
+    // await this.getMarketMsg();
     this.setState({ report: res.data });
   }
 
@@ -277,6 +286,18 @@ class EditReport extends React.Component {
     this.setState({
       existProj: reportProj.filter(f => f.proj && !f.projTitle && projId.includes(f.proj.id)),
       newProj: reportProj.filter(f => f.proj && !f.projTitle && !projId.includes(f.proj.id)),
+    });
+  }
+
+  getMarketMsg = async () => {
+    const params = {
+      report: this.reportId,
+      page_size: 1000,
+    };
+    const res = await api.getWorkReportMarketMsg(params);
+    const { data: marketMsg } = res.data;
+    this.setState({
+      marketMsg,
     });
   }
 
