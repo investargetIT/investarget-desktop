@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, subtracting } from '../utils/util';
 import moment from 'moment';
 import _ from 'lodash';
 import { Form, Button, message, Spin, Modal } from 'antd'
@@ -219,7 +219,7 @@ class EditReport extends React.Component {
     const { startTime, endTime, marketMsg, others } = this.state.report;
     const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
     const newProjKeys = this.state.newProj.map(m => `newsproj${m.id}`);
-    // const summaryKeys = this.state.marketMsg.map(m => `summary${m.id}`);
+    // const summaryKeys = this.state.marketMsg.map(m => `summary-${m.id}`);
 
     const formData = {
       time: {
@@ -252,7 +252,7 @@ class EditReport extends React.Component {
     });
 
     // this.state.marketMsg.forEach(element => {
-    //   const m = `summary${element.id}`;
+    //   const m = `summary-${element.id}`;
     //   formData[`summary_${m}`] = { value: element.content };
     // });
 
@@ -430,6 +430,8 @@ class EditReport extends React.Component {
     const res = await api.editWorkReport(this.reportId, body);
     const { id: reportId } = res.data;
 
+    // await this.editMarketMsg();
+
     await Promise.all(this.state.allProj.map(m => api.deleteWorkReportProjInfo(m.id)));
 
     const existingProjInfo = this.getPlanForExistingProj(data);
@@ -438,6 +440,37 @@ class EditReport extends React.Component {
     const allProjReportInfos = existingProjInfo.concat(newProjReportInfo).concat(textProjectInfo);
     await Promise.all(allProjReportInfos.map(m => api.addWorkReportProjInfo({ ...m, report: reportId })));
     
+  }
+
+  editMarketMsg = async (values) => {
+    let allMarketMsg = [];
+    for (const property in values) {
+      if (property.startsWith('summary')) {
+        const value = values[property];
+        const infos = property.split('_');
+        const key = infos[1];
+        const o = { key, value };
+        allMarketMsg.push(o);
+      }
+    }
+    allMarketMsg = allMarketMsg.filter(f => f.key && f.value);
+
+    // 新增市场消息
+    const newKrs = allMarketMsg.filter(f => !f.key.startsWith('summary'));
+    await Promise.all(newKrs.map(m => api.addOKRResult({ ...m, report: this.reportId })));
+
+    // 编辑市场消息
+    const oldKrs = allMarketMsg.filter(f => f.key.startsWith('summary'));
+    await Promise.all(oldKrs.map((m) => {
+      const krsId = parseInt(m.key.split('-')[1], 10);
+      return api.editOKRResult(krsId, m);
+    }));
+
+    // 删除市场消息
+    const oldKrsIds = oldKrs.map(m => parseInt(m.key.split('-')[1], 10));
+    const originalKrsIds = this.state.marketMsg.map(m => m.id);
+    const toDeleteIds = subtracting(originalKrsIds, oldKrsIds);
+    await Promise.all(toDeleteIds.map(m => api.deleteOKRResult(m)));
   }
 
   getPlanForTextProj = values => {
