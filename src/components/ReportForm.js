@@ -187,6 +187,9 @@ class ReportForm extends React.Component {
     form.setFieldsValue({
       summary_keys: nextKeys,
     });
+    setTimeout(() => {
+      document.getElementById(`summary-form-items-${summaryFormItemId}`).scrollIntoView();
+    }, 100);
   }
 
   removeFormItem = (key, value) => {
@@ -543,7 +546,7 @@ class ReportForm extends React.Component {
           </div>
 
           <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('org_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem('org_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
           </div>
 
         </div>
@@ -562,7 +565,7 @@ class ReportForm extends React.Component {
             </BasicFormItem>
           </div>
           <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('summary_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem('summary_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
           </div>
         </div>
       </div>
