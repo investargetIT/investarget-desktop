@@ -266,7 +266,7 @@ class EditReport extends React.Component {
     this.endDate = endTime;
     this.userId = user.id;
     await this.getReportProj();
-    // await this.getMarketMsg();
+    await this.getMarketMsg();
     this.setState({ report: res.data });
   }
 
@@ -430,7 +430,7 @@ class EditReport extends React.Component {
     const res = await api.editWorkReport(this.reportId, body);
     const { id: reportId } = res.data;
 
-    // await this.editMarketMsg();
+    await this.editMarketMsg();
 
     await Promise.all(this.state.allProj.map(m => api.deleteWorkReportProjInfo(m.id)));
 
@@ -456,21 +456,24 @@ class EditReport extends React.Component {
     allMarketMsg = allMarketMsg.filter(f => f.key && f.value);
 
     // 新增市场消息
-    const newKrs = allMarketMsg.filter(f => !f.key.startsWith('summary'));
-    await Promise.all(newKrs.map(m => api.addOKRResult({ ...m, report: this.reportId })));
+    const newMarketMsg = allMarketMsg.filter(f => !f.key.startsWith('summary'));
+    await Promise.all(newMarketMsg.map(m => api.addWorkReportMarketMsg({
+      report: this.reportId,
+      marketMsg: m.value,
+    })));
 
     // 编辑市场消息
-    const oldKrs = allMarketMsg.filter(f => f.key.startsWith('summary'));
-    await Promise.all(oldKrs.map((m) => {
-      const krsId = parseInt(m.key.split('-')[1], 10);
-      return api.editOKRResult(krsId, m);
+    const oldMarketMsg = allMarketMsg.filter(f => f.key.startsWith('summary'));
+    await Promise.all(oldMarketMsg.map((m) => {
+      const marketMsgId = parseInt(m.key.split('-')[1], 10);
+      return api.editWorkReportMarketMsg(marketMsgId, { marketMsg: m.value });
     }));
 
     // 删除市场消息
-    const oldKrsIds = oldKrs.map(m => parseInt(m.key.split('-')[1], 10));
-    const originalKrsIds = this.state.marketMsg.map(m => m.id);
-    const toDeleteIds = subtracting(originalKrsIds, oldKrsIds);
-    await Promise.all(toDeleteIds.map(m => api.deleteOKRResult(m)));
+    const oldMarketMsgIds = oldMarketMsg.map(m => parseInt(m.key.split('-')[1], 10));
+    const originalMarketMsgIds = this.state.marketMsg.map(m => m.id);
+    const toDeleteIds = subtracting(originalMarketMsgIds, oldMarketMsgIds);
+    await Promise.all(toDeleteIds.map(m => api.deleteWorkReportMarketMsg(m)));
   }
 
   getPlanForTextProj = values => {
