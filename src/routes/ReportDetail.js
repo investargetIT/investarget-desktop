@@ -42,6 +42,7 @@ class ReportDetail extends React.Component {
       projOrgBds: [],
       photourl: null,
       current: null,
+      marketMsg: [],
     };
     this.reportId = Number(props.params.id);
   }
@@ -63,6 +64,7 @@ class ReportDetail extends React.Component {
     this.getOrgRemark(startTime, endTime);
     await this.getOrgBd(startTime, endTime);
     this.getReportProj();
+    this.getMarketMsg();
   }
 
   getReportProj = async () => {
@@ -87,6 +89,18 @@ class ReportDetail extends React.Component {
       }
     });
     this.setState({ projOrgBds: orgBds });
+  }
+
+  getMarketMsg = async () => {
+    const params = {
+      report: this.reportId,
+      page_size: 1000,
+    };
+    const res = await api.getWorkReportMarketMsg(params);
+    const { data: marketMsg } = res.data;
+    this.setState({
+      marketMsg,
+    });
   }
 
   getOrgRemark = async (startDate, endDate) => {
@@ -319,10 +333,16 @@ class ReportDetail extends React.Component {
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
-          <div
+          {this.state.marketMsg.map(m => (
+            <div
+              style={{ padding: '0 10px' }}
+              dangerouslySetInnerHTML={{ __html: m.marketMsg.replace(/\n/g, '<br/>') || '未填写' }}
+            />
+          ))}
+          {/* <div
             style={{ padding: '0 10px' }}
             dangerouslySetInnerHTML={{ __html: this.state.report && this.state.report.marketMsg && this.state.report.marketMsg.replace(/\n/g, '<br/>') || '未填写' }}
-          />
+          /> */}
         </div>
 
         <div id="alipay" style={{ marginBottom: 40 }}>
