@@ -219,7 +219,7 @@ class EditReport extends React.Component {
     const { startTime, endTime, marketMsg, others } = this.state.report;
     const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
     const newProjKeys = this.state.newProj.map(m => `newsproj${m.id}`);
-    // const summaryKeys = this.state.marketMsg.map(m => `summary-${m.id}`);
+    const summaryKeys = this.state.marketMsg.map(m => `summary-${m.id}`);
 
     const formData = {
       time: {
@@ -229,7 +229,7 @@ class EditReport extends React.Component {
       suggestion: { value: others },
       textproject_keys: { value: textProjKeys },
       proj_keys: { value: newProjKeys },
-      // summary_keys: { value: summaryKeys },
+      summary_keys: { value: summaryKeys },
     };
 
     this.state.textProj.forEach(element => {
@@ -251,10 +251,10 @@ class EditReport extends React.Component {
       formData[`newreport_${m}_nextplan`] = { value: element.nextPlan };
     });
 
-    // this.state.marketMsg.forEach(element => {
-    //   const m = `summary-${element.id}`;
-    //   formData[`summary_${m}`] = { value: element.content };
-    // });
+    this.state.marketMsg.forEach(element => {
+      const m = `summary-${element.id}`;
+      formData[`summary_${m}`] = { value: element.content };
+    });
 
     return formData;
   }
