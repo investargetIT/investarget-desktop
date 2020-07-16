@@ -18,7 +18,7 @@ class ReportList extends React.Component {
     let filters = WorkReportFilter.defaultValue;
     if (date) {
       const startEndDate = [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)];
-      filters = { startEndDate };
+      filters = { startEndDate, search: '' };
     }
 
     this.state = {
@@ -36,12 +36,13 @@ class ReportList extends React.Component {
   }
 
   getReportList = () => {
-    const { page, pageSize, filters } = this.state;
-    const startTime = filters.startEndDate[0].format('YYYY-MM-DD');
-    const endTime = filters.startEndDate[1].format('YYYY-MM-DD');
+    const { page, pageSize, filters: { startEndDate, search } } = this.state;
+    const startTime = startEndDate && startEndDate.length > 1 ? startEndDate[0].format('YYYY-MM-DD') : null;
+    const endTime = startEndDate && startEndDate.length > 1 ? startEndDate[1].format('YYYY-MM-DD') : null;
     const params = {
-      startTime: hasPerm('BD.admin_getWorkReport') ? `${startTime}T00:00:00` : undefined,
-      endTime: hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
+      startTime: startTime && hasPerm('BD.admin_getWorkReport') ? `${startTime}T00:00:00` : undefined,
+      endTime: endTime && hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
+      search,
       page_index: page,
       page_size: pageSize
     };

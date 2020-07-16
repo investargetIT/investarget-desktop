@@ -14,6 +14,7 @@ import {
   Radio, 
   Icon,
   DatePicker,
+  Input,
 } from 'antd'
 const RadioGroup = Radio.Group
 const CheckboxGroup = Checkbox.Group
@@ -1090,6 +1091,7 @@ class WxMessageFilter extends React.Component {
 class WorkReportFilter extends React.Component {
 
   static defaultValue = {
+    search: '',
     startEndDate: [moment().startOf('week'), moment().startOf('week').add('days', 6)]
   }
 
@@ -1099,7 +1101,7 @@ class WorkReportFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    this.setState({ [key]: value },this.handleSearch)
+    this.setState({ [key]: value });
   }
 
   handleSearch = () => {
@@ -1112,13 +1114,19 @@ class WorkReportFilter extends React.Component {
   }
 
   render() {
-    const { startEndDate } = this.state
+    const { startEndDate, search } = this.state;
     return (
       <div>
         <BasicContainer label="起止时间">
           <RangePicker onChange={this.handleChange.bind(this, 'startEndDate')} value={startEndDate} />
         </BasicContainer>
-        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+        <BasicContainer label="市场信息和项目信息">
+          <Input style={{ width: 318 }} onChange={e => this.setState({ search: e.target.value })} value={search} />
+        </BasicContainer>
+        <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+          <Button size="large" type="primary" icon="search" onClick={this.handleSearch}>{i18n('filter.filter')}</Button>
+          <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={this.handleReset}>{i18n('filter.reset')}</Button>
+        </div>
       </div>
     )
   }
