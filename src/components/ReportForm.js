@@ -182,10 +182,10 @@ class ReportForm extends React.Component {
   addSummaryFormItem = () => {
     summaryFormItemId++;
     const { form } = this.props;
-    const keys = form.getFieldValue('summary_keys');
+    const keys = form.getFieldValue('market_keys');
     const nextKeys = keys.concat(summaryFormItemId);
     form.setFieldsValue({
-      summary_keys: nextKeys,
+      market_keys: nextKeys,
     });
     setTimeout(() => {
       document.getElementById(`summary-form-items-${summaryFormItemId}`).scrollIntoView();
@@ -553,8 +553,8 @@ class ReportForm extends React.Component {
       </div>
     ));
 
-    getFieldDecorator('summary_keys', { initialValue: [] });
-    const summaryKeys = getFieldValue('summary_keys');
+    getFieldDecorator('market_keys', { initialValue: [] });
+    const summaryKeys = getFieldValue('market_keys');
     const summaryFormItems = summaryKeys.map((m, i) => (
       <div key={m} id={`summary-form-items-${m}`}>
         {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
@@ -565,7 +565,7 @@ class ReportForm extends React.Component {
             </BasicFormItem>
           </div>
           <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('summary_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
+            <img onClick={() => this.removeFormItem('market_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
           </div>
         </div>
       </div>

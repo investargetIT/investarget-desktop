@@ -219,7 +219,7 @@ class EditReport extends React.Component {
     const { startTime, endTime, marketMsg, others } = this.state.report;
     const textProjKeys = this.state.textProj.map(m => `textproj${m.id}`);
     const newProjKeys = this.state.newProj.map(m => `newsproj${m.id}`);
-    const summaryKeys = this.state.marketMsg.map(m => `summary-${m.id}`);
+    const summaryKeys = this.state.marketMsg.map(m => `market-${m.id}`);
 
     const formData = {
       time: {
@@ -229,7 +229,7 @@ class EditReport extends React.Component {
       suggestion: { value: others },
       textproject_keys: { value: textProjKeys },
       proj_keys: { value: newProjKeys },
-      summary_keys: { value: summaryKeys },
+      market_keys: { value: summaryKeys },
     };
 
     this.state.textProj.forEach(element => {
@@ -252,8 +252,8 @@ class EditReport extends React.Component {
     });
 
     this.state.marketMsg.forEach(element => {
-      const m = `summary-${element.id}`;
-      formData[`summary_${m}`] = { value: element.content };
+      const m = `market-${element.id}`;
+      formData[`summary_${m}`] = { value: element.marketMsg };
     });
 
     return formData;
@@ -430,7 +430,7 @@ class EditReport extends React.Component {
     const res = await api.editWorkReport(this.reportId, body);
     const { id: reportId } = res.data;
 
-    await this.editMarketMsg();
+    await this.editMarketMsg(data);
 
     await Promise.all(this.state.allProj.map(m => api.deleteWorkReportProjInfo(m.id)));
 
@@ -456,14 +456,14 @@ class EditReport extends React.Component {
     allMarketMsg = allMarketMsg.filter(f => f.key && f.value);
 
     // 新增市场消息
-    const newMarketMsg = allMarketMsg.filter(f => !f.key.startsWith('summary'));
+    const newMarketMsg = allMarketMsg.filter(f => !f.key.startsWith('market'));
     await Promise.all(newMarketMsg.map(m => api.addWorkReportMarketMsg({
       report: this.reportId,
       marketMsg: m.value,
     })));
 
     // 编辑市场消息
-    const oldMarketMsg = allMarketMsg.filter(f => f.key.startsWith('summary'));
+    const oldMarketMsg = allMarketMsg.filter(f => f.key.startsWith('market'));
     await Promise.all(oldMarketMsg.map((m) => {
       const marketMsgId = parseInt(m.key.split('-')[1], 10);
       return api.editWorkReportMarketMsg(marketMsgId, { marketMsg: m.value });

@@ -335,6 +335,7 @@ class ReportDetail extends React.Component {
           </div>
           {this.state.marketMsg.map(m => (
             <div
+              key={m.id}
               style={{ padding: '0 10px' }}
               dangerouslySetInnerHTML={{ __html: m.marketMsg.replace(/\n/g, '<br/>') || '未填写' }}
             />
