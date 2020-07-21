@@ -1117,12 +1117,24 @@ class WorkReportFilter extends React.Component {
     const { startEndDate, search } = this.state;
     return (
       <div>
-        <BasicContainer label="起止时间">
+        <Row gutter={16} style={{ marginBottom: '16px' }}>
+          <Col span={4} style={{ color: '#4a535e', width: 200 }}>起止时间：</Col>
+          <Col span={20}>
+            <RangePicker onChange={this.handleChange.bind(this, 'startEndDate')} value={startEndDate} />
+          </Col>
+        </Row>
+        {/* <BasicContainer label="起止时间">
           <RangePicker onChange={this.handleChange.bind(this, 'startEndDate')} value={startEndDate} />
-        </BasicContainer>
-        <BasicContainer label="市场信息和项目信息">
+        </BasicContainer> */}
+        {/* <BasicContainer label="市场信息和项目信息">
           <Input style={{ width: 318 }} onChange={e => this.setState({ search: e.target.value })} value={search} />
-        </BasicContainer>
+        </BasicContainer> */}
+        <Row gutter={16} style={{ marginBottom: '16px' }}>
+          <Col span={4} style={{ color: '#4a535e', width: 200 }}>市场信息和项目信息：</Col>
+          <Col span={20}>
+            <Input style={{ width: 318 }} onChange={e => this.setState({ search: e.target.value })} value={search} />
+          </Col>
+        </Row>
         <div style={{ marginBottom: '16px', textAlign: 'center' }}>
           <Button size="large" type="primary" icon="search" onClick={this.handleSearch}>{i18n('filter.filter')}</Button>
           <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={this.handleReset}>{i18n('filter.reset')}</Button>
