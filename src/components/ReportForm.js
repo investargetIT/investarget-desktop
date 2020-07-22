@@ -1027,6 +1027,11 @@ class ReportForm extends React.Component {
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
             <div style={{ color: '#10458F', textDecoration: 'underline', cursor: 'pointer' }} onClick={this.addSummaryFormItem}>添加市场信息和项目信息</div>
           </div>
+          {getFieldValue('summary') &&
+            <BasicFormItem name="summary" layout>
+              <Input.TextArea autosize={{ minRows: 6 }} placeholder="其他事项/工作建议（如果有）" />
+            </BasicFormItem>
+          }
           {summaryFormItems}
         </div>
 

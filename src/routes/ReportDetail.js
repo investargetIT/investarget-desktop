@@ -333,17 +333,17 @@ class ReportDetail extends React.Component {
           <div style={{ marginBottom: 10, padding: '0 10px', lineHeight: '48px', backgroundColor: '#eee', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>市场信息和项目信息汇报</div>
           </div>
+          <div
+            style={{ padding: '0 10px' }}
+            dangerouslySetInnerHTML={{ __html: this.state.report && this.state.report.marketMsg && this.state.report.marketMsg.replace(/\n/g, '<br/>') || '' }}
+          />
           {this.state.marketMsg.map(m => (
             <div
               key={m.id}
               style={{ padding: '0 10px' }}
-              dangerouslySetInnerHTML={{ __html: m.marketMsg.replace(/\n/g, '<br/>') || '未填写' }}
+              dangerouslySetInnerHTML={{ __html: m.marketMsg.replace(/\n/g, '<br/>') || '' }}
             />
           ))}
-          {/* <div
-            style={{ padding: '0 10px' }}
-            dangerouslySetInnerHTML={{ __html: this.state.report && this.state.report.marketMsg && this.state.report.marketMsg.replace(/\n/g, '<br/>') || '未填写' }}
-          /> */}
         </div>
 
         <div id="alipay" style={{ marginBottom: 40 }}>

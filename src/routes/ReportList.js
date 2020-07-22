@@ -90,7 +90,7 @@ class ReportList extends React.Component {
         title: '操作', key: 'operation', render: (text, record) => {
           return (
             <div>
-              <Link to={`/app/report/${record.id}`} style={{ marginRight: 10 }}>
+              <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
                 <Icon type="eye-o" style={{ fontSize: '16px' }} />
               </Link>
               {record.user.id === getCurrentUser() &&
