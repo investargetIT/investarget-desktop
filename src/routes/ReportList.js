@@ -115,13 +115,13 @@ class ReportList extends React.Component {
         action={{name: '填写周报', link: "/app/report/add" }}
       >
 
-        {hasPerm('BD.admin_getWorkReport') &&
-          <WorkReportFilter
-            defaultValue={this.state.filters}
-            onSearch={this.handleFilt}
-            onReset={this.handleReset}
-          />
-        }
+        {/* {hasPerm('BD.admin_getWorkReport') && */}
+        <WorkReportFilter
+          defaultValue={this.state.filters}
+          onSearch={this.handleFilt}
+          onReset={this.handleReset}
+        />
+        {/* } */}
 
         <Table
           columns={columns}
