@@ -1134,7 +1134,7 @@ class WorkReportFilter extends React.Component {
         <div style={{ display: 'flex', marginBottom: '16px', alignItems: 'center' }}>
           <div style={{ color: '#4a535e', width: 200 }}>市场信息和项目信息：</div>
           <div>
-            <Input style={{ width: 318 }} onChange={e => this.setState({ search: e.target.value })} value={search} />
+            <Input style={{ width: 318 }} onChange={e => this.setState({ search: e.target.value })} value={search} onPressEnter={this.handleSearch} />
           </div>
         </div>
         <div style={{ marginBottom: '16px', textAlign: 'center' }}>
