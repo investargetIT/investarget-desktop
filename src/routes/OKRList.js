@@ -164,6 +164,10 @@ class OKRList extends React.Component {
       groupOrkIds.push(group);
     }
     window.echo('group okr ids', groupOrkIds);
+    const req = await api.getOKRResult({ okr: groupOrkIds[0].join(','), page_size: 1 });
+    const { count } = req.data;
+    const req2 = await api.getOKRResult({ okr: groupOrkIds[0].join(','), page_size: count });
+    window.echo('req', req2);
   }
 
   // getOKRList = async () => {
