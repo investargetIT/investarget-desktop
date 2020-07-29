@@ -163,11 +163,21 @@ class OKRList extends React.Component {
       const group = allOkrIds.slice(index * 20, 20 * (index + 1));
       groupOrkIds.push(group);
     }
-    window.echo('group okr ids', groupOrkIds);
-    const req = await api.getOKRResult({ okr: groupOrkIds[0].join(','), page_size: 1 });
-    const { count } = req.data;
-    const req2 = await api.getOKRResult({ okr: groupOrkIds[0].join(','), page_size: count });
-    window.echo('req', req2);
+    for (let index = 0; index < groupOrkIds.length; index++) {
+      const element = groupOrkIds[index];
+      const req = await api.getOKRResult({ okr: element.join(','), page_size: 1 });
+      const { count } = req.data;
+      const req2 = await api.getOKRResult({ okr: element.join(','), page_size: count });
+      const { data: okrResult1 } = req2.data;
+      currentList = currentList.map((m) => {
+        const okr = m.okr.map(n => {
+          const okrResult2 = okrResult1.filter(f => f.okr === n.id);
+          return { ...n, okrResult: n.okrResult.concat(okrResult2) };
+        });
+        return { ...m, okr };
+      });
+      this.setState({ list: currentList });
+    }
   }
 
   // getOKRList = async () => {
