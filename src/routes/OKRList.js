@@ -116,7 +116,7 @@ class OKRList extends React.Component {
   // }
 
   getOkrByUser = async () => {
-    const result = await api.getOKRList();
+    const result = await api.getOKRList({ page_size: 1 });
     const { count: total } = result.data;
     if (total === 0) {
       return [];
@@ -129,14 +129,28 @@ class OKRList extends React.Component {
     const currentList = uniqueUserIds.map((m) => {
       const okr = allOkr.filter(f => f.createuser === m);
       const { year, quarter } = okr[0];
-      return { user: m, year, quarter, okr };
+      return {
+        user: m,
+        year,
+        quarter,
+        okr: okr.map(m => ({ ...m, okrResult: [] })),
+        userDetail: {
+          id: m,
+          username: '',
+          photourl: '/images/avatar1.png',
+        },
+      };
     });
+    this.setState({ list: currentList });
     return { uniqueUserIds, allOkrIds, currentList };
   }
 
   getOKRList = async () => {
-    let { uniqueUserIds, allOkrIds, currentList } = await this.getOkrByUser();
-
+    const getOkrByUserRes = await this.getOkrByUser();
+    window.echo('get okr by user res', getOkrByUserRes);
+    return;
+    const { uniqueUserIds, allOkrIds } = getOkrByUserRes;
+    let { currentList } = getOkrByUserRes;
     const allUserInfo = await Promise.all(uniqueUserIds.map(m => api.getUserInfo(m)));
     const allUserInfoDetails = allUserInfo.map(m => m.data);
     currentList = currentList.map((m) => {
