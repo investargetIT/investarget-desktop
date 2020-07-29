@@ -147,17 +147,14 @@ class OKRList extends React.Component {
 
   getOKRList = async () => {
     const getOkrByUserRes = await this.getOkrByUser();
-    window.echo('get okr by user res', getOkrByUserRes);
-    return;
     const { uniqueUserIds, allOkrIds } = getOkrByUserRes;
     let { currentList } = getOkrByUserRes;
     const allUserInfo = await Promise.all(uniqueUserIds.map(m => api.getUserInfo(m)));
     const allUserInfoDetails = allUserInfo.map(m => m.data);
     currentList = currentList.map((m) => {
-      const userDetail = allUserInfoDetails.filter(f => f.id === m.user);
+      const userDetail = allUserInfoDetails.filter(f => f.id === m.user)[0];
       return { ...m, userDetail };
     });
-
     this.setState({ list: currentList });
   }
 
