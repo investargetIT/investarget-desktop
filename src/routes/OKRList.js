@@ -156,6 +156,14 @@ class OKRList extends React.Component {
       return { ...m, userDetail };
     });
     this.setState({ list: currentList });
+
+    const okrIdDivideByFour = Math.floor(allOkrIds.length / 20);
+    const groupOrkIds = [];
+    for (let index = 0; index <= okrIdDivideByFour; index++) {
+      const group = allOkrIds.slice(index * 20, 20 * (index + 1));
+      groupOrkIds.push(group);
+    }
+    window.echo('group okr ids', groupOrkIds);
   }
 
   // getOKRList = async () => {
