@@ -118,6 +118,9 @@ class HandleError extends React.Component {
       case 2007:
         Modal.error({ title: '机构BD创建失败', content: msg });
         break;
+      case 50061:
+        Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }

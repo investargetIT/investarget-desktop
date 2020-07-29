@@ -58,11 +58,11 @@ class AddProjectBD extends React.Component {
 
   addProjBD = async (values) => {
     const param = toData(values);
-    const { com_name } = param;
-    const getProjBD = await api.getProjBDList({ search: com_name });
-    if (getProjBD.data.count > 0) {
-      throw new FormError('已存在项目名称相同的BD任务，无法创建');
-    }
+    // const { com_name } = param;
+    // const getProjBD = await api.getProjBDList({ search: com_name });
+    // if (getProjBD.data.count > 0) {
+    //   throw new FormError('已存在项目名称相同的BD任务，无法创建');
+    // }
     await api.addProjBD(param);
   }
 
