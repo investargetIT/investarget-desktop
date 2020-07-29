@@ -98,6 +98,23 @@ class OKRList extends React.Component {
   //   this.setState({ pageSize, page: 1 }, this.getOKRList)
   // }
 
+  // getOkrByUser = async () => {
+  //   const result = await api.getOKRList();
+  //   const { count: total } = result.data;
+  //   if (total === 0) {
+  //     return [];
+  //   }
+  //   const allOkrRes = await api.getOKRList({ page_size: total });
+  //   const { data: allOkr } = allOkrRes.data;
+  //   const allUserIds = allOkr.map(m => m.createuser);
+  //   const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
+  //   return uniqueUserIds.map((m) => {
+  //     const okr = allOkr.filter(f => f.createuser === m);
+  //     const { year, quarter } = okr[0];
+  //     return { user: m, year, quarter, okr };
+  //   });
+  // }
+
   getOkrByUser = async () => {
     const result = await api.getOKRList();
     const { count: total } = result.data;
@@ -108,37 +125,51 @@ class OKRList extends React.Component {
     const { data: allOkr } = allOkrRes.data;
     const allUserIds = allOkr.map(m => m.createuser);
     const uniqueUserIds = allUserIds.filter((v, i, a) => a.indexOf(v) === i);
-    return uniqueUserIds.map((m) => {
+    const allOkrIds = allOkr.map(m => m.id);
+    const currentList = uniqueUserIds.map((m) => {
       const okr = allOkr.filter(f => f.createuser === m);
       const { year, quarter } = okr[0];
       return { user: m, year, quarter, okr };
     });
+    return { uniqueUserIds, allOkrIds, currentList };
   }
 
   getOKRList = async () => {
-    const okrByUser = await this.getOkrByUser();
+    let { uniqueUserIds, allOkrIds, currentList } = await this.getOkrByUser();
 
-    for (let index = 0; index < okrByUser.length; index++) {
-      const element = okrByUser[index];
+    const allUserInfo = await Promise.all(uniqueUserIds.map(m => api.getUserInfo(m)));
+    const allUserInfoDetails = allUserInfo.map(m => m.data);
+    currentList = currentList.map((m) => {
+      const userDetail = allUserInfoDetails.filter(f => f.id === m.user);
+      return { ...m, userDetail };
+    });
 
-      const userDetail = await api.getUserInfo(element.user);
-      element.userDetail = userDetail.data;
-
-      for (let index1 = 0; index1 < element.okr.length; index1++) {
-        const element1 = element.okr[index1];
-        const okrResult = await api.getOKRResult({ okr: element1.id });
-        const { count } = okrResult.data;
-        if (count === 0) {
-          element1.okrResult = [];
-        } else {
-          const okrResult1 = await api.getOKRResult({ okr: element1.id, page_size: count });
-          element1.okrResult = okrResult1.data.data;
-        }
-      }
-    }
-    window.echo('okr by user', okrByUser);
-    this.setState({ list: okrByUser });
+    this.setState({ list: currentList });
   }
+
+  // getOKRList = async () => {
+  //   const okrByUser = await this.getOkrByUser();
+
+  //   for (let index = 0; index < okrByUser.length; index++) {
+  //     const element = okrByUser[index];
+
+  //     const userDetail = await api.getUserInfo(element.user);
+  //     element.userDetail = userDetail.data;
+
+  //     for (let index1 = 0; index1 < element.okr.length; index1++) {
+  //       const element1 = element.okr[index1];
+  //       const okrResult = await api.getOKRResult({ okr: element1.id });
+  //       const { count } = okrResult.data;
+  //       if (count === 0) {
+  //         element1.okrResult = [];
+  //       } else {
+  //         const okrResult1 = await api.getOKRResult({ okr: element1.id, page_size: count });
+  //         element1.okrResult = okrResult1.data.data;
+  //       }
+  //     }
+  //   }
+  //   this.setState({ list: okrByUser });
+  // }
 
   tryToGetOKRList = async () => {
     try {
