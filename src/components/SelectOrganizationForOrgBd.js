@@ -176,24 +176,24 @@ class SelectOrganization extends React.Component {
     })
   }
 
-  getOrg = () => {
-    const { filters, search, page, pageSize } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false, orgstatus: 2 };
-    // if (this.props.traderId) {
-    //   params['trader'] = this.props.traderId
-    // }
-    this.setState({ loading: true })
-    api.getOrg(params).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
+  // getOrg = () => {
+  //   const { filters, search, page, pageSize } = this.state
+  //   const params = { ...filters, search, page_index: page, page_size: pageSize, issub: false, orgstatus: 2 };
+  //   // if (this.props.traderId) {
+  //   //   params['trader'] = this.props.traderId
+  //   // }
+  //   this.setState({ loading: true })
+  //   api.getOrg(params).then(result => {
+  //     const { count: total, data: list } = result.data
+  //     this.setState({ total, list, loading: false })
+  //   }, error => {
+  //     this.setState({ loading: false })
+  //     this.props.dispatch({
+  //       type: 'app/findError',
+  //       payload: error
+  //     })
+  //   })
+  // }
 
   getOrgFromQuery = () => {
     const { page, pageSize } = this.state;
@@ -331,6 +331,11 @@ class SelectOrganization extends React.Component {
       })
   }
 
+  handleRowExpand = (expanded, record) => {
+    window.echo('expanded', expanded);
+    window.echo('record', record);
+  }
+
   render() {
 
     const rowSelection= {
@@ -368,6 +373,41 @@ class SelectOrganization extends React.Component {
       } },
       { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
     ]
+
+    const expandedRowRender = (record) => {
+      const subColumns = [
+        {
+          title: i18n('mobile'),
+          key: 'mobile',
+          dataIndex: 'mobile',
+          render: text => !text || !checkRealMobile(text) ? '暂无' : text,
+        },
+        {
+          title: i18n('account.email'),
+          key: 'email',
+          dataIndex: 'email',
+          render: text => !text || text.includes('@investarget') ? '暂无' : text,
+        },
+        {
+          title: i18n('user.position'),
+          key: 'position',
+          dataIndex: 'title',
+          render: text => text && this.props.title.filter(f => f.id === text)[0].name,
+        },
+      ];
+      return (
+        <Table
+          // showHeader={false}
+          columns={subColumns}
+          dataSource={record.items}
+          rowKey={record => record.key}
+          pagination={false}
+          loading={!record.loaded}
+          size={"small"}
+          // rowSelection={rowSelection}
+        />
+      );
+    };
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
  
@@ -425,9 +465,11 @@ class SelectOrganization extends React.Component {
           rowSelection={rowSelection}
           columns={columns}
           dataSource={list}
+          // expandedRowRender={expandedRowRender}
           rowKey={record=>record.id}
           loading={loading}
           pagination={false}
+          onExpand={this.handleRowExpand}
         />
 
         {!(this.props.query.search && this.props.query.searchOrgName) &&
