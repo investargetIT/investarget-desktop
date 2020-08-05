@@ -73,6 +73,7 @@ class SelectOrganization extends React.Component {
       list: [],
       loading: false,
       orgInvestor: [],
+      loadingSubOrg: false,
     }
   }
 
@@ -104,6 +105,8 @@ class SelectOrganization extends React.Component {
     const param = {
       search,
       page_size: 100,
+      issub: false,
+      orgstatus: 2,
     };
 
     let list = [];
@@ -130,6 +133,8 @@ class SelectOrganization extends React.Component {
       text,
       like,
       page_size: 100,
+      issub: false,
+      orgstatus: 2,
     };
     const req3 = await api.searchOrg(param2);
     const { count: count3, data: list3 } = req3.data;
@@ -202,6 +207,8 @@ class SelectOrganization extends React.Component {
       search,
       page_size: pageSize,
       page_index: page,
+      issub: false,
+      orgstatus: 2,
     };
     this.setState({ loading: true });
     api.getOrg(params).then(result => {
@@ -225,6 +232,8 @@ class SelectOrganization extends React.Component {
       page_size: pageSize,
       page_index: page,
       like,
+      issub: false,
+      orgstatus: 2,
     };
     this.setState({ loading: true });
     api.searchOrg(params).then(result => {
@@ -331,9 +340,37 @@ class SelectOrganization extends React.Component {
       })
   }
 
-  handleRowExpand = (expanded, record) => {
-    window.echo('expanded', expanded);
-    window.echo('record', record);
+  handleRowExpand = async (expanded, record) => {
+    if (!expanded) return;
+    this.setState({ loadingSubOrg: true });
+    const { id: org } = record;
+    const req1 = await api.getOrgManageFund({ org });
+    const { count, data } = req1.data;
+    let fundData = [];
+    if (count === 0) {
+      this.setState({ loadingSubOrg: false });
+      return;
+    }
+    if (count <= 10) {
+      fundData = data;
+    } else {
+      const req2 = await api.getOrgManageFund({ org, page_size: count });
+      fundData = req2.data.data;
+    }
+    const orgIds = fundData.map(m => m.fund);
+    const reqOrg = await api.getOrg({ ids: orgIds, page_size: orgIds.length });
+    const subOrg = fundData.map((m) => {
+      const orgDetails = reqOrg.data.data.filter(f => f.id === m.fund)[0];
+      return orgDetails;
+    });
+    const newList = [...this.state.list];
+    for (let index = 0; index < newList.length; index++) {
+      const element = newList[index];
+      if (element.id === org) {
+        element.subOrg = subOrg;
+      }
+    }
+    this.setState({ list: newList, loadingSubOrg: false });
   }
 
   render() {
@@ -376,33 +413,25 @@ class SelectOrganization extends React.Component {
 
     const expandedRowRender = (record) => {
       const subColumns = [
+        { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname' },
+        { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
+        { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
         {
-          title: i18n('mobile'),
-          key: 'mobile',
-          dataIndex: 'mobile',
-          render: text => !text || !checkRealMobile(text) ? '暂无' : text,
+          title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
+            let phases = record.orgtransactionphase || []
+            return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
+          },
         },
-        {
-          title: i18n('account.email'),
-          key: 'email',
-          dataIndex: 'email',
-          render: text => !text || text.includes('@investarget') ? '暂无' : text,
-        },
-        {
-          title: i18n('user.position'),
-          key: 'position',
-          dataIndex: 'title',
-          render: text => text && this.props.title.filter(f => f.id === text)[0].name,
-        },
+        { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode' },
       ];
       return (
         <Table
-          // showHeader={false}
+          showHeader={false}
           columns={subColumns}
-          dataSource={record.items}
-          rowKey={record => record.key}
+          dataSource={record.subOrg}
+          rowKey={record => record.id}
           pagination={false}
-          loading={!record.loaded}
+          loading={this.state.loadingSubOrg}
           size={"small"}
           // rowSelection={rowSelection}
         />
@@ -465,7 +494,7 @@ class SelectOrganization extends React.Component {
           rowSelection={rowSelection}
           columns={columns}
           dataSource={list}
-          // expandedRowRender={expandedRowRender}
+          expandedRowRender={expandedRowRender}
           rowKey={record=>record.id}
           loading={loading}
           pagination={false}
