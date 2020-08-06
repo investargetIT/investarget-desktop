@@ -358,23 +358,78 @@ class OrgBDListComponent extends React.Component {
         let list = result.data.data
         let orgList = {}
         list.forEach(item => {orgList[item.id] = item})
-        this.setState({
-          list: baseList.map(item => ({
-            id: `${item.org}-${item.proj}`,
-            org: orgList[item.org], 
-            proj: {id: item.proj},
-            loaded: false,
-            items: []
-          })),
-          total: baseResult.data.count,
-          loading: false,
-          expanded: baseList.map(item => `${item.org}-${item.proj}`),
-        }, () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)));
+        this.setState(
+          {
+            list: baseList.map(item => ({
+              id: `${item.org}-${item.proj}`,
+              org: orgList[item.org],
+              proj: { id: item.proj },
+              loaded: false,
+              items: [],
+            })),
+            total: baseResult.data.count,
+            loading: false,
+            expanded: baseList.map(item => `${item.org}-${item.proj}`),
+          },
+          // () => this.state.list.map(m => this.getOrgBdListDetail(m.org.id, m.proj.id)),
+          this.loadOrgBDDetails,
+        );
       })
       .catch(handleError);
       if (this.props.orgbdres.length > 0) {
         this.getStatisticData().then(data => this.setState({ statistic: data }));
       }
+  }
+
+  loadOrgBDDetails = async () => {
+    const org = this.state.list.map(m => m.org.id);
+    const { manager, response, createuser, proj } = this.state.filters;
+    const param1 = {
+      org,
+      proj: proj || "none",
+      response,
+      search: this.state.search,
+      // page_size: 100,
+      isRead: this.state.showUnreadOnly ? false : undefined,
+    };
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      param1.manager = manager;
+      param1.createuser = createuser;
+    } else {
+      param1.manager = [getCurrentUser()];
+      param1.createuser = [getCurrentUser()];
+      param1.unionFields = 'manager,createuser';
+    }
+    let orgBDDetails = [];
+    const req1 = await api.getOrgBdList(param1);
+    const { data: data1, count: count1 } = req1.data;
+    if (count1 <= 10) {
+      orgBDDetails = data1;
+    } else {
+      const req2 = await api.getOrgBdList({ ...param1, page_size: count1 });
+      orgBDDetails = req2.data.data;
+    }
+    
+    const newList = this.state.list.map((item) => {
+      const items = orgBDDetails.filter(f => f.org.id === item.org.id)
+        .sort((a, b) => {
+          const aImportant = a.isimportant ? 1 : 0;
+          const bImportant = b.isimportant ? 1 : 0;
+          return bImportant - aImportant;
+        });
+      return { ...item, items, loaded: true };
+    });
+
+    this.setState(
+      { list: newList },
+      () => api.readOrgBD({ bds: orgBDDetails.map(m => m.id) }),
+    );
+
+    if (this.state.currentBD) {
+      const comments = orgBDDetails.filter(item => item.id === this.state.currentBD.id)[0].BDComments || [];
+      this.setState({ comments });
+    }
   }
 
   // getOrgBdRefactorDetail = async (org, proj) => {
@@ -429,77 +484,77 @@ class OrgBDListComponent extends React.Component {
   //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
   // }
 
-  getOrgBdListDetail = (org, proj) => {
-    const { manager, response, createuser } = this.state.filters;
-    // this.getOrgBdRefactorDetail(org, proj)
-    const param1 = {
-      org,
-      proj: proj || "none",
-      response,
-      search: this.state.search,
-      page_size: 100,
-      isRead: this.state.showUnreadOnly ? false : undefined,
-    };
-    window.echo('承揽承做id数组', this.state.projTradersIds);
-    // 管理员承揽承做才可以筛选负责人
-    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-      param1.manager = manager;
-      param1.createuser = createuser;
-      // param1.unionFields = 'manager,createuser';
-    } else {
-      param1.manager = [getCurrentUser()];
-      param1.createuser = [getCurrentUser()];
-      param1.unionFields = 'manager,createuser';
-    }
-    api.getOrgBdList(param1)
-    .then(result => {
-      let list = result.data.data.sort((a, b) => {
-        const aImportant = a.isimportant ? 1 : 0;
-        const bImportant = b.isimportant ? 1 : 0;
-        return bImportant - aImportant;
-      });
-      let promises = list.map(item=>{
-        if(item.bduser && ![4, 5, 6, null].includes(item.response)) {
-          const params = {
-            proj: proj.id,
-            investor: item.bduser,
-            trader: item.manager.id,
-            isClose: false,
-          }
-          // return api.getTimeline(params);
-          return {
-            data: { 
-              count: 1, 
-              data: [{ id: true }] 
-            }
-          };
-        } else {
-          return { 
-            data: { count: 0 }
-          }
-        }
-      });
-      Promise.all(promises).then(data=>{
-        data.forEach((item,index)=>{
-          if (item.data.count > 0) {
-            list[index].timeline = item.data.data[0].id;  
-          }
-        })
-        let newList = this.state.list.map(item => 
-          item.id === `${org}-${proj}` ?
-            {...item, items: list, loaded: true} :
-            item
-        )
-        this.setState({
-          list: newList,
-        }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
-        if (this.state.currentBD) {
-          const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
-          this.setState({ comments });
-        }
-      })
-    })
-  }
+  // getOrgBdListDetail = (org, proj) => {
+  //   const { manager, response, createuser } = this.state.filters;
+  //   // this.getOrgBdRefactorDetail(org, proj)
+  //   const param1 = {
+  //     org,
+  //     proj: proj || "none",
+  //     response,
+  //     search: this.state.search,
+  //     page_size: 100,
+  //     isRead: this.state.showUnreadOnly ? false : undefined,
+  //   };
+  //   window.echo('承揽承做id数组', this.state.projTradersIds);
+  //   // 管理员承揽承做才可以筛选负责人
+  //   if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+  //     param1.manager = manager;
+  //     param1.createuser = createuser;
+  //     // param1.unionFields = 'manager,createuser';
+  //   } else {
+  //     param1.manager = [getCurrentUser()];
+  //     param1.createuser = [getCurrentUser()];
+  //     param1.unionFields = 'manager,createuser';
+  //   }
+  //   api.getOrgBdList(param1)
+  //   .then(result => {
+  //     let list = result.data.data.sort((a, b) => {
+  //       const aImportant = a.isimportant ? 1 : 0;
+  //       const bImportant = b.isimportant ? 1 : 0;
+  //       return bImportant - aImportant;
+  //     });
+  //     let promises = list.map(item=>{
+  //       if(item.bduser && ![4, 5, 6, null].includes(item.response)) {
+  //         const params = {
+  //           proj: proj.id,
+  //           investor: item.bduser,
+  //           trader: item.manager.id,
+  //           isClose: false,
+  //         }
+  //         // return api.getTimeline(params);
+  //         return {
+  //           data: { 
+  //             count: 1, 
+  //             data: [{ id: true }] 
+  //           }
+  //         };
+  //       } else {
+  //         return { 
+  //           data: { count: 0 }
+  //         }
+  //       }
+  //     });
+  //     Promise.all(promises).then(data=>{
+  //       data.forEach((item,index)=>{
+  //         if (item.data.count > 0) {
+  //           list[index].timeline = item.data.data[0].id;  
+  //         }
+  //       })
+  //       let newList = this.state.list.map(item => 
+  //         item.id === `${org}-${proj}` ?
+  //           {...item, items: list, loaded: true} :
+  //           item
+  //       )
+  //       this.setState({
+  //         list: newList,
+  //       }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
+  //       if (this.state.currentBD) {
+  //         const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
+  //         this.setState({ comments });
+  //       }
+  //     })
+  //   })
+  // }
 
   handleDelete(record) {
     api.deleteOrgBD(record.id)
@@ -542,27 +597,27 @@ class OrgBDListComponent extends React.Component {
     });
   }
 
-  syncTimeline = async state => {
-    const { proj, bduser, manager } = this.state.currentBD;
-    const params = {
-      proj: proj.id,
-      investor: bduser,
-      trader: manager.id,
-      isClose: false,
-    };
-    const checkTimeline = await api.getTimeline(params);
+  // syncTimeline = async state => {
+  //   const { proj, bduser, manager } = this.state.currentBD;
+  //   const params = {
+  //     proj: proj.id,
+  //     investor: bduser,
+  //     trader: manager.id,
+  //     isClose: false,
+  //   };
+  //   const checkTimeline = await api.getTimeline(params);
 
-    if (checkTimeline.data.count === 0) {
-      return await this.addTimeline(state.status);
-    } else {
-      const timeline = checkTimeline.data.data[0];
-      return await api.editTimeline(timeline.id, {
-        statusdata: {
-          transationStatus: state.status
-        }
-      });
-    }
-  }
+  //   if (checkTimeline.data.count === 0) {
+  //     return await this.addTimeline(state.status);
+  //   } else {
+  //     const timeline = checkTimeline.data.data[0];
+  //     return await api.editTimeline(timeline.id, {
+  //       statusdata: {
+  //         transationStatus: state.status
+  //       }
+  //     });
+  //   }
+  // }
 
   addTimeline = status => {
     const { proj, bduser, manager } = this.state.currentBD;
