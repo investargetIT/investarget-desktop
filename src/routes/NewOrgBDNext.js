@@ -95,6 +95,7 @@ class NewOrgBDList extends React.Component {
         traderList: [],
         org: null, // 为哪个机构添加投资人
         historyBDRefresh: 0,
+        projTradersIds: [], // 项目承揽承做的 ID 数组
     }
 
     this.allTrader = [];
@@ -110,6 +111,14 @@ class NewOrgBDList extends React.Component {
     api.getProjDetail(this.projId)
       .then(result => {
         this.projDetail = result.data || {}
+        
+        const { projTraders } = result.data;
+        if (projTraders) {
+          this.setState({
+            projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
+          });
+        }
+
         this.getOrgBdList()
       })
       .catch(error => {
@@ -250,7 +259,7 @@ class NewOrgBDList extends React.Component {
       });
 
       const params = { org, proj: this.projId || "none" };
-      if (!hasPerm('BD.manageOrgBD')) {
+      if (!hasPerm('BD.manageOrgBD') && !this.state.projTradersIds.includes(getCurrentUser())) {
         params.manager = getCurrentUser();
         // params.createuser = getCurrentUser();
         // params.unionFields = 'manager,createuser';
