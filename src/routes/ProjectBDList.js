@@ -477,7 +477,7 @@ class ProjectBDList extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>
-        {source!=0 ? <BDModal source={source}  element='proj'/> : null}
+        {/* {source!=0 ? <BDModal source={source}  element='proj'/> : null} */}
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
           <Search
