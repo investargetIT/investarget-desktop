@@ -484,77 +484,77 @@ class OrgBDListComponent extends React.Component {
   //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
   // }
 
-  // getOrgBdListDetail = (org, proj) => {
-  //   const { manager, response, createuser } = this.state.filters;
-  //   // this.getOrgBdRefactorDetail(org, proj)
-  //   const param1 = {
-  //     org,
-  //     proj: proj || "none",
-  //     response,
-  //     search: this.state.search,
-  //     page_size: 100,
-  //     isRead: this.state.showUnreadOnly ? false : undefined,
-  //   };
-  //   window.echo('承揽承做id数组', this.state.projTradersIds);
-  //   // 管理员承揽承做才可以筛选负责人
-  //   if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-  //     param1.manager = manager;
-  //     param1.createuser = createuser;
-  //     // param1.unionFields = 'manager,createuser';
-  //   } else {
-  //     param1.manager = [getCurrentUser()];
-  //     param1.createuser = [getCurrentUser()];
-  //     param1.unionFields = 'manager,createuser';
-  //   }
-  //   api.getOrgBdList(param1)
-  //   .then(result => {
-  //     let list = result.data.data.sort((a, b) => {
-  //       const aImportant = a.isimportant ? 1 : 0;
-  //       const bImportant = b.isimportant ? 1 : 0;
-  //       return bImportant - aImportant;
-  //     });
-  //     let promises = list.map(item=>{
-  //       if(item.bduser && ![4, 5, 6, null].includes(item.response)) {
-  //         const params = {
-  //           proj: proj.id,
-  //           investor: item.bduser,
-  //           trader: item.manager.id,
-  //           isClose: false,
-  //         }
-  //         // return api.getTimeline(params);
-  //         return {
-  //           data: { 
-  //             count: 1, 
-  //             data: [{ id: true }] 
-  //           }
-  //         };
-  //       } else {
-  //         return { 
-  //           data: { count: 0 }
-  //         }
-  //       }
-  //     });
-  //     Promise.all(promises).then(data=>{
-  //       data.forEach((item,index)=>{
-  //         if (item.data.count > 0) {
-  //           list[index].timeline = item.data.data[0].id;  
-  //         }
-  //       })
-  //       let newList = this.state.list.map(item => 
-  //         item.id === `${org}-${proj}` ?
-  //           {...item, items: list, loaded: true} :
-  //           item
-  //       )
-  //       this.setState({
-  //         list: newList,
-  //       }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
-  //       if (this.state.currentBD) {
-  //         const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
-  //         this.setState({ comments });
-  //       }
-  //     })
-  //   })
-  // }
+  getOrgBdListDetail = (org, proj) => {
+    const { manager, response, createuser } = this.state.filters;
+    // this.getOrgBdRefactorDetail(org, proj)
+    const param1 = {
+      org,
+      proj: proj || "none",
+      response,
+      search: this.state.search,
+      page_size: 100,
+      isRead: this.state.showUnreadOnly ? false : undefined,
+    };
+    window.echo('承揽承做id数组', this.state.projTradersIds);
+    // 管理员承揽承做才可以筛选负责人
+    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      param1.manager = manager;
+      param1.createuser = createuser;
+      // param1.unionFields = 'manager,createuser';
+    } else {
+      param1.manager = [getCurrentUser()];
+      param1.createuser = [getCurrentUser()];
+      param1.unionFields = 'manager,createuser';
+    }
+    api.getOrgBdList(param1)
+    .then(result => {
+      let list = result.data.data.sort((a, b) => {
+        const aImportant = a.isimportant ? 1 : 0;
+        const bImportant = b.isimportant ? 1 : 0;
+        return bImportant - aImportant;
+      });
+      let promises = list.map(item=>{
+        if(item.bduser && ![4, 5, 6, null].includes(item.response)) {
+          const params = {
+            proj: proj.id,
+            investor: item.bduser,
+            trader: item.manager.id,
+            isClose: false,
+          }
+          // return api.getTimeline(params);
+          return {
+            data: { 
+              count: 1, 
+              data: [{ id: true }] 
+            }
+          };
+        } else {
+          return { 
+            data: { count: 0 }
+          }
+        }
+      });
+      Promise.all(promises).then(data=>{
+        data.forEach((item,index)=>{
+          if (item.data.count > 0) {
+            list[index].timeline = item.data.data[0].id;  
+          }
+        })
+        let newList = this.state.list.map(item => 
+          item.id === `${org}-${proj}` ?
+            {...item, items: list, loaded: true} :
+            item
+        )
+        this.setState({
+          list: newList,
+        }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
+        if (this.state.currentBD) {
+          const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
+          this.setState({ comments });
+        }
+      })
+    })
+  }
 
   handleDelete(record) {
     api.deleteOrgBD(record.id)
