@@ -962,3 +962,12 @@ export const endOnlineTest = (id, body) => r(`/msg/internTest/${id}/`, 'PUT', bo
 export const getZoomMeetingList = () => r('/service/zoom/meetings/?type=upcoming');
 
 export const getWebexMeetingList = body => r('/msg/webexAPI/meeting/', 'POST', body);
+
+export const batchGetUserSimpleInfo = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r(`/user/simple?${qs.stringify(params)}`)
+};
