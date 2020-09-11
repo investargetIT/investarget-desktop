@@ -38,9 +38,9 @@ const drawAnnotationLayer = function (page) {
   
   PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
   const adapter = PDFJSAnnotate.getStoreAdapter();
-  adapter.getAnnotations('test.pdf', 1).then(annotations => {
+  adapter.getAnnotations('test.pdf', page.pageNumber ).then(annotations => {
     console.log('annotations', annotations);
-    const svg = document.querySelector('.customAnnotationLayer');
+    const svg = document.querySelector(`.page[data-page-number="${page.pageNumber}"] .customAnnotationLayer`);
     // const svg = document.createElement('svg');
     // svg.setAttribute('class', 'customAnnotationLayer');
     svg.setAttribute('width', viewport.width);
