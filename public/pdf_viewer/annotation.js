@@ -16,16 +16,18 @@ const drawAnnotationLayer = function (page) {
 
   // PDFJSAnnotate.setStoreAdapter(PDFJSAnnotate.LocalStoreAdapter)
 
-  const viewport = {
-    height: 1055.621,
-    offsetX: 0,
-    offsetY: 0,
-    rotation: 0,
-    scale: 1.33,
-    transform: [1.33, 0, 0, -1.33, 0, 1055.621],
-    viewBox: [0, 0, 581.1, 793.7],
-    width: 772.863,
-  }
+  // const viewport = {
+  //   height: 1055.621,
+  //   offsetX: 0,
+  //   offsetY: 0,
+  //   rotation: 0,
+  //   scale: 1.33,
+  //   transform: [1.33, 0, 0, -1.33, 0, 1055.621],
+  //   viewBox: [0, 0, 581.1, 793.7],
+  //   width: 772.863,
+  // }
+  const { viewport } = page.source;
+
   // VIEWER.appendChild(UI.createPage(1));
   const pageHtml = document.querySelector(`.page[data-page-number="${page.pageNumber}"]`);
   console.log('page html', pageHtml);
