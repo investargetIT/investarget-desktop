@@ -2011,6 +2011,8 @@ function webViewerInitialized() {
   PDFViewerApplication.eventBus.on('pagerendered', function(e) {
     var ctx = e.source.canvas.getContext('2d');
     drawWatermark(ctx, WATER_MARK, ORG); // 记事：WATER_MARK 写错城 WATERMARK 导致 disableTextLayer 失效
+    console.log('page rendered', e); // we have viewport here
+    window.drawAnnotationLayer();
   });
 
 }
