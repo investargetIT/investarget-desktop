@@ -10,7 +10,7 @@ const drawAnnotationLayer = function (page) {
   const pageHtml = document.querySelector(`.page[data-page-number="${pageNumber}"]`);
   const svgLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
-  pageHtml.appendChild(svgLayer);
+  pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
   
   PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
   const adapter = PDFJSAnnotate.getStoreAdapter();
