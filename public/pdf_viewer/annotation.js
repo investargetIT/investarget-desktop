@@ -1,8 +1,9 @@
 const { default: PDFJSAnnotate } = PDFAnnotate;
 
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
+// UI.enableRect('highlight');
 // UI.enableRect('area');
-// UI.enableEdit();
+UI.enableEdit();
 
 const drawAnnotationLayer = function (page) {
   const { source, pageNumber } = page;
@@ -12,7 +13,6 @@ const drawAnnotationLayer = function (page) {
   const svgLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
   pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
-  // pageHtml.appendChild(svgLayer);
   
   PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
   const adapter = PDFJSAnnotate.getStoreAdapter();
