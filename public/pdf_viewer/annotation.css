@@ -1,0 +1,11 @@
+.custom-annotation-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+#pdf-annotate-edit-overlay a {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
