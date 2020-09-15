@@ -134,9 +134,12 @@ class DataRoom extends React.Component {
     // const reqUserInfo = await Promise.all(allReq);
     // const dataRoomTemp = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: reqUserInfo[i].data }));
 
+    let allUserInfo = [];
     const allTempUserIds = reqDataroomTemp.data.data.map(m => m.user);
-    const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
-    const { data: allUserInfo } = allUsersReq.data;
+    if (allTempUserIds.length > 0) {
+      const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
+      allUserInfo = allUsersReq.data.data;
+    }
     const dataRoomTemp = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: allUserInfo.filter(f => f.id === m.user)[0] }));
 
     this.setState({
