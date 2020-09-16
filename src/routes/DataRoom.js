@@ -855,7 +855,7 @@ class DataRoom extends React.Component {
         // style={disableSelect}
       >
       
-        {hasPerm('dataroom.admin_adddataroom') || this.state.isProjTrader ?
+        {hasPerm('dataroom.admin_getdataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
@@ -871,6 +871,7 @@ class DataRoom extends React.Component {
               onApplyTemplate={this.state.hasPermissionForDataroomTemp ? this.handleApplyTemplate : undefined}
               dataRoomTemp={this.state.dataRoomTemp}
               onSendNewFileEmail={this.handleSendNewFileEmail}
+              currentUserIsProjTrader={this.state.isProjTrader}
             />
           </div>
           : null}
