@@ -1912,7 +1912,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 
 @media screen and (min-resolution: 2dppx) {
   /* Rules for Retina screens */
-  .toolbarButton::before {
+  /* .toolbarButton::before {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
     top: -5px;
@@ -2086,7 +2086,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
   html[dir='rtl'] .outlineItemToggler::before {
     left: 0;
-  }
+  } */
 }
 
 @media print {
