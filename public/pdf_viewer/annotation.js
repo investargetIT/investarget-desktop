@@ -1,9 +1,6 @@
 const { default: PDFJSAnnotate } = PDFAnnotate;
 
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
-// UI.enableRect('highlight');
-// UI.enableRect('area');
-// UI.enableEdit();
 
 const drawAnnotationLayer = function (page) {
   const { source, pageNumber } = page;
@@ -26,16 +23,59 @@ const drawAnnotationLayer = function (page) {
 
 window.drawAnnotationLayer = drawAnnotationLayer;
 
-$('#annotation-select').click(function() {
+function enableEdit() {
+  $('#annotation-select').addClass('toggled');
+  $('.custom-annotation-layer').css('zIndex', 1);
+  UI.enableEdit();
+}
+function disableEdit() {
+  $('#annotation-select').removeClass('toggled');
+  $('.custom-annotation-layer').css('zIndex', 0);
+  UI.disableEdit();
+}
+function enableRectangle() {
+  $('#annotation-rectangle').addClass('toggled');
+  UI.enableRect('area');
+}
+function disableRectangle() {
   $('#annotation-rectangle').removeClass('toggled');
+  UI.disableRect();
+}
+function enableHighlight() {
+  $('#annotation-highlight').addClass('toggled');
+  UI.enableRect('highlight');
+}
+function disableHighlight() {
   $('#annotation-highlight').removeClass('toggled');
+  UI.disableRect();
+}
+
+$('#annotation-select').click(function() {
+  disableRectangle();
+  disableHighlight();
   if ($('#annotation-select').hasClass('toggled')) {
-    $('#annotation-select').removeClass('toggled');
-    $('.custom-annotation-layer').css('zIndex', 0);
-    UI.disableEdit();
+    disableEdit();
   } else {
-    $('#annotation-select').addClass('toggled');
-    $('.custom-annotation-layer').css('zIndex', 1);
-    UI.enableEdit();
+    enableEdit();
+  }
+});
+
+$('#annotation-rectangle').click(function() {
+  disableEdit();
+  disableHighlight();
+  if ($('#annotation-rectangle').hasClass('toggled')) {
+    disableRectangle();
+  } else {
+    enableRectangle();
+  }
+});
+
+$('#annotation-highlight').click(function() {
+  disableEdit();
+  disableRectangle();
+  if ($('#annotation-highlight').hasClass('toggled')) {
+    disableHighlight();
+  } else {
+    enableHighlight();
   }
 });
