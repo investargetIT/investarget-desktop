@@ -538,7 +538,7 @@ html[dir='rtl'] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 32px;
+  top: 64px;
   right: 0;
   bottom: 0;
   left: 0;
