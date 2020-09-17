@@ -17,12 +17,13 @@
 }
 .icon-container {
   margin: 0 4px;
-  width: 32px;
-  height: 25px;
+  width: 30px;
+  height: 23px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid transparent;
+  border-radius: 2px;
 }
 .icon-container:hover {
   background-color: hsla(0,0%,0%,.12);
