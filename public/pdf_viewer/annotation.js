@@ -3,7 +3,7 @@ const { default: PDFJSAnnotate } = PDFAnnotate;
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 // UI.enableRect('highlight');
 // UI.enableRect('area');
-UI.enableEdit();
+// UI.enableEdit();
 
 const drawAnnotationLayer = function (page) {
   const { source, pageNumber } = page;
@@ -26,6 +26,16 @@ const drawAnnotationLayer = function (page) {
 
 window.drawAnnotationLayer = drawAnnotationLayer;
 
-$('.icon-container').click(function() {
-  $(this).toggleClass('toggled');
+$('#annotation-select').click(function() {
+  $('#annotation-rectangle').removeClass('toggled');
+  $('#annotation-highlight').removeClass('toggled');
+  if ($('#annotation-select').hasClass('toggled')) {
+    $('#annotation-select').removeClass('toggled');
+    $('.custom-annotation-layer').css('zIndex', 0);
+    UI.disableEdit();
+  } else {
+    $('#annotation-select').addClass('toggled');
+    $('.custom-annotation-layer').css('zIndex', 1);
+    UI.enableEdit();
+  }
 });
