@@ -18,7 +18,7 @@
     <script src="pdf_viewer/compatibility.js"></script>
     <script src="pdf_viewer/pdf.min.js"></script>
     <script src="pdf_viewer/pdf-annotate.js"></script>
-    <script src="pdf_viewer/annotation.js"></script>
+    
     <script src="pdf_viewer/viewer.js"></script>
 
   </head>
@@ -136,7 +136,7 @@
         </div>  <!-- secondaryToolbar -->
 
         <div class="toolbar">
-          <div id="toolbarContainer">
+          <div class="toolbarContainer">
             <div id="toolbarViewer">
               <div id="toolbarViewerLeft">
                 <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar">
@@ -217,6 +217,19 @@
               <div class="progress">
                 <div class="glimmer">
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbarContainer">
+            <div id="annotationbarViewer">
+              <div class="icon-container">
+                <img src="/pdf_viewer/images/toolbarButton-download.png" />
+              </div>
+              <div class="icon-container">
+                <img src="/pdf_viewer/images/toolbarButton-bookmark.png" />
               </div>
             </div>
           </div>
@@ -348,7 +361,7 @@
         </div>
       </div>
     </div>
-
+    <script src="pdf_viewer/annotation.js"></script>
   </body>
 </html>
 

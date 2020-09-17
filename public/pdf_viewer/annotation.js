@@ -25,3 +25,7 @@ const drawAnnotationLayer = function (page) {
 }
 
 window.drawAnnotationLayer = drawAnnotationLayer;
+
+$('.icon-container').click(function() {
+  $(this).toggleClass('toggled');
+});
