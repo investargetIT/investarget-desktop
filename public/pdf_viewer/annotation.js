@@ -2,6 +2,7 @@ const { default: PDFJSAnnotate } = PDFAnnotate;
 
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 
+const documentId = 'test.pdf';
 const drawAnnotationLayer = function (page) {
   const { source, pageNumber } = page;
   const { viewport } = source;
@@ -13,11 +14,15 @@ const drawAnnotationLayer = function (page) {
   
   PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
   const adapter = PDFJSAnnotate.getStoreAdapter();
-  adapter.getAnnotations('test.pdf', pageNumber ).then(annotations => {
+  adapter.getAnnotations(documentId, pageNumber ).then(annotations => {
     const svg = document.querySelector(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`);
     svg.setAttribute('width', viewport.width);
     svg.setAttribute('height', viewport.height);
     PDFJSAnnotate.render(svg, viewport, annotations);
+    Promise.all(annotations.annotations.map(m => adapter.getComments(documentId, m.uuid))).then(comments => {
+      const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
+      console.log('comments on this page', commentsOnThisPage);
+    });
   });
 }
 
