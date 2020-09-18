@@ -1,8 +1,29 @@
 const { default: PDFJSAnnotate } = PDFAnnotate;
-
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 
 const documentId = 'test.pdf';
+
+const loadAllComments = function () {
+  const generateSingleComment = function (content, page) {
+    return `<div class="comment-container">
+      <div>${content}</div>
+      <div class="comment-page">Page ${page}</div>
+    </div>`
+  };
+  const commentsView = document.getElementById('commentsView');
+  const annotationStr = localStorage.getItem(`${documentId}/annotations`);
+  const allAnnotations = JSON.parse(annotationStr);
+  let comments = allAnnotations.filter(f => f.class === 'Comment');
+  comments = comments.map(m => {
+    const annotation = allAnnotations.filter(f => f.uuid === m.annotation)[0];
+    return { ...m, page: annotation.page };
+  });
+  const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
+  const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page)).reduce((previous, current) => previous + current, '');
+  commentsView.innerHTML = commentsHTML;
+}
+loadAllComments();
+
 const drawAnnotationLayer = function (page) {
   const { source, pageNumber } = page;
   const { viewport } = source;
@@ -19,10 +40,6 @@ const drawAnnotationLayer = function (page) {
     svg.setAttribute('width', viewport.width);
     svg.setAttribute('height', viewport.height);
     PDFJSAnnotate.render(svg, viewport, annotations);
-    Promise.all(annotations.annotations.map(m => adapter.getComments(documentId, m.uuid))).then(comments => {
-      const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
-      console.log('comments on this page', commentsOnThisPage);
-    });
   });
 }
 
