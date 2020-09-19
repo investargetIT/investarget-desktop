@@ -7,7 +7,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
@@ -15,6 +15,7 @@ import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option
+const RadioGroup = Radio.Group;
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
@@ -212,13 +213,26 @@ class OrganizationList extends React.Component {
 
           <div style={{ overflow: 'auto' }}>
 
-            <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
+            {/* <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
               <Search
                 style={{ width: 250 }}
                 placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
                 onSearch={() => this.setState({ page: 1 }, this.getOrg)}
                 onChange={search => this.setState({ search })}
                 value={search}
+              />
+            </div> */}
+
+            <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
+              <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
+                <Radio value={0}>搜索机构名称/股票代码</Radio>
+                <Radio value={1}>搜索备注以及附件内文字</Radio>
+              </RadioGroup>
+              <Search
+                style={{ width: 250, marginLeft: 10 }}
+                placeholder="搜索内容"
+                onChange={search => this.setState({ search })}
+                value={this.state.search}
               />
             </div>
 
