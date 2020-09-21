@@ -49,16 +49,16 @@ class OrganizationList extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrg)
+    this.setState({ filters, page: 1 }, this.handleOrgSearch);
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getOrg)
+    this.setState({ searchOption: 0, filters, page: 1, search: null }, this.getOrg);
   }
 
-  handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getOrg)
-  }
+  // handleSearch = (search) => {
+  //   this.setState({ search, page: 1 }, this.getOrg)
+  // }
 
   handleOrgSearch = () => {
     if (this.state.searchOption === 0) {
@@ -68,12 +68,20 @@ class OrganizationList extends React.Component {
     }
   }
 
+  handleFilterOrg = () => {
+    if (this.state.searchOption === 0) {
+      this.getOrg();
+    } else if (this.state.searchOption === 1) {
+      this.searchOrg();
+    }
+  }
+
   handlePageChange = (page) => {
-    this.setState({ page }, this.getOrg)
+    this.setState({ page }, this.handleFilterOrg)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getOrg)
+    this.setState({ pageSize, page: 1 }, this.handleFilterOrg)
   }
 
   getOrg = () => {
@@ -131,7 +139,7 @@ class OrganizationList extends React.Component {
   deleteOrg = (id) => {
     this.setState({ loading: true })
     api.deleteOrg(id).then(result => {
-      this.getOrg()
+      this.handleFilterOrg();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -158,12 +166,12 @@ class OrganizationList extends React.Component {
         sort: sorter.columnKey, 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getOrg
+      this.handleFilterOrg
     );
   }
 
   componentDidMount() {
-    this.getOrg()
+    this.handleFilterOrg();
   }
 
   handleExportBtnClicked = () => {
