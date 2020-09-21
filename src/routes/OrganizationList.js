@@ -31,6 +31,7 @@ class OrganizationList extends React.Component {
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
+    const searchOption = setting ? (setting.searchOption || 0) : 0
 
     this.state = {
       filters,
@@ -44,7 +45,7 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
-      searchOption: 0,
+      searchOption,
     }
   }
 
@@ -127,7 +128,7 @@ class OrganizationList extends React.Component {
         payload: error
       })
     })
-    // this.writeSetting()
+    this.writeSetting()
   }
 
   // 按创建时间排序
@@ -150,8 +151,8 @@ class OrganizationList extends React.Component {
   }
 
   writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const { filters, search, page, pageSize, searchOption } = this.state;
+    const data = { filters, search, page, pageSize, searchOption };
     localStorage.setItem('OrganizationList', JSON.stringify(data))
   }
 
