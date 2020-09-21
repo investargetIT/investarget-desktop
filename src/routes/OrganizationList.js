@@ -44,6 +44,7 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
+      searchOption: 0,
     }
   }
 
@@ -57,6 +58,14 @@ class OrganizationList extends React.Component {
 
   handleSearch = (search) => {
     this.setState({ search, page: 1 }, this.getOrg)
+  }
+
+  handleOrgSearch = () => {
+    if (this.state.searchOption === 0) {
+      this.setState({ page: 1 }, this.getOrg);
+    } else if (this.state.searchOption === 1) {
+      window.echo('search org remark');
+    }
   }
 
   handlePageChange = (page) => {
@@ -224,7 +233,7 @@ class OrganizationList extends React.Component {
             </div> */}
 
             <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
-              <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
+              <RadioGroup onChange={e => this.setState({ searchOption: e.target.value })} defaultValue={0} value={this.state.searchOption}>
                 <Radio value={0}>搜索机构名称/股票代码</Radio>
                 <Radio value={1}>搜索备注以及附件内文字</Radio>
               </RadioGroup>
@@ -232,7 +241,8 @@ class OrganizationList extends React.Component {
                 style={{ width: 250, marginLeft: 10 }}
                 placeholder="搜索内容"
                 onChange={search => this.setState({ search })}
-                value={this.state.search}
+                value={search}
+                onSearch={this.handleOrgSearch}
               />
             </div>
 
