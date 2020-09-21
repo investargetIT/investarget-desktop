@@ -99,6 +99,13 @@ class OrganizationList extends React.Component {
   }
 
   searchOrg = () => {
+    if (!this.state.search) {
+      Modal.error({
+        title: '无效操作',
+        content: '搜索备注及附件内文字时，内容不能为空',
+      });
+      return;
+    };
     const { filters, search: text, page, pageSize, sort, desc } = this.state;
     const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false };
     this.setState({ loading: true })
