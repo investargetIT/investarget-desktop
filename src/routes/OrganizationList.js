@@ -64,7 +64,7 @@ class OrganizationList extends React.Component {
     if (this.state.searchOption === 0) {
       this.setState({ page: 1 }, this.getOrg);
     } else if (this.state.searchOption === 1) {
-      window.echo('search org remark');
+      this.setState({ page: 1 }, this.searchOrg);
     }
   }
 
@@ -98,10 +98,27 @@ class OrganizationList extends React.Component {
     this.writeSetting()
   }
 
+  searchOrg = () => {
+    const { filters, search: text, page, pageSize, sort, desc } = this.state;
+    const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false };
+    this.setState({ loading: true })
+    api.searchOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+    // this.writeSetting()
+  }
+
   // 按创建时间排序
   handleSortChange = value => {
     const desc = value === 'desc' ? 1 : 0;
-    this.setState({ desc, sort: undefined }, this.getOrg);
+    this.setState({ desc, sort: undefined }, this.handleOrgSearch);
   }
 
   deleteOrg = (id) => {
