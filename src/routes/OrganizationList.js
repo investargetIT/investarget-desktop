@@ -7,7 +7,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
@@ -242,6 +242,18 @@ class OrganizationList extends React.Component {
       },
     ]
 
+    const selectBefore = (
+      <Select
+        defaultValue="0"
+        style={{ width: 200 }}
+        value={this.state.searchOption.toString()}
+        onChange={e => this.setState({ searchOption: parseInt(e, 10)})} 
+      >
+        <Option value="0">搜索机构名称/股票代码</Option>
+        <Option value="1">搜索备注以及附件内文字</Option>
+      </Select>
+    );
+
     const { filters, search, total, list, loading, page, pageSize } = this.state
     const action = hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
@@ -266,7 +278,7 @@ class OrganizationList extends React.Component {
             </div> */}
 
             <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
-              <RadioGroup onChange={e => this.setState({ searchOption: e.target.value })} defaultValue={0} value={this.state.searchOption}>
+              {/* <RadioGroup onChange={e => this.setState({ searchOption: e.target.value })} defaultValue={0} value={this.state.searchOption}>
                 <Radio value={0}>搜索机构名称/股票代码</Radio>
                 <Radio value={1}>搜索备注以及附件内文字</Radio>
               </RadioGroup>
@@ -275,6 +287,15 @@ class OrganizationList extends React.Component {
                 placeholder="搜索内容"
                 onChange={search => this.setState({ search })}
                 value={search}
+                onSearch={this.handleOrgSearch}
+              /> */}
+              <Input.Search
+                style={{ width: 450, marginLeft: 10 }}
+                placeholder="搜索内容"
+                size="large"
+                addonBefore={selectBefore}
+                value={search}
+                onChange={e => this.setState({ search: e.target.value })}
                 onSearch={this.handleOrgSearch}
               />
             </div>
