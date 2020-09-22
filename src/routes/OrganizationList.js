@@ -263,7 +263,12 @@ class OrganizationList extends React.Component {
 
         <div>
 
-          <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+          <OrganizationListFilter
+            hideTag={this.state.searchOption === 1}
+            defaultValue={filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+          />
 
           <div style={{ overflow: 'auto' }}>
 
