@@ -217,14 +217,14 @@ class OrganizationList extends React.Component {
         </Link>,
       //sorter:true, 
       },
-      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter:true, },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter:true, },
-      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter:true, },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
-      }, sorter:true, },
-      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter:true, },
+      }, sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
 
@@ -300,13 +300,15 @@ class OrganizationList extends React.Component {
               />
             </div>
 
-            <div style={{ float: 'right' }}>
-              {i18n('common.sort_by_created_time')}
-              <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
-                <Option value="asc">{i18n('common.asc_order')}</Option>
-                <Option value="desc">{i18n('common.dec_order')}</Option>
-              </Select>
-            </div>
+            {this.state.searchOption === 0 &&
+              <div style={{ float: 'right' }}>
+                {i18n('common.sort_by_created_time')}
+                <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
+                  <Option value="asc">{i18n('common.asc_order')}</Option>
+                  <Option value="desc">{i18n('common.dec_order')}</Option>
+                </Select>
+              </div>
+            }
 
           </div>
 
