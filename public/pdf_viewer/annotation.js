@@ -17,8 +17,12 @@ const loadAllComments = function () {
   if (allAnnotations) {
     comments = allAnnotations.filter(f => f.class === 'Comment');
     comments = comments.map(m => {
-      const annotation = allAnnotations.filter(f => f.uuid === m.annotation)[0];
-      return { ...m, page: annotation.page };
+      const annotation = allAnnotations.filter(f => f.uuid === m.annotation);
+      if (annotation.length > 0) {
+        return { ...m, page: annotation[0].page };
+      } else {
+        return { ...m, page: 'error'};
+      }
     });
   }
   const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
