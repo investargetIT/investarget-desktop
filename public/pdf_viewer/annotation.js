@@ -13,11 +13,14 @@ const loadAllComments = function () {
   const commentsView = document.getElementById('commentsView');
   const annotationStr = localStorage.getItem(`${documentId}/annotations`);
   const allAnnotations = JSON.parse(annotationStr);
-  let comments = allAnnotations.filter(f => f.class === 'Comment');
-  comments = comments.map(m => {
-    const annotation = allAnnotations.filter(f => f.uuid === m.annotation)[0];
-    return { ...m, page: annotation.page };
-  });
+  let comments = [];
+  if (allAnnotations) {
+    comments = allAnnotations.filter(f => f.class === 'Comment');
+    comments = comments.map(m => {
+      const annotation = allAnnotations.filter(f => f.uuid === m.annotation)[0];
+      return { ...m, page: annotation.page };
+    });
+  }
   const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
   const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page)).reduce((previous, current) => previous + current, '');
   commentsView.innerHTML = commentsHTML;
