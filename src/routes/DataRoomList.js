@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, hasPerm, getCurrentUser } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, isLogin } from '../utils/util'
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -101,6 +101,9 @@ class DataRoomList extends React.Component {
   getDataRoomList = () => {
     const { search, page, pageSize } = this.state
     const params = { search, page_index: page, page_size: pageSize }
+    if (!isLogin().is_superuser && hasPerm('dataroom.admin_getdataroom') && hasPerm('dataroom.onlydataroom')) {
+      params.user = getCurrentUser();
+    }
     this.setState({ loading: true })
 
     // if (hasPerm('usersys.as_admin')) {

@@ -134,9 +134,12 @@ class DataRoom extends React.Component {
     // const reqUserInfo = await Promise.all(allReq);
     // const dataRoomTemp = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: reqUserInfo[i].data }));
 
+    let allUserInfo = [];
     const allTempUserIds = reqDataroomTemp.data.data.map(m => m.user);
-    const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
-    const { data: allUserInfo } = allUsersReq.data;
+    if (allTempUserIds.length > 0) {
+      const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
+      allUserInfo = allUsersReq.data.data;
+    }
     const dataRoomTemp = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: allUserInfo.filter(f => f.id === m.user)[0] }));
 
     this.setState({
@@ -852,7 +855,7 @@ class DataRoom extends React.Component {
         // style={disableSelect}
       >
       
-        {hasPerm('dataroom.admin_adddataroom') || this.state.isProjTrader ?
+        {hasPerm('dataroom.admin_getdataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
@@ -868,6 +871,7 @@ class DataRoom extends React.Component {
               onApplyTemplate={this.state.hasPermissionForDataroomTemp ? this.handleApplyTemplate : undefined}
               dataRoomTemp={this.state.dataRoomTemp}
               onSendNewFileEmail={this.handleSendNewFileEmail}
+              currentUserIsProjTrader={this.state.isProjTrader}
             />
           </div>
           : null}

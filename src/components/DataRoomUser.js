@@ -25,36 +25,53 @@ const rowStyle = {
   borderBottom: '1px dashed #f2f2f2',
 }
 
-function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile) {
+function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader) {
   const { user: { id: userId }} = item;
   const userIdsWithDataroomTemp = dataRoomTemp.map(m => m.user);
-  return <div>
-    <div style={{ textAlign: 'center' }}>
-      <Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link>&nbsp;
-      { item.user.org ? 
-      <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> 
-      : '暂无机构' }
-      &nbsp;
-      {/* {onApplyTemplate && <Button onClick={onApplyTemplate.bind(this, item)}>应用模版</Button>} */}
-    </div>
+  return (
+    <div>
+
+      {hasPerm('usersys.as_trader') ?
+        <div style={{ textAlign: 'center' }}>
+          <Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link>&nbsp;
+          {item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}&nbsp;
+        </div>
+        :
+        <div style={{ textAlign: 'center' }}>
+          {item.user.username}&nbsp;
+          {item.user.org ? item.user.org.orgname : '暂无机构'}&nbsp;
+        </div>
+      }
+
       <div style={{ textAlign: 'center' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
-    <div style={{ textAlign: 'center', marginTop: 10 }}>
-      {/* {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>} */}
-      <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
-        <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
-      </Popconfirm>
-      <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={onSendNewFileEmail.bind(this, item)}>
-        <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
-      </Popconfirm>
-      <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
-        <Button type="danger">移除</Button>
-      </Popconfirm>
+
+      {(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.admin_deletedataroom') || currentUserIsProjTrader) &&
+        <div style={{ textAlign: 'center', marginTop: 10 }}>
+          {/* {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>} */}
+          {(hasPerm('dataroom.admin_adddataroom') || currentUserIsProjTrader) &&
+            <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
+              <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+            </Popconfirm>
+          }
+          {(hasPerm('dataroom.admin_adddataroom') || currentUserIsProjTrader) &&
+            <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={onSendNewFileEmail.bind(this, item)}>
+              <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+            </Popconfirm>
+          }
+          {(hasPerm('dataroom.admin_deletedataroom') || currentUserIsProjTrader) &&
+            <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
+              <Button type="danger">移除</Button>
+            </Popconfirm>
+          }
+        </div>
+      }
+
     </div>
-  </div>;
+  );
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
   return <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -75,7 +92,7 @@ function DataRoomUser(props) {
 
     <div>
       {list.map(item => (
-        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile)}>
+        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
           <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
             <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
             { props.selectedUser === item.user.id ?

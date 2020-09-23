@@ -7,7 +7,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
 import { OrganizationListFilter } from '../components/Filter'
@@ -15,6 +15,7 @@ import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const Option = Select.Option
+const RadioGroup = Radio.Group;
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
@@ -30,6 +31,7 @@ class OrganizationList extends React.Component {
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
+    const searchOption = setting ? (setting.searchOption || 0) : 0
 
     this.state = {
       filters,
@@ -43,27 +45,44 @@ class OrganizationList extends React.Component {
       desc:undefined,
       selectedIds: [],
       downloadUrl: null,
+      searchOption,
     }
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getOrg)
+    this.setState({ filters, page: 1 }, this.handleOrgSearch);
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getOrg)
+    this.setState({ searchOption: 0, filters, page: 1, search: null }, this.getOrg);
   }
 
-  handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getOrg)
+  // handleSearch = (search) => {
+  //   this.setState({ search, page: 1 }, this.getOrg)
+  // }
+
+  handleOrgSearch = () => {
+    if (this.state.searchOption === 0) {
+      this.setState({ page: 1 }, this.getOrg);
+    } else if (this.state.searchOption === 1) {
+      this.setState({ page: 1 }, this.searchOrg);
+    }
+  }
+
+  handleFilterOrg = () => {
+    if (this.state.searchOption === 0) {
+      this.getOrg();
+    } else if (this.state.searchOption === 1) {
+      this.searchOrg();
+    }
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getOrg)
+    this.setState({ page }, this.handleFilterOrg)
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getOrg)
+    this.setState({ pageSize, page: 1 }, this.handleFilterOrg)
   }
 
   getOrg = () => {
@@ -88,16 +107,40 @@ class OrganizationList extends React.Component {
     this.writeSetting()
   }
 
+  searchOrg = () => {
+    if (!this.state.search) {
+      Modal.error({
+        title: '无效操作',
+        content: '搜索备注及附件内文字时，内容不能为空',
+      });
+      return;
+    };
+    const { filters, search: text, page, pageSize, sort, desc } = this.state;
+    const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false };
+    this.setState({ loading: true })
+    api.searchOrg(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ total, list, loading: false })
+    }, error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+    this.writeSetting()
+  }
+
   // 按创建时间排序
   handleSortChange = value => {
     const desc = value === 'desc' ? 1 : 0;
-    this.setState({ desc, sort: undefined }, this.getOrg);
+    this.setState({ desc, sort: undefined }, this.handleOrgSearch);
   }
 
   deleteOrg = (id) => {
     this.setState({ loading: true })
     api.deleteOrg(id).then(result => {
-      this.getOrg()
+      this.handleFilterOrg();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -108,8 +151,8 @@ class OrganizationList extends React.Component {
   }
 
   writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
+    const { filters, search, page, pageSize, searchOption } = this.state;
+    const data = { filters, search, page, pageSize, searchOption };
     localStorage.setItem('OrganizationList', JSON.stringify(data))
   }
 
@@ -124,12 +167,12 @@ class OrganizationList extends React.Component {
         sort: sorter.columnKey, 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getOrg
+      this.handleFilterOrg
     );
   }
 
   componentDidMount() {
-    this.getOrg()
+    this.handleFilterOrg();
   }
 
   handleExportBtnClicked = () => {
@@ -174,14 +217,14 @@ class OrganizationList extends React.Component {
         </Link>,
       //sorter:true, 
       },
-      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter:true, },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter:true, },
-      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter:true, },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
-      }, sorter:true, },
-      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter:true, },
+      }, sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
 
@@ -199,6 +242,18 @@ class OrganizationList extends React.Component {
       },
     ]
 
+    const selectBefore = (
+      <Select
+        defaultValue="0"
+        style={{ width: 200 }}
+        value={this.state.searchOption.toString()}
+        onChange={e => this.setState({ searchOption: parseInt(e, 10)})} 
+      >
+        <Option value="0">搜索机构名称/股票代码</Option>
+        <Option value="1">搜索备注以及附件内文字</Option>
+      </Select>
+    );
+
     const { filters, search, total, list, loading, page, pageSize } = this.state
     const action = hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
@@ -208,11 +263,16 @@ class OrganizationList extends React.Component {
 
         <div>
 
-          <OrganizationListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+          <OrganizationListFilter
+            hideTag={this.state.searchOption === 1}
+            defaultValue={filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+          />
 
           <div style={{ overflow: 'auto' }}>
 
-            <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
+            {/* <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
               <Search
                 style={{ width: 250 }}
                 placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
@@ -220,15 +280,40 @@ class OrganizationList extends React.Component {
                 onChange={search => this.setState({ search })}
                 value={search}
               />
+            </div> */}
+
+            <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
+              {/* <RadioGroup onChange={e => this.setState({ searchOption: e.target.value })} defaultValue={0} value={this.state.searchOption}>
+                <Radio value={0}>搜索机构名称/股票代码</Radio>
+                <Radio value={1}>搜索备注以及附件内文字</Radio>
+              </RadioGroup>
+              <Search
+                style={{ width: 250, marginLeft: 10 }}
+                placeholder="搜索内容"
+                onChange={search => this.setState({ search })}
+                value={search}
+                onSearch={this.handleOrgSearch}
+              /> */}
+              <Input.Search
+                style={{ width: 450, marginLeft: 10 }}
+                placeholder="搜索内容"
+                size="large"
+                addonBefore={selectBefore}
+                value={search}
+                onChange={e => this.setState({ search: e.target.value })}
+                onSearch={this.handleOrgSearch}
+              />
             </div>
 
-            <div style={{ float: 'right' }}>
-              {i18n('common.sort_by_created_time')}
-              <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
-                <Option value="asc">{i18n('common.asc_order')}</Option>
-                <Option value="desc">{i18n('common.dec_order')}</Option>
-              </Select>
-            </div>
+            {this.state.searchOption === 0 &&
+              <div style={{ float: 'right' }}>
+                {i18n('common.sort_by_created_time')}
+                <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
+                  <Option value="asc">{i18n('common.asc_order')}</Option>
+                  <Option value="desc">{i18n('common.dec_order')}</Option>
+                </Select>
+              </div>
+            }
 
           </div>
 

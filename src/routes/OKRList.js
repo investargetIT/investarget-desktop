@@ -153,8 +153,11 @@ class OKRList extends React.Component {
     // const allUserInfo = await Promise.all(uniqueUserIds.map(m => api.getUserInfo(m)));
     // const allUserInfoDetails = allUserInfo.map(m => m.data);
 
-    const allUserInfo = await api.batchGetUserSimpleInfo({ id: uniqueUserIds, page_size: uniqueUserIds.length });
-    const { data: allUserInfoDetails } = allUserInfo.data;
+    let allUserInfoDetails = [];
+    if (uniqueUserIds.length > 0) {
+      const allUserInfo = await api.batchGetUserSimpleInfo({ id: uniqueUserIds, page_size: uniqueUserIds.length });
+      allUserInfoDetails = allUserInfo.data.data;
+    }
 
     currentList = currentList.map((m) => {
       const userDetail = allUserInfoDetails.filter(f => f.id === m.user)[0];
