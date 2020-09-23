@@ -110,3 +110,11 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   // TODO: remove highlight annotation if it's just a click
   $('#add-comment-form').modal();
 });
+
+// 提交评论
+$('#comment-submit-button').click(function(e) {
+  e.preventDefault();
+  const content = $('#comment-content').val();
+  if (!content) return;
+  console.log('提交按钮', content);
+});
