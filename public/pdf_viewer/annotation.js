@@ -101,3 +101,8 @@ $('#annotation-highlight').click(function() {
     enableHighlight();
   }
 });
+
+UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
+  console.log('Annotation added', documentId, pageNumber, annotation);
+  // TODO: remove highlight annotation if it's just a click
+});
