@@ -108,6 +108,7 @@ $('#annotation-highlight').click(function() {
 UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   console.log('Annotation added', documentId, pageNumber, annotation);
   // TODO: remove highlight annotation if it's just a click
+  $('#add-comment-form').data('annotation', { documentId, annotationId: annotation.uuid });
   $('#add-comment-form').modal();
 });
 
@@ -116,5 +117,12 @@ $('#comment-submit-button').click(function(e) {
   e.preventDefault();
   const content = $('#comment-content').val();
   if (!content) return;
-  console.log('提交按钮', content);
+  const annotation = $('#add-comment-form').data('annotation');
+  const { documentId, annotationId } = annotation;
+  PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
+    $('#add-comment-form').removeData('annotation');
+    $.modal.close();
+    $('#comment-content').val('');
+    loadAllComments();
+  });
 });
