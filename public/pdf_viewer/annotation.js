@@ -161,6 +161,8 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   $('#add-comment-form').modal();
 });
 
+
+let submitComment = false;
 // 提交评论
 $('#comment-submit-button').click(function(e) {
   e.preventDefault();
@@ -173,7 +175,9 @@ $('#comment-submit-button').click(function(e) {
   const { documentId, annotationId } = annotation;
   PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
     $('#add-comment-form').removeData('annotation');
+    submitComment = true;
     $.modal.close();
+    submitComment = false;
     $('#comment-content').val('');
     loadAllComments();
   });
@@ -182,9 +186,8 @@ $('#comment-submit-button').click(function(e) {
 $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
   console.log('event', event);
   console.log('modal', modal);
-  const content = $('#comment-content').val();
-  if (!content) {
-    console.log('empty comment delete annotation');
+  if (!submitComment) {
+    $('#comment-content').val('');
     const annotation = $('#add-comment-form').data('annotation');
     const { documentId, annotationId } = annotation;
     PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, annotationId).then(() => {
@@ -195,12 +198,12 @@ $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
 
       $(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`).remove();
 
+      // TODO: refactor codes below along with drawAnnotationLayer
       const pageHtml = document.querySelector(`.page[data-page-number="${pageNumber}"]`);
       const svgLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
       pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
       PDFJSAnnotate.getStoreAdapter().getAnnotations(documentId, pageNumber).then(annotations => {
-        console.log('annotations', annotations);
         const svg = document.querySelector(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`);
         svg.setAttribute('width', viewport.width);
         svg.setAttribute('height', viewport.height);
