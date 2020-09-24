@@ -124,10 +124,28 @@ $('#annotation-comment').click(function() {
   disableEdit();
   disableRectangle();
   disableHighlight();
-  if ($('#annotation-highlight').hasClass('toggled')) {
-    disablePoint();
+  if ($('#annotation-comment').hasClass('toggled')) {
+    $('#annotation-comment').removeClass('toggled');
   } else {
-    enablePoint();
+    $('#annotation-comment').addClass('toggled');
+  }
+});
+$('#annotation-comment').hover(function() {
+  if ($('#annotation-comment').hasClass('toggled')) {
+    UI.disablePoint();
+  }
+}, function() {
+  if ($('#annotation-comment').hasClass('toggled')) {
+    UI.enablePoint();
+  }
+});
+$('#annotation-rectangle').hover(function() {
+  if ($('#annotation-comment').hasClass('toggled')) {
+    UI.disablePoint();
+  }
+}, function() {
+  if ($('#annotation-comment').hasClass('toggled')) {
+    UI.enablePoint();
   }
 });
 
