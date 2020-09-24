@@ -151,7 +151,12 @@ $('#annotation-rectangle').hover(function() {
 
 UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   console.log('Annotation added', documentId, pageNumber, annotation);
-  // TODO: remove highlight annotation if it's just a click
+  if (annotation.type === 'point') {
+    setTimeout(() => {
+      loadAllComments()
+    }, 1000);
+    return;
+  }
   $('#add-comment-form').data('annotation', { documentId, annotationId: annotation.uuid });
   $('#add-comment-form').modal();
 });
@@ -160,7 +165,10 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
 $('#comment-submit-button').click(function(e) {
   e.preventDefault();
   const content = $('#comment-content').val();
-  if (!content) return;
+  if (!content) {
+    alert('评论内容不能为空');
+    return
+  };
   const annotation = $('#add-comment-form').data('annotation');
   const { documentId, annotationId } = annotation;
   PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
@@ -169,4 +177,21 @@ $('#comment-submit-button').click(function(e) {
     $('#comment-content').val('');
     loadAllComments();
   });
+});
+
+$('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
+  console.log('event', event);
+  console.log('modal', modal);
+  const content = $('#comment-content').val();
+  if (!content) {
+    console.log('empty comment delete annotation');
+    const annotation = $('#add-comment-form').data('annotation');
+    const { documentId, annotationId } = annotation;
+    PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, annotationId).then(comment => {
+      // TOOD: rerender annotation layer
+      // window.PDFViewerApplication.pdfViewer._pages
+      console.log('comment', comment);
+      $('#add-comment-form').removeData('annotation');
+    });
+  };
 });
