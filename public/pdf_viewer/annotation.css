@@ -50,6 +50,10 @@
   width: 20px;
   height: 20px;
 }
+.annotation-bar-icon.comment-icon {
+  width: 17px;
+  height: 17px;
+}
 .annotation-icon-divider {
   width: 1px;
   height: 16px;

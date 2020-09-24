@@ -78,10 +78,19 @@ function disableHighlight() {
   $('#annotation-highlight').removeClass('toggled');
   UI.disableRect();
 }
+function enablePoint() {
+  $('#annotation-comment').addClass('toggled');
+  UI.enablePoint();
+}
+function disablePoint() {
+  $('#annotation-comment').removeClass('toggled');
+  UI.disablePoint();
+}
 
 $('#annotation-select').click(function() {
   disableRectangle();
   disableHighlight();
+  disablePoint();
   if ($('#annotation-select').hasClass('toggled')) {
     disableEdit();
   } else {
@@ -92,6 +101,7 @@ $('#annotation-select').click(function() {
 $('#annotation-rectangle').click(function() {
   disableEdit();
   disableHighlight();
+  disablePoint();
   if ($('#annotation-rectangle').hasClass('toggled')) {
     disableRectangle();
   } else {
@@ -102,10 +112,22 @@ $('#annotation-rectangle').click(function() {
 $('#annotation-highlight').click(function() {
   disableEdit();
   disableRectangle();
+  disablePoint();
   if ($('#annotation-highlight').hasClass('toggled')) {
     disableHighlight();
   } else {
     enableHighlight();
+  }
+});
+
+$('#annotation-comment').click(function() {
+  disableEdit();
+  disableRectangle();
+  disableHighlight();
+  if ($('#annotation-highlight').hasClass('toggled')) {
+    disablePoint();
+  } else {
+    enablePoint();
   }
 });
 
