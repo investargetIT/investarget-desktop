@@ -187,11 +187,25 @@ $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
     console.log('empty comment delete annotation');
     const annotation = $('#add-comment-form').data('annotation');
     const { documentId, annotationId } = annotation;
-    PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, annotationId).then(comment => {
-      // TOOD: rerender annotation layer
-      // window.PDFViewerApplication.pdfViewer._pages
-      console.log('comment', comment);
+    PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, annotationId).then(() => {
       $('#add-comment-form').removeData('annotation');
+
+      const { currentPageNumber: pageNumber, _pages } = PDFViewerApplication.pdfViewer;
+      const { viewport } = _pages[pageNumber - 1];
+
+      $(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`).remove();
+
+      const pageHtml = document.querySelector(`.page[data-page-number="${pageNumber}"]`);
+      const svgLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
+      pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
+      PDFJSAnnotate.getStoreAdapter().getAnnotations(documentId, pageNumber).then(annotations => {
+        console.log('annotations', annotations);
+        const svg = document.querySelector(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`);
+        svg.setAttribute('width', viewport.width);
+        svg.setAttribute('height', viewport.height);
+        PDFJSAnnotate.render(svg, viewport, annotations);
+      });
     });
   };
 });
