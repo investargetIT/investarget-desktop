@@ -34,6 +34,12 @@ const loadAllComments = function () {
   const commentsHTML = annotationComments.filter(f => f.comments.length > 0)
     .map(m => generateSingleComment(m))
     .reduce((previous, current) => previous + current, '');
+  if (commentsHTML) {
+    setTimeout(() => {
+      window.PDFViewerApplication.pdfSidebar.open();
+      window.PDFViewerApplication.pdfSidebar.switchView(4);
+    }, 1000);
+  }
   commentsView.innerHTML = commentsHTML;
 
   $('.comment-container').click(function() {
@@ -48,6 +54,7 @@ const loadAllComments = function () {
   });
   $('.comment-actions__reply').click(function() {
 
+    UI.disableEdit();
     // disable point here otherwise you can't focus when replay a comment
     disablePoint();
 
