@@ -47,6 +47,10 @@ const loadAllComments = function () {
     }
   });
   $('.comment-actions__reply').click(function() {
+
+    // disable point here otherwise you can't focus when replay a comment
+    disablePoint();
+
     const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
     $('#add-comment-form').data('annotation', { documentId, annotationId });
     isReply = true;
@@ -55,6 +59,11 @@ const loadAllComments = function () {
   });
   $('.comment-actions__delete').click(function() {
     if (!window.confirm('你确定要删除这些评论吗？相关的批注也会被一并删除')) return false;
+    
+    // You need to remove the edit overlay otherwise it still exists even if related annotation is removed
+    // You can simply call disableEdit to do that
+    UI.disableEdit();
+
     const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
     // Fisrt delete all comments
     const relatedComments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === annotationId);
