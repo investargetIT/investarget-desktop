@@ -10,6 +10,7 @@ const loadAllComments = function () {
       <div class="comment-content">${content}</div>
       <div class="comment-actions">
         <img class="comment-actions__icon" src="/pdf_viewer/images/annotationBarButton-reply.png" />
+        <img class="comment-actions__icon" src="/pdf_viewer/images/annotationBarButton-delete.png" />
       </div>
     </div>`
   };

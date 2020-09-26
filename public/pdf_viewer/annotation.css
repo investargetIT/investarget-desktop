@@ -82,6 +82,7 @@
   text-align: right;
 }
 .comment-actions__icon {
+  margin-left: 10px;
   width: 20px;
 }
 .modal-comment-title, .modal-comment-input, .modal-comment-button {
