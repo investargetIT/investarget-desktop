@@ -6,8 +6,11 @@ const documentId = 'test.pdf';
 const loadAllComments = function () {
   const generateSingleComment = function (content, page, uuid, annotationId) {
     return `<div class="comment-container" data-uuid="${uuid}" data-annotation-uuid="${annotationId}">
-      <div>${content}</div>
-      <div class="comment-page">Page ${page}</div>
+      <div class="comment-page">Page ${page}</div>  
+      <div class="comment-content">${content}</div>
+      <div class="comment-actions">
+        <img class="comment-actions__icon" src="/pdf_viewer/images/annotationBarButton-reply.png" />
+      </div>
     </div>`
   };
   const commentsView = document.getElementById('commentsView');

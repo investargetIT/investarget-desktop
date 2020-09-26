@@ -71,9 +71,18 @@
   background-color: rgba(0, 0, 0, .4);
 }
 .comment-page {
-  margin-top: 4px;
   font-size: 10px;
   text-align: right;
+}
+.comment-content {
+  margin-top: 10px;
+}
+.comment-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+.comment-actions__icon {
+  width: 20px;
 }
 .modal-comment-title, .modal-comment-input, .modal-comment-button {
   font-size: 14px;
