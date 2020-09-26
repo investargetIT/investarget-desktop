@@ -9,8 +9,8 @@ const loadAllComments = function () {
       <div class="comment-page">Page ${page}</div>  
       <div class="comment-content">${content}</div>
       <div class="comment-actions">
-        <img class="comment-actions__icon" src="/pdf_viewer/images/annotationBarButton-reply.png" />
-        <img class="comment-actions__icon" src="/pdf_viewer/images/annotationBarButton-delete.png" />
+        <img class="comment-actions__icon comment-actions__reply" src="/pdf_viewer/images/annotationBarButton-reply.png" />
+        <img class="comment-actions__icon comment-actions__delete" src="/pdf_viewer/images/annotationBarButton-delete.png" />
       </div>
     </div>`
   };
@@ -42,6 +42,10 @@ const loadAllComments = function () {
     if (target) {
       UI.createEditOverlay(target);
     }
+  });
+  $('.comment-actions__reply').click(function() {
+    console.log('comment actions reply click', $(this));
+    return false;
   });
 }
 loadAllComments();

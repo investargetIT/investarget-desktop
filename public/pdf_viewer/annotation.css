@@ -85,6 +85,9 @@
   margin-left: 10px;
   width: 20px;
 }
+.comment-actions__icon:hover {
+  cursor: pointer;
+}
 .modal-comment-title, .modal-comment-input, .modal-comment-button {
   font-size: 14px;
   letter-spacing: 1px;
