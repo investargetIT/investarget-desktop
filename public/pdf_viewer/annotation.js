@@ -28,6 +28,11 @@ const loadAllComments = function () {
   const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
   const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page, m.uuid, m.annotation)).reduce((previous, current) => previous + current, '');
   commentsView.innerHTML = commentsHTML;
+
+  $('.comment-container').click(function() {
+    $('.comment-container').removeClass('active');
+    $(this).addClass('active');
+  });
 }
 loadAllComments();
 
