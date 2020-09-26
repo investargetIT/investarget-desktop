@@ -47,11 +47,42 @@ const loadAllComments = function () {
     }
   });
   $('.comment-actions__reply').click(function() {
-    console.log('comment actions reply click', $(this));
     const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
     $('#add-comment-form').data('annotation', { documentId, annotationId });
     isReply = true;
     $('#add-comment-form').modal();
+    return false;
+  });
+  $('.comment-actions__delete').click(function() {
+    if (!window.confirm('你确定要删除这些评论吗？相关的批注也会被一并删除')) return false;
+    const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
+    // Fisrt delete all comments
+    const relatedComments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === annotationId);
+    Promise.all(relatedComments.map(m => PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, m.uuid))).then(() => {
+      loadAllComments();
+      PDFJSAnnotate.getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
+        // TODO: refactor codes below
+        $('#add-comment-form').removeData('annotation');
+
+        const { currentPageNumber: pageNumber, _pages } = PDFViewerApplication.pdfViewer;
+        const { viewport } = _pages[pageNumber - 1];
+
+        $(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`).remove();
+
+        // TODO: refactor codes below along with drawAnnotationLayer
+        const pageHtml = document.querySelector(`.page[data-page-number="${pageNumber}"]`);
+        const svgLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
+        pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
+        PDFJSAnnotate.getStoreAdapter().getAnnotations(documentId, pageNumber).then(annotations => {
+          const svg = document.querySelector(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`);
+          svg.setAttribute('width', viewport.width);
+          svg.setAttribute('height', viewport.height);
+          PDFJSAnnotate.render(svg, viewport, annotations);
+        });
+      });
+    });
+    // After that delete the annotation
     return false;
   });
 }
