@@ -32,6 +32,12 @@ const loadAllComments = function () {
   $('.comment-container').click(function() {
     $('.comment-container').removeClass('active');
     $(this).addClass('active');
+    // Highligh related annotation
+    const annotationId = $(this).attr('data-annotation-uuid');
+    const target = document.querySelector(`[data-pdf-annotate-uuid="${annotationId}"]`);
+    if (target) {
+      UI.createEditOverlay(target);
+    }
   });
 }
 loadAllComments();
@@ -52,14 +58,6 @@ const drawAnnotationLayer = function (page) {
     svg.setAttribute('width', viewport.width);
     svg.setAttribute('height', viewport.height);
     PDFJSAnnotate.render(svg, viewport, annotations);
-
-    setTimeout(() => {
-      const target = document.querySelector('[data-pdf-annotate-uuid="14adb467-cddc-443b-aead-4471a854a842"]');
-      if (target) {
-        UI.createEditOverlay(target);
-      }
-    }, 1000);
-
   });
 }
 
