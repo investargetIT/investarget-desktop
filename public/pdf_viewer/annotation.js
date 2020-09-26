@@ -7,10 +7,12 @@ let submitComment = false;
 let isReply = false;
 
 const loadAllComments = function () {
-  const generateSingleComment = function (content, page, uuid, annotationId) {
-    return `<div class="comment-container" data-uuid="${uuid}" data-annotation-uuid="${annotationId}">
+  const generateSingleComment = function (annotation) {
+    const { uuid: annotationId, page, comments } = annotation;
+    const commentHTML = comments.map(m => `<div class="comment-content">${m.content}</div>`).reduce((prev, curr) => prev + curr, '');
+    return `<div class="comment-container" data-annotation-uuid="${annotationId}">
       <div class="comment-page">Page ${page}</div>  
-      <div class="comment-content">${content}</div>
+      ${commentHTML} 
       <div class="comment-actions">
         <img class="comment-actions__icon comment-actions__reply" src="/pdf_viewer/images/annotationBarButton-reply.png" />
         <img class="comment-actions__icon comment-actions__delete" src="/pdf_viewer/images/annotationBarButton-delete.png" />
@@ -20,20 +22,18 @@ const loadAllComments = function () {
   const commentsView = document.getElementById('commentsView');
   const annotationStr = localStorage.getItem(`${documentId}/annotations`);
   const allAnnotations = JSON.parse(annotationStr);
-  let comments = [];
+  let annotationComments = [];
   if (allAnnotations) {
-    comments = allAnnotations.filter(f => f.class === 'Comment');
-    comments = comments.map(m => {
-      const annotation = allAnnotations.filter(f => f.uuid === m.annotation);
-      if (annotation.length > 0) {
-        return { ...m, page: annotation[0].page };
-      } else {
-        return { ...m, page: 'error'};
-      }
+    annotationComments = allAnnotations.filter(f => f.class === 'Annotation');
+    annotationComments = annotationComments.map(m => {
+      const comments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === m.uuid);
+      return { ...m, comments };
     });
   }
-  const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
-  const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page, m.uuid, m.annotation)).reduce((previous, current) => previous + current, '');
+  console.log('annotation comments', annotationComments);
+  const commentsHTML = annotationComments.filter(f => f.comments.length > 0)
+    .map(m => generateSingleComment(m))
+    .reduce((previous, current) => previous + current, '');
   commentsView.innerHTML = commentsHTML;
 
   $('.comment-container').click(function() {
