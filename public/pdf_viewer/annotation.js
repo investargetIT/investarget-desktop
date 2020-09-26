@@ -4,8 +4,8 @@ const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 const documentId = 'test.pdf';
 
 const loadAllComments = function () {
-  const generateSingleComment = function (content, page) {
-    return `<div class="comment-container">
+  const generateSingleComment = function (content, page, uuid, annotationId) {
+    return `<div class="comment-container" data-uuid="${uuid}" data-annotation-uuid="${annotationId}">
       <div>${content}</div>
       <div class="comment-page">Page ${page}</div>
     </div>`
@@ -26,7 +26,7 @@ const loadAllComments = function () {
     });
   }
   const commentsOnThisPage = comments.reduce((previous, current) => previous.concat(current), []);
-  const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page)).reduce((previous, current) => previous + current, '');
+  const commentsHTML = commentsOnThisPage.map(m => generateSingleComment(m.content, m.page, m.uuid, m.annotation)).reduce((previous, current) => previous + current, '');
   commentsView.innerHTML = commentsHTML;
 }
 loadAllComments();
