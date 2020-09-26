@@ -3,6 +3,9 @@ const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 
 const documentId = 'test.pdf';
 
+let submitComment = false;
+let isReply = false;
+
 const loadAllComments = function () {
   const generateSingleComment = function (content, page, uuid, annotationId) {
     return `<div class="comment-container" data-uuid="${uuid}" data-annotation-uuid="${annotationId}">
@@ -45,6 +48,10 @@ const loadAllComments = function () {
   });
   $('.comment-actions__reply').click(function() {
     console.log('comment actions reply click', $(this));
+    const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
+    $('#add-comment-form').data('annotation', { documentId, annotationId });
+    isReply = true;
+    $('#add-comment-form').modal();
     return false;
   });
 }
@@ -180,8 +187,6 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   $('#add-comment-form').modal();
 });
 
-
-let submitComment = false;
 // 提交评论
 $('#comment-submit-button').click(function(e) {
   e.preventDefault();
@@ -196,7 +201,6 @@ $('#comment-submit-button').click(function(e) {
     $('#add-comment-form').removeData('annotation');
     submitComment = true;
     $.modal.close();
-    submitComment = false;
     $('#comment-content').val('');
     loadAllComments();
   });
@@ -205,11 +209,11 @@ $('#comment-submit-button').click(function(e) {
 $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
   console.log('event', event);
   console.log('modal', modal);
-  if (!submitComment) {
+  if (!submitComment && !isReply) {
     $('#comment-content').val('');
     const annotation = $('#add-comment-form').data('annotation');
     const { documentId, annotationId } = annotation;
-    PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, annotationId).then(() => {
+    PDFJSAnnotate.getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
       $('#add-comment-form').removeData('annotation');
 
       const { currentPageNumber: pageNumber, _pages } = PDFViewerApplication.pdfViewer;
@@ -230,4 +234,9 @@ $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
       });
     });
   };
+});
+
+$('#add-comment-form').on($.modal.AFTER_CLOSE, function() {
+  isReply = false;
+  submitComment = false;
 });
