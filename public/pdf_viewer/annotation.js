@@ -43,6 +43,10 @@ const loadAllComments = function () {
   commentsView.innerHTML = commentsHTML;
 
   $('.comment-container').click(function() {
+
+    disableRectangle();
+    disablePoint();
+
     $('.comment-container').removeClass('active');
     $(this).addClass('active');
     // Highligh related annotation
