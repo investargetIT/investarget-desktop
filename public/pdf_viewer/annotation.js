@@ -234,6 +234,15 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   $('#add-comment-form').modal();
 });
 
+UI.addEventListener('annotation:delete', (documentId, annotationId) => {
+  const annotationStr = localStorage.getItem(`${documentId}/annotations`);
+  const allAnnotations = JSON.parse(annotationStr);
+  const relatedComments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === annotationId);
+  Promise.all(relatedComments.map(m => PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, m.uuid))).then(() => {
+    loadAllComments();
+  });
+});
+
 // 提交评论
 $('#comment-submit-button').click(function(e) {
   e.preventDefault();
