@@ -1,7 +1,12 @@
 const { default: PDFJSAnnotate } = PDFAnnotate;
 const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 
-const documentId = 'test.pdf';
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const dataroomId = urlParams.get('dataroomId');
+const fileId = urlParams.get('fileId');
+
+const documentId = fileId;
 
 const baseUrl = 'http://apitest.investarget.com';
 
@@ -302,3 +307,5 @@ $('#add-comment-form').on($.modal.AFTER_CLOSE, function() {
   isReply = false;
   submitComment = false;
 });
+
+// const getAnnotations = (documentId)
