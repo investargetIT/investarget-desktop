@@ -117,9 +117,11 @@ class FileMgmt extends React.Component {
           title: '该文件不支持在线预览',
         });
       } else {
+        const { dataroom: dataroomId, id: fileId } = file;
         const watermark = isLogin().email || 'Investarget'
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
         const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+          '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) + 
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
         window.open(url)
       }
