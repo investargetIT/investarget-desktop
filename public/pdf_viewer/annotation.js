@@ -3,6 +3,8 @@ const { UI, config: { annotationLayerName } } = PDFJSAnnotate;
 
 const documentId = 'test.pdf';
 
+const baseUrl = 'http://apitest.investarget.com';
+
 let submitComment = false;
 let isReply = false;
 
