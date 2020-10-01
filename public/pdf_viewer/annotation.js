@@ -308,13 +308,43 @@ $('#add-comment-form').on($.modal.AFTER_CLOSE, function() {
   submitComment = false;
 });
 
+function getUserInfo() {
+  const userInfoStr = localStorage.getItem('user_info')
+  try {
+    return JSON.parse(userInfoStr)
+  } catch(e) {
+    return null
+  }
+}
+
 const getAnnotations = async (documentId, pageNumber) => {
   console.log('document id', documentId);
   console.log('page number', pageNumber);
-  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`);
+
+  const user = getUserInfo()
+  if (!user) {
+    throw new Error('user missing');
+  }
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new Error('data source missing');
+  }
+
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
+  });
   const response = await reqDiscussion.json();
   console.log('req discussion', response);
 }
 
-getAnnotations(documentId, 1);
+// getAnnotations(documentId, 1);
 
