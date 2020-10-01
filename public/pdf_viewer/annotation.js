@@ -308,4 +308,13 @@ $('#add-comment-form').on($.modal.AFTER_CLOSE, function() {
   submitComment = false;
 });
 
-// const getAnnotations = (documentId)
+const getAnnotations = async (documentId, pageNumber) => {
+  console.log('document id', documentId);
+  console.log('page number', pageNumber);
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`);
+  const response = await reqDiscussion.json();
+  console.log('req discussion', response);
+}
+
+getAnnotations(documentId, 1);
+
