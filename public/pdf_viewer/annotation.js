@@ -346,5 +346,64 @@ const getAnnotations = async (documentId, pageNumber) => {
   console.log('req discussion', response);
 }
 
+const addAnnotation = async (documentId, pageNumber, annotation) => {
+  console.log('document id', documentId);
+  console.log('page number', pageNumber);
+  console.log('annotation', annotation);
+
+  const user = getUserInfo()
+  if (!user) {
+    throw new Error('user missing');
+  }
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new Error('data source missing');
+  };
+
+  const body = {
+    user: user.id,
+    dataroom: dataroomId,
+    file: documentId,
+    question: 'placeholder',
+    location: JSON.stringify(annotation),
+  };
+
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
+    body: JSON.stringify(body),
+  });
+  const response = await reqDiscussion.json();
+  console.log('req discussion', response);
+  const { code } = response;
+  if (code !== 1000) {
+    if (response.errormsg) {
+      alert(response.errormsg);
+    } else {
+      alert('未知错误');
+    }
+  }
+}
+
+const testAnnotation = {
+  class: "Annotation",
+  height: 52.2,
+  page: 1,
+  type: "area",
+  uuid: "d76646cb-d364-46d8-9983-56a4c88fd3b5",
+  width: 87.00000000000003,
+  x: 84.04545454545455,
+  y: 36.13636363636365,
+};
+
 // getAnnotations(documentId, 1);
 
+// addAnnotation(documentId, 1, testAnnotation);
