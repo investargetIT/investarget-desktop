@@ -13,6 +13,27 @@ const baseUrl = 'http://apitest.investarget.com';
 let submitComment = false;
 let isReply = false;
 
+const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
+  getAnnotations(documentId, pageNumber) {
+    return getAnnotationsReq(documentId, pageNumber);
+  },
+
+  // getAnnotation(documentId, annotationId) {/* ... */},
+
+  // addAnnotation(documentId, pageNumber, annotation) {/* ... */},
+
+  // editAnnotation(documentId, pageNumber, annotation) {/* ... */},
+
+  // deleteAnnotation(documentId, annotationId) {/* ... */},
+  
+  // addComment(documentId, annotationId, content) {/* ... */},
+
+  // deleteComment(documentId, commentId) {/* ... */}
+});
+
+PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
+// PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
+
 const loadAllComments = function () {
   const generateSingleComment = function (annotation) {
     const { uuid: annotationId, page, comments } = annotation;
@@ -124,9 +145,7 @@ const drawAnnotationLayer = function (page) {
   svgLayer.setAttribute('class', `${annotationLayerName} custom-annotation-layer`);
   pageHtml.insertBefore(svgLayer, pageHtml.children[1]);
   
-  PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
-  const adapter = PDFJSAnnotate.getStoreAdapter();
-  adapter.getAnnotations(documentId, pageNumber ).then(annotations => {
+  PDFJSAnnotate.getStoreAdapter().getAnnotations(documentId, pageNumber ).then(annotations => {
     const svg = document.querySelector(`.page[data-page-number="${pageNumber}"] .custom-annotation-layer`);
     svg.setAttribute('width', viewport.width);
     svg.setAttribute('height', viewport.height);
@@ -317,10 +336,8 @@ function getUserInfo() {
   }
 }
 
-const getAnnotations = async (documentId, pageNumber) => {
-  console.log('document id', documentId);
-  console.log('page number', pageNumber);
-
+// TODO: get all annotations adding page_size
+const getAnnotationsReq = async (documentId, pageNumber) => {
   const user = getUserInfo()
   if (!user) {
     throw new Error('user missing');
@@ -343,7 +360,9 @@ const getAnnotations = async (documentId, pageNumber) => {
     },
   });
   const response = await reqDiscussion.json();
-  console.log('req discussion', response);
+  const { result: { data } } = response;
+  const annotations = data.map(m => JSON.parse(m.location)).filter(f => f.page === pageNumber);
+  return { annotations, documentId, pageNumber };
 }
 
 const addAnnotation = async (documentId, pageNumber, annotation) => {
