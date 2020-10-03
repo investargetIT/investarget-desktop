@@ -17,10 +17,11 @@ const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   getAnnotations(documentId, pageNumber) {
     return getAnnotationsReq(documentId, pageNumber);
   },
+  addAnnotation(documentId, pageNumber, annotation) {
+    return addAnnotationReq(documentId, pageNumber, annotation);
+  },
 
   // getAnnotation(documentId, annotationId) {/* ... */},
-
-  // addAnnotation(documentId, pageNumber, annotation) {/* ... */},
 
   // editAnnotation(documentId, pageNumber, annotation) {/* ... */},
 
@@ -365,7 +366,7 @@ const getAnnotationsReq = async (documentId, pageNumber) => {
   return { annotations, documentId, pageNumber };
 }
 
-const addAnnotation = async (documentId, pageNumber, annotation) => {
+const addAnnotationReq = async (documentId, pageNumber, annotation) => {
   console.log('document id', documentId);
   console.log('page number', pageNumber);
   console.log('annotation', annotation);
@@ -380,6 +381,7 @@ const addAnnotation = async (documentId, pageNumber, annotation) => {
     throw new Error('data source missing');
   };
 
+  // TODO: add page info to location
   const body = {
     user: user.id,
     dataroom: dataroomId,
@@ -409,6 +411,8 @@ const addAnnotation = async (documentId, pageNumber, annotation) => {
     } else {
       alert('未知错误');
     }
+  } else {
+    return annotation;
   }
 }
 
