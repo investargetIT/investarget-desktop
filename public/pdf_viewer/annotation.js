@@ -361,6 +361,15 @@ const getAnnotationsReq = async (documentId, pageNumber) => {
     },
   });
   const response = await reqDiscussion.json();
+  const { code } = response;
+  if (code !== 1000) {
+    if (response.errormsg) {
+      alert(response.errormsg);
+    } else {
+      alert('未知错误');
+    }
+    return;
+  }
   const { result: { data } } = response;
   const annotations = data.map(m => JSON.parse(m.location)).filter(f => f.page === pageNumber);
   return { annotations, documentId, pageNumber };
@@ -381,13 +390,12 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
     throw new Error('data source missing');
   };
 
-  // TODO: add page info to location
   const body = {
     user: user.id,
     dataroom: dataroomId,
     file: documentId,
     question: 'placeholder',
-    location: JSON.stringify(annotation),
+    location: JSON.stringify({ ...annotation, page: pageNumber }),
   };
 
   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/`, {
