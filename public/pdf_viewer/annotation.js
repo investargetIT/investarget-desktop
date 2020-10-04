@@ -15,7 +15,7 @@ let isReply = false;
 
 const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   getAnnotations(documentId, pageNumber) {
-    return getAnnotationsReq(documentId, pageNumber);
+    return getAnnotationsForAdapter(documentId, pageNumber);
   },
   addAnnotation(documentId, pageNumber, annotation) {
     return addAnnotationReq(documentId, pageNumber, annotation);
@@ -338,7 +338,7 @@ function getUserInfo() {
 }
 
 // TODO: get all annotations adding page_size
-const getAnnotationsReq = async (documentId, pageNumber) => {
+const getAnnotationsReq = async (documentId) => {
   const user = getUserInfo()
   if (!user) {
     throw new Error('user missing');
@@ -371,6 +371,11 @@ const getAnnotationsReq = async (documentId, pageNumber) => {
     return;
   }
   const { result: { data } } = response;
+  return data;
+}
+
+const getAnnotationsForAdapter = async (documentId, pageNumber) => {
+  const data = await getAnnotationsReq(documentId);
   const annotations = data.map(m => JSON.parse(m.location)).filter(f => f.page === pageNumber);
   return { annotations, documentId, pageNumber };
 }
