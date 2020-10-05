@@ -13,6 +13,43 @@ const baseUrl = 'http://apitest.investarget.com';
 let submitComment = false;
 let isReply = false;
 
+// TODO: get all annotations adding page_size
+const getAnnotationsReq = async (documentId) => {
+  const user = getUserInfo()
+  if (!user) {
+    throw new Error('user missing');
+  }
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new Error('data source missing');
+  }
+
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
+  });
+  const response = await reqDiscussion.json();
+  const { code } = response;
+  if (code !== 1000) {
+    if (response.errormsg) {
+      alert(response.errormsg);
+    } else {
+      alert('未知错误');
+    }
+    return;
+  }
+  const { result: { data } } = response;
+  return data;
+}
+
 const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   getAnnotations(documentId, pageNumber) {
     return getAnnotationsForAdapter(documentId, pageNumber);
@@ -35,13 +72,14 @@ const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
 PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
 // PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
 
-const loadAllComments = function () {
+const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
-    const { uuid: annotationId, page, comments } = annotation;
-    const commentHTML = comments.map(m => `<div class="comment-content">${m.content}</div>`).reduce((prev, curr) => prev + curr, '');
+    const { uuid: annotationId, page, question } = annotation;
+    // const commentHTML = comments.map(m => `<div class="comment-content">${m.content}</div>`).reduce((prev, curr) => prev + curr, '');
+    const questionHTML = `<div class="comment-content">${question}</div>`;
     return `<div class="comment-container" data-annotation-uuid="${annotationId}">
       <div class="comment-page">Page ${page}</div>  
-      ${commentHTML} 
+      ${questionHTML} 
       <div class="comment-actions">
         <img class="comment-actions__icon comment-actions__reply" src="/pdf_viewer/images/annotationBarButton-reply.png" />
         <img class="comment-actions__icon comment-actions__delete" src="/pdf_viewer/images/annotationBarButton-delete.png" />
@@ -49,18 +87,26 @@ const loadAllComments = function () {
     </div>`
   };
   const commentsView = document.getElementById('commentsView');
-  const annotationStr = localStorage.getItem(`${documentId}/annotations`);
-  const allAnnotations = JSON.parse(annotationStr);
+  // const annotationStr = localStorage.getItem(`${documentId}/annotations`);
+  // const allAnnotations = JSON.parse(annotationStr);
+  const allAnnotations = await getAnnotationsReq(documentId);
+  console.log('all annotations', allAnnotations);
   let annotationComments = [];
   if (allAnnotations) {
-    annotationComments = allAnnotations.filter(f => f.class === 'Annotation');
-    annotationComments = annotationComments.map(m => {
-      const comments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === m.uuid);
-      return { ...m, comments };
+    // annotationComments = allAnnotations.filter(f => f.class === 'Annotation');
+    annotationComments = allAnnotations.filter(f => f.location).map(m => {
+      const { location } = m;
+      const annotation = JSON.parse(location);
+      const { page, uuid } = annotation;
+      return { ...m, page, uuid };
     });
+    // annotationComments = annotationComments.map(m => {
+    //   const comments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === m.uuid);
+    //   return { ...m, comments };
+    // });
   }
   console.log('annotation comments', annotationComments);
-  const commentsHTML = annotationComments.filter(f => f.comments.length > 0)
+  const commentsHTML = annotationComments.filter(f => f.question && f.page)
     .map(m => generateSingleComment(m))
     .reduce((previous, current) => previous + current, '');
   if (commentsHTML) {
@@ -335,43 +381,6 @@ function getUserInfo() {
   } catch(e) {
     return null
   }
-}
-
-// TODO: get all annotations adding page_size
-const getAnnotationsReq = async (documentId) => {
-  const user = getUserInfo()
-  if (!user) {
-    throw new Error('user missing');
-  }
-
-  const source = parseInt(localStorage.getItem('source'), 10)
-  if (!source) {
-    throw new Error('data source missing');
-  }
-
-  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'clienttype': '3',
-      'source': source,
-      'token': user.token,
-    },
-  });
-  const response = await reqDiscussion.json();
-  const { code } = response;
-  if (code !== 1000) {
-    if (response.errormsg) {
-      alert(response.errormsg);
-    } else {
-      alert('未知错误');
-    }
-    return;
-  }
-  const { result: { data } } = response;
-  return data;
 }
 
 const getAnnotationsForAdapter = async (documentId, pageNumber) => {
