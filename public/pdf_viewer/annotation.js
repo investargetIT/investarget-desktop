@@ -395,12 +395,18 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
     throw new Error('data source missing');
   };
 
+  const location = {
+    ...annotation,
+    page: pageNumber,
+    class: 'Annotation',
+    uuid: PDFJSAnnotate.uuid(),
+  };
   const body = {
     user: user.id,
     dataroom: dataroomId,
     file: documentId,
     question: 'placeholder',
-    location: JSON.stringify({ ...annotation, page: pageNumber }),
+    location: JSON.stringify(location),
   };
 
   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/`, {
@@ -425,7 +431,7 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
       alert('未知错误');
     }
   } else {
-    return annotation;
+    return location;
   }
 }
 
