@@ -74,14 +74,14 @@ PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
 
 const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
-    const { uuid: annotationId, page, question, user } = annotation;
+    const { uuid: annotationId, page, question, user, asktime } = annotation;
     return `<div class="comment-container" data-annotation-uuid="${annotationId}">
       <div class="comment-page">Page ${page}</div>
       <div class="comment-wrapper">
         <img class="comment-author-avatar" src="${user.photourl}" />
         <div class="comment-right">
-          <div class="comment-time">2020-10-10 12:12:20</div>
-          <div class="comment-author-name">小游戏啊</div>
+          <div class="comment-time">${asktime.slice(0, 19).replace('T', ' ')}</div>
+          <div class="comment-author-name">${user.username}</div>
           <div class="comment-content">${question}</div>
         </div>
       </div>
