@@ -339,7 +339,8 @@ $('#comment-submit-button').click(function(e) {
   };
   const annotation = $('#add-comment-form').data('annotation');
   const { documentId, annotationId } = annotation;
-  PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
+  addAnnotationCommentReq(annotationId, content).then(comment => {
+  // PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
     $('#add-comment-form').removeData('annotation');
     submitComment = true;
     $.modal.close();
@@ -454,52 +455,52 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
   }
 }
 
-// const updateAnnotationIdReq = async (annotationId, location) => {
-//   console.log('annotation id', annotationId);
+const addAnnotationCommentReq = async (annotationId, comment) => {
+  console.log('annotation id', annotationId);
 
-//   const user = getUserInfo()
-//   if (!user) {
-//     throw new Error('user missing');
-//   }
+  const user = getUserInfo()
+  if (!user) {
+    throw new Error('user missing');
+  }
 
-//   const source = parseInt(localStorage.getItem('source'), 10)
-//   if (!source) {
-//     throw new Error('data source missing');
-//   };
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new Error('data source missing');
+  };
 
-//   const newLocation = {
-//     ...location,
-//     uuid: annotationId,
-//   };
-//   const body = {
-//     location: JSON.stringify(newLocation),
-//   };
+  // const newLocation = {
+  //   ...location,
+  //   uuid: annotationId,
+  // };
+  const body = {
+    question: comment,
+  };
 
-//   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/${annotationId}/`, {
-//     method: 'PUT',
-//     credentials: 'include',
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json',
-//       'clienttype': '3',
-//       'source': source,
-//       'token': user.token,
-//     },
-//     body: JSON.stringify(body),
-//   });
-//   const response = await reqDiscussion.json();
-//   console.log('req discussion', response);
-//   const { code } = response;
-//   if (code !== 1000) {
-//     if (response.errormsg) {
-//       alert(response.errormsg);
-//     } else {
-//       alert('未知错误');
-//     }
-//   } else {
-//     return location;
-//   }
-// }
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/${annotationId}/`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
+    body: JSON.stringify(body),
+  });
+  const response = await reqDiscussion.json();
+  console.log('req discussion', response);
+  const { code } = response;
+  if (code !== 1000) {
+    if (response.errormsg) {
+      alert(response.errormsg);
+    } else {
+      alert('未知错误');
+    }
+  } else {
+    return response;
+  }
+}
 
 const testAnnotation = {
   class: "Annotation",
