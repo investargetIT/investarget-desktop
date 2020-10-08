@@ -74,8 +74,24 @@
   font-size: 10px;
   text-align: right;
 }
-.comment-content {
+.comment-wrapper {
+  display: flex;
   margin-top: 10px;
+}
+.comment-author-avatar {
+  margin-right: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.comment-author-name {
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.comment-time {
+  font-size: 11px;
+  color: #ccc;
 }
 .comment-actions {
   margin-top: 10px;
