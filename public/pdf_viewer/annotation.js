@@ -50,6 +50,17 @@ const getAnnotationsReq = async (documentId) => {
   return data;
 }
 
+const saveAnnotationsToLocalStorage = async (documentId) => {
+  const data = await getAnnotationsReq(documentId);
+  const annotations = data.map(m => {
+    const annotation = JSON.parse(m.location);
+    return { ...annotation, uuid: m.id };
+  });
+  localStorage.setItem(`${documentId}/annotations`, JSON.stringify(annotations));
+}
+
+saveAnnotationsToLocalStorage(documentId);
+
 const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   getAnnotations(documentId, pageNumber) {
     return getAnnotationsForAdapter(documentId, pageNumber);
@@ -73,8 +84,8 @@ const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   // deleteComment(documentId, commentId) {/* ... */}
 });
 
-PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
-// PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
+// PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
+PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
 
 const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
