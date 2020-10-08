@@ -89,8 +89,8 @@ PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
 
 const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
-    const { uuid: annotationId, page, question, user, asktime } = annotation;
-    return `<div class="comment-container" data-annotation-uuid="${annotationId}">
+    const { uuid: annotationId, page, question, user, asktime, id: systemId } = annotation;
+    return `<div class="comment-container" data-annotation-uuid="${annotationId}" data-annotation-system-id="${systemId}">
       <div class="comment-page">Page ${page}</div>
       <div class="comment-wrapper">
         <img class="comment-author-avatar" src="${user.photourl}" />
@@ -163,6 +163,8 @@ const loadAllComments = async function () {
     $('#add-comment-form').modal();
     return false;
   });
+  
+  // 删除评论
   $('.comment-actions__delete').click(function() {
     if (!window.confirm('你确定要删除这些评论吗？相关的批注也会被一并删除')) return false;
     
@@ -171,9 +173,9 @@ const loadAllComments = async function () {
     UI.disableEdit();
 
     const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
-    // Fisrt delete all comments
-    const relatedComments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === annotationId);
-    Promise.all(relatedComments.map(m => PDFJSAnnotate.getStoreAdapter().deleteComment(documentId, m.uuid))).then(() => {
+    const systemId = $(this).parents('.comment-container').attr('data-annotation-system-id');
+
+    deleteAnnotationReq(systemId).then(res => {
       loadAllComments();
       PDFJSAnnotate.getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
         // TODO: refactor codes below
@@ -489,6 +491,42 @@ const addAnnotationCommentReq = async (annotationId, comment) => {
       'token': user.token,
     },
     body: JSON.stringify(body),
+  });
+  const response = await reqDiscussion.json();
+  console.log('req discussion', response);
+  const { code } = response;
+  if (code !== 1000) {
+    if (response.errormsg) {
+      alert(response.errormsg);
+    } else {
+      alert('未知错误');
+    }
+  } else {
+    return response;
+  }
+}
+
+const deleteAnnotationReq = async id => {
+  const user = getUserInfo()
+  if (!user) {
+    throw new Error('user missing');
+  }
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new Error('data source missing');
+  };
+
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/${id}/`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
   });
   const response = await reqDiscussion.json();
   console.log('req discussion', response);
