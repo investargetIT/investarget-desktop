@@ -449,9 +449,57 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
       alert('未知错误');
     }
   } else {
-    return location;
+    const { result: { id } } = response;
+    return { ...location, uuid: id };
   }
 }
+
+// const updateAnnotationIdReq = async (annotationId, location) => {
+//   console.log('annotation id', annotationId);
+
+//   const user = getUserInfo()
+//   if (!user) {
+//     throw new Error('user missing');
+//   }
+
+//   const source = parseInt(localStorage.getItem('source'), 10)
+//   if (!source) {
+//     throw new Error('data source missing');
+//   };
+
+//   const newLocation = {
+//     ...location,
+//     uuid: annotationId,
+//   };
+//   const body = {
+//     location: JSON.stringify(newLocation),
+//   };
+
+//   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/${annotationId}/`, {
+//     method: 'PUT',
+//     credentials: 'include',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json',
+//       'clienttype': '3',
+//       'source': source,
+//       'token': user.token,
+//     },
+//     body: JSON.stringify(body),
+//   });
+//   const response = await reqDiscussion.json();
+//   console.log('req discussion', response);
+//   const { code } = response;
+//   if (code !== 1000) {
+//     if (response.errormsg) {
+//       alert(response.errormsg);
+//     } else {
+//       alert('未知错误');
+//     }
+//   } else {
+//     return location;
+//   }
+// }
 
 const testAnnotation = {
   class: "Annotation",
