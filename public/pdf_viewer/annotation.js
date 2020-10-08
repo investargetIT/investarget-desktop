@@ -327,7 +327,7 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
     }, 1000);
     return;
   }
-  $('#add-comment-form').data('annotation', { documentId, annotationId: annotation.uuid });
+  $('#add-comment-form').data('formAnnotation', { documentId, pageNumber, annotation });
   $('#add-comment-form').modal();
 });
 
@@ -348,10 +348,9 @@ $('#comment-submit-button').click(function(e) {
     alert('评论内容不能为空');
     return
   };
-  const annotation = $('#add-comment-form').data('annotation');
-  const { documentId, annotationId } = annotation;
-  addAnnotationCommentReq(annotationId, content).then(comment => {
-  // PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, content).then(comment => {
+  const formAnnotation = $('#add-comment-form').data('formAnnotation');
+  const { documentId, pageNumber, annotation } = formAnnotation;
+  addAnnotationReq(documentId, pageNumber, annotation, content).then(() => {
     $('#add-comment-form').removeData('annotation');
     submitComment = true;
     $.modal.close();
@@ -410,7 +409,7 @@ const getAnnotationsForAdapter = async (documentId, pageNumber) => {
   return { annotations, documentId, pageNumber };
 }
 
-const addAnnotationReq = async (documentId, pageNumber, annotation) => {
+const addAnnotationReq = async (documentId, pageNumber, annotation, comment) => {
   console.log('document id', documentId);
   console.log('page number', pageNumber);
   console.log('annotation', annotation);
@@ -425,18 +424,12 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
     throw new Error('data source missing');
   };
 
-  const location = {
-    ...annotation,
-    page: pageNumber,
-    class: 'Annotation',
-    uuid: PDFJSAnnotate.uuid(),
-  };
   const body = {
     user: user.id,
     dataroom: dataroomId,
     file: documentId,
-    question: 'placeholder',
-    location: JSON.stringify(location),
+    question: comment,
+    location: JSON.stringify(annotation),
   };
 
   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/`, {
@@ -460,9 +453,6 @@ const addAnnotationReq = async (documentId, pageNumber, annotation) => {
     } else {
       alert('未知错误');
     }
-  } else {
-    const { result: { id } } = response;
-    return { ...location, uuid: id };
   }
 }
 
