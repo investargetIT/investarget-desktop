@@ -356,6 +356,7 @@ $('#comment-submit-button').click(function(e) {
     $.modal.close();
     $('#comment-content').val('');
     loadAllComments();
+    saveAnnotationsToLocalStorage(documentId);
   });
 });
 
