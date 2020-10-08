@@ -151,8 +151,9 @@ const loadAllComments = async function () {
       UI.createEditOverlay(target);
     }
   });
-  $('.comment-actions__reply').click(function() {
 
+  // 回复评论
+  $('.comment-actions__reply').click(function() {
     UI.disableEdit();
     // disable point here otherwise you can't focus when replay a comment
     disablePoint();
