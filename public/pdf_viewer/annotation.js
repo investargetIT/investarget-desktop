@@ -57,7 +57,11 @@ const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   addAnnotation(documentId, pageNumber, annotation) {
     return addAnnotationReq(documentId, pageNumber, annotation);
   },
-
+  getComments() {
+    return new Promise((resolve) => {
+      return resolve([]);
+    });
+  },
   // getAnnotation(documentId, annotationId) {/* ... */},
 
   // editAnnotation(documentId, pageNumber, annotation) {/* ... */},
