@@ -54,7 +54,7 @@ const saveAnnotationsToLocalStorage = async (documentId) => {
   const data = await getAnnotationsReq(documentId);
   const annotations = data.map(m => {
     const annotation = JSON.parse(m.location);
-    return { ...annotation, uuid: m.id };
+    return { ...annotation, systemId: m.id };
   });
   localStorage.setItem(`${documentId}/annotations`, JSON.stringify(annotations));
 }
