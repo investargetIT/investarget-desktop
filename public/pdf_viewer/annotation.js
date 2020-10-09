@@ -354,7 +354,7 @@ $('#comment-submit-button').click(function(e) {
   const formAnnotation = $('#add-comment-form').data('formAnnotation');
   const { documentId, pageNumber, annotation } = formAnnotation;
   addAnnotationReq(documentId, pageNumber, annotation, content).then(() => {
-    $('#add-comment-form').removeData('annotation');
+    $('#add-comment-form').removeData('formAnnotation');
     submitComment = true;
     $.modal.close();
     $('#comment-content').val('');
