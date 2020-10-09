@@ -89,17 +89,39 @@ PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
 
 const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
-    const { uuid: annotationId, page, question, user, asktime, id: systemId } = annotation;
+    const {
+      uuid: annotationId,
+      page,
+      question,
+      user,
+      asktime,
+      id: systemId,
+      answer,
+      answertime,
+      trader,
+    } = annotation;
+    let answerHTML = '';
+    if (answer && answertime && trader) {
+      answerHTML = `<div class="comment-wrapper">
+        <img class="comment-author-avatar" src="${trader.photourl}" />
+        <div class="comment-right">
+          <div class="comment-time">回复于 ${answertime.slice(0, 16).replace('T', ' ')}</div>
+          <div class="comment-author-name">${trader.username}</div>
+          <div class="comment-content">${answer}</div>
+        </div>
+      </div>`;
+    }
     return `<div class="comment-container" data-annotation-uuid="${annotationId}" data-annotation-system-id="${systemId}">
       <div class="comment-page">Page ${page}</div>
       <div class="comment-wrapper">
         <img class="comment-author-avatar" src="${user.photourl}" />
         <div class="comment-right">
-          <div class="comment-time">${asktime.slice(0, 19).replace('T', ' ')}</div>
+          <div class="comment-time">提问于 ${asktime.slice(0, 16).replace('T', ' ')}</div>
           <div class="comment-author-name">${user.username}</div>
           <div class="comment-content">${question}</div>
         </div>
       </div>
+      ${answerHTML} 
       <div class="comment-actions">
         <img class="comment-actions__icon comment-actions__reply" src="/pdf_viewer/images/annotationBarButton-reply.png" />
         <img class="comment-actions__icon comment-actions__delete" src="/pdf_viewer/images/annotationBarButton-delete.png" />

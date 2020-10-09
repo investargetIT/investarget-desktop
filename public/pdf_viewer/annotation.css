@@ -76,7 +76,7 @@
 }
 .comment-wrapper {
   display: flex;
-  margin-top: 4px;
+  margin: 16px 0;
 }
 .comment-author-avatar {
   margin-right: 6px;
