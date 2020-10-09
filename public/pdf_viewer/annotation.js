@@ -158,8 +158,8 @@ const loadAllComments = async function () {
     // disable point here otherwise you can't focus when replay a comment
     disablePoint();
 
-    const annotationId = $(this).parents('.comment-container').attr('data-annotation-uuid');
-    $('#add-comment-form').data('annotation', { documentId, annotationId });
+    const annotationId = $(this).parents('.comment-container').attr('data-annotation-system-id');
+    $('#add-comment-form').data('replyAnnotation', { documentId, annotationId });
     isReply = true;
     $('#add-comment-form').modal();
     return false;
@@ -343,7 +343,7 @@ UI.addEventListener('annotation:delete', (documentId, annotationId) => {
   });
 });
 
-// 提交评论
+// 提交评论或者回复
 $('#comment-submit-button').click(function(e) {
   e.preventDefault();
   const content = $('#comment-content').val();
@@ -351,16 +351,30 @@ $('#comment-submit-button').click(function(e) {
     alert('评论内容不能为空');
     return
   };
-  const formAnnotation = $('#add-comment-form').data('formAnnotation');
-  const { documentId, pageNumber, annotation } = formAnnotation;
-  addAnnotationReq(documentId, pageNumber, annotation, content).then(() => {
-    $('#add-comment-form').removeData('formAnnotation');
-    submitComment = true;
-    $.modal.close();
-    $('#comment-content').val('');
-    loadAllComments();
-    saveAnnotationsToLocalStorage(documentId);
-  });
+  if (isReply) {
+    const replyData = $('#add-comment-form').data('replyAnnotation');
+    const { documentId, annotationId } = replyData;
+    console.log('docu id', documentId);
+    console.log('annotation id', annotationId);
+    addAnnotationCommentReq(annotationId, content).then(() => {
+      $('#add-comment-form').removeData('replyAnnotation');
+      submitComment = true;
+      $.modal.close();
+      $('#comment-content').val('');
+      loadAllComments();
+    });
+  } else {
+    const formAnnotation = $('#add-comment-form').data('formAnnotation');
+    const { documentId, pageNumber, annotation } = formAnnotation;
+    addAnnotationReq(documentId, pageNumber, annotation, content).then(() => {
+      $('#add-comment-form').removeData('formAnnotation');
+      submitComment = true;
+      $.modal.close();
+      $('#comment-content').val('');
+      loadAllComments();
+      saveAnnotationsToLocalStorage(documentId);
+    });
+  }
 });
 
 $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
@@ -473,12 +487,8 @@ const addAnnotationCommentReq = async (annotationId, comment) => {
     throw new Error('data source missing');
   };
 
-  // const newLocation = {
-  //   ...location,
-  //   uuid: annotationId,
-  // };
   const body = {
-    question: comment,
+    answer: comment,
   };
 
   const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/${annotationId}/`, {
