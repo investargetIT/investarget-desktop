@@ -368,10 +368,10 @@ $('#add-comment-form').on($.modal.BEFORE_CLOSE, function(event, modal) {
   console.log('modal', modal);
   if (!submitComment && !isReply) {
     $('#comment-content').val('');
-    const annotation = $('#add-comment-form').data('annotation');
-    const { documentId, annotationId } = annotation;
+    const formAnnotation = $('#add-comment-form').data('formAnnotation');
+    const { documentId, annotation: { uuid: annotationId } } = formAnnotation;
     PDFJSAnnotate.getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
-      $('#add-comment-form').removeData('annotation');
+      $('#add-comment-form').removeData('formAnnotation');
 
       const { currentPageNumber: pageNumber, _pages } = PDFViewerApplication.pdfViewer;
       const { viewport } = _pages[pageNumber - 1];
