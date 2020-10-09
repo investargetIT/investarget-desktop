@@ -25,7 +25,7 @@ const getAnnotationsReq = async (documentId) => {
     throw new Error('data source missing');
   }
 
-  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}`, {
+  const reqDiscussion = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}&page_size=1`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -46,8 +46,23 @@ const getAnnotationsReq = async (documentId) => {
     }
     return;
   }
-  const { result: { data } } = response;
-  return data;
+  const { result: { count, data } } = response;
+  if (count <= 1) {
+    return data;
+  }
+  const reqDiscussion2 = await fetch(`${baseUrl}/dataroom/discuss/?file=${documentId}&page_size=${count}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'clienttype': '3',
+      'source': source,
+      'token': user.token,
+    },
+  });
+  const response2 = await reqDiscussion2.json();
+  return response2.result.data;
 }
 
 const saveAnnotationsToLocalStorage = async (documentId) => {
