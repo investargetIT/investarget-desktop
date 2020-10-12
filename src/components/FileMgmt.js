@@ -465,6 +465,7 @@ class FileMgmt extends React.Component {
   }
 
   render () {
+    window.echo('file annotation list', this.props.fileAnnotationList);
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
     const rowSelection = {

@@ -79,6 +79,7 @@ class DataRoom extends React.Component {
 
       displayDownloadingModal: false,
       waitingTime: '',
+      fileAnnotationList: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -120,7 +121,7 @@ class DataRoom extends React.Component {
       const req2 = await api.getAnnotations({ dataroom: id, page_size: count });
       annotations = req2.data.data;
     }
-    window.echo('annotations', annotations);
+    this.setState({ fileAnnotationList: annotations });
   }
 
   getNewDataRoomFile = async () => {
@@ -909,6 +910,7 @@ class DataRoom extends React.Component {
           onManageUser={this.showModal}
           userOptions={this.state.userOptions}
           fileUserList={this.state.fileUserList}
+          fileAnnotationList={this.state.fileAnnotationList}
           onSelectFileUser={this.handleSelectFileUser}
           onDeselectFileUser={this.handleDeselectFileUser}
           onNewFolderNameChange={this.handleNewFolderNameChange.bind(this)}
