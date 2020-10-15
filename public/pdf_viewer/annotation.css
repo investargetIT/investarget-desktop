@@ -54,6 +54,10 @@
   width: 17px;
   height: 17px;
 }
+.annotation-bar-icon.pen-icon {
+  width: 18px;
+  height: 18px;
+}
 .annotation-icon-divider {
   width: 1px;
   height: 16px;
