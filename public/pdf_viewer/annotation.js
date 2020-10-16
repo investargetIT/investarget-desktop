@@ -76,28 +76,28 @@ const saveAnnotationsToLocalStorage = async (documentId) => {
 
 saveAnnotationsToLocalStorage(documentId);
 
-const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
-  getAnnotations(documentId, pageNumber) {
-    return getAnnotationsForAdapter(documentId, pageNumber);
-  },
-  addAnnotation(documentId, pageNumber, annotation) {
-    return addAnnotationReq(documentId, pageNumber, annotation);
-  },
-  getComments() {
-    return new Promise((resolve) => {
-      return resolve([]);
-    });
-  },
-  // getAnnotation(documentId, annotationId) {/* ... */},
+// const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
+//   getAnnotations(documentId, pageNumber) {
+//     return getAnnotationsForAdapter(documentId, pageNumber);
+//   },
+//   addAnnotation(documentId, pageNumber, annotation) {
+//     return addAnnotationReq(documentId, pageNumber, annotation);
+//   },
+//   getComments() {
+//     return new Promise((resolve) => {
+//       return resolve([]);
+//     });
+//   },
+//   // getAnnotation(documentId, annotationId) {/* ... */},
 
-  // editAnnotation(documentId, pageNumber, annotation) {/* ... */},
+//   // editAnnotation(documentId, pageNumber, annotation) {/* ... */},
 
-  // deleteAnnotation(documentId, annotationId) {/* ... */},
+//   // deleteAnnotation(documentId, annotationId) {/* ... */},
   
-  // addComment(documentId, annotationId, content) {/* ... */},
+//   // addComment(documentId, annotationId, content) {/* ... */},
 
-  // deleteComment(documentId, commentId) {/* ... */}
-});
+//   // deleteComment(documentId, commentId) {/* ... */}
+// });
 
 // PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
 PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
@@ -387,10 +387,13 @@ $('#annotation-rectangle').hover(function() {
 
 UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   console.log('Annotation added', documentId, pageNumber, annotation);
-  if (annotation.type === 'point') {
-    setTimeout(() => {
-      loadAllComments()
-    }, 1000);
+  // if (annotation.type === 'point') {
+  //   setTimeout(() => {
+  //     loadAllComments()
+  //   }, 1000);
+  //   return;
+  // }
+  if (annotation.type === 'drawing') {
     return;
   }
   $('#add-comment-form').data('formAnnotation', { documentId, pageNumber, annotation });
@@ -616,16 +619,16 @@ const deleteAnnotationReq = async id => {
   }
 }
 
-const testAnnotation = {
-  class: "Annotation",
-  height: 52.2,
-  page: 1,
-  type: "area",
-  uuid: "d76646cb-d364-46d8-9983-56a4c88fd3b5",
-  width: 87.00000000000003,
-  x: 84.04545454545455,
-  y: 36.13636363636365,
-};
+// const testAnnotation = {
+//   class: "Annotation",
+//   height: 52.2,
+//   page: 1,
+//   type: "area",
+//   uuid: "d76646cb-d364-46d8-9983-56a4c88fd3b5",
+//   width: 87.00000000000003,
+//   x: 84.04545454545455,
+//   y: 36.13636363636365,
+// };
 
 // getAnnotations(documentId, 1);
 
