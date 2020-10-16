@@ -394,6 +394,7 @@ UI.addEventListener('annotation:add', (documentId, pageNumber, annotation) => {
   //   return;
   // }
   if (annotation.type === 'drawing') {
+    addAnnotationReq(documentId, pageNumber, annotation)
     return;
   }
   $('#add-comment-form').data('formAnnotation', { documentId, pageNumber, annotation });
@@ -493,7 +494,7 @@ const getAnnotationsForAdapter = async (documentId, pageNumber) => {
   return { annotations, documentId, pageNumber };
 }
 
-const addAnnotationReq = async (documentId, pageNumber, annotation, comment) => {
+const addAnnotationReq = async (documentId, pageNumber, annotation, comment = '') => {
   console.log('document id', documentId);
   console.log('page number', pageNumber);
   console.log('annotation', annotation);
