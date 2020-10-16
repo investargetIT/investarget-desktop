@@ -126,7 +126,7 @@ const loadAllComments = async function () {
         </div>
       </div>`;
     }
-    return `<div class="comment-container" data-annotation-uuid="${annotationId}" data-annotation-system-id="${systemId}">
+    return `<div class="comment-container" data-annotation-uuid="${annotationId}" data-annotation-system-id="${systemId}" data-annotation-page="${page}">
       <div class="comment-page">Page ${page}</div>
       <div class="comment-wrapper">
         <img class="comment-author-avatar" src="${user.photourl}" />
@@ -187,6 +187,12 @@ const loadAllComments = async function () {
     if (target) {
       UI.createEditOverlay(target);
     }
+  });
+
+  // 点击页码跳转到相应页面
+  $('.comment-page').click(function() {
+    const annotationPage = $(this).parents('.comment-container').attr('data-annotation-page');
+    PDFViewerApplication.pdfViewer.scrollPageIntoView({ pageNumber: parseInt(annotationPage) });
   });
 
   // 回复评论

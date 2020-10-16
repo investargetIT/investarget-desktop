@@ -78,6 +78,10 @@
   font-size: 10px;
   text-align: right;
 }
+.comment-page:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
 .comment-wrapper {
   display: flex;
   margin: 16px 0;
