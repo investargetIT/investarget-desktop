@@ -75,6 +75,30 @@ const saveAnnotationsToLocalStorage = async (documentId) => {
 
 saveAnnotationsToLocalStorage(documentId);
 
+
+const getSignatureFromAnnotation = allAnnotation => {
+  const signatureAnnotations = allAnnotation.filter(f => f.question === '');
+  const pageSignatureAnnotations = signatureAnnotations.map(m => {
+    const { location } = m;
+    const originalAnnotation = JSON.parse(location);
+    const { page } = originalAnnotation;
+    return { ...m, page };
+  });
+  const result = [];
+  for (let index = 0; index < pageSignatureAnnotations.length; index++) {
+    const element = pageSignatureAnnotations[index];
+    const { page } = element;
+    const pageIndex = result.map(m => m.page).indexOf(page);
+    if (pageIndex === -1) {
+      const { asktime, createdtime, id, user } = element;
+      result.push({ asktime, createdtime, id, user, page, annotations: [element] });
+    } else {
+      result[pageIndex].annotations.push(element);
+    }
+  }
+  return result;
+}
+
 // const myStoreAdapter = new PDFJSAnnotate.StoreAdapter({
 //   getAnnotations(documentId, pageNumber) {
 //     return getAnnotationsForAdapter(documentId, pageNumber);
@@ -144,6 +168,9 @@ const loadAllComments = async function () {
   };
   const commentsView = document.getElementById('commentsView');
   const allAnnotations = await getAnnotationsReq(documentId);
+
+  const allSignature = getSignatureFromAnnotation(allAnnotations);
+  console.log('all signature', allSignature);
 
   let annotationComments = [];
   if (allAnnotations) {
