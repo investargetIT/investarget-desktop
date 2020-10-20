@@ -13,7 +13,6 @@ const baseUrl = 'http://apitest.investarget.com';
 let submitComment = false;
 let isReply = false;
 
-// TODO: get all annotations adding page_size
 const getAnnotationsReq = async (documentId) => {
   const user = getUserInfo()
   if (!user) {
@@ -144,23 +143,16 @@ const loadAllComments = async function () {
     </div>`
   };
   const commentsView = document.getElementById('commentsView');
-  // const annotationStr = localStorage.getItem(`${documentId}/annotations`);
-  // const allAnnotations = JSON.parse(annotationStr);
   const allAnnotations = await getAnnotationsReq(documentId);
-  console.log('all annotations', allAnnotations);
+
   let annotationComments = [];
   if (allAnnotations) {
-    // annotationComments = allAnnotations.filter(f => f.class === 'Annotation');
     annotationComments = allAnnotations.filter(f => f.location).map(m => {
       const { location } = m;
       const annotation = JSON.parse(location);
       const { page, uuid } = annotation;
       return { ...m, page, uuid };
     });
-    // annotationComments = annotationComments.map(m => {
-    //   const comments = allAnnotations.filter(f => f.class === 'Comment' && f.annotation === m.uuid);
-    //   return { ...m, comments };
-    // });
   }
   console.log('annotation comments', annotationComments);
   const commentsHTML = annotationComments.filter(f => f.question && f.page)
