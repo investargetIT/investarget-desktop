@@ -533,7 +533,7 @@ class FileMgmt extends React.Component {
         </div>
       )},
     }, {
-      title: '提问用户',
+      title: '标注用户',
       key: 'annotation_user',
       render: (text, record) => {
         const currentFileAnnotation = this.props.fileAnnotationList.filter(f => f.file.id === record.id);
