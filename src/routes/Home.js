@@ -13,6 +13,7 @@ const options = [
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />, value: 2 },
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/aura_logo.png" />, value: 3 },
   { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_delova_biotech.png" />, value: 4 },
+  { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_hongyun.jpg" />, value: 5 },
 ]
 let source
 
@@ -69,6 +70,9 @@ class Home extends React.Component {
         break;
       case 'delovabio.investarget.com':
         localStorage.setItem('source', 4);
+        break;
+      case 'redcloudbio.investarget.com':
+        localStorage.setItem('source', 5);
         break;
     }
   }

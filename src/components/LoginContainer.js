@@ -39,7 +39,10 @@ class LoginContainer extends React.Component {
     } else if (source === 4) {
       logo = '/images/logo_delova_biotech.png';
       bg = 'url(/images/bg_delova_biotech.jpeg)';
-    }
+    } else if (source === 5) {
+      logo = '/images/logo_hongyun.jpg';
+      bg = 'url(/images/bg_hongyun.jpg)';
+    } 
     const bodyWrapStyle = {
       margin: '0 auto', 
       minWidth: 1200, 
