@@ -106,7 +106,7 @@ class UserForm extends React.Component {
       <Form>
 
          { this.hasPerm || !this.isEditUser ?
-        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={this.props.isTraderAddInvestor ? [1] : undefined} required>
+        <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
           <SelectUserGroup type={(this.props.isTraderAddInvestor || !this.hasPerm) ? 'investor' : null} />
         </BasicFormItem>
         : null } 
