@@ -635,13 +635,13 @@ class FileMgmt extends React.Component {
         console.log(file)
         const fileType = file.type
         const files=this.props.data.filter(f => f.parentId === this.state.parentId)
-        if (!validFileTypes.includes(fileType)) {
-          Modal.error({
-            title: '不支持的文件类型',
-            content: '请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件',
-          })
-          return false
-        }
+        // if (!validFileTypes.includes(fileType)) {
+        //   Modal.error({
+        //     title: '不支持的文件类型',
+        //     content: '请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件',
+        //   })
+        //   return false
+        // }
         if(files.some(item=>{
           return item.name==file.name
         })){
