@@ -27,7 +27,7 @@ function ModifyPwd(props) {
         .catch(err => {
           props.dispatch({
             type: 'app/findError',
-            payload: error
+            payload: err
           })
         })
       }
