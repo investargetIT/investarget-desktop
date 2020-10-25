@@ -91,8 +91,9 @@ const getSignatureFromAnnotation = allAnnotation => {
     const pageIndex = result.map(m => m.page).indexOf(page);
     if (pageIndex === -1) {
       const { asktime, createdtime, id, user } = element;
-      result.push({ type: 'signature', asktime, createdtime, id, user, page, annotations: [element] });
+      result.push({ type: 'signature', asktime, createdtime, id: id.toString(), user, page, annotations: [element] });
     } else {
+      result[pageIndex].id += `,${element.id}`;
       result[pageIndex].annotations.push(element);
     }
   }
