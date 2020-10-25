@@ -166,11 +166,35 @@ const loadAllComments = async function () {
       </div>
     </div>`
   };
+
+  const generateSignature = function (annotation) {
+    const {
+      // uuid: annotationId,
+      page,
+      user,
+      asktime,
+      id: systemId,
+    } = annotation;
+    return `<div class="comment-container" data-annotation-system-id="${systemId}" data-annotation-page="${page}">
+      <div class="comment-page">Page ${page}</div>
+      <div class="comment-wrapper">
+        <img class="comment-author-avatar" src="${user.photourl}" />
+        <div class="comment-right">
+          <div class="comment-time">签名于 ${asktime.slice(0, 16).replace('T', ' ')}</div>
+          <div class="comment-author-name">${user.username}</div>
+        </div>
+      </div>
+      <div class="comment-actions">
+        <img class="comment-actions__icon comment-actions__reply" src="/pdf_viewer/images/annotationBarButton-reply.png" />
+        <img class="comment-actions__icon comment-actions__delete" src="/pdf_viewer/images/annotationBarButton-delete.png" />
+      </div>
+    </div>`
+  };
+
   const commentsView = document.getElementById('commentsView');
   const allAnnotations = await getAnnotationsReq(documentId);
 
   const allSignature = getSignatureFromAnnotation(allAnnotations);
-  console.log('all signature', allSignature);
 
   let annotationComments = [];
   if (allAnnotations) {
@@ -182,7 +206,6 @@ const loadAllComments = async function () {
     });
   }
   annotationComments = annotationComments.filter(f => f.question && f.page);
-  console.log('all question', annotationComments);
 
   const allSidebarContent = allSignature.concat(annotationComments);
   console.log('all sidebar content', allSidebarContent);
@@ -190,8 +213,15 @@ const loadAllComments = async function () {
     return new Date(b.createdtime) - new Date(a.createdtime);
   });
 
-  const commentsHTML = annotationComments.map(m => generateSingleComment(m))
-    .reduce((previous, current) => previous + current, '');
+  const commentsHTML = allSidebarContent.map(m => {
+    if (m.type === 'question') {
+      return generateSingleComment(m);
+    } else if (m.type === 'signature') {
+      return generateSignature(m);
+    } else {
+      return '';
+    }
+  }).reduce((previous, current) => previous + current, '');
   if (commentsHTML) {
     setTimeout(() => {
       window.PDFViewerApplication.pdfSidebar.open();
