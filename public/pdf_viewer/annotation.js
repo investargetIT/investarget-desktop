@@ -81,8 +81,8 @@ const getSignatureFromAnnotation = allAnnotation => {
   const pageSignatureAnnotations = signatureAnnotations.map(m => {
     const { location } = m;
     const originalAnnotation = JSON.parse(location);
-    const { page } = originalAnnotation;
-    return { ...m, page };
+    const { page, uuid } = originalAnnotation;
+    return { ...m, page, uuid };
   });
   const result = [];
   for (let index = 0; index < pageSignatureAnnotations.length; index++) {
@@ -90,10 +90,11 @@ const getSignatureFromAnnotation = allAnnotation => {
     const { page } = element;
     const pageIndex = result.map(m => m.page).indexOf(page);
     if (pageIndex === -1) {
-      const { asktime, createdtime, id, user } = element;
-      result.push({ type: 'signature', asktime, createdtime, id: id.toString(), user, page, annotations: [element] });
+      const { asktime, createdtime, id, user, uuid } = element;
+      result.push({ type: 'signature', asktime, createdtime, id: id.toString(), user, page, annotations: [element], uuid: uuid.toString() });
     } else {
       result[pageIndex].id += `,${element.id}`;
+      result[pageIndex].uuid += `,${element.uuid}`;
       result[pageIndex].annotations.push(element);
     }
   }
@@ -170,13 +171,13 @@ const loadAllComments = async function () {
 
   const generateSignature = function (annotation) {
     const {
-      // uuid: annotationId,
+      uuid: annotationId,
       page,
       user,
       asktime,
       id: systemId,
     } = annotation;
-    return `<div class="comment-container" data-annotation-system-id="${systemId}" data-annotation-page="${page}">
+    return `<div class="comment-container" data-annotation-system-id="${systemId}" data-annotation-uuid="${annotationId}" data-annotation-page="${page}">
       <div class="comment-page">Page ${page}</div>
       <div class="comment-wrapper">
         <img class="comment-author-avatar" src="${user.photourl}" />
