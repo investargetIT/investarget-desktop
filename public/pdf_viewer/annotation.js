@@ -91,7 +91,7 @@ const getSignatureFromAnnotation = allAnnotation => {
     const pageIndex = result.map(m => m.page).indexOf(page);
     if (pageIndex === -1) {
       const { asktime, createdtime, id, user } = element;
-      result.push({ asktime, createdtime, id, user, page, annotations: [element] });
+      result.push({ type: 'signature', asktime, createdtime, id, user, page, annotations: [element] });
     } else {
       result[pageIndex].annotations.push(element);
     }
@@ -178,12 +178,19 @@ const loadAllComments = async function () {
       const { location } = m;
       const annotation = JSON.parse(location);
       const { page, uuid } = annotation;
-      return { ...m, page, uuid };
+      return { ...m, page, uuid, type: 'question' };
     });
   }
-  console.log('annotation comments', annotationComments);
-  const commentsHTML = annotationComments.filter(f => f.question && f.page)
-    .map(m => generateSingleComment(m))
+  annotationComments = annotationComments.filter(f => f.question && f.page);
+  console.log('all question', annotationComments);
+
+  const allSidebarContent = allSignature.concat(annotationComments);
+  console.log('all sidebar content', allSidebarContent);
+  allSidebarContent.sort(function(a, b) {
+    return new Date(b.createdtime) - new Date(a.createdtime);
+  });
+
+  const commentsHTML = annotationComments.map(m => generateSingleComment(m))
     .reduce((previous, current) => previous + current, '');
   if (commentsHTML) {
     setTimeout(() => {
