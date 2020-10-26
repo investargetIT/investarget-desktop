@@ -304,6 +304,32 @@ const loadAllComments = async function () {
     // After that delete the annotation
     return false;
   });
+
+   // 隐藏签名 
+   $('.comment-actions__hide').click(function() {
+    UI.disableEdit();
+
+    const annotationUUID = $(this).parents('.comment-container').attr('data-annotation-uuid');
+    const uuidArray = annotationUUID.split(',');
+    for (let index = 0; index < uuidArray.length; index++) {
+      const element = uuidArray[index];
+      $(`[data-pdf-annotate-uuid="${element}"]`).hide();
+    }
+    return false;
+  });
+
+  // 显示签名 
+  $('.comment-actions__display').click(function () {
+    UI.disableEdit();
+
+    const annotationUUID = $(this).parents('.comment-container').attr('data-annotation-uuid');
+    const uuidArray = annotationUUID.split(',');
+    for (let index = 0; index < uuidArray.length; index++) {
+      const element = uuidArray[index];
+      $(`[data-pdf-annotate-uuid="${element}"]`).show();
+    }
+    return false;
+  });
 }
 loadAllComments();
 
