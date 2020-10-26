@@ -136,3 +136,6 @@
   margin-top: 10px;
   width: 100px;
 }
+.comment-actions__display {
+  display: none;
+}

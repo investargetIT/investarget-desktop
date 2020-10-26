@@ -315,6 +315,10 @@ const loadAllComments = async function () {
       const element = uuidArray[index];
       $(`[data-pdf-annotate-uuid="${element}"]`).hide();
     }
+    
+    $(this).hide();
+    $(this).siblings('.comment-actions__display').show();
+    
     return false;
   });
 
@@ -328,6 +332,10 @@ const loadAllComments = async function () {
       const element = uuidArray[index];
       $(`[data-pdf-annotate-uuid="${element}"]`).show();
     }
+
+    $(this).hide();
+    $(this).siblings('.comment-actions__hide').show();
+
     return false;
   });
 }
