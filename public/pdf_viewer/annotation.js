@@ -127,6 +127,13 @@ const getSignatureFromAnnotation = allAnnotation => {
 // PDFJSAnnotate.setStoreAdapter(myStoreAdapter);
 PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
 
+hideSignatureForTrader = () => {
+  setTimeout(() => {
+    const element = '3efd45ee-a2e5-425d-ad8d-b67dbe6a10ae';
+    $(`[data-pdf-annotate-uuid="${element}"]`).hide();
+  }, 100);
+};
+
 const loadAllComments = async function () {
   const generateSingleComment = function (annotation) {
     const {
@@ -231,6 +238,8 @@ const loadAllComments = async function () {
     }, 1000);
   }
   commentsView.innerHTML = commentsHTML;
+  
+  hideSignatureForTrader();
 
   $('.comment-container').click(function() {
 
