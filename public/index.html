@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="icon" href="/images/investarget_new_logo.png">
   <link rel="stylesheet" href="/bootstrap.min.css" />
   <link rel="stylesheet" href="/bootstrap-override.css" />
   <link rel="stylesheet" href="/font-awesome.min.css" />
@@ -23,6 +22,11 @@
   <script>
     var source = parseInt(localStorage.getItem('source'));
     if (source === 1) {
+      var link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = '/images/investarget_new_logo.png';
+      document.getElementsByTagName('head')[0].appendChild(link);
+
       document.title = '多维海拓 Investarget';
     } else if (source === 2) {
       document.title = '汽车·创新港';
@@ -30,6 +34,13 @@
       document.title = 'Aura Semiconductor';
     } else if (source === 4) {
       document.title = '清普生物科技';
+    } else if (source === 5) {
+      var link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = '/images/icon_hongyun.png';
+      document.getElementsByTagName('head')[0].appendChild(link);
+
+      document.title = '红云生物';
     } else {
       document.title = 'Unknown Datasource';
     }

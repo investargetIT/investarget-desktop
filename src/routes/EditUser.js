@@ -58,17 +58,17 @@ class EditUser extends React.Component {
         let body = values
 
         // #426
-        if (body.userstatus === 2) {
-          const juniorInvestorGroupId = getUserGroupIdByName(this.props.group, '初级投资人');
-          const juniorTraderGroupId = getUserGroupIdByName(this.props.group, '初级交易师');
-          if (body.groups[0] === juniorInvestorGroupId) {
-            const investorGroupId = getUserGroupIdByName(this.props.group, '用户');
-            body.groups = [investorGroupId];
-          } else if (body.groups[0] === juniorTraderGroupId) {
-            const traderGroupId = getUserGroupIdByName(this.props.group, '交易师');
-            body.groups = [traderGroupId];
-          }
-        }
+        // if (body.userstatus === 2) {
+        //   const juniorInvestorGroupId = getUserGroupIdByName(this.props.group, '初级投资人');
+        //   const juniorTraderGroupId = getUserGroupIdByName(this.props.group, '初级交易师');
+        //   if (body.groups[0] === juniorInvestorGroupId) {
+        //     const investorGroupId = getUserGroupIdByName(this.props.group, '用户');
+        //     body.groups = [investorGroupId];
+        //   } else if (body.groups[0] === juniorTraderGroupId) {
+        //     const traderGroupId = getUserGroupIdByName(this.props.group, '交易师');
+        //     body.groups = [traderGroupId];
+        //   }
+        // }
 
         // if (body.tags) {
         //   body.tags = body.tags.reduce((prev, curr) => prev.concat(JSON.parse(curr)), []);

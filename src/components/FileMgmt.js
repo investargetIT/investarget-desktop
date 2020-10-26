@@ -654,7 +654,11 @@ class FileMgmt extends React.Component {
         console.log(file)
         const fileType = file.type
         const files=this.props.data.filter(f => f.parentId === this.state.parentId)
-        if (!validFileTypes.includes(fileType)) {
+        const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
+        const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+        if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
+          window.echo('mime type', fileType);
+          window.echo('file name', file.name);
           Modal.error({
             title: '不支持的文件类型',
             content: '请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件',
