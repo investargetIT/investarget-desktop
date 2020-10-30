@@ -696,10 +696,18 @@ class FileMgmt extends React.Component {
           { hasEnoughPerm || this.props.isProjTrader ?
           <Upload {...props}>
             <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}} onClick={this.handleUploadBtnClicked}>
-            <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload')}
+            <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload_file')}
             </Button>
           </Upload>
           : null }
+
+          { hasEnoughPerm || this.props.isProjTrader ?
+            <Upload {...props}>
+              <Button size="large" type="primary" style={{ ...buttonStyle, color: '#237ccc' }} onClick={this.handleUploadBtnClicked}>
+                <img style={{ marginRight: 4, marginBottom: 3 }} src="/images/upload.png" />{i18n('dataroom.upload_directory')}
+              </Button>
+            </Upload>
+            : null}
 
           { hasDownloadPerm ?
             <Button size="large" type="primary" style={buttonStyle} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>

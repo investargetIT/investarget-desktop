@@ -488,6 +488,8 @@
     "all": "全部文件",
     "back": "返回上一级",
     "upload": "上传",
+    "upload_file": "上传文件",
+    "upload_directory": "上传文件夹",
     "new_folder": "新建文件夹",
     "delete": "删除",
     "rename": "重命名",

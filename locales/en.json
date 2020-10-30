@@ -458,6 +458,8 @@
     "all": "ALL",
     "back": "Back",
     "upload": "Upload",
+    "upload_file": "Upload Files",
+    "upload_directory": "Upload Directory",
     "new_folder": "New Folder",
     "delete": "Delete",
     "rename": "Rename",
