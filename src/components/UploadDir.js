@@ -5,6 +5,7 @@ class UploadDir extends React.Component {
   constructor (props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.onChangeFile = this.onChangeFile.bind(this);
   }
 
   componentDidMount() {
@@ -12,8 +13,17 @@ class UploadDir extends React.Component {
     this.inputElement.webkitdirectory = true;
   }
 
-  handleClick() {
+  handleClick(e) {
+    e.stopPropagation();
+    e.preventDefault();
     this.inputElement.click();
+  }
+
+  onChangeFile(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    const { files } = event.target;
+    window.echo('files', files);
   }
 
   render() {
@@ -22,9 +32,12 @@ class UploadDir extends React.Component {
         <div className="ant-upload ant-upload-select ant-upload-select-text">
           <span tabIndex="0" className="ant-upload" role="button">
             <input
+              onClick={e => e.stopPropagation()}
               ref={input => this.inputElement = input}
               type="file"
+              multiple
               style={{ display: 'none' }}
+              onChange={this.onChangeFile.bind(this)}
             />
             {this.props.children}
           </span>
