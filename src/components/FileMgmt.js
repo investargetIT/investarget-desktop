@@ -4,6 +4,7 @@ import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting } 
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
+import UploadDir from './UploadDir';
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -702,11 +703,11 @@ class FileMgmt extends React.Component {
           : null }
 
           { hasEnoughPerm || this.props.isProjTrader ?
-            <Upload {...props}>
+            <UploadDir {...props}>
               <Button size="large" type="primary" style={{ ...buttonStyle, color: '#237ccc' }} onClick={this.handleUploadBtnClicked}>
                 <img style={{ marginRight: 4, marginBottom: 3 }} src="/images/upload.png" />{i18n('dataroom.upload_directory')}
               </Button>
-            </Upload>
+            </UploadDir>
             : null}
 
           { hasDownloadPerm ?
