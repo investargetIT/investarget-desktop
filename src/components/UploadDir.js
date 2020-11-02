@@ -36,6 +36,9 @@ class UploadDir extends React.Component {
       if (this.props.beforeUpload) {
         allowUpload = this.props.beforeUpload(element);
       }
+      if (allowUpload) {
+        // TODO: upload file
+      }
     }
   }
 
