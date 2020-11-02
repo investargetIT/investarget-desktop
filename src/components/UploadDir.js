@@ -6,6 +6,7 @@ class UploadDir extends React.Component {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
+    this.handleInputClick = this.handleInputClick.bind(this);
   }
 
   componentDidMount() {
@@ -17,6 +18,11 @@ class UploadDir extends React.Component {
     e.stopPropagation();
     e.preventDefault();
     this.inputElement.click();
+  }
+
+  handleInputClick(e) {
+    e.stopPropagation();
+    this.inputElement.value = null;
   }
 
   onChangeFile(event) {
@@ -32,7 +38,7 @@ class UploadDir extends React.Component {
         <div className="ant-upload ant-upload-select ant-upload-select-text">
           <span tabIndex="0" className="ant-upload" role="button">
             <input
-              onClick={e => e.stopPropagation()}
+              onClick={this.handleInputClick}
               ref={input => this.inputElement = input}
               type="file"
               multiple
