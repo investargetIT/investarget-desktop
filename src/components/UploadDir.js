@@ -29,7 +29,14 @@ class UploadDir extends React.Component {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
-    window.echo('files', files);
+    const fileArray = Array.from(files);
+    for (let index = 0; index < fileArray.length; index++) {
+      const element = fileArray[index];
+      let allowUpload = true;
+      if (this.props.beforeUpload) {
+        allowUpload = this.props.beforeUpload(element);
+      }
+    }
   }
 
   render() {

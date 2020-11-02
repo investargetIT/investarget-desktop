@@ -639,11 +639,12 @@ class FileMgmt extends React.Component {
         const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
         const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
         if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
+          window.echo('mime type or file name suffix not valid');
           window.echo('mime type', fileType);
           window.echo('file name', file.name);
           Modal.error({
             title: '不支持的文件类型',
-            content: '请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件',
+            content: `${file.name} 文件类型有误，请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件`,
           })
           return false
         }
