@@ -1,4 +1,5 @@
 import React from 'react';
+import * as api from '../api';
 
 class UploadDir extends React.Component {
 
@@ -29,15 +30,53 @@ class UploadDir extends React.Component {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
-    const fileArray = Array.from(files);
-    for (let index = 0; index < fileArray.length; index++) {
-      const element = fileArray[index];
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
       let allowUpload = true;
       if (this.props.beforeUpload) {
-        allowUpload = this.props.beforeUpload(element);
+        allowUpload = this.props.beforeUpload(file);
       }
       if (allowUpload) {
-        // TODO: upload file
+        const { lastModified, lastModifiedDate, name, size, type, webkitRelativePath } = file;
+        this.props.onChange({
+          file: {
+            lastModified,
+            lastModifiedDate,
+            name,
+            size,
+            type,
+            webkitRelativePath,
+            status: 'uploading',
+          },
+        });
+        api.qiniuUpload('file', file).then(result => {
+          const { data } = result;
+          this.props.onChange({
+            file: {
+              lastModified,
+              lastModifiedDate,
+              name,
+              size,
+              type,
+              webkitRelativePath,
+              status: 'done',
+              response: { result: data },
+            },
+          });
+        }).catch(error => {
+          console.error(error);
+          this.props.onChange({
+            file: {
+              lastModified,
+              lastModifiedDate,
+              name,
+              size,
+              type,
+              webkitRelativePath,
+              status: 'error',
+            },
+          });
+        });
       }
     }
   }
