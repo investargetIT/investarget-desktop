@@ -978,3 +978,12 @@ export const batchGetUserSimpleInfo = params => {
   })
   return r(`/user/simple?${qs.stringify(params)}`)
 };
+
+export const getAnnotations = params => {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r(`/dataroom/discuss/?${qs.stringify(params)}`);
+};

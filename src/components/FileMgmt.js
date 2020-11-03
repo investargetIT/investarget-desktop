@@ -5,6 +5,7 @@ import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
+import _ from 'lodash';
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -118,9 +119,11 @@ class FileMgmt extends React.Component {
           title: '该文件不支持在线预览',
         });
       } else {
+        const { dataroom: dataroomId, id: fileId } = file;
         const watermark = isLogin().email || 'Investarget'
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
         const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+          '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) + 
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
         window.open(url)
       }
@@ -464,6 +467,7 @@ class FileMgmt extends React.Component {
   }
 
   render () {
+    window.echo('file annotation list', this.props.fileAnnotationList);
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
     const rowSelection = {
@@ -529,6 +533,21 @@ class FileMgmt extends React.Component {
           <Button size="large" onClick={this.handleCancel.bind(this, record.unique)} style={{ marginLeft: 6, verticalAlign: 'middle' }}>{i18n('common.cancel')}</Button> </span>) }
         </div>
       )},
+    }, {
+      title: '标注用户',
+      key: 'annotation_user',
+      render: (text, record) => {
+        const currentFileAnnotation = this.props.fileAnnotationList.filter(f => f.file.id === record.id);
+        const annotationUsers = currentFileAnnotation.map(m => m.user);
+        const uniqueUsers = _.uniqBy(annotationUsers, 'id');
+        return uniqueUsers.map(m => (
+          <img
+            key={m.id}
+            style={{ marginRight: 2, width: 20, borderRadius: 2 }}
+            src={m.photourl}
+          />
+        ));
+      },
     }, {
       title: i18n('dataroom.size'),
       dataIndex: 'size',

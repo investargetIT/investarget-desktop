@@ -9,14 +9,18 @@
 
 
     <link rel="stylesheet" href="pdf_viewer/viewer.css">
+    <link rel="stylesheet" href="pdf_viewer/annotation.css">
 
     <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/jquery_modal/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="/lib/jquery_modal/jquery.modal.min.css">
 
     <!-- This snippet is used in production (included from viewer.html) -->
     <link rel="resource" type="application/l10n" href="pdf_viewer/locale/locale.properties">
     <script src="pdf_viewer/compatibility.js"></script>
     <script src="pdf_viewer/pdf.min.js"></script>
-
+    <script src="pdf_viewer/pdf-annotate.js"></script>
+    
     <script src="pdf_viewer/viewer.js"></script>
 
   </head>
@@ -36,6 +40,9 @@
             <button id="viewAttachments" class="toolbarButton" title="Show Attachments" tabindex="4" data-l10n-id="attachments">
                <span data-l10n-id="attachments_label">Attachments</span>
             </button>
+            <button id="viewComments" class="toolbarButton" title="显示评论" tabindex="5" data-l10n-id="comments">
+              <span data-l10n-id="comments_label">评论</span>
+           </button>
           </div>
         </div>
         <div id="sidebarContent">
@@ -44,6 +51,16 @@
           <div id="outlineView" class="hidden">
           </div>
           <div id="attachmentsView" class="hidden">
+          </div>
+          <div id="commentsView" class="hidden">
+            <!-- <div class="comment-container">
+              <div>这是评论的内容，内容还是很多的，很多很多</div>
+              <div class="comment-page">Page 10</div>
+            </div>
+            <div class="comment-container">
+              <div>这是评论的内容，内容还是很多的，很多很多</div>
+              <div class="comment-page">Page 10</div>
+            </div> -->
           </div>
         </div>
       </div>  <!-- sidebarContainer -->
@@ -134,7 +151,7 @@
         </div>  <!-- secondaryToolbar -->
 
         <div class="toolbar">
-          <div id="toolbarContainer">
+          <div class="toolbarContainer">
             <div id="toolbarViewer">
               <div id="toolbarViewerLeft">
                 <button id="sidebarToggle" class="toolbarButton" title="Toggle Sidebar" tabindex="11" data-l10n-id="toggle_sidebar">
@@ -216,6 +233,29 @@
                 <div class="glimmer">
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbarContainer">
+            <div id="annotationbarViewer">
+              <!-- <div id="annotation-select" class="icon-container" title="Select Annotation">
+                <img class="annotation-bar-icon" src="/pdf_viewer/images/annotationBarButton-select.png" alt="Rectangle" />
+              </div>
+              <div class="annotation-icon-divider"></div> -->
+              <div id="annotation-rectangle" class="icon-container" title="按住鼠标并拖动生成矩形框">
+                <img class="annotation-bar-icon" src="/pdf_viewer/images/annotationBarButton-rectangle.png" alt="Highlight" />
+              </div>
+              <!-- <div id="annotation-pen" class="icon-container" title="签名">
+                <img class="annotation-bar-icon pen-icon" src="/pdf_viewer/images/annotationBarButton-draw.png" alt="Pen" />
+              </div> -->
+              <!-- <div id="annotation-highlight" class="icon-container" title="Highlight">
+                <img class="annotation-bar-icon" src="/pdf_viewer/images/annotationBarButton-highlight.png" alt="Highlight" />
+              </div> -->
+              <!-- <div id="annotation-comment" class="icon-container" title="点击任意位置添加评论">
+                <img class="annotation-bar-icon comment-icon" src="/pdf_viewer/images/annotationBarButton-comment.png" alt="Comment" />
+              </div> -->
             </div>
           </div>
         </div>
@@ -346,7 +386,12 @@
         </div>
       </div>
     </div>
-
+    <form id="add-comment-form" class="modal">
+      <label class="modal-comment-title" for="story">评论</label>
+      <textarea id="comment-content" class="modal-comment-input" name="story" rows="5" cols="33" placeholder="评论内容"></textarea>
+      <input id="comment-submit-button" class="modal-comment-button" type="submit" value="提交">
+    </form>
+    <script src="pdf_viewer/annotation.js"></script>
   </body>
 </html>
 

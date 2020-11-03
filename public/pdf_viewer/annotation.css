@@ -1,0 +1,141 @@
+.custom-annotation-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+#pdf-annotate-edit-overlay a {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+#annotationbarViewer {
+  padding: 0 4px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.icon-container {
+  margin-right: 2px;
+  width: 30px;
+  height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.icon-container:hover {
+  background-color: hsla(0,0%,0%,.12);
+  background-image: linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-clip: padding-box;
+  border: 1px solid hsla(0,0%,0%,.35);
+  border-color: rgba(156, 145, 145, 0.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
+  box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset, 0 0 1px hsla(0,0%,100%,.15) inset, 0 1px 0 hsla(0,0%,100%,.05);
+}
+.icon-container.toggled {
+  background-color: hsla(0,0%,0%,.3);
+  background-image: linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  border-color: hsla(0,0%,0%,.4) hsla(0,0%,0%,.45) hsla(0,0%,0%,.5);
+  box-shadow: 0 1px 1px hsla(0,0%,0%,.1) inset, 0 0 1px hsla(0,0%,0%,.2) inset, 0 1px 0 hsla(0,0%,100%,.05);
+  -webkit-transition-property: background-color, border-color, box-shadow;
+  -webkit-transition-duration: 10ms;
+  -webkit-transition-timing-function: linear;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 10ms;
+  transition-timing-function: linear;
+}
+.annotation-bar-icon {
+  width: 20px;
+  height: 20px;
+}
+.annotation-bar-icon.comment-icon {
+  width: 17px;
+  height: 17px;
+}
+.annotation-bar-icon.pen-icon {
+  width: 18px;
+  height: 18px;
+}
+.annotation-icon-divider {
+  width: 1px;
+  height: 16px;
+  background-color: #333;
+  margin-right: 6px;
+  margin-left: 4px;
+}
+.comment-container {
+  padding: 10px;
+  font-size: 12px;
+  color: #f2f2f2;
+  border-bottom: 1px solid #333;
+}
+.comment-container.active {
+  background-color: rgba(0, 0, 0, .4);
+}
+.comment-page {
+  font-size: 10px;
+  text-align: right;
+}
+.comment-page:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+.comment-wrapper {
+  display: flex;
+  margin: 16px 0;
+}
+.comment-author-avatar {
+  margin-right: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.comment-author-name {
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.comment-time {
+  font-size: 11px;
+  color: #ccc;
+}
+.comment-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+.comment-actions__icon {
+  margin-left: 10px;
+  width: 20px;
+}
+.comment-actions__icon:hover {
+  cursor: pointer;
+}
+.modal-comment-title, .modal-comment-input, .modal-comment-button {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.modal-comment-input {
+  resize: vertical;
+  width: 400px;
+  padding: 10px;
+  line-height: 1.5;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #999;
+}
+.modal-comment-title {
+  display: block;
+  margin-bottom: 10px;
+}
+.toolbar {
+  z-index: 0;
+}
+.modal-comment-button {
+  margin-top: 10px;
+  width: 100px;
+}
+.comment-actions__display {
+  display: none;
+}

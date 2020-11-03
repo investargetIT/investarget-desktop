@@ -538,7 +538,7 @@ html[dir='rtl'] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 32px;
+  top: 64px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -559,7 +559,7 @@ html[dir='rtl'] #viewerContainer {
   cursor: default;
 }
 
-#toolbarContainer {
+.toolbarContainer {
   width: 100%;
 }
 
@@ -583,21 +583,21 @@ html[dir='rtl'] #toolbarSidebar {
               0 0 1px hsla(0,0%,0%,.1);
 }
 
-#toolbarContainer, .findbar, .secondaryToolbar {
+.toolbarContainer, .findbar, .secondaryToolbar {
   position: relative;
   height: 32px;
   background-color: #474747; /* fallback */
   background-image: url(images/texture.png),
                     linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
 }
-html[dir='ltr'] #toolbarContainer, .findbar, .secondaryToolbar {
+html[dir='ltr'] .toolbarContainer, .findbar, .secondaryToolbar {
   box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
               inset 0 1px 1px hsla(0,0%,0%,.15),
               inset 0 -1px 0 hsla(0,0%,100%,.05),
               0 1px 0 hsla(0,0%,0%,.15),
               0 1px 1px hsla(0,0%,0%,.1);
 }
-html[dir='rtl'] #toolbarContainer, .findbar, .secondaryToolbar {
+html[dir='rtl'] .toolbarContainer, .findbar, .secondaryToolbar {
   box-shadow: inset -1px 0 0 hsla(0,0%,100%,.08),
               inset 0 1px 1px hsla(0,0%,0%,.15),
               inset 0 -1px 0 hsla(0,0%,100%,.05),
@@ -1246,7 +1246,9 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
 #viewThumbnail.toolbarButton::before {
   content: url(images/toolbarButton-viewThumbnail.png);
 }
-
+#viewComments.toolbarButton::before {
+  content: url(images/toolbarButton-viewComments.png);
+}
 html[dir="ltr"] #viewOutline.toolbarButton::before {
   content: url(images/toolbarButton-viewOutline.png);
 }
@@ -1912,7 +1914,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 
 @media screen and (min-resolution: 2dppx) {
   /* Rules for Retina screens */
-  .toolbarButton::before {
+  /* .toolbarButton::before {
     -webkit-transform: scale(0.5);
     transform: scale(0.5);
     top: -5px;
@@ -2086,7 +2088,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
   html[dir='rtl'] .outlineItemToggler::before {
     left: 0;
-  }
+  } */
 }
 
 @media print {
