@@ -487,37 +487,43 @@ class DataRoom extends React.Component {
 
   handleUploadFileWithDir(file, parentId) {
     window.echo('file with dir', file, parentId);
-    const body = {
-      dataroom: parseInt(this.state.id),
-      filename: file.name,
-      isFile: true,
-      orderNO: 1,
-      parent: parentId == -999 ? null : parentId,
-      key: file.response.result.key,
-      size: file.size,
-      bucket: 'file',
-      realfilekey: file.response.result.realfilekey,
-    }
+    const { webkitRelativePath } = file;
+    const splitPath = webkitRelativePath.split('/');
+    window.echo('split path', splitPath);
+    const dirArray = splitPath.slice(0, splitPath.length - 1);
+    window.echo('dir array', dirArray);
 
-    api.addDataRoomFile(body).then(data => {
-      const item = data.data
-      const parentId = item.parent || -999
+    // const body = {
+    //   dataroom: parseInt(this.state.id),
+    //   filename: file.name,
+    //   isFile: true,
+    //   orderNO: 1,
+    //   parent: parentId == -999 ? null : parentId,
+    //   key: file.response.result.key,
+    //   size: file.size,
+    //   bucket: 'file',
+    //   realfilekey: file.response.result.realfilekey,
+    // }
 
-      const name = item.filename
-      const rename = item.filename
-      const unique = item.id
-      const isFolder = !item.isFile
-      const date = item.lastmodifytime || item.createdtime
-      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
-      const newData = this.state.data;
-      newData.push(newItem)
-      this.setState({ data: newData })
-    }).catch(error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
+    // api.addDataRoomFile(body).then(data => {
+    //   const item = data.data
+    //   const parentId = item.parent || -999
+
+    //   const name = item.filename
+    //   const rename = item.filename
+    //   const unique = item.id
+    //   const isFolder = !item.isFile
+    //   const date = item.lastmodifytime || item.createdtime
+    //   const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+    //   const newData = this.state.data;
+    //   newData.push(newItem)
+    //   this.setState({ data: newData })
+    // }).catch(error => {
+    //   this.props.dispatch({
+    //     type: 'app/findError',
+    //     payload: error
+    //   })
+    // })
   }
 
   handleSelectFileUser = (file, user) => {
