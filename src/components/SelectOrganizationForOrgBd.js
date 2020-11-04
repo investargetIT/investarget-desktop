@@ -127,11 +127,10 @@ class SelectOrganization extends React.Component {
 
   searchAllOrg = async () => {
     let list = [];
-    const { search: text, like, lv } = this.props.query;
+    const { search: text, lv } = this.props.query;
     const param2 = {
       lv,
       text,
-      like,
       page_size: 100,
       issub: false,
       orgstatus: 2,
@@ -225,13 +224,12 @@ class SelectOrganization extends React.Component {
 
   searchOrg = () => {
     const { page, pageSize } = this.state;
-    const { search: text, like, lv } = this.props.query;
+    const { search: text, lv } = this.props.query;
     const params = {
       lv,
       text,
       page_size: pageSize,
       page_index: page,
-      like,
       issub: false,
       orgstatus: 2,
     };

@@ -42,7 +42,6 @@ class NewOrgBD extends React.Component {
       current: 0,
       lv: null,
       search: '',
-      like: 1,
     }
   }
 
@@ -181,12 +180,8 @@ class NewOrgBD extends React.Component {
                 </div>
 
                 <div>
-                  <RadioGroup onChange={e => this.setState({ like: e.target.value })} defaultValue={1} value={this.state.like}>
-                    <Radio value={0}>精确查询</Radio>
-                    <Radio value={1}>模糊查询</Radio>
-                  </RadioGroup>
                   <Search
-                    style={{ width: 250, marginLeft: 10 }}
+                    style={{ width: 250 }}
                     placeholder="备注以及附件内文字"
                     onChange={search => this.setState({ search })}
                     value={this.state.search}
@@ -197,7 +192,7 @@ class NewOrgBD extends React.Component {
             {this.state.current === 1 &&
               <div style={{ padding: '16px' }}>
                 <SelectOrganizationForOrgBd
-                  query={{ lv: this.state.lv, like: this.state.like, search: this.state.search, searchOrgName: this.state.searchOrgName }}
+                  query={{ lv: this.state.lv, search: this.state.search, searchOrgName: this.state.searchOrgName }}
                   traderId={this.props.bd ? undefined : traderId}
                   value={selectedOrgs}
                   details={selectedOrgDetails}
