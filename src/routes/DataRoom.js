@@ -485,6 +485,41 @@ class DataRoom extends React.Component {
     })
   }
 
+  handleUploadFileWithDir(file, parentId) {
+    window.echo('file with dir', file, parentId);
+    const body = {
+      dataroom: parseInt(this.state.id),
+      filename: file.name,
+      isFile: true,
+      orderNO: 1,
+      parent: parentId == -999 ? null : parentId,
+      key: file.response.result.key,
+      size: file.size,
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
+    }
+
+    api.addDataRoomFile(body).then(data => {
+      const item = data.data
+      const parentId = item.parent || -999
+
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = this.state.data;
+      newData.push(newItem)
+      this.setState({ data: newData })
+    }).catch(error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   handleSelectFileUser = (file, user) => {
     // const list = [...this.state.fileUserList, {file, user}]
     // this.setState({ fileUserList: list })
@@ -919,6 +954,7 @@ class DataRoom extends React.Component {
           onDeleteFiles={this.handleDeleteFiles.bind(this)}
           onMoveFiles={this.handleOnMoveFiles.bind(this)}
           onUploadFile={this.handleUploadFile.bind(this)}
+          onUploadFileWithDir={this.handleUploadFileWithDir.bind(this)}
           selectedUser={this.state.selectedUser}
           onSelectUser={this.handleSelectUser}
           loading={this.state.loading}
