@@ -485,45 +485,81 @@ class DataRoom extends React.Component {
     })
   }
 
-  handleUploadFileWithDir(file, parentId) {
+  createFolder = async (folderName, parentFolderID) => {
+    const body = {
+      dataroom: Number(this.state.id),
+      filename: folderName,
+      isFile: false,
+      orderNO: 1,
+      parent: parentFolderID == -999 ? null : parentFolderID,
+    }
+    const data = await api.addDataRoomFile(body);
+    const item = data.data
+    const parentId = item.parent || -999
+    const name = item.filename
+    const rename = item.filename
+    const unique = item.id
+    const isFolder = !item.isFile
+    const date = item.lastmodifytime || item.createdtime
+    const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
+    const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+    const newData = this.state.data.slice();
+    newData.push(newItem);
+    this.setState({ data: newData });
+    return unique;
+  }
+
+  createFolderLoop = async (folderArr, initialParentId) => {
+    let parentFolderID = initialParentId;
+    for (let index = 0; index < folderArr.length; index++) {
+      const folderName = folderArr[index];
+      const newFolderId = await this.createFolder(folderName, parentFolderID);
+      parentFolderID = newFolderId;
+    }
+    return parentFolderID;
+  }
+
+  async handleUploadFileWithDir(file, parentId) {
     window.echo('file with dir', file, parentId);
     const { webkitRelativePath } = file;
     const splitPath = webkitRelativePath.split('/');
     window.echo('split path', splitPath);
     const dirArray = splitPath.slice(0, splitPath.length - 1);
     window.echo('dir array', dirArray);
+    const finalFolderID = await this.createFolderLoop(dirArray, parentId);
+    window.echo('final folder ID', finalFolderID);
 
-    // const body = {
-    //   dataroom: parseInt(this.state.id),
-    //   filename: file.name,
-    //   isFile: true,
-    //   orderNO: 1,
-    //   parent: parentId == -999 ? null : parentId,
-    //   key: file.response.result.key,
-    //   size: file.size,
-    //   bucket: 'file',
-    //   realfilekey: file.response.result.realfilekey,
-    // }
+    const body = {
+      dataroom: parseInt(this.state.id),
+      filename: file.name,
+      isFile: true,
+      orderNO: 1,
+      parent: finalFolderID == -999 ? null : finalFolderID,
+      key: file.response.result.key,
+      size: file.size,
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
+    }
 
-    // api.addDataRoomFile(body).then(data => {
-    //   const item = data.data
-    //   const parentId = item.parent || -999
+    api.addDataRoomFile(body).then(data => {
+      const item = data.data
+      const parentId = item.parent || -999
 
-    //   const name = item.filename
-    //   const rename = item.filename
-    //   const unique = item.id
-    //   const isFolder = !item.isFile
-    //   const date = item.lastmodifytime || item.createdtime
-    //   const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
-    //   const newData = this.state.data;
-    //   newData.push(newItem)
-    //   this.setState({ data: newData })
-    // }).catch(error => {
-    //   this.props.dispatch({
-    //     type: 'app/findError',
-    //     payload: error
-    //   })
-    // })
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = this.state.data.slice();
+      newData.push(newItem)
+      this.setState({ data: newData });
+    }).catch(error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   handleSelectFileUser = (file, user) => {
