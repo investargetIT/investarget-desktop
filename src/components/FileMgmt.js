@@ -466,6 +466,46 @@ class FileMgmt extends React.Component {
     if (allChildren.map(m => m.id).filter(f => allSelectedData.includes(f)).length > 0) return true;
   }
 
+  tryToFindFolder = (folderName, parentFolderID) => {
+    const files = this.props.data.filter(f => f.parentId === parentFolderID);
+    const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+    if (sameNameFolderIndex > -1) {
+      return files[sameNameFolderIndex].id;
+    }
+    return null;
+  }
+
+  findFolderLoop = (folderArr, initialParentId) => {
+    let parentFolderID = initialParentId;
+    for (let index = 0; index < folderArr.length; index++) {
+      const folderName = folderArr[index];
+      const newFolderId = this.tryToFindFolder(folderName, parentFolderID);
+      if (newFolderId) {
+        parentFolderID = newFolderId;
+      } else {
+        return null; 
+      }
+    }
+    return parentFolderID;
+  }
+
+  checkFileWithFolderIfExist = (file, initialParentId) => {
+    const { webkitRelativePath } = file;
+    const splitPath = webkitRelativePath.split('/');
+    const folderArr = splitPath.slice(0, splitPath.length - 1);
+
+    const finalFolderID = this.findFolderLoop(folderArr, initialParentId);
+
+    if (finalFolderID) {
+      const files = this.props.data.filter(f => f.parentId === finalFolderID);
+      if (files.some(item => item.name == file.name)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   render () {
     // window.echo('file annotation list', this.props.fileAnnotationList);
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
@@ -719,20 +759,9 @@ class FileMgmt extends React.Component {
           return false
         }
         
-        const files = this.props.data.filter(f => f.parentId === this.state.parentId);
-        if (file.webkitRelativePath) {
-          // 判断当前目录是否存在同名文件夹
-          // const folderName = file.webkitRelativePath.split('/')[0];
-          // if (files.some(item => item.name == folderName)) {
-          //   message.warning(`同名文件夹，文件夹 ${folderName} 已存在，无法上传`);
-          //   return false;
-          // }
-        } else {
-          // 判断当前目录是否存在同名文件
-          if (files.some(item => item.name == file.name)) {
-            message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
-            return false;
-          }
+        if (this.checkFileWithFolderIfExist(file, this.state.parentId)) {
+          message.warning(`文件 ${file.webkitRelativePath} 已存在，无法上传`);
+          return false;
         }
 
         return true; 
