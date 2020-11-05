@@ -727,18 +727,13 @@ class FileMgmt extends React.Component {
         // if (currentFiles.some(item => { return Object.is(item.name, value.rename) }))
 
         // 判断当前目录是否存在同名文件
-        // if(files.some(item=>{
-        //   return item.name==file.name
-        // })){
-        //   // Modal.error({
-        //   //   title: '不支持的文件名字',
-        //   //   content: '已存在相同的文件名字',
-        //   // })
-        //   message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
-        //   return false
-        // }
+        const files = this.props.data.filter(f => f.parentId === this.state.parentId)
+        if (!file.webkitRelativePath && files.some(item => item.name == file.name)) {
+          message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
+          return false
+        }
 
-        return true
+        return true; 
       },
       onChange(info) {
         if (info.file.status !== 'uploading') {
