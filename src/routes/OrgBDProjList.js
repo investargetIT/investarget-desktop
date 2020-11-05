@@ -137,21 +137,23 @@ class OrgBDProjList extends React.Component {
     const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
     // const list = await this.getAllOrgBdProjects();
 
-    // 最后请求当前用户的未读机构BD的统计数据
-    const reqUnreadOrgBD = await api.getOrgBDProj({
-      proj: list.map(m => m.id),
-      isRead: false,
-      manager: [getCurrentUser()],
-      page_size: list.length,
-    });
-   
-    // 将未读机构BD项目与所有项目做匹配
-    list.forEach(element => {
-      const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
-      if (index > -1) {
-        element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
-      }
-    });
+    if (list.length > 0) {
+      // 最后请求当前用户的未读机构BD的统计数据
+      const reqUnreadOrgBD = await api.getOrgBDProj({
+        proj: list.map(m => m.id),
+        isRead: false,
+        manager: [getCurrentUser()],
+        page_size: list.length,
+      });
+
+      // 将未读机构BD项目与所有项目做匹配
+      list.forEach(element => {
+        const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
+        if (index > -1) {
+          element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
+        }
+      });
+    }
 
     this.setState({ loading: false, total, list });
   }
