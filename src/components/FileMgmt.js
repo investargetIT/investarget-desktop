@@ -719,18 +719,22 @@ class FileMgmt extends React.Component {
           return false
         }
         
+        const files = this.props.data.filter(f => f.parentId === this.state.parentId);
+
         // 判断当前目录是否存在同名文件夹
-        // const files=this.props.data.filter(f => f.parentId === this.state.parentId)
-        // const allFilesInCurrentFolder = this.state.filter(f => { return f.parentId == value.parentId }).slice(1)
-        // window.echo('current files', currentFiles);
-
-        // if (currentFiles.some(item => { return Object.is(item.name, value.rename) }))
-
-        // 判断当前目录是否存在同名文件
-        const files = this.props.data.filter(f => f.parentId === this.state.parentId)
-        if (!file.webkitRelativePath && files.some(item => item.name == file.name)) {
-          message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
-          return false
+        window.echo('current files', currentFiles);
+        if (file.webkitRelativePath) {
+          const folderName = file.webkitRelativePath.split('/')[0];
+          if (files.some(item => item.name == folderName)) {
+            message.warning(`同名文件夹，文件夹 ${folderName} 已存在，无法上传`);
+            return false;
+          }
+        } else {
+          // 判断当前目录是否存在同名文件
+          if (files.some(item => item.name == file.name)) {
+            message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
+            return false
+          }
         }
 
         return true; 
