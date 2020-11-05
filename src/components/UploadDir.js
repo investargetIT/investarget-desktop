@@ -26,7 +26,7 @@ class UploadDir extends React.Component {
     this.inputElement.value = null;
   }
 
-  onChangeFile(event) {
+  async onChangeFile(event) {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
@@ -38,7 +38,7 @@ class UploadDir extends React.Component {
       }
       if (allowUpload) {
         const { lastModified, lastModifiedDate, name, size, type, webkitRelativePath } = file;
-        this.props.onChange({
+        await this.props.onChange({
           file: {
             lastModified,
             lastModifiedDate,
@@ -49,9 +49,10 @@ class UploadDir extends React.Component {
             status: 'uploading',
           },
         });
-        api.qiniuUpload('file', file).then(result => {
+        try {
+          const result = await api.qiniuUpload('file', file);
           const { data } = result;
-          this.props.onChange({
+          await this.props.onChange({
             file: {
               lastModified,
               lastModifiedDate,
@@ -63,9 +64,9 @@ class UploadDir extends React.Component {
               response: { result: data },
             },
           });
-        }).catch(error => {
+        } catch (error) {
           console.error(error);
-          this.props.onChange({
+          await this.props.onChange({
             file: {
               lastModified,
               lastModifiedDate,
@@ -76,7 +77,7 @@ class UploadDir extends React.Component {
               status: 'error',
             },
           });
-        });
+        }
       }
     }
   }

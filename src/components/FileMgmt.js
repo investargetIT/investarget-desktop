@@ -722,11 +722,11 @@ class FileMgmt extends React.Component {
         const files = this.props.data.filter(f => f.parentId === this.state.parentId);
         if (file.webkitRelativePath) {
           // 判断当前目录是否存在同名文件夹
-          const folderName = file.webkitRelativePath.split('/')[0];
-          if (files.some(item => item.name == folderName)) {
-            message.warning(`同名文件夹，文件夹 ${folderName} 已存在，无法上传`);
-            return false;
-          }
+          // const folderName = file.webkitRelativePath.split('/')[0];
+          // if (files.some(item => item.name == folderName)) {
+          //   message.warning(`同名文件夹，文件夹 ${folderName} 已存在，无法上传`);
+          //   return false;
+          // }
         } else {
           // 判断当前目录是否存在同名文件
           if (files.some(item => item.name == file.name)) {
@@ -737,7 +737,7 @@ class FileMgmt extends React.Component {
 
         return true; 
       },
-      onChange(info) {
+      async onChange(info) {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
         }
@@ -749,7 +749,7 @@ class FileMgmt extends React.Component {
           }
           message.success(`${info.file.name} file uploaded successfully`)
           react.setState({ loading: false })
-          react.props.onUploadFileWithDir(info.file, react.uploadDir);
+          await react.props.onUploadFileWithDir(info.file, react.uploadDir);
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
           react.setState({ loading: false })

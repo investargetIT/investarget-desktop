@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select, Input, Tree } from 'antd'
+import { Modal, Select, Input, Tree, message } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
@@ -485,7 +485,15 @@ class DataRoom extends React.Component {
     })
   }
 
-  createFolder = async (folderName, parentFolderID) => {
+  createOrFindFolder = async (folderName, parentFolderID) => {
+    // 检查当前目录下是否有同名文件夹
+    const files = this.state.data.filter(f => f.parentId === parentFolderID);
+    const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+    if (sameNameFolderIndex > -1) {
+      window.echo('find duplaicate folder', files[sameNameFolderIndex]);
+      return files[sameNameFolderIndex].id;
+    }
+
     const body = {
       dataroom: Number(this.state.id),
       filename: folderName,
@@ -509,26 +517,27 @@ class DataRoom extends React.Component {
     return unique;
   }
 
-  createFolderLoop = async (folderArr, initialParentId) => {
+  createOrFindFolderLoop = async (folderArr, initialParentId) => {
     let parentFolderID = initialParentId;
     for (let index = 0; index < folderArr.length; index++) {
       const folderName = folderArr[index];
-      const newFolderId = await this.createFolder(folderName, parentFolderID);
+      const newFolderId = await this.createOrFindFolder(folderName, parentFolderID);
       parentFolderID = newFolderId;
     }
     return parentFolderID;
   }
 
   async handleUploadFileWithDir(file, parentId) {
-    window.echo('file with dir', file, parentId);
     const { webkitRelativePath } = file;
     const splitPath = webkitRelativePath.split('/');
-    window.echo('split path', splitPath);
     const dirArray = splitPath.slice(0, splitPath.length - 1);
-    window.echo('dir array', dirArray);
-    const finalFolderID = await this.createFolderLoop(dirArray, parentId);
-    window.echo('final folder ID', finalFolderID);
+    const finalFolderID = await this.createOrFindFolderLoop(dirArray, parentId);
 
+    const files = this.state.data.filter(f => f.parentId === finalFolderID);
+    if (files.some(item => item.name == file.name)) {
+      message.warning(`文件 ${file.webkitRelativePath} 已存在`);
+      return;
+    }
     const body = {
       dataroom: parseInt(this.state.id),
       filename: file.name,
