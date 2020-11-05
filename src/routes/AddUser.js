@@ -172,7 +172,11 @@ class AddUser extends React.Component {
     })
     .catch(err => {
       this.setState({ visible: false, confirmLoading: false })
-      this.props.dispatch({ type: 'app/findError', payload: err })
+      if (err.message.indexOf('身份类型不符合条件') > -1) {
+        Modal.error({ title: '该用户是交易师无法添加' });
+      } else {
+        this.props.dispatch({ type: 'app/findError', payload: err });
+      }
     })
   }
 
