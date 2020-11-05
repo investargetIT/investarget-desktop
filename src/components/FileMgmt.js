@@ -760,7 +760,7 @@ class FileMgmt extends React.Component {
         }
         
         if (this.checkFileWithFolderIfExist(file, this.state.parentId)) {
-          message.warning(`文件 ${file.webkitRelativePath} 已存在，无法上传`);
+          message.warning(`文件 ${file.webkitRelativePath || file.name} 已存在，无法上传`);
           return false;
         }
 
