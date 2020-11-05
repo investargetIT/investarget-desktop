@@ -720,10 +720,8 @@ class FileMgmt extends React.Component {
         }
         
         const files = this.props.data.filter(f => f.parentId === this.state.parentId);
-
-        // 判断当前目录是否存在同名文件夹
-        window.echo('current files', currentFiles);
         if (file.webkitRelativePath) {
+          // 判断当前目录是否存在同名文件夹
           const folderName = file.webkitRelativePath.split('/')[0];
           if (files.some(item => item.name == folderName)) {
             message.warning(`同名文件夹，文件夹 ${folderName} 已存在，无法上传`);
@@ -733,7 +731,7 @@ class FileMgmt extends React.Component {
           // 判断当前目录是否存在同名文件
           if (files.some(item => item.name == file.name)) {
             message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
-            return false
+            return false;
           }
         }
 
