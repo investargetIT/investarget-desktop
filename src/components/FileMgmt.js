@@ -1,5 +1,5 @@
 import React from 'react'
-import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
+import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
@@ -872,14 +872,32 @@ class FileMgmt extends React.Component {
           ) : null} */}
         </div>
 
-        <Table
-          size="small"
-          columns={columns}
-          rowKey={record => record.unique}
-          // rowSelection={rowSelection}
-          dataSource={this.getTableDataSource()}
-          loading={this.state.loading}
-          pagination={false} />
+        <div style={{ position: 'relative' }}>
+          <Table
+            size="small"
+            columns={columns}
+            rowKey={record => record.unique}
+            // rowSelection={rowSelection}
+            dataSource={this.getTableDataSource()}
+            loading={this.state.loading}
+            pagination={false}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(255, 255, 255, .5)',
+              display: 'flex',
+              justifyContent: 'center',
+              paddingTop: 100,
+            }}
+          >
+            <Progress type="circle" percent={75} />
+          </div>
+        </div>
 
         <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
           <Button type="primary" size="large" style={{marginRight:8}} onClick={this.handleMultiVisible}>{i18n('dataroom.visible')}</Button>
