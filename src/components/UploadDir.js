@@ -30,6 +30,12 @@ class UploadDir extends React.Component {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
+    
+    const percentEachFile = Math.floor(100 / files.length);
+    if (this.props.updateUploadProgress) {
+      this.props.updateUploadProgress(1);
+    }
+
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
       let allowUpload = true;
@@ -77,6 +83,14 @@ class UploadDir extends React.Component {
               status: 'error',
             },
           });
+        }
+      }
+      // 更新上传进度
+      if (this.props.updateUploadProgress) {
+        if (index === files.length - 1) {
+          this.props.updateUploadProgress(100);
+        } else {
+          this.props.updateUploadProgress(percentEachFile * (index + 1));
         }
       }
     }

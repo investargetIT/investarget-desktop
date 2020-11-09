@@ -63,6 +63,7 @@ class FileMgmt extends React.Component {
       visible: false,
       action: null,
       loading: false,
+      uploadDirProgress: null,
     }
 
     // this.handleNameChange = this.handleNameChange.bind(this)
@@ -786,6 +787,14 @@ class FileMgmt extends React.Component {
           react.setState({ loading: true })
         }
       },
+      updateUploadProgress(percent) {
+        react.setState({ uploadDirProgress: percent });
+        if (percent === 100) {
+          setTimeout(() => {
+            react.setState({ uploadDirProgress: null });
+          }, 2000);
+        }
+      },
     };
 
     const unableToOperate = this.props.location.query.isClose === 'true'
@@ -882,21 +891,23 @@ class FileMgmt extends React.Component {
             loading={this.state.loading}
             pagination={false}
           />
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'rgba(255, 255, 255, .5)',
-              display: 'flex',
-              justifyContent: 'center',
-              paddingTop: 100,
-            }}
-          >
-            <Progress type="circle" percent={75} />
-          </div>
+          {this.state.uploadDirProgress &&
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(255, 255, 255, .5)',
+                display: 'flex',
+                justifyContent: 'center',
+                paddingTop: 100,
+              }}
+            >
+              <Progress type="circle" percent={this.state.uploadDirProgress} />
+            </div>
+          }
         </div>
 
         <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
