@@ -106,6 +106,17 @@ class MyPartner extends React.Component {
     });
   }
 
+  handleEditBtnClick(record) {
+    if (this.props.type !== "investor") return;
+    const { investoruser: { id: investorID } } = record;
+    const body = {
+      relationtype: false,
+      investoruser: investorID,
+      traderuser: isLogin().id,
+    };
+    api.addUserRelation(body);
+  }
+
   componentDidMount() {
     this.getPartner();
     this.getFriends();
@@ -277,7 +288,7 @@ class MyPartner extends React.Component {
         render: (text, record) => (
           <span>
             <Link to={'/app/user/edit/' + record.investoruser.id + '?redirect=' + this.redirect} target="_blank">
-              <Button style={buttonStyle} size="small">{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} size="small" onClick={this.handleEditBtnClick.bind(this, record)}>{i18n("common.edit")}</Button>
             </Link>
             {/* { !this.state.friendList.includes(record.investoruser.id) ?
               <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.investoruser.id)} size="small">{i18n("add_friend")}</Button>
