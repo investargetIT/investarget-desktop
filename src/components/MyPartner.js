@@ -341,7 +341,7 @@ class MyPartner extends React.Component {
 
       { this.props.type === "investor" ? 
       <div style={{ float: 'right', lineHeight: '48px' }}>
-        {famliarStatistics.map(m => <Tag key={m}>{m}</Tag>)}
+        {famliarStatistics.map((m, i) => <Tag key={i}>{m}</Tag>)}
       </div>
       : null }
 
