@@ -145,7 +145,8 @@ class MyPartner extends React.Component {
   }
 
   loadLabelByValue(type, value) {
-    if (Array.isArray(value) && this.props.tag.length > 0) {
+    if (this.props[type].length === 0) return;
+    if (Array.isArray(value)) {
       return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
     } else if (typeof value === 'number') {
       return this.props[type].filter(f => f.id === value)[0].name;
