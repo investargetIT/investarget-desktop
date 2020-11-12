@@ -7,6 +7,7 @@ import {
   Icon,
   Popover,
   Input,
+  Table,
 } from 'antd';
 import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
@@ -15,6 +16,7 @@ import {
   isLogin,
 } from '../utils/util';
 import { Link } from 'dva/router';
+import moment from 'moment';
 
 const rowStyle = {
   display: 'flex',
@@ -71,42 +73,129 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader, orgBDList } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
-  return <div style={{ display: 'flex', alignItems: 'center' }}>
+  const columns = [
+    {
+      title: i18n('org_bd.contact'),
+      width: '10%',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: '职位',
+      key: 'title',
+      width: '7%',
+      dataIndex: 'usertitle.name',
+    },
+    {
+      title: i18n('org_bd.creator'),
+      width: '7%',
+      dataIndex: 'createuser.username',
+      key: 'createuser',
+    },
+    {
+      title: i18n('org_bd.manager'),
+      width: '10%',
+      dataIndex: 'manager.username',
+      key: 'manager',
+    },
+    {
+      title: '任务时间',
+      width: '16%',
+      render: (text, record) => {
+        if (record.response !== null) {
+          return '正常';
+        }
+        if (record.expirationtime === null) {
+          return '无过期时间';
+        }
+        const ms = moment(record.expirationtime).diff(moment());
+        const d = moment.duration(ms);
+        const remainDays = Math.ceil(d.asDays());
+        return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+      },
+      key: 'createdtime',
+    },
+    // {
+    //   title: i18n('org_bd.status'),
+    //   width: '10%',
+    //   render: (text, record) => {
+    //     if (record.new) {
+    //       return (
+    //         <Checkbox
+    //           checked={record.isimportant}
+    //           onChange={v => { this.updateSelection(record, { isimportant: v.target.checked }) }}>
+    //           重点BD
+    //         </Checkbox>
+    //       );
+    //     } else {
+    //       return text && this.props.orgbdres.filter(f => f.id === text)[0].name;
+    //     }
+    //   },
+    //   dataIndex: 'response',
+    //   key: 'response',
+    //   sorter: false
+    // },
+    // {
+    //   title: "最新备注", width: '20%', render: (text, record) => {
+    //     let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
 
-    {isAbleToAddUser ?
-      <div style={{ marginRight: 10 }}>
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: 160, marginRight: 8 }}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></div>
-          <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></div>
-        </div>
-      </div>
-      : null}
+    //     return record.new ? "暂无" : (latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}><div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div></Popover> : "暂无")
+    //   }, key: 'bd_latest_info'
+    // },
+  ];
 
-    {/* { isAbleToAddUser ? <Col span={1} /> : null } */}
-
-    {onApplyTemplate && <div style={{ marginRight: 6 }}><Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button></div>}
-    {/* {onApplyTemplate && <Col span={1} />} */}
-
+  return (
     <div>
-      {list.map(item => (
-        <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
-          <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
-            <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
-            { props.selectedUser === item.user.id ?
-            <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            {/* {item.user.username} */}
-              <img style={{ width: 20 }} src="/images/check.png" />
-            </div>
-            : null }
-          </div>
-        </Popover>
-      ))}
-    </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
 
-  </div>;
+        {isAbleToAddUser ?
+          <div style={{ marginRight: 10 }}>
+            <div style={{ display: 'flex' }}>
+              <div style={{ width: 160, marginRight: 8 }}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></div>
+              <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></div>
+            </div>
+          </div>
+          : null}
+
+        {/* { isAbleToAddUser ? <Col span={1} /> : null } */}
+
+        {onApplyTemplate && <div style={{ marginRight: 6 }}><Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button></div>}
+        {/* {onApplyTemplate && <Col span={1} />} */}
+
+        <div>
+          {list.map(item => (
+            <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
+              <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
+                <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+                {props.selectedUser === item.user.id ?
+                  <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                    {/* {item.user.username} */}
+                    <img style={{ width: 20 }} src="/images/check.png" />
+                  </div>
+                  : null}
+              </div>
+            </Popover>
+          ))}
+        </div>
+
+      </div>
+
+      <Table
+        showHeader={true}
+        columns={columns}
+        dataSource={orgBDList}
+        size="small"
+        rowKey={record => record.id}
+        pagination={false}
+      // loading={!record.loaded}
+      // rowClassName={this.handleRowClassName}
+      />
+
+    </div>
+  );
 }
 
 function DataRoomUserList(props) {
