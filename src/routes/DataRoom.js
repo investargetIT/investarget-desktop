@@ -80,6 +80,8 @@ class DataRoom extends React.Component {
       displayDownloadingModal: false,
       waitingTime: '',
       fileAnnotationList: [],
+
+      selectedUserOrgBD: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -701,18 +703,17 @@ class DataRoom extends React.Component {
   }
 
   handleSelectUser = (value) => {
-
-    // window.echo('handle select user', value);
-    api.getOrgBdList({
-      bduser: value,
-      proj: this.state.projectID,
-    });
-
     if (value === this.state.selectedUser) {
-      this.setState({ selectedUser: null, targetUserFileList: [] });
+      this.setState({ selectedUser: null, targetUserFileList: [], selectedUserOrgBD: [] });
     } else {
       const list = this.state.fileUserList.filter(item => item.user == value)
       this.setState({ selectedUser: value, targetUserFileList: list });
+      
+      // 获取用户机构BD
+      api.getOrgBdList({
+        bduser: value,
+        proj: this.state.projectID,
+      }).then(data => this.setState({ selectedUserOrgBD: data.data.data }));
     }
   }
 
@@ -968,6 +969,7 @@ class DataRoom extends React.Component {
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}
+              orgBDList={this.state.selectedUserOrgBD}
               userWithNewDataroomFile={this.state.userWithNewDataroomFile}
               newUser={this.state.newUser}
               onSelectUser={this.handleChangeUser}
