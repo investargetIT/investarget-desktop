@@ -701,6 +701,13 @@ class DataRoom extends React.Component {
   }
 
   handleSelectUser = (value) => {
+
+    // window.echo('handle select user', value);
+    api.getOrgBdList({
+      bduser: value,
+      proj: this.state.projectID,
+    });
+
     if (value === this.state.selectedUser) {
       this.setState({ selectedUser: null, targetUserFileList: [] });
     } else {
