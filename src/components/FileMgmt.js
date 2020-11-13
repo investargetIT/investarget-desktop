@@ -121,7 +121,8 @@ class FileMgmt extends React.Component {
         });
       } else {
         const { dataroom: dataroomId, id: fileId } = file;
-        const watermark = isLogin().email || 'Investarget'
+        const originalEmail = isLogin().email || 'Investarget'
+        const watermark = originalEmail.replace('@', '[at]');
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
         const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
           '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) + 
