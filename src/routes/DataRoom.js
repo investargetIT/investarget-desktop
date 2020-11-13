@@ -89,6 +89,8 @@ class DataRoom extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+
     api.getProjLangDetail(this.state.projectID).then(res => {
       const { projTraders } = res.data;
       const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
@@ -983,6 +985,7 @@ class DataRoom extends React.Component {
               dataRoomTemp={this.state.dataRoomTemp}
               onSendNewFileEmail={this.handleSendNewFileEmail}
               currentUserIsProjTrader={this.state.isProjTrader}
+              orgbdres={this.props.orgbdres}
             />
           </div>
           : null}
@@ -1130,4 +1133,8 @@ class DataRoom extends React.Component {
   }
 }
 
-export default connect()(DataRoom)
+function mapStateToProps(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+}
+export default connect(mapStateToProps)(DataRoom);
