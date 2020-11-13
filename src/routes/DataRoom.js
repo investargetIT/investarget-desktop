@@ -704,7 +704,7 @@ class DataRoom extends React.Component {
       .catch(handleError);
   }
 
-  handleSelectUser = (value) => {
+  handleSelectUser = async (value) => {
     if (value === this.state.selectedUser) {
       this.setState({ selectedUser: null, targetUserFileList: [], selectedUserOrgBD: [] });
     } else {
@@ -712,10 +712,21 @@ class DataRoom extends React.Component {
       this.setState({ selectedUser: value, targetUserFileList: list });
       
       // 获取用户机构BD
-      api.getOrgBdList({
+      const data = await api.getOrgBdList({
         bduser: value,
         proj: this.state.projectID,
-      }).then(data => this.setState({ selectedUserOrgBD: data.data.data }));
+      });
+      const { count } = data.data;
+      if (count < 11) {
+        this.setState({ selectedUserOrgBD: data.data.data });
+        return;
+      }
+      const data2 = await api.getOrgBdList({
+        bduser: value,
+        proj: this.state.projectID,
+        page_size: count,
+      });
+      this.setState({ selectedUserOrgBD: data2.data.data });
     }
   }
 
