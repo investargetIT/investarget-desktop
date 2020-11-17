@@ -711,22 +711,22 @@ class DataRoom extends React.Component {
       const list = this.state.fileUserList.filter(item => item.user == value)
       this.setState({ selectedUser: value, targetUserFileList: list });
       
-      // 获取用户机构BD
-      const data = await api.getOrgBdList({
-        bduser: value,
-        proj: this.state.projectID,
-      });
-      const { count } = data.data;
-      if (count < 11) {
-        this.setState({ selectedUserOrgBD: data.data.data });
-        return;
-      }
-      const data2 = await api.getOrgBdList({
-        bduser: value,
-        proj: this.state.projectID,
-        page_size: count,
-      });
-      this.setState({ selectedUserOrgBD: data2.data.data });
+      // // 获取用户机构BD
+      // const data = await api.getOrgBdList({
+      //   bduser: value,
+      //   proj: this.state.projectID,
+      // });
+      // const { count } = data.data;
+      // if (count < 11) {
+      //   this.setState({ selectedUserOrgBD: data.data.data });
+      //   return;
+      // }
+      // const data2 = await api.getOrgBdList({
+      //   bduser: value,
+      //   proj: this.state.projectID,
+      //   page_size: count,
+      // });
+      // this.setState({ selectedUserOrgBD: data2.data.data });
     }
   }
 

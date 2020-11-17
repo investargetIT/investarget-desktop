@@ -185,7 +185,7 @@ function DataRoomUser(props) {
 
       </div>
 
-      {props.selectedUser &&
+      {/* {props.selectedUser &&
         <div>
           <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: 'black' }}>选中用户的机构BD</div>
           <Table
@@ -199,7 +199,7 @@ function DataRoomUser(props) {
           // rowClassName={this.handleRowClassName}
           />
         </div>
-      }
+      } */}
 
     </div>
   );
