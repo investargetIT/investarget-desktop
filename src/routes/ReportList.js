@@ -44,7 +44,9 @@ class ReportList extends React.Component {
       endTime: endTime && hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
       search,
       page_index: page,
-      page_size: pageSize
+      page_size: pageSize,
+      sort: 'startTime',
+      desc: 1,
     };
     this.setState({ loading: true })
     api.getWorkReport(params).then(result => {
