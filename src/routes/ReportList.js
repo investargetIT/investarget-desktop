@@ -3,11 +3,13 @@ import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
 import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../utils/util';
 import { connect } from 'dva';
-import { Icon, Table, Pagination, Popconfirm } from 'antd';
+import { Icon, Table, Pagination, Popconfirm, Select, Button } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
 import moment from 'moment';
+
+const Option = Select.Option;
 
 class ReportList extends React.Component {
 
@@ -81,6 +83,10 @@ class ReportList extends React.Component {
     this.setState({ filters, page: 1 }, this.getReportList);
   }
 
+  handleChange = (value) => {
+    window.echo('change value', value);
+  }
+
   render() {
     const { location } = this.props;
     const { total, list, loading, page, pageSize } = this.state;
@@ -110,11 +116,25 @@ class ReportList extends React.Component {
         }
       },
     ]
+
+    const rightAction = (
+      <div>
+        填写
+        <Select defaultValue="this_week" style={{ width: 70 }} onChange={this.handleChange}>
+          <Option value="this_week">本周</Option>
+          <Option value="last_week">上周</Option>
+        </Select>
+        周报
+        <Button type="primary" style={{ marginLeft: 10 }}>确定</Button>
+      </div>
+    );
+
     return (
       <LeftRightLayout
         location={location}
         title="工作报告列表"
-        action={{name: '填写周报', link: "/app/report/add" }}
+        // action={{name: '填写周报', link: "/app/report/add" }}
+        right={rightAction}
       >
 
         {/* {hasPerm('BD.admin_getWorkReport') && */}
