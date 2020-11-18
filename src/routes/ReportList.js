@@ -5,7 +5,7 @@ import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../util
 import { connect } from 'dva';
 import { Icon, Table, Pagination, Popconfirm, Select, Button } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { Link } from 'dva/router';
+import { Link, withRouter } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
 import moment from 'moment';
 
@@ -30,6 +30,7 @@ class ReportList extends React.Component {
       list: [],
       loading: false,
       filters,
+      newReportDate: 'this_week',
     }
   }
 
@@ -83,8 +84,12 @@ class ReportList extends React.Component {
     this.setState({ filters, page: 1 }, this.getReportList);
   }
 
-  handleChange = (value) => {
-    window.echo('change value', value);
+  handleCreateReportBtnClick = () => {
+    let destination = '/app/report/add';
+    if (this.state.newReportDate === 'last_week') {
+      destination += '?date=last_week';
+    }
+    this.props.router.push(destination);
   }
 
   render() {
@@ -120,12 +125,16 @@ class ReportList extends React.Component {
     const rightAction = (
       <div>
         填写
-        <Select defaultValue="this_week" style={{ width: 70 }} onChange={this.handleChange}>
+        <Select
+          value={this.state.newReportDate}
+          style={{ width: 70 }}
+          onChange={newReportDate => this.setState({ newReportDate })}
+        >
           <Option value="this_week">本周</Option>
           <Option value="last_week">上周</Option>
         </Select>
         周报
-        <Button type="primary" style={{ marginLeft: 10 }}>确定</Button>
+        <Button type="primary" style={{ marginLeft: 10 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
       </div>
     );
 
@@ -168,4 +177,4 @@ class ReportList extends React.Component {
   }
 }
 
-export default connect()(ReportList);
+export default connect()(withRouter(ReportList));
