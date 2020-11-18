@@ -87,7 +87,8 @@ class ReportList extends React.Component {
   handleCreateReportBtnClick = () => {
     let destination = '/app/report/add';
     if (this.state.newReportDate === 'last_week') {
-      destination += '?date=last_week';
+      const lastWeek = moment().subtract(1, 'weeks').format('YYYY-MM-DD');
+      destination += `?date=${lastWeek}`;
     }
     this.props.router.push(destination);
   }
