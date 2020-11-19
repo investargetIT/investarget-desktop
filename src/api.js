@@ -988,4 +988,11 @@ export const getAnnotations = params => {
   return r(`/dataroom/discuss/?${qs.stringify(params)}`);
 };
 
-export const getInvestors = params => r(`/user/investor?${qs.stringify(params)}`);
+export const getInvestors = params => {
+  _.forIn(params, function (value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r(`/user/investor?${qs.stringify(params)}`)
+};
