@@ -103,6 +103,13 @@ class MyPartner extends React.Component {
           })
         })
         .catch(handleError);
+
+        api.getUserRelation(params)
+        .then(result => {
+          this.setState({
+            statistics: result.data.familiar_count,
+          })
+        });
     } else {
       api.getUserRelation(params)
         .then(result => {
