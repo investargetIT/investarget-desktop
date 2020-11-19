@@ -106,6 +106,7 @@ class MyPartner extends React.Component {
 
         api.getUserRelation(params)
         .then(result => {
+          if (!result.data.familiar_count) return;
           this.setState({
             statistics: result.data.familiar_count,
           })
