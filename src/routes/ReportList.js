@@ -125,17 +125,16 @@ class ReportList extends React.Component {
 
     const rightAction = (
       <div>
-        填写
         <Select
           value={this.state.newReportDate}
-          style={{ width: 70 }}
+          className="customized-select-component"
+          style={{ width: 120 }}
           onChange={newReportDate => this.setState({ newReportDate })}
         >
-          <Option value="this_week">本周</Option>
-          <Option value="last_week">上周</Option>
+          <Option value="this_week">填写本周周报</Option>
+          <Option value="last_week">填写上周周报</Option>
         </Select>
-        周报
-        <Button type="primary" style={{ marginLeft: 10 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
+        <Button type="primary" style={{ marginLeft: 4 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
       </div>
     );
 

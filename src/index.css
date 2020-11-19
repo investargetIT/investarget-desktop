@@ -110,3 +110,7 @@ html, body, :global(#root) {
   cursor: not-allowed;
   opacity: 0.5;
 }
+:global(.customized-select-component .ant-select-selection) {
+  background-color: #eee;
+  color: #555;
+}

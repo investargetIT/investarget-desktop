@@ -396,10 +396,10 @@ button[disabled], html input[disabled] {
   border-color: #ebf0f3;
   color: #666;
 }
-.ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
+/* .ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
   height: 32px;
   line-height: 44px;
-}
+} */
 .ant-pagination-jump-prev:after, .ant-pagination-jump-next:after {
   color: #666;
 }
