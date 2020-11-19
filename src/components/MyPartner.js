@@ -2,7 +2,8 @@ import React from 'react'
 import { 
   i18n, 
   isLogin, 
-  getUserInfo, 
+  getUserInfo,
+  handleError,
 } from '../utils/util';
 import { MyInvestorListFilter, FamiliarFilter } from '../components/Filter'
 import { Tag, Table, Button, Pagination, Modal } from 'antd';
@@ -87,15 +88,33 @@ class MyPartner extends React.Component {
     
     const params = Object.assign({}, param, this.state.filters);
 
-    api.getUserRelation(params)
-      .then(result => {
-        this.setState({
-          list: result.data.data,
-          loading: false, 
-          total: result.data.count,
-          statistics: result.data.familiar_count,
+    if (this.props.type === 'investor') {
+      api.getInvestors(params)
+        .then(result => {
+          this.setState({
+            list: result.data.data.map(m => ({
+              id: m.id,
+              familiar: m.familiar,
+              investoruser: m,
+              traderuser: { id: isLogin().id }
+            })),
+            loading: false,
+            total: result.data.count,
+          })
         })
-      })
+        .catch(handleError);
+    } else {
+      api.getUserRelation(params)
+        .then(result => {
+          this.setState({
+            list: result.data.data,
+            loading: false,
+            total: result.data.count,
+            statistics: result.data.familiar_count,
+          })
+        })
+        .catch(handleError);
+    }
   }
 
   getFriends = () => {

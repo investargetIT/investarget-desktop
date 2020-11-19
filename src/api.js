@@ -987,3 +987,5 @@ export const getAnnotations = params => {
   })
   return r(`/dataroom/discuss/?${qs.stringify(params)}`);
 };
+
+export const getInvestors = params => r(`/user/investor?${qs.stringify(params)}`);
