@@ -104,7 +104,7 @@ class MyPartner extends React.Component {
         })
         .catch(handleError);
 
-        api.getUserRelation(params)
+        api.getUserRelation({ ...params, page_index: 1 })
         .then(result => {
           if (!result.data.familiar_count) return;
           this.setState({
