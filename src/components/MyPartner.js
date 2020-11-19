@@ -57,7 +57,7 @@ class MyPartner extends React.Component {
       total: 0,
       pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
       pageIndex: parseInt(page, 10) || 1,
-      friendList: [],
+      // friendList: [],
       selectedRows: [],
       selectedRowKeys: [],
       showFamModifyDialog: false,
@@ -117,13 +117,13 @@ class MyPartner extends React.Component {
     }
   }
 
-  getFriends = () => {
-    api.getUserFriend({ page_size: 100 })
-    .then(result => {
-      const friendList = result.data.data.map(m => m.friend.id === isLogin().id ? m.user.id : m.friend.id);
-      this.setState({ friendList })
-    });
-  }
+  // getFriends = () => {
+  //   api.getUserFriend({ page_size: 100 })
+  //   .then(result => {
+  //     const friendList = result.data.data.map(m => m.friend.id === isLogin().id ? m.user.id : m.friend.id);
+  //     this.setState({ friendList })
+  //   });
+  // }
 
   handleEditBtnClick(record) {
     if (this.props.type !== "investor") return;
@@ -138,7 +138,7 @@ class MyPartner extends React.Component {
 
   componentDidMount() {
     this.getPartner();
-    this.getFriends();
+    // this.getFriends();
 
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' }); 
@@ -220,22 +220,22 @@ class MyPartner extends React.Component {
     console.log(pageSize)
   }
 
-  handleAddFriend(userID) {
-    const index = this.state.list.map(m => m.investoruser.id).indexOf(userID)
-    if (index < 0) return
+  // handleAddFriend(userID) {
+  //   const index = this.state.list.map(m => m.investoruser.id).indexOf(userID)
+  //   if (index < 0) return
 
-    api.addUserFriend([userID])
-    .then(() => {
-      Modal.success({
-        title: i18n('success'),
-        content: i18n('request_sent_please_wait'),
-      })
-      const newList = [...this.state.list]
-      newList[index].isAlreadyAdded = true
-      this.setState({ list: newList })
-    })
-    .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
-  }
+  //   api.addUserFriend([userID])
+  //   .then(() => {
+  //     Modal.success({
+  //       title: i18n('success'),
+  //       content: i18n('request_sent_please_wait'),
+  //     })
+  //     const newList = [...this.state.list]
+  //     newList[index].isAlreadyAdded = true
+  //     this.setState({ list: newList })
+  //   })
+  //   .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
+  // }
 
   submitModifyFamlv() {
     if (this.state.changedValue === null) {
