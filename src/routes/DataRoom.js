@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select, Input, Tree, message } from 'antd'
+import { Modal, Select, Input, Tree, message, Collapse, Table, Popover } from 'antd'
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
@@ -11,9 +11,11 @@ import {
 } from '../components/DataRoomUser';
 import { Search } from '../components/Search';
 import _ from 'lodash';
+import moment from 'moment';
 
 const { Option } = Select;
 const { TreeNode } = Tree;
+const { Panel } = Collapse;
 
 const disableSelect = {
   padding: 30,
@@ -82,6 +84,7 @@ class DataRoom extends React.Component {
       fileAnnotationList: [],
 
       selectedUserOrgBD: [],
+      dataroomUsersOrgBdByOrg: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -223,9 +226,52 @@ class DataRoom extends React.Component {
     })
   })
 
+  getOrgBdOfUsers = async users => {
+    const pageSize = 100;
+    let result = await api.getOrgBdList({
+      bduser: users.map(m => m.id),
+      proj: this.state.projectID,
+      page_size: pageSize,
+    });
+    const { count } = result.data;
+    if (count > pageSize) {
+      result = await api.getOrgBdList({
+        bduser: users.map(m => m.id),
+        proj: this.state.projectID,
+        page_size: count,
+      });
+    }
+
+    const dataroomUserOrgBd = [{ org: { id: -1, orgname: '暂无机构' }, orgbd: [] }];
+    const allOrgBds = result.data.data;
+    for (let index = 0; index < allOrgBds.length; index++) {
+      const element = allOrgBds[index];
+      const { org } = element;
+      if (org) {
+        const orgIndex = dataroomUserOrgBd.map(m => m.org.id).indexOf(org.id);
+        if (orgIndex > -1) {
+          dataroomUserOrgBd[orgIndex].orgbd.push(element);
+        } else {
+          dataroomUserOrgBd.push({ org, orgbd: [element] });
+        }
+      } else {
+        dataroomUserOrgBd[0].orgbd.push(element);
+      }
+    }
+
+    this.setState({
+      dataroomUsersOrgBdByOrg: dataroomUserOrgBd.filter(f => f.orgbd.length > 0),
+    });
+  }
+
   getAllUserFile = () => {
     api.queryUserDataRoom({ dataroom: this.state.id }).then(result => {
       const list = result.data.data
+      
+      if (list.length > 0) {
+        this.getOrgBdOfUsers(list.map(m => m.user));
+      }
+
       const users = list.map(item => item.user)
       const userIds = users.map(item => item.id)
       this.checkUserNewFile(userIds);
@@ -966,6 +1012,81 @@ class DataRoom extends React.Component {
   }
 
   render () {
+    const orgBdTableColumns = [
+      {
+        title: i18n('org_bd.contact'),
+        width: '10%',
+        dataIndex: 'username',
+        key: 'username',
+      },
+      {
+        title: '职位',
+        key: 'title',
+        width: '10%',
+        dataIndex: 'usertitle.name',
+      },
+      {
+        title: '创建时间',
+        key: 'createdtime',
+        dataIndex: 'createdtime',
+        width: '15%',
+        render: text => text.slice(0, 16).replace('T', ' '),
+      },
+      {
+        title: i18n('org_bd.creator'),
+        width: '10%',
+        dataIndex: 'createuser.username',
+        key: 'createuser',
+      },
+      {
+        title: i18n('org_bd.manager'),
+        width: '10%',
+        dataIndex: 'manager.username',
+        key: 'manager',
+      },
+      {
+        title: '任务时间',
+        width: '10%',
+        render: (text, record) => {
+          if (record.response !== null) {
+            return '正常';
+          }
+          if (record.expirationtime === null) {
+            return '无过期时间';
+          }
+          const ms = moment(record.expirationtime).diff(moment());
+          const d = moment.duration(ms);
+          const remainDays = Math.ceil(d.asDays());
+          return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+        },
+        key: 'tasktime',
+      },
+      {
+        title: i18n('org_bd.status'),
+        width: '15%',
+        render: (text, record) => {
+          return text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name;
+        },
+        dataIndex: 'response',
+        key: 'response',
+      },
+      {
+        title: "最新备注",
+        width: '20%',
+        render: (text, record) => {
+          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+          return (
+            latestComment ?
+              <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+              </Popover>
+              : "暂无"
+          );
+        },
+        key: 'bd_latest_info',
+      },
+    ];
+
     const newDataroomFileParentDir = this.state.newDataroomFile.map(m => this.findAllParents(m.id));
     const newDataroomFileParentDirInOneArray = newDataroomFileParentDir.reduce((pre, cur) => pre.concat(cur), []);
     const uniqueParents = _.uniqBy(newDataroomFileParentDirInOneArray, 'id');
@@ -998,6 +1119,22 @@ class DataRoom extends React.Component {
               currentUserIsProjTrader={this.state.isProjTrader}
               orgbdres={this.props.orgbdres}
             />
+            {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
+              <Collapse>
+                {this.state.dataroomUsersOrgBdByOrg.map(m => (
+                  <Panel header={m.org.orgname} key={m.org.id}>
+                    <Table
+                      showHeader={true}
+                      columns={orgBdTableColumns}
+                      dataSource={m.orgbd}
+                      size="small"
+                      rowKey={record => record.id}
+                      pagination={false}
+                    />
+                  </Panel>
+                ))}
+              </Collapse>
+            }
           </div>
           : null}
 
