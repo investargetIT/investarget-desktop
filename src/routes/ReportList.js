@@ -3,13 +3,20 @@ import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
 import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../utils/util';
 import { connect } from 'dva';
-import { Icon, Table, Pagination, Popconfirm, Select, Button } from 'antd';
+import { Icon, Table, Pagination, Popconfirm, Select, Button, Modal } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link, withRouter } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
 import moment from 'moment';
 
 const Option = Select.Option;
+
+const actionStyle = {
+  float: 'right',
+  fontSize: 16,
+  textDecoration: 'underline',
+  color: '#428bca',
+}
 
 class ReportList extends React.Component {
 
@@ -31,6 +38,7 @@ class ReportList extends React.Component {
       loading: false,
       filters,
       newReportDate: 'this_week',
+      displayReportDateModal: false,
     }
   }
 
@@ -85,6 +93,7 @@ class ReportList extends React.Component {
   }
 
   handleCreateReportBtnClick = () => {
+    this.setState({ displayReportDateModal: false });
     let destination = '/app/report/add';
     if (this.state.newReportDate === 'last_week') {
       const lastWeek = moment().subtract(1, 'weeks').format('YYYY-MM-DD');
@@ -123,27 +132,27 @@ class ReportList extends React.Component {
       },
     ]
 
-    const rightAction = (
-      <div>
-        <Select
-          value={this.state.newReportDate}
-          className="customized-select-component"
-          style={{ width: 120 }}
-          onChange={newReportDate => this.setState({ newReportDate })}
-        >
-          <Option value="this_week">填写本周周报</Option>
-          <Option value="last_week">填写上周周报</Option>
-        </Select>
-        <Button type="primary" style={{ marginLeft: 4 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
-      </div>
-    );
+    // const rightAction = (
+    //   <div>
+    //     <Select
+    //       value={this.state.newReportDate}
+    //       className="customized-select-component"
+    //       style={{ width: 120 }}
+    //       onChange={newReportDate => this.setState({ newReportDate })}
+    //     >
+    //       <Option value="this_week">填写本周周报</Option>
+    //       <Option value="last_week">填写上周周报</Option>
+    //     </Select>
+    //     <Button type="primary" style={{ marginLeft: 4 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
+    //   </div>
+    // );
 
     return (
       <LeftRightLayout
         location={location}
         title="工作报告列表"
         // action={{name: '填写周报', link: "/app/report/add" }}
-        right={rightAction}
+        right={<a style={actionStyle} onClick={() => this.setState({ displayReportDateModal: true })}>填写周报</a>}
       >
 
         {/* {hasPerm('BD.admin_getWorkReport') && */}
@@ -172,6 +181,24 @@ class ReportList extends React.Component {
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
+        
+        <Modal
+          title="请选择要填写的周报日期"
+          visible={this.state.displayReportDateModal}
+          onOk={this.handleCreateReportBtnClick}
+          onCancel={() => this.setState({ displayReportDateModal: false })}
+        >
+          <Select
+            value={this.state.newReportDate}
+            className="customized-select-component"
+            style={{ width: 100 }}
+            onChange={newReportDate => this.setState({ newReportDate })}
+          >
+            <Option value="this_week">本周</Option>
+            <Option value="last_week">上周</Option>
+          </Select>
+        </Modal>
+
       </LeftRightLayout>
     );
   }
