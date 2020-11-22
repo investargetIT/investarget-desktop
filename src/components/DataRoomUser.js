@@ -8,6 +8,7 @@ import {
   Popover,
   Input,
   Table,
+  Collapse,
 } from 'antd';
 import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
@@ -17,6 +18,8 @@ import {
 } from '../utils/util';
 import { Link } from 'dva/router';
 import moment from 'moment';
+
+const { Panel } = Collapse;
 
 const rowStyle = {
   display: 'flex',
@@ -73,8 +76,83 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader, dataroomUserOrgBd } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
+
+  const orgBdTableColumns = [
+    {
+      title: i18n('org_bd.contact'),
+      width: '10%',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: '职位',
+      key: 'title',
+      width: '10%',
+      dataIndex: 'usertitle.name',
+    },
+    {
+      title: '创建时间',
+      key: 'createdtime',
+      dataIndex: 'createdtime',
+      width: '15%',
+      render: text => text.slice(0, 16).replace('T', ' '),
+    },
+    {
+      title: i18n('org_bd.creator'),
+      width: '10%',
+      dataIndex: 'createuser.username',
+      key: 'createuser',
+    },
+    {
+      title: i18n('org_bd.manager'),
+      width: '10%',
+      dataIndex: 'manager.username',
+      key: 'manager',
+    },
+    {
+      title: '任务时间',
+      width: '10%',
+      render: (text, record) => {
+        if (record.response !== null) {
+          return '正常';
+        }
+        if (record.expirationtime === null) {
+          return '无过期时间';
+        }
+        const ms = moment(record.expirationtime).diff(moment());
+        const d = moment.duration(ms);
+        const remainDays = Math.ceil(d.asDays());
+        return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+      },
+      key: 'tasktime',
+    },
+    {
+      title: i18n('org_bd.status'),
+      width: '15%',
+      render: (text, record) => {
+        return text && props.orgbdres.length > 0 && props.orgbdres.filter(f => f.id === text)[0].name;
+      },
+      dataIndex: 'response',
+      key: 'response',
+    },
+    {
+      title: "最新备注",
+      width: '20%',
+      render: (text, record) => {
+        let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+        return (
+          latestComment ?
+            <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+              <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+            </Popover>
+            : "暂无"
+        );
+      },
+      key: 'bd_latest_info',
+    },
+  ];
 
   return (
     <div>
@@ -111,6 +189,23 @@ function DataRoomUser(props) {
         </div>
 
       </div>
+
+      {dataroomUserOrgBd.length > 0 &&
+        <Collapse>
+          {dataroomUserOrgBd.map(m => (
+            <Panel header={m.org.orgname} key={m.org.id}>
+              <Table
+                showHeader={true}
+                columns={orgBdTableColumns}
+                dataSource={m.orgbd}
+                size="small"
+                rowKey={record => record.id}
+                pagination={false}
+              />
+            </Panel>
+          ))}
+        </Collapse>
+      }
 
 
     </div>

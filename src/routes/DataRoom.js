@@ -1021,80 +1021,80 @@ class DataRoom extends React.Component {
   }
 
   render () {
-    const orgBdTableColumns = [
-      {
-        title: i18n('org_bd.contact'),
-        width: '10%',
-        dataIndex: 'username',
-        key: 'username',
-      },
-      {
-        title: '职位',
-        key: 'title',
-        width: '10%',
-        dataIndex: 'usertitle.name',
-      },
-      {
-        title: '创建时间',
-        key: 'createdtime',
-        dataIndex: 'createdtime',
-        width: '15%',
-        render: text => text.slice(0, 16).replace('T', ' '),
-      },
-      {
-        title: i18n('org_bd.creator'),
-        width: '10%',
-        dataIndex: 'createuser.username',
-        key: 'createuser',
-      },
-      {
-        title: i18n('org_bd.manager'),
-        width: '10%',
-        dataIndex: 'manager.username',
-        key: 'manager',
-      },
-      {
-        title: '任务时间',
-        width: '10%',
-        render: (text, record) => {
-          if (record.response !== null) {
-            return '正常';
-          }
-          if (record.expirationtime === null) {
-            return '无过期时间';
-          }
-          const ms = moment(record.expirationtime).diff(moment());
-          const d = moment.duration(ms);
-          const remainDays = Math.ceil(d.asDays());
-          return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-        },
-        key: 'tasktime',
-      },
-      {
-        title: i18n('org_bd.status'),
-        width: '15%',
-        render: (text, record) => {
-          return text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name;
-        },
-        dataIndex: 'response',
-        key: 'response',
-      },
-      {
-        title: "最新备注",
-        width: '20%',
-        render: (text, record) => {
-          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
-          return (
-            latestComment ?
-              <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
-                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-              </Popover>
-              : "暂无"
-          );
-        },
-        key: 'bd_latest_info',
-      },
-    ];
+    // const orgBdTableColumns = [
+    //   {
+    //     title: i18n('org_bd.contact'),
+    //     width: '10%',
+    //     dataIndex: 'username',
+    //     key: 'username',
+    //   },
+    //   {
+    //     title: '职位',
+    //     key: 'title',
+    //     width: '10%',
+    //     dataIndex: 'usertitle.name',
+    //   },
+    //   {
+    //     title: '创建时间',
+    //     key: 'createdtime',
+    //     dataIndex: 'createdtime',
+    //     width: '15%',
+    //     render: text => text.slice(0, 16).replace('T', ' '),
+    //   },
+    //   {
+    //     title: i18n('org_bd.creator'),
+    //     width: '10%',
+    //     dataIndex: 'createuser.username',
+    //     key: 'createuser',
+    //   },
+    //   {
+    //     title: i18n('org_bd.manager'),
+    //     width: '10%',
+    //     dataIndex: 'manager.username',
+    //     key: 'manager',
+    //   },
+    //   {
+    //     title: '任务时间',
+    //     width: '10%',
+    //     render: (text, record) => {
+    //       if (record.response !== null) {
+    //         return '正常';
+    //       }
+    //       if (record.expirationtime === null) {
+    //         return '无过期时间';
+    //       }
+    //       const ms = moment(record.expirationtime).diff(moment());
+    //       const d = moment.duration(ms);
+    //       const remainDays = Math.ceil(d.asDays());
+    //       return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+    //     },
+    //     key: 'tasktime',
+    //   },
+    //   {
+    //     title: i18n('org_bd.status'),
+    //     width: '15%',
+    //     render: (text, record) => {
+    //       return text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name;
+    //     },
+    //     dataIndex: 'response',
+    //     key: 'response',
+    //   },
+    //   {
+    //     title: "最新备注",
+    //     width: '20%',
+    //     render: (text, record) => {
+    //       let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+    //       return (
+    //         latestComment ?
+    //           <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+    //             <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+    //           </Popover>
+    //           : "暂无"
+    //       );
+    //     },
+    //     key: 'bd_latest_info',
+    //   },
+    // ];
 
     const newDataroomFileParentDir = this.state.newDataroomFile.map(m => this.findAllParents(m.id));
     const newDataroomFileParentDirInOneArray = newDataroomFileParentDir.reduce((pre, cur) => pre.concat(cur), []);
@@ -1126,8 +1126,9 @@ class DataRoom extends React.Component {
               onSendNewFileEmail={this.handleSendNewFileEmail}
               currentUserIsProjTrader={this.state.isProjTrader}
               orgbdres={this.props.orgbdres}
+              dataroomUserOrgBd={this.state.dataroomUsersOrgBdByOrg}
             />
-            {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
+            {/* {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
               <Collapse>
                 {this.state.dataroomUsersOrgBdByOrg.map(m => (
                   <Panel header={m.org.orgname} key={m.org.id}>
@@ -1142,7 +1143,7 @@ class DataRoom extends React.Component {
                   </Panel>
                 ))}
               </Collapse>
-            }
+            } */}
           </div>
           : null}
 
