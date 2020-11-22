@@ -73,81 +73,8 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader, orgBDList } = props
+    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
-  const columns = [
-    // {
-    //   title: i18n('org_bd.contact'),
-    //   width: '10%',
-    //   dataIndex: 'username',
-    //   key: 'username',
-    // },
-    // {
-    //   title: '职位',
-    //   key: 'title',
-    //   width: '7%',
-    //   dataIndex: 'usertitle.name',
-    // },
-    {
-      title: '创建时间',
-      key: 'createdtime',
-      dataIndex: 'createdtime',
-      render: text => text.slice(0, 16).replace('T', ' '),
-    },
-    {
-      title: i18n('org_bd.creator'),
-      // width: '7%',
-      dataIndex: 'createuser.username',
-      key: 'createuser',
-    },
-    {
-      title: i18n('org_bd.manager'),
-      // width: '10%',
-      dataIndex: 'manager.username',
-      key: 'manager',
-    },
-    {
-      title: '任务时间',
-      // width: '16%',
-      render: (text, record) => {
-        if (record.response !== null) {
-          return '正常';
-        }
-        if (record.expirationtime === null) {
-          return '无过期时间';
-        }
-        const ms = moment(record.expirationtime).diff(moment());
-        const d = moment.duration(ms);
-        const remainDays = Math.ceil(d.asDays());
-        return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-      },
-      key: 'tasktime',
-    },
-    {
-      title: i18n('org_bd.status'),
-      // width: '10%',
-      render: (text, record) => {
-        return text && props.orgbdres.length > 0 && props.orgbdres.filter(f => f.id === text)[0].name;
-      },
-      dataIndex: 'response',
-      key: 'response',
-    },
-    {
-      title: "最新备注",
-      // width: '20%',
-      render: (text, record) => {
-        let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
-        return (
-          latestComment ?
-            <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
-              <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-            </Popover>
-            : "暂无"
-        );
-      },
-      key: 'bd_latest_info',
-    },
-  ];
 
   return (
     <div>
@@ -185,21 +112,6 @@ function DataRoomUser(props) {
 
       </div>
 
-      {/* {props.selectedUser &&
-        <div>
-          <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: 'black' }}>选中用户的机构BD</div>
-          <Table
-            showHeader={true}
-            columns={columns}
-            dataSource={orgBDList}
-            size="small"
-            rowKey={record => record.id}
-            pagination={false}
-          // loading={!record.loaded}
-          // rowClassName={this.handleRowClassName}
-          />
-        </div>
-      } */}
 
     </div>
   );
