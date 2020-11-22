@@ -154,9 +154,31 @@ function DataRoomUser(props) {
     },
   ];
 
+  const panelHeader = (org) => {
+    const { id: orgID } = org;
+    return (
+      <div>
+        {org.orgname}
+        {list.filter(f => orgID !== -1 ? (f.user.org && f.user.org.id === orgID) : !f.user.org ).map(item => (
+          <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
+            <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
+              <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+              {props.selectedUser === item.user.id ?
+                <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  {/* {item.user.username} */}
+                  <img style={{ width: 20 }} src="/images/check.png" />
+                </div>
+                : null}
+            </div>
+          </Popover>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
 
         {isAbleToAddUser ?
           <div style={{ marginRight: 10 }}>
@@ -173,19 +195,21 @@ function DataRoomUser(props) {
         {/* {onApplyTemplate && <Col span={1} />} */}
 
         <div>
-          {list.map(item => (
-            <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
-              <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
-                <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
-                {props.selectedUser === item.user.id ?
-                  <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                    {/* {item.user.username} */}
-                    <img style={{ width: 20 }} src="/images/check.png" />
-                  </div>
-                  : null}
-              </div>
-            </Popover>
-          ))}
+          {
+          // list.map(item => (
+          //   <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>
+          //     <div onClick={props.onChange.bind(this, item.user.id)} style={{ position: 'relative', display: 'inline-block', margin: 4, cursor: 'pointer' }}>
+          //       <img style={{ width: 40, height: 40 }} src={item.user.photourl} />
+          //       {props.selectedUser === item.user.id ?
+          //         <div style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, color: 'white', backgroundColor: 'rgba(0, 0, 0, .3)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          //           {/* {item.user.username} */}
+          //           <img style={{ width: 20 }} src="/images/check.png" />
+          //         </div>
+          //         : null}
+          //     </div>
+          //   </Popover>
+          // ))
+          }
         </div>
 
       </div>
@@ -193,7 +217,7 @@ function DataRoomUser(props) {
       {dataroomUserOrgBd.length > 0 &&
         <Collapse>
           {dataroomUserOrgBd.map(m => (
-            <Panel header={m.org.orgname} key={m.org.id}>
+            <Panel className="investarget-custom-panel" header={panelHeader(m.org)} key={m.org.id}>
               <Table
                 showHeader={true}
                 columns={orgBdTableColumns}
