@@ -242,25 +242,31 @@ class DataRoom extends React.Component {
       });
     }
 
-    const dataroomUserOrgBd = [{ org: { id: -1, orgname: '暂无机构' }, orgbd: [] }];
+    let dataroomUserOrgBd = users.map(m => {
+      const { org } = m;
+      if (org) {
+        return { id: org.id, org, orgbd: [] };
+      } else {
+        return { id: -1, org: { id: -1, orgname: '暂无机构' }, orgbd: [] };
+      }
+    });
+    dataroomUserOrgBd = _.uniqBy(dataroomUserOrgBd, 'id');
+
     const allOrgBds = result.data.data;
     for (let index = 0; index < allOrgBds.length; index++) {
       const element = allOrgBds[index];
       const { org } = element;
-      if (org) {
-        const orgIndex = dataroomUserOrgBd.map(m => m.org.id).indexOf(org.id);
-        if (orgIndex > -1) {
-          dataroomUserOrgBd[orgIndex].orgbd.push(element);
-        } else {
-          dataroomUserOrgBd.push({ org, orgbd: [element] });
-        }
+      const orgID = org ? org.id : -1;
+      const orgIndex = dataroomUserOrgBd.map(m => m.org.id).indexOf(orgID);
+      if (orgIndex > -1) {
+        dataroomUserOrgBd[orgIndex].orgbd.push(element);
       } else {
-        dataroomUserOrgBd[0].orgbd.push(element);
+        dataroomUserOrgBd.push({ id: org.id, org, orgbd: [element] });
       }
     }
 
     this.setState({
-      dataroomUsersOrgBdByOrg: dataroomUserOrgBd.filter(f => f.orgbd.length > 0),
+      dataroomUsersOrgBdByOrg: dataroomUserOrgBd,
     });
   }
 
