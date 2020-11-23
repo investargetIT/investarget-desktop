@@ -188,15 +188,17 @@ class ReportList extends React.Component {
           onOk={this.handleCreateReportBtnClick}
           onCancel={() => this.setState({ displayReportDateModal: false })}
         >
-          <Select
-            value={this.state.newReportDate}
-            className="customized-select-component"
-            style={{ width: 100 }}
-            onChange={newReportDate => this.setState({ newReportDate })}
-          >
-            <Option value="this_week">本周</Option>
-            <Option value="last_week">上周</Option>
-          </Select>
+          <div style={{ textAlign: 'center' }}>
+            <Select
+              value={this.state.newReportDate}
+              className="customized-select-component"
+              style={{ width: 200 }}
+              onChange={newReportDate => this.setState({ newReportDate })}
+            >
+              <Option value="this_week">本周</Option>
+              <Option value="last_week">上周</Option>
+            </Select>
+          </div>
         </Modal>
 
       </LeftRightLayout>
