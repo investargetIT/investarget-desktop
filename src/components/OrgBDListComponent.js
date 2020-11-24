@@ -1779,7 +1779,7 @@ export function SimpleLine(props) {
   );
 }
 
-function BDComments(props) {
+export function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd, bd } = props
   return (
     <div>

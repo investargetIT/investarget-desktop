@@ -9,6 +9,7 @@ import {
   DataRoomUser, 
   DataRoomUserList, 
 } from '../components/DataRoomUser';
+import { BDComments } from '../components/OrgBDListComponent';
 import { Search } from '../components/Search';
 import _ from 'lodash';
 import moment from 'moment';
@@ -85,6 +86,10 @@ class DataRoom extends React.Component {
 
       // selectedUserOrgBD: [],
       dataroomUsersOrgBdByOrg: [],
+      commentVisible: false,
+      newComment: '',
+      currentBD: null,
+      comments: [],
     }
 
     this.dataRoomTempModalUserId = null;
@@ -240,6 +245,11 @@ class DataRoom extends React.Component {
         proj: this.state.projectID,
         page_size: count,
       });
+    }
+
+    if (this.state.currentBD) {
+      const comments = result.data.data.filter(item => item.id == this.state.currentBD.id)[0].BDComments || [];
+      this.setState({ comments });
     }
 
     let dataroomUserOrgBd = users.map(m => {
@@ -1020,6 +1030,29 @@ class DataRoom extends React.Component {
     }
   }
 
+  handleOpenModal = bd => {
+    this.setState({ commentVisible: true, currentBD: bd, comments: bd.BDComments || [] });
+  }
+
+  handleAddComment = () => {
+    const body = {
+      orgBD: this.state.currentBD.id,
+      comments: this.state.newComment,
+    };
+    api.addOrgBDComment(body)
+      .then(() => this.setState(
+        { newComment: '' },
+        () => this.getOrgBdOfUsers(this.state.list.map(m => m.user)),
+      ))
+      .catch(error => handleError(error));
+  }
+
+  handleDeleteComment = id => {
+    api.deleteOrgBDComment(id)
+    .then(() => this.getOrgBdOfUsers(this.state.list.map(m => m.user)))
+    .catch(error => handleError(error));
+  }
+
   render () {
     // const orgBdTableColumns = [
     //   {
@@ -1127,6 +1160,7 @@ class DataRoom extends React.Component {
               currentUserIsProjTrader={this.state.isProjTrader}
               orgbdres={this.props.orgbdres}
               dataroomUserOrgBd={this.state.dataroomUsersOrgBdByOrg}
+              onOpenOrgBdCommentModal={this.handleOpenModal}
             />
             {/* {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
               <Collapse>
@@ -1284,6 +1318,23 @@ class DataRoom extends React.Component {
             <div style={{ padding: '20px 0' }}>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{this.state.waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>
           </Modal>
         }
+
+        <Modal
+          title={i18n('remark.comment')}
+          visible={this.state.commentVisible}
+          footer={null}
+          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
+          maskClosable={false}
+        >
+          <BDComments
+            bd={this.state.currentBD}
+            comments={this.state.comments}
+            newComment={this.state.newComment}
+            onChange={e => this.setState({ newComment: e.target.value })}
+            onAdd={this.handleAddComment}
+            onDelete={this.handleDeleteComment}
+          />
+        </Modal>
 
       </LeftRightLayout>
     )

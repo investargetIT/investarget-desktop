@@ -30,6 +30,8 @@ const rowStyle = {
   borderBottom: '1px dashed #f2f2f2',
 }
 
+const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
+
 function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader) {
   const { user: { id: userId }} = item;
   const userIdsWithDataroomTemp = dataRoomTemp.map(m => m.user);
@@ -79,6 +81,10 @@ function DataRoomUser(props) {
     const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader, dataroomUserOrgBd } = props
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
+    const handleOpenModal = record => {
+      props.onOpenOrgBdCommentModal(record);
+    }
+
   const orgBdTableColumns = [
     {
       title: i18n('org_bd.contact'),
@@ -101,13 +107,13 @@ function DataRoomUser(props) {
     },
     {
       title: i18n('org_bd.creator'),
-      width: '10%',
+      width: '8%',
       dataIndex: 'createuser.username',
       key: 'createuser',
     },
     {
       title: i18n('org_bd.manager'),
-      width: '10%',
+      width: '8%',
       dataIndex: 'manager.username',
       key: 'manager',
     },
@@ -139,7 +145,7 @@ function DataRoomUser(props) {
     },
     {
       title: "最新备注",
-      width: '20%',
+      width: '14%',
       render: (text, record) => {
         let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
         return (
@@ -151,6 +157,40 @@ function DataRoomUser(props) {
         );
       },
       key: 'bd_latest_info',
+    },
+    {
+      title: i18n('org_bd.operation'),
+      width: '10%',
+      key: 'operation',
+      render: (text, record) => {
+        return <span>
+
+          { /* 修改状态和备注按钮 */}
+          {/* {this.isAbleToModifyStatus(record) ? */}
+            <span>
+              {/* <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button> */}
+              <a
+                style={{ ...buttonStyle, marginRight: 4 }}
+                href="javascript:void(0)"
+                onClick={() => handleOpenModal(record)}
+                >{i18n('remark.comment')}</a>
+            </span>
+            {/* : null} */}
+
+          { /* 删除按钮 */}
+          {/* {hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ? */}
+            <Popconfirm
+              title={i18n('message.confirm_delete')}
+              // onConfirm={this.handleDelete.bind(this, record)}
+            >
+              <Button style={{ ...buttonStyle, color: undefined }}>
+                <Icon type="delete" />
+              </Button>
+            </Popconfirm>
+            {/* : null} */}
+
+        </span>
+      },
     },
   ];
 
