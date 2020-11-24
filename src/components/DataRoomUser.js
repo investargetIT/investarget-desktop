@@ -15,6 +15,7 @@ import {
   i18n,
   hasPerm,
   isLogin,
+  getUserInfo,
 } from '../utils/util';
 import { Link } from 'dva/router';
 import moment from 'moment';
@@ -87,6 +88,17 @@ function DataRoomUser(props) {
 
     const handleDelete = record => {
       props.onDeleteOrgBd(record);
+    }
+
+    const isAbleToModifyStatus = record => {
+      if (hasPerm('BD.manageOrgBD')) {
+        return true;
+      }
+      const currentUserID = getUserInfo() && getUserInfo().id;
+      if (currentUserIsProjTrader || [record.manager.id, record.createuser.id].includes(currentUserID)) {
+        return true;
+      }
+      return false;
     }
 
   const orgBdTableColumns = [
@@ -170,19 +182,19 @@ function DataRoomUser(props) {
         return <span>
 
           { /* 修改状态和备注按钮 */}
-          {/* {this.isAbleToModifyStatus(record) ? */}
+          {isAbleToModifyStatus(record) &&
             <span>
               {/* <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button> */}
               <a
                 style={{ ...buttonStyle, marginRight: 4 }}
                 href="javascript:void(0)"
                 onClick={() => handleOpenModal(record)}
-                >{i18n('remark.comment')}</a>
+              >{i18n('remark.comment')}</a>
             </span>
-            {/* : null} */}
+          }
 
           { /* 删除按钮 */}
-          {/* {hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ? */}
+          {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) &&
             <Popconfirm
               title={i18n('message.confirm_delete')}
               onConfirm={() => handleDelete(record)}
@@ -191,7 +203,7 @@ function DataRoomUser(props) {
                 <Icon type="delete" />
               </Button>
             </Popconfirm>
-            {/* : null} */}
+          }
 
         </span>
       },
