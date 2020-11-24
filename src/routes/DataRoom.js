@@ -1053,6 +1053,12 @@ class DataRoom extends React.Component {
     .catch(error => handleError(error));
   }
 
+  handleDeleteOrgBd = record => {
+    api.deleteOrgBD(record.id)
+      .then(() => this.getOrgBdOfUsers(this.state.list.map(m => m.user)))
+      .catch(error => handleError(error));
+  }
+
   render () {
     // const orgBdTableColumns = [
     //   {
@@ -1161,6 +1167,7 @@ class DataRoom extends React.Component {
               orgbdres={this.props.orgbdres}
               dataroomUserOrgBd={this.state.dataroomUsersOrgBdByOrg}
               onOpenOrgBdCommentModal={this.handleOpenModal}
+              onDeleteOrgBd={this.handleDeleteOrgBd}
             />
             {/* {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
               <Collapse>

@@ -85,35 +85,39 @@ function DataRoomUser(props) {
       props.onOpenOrgBdCommentModal(record);
     }
 
+    const handleDelete = record => {
+      props.onDeleteOrgBd(record);
+    }
+
   const orgBdTableColumns = [
     {
       title: i18n('org_bd.contact'),
-      width: '10%',
+      width: '8%',
       dataIndex: 'username',
       key: 'username',
     },
     {
       title: '职位',
       key: 'title',
-      width: '10%',
+      width: '8%',
       dataIndex: 'usertitle.name',
     },
     {
       title: '创建时间',
       key: 'createdtime',
       dataIndex: 'createdtime',
-      width: '15%',
+      width: '13%',
       render: text => text.slice(0, 16).replace('T', ' '),
     },
     {
       title: i18n('org_bd.creator'),
-      width: '8%',
+      width: '9%',
       dataIndex: 'createuser.username',
       key: 'createuser',
     },
     {
       title: i18n('org_bd.manager'),
-      width: '8%',
+      width: '9%',
       dataIndex: 'manager.username',
       key: 'manager',
     },
@@ -145,7 +149,7 @@ function DataRoomUser(props) {
     },
     {
       title: "最新备注",
-      width: '14%',
+      width: '18%',
       render: (text, record) => {
         let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
         return (
@@ -181,7 +185,7 @@ function DataRoomUser(props) {
           {/* {hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ? */}
             <Popconfirm
               title={i18n('message.confirm_delete')}
-              // onConfirm={this.handleDelete.bind(this, record)}
+              onConfirm={() => handleDelete(record)}
             >
               <Button style={{ ...buttonStyle, color: undefined }}>
                 <Icon type="delete" />
