@@ -90,6 +90,10 @@ function DataRoomUser(props) {
       props.onDeleteOrgBd(record);
     }
 
+    const handleModifyStatusBtnClicked = record => {
+      props.onModifyStatusBtnClick(record);
+    }
+
     const isAbleToModifyStatus = record => {
       if (hasPerm('BD.manageOrgBD')) {
         return true;
@@ -104,14 +108,14 @@ function DataRoomUser(props) {
   const orgBdTableColumns = [
     {
       title: i18n('org_bd.contact'),
-      width: '8%',
+      width: '7%',
       dataIndex: 'username',
       key: 'username',
     },
     {
       title: '职位',
       key: 'title',
-      width: '8%',
+      width: '7%',
       dataIndex: 'usertitle.name',
     },
     {
@@ -123,13 +127,13 @@ function DataRoomUser(props) {
     },
     {
       title: i18n('org_bd.creator'),
-      width: '9%',
+      width: '7%',
       dataIndex: 'createuser.username',
       key: 'createuser',
     },
     {
       title: i18n('org_bd.manager'),
-      width: '9%',
+      width: '7%',
       dataIndex: 'manager.username',
       key: 'manager',
     },
@@ -176,7 +180,7 @@ function DataRoomUser(props) {
     },
     {
       title: i18n('org_bd.operation'),
-      width: '10%',
+      width: '16%',
       key: 'operation',
       render: (text, record) => {
         return <span>
@@ -184,7 +188,7 @@ function DataRoomUser(props) {
           { /* 修改状态和备注按钮 */}
           {isAbleToModifyStatus(record) &&
             <span>
-              {/* <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button> */}
+              <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={() => handleModifyStatusBtnClicked(record)}>{i18n('project.modify_status')}</button>
               <a
                 style={{ ...buttonStyle, marginRight: 4 }}
                 href="javascript:void(0)"
