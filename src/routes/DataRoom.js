@@ -256,7 +256,7 @@ class DataRoom extends React.Component {
       this.setState({ comments });
     }
 
-    let dataroomUserOrgBd = users.map(m => {
+    let dataroomUserOrgBdBeforeSort = users.map(m => {
       const { org } = m;
       if (org) {
         return { id: org.id, org, orgbd: [] };
@@ -264,7 +264,19 @@ class DataRoom extends React.Component {
         return { id: -1, org: { id: -1, orgname: '暂无机构' }, orgbd: [] };
       }
     });
-    dataroomUserOrgBd = _.uniqBy(dataroomUserOrgBd, 'id');
+    dataroomUserOrgBdBeforeSort = _.uniqBy(dataroomUserOrgBdBeforeSort, 'id');
+  
+    // 暂无机构排最后
+    const result1 = [], result2 = [];
+    for (let index = 0; index < dataroomUserOrgBdBeforeSort.length; index++) {
+      const element = dataroomUserOrgBdBeforeSort[index];
+      if (element.id !== -1) {
+        result1.push(element);
+      } else {
+        result2.push(element);
+      }
+    }
+    const dataroomUserOrgBd = result1.concat(result2);
 
     const allOrgBds = result.data.data;
     for (let index = 0; index < allOrgBds.length; index++) {
