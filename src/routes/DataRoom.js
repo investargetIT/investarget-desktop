@@ -868,10 +868,9 @@ class DataRoom extends React.Component {
     this.toggleUserDataroomFiles(this.state.selectedUser, data, false);
   }
 
-  checkDataRoomStatus = (isDownloadingSelectedFiles, files) => {
+  checkDataRoomStatus = async (isDownloadingSelectedFiles, files) => {
     const user = this.state.downloadUser && this.state.downloadUser.id;
     const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
-    // const files = this.state.selectedFiles.map(m => m.id).join(',');
     const password = this.state.pdfPassword;
     const params = { water, user };
     if (password) {
@@ -880,35 +879,32 @@ class DataRoom extends React.Component {
     if (isDownloadingSelectedFiles) {
       params.files = files;
     }
-    api.createAndCheckDataroomZip(this.state.id, params)
-      .then(result => {
-        if (result.data.code === 8005) {
-          const part = isDownloadingSelectedFiles ? 1 : 0;
-          this.setState({ 
-            loading: false, 
-            downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part),
-            downloadUser: isLogin(),
-          });
-          // 重置下载链接， 防止相同下载链接不执行
-          setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
-        } else {
-          this.setState({ loading: false, disableEditPassword: true });
-          let waitingTime = '';
-          if (result.data.seconds) {
-            waitingTime = `${result.data.seconds}秒`
-          }
-          // const ref = Modal.info({
-          //   title: '请求已发送成功',
-          //   content: <div>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>,
-          // });
-          this.setState({ displayDownloadingModal: true, waitingTime });
-          setTimeout(() => {
-            // ref.destroy();
-            this.setState({ displayDownloadingModal: false, waitingTime: '' });
-          }, 3000);
+
+    try {
+      const result = await api.createAndCheckDataroomZip(this.state.id, params)
+      if (result.data.code === 8005) {
+        const part = isDownloadingSelectedFiles ? 1 : 0;
+        this.setState({
+          loading: false,
+          downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part),
+          downloadUser: isLogin(),
+        });
+        // 重置下载链接， 防止相同下载链接不执行
+        setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
+      } else {
+        this.setState({ loading: false, disableEditPassword: true });
+        let waitingTime = '';
+        if (result.data.seconds) {
+          waitingTime = `${result.data.seconds}秒`
         }
-      })
-      .catch(error => this.setState({ loading: false }, () => handleError(error)));
+        this.setState({ displayDownloadingModal: true, waitingTime });
+        setTimeout(() => {
+          this.setState({ displayDownloadingModal: false, waitingTime: '' });
+        }, 3000);
+      }
+    } catch (error) {
+      this.setState({ loading: false }, () => handleError(error));
+    }
   }
 
   handleDownloadBtnClicked = () => {
