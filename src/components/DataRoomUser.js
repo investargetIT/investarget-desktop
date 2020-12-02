@@ -9,6 +9,7 @@ import {
   Input,
   Table,
   Collapse,
+  Checkbox,
 } from 'antd';
 import { SelectExistInvestor } from '../components/ExtraInput'
 import { 
@@ -297,7 +298,7 @@ function DataRoomUser(props) {
 }
 
 function DataRoomUserList(props) {
-  const { list, password, passwordChange, disableEditPassword, displayEditPasswordField } = props;
+  const { list, password, passwordChange, disableEditPassword, displayEditPasswordField, noWatermarkCheckboxChecked, noWatermarkCheckboxOnChange } = props;
   return (
     <div>
 
@@ -333,6 +334,10 @@ function DataRoomUserList(props) {
           <Button disabled={props.disableDownloadNewFilesButton} style={{ marginLeft: 10 }} onClick={props.onDownloadNewFiles}>下载新文件</Button>
         }
       </Row>
+
+      <div style={{ textAlign: 'center' }}>
+        <Checkbox checked={noWatermarkCheckboxChecked} onChange={noWatermarkCheckboxOnChange}>下载无水印文件</Checkbox>
+      </div>
 
     </div>
   );

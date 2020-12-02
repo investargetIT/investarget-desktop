@@ -93,6 +93,8 @@ class DataRoom extends React.Component {
       comments: [],
       showModifyOrgBDStatusModal: false,
       makeUserIds: [],
+
+      downloadDataroomWithoutWatermark: false,
     }
 
     this.dataRoomTempModalUserId = null;
@@ -1486,6 +1488,8 @@ class DataRoom extends React.Component {
             disableEditPassword={this.state.disableEditPassword}
             disableDownloadNewFilesButton={this.state.newDataroomFile.length === 0}
             onDownloadNewFiles={this.handleDownloadNewFiles}
+            noWatermarkCheckboxChecked={this.state.downloadDataroomWithoutWatermark}
+            noWatermarkCheckboxOnChange={e => this.setState({ downloadDataroomWithoutWatermark: e.target.checked })}
           />
           </Modal>
 
