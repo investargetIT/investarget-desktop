@@ -868,14 +868,22 @@ class DataRoom extends React.Component {
     this.toggleUserDataroomFiles(this.state.selectedUser, data, false);
   }
 
-  checkDataRoomStatus = async (isDownloadingSelectedFiles, files) => {
+  checkDataRoomStatus = async (noWatermark, isDownloadingSelectedFiles, files) => {
     const user = this.state.downloadUser && this.state.downloadUser.id;
-    const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
+    const params = { user };
+
+    if (noWatermark) {
+      params.nowater = 1;
+    } else {
+      const water = this.state.downloadUser ? this.state.downloadUser.username + ',' + (this.state.downloadUser.org ? this.state.downloadUser.org.orgname : '多维海拓') + ',' + this.state.downloadUser.email : null;
+      params.water = water;
+    }
+
     const password = this.state.pdfPassword;
-    const params = { water, user };
     if (password) {
       params.password = password;
     }
+
     if (isDownloadingSelectedFiles) {
       params.files = files;
     }
@@ -884,9 +892,10 @@ class DataRoom extends React.Component {
       const result = await api.createAndCheckDataroomZip(this.state.id, params)
       if (result.data.code === 8005) {
         const part = isDownloadingSelectedFiles ? 1 : 0;
+        const nowater = noWatermark ? 1 : 0;
         this.setState({
           loading: false,
-          downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part),
+          downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part, nowater),
           downloadUser: isLogin(),
         });
         // 重置下载链接， 防止相同下载链接不执行
@@ -909,19 +918,22 @@ class DataRoom extends React.Component {
 
   handleDownloadBtnClicked = () => {
     this.setState({ loading: true, visible: false });
-    this.checkDataRoomStatus();
+    const noWatermark = this.state.downloadDataroomWithoutWatermark;
+    this.checkDataRoomStatus(noWatermark);
   }
 
   handleDownloadSelectedFilesBtnClicked = () => {
     this.setState({ loading: true, visible: false });
     const files = this.state.selectedFiles.map(m => m.id).join(',');
-    this.checkDataRoomStatus(true, files);
+    const noWatermark = this.state.downloadDataroomWithoutWatermark;
+    this.checkDataRoomStatus(noWatermark, true, files);
   }
 
   handleDownloadNewFiles = () => {
     this.setState({ loading: true, visible: false });
     const files = this.state.newDataroomFile.map(m => m.id).join(',');
-    this.checkDataRoomStatus(true, files);
+    const noWatermark = this.state.downloadDataroomWithoutWatermark;
+    this.checkDataRoomStatus(noWatermark, true, files);
   }
 
   handleSaveTemplate = (body) => {

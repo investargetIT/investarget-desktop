@@ -591,9 +591,9 @@ export const createAndCheckDataroomZip = (dataroomId, params) => r(`/dataroom/ch
  * @param {Number} dataroomID - dataroom 的 id
  * @param {Number} investorID - 投资人的 id
  */
-export const downloadDataRoom = (dataroomID, investorID, part = 0) => {
+export const downloadDataRoom = (dataroomID, investorID, part = 0, nowater = 0) => {
   const user = getCurrentUserInfo()
-  let url = `/dataroom/downzip/${dataroomID}/?user=${investorID}&token=${user.token}&part=${part}`;
+  let url = `/dataroom/downzip/${dataroomID}/?user=${investorID}&token=${user.token}&part=${part}&nowater=${nowater}`;
   return baseUrl + url;
 };
 
