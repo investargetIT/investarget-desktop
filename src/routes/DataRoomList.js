@@ -285,7 +285,8 @@ class DataRoomList extends React.Component {
                   <Row gutter={24} key={row} style={rowStyle} type="flex" align="stretch">
                     {
                       _.range(getRowCols(row)).map(col => {
-                        if (!hasPerm('dataroom.admin_adddataroom')) {
+                        // 没有管理员增加 dataroom 权限或者不是超级管理员但是有只看 dataroom 权限的用户没有 AddCard
+                        if (!hasPerm('dataroom.admin_adddataroom') || (!isLogin().is_superuser && hasPerm('dataroom.onlydataroom'))) {
                           let index = cols * row + col // -1 减去 AddCard
                           let record = list[index]
                           return record ? <Col span={24/cols} key={col}><DataroomCard record={record} /></Col> : null
