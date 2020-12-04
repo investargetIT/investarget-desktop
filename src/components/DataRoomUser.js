@@ -337,7 +337,7 @@ function DataRoomUserList(props) {
 
       {hasPerm('dataroom.downloadNoWatermarkFile') &&
         <div style={{ textAlign: 'center' }}>
-          <Checkbox checked={noWatermarkCheckboxChecked} onChange={noWatermarkCheckboxOnChange}>下载无水印文件</Checkbox>
+          <Checkbox checked={noWatermarkCheckboxChecked} onChange={noWatermarkCheckboxOnChange}>文件无水印</Checkbox>
         </div>
       }
 
