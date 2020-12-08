@@ -1194,8 +1194,20 @@ class OrgBDListComponent extends React.Component {
     this.setState({ orgBlackListDataSource: newDataSource });
   }
 
+  getAllOrgBDBLacklist = async () => {
+    let res = await api.getOrgBDBlacklist({ proj: this.projId, page_size: 100 });
+    const { count } = res.data;
+    if (count > 100) {
+      res = await api.getOrgBDBlacklist({ proj: this.projId, page_size: count });
+    }
+    res.data.data.sort((a, b) => {
+      return new Date(b.createdtime) - new Date(a.createdtime)
+    });
+    return res;
+  }
+
   getOrgBlacklist = async () => {
-    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
+    const getRes = await this.getAllOrgBDBLacklist();
     const { data: blacklist } = getRes.data;
     this.setState({
       orgBlackListDataSource: blacklist.map(m => ({ ...m.org, reason: m.reason })),
@@ -1215,7 +1227,7 @@ class OrgBDListComponent extends React.Component {
       proj: this.projId,
       reason: this.state.reasonForBlacklist,
     })));
-    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
+    const getRes = await this.getAllOrgBDBLacklist();
     const { data: blacklist } = getRes.data;
 
     // update data source, add reason to the ones which have juse been added to blacklist
@@ -1237,7 +1249,7 @@ class OrgBDListComponent extends React.Component {
   handleRemoveOrgFromBlacklist = async () => {
     const selectTableIds = this.selectedOrgForBlacklist.map(m => this.state.orgBlackList.filter(f => f.id === m)[0].tableId);
     await Promise.all(selectTableIds.map(m => api.deleteOrgBDBlacklist(m)));
-    const getRes = await api.getOrgBDBlacklist({ proj: this.projId });
+    const getRes = await this.getAllOrgBDBLacklist();
     const { data: blacklist } = getRes.data;
 
     // update data source, remove reason to those which have juse been removed from blacklist
