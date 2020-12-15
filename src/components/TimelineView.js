@@ -71,11 +71,15 @@ class TimelineView extends React.Component {
   findRelatedStatusName = tranStatusName => {
     switch (tranStatusName) {
       case '获取项目概要':
-        return '已见面';
-      case '获取投资备忘录':
         return '正在看前期资料';
+      case '获取投资备忘录':
+        return '已见面';
       case '签署保密协议':
         return '已签NDA';
+      case 'Teaser Received':
+        return 'Received';
+      case 'CIM Received':
+        return 'Teaser Received';
       default:
         return tranStatusName;
     }
