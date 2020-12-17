@@ -24,8 +24,10 @@ class ProjectReport extends React.Component {
   constructor(props) {
     super(props);
 
+    const settings = this.readSetting();
+    let filters = settings ? settings.filters : ProjectReportFilter.defaultValue;
+
     const { date } = props.location.query;
-    let filters = ProjectReportFilter.defaultValue;
     if (date) {
       const startEndDate = [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)];
       filters = { startEndDate };
@@ -82,6 +84,7 @@ class ProjectReport extends React.Component {
 
     window.echo('projOrgBds', projOrgBds);
     this.setState({ projectListByOrgBd: projOrgBds, loading: false });
+    this.writeSetting();
   }
 
   handleFilt = (filters) => {
@@ -90,6 +93,28 @@ class ProjectReport extends React.Component {
 
   handleReset = (filters) => {
     this.setState({ filters, page: 1 }, this.getProjectByOrgBd);
+  }
+
+  writeSetting = () => {
+    const [ start, end ] = this.state.filters.startEndDate;
+    const startDate = `${start.format('YYYY-MM-DD')}`;
+    const endDate = `${end.format('YYYY-MM-DD')}`;
+    const startEndDate = [startDate, endDate];
+    const { filters } = this.state;
+    filters.startEndDate = startEndDate;
+    const data = { filters };
+    localStorage.setItem('ProjectReport', JSON.stringify(data));
+  }
+
+  readSetting = () => {
+    var data = localStorage.getItem('ProjectReport');
+    if (!data) return null;
+    const parsedData = JSON.parse(data);
+    const { filters } = parsedData;
+    const { startEndDate } = filters;
+    const [ start, end ] = startEndDate;
+    parsedData.filters.startEndDate = [moment(start), moment(end)];
+    return parsedData;
   }
 
   render() {
