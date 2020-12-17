@@ -106,14 +106,6 @@ class ProjectReport extends React.Component {
     })
   }
 
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getReportList);
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getReportList);
-  }
-
   deleteReportItem = async item => {
     api.deleteWorkReport(item.id).then(this.getReportList).catch(handleError);
   }
@@ -124,16 +116,6 @@ class ProjectReport extends React.Component {
 
   handleReset = (filters) => {
     this.setState({ filters, page: 1 }, this.getReportList);
-  }
-
-  handleCreateReportBtnClick = () => {
-    this.setState({ displayReportDateModal: false });
-    let destination = '/app/report/add';
-    if (this.state.newReportDate === 'last_week') {
-      const lastWeek = moment().subtract(1, 'weeks').format('YYYY-MM-DD');
-      destination += `?date=${lastWeek}`;
-    }
-    this.props.router.push(destination);
   }
 
   render() {
@@ -166,36 +148,14 @@ class ProjectReport extends React.Component {
       },
     ]
 
-    // const rightAction = (
-    //   <div>
-    //     <Select
-    //       value={this.state.newReportDate}
-    //       className="customized-select-component"
-    //       style={{ width: 120 }}
-    //       onChange={newReportDate => this.setState({ newReportDate })}
-    //     >
-    //       <Option value="this_week">填写本周周报</Option>
-    //       <Option value="last_week">填写上周周报</Option>
-    //     </Select>
-    //     <Button type="primary" style={{ marginLeft: 4 }} onClick={this.handleCreateReportBtnClick}>确定</Button>
-    //   </div>
-    // );
-
     return (
-      <LeftRightLayout
-        location={location}
-        title="工作报告列表"
-        // action={{name: '填写周报', link: "/app/report/add" }}
-        right={<a style={actionStyle} onClick={() => this.setState({ displayReportDateModal: true })}>填写周报</a>}
-      >
+      <LeftRightLayout location={location} title="项目报表">
 
-        {/* {hasPerm('BD.admin_getWorkReport') && */}
         <WorkReportFilter
           defaultValue={this.state.filters}
           onSearch={this.handleFilt}
           onReset={this.handleReset}
         />
-        {/* } */}
 
         <Table
           columns={columns}
@@ -203,37 +163,6 @@ class ProjectReport extends React.Component {
           rowKey={record => record.id}
           loading={loading}
           pagination={false} />
-
-        <Pagination
-          className="ant-table-pagination"
-          total={total}
-          current={page}
-          pageSize={pageSize}
-          onChange={this.handlePageChange}
-          showSizeChanger
-          onShowSizeChange={this.handlePageSizeChange}
-          showQuickJumper
-          pageSizeOptions={PAGE_SIZE_OPTIONS}
-        />
-        
-        <Modal
-          title="请选择要填写的周报日期"
-          visible={this.state.displayReportDateModal}
-          onOk={this.handleCreateReportBtnClick}
-          onCancel={() => this.setState({ displayReportDateModal: false })}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <Select
-              value={this.state.newReportDate}
-              className="customized-select-component"
-              style={{ width: 200 }}
-              onChange={newReportDate => this.setState({ newReportDate })}
-            >
-              <Option value="this_week">本周</Option>
-              <Option value="last_week">上周</Option>
-            </Select>
-          </div>
-        </Modal>
 
       </LeftRightLayout>
     );
