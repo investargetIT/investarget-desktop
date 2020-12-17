@@ -124,27 +124,11 @@ class ProjectReport extends React.Component {
     const columns = [
       { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
       { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
-      // {
-      //   title: '操作', key: 'operation', render: (text, record) => {
-      //     return (
-      //       <div>
-      //         <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
-      //           <Icon type="eye-o" style={{ fontSize: '16px' }} />
-      //         </Link>
-      //         {record.user.id === getCurrentUser() &&
-      //           <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
-      //             <Icon type="edit" style={{ fontSize: '16px' }} />
-      //           </Link>
-      //         }
-      //         <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
-      //           <Link>
-      //             <Icon type="delete" style={{ fontSize: '16px' }} />
-      //           </Link>
-      //         </Popconfirm>
-      //       </div>
-      //     );
-      //   }
-      // },
+      {
+        title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
+          return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? m.response : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}`).join('\r\n');
+        }
+      },
     ]
 
     return (
