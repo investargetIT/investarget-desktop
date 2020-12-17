@@ -69,8 +69,9 @@ class ProjectReport extends React.Component {
       api.getOrgBdList(params2),
     ]);
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
-    const orgBds =  _.uniqBy(allOrgBds, 'id');
+    let orgBds =  _.uniqBy(allOrgBds, 'id');
 
+    orgBds = orgBds.filter(f => f.response && ![4, 5, 6].includes(f.response));
     window.echo('orgbds', orgBds);
 
     const projs = orgBds.map(m => m.proj);
