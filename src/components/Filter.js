@@ -1146,6 +1146,48 @@ class WorkReportFilter extends React.Component {
   }
 }
 
+class ProjectReportFilter extends React.Component {
+
+  static defaultValue = {
+    startEndDate: [moment().startOf('week'), moment().startOf('week').add('days', 6)]
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = this.props.defaultValue || ProjectReportFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value });
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...ProjectReportFilter.defaultValue })
+    this.props.onReset({ ...ProjectReportFilter.defaultValue })
+  }
+
+  render() {
+    const { startEndDate } = this.state;
+    return (
+      <div>
+        <div style={{ display: 'flex', marginBottom: '16px', alignItems: 'center' }}>
+          <div style={{ color: '#4a535e', width: 200 }}>起止时间：</div>
+          <div>
+            <RangePicker style={{ width: 318 }} allowClear={false} onChange={this.handleChange.bind(this, 'startEndDate')} value={startEndDate} />
+          </div>
+        </div>
+        <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+          <Button size="large" type="primary" icon="search" onClick={this.handleSearch}>{i18n('filter.filter')}</Button>
+          <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={this.handleReset}>{i18n('filter.reset')}</Button>
+        </div>
+      </div>
+    )
+  }
+}
 
 ///// used in AddUser.js TODO:// refractor
 function mapStateToPropsForAudit(state) {
@@ -1170,5 +1212,6 @@ export {
   WorkReportFilter,
   OrgBDFilter,
   MeetBDFilter,
-  FamiliarFilter
+  FamiliarFilter,
+  ProjectReportFilter,
 }

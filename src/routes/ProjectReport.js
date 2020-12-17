@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import { Icon, Table, Pagination, Popconfirm, Select, Button, Modal, Popover } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link, withRouter } from 'dva/router';
-import { WorkReportFilter } from '../components/Filter';
+import { ProjectReportFilter } from '../components/Filter';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -25,10 +25,10 @@ class ProjectReport extends React.Component {
     super(props);
 
     const { date } = props.location.query;
-    let filters = WorkReportFilter.defaultValue;
+    let filters = ProjectReportFilter.defaultValue;
     if (date) {
       const startEndDate = [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)];
-      filters = { startEndDate, search: '' };
+      filters = { startEndDate };
     }
 
     this.state = {
@@ -39,9 +39,7 @@ class ProjectReport extends React.Component {
       loading: false,
       filters,
       projectListByOrgBd: [],
-    }
-    this.startDate = '2019-07-20T00:00:00';
-    this.endDate = '2020-12-16T23:59:59';
+    };
   }
 
   componentDidMount() {
@@ -51,10 +49,15 @@ class ProjectReport extends React.Component {
 
   getProjectByOrgBd = async () => {
     this.setState({ loading: true });
-    const stime = this.startDate;
-    const etime = this.endDate;
-    const stimeM = this.startDate;
-    const etimeM = this.endDate;
+
+    const [ start, end ] = this.state.filters.startEndDate;
+    const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+
+    const stime = startDate;
+    const etime = endDate;
+    const stimeM = startDate;
+    const etimeM = endDate;
     const page_size = 1000;
 
     const params1 = { stimeM, etimeM, page_size };
@@ -81,42 +84,12 @@ class ProjectReport extends React.Component {
     this.setState({ projectListByOrgBd: projOrgBds, loading: false });
   }
 
-  getReportList = () => {
-    const { page, pageSize, filters: { startEndDate, search } } = this.state;
-    const startTime = startEndDate && startEndDate.length > 1 ? startEndDate[0].format('YYYY-MM-DD') : null;
-    const endTime = startEndDate && startEndDate.length > 1 ? startEndDate[1].format('YYYY-MM-DD') : null;
-    const params = {
-      startTime: startTime && hasPerm('BD.admin_getWorkReport') ? `${startTime}T00:00:00` : undefined,
-      endTime: endTime && hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
-      search,
-      page_index: page,
-      page_size: pageSize,
-      sort: 'startTime',
-      desc: 1,
-    };
-    this.setState({ loading: true })
-    api.getWorkReport(params).then(result => {
-      const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  deleteReportItem = async item => {
-    api.deleteWorkReport(item.id).then(this.getReportList).catch(handleError);
-  }
-
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getReportList);
+    this.setState({ filters, page: 1 }, this.getProjectByOrgBd);
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getReportList);
+    this.setState({ filters, page: 1 }, this.getProjectByOrgBd);
   }
 
   render() {
@@ -152,7 +125,7 @@ class ProjectReport extends React.Component {
     return (
       <LeftRightLayout location={location} title="项目报表">
 
-        <WorkReportFilter
+        <ProjectReportFilter
           defaultValue={this.state.filters}
           onSearch={this.handleFilt}
           onReset={this.handleReset}
