@@ -77,6 +77,7 @@ import AddOKR from './routes/AddOKR';
 import OKRList from './routes/OKRList';
 import EditOKR from './routes/EditOKR';
 import InternOnlineTest from './routes/InternOnlineTest';
+import ProjectReport from './routes/ProjectReport';
 
 function RouterConfig({ history }) {
   return (
@@ -156,6 +157,7 @@ function RouterConfig({ history }) {
       <Route path="/app/okr/list" component={OKRList} />
       <Route path="/app/okr/edit/:id" component={EditOKR} />
       <Route path="/app/online-test" component={InternOnlineTest} />
+      <Route path="/app/project-report" component={ProjectReport} />
     </Router>
   )
 }
