@@ -19,6 +19,17 @@ const actionStyle = {
   color: '#428bca',
 }
 
+function tableToExcel(table, worksheetName) {
+  var uri = 'data:application/vnd.ms-excel;base64,'
+  var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+  var base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))); }
+  var format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+  var ctx = { worksheet: worksheetName, table: table.outerHTML }
+  var href = uri + base64(format(template, ctx))
+  return href
+}
+
 class ProjectReport extends React.Component {
 
   constructor(props) {
@@ -118,6 +129,23 @@ class ProjectReport extends React.Component {
     return parsedData;
   }
 
+  downloadExportFile = () => {
+    var link = document.createElement('a');
+    link.download = 'Projects.xls';
+
+    var table = document.querySelectorAll('table')[0];
+    table.border = '1';
+
+    var cells = table.querySelectorAll('td, th');
+    cells.forEach(element => {
+      element.style.textAlign = 'center';
+      element.style.verticalAlign = 'middle';
+    });
+
+    link.href = tableToExcel(table, '机构BD');
+    link.click();
+  }
+
   render() {
     const { location } = this.props;
     const { total, list, loading, page, pageSize } = this.state;
@@ -140,7 +168,7 @@ class ProjectReport extends React.Component {
 
     const columnsForExport = [
       { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
-      { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
+      { title: '项目开始时间', key: 'startTime', dataIndex: 'proj.publishDate', render: text => text ? text.slice(0, 16).replace('T', ' ') : '' },
       {
         title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
           return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}。`).join('\r\n');
@@ -158,14 +186,6 @@ class ProjectReport extends React.Component {
         />
 
         <Table
-          columns={columns}
-          dataSource={this.state.projectListByOrgBd}
-          rowKey={record => record.proj.id}
-          loading={loading}
-          pagination={false}
-        />
-
-        <Table
           style={{ display: 'none' }}
           columns={columnsForExport}
           dataSource={this.state.projectListByOrgBd}
@@ -173,6 +193,24 @@ class ProjectReport extends React.Component {
           loading={loading}
           pagination={false}
         />
+
+        <Table
+          columns={columns}
+          dataSource={this.state.projectListByOrgBd}
+          rowKey={record => record.proj.id}
+          loading={loading}
+          pagination={false}
+        />
+
+        {this.state.projectListByOrgBd.length > 0 &&
+          <Button
+            style={{ marginTop: 16, backgroundColor: 'orange', border: 'none' }}
+            type="primary"
+            size="large"
+            onClick={this.downloadExportFile}>
+            {i18n('project_library.export_excel')}
+          </Button>
+        }
 
       </LeftRightLayout>
     );
