@@ -37,7 +37,8 @@
     "exportexcel_organization": "导出任务",
     "weekly_report": "周报",
     "OKR": "OKR",
-    "onlineTest": "在线测试"
+    "onlineTest": "在线测试",
+    "orgBD_report": "项目报表"
   },
   "account": {
     "login": "登录",

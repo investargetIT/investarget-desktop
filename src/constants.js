@@ -51,6 +51,7 @@ export const KEY_TO_URI = {
   "weekly_report": "/app/report/list",
   "OKR": "/app/okr/list",
   "onlineTest": "/app/online-test",
+  "orgBD_report": "/app/project-report",
 }
 
 export const URI_TO_KEY = {
