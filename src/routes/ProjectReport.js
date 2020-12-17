@@ -38,8 +38,7 @@ class ProjectReport extends React.Component {
       list: [],
       loading: false,
       filters,
-      newReportDate: 'this_week',
-      displayReportDateModal: false,
+      projectListByOrgBd: [],
     }
     this.startDate = '2019-07-20T00:00:00';
     this.endDate = '2020-12-16T23:59:59';
@@ -50,6 +49,7 @@ class ProjectReport extends React.Component {
   }
 
   getProjectByOrgBd = async () => {
+    this.setState({ loading: true });
     const stime = this.startDate;
     const etime = this.endDate;
     const stimeM = this.startDate;
@@ -77,7 +77,7 @@ class ProjectReport extends React.Component {
     });
 
     window.echo('projOrgBds', projOrgBds);
-    // this.setState({ projOrgBds });
+    this.setState({ projectListByOrgBd: projOrgBds, loading: false });
   }
 
   getReportList = () => {
@@ -122,30 +122,29 @@ class ProjectReport extends React.Component {
     const { location } = this.props;
     const { total, list, loading, page, pageSize } = this.state;
     const columns = [
-      { title: '姓名', key: 'user', dataIndex: 'user.username' },
-      { title: '开始时间', key: 'startTime', dataIndex: 'startTime', render: text => text.slice(0, 10) },
-      { title: '截止时间', key: 'endTime', dataIndex: 'endTime', render: text => text.slice(0, 10) },
-      {
-        title: '操作', key: 'operation', render: (text, record) => {
-          return (
-            <div>
-              <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
-                <Icon type="eye-o" style={{ fontSize: '16px' }} />
-              </Link>
-              {record.user.id === getCurrentUser() &&
-                <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
-                  <Icon type="edit" style={{ fontSize: '16px' }} />
-                </Link>
-              }
-              <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
-                <Link>
-                  <Icon type="delete" style={{ fontSize: '16px' }} />
-                </Link>
-              </Popconfirm>
-            </div>
-          );
-        }
-      },
+      { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
+      { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
+      // {
+      //   title: '操作', key: 'operation', render: (text, record) => {
+      //     return (
+      //       <div>
+      //         <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
+      //           <Icon type="eye-o" style={{ fontSize: '16px' }} />
+      //         </Link>
+      //         {record.user.id === getCurrentUser() &&
+      //           <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
+      //             <Icon type="edit" style={{ fontSize: '16px' }} />
+      //           </Link>
+      //         }
+      //         <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
+      //           <Link>
+      //             <Icon type="delete" style={{ fontSize: '16px' }} />
+      //           </Link>
+      //         </Popconfirm>
+      //       </div>
+      //     );
+      //   }
+      // },
     ]
 
     return (
@@ -159,10 +158,11 @@ class ProjectReport extends React.Component {
 
         <Table
           columns={columns}
-          dataSource={list}
-          rowKey={record => record.id}
+          dataSource={this.state.projectListByOrgBd}
+          rowKey={record => record.proj.id}
           loading={loading}
-          pagination={false} />
+          pagination={false}
+        />
 
       </LeftRightLayout>
     );
