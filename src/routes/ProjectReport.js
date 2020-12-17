@@ -3,7 +3,7 @@ import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
 import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../utils/util';
 import { connect } from 'dva';
-import { Icon, Table, Pagination, Popconfirm, Select, Button, Modal } from 'antd';
+import { Icon, Table, Pagination, Popconfirm, Select, Button, Modal, Popover } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link, withRouter } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
@@ -127,10 +127,27 @@ class ProjectReport extends React.Component {
       { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
       {
         title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
+          const htmlContent = record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}`).join('\n');
+          const contentWithoutLine = htmlContent.replace(/\n/g, ' ');
+          return <Popover
+            title="机构BD更新情况"
+            content={<div dangerouslySetInnerHTML={{ __html: htmlContent.replace(/\n/g, '<br>') }}></div>}
+          >
+            <div style={{color: "#428bca"}}>{contentWithoutLine.length >= 24 ? (contentWithoutLine.substr(0, 22) + "...") : contentWithoutLine}</div>
+          </Popover>
+        }
+      },
+    ];
+
+    const columnsForExport = [
+      { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
+      { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
+      {
+        title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
           return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}。`).join('\r\n');
         }
       },
-    ]
+    ];
 
     return (
       <LeftRightLayout location={location} title="项目报表">
@@ -143,6 +160,15 @@ class ProjectReport extends React.Component {
 
         <Table
           columns={columns}
+          dataSource={this.state.projectListByOrgBd}
+          rowKey={record => record.proj.id}
+          loading={loading}
+          pagination={false}
+        />
+
+        <Table
+          style={{ display: 'none' }}
+          columns={columnsForExport}
           dataSource={this.state.projectListByOrgBd}
           rowKey={record => record.proj.id}
           loading={loading}
