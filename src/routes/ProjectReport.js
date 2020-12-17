@@ -45,6 +45,7 @@ class ProjectReport extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getProjectByOrgBd()
   }
 
@@ -126,7 +127,7 @@ class ProjectReport extends React.Component {
       { title: '项目开始时间', key: 'startTime', render: () => '2020-10-28 17:40:40' },
       {
         title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
-          return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? m.response : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}`).join('\r\n');
+          return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}。`).join('\r\n');
         }
       },
     ]
@@ -152,5 +153,8 @@ class ProjectReport extends React.Component {
     );
   }
 }
-
-export default connect()(withRouter(ProjectReport));
+function mapStateToProps(state) {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+}
+export default connect(mapStateToProps)(withRouter(ProjectReport));
