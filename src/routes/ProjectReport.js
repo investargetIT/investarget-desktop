@@ -8,6 +8,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link, withRouter } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
 import moment from 'moment';
+import _ from 'lodash';
 
 const Option = Select.Option;
 
@@ -40,10 +41,43 @@ class ProjectReport extends React.Component {
       newReportDate: 'this_week',
       displayReportDateModal: false,
     }
+    this.startDate = '2019-07-20T00:00:00';
+    this.endDate = '2020-12-16T23:59:59';
   }
 
   componentDidMount() {
-    this.getReportList()
+    this.getProjectByOrgBd()
+  }
+
+  getProjectByOrgBd = async () => {
+    const stime = this.startDate;
+    const etime = this.endDate;
+    const stimeM = this.startDate;
+    const etimeM = this.endDate;
+    const page_size = 1000;
+
+    const params1 = { stimeM, etimeM, page_size };
+    const params2 = { stime, etime, page_size };
+    const res = await Promise.all([
+      api.getOrgBdList(params1),
+      api.getOrgBdList(params2),
+    ]);
+    const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+    const orgBds =  _.uniqBy(allOrgBds, 'id');
+
+    window.echo('orgbds', orgBds);
+
+    const projs = orgBds.map(m => m.proj);
+    const projIds = projs.map(m => m.id);
+    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+    const projOrgBds = uniqueProjIds.map(m => {
+      const proj = projs.filter(f => f.id === m)[0];
+      const bds = orgBds.filter(f => f.proj.id === m);
+      return { proj, orgBds: bds };
+    });
+
+    window.echo('projOrgBds', projOrgBds);
+    // this.setState({ projOrgBds });
   }
 
   getReportList = () => {
