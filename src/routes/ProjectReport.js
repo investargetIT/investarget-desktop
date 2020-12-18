@@ -61,42 +61,61 @@ class ProjectReport extends React.Component {
   }
 
   getProjectByOrgBd = async () => {
-    this.setState({ loading: true });
+    try {
+      this.setState({ loading: true });
 
-    const [ start, end ] = this.state.filters.startEndDate;
-    const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+      const [start, end] = this.state.filters.startEndDate;
+      const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+      const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
 
-    const stime = startDate;
-    const etime = endDate;
-    const stimeM = startDate;
-    const etimeM = endDate;
-    const page_size = 1000;
+      const stime = startDate;
+      const etime = endDate;
+      const stimeM = startDate;
+      const etimeM = endDate;
+      const page_size = 1000;
 
-    const params1 = { stimeM, etimeM, page_size };
-    const params2 = { stime, etime, page_size };
-    const res = await Promise.all([
-      api.getOrgBdList(params1),
-      api.getOrgBdList(params2),
-    ]);
-    const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
-    let orgBds =  _.uniqBy(allOrgBds, 'id');
+      const params1 = { stimeM, etimeM, page_size };
+      const params2 = { stime, etime, page_size };
+      let res = await Promise.all([
+        api.getOrgBdList(params1),
+        api.getOrgBdList(params2),
+      ]);
+      res = await Promise.all(res.map((m, idx) => {
+        if (m.data.count > 1000) {
+          if (idx === 0) {
+            return api.getOrgBdList({ ...params1, page_size: m.data.count });
+          }
+          if (idx === 1) {
+            return api.getOrgBdList({ ...params2, page_size: m.data.count })
+          }
+        } else {
+          return new Promise(resolve => {
+            resolve(m);
+          });
+        }
+      }));
 
-    orgBds = orgBds.filter(f => f.response && ![4, 5, 6].includes(f.response));
-    window.echo('orgbds', orgBds);
+      const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
+      let orgBds = _.uniqBy(allOrgBds, 'id');
 
-    const projs = orgBds.map(m => m.proj);
-    const projIds = projs.map(m => m.id);
-    const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
-    const projOrgBds = uniqueProjIds.map(m => {
-      const proj = projs.filter(f => f.id === m)[0];
-      const bds = orgBds.filter(f => f.proj.id === m);
-      return { proj, orgBds: bds };
-    });
+      orgBds = orgBds.filter(f => f.response && ![4, 5, 6].includes(f.response));
 
-    window.echo('projOrgBds', projOrgBds);
-    this.setState({ projectListByOrgBd: projOrgBds, loading: false });
-    this.writeSetting();
+      const projs = orgBds.map(m => m.proj);
+      const projIds = projs.map(m => m.id);
+      const uniqueProjIds = projIds.filter((v, i, a) => a.indexOf(v) === i);
+      const projOrgBds = uniqueProjIds.map(m => {
+        const proj = projs.filter(f => f.id === m)[0];
+        const bds = orgBds.filter(f => f.proj.id === m);
+        return { proj, orgBds: bds };
+      });
+
+      this.setState({ projectListByOrgBd: projOrgBds, loading: false });
+      this.writeSetting();
+    } catch (error) {
+      handleError(error);
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   handleFilt = (filters) => {
