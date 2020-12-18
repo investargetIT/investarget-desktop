@@ -112,9 +112,7 @@ class ProjectReport extends React.Component {
     const startDate = `${start.format('YYYY-MM-DD')}`;
     const endDate = `${end.format('YYYY-MM-DD')}`;
     const startEndDate = [startDate, endDate];
-    const { filters } = this.state;
-    filters.startEndDate = startEndDate;
-    const data = { filters };
+    const data = { filters: { startEndDate } };
     localStorage.setItem('ProjectReport', JSON.stringify(data));
   }
 
