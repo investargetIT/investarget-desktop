@@ -52,12 +52,43 @@ class ProjectReport extends React.Component {
       loading: false,
       filters,
       projectListByOrgBd: [],
+
+      loadingUser: false,
+      userListByWeeklyReport: [],
     };
   }
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getProjectByOrgBd()
+    this.getUserByWeeklyReport();
+  }
+
+  getUserByWeeklyReport = async () => {
+    try {
+      this.setState({ loadingUser: true });
+      const { filters: { startEndDate } } = this.state;
+      const startTime = startEndDate && startEndDate.length > 1 ? startEndDate[0].format('YYYY-MM-DD') : null;
+      const endTime = startEndDate && startEndDate.length > 1 ? startEndDate[1].format('YYYY-MM-DD') : null;
+      const page_size = 1000;
+      const params = {
+        startTime: startTime && hasPerm('BD.admin_getWorkReport') ? `${startTime}T00:00:00` : undefined,
+        endTime: endTime && hasPerm('BD.admin_getWorkReport') ? `${endTime}T23:59:59` : undefined,
+        sort: 'startTime',
+        desc: 1,
+        page_size,
+      };
+      let result = await api.getWorkReport(params);
+      const { count: total } = result.data;
+      if (total > page_size) {
+        result = await api.getWorkReport({ ...params, page_size: total });
+      }
+      this.setState({ userListByWeeklyReport: result.data.data });
+    } catch (error) {
+      handleError(error);
+    } finally {
+      this.setState({ loadingUser: false });
+    }
   }
 
   getProjectByOrgBd = async () => {
