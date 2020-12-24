@@ -83,7 +83,27 @@ class ProjectReport extends React.Component {
       if (total > page_size) {
         result = await api.getWorkReport({ ...params, page_size: total });
       }
-      this.setState({ userListByWeeklyReport: result.data.data });
+      let { data: reportList } = result.data;
+
+      if (reportList.length > 0) {
+        const params1 = {
+          report: reportList.map(m => m.id),
+          page_size,
+        };
+        let result1 = await api.getWorkReportProjInfo(params1);
+        const { count: total1 } = result1.data;
+        if (total1 > page_size) {
+          result1 = await api.getWorkReportProjInfo({ ...params, page_size: total1 });
+        }
+        let { data: reportProjInfoList } = result1.data;
+        reportProjInfoList = reportProjInfoList.filter(f => f.thisPlan || f.nextPlan);
+        reportList = reportList.map(m => {
+          const projInfo = reportProjInfoList.filter(f => f.report === m.id);
+          return { ...m, projInfo };
+        });
+      }
+
+      this.setState({ userListByWeeklyReport: reportList });
     } catch (error) {
       handleError(error);
     } finally {
