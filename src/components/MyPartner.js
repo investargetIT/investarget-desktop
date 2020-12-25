@@ -343,6 +343,9 @@ class MyPartner extends React.Component {
                           .filter(r=>selectedRowKeys.includes(r.id))
         })
       },
+      getCheckboxProps: record => ({
+        disabled: !record.familiar,
+      }),
     };
     const famliarStatistics = this.state.statistics.map(m => {
       const famObj = this.props.famlv.filter(f => f.id === m.familiar)[0];
