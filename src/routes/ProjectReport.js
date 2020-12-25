@@ -274,6 +274,22 @@ class ProjectReport extends React.Component {
       },
     ];
 
+    const userColumnsForExport = [
+      { title: '员工姓名', key: 'username', dataIndex: 'user.username' },
+      {
+        title: '项目名称本周下周计划', key: 'proj_info', render: (_, record) => {
+          if (!record.projInfo || record.projInfo.length === 0) return '暂无';
+          return record.projInfo.map(m => `项目名称：${m.proj ? m.proj.projtitle : m.projTitle}，本周计划：${m.thisPlan || '暂无'}，下周计划：${m.nextPlan || '暂无'}`).join('\r\n');
+        }
+      },
+      {
+        title: '市场信息和项目信息汇报', key: 'market', render: (_, record) => {
+          if (!record.marketMsgs || record.marketMsgs.length === 0) return '暂无';
+          return record.marketMsgs.map(m => m.marketMsg).join('\r\n');
+        }
+      },
+    ];
+
     return (
       <LeftRightLayout location={location} title="项目报表">
 
@@ -289,6 +305,15 @@ class ProjectReport extends React.Component {
           dataSource={this.state.projectListByOrgBd}
           rowKey={record => record.proj.id}
           loading={loading}
+          pagination={false}
+        />
+
+        <Table
+          style={{ display: 'none' }}
+          columns={userColumnsForExport}
+          dataSource={this.state.userListByWeeklyReport}
+          rowKey={record => record.id}
+          loading={this.state.loadingUser}
           pagination={false}
         />
 
