@@ -199,7 +199,7 @@ class ProjectReport extends React.Component {
 
   downloadExportFile = () => {
     var link = document.createElement('a');
-    link.download = 'Projects.xls';
+    link.download = '项目报表.xls';
 
     var table = document.querySelectorAll('table')[0];
     table.border = '1';
@@ -210,8 +210,30 @@ class ProjectReport extends React.Component {
       element.style.verticalAlign = 'middle';
     });
 
-    link.href = tableToExcel(table, '机构BD');
+    link.href = tableToExcel(table, '项目报表');
     link.click();
+  }
+
+  downloadUserExcel = () => {
+    const link = document.createElement('a');
+    link.download = '员工报表.xls';
+
+    const table = document.querySelectorAll('table')[1];
+    table.border = '1';
+
+    const cells = table.querySelectorAll('td, th');
+    cells.forEach(element => {
+      element.style.textAlign = 'center';
+      element.style.verticalAlign = 'middle';
+    });
+
+    link.href = tableToExcel(table, '员工报表');
+    link.click();
+  }
+
+  downloadExcel = () => {
+    this.downloadExportFile();
+    this.downloadUserExcel();
   }
 
   render() {
@@ -339,7 +361,7 @@ class ProjectReport extends React.Component {
             style={{ marginTop: 16, backgroundColor: 'orange', border: 'none' }}
             type="primary"
             size="large"
-            onClick={this.downloadExportFile}>
+            onClick={this.downloadExcel}>
             {i18n('project_library.export_excel')}
           </Button>
         }
