@@ -232,8 +232,12 @@ class ProjectReport extends React.Component {
   }
 
   downloadExcel = () => {
-    this.downloadExportFile();
-    this.downloadUserExcel();
+    if (this.state.projectListByOrgBd.length > 0) {
+      this.downloadExportFile();
+    }
+    if (this.state.userListByWeeklyReport.length > 0) {
+      this.downloadUserExcel();
+    }
   }
 
   render() {
@@ -356,7 +360,7 @@ class ProjectReport extends React.Component {
           pagination={false}
         />
 
-        {this.state.projectListByOrgBd.length > 0 &&
+        {(this.state.projectListByOrgBd.length > 0 || this.state.userListByWeeklyReport > 0) && 
           <Button
             style={{ marginTop: 16, backgroundColor: 'orange', border: 'none' }}
             type="primary"
