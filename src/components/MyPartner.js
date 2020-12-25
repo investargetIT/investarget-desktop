@@ -245,29 +245,27 @@ class MyPartner extends React.Component {
   //   .catch(err => this.props.dispatch({ type: 'app/findError', payload: err }))
   // }
 
-  submitModifyFamlv() {
+  async submitModifyFamlv() {
     if (this.state.changedValue === null) {
-      Modal.error({title: "错误", content: "您未勾选修改内容!"})
-    } else {
-      this.setState({isSubmitting: true})
-      let params = {
-        familiar: this.state.changedValue
-      }
-      api.editUserRelation(
+      Modal.error({title: "错误", content: "您未勾选修改内容!"});
+      return;
+    }
+    try {
+      this.setState({ isSubmitting: true });
+      await api.editUserRelation(
         this.state.selectedRows.map(record => ({
           familiar: this.state.changedValue,
           id: record.id,
           investoruser: record.investoruser.id,
           traderuser: record.traderuser.id,
         }))
-      ).then(result => {
-        Modal.success({title: "成功", content: "修改熟悉程度成功!"})
-        this.getPartner()
-        this.setState({ showFamModifyDialog: false, selectedRows: [], selectedRowKeys: [], isSubmitting: false })
-      }).catch(error => {
-        Modal.success({title: "失败", content: "请求服务器失败, 请稍后再试!"})
-        this.setState({ isSubmitting: false })
-      })
+      );
+      Modal.success({ title: "成功", content: "修改熟悉程度成功!" });
+      this.getPartner();
+      this.setState({ showFamModifyDialog: false, selectedRows: [], selectedRowKeys: [], isSubmitting: false });
+    } catch (error) {
+      Modal.success({ title: "失败", content: "请求服务器失败, 请稍后再试!" });
+      this.setState({ isSubmitting: false });
     }
   }
 
