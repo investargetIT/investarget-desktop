@@ -60,8 +60,12 @@ class ProjectReport extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
-    this.getProjectByOrgBd()
-    // this.getUserByWeeklyReport();
+    this.loadData();
+  }
+
+  loadData = () => {
+    this.getProjectByOrgBd();
+    this.getUserByWeeklyReport();
   }
 
   getUserByWeeklyReport = async () => {
@@ -170,11 +174,11 @@ class ProjectReport extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProjectByOrgBd);
+    this.setState({ filters, page: 1 }, this.loadData);
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProjectByOrgBd);
+    this.setState({ filters, page: 1 }, this.loadData);
   }
 
   writeSetting = () => {
@@ -334,14 +338,14 @@ class ProjectReport extends React.Component {
           pagination={false}
         />
 
-        {/* <Table
+        <Table
           style={{ display: 'none' }}
           columns={userColumnsForExport}
           dataSource={this.state.userListByWeeklyReport}
           rowKey={record => record.id}
           loading={this.state.loadingUser}
           pagination={false}
-        /> */}
+        />
 
         <Table
           columns={columns}
@@ -351,14 +355,14 @@ class ProjectReport extends React.Component {
           pagination={false}
         />
 
-        {/* <Table
+        <Table
           style={{ marginTop: 40 }}
           columns={columnsForUser}
           dataSource={this.state.userListByWeeklyReport}
           rowKey={record => record.id}
           loading={this.state.loadingUser}
           pagination={false}
-        /> */}
+        />
 
         {(this.state.projectListByOrgBd.length > 0 || this.state.userListByWeeklyReport > 0) && 
           <Button
