@@ -240,7 +240,9 @@ class ProjectReport extends React.Component {
       this.downloadExportFile();
     }
     if (this.state.userListByWeeklyReport.length > 0) {
-      this.downloadUserExcel();
+      setTimeout(() => {
+        this.downloadUserExcel();
+      }, 1000);
     }
   }
 
