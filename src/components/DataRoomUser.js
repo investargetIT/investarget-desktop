@@ -298,7 +298,7 @@ function DataRoomUser(props) {
 }
 
 function DataRoomUserList(props) {
-  const { list, password, passwordChange, disableEditPassword, displayEditPasswordField, noWatermarkCheckboxChecked, noWatermarkCheckboxOnChange } = props;
+  const { list, password, passwordChange, disableEditPassword, displayEditPasswordField, noWatermarkCheckboxChecked, noWatermarkCheckboxOnChange, currentUserIsProjTrader } = props;
   return (
     <div>
 
@@ -335,7 +335,7 @@ function DataRoomUserList(props) {
         }
       </Row>
 
-      {hasPerm('dataroom.downloadNoWatermarkFile') &&
+      {(hasPerm('dataroom.downloadNoWatermarkFile') || currentUserIsProjTrader) &&
         <div style={{ textAlign: 'center' }}>
           <Checkbox checked={noWatermarkCheckboxChecked} onChange={noWatermarkCheckboxOnChange}>文件无水印</Checkbox>
         </div>

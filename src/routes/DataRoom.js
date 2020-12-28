@@ -1498,6 +1498,7 @@ class DataRoom extends React.Component {
             onDownloadNewFiles={this.handleDownloadNewFiles}
             noWatermarkCheckboxChecked={this.state.downloadDataroomWithoutWatermark}
             noWatermarkCheckboxOnChange={e => this.setState({ downloadDataroomWithoutWatermark: e.target.checked })}
+            currentUserIsProjTrader={this.state.isProjTrader}
           />
           </Modal>
 
