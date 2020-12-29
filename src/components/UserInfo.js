@@ -265,48 +265,53 @@ class UserInfo extends React.Component {
   }
 
   componentDidMount() {
-    const userId = this.props.userId
-    api.getUserInfo(userId).then(result => {
-      const data = result.data
-      console.log(data)
-      const username = data.username
-      const title = data.title ? data.title.name : ''
-      const tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : ''
-      const country = data.country ? data.country.country : ''
-      const area = data.orgarea ? data.orgarea.name : '';
-      const org = data.org ? data.org.orgname : ''
-      const mobile = (data.mobile && data.mobileAreaCode) ? (`+${data.mobileAreaCode} ${data.mobile}`) : ''
-      const wechat = data.wechat
-      const email = data.email
-      const userstatus = data.userstatus.name
-      const cardBucket = data.cardBucket
-      const cardKey = data.cardKey
-      const ishasfundorplan = data.ishasfundorplan
-      const mergedynamic = data.mergedynamic
-      const targetdemand = data.targetdemand
-      const orgid=data.org ? data.org.id : ''
-      this.setState({
-        username, title, tags, country, area, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
-      })
-      if (this.props.onGetUsername) {
-        this.props.onGetUsername(username);
-      }
-      if (this.props.onGetMobile) {
-        this.props.onGetMobile(mobile);
-      }
-      if (cardBucket && cardKey) {
-        api.downloadUrl(cardBucket, cardKey).then(result => {
-          this.setState({ cardUrl: result.data })
-        })
-      }
-    }, error => {
+    try {
+      this.getUsernameAndSetState();
+    } catch (error) {
       this.props.dispatch({
         type: 'app/findError',
-        payload: error
-      })
-    })
+        payload: error,
+      });
+    }
   }
 
+  getUsernameAndSetState = async () => {
+    const userId = this.props.userId;
+    const result = await api.getUserInfo(userId)
+    const data = result.data
+    console.log(data)
+    const username = data.username
+    const title = data.title ? data.title.name : ''
+    const tags = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : ''
+    const country = data.country ? data.country.country : ''
+    const area = data.orgarea ? data.orgarea.name : '';
+    const org = data.org ? data.org.orgname : ''
+    const mobile = (data.mobile && data.mobileAreaCode) ? (`+${data.mobileAreaCode} ${data.mobile}`) : ''
+    const wechat = data.wechat
+    const email = data.email
+    const userstatus = data.userstatus.name
+    const cardBucket = data.cardBucket
+    const cardKey = data.cardKey
+    const ishasfundorplan = data.ishasfundorplan
+    const mergedynamic = data.mergedynamic
+    const targetdemand = data.targetdemand
+    const orgid = data.org ? data.org.id : ''
+    this.setState({
+      username, title, tags, country, area, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
+    })
+    if (this.props.onGetUsername) {
+      this.props.onGetUsername(username);
+    }
+    if (this.props.onGetMobile) {
+      this.props.onGetMobile(mobile);
+    }
+    if (cardBucket && cardKey) {
+      api.downloadUrl(cardBucket, cardKey).then(result => {
+        this.setState({ cardUrl: result.data })
+      })
+    }
+    return username;
+  }
 
 
   render() {
