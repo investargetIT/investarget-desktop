@@ -6,6 +6,7 @@ import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Mod
 import LeftRightLayout from '../components/LeftRightLayout'
 import * as api from '../api'
 import { Search2 } from '../components/Search'
+import _ from 'lodash';
 
 const rowStyle = {
   marginBottom: '24px',
@@ -64,9 +65,25 @@ class OrgBDProjList extends React.Component {
     this.getData().catch(handleError);
   }
 
+  getProjTraderData = async () => {
+    const page_size = 100;
+    const params = {
+      search: this.state.search,
+      max_size: page_size,
+      skip_count: 0,
+      user: getCurrentUser(),
+    };
+    let reqProj = await api.getProj(params);
+    const { count: totalNum } = reqProj.data;
+    if (totalNum > page_size) {
+      reqProj = await api.getProj({ ...params, max_size: totalNum });
+    }
+    return reqProj.data.data;
+  }
+
   getData = async () => {
     const { search, page, pageSize } = this.state;
-    let page_size = 10;
+    const page_size = 100;
     const params = {
       search,
       page_size,
@@ -82,13 +99,18 @@ class OrgBDProjList extends React.Component {
     // 首先请求所有以项目分组的机构BD
     let reqProj = await api.getOrgBDProj(params);
     const { count: totalNum } = reqProj.data;
-
     if (totalNum > page_size) {
       reqProj = await api.getOrgBDProj({ ...params, page_size: totalNum });
     }
+    let orgBDProjects = reqProj.data.data;
+    orgBDProjects = orgBDProjects.filter(f => f.proj).map(m => m.proj);
 
-    const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
+    if (!hasPerm('BD.manageOrgBD')) {
+      const projectAsTrader = await this.getProjTraderData();
+      orgBDProjects = orgBDProjects.concat(projectAsTrader);
+    }
 
+    const list = _.uniqBy(orgBDProjects, 'id');
     if (list.length > 0) {
       // 最后请求当前用户的未读机构BD的统计数据
       const reqUnreadOrgBD = await api.getOrgBDProj({
