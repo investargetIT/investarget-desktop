@@ -230,9 +230,12 @@ const Field = (props) => {
         <div style={{textAlign: 'left',color:'#282828',fontSize:'16px'}}>{props.title}</div>
       </Col>
       <Col span={18}>
-      {props.orgid? <Link to={"/app/organization/"+props.orgid}><div>{props.value}</div></Link> :
-      <div>{props.value}</div>
-      }
+        {
+          props.orgid ?
+            <div><Link to={"/app/organization/" + props.orgid}>{props.value}</Link>{props.historyOrg}</div>
+            :
+            <div>{props.value}</div>
+        }
       </Col>
     </Row>
   )
@@ -261,6 +264,7 @@ class UserInfo extends React.Component {
       targetdemand: '',
       orgid:'',
       attachment: [],
+      historyOrg: null,
     }
   }
 
@@ -334,7 +338,7 @@ class UserInfo extends React.Component {
       }
     }
     if (historyOrg.length > 0) {
-      this.setState({ org: `${this.state.org}，之前机构：${historyOrg.join('、')}` });
+      this.setState({ historyOrg: `，之前机构：${historyOrg.join('、')}` });
     }
   }
 
@@ -346,7 +350,7 @@ class UserInfo extends React.Component {
         <TabPane tab="基本信息" key="1">
           <div>
             <Field title={i18n('user.cn_name')} value={username} />
-            <Field title={i18n('user.institution')} value={org} orgid={orgid} />
+            <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />
             <Field title={i18n('user.department')} value={''} />
             <Field title={i18n('user.position')} value={title} />
             <Field title={i18n('user.tags')} value={tags} />
