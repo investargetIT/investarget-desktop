@@ -264,9 +264,10 @@ class UserInfo extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     try {
-      this.getUsernameAndSetState();
+      const { username, org } = await this.getUsernameAndSetState();
+      await this.getHistoryOrg(username, org);
     } catch (error) {
       this.props.dispatch({
         type: 'app/findError',
@@ -310,7 +311,31 @@ class UserInfo extends React.Component {
         this.setState({ cardUrl: result.data })
       })
     }
-    return username;
+    return { username, org: data.org };
+  }
+
+  getHistoryOrg = async (username, org) => {
+    const pageSize = 100;
+    const params = { search: username, page_size: pageSize };
+    let res = await api.getLogOfUserUpdate(params);
+    const { count } = res.data;
+    if (count > pageSize) {
+      res = await api.getLogOfUserUpdate({ ...params, page_size: count });
+    }
+    let historyOrg = res.data.data.filter(f => f.user_id === this.props.userId && f.type === 'organization' && f.before);
+    historyOrg.sort((a, b) => new Date(b.updatetime)- new Date(a.updatetime))
+    historyOrg = historyOrg.map(m => m.before);
+    if (org) {
+      if (org.orgname) {
+        historyOrg = historyOrg.filter(f => f !== org.orgname);
+      }
+      if (org.orgfullname) {
+        historyOrg = historyOrg.filter(f => f !== org.orgfullname);
+      }
+    }
+    if (historyOrg.length > 0) {
+      this.setState({ org: `${this.state.org}，之前机构：${historyOrg.join('、')}` });
+    }
   }
 
 
