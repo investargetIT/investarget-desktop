@@ -271,7 +271,7 @@ class UserInfo extends React.Component {
   async componentDidMount() {
     try {
       const { username, org } = await this.getUsernameAndSetState();
-      await this.getHistoryOrg(username, org);
+      this.getHistoryOrg(username, org);
     } catch (error) {
       this.props.dispatch({
         type: 'app/findError',
