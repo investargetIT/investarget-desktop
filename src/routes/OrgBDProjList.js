@@ -56,9 +56,9 @@ class OrgBDProjList extends React.Component {
     this.setState({ search, page: 1 }, this.getOrgBDProjList)
   }
 
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getOrgBDProjList)
-  }
+  // handlePageChange = (page) => {
+  //   this.setState({ page }, this.getOrgBDProjList)
+  // }
 
   getOrgBDProjList = () => {
     this.getData().catch(handleError);
@@ -66,10 +66,11 @@ class OrgBDProjList extends React.Component {
 
   getData = async () => {
     const { search, page, pageSize } = this.state;
+    let page_size = 10;
     const params = {
       search,
-      page_size: pageSize,
-      page_index: page,
+      page_size,
+      // page_index: page,
     };
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
@@ -79,8 +80,12 @@ class OrgBDProjList extends React.Component {
     this.setState({ loading: true })
 
     // 首先请求所有以项目分组的机构BD
-    const reqProj = await api.getOrgBDProj(params);
-    const { count: total } = reqProj.data;
+    let reqProj = await api.getOrgBDProj(params);
+    const { count: totalNum } = reqProj.data;
+
+    if (totalNum > page_size) {
+      reqProj = await api.getOrgBDProj({ ...params, page_size: totalNum });
+    }
 
     const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
 
@@ -102,7 +107,7 @@ class OrgBDProjList extends React.Component {
       });
     }
 
-    this.setState({ loading: false, total, list });
+    this.setState({ loading: false, total: totalNum, list });
   }
 
   componentDidMount() {
@@ -204,13 +209,13 @@ class OrgBDProjList extends React.Component {
             </div>
           </div>
 
-          <Pagination
+          {/* <Pagination
             style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
             total={total}
             current={page}
             pageSize={pageSize}
             onChange={this.handlePageChange}
-          />
+          /> */}
         </div>
       </LeftRightLayout>
     )
