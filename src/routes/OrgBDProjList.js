@@ -57,12 +57,16 @@ class OrgBDProjList extends React.Component {
     this.setState({ search, page: 1 }, this.getOrgBDProjList)
   }
 
-  // handlePageChange = (page) => {
-  //   this.setState({ page }, this.getOrgBDProjList)
-  // }
+  handlePageChange = (page) => {
+    this.setState({ page }, this.getOrgBDProjList)
+  }
 
   getOrgBDProjList = () => {
-    this.getData().catch(handleError);
+    if (hasPerm('BD.manageOrgBD')) {
+      this.getDataWithPermission().catch(handleError);
+    } else {
+      this.getData().catch(handleError);
+    }
   }
 
   getProjTraderData = async () => {
@@ -130,6 +134,43 @@ class OrgBDProjList extends React.Component {
     }
 
     this.setState({ loading: false, total: totalNum, list });
+  }
+
+  getDataWithPermission = async () => {
+    const { search, page, pageSize } = this.state;
+    const params = {
+      search,
+      page_size: pageSize,
+      page_index: page,
+    };
+
+    this.setState({ loading: true })
+
+    // 首先请求所有以项目分组的机构BD
+    const reqProj = await api.getOrgBDProj(params);
+    const { count: total } = reqProj.data;
+
+    const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
+
+    if (list.length > 0) {
+      // 最后请求当前用户的未读机构BD的统计数据
+      const reqUnreadOrgBD = await api.getOrgBDProj({
+        proj: list.map(m => m.id),
+        isRead: false,
+        manager: [getCurrentUser()],
+        page_size: list.length,
+      });
+
+      // 将未读机构BD项目与所有项目做匹配
+      list.forEach(element => {
+        const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
+        if (index > -1) {
+          element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
+        }
+      });
+    }
+
+    this.setState({ loading: false, total, list });
   }
 
   componentDidMount() {
@@ -231,13 +272,16 @@ class OrgBDProjList extends React.Component {
             </div>
           </div>
 
-          {/* <Pagination
-            style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-          /> */}
+          {hasPerm('BD.manageOrgBD') &&
+            <Pagination
+              style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
+              total={total}
+              current={page}
+              pageSize={pageSize}
+              onChange={this.handlePageChange}
+            />
+          }
+
         </div>
       </LeftRightLayout>
     )
