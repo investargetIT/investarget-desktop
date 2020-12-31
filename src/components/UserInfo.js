@@ -232,7 +232,11 @@ const Field = (props) => {
       <Col span={18}>
         {
           props.orgid ?
-            <div><Link to={"/app/organization/" + props.orgid}>{props.value}</Link>{props.historyOrg}</div>
+            <div>
+              <Link to={"/app/organization/" + props.orgid}>{props.value}</Link>
+              {props.historyOrg && '，'}
+              {props.historyOrg && <span style={{ color: 'red' }}>{props.historyOrg}</span>}
+            </div>
             :
             <div>{props.value}</div>
         }
@@ -338,7 +342,7 @@ class UserInfo extends React.Component {
       }
     }
     if (historyOrg.length > 0) {
-      this.setState({ historyOrg: `，之前机构：${historyOrg.join('、')}` });
+      this.setState({ historyOrg: `之前机构：${historyOrg.join('、')}` });
     }
   }
 
