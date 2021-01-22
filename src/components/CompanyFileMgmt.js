@@ -31,7 +31,11 @@ const imageFileTypes = [
   'image/webp', 
 ];
 
-const validFileTypes = officeFileTypes.concat(imageFileTypes);
+const videoFileTypes = [
+  'video/mp4',
+];
+
+const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes);
 
 const buttonStyle = {
   backgroundColor: 'transparent', 
@@ -317,6 +321,7 @@ class FileMgmt extends React.Component {
                 (/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(record.filename) ? "/images/image.png" :
                 (/\.(doc|docx)$/i).test(record.filename) ? "/images/doc.png" : 
                 (/\.(ppt|pptx)$/i).test(record.filename) ? "/images/ppt.png" : 
+                (/\.(mp4|avi)$/i).test(record.filename) ? "/images/file-video-icon.png" : 
                 (/\.(xls|xlsx)$/i).test(record.filename) ? "/images/xls.png" : "/images/pdf.png" 
                 : 
                 (ifhasFiles ? "/images/fullFolder.png" : "/images/folder.png")}
