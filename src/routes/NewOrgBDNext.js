@@ -690,6 +690,81 @@ class NewOrgBDList extends React.Component {
       );
     }
 
+    const dataSourceForExportCreateOrgBD = list.map(m => m.items)
+      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+    window.echo('data source for export', dataSourceForExportCreateOrgBD);
+
+    const columnsForExportCreateOrgBD = [
+      {
+        title: '机构',
+        key: 'org',
+        dataIndex: 'org.orgname',
+      },
+      {
+        title: i18n('user.name'),
+        key: 'username',
+        dataIndex: 'username',
+        render: (text, record) => {
+          // 可以新建的暂无联系人的BD
+          if (!record.username) {
+            return '暂无投资人';
+          }
+
+          // 可以新建的有联系人的BD
+          return (
+            <a target="_blank" href={'/app/user/' + record.id}>
+              <span style={{ color: '#428BCA' }}>{record.username}</span>
+            </a>
+          );
+        },
+      },
+      // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
+      // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
+      {
+        title: i18n('mobile'),
+        key: 'mobile',
+        dataIndex: 'mobile',
+        render: text => !text || !checkRealMobile(text) ? '暂无' : text,
+      },
+      {
+        title: i18n('account.email'),
+        key: 'email',
+        dataIndex: 'email',
+        render: text => !text || text.includes('@investarget') ? '暂无' : text,
+      },
+      {
+        title: i18n('user.position'),
+        key: 'position',
+        dataIndex: 'title',
+        render: text => (text && this.props.title.length > 0) ? this.props.title.filter(f => f.id === text)[0].name : '暂无',
+      },
+      {
+        title: '标签',
+        key: 'tags',
+        dataIndex: 'tags',
+        render: (text, record) => {
+          let tags;
+          if (record.tags) {
+            tags = record.tags.map(m => {
+              const tagObj = this.props.tag.filter(f => f.id === m)[0];
+              return tagObj.name;
+            }).join('、');
+          }
+          return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
+        },
+      },
+      // { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
+
+    ]
+    // if (this.props.source != "meetingbd") {
+    //   columns.push({
+    //     title: i18n('org_bd.important') + '/操作', render: (text, record) => {
+    //       if (!record.bd) return <Button onClick={this.handleCreateBD.bind(this, record)}>创建BD</Button>
+    //       else return <div>{record.bd.isimportant ? "是" : "否"}</div>
+    //     }
+    //   })
+    // }
+
     return (
       <LeftRightLayout 
         location={this.props.location} 
@@ -728,6 +803,16 @@ class NewOrgBDList extends React.Component {
           loading={loading}
           onExpand={this.onExpand.bind(this)}
           expandedRowKeys={expanded}
+          pagination={false}
+          size={"middle"}
+        />
+
+        <Table
+          className="export-create-orgbd"
+          style={{ marginTop: 20 }}
+          columns={columnsForExportCreateOrgBD}
+          dataSource={dataSourceForExportCreateOrgBD}
+          rowKey={record => record.id}
           pagination={false}
           size={"middle"}
         />
