@@ -77,7 +77,9 @@ class NewOrgBDList extends React.Component {
     this.filterOrgWithoutInvestor = this.props.location.query.investor === 'true' ? true : false;
     this.tags = (this.props.location.query.tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
     this.projDetail = {}
-
+    // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
+    this.activeUserKey = this.props.location.query.activeUserKey;
+    
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: '',
@@ -202,7 +204,7 @@ class NewOrgBDList extends React.Component {
 
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
-      await this.loadDataForSingleOrg(element);
+      await this.loadDataForSingleOrg(element, true);
     }
   }
 
@@ -240,7 +242,7 @@ class NewOrgBDList extends React.Component {
   //   return result;
   // }
 
-  loadDataForSingleOrg = async orgDetail => {
+  loadDataForSingleOrg = async (orgDetail, initialLoad) => {
 
     const { id: org, orgname, orgfullname } = orgDetail;
     let dataForSingleOrg;
@@ -317,7 +319,15 @@ class NewOrgBDList extends React.Component {
       });
     }
     newList = newList.filter(f => !(f.loaded && f.items.length === 0));
-    this.setState({ list: newList, originalList: newList }); 
+    this.setState({ list: newList, originalList: newList });
+
+    // 通过创建BD的链接进来的并且是首次加载
+    if (initialLoad && this.activeUserKey) {
+      const filterData = dataForSingleOrg.filter(f => f.key === this.activeUserKey);
+      if (filterData.length > 0) {
+        this.handleCreateBD(filterData[0]);
+      }
+    }
 
     return dataForSingleOrg;
   }
@@ -377,7 +387,7 @@ class NewOrgBDList extends React.Component {
 
     if (expandIndex < 0) {
       newExpanded.push(currentId)
-      this.loadDataForSingleOrg(record.org, record.proj.id)
+      this.loadDataForSingleOrg(record.org);
     } else {
       newExpanded.splice(expandIndex, 1)
     }
@@ -721,6 +731,7 @@ class NewOrgBDList extends React.Component {
 
     const dataSourceForExportCreateOrgBD = list.map(m => m.items)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+    // window.echo('data source for export', dataSourceForExportCreateOrgBD);
 
     const columnsForExportCreateOrgBD = [
       {
