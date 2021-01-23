@@ -51,6 +51,17 @@ class H3 extends React.Component {
   render() { return <p style={{fontSize: this.props.size || '13px', fontWeight: 'bolder', marginTop: '5px', marginBottom: '10px', ...this.props.style}}>{this.props.children}</p> }
 }
 
+function tableToExcel(table, worksheetName) {
+  var uri = 'data:application/vnd.ms-excel;base64,'
+  var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+  var base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))); }
+  var format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+  var ctx = { worksheet: worksheetName, table: table.outerHTML }
+  var href = uri + base64(format(template, ctx))
+  return href
+}
+
 class NewOrgBDList extends React.Component {
   
   constructor(props) {
@@ -559,6 +570,24 @@ class NewOrgBDList extends React.Component {
     )});
   }
 
+  downloadExportFile = () => {
+    var link = document.createElement('a');
+    link.download = '创建机构BD.xls';
+
+    var tableContainer = document.querySelector('.export-create-orgbd');
+    var table = tableContainer.querySelector('table');
+    table.border = '1';
+
+    var cells = table.querySelectorAll('td, th');
+    cells.forEach(element => {
+      element.style.textAlign = 'center';
+      element.style.verticalAlign = 'middle';
+    });
+
+    link.href = tableToExcel(table, '创建机构BD');
+    link.click();
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -692,7 +721,7 @@ class NewOrgBDList extends React.Component {
 
     const dataSourceForExportCreateOrgBD = list.map(m => m.items)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-    window.echo('data source for export', dataSourceForExportCreateOrgBD);
+    window.echo('aaadata source for export', dataSourceForExportCreateOrgBD);
 
     const columnsForExportCreateOrgBD = [
       {
@@ -712,7 +741,7 @@ class NewOrgBDList extends React.Component {
 
           // 可以新建的有联系人的BD
           return (
-            <a target="_blank" href={'/app/user/' + record.id}>
+            <a target="_blank" href={`${window.location.origin}/app/user/${record.id}`}>
               <span style={{ color: '#428BCA' }}>{record.username}</span>
             </a>
           );
@@ -753,7 +782,7 @@ class NewOrgBDList extends React.Component {
           return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
         },
       },
-      // { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
 
     ]
     // if (this.props.source != "meetingbd") {
@@ -816,6 +845,17 @@ class NewOrgBDList extends React.Component {
           pagination={false}
           size={"middle"}
         />
+
+        <Button
+          // disabled={this.state.selectedIds.length == 0}
+          style={{ marginTop: 10, backgroundColor: 'orange', border: 'none' }}
+          type="primary"
+          size="large"
+          // loading={this.state.exportLoading}
+          onClick={this.downloadExportFile}
+        >
+          {i18n('project_library.export_excel')}
+        </Button>
 
         {/* <div style={{ marginTop: 10, marginBottom: 10 }}>
           {this.state.selectedKeys.map(user => 
