@@ -107,6 +107,7 @@ class NewOrgBDList extends React.Component {
         org: null, // 为哪个机构添加投资人
         historyBDRefresh: 0,
         projTradersIds: [], // 项目承揽承做的 ID 数组
+        activeUser: null, // 点击创建BD时对应的投资人
     }
 
     this.allTrader = [];
@@ -467,19 +468,18 @@ class NewOrgBDList extends React.Component {
   // }
 
   handleCreateBD = user => {
-    this.activeUser = user;
-    this.setState({ selectVisible: true });
-    if (this.activeUser.id) {
+    this.setState({ selectVisible: true, activeUser: user });
+    if (user.id) {
       // 在为投资人分配IR时默认选中熟悉程度最高的交易师
-      this.setDefaultTrader();
+      this.setDefaultTrader(user);
     } else {
       this.setState({ traderList: this.allTrader, manager: this.allTrader[0].id.toString() });
     }
   }
 
-  setDefaultTrader = () => {
+  setDefaultTrader = activeInvestor => {
     const params = {
-      investoruser: this.activeUser.id,
+      investoruser: activeInvestor.id,
       page_size: 1000,
     };
     api.getUserRelation(params)
@@ -525,7 +525,7 @@ class NewOrgBDList extends React.Component {
   }
 
   createOrgBD = () => {
-    const user = this.activeUser;
+    const user = this.state.activeUser;
     const manager = this.state.traderList.filter(f => f.id === parseInt(this.state.manager, 10))[0];
     this.setState({ selectVisible: false });
     let body = {
@@ -721,7 +721,6 @@ class NewOrgBDList extends React.Component {
 
     const dataSourceForExportCreateOrgBD = list.map(m => m.items)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-    window.echo('aaadata source for export', dataSourceForExportCreateOrgBD);
 
     const columnsForExportCreateOrgBD = [
       {
@@ -873,52 +872,54 @@ class NewOrgBDList extends React.Component {
           <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
         </div> */}
 
-        <Modal
-          title="创建BD"
-          visible={this.state.selectVisible}
-          footer={null}
-          onCancel={() => this.setState({ selectVisible: false, expirationtime: moment().add(1, 'weeks'), })}
-          closable={true}
-          maskClosable={false}
-        >
-          <div style={{marginLeft: '15px'}}>
-            <H3>1.选择交易师</H3>
-            <SelectTrader
-              style={{ width: 300 }}
-              mode="single"
-              data={this.state.traderList}
-              value={this.state.manager}
-              onChange={manager => this.setState({ manager })} />
-            
-            <H3>2.选择过期时间</H3>
-            <DatePicker 
-                  style={{ marginBottom: '15px' }}
-                  placeholder="过期时间"
-                  disabledDate={this.disabledDate}
-                  // defaultValue={moment()}
-                  showToday={false}
-                  shape="circle"
-                  value={this.state.expirationtime}
-                  renderExtraFooter={() => {
-                    return <div>
-                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment()})}}>Now</Button>
+        {this.state.selectVisible &&
+          <Modal
+            title={`创建BD-${this.state.activeUser.org.orgname}-${this.state.activeUser.username || '暂无投资人'}`}
+            visible={this.state.selectVisible}
+            footer={null}
+            onCancel={() => this.setState({ selectVisible: false, expirationtime: moment().add(1, 'weeks'), })}
+            closable={true}
+            maskClosable={false}
+          >
+            <div style={{ marginLeft: '15px' }}>
+              <H3>1.选择交易师</H3>
+              <SelectTrader
+                style={{ width: 300 }}
+                mode="single"
+                data={this.state.traderList}
+                value={this.state.manager}
+                onChange={manager => this.setState({ manager })} />
+
+              <H3>2.选择过期时间</H3>
+              <DatePicker
+                style={{ marginBottom: '15px' }}
+                placeholder="过期时间"
+                disabledDate={this.disabledDate}
+                // defaultValue={moment()}
+                showToday={false}
+                shape="circle"
+                value={this.state.expirationtime}
+                renderExtraFooter={() => {
+                  return <div>
+                    <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment() }) }}>Now</Button>
                       &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment().add(1, 'weeks')})}}>Week</Button>
+                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
                       &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={()=>{this.setState({expirationtime: moment().add(1, 'months')})}}>Month</Button>
-                    </div>
-                  }}
-                  onChange={v=>{this.setState({expirationtime: v})}}
-                />
+                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'months') }) }}>Month</Button>
+                  </div>
+                }}
+                onChange={v => { this.setState({ expirationtime: v }) }}
+              />
               <span style={{ marginLeft: 40 }}>重点BD</span>
               <Switch
                 defaultChecked={this.state.isimportant}
                 onChange={checked => this.setState({ isimportant: checked })}
               />
 
-            <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
-          </div>
-        </Modal>
+              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+            </div>
+          </Modal>
+        }
 
         {this.state.org ?
         <ModalAddUser
