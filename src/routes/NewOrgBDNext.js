@@ -782,17 +782,16 @@ class NewOrgBDList extends React.Component {
           return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
         },
       },
-      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
-
-    ]
-    // if (this.props.source != "meetingbd") {
-    //   columns.push({
-    //     title: i18n('org_bd.important') + '/操作', render: (text, record) => {
-    //       if (!record.bd) return <Button onClick={this.handleCreateBD.bind(this, record)}>创建BD</Button>
-    //       else return <div>{record.bd.isimportant ? "是" : "否"}</div>
-    //     }
-    //   })
-    // }
+      { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' },
+      {
+        title: i18n('org_bd.important') + '/操作',
+        key: 'operation',
+        render: (_, record) => {
+          if (!record.bd) return <a target="_blank" href={window.location.href}>创建BD</a>;
+          return <div>{record.bd.isimportant ? "是" : "否"}</div>;
+        },
+      },
+    ];
 
     return (
       <LeftRightLayout 
