@@ -62,6 +62,18 @@ function tableToExcel(table, worksheetName) {
   return href
 }
 
+function replaceUrlParam(url, paramName, paramValue) {
+    if (paramValue == null) {
+        paramValue = '';
+    }
+    var pattern = new RegExp('\\b('+paramName+'=).*?(&|#|$)');
+    if (url.search(pattern)>=0) {
+        return url.replace(pattern,'$1' + paramValue + '$2');
+    }
+    url = url.replace(/[?#]$/,'');
+    return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue;
+}
+
 class NewOrgBDList extends React.Component {
   
   constructor(props) {
@@ -731,7 +743,6 @@ class NewOrgBDList extends React.Component {
 
     const dataSourceForExportCreateOrgBD = list.map(m => m.items)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-    // window.echo('data source for export', dataSourceForExportCreateOrgBD);
 
     const columnsForExportCreateOrgBD = [
       {
@@ -797,7 +808,10 @@ class NewOrgBDList extends React.Component {
         title: i18n('org_bd.important') + '/操作',
         key: 'operation',
         render: (_, record) => {
-          if (!record.bd) return <a target="_blank" href={window.location.href}>创建BD</a>;
+          if (!record.bd) {
+            const urlWithActiveUserKey = replaceUrlParam(window.location.href, 'activeUserKey', record.key);
+            return <a target="_blank" href={urlWithActiveUserKey}>创建BD</a>;
+          }
           return <div>{record.bd.isimportant ? "是" : "否"}</div>;
         },
       },
@@ -847,7 +861,7 @@ class NewOrgBDList extends React.Component {
 
         <Table
           className="export-create-orgbd"
-          style={{ marginTop: 20 }}
+          style={{ display: 'none' }}
           columns={columnsForExportCreateOrgBD}
           dataSource={dataSourceForExportCreateOrgBD}
           rowKey={record => record.id}
