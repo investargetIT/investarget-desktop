@@ -134,6 +134,7 @@ class NewOrgBDList extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
+    this.getAllTrader();
     api.getProjDetail(this.projId)
       .then(result => {
         this.projDetail = result.data || {}
@@ -151,7 +152,6 @@ class NewOrgBDList extends React.Component {
         this.getOrgBdList()
       })
     
-    this.getAllTrader();
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
@@ -337,7 +337,10 @@ class NewOrgBDList extends React.Component {
     if (initialLoad && this.activeUserKey) {
       const filterData = dataForSingleOrg.filter(f => f.key === this.activeUserKey);
       if (filterData.length > 0) {
-        this.handleCreateBD(filterData[0]);
+        // 延迟加载否则可能出现交易师列表没加载完报错的问题
+        setTimeout(() => {
+          this.handleCreateBD(filterData[0]);
+        }, 3000);
       }
     }
 
@@ -864,7 +867,7 @@ class NewOrgBDList extends React.Component {
           style={{ display: 'none' }}
           columns={columnsForExportCreateOrgBD}
           dataSource={dataSourceForExportCreateOrgBD}
-          rowKey={record => record.id}
+          rowKey={record => record.key}
           pagination={false}
           size={"middle"}
         />
