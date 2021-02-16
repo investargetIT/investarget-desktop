@@ -1122,22 +1122,21 @@ class OrgBDListComponent extends React.Component {
   loadAllOrgBD = async () => {
     const { search, filters } = this.state;
     const params = {
+        ...filters,
         page_size: 1000,
         search,
-        ...filters,
-        manager: undefined,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
     };
-    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-      params.manager = manager;
-      params.createuser = manager;
-      params.unionFields = 'manager,createuser';
-    } else {
-      params.manager = getCurrentUser();
-      params.createuser = getCurrentUser();
-      params.unionFields = 'manager,createuser';
-    }
+    // if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+    //   params.manager = manager;
+    //   params.createuser = manager;
+    //   params.unionFields = 'manager,createuser';
+    // } else {
+    //   params.manager = getCurrentUser();
+    //   params.createuser = getCurrentUser();
+    //   params.unionFields = 'manager,createuser';
+    // }
     let allOrgs = await api.getOrgBdBase(params);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
@@ -1147,19 +1146,19 @@ class OrgBDListComponent extends React.Component {
       items: []
     }));
 
-    const { manager, response } = this.state.filters;
+    const { manager, response, createuser } = this.state.filters;
     for (let index = 0; index < allOrgs.length; index++) {
       const element = allOrgs[index];
-      const params2 = { org: element.org, proj: element.proj.id || "none", response, search: this.state.search };
-      if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-        params2.manager = manager;
-        params2.createuser = manager;
-        params2.unionFields = 'manager,createuser';
-      } else {
-        params2.manager = getCurrentUser();
-        params2.createuser = getCurrentUser();
-        params2.unionFields = 'manager,createuser';
-      }
+      const params2 = { org: element.org, proj: element.proj.id || "none", response, search: this.state.search, manager, createuser };
+      // if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+      //   params2.manager = manager;
+      //   params2.createuser = manager;
+      //   params2.unionFields = 'manager,createuser';
+      // } else {
+      //   params2.manager = getCurrentUser();
+      //   params2.createuser = getCurrentUser();
+      //   params2.unionFields = 'manager,createuser';
+      // }
       const orgBD = await api.getOrgBdList(params2);
       element.items = orgBD.data.data;
       element.loaded = true;
@@ -1595,7 +1594,7 @@ class OrgBDListComponent extends React.Component {
 
         { this.state.filters.proj !== null ? 
         <Table
-          style={{ display: 'none' }}
+          // style={{ display: 'none' }}
           className="new-org-db-style"
           columns={columnsForExport}
           dataSource={this.state.listForExport}
