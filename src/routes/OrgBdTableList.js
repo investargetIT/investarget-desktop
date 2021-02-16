@@ -241,11 +241,11 @@ class TimelineList extends React.Component {
       search, sort, desc,
       response: filters.response.length === 0 ? this.orgBdRes.map(m => m.id) : filters.response,
     };
-    if (!hasPerm('BD.manageOrgBD')) {
-      params.manager = getCurrentUser();
-      // params.createuser = getCurrentUser();
-      // params.unionFields = 'manager,createuser';
-    }
+    // if (!hasPerm('BD.manageOrgBD')) {
+    //   params.manager = getCurrentUser();
+    //   // params.createuser = getCurrentUser();
+    //   // params.unionFields = 'manager,createuser';
+    // }
     this.setState({ loading: true });
     const res = await api.getOrgBdList(params);
     let { data: list, count: total } = res.data;
