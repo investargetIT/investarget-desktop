@@ -1594,7 +1594,7 @@ class OrgBDListComponent extends React.Component {
 
         { this.state.filters.proj !== null ? 
         <Table
-          // style={{ display: 'none' }}
+          style={{ display: 'none' }}
           className="new-org-db-style"
           columns={columnsForExport}
           dataSource={this.state.listForExport}
