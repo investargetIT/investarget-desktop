@@ -493,22 +493,24 @@ class OrgBDListComponent extends React.Component {
     const param1 = {
       org,
       proj: proj || "none",
+      manager,
+      createuser,
       response,
       search: this.state.search,
       page_size: 100,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
     window.echo('承揽承做id数组', this.state.projTradersIds);
-    // 管理员承揽承做才可以筛选负责人
-    if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-      param1.manager = manager;
-      param1.createuser = createuser;
-      // param1.unionFields = 'manager,createuser';
-    } else {
-      param1.manager = [getCurrentUser()];
-      param1.createuser = [getCurrentUser()];
-      param1.unionFields = 'manager,createuser';
-    }
+    // // 管理员承揽承做才可以筛选负责人
+    // if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
+    //   param1.manager = manager;
+    //   param1.createuser = createuser;
+    //   // param1.unionFields = 'manager,createuser';
+    // } else {
+    //   param1.manager = [getCurrentUser()];
+    //   param1.createuser = [getCurrentUser()];
+    //   param1.unionFields = 'manager,createuser';
+    // }
     api.getOrgBdList(param1)
     .then(result => {
       let list = result.data.data.sort((a, b) => {
