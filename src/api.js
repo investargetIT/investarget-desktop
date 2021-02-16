@@ -875,7 +875,14 @@ export const getOrgInvestEvent  = param => r('/org/investevent/?' + qs.stringify
 export const getOrgManageFund   = param => r('/org/managefund/?' + qs.stringify(param));   // 管理基金
 
 export const getOrgBDCount =  param => r('/bd/orgbd/count/?' + qs.stringify(param));
-export const getOrgBDCountNew = param => r('/bd/orgbd/response/?' + qs.stringify(param));
+export const getOrgBDCountNew = param => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
+  return r('/bd/orgbd/response/?' + qs.stringify(param));
+}
 
 export const getProjBDCount = param => r('/bd/projbd/count/?' + qs.stringify(param));
 
