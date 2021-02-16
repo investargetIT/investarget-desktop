@@ -62,11 +62,11 @@ class OrgBDProjList extends React.Component {
   }
 
   getOrgBDProjList = () => {
-    if (hasPerm('BD.manageOrgBD')) {
+    // if (hasPerm('BD.manageOrgBD')) {
       this.getDataWithPermission().catch(handleError);
-    } else {
-      this.getData().catch(handleError);
-    }
+    // } else {
+      // this.getData().catch(handleError);
+    // }
   }
 
   getProjTraderData = async () => {
@@ -85,56 +85,56 @@ class OrgBDProjList extends React.Component {
     return reqProj.data.data;
   }
 
-  getData = async () => {
-    const { search, page, pageSize } = this.state;
-    const page_size = 100;
-    const params = {
-      search,
-      page_size,
-      // page_index: page,
-    };
-    if (!hasPerm('BD.manageOrgBD')) {
-      params.manager = getCurrentUser();
-      params.createuser = getCurrentUser();
-      params.unionFields = 'manager,createuser';
-    }
-    this.setState({ loading: true })
+  // getData = async () => {
+  //   const { search, page, pageSize } = this.state;
+  //   const page_size = 100;
+  //   const params = {
+  //     search,
+  //     page_size,
+  //     // page_index: page,
+  //   };
+  //   if (!hasPerm('BD.manageOrgBD')) {
+  //     params.manager = getCurrentUser();
+  //     params.createuser = getCurrentUser();
+  //     params.unionFields = 'manager,createuser';
+  //   }
+  //   this.setState({ loading: true })
 
-    // 首先请求所有以项目分组的机构BD
-    let reqProj = await api.getOrgBDProj(params);
-    const { count: totalNum } = reqProj.data;
-    if (totalNum > page_size) {
-      reqProj = await api.getOrgBDProj({ ...params, page_size: totalNum });
-    }
-    let orgBDProjects = reqProj.data.data;
-    orgBDProjects = orgBDProjects.filter(f => f.proj).map(m => m.proj);
+  //   // 首先请求所有以项目分组的机构BD
+  //   let reqProj = await api.getOrgBDProj(params);
+  //   const { count: totalNum } = reqProj.data;
+  //   if (totalNum > page_size) {
+  //     reqProj = await api.getOrgBDProj({ ...params, page_size: totalNum });
+  //   }
+  //   let orgBDProjects = reqProj.data.data;
+  //   orgBDProjects = orgBDProjects.filter(f => f.proj).map(m => m.proj);
 
-    if (!hasPerm('BD.manageOrgBD')) {
-      const projectAsTrader = await this.getProjTraderData();
-      orgBDProjects = orgBDProjects.concat(projectAsTrader);
-    }
+  //   if (!hasPerm('BD.manageOrgBD')) {
+  //     const projectAsTrader = await this.getProjTraderData();
+  //     orgBDProjects = orgBDProjects.concat(projectAsTrader);
+  //   }
 
-    const list = _.uniqBy(orgBDProjects, 'id');
-    if (list.length > 0) {
-      // 最后请求当前用户的未读机构BD的统计数据
-      const reqUnreadOrgBD = await api.getOrgBDProj({
-        proj: list.map(m => m.id),
-        isRead: false,
-        manager: [getCurrentUser()],
-        page_size: list.length,
-      });
+  //   const list = _.uniqBy(orgBDProjects, 'id');
+  //   if (list.length > 0) {
+  //     // 最后请求当前用户的未读机构BD的统计数据
+  //     const reqUnreadOrgBD = await api.getOrgBDProj({
+  //       proj: list.map(m => m.id),
+  //       isRead: false,
+  //       manager: [getCurrentUser()],
+  //       page_size: list.length,
+  //     });
 
-      // 将未读机构BD项目与所有项目做匹配
-      list.forEach(element => {
-        const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
-        if (index > -1) {
-          element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
-        }
-      });
-    }
+  //     // 将未读机构BD项目与所有项目做匹配
+  //     list.forEach(element => {
+  //       const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
+  //       if (index > -1) {
+  //         element.unReadOrgBDNum = reqUnreadOrgBD.data.data[index].count;
+  //       }
+  //     });
+  //   }
 
-    this.setState({ loading: false, total: totalNum, list });
-  }
+  //   this.setState({ loading: false, total: totalNum, list });
+  // }
 
   getDataWithPermission = async () => {
     const { search, page, pageSize } = this.state;
@@ -272,7 +272,7 @@ class OrgBDProjList extends React.Component {
             </div>
           </div>
 
-          {hasPerm('BD.manageOrgBD') &&
+          {/* {hasPerm('BD.manageOrgBD') && */}
             <Pagination
               style={{ marginTop: 50, marginBottom: 20, textAlign: 'center' }}
               total={total}
@@ -280,7 +280,7 @@ class OrgBDProjList extends React.Component {
               pageSize={pageSize}
               onChange={this.handlePageChange}
             />
-          }
+          {/* } */}
 
         </div>
       </LeftRightLayout>
