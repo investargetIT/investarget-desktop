@@ -1439,42 +1439,50 @@ class OrgBDListComponent extends React.Component {
             return null;
           },
         },
-        {title: '任务时间', width: '16%', render: (text, record) => {
-          if (record.new) {
-            return <div>
-              { timeWithoutHour(new Date()) + " - " }
-              <DatePicker 
-                placeholder="过期时间"
-                disabledDate={this.disabledDate}
-                // defaultValue={moment()}
-                showToday={false}
-                shape="circle"
-                value={record.expirationtime}
-                renderExtraFooter={() => {
-                  return <div>
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment()})}}>Now</Button>
+        {
+          title: '任务时间',
+          width: '16%',
+          key: 'createdtime',
+          sorter: false,
+          render: (text, record) => {
+            if (record.new) {
+              return <div>
+                {timeWithoutHour(new Date()) + " - "}
+                <DatePicker
+                  placeholder="过期时间"
+                  disabledDate={this.disabledDate}
+                  // defaultValue={moment()}
+                  showToday={false}
+                  shape="circle"
+                  value={record.expirationtime}
+                  renderExtraFooter={() => {
+                    return <div>
+                      <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment() }) }}>Now</Button>
                     &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'weeks')})}}>Week</Button>
+                    <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
                     &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={()=>{this.updateSelection(record, {expirationtime: moment().add(1, 'months')})}}>Month</Button>
-                  </div>
-                }}
-                onChange={v=>{this.updateSelection(record, {expirationtime: v})}}
-              />
-            </div>
-          } else {
-            if (record.response !== null) {
-              return '正常';
+                    <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'months') }) }}>Month</Button>
+                    </div>
+                  }}
+                  onChange={v => { this.updateSelection(record, { expirationtime: v }) }}
+                />
+              </div>
+            } 
+            if (this.isAbleToModifyStatus(record)) {
+              if (record.response !== null) {
+                return '正常';
+              }
+              if (record.expirationtime === null) {
+                return '无过期时间';
+              }
+              const ms = moment(record.expirationtime).diff(moment());
+              const d = moment.duration(ms);
+              const remainDays = Math.ceil(d.asDays());
+              return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
             }
-            if (record.expirationtime === null) {
-              return '无过期时间';
-            }
-            const ms = moment(record.expirationtime).diff(moment());
-            const d = moment.duration(ms);
-            const remainDays = Math.ceil(d.asDays());
-            return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-          }
-        }, key:'createdtime', sorter:false},
+            return null;
+          },
+        },
         {
           title: i18n('org_bd.status'),
           width: '10%',
