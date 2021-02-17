@@ -1486,6 +1486,9 @@ class OrgBDListComponent extends React.Component {
         {
           title: i18n('org_bd.status'),
           width: '10%',
+          dataIndex: 'response',
+          key: 'response',
+          sorter: false,
           render: (text, record) => {
             if (record.new) {
               return (
@@ -1495,19 +1498,31 @@ class OrgBDListComponent extends React.Component {
                   重点BD
                 </Checkbox>
               );
-            } else {
+            }
+            if (this.isAbleToModifyStatus(record)) {
               return text && this.props.orgbdres.filter(f => f.id === text)[0].name;
             }
-          }, 
-          dataIndex: 'response', 
-          key:'response', 
-          sorter:false
+            return null;
+          },
         },
-        {title: "最新备注", width: '20%', render: (text, record) => {
-          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
-
-          return record.new ? "暂无" : (latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{maxWidth: 400}}>{latestComment}</p>}><div style={{color: "#428bca"}}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment }</div></Popover> : "暂无")
-        }, key:'bd_latest_info'}]
+        {
+          title: "最新备注",
+          width: '20%',
+          key: 'bd_latest_info',
+          render: (text, record) => {
+            if (record.new) {
+              return '暂无';
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+              return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+              </Popover> : "暂无";
+            }
+            return null;
+          },
+        },
+      ];
         
         if (this.props.editable) columns.push({
             title: i18n('org_bd.operation'), width: '20%', render: (text, record) => 
