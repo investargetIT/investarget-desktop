@@ -544,25 +544,39 @@ class TimelineList extends React.Component {
         key: 'manager', 
         dataIndex: 'manager.username', 
         sorter: true,
+        render: (text, record) => {
+          if (this.isAbleToModifyStatus(record)) {
+            return text;
+          }
+          return null;
+        },
       },
       { 
         title: i18n('org_bd.status'), 
         key: 'response',
         dataIndex: 'response',
         sorter: true,
-        render: text => text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name,
+        render: (text, record) => {
+          if (this.isAbleToModifyStatus(record)) {
+            return text && this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name;
+          }
+          return null;
+        }
       },
       {
         title: "最新备注",
         key: 'bd_latest_info',
-        render: (text, record) => {
-          let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length-1].comments || null;
-          return latestComment ?
-            <Popover placement="leftTop" title="最新备注" content={<p style={{maxWidth: 400}}>{latestComment}</p>}>
-              <div style={{color: "#428bca"}}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment }
-              </div>
-            </Popover>
-            : "暂无";
+        render: (_, record) => {
+          if (this.isAbleToModifyStatus(record)) {
+            let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+            return latestComment ?
+              <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}
+                </div>
+              </Popover>
+              : "暂无";
+          }
+          return null;
         },
       },
       {
