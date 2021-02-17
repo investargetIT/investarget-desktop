@@ -1399,9 +1399,22 @@ class OrgBDListComponent extends React.Component {
             width: '7%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
-          {title: i18n('org_bd.creator'), width: '7%', render: (text, record) => {
-            return record.new ? isLogin().username : record.createuser.username
-          }, dataIndex:'createuser.username', key:'createuser', sorter:false},
+        {
+          title: i18n('org_bd.creator'),
+          width: '7%',
+          dataIndex: 'createuser.username',
+          key: 'createuser',
+          sorter: false,
+          render: (text, record) => {
+            if (record.new) {
+              return isLogin().username;
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              return text;
+            }
+            return null;
+          }, 
+        },
           {title: i18n('org_bd.manager'), width: '10%', render: (text, record) => {
             return record.new ? 
             <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div>{record.manager.username}</div>
