@@ -1415,10 +1415,30 @@ class OrgBDListComponent extends React.Component {
             return null;
           }, 
         },
-          {title: i18n('org_bd.manager'), width: '10%', render: (text, record) => {
-            return record.new ? 
-            <SelectTrader style={{ width: "100%" }} data={this.state.traderList} mode="single" value={record.trader} onChange={v=>{this.updateSelection(record, {trader: v})}}/> : <div>{record.manager.username}</div>
-          }, dataIndex: 'manager.username', key:'manager', sorter:false},
+        {
+          title: i18n('org_bd.manager'),
+          width: '10%',
+          dataIndex: 'manager.username',
+          key: 'manager',
+          sorter: false,
+          render: (text, record) => {
+            if (record.new) {
+              return (
+                <SelectTrader
+                  style={{ width: "100%" }}
+                  data={this.state.traderList}
+                  mode="single"
+                  value={record.trader}
+                  onChange={v => { this.updateSelection(record, { trader: v }) }}
+                />
+              );
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              return text;
+            }
+            return null;
+          },
+        },
         {title: '任务时间', width: '16%', render: (text, record) => {
           if (record.new) {
             return <div>
