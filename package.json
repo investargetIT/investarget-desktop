@@ -16,12 +16,12 @@
     "install-node": "6.9.2"
   },
   "dependencies": {
-    "antd": "^2.13.10",
+    "antd": "^4.12.3",
     "babel-plugin-import": "^1.1.1",
     "babel-runtime": "^6.9.2",
     "classnames": "^2.2.5",
-    "dva": "^1.2.1",
-    "dva-loading": "^0.2.1",
+    "dva": "^2.4.1",
+    "dva-loading": "^3.0.22",
     "es6-promise": "^4.1.1",
     "favicon.js": "^1.0.0",
     "g2": "^2.3.13",
@@ -31,12 +31,11 @@
     "prop-types": "^15.5.10",
     "qrcode.react": "^0.7.2",
     "rc-trigger": "^2.0.1",
-    "react": "^15.4.0",
-    "react-addons-css-transition-group": "^15.5.2",
-    "react-dom": "^15.4.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-draggable": "^3.0.2",
     "react-intl": "^2.2.3",
-    "recharts": "^1.0.0-alpha.1",
+    "recharts": "^2.0.7",
     "viewerjs": "^0.7.1"
   },
   "devDependencies": {
