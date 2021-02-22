@@ -52,32 +52,15 @@ class Login extends React.Component {
     }
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        const redirectUrl = this.props.location.query.redirect
-        this.props.dispatch({
-          type: 'currentUser/login',
-          payload: { ...values,
-            redirect: redirectUrl && decodeURIComponent(redirectUrl)
-          }
-        })
-      } else {
-        // 按字段顺序处理错误，只处理第一个错误
-        let fields = ['username', 'password']
-        for (let i = 0, len = fields.length; i < len; i++) {
-          let field = fields[i]
-          let errField = err[field]
-          if (errField) {
-            let error = errField.errors[0]
-            handleError(new FormError(error.message))
-            return
-          }
-        }
-      }
-    })
+  handleSubmit = values => {
+    const redirectUrl = this.props.location.query.redirect;
+    this.props.dispatch({
+      type: 'currentUser/login',
+      payload: {
+        ...values,
+        redirect: redirectUrl && decodeURIComponent(redirectUrl),
+      },
+    });
   }
 
   componentDidMount() {
@@ -89,7 +72,7 @@ class Login extends React.Component {
   render() {
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form onSubmit={this.handleSubmit} className="it-login-form">
+        <Form className="it-login-form" onFinish={this.handleSubmit}>
           <div style={formStyle}>
             <div style={{ margin: '0 auto' }}>
               <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
