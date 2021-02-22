@@ -151,4 +151,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(Form.create()(Login))
+export default connect(mapStateToProps)(Login);
