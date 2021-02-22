@@ -53,7 +53,9 @@ class Login extends React.Component {
   }
 
   handleSubmit = values => {
-    const redirectUrl = this.props.location.query.redirect;
+    const { search } = this.props.location;
+    const params = new URLSearchParams(search);
+    const redirectUrl = params.get('redirect');
     this.props.dispatch({
       type: 'currentUser/login',
       payload: {
