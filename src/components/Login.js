@@ -87,7 +87,6 @@ class Login extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
@@ -97,36 +96,39 @@ class Login extends React.Component {
               <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
               <div style={{ position: 'relative', marginBottom: 20, }}>
-                {getFieldDecorator('username', {
-                  rules: [{ required: true, message: i18n('account.account_warning') }],
-                  initialValue: this.username || '',
-                })(
+                <Form.Item
+                  name="username"
+                  rules={[{ required: true, message: i18n('account.account_warning') }]}
+                  initialValue={this.username || ''}
+                >
                   <Input placeholder={i18n('account.account_warning')} style={formInputStyle} />
-                )}
+                </Form.Item>
                 <div style={inputIconStyle}>
                   <img src="/images/sign-in-username.jpg" style={{ verticalAlign: 'top' }} />
                 </div>
               </div>
 
               <div style={{ position: 'relative' }}>
-                {getFieldDecorator('password', {
-                  rules: [{ required: true, message: i18n('account.password_warning') }],
-                  initialValue: this.password || '',
-                })(
+                <Form.Item
+                  name="password"
+                  rules={[{ required: true, message: i18n('account.password_warning') }]}
+                  initialValue={this.password || ''}
+                >
                   <Input placeholder={i18n('account.password_warning')} style={formInputStyle} type="password" />
-                )}
+                </Form.Item>
                 <div style={inputIconStyle}>
                   <img src="/images/sign-in-password.jpg" style={{ verticalAlign: 'top' }} />
                 </div>
               </div>
 
               <div style={{ padding: '10px 16px' }}>
-                {getFieldDecorator('remember', {
-                  valuePropName: 'checked',
-                  initialValue: this.username ? true : false, // 如果是记住账号密码，初始值设为 true
-                })(
+                <Form.Item
+                  name="remember"
+                  valuePropName="checked"
+                  initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
+                >
                   <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.auto_login')}</Checkbox>
-                )}
+                </Form.Item>
                 <Link style={{ float: 'right', textDecoration: 'underline' }} to="/password">{i18n("account.forget_password")}</Link>
               </div>
 
