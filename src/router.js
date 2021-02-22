@@ -1,89 +1,89 @@
 import React from 'react'
 import { Router, Route, Redirect } from 'dva/router'
-import IndexPage from './routes/IndexPage'
-import Login from './components/Login.js'
-import UserList from "./routes/UserList.js"
-import OrgUserList from './routes/OrgUserList.js'
-import Register from './routes/Register'
 import Home from './routes/Home'
-import AddOrganization from "./routes/AddOrganization.js"
-import OrganizationList from "./routes/OrganizationList.js"
-import AddProject from './routes/AddProject'
-import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
-import AddUser from './routes/AddUser.js'
-import LogList from './routes/LogList'
-import ModifyPwd from './routes/ModifyPwd'
-import BasicInfo from './routes/BasicInfo'
-import PermList from './routes/PermList'
-import DataRoom from './routes/DataRoom'
-import EditOrganization from './routes/EditOrganization'
-import OrgDetail from './routes/OrgDetail'
-import EditProject from './routes/EditProject'
-import ProjectList from './routes/ProjectList'
-import ProjectListRecommend from './routes/ProjectListRecommend'
-import ProjectListFavor from './routes/ProjectListFavor'
-import ProjectListInterest from './routes/ProjectListInterest'
-import ProjectListPublished from './routes/ProjectListPublished'
-import ProjectDetail from './routes/ProjectDetail'
-import OrgBdTableList from './routes/OrgBdTableList';
-import DataRoomList from './routes/DataRoomList'
-import EmailList from './routes/EmailList'
-import EmailDetail from './routes/EmailDetail'
-import EditUser from './routes/EditUser'
-import UserDetail from './routes/UserDetail'
-import EditTimeline from './routes/EditTimeline'
-import TimelineDetail from './routes/TimelineDetail'
-import InboxList from './routes/InboxList'
-import AddDataRoom from './routes/AddDataRoom'
-import AddTimeline from './routes/AddTimeline'
-import AddMarketPlace from './routes/AddMarketPlace'
-import EditMarketPlace from './routes/EditMarketPlace'
-import MarketPlaceDetail from './routes/MarketPlaceDetail'
-import MyInvestor from './routes/MyInvestor'
-import MyTrader from './routes/MyTrader'
-import RecommendProject from './routes/RecommendProject'
-import SelectUserToPosition from './routes/SelectUserToPosition'
-import AccessDenied from './routes/AccessDenied'
-import SelectTraderToRelation from './routes/SelectTraderToRelation'
-import Agreement from './routes/Agreement'
-import ProjectLibrary from './routes/ProjectLibrary'
-import ProjectLibraryItem from './routes/ProjectLibraryItem'
-import ProjectBDList from './routes/ProjectBDList'
-import AddProjectBD from './routes/AddProjectBD'
-import EditProjectBD from './routes/EditProjectBD'
-import WxMessage from './routes/WxMessage'
-import Schedule from './routes/Schedule'
-import ScheduleList from './routes/ScheduleList'
-import ResetPassword from './routes/ResetPassword'
-import Register1 from './routes/Register1'
-import RecommendFriends from './components/RecommendFriends';
-import RecommendProjects from './components/RecommendProjects';
-import OrgBDList from './routes/OrgBDList';
-import AddOrgBD from './routes/AddOrgBD';
-import NewOrgBD from './routes/NewOrgBD';
-import NewOrgBDNext from './routes/NewOrgBDNext';
-import TraderDetail from './routes/TraderDetail';
-import MeetingBDList from './routes/MeetingBDList';
-import AddMeetingBD from './routes/AddMeetingBD';
-import CompanyDataRoomList from './routes/CompanyDataRoomList';
-import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
-import OrgExportList from './routes/OrgExportList';
-import OrgBDProjList from './routes/OrgBDProjList';
-import AddReport from './routes/AddReport';
-import ReportList from './routes/ReportList';
-import ReportDetail from './routes/ReportDetail';
-import EditReport from './routes/EditReport';
-import AddOKR from './routes/AddOKR';
-import OKRList from './routes/OKRList';
-import EditOKR from './routes/EditOKR';
-import InternOnlineTest from './routes/InternOnlineTest';
-import ProjectReport from './routes/ProjectReport';
+// import IndexPage from './routes/IndexPage'
+// import Login from './components/Login.js'
+// import UserList from "./routes/UserList.js"
+// import OrgUserList from './routes/OrgUserList.js'
+// import Register from './routes/Register'
+// import AddOrganization from "./routes/AddOrganization.js"
+// import OrganizationList from "./routes/OrganizationList.js"
+// import AddProject from './routes/AddProject'
+// import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
+// import AddUser from './routes/AddUser.js'
+// import LogList from './routes/LogList'
+// import ModifyPwd from './routes/ModifyPwd'
+// import BasicInfo from './routes/BasicInfo'
+// import PermList from './routes/PermList'
+// import DataRoom from './routes/DataRoom'
+// import EditOrganization from './routes/EditOrganization'
+// import OrgDetail from './routes/OrgDetail'
+// import EditProject from './routes/EditProject'
+// import ProjectList from './routes/ProjectList'
+// import ProjectListRecommend from './routes/ProjectListRecommend'
+// import ProjectListFavor from './routes/ProjectListFavor'
+// import ProjectListInterest from './routes/ProjectListInterest'
+// import ProjectListPublished from './routes/ProjectListPublished'
+// import ProjectDetail from './routes/ProjectDetail'
+// import OrgBdTableList from './routes/OrgBdTableList';
+// import DataRoomList from './routes/DataRoomList'
+// import EmailList from './routes/EmailList'
+// import EmailDetail from './routes/EmailDetail'
+// import EditUser from './routes/EditUser'
+// import UserDetail from './routes/UserDetail'
+// import EditTimeline from './routes/EditTimeline'
+// import TimelineDetail from './routes/TimelineDetail'
+// import InboxList from './routes/InboxList'
+// import AddDataRoom from './routes/AddDataRoom'
+// import AddTimeline from './routes/AddTimeline'
+// import AddMarketPlace from './routes/AddMarketPlace'
+// import EditMarketPlace from './routes/EditMarketPlace'
+// import MarketPlaceDetail from './routes/MarketPlaceDetail'
+// import MyInvestor from './routes/MyInvestor'
+// import MyTrader from './routes/MyTrader'
+// import RecommendProject from './routes/RecommendProject'
+// import SelectUserToPosition from './routes/SelectUserToPosition'
+// import AccessDenied from './routes/AccessDenied'
+// import SelectTraderToRelation from './routes/SelectTraderToRelation'
+// import Agreement from './routes/Agreement'
+// import ProjectLibrary from './routes/ProjectLibrary'
+// import ProjectLibraryItem from './routes/ProjectLibraryItem'
+// import ProjectBDList from './routes/ProjectBDList'
+// import AddProjectBD from './routes/AddProjectBD'
+// import EditProjectBD from './routes/EditProjectBD'
+// import WxMessage from './routes/WxMessage'
+// import Schedule from './routes/Schedule'
+// import ScheduleList from './routes/ScheduleList'
+// import ResetPassword from './routes/ResetPassword'
+// import Register1 from './routes/Register1'
+// import RecommendFriends from './components/RecommendFriends';
+// import RecommendProjects from './components/RecommendProjects';
+// import OrgBDList from './routes/OrgBDList';
+// import AddOrgBD from './routes/AddOrgBD';
+// import NewOrgBD from './routes/NewOrgBD';
+// import NewOrgBDNext from './routes/NewOrgBDNext';
+// import TraderDetail from './routes/TraderDetail';
+// import MeetingBDList from './routes/MeetingBDList';
+// import AddMeetingBD from './routes/AddMeetingBD';
+// import CompanyDataRoomList from './routes/CompanyDataRoomList';
+// import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
+// import OrgExportList from './routes/OrgExportList';
+// import OrgBDProjList from './routes/OrgBDProjList';
+// import AddReport from './routes/AddReport';
+// import ReportList from './routes/ReportList';
+// import ReportDetail from './routes/ReportDetail';
+// import EditReport from './routes/EditReport';
+// import AddOKR from './routes/AddOKR';
+// import OKRList from './routes/OKRList';
+// import EditOKR from './routes/EditOKR';
+// import InternOnlineTest from './routes/InternOnlineTest';
+// import ProjectReport from './routes/ProjectReport';
 
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
       <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
+      {/* <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/register1" component={Register1} />
       <Route path="/recommend-friends" component={RecommendFriends} />
@@ -157,7 +157,7 @@ function RouterConfig({ history }) {
       <Route path="/app/okr/list" component={OKRList} />
       <Route path="/app/okr/edit/:id" component={EditOKR} />
       <Route path="/app/online-test" component={InternOnlineTest} />
-      <Route path="/app/project-report" component={ProjectReport} />
+      <Route path="/app/project-report" component={ProjectReport} /> */}
     </Router>
   )
 }

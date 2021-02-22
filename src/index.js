@@ -2,8 +2,7 @@ import ReactDOM from 'react-dom'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { LocaleProvider } from 'antd'
 import dva from 'dva';
-import { useRouterHistory } from 'dva/router';
-import { createHistory } from 'history'
+import createHistory from 'history/createBrowserHistory';
 import { state } from './models/app';
 import './base_components/menu.less';
 import './index.css';
@@ -37,7 +36,7 @@ collapsed = w < 1200 ? true : collapsed ? JSON.parse(collapsed) : false;
 
 // 1. Initialize
 const app = dva({
-  history: useRouterHistory(createHistory)({ basename: basename }),
+  history: createHistory({ basename: basename }),
   initialState: {
     currentUser: getUserInfo(),
     app: {
