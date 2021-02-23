@@ -1,4 +1,5 @@
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
 import { i18n, handleError } from '../utils/util'
@@ -6,7 +7,12 @@ import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
 
-const formStyle = {width:418,padding:20,background:'white',zIndex:1,color:'#666', 
+const formStyle = {
+  width: 480,
+  padding: 20,
+  background: 'white',
+  zIndex:1,
+  color:'#666', 
   border: '1px solid rgba(0, 0, 0, .2)',
   borderRadius: 6,
   boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
@@ -15,7 +21,7 @@ const formTitleStyle = {fontSize:30,fontWeight:400,textAlign:'center',color:'#66
 const formSubtitleStyle = {fontSize:14,color: '#666',padding:'12px 16px', marginBottom: 30, textAlign: 'center'}
 const formInputStyle = {
   border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
-  background: '#F0F0F0',
+  // background: '#F0F0F0',
   border: '1px solid #ccc',
   borderRadius: 4,
   fontSize: 14,
@@ -86,7 +92,11 @@ class Login extends React.Component {
                   rules={[{ required: true, message: i18n('account.account_warning') }]}
                   initialValue={this.username || ''}
                 >
-                  <Input placeholder={i18n('account.account_warning')} style={formInputStyle} />
+                  <Input
+                    style={formInputStyle}
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    placeholder={i18n('account.account_warning')}
+                  />
                 </Form.Item>
                 <div style={inputIconStyle}>
                   <img src="/images/sign-in-username.jpg" style={{ verticalAlign: 'top' }} />
@@ -99,14 +109,19 @@ class Login extends React.Component {
                   rules={[{ required: true, message: i18n('account.password_warning') }]}
                   initialValue={this.password || ''}
                 >
-                  <Input placeholder={i18n('account.password_warning')} style={formInputStyle} type="password" />
+                  <Input
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder={i18n('account.password_warning')}
+                    style={formInputStyle}
+                    type="password"
+                  />
                 </Form.Item>
                 <div style={inputIconStyle}>
                   <img src="/images/sign-in-password.jpg" style={{ verticalAlign: 'top' }} />
                 </div>
               </div>
 
-              <div style={{ padding: '10px 16px' }}>
+              <div style={{ padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Form.Item
                   name="remember"
                   valuePropName="checked"
@@ -114,7 +129,7 @@ class Login extends React.Component {
                 >
                   <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.auto_login')}</Checkbox>
                 </Form.Item>
-                <Link style={{ float: 'right', textDecoration: 'underline' }} to="/password">{i18n("account.forget_password")}</Link>
+                <Link style={{ marginBottom: 24, textDecoration: 'underline' }} to="/password">{i18n("account.forget_password")}</Link>
               </div>
 
               <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>

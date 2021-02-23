@@ -1,15 +1,15 @@
 import { changeLang } from '../utils/util'
 import headerStyles from './LoginContainerHeader.css';
 
-const containerStyle = {background:'#fff'}
+const containerStyle = {background:'#f3f5f7', whiteSpace: 'pre', display: 'inline-block', minWidth: '100%'}
 const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
 const logoStyle = {height: 70, padding: '10px 0'}
-const bodyStyle = {width: 1200, height: '100%', margin: '0 auto', position: 'relative', 
+const bodyStyle = {width: 1200, height: 750, margin: '0 auto', position: 'relative', 
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
 };
-const footerStyle = {width: 1200, height: 100, margin: '0 auto', backgroundColor: '#fff'}
+const footerStyle = {width: 1200, height: 100, margin: '0 auto'}
 const copyrightStyle = {textAlign:'center',height:20,lineHeight:'20px',paddingTop:40,fontSize:16,color:'#989898'}
 
 class LoginContainer extends React.Component {
@@ -47,15 +47,15 @@ class LoginContainer extends React.Component {
       margin: '0 auto', 
       minWidth: 1200, 
       maxWidth: 1920, 
-      height: 750, 
-      backgroundImage: bg, 
+      // height: 750, 
+      // backgroundImage: bg, 
       backgroundPosition: 'center center', 
       backgroundSize: 'cover', 
       backgroundRepeat: 'no-repeat'
     };
     return (
       <div style={containerStyle}>
-        {source !== 1 && (
+        {/* {source !== 1 && (
           <div style={headerStyle}>
             <img src={logo} style={logoStyle} />
             <div style={{ float: "right", marginRight: 30, lineHeight: "80px" }}>
@@ -98,17 +98,17 @@ class LoginContainer extends React.Component {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         <div style={{ ...bodyWrapStyle, ...this.props.bodyWrapStyle }}>
           <div style={bodyStyle}>
             {props.children}
           </div>
-        </div>
-        <div style={footerStyle}>
-          <p style={copyrightStyle}>
-            &copy; 2020.All Rights Reserved. Investarget
+          <div style={footerStyle}>
+            <p style={copyrightStyle}>
+              &copy; 2020.All Rights Reserved. Investarget
           </p>
+          </div>
         </div>
       </div>
     )
