@@ -55,6 +55,12 @@ class LoginContainer extends React.Component {
     };
     return (
       <div style={containerStyle}>
+        <div>
+          <div>
+            <img src="/images/investarget_new_logo.png" style={{ width: 48, height: 48 }} />
+            <img src="/images/investarget_logo_transparent.png" style={{ marginLeft: 10, width: 180 }} />
+          </div>
+        </div>
         {/* {source !== 1 && (
           <div style={headerStyle}>
             <img src={logo} style={logoStyle} />
