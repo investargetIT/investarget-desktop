@@ -205,8 +205,10 @@ class NewOrgBDList extends React.Component {
     } else {
       // 暂无投资人
       const activeUserOrgID = splitStrArr[2];
+      const reqOrgInfo = await api.getOrgDetailLang(activeUserOrgID);
+      const { data: org } = reqOrgInfo;
+      this.setState({ activeUserFromExcel: { org } });
     }
-    
   }
 
   setDefaultTraderForExcelIfNecessary = () => {
@@ -1036,7 +1038,7 @@ class NewOrgBDList extends React.Component {
 
         {this.state.displayCreateBDModalFromExcel &&
           <Modal
-            title={this.state.activeUserFromExcel ? `创建BD-${this.state.activeUserFromExcel.org.orgname}-${this.state.activeUserFromExcel.username}` : '创建BD'}
+            title={this.state.activeUserFromExcel ? `创建BD-${this.state.activeUserFromExcel.org.orgname}-${this.state.activeUserFromExcel.username || '暂无投资人'}` : '创建BD'}
             visible={this.state.displayCreateBDModalFromExcel}
             footer={null}
             onCancel={() => this.setState({ displayCreateBDModalFromExcel: false, expirationtime: moment().add(1, 'weeks'), })}
