@@ -55,10 +55,14 @@ class LoginContainer extends React.Component {
     };
     return (
       <div style={containerStyle}>
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: 30 }}>
           <div>
             <img src="/images/investarget_new_logo.png" style={{ width: 48, height: 48 }} />
             <img src="/images/investarget_logo_transparent.png" style={{ marginLeft: 10, width: 180 }} />
+          </div>
+          <div style={{ width: 120, height: 32, display: 'flex', alignItems: 'center', border: '1px #13356c solid', borderRadius: 4, overflow: 'hidden', fontSize: 14 }}>
+            <div style={{ flex: 1, textAlign: 'center', lineHeight: '32px', background: '#13356c', color: 'white', cursor: 'pointer' }}>中文</div>
+            <div style={{ flex: 1, textAlign: 'center', lineHeight: '32px', color: '#13356c', cursor: 'pointer' }}>EN</div>
           </div>
         </div>
         {/* {source !== 1 && (
