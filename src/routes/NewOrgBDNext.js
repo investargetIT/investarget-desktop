@@ -139,13 +139,14 @@ class NewOrgBDList extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
+    this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
     api.getProjDetail(this.projId)
       .then(result => {
         this.projDetail = result.data || {}
         
         const { projTraders } = result.data;
+        this.checkIfExistBDFromExcel(projTraders);
         if (projTraders) {
-          this.checkIfExistBDFromExcel(projTraders);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
           });
@@ -157,7 +158,6 @@ class NewOrgBDList extends React.Component {
         this.getOrgBdList()
       })
     this.checkCreateBDFromExcel();
-    this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
 
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
@@ -175,8 +175,10 @@ class NewOrgBDList extends React.Component {
       activeOrgID = splitStrArr[2];
       activeUserID = null;
     }
-
-    const projTradersIds = projTraders.filter(f => f.user).map(m => m.user.id);
+    let projTradersIds = [];
+    if (projTraders) {
+      projTradersIds = projTraders.filter(f => f.user).map(m => m.user.id);
+    }
     const params = { proj: this.projId || "none" };
     if (!hasPerm('BD.manageOrgBD') && !projTradersIds.includes(getCurrentUser())) {
       params.manager = getCurrentUser();
