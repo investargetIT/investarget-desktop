@@ -125,7 +125,7 @@ class NewOrgBDList extends React.Component {
         activeUser: null, // 点击创建BD时对应的投资人
 
         // 从Excel链接进来的创建机构BD相关状态
-        displayCreateBDModalFromExcel: this.activeUserKey ? true : false,
+        displayCreateBDModalFromExcel: false,
         activeUserFromExcel: null,
     }
 
@@ -139,14 +139,13 @@ class NewOrgBDList extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
-    this.checkCreateBDFromExcel();
-    this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
     api.getProjDetail(this.projId)
       .then(result => {
         this.projDetail = result.data || {}
         
         const { projTraders } = result.data;
         if (projTraders) {
+          this.checkIfExistBDFromExcel(projTraders);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
           });
@@ -157,12 +156,43 @@ class NewOrgBDList extends React.Component {
       .catch(error => {
         this.getOrgBdList()
       })
-    
+    this.checkCreateBDFromExcel();
+    this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
+
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+  }
+
+  checkIfExistBDFromExcel = async projTraders => {
+    if (!this.activeUserKey) return;
+    const splitStrArr = this.activeUserKey.split('-');
+    let activeUserID = splitStrArr[1];
+    let activeOrgID = null;
+    if (activeUserID === 'null') {
+      activeOrgID = splitStrArr[2];
+      activeUserID = null;
+    }
+
+    const projTradersIds = projTraders.filter(f => f.user).map(m => m.user.id);
+    const params = { proj: this.projId || "none" };
+    if (!hasPerm('BD.manageOrgBD') && !projTradersIds.includes(getCurrentUser())) {
+      params.manager = getCurrentUser();
+    }
+    if (activeUserID) {
+      params.bduser = activeUserID;
+    }
+    if (activeOrgID) {
+      params.org = activeOrgID;
+    }
+    const reqBD = await api.getOrgBdList(params);
+    const { count } = reqBD.data;
+    if (count === 0) {
+      // 说明已经不存在相关的机构BD，显示弹出框
+      this.setState({ displayCreateBDModalFromExcel: true });
+    }
   }
 
   checkCreateBDFromExcel = async () => {
