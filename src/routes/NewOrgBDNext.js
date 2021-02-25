@@ -604,6 +604,32 @@ class NewOrgBDList extends React.Component {
       .catch(handleError);
   }
 
+  createOrgBDFromExcel = () => {
+    const user = this.state.activeUserFromExcel;
+    const manager = this.state.traderList.filter(f => f.id === parseInt(this.state.manager, 10))[0];
+    this.setState({ displayCreateBDModalFromExcel: false });
+    let body = {
+      bduser: user.id,
+      manager: this.state.manager,
+      org: user.org.id,
+      proj: this.projId,
+      isimportant: this.state.isimportant,
+      bd_status: 1,
+      expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
+    };
+    api.getUserSession()
+      .then(() => api.addOrgBD(body))
+      .then(() => {
+        Modal.success({
+          title: '机构BD创建成功',
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+        });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.loadDataForSingleOrg(user.org);
+      })
+      .catch(handleError);
+  }
+
   handleSearch = async () => {
     if (!this.state.search) {
       this.setState({ list: this.state.originalList });
@@ -1022,7 +1048,7 @@ class NewOrgBDList extends React.Component {
                 onChange={checked => this.setState({ isimportant: checked })}
               />
 
-              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
             </div>
           </Modal>
         }
