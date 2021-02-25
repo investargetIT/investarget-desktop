@@ -89,9 +89,10 @@ class NewOrgBDList extends React.Component {
     this.filterOrgWithoutInvestor = this.props.location.query.investor === 'true' ? true : false;
     this.tags = (this.props.location.query.tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
     this.projDetail = {}
+
     // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
     this.activeUserKey = this.props.location.query.activeUserKey;
-    
+
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: '',
@@ -122,6 +123,10 @@ class NewOrgBDList extends React.Component {
         historyBDRefresh: 0,
         projTradersIds: [], // 项目承揽承做的 ID 数组
         activeUser: null, // 点击创建BD时对应的投资人
+
+        // 从Excel链接进来的创建机构BD相关状态
+        displayCreateBDModalFromExcel: false,
+        activeUserFromExcel: null,
     }
 
     this.allTrader = [];
@@ -134,12 +139,13 @@ class NewOrgBDList extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
-    this.getAllTrader();
+    this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
     api.getProjDetail(this.projId)
       .then(result => {
         this.projDetail = result.data || {}
         
         const { projTraders } = result.data;
+        this.checkIfExistBDFromExcel(projTraders);
         if (projTraders) {
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
@@ -151,12 +157,72 @@ class NewOrgBDList extends React.Component {
       .catch(error => {
         this.getOrgBdList()
       })
-    
+    this.checkCreateBDFromExcel();
+
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+  }
+
+  checkIfExistBDFromExcel = async projTraders => {
+    if (!this.activeUserKey) return;
+    const splitStrArr = this.activeUserKey.split('-');
+    let activeUserID = splitStrArr[1];
+    let activeOrgID = null;
+    if (activeUserID === 'null') {
+      activeOrgID = splitStrArr[2];
+      activeUserID = null;
+    }
+    let projTradersIds = [];
+    if (projTraders) {
+      projTradersIds = projTraders.filter(f => f.user).map(m => m.user.id);
+    }
+    const params = { proj: this.projId || "none" };
+    if (!hasPerm('BD.manageOrgBD') && !projTradersIds.includes(getCurrentUser())) {
+      params.manager = getCurrentUser();
+    }
+    if (activeUserID) {
+      params.bduser = activeUserID;
+    }
+    if (activeOrgID) {
+      params.org = activeOrgID;
+    }
+    const reqBD = await api.getOrgBdList(params);
+    const { count } = reqBD.data;
+    if (count === 0) {
+      // 说明已经不存在相关的机构BD，显示弹出框
+      this.setState({ displayCreateBDModalFromExcel: true });
+    }
+  }
+
+  checkCreateBDFromExcel = async () => {
+    if (!this.activeUserKey) return;
+    const splitStrArr = this.activeUserKey.split('-');
+    const activeUserID = splitStrArr[1];
+    if (activeUserID !== 'null') {
+      const reqUserInfo = await api.getUserInfo(activeUserID);
+      this.setState({ activeUserFromExcel: reqUserInfo.data });
+    } else {
+      // 暂无投资人
+      const activeUserOrgID = splitStrArr[2];
+      const reqOrgInfo = await api.getOrgDetailLang(activeUserOrgID);
+      const { data: org } = reqOrgInfo;
+      this.setState({ activeUserFromExcel: { org } });
+    }
+  }
+
+  setDefaultTraderForExcelIfNecessary = () => {
+    if (!this.activeUserKey || !this.state.displayCreateBDModalFromExcel) return;
+    const splitStrArr = this.activeUserKey.split('-');
+    const activeUserID = splitStrArr[1];
+    if (activeUserID !== 'null') {
+      this.setDefaultTrader(activeUserID);
+    } else {
+      // 暂无投资人的机构BD设置默认交易师
+      this.setState({ traderList: this.allTrader, manager: this.allTrader[0].id.toString() });
+    }
   }
 
   getOrgBdList = () => {
@@ -333,16 +399,16 @@ class NewOrgBDList extends React.Component {
     newList = newList.filter(f => !(f.loaded && f.items.length === 0));
     this.setState({ list: newList, originalList: newList });
 
-    // 通过创建BD的链接进来的并且是首次加载
-    if (initialLoad && this.activeUserKey) {
-      const filterData = dataForSingleOrg.filter(f => f.key === this.activeUserKey);
-      if (filterData.length > 0) {
-        // 延迟加载否则可能出现交易师列表没加载完报错的问题
-        setTimeout(() => {
-          this.handleCreateBD(filterData[0]);
-        }, 3000);
-      }
-    }
+    // // 通过创建BD的链接进来的并且是首次加载
+    // if (initialLoad && this.activeUserKey) {
+    //   const filterData = dataForSingleOrg.filter(f => f.key === this.activeUserKey);
+    //   if (filterData.length > 0) {
+    //     // 延迟加载否则可能出现交易师列表没加载完报错的问题
+    //     setTimeout(() => {
+    //       this.handleCreateBD(filterData[0]);
+    //     }, 3000);
+    //   }
+    // }
 
     return dataForSingleOrg;
   }
@@ -496,15 +562,15 @@ class NewOrgBDList extends React.Component {
     this.setState({ selectVisible: true, activeUser: user });
     if (user.id) {
       // 在为投资人分配IR时默认选中熟悉程度最高的交易师
-      this.setDefaultTrader(user);
+      this.setDefaultTrader(user.id);
     } else {
       this.setState({ traderList: this.allTrader, manager: this.allTrader[0].id.toString() });
     }
   }
 
-  setDefaultTrader = activeInvestor => {
+  setDefaultTrader = activeInvestorID => {
     const params = {
-      investoruser: activeInvestor.id,
+      investoruser: activeInvestorID,
       page_size: 1000,
     };
     api.getUserRelation(params)
@@ -535,18 +601,15 @@ class NewOrgBDList extends React.Component {
       })
   }
 
-  getAllTrader() {
-    api.queryUserGroup({ type: 'trader' })
-    .then(data => api.getUser({ 
-      groups: data.data.data.map(m => m.id), 
+  getAllTrader = async () => {
+    const reqUserGroup = await api.queryUserGroup({ type: 'trader' });
+    const data = await api.getUser({ 
+      groups: reqUserGroup.data.data.map(m => m.id), 
       userstatus: 2, 
       page_size: 1000, 
-      // org: !hasPerm('BD.manageOrgBD') ? [isLogin().org.id] : undefined, 
-    }))
-    .then(data => {
-      this.allTrader = data.data.data; 
-      this.setState({ traderList: this.allTrader });
-    })
+    });
+    this.allTrader = data.data.data; 
+    this.setState({ traderList: this.allTrader });
   }
 
   createOrgBD = () => {
@@ -565,6 +628,32 @@ class NewOrgBDList extends React.Component {
     api.getUserSession()
       .then(() => api.addOrgBD(body))
       .then(result => {
+        Modal.success({
+          title: '机构BD创建成功',
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+        });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.loadDataForSingleOrg(user.org);
+      })
+      .catch(handleError);
+  }
+
+  createOrgBDFromExcel = () => {
+    const user = this.state.activeUserFromExcel;
+    const manager = this.state.traderList.filter(f => f.id === parseInt(this.state.manager, 10))[0];
+    this.setState({ displayCreateBDModalFromExcel: false });
+    let body = {
+      bduser: user.id,
+      manager: this.state.manager,
+      org: user.org.id,
+      proj: this.projId,
+      isimportant: this.state.isimportant,
+      bd_status: 1,
+      expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
+    };
+    api.getUserSession()
+      .then(() => api.addOrgBD(body))
+      .then(() => {
         Modal.success({
           title: '机构BD创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
@@ -945,6 +1034,55 @@ class NewOrgBDList extends React.Component {
               />
 
               <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+            </div>
+          </Modal>
+        }
+
+        {this.state.displayCreateBDModalFromExcel &&
+          <Modal
+            title={this.state.activeUserFromExcel ? `创建BD-${this.state.activeUserFromExcel.org.orgname}-${this.state.activeUserFromExcel.username || '暂无投资人'}` : '创建BD'}
+            visible={this.state.displayCreateBDModalFromExcel}
+            footer={null}
+            onCancel={() => this.setState({ displayCreateBDModalFromExcel: false, expirationtime: moment().add(1, 'weeks'), })}
+            closable={true}
+            maskClosable={false}
+          >
+            <div style={{ marginLeft: '15px' }}>
+              <H3>1.选择交易师</H3>
+              <SelectTrader
+                style={{ width: 300 }}
+                mode="single"
+                data={this.state.traderList}
+                value={this.state.manager}
+                onChange={manager => this.setState({ manager })} />
+
+              <H3>2.选择过期时间</H3>
+              <DatePicker
+                style={{ marginBottom: '15px' }}
+                placeholder="过期时间"
+                disabledDate={this.disabledDate}
+                // defaultValue={moment()}
+                showToday={false}
+                shape="circle"
+                value={this.state.expirationtime}
+                renderExtraFooter={() => {
+                  return <div>
+                    <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment() }) }}>Now</Button>
+                      &nbsp;&nbsp;
+                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
+                      &nbsp;&nbsp;
+                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'months') }) }}>Month</Button>
+                  </div>
+                }}
+                onChange={v => { this.setState({ expirationtime: v }) }}
+              />
+              <span style={{ marginLeft: 40 }}>重点BD</span>
+              <Switch
+                defaultChecked={this.state.isimportant}
+                onChange={checked => this.setState({ isimportant: checked })}
+              />
+
+              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
             </div>
           </Modal>
         }
