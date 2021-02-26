@@ -4,7 +4,7 @@ import headerStyles from './LoginContainerHeader.css';
 const containerStyle = {background:'#f3f5f7', whiteSpace: 'pre', display: 'inline-block', minWidth: '100%'}
 const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
 const logoStyle = {height: 70, padding: '10px 0'}
-const bodyStyle = {width: 1200, height: 750, margin: '0 auto', position: 'relative', 
+const bodyStyle = {width: 1200, margin: '0 auto', position: 'relative', 
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -51,7 +51,8 @@ class LoginContainer extends React.Component {
       // backgroundImage: bg, 
       backgroundPosition: 'center center', 
       backgroundSize: 'cover', 
-      backgroundRepeat: 'no-repeat'
+      backgroundRepeat: 'no-repeat',
+      marginTop: 124,
     };
     return (
       <div style={containerStyle}>

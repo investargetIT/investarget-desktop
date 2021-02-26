@@ -9,32 +9,60 @@ import FormError from '../utils/FormError'
 
 const formStyle = {
   width: 480,
-  padding: 20,
+  padding: '30px 60px',
   background: 'white',
-  zIndex:1,
-  color:'#666', 
-  border: '1px solid rgba(0, 0, 0, .2)',
-  borderRadius: 6,
-  boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
+  zIndex: 1,
+  color: '#666', 
+  borderRadius: 8,
+  boxShadow: '0 0 12px 0 rgba(0, 0, 0, 0.1)',
 };
-const formTitleStyle = {fontSize:30,fontWeight:400,textAlign:'center',color:'#666'}
-const formSubtitleStyle = {fontSize:14,color: '#666',padding:'12px 16px', marginBottom: 30, textAlign: 'center'}
-const formInputStyle = {
-  border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
-  // background: '#F0F0F0',
-  border: '1px solid #ccc',
-  borderRadius: 4,
+const formTitleStyle = {
+  marginBottom: 12,
+  fontSize: 30,
+  fontWeight: 'normal',
+  textAlign: 'center',
+  color: '#262626',
+  lineHeight: '42px',
+};
+const formSubtitleStyle = {
   fontSize: 14,
-  // padding: '5px 20px',
+  lineHeight: '22px',
+  color: '#989898',
+  marginBottom: 40,
+  textAlign: 'center',
+};
+const formInputStyle = {
+  fontSize: 16,
+  fontWeight: 200,
+  color: '#989898',
+  height: 40,
+  border: '1px solid #d9d9d9',
+  borderRadius: 4,
+  fontSize: 16,
   color: '#555',
 };
-const inputIconStyle = {width:18,height:18,lineHeight:'18x',textAlign:'center',position:'absolute',top:15,right:16, display: 'none'}
-const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200,
+const inputIconStyle = {
+  width: 18,
+  height: 18,
+  lineHeight: '18x',
+  textAlign: 'center',
+  position: 'absolute',
+  top: 15,
+  right: 16,
+  display: 'none',
+};
+const submitStyle = {
+  width: '100%',
+  height: 50,
+  fontSize: 20,
+  backgroundColor: 'rgba(35,126,205,.8)',
+  border: 'none',
+  color: '#fff',
+  fontWeight: 200,
   fontSize: 16,
   background: '#13356C',
   borderRadius: 6,
   fontWeight: 'normal',
-  // height: 43,
 };
 
 
@@ -86,7 +114,7 @@ class Login extends React.Component {
               <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
               <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
-              <div style={{ position: 'relative', marginBottom: 20, }}>
+              <div style={{ position: 'relative', marginBottom: 24, }}>
                 <Form.Item
                   name="username"
                   rules={[{ required: true, message: i18n('account.account_warning') }]}
@@ -94,7 +122,7 @@ class Login extends React.Component {
                 >
                   <Input
                     style={formInputStyle}
-                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    prefix={<UserOutlined style={{ color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.account_warning')}
                   />
                 </Form.Item>
@@ -110,7 +138,7 @@ class Login extends React.Component {
                   initialValue={this.password || ''}
                 >
                   <Input
-                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    prefix={<LockOutlined style={{ color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.password_warning')}
                     style={formInputStyle}
                     type="password"
