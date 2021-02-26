@@ -62,11 +62,11 @@ class LoginContainer extends React.Component {
           </div>
           <div style={{ width: 120, height: 32, display: 'flex', alignItems: 'center', border: '1px #13356c solid', borderRadius: 4, overflow: 'hidden', fontSize: 14 }}>
             <div
-              style={{ flex: 1, textAlign: 'center', lineHeight: '32px', background: '#13356c', color: 'white', cursor: 'pointer' }}
+              style={{ flex: 1, textAlign: 'center', lineHeight: '32px', background: window.LANG !== 'en' ? '#13356c' : 'white', color: window.LANG !== 'en' ? 'white' : '#13356c', cursor: 'pointer' }}
               onClick={this.changeLang.bind(this, 'cn')}
             >中文</div>
             <div
-              style={{ flex: 1, textAlign: 'center', lineHeight: '32px', color: '#13356c', cursor: 'pointer' }}
+              style={{ flex: 1, textAlign: 'center', lineHeight: '32px', background: window.LANG !== 'en' ? 'white' : '#13356c', color: window.LANG !== 'en' ? '#13356c' : 'white', cursor: 'pointer' }}
               onClick={this.changeLang.bind(this, 'en')}
             >EN</div>
           </div>
