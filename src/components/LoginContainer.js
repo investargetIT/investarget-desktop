@@ -9,8 +9,8 @@ const bodyStyle = {width: 1200, margin: '0 auto', position: 'relative',
   justifyContent: 'center',
   alignItems: 'center',
 };
-const footerStyle = {width: 1200, height: 100, margin: '0 auto'}
-const copyrightStyle = {textAlign:'center',height:20,lineHeight:'20px',paddingTop:40,fontSize:16,color:'#989898'}
+const footerStyle = {width: 1200, margin: '0 auto', marginTop: 152, marginBottom: 60}
+const copyrightStyle = {textAlign:'center',lineHeight:'20px',fontSize:12,color:'#989898', marginBottom: 0}
 
 class LoginContainer extends React.Component {
 
@@ -123,7 +123,7 @@ class LoginContainer extends React.Component {
           </div>
           <div style={footerStyle}>
             <p style={copyrightStyle}>
-              &copy; 2020.All Rights Reserved. Investarget
+              &copy; 2021.All Rights Reserved. Investarget
           </p>
           </div>
         </div>

@@ -53,15 +53,15 @@ const inputIconStyle = {
 };
 const submitStyle = {
   width: '100%',
-  height: 50,
+  height: 40,
   fontSize: 20,
-  backgroundColor: 'rgba(35,126,205,.8)',
+  backgroundColor: '#13356c',
   border: 'none',
   color: '#fff',
   fontWeight: 200,
   fontSize: 16,
   background: '#13356C',
-  borderRadius: 6,
+  borderRadius: 4,
   fontWeight: 'normal',
 };
 
@@ -121,8 +121,9 @@ class Login extends React.Component {
                   initialValue={this.username || ''}
                 >
                   <Input
+                    className="login-input"
                     style={formInputStyle}
-                    prefix={<UserOutlined style={{ color: '#bfbfbf' }} className="site-form-item-icon" />}
+                    prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.account_warning')}
                   />
                 </Form.Item>
@@ -138,7 +139,8 @@ class Login extends React.Component {
                   initialValue={this.password || ''}
                 >
                   <Input
-                    prefix={<LockOutlined style={{ color: '#bfbfbf' }} className="site-form-item-icon" />}
+                    className="login-input"
+                    prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.password_warning')}
                     style={formInputStyle}
                     type="password"
@@ -149,20 +151,20 @@ class Login extends React.Component {
                 </div>
               </div>
 
-              <div style={{ padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Form.Item
                   name="remember"
                   valuePropName="checked"
                   initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
                 >
-                  <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.auto_login')}</Checkbox>
+                  <Checkbox className="it" style={{ color: '#262626' }}>{i18n('account.auto_login')}</Checkbox>
                 </Form.Item>
-                <Link style={{ marginBottom: 24, textDecoration: 'underline' }} to="/password">{i18n("account.forget_password")}</Link>
+                <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
               </div>
 
               <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
-              <div style={{ marginTop: 10, padding: 8, textAlign: 'center' }}>
-                {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ textDecoration: 'underline' }}>{i18n('account.directly_register')}</Link>
+              <div style={{ marginTop: 18, padding: 8, textAlign: 'center', fontSize: 14, color: '#989898' }}>
+                {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link>
               </div>
             </div>
           </div>
