@@ -72,11 +72,6 @@ button[disabled], html input[disabled] {
 
 
 
-/* Input */
-/* .ant-input:active, .ant-input:focus {
-  border-color: #999;
-  box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important; /* 使任何状态的 input 的 box-shadow 相同 */
-} */
 .ant-form-item-required:before {
   color: #D9534F;
 }

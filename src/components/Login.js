@@ -122,6 +122,7 @@ class Login extends React.Component {
                 >
                   <Input
                     className="login-input"
+                    bordered={false}
                     style={formInputStyle}
                     prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.account_warning')}
@@ -140,6 +141,7 @@ class Login extends React.Component {
                 >
                   <Input
                     className="login-input"
+                    bordered={false}
                     prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.password_warning')}
                     style={formInputStyle}
