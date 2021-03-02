@@ -10,6 +10,7 @@ import LoginContainer from '../components/LoginContainer'
 import GlobalMobile from '../components/GlobalMobile'
 import FormError from '../utils/FormError'
 import HandleError from '../components/HandleError'
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
 
 const formInputStyle = {
   border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
@@ -212,7 +213,11 @@ class ResetPassword extends React.Component {
                     name="code"
                     rules={[{required: true, message: i18n("account.input_the_code")}]}
                   >
-                    <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+                    <Input
+                      prefix={<MailOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                      style={formInputStyle}
+                      placeholder={i18n("account.input_the_code")}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -241,7 +246,12 @@ class ResetPassword extends React.Component {
               name="password"
               rules={[{required: true, message: i18n("account.input_new_password")}]}
             >
-              <Input style={formInputStyle} placeholder={i18n("account.input_new_password")} type="password" />
+              <Input
+                prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                style={formInputStyle}
+                placeholder={i18n("account.input_new_password")}
+                type="password"
+               />
             </Form.Item>
 
             <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n("common.submit")}</Button>
