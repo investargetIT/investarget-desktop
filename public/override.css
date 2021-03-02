@@ -448,3 +448,27 @@ button[disabled], html input[disabled] {
   position: relative;
   right: unset;
 }
+.login-register-form {
+  width: 480px;
+  padding: 30px 60px;
+  background: white;
+  z-index: 1;
+  color: #666;
+  border-radius: 8px;
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.1);
+}
+.login-register-form__title {
+  margin-bottom: 12px;
+  font-size: 30px;
+  font-weight: normal;
+  text-align: center;
+  color: #262626;
+  line-height: 42px;
+}
+.login-register-form__subtitle{
+  font-size: 14px;
+  line-height: 22px;
+  color: #989898;
+  margin-bottom: 40px;
+  text-align: center;
+}

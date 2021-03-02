@@ -20,13 +20,6 @@ const titleStyle = {
   textAlign: 'center',
   lineHeight: 4
 }
-const formStyle = {width:418,padding:20,background:'white',zIndex:1,color:'#666', 
-  border: '1px solid rgba(0, 0, 0, .2)',
-  borderRadius: 6,
-  boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
-};
-const formTitleStyle = {fontSize:30,fontWeight:400,textAlign:'center',color:'#666'}
-const formSubtitleStyle = {fontSize:14,color: '#666',padding:'12px 16px', marginBottom: 30, textAlign: 'center'}
 const formInputStyle = {
   border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
   background: '#F0F0F0',
@@ -207,9 +200,9 @@ class ResetPassword extends React.Component {
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form onSubmit={this.handleSubmit} className="it-login-form">
-          <div style={formStyle}>
-            <h1 style={formTitleStyle}>{i18n('account.reset_password')}</h1>
-            <p style={formSubtitleStyle}>{i18n('account.reset_info')}</p>
+          <div className="login-register-form">
+            <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
+            <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
 
             <div style={inputStyle}>
               {/* {getFieldDecorator('mobileInfo', {
