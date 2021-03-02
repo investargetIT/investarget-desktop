@@ -91,7 +91,7 @@
     "choose_tags": "请选择你的标签",
     "choose_position": "请选择你的职位",
     "reset_password": "重置密码",
-    "reset_info": "输入手机号码，重置密码！",
+    "reset_info": "输入手机号及验证码后，即可重置密码",
     "input_the_code": "请输入验证码",
     "input_new_password": "请输入新的密码",
     "password_reset_ok": "密码重置成功，请重新登录",
