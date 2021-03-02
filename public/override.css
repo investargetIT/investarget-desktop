@@ -465,10 +465,18 @@ button[disabled], html input[disabled] {
   color: #262626;
   line-height: 42px;
 }
-.login-register-form__subtitle{
+.login-register-form__subtitle {
   font-size: 14px;
   line-height: 22px;
   color: #989898;
   margin-bottom: 40px;
   text-align: center;
+}
+.login-register-form__input {
+  font-weight: 200;
+  height: 40px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #262626;
 }

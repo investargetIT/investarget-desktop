@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Input, Select } from 'antd'
+import { i18n } from '../utils/util'
 const Option = Select.Option
 
 
@@ -79,15 +80,30 @@ class GlobalMobile extends React.Component {
   render() {
     const { countryId, areaCode, mobile } = this.state
     return (
-      <Input.Group compact className="it-mobile" style={{display: 'flex'}}>
+      <Input.Group compact className="it-mobile login-register-form__input" style={{display: 'flex'}}>
         <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId ? countryId + '' : this.findChina()}>
           {this.props.country.map(c => {
             return c.key ?<Option key={c.id} value={c.id + ''}>
             <img src={c.url} style={{ width: 40, height: 28, marginLeft: 6, verticalAlign: 'top' }} />
           </Option> : null})}
         </Select>
-        <Input size="large" readOnly style={{width: 60,height: 48,border: 'none',borderLeft: '1px solid #cfcfcf',fontSize:16,color:'#989898', ...this.props.inputStyle}} disabled={this.props.disabled} value={areaCode} onChange={this.handleChangeAreaCode} />
-        <Input size="large" style={{flexGrow: 1,height: 48,border: 'none',fontSize:16,color:'#989898', ...this.props.inputStyle}} disabled={this.props.disabled} value={mobile} onChange={this.handleChangeMobile} onBlur={this.props.onBlur} />
+        <Input
+          size="large"
+          readOnly
+          style={{width: 60,border: 'none',borderLeft: '1px solid #cfcfcf',fontSize:16,color:'#989898', ...this.props.inputStyle}}
+          disabled={this.props.disabled}
+          value={areaCode}
+          onChange={this.handleChangeAreaCode}
+        />
+        <Input
+          size="large"
+          style={{flexGrow: 1,border: 'none',fontSize:16,color:'#989898', ...this.props.inputStyle}}
+          disabled={this.props.disabled}
+          value={mobile}
+          onChange={this.handleChangeMobile}
+          onBlur={this.props.onBlur}
+          placeholder={i18n('account.account_warning')}
+        />
       </Input.Group>
     )
   }

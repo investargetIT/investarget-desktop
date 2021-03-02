@@ -196,15 +196,13 @@ class ResetPassword extends React.Component {
             <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
 
-            <div style={inputStyle}>
-              <Form.Item
-                name="mobileInfo"
-                rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
-                initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
-              >
-                <GlobalMobile inputStyle={{ background: '#F0F0F0' }} disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
-              </Form.Item>
-            </div>
+            <Form.Item
+              name="mobileInfo"
+              rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
+              initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
+            >
+              <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} />
+            </Form.Item>
 
             <div style={{marginBottom: 8}}>
               <Row gutter={8}>
@@ -214,8 +212,8 @@ class ResetPassword extends React.Component {
                     rules={[{required: true, message: i18n("account.input_the_code")}]}
                   >
                     <Input
+                      className="login-register-form__input"
                       prefix={<MailOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                      style={formInputStyle}
                       placeholder={i18n("account.input_the_code")}
                     />
                   </Form.Item>
@@ -247,8 +245,8 @@ class ResetPassword extends React.Component {
               rules={[{required: true, message: i18n("account.input_new_password")}]}
             >
               <Input
+                className="login-register-form__input"
                 prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                style={formInputStyle}
                 placeholder={i18n("account.input_new_password")}
                 type="password"
                />
