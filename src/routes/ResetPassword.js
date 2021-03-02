@@ -188,8 +188,6 @@ class ResetPassword extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
-
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
     function checkMobileInfo(rule, value, callback) {
@@ -214,22 +212,35 @@ class ResetPassword extends React.Component {
             <p style={formSubtitleStyle}>{i18n('account.reset_info')}</p>
 
             <div style={inputStyle}>
-              {getFieldDecorator('mobileInfo', {
+              {/* {getFieldDecorator('mobileInfo', {
                 rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
                 initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
               })(
                 <GlobalMobile inputStyle={{ background: '#F0F0F0' }} disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
-              )}
+              )} */}
+              <Form.Item
+                name="mobileInfo"
+                rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
+                initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
+              >
+                <GlobalMobile inputStyle={{ background: '#F0F0F0' }} disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
+              </Form.Item>
             </div>
 
             <div style={{marginBottom: 8}}>
               <Row gutter={8}>
                 <Col span={12}>
-                  {getFieldDecorator("code", {
+                  {/* {getFieldDecorator("code", {
                     rules: [{
                       required: true, message: i18n("account.input_the_code"),
                     }],
-                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)}
+                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)} */}
+                  <Form.Item
+                    name="code"
+                    rules={[{required: true, message: i18n("account.input_the_code")}]}
+                  >
+                    <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+                  </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Button
@@ -253,9 +264,15 @@ class ResetPassword extends React.Component {
               </Row>
             </div>
 
-            {getFieldDecorator('password', { rules: [{required: true, message: i18n("account.input_new_password")}] })(
+            {/* {getFieldDecorator('password', { rules: [{required: true, message: i18n("account.input_new_password")}] })(
               <Input style={formInputStyle} placeholder={i18n("account.input_new_password")} type="password" />
-            )}
+            )} */}
+            <Form.Item
+              name="password"
+              rules={[{required: true, message: i18n("account.input_new_password")}]}
+            >
+              <Input style={formInputStyle} placeholder={i18n("account.input_new_password")} type="password" />
+            </Form.Item>
 
             <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n("common.submit")}</Button>
 
@@ -287,4 +304,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(Form.create()(ResetPassword)))
+export default connect(mapStateToProps)(withRouter(ResetPassword))

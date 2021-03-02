@@ -10,7 +10,7 @@ import {
   isLogin,
 } from '../utils/util';
 
-const AddUserForm = Form.create()(SimpleUserForm);
+const AddUserForm = SimpleUserForm;
 
 class ModalAddUser extends React.Component {
 

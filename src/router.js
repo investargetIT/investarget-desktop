@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import Home from './routes/Home';
 import Login from './components/Login.js';
+import ResetPassword from './routes/ResetPassword';
 // import IndexPage from './routes/IndexPage'
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
@@ -54,7 +55,6 @@ import Login from './components/Login.js';
 // import WxMessage from './routes/WxMessage'
 // import Schedule from './routes/Schedule'
 // import ScheduleList from './routes/ScheduleList'
-// import ResetPassword from './routes/ResetPassword'
 // import Register1 from './routes/Register1'
 // import RecommendFriends from './components/RecommendFriends';
 // import RecommendProjects from './components/RecommendProjects';
@@ -85,6 +85,7 @@ function RouterConfig({ history }) {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
+        <Route path="/password" component={ResetPassword} />
         {/* <Route path="/register" component={Register} />
         <Route path="/register1" component={Register1} />
         <Route path="/recommend-friends" component={RecommendFriends} />
@@ -141,7 +142,6 @@ function RouterConfig({ history }) {
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/schedule/list" component={ScheduleList} />
-        <Route path="/password" component={ResetPassword} />
         <Route path="/app/org/bd" component={OrgBDList} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
