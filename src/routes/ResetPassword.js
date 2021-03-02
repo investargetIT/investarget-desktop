@@ -1,11 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import fetch from 'dva/fetch'
-import { routerRedux, Link, withRouter } from 'dva/router'
-import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal } from 'antd'
-import LeftRightLayout from '../components/LeftRightLayout'
-import { Mobile, Code, Password, Submit } from '../components/Form'
+import { Link, withRouter } from 'dva/router'
+import { Form, Button, Input, Row, Col, message, Modal } from 'antd'
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { ApiError } from '../utils/request'
@@ -14,12 +11,6 @@ import GlobalMobile from '../components/GlobalMobile'
 import FormError from '../utils/FormError'
 import HandleError from '../components/HandleError'
 
-const FormItem = Form.Item
-
-const titleStyle = {
-  textAlign: 'center',
-  lineHeight: 4
-}
 const formInputStyle = {
   border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
   background: '#F0F0F0',
@@ -205,12 +196,6 @@ class ResetPassword extends React.Component {
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
 
             <div style={inputStyle}>
-              {/* {getFieldDecorator('mobileInfo', {
-                rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
-                initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
-              })(
-                <GlobalMobile inputStyle={{ background: '#F0F0F0' }} disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} />
-              )} */}
               <Form.Item
                 name="mobileInfo"
                 rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
@@ -223,11 +208,6 @@ class ResetPassword extends React.Component {
             <div style={{marginBottom: 8}}>
               <Row gutter={8}>
                 <Col span={12}>
-                  {/* {getFieldDecorator("code", {
-                    rules: [{
-                      required: true, message: i18n("account.input_the_code"),
-                    }],
-                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)} */}
                   <Form.Item
                     name="code"
                     rules={[{required: true, message: i18n("account.input_the_code")}]}
@@ -257,9 +237,6 @@ class ResetPassword extends React.Component {
               </Row>
             </div>
 
-            {/* {getFieldDecorator('password', { rules: [{required: true, message: i18n("account.input_new_password")}] })(
-              <Input style={formInputStyle} placeholder={i18n("account.input_new_password")} type="password" />
-            )} */}
             <Form.Item
               name="password"
               rules={[{required: true, message: i18n("account.input_new_password")}]}
