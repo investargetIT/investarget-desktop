@@ -37,31 +37,14 @@ class Register1 extends React.Component {
     };
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if(!err) {
-        const { mobile, areaCode } = values.mobileInfo;
-        api.checkUserExist(mobile)
-        .then(result => {
-          const pathname = result.data.result ? '/password' : '/register';
-          const state = { mobile, areaCode }
-          this.props.dispatch(routerRedux.push({ pathname, state }));
-        });
-      } else {
-        console.log(err)
-        let fields = ['mobileInfo']
-        for (let i = 0, len = fields.length; i < len; i++) {
-          let field = fields[i]
-          let errField = err[field]
-          if (errField) {
-            let error = errField.errors[0]
-            handleError(new FormError(error.message))
-            return
-          }
-        }
-      }
-    });
+  handleSubmit = values => {
+    const { mobile, areaCode } = values.mobileInfo;
+    api.checkUserExist(mobile)
+      .then(result => {
+        const pathname = result.data.result ? '/password' : '/register';
+        const state = { mobile, areaCode }
+        this.props.dispatch(routerRedux.push({ pathname, state }));
+      });
   }
 
   render () {
@@ -81,7 +64,7 @@ class Register1 extends React.Component {
 
     return (
       <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
-        <Form onSubmit={this.handleSubmit} className="it-login-form login-register-form">
+        <Form onFinish={this.handleSubmit} className="it-login-form login-register-form">
           <h1 className="login-register-form__title">{i18n("account.register")}</h1>
           <p className="login-register-form__subtitle">{i18n("account.input_phone_number")}</p>
           <div style={inputStyle}>

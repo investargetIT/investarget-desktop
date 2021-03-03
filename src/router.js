@@ -4,10 +4,10 @@ import Home from './routes/Home';
 import Login from './components/Login.js';
 import ResetPassword from './routes/ResetPassword';
 import Register1 from './routes/Register1';
+import Register from './routes/Register';
 // import IndexPage from './routes/IndexPage'
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
-// import Register from './routes/Register'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import OrganizationList from "./routes/OrganizationList.js"
 // import AddProject from './routes/AddProject'
@@ -87,8 +87,8 @@ function RouterConfig({ history }) {
         <Route path="/login" component={Login} />
         <Route path="/password" component={ResetPassword} />
         <Route path="/register1" component={Register1} />
-        {/* <Route path="/register" component={Register} />
-        <Route path="/recommend-friends" component={RecommendFriends} />
+        <Route path="/register" component={Register} />
+        {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/app" component={IndexPage} />
         <Route path="/403" component={AccessDenied} />

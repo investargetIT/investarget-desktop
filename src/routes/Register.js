@@ -575,4 +575,4 @@ Register.childContextTypes = {
   form: PropTypes.object
 }
 
-export default connect(mapStateToProps)(withRouter(Form.create()(Register)))
+export default connect(mapStateToProps)(withRouter(Register));
