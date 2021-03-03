@@ -3,6 +3,7 @@ import { Router, Route, Switch } from 'dva/router';
 import Home from './routes/Home';
 import Login from './components/Login.js';
 import ResetPassword from './routes/ResetPassword';
+import Register1 from './routes/Register1';
 // import IndexPage from './routes/IndexPage'
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
@@ -55,7 +56,6 @@ import ResetPassword from './routes/ResetPassword';
 // import WxMessage from './routes/WxMessage'
 // import Schedule from './routes/Schedule'
 // import ScheduleList from './routes/ScheduleList'
-// import Register1 from './routes/Register1'
 // import RecommendFriends from './components/RecommendFriends';
 // import RecommendProjects from './components/RecommendProjects';
 // import OrgBDList from './routes/OrgBDList';
@@ -86,8 +86,8 @@ function RouterConfig({ history }) {
         <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/password" component={ResetPassword} />
-        {/* <Route path="/register" component={Register} />
         <Route path="/register1" component={Register1} />
+        {/* <Route path="/register" component={Register} />
         <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/app" component={IndexPage} />
