@@ -247,9 +247,6 @@ button[disabled], html input[disabled] {
   display: none; /*隐藏输出框下出现的错误提示*/
 }
 
-.it-login-form .ant-form-item {
-  margin-bottom: 20px;
-}
 /* 覆盖全球手机号输入组件的样式 */
 .it-mobile .ant-select-selection {
   height: 48px;
@@ -479,4 +476,24 @@ button[disabled], html input[disabled] {
   border-radius: 4px;
   font-size: 16px;
   color: #262626;
+}
+.login-register-form__submit {
+  width: 100%;
+  height: 40px;
+  font-size: 20px;
+  background-color: #13356c;
+  border: none;
+  color: #fff;
+  font-weight: 200;
+  font-size: 16px;
+  background: #13356C;
+  border-radius: 4px;
+  font-weight: normal;
+}
+.login-register-form__hint {
+  margin-top: 18px;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #989898;
 }
