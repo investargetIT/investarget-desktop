@@ -410,32 +410,54 @@ class Register extends React.Component {
 
             <div style={{marginTop:20,marginBottom:10}}>
               <span style={{fontSize:22,marginLeft:24,marginRight:32}}>{i18n('account.role')}</span>
-              {getFieldDecorator('type', {rules: [{required: true, message: i18n('account.select_role')}]})(
+              {/* {getFieldDecorator('type', {rules: [{required: true, message: i18n('account.select_role')}]})(
                 <RadioGroup size="large" className="it-login-radio">
                   
                   <Radio value={ foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
                   { foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio> }
                 </RadioGroup>
-              )}
+              )} */}
+              <Form.Item
+                name="type"
+                rules={[{required: true, message: i18n('account.select_role')}]}
+              >
+                <RadioGroup size="large" className="it-login-radio">
+                  <Radio value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
+                  {foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio>}
+                </RadioGroup>
+              </Form.Item>
             </div>
 
             <div style={wrapStyle}>
-            {getFieldDecorator('mobileInfo', {
+              {/* {getFieldDecorator('mobileInfo', {
               rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
               initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
             })(
               <GlobalMobile disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} inputStyle={{fontSize:14,color:'#636e7b'}} />
-            )}
+            )} */}
+              <Form.Item
+                name="mobileInfo"
+                rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
+                initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
+              >
+                <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
+              </Form.Item>
             </div>
 
             <div style={{marginBottom: 8}}>
               <Row gutter={8}>
                 <Col span={12}>
-                  {getFieldDecorator("code", {
+                  {/* {getFieldDecorator("code", {
                     rules: [{
                       required: true, message: i18n("account.input_the_code"),
                     }],
-                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)}
+                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)} */}
+                  <Form.Item
+                    name="code"
+                    rules={[{required: true, message: i18n("account.input_the_code")}]}
+                  >
+                    <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+                  </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Button
@@ -461,57 +483,105 @@ class Register extends React.Component {
 
             <div style={wrapStyle}>
               <label style={labelStyle} className="mb0">{i18n("account.email")}：</label>
-              {getFieldDecorator("email", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]})(
+              {/* {getFieldDecorator("email", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]})(
                 <Input style={inputStyle} />
-              )}
+              )} */}
+              <Form.Item
+                name="email"
+                rules={[{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]}
+              >
+                <Input style={inputStyle} />
+              </Form.Item>
             </div>
 
             <div style={wrapStyle}>
               <label style={labelStyle} className="mb0">{i18n("account.name")}：</label>
-              {getFieldDecorator("username", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.name")}]})(
+              {/* {getFieldDecorator("username", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.name")}]})(
                 <Input style={inputStyle} />
-              )}
+              )} */}
+              <Form.Item
+                name="username"
+                rules={[{required: true, message: i18n("account.please_input") + i18n("account.name")}]}
+              >
+                <Input style={inputStyle} />
+              </Form.Item>
             </div>
 
             <div style={selectWrapStyle}>
               <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
-              {getFieldDecorator("organization", { rules: [{required: true, message: i18n("account.please_select") + i18n("account.org")}] })(
+              {/* {getFieldDecorator("organization", { rules: [{required: true, message: i18n("account.please_select") + i18n("account.org")}] })(
                 <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
-              )}
+              )} */}
+              <Form.Item
+                name="organization"
+                rules={[{required: true, message: i18n("account.please_select") + i18n("account.org")}]}
+              >
+                <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
+              </Form.Item>
             </div>
 
             <div style={selectWrapStyle}>
               <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Position" : "职 位"}</label>
-              {getFieldDecorator("title", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.position")}]})(
+              {/* {getFieldDecorator("title", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.position")}]})(
                 <SelectTitle showSearch className="it-login-select" />
-              )}
+              )} */}
+              <Form.Item
+                name="title"
+                rules={[{required: true, message: i18n("account.please_select") + i18n("account.position")}]}
+              >
+                <SelectTitle showSearch className="it-login-select" />
+              </Form.Item>
             </div>
 
             <div style={selectWrapStyle}>
               <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Tags" : "标 签"}</label>
-              {getFieldDecorator("tags", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]})(
+              {/* {getFieldDecorator("tags", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]})(
                 <SelectTag mode="multiple" className="it-login-select-multiple" />
-              )}
+              )} */}
+              <Form.Item
+                name="tags"
+                rules={[{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]}
+              >
+                <SelectTag mode="multiple" className="it-login-select-multiple" />
+              </Form.Item>
             </div>
 
             <div style={wrapStyle}>
               <label style={labelStyle} className="mb0">{i18n("account.password")}：</label>
-              {getFieldDecorator("password", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}]})(
+              {/* {getFieldDecorator("password", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}]})(
                 <Input style={inputStyle} type="password" />
-              )}
+              )} */}
+              <Form.Item
+                name="password"
+                rules={[{required: true, message: i18n("account.please_input") + i18n("account.password")}]}
+              >
+                <Input style={inputStyle} type="password" />
+              </Form.Item>
             </div>
 
             <div style={{...wrapStyle,marginBottom:0}}>
               <label style={labelStyle} className="mb0">{i18n("account.confirm_password")}：</label>
-              {getFieldDecorator("confirm", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]})(
+              {/* {getFieldDecorator("confirm", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]})(
                 <Input style={inputStyle} type="password" />
-              )}
+              )} */}
+              <Form.Item
+                name="confirm"
+                rules={[{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]}
+              >
+                <Input style={inputStyle} type="password" />
+              </Form.Item>
             </div>
 
             <div style={{padding:'8px 16px'}}>
-              {getFieldDecorator("agreement", { rules: [{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}] })(
+              {/* {getFieldDecorator("agreement", { rules: [{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}] })(
                 <Checkbox className="it" style={{color:'#666'}}>{i18n('account.agreement1')}</Checkbox>
-              )}
+              )} */}
+              <Form.Item
+                name="agreement"
+                rules={[{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}]}
+              >
+                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.agreement1')}</Checkbox>
+              </Form.Item>
               <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>{i18n('account.agreement2')}</Link>
             </div>
 
