@@ -46,6 +46,9 @@ const tailFormItemLayout = {
 }
 
 class Register extends React.Component {
+
+  formRef = React.createRef();
+
   constructor(props) {
     super(props)
     this.state = {
@@ -207,7 +210,7 @@ class Register extends React.Component {
   }
 
   handleFetchButtonClicked() {
-    const { getFieldValue } = this.props.form
+    const { getFieldValue } = this.formRef;
     const mobileInfo = getFieldValue('mobileInfo')
     const { areaCode: areacode, mobile } = mobileInfo
     if (!areacode) {
@@ -296,7 +299,7 @@ class Register extends React.Component {
 
   render() {
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldValue } = this.formRef;
 
 
     const containerStyle = {
@@ -402,7 +405,7 @@ class Register extends React.Component {
 
     const content = (
       <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form onSubmit={this.handleSubmit} className="it-login-form">
+        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form">
           <div style={formStyle}>
 
             <div style={{marginTop:20,marginBottom:10}}>
