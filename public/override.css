@@ -497,3 +497,6 @@ button[disabled], html input[disabled] {
   font-size: 14px;
   color: #989898;
 }
+.it .ant-checkbox + span {
+  padding-right: 0;
+}

@@ -95,7 +95,8 @@
     "input_the_code": "Input Verification Code",
     "input_new_password": "Please Enter Your New Password",
     "password_reset_ok": "Password reset successfully, please login again",
-    "input_phone_number": "Please Enter Your Phone Number Below!"
+    "input_phone_number": "Please Enter Your Phone Number Below!",
+    "password_placeholder": "Password"
   },
 
   "project_library": {

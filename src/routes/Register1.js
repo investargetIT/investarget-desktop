@@ -404,99 +404,90 @@ class Register extends React.Component {
     return (
       <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function () { this.forceUpdate() }.bind(this)}>
         <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form login-register-form">
-            <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
-            <p className="login-register-form__subtitle">{i18n('account.register_hint')}</p>
+          <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
+          <p className="login-register-form__subtitle">{i18n('account.register_hint')}</p>
 
-            <div style={wrapStyle}>
-              <Form.Item
-                name="mobileInfo"
-                rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
-                initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
-              >
-                <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
-              </Form.Item>
-            </div>
+          <div style={wrapStyle}>
+            <Form.Item
+              name="mobileInfo"
+              rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
+              initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
+            >
+              <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
+            </Form.Item>
+          </div>
 
-            <div style={{ marginBottom: 8 }}>
-              <Row gutter={8}>
-                <Col span={12}>
-                  <Form.Item
-                    name="code"
-                    rules={[{ required: true, message: i18n("account.input_the_code") }]}
-                  >
-                    <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    loading={this.state.loading}
-                    disabled={codeValue ? true : false}
-                    onClick={this.handleFetchButtonClicked.bind(this)}
-                    size="large"
-                    style={codeButtonStyle}
-                  >
-                    {this.state.loading
-                      ? i18n("account.is_fetching_code")
-                      : (codeValue ? <span style={{ color: '#237ccc' }}>{codeValue}</span>
-                        : (<span>
-                          <span style={{ textDecoration: 'underline' }}>{i18n("account.fetch_code")}</span>
+          <div style={{ marginBottom: 8 }}>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  name="code"
+                  rules={[{ required: true, message: i18n("account.input_the_code") }]}
+                >
+                  <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Button
+                  loading={this.state.loading}
+                  disabled={codeValue ? true : false}
+                  onClick={this.handleFetchButtonClicked.bind(this)}
+                  size="large"
+                  style={codeButtonStyle}
+                >
+                  {this.state.loading
+                    ? i18n("account.is_fetching_code")
+                    : (codeValue ? <span style={{ color: '#237ccc' }}>{codeValue}</span>
+                      : (<span>
+                        <span style={{ textDecoration: 'underline' }}>{i18n("account.fetch_code")}</span>
                                         &nbsp;<span style={{ color: '#237ccc' }}>(60s)</span>
-                        </span>)
-                      )
-                    }
-                  </Button>
-                </Col>
-              </Row>
-            </div>
+                      </span>)
+                    )
+                  }
+                </Button>
+              </Col>
+            </Row>
+          </div>
 
-            <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">{i18n("account.email")}：</label>
-              <Form.Item
-                name="email"
-                rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email' }]}
-              >
-                <Input style={inputStyle} />
-              </Form.Item>
-            </div>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email' }]}
+          >
+            <Input className="login-register-form__input" placeholder={i18n('account.email')} />
+          </Form.Item>
 
-            <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">{i18n("account.password")}：</label>
-              <Form.Item
-                name="password"
-                rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }]}
-              >
-                <Input style={inputStyle} type="password" />
-              </Form.Item>
-            </div>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }]}
+          >
+            <Input className="login-register-form__input" type="password" placeholder={i18n('account.password_placeholder')} />
+          </Form.Item>
 
-            <div style={{ ...wrapStyle, marginBottom: 0 }}>
-              <label style={labelStyle} className="mb0">{i18n("account.confirm_password")}：</label>
-              <Form.Item
-                name="confirm"
-                rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: confirmValidator }]}
-              >
-                <Input style={inputStyle} type="password" />
-              </Form.Item>
-            </div>
+          <Form.Item
+            name="confirm"
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: confirmValidator }]}
+          >
+            <Input className="login-register-form__input" type="password" placeholder={i18n('account.confirm_password')}/>
+          </Form.Item>
 
-            <div style={{ padding: '8px 16px' }}>
-              <Form.Item
-                name="agreement"
-                rules={[{ required: true, message: i18n('account.confirm_agreement') }, { type: 'boolean' }, { validator: checkAgreement }]}
-              >
-                <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.agreement1')}</Checkbox>
-              </Form.Item>
-              <Link to="/app/agreement" target="_blank" style={{ textDecoration: 'underline', color: '#237ccc' }}>{i18n('account.agreement2')}</Link>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Form.Item
+              name="agreement"
+              rules={[{ required: true, message: i18n('account.confirm_agreement') }, { type: 'boolean' }, { validator: checkAgreement }]}
+            >
+              <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.agreement1')}</Checkbox>
+            </Form.Item>
+            <Link to="/app/agreement" target="_blank" style={{ marginBottom: 24, color: '#339bd2' }}>{i18n('account.agreement2')}</Link>
+          </div>
 
-            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
+          <Button htmlType="submit" className="login-register-form__submit" loading={this.props.loading}>{i18n('common.next')}</Button>
 
-            <div style={{ padding: '8px 16px', textAlign: 'center' }}>
-              {i18n('account.have_account_already')}<Link to="/login" style={{ textDecoration: 'underline' }}>{i18n('account.directly_login')}</Link>
-            </div>
+          <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
 
         </Form>
+
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
+
       </LoginContainer>
     );
   }
