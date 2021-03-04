@@ -43,6 +43,7 @@
     "login": "Login",
     "directly_login": "Login",
     "directly_register": "Register Here",
+    "register_hint": "Please input your phone number to register",
     "login_message": "Please Login to Access Your Account!",
     "dont_have_account_yet": "Don't Have Account Yet? ",
     "have_account_already": "Already Have An Account? ",
