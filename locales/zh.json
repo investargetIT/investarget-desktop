@@ -45,6 +45,7 @@
     "directly_login": "立即登录",
     "directly_register": "立即注册",
     "register_hint": "您的手机号即为登录账号，请输入正确的手机号",
+    "register_hint_info": "请输入您的基本信息",
     "login_message": "登录访问您的 Investarget 账号",
     "dont_have_account_yet": "还没有账号? ",
     "have_account_already": "已有账号? ",

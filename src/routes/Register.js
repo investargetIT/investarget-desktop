@@ -4,8 +4,6 @@ import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
-import RecommendFriendsComponent from '../components/RecommendFriends'
-import RecommendProjectsComponent from '../components/RecommendProjects'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
@@ -383,13 +381,15 @@ class Register extends React.Component {
     const selectContentContainerStyle = {flexGrow:1,height:50}
 
     const wrapStyle = {
-      backgroundColor: '#fff', borderRadius: 4, height: 50, display: 'flex', alignItems: 'center', marginBottom: 8,
-      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
+      display: 'flex',
+      alignItems: 'center',
     };
-    const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
+    const labelStyle = {
+      width: 48,
+      flexShrink: 0,
+      fontSize: 16,
+      color: '#656565',
+    };
     const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0,backgroundColor: '#F0F0F0'}
 
     const submitStyle = {
@@ -403,228 +403,77 @@ class Register extends React.Component {
 
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
-    const content = (
-      <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form">
-          <div style={formStyle}>
-
-            <div style={{marginTop:20,marginBottom:10}}>
-              <span style={{fontSize:22,marginLeft:24,marginRight:32}}>{i18n('account.role')}</span>
-              {/* {getFieldDecorator('type', {rules: [{required: true, message: i18n('account.select_role')}]})(
-                <RadioGroup size="large" className="it-login-radio">
-                  
-                  <Radio value={ foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
-                  { foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio> }
-                </RadioGroup>
-              )} */}
-              <Form.Item
-                name="type"
-                rules={[{required: true, message: i18n('account.select_role')}]}
-              >
-                <RadioGroup size="large" className="it-login-radio">
-                  <Radio value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
-                  {foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio>}
-                </RadioGroup>
-              </Form.Item>
-            </div>
-
-            <div style={wrapStyle}>
-              {/* {getFieldDecorator('mobileInfo', {
-              rules: [{ required: true }, { type: 'object' }, { validator: checkMobileInfo }],
-              initialValue: { areaCode: this.areaCode || '86', mobile: this.mobile || '' },
-            })(
-              <GlobalMobile disabled={this.mobile&&this.areaCode?true:false} onBlur={this.handleMobileBlur} inputStyle={{fontSize:14,color:'#636e7b'}} />
-            )} */}
-              <Form.Item
-                name="mobileInfo"
-                rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
-                initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
-              >
-                <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
-              </Form.Item>
-            </div>
-
-            <div style={{marginBottom: 8}}>
-              <Row gutter={8}>
-                <Col span={12}>
-                  {/* {getFieldDecorator("code", {
-                    rules: [{
-                      required: true, message: i18n("account.input_the_code"),
-                    }],
-                  })(<Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />)} */}
-                  <Form.Item
-                    name="code"
-                    rules={[{required: true, message: i18n("account.input_the_code")}]}
-                  >
-                    <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    loading={this.state.loading}
-                    disabled={codeValue ? true : false}
-                    onClick={this.handleFetchButtonClicked.bind(this)}
-                    size="large"
-                    style={codeButtonStyle}
-                  >
-                    {this.state.loading
-                      ? i18n("account.is_fetching_code")
-                      : (codeValue ? <span style={{color:'#237ccc'}}>{codeValue}</span>
-                                   : (<span>
-                                        <span style={{textDecoration:'underline'}}>{i18n("account.fetch_code")}</span>
-                                        &nbsp;<span style={{color:'#237ccc'}}>(60s)</span>
-                                    </span>)
-                      )
-                    }
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-
-            <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">{i18n("account.email")}：</label>
-              {/* {getFieldDecorator("email", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]})(
-                <Input style={inputStyle} />
-              )} */}
-              <Form.Item
-                name="email"
-                rules={[{required: true, message: i18n("account.please_input") + i18n("account.email")}, {type: 'email'}]}
-              >
-                <Input style={inputStyle} />
-              </Form.Item>
-            </div>
-
-            <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">{i18n("account.name")}：</label>
-              {/* {getFieldDecorator("username", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.name")}]})(
-                <Input style={inputStyle} />
-              )} */}
-              <Form.Item
-                name="username"
-                rules={[{required: true, message: i18n("account.please_input") + i18n("account.name")}]}
-              >
-                <Input style={inputStyle} />
-              </Form.Item>
-            </div>
-
-            <div style={selectWrapStyle}>
-              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
-              {/* {getFieldDecorator("organization", { rules: [{required: true, message: i18n("account.please_select") + i18n("account.org")}] })(
-                <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
-              )} */}
-              <Form.Item
-                name="organization"
-                rules={[{required: true, message: i18n("account.please_select") + i18n("account.org")}]}
-              >
-                <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
-              </Form.Item>
-            </div>
-
-            <div style={selectWrapStyle}>
-              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Position" : "职 位"}</label>
-              {/* {getFieldDecorator("title", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.position")}]})(
-                <SelectTitle showSearch className="it-login-select" />
-              )} */}
-              <Form.Item
-                name="title"
-                rules={[{required: true, message: i18n("account.please_select") + i18n("account.position")}]}
-              >
-                <SelectTitle showSearch className="it-login-select" />
-              </Form.Item>
-            </div>
-
-            <div style={selectWrapStyle}>
-              <label style={{...selectLabelStyle, width: foreigner ? 110 : 80}} className="mb0">{foreigner ? "Tags" : "标 签"}</label>
-              {/* {getFieldDecorator("tags", {rules: [{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]})(
-                <SelectTag mode="multiple" className="it-login-select-multiple" />
-              )} */}
-              <Form.Item
-                name="tags"
-                rules={[{required: true, message: i18n("account.please_select") + i18n("account.tag")}, {type: 'array'}]}
-              >
-                <SelectTag mode="multiple" className="it-login-select-multiple" />
-              </Form.Item>
-            </div>
-
-            <div style={wrapStyle}>
-              <label style={labelStyle} className="mb0">{i18n("account.password")}：</label>
-              {/* {getFieldDecorator("password", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}]})(
-                <Input style={inputStyle} type="password" />
-              )} */}
-              <Form.Item
-                name="password"
-                rules={[{required: true, message: i18n("account.please_input") + i18n("account.password")}]}
-              >
-                <Input style={inputStyle} type="password" />
-              </Form.Item>
-            </div>
-
-            <div style={{...wrapStyle,marginBottom:0}}>
-              <label style={labelStyle} className="mb0">{i18n("account.confirm_password")}：</label>
-              {/* {getFieldDecorator("confirm", { rules: [{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]})(
-                <Input style={inputStyle} type="password" />
-              )} */}
-              <Form.Item
-                name="confirm"
-                rules={[{required: true, message: i18n("account.please_input") + i18n("account.password")}, {validator: confirmValidator}]}
-              >
-                <Input style={inputStyle} type="password" />
-              </Form.Item>
-            </div>
-
-            <div style={{padding:'8px 16px'}}>
-              {/* {getFieldDecorator("agreement", { rules: [{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}] })(
-                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.agreement1')}</Checkbox>
-              )} */}
-              <Form.Item
-                name="agreement"
-                rules={[{required: true, message: i18n('account.confirm_agreement')}, {type: 'boolean'}, {validator: checkAgreement}]}
-              >
-                <Checkbox className="it" style={{color:'#666'}}>{i18n('account.agreement1')}</Checkbox>
-              </Form.Item>
-              <Link to="/app/agreement" target="_blank" style={{textDecoration: 'underline', color:'#237ccc'}}>{i18n('account.agreement2')}</Link>
-            </div>
-
-            <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
-
-            <div style={{padding:'8px 16px', textAlign: 'center'}}>
-              {i18n('account.have_account_already')}<Link to="/login" style={{textDecoration:'underline'}}>{i18n('account.directly_login')}</Link>
-            </div>
-
-          </div>
-        </Form>
-      </LoginContainer>
-    )
-
     return (
-      <div style={containerStyle}>
-        <div style={wrapperStyle} className="clearfix">
-          <div style={this.props.currentUser ? Object.assign({},itemStyle,{opacity: 0}) : itemStyle}>
-            {content}
+      <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function () { this.forceUpdate() }.bind(this)}>
+        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="login-register-form it-login-form">
+
+          <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
+          <p className="login-register-form__subtitle">{i18n('account.register_hint_info')}</p>
+
+          <div className="login-register-form__container" style={wrapStyle}>
+            <label style={labelStyle} className="mb0">{i18n("account.name")}：</label>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: i18n("account.please_input") + i18n("account.name") }]}
+            >
+              <Input className="login-register-form__input" />
+            </Form.Item>
           </div>
-          <div style={itemStyle}>
-            {/* <RecommendFriendsComponent
-              key={1}
-              friends={this.props.friends}
-              selectedFriends={this.props.selectedFriends}
-              onFriendToggle={this.onFriendToggle}
-              onFriendsSkip={this.onFriendsSkip}
-              onFriendsSubmit={this.onFriendsSubmit}
-            /> */}
+
+          <div style={{ marginTop: 20, marginBottom: 10 }}>
+            <span style={{ fontSize: 22, marginLeft: 24, marginRight: 32 }}>{i18n('account.role')}</span>
+            <Form.Item
+              name="type"
+              rules={[{ required: true, message: i18n('account.select_role') }]}
+            >
+              <RadioGroup size="large" className="it-login-radio">
+                <Radio value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
+                {foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio>}
+              </RadioGroup>
+            </Form.Item>
           </div>
-          <div style={itemStyle}>
-            {/* <RecommendProjectsComponent
-              projects={this.props.projects}
-              selectedProjects={this.props.selectedProjects}
-              onProjectToggle={this.onProjectToggle}
-              onProjectsSkip={this.onProjectsSkip}
-              onProjectsSubmit={this.onProjectsSubmit}
-            /> */}
+
+          <div style={selectWrapStyle}>
+            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
+            <Form.Item
+              name="organization"
+              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.org") }]}
+            >
+              <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
+            </Form.Item>
           </div>
-        </div>
+
+          <div style={selectWrapStyle}>
+            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Position" : "职 位"}</label>
+            <Form.Item
+              name="title"
+              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.position") }]}
+            >
+              <SelectTitle showSearch className="it-login-select" />
+            </Form.Item>
+          </div>
+
+          <div style={selectWrapStyle}>
+            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Tags" : "标 签"}</label>
+            <Form.Item
+              name="tags"
+              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.tag") }, { type: 'array' }]}
+            >
+              <SelectTag mode="multiple" className="it-login-select-multiple" />
+            </Form.Item>
+          </div>
+
+          <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
+
+          <div style={{ padding: '8px 16px', textAlign: 'center' }}>
+            {i18n('account.have_account_already')}<Link to="/login" style={{ textDecoration: 'underline' }}>{i18n('account.directly_login')}</Link>
+          </div>
+
+        </Form>
 
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
-    </div>
+
+      </LoginContainer>
     );
   }
 

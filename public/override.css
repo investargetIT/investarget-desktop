@@ -500,3 +500,7 @@ button[disabled], html input[disabled] {
 .it .ant-checkbox + span {
   padding-right: 0;
 }
+.login-register-form__container .ant-form-item {
+  flex: 1;
+  margin-bottom: 0;
+}
