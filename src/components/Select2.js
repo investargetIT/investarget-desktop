@@ -2,12 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Input, Icon, Tooltip } from 'antd'
+import { Input, Tooltip } from 'antd'
 import Trigger from 'rc-trigger'
 import 'rc-trigger/assets/index.css';
 import _ from 'lodash'
 import styles from './Select2.css'
 import { i18n } from '../utils/util'
+import { PlusOutlined } from '@ant-design/icons';
 
 function isParent(obj, parentObj) {
   while (obj != undefined && obj != null && obj.tagName.toUpperCase() != 'BODY') {
@@ -274,7 +275,17 @@ class Select2 extends React.Component {
     const { label, visible, search, list, reloading, loading, total } = this.state;
     const content = (
       <div style={{ ...searchStyle }} ref="content">
-        <Input ref="search" style={inputStyle} size="large" suffix={this.props.allowCreate ? <Icon type="plus" onClick={this.handleCreate.bind(this, search)} /> : null} placeholder={this.props.placeholder} value={search} onChange={this.handleSearch} />
+        
+        <Input
+          ref="search"
+          style={inputStyle}
+          size="large"
+          suffix={this.props.allowCreate ? <PlusOutlined onClick={this.handleCreate.bind(this, search)} /> : null}
+          placeholder={this.props.placeholder}
+          value={search}
+          onChange={this.handleSearch}
+        />
+
         <div ref="result" style={resultStyle} onScroll={this.handleScroll}>
           { reloading ? <p style={tipStyle}>{i18n('common.is_searching')}</p> : null }
           { !reloading && total === 0 ? <p style={tipStyle}>{this.props.noResult || '暂无'}</p> : null }
