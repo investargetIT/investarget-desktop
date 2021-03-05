@@ -261,11 +261,6 @@ button[disabled], html input[disabled] {
 .it-mobile .ant-select-selection-selected-value {
   padding-right: 10px;
 }
-.it-mobile .ant-select-arrow {
-  right: 6px;
-}
-
-
 /* 覆盖 bootstrap label 元素的样式 */
 .mb0 {
   margin-bottom: 0!important;
@@ -503,4 +498,13 @@ button[disabled], html input[disabled] {
 .login-register-form__container .ant-form-item {
   flex: 1;
   margin-bottom: 0;
+}
+.global-mobile__select.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  width: unset;
+  padding: 0 9px;
+}
+.global-mobile__select .ant-select-arrow {
+  font-size: 14px;
+  top: 50%;
+  right: 10px;
 }
