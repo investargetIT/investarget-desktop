@@ -81,7 +81,7 @@ class GlobalMobile extends React.Component {
     const { countryId, areaCode, mobile } = this.state
     return (
       <Input.Group compact className="it-mobile login-register-form__input" style={{display: 'flex'}}>
-        <Select size="large" disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId ? countryId + '' : this.findChina()}>
+        <Select style={{ height: 40 }} bordered={false} disabled={this.props.disabled} onChange={this.handleChangeCountry} value={countryId ? countryId + '' : this.findChina()}>
           {this.props.country.map(c => {
             return c.key ?<Option key={c.id} value={c.id + ''}>
             <img src={c.url} style={{ width: 40, height: 28, marginLeft: 6, verticalAlign: 'top' }} />
