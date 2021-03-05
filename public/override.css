@@ -83,13 +83,6 @@ button[disabled], html input[disabled] {
   outline: 0;
   box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important;
 }
-
-.ant-select-dropdown {
-  border: 1px solid #999;
-  /* color: #000; */
-  /* background-color: #f7f7f7; */
-  box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
-}
 /* .ant-select-dropdown-menu-item:hover, .ant-select-dropdown-menu-item-active {
   color: #fff;
   background-color: #666;

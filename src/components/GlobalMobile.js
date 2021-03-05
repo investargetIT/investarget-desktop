@@ -88,11 +88,12 @@ class GlobalMobile extends React.Component {
           disabled={this.props.disabled}
           onChange={this.handleChangeCountry}
           value={countryId ? countryId + '' : this.findChina()}
+          optionLabelProp="label"
+          dropdownMatchSelectWidth={88}
         >
           {this.props.country.map(c => {
-            return c.key ?<Option key={c.id} value={c.id + ''}>
-            <img src={c.url} style={{ width: 30, height: 20, marginTop: 5, verticalAlign: 'top' }} />
-          </Option> : null})}
+            return c.key ? <Option key={c.id} value={c.id + ''} label={<img src={c.url} style={{ width: 30, height: 20, marginTop: 5, verticalAlign: 'top' }} />}>{c.country}</Option> : null;
+          })}
         </Select>
         <Input
           size="large"
