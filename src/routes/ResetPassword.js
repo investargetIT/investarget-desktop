@@ -21,7 +21,18 @@ const formInputStyle = {
   // padding: '5px 20px',
   color: '#555',
 };
-const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
+const codeButtonStyle = {
+  paddingLeft: 16,
+  paddingRight: 16,
+  height: 40,
+  backgroundColor: '#fff',
+  textAlign: 'left',
+  fontSize: 14,
+  color: '#595959',
+  lineHeight: '22px',
+  borderColor: '#d9d9d9',
+  borderRadius: 4,
+}
 const inputStyle = {border:'none',fontSize:16,fontWeight:200,height:50,marginBottom:8, 
   background: '#F0F0F0',
   border: '1px solid #ccc',
@@ -204,40 +215,41 @@ class ResetPassword extends React.Component {
               <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} />
             </Form.Item>
 
-            <div style={{marginBottom: 8}}>
-              <Row gutter={8}>
-                <Col span={12}>
-                  <Form.Item
-                    name="code"
-                    rules={[{required: true, message: i18n("account.input_the_code")}]}
-                  >
-                    <Input
-                      className="login-register-form__input"
-                      prefix={<MailOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                      placeholder={i18n("account.input_the_code")}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    loading={this.state.loading}
-                    disabled={codeValue ? true : false}
-                    onClick={this.handleFetchButtonClicked.bind(this)}
-                    size="large"
-                    style={codeButtonStyle}
-                  >
-                    {this.state.loading
-                      ? i18n("account.is_fetching_code")
-                      : (codeValue ? <span style={{color:'#237ccc'}}>{codeValue}</span>
-                                   : (<span>
-                                        <span style={{textDecoration:'underline'}}>{i18n("account.fetch_code")}</span>
-                                        &nbsp;<span style={{color:'#237ccc'}}>(60s)</span>
-                                    </span>)
+            <div style={{ display: 'flex' }}>
+              <div style={{ flex: 1, marginRight: 8 }}>
+                <Form.Item
+                  name="code"
+                  rules={[{ required: true, message: i18n("account.input_the_code") }]}
+                >
+                  <Input
+                    className="login-register-form__input"
+                    prefix={<MailOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                    placeholder={i18n("account.input_the_code")}
+                  />
+                </Form.Item>
+              </div>
+              <div>
+                <Button
+                  className="login-register-form__sms"
+                  loading={this.state.loading}
+                  disabled={codeValue ? true : false}
+                  onClick={this.handleFetchButtonClicked.bind(this)}
+                  size="large"
+                  style={codeButtonStyle}
+                >
+                  {
+                    this.state.loading ?
+                      i18n("account.is_fetching_code")
+                      :
+                      (
+                        codeValue ?
+                          <span style={{ color: '#237ccc' }}>{codeValue}</span>
+                          :
+                          i18n('account.fetch_code')
                       )
-                    }
-                  </Button>
-                </Col>
-              </Row>
+                  }
+                </Button>
+              </div>
             </div>
 
             <Form.Item

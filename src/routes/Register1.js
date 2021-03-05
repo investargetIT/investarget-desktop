@@ -367,7 +367,18 @@ class Register extends React.Component {
       fontSize: 14,
       color: '#555'
     };
-    const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
+    const codeButtonStyle = {
+      paddingLeft: 16,
+      paddingRight: 16,
+      height: 40,
+      backgroundColor: '#fff',
+      textAlign: 'left',
+      fontSize: 14,
+      color: '#595959',
+      lineHeight: '22px',
+      borderColor: '#d9d9d9',
+      borderRadius: 4,
+    }
 
     const selectWrapStyle = {
       display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
@@ -415,35 +426,41 @@ class Register extends React.Component {
             <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
           </Form.Item>
 
-          <Row gutter={8}>
-            <Col span={12}>
+          <div style={{ display: 'flex' }}>
+            <div style={{ flex: 1, marginRight: 8 }}>
               <Form.Item
                 name="code"
                 rules={[{ required: true, message: i18n("account.input_the_code") }]}
               >
-                <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+                <Input
+                  className="login-register-form__input"
+                  placeholder={i18n("account.input_the_code")}
+                />
               </Form.Item>
-            </Col>
-            <Col span={12}>
+            </div>
+            <div>
               <Button
+                className="login-register-form__sms"
                 loading={this.state.loading}
                 disabled={codeValue ? true : false}
                 onClick={this.handleFetchButtonClicked.bind(this)}
                 size="large"
                 style={codeButtonStyle}
               >
-                {this.state.loading
-                  ? i18n("account.is_fetching_code")
-                  : (codeValue ? <span style={{ color: '#237ccc' }}>{codeValue}</span>
-                    : (<span>
-                      <span style={{ textDecoration: 'underline' }}>{i18n("account.fetch_code")}</span>
-                                        &nbsp;<span style={{ color: '#237ccc' }}>(60s)</span>
-                    </span>)
-                  )
+                {
+                  this.state.loading ?
+                    i18n("account.is_fetching_code")
+                    :
+                    (
+                      codeValue ?
+                        <span style={{ color: '#237ccc' }}>{codeValue}</span>
+                        :
+                        i18n('account.fetch_code')
+                    )
                 }
               </Button>
-            </Col>
-          </Row>
+            </div>
+          </div>
 
           <Form.Item
             name="email"
