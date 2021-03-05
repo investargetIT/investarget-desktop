@@ -407,47 +407,43 @@ class Register extends React.Component {
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
           <p className="login-register-form__subtitle">{i18n('account.register_hint')}</p>
 
-          <div style={wrapStyle}>
-            <Form.Item
-              name="mobileInfo"
-              rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
-              initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
-            >
-              <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
-            </Form.Item>
-          </div>
+          <Form.Item
+            name="mobileInfo"
+            rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
+            initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
+          >
+            <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
+          </Form.Item>
 
-          <div style={{ marginBottom: 8 }}>
-            <Row gutter={8}>
-              <Col span={12}>
-                <Form.Item
-                  name="code"
-                  rules={[{ required: true, message: i18n("account.input_the_code") }]}
-                >
-                  <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Button
-                  loading={this.state.loading}
-                  disabled={codeValue ? true : false}
-                  onClick={this.handleFetchButtonClicked.bind(this)}
-                  size="large"
-                  style={codeButtonStyle}
-                >
-                  {this.state.loading
-                    ? i18n("account.is_fetching_code")
-                    : (codeValue ? <span style={{ color: '#237ccc' }}>{codeValue}</span>
-                      : (<span>
-                        <span style={{ textDecoration: 'underline' }}>{i18n("account.fetch_code")}</span>
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item
+                name="code"
+                rules={[{ required: true, message: i18n("account.input_the_code") }]}
+              >
+                <Input style={formInputStyle} placeholder={i18n("account.input_the_code")} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Button
+                loading={this.state.loading}
+                disabled={codeValue ? true : false}
+                onClick={this.handleFetchButtonClicked.bind(this)}
+                size="large"
+                style={codeButtonStyle}
+              >
+                {this.state.loading
+                  ? i18n("account.is_fetching_code")
+                  : (codeValue ? <span style={{ color: '#237ccc' }}>{codeValue}</span>
+                    : (<span>
+                      <span style={{ textDecoration: 'underline' }}>{i18n("account.fetch_code")}</span>
                                         &nbsp;<span style={{ color: '#237ccc' }}>(60s)</span>
-                      </span>)
-                    )
-                  }
-                </Button>
-              </Col>
-            </Row>
-          </div>
+                    </span>)
+                  )
+                }
+              </Button>
+            </Col>
+          </Row>
 
           <Form.Item
             name="email"
