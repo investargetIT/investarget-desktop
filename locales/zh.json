@@ -99,7 +99,8 @@
     "password_reset_ok": "密码重置成功，请重新登录",
     "input_phone_number": "输入正确的手机号码！",
     "password_placeholder": "6 - 16 位密码，区分大小写",
-    "please_type_name": "请输入姓名"
+    "please_type_name": "请输入姓名",
+    "please_select_title": "请选择职位"
   },
 
   "project_library": {

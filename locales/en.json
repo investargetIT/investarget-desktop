@@ -98,7 +98,8 @@
     "password_reset_ok": "Password reset successfully, please login again",
     "input_phone_number": "Please Enter Your Phone Number Below!",
     "password_placeholder": "Password",
-    "please_type_name": "Please type your name"
+    "please_type_name": "Please type your name",
+    "please_select_title": "Please select your title"
   },
 
   "project_library": {

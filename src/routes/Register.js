@@ -435,7 +435,7 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          <div style={selectWrapStyle}>
+          {/* <div style={selectWrapStyle}>
             <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
             <Form.Item
               name="organization"
@@ -443,15 +443,15 @@ class Register extends React.Component {
             >
               <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
             </Form.Item>
-          </div>
+          </div> */}
 
-          <div style={selectWrapStyle}>
-            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Position" : "职 位"}</label>
+          <div className="login-register-form__container">
+            <label className="login-register-form__container__label">{foreigner ? "Position" : "职位"}：</label>
             <Form.Item
               name="title"
               rules={[{ required: true, message: i18n("account.please_select") + i18n("account.position") }]}
             >
-              <SelectTitle showSearch className="it-login-select" />
+              <SelectTitle className="login-register-form__select" showSearch placeholder={i18n('account.please_select_title')}/>
             </Form.Item>
           </div>
 
