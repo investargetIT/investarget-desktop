@@ -21,18 +21,6 @@ const formInputStyle = {
   // padding: '5px 20px',
   color: '#555',
 };
-const codeButtonStyle = {
-  paddingLeft: 16,
-  paddingRight: 16,
-  height: 40,
-  backgroundColor: '#fff',
-  textAlign: 'left',
-  fontSize: 14,
-  color: '#595959',
-  lineHeight: '22px',
-  borderColor: '#d9d9d9',
-  borderRadius: 4,
-}
 const inputStyle = {border:'none',fontSize:16,fontWeight:200,height:50,marginBottom:8, 
   background: '#F0F0F0',
   border: '1px solid #ccc',
@@ -234,19 +222,12 @@ class ResetPassword extends React.Component {
                   loading={this.state.loading}
                   disabled={codeValue ? true : false}
                   onClick={this.handleFetchButtonClicked.bind(this)}
-                  size="large"
-                  style={codeButtonStyle}
                 >
                   {
                     this.state.loading ?
                       i18n("account.is_fetching_code")
                       :
-                      (
-                        codeValue ?
-                          <span style={{ color: '#237ccc' }}>{codeValue}</span>
-                          :
-                          i18n('account.fetch_code')
-                      )
+                      (codeValue || i18n('account.fetch_code'))
                   }
                 </Button>
               </div>

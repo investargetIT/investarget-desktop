@@ -8,27 +8,6 @@ button[disabled], html input[disabled] {
 /* 覆盖 AntDesign 样式 */
 
 /* Buttons */
-.ant-btn {
-  color: #428BCA;
-  background-color: #e4e7ea;
-  border-color: #ccc;
-}
-.ant-btn:hover, .ant-btn:focus, .ant-btn:active {
-  color: #636e7b;
-  background-color: #f7f7f7;
-  border-color: #ccc;
-}
-
-/* .ant-btn {
-  color: #666;
-  background-color: #fff;
-  border-color: #ccc;
-}
-.ant-btn:hover, .ant-btn:focus, .ant-btn:active {
-  color: #333;
-  background-color: #f7f7f7;
-  border-color: #ccc;
-} */
 .ant-btn-primary {
   color: #fff;
   background-color: #428bca;
@@ -43,9 +22,6 @@ button[disabled], html input[disabled] {
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
-}
-.ant-btn-lg {
-  font-size: 14px;
 }
 /* 白色按钮 */
 .ant-btn.white {
@@ -503,4 +479,11 @@ button[disabled], html input[disabled] {
 }
 .login-register-form__sms.ant-btn.ant-btn-loading > span {
   display: initial;
+}
+.login-register-form__sms.ant-btn {
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 22px;
 }

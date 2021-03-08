@@ -367,19 +367,6 @@ class Register extends React.Component {
       fontSize: 14,
       color: '#555'
     };
-    const codeButtonStyle = {
-      paddingLeft: 16,
-      paddingRight: 16,
-      height: 40,
-      backgroundColor: '#fff',
-      textAlign: 'left',
-      fontSize: 14,
-      color: '#595959',
-      lineHeight: '22px',
-      borderColor: '#d9d9d9',
-      borderRadius: 4,
-    }
-
     const selectWrapStyle = {
       display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
       border: 'none', fontSize: 16, height: 50, marginBottom: 8,
@@ -444,19 +431,12 @@ class Register extends React.Component {
                 loading={this.state.loading}
                 disabled={codeValue ? true : false}
                 onClick={this.handleFetchButtonClicked.bind(this)}
-                size="large"
-                style={codeButtonStyle}
               >
                 {
                   this.state.loading ?
                     i18n("account.is_fetching_code")
                     :
-                    (
-                      codeValue ?
-                        <span style={{ color: '#237ccc' }}>{codeValue}</span>
-                        :
-                        i18n('account.fetch_code')
-                    )
+                    (codeValue || i18n('account.fetch_code'))
                 }
               </Button>
             </div>
