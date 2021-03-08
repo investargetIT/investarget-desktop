@@ -406,7 +406,7 @@ class Register extends React.Component {
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
     return (
-      <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function () { this.forceUpdate() }.bind(this)}>
+      <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
         <Form ref={this.formRef} onSubmit={this.handleSubmit} className="login-register-form it-login-form">
 
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
@@ -465,11 +465,9 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          <Button htmlType="submit" style={submitStyle} loading={this.props.loading}>{i18n('common.submit')}</Button>
+          <Button htmlType="submit" className="login-register-form__submit" loading={this.props.loading}>{i18n('common.submit')}</Button>
 
-          <div style={{ padding: '8px 16px', textAlign: 'center' }}>
-            {i18n('account.have_account_already')}<Link to="/login" style={{ textDecoration: 'underline' }}>{i18n('account.directly_login')}</Link>
-          </div>
+          <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ textDecoration: 'underline' }}>{i18n('account.directly_login')}</Link></div>
 
         </Form>
 

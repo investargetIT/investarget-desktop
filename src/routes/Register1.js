@@ -400,7 +400,7 @@ class Register extends React.Component {
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
     return (
-      <LoginContainer bodyWrapStyle={{ height: 1000 }} changeLang={function () { this.forceUpdate() }.bind(this)}>
+      <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
         <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form login-register-form">
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
           <p className="login-register-form__subtitle">{i18n('account.register_hint')}</p>
