@@ -97,7 +97,8 @@
     "input_new_password": "Please Enter Your New Password",
     "password_reset_ok": "Password reset successfully, please login again",
     "input_phone_number": "Please Enter Your Phone Number Below!",
-    "password_placeholder": "Password"
+    "password_placeholder": "Password",
+    "please_type_name": "Please type your name"
   },
 
   "project_library": {
