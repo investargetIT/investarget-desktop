@@ -99,7 +99,8 @@
     "input_phone_number": "Please Enter Your Phone Number Below!",
     "password_placeholder": "Password",
     "please_type_name": "Please type your name",
-    "please_select_title": "Please select your title"
+    "please_select_title": "Please select your title",
+    "please_choose_tags": "Please pick some tags"
   },
 
   "project_library": {

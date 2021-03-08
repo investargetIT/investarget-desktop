@@ -455,13 +455,13 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          <div style={selectWrapStyle}>
-            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Tags" : "标 签"}</label>
+          <div className="login-register-form__container">
+            <label className="login-register-form__container__label">{foreigner ? "Tags" : "标签"}：</label>
             <Form.Item
               name="tags"
               rules={[{ required: true, message: i18n("account.please_select") + i18n("account.tag") }, { type: 'array' }]}
             >
-              <SelectTag mode="multiple" className="it-login-select-multiple" />
+              <SelectTag className="login-register-form__select" placeholder={i18n('account.please_choose_tags')} mode="multiple" showArrow />
             </Form.Item>
           </div>
 
