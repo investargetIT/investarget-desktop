@@ -42,7 +42,11 @@ const tailFormItemLayout = {
     },
   },
 }
-
+const radioStyle = {
+  fontSize: 16,
+  lineHeight: '24px',
+  color: '#262626',
+};
 class Register extends React.Component {
 
   formRef = React.createRef();
@@ -367,8 +371,6 @@ class Register extends React.Component {
       fontSize: 14,
       color: '#555'
     };
-    const codeButtonStyle = {width:'100%',height:'50px',border:'none',backgroundColor:'#fff',textAlign:'left',fontSize:16,color:'#656565'}
-
     const selectWrapStyle = {
       display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
       border: 'none', fontSize: 16, height: 50, marginBottom: 8,
@@ -410,8 +412,8 @@ class Register extends React.Component {
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
           <p className="login-register-form__subtitle">{i18n('account.register_hint_info')}</p>
 
-          <div className="login-register-form__container" style={wrapStyle}>
-            <label style={labelStyle} className="mb0">{i18n("account.name")}：</label>
+          <div className="login-register-form__container">
+            <label className="login-register-form__container__label">{i18n("account.name")}：</label>
             <Form.Item
               name="username"
               rules={[{ required: true, message: i18n("account.please_input") + i18n("account.name") }]}
@@ -420,15 +422,15 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          <div style={{ marginTop: 20, marginBottom: 10 }}>
-            <span style={{ fontSize: 22, marginLeft: 24, marginRight: 32 }}>{i18n('account.role')}</span>
+          <div className="login-register-form__container">
+            <label className="login-register-form__container__label">{i18n('account.role')}：</label>
             <Form.Item
               name="type"
               rules={[{ required: true, message: i18n('account.select_role') }]}
             >
-              <RadioGroup size="large" className="it-login-radio">
-                <Radio value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
-                {foreigner ? null : <Radio value={'trader'}>{i18n('account.trader')}</Radio>}
+              <RadioGroup>
+                <Radio style={radioStyle} value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
+                {!foreigner && <Radio style={radioStyle} value={'trader'}>{i18n('account.trader')}</Radio>}
               </RadioGroup>
             </Form.Item>
           </div>

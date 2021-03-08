@@ -277,38 +277,6 @@ button[disabled], html input[disabled] {
   font-size: 12px;
 }
 
-.it-login-radio.ant-radio-group .ant-radio-wrapper {
-  color: #666;
-  font-size: 18px;
-  margin-right: 18px;
-}
-
-.it-login-radio.ant-radio-group .ant-radio-inner {
-  background-color: transparent;
-  width: 16px;
-  height: 16px;
-  border-width: 2px;
-  border-color: #989898;
-}
-.it-login-radio.ant-radio-group .ant-radio-inner:after {
-  width: 6px;
-  height: 6px;
-  left: 3px;
-  top: 3px;
-}
-.it-login-radio .ant-radio-checked .ant-radio-inner {
-  border-color: #237ccc;
-}
-.it-login-radio .ant-radio-checked .ant-radio-inner:after {
-  background-color: #237ccc;
-}
-.it-login-radio .ant-radio-wrapper:hover .ant-radio-inner {
-  border-color: #237ccc;
-}
-.it-login-radio .ant-radio {
-  vertical-align: middle;
-}
-
 
 /* 覆盖 Pagination 样式 */
 .ant-pagination-item {
@@ -463,6 +431,16 @@ button[disabled], html input[disabled] {
 }
 .it .ant-checkbox + span {
   padding-right: 0;
+}
+.login-register-form__container {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+label.login-register-form__container__label {
+  font-size: 16px;
+  line-height: 24px;
+  color: #262626;
 }
 .login-register-form__container .ant-form-item {
   flex: 1;
