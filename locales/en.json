@@ -100,7 +100,8 @@
     "password_placeholder": "Password",
     "please_type_name": "Please type your name",
     "please_select_title": "Please select your title",
-    "please_choose_tags": "Please pick some tags"
+    "please_choose_tags": "Please pick some tags",
+    "select_org": "Please type or select your company"
   },
 
   "project_library": {

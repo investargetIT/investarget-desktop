@@ -284,42 +284,84 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 // }
 // SelectOrganization = connect()(SelectOrganization)
 
-/**
- * SelectExistOrganization
- */
-class SelectExistOrganization extends React.Component {
+// async function fetchUserList(username) {
+//   console.log('fetching user', username);
+//   return fetch('https://randomuser.me/api/?results=5')
+//     .then((response) => response.json())
+//     .then((body) =>
+//       body.results.map((user) => ({
+//         label: `${user.name.first} ${user.name.last}`,
+//         value: user.login.username,
+//       })),
+//     );
+// }
 
-  getOrg = (params) => {
-    return api.getOrg({...params, issub: false, orgstatus: 2}).then(result => {
-      var { count: total, data: list } = result.data
-      list = list.map(item => {
-        const { id: value, orgfullname: label, description } = item
-        return { value, label, description }
-      })
-      return { total, list }
+const getOrg = (params) => {
+  return api.getOrg({...params, issub: false, orgstatus: 2}).then(result => {
+    var { count: total, data: list } = result.data
+    list = list.map(item => {
+      const { id: value, orgfullname: label, description } = item
+      return { value, label, description }
     })
-  }
-
-  getOrgnameById = (id) => {
-    return api.getOrgDetailLang(id).then(result => {
-      return result.data.orgfullname
-    })
-  }
-
-  render() {
-    const { value, onChange, allowCreate, ...extraProps } = this.props
-    return (
-      <Select2
-        getData={this.getOrg}
-        getNameById={this.getOrgnameById}
-        value={this.props.value}
-        onChange={this.props.onChange}
-        allowCreate={this.props.allowCreate}
-        {...extraProps}
-      />
-    )
-  }
+    // return { total, list }
+    return list;
+  });
 }
+
+const SelectExistOrganization = (props) => {
+  const [value, setValue] = React.useState([]);
+  return (
+    <Select2
+      value={value}
+      placeholder={i18n('account.select_org')}
+      fetchOptions={getOrg}
+      onChange={(newValue) => {
+        setValue(newValue);
+      }}
+      style={{
+        width: '100%',
+      }}
+      {...props}
+    />
+  );
+};
+
+// /**
+//  * SelectExistOrganization
+//  */
+// class SelectExistOrganization extends React.Component {
+
+//   getOrg = (params) => {
+//     return api.getOrg({...params, issub: false, orgstatus: 2}).then(result => {
+//       var { count: total, data: list } = result.data
+//       list = list.map(item => {
+//         const { id: value, orgfullname: label, description } = item
+//         return { value, label, description }
+//       })
+//       return { total, list }
+//     })
+//   }
+
+//   getOrgnameById = (id) => {
+//     return api.getOrgDetailLang(id).then(result => {
+//       return result.data.orgfullname
+//     })
+//   }
+
+//   render() {
+//     const { value, onChange, allowCreate, ...extraProps } = this.props
+//     return (
+//       <Select2
+//         getData={this.getOrg}
+//         getNameById={this.getOrgnameById}
+//         value={this.props.value}
+//         onChange={this.props.onChange}
+//         allowCreate={this.props.allowCreate}
+//         {...extraProps}
+//       />
+//     )
+//   }
+// }
 
 /**
  * SelectProjectLibrary
