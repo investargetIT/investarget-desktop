@@ -303,8 +303,8 @@ const getOrg = (params) => {
       const { id: value, orgfullname: label, description } = item
       return { value, label, description }
     })
-    // return { total, list }
-    return list;
+    return { total, list }
+    // return list;
   });
 }
 
