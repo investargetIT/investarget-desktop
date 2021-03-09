@@ -435,15 +435,15 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          {/* <div style={selectWrapStyle}>
-            <label style={{ ...selectLabelStyle, width: foreigner ? 110 : 80 }} className="mb0">{foreigner ? "Organization" : "机 构"}</label>
+          <div className="login-register-form__container">
+            <label className="login-register-form__container__label">{foreigner ? "Organization" : "机构"}：</label>
             <Form.Item
               name="organization"
               rules={[{ required: true, message: i18n("account.please_select") + i18n("account.org") }]}
             >
               <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} />
             </Form.Item>
-          </div> */}
+          </div>
 
           <div className="login-register-form__container">
             <label className="login-register-form__container__label">{foreigner ? "Position" : "职位"}：</label>
