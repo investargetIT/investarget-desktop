@@ -1,3 +1,4 @@
+import React from 'react';
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 
@@ -11,6 +12,14 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
 
   const fetchRef = React.useRef(0);
   const dropdownContent = React.useRef(null);
+
+  React.useEffect(() => {
+    fetchOptions({ page_index: 1, page_size: 10 }).then(data => {
+      const { list: newOptions, total } = data;
+      setTotal(total);
+      setOptions(newOptions);
+    });
+  }, []);
 
   const debounceFetcher = React.useMemo(() => {
     const loadOptions = (value) => {
