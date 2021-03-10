@@ -12,6 +12,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
 
   const fetchRef = React.useRef(0);
   const dropdownContent = React.useRef(null);
+  const selectRef = React.useRef(null);
 
   React.useEffect(() => {
     fetchOptions({ page_index: 1, page_size: 10 }).then(data => {
@@ -72,9 +73,20 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
     }
   }
 
+  const handleAddBtnClick = () => {
+    props.onChange(search);
+    selectRef.current.blur();
+  }
+
   const dropdownRender = originalNode => {
     return (
       <div ref={dropdownContent} onScroll={handleScroll}>
+        {search && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 12px', minHeight: 32 }}>
+            <div style={{ fontWeight: 500, color: '#636e7b' }}>{search}</div>
+            <div onClick={handleAddBtnClick}  style={{ color: '#339bd2', cursor: 'pointer' }}>添加</div>
+          </div>
+        )}
         {originalNode}
         {fetchingMore && <Spin style={{ paddingLeft: 14 }} size="small" />}
       </div>
@@ -84,11 +96,14 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
   return (
     <Select
       size="large"
+      // open
       showSearch
-      labelInValue
+      // labelInValue
+      value={props.value}
+      ref={selectRef}
       filterOption={false}
       onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size="small" /> : null}
+      notFoundContent={fetching ? <Spin size="small" /> : '未找到相关机构'}
       {...props}
       options={options}
       dropdownRender={dropdownRender}

@@ -301,7 +301,7 @@ const getOrg = (params) => {
     var { count: total, data: list } = result.data
     list = list.map(item => {
       const { id: value, orgfullname: label, description } = item
-      return { value, label, description }
+      return { value: label, label, description }
     })
     return { total, list }
     // return list;
