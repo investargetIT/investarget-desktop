@@ -445,6 +445,9 @@ label.login-register-form__container__label {
   top: 50%;
   right: 10px;
 }
+.ant-form-item-has-error .global-mobile__select.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+  border-color: transparent !important;
+}
 .login-register-form__sms.ant-btn.ant-btn-loading > span {
   display: initial;
 }
