@@ -7,7 +7,7 @@ import { withRouter, Link } from 'dva/router'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, checkRealMobile } from '../utils/util'
 import { BasicFormItem } from '../components/Form'
 import { SelectExistOrganization, SelectTitle, SelectTag } from '../components/ExtraInput'
 import LoginContainer from '../components/LoginContainer'
@@ -202,7 +202,7 @@ class Register extends React.Component {
       //   callback(i18n('areacode_invalid'))
       } else if (value.mobile == '') {
         callback(i18n('mobile_not_empty'))
-      } else if (!/^\d+$/.test(value.mobile)) {
+      } else if (!checkRealMobile(value.mobile)) {
         callback(i18n('mobile_incorrect_format'))
       } else {
         callback()
