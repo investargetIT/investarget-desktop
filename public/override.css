@@ -386,18 +386,18 @@ button[disabled], html input[disabled] {
   text-align: center;
 }
 .login-register-form__input {
-  font-weight: normal;
   height: 40px;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  font-size: 16px;
-  /* color: #262626; */
 }
-.login-register-form__input::placeholder, .login-register-form__input .ant-input::placeholder {
-  color: #bfbfbf;
+.login-register-form__input, .login-register-form__input .ant-input {
+  color: #262626;
   font-size: 16px;
   line-height: 24px;
   font-weight: normal;
+}
+.login-register-form__input::placeholder, .login-register-form__input .ant-input::placeholder {
+  color: #bfbfbf;
 }
 .login-register-form__submit {
   width: 100%;
