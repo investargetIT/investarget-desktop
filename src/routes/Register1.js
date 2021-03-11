@@ -246,6 +246,7 @@ class Register extends React.Component {
       })
     }).catch(error => {
       this.setState({ loading: false })
+      this.props.dispatch({ type: 'app/findError', payload: error });
     })
   }
 
