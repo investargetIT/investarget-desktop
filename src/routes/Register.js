@@ -303,9 +303,9 @@ class Register extends React.Component {
     if (!this.props.currentUser) {
       return <Redirect to="/register1" />;
     }
+
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
     const { getFieldValue } = this.formRef;
-
 
     const containerStyle = {
       position: 'relative',
