@@ -3,7 +3,7 @@ import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal 
 import { getOrg, sendSmsCode, checkUserExist } from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { connect } from 'dva'
-import { withRouter, Link } from 'dva/router'
+import { withRouter, Link, Redirect } from 'dva/router'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
@@ -300,6 +300,9 @@ class Register extends React.Component {
   }
 
   render() {
+    if (!this.props.currentUser) {
+      return <Redirect to="/register1" />;
+    }
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
     const { getFieldValue } = this.formRef;
 
