@@ -410,7 +410,7 @@ class Register extends React.Component {
             rules={[{ required: true }, { type: 'object' }, { validator: checkMobileInfo }]}
             initialValue={{ areaCode: this.areaCode || '86', mobile: this.mobile || '' }}
           >
-            <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} inputStyle={{ fontSize: 14, color: '#636e7b' }} />
+            <GlobalMobile disabled={this.mobile && this.areaCode ? true : false} onBlur={this.handleMobileBlur} />
           </Form.Item>
 
           <div style={{ display: 'flex' }}>
