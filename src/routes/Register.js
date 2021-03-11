@@ -1,47 +1,15 @@
 import React from 'react'
-import { Form, Radio, Button, Select, Input, Row, Col, Checkbox, message, Modal } from 'antd'
-import { getOrg, sendSmsCode, checkUserExist } from '../api'
-import LeftRightLayout from '../components/LeftRightLayout'
+import { Form, Radio, Button, Input, Modal } from 'antd'
 import { connect } from 'dva'
 import { withRouter, Link, Redirect } from 'dva/router'
 import PropTypes from 'prop-types'
-import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
-import { ApiError } from '../utils/request'
 import { i18n, handleError } from '../utils/util'
-import { BasicFormItem } from '../components/Form'
 import { SelectExistOrganization, SelectTitle, SelectTag } from '../components/ExtraInput'
 import LoginContainer from '../components/LoginContainer'
-import GlobalMobile from '../components/GlobalMobile'
 import FormError from '../utils/FormError'
 import HandleError from '../components/HandleError'
 
-const FormItem = Form.Item
 const RadioGroup = Radio.Group
-const Option = Select.Option
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-}
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 14,
-      offset: 6,
-    },
-  },
-}
 const radioStyle = {
   fontSize: 16,
   lineHeight: '24px',
@@ -60,13 +28,6 @@ class Register extends React.Component {
       intervalId: null,
       loading: false,
     }
-    this.onFriendToggle = this.onFriendToggle.bind(this)
-    this.onFriendsSkip = this.onFriendsSkip.bind(this)
-    this.onFriendsSubmit = this.onFriendsSubmit.bind(this)
-    this.onProjectToggle = this.onProjectToggle.bind(this)
-    this.onProjectsSkip = this.onProjectsSkip.bind(this)
-    this.onProjectsSubmit = this.onProjectsSubmit.bind(this)
-    this.timer = this.timer.bind(this)
 
     const { state } = this.props.location;
     if (state) {
@@ -80,13 +41,6 @@ class Register extends React.Component {
     return {
       form: this.props.form
     }
-  }
-
-  onChange = (e) => {
-    console.log('radio checked', e.target.value);
-    this.setState({
-      value: e.target.value,
-    });
   }
 
   handleSubmit = e => {
@@ -124,173 +78,6 @@ class Register extends React.Component {
     })
   }
 
-  handleOrgChange = value => {
-
-    if (value === '') {
-      this.setState({ org: [] })
-      return
-    } else if (value.length < 2) {
-      this.setState({ org: [] })
-      return
-    } else if (this.state.org.map(i => i.name).includes(value)) {
-      return
-    }
-
-    getOrg({search: value}).then(data => {
-      const org = data.data.data.map(item => {
-        return { id: item.id, name: item.orgname }
-      })
-      this.setState({ org: org })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
-  checkAgreement = (rule, value, callback) => {
-    if (!value) {
-      callback('请阅读并接受声明')
-    } else {
-      callback()
-    }
-  }
-
-  // recommend_friends
-  onFriendToggle(friend) {
-    this.props.dispatch({
-      type: 'recommendFriends/toggleFriend',
-      payload: friend
-    })
-  }
-
-  onFriendsSkip() {
-    this.props.dispatch({
-      type: 'recommendFriends/skipFriends',
-    })
-  }
-
-  onFriendsSubmit() {
-    this.props.dispatch({
-      type: 'recommendFriends/addFriends'
-    })
-  }
-
-  // recommend_projects
-
-  onProjectToggle(project) {
-    this.props.dispatch({
-      type: 'recommendProjects/toggleProject',
-      payload: project
-    })
-  }
-
-  onProjectsSkip() {
-    this.props.dispatch({
-      type: 'recommendProjects/skipProjects',
-    })
-  }
-
-  onProjectsSubmit() {
-    this.props.dispatch({
-      type: 'recommendProjects/addProjects'
-    })
-  }
-
-  timer() {
-    if (this.state.fetchSmsCodeValue > 0) {
-    this.setState({ fetchSmsCodeValue: this.state.fetchSmsCodeValue - 1 })
-    } else {
-      clearInterval(this.state.intervalId)
-      this.setState({
-        fetchSmsCodeValue: null,
-        loading: false,
-        intervalId: null
-      })
-    }
-  }
-
-  handleFetchButtonClicked() {
-    const { getFieldValue } = this.formRef;
-    const mobileInfo = getFieldValue('mobileInfo')
-    const { areaCode: areacode, mobile } = mobileInfo
-    if (!areacode) {
-      message.error(i18n('account.require_areacode'))
-      return
-    }
-    if (!mobile) {
-      message.error(i18n('account.require_mobile'))
-      return
-    }
-    this.setState({ loading: true })
-    const body = {
-      mobile: mobile,
-      areacode: areacode
-    }
-    checkUserExist(mobile)
-    .then(data => {
-      const isExist = data.data.result
-      if (isExist) {
-        throw new ApiError(20041)
-      }
-      return sendSmsCode(body)
-    })
-    .then(data => {
-      if (data.data.status !== 'success') {
-        throw new Error(data.data.msg)
-      }
-      message.success(i18n('account.code_sent'))
-      localStorage.setItem('smstoken', data.data.smstoken)
-      const intervalId = setInterval(this.timer, 1000)
-      this.setState({
-        loading: false,
-        intervalId: intervalId,
-        fetchSmsCodeValue: 60
-      })
-    }).catch(error => {
-      this.setState({ loading: false })
-    })
-  }
-
-  handleMobileBlur = (evt) => {
-    if (!evt.target.value) return
-    checkUserExist(evt.target.value)
-    .then(data => {
-      const isExist = data.data.result
-      if (isExist) {
-        Modal.confirm({
-          closable: false,
-          maskClosable: false,
-          title: i18n('message.mobile_exist'),
-          cancelText: i18n('retrieve_password'),
-          okText: i18n('to_login'),
-          onCancel: () => {
-            this.props.router.push('/password')
-          },
-          onOk: () => {
-            this.props.router.push('/login')
-          }
-        })
-      }
-    })
-    .catch(error => {
-      this.props.dispatch({ type: 'app/findError', payload: error })
-    })
-  }
-
-  handleEmailOnBlur = evt => {
-    if (!evt.target.value) return
-    checkUserExist(evt.target.value)
-    .then(data => {
-      const isExist = data.data.result
-      if (isExist) throw new ApiError(20042)
-    })
-    .catch(error => {
-      this.props.dispatch({ type: 'app/findError', payload: error })
-    })
-  }
-
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
   }
@@ -301,113 +88,10 @@ class Register extends React.Component {
 
   render() {
     if (!this.props.currentUser) {
-      return <Redirect to="/register1" />;
+      // return <Redirect to="/register1" />;
     }
 
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
-    const { getFieldValue } = this.formRef;
-
-    const containerStyle = {
-      position: 'relative',
-      width: '100%',
-      height: '100vh',
-      overflow: 'hidden',
-    }
-    const wrapperStyle = {
-      zIndex: 1,
-      width: '300%',
-      height: '100%',
-      left: (- (this.props.registerStep - 1) * 100) + '%',
-      top: 0,
-      transition: 'left 500ms ease',
-      WebkitTransition: 'left 500ms ease',
-    }
-    const itemStyle = {
-      float: 'left',
-      width: '33.33%',
-      height: '100%',
-      overflow: 'auto',
-    }
-
-    function checkMobileInfo(rule, value, callback) {
-      if (value.areaCode == '') {
-        callback(i18n('areacode_not_empty'))
-      // } else if (!allowAreaCode.includes(value.areaCode)) {
-      //   callback(i18n('areacode_invalid'))
-      } else if (value.mobile == '') {
-        callback(i18n('mobile_not_empty'))
-      } else if (!/^\d+$/.test(value.mobile)) {
-        callback(i18n('mobile_incorrect_format'))
-      } else {
-        callback()
-      }
-    }
-
-    function checkAgreement(rule, value, callback) {
-      if (!value) {
-        callback(i18n('account.please_check_agreement'))
-      } else {
-        callback()
-      }
-    }
-
-    function confirmValidator(rule, value, callback) {
-      const password = getFieldValue('password')
-      if (value && password && value !== password) {
-        callback(i18n('validation.two_passwords_not_inconsistent'))
-      } else {
-        callback()
-      }
-    }
-
-    const formStyle = {
-      width: 418, padding: 20, background: 'white', zIndex: 1, color: '#666',
-      border: '1px solid rgba(0, 0, 0, .2)',
-      borderRadius: 6,
-      boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
-    };
-    const formInputStyle = {
-      border: 'none', fontSize: 14, padding: '12px 16px', paddingRight: 40, height: 50,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
-      fontSize: 14,
-      color: '#555'
-    };
-    const selectWrapStyle = {
-      display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
-      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
-    };
-    const selectLabelStyle = {flexShrink: 0,fontSize: 16,width: 110, textAlign:"center" ,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
-    const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none',backgroundColor: 'inherit'}
-    const selectContentContainerStyle = {flexGrow:1,height:50}
-
-    const wrapStyle = {
-      display: 'flex',
-      alignItems: 'center',
-    };
-    const labelStyle = {
-      width: 48,
-      flexShrink: 0,
-      fontSize: 16,
-      color: '#656565',
-    };
-    const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0,backgroundColor: '#F0F0F0'}
-
-    const submitStyle = {
-      width: '100%', height: 50, fontSize: 20, backgroundColor: 'rgba(35,126,205,.8)', border: 'none', color: '#fff', fontWeight: 200,
-      fontSize: 16,
-      background: '#13356C',
-      borderRadius: 6,
-      fontWeight: 'normal',
-    };
-
-
-    const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
-
     return (
       <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
         <Form ref={this.formRef} onSubmit={this.handleSubmit} className="login-register-form it-login-form">
