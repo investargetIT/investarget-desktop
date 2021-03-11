@@ -15,34 +15,6 @@ import GlobalMobile from '../components/GlobalMobile'
 import FormError from '../utils/FormError'
 import HandleError from '../components/HandleError'
 
-const FormItem = Form.Item
-const RadioGroup = Radio.Group
-const Option = Select.Option
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-}
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 14,
-      offset: 6,
-    },
-  },
-}
-
 class Register extends React.Component {
 
   formRef = React.createRef();
@@ -56,12 +28,6 @@ class Register extends React.Component {
       intervalId: null,
       loading: false,
     }
-    this.onFriendToggle = this.onFriendToggle.bind(this)
-    this.onFriendsSkip = this.onFriendsSkip.bind(this)
-    this.onFriendsSubmit = this.onFriendsSubmit.bind(this)
-    this.onProjectToggle = this.onProjectToggle.bind(this)
-    this.onProjectsSkip = this.onProjectsSkip.bind(this)
-    this.onProjectsSubmit = this.onProjectsSubmit.bind(this)
     this.timer = this.timer.bind(this)
 
     const { state } = this.props.location;
@@ -120,78 +86,12 @@ class Register extends React.Component {
     })
   }
 
-  handleOrgChange = value => {
-
-    if (value === '') {
-      this.setState({ org: [] })
-      return
-    } else if (value.length < 2) {
-      this.setState({ org: [] })
-      return
-    } else if (this.state.org.map(i => i.name).includes(value)) {
-      return
-    }
-
-    getOrg({search: value}).then(data => {
-      const org = data.data.data.map(item => {
-        return { id: item.id, name: item.orgname }
-      })
-      this.setState({ org: org })
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
-
   checkAgreement = (rule, value, callback) => {
     if (!value) {
       callback('请阅读并接受声明')
     } else {
       callback()
     }
-  }
-
-  // recommend_friends
-  onFriendToggle(friend) {
-    this.props.dispatch({
-      type: 'recommendFriends/toggleFriend',
-      payload: friend
-    })
-  }
-
-  onFriendsSkip() {
-    this.props.dispatch({
-      type: 'recommendFriends/skipFriends',
-    })
-  }
-
-  onFriendsSubmit() {
-    this.props.dispatch({
-      type: 'recommendFriends/addFriends'
-    })
-  }
-
-  // recommend_projects
-
-  onProjectToggle(project) {
-    this.props.dispatch({
-      type: 'recommendProjects/toggleProject',
-      payload: project
-    })
-  }
-
-  onProjectsSkip() {
-    this.props.dispatch({
-      type: 'recommendProjects/skipProjects',
-    })
-  }
-
-  onProjectsSubmit() {
-    this.props.dispatch({
-      type: 'recommendProjects/addProjects'
-    })
   }
 
   timer() {
@@ -276,18 +176,6 @@ class Register extends React.Component {
     })
   }
 
-  handleEmailOnBlur = evt => {
-    if (!evt.target.value) return
-    checkUserExist(evt.target.value)
-    .then(data => {
-      const isExist = data.data.result
-      if (isExist) throw new ApiError(20042)
-    })
-    .catch(error => {
-      this.props.dispatch({ type: 'app/findError', payload: error })
-    })
-  }
-
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
   }
@@ -307,31 +195,6 @@ class Register extends React.Component {
   }
 
   render() {
-    const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
-
-
-    const containerStyle = {
-      position: 'relative',
-      width: '100%',
-      height: '100vh',
-      overflow: 'hidden',
-    }
-    const wrapperStyle = {
-      zIndex: 1,
-      width: '300%',
-      height: '100%',
-      left: (- (this.props.registerStep - 1) * 100) + '%',
-      top: 0,
-      transition: 'left 500ms ease',
-      WebkitTransition: 'left 500ms ease',
-    }
-    const itemStyle = {
-      float: 'left',
-      width: '33.33%',
-      height: '100%',
-      overflow: 'auto',
-    }
-
     function checkMobileInfo(rule, value, callback) {
       if (value.areaCode == '') {
         callback(i18n('areacode_not_empty'))
@@ -353,51 +216,6 @@ class Register extends React.Component {
         callback()
       }
     }
-
-
-    const formStyle = {
-      width: 418, padding: 20, background: 'white', zIndex: 1, color: '#666',
-      border: '1px solid rgba(0, 0, 0, .2)',
-      borderRadius: 6,
-      boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
-    };
-    const formInputStyle = {
-      border: 'none', fontSize: 14, padding: '12px 16px', paddingRight: 40, height: 50,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
-      fontSize: 14,
-      color: '#555'
-    };
-    const selectWrapStyle = {
-      display: 'flex', alignItems: 'center', backgroundColor: '#fff', marginBottom: 8, borderRadius: 4, height: 50,
-      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
-    };
-    const selectLabelStyle = {flexShrink: 0,fontSize: 16,width: 110, textAlign:"center" ,height: 50,lineHeight: '50px',borderRight: '1px solid #cfcfcf',color:'#656565'}
-    const selectContentStyle = {height:50,lineHeight:'50px',color:'#636e7b',fontSize:14,border:'none',backgroundColor: 'inherit'}
-    const selectContentContainerStyle = {flexGrow:1,height:50}
-
-    const wrapStyle = {
-      backgroundColor: '#fff', borderRadius: 4, height: 50, display: 'flex', alignItems: 'center', marginBottom: 8,
-      border: 'none', fontSize: 16, height: 50, marginBottom: 8,
-      background: '#F0F0F0',
-      border: '1px solid #ccc',
-      borderRadius: 4,
-    };
-    const labelStyle = {flexShrink:0,paddingLeft:16,fontSize:16,color:'#656565'}
-    const inputStyle = {border:'none',fontSize:14,color:'#636e7b',padding:'12px 16px',height:'100%',paddingLeft:0,backgroundColor: '#F0F0F0'}
-
-    const submitStyle = {
-      width: '100%', height: 50, fontSize: 20, backgroundColor: 'rgba(35,126,205,.8)', border: 'none', color: '#fff', fontWeight: 200,
-      fontSize: 16,
-      background: '#13356C',
-      borderRadius: 6,
-      fontWeight: 'normal',
-    };
-
 
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
