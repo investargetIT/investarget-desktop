@@ -102,7 +102,8 @@
     "please_type_name": "请输入姓名",
     "please_select_title": "请选择职位",
     "please_choose_tags": "请选择标签（可复选）",
-    "select_org": "请输入机构名称，或选择已有机构"
+    "select_org": "请输入机构名称，或选择已有机构",
+    "invalid_email": "邮箱格式错误"
   },
 
   "project_library": {

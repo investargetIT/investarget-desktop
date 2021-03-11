@@ -264,7 +264,7 @@ class Register extends React.Component {
 
           <Form.Item
             name="email"
-            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email' }]}
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email', message: i18n('account.invalid_email') }]}
           >
             <Input className="login-register-form__input" placeholder={i18n('account.email')} />
           </Form.Item>
