@@ -184,7 +184,7 @@ class Register extends React.Component {
     if (this.state.intervalId !== null) clearInterval(this.state.intervalId);
   }
 
-  confirmValidator(rule, value, callback) {
+  confirmValidator = (rule, value, callback) => {
     const { getFieldValue } = this.formRef.current;
     const password = getFieldValue('password')
     if (value && password && value !== password) {
