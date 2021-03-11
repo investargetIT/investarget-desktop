@@ -60,53 +60,27 @@ class ResetPassword extends React.Component {
     }
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault()
-    const smstoken = this.state.smstoken
+  handleSubmit = values => {
+    const { smstoken } = this.state
+    const { mobileInfo, code, password } = values
+    const { areaCode, mobile } = mobileInfo
 
-    this.props.form.validateFields((err, values) => {
-      if(!err) {
-        const { smstoken } = this.state
-        const { mobileInfo, code, password } = values
-        const { areaCode, mobile } = mobileInfo
-
-        let param = {
-          mobile: mobile,
-          mobilecodetoken: smstoken,
-          mobilecode: code,
-          password: password,
+    let param = {
+      mobile: mobile,
+      mobilecodetoken: smstoken,
+      mobilecode: code,
+      password: password,
+    }
+    api.resetPassword(param).then(result => {
+      Modal.info({
+        title: i18n('account.password_reset_ok'),
+        onOk: () => {
+          localStorage.removeItem('login_info')
+          this.props.history.push('/login')
         }
-        api.resetPassword(param).then(result => {
-          Modal.info({
-            title: i18n('account.password_reset_ok'),
-            onOk: () => {
-              localStorage.removeItem('login_info')
-              this.props.router.push('/login')
-            }
-          })
-        }).catch(error => {
-          handleError(error)
-        })
-      } else {
-        // 按字段顺序处理错误，只处理第一个错误
-        let fields = ['mobileInfo', 'smstoken', 'code', 'password']
-        for (let i = 0, len = fields.length; i < len; i++) {
-          let field = fields[i]
-          if (field == 'smstoken') {
-            let smstoken = localStorage.getItem('smstoken')
-            if (!smstoken) {
-              Modal.error({ title: i18n('account.require_code') })
-              return
-            }
-          }
-          let errField = err[field]
-          if (errField) {
-            let error = errField.errors[0]
-            handleError(new FormError(error.message))
-            return
-          }
-        }
-      }
+      })
+    }).catch(error => {
+      handleError(error)
     })
   }
 
@@ -190,7 +164,7 @@ class ResetPassword extends React.Component {
 
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form">
+        <Form ref={this.formRef} onFinish={this.handleSubmit} className="it-login-form">
           <div className="login-register-form">
             <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
