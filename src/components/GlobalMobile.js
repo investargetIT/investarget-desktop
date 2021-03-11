@@ -98,14 +98,14 @@ class GlobalMobile extends React.Component {
         <Input
           size="large"
           readOnly
-          style={{width: 60,border: 'none',borderLeft: '1px solid #cfcfcf',fontSize:16,color:'#989898', ...this.props.inputStyle}}
+          style={{ width: 60, border: 'none', borderLeft: '1px solid #cfcfcf', fontSize: 16, color: '#262626', ...this.props.inputStyle }}
           disabled={this.props.disabled}
           value={areaCode}
           onChange={this.handleChangeAreaCode}
         />
         <Input
           size="large"
-          style={{flexGrow: 1,border: 'none',fontSize:16,color:'#989898', ...this.props.inputStyle}}
+          style={{ flexGrow: 1, border: 'none', fontSize: 16, color: '#262626', ...this.props.inputStyle }}
           disabled={this.props.disabled}
           value={mobile}
           onChange={this.handleChangeMobile}
