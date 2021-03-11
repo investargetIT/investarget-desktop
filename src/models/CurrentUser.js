@@ -68,7 +68,9 @@ export default {
         yield put(routerRedux.replace('/login'))
       }
     },
-    *register({ payload: user }, { call, put }) {
+    *register({ payload: additionalInfo }, { call, put, select }) {
+      const { registerInfo } = yield select(state => state.currentUser);
+      const user = { ...registerInfo, ...additionalInfo };
       yield call(api.register, {...user, registersource: 3}) // 标识注册来源
 
       const { data } = yield call(api.login, { username: user.email, password: user.password })
@@ -80,8 +82,14 @@ export default {
         userInfo
       })
 
-      if (user.type !== 14) yield put(routerRedux.replace('/recommend-friends'));
-      else yield put(routerRedux.replace('/app/dataroom/project/list'));
+      let url = '/app';
+      if (!is_superuser && permissions.includes('usersys.as_investor')) {
+        url = '/app/dataroom/project/list';
+      }
+      yield put(routerRedux.replace(url))
+
+      // if (user.type !== 14) yield put(routerRedux.replace('/recommend-friends'));
+      // else yield put(routerRedux.replace('/app/dataroom/project/list'));
     },
     *register1({ payload: registerInfo }, { put }) {
       yield put({ type: 'saveRegisterInfo', registerInfo });
