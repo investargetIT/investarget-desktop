@@ -286,11 +286,11 @@ class Register extends React.Component {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Form.Item
               name="agreement"
+              valuePropName="checked"
               rules={[{ required: true, message: i18n('account.confirm_agreement') }, { type: 'boolean' }, { validator: checkAgreement }]}
             >
-              <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.agreement1')}</Checkbox>
+              <Checkbox className="it" style={{ color: '#666' }}>{i18n('account.agreement1')}<Link to="/app/agreement" target="_blank" style={{ marginBottom: 24, color: '#339bd2' }}>{i18n('account.agreement2')}</Link></Checkbox>
             </Form.Item>
-            <Link to="/app/agreement" target="_blank" style={{ marginBottom: 24, color: '#339bd2' }}>{i18n('account.agreement2')}</Link>
           </div>
 
           <Button htmlType="submit" className="login-register-form__submit" loading={this.props.loading}>{i18n('common.next')}</Button>
