@@ -393,7 +393,7 @@ button[disabled], html input[disabled] {
   font-size: 16px;
   /* color: #262626; */
 }
-.login-register-form__input::placeholder {
+.login-register-form__input::placeholder, .login-register-form__input .ant-input::placeholder {
   color: #bfbfbf;
   font-size: 16px;
   line-height: 24px;

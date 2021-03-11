@@ -121,7 +121,7 @@ class Login extends React.Component {
                   initialValue={this.username || ''}
                 >
                   <Input
-                    className="login-input"
+                    className="login-register-form__input"
                     bordered={false}
                     style={formInputStyle}
                     prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
@@ -140,7 +140,7 @@ class Login extends React.Component {
                   initialValue={this.password || ''}
                 >
                   <Input
-                    className="login-input"
+                    className="login-register-form__input"
                     bordered={false}
                     prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n('account.password_warning')}
