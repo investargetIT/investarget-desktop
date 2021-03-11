@@ -208,7 +208,7 @@ class Register extends React.Component {
   }
 
   handleFetchButtonClicked() {
-    const { getFieldValue } = this.formRef;
+    const { getFieldValue } = this.formRef.current;
     const mobileInfo = getFieldValue('mobileInfo')
     const { areaCode: areacode, mobile } = mobileInfo
     if (!areacode) {
@@ -295,9 +295,18 @@ class Register extends React.Component {
     if (this.state.intervalId !== null) clearInterval(this.state.intervalId);
   }
 
+  confirmValidator(rule, value, callback) {
+    const { getFieldValue } = this.formRef.current;
+    const password = getFieldValue('password')
+    if (value && password && value !== password) {
+      callback(i18n('validation.two_passwords_not_inconsistent'))
+    } else {
+      callback()
+    }
+  }
+
   render() {
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
-    const { getFieldValue } = this.formRef;
 
 
     const containerStyle = {
@@ -344,14 +353,6 @@ class Register extends React.Component {
       }
     }
 
-    function confirmValidator(rule, value, callback) {
-      const password = getFieldValue('password')
-      if (value && password && value !== password) {
-        callback(i18n('validation.two_passwords_not_inconsistent'))
-      } else {
-        callback()
-      }
-    }
 
     const formStyle = {
       width: 418, padding: 20, background: 'white', zIndex: 1, color: '#666',
@@ -458,7 +459,7 @@ class Register extends React.Component {
 
           <Form.Item
             name="confirm"
-            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: confirmValidator }]}
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: this.confirmValidator }]}
           >
             <Input className="login-register-form__input" type="password" placeholder={i18n('account.confirm_password')}/>
           </Form.Item>
