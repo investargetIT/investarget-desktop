@@ -51,39 +51,15 @@ class Register extends React.Component {
     });
   }
 
-  handleSubmit = e => {
-    e.preventDefault()
-
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      const smstoken = localStorage.getItem('smstoken')
-      if(!err) {
-        const { mobileInfo, ...otherValues } = values
-        const { areaCode: prefix, mobile } = mobileInfo
-        this.props.dispatch({
-          type: 'currentUser/register',
-          payload: { prefix, mobile, ...otherValues, smstoken }
-        })
-      } else {
-        // 按字段顺序处理错误，只处理第一个错误
-        let fields = ['type', 'mobileInfo', 'smstoken', 'code', 'email', 'username', 'organization', 'title', 'tags', 'password', 'confirm', 'agreement']
-        for (let i = 0, len = fields.length; i < len; i++) {
-          let field = fields[i]
-          if (field == 'smstoken') {
-            let smstoken = localStorage.getItem('smstoken')
-            if (!smstoken) {
-              Modal.error({ title: i18n('account.require_code') })
-              return
-            }
-          }
-          let errField = err[field]
-          if (errField) {
-            let error = errField.errors[0]
-            handleError(new FormError(error.message))
-            return
-          }
-        }
-      }
-    })
+  handleSubmit = values => {
+    const smstoken = localStorage.getItem('smstoken');
+    const { mobileInfo, ...otherValues } = values;
+    const { areaCode: prefix, mobile } = mobileInfo;
+    this.props.dispatch({
+      type: 'currentUser/register1',
+      payload: { prefix, mobile, ...otherValues, smstoken },
+    });
+    this.props.history.push('/register');
   }
 
   checkAgreement = (rule, value, callback) => {
@@ -221,7 +197,7 @@ class Register extends React.Component {
 
     return (
       <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
-        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form login-register-form">
+        <Form ref={this.formRef} onFinish={this.handleSubmit} className="it-login-form login-register-form">
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
           <p className="login-register-form__subtitle">{i18n('account.register_hint')}</p>
 

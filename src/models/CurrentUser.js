@@ -29,6 +29,9 @@ export default {
     delete() {
       return null
     },
+    saveRegisterInfo(state, { registerInfo }) {
+      return { ...state, registerInfo };
+    },
   },
   effects: {
     *login({ payload: { username, password, remember, redirect } }, { call, put }) {
@@ -79,6 +82,9 @@ export default {
 
       if (user.type !== 14) yield put(routerRedux.replace('/recommend-friends'));
       else yield put(routerRedux.replace('/app/dataroom/project/list'));
+    },
+    *register1({ payload: registerInfo }, { put }) {
+      yield put({ type: 'saveRegisterInfo', registerInfo });
     },
   }
 }
