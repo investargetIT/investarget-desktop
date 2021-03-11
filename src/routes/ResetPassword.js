@@ -51,7 +51,7 @@ class ResetPassword extends React.Component {
       intervalId: null,
       loading: false,
     }
-
+    this.formRef = React.createRef();
     const { state } = this.props.location;
     if (state) {
       const { mobile, areaCode } = state;
@@ -124,7 +124,7 @@ class ResetPassword extends React.Component {
   }
 
   handleFetchButtonClicked = () => {
-    const { getFieldValue } = this.props.form
+    const { getFieldValue } = this.formRef.current;
     const mobileInfo = getFieldValue('mobileInfo')
     const { areaCode: areacode, mobile } = mobileInfo
 
@@ -190,7 +190,7 @@ class ResetPassword extends React.Component {
 
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form onSubmit={this.handleSubmit} className="it-login-form">
+        <Form ref={this.formRef} onSubmit={this.handleSubmit} className="it-login-form">
           <div className="login-register-form">
             <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
