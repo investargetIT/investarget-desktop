@@ -262,10 +262,10 @@ class Register extends React.Component {
           cancelText: i18n('retrieve_password'),
           okText: i18n('to_login'),
           onCancel: () => {
-            this.props.router.push('/password')
+            this.props.history.push('/password')
           },
           onOk: () => {
-            this.props.router.push('/login')
+            this.props.history.push('/login')
           }
         })
       }
