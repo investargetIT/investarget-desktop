@@ -221,7 +221,7 @@ class Register extends React.Component {
               >
                 <Input
                   className="login-register-form__input"
-                  placeholder={i18n("account.input_the_code")}
+                  placeholder={i18n("account.code")}
                 />
               </Form.Item>
             </div>
