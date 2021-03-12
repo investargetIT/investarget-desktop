@@ -387,7 +387,6 @@ button[disabled], html input[disabled] {
 }
 .login-register-form__input {
   height: 40px;
-  border: 1px solid #d9d9d9;
   border-radius: 4px;
 }
 .login-register-form__input, .login-register-form__input .ant-input {
