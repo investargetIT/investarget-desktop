@@ -110,7 +110,7 @@ class GlobalMobile extends React.Component {
           value={mobile}
           onChange={this.handleChangeMobile}
           onBlur={this.props.onBlur}
-          placeholder={i18n('account.account_warning')}
+          placeholder={this.props.placeholder || i18n('account.account_warning')}
         />
       </Input.Group>
     )
