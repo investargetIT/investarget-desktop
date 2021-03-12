@@ -96,7 +96,7 @@
     "reset_info": "输入手机号及验证码后，即可重置密码",
     "input_the_code": "请输入验证码",
     "input_new_password": "请输入新的密码",
-    "password_reset_ok": "密码重置成功，请重新登录",
+    "password_reset_ok": "成功重置密码，请重新登录。",
     "input_phone_number": "输入正确的手机号码！",
     "password_placeholder": "6 - 16 位密码，区分大小写",
     "please_type_name": "请输入姓名",

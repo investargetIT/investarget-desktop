@@ -71,14 +71,10 @@ class ResetPassword extends React.Component {
       mobilecode: code,
       password: password,
     }
-    api.resetPassword(param).then(result => {
-      Modal.info({
-        title: i18n('account.password_reset_ok'),
-        onOk: () => {
-          localStorage.removeItem('login_info')
-          this.props.history.push('/login')
-        }
-      })
+    api.resetPassword(param).then(() => {
+      message.success(i18n('account.password_reset_ok'));
+      localStorage.removeItem('login_info');
+      this.props.history.push('/login');
     }).catch(error => {
       handleError(error)
     })
