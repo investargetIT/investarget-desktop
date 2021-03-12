@@ -2,38 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link, withRouter } from 'dva/router'
-import { Form, Button, Input, Row, Col, message, Modal } from 'antd'
+import { Form, Button, Input, message } from 'antd'
 import { i18n, handleError } from '../utils/util'
 import * as api from '../api'
 import { ApiError } from '../utils/request'
 import LoginContainer from '../components/LoginContainer'
 import GlobalMobile from '../components/GlobalMobile'
-import FormError from '../utils/FormError'
 import HandleError from '../components/HandleError'
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
-
-const formInputStyle = {
-  border: 'none', fontSize: 16, fontWeight: 200, color: '#989898', padding: '12px 16px', paddingRight: 40, height: 'auto',
-  background: '#F0F0F0',
-  border: '1px solid #ccc',
-  borderRadius: 4,
-  fontSize: 14,
-  // padding: '5px 20px',
-  color: '#555',
-};
-const inputStyle = {border:'none',fontSize:16,fontWeight:200,height:50,marginBottom:8, 
-  background: '#F0F0F0',
-  border: '1px solid #ccc',
-  borderRadius: 4,
-};
-const submitStyle = {width:'100%',height:50,fontSize:20,backgroundColor:'rgba(35,126,205,.8)',border:'none',color:'#fff',fontWeight:200,
-  fontSize: 16,
-  background: '#13356C',
-  borderRadius: 6,
-  fontWeight: 'normal',
-  // height: 43,
-  marginTop: 8,
-};
 
 class ResetPassword extends React.Component {
 
