@@ -120,7 +120,13 @@ class Register extends React.Component {
               name="tags"
               rules={[{ required: true, message: i18n("account.please_select") + i18n("account.tag") }, { type: 'array' }]}
             >
-              <SelectTag className="login-register-form__select" placeholder={i18n('account.please_choose_tags')} mode="multiple" showArrow />
+              <SelectTag
+                className="login-register-form__select login-register-form__select-tag"
+                placeholder={i18n('account.please_choose_tags')}
+                mode="multiple"
+                showArrow
+                size="middle"
+              />
             </Form.Item>
           </div>
 
