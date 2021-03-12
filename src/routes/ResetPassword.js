@@ -26,6 +26,7 @@ class ResetPassword extends React.Component {
       fetchSmsCodeValue: null,
       intervalId: null,
       loading: false,
+      submitLoading: false,
     }
     this.formRef = React.createRef();
     const { state } = this.props.location;
@@ -47,6 +48,7 @@ class ResetPassword extends React.Component {
       mobilecode: code,
       password: password,
     }
+    this.setState({ submitLoading: true });
     api.resetPassword(param).then(() => {
       message.success(i18n('account.password_reset_ok'));
       localStorage.removeItem('login_info');
@@ -191,7 +193,7 @@ class ResetPassword extends React.Component {
                />
             </Form.Item>
 
-            <Button className="login-register-form__submit" htmlType="submit" loading={this.props.loading}>{i18n("common.submit")}</Button>
+            <Button className="login-register-form__submit" htmlType="submit" loading={this.state.submitLoading}>{i18n("common.submit")}</Button>
 
             <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
 
