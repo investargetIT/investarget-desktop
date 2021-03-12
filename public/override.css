@@ -216,20 +216,6 @@ button[disabled], html input[disabled] {
   display: none; /*隐藏输出框下出现的错误提示*/
 }
 
-/* 覆盖全球手机号输入组件的样式 */
-.it-mobile .ant-select-selection {
-  height: 48px;
-  border: none;
-}
-.it-mobile .ant-select-selection__rendered {
-  margin-left: 8px;
-  margin-right: 14px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-.it-mobile .ant-select-selection-selected-value {
-  padding-right: 10px;
-}
 /* 覆盖 bootstrap label 元素的样式 */
 .mb0 {
   margin-bottom: 0!important;
@@ -470,4 +456,10 @@ label.login-register-form__container__label {
 }
 .login-register-form__select-tag.ant-select-multiple .ant-select-selection-placeholder {
   font-size: 16px;
+}
+.global-mobile.ant-input-group.ant-input-group-compact {
+  display: flex;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  overflow: hidden;
 }

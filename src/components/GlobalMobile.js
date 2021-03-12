@@ -80,7 +80,7 @@ class GlobalMobile extends React.Component {
   render() {
     const { countryId, areaCode, mobile } = this.state
     return (
-      <Input.Group compact className="it-mobile login-register-form__input" style={{display: 'flex'}}>
+      <Input.Group compact className="global-mobile">
         <Select
           className="global-mobile__select"
           style={{ width: 70, height: 38, display: 'flex', alignItems: 'center' }}
