@@ -65,70 +65,71 @@ class Register extends React.Component {
     const foreigner = (localStorage.getItem('APP_PREFERRED_LANG') || 'cn') !== 'cn';
     return (
       <LoginContainer changeLang={function () { this.forceUpdate() }.bind(this)}>
-        <Form ref={this.formRef} onFinish={this.handleSubmit} className="login-register-form it-login-form">
+        <Form
+          labelCol={foreigner && { span: 7 }}
+          wrapperCol={foreigner && { span: 17 }}
+          ref={this.formRef}
+          onFinish={this.handleSubmit}
+          className="login-register-form it-login-form"
+        >
 
           <h1 className="login-register-form__title">{i18n('account.directly_register')}</h1>
           <p className="login-register-form__subtitle">{i18n('account.register_hint_info')}</p>
 
-          <div className="login-register-form__container">
-            <label className="login-register-form__container__label">{i18n("account.name")}：</label>
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: i18n("account.please_input") + i18n("account.name") }]}
-            >
-              <Input className="login-register-form__input" placeholder={i18n('account.please_type_name')}/>
-            </Form.Item>
-          </div>
+          <Form.Item
+            required={false}
+            label={i18n("account.name")}
+            name="username"
+            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.name") }]}
+          >
+            <Input className="login-register-form__input" placeholder={i18n('account.please_type_name')} />
+          </Form.Item>
 
-          <div className="login-register-form__container">
-            <label className="login-register-form__container__label">{i18n('account.role')}：</label>
-            <Form.Item
-              name="type"
-              rules={[{ required: true, message: i18n('account.select_role') }]}
-            >
-              <RadioGroup>
-                <Radio style={radioStyle} value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
-                {!foreigner && <Radio style={radioStyle} value={'trader'}>{i18n('account.trader')}</Radio>}
-              </RadioGroup>
-            </Form.Item>
-          </div>
+          <Form.Item
+            className="register-role"
+            required={false}
+            label={i18n('account.role')}
+            name="type"
+            rules={[{ required: true, message: i18n('account.select_role') }]}
+          >
+            <RadioGroup>
+              <Radio style={radioStyle} value={foreigner ? 14 : 'investor'}>{i18n('account.investor')}</Radio>
+              {!foreigner && <Radio style={radioStyle} value={'trader'}>{i18n('account.trader')}</Radio>}
+            </RadioGroup>
+          </Form.Item>
 
-          <div className="login-register-form__container">
-            <label className="login-register-form__container__label">{foreigner ? "Organization" : "机构"}：</label>
-            <Form.Item
-              name="organization"
-              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.org") }]}
-            >
-              <SelectExistOrganization className="login-register-form__select" />
-              {/* <SelectExistOrganization allowCreate style={selectContentStyle} containerStyle={selectContentContainerStyle} /> */}
-            </Form.Item>
-          </div>
+          <Form.Item
+            required={false}
+            label={foreigner ? "Organization" : "机构"}
+            name="organization"
+            rules={[{ required: true, message: i18n("account.please_select") + i18n("account.org") }]}
+          >
+            <SelectExistOrganization className="login-register-form__select" />
+          </Form.Item>
 
-          <div className="login-register-form__container">
-            <label className="login-register-form__container__label">{foreigner ? "Position" : "职位"}：</label>
-            <Form.Item
-              name="title"
-              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.position") }]}
-            >
-              <SelectTitle className="login-register-form__select" showSearch placeholder={i18n('account.please_select_title')}/>
-            </Form.Item>
-          </div>
+          <Form.Item
+            required={false}
+            label={foreigner ? "Position" : "职位"}
+            name="title"
+            rules={[{ required: true, message: i18n("account.please_select") + i18n("account.position") }]}
+          >
+            <SelectTitle className="login-register-form__select" showSearch placeholder={i18n('account.please_select_title')} />
+          </Form.Item>
 
-          <div className="login-register-form__container">
-            <label className="login-register-form__container__label">{foreigner ? "Tags" : "标签"}：</label>
-            <Form.Item
-              name="tags"
-              rules={[{ required: true, message: i18n("account.please_select") + i18n("account.tag") }, { type: 'array' }]}
-            >
-              <SelectTag
-                className="login-register-form__select login-register-form__select-tag"
-                placeholder={i18n('account.please_choose_tags')}
-                mode="multiple"
-                showArrow
-                size="middle"
-              />
-            </Form.Item>
-          </div>
+          <Form.Item
+            required={false}
+            label={foreigner ? "Tags" : "标签"}
+            name="tags"
+            rules={[{ required: true, message: i18n("account.please_select") + i18n("account.tag") }, { type: 'array' }]}
+          >
+            <SelectTag
+              className="login-register-form__select login-register-form__select-tag"
+              placeholder={i18n('account.please_choose_tags')}
+              mode="multiple"
+              showArrow
+              size="middle"
+            />
+          </Form.Item>
 
           <Button htmlType="submit" className="login-register-form__submit" loading={this.props.loading}>{i18n('common.submit')}</Button>
 

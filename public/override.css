@@ -463,3 +463,6 @@ label.login-register-form__container__label {
   border-radius: 4px;
   overflow: hidden;
 }
+.register-role .ant-form-item-control {
+  justify-content: center;
+}

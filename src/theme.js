@@ -31,6 +31,7 @@ var theme = {
 
   // Checkbox
   // "checkbox-size": "18px",
+  "form-item-label-font-size": "16px",
 }
 
 module.exports = theme
