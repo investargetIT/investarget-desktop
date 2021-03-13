@@ -108,56 +108,52 @@ class Login extends React.Component {
   render() {
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form className="it-login-form" onFinish={this.handleSubmit}>
-          <div style={formStyle}>
-            <div style={{ margin: '0 auto' }}>
-              <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
-              <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
+        <Form className="it-login-form login-register-form" onFinish={this.handleSubmit}>
+          <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
+          <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
-              <Form.Item
-                name="username"
-                rules={[{ required: true, message: i18n('account.account_warning') }]}
-                initialValue={this.username || ''}
-              >
-                <Input
-                  allowClear
-                  className="login-register-form__input"
-                  prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                  placeholder={i18n('account.account_warning')}
-                />
-              </Form.Item>
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: i18n('account.account_warning') }]}
+            initialValue={this.username || ''}
+          >
+            <Input
+              allowClear
+              className="login-register-form__input"
+              prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+              placeholder={i18n('account.account_warning')}
+            />
+          </Form.Item>
 
-              <Form.Item
-                name="password"
-                rules={[{ required: true, message: i18n('account.password_warning') }]}
-                initialValue={this.password || ''}
-              >
-                <Input
-                  allowClear
-                  className="login-register-form__input"
-                  prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                  placeholder={i18n('account.password_warning')}
-                  type="password"
-                />
-              </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: i18n('account.password_warning') }]}
+            initialValue={this.password || ''}
+          >
+            <Input
+              allowClear
+              className="login-register-form__input"
+              prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+              placeholder={i18n('account.password_warning')}
+              type="password"
+            />
+          </Form.Item>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Form.Item
-                  name="remember"
-                  valuePropName="checked"
-                  initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
-                >
-                  <Checkbox className="it" style={{ color: '#262626' }}>{i18n('account.auto_login')}</Checkbox>
-                </Form.Item>
-                <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
-              </div>
-
-              <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
-              <div style={{ marginTop: 18, padding: 8, textAlign: 'center', fontSize: 14, color: '#989898' }}>
-                {i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link>
-              </div>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Form.Item
+              name="remember"
+              valuePropName="checked"
+              initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
+            >
+              <Checkbox className="it" style={{ color: '#262626' }}>{i18n('account.auto_login')}</Checkbox>
+            </Form.Item>
+            <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
           </div>
+
+          <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
+
+          <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
+
         </Form>
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
       </LoginContainer>
