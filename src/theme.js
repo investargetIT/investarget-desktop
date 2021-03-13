@@ -6,7 +6,7 @@ var theme = {
   // "primary-color": "#428BCA",
   // "success-color": "#1CAF9A",
   // "warning-color": "#F0AD4E",
-  // "error-color": "#D9534F",
+  "error-color": "#E64547",
 
   // "body-background": "#f2f2f2",
   // "text-color": "#636e7b",
