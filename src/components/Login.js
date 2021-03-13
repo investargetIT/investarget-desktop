@@ -114,42 +114,32 @@ class Login extends React.Component {
               <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
               <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
-              <div style={{ position: 'relative', marginBottom: 24, }}>
-                <Form.Item
-                  name="username"
-                  rules={[{ required: true, message: i18n('account.account_warning') }]}
-                  initialValue={this.username || ''}
-                >
-                  <Input
-                    allowClear
-                    className="login-register-form__input"
-                    prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                    placeholder={i18n('account.account_warning')}
-                  />
-                </Form.Item>
-                <div style={inputIconStyle}>
-                  <img src="/images/sign-in-username.jpg" style={{ verticalAlign: 'top' }} />
-                </div>
-              </div>
+              <Form.Item
+                name="username"
+                rules={[{ required: true, message: i18n('account.account_warning') }]}
+                initialValue={this.username || ''}
+              >
+                <Input
+                  allowClear
+                  className="login-register-form__input"
+                  prefix={<UserOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                  placeholder={i18n('account.account_warning')}
+                />
+              </Form.Item>
 
-              <div style={{ position: 'relative' }}>
-                <Form.Item
-                  name="password"
-                  rules={[{ required: true, message: i18n('account.password_warning') }]}
-                  initialValue={this.password || ''}
-                >
-                  <Input
-                    allowClear
-                    className="login-register-form__input"
-                    prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                    placeholder={i18n('account.password_warning')}
-                    type="password"
-                  />
-                </Form.Item>
-                <div style={inputIconStyle}>
-                  <img src="/images/sign-in-password.jpg" style={{ verticalAlign: 'top' }} />
-                </div>
-              </div>
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: i18n('account.password_warning') }]}
+                initialValue={this.password || ''}
+              >
+                <Input
+                  allowClear
+                  className="login-register-form__input"
+                  prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                  placeholder={i18n('account.password_warning')}
+                  type="password"
+                />
+              </Form.Item>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Form.Item
