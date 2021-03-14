@@ -292,7 +292,7 @@ class Register extends React.Component {
             </Form.Item>
           </div>
 
-          <Button htmlType="submit" className="login-register-form__submit" loading={this.props.loading}>{i18n('common.next')}</Button>
+          <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>{i18n('common.next')}</Button>
 
           <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
 

@@ -198,7 +198,7 @@ class ResetPassword extends React.Component {
               )}
             </Form.Item>
 
-            <Button className="login-register-form__submit" htmlType="submit" loading={this.state.submitLoading}>{i18n("common.submit")}</Button>
+            <Button block type="primary" size="large" htmlType="submit" loading={this.state.submitLoading}>{i18n("common.submit")}</Button>
 
             <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
 
