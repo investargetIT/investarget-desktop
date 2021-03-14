@@ -8,7 +8,7 @@ button[disabled], html input[disabled] {
 /* 覆盖 AntDesign 样式 */
 
 /* Buttons */
-.ant-btn-primary {
+/* .ant-btn-primary {
   color: #fff;
   background-color: #428bca;
   border-color: #357ebd;
@@ -22,9 +22,9 @@ button[disabled], html input[disabled] {
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
-}
+} */
 /* 白色按钮 */
-.ant-btn.white {
+/* .ant-btn.white {
   color: #666;
   background-color: #fff;
   border-color: #ccc;
@@ -33,9 +33,9 @@ button[disabled], html input[disabled] {
   color: #333;
   background-color: #f7f7f7;
   border-color: #ccc;
-}
+} */
 /* 成功色按钮 */
-.ant-btn.success {
+/* .ant-btn.success {
   color: #fff;
   background-color: #1CAF9A;
   border-color: #17a08c;
@@ -44,7 +44,7 @@ button[disabled], html input[disabled] {
   color: #fff;
   background-color: #17a08c;
   border-color: #119380;
-}
+} */
 
 
 

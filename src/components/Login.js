@@ -153,7 +153,7 @@ class Login extends React.Component {
             <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
           </div>
 
-          <Button htmlType="submit" style={submitStyle}>{i18n('account.login')}</Button>
+          <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>{i18n('account.login')}</Button>
 
           <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
 
