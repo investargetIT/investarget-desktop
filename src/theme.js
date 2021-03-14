@@ -6,8 +6,8 @@ var theme = {
   // "primary-color": "#428BCA",
   // "success-color": "#1CAF9A",
   // "warning-color": "#F0AD4E",
-  "primary-color": "#13356C",
   "error-color": "#E64547",
+  "btn-primary-bg": "#13356C",
 
   // "body-background": "#f2f2f2",
   // "text-color": "#636e7b",

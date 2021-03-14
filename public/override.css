@@ -443,6 +443,10 @@ label.login-register-form__container__label {
   border-radius: 4px;
   line-height: 22px;
 }
+.login-register-form__sms.ant-btn:hover, .login-register-form__sms.ant-btn:focus {
+  color: #339bd2;
+  border-color: #339bd2;
+}
 .login-register-form__select {
   color: #262626;
 }
