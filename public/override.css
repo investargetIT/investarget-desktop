@@ -466,3 +466,6 @@ label.login-register-form__container__label {
 .register-role .ant-form-item-control {
   justify-content: center;
 }
+.login-register-form__input .ant-input-clear-icon {
+  font-size: 16px;
+}

@@ -130,12 +130,10 @@ class Login extends React.Component {
             rules={[{ required: true, message: i18n('account.password_warning') }]}
             initialValue={this.password || ''}
           >
-            <Input
-              allowClear
+            <Input.Password
               className="login-register-form__input"
               prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
               placeholder={i18n('account.password_warning')}
-              type="password"
             />
           </Form.Item>
 
