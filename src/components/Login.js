@@ -125,16 +125,21 @@ class Login extends React.Component {
             />
           </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: i18n('account.password_warning') }]}
-            initialValue={this.password || ''}
-          >
-            <Input.Password
-              className="login-register-form__input"
-              prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-              placeholder={i18n('account.password_warning')}
-            />
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => (
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: i18n('account.password_warning') }]}
+                initialValue={this.password || ''}
+              >
+                <Input.Password
+                  className="login-register-form__input"
+                  prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                  placeholder={i18n('account.password_warning')}
+                  visibilityToggle={getFieldValue('password') ? true : false}
+                />
+              </Form.Item>
+            )}
           </Form.Item>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

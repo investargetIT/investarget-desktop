@@ -220,6 +220,7 @@ class Register extends React.Component {
                 rules={[{ required: true, message: i18n("account.input_the_code") }]}
               >
                 <Input
+                  allowClear
                   className="login-register-form__input"
                   placeholder={i18n("account.code")}
                 />
@@ -246,21 +247,39 @@ class Register extends React.Component {
             name="email"
             rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email', message: i18n('account.invalid_email') }]}
           >
-            <Input className="login-register-form__input" placeholder={i18n('account.email')} />
+            <Input allowClear className="login-register-form__input" placeholder={i18n('account.email')} />
           </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }]}
-          >
-            <Input className="login-register-form__input" type="password" placeholder={i18n('account.password_placeholder')} />
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => (
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }]}
+              >
+                <Input.Password
+                  prefix={<span />}
+                  className="login-register-form__input"
+                  placeholder={i18n('account.password_placeholder')}
+                  visibilityToggle={getFieldValue('password') ? true : false}
+                />
+              </Form.Item>
+            )}
           </Form.Item>
 
-          <Form.Item
-            name="confirm"
-            rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: this.confirmValidator }]}
-          >
-            <Input className="login-register-form__input" type="password" placeholder={i18n('account.confirm_password')}/>
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => (
+              <Form.Item
+                name="confirm"
+                rules={[{ required: true, message: i18n("account.please_input") + i18n("account.password") }, { validator: this.confirmValidator }]}
+              >
+                <Input.Password
+                  prefix={<span />}
+                  className="login-register-form__input"
+                  placeholder={i18n('account.confirm_password')}
+                  visibilityToggle={getFieldValue('confirm') ? true : false}
+                />
+              </Form.Item>
+            )}
           </Form.Item>
 
           <div style={{ display: 'flex', alignItems: 'center' }}>

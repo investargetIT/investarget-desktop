@@ -158,6 +158,7 @@ class ResetPassword extends React.Component {
                   rules={[{ required: true, message: i18n("account.input_the_code") }]}
                 >
                   <Input
+                    allowClear
                     className="login-register-form__input"
                     prefix={<MailOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
                     placeholder={i18n("account.input_the_code")}
@@ -181,16 +182,20 @@ class ResetPassword extends React.Component {
               </div>
             </div>
 
-            <Form.Item
-              name="password"
-              rules={[{required: true, message: i18n("account.input_new_password")}]}
-            >
-              <Input
-                className="login-register-form__input"
-                prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
-                placeholder={i18n("account.input_new_password")}
-                type="password"
-               />
+            <Form.Item noStyle shouldUpdate>
+              {({ getFieldValue }) => (
+                <Form.Item
+                  name="password"
+                  rules={[{ required: true, message: i18n("account.input_new_password") }]}
+                >
+                  <Input.Password
+                    className="login-register-form__input"
+                    prefix={<LockOutlined style={{ marginRight: 4, color: '#bfbfbf' }} className="site-form-item-icon" />}
+                    placeholder={i18n("account.input_new_password")}
+                    visibilityToggle={getFieldValue('password') ? true : false}
+                  />
+                </Form.Item>
+              )}
             </Form.Item>
 
             <Button className="login-register-form__submit" htmlType="submit" loading={this.state.submitLoading}>{i18n("common.submit")}</Button>
