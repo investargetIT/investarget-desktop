@@ -80,32 +80,32 @@ class GlobalMobile extends React.Component {
   render() {
     const { countryId, areaCode, mobile } = this.state
     return (
-      <Input.Group compact className="global-mobile">
+      <Input.Group compact>
         <Select
-          className="global-mobile__select"
-          style={{ width: 70, height: 38, display: 'flex', alignItems: 'center' }}
-          bordered={false}
+          size="large"
           disabled={this.props.disabled}
           onChange={this.handleChangeCountry}
           value={countryId ? countryId + '' : this.findChina()}
           optionLabelProp="label"
-          dropdownMatchSelectWidth={88}
+          dropdownMatchSelectWidth={96}
         >
           {this.props.country.map(c => {
-            return c.key ? <Option key={c.id} value={c.id + ''} label={<img src={c.url} style={{ width: 30, height: 20, marginTop: 5, verticalAlign: 'top' }} />}>{c.country}</Option> : null;
+            return c.key ? <Option key={c.id} value={c.id + ''} label={<img src={c.url} style={{ width: 30, height: 20, marginTop: 9, verticalAlign: 'top' }} />}>{c.country}</Option> : null;
           })}
         </Select>
         <Input
+          style={{ width: '15%' }}
           size="large"
           readOnly
-          style={{ width: 60, border: 'none', borderLeft: '1px solid #cfcfcf', fontSize: 16, color: '#262626', ...this.props.inputStyle }}
           disabled={this.props.disabled}
           value={areaCode}
           onChange={this.handleChangeAreaCode}
         />
         <Input
+          style={{ width: '65%' }}
+          className="login-register-form__input"
+          allowClear
           size="large"
-          style={{ flexGrow: 1, border: 'none', fontSize: 16, color: '#262626', ...this.props.inputStyle }}
           disabled={this.props.disabled}
           value={mobile}
           onChange={this.handleChangeMobile}

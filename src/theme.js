@@ -9,6 +9,7 @@ var theme = {
   "error-color": "#E64547",
   "btn-primary-bg": "#13356C",
   "checkbox-color": "#13356C",
+  "border-radius-base": "4px",
 
   // "body-background": "#f2f2f2",
   // "text-color": "#636e7b",
