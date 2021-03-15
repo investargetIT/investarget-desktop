@@ -151,7 +151,7 @@ button[disabled], html input[disabled] {
 
 
 /* Checkbox */
-.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+/* .ant-checkbox-wrapper + .ant-checkbox-wrapper {
   margin-left: 0;
 }
 
@@ -166,7 +166,7 @@ button[disabled], html input[disabled] {
 }
 .it.ant-checkbox-wrapper {
   margin-bottom: 0!important;
-}
+} */
 
 
 /* Tabs */

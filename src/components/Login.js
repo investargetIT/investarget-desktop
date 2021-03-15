@@ -165,7 +165,7 @@ class Login extends React.Component {
               valuePropName="checked"
               initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
             >
-              <Checkbox className="it" style={{ color: '#262626' }}>{i18n('account.auto_login')}</Checkbox>
+              <Checkbox>{i18n('account.auto_login')}</Checkbox>
             </Form.Item>
             <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
           </div>
