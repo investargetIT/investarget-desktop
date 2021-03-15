@@ -1,4 +1,4 @@
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import { Form, Input, Button, Checkbox, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
@@ -71,6 +71,10 @@ class Login extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      errorMsg: null,
+    };
+
     let loginInfo = localStorage.getItem('login_info')
     if (loginInfo) {
       try {
@@ -96,6 +100,10 @@ class Login extends React.Component {
         ...values,
         redirect: redirectUrl && decodeURIComponent(redirectUrl),
       },
+    }).catch(error => {
+      if (error.code === 2002 || error.code === 2001) {
+        this.setState({ errorMsg: error.message });
+      }
     });
   }
 
@@ -111,6 +119,15 @@ class Login extends React.Component {
         <Form className="it-login-form login-register-form" onFinish={this.handleSubmit}>
           <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
           <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
+
+          {this.state.errorMsg &&
+            <Alert
+              style={{ marginBottom: 20 }}
+              message={this.state.errorMsg}
+              type="error"
+              showIcon
+            />
+          }
 
           <Form.Item
             name="username"
