@@ -127,6 +127,8 @@ class Register extends React.Component {
   }
 
   handleMobileBlur = (evt) => {
+    const fieldError = this.formRef.current.getFieldError('mobileInfo');
+    if (fieldError.length > 0) return;
     if (!evt.target.value) return
     checkUserExist(evt.target.value)
     .then(data => {
@@ -153,6 +155,8 @@ class Register extends React.Component {
   }
 
   handleEmailBlur = (evt) => {
+    const fieldError = this.formRef.current.getFieldError('email');
+    if (fieldError.length > 0) return;
     if (!evt.target.value) return
     checkUserExist(evt.target.value)
     .then(data => {
