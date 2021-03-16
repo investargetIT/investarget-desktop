@@ -152,6 +152,32 @@ class Register extends React.Component {
     })
   }
 
+  handleEmailBlur = (evt) => {
+    if (!evt.target.value) return
+    checkUserExist(evt.target.value)
+    .then(data => {
+      const isExist = data.data.result
+      if (isExist) {
+        Modal.confirm({
+          closable: false,
+          maskClosable: false,
+          title: i18n('message.email_exist'),
+          cancelText: i18n('retrieve_password'),
+          okText: i18n('to_login'),
+          onCancel: () => {
+            this.props.history.push('/password')
+          },
+          onOk: () => {
+            this.props.history.push('/login')
+          }
+        })
+      }
+    })
+    .catch(error => {
+      this.props.dispatch({ type: 'app/findError', payload: error })
+    })
+  }
+
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag', 'country', 'title'] })
   }
@@ -247,7 +273,12 @@ class Register extends React.Component {
             name="email"
             rules={[{ required: true, message: i18n("account.please_input") + i18n("account.email") }, { type: 'email', message: i18n('account.invalid_email') }]}
           >
-            <Input allowClear className="login-register-form__input" placeholder={i18n('account.email')} />
+            <Input
+              allowClear
+              className="login-register-form__input"
+              placeholder={i18n('account.email')}
+              onBlur={this.handleEmailBlur}
+            />
           </Form.Item>
 
           <Form.Item noStyle shouldUpdate>
