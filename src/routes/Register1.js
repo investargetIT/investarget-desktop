@@ -30,6 +30,10 @@ class Register extends React.Component {
     }
     this.timer = this.timer.bind(this)
 
+    // Fix Safari autofill trigger multiple onBlur event
+    this.displayMobileExistModal = false;
+    this.displayEmailExistModal = false;
+
     const { state } = this.props.location;
     if (state) {
       const { mobile, areaCode } = state;
@@ -133,7 +137,7 @@ class Register extends React.Component {
     checkUserExist(evt.target.value)
     .then(data => {
       const isExist = data.data.result
-      if (isExist) {
+      if (isExist && !this.displayMobileExistModal) {
         Modal.confirm({
           closable: false,
           maskClosable: false,
@@ -147,6 +151,7 @@ class Register extends React.Component {
             this.props.history.push('/login')
           }
         })
+        this.displayMobileExistModal = true;
       }
     })
     .catch(error => {
@@ -161,7 +166,7 @@ class Register extends React.Component {
     checkUserExist(evt.target.value)
     .then(data => {
       const isExist = data.data.result
-      if (isExist) {
+      if (isExist && !this.displayEmailExistModal) {
         Modal.confirm({
           closable: false,
           maskClosable: false,
@@ -175,6 +180,7 @@ class Register extends React.Component {
             this.props.history.push('/login')
           }
         })
+        this.displayEmailExistModal = true;
       }
     })
     .catch(error => {
