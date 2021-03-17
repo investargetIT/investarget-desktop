@@ -122,17 +122,15 @@ class ResetPassword extends React.Component {
   render() {
     const codeValue = this.state.fetchSmsCodeValue ? i18n('account.send_wait_time', {'second': this.state.fetchSmsCodeValue}) : null
 
-    function checkMobileInfo(rule, value, callback) {
+    function checkMobileInfo(_, value) {
       if (value.areaCode == '') {
-        callback(i18n('areacode_not_empty'))
-      // } else if (!allowAreaCode.includes(value.areaCode)) {
-      //   callback(i18n('areacode_invalid'))
+        return Promise.reject(new Error(i18n('areacode_not_empty')));
       } else if (value.mobile == '') {
-        callback(i18n('mobile_not_empty'))
+        return Promise.reject(new Error(i18n('mobile_not_empty')));
       } else if (!/^\d+$/.test(value.mobile)) {
-        callback(i18n('mobile_incorrect_format'))
+        return Promise.reject(new Error(i18n('mobile_incorrect_format')));
       } else {
-        callback()
+        return Promise.resolve(); 
       }
     }
 

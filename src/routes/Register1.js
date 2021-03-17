@@ -7,7 +7,7 @@ import { withRouter, Link } from 'dva/router'
 import PropTypes from 'prop-types'
 import { Submit, Agreement, Role, Mobile, Code, Org, Email, FullName, Password, ConfirmPassword, Position, Tags } from '../components/Form'
 import { ApiError } from '../utils/request'
-import { i18n, handleError, checkRealMobile } from '../utils/util'
+import { i18n, handleError } from '../utils/util'
 import { BasicFormItem } from '../components/Form'
 import { SelectExistOrganization, SelectTitle, SelectTag } from '../components/ExtraInput'
 import LoginContainer from '../components/LoginContainer'
@@ -196,36 +196,34 @@ class Register extends React.Component {
     if (this.state.intervalId !== null) clearInterval(this.state.intervalId);
   }
 
-  confirmValidator = (rule, value, callback) => {
+  confirmValidator = (_, value) => {
     const { getFieldValue } = this.formRef.current;
     const password = getFieldValue('password')
     if (value && password && value !== password) {
-      callback(i18n('validation.two_passwords_not_inconsistent'))
+      return Promise.reject(new Error(i18n('validation.two_passwords_not_inconsistent')));
     } else {
-      callback()
+      return Promise.resolve();
     }
   }
 
   render() {
-    function checkMobileInfo(rule, value, callback) {
+    function checkMobileInfo(_, value) {
       if (value.areaCode == '') {
-        callback(i18n('areacode_not_empty'))
-      // } else if (!allowAreaCode.includes(value.areaCode)) {
-      //   callback(i18n('areacode_invalid'))
+        return Promise.reject(new Error(i18n('areacode_not_empty')));
       } else if (value.mobile == '') {
-        callback(i18n('mobile_not_empty'))
-      } else if (!checkRealMobile(value.mobile)) {
-        callback(i18n('mobile_incorrect_format'))
+        return Promise.reject(new Error(i18n('mobile_not_empty')));
+      } else if (!/^\d+$/.test(value.mobile)) {
+        return Promise.reject(new Error(i18n('mobile_incorrect_format')));
       } else {
-        callback()
+        return Promise.resolve(); 
       }
     }
 
-    function checkAgreement(rule, value, callback) {
+    function checkAgreement(_, value) {
       if (!value) {
-        callback(i18n('account.please_check_agreement'))
+        return Promise.reject(new Error(i18n('account.please_check_agreement')));
       } else {
-        callback()
+        return Promise.resolve();
       }
     }
 
