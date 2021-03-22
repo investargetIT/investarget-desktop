@@ -105,11 +105,11 @@ class UserForm extends React.Component {
     return (
       <Form>
 
-         { this.hasPerm || !this.isEditUser ?
+         {/* { this.hasPerm || !this.isEditUser ? */}
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
           <SelectUserGroup type={(this.props.isTraderAddInvestor || !this.hasPerm) ? 'investor' : null} />
         </BasicFormItem>
-        : null } 
+        {/* : null }  */}
 
         <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>

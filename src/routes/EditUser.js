@@ -55,7 +55,7 @@ class EditUser extends React.Component {
         }
 
 
-        let body = values
+        let body = { ...values };
 
         // #426
         // if (body.userstatus === 2) {
@@ -74,9 +74,9 @@ class EditUser extends React.Component {
         //   body.tags = body.tags.reduce((prev, curr) => prev.concat(JSON.parse(curr)), []);
         // }
 
-        if (!hasPerm('usersys.admin_changeuser')) {
-          body = { ...values, groups: undefined}
-        }
+        // if (!hasPerm('usersys.admin_changeuser')) {
+        //   body = { ...values, groups: undefined}
+        // }
         let promise = new Promise((resolve,reject)=>{
           if(isNaN(body.org)&&body.org!=undefined){
             resolve(api.addOrg({orgnameC:values.org}))
