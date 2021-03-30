@@ -484,3 +484,13 @@ export function getUserGroupIdByName(allGroups, name) {
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export const requestAllData = async (request, params, page_size) => {
+  const firstRes = await request({ ...params, page_size });
+  const { count } = firstRes.data;
+  if (count <= page_size) {
+    return firstRes;
+  }
+  const secondRes = await request({ ...params, page_size: count });
+  return secondRes;
+}
