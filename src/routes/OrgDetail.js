@@ -8,6 +8,7 @@ import {
   isLogin,
   getUserInfo,
   time,
+  requestAllData,
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
@@ -766,8 +767,8 @@ class OrgDetail extends React.Component {
           })
         })
         return Promise.all([
-          api.getUser({ org: data.id, page_size: 1000, title: orgStructure.map(m => m.title.id)}),
-          api.getUnreachUser({ org: data.id, page_size: 1000 }),
+          requestAllData(api.getUser, { org: data.id, title: orgStructure.map(m => m.title.id) }, 1000),
+          requestAllData(api.getUnreachUser, { org: data.id }, 1000),
         ])
       } else {
         return Promise.resolve()
