@@ -448,3 +448,6 @@ button[disabled], html input[disabled] {
   position: relative;
   right: unset;
 }
+.ant-calendar-input-wrap {
+  display: none;
+}
