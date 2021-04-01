@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -688,7 +688,7 @@ class DownloadFiles extends React.Component {
 
   componentDidMount() {
     const id = this.props.projectId
-    api.getProjAttachment({ proj: id, page_size: 10000 }).then(result => {
+    requestAllData(api.getProjAttachment, { proj: id, page_size: 10000 }, 10000).then(result => {
       const { data: attachments } = result.data
       this.setState({ attachments })
 

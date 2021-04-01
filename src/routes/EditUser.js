@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName } from '../utils/util'
+import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName, requestAllData } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
@@ -148,7 +148,7 @@ class EditUser extends React.Component {
   componentDidMount() {
     const userId = Number(this.props.params.id)
     let userDetailInfo, investorGroup
-    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    requestAllData(api.queryUserGroup, { type: 'investor' }, 100)
     .then(data => {
       investorGroup = data.data.data.map(m => m.id)
       return api.getUserInfo(userId, true);

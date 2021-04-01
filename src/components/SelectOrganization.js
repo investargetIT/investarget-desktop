@@ -5,6 +5,7 @@ import {
   i18n,
   getUserInfo,
   checkRealMobile,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -163,12 +164,12 @@ class SelectOrganization extends React.Component {
     api.queryUserGroup({ type: 'investor' })
       .then(data => {
         const investorGroups = data.data.data.map(item => item.id);
-        return api.getUser({
+        return requestAllData(api.getUser, {
           page_size: 1000,
           groups: investorGroups,
           starmobile: true,
           org: [orgID]
-        });
+        }, 1000);
       })
       .then(data => {
         orgInvestor.investors = data.data;

@@ -6,6 +6,7 @@ import {
   intersection, 
   checkMobile,
   handleError,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -83,7 +84,7 @@ class UserForm extends React.Component {
   }
 
   componentDidMount() {
-    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    requestAllData(api.queryUserGroup, { type: 'investor' }, 100)
     .then(data => this.setState({ investorGroup: data.data.data.map(m => m.id) }))
   }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n } from '../utils/util'
+import { i18n, requestAllData } from '../utils/util'
 import { message, Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
@@ -129,7 +129,7 @@ class PermList extends React.Component {
   }
 
   setUserGroup() {
-    queryUserGroup({ page_size: 100 }).then(data => {
+    requestAllData(queryUserGroup, { page_size: 100 }, 100).then(data => {
       this.props.dispatch({
         type: 'app/saveGroup',
         payload: data.data.data
