@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { i18n, requestAllData } from '../utils/util'
 import { Modal, Select, Checkbox, Row, Col, Upload, Spin } from 'antd';
 import { baseUrl } from '../utils/request';
 import { Modal as GModal } from './GlobalComponents';
@@ -157,7 +157,7 @@ class AuditProjectModal extends React.Component {
       proj: projId,
       page_size: 10000
     }
-    api.getProjAttachment(param).then(result => {
+    requestAllData(api.getProjAttachment, param, 10000).then(result => {
       return result.data.data
     })
     .then(fileList => {
