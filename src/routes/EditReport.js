@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, handleError, subtracting } from '../utils/util';
+import { i18n, handleError, subtracting, requestAllData } from '../utils/util';
 import moment from 'moment';
 import _ from 'lodash';
 import { Form, Button, message, Spin, Modal } from 'antd'
@@ -275,7 +275,7 @@ class EditReport extends React.Component {
       report: this.reportId,
       page_size: 1000,
     };
-    const res = await api.getWorkReportProjInfo(params);
+    const res = await requestAllData(api.getWorkReportProjInfo, params, 1000);
     const { data: reportProj } = res.data;
     this.setState({
       allProj: reportProj,
@@ -294,7 +294,7 @@ class EditReport extends React.Component {
       report: this.reportId,
       page_size: 1000,
     };
-    const res = await api.getWorkReportMarketMsg(params);
+    const res = await requestAllData(api.getWorkReportMarketMsg, params, 1000);
     const { data: marketMsg } = res.data;
     this.setState({
       marketMsg,
@@ -312,8 +312,8 @@ class EditReport extends React.Component {
     const params1 = { manager, stimeM, etimeM, page_size };
     const params2 = { manager, stime, etime, page_size };
     const res = await Promise.all([
-      api.getOrgBdList(params1),
-      api.getOrgBdList(params2),
+      requestAllData(api.getOrgBdList, params1, 1000),
+      requestAllData(api.getOrgBdList, params2, 1000),
     ]);
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     const orgBds =  _.uniqBy(allOrgBds, 'id');
