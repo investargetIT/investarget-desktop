@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { i18n, getCurrentUser, hasPerm, handleError} from '../utils/util'
+import { i18n, getCurrentUser, hasPerm, handleError, requestAllData } from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
@@ -100,8 +100,8 @@ class ReportForm extends React.Component {
     const params1 = { createuser, stimeM, etimeM, page_size };
     const params2 = { createuser, stime, etime, page_size };
     const res = await Promise.all([
-      api.getOrgRemark(params1),
-      api.getOrgRemark(params2),
+      requestAllData(api.getOrgRemark, params1, 1000),
+      requestAllData(api.getOrgRemark, params2, 1000),
     ]);
     const allOrgRemarks = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     let remarks =  _.uniqBy(allOrgRemarks, 'id');
@@ -132,8 +132,8 @@ class ReportForm extends React.Component {
     const params1 = { manager, stimeM, etimeM, page_size };
     const params2 = { manager, stime, etime, page_size };
     const res = await Promise.all([
-      api.getOrgBdList(params1),
-      api.getOrgBdList(params2),
+      requestAllData(api.getOrgBdList, params1, 1000),
+      requestAllData(api.getOrgBdList, params2, 1000),
     ]);
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     const orgBds =  _.uniqBy(allOrgBds, 'id');
