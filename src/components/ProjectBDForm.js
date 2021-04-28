@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes, { func } from 'prop-types'
-import {hasPerm, getCurrencyFromId, exchange} from '../utils/util'
+import { hasPerm, getCurrencyFromId, exchange, getUserInfo } from '../utils/util'
 import { Form, Input, Radio, Checkbox, Row, Col, DatePicker, Switch } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
@@ -157,6 +157,7 @@ class ProjectBDForm extends React.Component {
     if (countryObj && this.props.country.length > 0) {
       country = this.props.country.filter(f => f.id === countryObj.value)[0];
     }
+    const createuser = getFieldValue('createuser');
     return (
       <Form>
         <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
@@ -289,7 +290,7 @@ class ProjectBDForm extends React.Component {
 
           </div>
         )}
-        {hasPerm('BD.manageProjectBD') ?
+        {hasPerm('BD.manageProjectBD') || getUserInfo().id === createuser ?
         <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="array" required>
           <SelectTrader mode="multiple" />
         </BasicFormItem> :null}
