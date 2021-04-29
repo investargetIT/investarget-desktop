@@ -1414,6 +1414,7 @@ class DataRoom extends React.Component {
               onOpenOrgBdCommentModal={this.handleOpenModal}
               onDeleteOrgBd={this.handleDeleteOrgBd}
               onModifyStatusBtnClick={this.handleModifyStatusBtnClick}
+              dataroomId={this.state.id}
             />
             {/* {this.state.dataroomUsersOrgBdByOrg.length > 0 &&
               <Collapse>
