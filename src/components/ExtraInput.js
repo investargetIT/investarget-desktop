@@ -410,8 +410,7 @@ class SelectExistInvestor extends React.Component {
   getInvestor = (params) => {
     params = {
       ...params,
-      traderuser:
-      getCurrentUser(),
+      traderuser: this.props.dataroom ? undefined : getCurrentUser(),
       sort: 'createdtime',
       desc: 1,
       dataroom: this.props.dataroom,
