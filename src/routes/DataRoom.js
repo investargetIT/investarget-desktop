@@ -39,9 +39,14 @@ class MyProgress extends React.Component {
   };
 
   async componentDidMount() {
-    const { dataroomId, requestParams: params } = this.props;
-    window.echo('dataroom id', dataroomId);
-    window.echo('request params', params);
+    const {
+      dataroomId,
+      requestParams: params,
+      downloadUser,
+      noWatermark,
+      isDownloadingSelectedFiles
+    } = this.props;
+    window.echo('props', this.props);
 
     // try {
     //   const result = await api.createAndCheckDataroomZip(dataroomId, params);
@@ -84,7 +89,7 @@ class MyProgress extends React.Component {
 
       if (result.data.code === 8005) {
         clearInterval(this.intervalId);
-        // this.props.onFinish();
+        this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark);
       }
     }, timeInterval);
 
@@ -966,6 +971,9 @@ class DataRoom extends React.Component {
       description: <MyProgress
         dataroomId={this.state.id}
         requestParams={params}
+        downloadUser={this.state.downloadUser}
+        noWatermark={noWatermark}
+        isDownloadingSelectedFiles={isDownloadingSelectedFiles}
         onFinish={this.handleDownloadFinish}
       />,
       duration: 0,
@@ -1391,9 +1399,18 @@ class DataRoom extends React.Component {
       .catch(error => handleError(error));
   }
 
-  handleDownloadFinish = () => {
-    window.echo('handle download finish');
-    notification.close('test1');
+  handleDownloadFinish = (dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark) => {
+    window.echo('handle download finish', dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark);
+    // notification.close('test1');
+    const part = isDownloadingSelectedFiles ? 1 : 0;
+    const nowater = noWatermark ? 1 : 0;
+    this.setState({
+      // loading: false,
+      downloadUrl: api.downloadDataRoom(dataroomId, downloadUser && downloadUser.id, part, nowater),
+      downloadUser: isLogin(),
+    });
+    // 重置下载链接， 防止相同下载链接不执行
+    setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
   }
 
   render () {
