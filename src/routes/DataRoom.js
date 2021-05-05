@@ -4,7 +4,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
 import { Modal, Select, Input, Tree, message, Collapse, notification, Progress } from 'antd';
-import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
+import { hasPerm, isLogin, i18n, handleError, requestAllData } from '../utils/util'
 import { 
   DataRoomUser, 
   DataRoomUserList, 
@@ -33,24 +33,72 @@ const disableSelect = {
 
 class MyProgress extends React.Component {
   state = {
-    percent: 0,
+    // percent: 0,
+    passedTime: 0,
+    remainingTime: null,
   };
 
-  componentDidMount() {
-    this.intervalId = setInterval(() => {
-      if (this.state.percent >= 100) {
+  async componentDidMount() {
+    const { dataroomId, requestParams: params } = this.props;
+    window.echo('dataroom id', dataroomId);
+    window.echo('request params', params);
+
+    // try {
+    //   const result = await api.createAndCheckDataroomZip(dataroomId, params);
+    //   if (result.data.code === 8005) {
+    //     // const part = isDownloadingSelectedFiles ? 1 : 0;
+    //     // const nowater = noWatermark ? 1 : 0;
+    //     // this.setState({
+    //     //   loading: false,
+    //     //   downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part, nowater),
+    //     //   downloadUser: isLogin(),
+    //     // });
+    //     // // 重置下载链接， 防止相同下载链接不执行
+    //     // setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
+    //   } else {
+    //     // this.setState({ loading: false, disableEditPassword: true });
+    //     let waitingTime = '';
+    //     if (result.data.seconds) {
+    //       waitingTime = `${result.data.seconds}秒`
+    //     }
+    //     // this.setState({ displayDownloadingModal: true, waitingTime });
+    //     // setTimeout(() => {
+    //     //   this.setState({ displayDownloadingModal: false, waitingTime: '' });
+    //     // }, 3000);
+    //   }
+    // } catch (error) {
+    //   // this.setState({ loading: false }, () => handleError(error));
+    // }
+
+    const timeInterval = 2000;
+    this.intervalId = setInterval(async () => {
+      const result = await api.createAndCheckDataroomZip(dataroomId, params);
+      window.echo('result', result);
+
+      const { seconds } = result.data;
+
+      this.setState({
+        remainingTime: Math.ceil(seconds * 1000),
+        passedTime: this.state.passedTime + timeInterval,
+      })
+
+      if (result.data.code === 8005) {
         clearInterval(this.intervalId);
-        this.props.onFinish();
-      } else {
-        this.setState({
-          percent: this.state.percent + 10,
-        })
+        // this.props.onFinish();
       }
-    }, 100);
+    }, timeInterval);
+
   }
 
   render() {
-    return <Progress percent={this.state.percent} />;
+    window.echo('passed time', this.state.passedTime);
+    window.echo('remaining time', this.state.remainingTime);
+    let percent = 0;
+    if (typeof this.state.remainingTime === 'number') {
+      percent = Math.floor(this.state.passedTime * 100 / (this.state.passedTime + this.state.remainingTime));
+    }
+    window.echo('percent', percent);
+    return <Progress percent={percent} />;
   }
 
 }
@@ -915,7 +963,11 @@ class DataRoom extends React.Component {
     notification.open({
       key: 'test1',
       message: 'Notification Title',
-      description: <MyProgress onFinish={this.handleDownloadFinish} />,
+      description: <MyProgress
+        dataroomId={this.state.id}
+        requestParams={params}
+        onFinish={this.handleDownloadFinish}
+      />,
       duration: 0,
       placement: 'bottomRight',
     });
