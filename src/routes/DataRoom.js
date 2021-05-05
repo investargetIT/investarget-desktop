@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select, Input, Tree, message, Collapse, Button, notification, Progress } from 'antd';
+import { Modal, Select, Input, Tree, message, Collapse, notification, Progress } from 'antd';
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
@@ -912,6 +912,17 @@ class DataRoom extends React.Component {
       params.files = files;
     }
 
+    notification.open({
+      key: 'test1',
+      message: 'Notification Title',
+      description: <MyProgress onFinish={this.handleDownloadFinish} />,
+      duration: 0,
+      placement: 'bottomRight',
+    });
+
+    window.echo('ready to request', this.state.id, params);
+    return;
+
     try {
       const result = await api.createAndCheckDataroomZip(this.state.id, params)
       if (result.data.code === 8005) {
@@ -1328,16 +1339,6 @@ class DataRoom extends React.Component {
       .catch(error => handleError(error));
   }
 
-  openNotification = () => {
-    notification.open({
-      key: 'test1',
-      message: 'Notification Title',
-      description: <MyProgress onFinish={this.handleDownloadFinish} />,
-      duration: 0,
-      placement: 'bottomRight',
-    });
-  };
-
   handleDownloadFinish = () => {
     window.echo('handle download finish');
     notification.close('test1');
@@ -1430,9 +1431,6 @@ class DataRoom extends React.Component {
         name={this.state.title}
         // style={disableSelect}
       >
-         <Button type="primary" onClick={this.openNotification}>
-    Open the notification box
-  </Button>
       
         {hasPerm('dataroom.admin_getdataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
