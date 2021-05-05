@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
-import { Modal, Select, Input, Tree, message, Collapse, Table, Popover } from 'antd'
+import { Modal, Select, Input, Tree, message, Collapse, Button, notification, Progress } from 'antd';
 import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
@@ -30,6 +30,30 @@ const disableSelect = {
   userSelect: 'none', /* Non-prefixed version, currently
                                 supported by Chrome, Opera and Firefox */
 };
+
+class MyProgress extends React.Component {
+  state = {
+    percent: 0,
+  };
+
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      if (this.state.percent >= 100) {
+        clearInterval(this.intervalId);
+        this.props.onFinish();
+      } else {
+        this.setState({
+          percent: this.state.percent + 10,
+        })
+      }
+    }, 100);
+  }
+
+  render() {
+    return <Progress percent={this.state.percent} />;
+  }
+
+}
 
 class DataRoom extends React.Component {
 
@@ -1304,6 +1328,21 @@ class DataRoom extends React.Component {
       .catch(error => handleError(error));
   }
 
+  openNotification = () => {
+    notification.open({
+      key: 'test1',
+      message: 'Notification Title',
+      description: <MyProgress onFinish={this.handleDownloadFinish} />,
+      duration: 0,
+      placement: 'bottomRight',
+    });
+  };
+
+  handleDownloadFinish = () => {
+    window.echo('handle download finish');
+    notification.close('test1');
+  }
+
   render () {
     // const orgBdTableColumns = [
     //   {
@@ -1391,6 +1430,9 @@ class DataRoom extends React.Component {
         name={this.state.title}
         // style={disableSelect}
       >
+         <Button type="primary" onClick={this.openNotification}>
+    Open the notification box
+  </Button>
       
         {hasPerm('dataroom.admin_getdataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
