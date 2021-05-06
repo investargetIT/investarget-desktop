@@ -33,7 +33,6 @@ const disableSelect = {
 
 class MyProgress extends React.Component {
   state = {
-    // percent: 0,
     passedTime: 0,
     remainingTime: null,
   };
@@ -44,65 +43,38 @@ class MyProgress extends React.Component {
       requestParams: params,
       downloadUser,
       noWatermark,
-      isDownloadingSelectedFiles
+      isDownloadingSelectedFiles,
+      notificationKey,
     } = this.props;
-    window.echo('props', this.props);
-
-    // try {
-    //   const result = await api.createAndCheckDataroomZip(dataroomId, params);
-    //   if (result.data.code === 8005) {
-    //     // const part = isDownloadingSelectedFiles ? 1 : 0;
-    //     // const nowater = noWatermark ? 1 : 0;
-    //     // this.setState({
-    //     //   loading: false,
-    //     //   downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part, nowater),
-    //     //   downloadUser: isLogin(),
-    //     // });
-    //     // // 重置下载链接， 防止相同下载链接不执行
-    //     // setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
-    //   } else {
-    //     // this.setState({ loading: false, disableEditPassword: true });
-    //     let waitingTime = '';
-    //     if (result.data.seconds) {
-    //       waitingTime = `${result.data.seconds}秒`
-    //     }
-    //     // this.setState({ displayDownloadingModal: true, waitingTime });
-    //     // setTimeout(() => {
-    //     //   this.setState({ displayDownloadingModal: false, waitingTime: '' });
-    //     // }, 3000);
-    //   }
-    // } catch (error) {
-    //   // this.setState({ loading: false }, () => handleError(error));
-    // }
 
     const timeInterval = 2000;
+
     this.intervalId = setInterval(async () => {
-      const result = await api.createAndCheckDataroomZip(dataroomId, params);
-      window.echo('result', result);
-
-      const { seconds } = result.data;
-
-      this.setState({
-        remainingTime: Math.ceil(seconds * 1000),
-        passedTime: this.state.passedTime + timeInterval,
-      })
-
-      if (result.data.code === 8005) {
+      try {
+        this.setState({ passedTime: this.state.passedTime + timeInterval });
+        const result = await api.createAndCheckDataroomZip(dataroomId, params);
+        const { seconds } = result.data;
+        this.setState({ remainingTime: Math.ceil(seconds * 1000) });
+        if (result.data.code === 8005) {
+          clearInterval(this.intervalId);
+          this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey);
+        }
+      } catch (error) {
         clearInterval(this.intervalId);
-        this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark);
+        this.props.onError(notificationKey);
+        handleError(error);
       }
     }, timeInterval);
-
   }
 
   render() {
-    window.echo('passed time', this.state.passedTime);
-    window.echo('remaining time', this.state.remainingTime);
+    // window.echo('passed time', this.state.passedTime);
+    // window.echo('remaining time', this.state.remainingTime);
     let percent = 0;
     if (typeof this.state.remainingTime === 'number') {
       percent = Math.floor(this.state.passedTime * 100 / (this.state.passedTime + this.state.remainingTime));
     }
-    window.echo('percent', percent);
+    // window.echo('percent', percent);
     return <Progress percent={percent} />;
   }
 
@@ -965,67 +937,80 @@ class DataRoom extends React.Component {
       params.files = files;
     }
 
+    const downloadNotificationKey = JSON.stringify({ ...params, id: this.state.id });
+    // window.echo('noti key', downloadNotificationKey);
+
     notification.open({
-      key: 'test1',
-      message: 'Notification Title',
+      key: downloadNotificationKey,
+      message: 'Dataroom 文件下载',
       description: <MyProgress
+        notificationKey={downloadNotificationKey}
         dataroomId={this.state.id}
         requestParams={params}
         downloadUser={this.state.downloadUser}
         noWatermark={noWatermark}
         isDownloadingSelectedFiles={isDownloadingSelectedFiles}
         onFinish={this.handleDownloadFinish}
+        onError={key => notification.close(key)}
       />,
       duration: 0,
       placement: 'bottomRight',
     });
 
-    window.echo('ready to request', this.state.id, params);
-    return;
+    // window.echo('ready to request', this.state.id, params);
 
-    try {
-      const result = await api.createAndCheckDataroomZip(this.state.id, params)
-      if (result.data.code === 8005) {
-        const part = isDownloadingSelectedFiles ? 1 : 0;
-        const nowater = noWatermark ? 1 : 0;
-        this.setState({
-          loading: false,
-          downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part, nowater),
-          downloadUser: isLogin(),
-        });
-        // 重置下载链接， 防止相同下载链接不执行
-        setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
-      } else {
-        this.setState({ loading: false, disableEditPassword: true });
-        let waitingTime = '';
-        if (result.data.seconds) {
-          waitingTime = `${result.data.seconds}秒`
-        }
-        this.setState({ displayDownloadingModal: true, waitingTime });
-        setTimeout(() => {
-          this.setState({ displayDownloadingModal: false, waitingTime: '' });
-        }, 3000);
-      }
-    } catch (error) {
-      this.setState({ loading: false }, () => handleError(error));
-    }
+    // try {
+    //   const result = await api.createAndCheckDataroomZip(this.state.id, params)
+    //   if (result.data.code === 8005) {
+    //     const part = isDownloadingSelectedFiles ? 1 : 0;
+    //     const nowater = noWatermark ? 1 : 0;
+    //     this.setState({
+    //       loading: false,
+    //       downloadUrl: api.downloadDataRoom(this.state.id, this.state.downloadUser && this.state.downloadUser.id, part, nowater),
+    //       downloadUser: isLogin(),
+    //     });
+    //     // 重置下载链接， 防止相同下载链接不执行
+    //     setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
+    //   } else {
+    //     this.setState({ loading: false, disableEditPassword: true });
+    //     let waitingTime = '';
+    //     if (result.data.seconds) {
+    //       waitingTime = `${result.data.seconds}秒`
+    //     }
+    //     this.setState({ displayDownloadingModal: true, waitingTime });
+    //     setTimeout(() => {
+    //       this.setState({ displayDownloadingModal: false, waitingTime: '' });
+    //     }, 3000);
+    //   }
+    // } catch (error) {
+    //   this.setState({ loading: false }, () => handleError(error));
+    // }
   }
 
   handleDownloadBtnClicked = () => {
-    this.setState({ loading: true, visible: false });
+    this.setState({
+      // loading: true,
+      visible: false,
+    });
     const noWatermark = this.state.downloadDataroomWithoutWatermark;
     this.checkDataRoomStatus(noWatermark);
   }
 
   handleDownloadSelectedFilesBtnClicked = () => {
-    this.setState({ loading: true, visible: false });
+    this.setState({
+      // loading: true,
+      visible: false,
+    });
     const files = this.state.selectedFiles.map(m => m.id).join(',');
     const noWatermark = this.state.downloadDataroomWithoutWatermark;
     this.checkDataRoomStatus(noWatermark, true, files);
   }
 
   handleDownloadNewFiles = () => {
-    this.setState({ loading: true, visible: false });
+    this.setState({
+      // loading: true,
+      visible: false,
+    });
     const files = this.state.newDataroomFile.map(m => m.id).join(',');
     const noWatermark = this.state.downloadDataroomWithoutWatermark;
     this.checkDataRoomStatus(noWatermark, true, files);
@@ -1399,9 +1384,9 @@ class DataRoom extends React.Component {
       .catch(error => handleError(error));
   }
 
-  handleDownloadFinish = (dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark) => {
-    window.echo('handle download finish', dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark);
-    // notification.close('test1');
+  handleDownloadFinish = (dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey) => {
+    // window.echo('handle download finish', dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark);
+    
     const part = isDownloadingSelectedFiles ? 1 : 0;
     const nowater = noWatermark ? 1 : 0;
     this.setState({
@@ -1409,8 +1394,12 @@ class DataRoom extends React.Component {
       downloadUrl: api.downloadDataRoom(dataroomId, downloadUser && downloadUser.id, part, nowater),
       downloadUser: isLogin(),
     });
+
     // 重置下载链接， 防止相同下载链接不执行
     setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
+
+    // 如果打包完成，自动关闭通知
+    setTimeout(() => notification.close(notificationKey), 3000);
   }
 
   render () {
@@ -1674,7 +1663,7 @@ class DataRoom extends React.Component {
           <Tree onSelect={this.onSelect}>{this.tree(newDataroomFileWithParentDir, -999)}</Tree>
         </Modal>
 
-        {this.state.displayDownloadingModal &&
+        {/* {this.state.displayDownloadingModal &&
           <Modal
             title="请求已发送成功"
             visible
@@ -1683,7 +1672,7 @@ class DataRoom extends React.Component {
           >
             <div style={{ padding: '20px 0' }}>请等待<span style={{ color: 'red', fontWeight: 'bold' }}>{this.state.waitingTime}</span>后，再次点击打包下载，系统将自动下载</div>
           </Modal>
-        }
+        } */}
 
         <Modal
           title={i18n('remark.comment')}
