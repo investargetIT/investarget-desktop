@@ -190,7 +190,7 @@ class DataRoom extends React.Component {
           title: res.data.projtitle,
           isProjTrader,
           hasPermissionForDataroomTemp: true,
-          makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
+          makeUserIds: projTraders ? projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id) : [],
         });
       } else {
         this.setState({ title: res.data.projtitle });
