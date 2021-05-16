@@ -1,4 +1,4 @@
-console.log('hello statistic');
+console.log('hello statistic 3');
 
 const statisticQueryString = window.location.search;
 const statisticUrlParams = new URLSearchParams(statisticQueryString);
@@ -64,3 +64,7 @@ const readFileRequest = async (documentId) => {
 }
 
 readFileRequest(fileId);
+
+window.addEventListener("beforeunload", function (e) {
+  if (!statisticFileId) return;
+});

@@ -175,6 +175,12 @@ class DataRoom extends React.Component {
     if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
       this.getNewDataRoomFile();
     }
+    // this.getDataroomFileReadingRecord();
+  }
+
+  getDataroomFileReadingRecord = async () => {
+    const req = await api.getDataroomFileReadRecord();
+    window.echo('request read record', req);
   }
 
   getDataRoomFileAnnotations = async () => {
