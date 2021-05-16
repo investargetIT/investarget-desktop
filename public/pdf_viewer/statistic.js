@@ -1,4 +1,4 @@
-console.log('hello statistic 3');
+console.log('hello statistic 6');
 
 const statisticQueryString = window.location.search;
 const statisticUrlParams = new URLSearchParams(statisticQueryString);
@@ -18,11 +18,17 @@ function statisticGetUserInfo() {
   }
 }
 
-const readFileRequest = async (documentId) => {
+/**
+ * Dataroom file related operation
+ * 
+ * @param {*} documentId 
+ * @param {*} operationType 0 begin, 1 end
+ * @returns 
+ */
+const dataroomFileOperationRequest = async (documentId, operationType) => {
   if (!statisticFileId) return;
 
   console.log('request begin to read file');
-  return;
 
   const user = getUserInfo()
   if (!user) {
@@ -36,7 +42,7 @@ const readFileRequest = async (documentId) => {
 
   const body = {
     file: parseInt(documentId),
-    type: 0,
+    type: operationType,
   };
 
   const reqDiscussion = await fetch(`${baseUrl}/dataroom/userRecord/`, {
@@ -63,8 +69,9 @@ const readFileRequest = async (documentId) => {
   }
 }
 
-readFileRequest(fileId);
+dataroomFileOperationRequest(fileId, 0);
 
 window.addEventListener("beforeunload", function (e) {
   if (!statisticFileId) return;
+  dataroomFileOperationRequest(fileId, 1);
 });
