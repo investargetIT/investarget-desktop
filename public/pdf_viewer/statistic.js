@@ -30,7 +30,7 @@ const dataroomFileOperationRequest = async (documentId, operationType) => {
 
   console.log('request begin to read file');
 
-  const user = getUserInfo()
+  const user = statisticGetUserInfo()
   if (!user) {
     throw new Error('user missing');
   }
@@ -69,9 +69,9 @@ const dataroomFileOperationRequest = async (documentId, operationType) => {
   }
 }
 
-dataroomFileOperationRequest(fileId, 0);
+dataroomFileOperationRequest(statisticFileId, 0);
 
 window.addEventListener("beforeunload", function (e) {
   if (!statisticFileId) return;
-  dataroomFileOperationRequest(fileId, 1);
+  dataroomFileOperationRequest(statisticFileId, 1);
 });
