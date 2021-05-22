@@ -2,7 +2,7 @@ require('es6-promise').polyfill();
 import fetch from 'dva/fetch';
 
 const prodUrl = 'https://api.investarget.com';
-let devUrl = "http://apitest3.investarget.com";
+let devUrl = "http://apitest.investarget.com";
 // devUrl = 'http://192.168.1.201:8000';
 // devUrl = prodUrl;
 const baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
