@@ -2,7 +2,6 @@ import React from 'react'
 import { 
   Menu, 
   Layout, 
-  Icon, 
   Alert, 
   Modal, 
 } from 'antd';
@@ -12,6 +11,10 @@ import { KEY_TO_URI, KEY_TO_ICON } from '../constants'
 import { i18n } from '../utils/util'
 import classNames from 'classnames'
 import styles from './SiderMenu.css'
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from '@ant-design/icons';
 
 const { SubMenu } = Menu
 const { Sider } = Layout
@@ -22,7 +25,10 @@ const menuStyle = {
 const collapsedMenuStyle = {
   padding: 5,
 }
- 
+const menuToggleIconStyle = {
+  fontSize: 16,
+  verticalAlign:'middle',
+}
 
 class SiderMenu extends React.Component {
 
@@ -133,10 +139,12 @@ class SiderMenu extends React.Component {
         style={{textAlign: 'center',backgroundColor:'rgba(117, 117, 117, 0.2)',borderRadius:4,marginBottom:4,height:30,lineHeight:'30px',cursor:'pointer'}}
         onClick={this.toggelMenu}
       >
-        <Icon
-          style={{fontSize:16,verticalAlign:'middle'}}
-          type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
-        />
+            {
+              this.props.collapsed ?
+                <MenuUnfoldOutlined style={menuToggleIconStyle} />
+                :
+                <MenuFoldOutlined style={menuToggleIconStyle} />
+            }
       </div>
       ) : null }
   
