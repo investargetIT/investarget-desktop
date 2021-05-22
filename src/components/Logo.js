@@ -22,7 +22,7 @@ function Logo(props) {
 
   return (
     <div style={{...logoStyle, ...props.style}}>
-      <Link to={ currentUser ? "/app" : "/" }>
+      {/* <Link to={ currentUser ? "/app" : "/" }> */}
         {source === 5 ?
           <img style={{...logoImgStyle, padding: 10}} src="/images/logo_hongyun.jpg" />
           : null }
@@ -41,7 +41,7 @@ function Logo(props) {
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>
           : null }
-      </Link>
+      {/* </Link> */}
     </div>
   )
 }

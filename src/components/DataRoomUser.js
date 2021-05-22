@@ -80,7 +80,22 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 }
 
 function DataRoomUser(props) {
-    const { list, newUser, onSelectUser, onAddUser, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader, dataroomUserOrgBd } = props
+    const {
+      list,
+      newUser,
+      onSelectUser,
+      onAddUser,
+      onDeleteUser,
+      onSendEmail,
+      onSaveTemplate,
+      onApplyTemplate,
+      dataRoomTemp,
+      onSendNewFileEmail,
+      userWithNewDataroomFile,
+      currentUserIsProjTrader,
+      dataroomUserOrgBd,
+      dataroomId,
+    } = props;
     const isAbleToAddUser = hasPerm('usersys.as_trader');
 
     const handleOpenModal = record => {
@@ -244,7 +259,13 @@ function DataRoomUser(props) {
         {isAbleToAddUser ?
           <div style={{ marginRight: 10 }}>
             <div style={{ display: 'flex' }}>
-              <div style={{ width: 160, marginRight: 8 }}><SelectExistInvestor value={newUser} onChange={onSelectUser} /></div>
+              <div style={{ width: 160, marginRight: 8 }}>
+                <SelectExistInvestor
+                  value={newUser}
+                  onChange={onSelectUser}
+                  dataroom={dataroomId}
+                />
+              </div>
               <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></div>
             </div>
           </div>

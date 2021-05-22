@@ -7,6 +7,7 @@ import {
   hasPerm,
   getUserInfo,
   handleError,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 
@@ -104,10 +105,10 @@ class OrgUserList extends React.Component {
       const { count: total, data: orgUser } = reqUser.data;
 
       //获取投资人的交易师
-      const orgUserRelation = await api.getUserRelation({
+      const orgUserRelation = await requestAllData(api.getUserRelation, {
         investoruser: orgUser.map(m => m.id),
         page_size: 1000,
-      });
+      }, 1000);
       orgUser.forEach(element => {
         const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
         element.traders = relations.map(m => ({

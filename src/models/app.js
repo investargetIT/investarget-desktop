@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { i18n, checkPerm, isLogin } from '../utils/util'
+import { i18n, checkPerm, isLogin, requestAllData } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
 
@@ -131,7 +131,7 @@ export default {
     *getGroup({}, { call, put, select }) {
       const group = yield select(state => state.app.group);
       if (group.length > 0) return;
-      const { data } = yield call(api.queryUserGroup, { page_size: 99 });
+      const { data } = yield call(requestAllData, api.queryUserGroup, { page_size: 99 }, 99);
       yield put({ type: 'saveGroup', payload: data.data });
     },
   },

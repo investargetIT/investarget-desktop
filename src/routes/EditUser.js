@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName } from '../utils/util'
+import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName, requestAllData } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
@@ -55,7 +55,7 @@ class EditUser extends React.Component {
         }
 
 
-        let body = values
+        let body = { ...values };
 
         // #426
         // if (body.userstatus === 2) {
@@ -74,9 +74,9 @@ class EditUser extends React.Component {
         //   body.tags = body.tags.reduce((prev, curr) => prev.concat(JSON.parse(curr)), []);
         // }
 
-        if (!hasPerm('usersys.admin_changeuser')) {
-          body = { ...values, groups: undefined}
-        }
+        // if (!hasPerm('usersys.admin_changeuser')) {
+        //   body = { ...values, groups: undefined}
+        // }
         let promise = new Promise((resolve,reject)=>{
           if(isNaN(body.org)&&body.org!=undefined){
             resolve(api.addOrg({orgnameC:values.org}))
@@ -148,7 +148,7 @@ class EditUser extends React.Component {
   componentDidMount() {
     const userId = Number(this.props.params.id)
     let userDetailInfo, investorGroup
-    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    requestAllData(api.queryUserGroup, { type: 'investor' }, 100)
     .then(data => {
       investorGroup = data.data.data.map(m => m.id)
       return api.getUserInfo(userId, true);

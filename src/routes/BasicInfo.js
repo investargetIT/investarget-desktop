@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n, getImageUrl } from '../utils/util'
+import { i18n, getImageUrl, isLogin, hasPerm } from '../utils/util'
 import { 
   Form, 
   message, 
@@ -47,7 +47,13 @@ class BasicInfo extends React.Component {
             userInfo
           })
           message.success(i18n('personal_info.message.update_success'))
-          this.props.dispatch(routerRedux.replace('/app'))
+
+          let url = '/app';
+          if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+            url = '/app/dataroom/project/list';
+          }
+          this.props.dispatch(routerRedux.replace(url));
+
         }, error => {
           this.props.dispatch({
             type: 'app/findError',

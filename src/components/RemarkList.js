@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
-import { handleError, time, i18n, hasPerm, getUserInfo } from '../utils/util';
+import { handleError, time, i18n, hasPerm, getUserInfo, requestAllData } from '../utils/util';
 import * as api from '../api'
 import RemarkList2 from './RemarkList2'
 
@@ -177,7 +177,7 @@ function remarkListWithApi(type) {
         page_size: 1000,
       }
       const {initComNum,list,currentList,currentListNum}=this.state
-      getApi(param).then(result => {
+      requestAllData(getApi, param, 1000).then(result => {
         const list = result.data.data
         sortByTime(list)
         this.setState({ list })

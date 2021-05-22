@@ -28,7 +28,7 @@ import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser} from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser, requestAllData } from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
 import { BasicContainer } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
@@ -450,7 +450,13 @@ class SelectExistUser extends React.Component {
 class SelectExistInvestor extends React.Component {
 
   getInvestor = (params) => {
-    params = { ...params, traderuser: getCurrentUser(), sort: 'createdtime', desc: 1 } // 审核通过
+    params = {
+      ...params,
+      traderuser: this.props.dataroom ? undefined : getCurrentUser(),
+      sort: 'createdtime',
+      desc: 1,
+      dataroom: this.props.dataroom,
+    };
     return api.getUserRelation(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => item.investoruser).map(item => {
@@ -674,7 +680,7 @@ class SelectTrader extends React.Component {
 
     if (!this.props.data) {
     api.queryUserGroup({ type: this.props.type || 'trader' })
-    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 1000))
     .then(data => this.setState({ data: data.data.data }))
     .catch(error => {
       this.props.dispatch({
@@ -731,7 +737,7 @@ class SelectOrgUser extends React.Component {
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
       const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
-      return api.getUser(param)
+      return requestAllData(api.getUser, param, 1000)
     }).then(data => {
       const traders = data.data.data
       const options = traders.map(item => {
@@ -772,7 +778,7 @@ class SelectOrgInvestor extends React.Component {
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
       const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
-      return api.getUser(param)
+      return requestAllData(api.getUser, param, 1000)
     }).then(data => {
       const traders = data.data.data
       const options = traders.map(item => {
@@ -1759,7 +1765,7 @@ class SelectMultiOrgs extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    api.getOrg({ search: value, issub: false, page_size: 1000, proj: this.props.proj })
+    requestAllData(api.getOrg, { search: value, issub: false, proj: this.props.proj }, 1000)
       .then(body => {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;
@@ -1830,7 +1836,7 @@ class SelectMultiUsers extends React.Component {
         // params.createuser = getCurrentUser();
         // params.unionFields = 'manager,createuser';
       }
-      const getOrgBdListReq = await api.getOrgBdList(params);
+      const getOrgBdListReq = await requestAllData(api.getOrgBdList, params, 1000);
       const { count: orgBdListCount } = getOrgBdListReq.data;
       if (orgBdListCount > 0) {
         const { data: orgBdListData } = getOrgBdListReq.data;
@@ -1852,7 +1858,7 @@ class SelectMultiUsers extends React.Component {
 
   asyncFetchAllInvestor = async value => {
     const reqUserGroup = await api.queryUserGroup({ type: this.props.type || 'investor' });
-    const reqUsers = await api.getUser({ search: value, groups: reqUserGroup.data.data.map(m => m.id), page_size: 100 });
+    const reqUsers = await requestAllData(api.getUser, { search: value, groups: reqUserGroup.data.data.map(m => m.id) }, 100);
     return reqUsers.data.data.filter(f => f.id !== getCurrentUser()).map(user => ({
       text: user.username,
       value: user.id,
@@ -1909,7 +1915,7 @@ class SelectOrAddDate extends React.Component {
   }
 
   getData = () => {
-    api.getLibEvent({ com_id: this.com_id, page_size: 100 })
+    requestAllData(api.getLibEvent, { com_id: this.com_id }, 100)
     .then(result => this.setState({ options: result.data.data.map(m => m.date)}));
   }
 

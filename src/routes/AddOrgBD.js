@@ -2,7 +2,7 @@ import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
-import { getCurrentUser, hasPerm, i18n } from '../utils/util'
+import { getCurrentUser, hasPerm, i18n, requestAllData } from '../utils/util'
 import { Button, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
@@ -104,7 +104,7 @@ class AddOrgBD extends React.Component {
 
   componentDidMount() {
     api.queryUserGroup({ type: this.props.type || 'trader' })
-    .then(data => api.getUser({ groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }))
+    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 1000))
     .then(data => this.setState({ data: data.data.data }))
     .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 

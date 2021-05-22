@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n } from '../utils/util'
+import { i18n, requestAllData } from '../utils/util'
 import {
   Input,
   Button,
@@ -186,7 +186,7 @@ class ProjectAttachments extends React.Component {
       proj: projId,
       page_size: 10000
     }
-    api.getProjAttachment(param).then(result => {
+    requestAllData(api.getProjAttachment, param, 10000).then(result => {
       return result.data.data
     })
     .then(fileList => {

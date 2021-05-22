@@ -28,6 +28,7 @@ import {
   sleep,
   hasPerm,
   getCurrentUser,
+  requestAllData,
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { baseUrl } from '../utils/request';
@@ -89,7 +90,7 @@ class UserInvestEventForm extends React.Component {
       Pindustrytype = com_cat_name; 
     }
 
-    const requestEvents = await api.getLibEvent({ com_id, page_size: 100 });
+    const requestEvents = await requestAllData(api.getLibEvent, { com_id }, 100);
     const event = requestEvents.data.data.filter(f => f.date === values.investDate.format('YYYY-MM-DD'))[0];
 
     const body = { 

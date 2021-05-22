@@ -9,6 +9,7 @@ import {
   handleError, 
   getUserInfo, 
   hasPerm,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -143,7 +144,7 @@ class ProjectLibrary extends React.Component {
   getAllProject = () => {
     const { filters, search } = this.state
     const param = { page_size: 500, com_name: search, ...filters }
-    api.getLibProjSimple(param).then(result => {
+    requestAllData(api.getLibProjSimple, param, 500).then(result => {
       const { data: list } = result.data;
       this.setState({ listForExport: list });
     });

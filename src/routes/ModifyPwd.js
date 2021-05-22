@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { i18n } from '../utils/util'
+import { i18n, isLogin, hasPerm } from '../utils/util';
 import { Form, message } from 'antd'
 import { Password, ConfirmPassword, OldPassword, Submit } from '../components/Form'
 import { modifyPassword } from '../api'
@@ -22,7 +22,11 @@ function ModifyPwd(props) {
         modifyPassword(props.currentUserID, values.old_password, values.password)
         .then(data => {
           message.success(i18n('account.password_updated'))
-          props.dispatch(routerRedux.replace('/app'))
+          let url = '/app';
+          if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+            url = '/app/dataroom/project/list';
+          }
+          props.dispatch(routerRedux.replace(url))
         })
         .catch(err => {
           props.dispatch({

@@ -8,6 +8,7 @@ import {
   hasPerm, 
   getUserInfo,
   getCurrentUser,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -179,12 +180,10 @@ class OrgBDListComponent extends React.Component {
 
   getAllTrader() {
     api.queryUserGroup({ type: 'trader' })
-    .then(data => api.getUser({ 
-      groups: data.data.data.map(m => m.id), 
-      userstatus: 2, 
-      page_size: 1000, 
-      // org: !hasPerm('BD.manageOrgBD') ? [isLogin().org.id] : undefined, 
-    }))
+    .then(data => requestAllData(api.getUser, {
+      groups: data.data.data.map(m => m.id),
+      userstatus: 2,
+    }, 1000))
     .then(data => {
       this.allTrader = data.data.data; 
       this.setState({ traderList: this.allTrader });
@@ -511,7 +510,7 @@ class OrgBDListComponent extends React.Component {
     //   param1.createuser = [getCurrentUser()];
     //   param1.unionFields = 'manager,createuser';
     // }
-    api.getOrgBdList(param1)
+    requestAllData(api.getOrgBdList, param1, 100)
     .then(result => {
       let list = result.data.data.sort((a, b) => {
         const aImportant = a.isimportant ? 1 : 0;
@@ -959,7 +958,7 @@ class OrgBDListComponent extends React.Component {
       investoruser: change.orgUser,
       page_size: 1000,
     };
-    api.getUserRelation(params)
+    requestAllData(api.getUserRelation, params, 1000)
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
@@ -1137,7 +1136,7 @@ class OrgBDListComponent extends React.Component {
     //   params.createuser = getCurrentUser();
     //   params.unionFields = 'manager,createuser';
     // }
-    let allOrgs = await api.getOrgBdBase(params);
+    let allOrgs = await requestAllData(api.getOrgBdBase, params, 1000);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
       org: item.org,

@@ -1010,3 +1010,12 @@ export const getInvestors = params => {
   })
   return r(`/user/investor?${qs.stringify(params)}`)
 };
+
+export const getDataroomFileReadRecord = params => {
+  _.forIn(params, function (value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r(`/dataroom/userRecord/?${qs.stringify(params)}`);
+}

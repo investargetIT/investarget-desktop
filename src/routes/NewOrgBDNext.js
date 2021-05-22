@@ -9,6 +9,7 @@ import {
   hasPerm, 
   getUserInfo,
   intersection, 
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -236,7 +237,7 @@ class NewOrgBDList extends React.Component {
     api.queryUserGroup({ type: 'investor' })
     .then(result => {
       this.investorGroup = result.data.data.map(item => item.id);
-      return api.getOrg(params);
+      return requestAllData(api.getOrg, params, 100);
     })
     .then(result => {
       let list = result.data.data
@@ -326,7 +327,9 @@ class NewOrgBDList extends React.Component {
     let dataForSingleOrg;
 
     // 首先加载机构的所有符合要求的投资人
-    const reqUser = await api.getUser({starmobile: true, org: [org], onjob: true, page_size: 1000, groups: this.investorGroup});
+    const reqUser = await requestAllData(api.getUser, {
+      starmobile: true, org: [org], onjob: true, groups: this.investorGroup
+    }, 1000);
     // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
@@ -335,10 +338,10 @@ class NewOrgBDList extends React.Component {
       const orgUser = reqUser.data.data;
 
       //获取投资人的交易师
-      const orgUserRelation = await api.getUserRelation({
+      const orgUserRelation = await requestAllData(api.getUserRelation, {
         investoruser: orgUser.map(m => m.id),
         page_size: 1000,
-      });
+      }, 1000);
       // const orgUserRelation = this.getUserRelation(orgUser.map(m => m.id));
       orgUser.forEach(element => {
         const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
@@ -573,7 +576,7 @@ class NewOrgBDList extends React.Component {
       investoruser: activeInvestorID,
       page_size: 1000,
     };
-    api.getUserRelation(params)
+    requestAllData(api.getUserRelation, params, 1000)
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
@@ -603,11 +606,11 @@ class NewOrgBDList extends React.Component {
 
   getAllTrader = async () => {
     const reqUserGroup = await api.queryUserGroup({ type: 'trader' });
-    const data = await api.getUser({ 
+    const data = await requestAllData(api.getUser, { 
       groups: reqUserGroup.data.data.map(m => m.id), 
       userstatus: 2, 
       page_size: 1000, 
-    });
+    }, 1000);
     this.allTrader = data.data.data; 
     this.setState({ traderList: this.allTrader });
   }
@@ -670,7 +673,7 @@ class NewOrgBDList extends React.Component {
       return;
     }
     this.setState({ loading: true });
-    const reqSearch = await api.getUser({ page_size: 1000, org: this.ids, search: this.state.search });
+    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 1000);
     this.setState({ loading: false });
     const searchResult = reqSearch.data.data.map(m => m.username);
     const newList = this.state.originalList.filter(f1 => 

@@ -6,6 +6,7 @@ import {
   intersection, 
   checkMobile,
   handleError,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -83,7 +84,7 @@ class UserForm extends React.Component {
   }
 
   componentDidMount() {
-    api.queryUserGroup({ type: 'investor', page_size: 100 })
+    requestAllData(api.queryUserGroup, { type: 'investor' }, 100)
     .then(data => this.setState({ investorGroup: data.data.data.map(m => m.id) }))
   }
 
@@ -105,11 +106,11 @@ class UserForm extends React.Component {
     return (
       <Form>
 
-         { this.hasPerm || !this.isEditUser ?
+         {/* { this.hasPerm || !this.isEditUser ? */}
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
           <SelectUserGroup type={(this.props.isTraderAddInvestor || !this.hasPerm) ? 'investor' : null} />
         </BasicFormItem>
-        : null } 
+        {/* : null }  */}
 
         <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>

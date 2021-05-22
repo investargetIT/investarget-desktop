@@ -461,3 +461,6 @@ label.login-register-form__container__label {
 .ant-checkbox-inner {
   border-radius: 2px;
 }
+.ant-calendar-input-wrap {
+  display: none;
+}

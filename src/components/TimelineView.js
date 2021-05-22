@@ -4,7 +4,7 @@ import { Link } from 'dva/router'
 import { Button,Popover } from 'antd'
 import styles from './TimelineView.css'
 import classNames from 'classnames'
-import { i18n, hasPerm, getCurrentUser } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, requestAllData } from '../utils/util'
 
 const titleStyle = {
   padding: '8px 0'
@@ -32,7 +32,7 @@ class TimelineView extends React.Component {
 
   getAllTimeline = () => {
     const param = { proj: this.props.projId, page_size: 10000 }
-    api.getTimelineBasic(param).then(result => {
+    requestAllData(api.getTimelineBasic, param, 10000).then(result => {
       const timelineList = result.data.data
       const list = timelineList.map(item => {
         return {
@@ -63,7 +63,7 @@ class TimelineView extends React.Component {
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
     }
-    const res = await api.getOrgBdList(params);
+    const res = await requestAllData(api.getOrgBdList, params, 1000);
     const { data: list } = res.data;
     this.setState({ list });
   }

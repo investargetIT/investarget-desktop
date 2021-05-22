@@ -1,6 +1,6 @@
 import React from 'react'
 import Chat from './Chat'
-import { isLogin, handleError } from '../utils/util'
+import { isLogin, handleError, requestAllData } from '../utils/util'
 import md5 from '../utils/md5'
 import * as api from '../api.js'
 import { connect } from 'dva'
@@ -226,7 +226,7 @@ class InstantMessage extends React.Component {
 
   getUserFriendAndMsg = () => {
     let friends
-    api.getUserFriend({ page_size: 100 })
+    requestAllData(api.getUserFriend, { page_size: 100 }, 100)
     .then(data => {
       const channels = data.data.data.filter(f => 
         f.user && f.friend && (((f.user.id === isLogin().id) && f.isaccept) || (f.friend.id === isLogin().id))

@@ -2,7 +2,7 @@ import React from 'react'
 import { Calendar, Modal, DatePicker, TimePicker, Select, Input, Checkbox, Form, Row, Col, Button, Popconfirm, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { withRouter } from 'dva/router'
-import { handleError, time, i18n, getCurrentUser, getUserInfo, hasPerm } from '../utils/util'
+import { handleError, time, i18n, getCurrentUser, getUserInfo, hasPerm, requestAllData } from '../utils/util'
 import * as api from '../api'
 import styles from './Schedule.css'
 const Option = Select.Option
@@ -215,11 +215,14 @@ class Schedule extends React.Component {
     // 加载前后三个月的日程
     const lastMonth = this.state.selectedDate.clone().subtract(1, 'M');
     const nextMonth = this.state.selectedDate.clone().add(1, 'M');
-    const requestThreeMonthsSchedule = [lastMonth, this.state.selectedDate, nextMonth].map(m => api.getSchedule({
-      manager: getCurrentUser(), 
-      page_size: 100, 
-      date: m.format('YYYY-MM-DD'),
-    }));
+    const requestThreeMonthsSchedule = [lastMonth, this.state.selectedDate, nextMonth].map(m => requestAllData(
+      api.getSchedule,
+      {
+        manager: getCurrentUser(),
+        date: m.format('YYYY-MM-DD'),
+      },
+      100,
+    ));
 
     try {
       const result = await Promise.all(requestThreeMonthsSchedule);
@@ -301,7 +304,7 @@ class Schedule extends React.Component {
           endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
           page_size: 1000
         };
-        const requestReport = await api.getWorkReport(params);
+        const requestReport = await requestAllData(api.getWorkReport, params, 1000);
         const reportList = requestReport.data.data.map(m => {
           const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
           const comments = '周报';
