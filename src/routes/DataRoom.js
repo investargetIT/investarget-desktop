@@ -948,7 +948,7 @@ class DataRoom extends React.Component {
 
     notification.open({
       key: downloadNotificationKey,
-      message: 'Dataroom 文件下载',
+      message: 'Dataroom 文件打包',
       description: <MyProgress
         notificationKey={downloadNotificationKey}
         dataroomId={this.state.id}
