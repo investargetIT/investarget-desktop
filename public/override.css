@@ -464,3 +464,10 @@ label.login-register-form__container__label {
 .ant-calendar-input-wrap {
   display: none;
 }
+
+/**
+ * Override side menu styles
+ */
+li.it-menu-item, li.it-menu-submenu {
+  list-style-type: none;
+}
