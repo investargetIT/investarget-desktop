@@ -1402,7 +1402,7 @@ class DataRoom extends React.Component {
     });
 
     // 重置下载链接， 防止相同下载链接不执行
-    setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false, pdfPassword: '' }), 1000);
+    setTimeout(() => this.setState({ downloadUrl: null, disableEditPassword: false }), 1000);
 
     // 如果打包完成，自动关闭通知
     setTimeout(() => notification.close(notificationKey), 3000);
