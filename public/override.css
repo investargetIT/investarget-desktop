@@ -471,3 +471,6 @@ label.login-register-form__container__label {
 li.it-menu-item, li.it-menu-submenu {
   list-style-type: none;
 }
+ul.it-menu {
+  padding-inline-start: 0;
+}

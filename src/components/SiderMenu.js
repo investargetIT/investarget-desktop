@@ -28,6 +28,7 @@ const collapsedMenuStyle = {
 const menuToggleIconStyle = {
   fontSize: 16,
   verticalAlign:'middle',
+  color: '#8f939e',
 }
 
 class SiderMenu extends React.Component {
