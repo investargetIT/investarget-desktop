@@ -129,7 +129,6 @@ class SiderMenu extends React.Component {
     }
 
     const menuStyle = {
-      padding: this.props.collapsed ? 5 : 10,
       height: '100%',
     }
     return (
@@ -150,11 +149,8 @@ class SiderMenu extends React.Component {
       ) : null }
   
       <Menu
-        prefixCls="it-menu"
         theme={this.props.theme}
-        mode={"inline"}
-        inlineCollapsed={this.props.collapsed}
-        inlineIndent={0}
+        mode="inline"
         selectedKeys={this.props.selectedKeys}
         onSelect={this.handleSelect.bind(this)}
         openKeys={this.props.openKeys}
@@ -167,30 +163,34 @@ class SiderMenu extends React.Component {
               return (
                 <SubMenu
                   key={m.namekey}
-                  title={(
-                    <span style={{display: 'block'}}>
-                      <span style={{...iconStyle, marginLeft: this.props.collapsed ? 7 : 0}} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
-                      <span style={navTextStyle} className="title">{i18n(`menu.${m.namekey}`)}</span>
-                    </span>)}
+                  icon={<MenuUnfoldOutlined />}
+                  title={i18n(`menu.${m.namekey}`)}
+                  // title={(
+                  //   <span style={{display: 'block'}}>
+                  //     <span style={{...iconStyle, marginLeft: this.props.collapsed ? 7 : 0}} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
+                  //     <span style={navTextStyle} className="title">{i18n(`menu.${m.namekey}`)}</span>
+                  //   </span>)}
                 >
-                  { subMenu.map(n => (
+                  { 
+                  subMenu.map(n => (
                     <Menu.Item key={n.namekey}>
                       <Link to={KEY_TO_URI[n.namekey]}>
-                        <i className="fa fa-caret-right"></i>
+                        {/* <i className="fa fa-caret-right"></i> */}
                         {i18n(`menu.${n.namekey}`)}
                       </Link>
                     </Menu.Item>)
-                  )}
+                  )
+                  }
                 </SubMenu>
               )
             } else {
               return (
-                <Menu.Item key={m.namekey}>
+                <Menu.Item key={m.namekey} icon={<MenuFoldOutlined />}>
                   <Link to={KEY_TO_URI[m.namekey]}>
-                    <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span>
-                    <span style={navTextStyle} className="title">
+                    {/* <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span> */}
+                    {/* <span style={navTextStyle} className="title"> */}
                       {i18n(`menu.${m.namekey}`)}
-                    </span>
+                    {/* </span> */}
                   </Link>
                 </Menu.Item>
               )

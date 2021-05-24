@@ -468,9 +468,9 @@ label.login-register-form__container__label {
 /**
  * Override side menu styles
  */
-li.it-menu-item, li.it-menu-submenu {
-  list-style-type: none;
+.ant-menu-vertical.ant-menu-sub, .ant-menu-vertical-left.ant-menu-sub, .ant-menu-vertical-right.ant-menu-sub {
+  max-height: calc(100vh - 100px);
 }
-ul.it-menu {
-  padding-inline-start: 0;
+.ant-menu-submenu-hidden {
+  display: none;
 }

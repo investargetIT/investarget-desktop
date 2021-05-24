@@ -69,20 +69,20 @@ class LeftRightLayout extends React.Component {
 
         <Header location={this.props.location} style={headStyle} changeLang={this.reload.bind(this)} />
 
-        <Layout style={{marginTop: 50,paddingTop:20}}>
+        <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
 
           <Sider
             trigger={null}
             collapsible
             collapsed={this.props.collapsed}
-            width={240}
-            style={siderStyle}
-            collapsedWidth={50}
+            // width={240}
+            // style={siderStyle}
+            // collapsedWidth={50}
           >
             <SiderMenu ref="sidemenu" collapsed={this.props.collapsed} theme="dark" />
           </Sider>
 
-          <Content className={styles['content']} style={{marginLeft: this.props.collapsed ? 50 : 240,paddingLeft:20}}>
+          <Content className={styles['content']} style={{ paddingLeft: 20, paddingTop: 20 }}>
             <div style={this.props.style || {padding: 30,backgroundColor:'#fff'}}>
               <div style={titleWrapStyle}>
                            

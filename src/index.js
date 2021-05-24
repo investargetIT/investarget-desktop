@@ -4,7 +4,7 @@ import { LocaleProvider } from 'antd'
 import dva from 'dva';
 import createHistory from 'history/createBrowserHistory';
 import { state } from './models/app';
-import './base_components/menu.less';
+// import './base_components/menu.less';
 import './index.css';
 import createLoading from 'dva-loading';
 import { message } from 'antd'
