@@ -163,7 +163,7 @@ class SiderMenu extends React.Component {
               return (
                 <SubMenu
                   key={m.namekey}
-                  icon={<MenuUnfoldOutlined />}
+                  icon={KEY_TO_ICON[m.namekey]}
                   title={i18n(`menu.${m.namekey}`)}
                   // title={(
                   //   <span style={{display: 'block'}}>
