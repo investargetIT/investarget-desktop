@@ -185,7 +185,7 @@ class SiderMenu extends React.Component {
               )
             } else {
               return (
-                <Menu.Item key={m.namekey} icon={<MenuFoldOutlined />}>
+                <Menu.Item key={m.namekey} icon={KEY_TO_ICON[m.namekey]}>
                   <Link to={KEY_TO_URI[m.namekey]}>
                     {/* <span style={iconStyle} className={classNames('icon', KEY_TO_ICON[m.namekey])}></span> */}
                     {/* <span style={navTextStyle} className="title"> */}

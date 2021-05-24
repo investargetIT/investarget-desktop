@@ -1,4 +1,14 @@
 import { baseUrl, prodUrl } from './utils/request';
+import {
+  HomeOutlined,
+  BookOutlined,
+  WalletOutlined,
+  EditOutlined,
+  UserOutlined,
+  FieldTimeOutlined,
+  FileSearchOutlined,
+  ApartmentOutlined,
+} from '@ant-design/icons';
 
 export const PAGE_SIZE = 5
 
@@ -135,23 +145,41 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
 }
 
 export const KEY_TO_ICON = {
-  'dashboard': 'fa fa-home',
-  'project_library': 'glyphicon glyphicon-book',
+  // 'dashboard': 'fa fa-home',
+  // 'project_library': 'glyphicon glyphicon-book',
+  // 'project_management': 'glyphicon glyphicon-list',
+  // 'organization_management': 'fa fa-sitemap',
+  // 'bd_management': 'glyphicon glyphicon-lock',
+  // 'email_management': 'fa fa-envelope-o',
+  // 'schedule_management': 'fa fa-calendar',
+  // 'user_management': 'fa fa-group',
+  // 'myinvestor': 'fa fa-user',
+  // 'mytrader': 'fa fa-user-plus',
+  // 'timeline_management': 'fa fa-tasks',
+  // 'dataroom_management': 'fa fa-folder',
+  // 'inbox_management': 'glyphicon glyphicon-envelope',
+  // 'user_center': 'fa fa-cogs',
+  // 'permission_management': 'fa fa-sitemap',
+  // 'log': 'fa fa-search',
+  // 'onlineTest': 'fa fa-pencil',
+
+  'dashboard': <HomeOutlined />,
+  'project_library': <BookOutlined />,
   'project_management': 'glyphicon glyphicon-list',
   'organization_management': 'fa fa-sitemap',
   'bd_management': 'glyphicon glyphicon-lock',
-  'email_management': 'fa fa-envelope-o',
+  'email_management': <WalletOutlined />,
   'schedule_management': 'fa fa-calendar',
-  'user_management': 'fa fa-group',
+  'user_management': <UserOutlined />,
   'myinvestor': 'fa fa-user',
   'mytrader': 'fa fa-user-plus',
-  'timeline_management': 'fa fa-tasks',
+  'timeline_management': <FieldTimeOutlined />,
   'dataroom_management': 'fa fa-folder',
   'inbox_management': 'glyphicon glyphicon-envelope',
   'user_center': 'fa fa-cogs',
-  'permission_management': 'fa fa-sitemap',
-  'log': 'fa fa-search',
-  'onlineTest': 'fa fa-pencil',
+  'permission_management': <ApartmentOutlined />,
+  'log': <FileSearchOutlined />,
+  'onlineTest': <EditOutlined />,
 }
 
 export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];
