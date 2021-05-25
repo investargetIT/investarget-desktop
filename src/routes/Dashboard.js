@@ -5,6 +5,7 @@ import { getUserInfo } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
 import { connect } from 'dva';
+import ProjectBdTable from '../components/ProjectBdTable';
 
 function Dashboard(props) {
 
@@ -56,7 +57,7 @@ function Dashboard(props) {
 
           <Col span={16} style={{ height: 300 }}>
             <Card title="项目BD" extra={<a href="#">全部项目</a>}>
-              <div style={{ height: 300 }}>Content</div>
+              <ProjectBdTable />
             </Card>
           </Col>
 
