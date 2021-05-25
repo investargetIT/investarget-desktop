@@ -9,6 +9,7 @@ import ProjectBdTable from '../components/ProjectBdTable';
 import {
   FilePdfFilled,
 } from '@ant-design/icons';
+import MySchedule from '../components/MySchedule';
 
 function Dashboard(props) {
 
@@ -124,7 +125,7 @@ function Dashboard(props) {
       </div>
 
       <Card title="工作日程">
-        <div style={{ height: 500 }}>Content</div>
+        <MySchedule />
       </Card>
 
     </LeftRightLayoutPure>
