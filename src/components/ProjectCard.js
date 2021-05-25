@@ -6,6 +6,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 const cardStyle = {
   height: '100%',
   overflow: 'hidden',
+  width: 260,
 }
 const cardBodyStyle = {
   height: '100%',

@@ -15,7 +15,7 @@ export default function Dashboard(props) {
   useEffect(() => {
     async function fetchData() {
       const params = {
-        max_size: 4,
+        max_size: 3,
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
@@ -41,9 +41,9 @@ export default function Dashboard(props) {
       </div>
 
       <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
-        <Row gutter={16}>
-          {projList.map(m => <Col key={m.id} span={6}><ProjectCard record={m} /></Col>)}
-        </Row>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}><ProjectCard record={m} /></div>)}
+        </div>
       </Card>
 
       <div className="site-card-wrapper" style={{ margin: '20px 0' }}>
