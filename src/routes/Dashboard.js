@@ -19,6 +19,7 @@ function Dashboard(props) {
     async function fetchData() {
       const params = {
         max_size: 3,
+        skip_count: 8,
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;

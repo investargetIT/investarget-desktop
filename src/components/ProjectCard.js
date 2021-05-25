@@ -1,6 +1,6 @@
 import { Card, Button, Popconfirm, Progress } from 'antd';
 import { Link } from 'dva/router';
-import { i18n, hasPerm } from '../utils/util';
+import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
 import { DeleteOutlined } from '@ant-design/icons';
 
 const cardStyle = {
@@ -64,6 +64,15 @@ export default function ProjectCard({ record, country: allCountries }) {
     )
   }
 
+  function transactionAmount(record) {
+    if (allCountries.length == 0) return;
+    if (isShowCNY(record, allCountries)) {
+      return record.financeAmount ? formatMoney(record.financeAmount, 'CNY') : 'N/A';
+    } else {
+      return record.financeAmount_USD ? formatMoney(record.financeAmount_USD) : 'N/A';
+    }
+  }
+
   return (
     <Card style={cardStyle} bodyStyle={cardBodyStyle}>
 
@@ -74,7 +83,7 @@ export default function ProjectCard({ record, country: allCountries }) {
           <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
         </div>
         <div style={cardTimeStyle}>地区：{projectArea(record)}</div>
-        <div style={cardTimeStyle}>拟交易规模：{dataroomTime}</div>
+        <div style={cardTimeStyle}>拟交易规模：{transactionAmount(record)}</div>
         <Progress percent={50} size="small" strokeColor="#339bd2" />
         {/* <div style={cardActionStyle}>
           <Button onClick={handleCloseDateRoom(record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
