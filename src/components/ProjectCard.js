@@ -1,4 +1,4 @@
-import { Card, Button, Popconfirm } from 'antd';
+import { Card, Button, Popconfirm, Progress } from 'antd';
 import { Link } from 'dva/router';
 import { i18n, hasPerm } from '../utils/util';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -54,15 +54,17 @@ export default function ProjectCard({ record }) {
         <div style={cardTitleStyle}>
           <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
         </div>
-        <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
-        <div style={cardActionStyle}>
+        <div style={cardTimeStyle}>地区：{dataroomTime}</div>
+        <div style={cardTimeStyle}>拟交易规模：{dataroomTime}</div>
+        <Progress percent={50} size="small" strokeColor="#339bd2" />
+        {/* <div style={cardActionStyle}>
           <Button onClick={handleCloseDateRoom(record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
           {hasPerm('dataroom.admin_deletedataroom') ?
             <Popconfirm title={i18n("delete_confirm")} onConfirm={deleteDataRoom(record)}>
               <DeleteOutlined />
             </Popconfirm>
             : null}
-        </div>
+        </div> */}
       </div>
 
       <Link to={dataroomUrl}>
