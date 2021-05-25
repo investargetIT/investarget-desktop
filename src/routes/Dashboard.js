@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Breadcrumb, Card, Row, Col } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { getUserInfo } from '../utils/util';
@@ -10,11 +10,14 @@ export default function Dashboard(props) {
   const userInfo = getUserInfo();
   window.echo('user info', userInfo);
 
+  const [projList, setProjList] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
       const reqProj = await api.getProj();
       const { data: projList } = reqProj.data;
       window.echo('proj list', projList);
+      setProjList(projList);
     }
     fetchData();
   }, []);
@@ -37,6 +40,7 @@ export default function Dashboard(props) {
 
       <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
         {/* <ProjectCard/> */}
+        { projList.map(m => <h2>{m.projtitle}</h2>) }
       </Card>
 
       <div className="site-card-wrapper" style={{ margin: '20px 0' }}>
