@@ -14,9 +14,11 @@ export default function Dashboard(props) {
 
   useEffect(() => {
     async function fetchData() {
-      const reqProj = await api.getProj();
+      const params = {
+        max_size: 3,
+      }
+      const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
-      // window.echo('proj list', projList);
       setProjList(projList);
     }
     fetchData();
