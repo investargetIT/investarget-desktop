@@ -2,6 +2,7 @@ import React from 'react';
 import { Breadcrumb, Card, Row, Col } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { getUserInfo } from '../utils/util';
+import ProjectCard from '../components/ProjectCard';
 
 export default function Dashboard(props) {
   const userInfo = getUserInfo();
@@ -23,9 +24,7 @@ export default function Dashboard(props) {
       </div>
 
       <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
-        <p>Card content</p>
-        <p>Card content</p>
-        <p>Card content</p>
+        <ProjectCard/>
       </Card>
 
       <div className="site-card-wrapper" style={{ margin: '20px 0' }}>
