@@ -24,6 +24,11 @@ export default function() {
       dataIndex: 'com_name',
       key: 'com_name',
     },
+    {
+      title: i18n('project_bd.status'),
+      dataIndex: ['bd_status', 'name'],
+      key: 'bd_status',
+    },
   ];
 
   return (
