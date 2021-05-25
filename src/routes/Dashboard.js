@@ -16,6 +16,7 @@ function Dashboard(props) {
 
   const [projList, setProjList] = useState([]);
   const [news, setNews] = useState();
+  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -43,6 +44,23 @@ function Dashboard(props) {
       }
     }
     fetchNewsData();
+
+    async function fetchCompanyFile() {
+      const reqComDataroom = await api.getCompanyDataRoom();
+      window.echo('com dataroom', reqComDataroom);
+      const { count, data: companyDataroom } = reqComDataroom.data;
+      if (count == 0) return;
+      const dataroomId = companyDataroom[0].id;
+      const params = {
+        dataroom: dataroomId,
+        isFile: true,
+        page_size: 4, // not working
+      }
+      const reqComFile = await api.queryDataRoomFile(params);
+      window.echo('req com file', reqComFile);
+      setFiles(reqComFile.data.data.slice(0, 4))
+    }
+    fetchCompanyFile();
 
   }, []);
 
@@ -87,13 +105,13 @@ function Dashboard(props) {
             </Card>
 
             <Card title="公司培训文件" extra={<a href="#">全部文件</a>} bodyStyle={{ padding: 0, paddingBottom: 20 }}>
-              {[1, 2, 3, 4].map(m => (
-                <a key={m} href="/app" target="_blank">
+              {files.map(m => (
+                <a key={m.id} href="/app" target="_blank">
                   <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
                     <FilePdfFilled style={{ fontSize: 36, color: '#989898' }} />
                     <div style={{ marginLeft: 8 }}>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>多维海拓</div>
-                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>4.3MB / PDF / 2021-04-18</div>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>{m.filename}</div>
+                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>4.3MB / PDF / {m.createdtime.slice(0, 10)}</div>
                     </div>
                   </div>
                 </a>
