@@ -55,7 +55,7 @@ function Dashboard(props) {
       <div className="site-card-wrapper" style={{ margin: '20px 0' }}>
         <Row gutter={20}>
 
-          <Col span={16} style={{ height: 300 }}>
+          <Col span={16}>
             <Card title="项目BD" extra={<a href="#">全部项目</a>}>
               <ProjectBdTable />
             </Card>

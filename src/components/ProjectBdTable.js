@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { i18n } from '../utils/util';
+import { Table } from 'antd';
 
 export default function() {
 
@@ -16,5 +18,22 @@ export default function() {
     fetchData();
   }, []);
 
-  return <h1>Project BD</h1>;
+  const columns = [
+    {
+      title: i18n('project_bd.project_name'),
+      dataIndex: 'com_name',
+      key: 'com_name',
+    },
+  ];
+
+  return (
+    <div>
+      <Table
+        columns={columns}
+        dataSource={projBdList}
+        rowKey={record => record.id}
+        pagination={false}
+      />
+    </div>
+  );
 }
