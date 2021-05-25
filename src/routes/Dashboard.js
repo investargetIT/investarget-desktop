@@ -2,15 +2,16 @@ import React from 'react';
 import { Breadcrumb, Card, Row, Col } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 
-class Dashboard extends React.Component {
-  render() {
+export default function Dashboard(props) {
     return (
-      <LeftRightLayoutPure location={this.props.location}>
+      <LeftRightLayoutPure location={props.location}>
 
-        <Breadcrumb style={{ marginBottom: 20 }}>
+        <Breadcrumb>
           <Breadcrumb.Item>首页</Breadcrumb.Item>
           <Breadcrumb.Item>工作台</Breadcrumb.Item>
         </Breadcrumb>
+
+        <div style={{ height: 80, backgroundColor: 'red', marginTop: 20, marginBottom: 30 }}></div>
 
         <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
           <p>Card content</p>
@@ -45,7 +46,4 @@ class Dashboard extends React.Component {
 
       </LeftRightLayoutPure>
     );
-  }
 }
-
-export default Dashboard;
