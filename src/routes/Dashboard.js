@@ -9,7 +9,6 @@ import { connect } from 'dva';
 function Dashboard(props) {
 
   const userInfo = getUserInfo();
-  window.echo('user info', userInfo);
 
   const [projList, setProjList] = useState([]);
 

@@ -1,7 +1,6 @@
-import { Card, Button, Popconfirm, Progress } from 'antd';
+import { Card, Button, Progress } from 'antd';
 import { Link } from 'dva/router';
 import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
-import { DeleteOutlined } from '@ant-design/icons';
 
 const cardStyle = {
   height: '100%',
@@ -30,10 +29,6 @@ const cardTimeStyle = {
   color: '#999',
   display: 'flex',
 }
-const cardActionStyle = {
-  position: 'relative',
-  textAlign: 'center',
-}
 
 export default function ProjectCard({ record, country: allCountries }) {
   const dataroomId = record.id
@@ -44,7 +39,6 @@ export default function ProjectCard({ record, country: allCountries }) {
   const dataroomTime = record.publishDate && record.publishDate.slice(0, 16).replace('T', ' ');
 
   function handleCloseDateRoom() {}
-  function deleteDataRoom() {}
 
   function projectArea(record) {
     const country = record.country
@@ -85,14 +79,6 @@ export default function ProjectCard({ record, country: allCountries }) {
         <div style={cardTimeStyle}>地区：{projectArea(record)}</div>
         <div style={cardTimeStyle}>拟交易规模：{transactionAmount(record)}</div>
         <Progress percent={50} size="small" strokeColor="#339bd2" />
-        {/* <div style={cardActionStyle}>
-          <Button onClick={handleCloseDateRoom(record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
-          {hasPerm('dataroom.admin_deletedataroom') ?
-            <Popconfirm title={i18n("delete_confirm")} onConfirm={deleteDataRoom(record)}>
-              <DeleteOutlined />
-            </Popconfirm>
-            : null}
-        </div> */}
       </div>
 
       <Link to={dataroomUrl}>
@@ -102,7 +88,7 @@ export default function ProjectCard({ record, country: allCountries }) {
       {record.isClose ?
         <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .5)', textAlign: 'center', paddingTop: 270 }}>
           <Button
-            onClick={this.handleCloseDateRoom.bind(this, record)}
+            onClick={handleCloseDateRoom(record)}
             size="large"
             disabled={!hasPerm('dataroom.admin_closedataroom')}
             style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#237ccc' }}>
