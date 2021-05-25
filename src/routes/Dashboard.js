@@ -6,6 +6,9 @@ import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
 import { connect } from 'dva';
 import ProjectBdTable from '../components/ProjectBdTable';
+import {
+  FilePdfFilled,
+} from '@ant-design/icons';
 
 function Dashboard(props) {
 
@@ -83,8 +86,18 @@ function Dashboard(props) {
               {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
             </Card>
 
-            <Card title="公司培训文件" extra={<a href="#">全部文件</a>}>
-              <div style={{ height: 73 }}>Card content</div>
+            <Card title="公司培训文件" extra={<a href="#">全部文件</a>} bodyStyle={{ padding: 0, paddingBottom: 20 }}>
+              {[1, 2, 3, 4].map(m => (
+                <a key={m} href="/app" target="_blank">
+                  <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
+                    <FilePdfFilled style={{ fontSize: 36, color: '#989898' }} />
+                    <div style={{ marginLeft: 8 }}>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>多维海拓</div>
+                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>4.3MB / PDF / 2021-04-18</div>
+                    </div>
+                  </div>
+                </a>
+              ))}
             </Card>
 
           </Col>
