@@ -4,8 +4,9 @@ import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { getUserInfo } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
+import { connect } from 'dva';
 
-export default function Dashboard(props) {
+function Dashboard(props) {
 
   const userInfo = getUserInfo();
   window.echo('user info', userInfo);
@@ -13,6 +14,8 @@ export default function Dashboard(props) {
   const [projList, setProjList] = useState([]);
 
   useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'country' });
+
     async function fetchData() {
       const params = {
         max_size: 3,
@@ -42,7 +45,9 @@ export default function Dashboard(props) {
 
       <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}><ProjectCard record={m} /></div>)}
+          {projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
+            <ProjectCard record={m} country={props.country} />
+          </div>)}
         </div>
       </Card>
 
@@ -74,3 +79,10 @@ export default function Dashboard(props) {
     </LeftRightLayoutPure>
   );
 }
+
+function mapStateToProps(state) {
+  const { country } = state.app
+  return { country };
+}
+
+export default connect(mapStateToProps)(Dashboard);

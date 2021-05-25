@@ -27,14 +27,15 @@ const cardTitleStyle = {
 const cardTimeStyle = {
   marginBottom: '8px',
   fontSize: 12, 
-  color: '#999'
+  color: '#999',
+  display: 'flex',
 }
 const cardActionStyle = {
   position: 'relative',
   textAlign: 'center',
 }
 
-export default function ProjectCard({ record }) {
+export default function ProjectCard({ record, country: allCountries }) {
   const dataroomId = record.id
   const projId = record.id
   const projTitle = record.projtitle
@@ -45,6 +46,24 @@ export default function ProjectCard({ record }) {
   function handleCloseDateRoom() {}
   function deleteDataRoom() {}
 
+  function projectArea(record) {
+    const country = record.country
+    const countryName = country ? country.country : ''
+    let imgUrl = country && country.key && country.url
+    if (country && !imgUrl) {
+      const parentCountry = allCountries.filter(f => f.id === country.parent)[0]
+      if (parentCountry && parentCountry.url) {
+        imgUrl = parentCountry.url
+      }
+    }
+    return (
+      <span style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+        { imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
+        <span>{countryName}</span>
+      </span>
+    )
+  }
+
   return (
     <Card style={cardStyle} bodyStyle={cardBodyStyle}>
 
@@ -54,7 +73,7 @@ export default function ProjectCard({ record }) {
         <div style={cardTitleStyle}>
           <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
         </div>
-        <div style={cardTimeStyle}>地区：{dataroomTime}</div>
+        <div style={cardTimeStyle}>地区：{projectArea(record)}</div>
         <div style={cardTimeStyle}>拟交易规模：{dataroomTime}</div>
         <Progress percent={50} size="small" strokeColor="#339bd2" />
         {/* <div style={cardActionStyle}>
