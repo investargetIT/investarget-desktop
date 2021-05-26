@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar } from 'antd';
 import moment from 'moment';
-import { requestAllData, getCurrentUser } from '../utils/util';
+import { requestAllData, getCurrentUser, handleError } from '../utils/util';
 import * as api from '../api';
 
 export default function MySchedule() {
@@ -27,26 +27,9 @@ export default function MySchedule() {
       100,
     ));
 
-    // try {
-    //   const result = await Promise.all(requestThreeMonthsSchedule);
-    //   let list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
-    //   let visibleEvent = false;
-    //   let event = {};
-    //   if (this.props.location.query.mid) {
-    //     const meetingId = this.props.location.query.mid;
-    //     const relatedEvent = list.filter(f => f.meeting && f.meeting.id === parseInt(meetingId, 10));
-    //     if (relatedEvent.length > 0) {
-    //       visibleEvent = true;
-    //       event = relatedEvent[0];
-    //     }
-    //   } else if (this.props.location.query.eventId) {
-    //     const eventId = this.props.location.query.eventId;
-    //     const relatedEvent = list.filter(f => f.id === parseInt(eventId, 10));
-    //     if (relatedEvent.length > 0) {
-    //       visibleEvent = true;
-    //       event = relatedEvent[0];
-    //     }
-    //   }
+    try {
+      const result = await Promise.all(requestThreeMonthsSchedule);
+      let list = result.reduce((prev, curr) => prev.concat(curr.data.data), []);
 
     //   const webexFromSchedule = list.filter(f => f.type === 4 && f.meeting);
     //   const webexScheduleMeetingKeys = webexFromSchedule.map(m => m.meeting.meetingKey);
@@ -145,13 +128,13 @@ export default function MySchedule() {
     //     console.error(error);
     //   }
 
-    //   list.sort((a, b) => {
-    //     return new Date(a.scheduledtime) - new Date(b.scheduledtime)
-    //   });
-    //   this.setState({ list, visibleEvent, event });
-    // } catch (error) {
-    //   handleError(error)
-    // }
+      list.sort((a, b) => {
+        return new Date(a.scheduledtime) - new Date(b.scheduledtime)
+      });
+      setMyScheduleList(list);
+    } catch (error) {
+      handleError(error)
+    }
 
   }
 
