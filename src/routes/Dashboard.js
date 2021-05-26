@@ -18,9 +18,21 @@ function Dashboard(props) {
   const [projList, setProjList] = useState([]);
   const [news, setNews] = useState();
   const [files, setFiles] = useState([]);
+  const [projNum, setProjNum] = useState(0);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
+
+    if (userInfo.indGroup) {
+      async function fetchProjNum() {
+        const params = {
+          indGroup: userInfo.indGroup.id,
+        }
+        const req = await api.getProjBDList(params);
+        setProjNum(req.data.count);
+      }
+      fetchProjNum();
+    }
 
     async function fetchData() {
       const params = {
@@ -75,7 +87,7 @@ function Dashboard(props) {
         <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo.photourl} />
         <div style={{ marginLeft: 20 }}>
           <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo.username} 祝您开心每一天！</div>
-          {userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 15</div>}
+          {userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 {projNum}</div>}
         </div>
       </div>
 
