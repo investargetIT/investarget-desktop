@@ -48,7 +48,6 @@ function Dashboard(props) {
 
     async function fetchCompanyFile() {
       const reqComDataroom = await api.getCompanyDataRoom();
-      window.echo('com dataroom', reqComDataroom);
       const { count, data: companyDataroom } = reqComDataroom.data;
       if (count == 0) return;
       const dataroomId = companyDataroom[0].id;
@@ -58,7 +57,6 @@ function Dashboard(props) {
         page_size: 4, // not working
       }
       const reqComFile = await api.queryDataRoomFile(params);
-      window.echo('req com file', reqComFile);
       setFiles(reqComFile.data.data.slice(0, 4))
     }
     fetchCompanyFile();
