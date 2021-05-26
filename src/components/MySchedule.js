@@ -3,6 +3,7 @@ import { Calendar } from 'antd';
 import moment from 'moment';
 import { requestAllData, getCurrentUser, handleError } from '../utils/util';
 import * as api from '../api';
+// import styles from '../router/Schedule';
 
 export default function MySchedule() {
 
@@ -20,6 +21,10 @@ export default function MySchedule() {
       getEvents();
     }
   }, [calendarMode, selectedDate]);
+
+  useEffect(() => {
+    // window.echo('my schedule list', myScheduleList);
+  }, [myScheduleList]);
 
   function onPanelChange(date, mode) {
     setSelectedDate(date);
@@ -166,7 +171,7 @@ export default function MySchedule() {
           listData.map(item => (
             <li
               style={{ lineHeight: '20px' }}
-              className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
+              // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
               key={`${item.type}-${item.id}`}
               // onClick={this.handleClickEvent.bind(this, item)}
             >
@@ -192,7 +197,7 @@ export default function MySchedule() {
               } */}
 
               {/* Others */}
-              {/* {item.type !== 4 && item.type !== 7 && item.comments} */}
+              {item.type !== 4 && item.type !== 7 && item.comments}
             </li>
           ))
         }
