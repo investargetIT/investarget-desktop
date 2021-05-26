@@ -1,5 +1,10 @@
 import React from 'react';
+import { Calendar } from 'antd';
 
 export default function MySchedule() {
-  return <h1>My Schedule</h1>;
+  return (
+    <div>
+      <Calendar />
+    </div>
+  );
 }
