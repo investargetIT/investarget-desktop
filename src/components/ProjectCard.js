@@ -51,9 +51,6 @@ export default function ProjectCard({ record, country: allCountries }) {
   const projTitle = record.projtitle
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
-  const dataroomTime = record.publishDate && record.publishDate.slice(0, 16).replace('T', ' ');
-
-  function handleCloseDateRoom() {}
 
   function projectArea(record) {
     const country = record.country
@@ -98,30 +95,15 @@ export default function ProjectCard({ record, country: allCountries }) {
 
 
       <div style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-
-        <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+        <Link to={`/app/org/bd?projId=${projId}`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
           <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
           <div>机构BD</div>
         </Link>
-
         <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
           <div style={cardIconBgStyle}><LockFilled style={{ fontSize: 32 }} /></div>
           <div>Data Room</div>
         </Link>
-
       </div>
-
-      {record.isClose ?
-        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .5)', textAlign: 'center', paddingTop: 270 }}>
-          <Button
-            onClick={handleCloseDateRoom(record)}
-            size="large"
-            disabled={!hasPerm('dataroom.admin_closedataroom')}
-            style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#237ccc' }}>
-            {record.isClose ? i18n('common.open') : i18n('common.close')}
-          </Button>
-        </div>
-        : null}
 
     </Card>
   )
