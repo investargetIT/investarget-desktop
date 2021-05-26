@@ -1,6 +1,10 @@
 import { Card, Button, Progress } from 'antd';
 import { Link } from 'dva/router';
 import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
+import {
+  FolderFilled,
+  LockFilled,
+} from '@ant-design/icons';
 
 const cardStyle = {
   height: '100%',
@@ -28,6 +32,17 @@ const cardTimeStyle = {
   fontSize: 12, 
   color: '#999',
   display: 'flex',
+}
+const cardIconBgStyle = {
+  width: 80,
+  height: 80,
+  margin: '0 auto',
+  marginBottom: 8,
+  backgroundColor: 'rgba(255, 255, 255, .3)',
+  borderRadius: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 }
 
 export default function ProjectCard({ record, country: allCountries }) {
@@ -81,9 +96,20 @@ export default function ProjectCard({ record, country: allCountries }) {
         <Progress percent={50} size="small" strokeColor="#339bd2" />
       </div>
 
-      <Link to={dataroomUrl}>
-        <div className="dataroom-cell-banner-bg" style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 200 }} />
-      </Link>
+
+      <div style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+        <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+          <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
+          <div>机构BD</div>
+        </Link>
+
+        <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+          <div style={cardIconBgStyle}><LockFilled style={{ fontSize: 32 }} /></div>
+          <div>Data Room</div>
+        </Link>
+
+      </div>
 
       {record.isClose ?
         <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .5)', textAlign: 'center', paddingTop: 270 }}>
