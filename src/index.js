@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import { addLocaleData, IntlProvider } from 'react-intl'
-import { LocaleProvider } from 'antd'
+import { ConfigProvider } from 'antd';
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import dva from 'dva';
 import createHistory from 'history/createBrowserHistory';
 import { state } from './models/app';
@@ -73,13 +74,13 @@ app.router(require('./router'));
 const App = app.start();
 
 ReactDOM.render(
-  (<LocaleProvider locale={appLocale.antd}>
+  (<ConfigProvider locale={zh_CN}>
     <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
       <div>
         <GlobalModal />
         <App />
       </div>
     </IntlProvider>
-  </LocaleProvider>),
+  </ConfigProvider>),
   document.getElementById('root')
 )
