@@ -5,6 +5,7 @@ import { getUserInfo, i18n } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 import ProjectBdTable from '../components/ProjectBdTable';
 import {
   FilePdfFilled,
@@ -91,7 +92,7 @@ function Dashboard(props) {
         </div>
       </div>
 
-      <Card title="进行中的项目" extra={<a href="#">全部项目</a>}>
+      <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
             <ProjectCard record={m} country={props.country} />
