@@ -8,10 +8,23 @@ export default function MySchedule() {
 
   const [myScheduleList, setMyScheduleList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [calendarMode, setCalendarMode] = useState('month');
 
   useEffect(() => {
     getEvents();
   }, []);
+
+  useEffect(() => {
+    // 只在月历模式下请求数据
+    if (calendarMode == 'month') {
+      getEvents();
+    }
+  }, [calendarMode, selectedDate]);
+
+  function onPanelChange(date, mode) {
+    setSelectedDate(date);
+    setCalendarMode(mode);
+  }
 
   async function getEvents() {
     // 加载前后三个月的日程
@@ -190,7 +203,7 @@ export default function MySchedule() {
   return (
     <Calendar
       dateCellRender={dateCellRender}
-      // onPanelChange={this.onPanelChange}
+      onPanelChange={onPanelChange}
       // onSelect={this.onSelect}
       // value={selectedDate}
     />
