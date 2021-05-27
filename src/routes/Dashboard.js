@@ -16,6 +16,13 @@ import { Link } from 'dva/router';
 import ProjectBdTable from '../components/ProjectBdTable';
 import {
   FilePdfFilled,
+  FileWordFilled,
+  FileFilled,
+  FileImageFilled,
+  FilePptFilled,
+  FileExcelFilled,
+  AudioFilled,
+  VideoCameraFilled,
 } from '@ant-design/icons';
 import MySchedule from '../components/MySchedule';
 
@@ -117,12 +124,32 @@ function Dashboard(props) {
         desc: 1, // not working
       }
       const reqComFile = await api.queryDataRoomFile(params);
-      window.echo('company file', reqComFile);
       setFiles(reqComFile.data.data.slice(0, 4))
     }
     fetchCompanyFile();
 
   }, []);
+
+  function getFileIconByType(fileType) {
+    switch (fileType) {
+      case 'PDF':
+        return <FilePdfFilled style={{ fontSize: 36, color: '#989898' }} />;
+      case 'IMAGE':
+        return <FileImageFilled style={{ fontSize: 36, color: '#989898' }} />;
+      case 'WORD':
+        return <FileWordFilled style={{ fontSize: 36, color: '#989898' }} />;
+      case 'PPT':
+        return <FilePptFilled style={{ fontSize: 36, color: '#989898' }} />;
+      case 'EXCEL':
+        return <FileExcelFilled style={{ fontSize: 36, color: '#989898' }} />;
+      case 'VIDEO':
+        return <VideoCameraFilled style={{ fontSize: 36, color: '#989898' }} />; 
+      case 'AUDIO':
+        return <AudioFilled style={{ fontSize: 36, color: '#989898' }} />;
+      default:
+        return <FileFilled style={{ fontSize: 36, color: '#989898' }} />;
+    }
+  }
 
   return (
     <LeftRightLayoutPure location={props.location}>
@@ -168,7 +195,7 @@ function Dashboard(props) {
               {files.map(m => (
                 <a key={m.id} href="/app" target="_blank">
                   <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
-                    <FilePdfFilled style={{ fontSize: 36, color: '#989898' }} />
+                    {getFileIconByType(getFileTypeByName(m.filename))} 
                     <div style={{ marginLeft: 8 }}>
                       <Tooltip title={getFilenameWithoutExt(m.filename)}>
                         <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>

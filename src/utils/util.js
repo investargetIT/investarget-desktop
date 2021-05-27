@@ -530,7 +530,7 @@ function getFileTypeByName(filename) {
   if (/\.(mp3|m4a)$/i.test(filename)) {
     return 'AUDIO';
   }
-  return 'UNKNOW';
+  return 'FILE';
 }
 
 export {
