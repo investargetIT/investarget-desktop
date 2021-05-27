@@ -166,11 +166,13 @@ export default function MySchedule() {
   function dateCellRender(value) {
     const listData = getListData(value);
     const isToday = value.isSame(moment(), 'day');
+    const isFirstDayOfMonth = value.date() == 1;
     return (
       <div style={{ height: 120 }}>
         <div className="my-calendar__date-header">
           {isToday && <div className={`my-calendar__date-header__value${isToday ? ' my-calendar__date-header__value-active' : ''}`}>{value.date()}</div>}
-          {!isToday && <div>{value.date()}</div>}
+          {isFirstDayOfMonth && <div>{`${value.month()+1}月1`}</div>}
+          {!isToday && !isFirstDayOfMonth && <div>{value.date()}</div>}
           <div>日</div>
         </div>
         <ul className="events">
