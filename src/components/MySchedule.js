@@ -169,6 +169,7 @@ export default function MySchedule() {
     const isFirstDayOfMonth = value.date() == 1;
     return (
       <div className="my-calendar__date">
+
         <div className="my-calendar__date-header">
           {isFirstDayOfMonth && <div>{`${value.month()+1}月`}</div>}
           {
@@ -179,11 +180,12 @@ export default function MySchedule() {
           }
           <div>日</div>
         </div>
-        <ul className="events">
+
+        <div className="my-calendar__date-content">
           {
             listData.map(item => (
-              <li
-                style={{ lineHeight: '20px' }}
+              <div
+                className="my-calendar__date-event"
                 // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
                 key={`${item.type}-${item.id}`}
               // onClick={this.handleClickEvent.bind(this, item)}
@@ -211,10 +213,11 @@ export default function MySchedule() {
 
                 {/* Others */}
                 {item.type !== 4 && item.type !== 7 && item.comments}
-              </li>
+              </div>
             ))
           }
-        </ul>
+        </div>
+
       </div>
     );
   }

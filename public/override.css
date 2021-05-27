@@ -471,6 +471,7 @@ label.login-register-form__container__label {
 }
 .my-calendar__date {
   height: 120px;
+  overflow: scroll;
 }
 .my-calendar__date:hover {
   background-color: #f5f5f5;;
@@ -491,4 +492,16 @@ label.login-register-form__container__label {
 .my-calendar__date-header__value-active {
   background-color: #339bd2;
   color: white;
+}
+.my-calendar__date-content {
+  text-align: left;
+  padding: 4px;
+}
+.my-calendar__date-event {
+  margin-bottom: 2px;
+  background-color: #bfbfbf;
+  border-radius: 4px;
+  padding: 0 8px;
+  line-height: 20px;
+  font-size: 12px;
 }
