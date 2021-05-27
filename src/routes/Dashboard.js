@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -168,9 +168,11 @@ function Dashboard(props) {
                   <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
                     <FilePdfFilled style={{ fontSize: 36, color: '#989898' }} />
                     <div style={{ marginLeft: 8 }}>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>
-                        {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
-                      </div>
+                      <Tooltip title={getFilenameWithoutExt(m.filename)}>
+                        <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>
+                          {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
+                        </div>
+                      </Tooltip>
                       <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>4.3MB / PDF / {m.createdtime.slice(0, 10)}</div>
                     </div>
                   </div>
