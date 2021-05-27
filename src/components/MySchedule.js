@@ -168,7 +168,7 @@ export default function MySchedule() {
     const isToday = value.isSame(moment(), 'day');
     const isFirstDayOfMonth = value.date() == 1;
     return (
-      <div style={{ height: 120 }}>
+      <div className="my-calendar__date">
         <div className="my-calendar__date-header">
           {isFirstDayOfMonth && <div>{`${value.month()+1}月`}</div>}
           {

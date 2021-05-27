@@ -463,6 +463,18 @@ label.login-register-form__container__label {
 .my-calendar tbody, .my-calendar td {
   border: 1px solid #e6e6e6;
 }
+.my-calendar .ant-picker-cell-selected .my-calendar__date {
+  background-color: #f0f6fb;
+}
+.my-calendar .ant-picker-cell-selected .my-calendar__date .my-calendar__date-header {
+  color: #339bd2;
+}
+.my-calendar__date {
+  height: 120px;
+}
+.my-calendar__date:hover {
+  background-color: #f5f5f5;;
+}
 .my-calendar__date-header {
   display: flex;
   justify-content: flex-end;
