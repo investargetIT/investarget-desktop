@@ -502,4 +502,13 @@ function trimTextIfExceedMaximumCount(text, count) {
   return text.slice(0, count) + '...';
 }
 
-export { trimTextIfExceedMaximumCount };
+function getFilenameWithoutExt(filename) {
+  const splitFilename = filename.split('.');
+  splitFilename.splice(splitFilename.length - 1, 1);
+  return splitFilename.join('.');
+}
+
+export {
+  trimTextIfExceedMaximumCount,
+  getFilenameWithoutExt,
+};
