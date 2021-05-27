@@ -104,7 +104,7 @@ export default function ProjectCard({ record, country: allCountries }) {
         </div>
         <div style={cardTimeStyle}>地区：{projectArea(record)}</div>
         <div style={cardTimeStyle}>拟交易规模：{transactionAmount(record)}</div>
-        <Progress percent={50} size="small" strokeColor="#339bd2" />
+        <Progress percent={record.percentage} size="small" strokeColor="#339bd2" />
       </div>
 
       {displayHoverContent &&

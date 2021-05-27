@@ -23,7 +23,6 @@ function Dashboard(props) {
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
-    // props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
 
     if (userInfo.indGroup) {
       async function fetchProjNum() {
@@ -48,6 +47,39 @@ function Dashboard(props) {
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
       setProjList(projList);
+
+      const reqBdRes = await api.getSource('orgbdres');
+      const { data: orgBDResList } = reqBdRes;
+      const projPercentage = [];
+      for (let index = 0; index < projList.length; index++) {
+        const element = projList[index];
+        const paramsForPercentage = { proj: element.id };
+        const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
+        let { response_count: resCount } = projPercentageCount.data;
+        resCount = resCount.map(m => {
+          const relatedRes = orgBDResList.filter(f => f.id === m.response);
+          let resIndex = 0;
+          if (relatedRes.length > 0) {
+            resIndex = relatedRes[0].sort;
+          }
+          return { ...m, resIndex };
+        });
+        const maxRes = Math.max(...resCount.map(m => m.resIndex));
+        let percentage = 0;
+        if (maxRes > 3) {
+          // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
+          percentage = Math.round((maxRes - 3) / 11 * 100);
+        }
+        projPercentage.push({ id: element.id, percentage });
+      }
+      setProjList(projList.map(m => {
+        const percentageList = projPercentage.filter(f => f.id === m.id);
+        if (percentageList.length > 0) {
+          return { ...m, percentage: percentageList[0].percentage };
+        }
+        return { ...m, percentage: 0 };
+      }));
+      
     }
     fetchData();
 
