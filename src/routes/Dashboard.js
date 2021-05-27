@@ -37,9 +37,13 @@ function Dashboard(props) {
     }
 
     async function fetchData() {
+      const reqProjStatus = await api.getSource('projstatus');
+      const { data: statusList } = reqProjStatus;
+      const ongoingStatus = statusList.filter(f => ['终审发布', '交易中', 'Published', 'Contacting'].includes(f.name));
+
       const params = {
         max_size: 3,
-        skip_count: 8,
+        projstatus: ongoingStatus.map(m => m.id),
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
