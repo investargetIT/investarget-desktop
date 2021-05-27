@@ -169,7 +169,8 @@ export default function MySchedule() {
     return (
       <div style={{ height: 120 }}>
         <div className="my-calendar__date-header">
-          <div className={`my-calendar__date-header__value${isToday ? ' my-calendar__date-header__value-active' : ''}`}>{value.date()}</div>
+          {isToday && <div className={`my-calendar__date-header__value${isToday ? ' my-calendar__date-header__value-active' : ''}`}>{value.date()}</div>}
+          {!isToday && <div>{value.date()}</div>}
           <div>日</div>
         </div>
         <ul className="events">
