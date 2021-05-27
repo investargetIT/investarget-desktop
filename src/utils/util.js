@@ -508,7 +508,33 @@ function getFilenameWithoutExt(filename) {
   return splitFilename.join('.');
 }
 
+function getFileTypeByName(filename) {
+  if (/\.(pdf)$/i.test(filename)) {
+    return 'PDF';
+  }
+  if (/\.(gif|jpg|jpeg|bmp|png|webp)$/i.test(filename)) {
+    return 'IMAGE';
+  }
+  if (/\.(doc|docx)$/i.test(filename)) {
+    return 'WORD';
+  }
+  if (/\.(ppt|pptx)$/i.test(filename)) {
+    return 'PPT';
+  }
+  if (/\.(xls|xlsx)$/i.test(filename)) {
+    return 'EXCEL';
+  }
+  if (/\.(mp4|avi)$/i.test(filename)) {
+    return 'VIDEO';
+  }
+  if (/\.(mp3|m4a)$/i.test(filename)) {
+    return 'AUDIO';
+  }
+  return 'UNKNOW';
+}
+
 export {
   trimTextIfExceedMaximumCount,
   getFilenameWithoutExt,
+  getFileTypeByName,
 };
