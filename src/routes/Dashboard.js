@@ -6,6 +6,7 @@ import {
   i18n,
   trimTextIfExceedMaximumCount,
   getFilenameWithoutExt,
+  formatBytes,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -115,7 +116,7 @@ function Dashboard(props) {
         desc: 1, // not working
       }
       const reqComFile = await api.queryDataRoomFile(params);
-      // window.echo('company file', reqComFile);
+      window.echo('company file', reqComFile);
       setFiles(reqComFile.data.data.slice(0, 4))
     }
     fetchCompanyFile();
@@ -173,7 +174,7 @@ function Dashboard(props) {
                           {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
                         </div>
                       </Tooltip>
-                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>4.3MB / PDF / {m.createdtime.slice(0, 10)}</div>
+                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>{formatBytes(m.size)} / PDF / {m.createdtime.slice(0, 10)}</div>
                     </div>
                   </div>
                 </a>
