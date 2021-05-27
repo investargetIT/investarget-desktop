@@ -166,18 +166,20 @@ export default function MySchedule() {
   function dateCellRender(value) {
     const listData = getListData(value);
     return (
-      <ul className="events">
-        {
-          listData.map(item => (
-            <li
-              style={{ lineHeight: '20px' }}
-              // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
-              key={`${item.type}-${item.id}`}
+      <div style={{ height: 120 }}>
+        <div>{`${value.date()}日`}</div>
+        <ul className="events">
+          {
+            listData.map(item => (
+              <li
+                style={{ lineHeight: '20px' }}
+                // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
+                key={`${item.type}-${item.id}`}
               // onClick={this.handleClickEvent.bind(this, item)}
-            >
+              >
 
-              {/* Webex */}
-              {/* {item.type === 4 &&
+                {/* Webex */}
+                {/* {item.type === 4 &&
                 <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
                   <span>
                     <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
@@ -186,8 +188,8 @@ export default function MySchedule() {
                 </Popover>
               } */}
 
-              {/* Zoom */}
-              {/* {item.type === 7 &&
+                {/* Zoom */}
+                {/* {item.type === 7 &&
                 <Popover title="Zoom视频会议" content={this.getZoomPopoverContent(item)}>
                   <span>
                     <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
@@ -196,18 +198,20 @@ export default function MySchedule() {
                 </Popover>
               } */}
 
-              {/* Others */}
-              {item.type !== 4 && item.type !== 7 && item.comments}
-            </li>
-          ))
-        }
-      </ul>
+                {/* Others */}
+                {item.type !== 4 && item.type !== 7 && item.comments}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     );
   }
 
   return (
     <Calendar
-      dateCellRender={dateCellRender}
+      className="my-calendar"
+      dateFullCellRender={dateCellRender}
       onPanelChange={onPanelChange}
       // onSelect={this.onSelect}
       // value={selectedDate}

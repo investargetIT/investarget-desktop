@@ -456,3 +456,10 @@ label.login-register-form__container__label {
 .ant-menu-submenu-hidden {
   display: none;
 }
+
+/**
+ * My schedule calendar customized styles
+ */
+.my-calendar > table, td {
+  border: 1px solid #e6e6e6;
+}
