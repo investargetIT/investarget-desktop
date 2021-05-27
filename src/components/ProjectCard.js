@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Card, Button, Progress } from 'antd';
 import { Link } from 'dva/router';
 import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
@@ -19,7 +20,7 @@ const cardImageStyle = {
   height: '200px',
   backgroundSize: 'cover',
   backgroundPosition: 'center center',
-  cursor: 'pointer',
+  // cursor: 'pointer',
 }
 const cardTitleStyle = {
   fontSize: '15px',
@@ -52,6 +53,8 @@ export default function ProjectCard({ record, country: allCountries }) {
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 
+  const [displayHoverContent, setDisplayHoverContent] = useState(false);
+
   function projectArea(record) {
     const country = record.country
     const countryName = country ? country.country : ''
@@ -79,10 +82,21 @@ export default function ProjectCard({ record, country: allCountries }) {
     }
   }
 
+  function handleMouseEnter() {
+    setDisplayHoverContent(true);
+  }
+
+  function handleMouseLeave() {
+    setDisplayHoverContent(false);
+  }
+
   return (
     <Card style={cardStyle} bodyStyle={cardBodyStyle}>
 
-      <div style={{ ...cardImageStyle, backgroundImage: `url(${imgUrl})` }}></div>
+      <div
+        style={{ ...cardImageStyle, backgroundImage: `url(${imgUrl})` }}
+        onMouseEnter={handleMouseEnter}
+      />
 
       <div style={{ padding: '16px' }}>
         <div style={cardTitleStyle}>
@@ -93,17 +107,18 @@ export default function ProjectCard({ record, country: allCountries }) {
         <Progress percent={50} size="small" strokeColor="#339bd2" />
       </div>
 
-
-      <div style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Link to={`/app/org/bd?projId=${projId}`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
-          <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
-          <div>机构BD</div>
-        </Link>
-        <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
-          <div style={cardIconBgStyle}><LockFilled style={{ fontSize: 32 }} /></div>
-          <div>Data Room</div>
-        </Link>
-      </div>
+      {displayHoverContent &&
+        <div onMouseLeave={handleMouseLeave} style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Link to={`/app/org/bd?projId=${projId}`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+            <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
+            <div>机构BD</div>
+          </Link>
+          <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+            <div style={cardIconBgStyle}><LockFilled style={{ fontSize: 32 }} /></div>
+            <div>Data Room</div>
+          </Link>
+        </div>
+      }
 
     </Card>
   )
