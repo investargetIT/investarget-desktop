@@ -463,3 +463,20 @@ label.login-register-form__container__label {
 .my-calendar > table, td {
   border: 1px solid #e6e6e6;
 }
+.my-calendar__date-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.my-calendar__date-header__value {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.my-calendar__date-header__value-active {
+  background-color: #339bd2;
+  color: white;
+}

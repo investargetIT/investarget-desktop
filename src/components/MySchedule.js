@@ -165,9 +165,13 @@ export default function MySchedule() {
 
   function dateCellRender(value) {
     const listData = getListData(value);
+    const isToday = value.isSame(moment(), 'day');
     return (
       <div style={{ height: 120 }}>
-        <div>{`${value.date()}日`}</div>
+        <div className="my-calendar__date-header">
+          <div className={`my-calendar__date-header__value${isToday ? ' my-calendar__date-header__value-active' : ''}`}>{value.date()}</div>
+          <div>日</div>
+        </div>
         <ul className="events">
           {
             listData.map(item => (
