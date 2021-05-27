@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { i18n } from '../utils/util';
-import { Table } from 'antd';
+import { Table, Popover } from 'antd';
 
 export default function() {
 
@@ -18,12 +18,47 @@ export default function() {
     fetchData();
   }, []);
 
+  function showPhoneNumber(item) {
+    const { usermobile } = item;
+    if (!usermobile) return '暂无';
+    const { bduser } = item;
+    if (bduser || usermobile.startsWith('+')) return usermobile;
+    return `+${usermobile}`;
+  }
+
   const columns = [
     {
       title: i18n('project_bd.project_name'),
       dataIndex: 'com_name',
       key: 'com_name',
-      render: text => <span style={{ color: '#339bd2' }}>{text}</span>
+      render: (text, record) => (
+        <div style={{ position: 'relative' }}>
+          {record.isimportant ? <img style={{ position: 'absolute', height: '10px', width: '10px', marginTop: '-5px', marginLeft: '-5px' }} src="/images/important.png" /> : null}
+          {record.source_type === 0 ?
+            <Popover title="项目方联系方式" content={
+              <div>
+                <div>{`姓名：${record.username || '暂无'}`}</div>
+                <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
+                <div>{`电话：${showPhoneNumber(record)}`}</div>
+                <div>{`邮箱：${record.useremail || '暂无'}`}</div>
+              </div>
+            }>
+              <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)} style={{ color: '#339bd2' }}>{text}</a>
+            </Popover>
+            :
+            <Popover title="项目方联系方式" content={
+              <div>
+                <div>{`姓名：${record.username || '暂无'}`}</div>
+                <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
+                <div>{`电话：${showPhoneNumber(record)}`}</div>
+                <div>{`邮箱：${record.useremail || '暂无'}`}</div>
+              </div>
+            }>
+              <div style={{ color: "#339bd2" }}>{text}</div>
+            </Popover>
+          }
+        </div>
+      ),
     },
     {
       title: i18n('project_bd.status'),
