@@ -494,3 +494,12 @@ export const requestAllData = async (request, params, page_size) => {
   const secondRes = await request({ ...params, page_size: count });
   return secondRes;
 }
+
+function trimTextIfExceedMaximumCount(text, count) {
+  if (text.length < count) {
+    return text;
+  }
+  return text.slice(0, count) + '...';
+}
+
+export { trimTextIfExceedMaximumCount };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb, Card, Row, Col } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
-import { getUserInfo, i18n } from '../utils/util';
+import { getUserInfo, i18n, trimTextIfExceedMaximumCount } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
 import { connect } from 'dva';
@@ -87,12 +87,13 @@ function Dashboard(props) {
       const reqNews = await api.getWxMsg({ isShow: true });
       if (reqNews.data.count > 0) {
         setNews(reqNews.data.data[0]);
-      } else {
-        setNews({
-          createtime: '2018-06-26T17:18:24.086778',
-          content: '兴旺投资创始合伙人黎媛菲：主要看消费、教育和科技。消费主要是包装食品、宠物、互联网餐饮、内衣、直播电商等新消费新零售赛道都很积极。科技主要是5G 半导体，大数据云计算、工业互联网。',
-        });
       }
+      // else {
+      //   setNews({
+      //     createtime: '2018-06-26T17:18:24.086778',
+      //     content: '妈妈负责辅导作业，妈妈负责做饭，妈妈负责洗衣，妈妈负责陪玩游戏……爸爸负责拉票！[呲牙][呲牙]儿子的画虽然一般，但他把名字取得挺用心、挺有诗意的，值得老爸我为他拉上一票！[偷笑][调皮]恳请各位爸爸妈妈们支持一下：1号《心中的太阳永不落》陆镜亦[合十][合十][抱拳][抱拳]一句话：做父母，太不容易了！[呲牙][呲牙]。妈妈负责辅导作业，妈妈负责做饭，妈妈负责洗衣，妈妈负责陪玩游戏……爸爸负责拉票！[呲牙][呲牙]儿子的画虽然一般，但他把名字取得挺用心、挺有诗意的，值得老爸我为他拉上一票！[偷笑][调皮]恳请各位爸爸妈妈们支持一下：1号《心中的太阳永不落》陆镜亦[合十][合十][抱拳][抱拳]一句话：做父母，太不容易了！[呲牙][呲牙]',
+      //   });
+      // }
     }
     fetchNewsData();
 
@@ -149,7 +150,7 @@ function Dashboard(props) {
           <Col span={8}>
 
             <Card title="市场消息" style={{ marginBottom: 20, fontSize: 14, lineHeight: '22px' }} extra={<a href="#">查看更多</a>}>
-              <div style={{ color: '#262626' }}>{news ? news.content : i18n('no_news')}</div>
+              <div style={{ color: '#262626' }}>{news ? trimTextIfExceedMaximumCount(news.content, 100) : i18n('no_news')}</div>
               {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
             </Card>
 
