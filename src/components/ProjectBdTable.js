@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { i18n, timeWithoutHour } from '../utils/util';
+import { i18n } from '../utils/util';
 import { Table } from 'antd';
 
 export default function() {
@@ -23,11 +23,13 @@ export default function() {
       title: i18n('project_bd.project_name'),
       dataIndex: 'com_name',
       key: 'com_name',
+      render: text => <span style={{ color: '#339bd2' }}>{text}</span>
     },
     {
       title: i18n('project_bd.status'),
       dataIndex: ['bd_status', 'name'],
       key: 'bd_status',
+      render: text => <span style={{ color: '#595959' }}>{text}</span>
     },
     {
       title: i18n('project_bd.manager'),
@@ -41,15 +43,17 @@ export default function() {
         if (normal) {
           allManagers = allManagers.concat(normal.map(m => m.manager.username));
         }
-        return allManagers.join('、');
+        return <span style={{ color: '#595959' }}>{allManagers.join('、')}</span>;
       },
     },
     {
       title: i18n('project_bd.created_time'),
       key: 'createdtime',
-      render: (_, record) => {
-        return timeWithoutHour(record.createdtime + record.timezone)
-      }
+      render: (_, record) => (
+        <span style={{ color: '#595959' }}>
+          {record.createdtime.slice(0, 10)}
+        </span>
+      ),
     },
   ];
 
