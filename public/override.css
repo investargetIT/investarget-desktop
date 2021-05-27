@@ -460,7 +460,7 @@ label.login-register-form__container__label {
 /**
  * My schedule calendar customized styles
  */
-.my-calendar > table, td {
+.my-calendar tbody, .my-calendar td {
   border: 1px solid #e6e6e6;
 }
 .my-calendar__date-header {
