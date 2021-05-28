@@ -223,12 +223,25 @@ export default function MySchedule() {
   }
 
   return (
-    <Calendar
-      className="my-calendar"
-      dateFullCellRender={dateCellRender}
-      onPanelChange={onPanelChange}
+    <div>
+      <Calendar
+        className="my-calendar"
+        dateFullCellRender={dateCellRender}
+        onPanelChange={onPanelChange}
       // onSelect={this.onSelect}
       // value={selectedDate}
-    />
+      />
+      <div style={{ display: 'flex', fontSize: 14, lineHeight: '20px', color: '#262626', marginTop: 40 }}>
+        <div>会议类型：</div>
+        <div className="my-calendar-tag" style={{ backgroundColor: '#bfbfbf', marginLeft: 4 }}></div>
+        <div style={{ marginLeft: 5 }}>周期性会议</div>
+        <div className="my-calendar-tag" style={{ backgroundColor: '#339bd2' }}></div>
+        <div style={{ marginLeft: 5 }}>约见投资人</div>
+        <div className="my-calendar-tag" style={{ backgroundColor: '#7db32a' }}></div>
+        <div style={{ marginLeft: 5 }}>约见公司</div>
+        <div className="my-calendar-tag" style={{ backgroundColor: '#e6b217' }}></div>
+        <div style={{ marginLeft: 5 }}>路演会议</div> 
+      </div>
+    </div>
   );
 }
