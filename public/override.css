@@ -505,6 +505,15 @@ label.login-register-form__container__label {
   line-height: 20px;
   font-size: 12px;
 }
+.my-calendar__date-event-1 {
+  background-color: #e6b217;
+}
+.my-calendar__date-event-2 {
+  background-color: #7bd32a;
+}
+.my-calendar__date-event-3 {
+  background-color: #339bd2;
+}
 .my-calendar-tag {
   margin-left: 16px;
   width: 20px;

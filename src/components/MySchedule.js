@@ -185,7 +185,7 @@ export default function MySchedule() {
           {
             listData.map(item => (
               <div
-                className="my-calendar__date-event"
+                className={`my-calendar__date-event${item.type ? ` my-calendar__date-event-${item.type}` : ''}`}
                 // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
                 key={`${item.type}-${item.id}`}
               // onClick={this.handleClickEvent.bind(this, item)}
