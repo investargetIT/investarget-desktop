@@ -520,3 +520,6 @@ label.login-register-form__container__label {
   height: 20px;
   border-radius: 4px;
 }
+.my-calendar .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+  padding-right: 38px;
+}

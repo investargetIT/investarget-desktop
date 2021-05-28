@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, Select, Typography, Row, Col, Radio } from 'antd';
+import { Calendar, Select, Radio } from 'antd';
 import moment from 'moment';
 import { requestAllData, getCurrentUser, handleError } from '../utils/util';
 import * as api from '../api';
@@ -265,44 +265,42 @@ export default function MySchedule() {
       );
     }
     return (
-      <div style={{ padding: 8 }}>
-        <Typography.Title level={4}>Custom header</Typography.Title>
-        <Row gutter={8}>
-          <Col>
-            <Radio.Group size="small" onChange={e => onTypeChange(e.target.value)} value={type}>
-              <Radio.Button value="month">Month</Radio.Button>
-              <Radio.Button value="year">Year</Radio.Button>
-            </Radio.Group>
-          </Col>
-          <Col>
-            <Select
-              size="small"
-              dropdownMatchSelectWidth={false}
-              className="my-year-select"
-              onChange={newYear => {
-                const now = value.clone().year(newYear);
-                onChange(now);
-              }}
-              value={String(year)}
-            >
-              {options}
-            </Select>
-          </Col>
-          <Col>
-            <Select
-              size="small"
-              dropdownMatchSelectWidth={false}
-              value={String(month)}
-              onChange={selectedMonth => {
-                const newValue = value.clone();
-                newValue.month(parseInt(selectedMonth, 10));
-                onChange(newValue);
-              }}
-            >
-              {monthOptions}
-            </Select>
-          </Col>
-        </Row>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+        <div>
+          <Select
+            size="large"
+            dropdownMatchSelectWidth={false}
+            className="my-year-select"
+            onChange={newYear => {
+              const now = value.clone().year(newYear);
+              onChange(now);
+            }}
+            value={String(year)}
+          >
+            {options}
+          </Select>
+
+          <Select
+            size="large"
+            style={{ marginLeft: 10 }}
+            dropdownMatchSelectWidth={false}
+            value={String(month)}
+            onChange={selectedMonth => {
+              const newValue = value.clone();
+              newValue.month(parseInt(selectedMonth, 10));
+              onChange(newValue);
+            }}
+          >
+            {monthOptions}
+          </Select>
+        </div>
+
+        <Radio.Group onChange={e => onTypeChange(e.target.value)} value={type}>
+          <Radio.Button value="month">月</Radio.Button>
+          <Radio.Button value="year">年</Radio.Button>
+        </Radio.Group>
+
       </div>
     );
   }
