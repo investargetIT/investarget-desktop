@@ -499,11 +499,11 @@ label.login-register-form__container__label {
 }
 .my-calendar__date-event {
   margin-bottom: 2px;
-  background-color: #bfbfbf;
   border-radius: 4px;
   padding: 0 8px;
   line-height: 20px;
   font-size: 12px;
+  color: white;
 }
 .my-calendar__date-event-1 {
   background-color: #e6b217;

@@ -167,6 +167,42 @@ export default function MySchedule() {
     const listData = getListData(value);
     const isToday = value.isSame(moment(), 'day');
     const isFirstDayOfMonth = value.date() == 1;
+
+    function singleEventRender(item) {
+      return (
+        <div
+          className={`my-calendar__date-event${item.type ? ` my-calendar__date-event-${item.type}` : ''}`}
+          // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
+          key={`${item.type}-${item.id}`}
+        // onClick={this.handleClickEvent.bind(this, item)}
+        >
+
+          {/* Webex */}
+          {/* {item.type === 4 &&
+                <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
+                  <span>
+                    <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
+                    <span>{item.comments}</span>
+                  </span>
+                </Popover>
+              } */}
+
+          {/* Zoom */}
+          {/* {item.type === 7 &&
+                <Popover title="Zoom视频会议" content={this.getZoomPopoverContent(item)}>
+                  <span>
+                    <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
+                    <span>{item.comments}</span>
+                  </span>
+                </Popover>
+              } */}
+
+          {/* Others */}
+          {item.type !== 4 && item.type !== 7 && item.comments}
+        </div>
+      );
+    }
+
     return (
       <div className="my-calendar__date">
 
@@ -183,38 +219,13 @@ export default function MySchedule() {
 
         <div className="my-calendar__date-content">
           {
-            listData.map(item => (
-              <div
-                className={`my-calendar__date-event${item.type ? ` my-calendar__date-event-${item.type}` : ''}`}
-                // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
-                key={`${item.type}-${item.id}`}
-              // onClick={this.handleClickEvent.bind(this, item)}
-              >
-
-                {/* Webex */}
-                {/* {item.type === 4 &&
-                <Popover title="Webex视频会议" content={this.getWebexPopoverContent(item)}>
-                  <span>
-                    <img style={{ marginRight: 8, width: 20 }} src="/images/webex.png" alt="" />
-                    <span>{item.comments}</span>
-                  </span>
-                </Popover>
-              } */}
-
-                {/* Zoom */}
-                {/* {item.type === 7 &&
-                <Popover title="Zoom视频会议" content={this.getZoomPopoverContent(item)}>
-                  <span>
-                    <img style={{ marginRight: 8, width: 20 }} src="/images/zoom.png" alt="" />
-                    <span>{item.comments}</span>
-                  </span>
-                </Popover>
-              } */}
-
-                {/* Others */}
-                {item.type !== 4 && item.type !== 7 && item.comments}
+            listData.length <= 4 ?
+              listData.map(item => singleEventRender(item))
+              :
+              <div>
+                {listData.slice(0, 3).map(item => singleEventRender(item))}
+                <div className="my-calendar__date-event" style={{ color: '#989898' }}>还有{listData.length - 3}项...</div>
               </div>
-            ))
           }
         </div>
 
