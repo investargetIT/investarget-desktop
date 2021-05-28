@@ -3,7 +3,10 @@ import { Calendar, Select, Radio } from 'antd';
 import moment from 'moment';
 import { requestAllData, getCurrentUser, handleError } from '../utils/util';
 import * as api from '../api';
-// import styles from '../router/Schedule';
+import {
+  RightOutlined,
+  LeftOutlined,
+} from '@ant-design/icons';
 
 export default function MySchedule() {
 
@@ -296,10 +299,17 @@ export default function MySchedule() {
           </Select>
         </div>
 
-        <Radio.Group onChange={e => onTypeChange(e.target.value)} value={type}>
-          <Radio.Button value="month">月</Radio.Button>
-          <Radio.Button value="year">年</Radio.Button>
-        </Radio.Group>
+        <div>
+          <Radio.Group onChange={e => onTypeChange(e.target.value)} value={type}>
+            <Radio.Button value="month">月</Radio.Button>
+            <Radio.Button value="year">年</Radio.Button>
+          </Radio.Group>
+          <Radio.Group style={{ marginLeft: 20 }} onChange={e => onTypeChange(e.target.value)} value={type}>
+            <Radio.Button className="my-calendar__month" style={{ padding: '0 8px' }} value="last_month"><LeftOutlined /></Radio.Button>
+            <Radio.Button value="today">今天</Radio.Button>
+            <Radio.Button className="my-calendar__month" style={{ padding: '0 8px' }} value="next_month"><RightOutlined /></Radio.Button>
+          </Radio.Group>
+        </div>
 
       </div>
     );

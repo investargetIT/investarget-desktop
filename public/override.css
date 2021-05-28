@@ -523,3 +523,9 @@ label.login-register-form__container__label {
 .my-calendar .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
   padding-right: 38px;
 }
+.my-calendar .ant-radio-button-wrapper.my-calendar__month {
+  color: #bfbfbf;
+}
+.my-calendar .ant-radio-button-wrapper.my-calendar__month:hover {
+  color: #339bd2;
+}
