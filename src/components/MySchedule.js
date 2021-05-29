@@ -267,6 +267,21 @@ export default function MySchedule() {
         </Select.Option>,
       );
     }
+
+    function onMonthSwitch(switchValue) {
+      switch (switchValue) {
+        case 'last_month':
+          onChange(value.clone().subtract(1, 'month'));
+          break;
+        case 'next_month':
+          onChange(value.clone().add(1, 'month'));
+          break;
+        default:
+          onChange(moment());
+          break;
+      }
+    }
+
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
@@ -304,7 +319,7 @@ export default function MySchedule() {
             <Radio.Button value="month">月</Radio.Button>
             <Radio.Button value="year">年</Radio.Button>
           </Radio.Group>
-          <Radio.Group style={{ marginLeft: 20 }} onChange={e => onTypeChange(e.target.value)} value={type}>
+          <Radio.Group style={{ marginLeft: 20 }} onChange={e => onMonthSwitch(e.target.value)} value={type}>
             <Radio.Button className="my-calendar__month" style={{ padding: '0 8px' }} value="last_month"><LeftOutlined /></Radio.Button>
             <Radio.Button value="today">今天</Radio.Button>
             <Radio.Button className="my-calendar__month" style={{ padding: '0 8px' }} value="next_month"><RightOutlined /></Radio.Button>
