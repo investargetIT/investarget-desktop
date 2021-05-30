@@ -106,12 +106,12 @@ function Dashboard(props) {
       if (reqNews.data.count > 0) {
         setNews(reqNews.data.data[0]);
       }
-      else {
-        setNews({
-          createtime: '2018-06-26T17:18:24.086778',
-          content: '兴旺投资创始合伙人黎媛菲：主要看消费、教育和科技。消费主要是包装食品、宠物、互联网餐饮、内衣、直播电商等新消费新零售赛道都很积极。科技主要是5G 半导体，大数据云计算、工业互联网。',
-        });
-      }
+      // else {
+      //   setNews({
+      //     createtime: '2018-06-26T17:18:24.086778',
+      //     content: '兴旺投资创始合伙人黎媛菲：主要看消费、教育和科技。消费主要是包装食品、宠物、互联网餐饮、内衣、直播电商等新消费新零售赛道都很积极。科技主要是5G 半导体，大数据云计算、工业互联网。',
+      //   });
+      // }
     }
     fetchNewsData();
 
@@ -173,7 +173,7 @@ function Dashboard(props) {
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {loadingOnGoingProjects && [1, 2, 3].map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
+          {loadingOnGoingProjects && [1, 2, 3].map(m => <div key={m} style={{ marginLeft: 24, marginBottom: 24 }}>
             <Card loading style={{ width: 260 }} />
           </div>)}
           {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>

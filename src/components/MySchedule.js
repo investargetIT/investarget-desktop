@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Select, Radio } from 'antd';
 import moment from 'moment';
-import { requestAllData, getCurrentUser, handleError } from '../utils/util';
+import { requestAllData, getCurrentUser, handleError, hasPerm } from '../utils/util';
 import * as api from '../api';
 import {
   RightOutlined,
@@ -84,44 +84,44 @@ export default function MySchedule() {
     //     }
     //   }
 
-    //   // 周报相关逻辑
-    //   if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
-    //     const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
-    //     const firstDayOfNextTwoMonths = this.state.selectedDate.clone().add(2, 'M').startOf('month');
-    //     const params = {
-    //       user: getCurrentUser(),
-    //       startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
-    //       endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
-    //       page_size: 1000
-    //     };
-    //     const requestReport = await requestAllData(api.getWorkReport, params, 1000);
-    //     const reportList = requestReport.data.data.map(m => {
-    //       const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
-    //       const comments = '周报';
-    //       const type = 5; // 5 means already filled weekly report
-    //       return { ...m, scheduledtime, comments, type };
-    //     });
+      // 周报相关逻辑
+      if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
+        const firstDayOfLastMonth = selectedDate.clone().subtract(1, 'M').startOf('month');
+        const firstDayOfNextTwoMonths = selectedDate.clone().add(2, 'M').startOf('month');
+        const params = {
+          user: getCurrentUser(),
+          startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
+          endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
+          page_size: 1000
+        };
+        const requestReport = await requestAllData(api.getWorkReport, params, 1000);
+        const reportList = requestReport.data.data.map(m => {
+          const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
+          const comments = '周报';
+          const type = 5; // 5 means already filled weekly report
+          return { ...m, scheduledtime, comments, type };
+        });
 
-    //     const day1 = 5;
-    //     const result1 = [];
-    //     const current1 = firstDayOfLastMonth.clone();
-    //     result1.push(current1.clone().day(day1));
-    //     while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
-    //       result1.push(current1.clone());
-    //     }
-    //     result1.forEach((element, index) => {
-    //       const dateStr = element.format('YYYY-MM-DD');
-    //       if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
-    //         list.push({
-    //           scheduledtime: dateStr,
-    //           comments: '周报',
-    //           type: 6,
-    //           id: index,
-    //         });
-    //       }
-    //     });
-    //     list = list.concat(reportList);
-    //   }
+        const day1 = 5;
+        const result1 = [];
+        const current1 = firstDayOfLastMonth.clone();
+        result1.push(current1.clone().day(day1));
+        while (current1.day(7 + day1).isBefore(firstDayOfNextTwoMonths)) {
+          result1.push(current1.clone());
+        }
+        result1.forEach((element, index) => {
+          const dateStr = element.format('YYYY-MM-DD');
+          if (!reportList.map(m => m.scheduledtime).includes(dateStr)) {
+            list.push({
+              scheduledtime: dateStr,
+              comments: '周报',
+              type: 6,
+              id: index,
+            });
+          }
+        });
+        list = list.concat(reportList);
+      }
 
     //   try {
     //     // 获取 zoom 视频会议列表

@@ -514,6 +514,12 @@ label.login-register-form__container__label {
 .my-calendar__date-event-3 {
   background-color: #339bd2;
 }
+.my-calendar__date-event-5 {
+  background-color: #abe4d3;
+}
+.my-calendar__date-event-6 {
+  background-color: #bfbfbf;
+}
 .my-calendar-tag {
   margin-left: 16px;
   width: 20px;
