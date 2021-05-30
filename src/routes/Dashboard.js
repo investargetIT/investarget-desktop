@@ -34,6 +34,7 @@ function Dashboard(props) {
   const [news, setNews] = useState();
   const [files, setFiles] = useState([]);
   const [projNum, setProjNum] = useState(0);
+  const [loadingOnGoingProjects, setLoadingOnGoingProjects] = useState(false);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -61,6 +62,8 @@ function Dashboard(props) {
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
       setProjList(projList);
+      
+      setLoadingOnGoingProjects(false);
 
       const reqBdRes = await api.getSource('orgbdres');
       const { data: orgBDResList } = reqBdRes;
@@ -93,8 +96,9 @@ function Dashboard(props) {
         }
         return { ...m, percentage: 0 };
       }));
-      
     }
+
+    setLoadingOnGoingProjects(true);
     fetchData();
 
     async function fetchNewsData() {
@@ -169,7 +173,10 @@ function Dashboard(props) {
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
+          {loadingOnGoingProjects && [1, 2, 3].map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
+            <Card loading style={{ width: 260 }} />
+          </div>)}
+          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
         </div>
