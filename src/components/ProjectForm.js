@@ -244,23 +244,23 @@ class ProjectConnectForm extends React.Component {
 
         
         {hasPerm('proj.admin_changeproj') ?
-          <BasicFormItem label={i18n('project.take_user')} name="takeUser" valueType="array">
+          <BasicFormItem label={i18n('project.development')} name="takeUser" valueType="array">
             {/* <SelectAllUser type="trader" /> */}
             <SelectTrader mode="multiple" disabledOption={getFieldValue('makeUser')} />
           </BasicFormItem>
           :
-          <BasicFormItem label={i18n('project.take_user')} name="takeUserName">
+          <BasicFormItem label={i18n('project.development')} name="takeUserName">
             <Input disabled />
           </BasicFormItem>
         }
 
         {hasPerm('proj.admin_changeproj') ?
-          <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="array">
+          <BasicFormItem label={i18n('project.team')} name="makeUser" valueType="array">
             {/* <SelectAllUser type="trader" /> */}
             <SelectTrader mode="multiple" disabledOption={getFieldValue('takeUser')} />
           </BasicFormItem>
           :
-          <BasicFormItem label={i18n('project.make_user')} name="makeUserName">
+          <BasicFormItem label={i18n('project.team')} name="makeUserName">
             <Input disabled />
           </BasicFormItem>
         }
