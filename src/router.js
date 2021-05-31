@@ -6,6 +6,7 @@ import ResetPassword from './routes/ResetPassword';
 import Register1 from './routes/Register1';
 import Register from './routes/Register';
 import Dashboard from './routes/Dashboard';
+import ProjectLibrary from './routes/ProjectLibrary';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -48,7 +49,6 @@ import Dashboard from './routes/Dashboard';
 // import AccessDenied from './routes/AccessDenied'
 // import SelectTraderToRelation from './routes/SelectTraderToRelation'
 // import Agreement from './routes/Agreement'
-// import ProjectLibrary from './routes/ProjectLibrary'
 // import ProjectLibraryItem from './routes/ProjectLibraryItem'
 // import ProjectBDList from './routes/ProjectBDList'
 // import AddProjectBD from './routes/AddProjectBD'
@@ -88,7 +88,7 @@ function RouterConfig({ history }) {
         <Route path="/password" component={ResetPassword} />
         <Route path="/register1" component={Register1} />
         <Route path="/register" component={Register} />
-        <Route path="/app" component={Dashboard} />
+        <Route path="/app/projects/library" component={ProjectLibrary} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -103,7 +103,6 @@ function RouterConfig({ history }) {
         <Route path={URI_11} component={LogList} />
         <Route path={URI_9} component={ModifyPwd} />
         <Route path={URI_10} component={BasicInfo} />
-        <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/bd/add" component={AddProjectBD} />
@@ -159,6 +158,7 @@ function RouterConfig({ history }) {
         <Route path="/app/okr/edit/:id" component={EditOKR} />
         <Route path="/app/online-test" component={InternOnlineTest} />
         <Route path="/app/project-report" component={ProjectReport} /> */}
+        <Route path="/app" component={Dashboard} />
       </Switch>
     </Router>
   )
