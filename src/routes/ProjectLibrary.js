@@ -45,7 +45,8 @@ class ProjectLibrary extends React.Component {
     super(props)
 
     // 根据是否从机构页面跳转而来设置相应的筛选条件
-    const { search: searchContent } = props.location.query;
+    const params = new URLSearchParams(props.location.search);
+    const searchContent = params.get('search');
     let search, filters, page;
     if (searchContent) {
       search = searchContent;
