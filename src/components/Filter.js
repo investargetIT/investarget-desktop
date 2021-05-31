@@ -60,6 +60,9 @@ import {
   SelectProjectForOrgBd,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
+import {
+  ReloadOutlined,
+} from '@ant-design/icons';
 
 
 export function BasicContainer(props) {
@@ -75,7 +78,7 @@ function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
       {/* <Button size="large" type="primary" icon="search" onClick={props.onSearch}>{i18n('filter.filter')}</Button> */}
-      <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={props.onReset}>{i18n('filter.reset')}</Button>
+      <Button size="large" style={{ marginLeft: 10 }} icon={<ReloadOutlined />} onClick={props.onReset}>{i18n('filter.reset')}</Button>
     </div>
   )
 }
