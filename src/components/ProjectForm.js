@@ -210,6 +210,11 @@ class ProjectConnectForm extends React.Component {
     return this.currentUserId === this.props.form.getFieldValue('supportUser').id;
   }
 
+  projectTeamValidator = (_, value, callback) => {
+    if (value.length === 1) return callback('请至少选择两位项目团队成员');
+    return callback();
+  }
+
   render() {
     const { getFieldValue } = this.props.form;
     return (
@@ -254,7 +259,12 @@ class ProjectConnectForm extends React.Component {
         }
 
         {hasPerm('proj.admin_changeproj') ?
-          <BasicFormItem label={i18n('project.team')} name="makeUser" valueType="array">
+          <BasicFormItem
+            label={i18n('project.team')}
+            name="makeUser"
+            valueType="array"
+            validator={this.projectTeamValidator}
+          >
             <SelectTrader mode="multiple" />
           </BasicFormItem>
           :
