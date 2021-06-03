@@ -58,6 +58,11 @@ function Dashboard(props) {
       const params = {
         max_size: 4,
         projstatus: ongoingStatus.map(m => m.id),
+        sort: 'publishDate',
+        desc: 1,
+      }
+      if (!userInfo.is_superuser) {
+        params['user'] = userInfo.id;
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
