@@ -172,11 +172,11 @@ function Dashboard(props) {
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
-          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-20px 0 0 -20px' }}>
+          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m} style={{ margin: '20px 0 0 20px' }}>
             <Card loading style={{ width: 250 }} />
           </div>)}
-          {!loadingOnGoingProjects && projList.map(m => <div key={m.id}>
+          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '20px 0 0 20px' }}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
         </div>
