@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -184,6 +184,7 @@ function Dashboard(props) {
           {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '20px 0 0 20px' }}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
+          {!loadingOnGoingProjects && projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
         </div>
       </Card>
 
