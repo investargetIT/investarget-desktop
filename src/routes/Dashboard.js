@@ -56,7 +56,7 @@ function Dashboard(props) {
       const ongoingStatus = statusList.filter(f => ['终审发布', '交易中', 'Published', 'Contacting'].includes(f.name));
 
       const params = {
-        max_size: 3,
+        max_size: 4,
         projstatus: ongoingStatus.map(m => m.id),
       }
       const reqProj = await api.getProj(params);
@@ -172,11 +172,11 @@ function Dashboard(props) {
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {loadingOnGoingProjects && [1, 2, 3].map(m => <div key={m} style={{ marginLeft: 24, marginBottom: 24 }}>
-            <Card loading style={{ width: 260 }} />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m}>
+            <Card loading style={{ width: 250 }} />
           </div>)}
-          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ marginLeft: 24, marginBottom: 24 }}>
+          {!loadingOnGoingProjects && projList.map(m => <div key={m.id}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
         </div>

@@ -10,7 +10,7 @@ import {
 const cardStyle = {
   height: '100%',
   overflow: 'hidden',
-  width: 260,
+  width: 250,
 }
 const cardBodyStyle = {
   height: '100%',
