@@ -8,6 +8,7 @@ import {
   getFilenameWithoutExt,
   formatBytes,
   getFileTypeByName,
+  hasPerm,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -61,7 +62,7 @@ function Dashboard(props) {
         sort: 'publishDate',
         desc: 1,
       }
-      if (!userInfo.is_superuser) {
+      if (!hasPerm('proj.admin_getproj')) {
         params['user'] = userInfo.id;
       }
       const reqProj = await api.getProj(params);
@@ -177,11 +178,11 @@ function Dashboard(props) {
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-20px 0 0 -20px' }}>
-          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m} style={{ margin: '20px 0 0 20px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 0 -18px' }}>
+          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m} style={{ margin: '18px 0 0 18px' }}>
             <Card loading style={{ width: 250 }} />
           </div>)}
-          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '20px 0 0 20px' }}>
+          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
           {!loadingOnGoingProjects && projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
