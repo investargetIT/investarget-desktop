@@ -1,3 +1,8 @@
+/* 覆盖默认样式 antd4 */
+ul {
+  padding-inline-start: 0;
+}
+
 /* 覆盖 Bootstarp 样式 */
 
 button[disabled], html input[disabled] {

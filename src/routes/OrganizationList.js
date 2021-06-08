@@ -7,9 +7,12 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Icon, Radio, Input } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-
+import {
+  UserOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import { OrganizationListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -211,14 +214,14 @@ class OrganizationList extends React.Component {
             : null}
             {record.orgfullname}
             { record.orglevel && [1, 2].includes(record.orglevel.id) ? 
-            <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
+            <span style={{ color: 'gray' }}><UserOutlined />({record.user_count})</span>
             : null }
           </div>
         </Link>,
       //sorter:true, 
       },
-      { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry', sorter: this.state.searchOption === 0 ? true : false, },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency', sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.industry'), key: 'industry', dataIndex: ['industry', 'industry'], sorter: this.state.searchOption === 0 ? true : false, },
+      { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'], sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
@@ -234,7 +237,7 @@ class OrganizationList extends React.Component {
 
             <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteOrg.bind(null, record.id)}>
               <Button style={buttonStyle} size="small" disabled={!record.action.delete} >
-                <Icon type="delete" />
+                <DeleteOutlined />
               </Button>
             </Popconfirm>
           </span>
@@ -328,31 +331,33 @@ class OrganizationList extends React.Component {
             rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
           />
 
-          <div style={{ fontSize: 13, marginTop: 0, float: window.innerWidth > 1200 ? 'left' : undefined }}>
-            <Button
-              disabled={this.state.selectedIds.length == 0}
-              style={{ backgroundColor: 'orange', border: 'none' }}
-              type="primary"
-              size="large"
-              loading={this.state.isLoadingExportData}
-              onClick={this.handleExportBtnClicked}>
-              {i18n('project_library.export_excel')}
-            </Button>
-            <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
-            <Icon type="user" />表示该机构下有联系方式的投资人数量
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 13, marginBottom: 24 }}>
+              <Button
+                disabled={this.state.selectedIds.length == 0}
+                style={{ backgroundColor: 'orange', border: 'none' }}
+                type="primary"
+                size="large"
+                loading={this.state.isLoadingExportData}
+                onClick={this.handleExportBtnClicked}>
+                {i18n('project_library.export_excel')}
+              </Button>
+              <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
+              <UserOutlined />表示该机构下有联系方式的投资人数量
           </div>
 
-          <Pagination
-            style={paginationStyle}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
-            showQuickJumper
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
-          />
+            <Pagination
+              style={paginationStyle}
+              total={total}
+              current={page}
+              pageSize={pageSize}
+              onChange={this.handlePageChange}
+              showSizeChanger
+              onShowSizeChange={this.handlePageSizeChange}
+              showQuickJumper
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
+            />
+          </div>
 
         </div>
 

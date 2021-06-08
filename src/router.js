@@ -7,10 +7,10 @@ import Register1 from './routes/Register1';
 import Register from './routes/Register';
 import Dashboard from './routes/Dashboard';
 import ProjectLibrary from './routes/ProjectLibrary';
+import OrganizationList from "./routes/OrganizationList.js";
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
-// import OrganizationList from "./routes/OrganizationList.js"
 // import AddProject from './routes/AddProject'
 // import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import AddUser from './routes/AddUser.js'
@@ -89,13 +89,13 @@ function RouterConfig({ history }) {
         <Route path="/register1" component={Register1} />
         <Route path="/register" component={Register} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
+        <Route path="/app/organization/list" component={OrganizationList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
         <Route path="/app/orguser/list" component={OrgUserList} />
         <Route path={URI_6} component={UserList} />
         <Route path="/app/user/add" component={AddUser} />
-        <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/organization/add" component={AddOrganization} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
         <Route path="/app/organization/edit/:id" component={EditOrganization} />
