@@ -8,6 +8,7 @@ import Register from './routes/Register';
 import Dashboard from './routes/Dashboard';
 import ProjectLibrary from './routes/ProjectLibrary';
 import OrganizationList from "./routes/OrganizationList.js";
+import OrgExportList from './routes/OrgExportList';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -67,7 +68,6 @@ import OrganizationList from "./routes/OrganizationList.js";
 // import AddMeetingBD from './routes/AddMeetingBD';
 // import CompanyDataRoomList from './routes/CompanyDataRoomList';
 // import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
-// import OrgExportList from './routes/OrgExportList';
 // import OrgBDProjList from './routes/OrgBDProjList';
 // import AddReport from './routes/AddReport';
 // import ReportList from './routes/ReportList';
@@ -90,6 +90,7 @@ function RouterConfig({ history }) {
         <Route path="/register" component={Register} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/organization/list" component={OrganizationList} />
+        <Route path="/app/org/export" component={OrgExportList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -147,7 +148,6 @@ function RouterConfig({ history }) {
         <Route path="/app/trader/:id" component={TraderDetail} />
         <Route path="/app/meeting/bd" component={MeetingBDList} />
         <Route path="/app/meetingbd/add" component={AddMeetingBD} />
-        <Route path="/app/org/export" component={OrgExportList} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/report/add" component={AddReport} />
         <Route path="/app/report/list" component={ReportList} />

@@ -93,7 +93,7 @@ class OrgExportList extends React.Component {
       {
         title: '创建人',
         key: 'createuser',
-        dataIndex: 'createuser.username'
+        dataIndex: ['createuser', 'username'],
       },
       { 
         title: '完成时间', 
