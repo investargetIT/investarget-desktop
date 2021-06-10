@@ -33,8 +33,8 @@ const disableSelect = {
 
 class MyProgress extends React.Component {
   state = {
-    passedTime: 0,
-    remainingTime: null,
+    remainingSecodes: null,
+    allSeconds: null,
   };
 
   async componentDidMount() {
@@ -51,13 +51,15 @@ class MyProgress extends React.Component {
 
     this.intervalId = setInterval(async () => {
       try {
-        this.setState({ passedTime: this.state.passedTime + timeInterval });
         const result = await api.createAndCheckDataroomZip(dataroomId, params);
-        const { seconds } = result.data;
-        this.setState({ remainingTime: Math.ceil(seconds * 1000) });
+        const { seconds, all } = result.data;
+        // 8005表示文件打包压缩已经完成，随时可以下载
         if (result.data.code === 8005) {
+          this.setState({ remainingSecodes: 0 });
           clearInterval(this.intervalId);
           this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey);
+        } else {
+          this.setState({ remainingSecodes: seconds, allSeconds: all });
         }
       } catch (error) {
         clearInterval(this.intervalId);
@@ -68,13 +70,10 @@ class MyProgress extends React.Component {
   }
 
   render() {
-    // window.echo('passed time', this.state.passedTime);
-    // window.echo('remaining time', this.state.remainingTime);
     let percent = 0;
-    if (typeof this.state.remainingTime === 'number') {
-      percent = Math.floor(this.state.passedTime * 100 / (this.state.passedTime + this.state.remainingTime));
+    if (typeof this.state.remainingSecodes === 'number' && typeof this.state.allSeconds === 'number' && this.state.allSeconds !== 0) {
+      percent = Math.floor((this.state.allSeconds - this.state.remainingSecodes) * 100 / this.state.allSeconds);
     }
-    // window.echo('percent', percent);
     return <Progress percent={percent} />;
   }
 
