@@ -15,6 +15,7 @@ import * as api from '../api';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import ProjectBdTable from '../components/ProjectBdTable';
+import OrgBdTable from '../components/OrgBdTable';
 import {
   FilePdfFilled,
   FileWordFilled,
@@ -197,7 +198,9 @@ function Dashboard(props) {
           <Col span={16}>
             <div className="card-container">
               <Tabs type="card" size="large">
-                <TabPane tab="当前任务" key="1"></TabPane>
+                <TabPane tab="当前任务" key="1">
+                  <OrgBdTable />
+                </TabPane>
                 <TabPane tab="项目BD" key="2">
                   <ProjectBdTable />
                 </TabPane>
