@@ -32,7 +32,7 @@ export default function() {
       dataIndex: 'com_name',
       key: 'com_name',
       render: (text, record) => (
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', lineHeight: '27px' }}>
           {record.isimportant ? <img style={{ position: 'absolute', height: '10px', width: '10px', marginTop: '-5px', marginLeft: '-5px' }} src="/images/important.png" /> : null}
           {record.source_type === 0 ?
             <Popover title="项目方联系方式" content={

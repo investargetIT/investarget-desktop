@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip, Empty } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -26,6 +26,8 @@ import {
   VideoCameraFilled,
 } from '@ant-design/icons';
 import MySchedule from '../components/MySchedule';
+
+const { TabPane } = Tabs;
 
 function Dashboard(props) {
 
@@ -193,9 +195,14 @@ function Dashboard(props) {
         <Row gutter={20}>
 
           <Col span={16}>
-            <Card title="项目BD" bordered={false} extra={<a href="#">全部项目</a>} style={{ minHeight: 630 }}>
-              <ProjectBdTable />
-            </Card>
+            <div className="card-container">
+              <Tabs type="card" size="large">
+                <TabPane tab="当前任务" key="1"></TabPane>
+                <TabPane tab="项目BD" key="2">
+                  <ProjectBdTable />
+                </TabPane>
+              </Tabs>
+            </div>
           </Col>
 
           <Col span={8}>
