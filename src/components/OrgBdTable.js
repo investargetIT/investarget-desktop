@@ -1,99 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { i18n } from '../utils/util';
 import { Table, Popover } from 'antd';
+import { connect } from 'dva';
 
-export default function() {
+function OrgBdTable(props) {
 
-  const [projBdList, setProjBdList] = useState([]);
+  const [orgBdList, setOrgBdList] = useState([]);
 
   useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+
     async function fetchData() {
       const params = {
-        page_index: 3,
+        // org,
+        // proj: proj || "none",
+        // response,
+        // manager,
+        // createuser,
+        // search: this.state.search,
+        // page_size: 100,
+        // isRead: this.state.showUnreadOnly ? false : undefined,
         page_size: 8,
-      }
-      const req = await api.getProjBDList(params);
-      setProjBdList(req.data.data);
+        sort: 'createdtime',
+        desc: 1,
+      };
+
+      const req = await api.getOrgBdList(params);
+      setOrgBdList(req.data.data);
     }
     fetchData();
   }, []);
 
-  function showPhoneNumber(item) {
-    const { usermobile } = item;
-    if (!usermobile) return '暂无';
-    const { bduser } = item;
-    if (bduser || usermobile.startsWith('+')) return usermobile;
-    return `+${usermobile}`;
-  }
-
   const columns = [
     {
       title: "机构名称",
-      dataIndex: 'com_name',
+      dataIndex: ['org', 'orgname'],
       key: 'com_name',
-      render: (text, record) => (
-        <div style={{ position: 'relative', lineHeight: '27px' }}>
-          {record.isimportant ? <img style={{ position: 'absolute', height: '10px', width: '10px', marginTop: '-5px', marginLeft: '-5px' }} src="/images/important.png" /> : null}
-          {record.source_type === 0 ?
-            <Popover title="项目方联系方式" content={
-              <div>
-                <div>{`姓名：${record.username || '暂无'}`}</div>
-                <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-                <div>{`电话：${showPhoneNumber(record)}`}</div>
-                <div>{`邮箱：${record.useremail || '暂无'}`}</div>
-              </div>
-            }>
-              <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)} style={{ color: '#339bd2' }}>{text}</a>
-            </Popover>
-            :
-            <Popover title="项目方联系方式" content={
-              <div>
-                <div>{`姓名：${record.username || '暂无'}`}</div>
-                <div>{`职位：${record.usertitle ? record.usertitle.name : '暂无'}`}</div>
-                <div>{`电话：${showPhoneNumber(record)}`}</div>
-                <div>{`邮箱：${record.useremail || '暂无'}`}</div>
-              </div>
-            }>
-              <div style={{ color: "#339bd2" }}>{text}</div>
-            </Popover>
-          }
-        </div>
-      ),
     },
     {
       title: i18n('account.investor'),
-      dataIndex: ['bd_status', 'name'],
-      key: 'bd_status',
-      render: text => <span style={{ color: '#595959' }}>{text}</span>
+      dataIndex: 'username',
+      key: 'investor',
     },
     {
       title: i18n('account.position'),
       key: 'manager',
-      render: (_, record) => {
-        const { main, normal } = record.manager;
-        let allManagers = [];
-        if (main) {
-          allManagers.push(main.username);
-        }
-        if (normal) {
-          allManagers = allManagers.concat(normal.map(m => m.manager.username));
-        }
-        return <span style={{ color: '#595959' }}>{allManagers.join('、')}</span>;
-      },
+      dataIndex: ['usertitle', 'name'],
     },
     {
       title: i18n('project_bd.status'),
-      key: 'createdtime',
-      render: (_, record) => (
-        <span style={{ color: '#595959' }}>
-          {record.createdtime.slice(0, 10)}
-        </span>
-      ),
+      key: 'status',
+      dataIndex: 'response',
+      render: text => props.orgbdres.length > 0 && text && props.orgbdres.filter(f => f.id === text)[0].name,
     },
     {
       title: i18n('timeline.latest_remark'),
       key: 'latest_remark',
-      render: () => '最新备注',
+      render: (_, record) => {
+        let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+        return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+          <div style={{ color: "#428bca", lineHeight: '27px' }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+        </Popover> : <div style={{ lineHeight: '27px' }}>暂无</div>;
+      },
     },
   ];
 
@@ -101,10 +69,17 @@ export default function() {
     <div>
       <Table
         columns={columns}
-        dataSource={projBdList}
+        dataSource={orgBdList}
         rowKey={record => record.id}
         pagination={false}
       />
     </div>
   );
 }
+
+function mapStateToProps(state) {
+  const { orgbdres } = state.app
+  return { orgbdres };
+}
+
+export default connect(mapStateToProps)(OrgBdTable);

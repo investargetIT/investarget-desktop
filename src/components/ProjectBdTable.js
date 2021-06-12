@@ -9,8 +9,9 @@ export default function() {
   useEffect(() => {
     async function fetchData() {
       const params = {
-        page_index: 3,
         page_size: 8,
+        sort: 'createdtime',
+        desc: 1,
       }
       const req = await api.getProjBDList(params);
       setProjBdList(req.data.data);
@@ -64,6 +65,7 @@ export default function() {
       title: i18n('project_bd.status'),
       dataIndex: ['bd_status', 'name'],
       key: 'bd_status',
+      width: '15%',
       render: text => <span style={{ color: '#595959' }}>{text}</span>
     },
     {
@@ -84,6 +86,7 @@ export default function() {
     {
       title: i18n('project_bd.created_time'),
       key: 'createdtime',
+      width: '20%',
       render: (_, record) => (
         <span style={{ color: '#595959' }}>
           {record.createdtime.slice(0, 10)}
