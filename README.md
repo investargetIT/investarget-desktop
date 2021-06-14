@@ -1,6 +1,10 @@
 # Migration to Antd V4
-* Table Column dataIndex 不再支持`.`，需要使用 Array
-* 不再支持 <Icon type="value" >
+* Table Column `dataIndex` 不再支持`.`，需要使用 Array
+* 不再支持 `<Icon type="value" >`
+* 不再支持 `Form.create()`, 属性全部直接移到 `<Form>` 中
+* 不再支持 `getFieldDecorator()`, 属性全部直接移到 `<Form.Item>` 中
+* `getFieldValue()` 使用方式变化，使用 `ref` 获取实例然后调方法，如果是根据值来显示或隐藏控件，用法见 `Register1.js`
+
 
 # Important #
 

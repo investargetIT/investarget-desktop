@@ -73,8 +73,13 @@ function BasicFormItem(props, context) {
   }
 
   return (
-    <FormItem {...(props.layout || formItemLayout)} {...props.layout} label={props.label}>
-      {context.form.getFieldDecorator(props.name, options)(props.children)}
+    <FormItem
+      name={props.name}
+      {...(props.layout || formItemLayout)}
+      {...props.layout} label={props.label}
+      {...options}
+    >
+      {props.children}
     </FormItem>
   )
 }

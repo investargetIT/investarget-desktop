@@ -1,12 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, Select, Radio } from 'antd';
+import { Calendar, Select, Radio, Form, Modal } from 'antd';
 import moment from 'moment';
-import { requestAllData, getCurrentUser, handleError, hasPerm } from '../utils/util';
+import { requestAllData, getCurrentUser, handleError, hasPerm, i18n } from '../utils/util';
 import * as api from '../api';
 import {
   RightOutlined,
   LeftOutlined,
 } from '@ant-design/icons';
+import ScheduleForm from './ScheduleForm';
+
+// function mapPropsToFields(props) {
+//   return props.data
+// }
+function onValuesChange(props, values) {
+  // window.echo('props', props);
+  // window.echo('values', values);
+  if (values.proj) {
+    props.onProjChange(values.proj);
+  }
+  if (values.user) {
+    props.onUserChange(values.user);
+  }
+}
+function mapAddPropsToFields(props) {
+  // window.echo('map to fields', props);
+  return props.data;
+}
+// const AddScheduleForm = Form.create({ onValuesChange, mapPropsToFields: mapAddPropsToFields })(ScheduleForm);
 
 export default function MySchedule() {
 
@@ -351,6 +371,32 @@ export default function MySchedule() {
         <div className="my-calendar-tag" style={{ backgroundColor: '#e6b217' }}></div>
         <div style={{ marginLeft: 5 }}>路演会议</div> 
       </div>
+
+      {/* <Modal
+        title={i18n('schedule.add_event')}
+        // visible={visibleAdd}
+        // onOk={this.addEvent}
+        // onCancel={this.hideAddModal}
+        // style={modalStyle}
+        // maskStyle={maskStyle}
+        maskClosable={false}
+        visible
+      > */}
+        {/* {visibleAdd ? */}
+          {/* <ScheduleForm
+            onValuesChange={onValuesChange}
+            getValueProps={mapAddPropsToFields}
+            // wrappedComponentRef={this.handleRef}
+            isAdd
+            date={selectedDate}
+            country={{ label: 'China', value: 42 }}
+            // onProjChange={this.handleProjChange}
+            // onUserChange={this.handleUserChange}
+            // data={this.setAddFormData()}
+          /> */}
+          {/* : null} */}
+      {/* </Modal> */}
+
     </div>
   );
 }

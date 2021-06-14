@@ -32,6 +32,17 @@ const tailFormItemLayout = {
   },
 }
 
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
+};
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 20, offset: 6 },
+  },
+};
+
 const FormItem = Form.Item;
 
 function range(start, end) {
@@ -46,16 +57,17 @@ class ScheduleForm extends React.Component {
 
   constructor(props) {
     super(props)
-    const { getFieldDecorator } = this.props.form
+    // const { getFieldDecorator } = this.props.form
 
-    if ('isAdd' in props) {
-      getFieldDecorator('scheduledtime', {
-        rules: [{required: true}], initialValue: props.date,
-      })
-      getFieldDecorator('country', { initialValue: props.country });
-      getFieldDecorator('type', { initialValue: 3 });
-    }
+    // if ('isAdd' in props) {
+    //   getFieldDecorator('scheduledtime', {
+    //     rules: [{required: true}], initialValue: props.date,
+    //   })
+    //   getFieldDecorator('country', { initialValue: props.country });
+    //   getFieldDecorator('type', { initialValue: 3 });
+    // }
     this.manualAttendeeNum = 0;
+    this.scheduleFormRef = React.createRef();
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -65,7 +77,7 @@ class ScheduleForm extends React.Component {
     this.manualAttendeeNum = this.manualAttendeeNum + 1;
     const { form } = this.props;
     // can use data-binding to get
-    const keys = form.getFieldValue('keys');
+    const keys = this.scheduleFormRef.current.getFieldValue('keys');
     const keyNums = keys.map(m => parseInt(m, 10));
     const maxKey = keyNums.length > 0 ? Math.max(...keyNums) : 0;
     const nextKeys = keys.concat(`${maxKey + 1}`);
@@ -79,14 +91,14 @@ class ScheduleForm extends React.Component {
   removeAttendeeFormItem = (k) => {
     const { form } = this.props;
     // can use data-binding to get
-    const keys = form.getFieldValue('keys');
+    const keys = this.scheduleFormRef.current.getFieldValue('keys');
     // We need at least one passenger
     // if (keys.length === 1) {
     //   return;
     // }
 
     // can use data-binding to set
-    form.setFieldsValue({
+    this.scheduleFormRef.current.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
   }
@@ -100,53 +112,52 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
-    const countryObj = getFieldValue('country');
-    const scheduleType = getFieldValue('type');
-    const disabledOrHide = scheduleType === 4 && !this.props.isAdd;
-    const proj = getFieldValue('proj');
-    const sendEmail = getFieldValue('sendEmail');
-    const user = getFieldValue('user');
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
-    };
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 20, offset: 6 },
-      },
-    };
+    window.echo('form ref', this.scheduleFormRef);
+    let countryObj, scheduleType, disabledOrHide, proj, sendEmail, user, keys;
+    if (this.scheduleFormRef.current) {
+      countryObj = this.scheduleFormRef.current.getFieldValue('country');
+      scheduleType = this.scheduleFormRef.current.getFieldValue('type');
+      disabledOrHide = scheduleType === 4 && !this.props.isAdd;
+      proj = this.scheduleFormRef.current.getFieldValue('proj');
+      sendEmail = this.scheduleFormRef.current.getFieldValue('sendEmail');
+      user = this.scheduleFormRef.current.getFieldValue('user');
+      keys = this.scheduleFormRef.current.getFieldValue('keys');
+    }
 
-    getFieldDecorator('investor-attendee', { initialValue: [] });
-    getFieldDecorator('trader-attendee', { initialValue: [] });
-
-    getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
     const attendeeFormItems = keys.map(k => {
       return (
         <FormItem {...formItemLayoutWithOutLabel} key={k}>
           <Row gutter={8} style={{ width: '79%' }}>
             <Col span={7}>
-              <FormItem required>
-                {
+              <FormItem
+                name={`name-${k}`}
+                rules={[{ message: i18n('validation.not_empty'), required: true }]}
+                initialValue=""
+                required
+              >
+                {/* {
                   getFieldDecorator(`name-${k}`, {
                     rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: ''
-                  })(
+                  })( */}
                     <Input placeholder="姓名" />
-                  )
-                }
+                  {/* )
+                } */}
               </FormItem>
             </Col>
             <Col span={15}>
-              <FormItem required>
-                {
+              <FormItem
+                name={`email-${k}`}
+                rules={[{ message: '请输入正确的邮箱地址', required: true, type: 'email' }]}
+                initialValue=""
+                required
+              >
+                {/* {
                   getFieldDecorator(`email-${k}`, {
                     rules: [{ message: '请输入正确的邮箱地址', required: true, type: 'email' }], initialValue: ''
-                  })(
+                  })( */}
                     <Input placeholder="邮箱" />
-                  )
-                }
+                  {/* )
+                } */}
               </FormItem>
             </Col>
             <Col span={2}>
@@ -161,18 +172,56 @@ class ScheduleForm extends React.Component {
         </FormItem>
       );
     });
-   
-    return (
-      <Form>
+  
+    getInitialValueForScheduleType = () => {
+      if ('isAdd' in this.props) {
+        return 3;
+      } 
+    }
 
-        <BasicFormItem label="日程类型" name="type" required valueType="number">
+    getInitialValueForCountry = () => {
+      if ('isAdd' in this.props) {
+        return this.props.country;
+      } 
+    }
+
+    getInitialValueForScheduleTime = () => {
+      if ('isAdd' in this.props) {
+        return this.props.date;
+      } 
+    }
+
+    getRulesForScheduleTime = () => {
+      if ('isAdd' in this.props) {
+        return [{ required: true }];
+      } 
+    }
+
+    return (
+      <Form ref={this.scheduleFormRef}>
+
+        <BasicFormItem
+          label="日程类型"
+          name="type"
+          required
+          valueType="number"
+          initialValue={this.getInitialValueForScheduleType}
+        >
           {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={disabledOrHide} /> : <SelectScheduleTypeWithoutMeeting />}
         </BasicFormItem>
 
         <BasicFormItem label={i18n('schedule.title')} name="comments" required>
           <Input />
         </BasicFormItem>
-        <BasicFormItem label={i18n('schedule.schedule_time')} name="scheduledtime" valueType="object" required>
+
+        <BasicFormItem
+          label={i18n('schedule.schedule_time')}
+          name="scheduledtime"
+          valueType="object"
+          required
+          initialValue={this.getInitialValueForScheduleTime}
+          rules={this.getRulesForScheduleTime}
+        >
           <DatePicker
             disabledDate={this.disabledDate}
             disabledTime={this.disabledTime}
@@ -192,6 +241,7 @@ class ScheduleForm extends React.Component {
           required 
           valueType="object" 
           getValueFromEvent={(id, detail) => detail}
+          initialValue={this.getInitialValueForCountry}
         >
           <CascaderCountry size="large" isDetail />
         </BasicFormItem>
@@ -228,21 +278,23 @@ class ScheduleForm extends React.Component {
           <FormItem
             {...formItemLayout}
             label="持续时间"
+            name="duration"
+            initialValue={60}
           >
-            {getFieldDecorator('duration', { initialValue: 60 })(
+            {/* {getFieldDecorator('duration', { initialValue: 60 })( */}
               <InputNumber min={1} />
-            )}
+            {/* )} */}
             <span className="ant-form-text">分钟</span>
           </FormItem>
 
           {this.props.isAdd &&
-          <BasicFormItem label="投资人" name="investor-attendee" valueType="array">
+          <BasicFormItem label="投资人" name="investor-attendee" valueType="array" initialValue={[]}>
             <SelectMultiUsers type="investor" proj={proj} />
           </BasicFormItem>
           }
 
           {this.props.isAdd &&
-          <BasicFormItem label="交易师" name="trader-attendee" valueType="array">
+          <BasicFormItem label="交易师" name="trader-attendee" valueType="array" initialValue={[]}>
             <SelectMultiUsers type="trader" />
           </BasicFormItem>
           }
@@ -257,7 +309,7 @@ class ScheduleForm extends React.Component {
           </FormItem>
           }
 
-          <BasicFormItem label="" name="keys" valueType="array">
+          <BasicFormItem label="" name="keys" valueType="array" initialValue={[]}>
             <Input type="hidden" />
           </BasicFormItem>
         </div>
