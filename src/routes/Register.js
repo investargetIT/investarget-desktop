@@ -108,7 +108,7 @@ class Register extends React.Component {
             name="organization"
             rules={[{ required: true, message: i18n("account.please_select") + i18n("account.org") }]}
           >
-            <SelectExistOrganization className="login-register-form__select" />
+            <SelectExistOrganization className="login-register-form__select" allowCreate />
           </Form.Item>
 
           <Form.Item

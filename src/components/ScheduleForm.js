@@ -264,13 +264,13 @@ class ScheduleForm extends React.Component {
         </BasicFormItem>
         }
 
-        {/* {!disabledOrHide &&
+        {!disabledOrHide &&
           <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
             <SelectExistProject />
           </BasicFormItem>
         }
 
-        {!disabledOrHide && scheduleType !== 4 &&
+        {/* {!disabledOrHide && scheduleType !== 4 &&
           <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
             <SelectExistInvestor />
           </BasicFormItem>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 
-function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
+function DebounceSelect({ fetchOptions, allowCreate = false, debounceTimeout = 800, ...props }) {
   const [fetching, setFetching] = React.useState(false);
   const [fetchingMore, setFetchingMore] = React.useState(false);
   const [options, setOptions] = React.useState([]);
@@ -81,7 +81,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
   const dropdownRender = originalNode => {
     return (
       <div ref={dropdownContent} onScroll={handleScroll}>
-        {search && (
+        {allowCreate && search && (
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 12px', minHeight: 32 }}>
             <div style={{ fontWeight: 500, color: '#636e7b' }}>{search}</div>
             <div onClick={handleAddBtnClick}  style={{ color: '#339bd2', cursor: 'pointer' }}>添加</div>

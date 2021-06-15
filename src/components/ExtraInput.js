@@ -583,17 +583,16 @@ class SelectPartner extends React.Component {
   }
 }
 
-/**
- * SelectExistProject
- */
-class SelectExistProject extends React.Component {
 
-  getProject = (params) => {
+
+const SelectExistProject = (props) => {
+
+  const getProject = (params) => {
     params = { ...params }
     params['skip_count'] = (params['page_index'] - 1) * params['page_size']
     params['max_size'] = params['page_size']
-    params['bdm'] = this.props.bdm;
-    params['projstatus'] = this.props.projstatus;
+    params['bdm'] = props.bdm;
+    params['projstatus'] = props.projstatus;
     delete params['page_index']
     delete params['page_size']
     return api.getProj(params).then(result => {
@@ -606,26 +605,84 @@ class SelectExistProject extends React.Component {
     })
   }
 
-  getProjectNameById = (id) => {
-    return api.getProjLangDetail(id).then(result => {
-      return result.data.projtitle
-    })
-  }
+  // const [value, setValue] = React.useState([]);
+  // return (
+  //   <Select2
+  //     value={value}
+  //     placeholder={i18n('account.select_org')}
+  //     fetchOptions={getOrg}
+  //     onChange={(newValue) => {
+  //       setValue(newValue);
+  //     }}
+  //     style={{
+  //       width: '100%',
+  //     }}
+  //     {...props}
+  //   />
+  // );
+  return (
+    <Select2
+      value={props.value}
+      placeholder={props.placeholder}
+      fetchOptions={getProject}
+      onChange={props.onChange}
 
-  render() {
-    return (
-      <Select2
-        style={this.props.style || {}}
-        getData={this.getProject}
-        getNameById={this.getProjectNameById}
-        value={this.props.value}
-        onChange={this.props.onChange}
-        placeholder={this.props.placeholder}
-        noResult={this.props.noResult}
-      />
-    )
-  }
-}
+      style={props.style || {}}
+      // getData={this.getProject}
+      // getNameById={this.getProjectNameById}
+      
+      
+      
+      // noResult={this.props.noResult}
+      // {...props}
+    />
+  );
+};
+
+
+/**
+ * SelectExistProject
+ */
+// class SelectExistProject extends React.Component {
+
+//   getProject = (params) => {
+//     params = { ...params }
+//     params['skip_count'] = (params['page_index'] - 1) * params['page_size']
+//     params['max_size'] = params['page_size']
+//     params['bdm'] = this.props.bdm;
+//     params['projstatus'] = this.props.projstatus;
+//     delete params['page_index']
+//     delete params['page_size']
+//     return api.getProj(params).then(result => {
+//       var { count: total, data: list } = result.data
+//       list = list.map(item => {
+//         const { id: value, projtitle: label } = item
+//         return { value, label }
+//       })
+//       return { total, list }
+//     })
+//   }
+
+//   getProjectNameById = (id) => {
+//     return api.getProjLangDetail(id).then(result => {
+//       return result.data.projtitle
+//     })
+//   }
+
+//   render() {
+//     return (
+//       <Select2
+//         style={this.props.style || {}}
+//         getData={this.getProject}
+//         getNameById={this.getProjectNameById}
+//         value={this.props.value}
+//         onChange={this.props.onChange}
+//         placeholder={this.props.placeholder}
+//         noResult={this.props.noResult}
+//       />
+//     )
+//   }
+// }
 
 class SelectProjectForOrgBd extends React.Component {
 
