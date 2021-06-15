@@ -92,7 +92,9 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
       </div>
     );
   }
-
+  // Remove unrecognized props
+  const { getData, getNameById, noResult, ...rest } = props;
+  window.echo('new proppps', rest);
   return (
     <Select
       size="large"
@@ -104,7 +106,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
       filterOption={false}
       onSearch={debounceFetcher}
       notFoundContent={fetching ? <Spin size="small" /> : '未找到相关机构'}
-      {...props}
+      {...rest}
       options={options}
       dropdownRender={dropdownRender}
     />

@@ -372,7 +372,7 @@ export default function MySchedule() {
         <div style={{ marginLeft: 5 }}>路演会议</div> 
       </div>
 
-      {/* <Modal
+      <Modal
         title={i18n('schedule.add_event')}
         // visible={visibleAdd}
         // onOk={this.addEvent}
@@ -381,9 +381,9 @@ export default function MySchedule() {
         // maskStyle={maskStyle}
         maskClosable={false}
         visible
-      > */}
+      >
         {/* {visibleAdd ? */}
-          {/* <ScheduleForm
+          <ScheduleForm
             onValuesChange={onValuesChange}
             getValueProps={mapAddPropsToFields}
             // wrappedComponentRef={this.handleRef}
@@ -393,9 +393,9 @@ export default function MySchedule() {
             // onProjChange={this.handleProjChange}
             // onUserChange={this.handleUserChange}
             // data={this.setAddFormData()}
-          /> */}
+          />
           {/* : null} */}
-      {/* </Modal> */}
+      </Modal>
 
     </div>
   );
