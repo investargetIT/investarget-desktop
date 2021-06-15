@@ -321,6 +321,7 @@ const SelectExistOrganization = (props) => {
       style={{
         width: '100%',
       }}
+      noResult="未找到相关机构"
       {...props}
     />
   );
@@ -444,18 +445,15 @@ class SelectExistUser extends React.Component {
 
 }
 
-/**
- * SelectExistInvestor
- */
-class SelectExistInvestor extends React.Component {
+const SelectExistInvestor = (props) => {
 
-  getInvestor = (params) => {
+  const getInvestor = (params) => {
     params = {
       ...params,
-      traderuser: this.props.dataroom ? undefined : getCurrentUser(),
+      traderuser: props.dataroom ? undefined : getCurrentUser(),
       sort: 'createdtime',
       desc: 1,
-      dataroom: this.props.dataroom,
+      dataroom: props.dataroom,
     };
     return api.getUserRelation(params).then(result => {
       var { count: total, data: list } = result.data
@@ -468,25 +466,63 @@ class SelectExistInvestor extends React.Component {
     })
   }
 
-  getUsernameById = (id) => {
-    return api.getUserInfo(id).then(result => {
-      return result.data.username
-    })
-  }
+  return (
+    <Select2
+      style={props.style || {}}
+      // getData={this.getInvestor}
+      fetchOptions={getInvestor}
+      // getNameById={this.getUsernameById}
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      noResult="未找到相关投资人"
+    />
+  );
+};
 
-  render() {
-    return (
-      <Select2
-        style={this.props.style || {}}
-        getData={this.getInvestor}
-        getNameById={this.getUsernameById}
-        value={this.props.value}
-        onChange={this.props.onChange}
-        placeholder={this.props.placeholder}
-      />
-    )
-  }
-}
+/**
+ * SelectExistInvestor
+ */
+// class SelectExistInvestor extends React.Component {
+
+//   getInvestor = (params) => {
+//     params = {
+//       ...params,
+//       traderuser: this.props.dataroom ? undefined : getCurrentUser(),
+//       sort: 'createdtime',
+//       desc: 1,
+//       dataroom: this.props.dataroom,
+//     };
+//     return api.getUserRelation(params).then(result => {
+//       var { count: total, data: list } = result.data
+//       list = list.map(item => item.investoruser).map(item => {
+//         const { id: value, username: label, org, mobile, email } = item;
+//         const description = [org ? org.orgname : '暂无机构', mobile, email].join('\n');
+//         return { value, label, description };
+//       })
+//       return { total, list }
+//     })
+//   }
+
+//   getUsernameById = (id) => {
+//     return api.getUserInfo(id).then(result => {
+//       return result.data.username
+//     })
+//   }
+
+//   render() {
+//     return (
+//       <Select2
+//         style={this.props.style || {}}
+//         getData={this.getInvestor}
+//         getNameById={this.getUsernameById}
+//         value={this.props.value}
+//         onChange={this.props.onChange}
+//         placeholder={this.props.placeholder}
+//       />
+//     )
+//   }
+// }
 
 /**
  * SelectAllUser

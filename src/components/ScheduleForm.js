@@ -270,11 +270,11 @@ class ScheduleForm extends React.Component {
           </BasicFormItem>
         }
 
-        {/* {!disabledOrHide && scheduleType !== 4 &&
+        {!disabledOrHide && scheduleType !== 4 &&
           <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
             <SelectExistInvestor />
           </BasicFormItem>
-        } */}
+        }
 
         { scheduleType === 4 &&
         <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>

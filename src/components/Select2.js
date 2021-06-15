@@ -2,7 +2,13 @@ import React from 'react';
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 
-function DebounceSelect({ fetchOptions, allowCreate = false, debounceTimeout = 800, ...props }) {
+function DebounceSelect({
+  fetchOptions,
+  allowCreate = false,
+  noResult = '未找到相关信息',
+  debounceTimeout = 800,
+  ...props,
+}) {
   const [fetching, setFetching] = React.useState(false);
   const [fetchingMore, setFetchingMore] = React.useState(false);
   const [options, setOptions] = React.useState([]);
@@ -93,8 +99,7 @@ function DebounceSelect({ fetchOptions, allowCreate = false, debounceTimeout = 8
     );
   }
   // Remove unrecognized props
-  const { getData, getNameById, noResult, ...rest } = props;
-  window.echo('new proppps', rest);
+  const { getData, getNameById, ...rest } = props;
   return (
     <Select
       size="large"
@@ -105,7 +110,7 @@ function DebounceSelect({ fetchOptions, allowCreate = false, debounceTimeout = 8
       ref={selectRef}
       filterOption={false}
       onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size="small" /> : '未找到相关机构'}
+      notFoundContent={fetching ? <Spin size="small" /> : noResult}
       {...rest}
       options={options}
       dropdownRender={dropdownRender}
