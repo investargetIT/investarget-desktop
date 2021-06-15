@@ -136,7 +136,6 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    window.echo('form ref', this.scheduleFormRef);
     let countryObj, scheduleType, disabledOrHide, proj, sendEmail, user;
     let keys = [];
     if (this.scheduleFormRef.current) {
@@ -148,7 +147,6 @@ class ScheduleForm extends React.Component {
       user = this.scheduleFormRef.current.getFieldValue('user');
       keys = this.scheduleFormRef.current.getFieldValue('keys');
     }
-    window.echo('keeeys', keys);
     // const attendeeFormItems = keys.map(k => {
     //   return (
     //     <FormItem {...formItemLayoutWithOutLabel} key={k}>
@@ -197,7 +195,6 @@ class ScheduleForm extends React.Component {
     //     </FormItem>
     //   );
     // });
-  
     return (
       <Form ref={this.scheduleFormRef}>
 
@@ -206,7 +203,7 @@ class ScheduleForm extends React.Component {
           name="type"
           required
           valueType="number"
-          initialValue={this.getInitialValueForScheduleType}
+          initialValue={this.getInitialValueForScheduleType()}
         >
           {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={disabledOrHide} /> : <SelectScheduleTypeWithoutMeeting />}
         </BasicFormItem>
@@ -220,8 +217,8 @@ class ScheduleForm extends React.Component {
           name="scheduledtime"
           valueType="object"
           required
-          initialValue={this.getInitialValueForScheduleTime}
-          rules={this.getRulesForScheduleTime}
+          initialValue={this.getInitialValueForScheduleTime()}
+          rules={this.getRulesForScheduleTime()}
         >
           <DatePicker
             disabledDate={this.disabledDate}
@@ -242,7 +239,7 @@ class ScheduleForm extends React.Component {
           required 
           valueType="object" 
           getValueFromEvent={(id, detail) => detail}
-          initialValue={this.getInitialValueForCountry}
+          initialValue={this.getInitialValueForCountry()}
         >
           <CascaderCountry size="large" isDetail />
         </BasicFormItem>
