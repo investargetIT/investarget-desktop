@@ -235,7 +235,7 @@ class ScheduleForm extends React.Component {
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');
-            if (scheduleType === 4 || !this.props.isAdd) return null;
+            if (scheduleType === 4) return null;
             return (
               <BasicFormItem
                 label={i18n('user.country')}
@@ -253,10 +253,10 @@ class ScheduleForm extends React.Component {
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4) return null;
             const countryObj = getFieldValue('country');
             if (!['中国', 'China'].includes(countryObj && countryObj.label)) return null;
-            const scheduleType = getFieldValue('type');
-            if (scheduleType === 4 || !this.props.isAdd) return null;
             return (
               <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
                 <SelectOrganizatonArea showSearch />
@@ -265,11 +265,17 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
-        {!disabledOrHide &&
-        <BasicFormItem label={i18n('schedule.address')} name="address">
-          <Input />
-        </BasicFormItem>
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4 && !this.props.isAdd) return null;
+            return (
+              <BasicFormItem label={i18n('schedule.address')} name="address">
+                <Input />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
         {!disabledOrHide &&
           <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
