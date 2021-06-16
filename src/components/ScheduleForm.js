@@ -301,48 +301,96 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
-        { scheduleType === 4 &&
-        <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
-          <BasicFormItem label="会议密码" name="password" required validator={this.passwordValidator}>
-            <Input />
-          </BasicFormItem>
-          <FormItem
-            {...formItemLayout}
-            label="持续时间"
-            name="duration"
-            initialValue={60}
-          >
-            <InputNumber min={1} />
-            <span className="ant-form-text">分钟</span>
-          </FormItem>
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType !== 4) return null;
+            return (
+              <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
+                <BasicFormItem label="会议密码" name="password" required validator={this.passwordValidator}>
+                  <Input />
+                </BasicFormItem>
+              </div>
+            );
+          }}
+        </Form.Item>
 
-          {this.props.isAdd &&
-          <BasicFormItem label="投资人" name="investor-attendee" valueType="array" initialValue={[]}>
-            <SelectMultiUsers type="investor" proj={proj} />
-          </BasicFormItem>
-          }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType !== 4) return null;
+            return (
+              <FormItem
+                {...formItemLayout}
+                label="持续时间"
+                name="duration"
+                initialValue={60}
+              >
+                <InputNumber min={1} />
+                <span className="ant-form-text">分钟</span>
+              </FormItem>
+            );
+          }}
+        </Form.Item>
 
-          {this.props.isAdd &&
-          <BasicFormItem label="交易师" name="trader-attendee" valueType="array" initialValue={[]}>
-            <SelectMultiUsers type="trader" />
-          </BasicFormItem>
-          }
-
-          {/* { attendeeFormItems } */}
-
-          {this.props.isAdd &&
-          <FormItem {...formItemLayoutWithOutLabel}>
-            <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
-              <Icon type="plus" /> 添加参会人 
-            </Button>
-          </FormItem>
-          }
-
-          <BasicFormItem label="" name="keys" valueType="array" initialValue={[]}>
-            <Input type="hidden" />
-          </BasicFormItem>
-        </div>
+        {this.props.isAdd &&
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              const scheduleType = getFieldValue('type');
+              if (scheduleType !== 4) return null;
+              return (
+                <BasicFormItem label="投资人" name="investor-attendee" valueType="array" initialValue={[]}>
+                  <SelectMultiUsers type="investor" proj={proj} />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
         }
+
+        {this.props.isAdd &&
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              const scheduleType = getFieldValue('type');
+              if (scheduleType !== 4) return null;
+              return (
+                <BasicFormItem label="交易师" name="trader-attendee" valueType="array" initialValue={[]}>
+                  <SelectMultiUsers type="trader" />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
+        }
+
+        {/* { attendeeFormItems } */}
+
+        {this.props.isAdd &&
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              const scheduleType = getFieldValue('type');
+              if (scheduleType !== 4) return null;
+              return (
+                <FormItem {...formItemLayoutWithOutLabel}>
+                  <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
+                    <Icon type="plus" /> 添加参会人
+                  </Button>
+                </FormItem>
+              );
+            }}
+          </Form.Item>
+        }
+
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType !== 4) return null;
+            return (
+              <BasicFormItem label="" name="keys" valueType="array" initialValue={[]}>
+                <Input type="hidden" />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
+
 
         {scheduleType !== 4 &&
           <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean">
