@@ -55,7 +55,8 @@ class MyProgress extends React.Component {
         const { seconds, all } = result.data;
         // 8005表示文件打包压缩已经完成，随时可以下载
         if (result.data.code === 8005) {
-          this.setState({ remainingSecodes: 0 });
+          // 设置 allSeconds 的值只是为了让进度条显示为 100%，任何数值都可以
+          this.setState({ remainingSecodes: 0, allSeconds: 1 });
           clearInterval(this.intervalId);
           this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey);
         } else {
