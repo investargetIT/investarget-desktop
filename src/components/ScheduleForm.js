@@ -136,15 +136,8 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    let countryObj, scheduleType, disabledOrHide, proj, sendEmail, user;
     let keys = [];
     if (this.scheduleFormRef.current) {
-      countryObj = this.scheduleFormRef.current.getFieldValue('country');
-      scheduleType = this.scheduleFormRef.current.getFieldValue('type');
-      disabledOrHide = scheduleType === 4 && !this.props.isAdd;
-      proj = this.scheduleFormRef.current.getFieldValue('proj');
-      sendEmail = this.scheduleFormRef.current.getFieldValue('sendEmail');
-      user = this.scheduleFormRef.current.getFieldValue('user');
       keys = this.scheduleFormRef.current.getFieldValue('keys');
     }
     // const attendeeFormItems = keys.map(k => {
@@ -198,15 +191,22 @@ class ScheduleForm extends React.Component {
     return (
       <Form ref={this.scheduleFormRef}>
 
-        <BasicFormItem
-          label="日程类型"
-          name="type"
-          required
-          valueType="number"
-          initialValue={this.getInitialValueForScheduleType()}
-        >
-          {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={disabledOrHide} /> : <SelectScheduleTypeWithoutMeeting />}
-        </BasicFormItem>
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            return (
+              <BasicFormItem
+                label="日程类型"
+                name="type"
+                required
+                valueType="number"
+                initialValue={this.getInitialValueForScheduleType()}
+              >
+                {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={scheduleType === 4 && !this.props.isAdd} /> : <SelectScheduleTypeWithoutMeeting />}
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
         <BasicFormItem label={i18n('schedule.title')} name="comments" required>
           <Input />
@@ -326,8 +326,10 @@ class ScheduleForm extends React.Component {
                 name="duration"
                 initialValue={60}
               >
-                <InputNumber min={1} />
-                <span className="ant-form-text">分钟</span>
+                <div>
+                  <InputNumber min={1} />
+                  <span className="ant-form-text">分钟</span>
+                </div>
               </FormItem>
             );
           }}
@@ -338,6 +340,7 @@ class ScheduleForm extends React.Component {
             {({ getFieldValue }) => {
               const scheduleType = getFieldValue('type');
               if (scheduleType !== 4) return null;
+              const proj = getFieldValue('proj');
               return (
                 <BasicFormItem label="投资人" name="investor-attendee" valueType="array" initialValue={[]}>
                   <SelectMultiUsers type="investor" proj={proj} />
@@ -391,24 +394,42 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4) return null;
+            return (
+              <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean" valuePropName="checked">
+                <Checkbox>发送提醒邮件</Checkbox>
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
-        {scheduleType !== 4 &&
-          <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean">
-            <Checkbox>发送提醒邮件</Checkbox>
-          </BasicFormItem>
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const sendEmail = getFieldValue('sendEmail');
+            const user = getFieldValue('user')
+            if (!sendEmail || user) return null;
+            return (
+              <BasicFormItem label="姓名" name="username" required>
+                <Input />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
-        {sendEmail && !user &&
-          <BasicFormItem label="姓名" name="username" required>
-            <Input />
-          </BasicFormItem>
-        }
-
-        <div style={{ display: sendEmail ? 'block' : 'none' }}>
-          <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required={sendEmail}>
-            <Input size="large" />
-          </BasicFormItem>
-        </div> 
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const sendEmail = getFieldValue('sendEmail');
+            if (!sendEmail) return null;
+            return (
+              <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
+                <Input size="large" />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
       </Form>
     )

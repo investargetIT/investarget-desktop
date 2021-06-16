@@ -5,6 +5,8 @@
 * 不再支持 `getFieldDecorator()`, 属性全部直接移到 `<Form.Item>` 中
 * `getFieldValue()` 使用方式变化，使用 `ref` 获取实例然后调方法，如果是根据值来显示或隐藏控件，用法见 `Register1.js`
 * 遇到类似 `React does not recognize the ... prop` 报错，需要把这些不认识的 `props` 排除掉再传递给组件，https://reactjs.org/warnings/unknown-prop.html
+* [antd: Checkbox] `value` is not a valid prop, do you mean `checked`, https://github.com/ant-design/ant-design/issues/20803#issuecomment-601626759
+* [antd: Form.Item] `children` is array of render props cannot have `name`, 这是要求 Form.Item 只能包含一子组件
 
 # Important #
 
