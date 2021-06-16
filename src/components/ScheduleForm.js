@@ -277,23 +277,27 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
-        {!disabledOrHide &&
-          <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
-            <SelectExistProject />
-          </BasicFormItem>
-        }
-
-        {!disabledOrHide && scheduleType !== 4 &&
-          <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
-            <SelectExistInvestor />
-          </BasicFormItem>
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4 && !this.props.isAdd) return null;
+            return (
+              <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
+                <SelectExistProject />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
-            if (getFieldValue('type') === 4) {
-              return
-            }
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4) return null;
+            return (
+              <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
+                <SelectExistInvestor />
+              </BasicFormItem>
+            );
           }}
         </Form.Item>
 
