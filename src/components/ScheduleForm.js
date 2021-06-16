@@ -232,28 +232,35 @@ class ScheduleForm extends React.Component {
           />
         </BasicFormItem>
 
-        {!disabledOrHide && scheduleType !== 4 &&
-        <BasicFormItem 
-          label={i18n('user.country')} 
-          name="country" 
-          required 
-          valueType="object" 
-          getValueFromEvent={(id, detail) => detail}
-          initialValue={this.getInitialValueForCountry()}
-        >
-          <CascaderCountry size="large" isDetail />
-        </BasicFormItem>
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4 || !this.props.isAdd) return null;
+            return (
+              <BasicFormItem
+                label={i18n('user.country')}
+                name="country"
+                required
+                valueType="object"
+                getValueFromEvent={(id, detail) => detail}
+                initialValue={this.getInitialValueForCountry()}
+              >
+                <CascaderCountry size="large" isDetail />
+              </BasicFormItem>
+            )
+          }}
+        </Form.Item>
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const countryObj = getFieldValue('country');
+            if (!['中国', 'China'].includes(countryObj && countryObj.label)) return null;
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4 || !this.props.isAdd) return null;
             return (
-              ['中国', 'China'].includes(countryObj && countryObj.label) && !disabledOrHide && scheduleType !== 4 ?
-                <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-                  <SelectOrganizatonArea showSearch />
-                </BasicFormItem>
-                : null
+              <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
+                <SelectOrganizatonArea showSearch />
+              </BasicFormItem>
             );
           }}
         </Form.Item>
@@ -276,6 +283,14 @@ class ScheduleForm extends React.Component {
           </BasicFormItem>
         }
 
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (getFieldValue('type') === 4) {
+              return
+            }
+          }}
+        </Form.Item>
+
         { scheduleType === 4 &&
         <div style={{ paddingTop: 30, borderTop: '1px solid #ccc' }}>
           <BasicFormItem label="会议密码" name="password" required validator={this.passwordValidator}>
@@ -287,9 +302,7 @@ class ScheduleForm extends React.Component {
             name="duration"
             initialValue={60}
           >
-            {/* {getFieldDecorator('duration', { initialValue: 60 })( */}
-              <InputNumber min={1} />
-            {/* )} */}
+            <InputNumber min={1} />
             <span className="ant-form-text">分钟</span>
           </FormItem>
 
