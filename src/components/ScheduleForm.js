@@ -18,6 +18,9 @@ import {
   SelectScheduleTypeWithoutMeeting,
 } from '../components/ExtraInput'
 import { i18n, hasPerm } from '../utils/util';
+import {
+  PlusOutlined,
+} from '@ant-design/icons';
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -374,7 +377,7 @@ class ScheduleForm extends React.Component {
               return (
                 <FormItem {...formItemLayoutWithOutLabel}>
                   <Button type="dashed" onClick={this.addAttendeeFormItem} style={{ width: '60%' }}>
-                    <Icon type="plus" /> 添加参会人
+                    <PlusOutlined /> 添加参会人
                   </Button>
                 </FormItem>
               );
