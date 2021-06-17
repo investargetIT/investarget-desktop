@@ -61,17 +61,7 @@ class ScheduleForm extends React.Component {
 
   constructor(props) {
     super(props)
-    // const { getFieldDecorator } = this.props.form
-
-    // if ('isAdd' in props) {
-    //   getFieldDecorator('scheduledtime', {
-    //     rules: [{required: true}], initialValue: props.date,
-    //   })
-    //   getFieldDecorator('country', { initialValue: props.country });
-    //   getFieldDecorator('type', { initialValue: 3 });
-    // }
     this.manualAttendeeNum = 0;
-    this.scheduleFormRef = React.createRef();
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -80,13 +70,13 @@ class ScheduleForm extends React.Component {
   addAttendeeFormItem = () => {
     this.manualAttendeeNum = this.manualAttendeeNum + 1;
     // can use data-binding to get
-    const keys = this.scheduleFormRef.current.getFieldValue('keys');
+    const keys = this.props.forwardedRef.current.getFieldValue('keys');
     const keyNums = keys.map(m => parseInt(m, 10));
     const maxKey = keyNums.length > 0 ? Math.max(...keyNums) : 0;
     const nextKeys = keys.concat(`${maxKey + 1}`);
     // can use data-binding to set
     // important! notify form to detect changes
-    this.scheduleFormRef.current.setFieldsValue({
+    this.props.forwardedRef.current.setFieldsValue({
       keys: nextKeys,
     });
   }
@@ -94,14 +84,9 @@ class ScheduleForm extends React.Component {
   removeAttendeeFormItem = (k) => {
     const { form } = this.props;
     // can use data-binding to get
-    const keys = this.scheduleFormRef.current.getFieldValue('keys');
-    // We need at least one passenger
-    // if (keys.length === 1) {
-    //   return;
-    // }
-
+    const keys = this.props.forwardedRef.current.getFieldValue('keys');
     // can use data-binding to set
-    this.scheduleFormRef.current.setFieldsValue({
+    this.props.forwardedRef.current.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
   }
@@ -139,8 +124,9 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
+    const { forwardedRef } = this.props;
     return (
-      <Form ref={this.scheduleFormRef}>
+      <Form ref={forwardedRef}>
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
@@ -317,11 +303,21 @@ class ScheduleForm extends React.Component {
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType !== 4) return null;
+            return (
+              <BasicFormItem label="" name="keys" valueType="array" initialValue={[]} hidden>
+                <Input type="hidden" />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
+
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType !== 4) return null;
             let keys = getFieldValue('keys');
-            window.echo('keys', keys);
-            if (!keys) {
-              keys = [];
-            }
             return keys.map(k => {
               return (
                 <FormItem {...formItemLayoutWithOutLabel} key={k} className="dynamic-attendee-item">
@@ -378,18 +374,6 @@ class ScheduleForm extends React.Component {
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');
-            if (scheduleType !== 4) return null;
-            return (
-              <BasicFormItem label="" name="keys" valueType="array" initialValue={[]}>
-                <Input type="hidden" />
-              </BasicFormItem>
-            );
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            const scheduleType = getFieldValue('type');
             if (scheduleType === 4) return null;
             return (
               <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean" valuePropName="checked">
@@ -429,4 +413,4 @@ class ScheduleForm extends React.Component {
   }
 }
 
-export default ScheduleForm
+export default React.forwardRef((props, ref) => <ScheduleForm {...props} forwardedRef={ref} />); 

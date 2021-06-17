@@ -7,6 +7,7 @@
 * 遇到类似 `React does not recognize the ... prop` 报错，需要把这些不认识的 `props` 排除掉再传递给组件，https://reactjs.org/warnings/unknown-prop.html
 * [antd: Checkbox] `value` is not a valid prop, do you mean `checked`, https://github.com/ant-design/ant-design/issues/20803#issuecomment-601626759
 * [antd: Form.Item] `children` is array of render props cannot have `name`, 这是要求 Form.Item 只能包含一子组件
+* 涉及到表单组件复用的可能需要 `React.forwardRef()`, 参考 ScheduleForm 组件
 
 # Important #
 

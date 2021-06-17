@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Calendar, Select, Radio, Form, Modal } from 'antd';
 import moment from 'moment';
 import { requestAllData, getCurrentUser, handleError, hasPerm, i18n } from '../utils/util';
@@ -34,6 +34,8 @@ export default function MySchedule() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [calendarMode, setCalendarMode] = useState('month');
 
+  const formRef = useRef(null);
+
   useEffect(() => {
     getEvents();
   }, []);
@@ -52,6 +54,50 @@ export default function MySchedule() {
   function onPanelChange(date, mode) {
     setSelectedDate(date);
     setCalendarMode(mode);
+  }
+
+  function setAddFormData() {
+    let maxKey = 0;
+    let keys = [];
+    if (this.addForm && this.addForm.getFieldValue('keys')) {
+      keys = this.addForm.getFieldValue('keys');
+      maxKey = keys.length > 0 ? Math.max(...keys) : 0;
+      const originValues = this.addForm.getFieldsValue();
+      const data = {};
+      for (let prop in originValues) {
+        data[prop] = { value: originValues[prop] };
+      }
+
+      // 自动设置发送邮件提醒的目标邮箱为选中的投资人邮箱
+      if (this.state.targetEmail) {
+        data.targetEmail = { value: this.state.targetEmail };
+      }
+
+      // 剔除原来选中的项目的联系人姓名和邮箱
+      if (this.state.oldSelectedProj) {
+        const oldContact = Object.keys(originValues)
+          .filter(f => f.startsWith('email'))
+          .map(m => {
+            const key = m.split('-')[1]; 
+            return {
+              email: originValues[m],
+              key,
+            };
+          })
+          .filter(f => f.email === this.state.oldSelectedProj.contactEmail);
+        if (oldContact.length > 0) {
+          keys = keys.filter(f => f !== oldContact[0].key);
+        }
+      }
+
+      // 增加现在新选中的项目的联系人姓名和邮箱
+      if (this.state.proj) {
+        data.keys = { value: keys.concat(`${maxKey + 1}`) };
+        data[`name-${maxKey + 1}`] = { value: this.state.proj.contactUsername };
+        data[`email-${maxKey + 1}`] = { value: this.state.proj.contactEmail };
+      }
+      return data;
+    }
   }
 
   async function getEvents() {
@@ -384,6 +430,7 @@ export default function MySchedule() {
       >
         {/* {visibleAdd ? */}
           <ScheduleForm
+            ref={formRef}
             onValuesChange={onValuesChange}
             getValueProps={mapAddPropsToFields}
             // wrappedComponentRef={this.handleRef}
@@ -392,7 +439,7 @@ export default function MySchedule() {
             country={{ label: 'China', value: 42 }}
             // onProjChange={this.handleProjChange}
             // onUserChange={this.handleUserChange}
-            // data={this.setAddFormData()}
+            // data={setAddFormData()}
           />
           {/* : null} */}
       </Modal>

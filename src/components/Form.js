@@ -71,6 +71,9 @@ function BasicFormItem(props, context) {
   if ('getValueFromEvent' in props) {
     options.getValueFromEvent = props.getValueFromEvent;
   }
+  if ('hidden' in props) {
+    options.hidden = props.hidden;
+  }
 
   return (
     <FormItem
