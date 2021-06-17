@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Calendar, Select, Radio, Form, Modal } from 'antd';
 import moment from 'moment';
-import { requestAllData, getCurrentUser, handleError, hasPerm, i18n } from '../utils/util';
+import { requestAllData, getCurrentUser, handleError, hasPerm, i18n, getUserInfo } from '../utils/util';
 import * as api from '../api';
 import {
   RightOutlined,
@@ -345,6 +345,94 @@ export default function MySchedule() {
     setTargetEmail('');
   }
 
+  function toData(formData) {
+    var data = {...formData}
+    data['scheduledtimeOrigin'] = data.scheduledtime.clone();
+    data['scheduledtime'] = data['scheduledtime'].format('YYYY-MM-DDTHH:mm:ss')
+    if (!['中国', 'China'].includes(formData.country && formData.country.label)) {
+      data['location'] = null;
+    }
+    data.country = formData.country && formData.country.value;
+    return data
+  }
+
+  function addEvent() {
+    formRef.current.validateFields()
+      .then(values => {
+        let param = toData(values);
+        addEventAsync(param)
+          .then(() => {
+            hideAddModal();
+            getEvents();
+          })
+          .catch(handleError);
+      });
+  }
+
+  const addEventAsync = async (param) => {
+    const body = { ...param, title: param.comments };
+    await api.getUserSession();
+    const meetingResult = await api.addSchedule([body]);
+    const { sendEmail } = body;
+    if (sendEmail) {
+      const {
+        targetEmail: destination,
+        scheduledtime: startDate,
+        comments: summary,
+        address: location,
+        scheduledtimeOrigin,
+        username,
+      } = body;
+      const sendEmailBody = {
+        destination,
+        html: `<div><p>${this.state.user ? this.state.user.username : username}，您好</p><p>标题：${summary}</p><p>时间：${startDate.replace('T', ' ')}</p></div>`,
+        subject: '日程邮件推送',
+        startDate,
+        endDate: scheduledtimeOrigin.add(1, 'h').format('YYYY-MM-DDTHH:mm:ss'),
+        summary,
+        description: summary,
+        location,
+      };
+      await api.sendScheduleReminderEmail(sendEmailBody);
+    }
+    if (param.type === 4) {
+      const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
+      const attendee = formatAttendee(param);
+      const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
+      await api.addWebexUser(userBody);
+
+      // 为在库里的参会人创建日程
+      const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
+      const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
+      await api.getUserSession();
+      await api.addSchedule(attendeeBody);
+    }
+  }
+
+  const formatAttendee = param => {
+    const existAttendees = param['investor-attendee'].concat(param['trader-attendee']).map(m => {
+      const user = parseInt(m.key, 10);
+      const nameAndEmail = m.label.split('\n');
+      const name = nameAndEmail[0];
+      const email = nameAndEmail[1];
+      return { user, name, email };
+    });
+    const manualAttendees = Object.keys(param).filter(f => f.startsWith('name')).map(m => {
+      const name = param[m];
+      const emailKey = `email-${m.split('-')[1]}`;
+      const email = param[emailKey];
+      return { name, email };
+    });
+    const currentUser = getUserInfo();
+    const meetingHost = {
+      user: currentUser.id,
+      name: currentUser.username,
+      email: currentUser.email,
+      meetingRole: true,
+    };
+    return existAttendees.concat(meetingHost, manualAttendees);
+  }
+
   function myCalendarHeaderRender(value, type, onChange, onTypeChange) {
     const start = 0;
     const end = 12;
@@ -464,7 +552,7 @@ export default function MySchedule() {
       {visibleAdd &&
         <Modal
           title={i18n('schedule.add_event')}
-          // onOk={this.addEvent}
+          onOk={addEvent}
           onCancel={hideAddModal}
           maskStyle={{ backgroundColor: 'rgba(0,0,0,.38)' }}
           maskClosable={false}
