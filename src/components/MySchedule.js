@@ -21,6 +21,8 @@ export default function MySchedule() {
   const [targetEmail, setTargetEmail] = useState(''); // 目标邮箱，发送提醒邮件的邮箱地址
   const [user, setUser] = useState(null); // 选择的投资人
 
+  const [visibleAdd, setVisibleAdd] = useState(false);
+
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -39,9 +41,11 @@ export default function MySchedule() {
   }, [myScheduleList]);
 
   useEffect(() => {
-    const newValues = setAddFormData();
-    formRef.current.setFieldsValue(newValues);
-  }, [proj, targetEmail])
+    if (formRef.current) {
+      const newValues = setAddFormData();
+      formRef.current.setFieldsValue(newValues);
+    }
+  }, [proj, targetEmail]);
 
   function onPanelChange(date, mode) {
     setSelectedDate(date);
@@ -324,6 +328,23 @@ export default function MySchedule() {
     });
   }
 
+  function onSelect(date) {
+    if (calendarMode == 'month' && date.diff(moment(), 'days') >= 0) {
+      setVisibleAdd(true);
+      setSelectedDate(date.startOf('hour'));
+    } else {
+      setSelectedDate(date);
+    }
+  }
+
+  function hideAddModal() {
+    setVisibleAdd(false);
+    setProj(undefined);
+    setOldSelectedProj(undefined);
+    setUser(null);
+    setTargetEmail('');
+  }
+
   function myCalendarHeaderRender(value, type, onChange, onTypeChange) {
     const start = 0;
     const end = 12;
@@ -425,7 +446,7 @@ export default function MySchedule() {
         dateFullCellRender={dateCellRender}
         onPanelChange={onPanelChange}
         headerRender={({ value, type, onChange, onTypeChange }) => myCalendarHeaderRender(value, type, onChange, onTypeChange)}
-      // onSelect={this.onSelect}
+        onSelect={onSelect}
       // value={selectedDate}
       />
       <div style={{ display: 'flex', fontSize: 14, lineHeight: '20px', color: '#262626', marginTop: 40 }}>
@@ -440,17 +461,15 @@ export default function MySchedule() {
         <div style={{ marginLeft: 5 }}>路演会议</div> 
       </div>
 
-      <Modal
-        title={i18n('schedule.add_event')}
-        // visible={visibleAdd}
-        // onOk={this.addEvent}
-        // onCancel={this.hideAddModal}
-        // style={modalStyle}
-        // maskStyle={maskStyle}
-        maskClosable={false}
-        visible
-      >
-        {/* {visibleAdd ? */}
+      {visibleAdd &&
+        <Modal
+          title={i18n('schedule.add_event')}
+          // onOk={this.addEvent}
+          onCancel={hideAddModal}
+          maskStyle={{ backgroundColor: 'rgba(0,0,0,.38)' }}
+          maskClosable={false}
+          visible
+        >
           <ScheduleForm
             ref={formRef}
             onValuesChange={onValuesChange}
@@ -458,8 +477,8 @@ export default function MySchedule() {
             date={selectedDate}
             country={{ label: 'China', value: 42 }}
           />
-          {/* : null} */}
-      </Modal>
+        </Modal>
+      }
 
     </div>
   );
