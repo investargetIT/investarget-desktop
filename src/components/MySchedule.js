@@ -12,16 +12,7 @@ import ScheduleForm from './ScheduleForm';
 // function mapPropsToFields(props) {
 //   return props.data
 // }
-function onValuesChange(props, values) {
-  // window.echo('props', props);
-  // window.echo('values', values);
-  if (values.proj) {
-    props.onProjChange(values.proj);
-  }
-  if (values.user) {
-    props.onUserChange(values.user);
-  }
-}
+
 function mapAddPropsToFields(props) {
   // window.echo('map to fields', props);
   return props.data;
@@ -33,6 +24,12 @@ export default function MySchedule() {
   const [myScheduleList, setMyScheduleList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
   const [calendarMode, setCalendarMode] = useState('month');
+
+  
+  const [proj, setProj] = useState(); // 新增时选中的项目
+  const [oldSelectedProj, setOldSelectedProj] = useState(); // 新增时原来选中的项目
+  const [targetEmail, setTargetEmail] = useState(''); // 目标邮箱，发送提醒邮件的邮箱地址
+  const [user, setUser] = useState(null); // 选择的投资人
 
   const formRef = useRef(null);
 
@@ -74,7 +71,7 @@ export default function MySchedule() {
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱
-      if (this.state.oldSelectedProj) {
+      if (oldSelectedProj) {
         const oldContact = Object.keys(originValues)
           .filter(f => f.startsWith('email'))
           .map(m => {
@@ -84,7 +81,7 @@ export default function MySchedule() {
               key,
             };
           })
-          .filter(f => f.email === this.state.oldSelectedProj.contactEmail);
+          .filter(f => f.email === oldSelectedProj.contactEmail);
         if (oldContact.length > 0) {
           keys = keys.filter(f => f !== oldContact[0].key);
         }
@@ -302,6 +299,36 @@ export default function MySchedule() {
     );
   }
 
+  function onValuesChange(changedValues, allValues) {
+    if (changedValues.proj) {
+      handleProjChange(changedValues.proj);
+    }
+    if (changedValues.user) {
+      handleUserChange(changedValues.user);
+    }
+  }
+
+  function handleProjChange(projID) {
+    api.getProjDetail(projID)
+      .then((response) => {
+        if (!response.data.email) return;
+        setOldSelectedProj(proj);
+        setProj({
+          id: projID,
+          contactUsername: response.data.contactPerson,
+          contactEmail: response.data.email,
+        });
+      });
+  }
+
+  function handleUserChange(userId) {
+    api.getUserInfo(userId).then(res => {
+      const { email } = res.data;
+      setUser(res.data);
+      setTargetEmail(email);
+    });
+  }
+
   function myCalendarHeaderRender(value, type, onChange, onTypeChange) {
     const start = 0;
     const end = 12;
@@ -437,8 +464,6 @@ export default function MySchedule() {
             isAdd
             date={selectedDate}
             country={{ label: 'China', value: 42 }}
-            // onProjChange={this.handleProjChange}
-            // onUserChange={this.handleUserChange}
             // data={setAddFormData()}
           />
           {/* : null} */}

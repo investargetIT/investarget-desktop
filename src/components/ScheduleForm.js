@@ -124,9 +124,9 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    const { forwardedRef } = this.props;
+    const { forwardedRef, onValuesChange } = this.props;
     return (
-      <Form ref={forwardedRef}>
+      <Form ref={forwardedRef} onValuesChange={onValuesChange}>
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
