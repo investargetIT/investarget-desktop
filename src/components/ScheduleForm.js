@@ -67,6 +67,10 @@ class ScheduleForm extends React.Component {
   disabledDate = current => current && current < moment().startOf('day');
   disabledTime = () => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) });
 
+  componentDidMount() {
+    this.props.forwardedRef.current.setFieldsValue({ keys: [] });
+  }
+
   addAttendeeFormItem = () => {
     this.manualAttendeeNum = this.manualAttendeeNum + 1;
     // can use data-binding to get

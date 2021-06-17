@@ -9,16 +9,6 @@ import {
 } from '@ant-design/icons';
 import ScheduleForm from './ScheduleForm';
 
-// function mapPropsToFields(props) {
-//   return props.data
-// }
-
-function mapAddPropsToFields(props) {
-  // window.echo('map to fields', props);
-  return props.data;
-}
-// const AddScheduleForm = Form.create({ onValuesChange, mapPropsToFields: mapAddPropsToFields })(ScheduleForm);
-
 export default function MySchedule() {
 
   const [myScheduleList, setMyScheduleList] = useState([]);
@@ -48,6 +38,11 @@ export default function MySchedule() {
     // window.echo('my schedule list', myScheduleList);
   }, [myScheduleList]);
 
+  useEffect(() => {
+    const newValues = setAddFormData();
+    formRef.current.setFieldsValue(newValues);
+  }, [proj, targetEmail])
+
   function onPanelChange(date, mode) {
     setSelectedDate(date);
     setCalendarMode(mode);
@@ -56,18 +51,18 @@ export default function MySchedule() {
   function setAddFormData() {
     let maxKey = 0;
     let keys = [];
-    if (this.addForm && this.addForm.getFieldValue('keys')) {
-      keys = this.addForm.getFieldValue('keys');
+    if (formRef.current && formRef.current.getFieldValue('keys')) {
+      keys = formRef.current.getFieldValue('keys');
       maxKey = keys.length > 0 ? Math.max(...keys) : 0;
-      const originValues = this.addForm.getFieldsValue();
+      const originValues = formRef.current.getFieldsValue();
       const data = {};
       for (let prop in originValues) {
-        data[prop] = { value: originValues[prop] };
+        data[prop] = originValues[prop];
       }
 
       // 自动设置发送邮件提醒的目标邮箱为选中的投资人邮箱
-      if (this.state.targetEmail) {
-        data.targetEmail = { value: this.state.targetEmail };
+      if (targetEmail) {
+        data.targetEmail = targetEmail;
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱
@@ -88,10 +83,10 @@ export default function MySchedule() {
       }
 
       // 增加现在新选中的项目的联系人姓名和邮箱
-      if (this.state.proj) {
-        data.keys = { value: keys.concat(`${maxKey + 1}`) };
-        data[`name-${maxKey + 1}`] = { value: this.state.proj.contactUsername };
-        data[`email-${maxKey + 1}`] = { value: this.state.proj.contactEmail };
+      if (proj) {
+        data.keys = keys.concat(`${maxKey + 1}`);
+        data[`name-${maxKey + 1}`] = proj.contactUsername;
+        data[`email-${maxKey + 1}`] = proj.contactEmail;
       }
       return data;
     }
@@ -459,12 +454,9 @@ export default function MySchedule() {
           <ScheduleForm
             ref={formRef}
             onValuesChange={onValuesChange}
-            getValueProps={mapAddPropsToFields}
-            // wrappedComponentRef={this.handleRef}
             isAdd
             date={selectedDate}
             country={{ label: 'China', value: 42 }}
-            // data={setAddFormData()}
           />
           {/* : null} */}
       </Modal>
