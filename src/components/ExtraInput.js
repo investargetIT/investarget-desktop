@@ -469,6 +469,7 @@ const SelectExistInvestor = (props) => {
   return (
     <Select2
       style={props.style || {}}
+      size={props.size}
       // getData={this.getInvestor}
       fetchOptions={getInvestor}
       // getNameById={this.getUsernameById}
@@ -662,7 +663,7 @@ const SelectExistProject = (props) => {
       placeholder={props.placeholder}
       fetchOptions={getProject}
       onChange={props.onChange}
-
+      size={props.size}
       style={props.style || {}}
       // getData={this.getProject}
       // getNameById={this.getProjectNameById}

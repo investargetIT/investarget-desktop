@@ -592,3 +592,15 @@ label.login-register-form__container__label {
 .card-container .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: black;
 }
+
+.dynamic-delete-button {
+  cursor: pointer;
+  position: relative;
+  top: 4px;
+  font-size: 24px;
+  color: #999999;
+  transition: all .3s;
+}
+.dynamic-attendee-item .ant-form-item {
+  margin-bottom: 0;
+}

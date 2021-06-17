@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, DatePicker, InputNumber, Button, Icon, Row, Col, Checkbox } from 'antd'
+import { Form, Input, DatePicker, InputNumber, Button, Row, Col, Checkbox } from 'antd'
 import moment from 'moment';
 import {
   BasicFormItem,
@@ -20,6 +20,7 @@ import {
 import { i18n, hasPerm } from '../utils/util';
 import {
   PlusOutlined,
+  MinusCircleOutlined,
 } from '@ant-design/icons';
 
 const tailFormItemLayout = {
@@ -78,7 +79,6 @@ class ScheduleForm extends React.Component {
 
   addAttendeeFormItem = () => {
     this.manualAttendeeNum = this.manualAttendeeNum + 1;
-    const { form } = this.props;
     // can use data-binding to get
     const keys = this.scheduleFormRef.current.getFieldValue('keys');
     const keyNums = keys.map(m => parseInt(m, 10));
@@ -86,7 +86,7 @@ class ScheduleForm extends React.Component {
     const nextKeys = keys.concat(`${maxKey + 1}`);
     // can use data-binding to set
     // important! notify form to detect changes
-    form.setFieldsValue({
+    this.scheduleFormRef.current.setFieldsValue({
       keys: nextKeys,
     });
   }
@@ -139,58 +139,6 @@ class ScheduleForm extends React.Component {
   }
 
   render() {
-    let keys = [];
-    if (this.scheduleFormRef.current) {
-      keys = this.scheduleFormRef.current.getFieldValue('keys');
-    }
-    // const attendeeFormItems = keys.map(k => {
-    //   return (
-    //     <FormItem {...formItemLayoutWithOutLabel} key={k}>
-    //       <Row gutter={8} style={{ width: '79%' }}>
-    //         <Col span={7}>
-    //           <FormItem
-    //             name={`name-${k}`}
-    //             rules={[{ message: i18n('validation.not_empty'), required: true }]}
-    //             initialValue=""
-    //             required
-    //           >
-    //             {/* {
-    //               getFieldDecorator(`name-${k}`, {
-    //                 rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: ''
-    //               })( */}
-    //                 <Input placeholder="姓名" />
-    //               {/* )
-    //             } */}
-    //           </FormItem>
-    //         </Col>
-    //         <Col span={15}>
-    //           <FormItem
-    //             name={`email-${k}`}
-    //             rules={[{ message: '请输入正确的邮箱地址', required: true, type: 'email' }]}
-    //             initialValue=""
-    //             required
-    //           >
-    //             {/* {
-    //               getFieldDecorator(`email-${k}`, {
-    //                 rules: [{ message: '请输入正确的邮箱地址', required: true, type: 'email' }], initialValue: ''
-    //               })( */}
-    //                 <Input placeholder="邮箱" />
-    //               {/* )
-    //             } */}
-    //           </FormItem>
-    //         </Col>
-    //         <Col span={2}>
-    //           <Icon
-    //             className="dynamic-delete-button"
-    //             type="minus-circle-o"
-    //             // disabled={keys.length === 1}
-    //             onClick={() => this.removeAttendeeFormItem(k)}
-    //           />
-    //         </Col>
-    //       </Row>
-    //     </FormItem>
-    //   );
-    // });
     return (
       <Form ref={this.scheduleFormRef}>
 
@@ -205,7 +153,7 @@ class ScheduleForm extends React.Component {
                 valueType="number"
                 initialValue={this.getInitialValueForScheduleType()}
               >
-                {hasPerm('usersys.as_trader') ? <SelectScheduleType disabled={scheduleType === 4 && !this.props.isAdd} /> : <SelectScheduleTypeWithoutMeeting />}
+                {hasPerm('usersys.as_trader') ? <SelectScheduleType size="normal" disabled={scheduleType === 4 && !this.props.isAdd} /> : <SelectScheduleTypeWithoutMeeting />}
               </BasicFormItem>
             );
           }}
@@ -248,7 +196,7 @@ class ScheduleForm extends React.Component {
                 getValueFromEvent={(id, detail) => detail}
                 initialValue={this.getInitialValueForCountry()}
               >
-                <CascaderCountry size="large" isDetail />
+                <CascaderCountry size="normal" isDetail />
               </BasicFormItem>
             )
           }}
@@ -262,7 +210,7 @@ class ScheduleForm extends React.Component {
             if (!['中国', 'China'].includes(countryObj && countryObj.label)) return null;
             return (
               <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-                <SelectOrganizatonArea showSearch />
+                <SelectOrganizatonArea showSearch size="normal" />
               </BasicFormItem>
             );
           }}
@@ -286,7 +234,7 @@ class ScheduleForm extends React.Component {
             if (scheduleType === 4 && !this.props.isAdd) return null;
             return (
               <BasicFormItem label={i18n('schedule.project')} name="proj" valueType="number">
-                <SelectExistProject />
+                <SelectExistProject size="normal" />
               </BasicFormItem>
             );
           }}
@@ -298,7 +246,7 @@ class ScheduleForm extends React.Component {
             if (scheduleType === 4) return null;
             return (
               <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
-                <SelectExistInvestor />
+                <SelectExistInvestor size="normal" />
               </BasicFormItem>
             );
           }}
@@ -367,7 +315,49 @@ class ScheduleForm extends React.Component {
           </Form.Item>
         }
 
-        {/* { attendeeFormItems } */}
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            let keys = getFieldValue('keys');
+            window.echo('keys', keys);
+            if (!keys) {
+              keys = [];
+            }
+            return keys.map(k => {
+              return (
+                <FormItem {...formItemLayoutWithOutLabel} key={k} className="dynamic-attendee-item">
+                  <Row gutter={8} style={{ width: '88%' }}>
+                    <Col span={7}>
+                      <FormItem
+                        name={`name-${k}`}
+                        rules={[{ message: i18n('validation.not_empty'), required: true }]}
+                        initialValue=""
+                        required
+                      >
+                        <Input placeholder="姓名" />
+                      </FormItem>
+                    </Col>
+                    <Col span={15}>
+                      <FormItem
+                        name={`email-${k}`}
+                        rules={[{ message: '请输入正确的邮箱地址', required: true, type: 'email' }]}
+                        initialValue=""
+                        required
+                      >
+                        <Input placeholder="邮箱" />
+                      </FormItem>
+                    </Col>
+                    <Col span={2}>
+                      <MinusCircleOutlined
+                        className="dynamic-delete-button"
+                        onClick={() => this.removeAttendeeFormItem(k)}
+                      />
+                    </Col>
+                  </Row>
+                </FormItem>
+              );
+            });
+          }}
+        </Form.Item>
 
         {this.props.isAdd &&
           <Form.Item noStyle shouldUpdate>
@@ -428,7 +418,7 @@ class ScheduleForm extends React.Component {
             if (!sendEmail) return null;
             return (
               <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
-                <Input size="large" />
+                <Input />
               </BasicFormItem>
             );
           }}
