@@ -282,12 +282,13 @@ class ProjectList extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
+          window.echo('record', record);
           return (
             <span  style={{display:'flex',alignItems:'center'}}>
             <div style={{display:'flex',flexWrap:"wrap",maxWidth:'250px'}}>
               <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
 
-              <Link href={"/app/projects/recommend/" + record.id} target="_blank">
+              <Link to={"/app/projects/recommend/" + record.id} target="_blank">
                 <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
               </Link>
 
@@ -338,7 +339,7 @@ class ProjectList extends React.Component {
     return (
       <LeftRightLayout location={location} title={i18n('project.platform_projects')} action={action}>
 
-        <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
 
         <div style={{ marginBottom: 20, textAlign: 'right' }} className="clearfix">
           <Search
@@ -373,7 +374,7 @@ class ProjectList extends React.Component {
           />
         </div>
 
-        <AuditProjectModal
+        {/* <AuditProjectModal
           projId={this.state.id}
           visible={visible}
           currentStatus={currentStatus}
@@ -388,7 +389,7 @@ class ProjectList extends React.Component {
           onSendWechatChange={this.handleSendWechatChange}
           discloseFinance={discloseFinance}
           onDiscloseFinanceChange={this.handleDiscloseFinanceChange}
-        />
+        /> */}
 
       </LeftRightLayout>
     )

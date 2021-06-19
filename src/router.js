@@ -9,6 +9,7 @@ import Dashboard from './routes/Dashboard';
 import ProjectLibrary from './routes/ProjectLibrary';
 import OrganizationList from "./routes/OrganizationList.js";
 import OrgExportList from './routes/OrgExportList';
+import ProjectList from './routes/ProjectList';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -23,7 +24,6 @@ import OrgExportList from './routes/OrgExportList';
 // import EditOrganization from './routes/EditOrganization'
 // import OrgDetail from './routes/OrgDetail'
 // import EditProject from './routes/EditProject'
-// import ProjectList from './routes/ProjectList'
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -91,6 +91,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/org/export" component={OrgExportList} />
+        <Route path="/app/projects/list" component={ProjectList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -108,7 +109,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/bd/add" component={AddProjectBD} />
         <Route path="/app/projects/bd/edit/:id" component={EditProjectBD} />
-        <Route path="/app/projects/list" component={ProjectList} />
         <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />
