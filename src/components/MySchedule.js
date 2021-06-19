@@ -25,9 +25,11 @@ function MySchedule(props) {
 
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEvent, setVisibleEvent] = useState(false);
+  const [visibleEdit, setVisibleEdit] = useState(false);
   const [event, setEvent] = useState({});
 
   const formRef = useRef(null);
+  const editFormRef = useRef(null);
 
   useEffect(() => {
     getEvents();
@@ -41,15 +43,18 @@ function MySchedule(props) {
   }, [calendarMode, selectedDate]);
 
   useEffect(() => {
-    // window.echo('my schedule list', myScheduleList);
-  }, [myScheduleList]);
-
-  useEffect(() => {
     if (formRef.current) {
       const newValues = setAddFormData();
       formRef.current.setFieldsValue(newValues);
     }
   }, [proj, targetEmail]);
+
+  useEffect(() => {
+    if (editFormRef.current) {
+      const values = toFormData(event);
+      editFormRef.current.setFieldsValue(values);
+    }
+  }, [visibleEdit]);
 
   function onPanelChange(date, mode) {
     setSelectedDate(date);
@@ -261,7 +266,6 @@ function MySchedule(props) {
     }
 
     const event = myScheduleList.filter(item => item.id == id)[0] || {};
-    window.echo('event', event);
     setVisibleEvent(true);
     setEvent(event);
     eventEl = e.target;
@@ -612,9 +616,16 @@ function MySchedule(props) {
   }
 
   const showEditModal = () => {
+    setVisibleEdit(true);
     setVisibleEvent(false);
-    eventEl.classList.remove('event-selected')
-    // this.setState({ visibleEdit: true })
+    if (eventEl) {
+      eventEl.classList.remove('event-selected');
+    }
+  }
+
+  const hideEditModal = () => {
+    setVisibleEdit(false);
+    setEvent({});
   }
 
   const eventTitle = (
@@ -689,9 +700,41 @@ function MySchedule(props) {
         </Modal>
       }
 
+      <Modal
+        title={i18n('schedule.edit_event')}
+        visible={visibleEdit}
+        // onOk={this.editEvent}
+        onCancel={hideEditModal}
+        maskStyle={maskStyle}
+        maskClosable={false}
+      >
+        <ScheduleForm ref={editFormRef} />
+      </Modal>
+
     </div>
   );
 }
+function toFormData(data) {
+  var formData = {
+    comments: data.comments,
+    scheduledtime: data.scheduledtime && moment(data.scheduledtime),
+    country: data.country && {label:data.country.country, value:data.country.id, areaCode:data.country.areaCode},
+    location: data.location &&data.location.id,
+    address: data.address,
+    proj: data.proj && data.proj.id,
+    user: data.user && data.user.id,
+    type: data.type || 3,
+  }
+  if (data.type === 4 && data.meeting) {
+    formData.password = data.meeting.password;
+    formData.duration = data.meeting.duration;
+  }
+  for (let prop in formData) {
+    formData[prop] = formData[prop];
+  }
+  return formData;
+}
+
 const maskStyle = {
   backgroundColor: 'rgba(0,0,0,.38)',
 };
