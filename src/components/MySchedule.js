@@ -8,8 +8,10 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import ScheduleForm from './ScheduleForm';
+import { connect } from 'dva';
+import { withRouter } from 'dva/router'
 
-export default function MySchedule() {
+function MySchedule(props) {
 
   const [myScheduleList, setMyScheduleList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -228,6 +230,41 @@ export default function MySchedule() {
     });
   }
 
+  const handleClickEvent = (item, e) => {
+    e.stopPropagation()
+
+    const { id, type, scheduledtime } = item;
+    if (type === 7) {
+      return;
+    }
+
+    if (type === 4 && !item.meeting) {
+      return;
+    }
+
+    if (hasPerm('BD.admin_getWorkReport') && (type === 5 || type === 6)) {
+      const url = `/app/report/list?date=${scheduledtime}`;
+      props.history.push(url);
+      return;
+    }
+    if (type === 5) {
+      const url = `/app/report/${id}`;
+      props.history.push(url);
+      return;
+    }
+    if (type === 6) {
+      const url = `/app/report/add?date=${scheduledtime}`;
+      props.history.push(url);
+      return;
+    }
+
+    const event = myScheduleList.filter(item => item.id == id)[0] || {};
+    window.echo('event', event);
+    // this.setState({visibleEvent:true, event })
+    // this.eventEl = e.target
+    // this.eventEl.classList.add('event-selected')
+  }
+
   function dateCellRender(value) {
     const listData = getListData(value);
     const isToday = value.isSame(moment(), 'day');
@@ -239,7 +276,7 @@ export default function MySchedule() {
           className={`my-calendar__date-event${item.type ? ` my-calendar__date-event-${item.type}` : ''}`}
           // className={styles['event-type' + (item.type ? `-${item.type}` : '-3')]}
           key={`${item.type}-${item.id}`}
-        // onClick={this.handleClickEvent.bind(this, item)}
+          onClick={e => handleClickEvent(item, e)}
         >
 
           {/* Webex */}
@@ -568,6 +605,20 @@ export default function MySchedule() {
         </Modal>
       }
 
+      {/* {visibleEvent &&
+        <Modal
+          title={eventTitle}
+          visible
+          onCancel={this.hideEventModal}
+          maskStyle={maskStyle}
+          footer={null}
+        >
+          <Event {...this.state.event} />
+        </Modal>
+      } */}
+
     </div>
   );
 }
+
+export default connect()(withRouter(MySchedule));
