@@ -402,6 +402,7 @@ function MySchedule(props) {
     return data
   }
 
+  // 
   function addEvent() {
     formRef.current.validateFields()
       .then(values => {
@@ -413,6 +414,35 @@ function MySchedule(props) {
           })
           .catch(handleError);
       });
+  }
+
+  const editEvent = () => {
+    editFormRef.current.validateFields()
+    .then(values => {
+      if (values.type !== 4) {
+        let param = toData(values)
+        let id = event.id
+        api.editSchedule(id, param).then(() => {
+          hideEditModal();
+          getEvents();
+        }).catch(error => {
+          hideEditModal();
+          handleError(error);
+        });
+      } else {
+        const meetingID = event.meeting.id;
+        const startDate = values.scheduledtime.format('YYYY-MM-DDTHH:mm:ss');
+        const { password, duration, comments: title } = values;
+        const body = { password, duration, title, startDate };
+        api.editWebexMeeting(meetingID, body).then(() => {
+          hideEditModal();
+          getEvents();
+        }).catch(error => {
+          hideEditModal();
+          handleError(error);
+        });
+      }
+    });
   }
 
   const addEventAsync = async (param) => {
@@ -431,7 +461,7 @@ function MySchedule(props) {
       } = body;
       const sendEmailBody = {
         destination,
-        html: `<div><p>${this.state.user ? this.state.user.username : username}，您好</p><p>标题：${summary}</p><p>时间：${startDate.replace('T', ' ')}</p></div>`,
+        html: `<div><p>${user ? user.username : username}，您好</p><p>标题：${summary}</p><p>时间：${startDate.replace('T', ' ')}</p></div>`,
         subject: '日程邮件推送',
         startDate,
         endDate: scheduledtimeOrigin.add(1, 'h').format('YYYY-MM-DDTHH:mm:ss'),
@@ -647,6 +677,8 @@ function MySchedule(props) {
     }
   }
 
+
+
   return (
     <div>
       <Calendar
@@ -703,7 +735,7 @@ function MySchedule(props) {
       <Modal
         title={i18n('schedule.edit_event')}
         visible={visibleEdit}
-        // onOk={this.editEvent}
+        onOk={editEvent}
         onCancel={hideEditModal}
         maskStyle={maskStyle}
         maskClosable={false}
