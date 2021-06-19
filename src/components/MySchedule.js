@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Calendar, Select, Radio, Form, Modal } from 'antd';
+import { Calendar, Select, Radio, Modal, Row, Col, Popconfirm } from 'antd';
 import moment from 'moment';
-import { requestAllData, getCurrentUser, handleError, hasPerm, i18n, getUserInfo } from '../utils/util';
+import { requestAllData, getCurrentUser, handleError, hasPerm, i18n, getUserInfo, time } from '../utils/util';
 import * as api from '../api';
 import {
   RightOutlined,
@@ -24,6 +24,8 @@ function MySchedule(props) {
   const [user, setUser] = useState(null); // 选择的投资人
 
   const [visibleAdd, setVisibleAdd] = useState(false);
+  const [visibleEvent, setVisibleEvent] = useState(false);
+  const [event, setEvent] = useState({});
 
   const formRef = useRef(null);
 
@@ -260,10 +262,13 @@ function MySchedule(props) {
 
     const event = myScheduleList.filter(item => item.id == id)[0] || {};
     window.echo('event', event);
-    // this.setState({visibleEvent:true, event })
-    // this.eventEl = e.target
-    // this.eventEl.classList.add('event-selected')
+    setVisibleEvent(true);
+    setEvent(event);
+    eventEl = e.target;
+    eventEl.classList.add('event-selected');
   }
+
+  let eventEl = null;
 
   function dateCellRender(value) {
     const listData = getListData(value);
@@ -564,6 +569,73 @@ function MySchedule(props) {
     );
   }
 
+  /**
+   * 删除日程，现在的逻辑是这样的
+   * 如果是非视频会议日程正常删除
+   * 如果是视频会议日程且当前用户是参会人，也是正常删除
+   * 如果是视频会议日程且当前用户是主持人，调用删除会议接口，服务端应该会把相关日程、参会人员等一起删除
+   */
+  const deleteEventAsync = async () => {
+    if (event.type === 4 && event.createuser.id === getCurrentUser()) {
+      const meetingID = event.meeting.id;
+      await api.deleteWebexMeeting(meetingID);
+    } else {
+      const scheduleID = event.id;
+      await api.deleteSchedule(scheduleID);
+    }
+  }
+
+  const deleteEvent = () => {
+    deleteEventAsync()
+      .then(getEvents)
+      .catch(handleError)
+      .finally(hideEventModal);
+  }
+
+  const eventTitleStyle = {
+    float: 'right',
+    fontSize: '12px',
+    fontWeight: 'normal',
+    marginLeft: 8,
+  }
+
+  const isEventEditable = () => {
+    if (moment(event.scheduledtime + event.timezone) < moment().startOf('day')){
+      return false;
+    }
+    const isMeetingSchedule = event.type === 4;
+    const isCurrentUserAttendee = isMeetingSchedule && event.createuser.id !== getCurrentUser();
+    if (isCurrentUserAttendee) {
+      return false;
+    }
+    return true;
+  }
+
+  const showEditModal = () => {
+    setVisibleEvent(false);
+    eventEl.classList.remove('event-selected')
+    // this.setState({ visibleEdit: true })
+  }
+
+  const eventTitle = (
+    <div style={{ marginRight: 32 }}>
+      {i18n('schedule.event')}
+      <Popconfirm title={i18n('delete_confirm')} onConfirm={deleteEvent}>
+        <a href="#" style={eventTitleStyle}>{i18n('common.delete')}</a>
+      </Popconfirm>
+      {isEventEditable() &&
+        <a href="#" style={eventTitleStyle} onClick={showEditModal}>{i18n('common.edit')}</a>
+      }
+    </div>
+  );
+
+  const hideEventModal = () => {
+    setVisibleEvent(false);
+    if (eventEl) {
+      eventEl.classList.remove('event-selected');
+    }
+  }
+
   return (
     <div>
       <Calendar
@@ -605,20 +677,118 @@ function MySchedule(props) {
         </Modal>
       }
 
-      {/* {visibleEvent &&
+      {visibleEvent &&
         <Modal
           title={eventTitle}
           visible
-          onCancel={this.hideEventModal}
+          onCancel={hideEventModal}
           maskStyle={maskStyle}
           footer={null}
         >
-          <Event {...this.state.event} />
+          <Event {...event} />
         </Modal>
-      } */}
+      }
 
     </div>
   );
+}
+const maskStyle = {
+  backgroundColor: 'rgba(0,0,0,.38)',
+};
+class Event extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      attendees: '',
+      currentAttendee: {
+        name: '',
+        email: '',
+        meetingRole: false,
+      },
+    };
+  }
+  componentDidMount() {
+    if (this.props.type === 4 && this.props.meeting) {
+      api.getWebexUser({ meeting: this.props.meeting.id })
+        .then(data => {
+          const content = data.data.data.map(m => `${m.name} ${m.email}`).join('\n');
+          const currentAttendee = data.data.data.filter(f => f.user === getCurrentUser())[0];
+          this.setState({ attendees: content, currentAttendee });
+        });
+    }
+  }
+
+  getWID = (url) => {
+    const wid = url.match(/WID=(.*)&/)[1];
+    return wid;
+  }
+
+  getPW = (url) => {
+    const pw = url.match(/PW=(.*)/)[1];
+    return pw;
+  }
+
+  render() {
+    const isHost = this.state.currentAttendee && this.state.currentAttendee.meetingRole;
+    const props = this.props;
+    return (
+      <div>
+        <Field title={i18n('schedule.title')} content={props.comments} />
+        <Field title={i18n('schedule.schedule_time')} content={props.scheduledtime ? time(props.scheduledtime + props.timezone) : ''} />
+        {props.type !== 4 && <Field title={i18n('user.country')} content={props.country && props.country.country} />}
+        {props.location ? <Field title={i18n('schedule.area')} content={props.location.name} /> : null}
+        <Field title={i18n('schedule.address')} content={props.address} />
+        <Field title={i18n('schedule.project')} content={props.projtitle} />
+        {props.type !== 4 || !props.meeting ?
+          <Field title={i18n('schedule.investor')} content={props.user && props.user.username} />
+          :
+          <div>
+            <Field title="会议密码" content={props.meeting.password} />
+            <Field title="持续时间" content={`${props.meeting.duration}分钟`} />
+            <Field title="参会人" content={this.state.attendees} />
+            {props.manager === props.meeting.createuser && <Field title="主持人密钥" content={props.meeting.hostKey} />}
+            <Field title="音频连接" content="4006140081 China2(400)" />
+            <Field title="会议号" content={`<span style="color: red;font-weight: bold">${props.meeting.meetingKey}</span>`} />
+            {props.meeting.status && props.meeting.status.status !== 0 && this.state.currentAttendee && <div>
+              {isHost ?
+                <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_host}">${props.meeting.url_host}</a>`} />
+                :
+                <Field title="会议日程" content={`<a target="_blank" href="${props.meeting.url_attendee}">${props.meeting.url_attendee}</a>`} />
+              }
+              {isHost ?
+                <Row><Col span={6} /><Col span={18}><a target="_blank" href={`/webex.html?wid=${this.getWID(props.meeting.url)}&pw=${this.getPW(props.meeting.url)}&mk=${props.meeting.meetingKey}`}><Button size="large" type="primary">启动会议</Button></a></Col></Row>
+                :
+                <Row><Col span={6} /><Col span={18}><a target="_blank" href={`https://investarget.webex.com.cn/investarget/m.php?AT=JM&MK=${props.meeting.meetingKey}&AN=${this.state.currentAttendee.name}&AE=${this.state.currentAttendee.email}`}><Button size="large" type="primary">加入会议</Button></a></Col></Row>
+              }
+            </div>}
+          </div>
+        }
+      </div>
+    );
+  }
+}
+
+const rowStyle = {
+  padding: '8px 0',
+  fontSize: '13px',
+}
+const leftStyle = {
+}
+const rightStyle = {
+  overflow: 'hidden',
+}
+
+const Field = (props) => {
+  return (
+    <Row style={rowStyle} gutter={24}>
+      <Col span={6} style={leftStyle}>
+        <div style={{textAlign: 'right'}}>{props.title}</div>
+      </Col>
+      <Col span={18} style={rightStyle}>
+        <div dangerouslySetInnerHTML={{ __html: props.content && props.content.replace(/\n/g, '<br>') }} />
+      </Col>
+    </Row>
+  )
 }
 
 export default connect()(withRouter(MySchedule));
