@@ -115,7 +115,7 @@ button[disabled], html input[disabled] {
 
 
 /* Pagination */
-.ant-pagination-item {
+/* .ant-pagination-item {
   min-width: 32px;
   height: 32px;
   line-height: 32px;
@@ -131,16 +131,16 @@ button[disabled], html input[disabled] {
 .ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
   height: 30px;
   line-height: 32px;
-}
+} */
 /* Pagination -- select */
-.ant-pagination-options-size-changer.ant-select .ant-select-selection--single {
+/* .ant-pagination-options-size-changer.ant-select .ant-select-selection--single {
   height: 32px;
 }
 .ant-pagination-options-size-changer.ant-select .ant-select-selection__rendered {
   line-height: 30px;
-}
+} */
 /* Pagination -- input */
-.ant-pagination-options-quick-jumper {
+/* .ant-pagination-options-quick-jumper {
   height: 32px;
   line-height: 32px;
 }
@@ -152,7 +152,7 @@ button[disabled], html input[disabled] {
   border-color: #999;
   outline: 0;
   box-shadow: 3px 3px 0 rgba(12,12,12,0.05)!important;
-}
+} */
 
 
 /* Checkbox */
@@ -254,7 +254,7 @@ button[disabled], html input[disabled] {
 
 
 /* 覆盖 Pagination 样式 */
-.ant-pagination-item {
+/* .ant-pagination-item {
   min-width: 32px;
   height: 32px;
   line-height: 32px;
@@ -299,12 +299,12 @@ button[disabled], html input[disabled] {
 .ant-pagination-prev:focus .ant-pagination-item-link, .ant-pagination-next:focus .ant-pagination-item-link, .ant-pagination-prev:hover .ant-pagination-item-link, .ant-pagination-next:hover .ant-pagination-item-link {
   border-color: #ebf0f3;
   color: #666;
-}
+} */
 /* .ant-pagination-prev .ant-pagination-item-link:after, .ant-pagination-next .ant-pagination-item-link:after {
   height: 32px;
   line-height: 44px;
 } */
-.ant-pagination-jump-prev:after, .ant-pagination-jump-next:after {
+/* .ant-pagination-jump-prev:after, .ant-pagination-jump-next:after {
   color: #666;
 }
 .ant-pagination-jump-prev:focus:after, .ant-pagination-jump-next:focus:after, .ant-pagination-jump-prev:hover:after, .ant-pagination-jump-next:hover:after {
@@ -312,7 +312,7 @@ button[disabled], html input[disabled] {
 }
 .ant-pagination-item a {
   margin: 0 8px;
-}
+} */
 
 .ant-tabs-nav .ant-tabs-tab {
   margin-right: 0;
