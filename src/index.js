@@ -74,7 +74,7 @@ app.router(require('./router'));
 const App = app.start();
 
 ReactDOM.render(
-  (<ConfigProvider locale={zh_CN}>
+  (<ConfigProvider locale={zh_CN} autoInsertSpaceInButton={false}>
     <IntlProvider locale={appLocale.locale} messages={appLocale.messages}>
       <div>
         <GlobalModal />

@@ -604,3 +604,9 @@ label.login-register-form__container__label {
 .dynamic-attendee-item .ant-form-item {
   margin-bottom: 0;
 }
+.operation .ant-btn {
+  color: #339bd2;
+}
+.operation .ant-btn:hover {
+  color: #394278;
+}
