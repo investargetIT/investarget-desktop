@@ -12,6 +12,7 @@ import {
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { ProjectListFilter } from '../components/Filter'
+import { NewProjectListFilter } from '../components/Filter';
 import { Search } from '../components/Search';
 import AuditProjectModal from '../components/AuditProjectModal'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -89,6 +90,9 @@ class ProjectList extends React.Component {
     {
       delete data['grossProfit_F']
       delete data['grossProfit_T']
+    }
+    if (data.projstatus === 0) {
+      data.projstatus = [];
     }
     return data
   }
@@ -438,14 +442,17 @@ class ProjectList extends React.Component {
         <Card title={i18n('project.platform_projects')}>
 
           <div className="another-btn" style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Search
-              style={{ width: 300 }}
-              placeholder="请输入项目名称"
-              onSearch={this.handleSearch}
-              onChange={search => this.setState({ search })}
-              value={search}
-              size="middle"
-            />
+            <div>
+              <Search
+                style={{ width: 300, marginRight: 20 }}
+                placeholder="请输入项目名称"
+                onSearch={this.handleSearch}
+                onChange={search => this.setState({ search })}
+                value={search}
+                size="middle"
+              />
+              <NewProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+            </div>
             <Button
               type="primary"
               icon={<PlusOutlined />}

@@ -58,6 +58,7 @@ import {
   TabCheckboxAbroad,
   TabCheckboxIndustryGroup,
   SelectProjectForOrgBd,
+  SelectProjectStatus,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 import {
@@ -794,6 +795,64 @@ class ProjectListFilter extends React.Component {
   }
 }
 
+class NewProjectListFilter extends React.Component {
+
+  static defaultValue = {
+    tags: [],
+    country: [],
+    industries: [],
+    netIncome_USD_F: 0,
+    netIncome_USD_T: 500000000,
+    grossProfit_F: -200000000,
+    grossProfit_T: 200000000,
+    projstatus: [],
+    service: [],
+    // indGroup: [],
+    // takeUser: [],
+    // makeUser: [],
+    usertype: null,
+    user: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || NewProjectListFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    window.echo('handle change', key, value);
+    if (Array.isArray(key)) {
+      key.forEach((item, index) => {
+        this.setState({ [item]: value[index] },this.handleSearch)
+      })
+    } else {
+      // if (key === 'projstatus' && value === 0) {
+        // this.setState({ projstatus: [] }, this.handleSearch);
+      // } else {
+      this.setState({ [key]: value },this.handleSearch)
+      // }
+    }
+
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...NewProjectListFilter.defaultValue })
+    this.props.onReset({ ...NewProjectListFilter.defaultValue })
+  }
+
+  render() {
+    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, usertype } = this.state
+    return (
+        <SelectProjectStatus size="middle" style={{ width: 160 }} value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
+
+    )
+  }
+}
+
 
 class ProjectLibraryFilter extends React.Component {
 
@@ -1207,6 +1266,7 @@ export {
   OrganizationListFilter,
   OrgFilterForOrgBd,
   ProjectListFilter,
+  NewProjectListFilter,
   TimelineFilter,
   OrgBdTableListFilter,
   ProjectLibraryFilter,

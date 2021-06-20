@@ -977,6 +977,7 @@ const SelectTransactionStatus = withOptionsAsync(SelectNumber, ['transactionStat
 const SelectProjectStatus = withOptionsAsync(SelectNumber, ['projstatus'], function(state) {
   const { projstatus } = state.app
   const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
+  options.unshift({ value: 0, label: '全部' });
   return { options }
 })
 
