@@ -97,7 +97,8 @@ class ProjectList extends React.Component {
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
+      this.setState({ total, list, loading: false });
+      this.getAndSetProjectPercentage();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -106,6 +107,42 @@ class ProjectList extends React.Component {
       })
     })
     this.writeSetting()
+  }
+
+  getAndSetProjectPercentage = async () => {
+    const reqBdRes = await api.getSource('orgbdres');
+    const { data: orgBDResList } = reqBdRes;
+    const projPercentage = [];
+    for (let index = 0; index < this.state.list.length; index++) {
+      const element = this.state.list[index];
+      const paramsForPercentage = { proj: element.id };
+      const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
+      let { response_count: resCount } = projPercentageCount.data;
+      resCount = resCount.map(m => {
+        const relatedRes = orgBDResList.filter(f => f.id === m.response);
+        let resIndex = 0;
+        if (relatedRes.length > 0) {
+          resIndex = relatedRes[0].sort;
+        }
+        return { ...m, resIndex };
+      });
+      const maxRes = Math.max(...resCount.map(m => m.resIndex));
+      let percentage = 0;
+      if (maxRes > 3) {
+        // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
+        percentage = Math.round((maxRes - 3) / 11 * 100);
+      }
+      projPercentage.push({ id: element.id, percentage });
+    }
+    this.setState({
+      list: this.state.list.map(m => {
+        const percentageList = projPercentage.filter(f => f.id === m.id);
+        if (percentageList.length > 0) {
+          return { ...m, percentage: percentageList[0].percentage };
+        }
+        return { ...m, percentage: 0 };
+      })
+    });
   }
 
   handleDelete = (id) => {
@@ -195,6 +232,7 @@ class ProjectList extends React.Component {
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
+    // window.echo('list', list);
     const buttonStyle={textDecoration:'underline',border:'none',background:'none',width:'110px',textAlign:'left'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
