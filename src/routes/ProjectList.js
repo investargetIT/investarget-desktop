@@ -437,13 +437,14 @@ class ProjectList extends React.Component {
 
         <Card title={i18n('project.platform_projects')}>
 
-          <div className="another-btn" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div className="another-btn" style={{ margin: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Search
-              style={{ width: 200 }}
-              placeholder={i18n('project.project_name')}
+              style={{ width: 300 }}
+              placeholder="请输入项目名称"
               onSearch={this.handleSearch}
               onChange={search => this.setState({ search })}
               value={search}
+              size="middle"
             />
             <Button
               type="primary"
