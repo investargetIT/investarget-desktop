@@ -325,7 +325,7 @@ class ProjectList extends React.Component {
       {
         title: '项目进度',
         key: 'progress',
-        render: (_, record) => record.percentage && <div style={{ minWidth: 150 }}><Progress percent={record.percentage} size="small" strokeColor="#339bd2" /></div>,
+        render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={record.percentage} size="small" strokeColor="#339bd2" /></div>,
       },
       {
         title: i18n('common.operation'),
@@ -437,7 +437,7 @@ class ProjectList extends React.Component {
 
         <Card title={i18n('project.platform_projects')}>
 
-          <div className="another-btn" style={{ margin: '20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="another-btn" style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Search
               style={{ width: 300 }}
               placeholder="请输入项目名称"
