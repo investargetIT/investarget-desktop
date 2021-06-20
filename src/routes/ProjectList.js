@@ -9,8 +9,8 @@ import {
   isShowCNY, 
 } from '../utils/util';
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal } from 'antd'
-import LeftRightLayout from '../components/LeftRightLayout'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb } from 'antd'
+import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 
 import { ProjectListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -282,7 +282,6 @@ class ProjectList extends React.Component {
         title: i18n('common.operation'),
         key: 'action',
         render: (text, record) => {
-          window.echo('record', record);
           return (
             <span  style={{display:'flex',alignItems:'center'}}>
             <div style={{display:'flex',flexWrap:"wrap",maxWidth:'250px'}}>
@@ -337,42 +336,55 @@ class ProjectList extends React.Component {
                     { name: i18n('project.upload_project'), link: "/app/projects/add" } : null
 
     return (
-      <LeftRightLayout location={location} title={i18n('project.platform_projects')} action={action}>
+      <LeftRightLayoutPure location={location}
+      // title={i18n('project.platform_projects')}
+      // action={action}
+      >
+
+        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+          <Breadcrumb.Item>
+            <Link to="/app">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+          <Breadcrumb.Item>平台项目</Breadcrumb.Item>
+        </Breadcrumb>
 
         {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
 
-        <div style={{ marginBottom: 20, textAlign: 'right' }} className="clearfix">
-          <Search
-            style={{ width: 200 }}
-            placeholder={i18n('project.project_name')}
-            onSearch={this.handleSearch}
-            onChange={search => this.setState({ search })}
-            value={search}
-          />
-        </div>
+        <Card title={i18n('project.platform_projects')}>
+          <div style={{ marginBottom: 20, textAlign: 'right' }} className="clearfix">
+            <Search
+              style={{ width: 200 }}
+              placeholder={i18n('project.project_name')}
+              onSearch={this.handleSearch}
+              onChange={search => this.setState({ search })}
+              value={search}
+            />
+          </div>
 
-        <Table
-          columns={columns}
-          dataSource={list}
-          rowKey={record=>record.id}
-          loading={loading}
-          pagination={false}
-        />
-
-        <div style={{ margin: '16px 0' }} className="clearfix">
-          <Pagination
-            size="large"
-            style={{ float: 'right' }}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
-            showQuickJumper
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          <Table
+            columns={columns}
+            dataSource={list}
+            rowKey={record => record.id}
+            loading={loading}
+            pagination={false}
           />
-        </div>
+
+          <div style={{ margin: '16px 0' }} className="clearfix">
+            <Pagination
+              size="large"
+              style={{ float: 'right' }}
+              total={total}
+              current={page}
+              pageSize={pageSize}
+              onChange={this.handlePageChange}
+              showSizeChanger
+              onShowSizeChange={this.handlePageSizeChange}
+              showQuickJumper
+              pageSizeOptions={PAGE_SIZE_OPTIONS}
+            />
+          </div>
+        </Card>
 
         {/* <AuditProjectModal
           projId={this.state.id}
@@ -390,8 +402,9 @@ class ProjectList extends React.Component {
           discloseFinance={discloseFinance}
           onDiscloseFinanceChange={this.handleDiscloseFinanceChange}
         /> */}
+        
 
-      </LeftRightLayout>
+      </LeftRightLayoutPure>
     )
   }
 }
