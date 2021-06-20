@@ -259,15 +259,26 @@ class ProjectList extends React.Component {
           }
         }       
       },
+      // {
+      //   title: i18n('project.current_status'),
+      //   key: 'projstatus',
+      //   render: (text, record) => {
+      //     const status = record.projstatus
+      //     const statusName = status ? status.name : ''
+      //     return statusName
+      //   }
+      // },
       {
-        title: i18n('project.current_status'),
-        key: 'projstatus',
-        render: (text, record) => {
-          const status = record.projstatus
-          const statusName = status ? status.name : ''
-          return statusName
-        }
-      }
+        // title: i18n('project_bd.created_time'),
+        title: '发布时间',
+        key: 'publishDate',
+        dataIndex: 'publishDate',
+        render: text => text && (
+          <div style={{ minWidth: 100, color: '#595959' }}>
+            {text.slice(0, 10)}
+          </div>
+        ),
+      },
     ]
     if (hasPerm('usersys.as_admin')) {
       columns.push({
