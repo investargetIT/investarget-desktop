@@ -703,6 +703,7 @@ function MySchedule(props) {
 
       {visibleAdd &&
         <Modal
+          className="another-btn"
           title={i18n('schedule.add_event')}
           onOk={addEvent}
           onCancel={hideAddModal}

@@ -610,3 +610,17 @@ label.login-register-form__container__label {
 .operation .ant-btn:hover {
   color: #394278;
 }
+.another-btn .ant-btn:hover {
+  color: #339bd2;
+  border-color: #339bd2;
+}
+.another-btn .ant-btn-primary {
+  color: #fff;
+  background: #339bd2;
+  border-color: #339bd2;
+}
+.another-btn .ant-btn-primary:hover, .another-btn .ant-btn-primary:focus {
+  color: #fff;
+  background: #5cafdb;
+  border-color: #5cafdb;
+}

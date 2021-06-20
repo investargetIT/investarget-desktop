@@ -18,6 +18,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { ApiError } from '../utils/request';
 import {
   DeleteOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 
 
@@ -435,7 +436,8 @@ class ProjectList extends React.Component {
         {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
 
         <Card title={i18n('project.platform_projects')}>
-          <div style={{ marginBottom: 20, textAlign: 'right' }} className="clearfix">
+
+          <div className="another-btn" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Search
               style={{ width: 200 }}
               placeholder={i18n('project.project_name')}
@@ -443,6 +445,13 @@ class ProjectList extends React.Component {
               onChange={search => this.setState({ search })}
               value={search}
             />
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => this.enterLoading(1)}
+            >
+              添加新项目
+            </Button>
           </div>
 
           <Table
