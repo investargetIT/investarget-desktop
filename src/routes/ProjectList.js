@@ -9,7 +9,7 @@ import {
   isShowCNY, 
 } from '../utils/util';
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb } from 'antd'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 
 import { ProjectListFilter } from '../components/Filter'
@@ -311,13 +311,14 @@ class ProjectList extends React.Component {
         title: '发布时间',
         key: 'publishDate',
         dataIndex: 'publishDate',
-        render: text => text && (
-          <div style={{ minWidth: 100, color: '#595959' }}>
-            {text.slice(0, 10)}
-          </div>
-        ),
+        render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
       },
-    ]
+      {
+        title: '项目进度',
+        key: 'progress',
+        render: (_, record) => record.percentage && <div style={{ minWidth: 150 }}><Progress percent={record.percentage} size="small" strokeColor="#339bd2" /></div>,
+      },
+    ];
     if (hasPerm('usersys.as_admin')) {
       columns.push({
         title: i18n('project.is_hidden'),
