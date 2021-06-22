@@ -171,15 +171,15 @@ class SiderMenu extends React.Component {
                   //     <span style={navTextStyle} className="title">{i18n(`menu.${m.namekey}`)}</span>
                   //   </span>)}
                 >
-                  { 
-                  subMenu.map(n => (
-                    <Menu.Item key={n.namekey}>
-                      <Link to={KEY_TO_URI[n.namekey]}>
-                        {/* <i className="fa fa-caret-right"></i> */}
-                        {i18n(`menu.${n.namekey}`)}
-                      </Link>
-                    </Menu.Item>)
-                  )
+                  {
+                    subMenu.map(n => (
+                      <Menu.Item key={n.namekey}>
+                        <Link to={KEY_TO_URI[n.namekey]}>
+                          {/* <i className="fa fa-caret-right"></i> */}
+                          {i18n(`menu.${n.namekey}`)}
+                        </Link>
+                      </Menu.Item>)
+                    )
                   }
                 </SubMenu>
               )
@@ -206,9 +206,25 @@ class SiderMenu extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { selectedKeys, openKeys } = state.app
-  const { menulist } = state.currentUser
-  return { selectedKeys, openKeys, menulist }
+  const { selectedKeys, openKeys } = state.app;
+  const { menulist: originalMenuList } = state.currentUser;
+  // 排除客户端不需要的菜单
+  const newMenuList = originalMenuList.filter(f => {
+    const hasSubMenu = originalMenuList.filter(f1 => f1.parentmenu === f.id).length > 0;
+    const inClient = Object.keys(KEY_TO_URI).includes(f.namekey);
+    if (!f.parentmenu && !hasSubMenu && !inClient) {
+      return false;
+    }
+    if (f.parentmenu && !inClient) {
+      return false;
+    }
+    return true;
+  });
+  return {
+    selectedKeys,
+    openKeys,
+    menulist: newMenuList,
+  };
 }
 
 export default connect(mapStateToProps)(SiderMenu)
