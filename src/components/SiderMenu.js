@@ -210,12 +210,17 @@ function mapStateToProps(state) {
   const { menulist: originalMenuList } = state.currentUser;
   // 排除客户端不需要的菜单
   const newMenuList = originalMenuList.filter(f => {
-    const hasSubMenu = originalMenuList.filter(f1 => f1.parentmenu === f.id).length > 0;
+    const isParent = !f.parentmenu;
+    const subMenu = originalMenuList.filter(f1 => f1.parentmenu === f.id);
+    const subMenuInClient = subMenu.filter(f => Object.keys(KEY_TO_URI).includes(f.namekey));
     const inClient = Object.keys(KEY_TO_URI).includes(f.namekey);
-    if (!f.parentmenu && !hasSubMenu && !inClient) {
+    if (isParent && subMenu.length === 0 && !inClient) {
       return false;
     }
-    if (f.parentmenu && !inClient) {
+    if (isParent && subMenuInClient.length === 0 && !inClient) {
+      return false;
+    }
+    if (!isParent && !inClient) {
       return false;
     }
     return true;
