@@ -235,6 +235,18 @@ class ProjectList extends React.Component {
   //   }
   // }
 
+  handleDeleteBtnClick(projId) {
+    const react = this;
+    Modal.confirm({
+      title: '删除项目',
+      content: '确认删除该项目吗？',
+      onOk() {
+        window.echo('confirm del');
+        react.handleDelete(projId);
+      },
+    });
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
@@ -343,12 +355,10 @@ class ProjectList extends React.Component {
                 </Link>
               </div>
               <div style={{ marginLeft: 20 }}>
-                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(null, record.id)}>
-                  <Button size="small" style={newButtonStyle} disabled={!record.action.delete}>
-                    删除
-                    <DeleteOutlined />
-                  </Button>
-                </Popconfirm>
+                <Button size="small" style={newButtonStyle} disabled={!record.action.delete} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
+                  删除
+                  <DeleteOutlined />
+                </Button>
               </div>
             </div>
           )
