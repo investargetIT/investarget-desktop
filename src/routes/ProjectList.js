@@ -449,6 +449,16 @@ class ProjectList extends React.Component {
 
         {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
 
+        <Card style={{ marginBottom: 20, height: 104 }}>
+          <div style={{ display: 'flex' }}>
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+            <div>4</div>
+            <div>5</div>
+          </div>
+        </Card>
+
         <Card title={i18n('project.platform_projects')}>
 
           <div className="another-btn" style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
