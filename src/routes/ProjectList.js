@@ -22,6 +22,28 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+const statStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+const statLabelStyle = {
+  marginBottom: 10,
+  fontSize: 14,
+  color: '#989898',
+  lineHeight: '22px',
+};
+const statValueStyle = {
+  fontSize: 14,
+  color: '#262626',
+  lineHeight: '32px',
+};
+const statValueNumStyle = {
+  fontSize: 24,
+}
+
 
 class ProjectList extends React.Component {
   constructor(props) {
@@ -449,13 +471,20 @@ class ProjectList extends React.Component {
 
         {/* <ProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
 
-        <Card style={{ marginBottom: 20, height: 104 }}>
-          <div style={{ display: 'flex' }}>
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
+        <Card style={{ marginBottom: 20 }} bodyStyle={{ height: 104, padding: 0, display: 'flex', alignItems: 'center' }}>
+          <div style={statStyle}>
+            <div style={statLabelStyle}>我的待办</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>8</span>个任务</div>
+          </div>
+          <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
+          <div style={statStyle}>
+            <div style={statLabelStyle}>本周任务平均处理时间</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>32</span>分钟</div>
+          </div>
+          <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
+          <div style={statStyle}>
+            <div style={statLabelStyle}>本周完成任务数</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>24</span>个任务</div>
           </div>
         </Card>
 
