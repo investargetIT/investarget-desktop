@@ -473,17 +473,17 @@ class ProjectList extends React.Component {
 
         <Card style={{ marginBottom: 20 }} bodyStyle={{ height: 104, padding: 0, display: 'flex', alignItems: 'center' }}>
           <div style={statStyle}>
-            <div style={statLabelStyle}>我的待办</div>
+            <div style={statLabelStyle}>我的待办-TODO</div>
             <div style={statValueStyle}><span style={statValueNumStyle}>8</span>个任务</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>本周任务平均处理时间</div>
+            <div style={statLabelStyle}>本周任务平均处理时间-TODO</div>
             <div style={statValueStyle}><span style={statValueNumStyle}>32</span>分钟</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>本周完成任务数</div>
+            <div style={statLabelStyle}>本周完成任务数-TODO</div>
             <div style={statValueStyle}><span style={statValueNumStyle}>24</span>个任务</div>
           </div>
         </Card>
