@@ -10,6 +10,7 @@ import ProjectLibrary from './routes/ProjectLibrary';
 import OrganizationList from "./routes/OrganizationList.js";
 import OrgExportList from './routes/OrgExportList';
 import ProjectList from './routes/ProjectList';
+import ProjectCostDetail from './routes/ProjectCostDetail';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -92,6 +93,7 @@ function RouterConfig({ history }) {
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/org/export" component={OrgExportList} />
         <Route path="/app/projects/list" component={ProjectList} />
+        <Route path="/app/projects/cost/:id" component={ProjectCostDetail} /> 
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
