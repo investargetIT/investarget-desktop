@@ -8,13 +8,7 @@
 * [antd: Checkbox] `value` is not a valid prop, do you mean `checked`, https://github.com/ant-design/ant-design/issues/20803#issuecomment-601626759
 * [antd: Form.Item] `children` is array of render props cannot have `name`, 这是要求 Form.Item 只能包含一子组件
 * 涉及到表单组件复用的可能需要 `React.forwardRef()`, 参考 ScheduleForm 组件
-
-## 如何获取 url params
-```javascript
-const params = new URLSearchParams(props.location.search);
-const searchContent = params.get('search');
-if (searchContent) {}
-```
+* 获取URL参数值时，使用util中的 `getURLParamValue()`
 
 # Important #
 

@@ -538,3 +538,8 @@ export {
   getFilenameWithoutExt,
   getFileTypeByName,
 };
+
+export function getURLParamValue(props, name) {
+  const params = new URLSearchParams(props.location.search);
+  return params.get(name);
+}

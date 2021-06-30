@@ -9,6 +9,7 @@ import {
   formatBytes,
   getFileTypeByName,
   hasPerm,
+  getURLParamValue,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -33,8 +34,7 @@ const { TabPane } = Tabs;
 function ProjectCostDetail(props) {
 
   let projName = '';
-  const params = new URLSearchParams(props.location.search);
-  const name = params.get('name');
+  const name = getURLParamValue(props, 'name'); 
   if (name) {
     projName = name;
   }
