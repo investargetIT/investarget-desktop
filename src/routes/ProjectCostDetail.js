@@ -38,7 +38,10 @@ function ProjectCostDetail(props) {
   if (name) {
     projName = name;
   }
-  const [projectDetails, setProjectDetails] = useState({ projtitle: projName });
+  const [projectDetails, setProjectDetails] = useState({
+    id: props.match.params.id,
+    projtitle: projName,
+  });
 
   const userInfo = getUserInfo();
 
@@ -181,7 +184,7 @@ function ProjectCostDetail(props) {
         </Breadcrumb.Item>
         <Breadcrumb.Item>项目管理</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link to="/app/project/list">平台项目</Link>
+          <Link to="/app/projects/list">平台项目</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>项目成本中心</Breadcrumb.Item>
       </Breadcrumb>
@@ -189,7 +192,7 @@ function ProjectCostDetail(props) {
 
       <div style={{ marginTop: 20, marginBottom: 30, marginLeft: 20, fontSize: 20, lineHeight: '28px', fontWeight: 'bold' }}>
         {projectDetails.projtitle}&nbsp;&nbsp;
-        <Link to="#" style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
+        <Link to={`/app/projects/${projectDetails.id}`} style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
