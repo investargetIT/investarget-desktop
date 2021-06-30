@@ -297,11 +297,11 @@ class ProjectList extends React.Component {
       {
         title: i18n('project.name'),
         key: 'title',
-        render: (text, record) => {
+        render: (_, record) => {
           if (record.action.get) {
             return (
               <span className="span-title">
-                <Link to={'/app/projects/cost/' + record.id}>{record.projtitle}</Link>
+                <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}`}>{record.projtitle}</Link>
               </span>
             )
           } else {

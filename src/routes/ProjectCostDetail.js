@@ -32,6 +32,14 @@ const { TabPane } = Tabs;
 
 function ProjectCostDetail(props) {
 
+  let projName = '';
+  const params = new URLSearchParams(props.location.search);
+  const name = params.get('name');
+  if (name) {
+    projName = name;
+  }
+  const [projectDetails, setProjectDetails] = useState({ projtitle: projName });
+
   const userInfo = getUserInfo();
 
   const [projList, setProjList] = useState([]);
@@ -178,7 +186,7 @@ function ProjectCostDetail(props) {
 
 
       <div style={{ marginTop: 20, marginBottom: 30, marginLeft: 20, fontSize: 20, lineHeight: '28px', fontWeight: 'bold' }}>
-        {userInfo.username}&nbsp;
+        {projectDetails.projtitle}&nbsp;&nbsp;
         <Link to="#" style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
