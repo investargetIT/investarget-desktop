@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n } from '../utils/util'
+import { i18n, requestAllData } from '../utils/util'
 import { 
   Row, 
   Col, 
@@ -93,7 +93,8 @@ class TransactionInfo extends React.Component {
   componentDidMount() {
     const userId = this.props.userId
     const params = { investoruser: userId }
-    api.getUserRelation(params).then(result => {
+    requestAllData(api.getUserRelation, params, 100)
+    .then(result => {
       let { count, data:list} = result.data
       let index=list.findIndex((item)=>{return item.relationtype==true})
       if(index!=-1){
