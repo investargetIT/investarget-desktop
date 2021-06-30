@@ -30,7 +30,7 @@ import MySchedule from '../components/MySchedule';
 
 const { TabPane } = Tabs;
 
-function Dashboard(props) {
+function ProjectCostDetail(props) {
 
   const userInfo = getUserInfo();
 
@@ -167,17 +167,19 @@ function Dashboard(props) {
   return (
     <LeftRightLayoutPure location={props.location}>
 
-      <Breadcrumb>
-        <Breadcrumb.Item>首页</Breadcrumb.Item>
-        <Breadcrumb.Item>工作台</Breadcrumb.Item>
+      <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+        <Breadcrumb.Item>
+          <Link to="/app">首页</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+        <Breadcrumb.Item>平台项目</Breadcrumb.Item>
+        <Breadcrumb.Item>项目成本中心</Breadcrumb.Item>
       </Breadcrumb>
 
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 30 }}>
-        <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo.photourl} />
-        <div style={{ marginLeft: 20 }}>
-          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo.username} 祝您开心每一天！</div>
-          {userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 {projNum}</div>}
-        </div>
+
+      <div style={{ marginTop: 20, marginBottom: 30, marginLeft: 20, fontSize: 20, lineHeight: '28px', fontWeight: 'bold' }}>
+        {userInfo.username}&nbsp;
+        <Link to="#" style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
@@ -253,4 +255,4 @@ function mapStateToProps(state) {
   return { country };
 }
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(ProjectCostDetail);
