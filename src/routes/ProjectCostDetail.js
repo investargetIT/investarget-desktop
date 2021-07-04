@@ -7,6 +7,27 @@ import {
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 
+const statStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+};
+const statLabelStyle = {
+  marginBottom: 10,
+  fontSize: 14,
+  color: '#989898',
+  lineHeight: '22px',
+};
+const statValueStyle = {
+  fontSize: 14,
+  color: '#262626',
+  lineHeight: '32px',
+};
+const statValueNumStyle = {
+  fontSize: 24,
+}
+
 function ProjectCostDetail(props) {
 
   let projName = '';
@@ -68,7 +89,15 @@ function ProjectCostDetail(props) {
       <Row gutter={16}>
         <Col span={12}>
           <Row gutter={16}>
-            <Col span={12}><Card style={{ flex: 1 }} title="机构BD数量" /></Col>
+            <Col span={12}>
+              <Card style={{ flex: 1 }} title="机构BD数量">
+                <div style={statStyle}>
+                  <div style={statLabelStyle}>机构名称-TODO</div>
+                  <div style={statValueStyle}><span style={statValueNumStyle}>12</span>&nbsp;个项目</div>
+                  <Link to={`/app/org/bd?projId=${projectDetails.id}`} style={{ marginTop: 10, fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看机构BD详情</Link>
+                </div>
+              </Card>
+            </Col>
             <Col span={12}><Card style={{ flex: 1 }} title="项目进度" /></Col>
           </Row>
           <Card
