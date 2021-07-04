@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Radio, Progress } from 'antd';
+import { Breadcrumb, Card, Row, Col, Radio, Progress, Steps } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getURLParamValue,
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
+
+const { Step } = Steps;
 
 const statStyle = {
   flex: 1,
@@ -43,6 +45,8 @@ function ProjectCostDetail(props) {
   const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
 
   useEffect(() => {
+    props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
+    props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
   }, []);
 
   const options = [
@@ -115,7 +119,17 @@ function ProjectCostDetail(props) {
           />
         </Col>
         <Col span={12}>
-          <Card title="项目进程时间轴"></Card>
+          <Card title="项目进程时间轴">
+            <Steps direction="vertical" current={8}>
+              {
+                props.transactionStatus.map((status, index) => {
+                  return (
+                    <Step key={status.id} title={status.name} description="This is a description." />
+                  );
+                })
+              }
+            </Steps>
+          </Card>
         </Col>
       </Row>
 
@@ -124,8 +138,8 @@ function ProjectCostDetail(props) {
 }
 
 function mapStateToProps(state) {
-  const { country } = state.app
-  return { country };
+  const { transactionStatus, orgbdres } = state.app;
+  return { transactionStatus, orgbdres };
 }
 
 export default connect(mapStateToProps)(ProjectCostDetail);
