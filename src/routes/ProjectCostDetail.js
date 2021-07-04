@@ -120,11 +120,16 @@ function ProjectCostDetail(props) {
         </Col>
         <Col span={12}>
           <Card title="项目进程时间轴">
-            <Steps direction="vertical" current={8}>
+            <Steps className="timeline-steps" direction="vertical" current={8} size="small">
               {
                 props.transactionStatus.map((status, index) => {
                   return (
-                    <Step key={status.id} title={status.name} description="This is a description." />
+                    <Step key={status.id} title={
+                      <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
+                        <div>{status.name}</div>
+                        <div>2021-04-18</div>
+                      </div>
+                    } />
                   );
                 })
               }

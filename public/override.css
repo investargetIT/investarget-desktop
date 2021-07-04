@@ -624,3 +624,6 @@ label.login-register-form__container__label {
   background: #5cafdb;
   border-color: #5cafdb;
 }
+.timeline-steps .ant-steps-item-title {
+  width: 100%;
+}
