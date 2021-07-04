@@ -195,69 +195,18 @@ function ProjectCostDetail(props) {
         <Link to={`/app/projects/${projectDetails.id}`} style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
-      <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 0 -18px' }}>
-          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m} style={{ margin: '18px 0 0 18px' }}>
-            <Card loading style={{ width: 250 }} />
-          </div>)}
-          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
-            <ProjectCard record={m} country={props.country} />
-          </div>)}
-          {!loadingOnGoingProjects && projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
-        </div>
-      </Card>
-
-      <div className="site-card-wrapper" style={{ margin: '20px 0' }}>
-        <Row gutter={20}>
-
-          <Col span={16}>
-            <div className="card-container">
-              <Tabs type="card" size="large">
-                <TabPane tab="当前任务" key="1">
-                  <OrgBdTable />
-                </TabPane>
-                <TabPane tab="项目BD" key="2">
-                  <ProjectBdTable />
-                </TabPane>
-              </Tabs>
-            </div>
-          </Col>
-
-          <Col span={8}>
-
-            <Card title="市场消息" bordered={false} style={{ marginBottom: 20, fontSize: 14, lineHeight: '22px', minHeight: 210 }} extra={<a href="#">查看更多</a>}>
-              <div style={{ color: '#262626' }}>{news ? trimTextIfExceedMaximumCount(news.content, 60) : i18n('no_news')}</div>
-              {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
-            </Card>
-
-            <Card title="公司培训文件" bordered={false} extra={<a href="#">全部文件</a>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
-              {files.map(m => (
-                <a key={m.id} href="/app" target="_blank">
-                  <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
-                    {getFileIconByType(getFileTypeByName(m.filename))} 
-                    <div style={{ marginLeft: 8 }}>
-                      <Tooltip title={getFilenameWithoutExt(m.filename)}>
-                        <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>
-                          {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
-                        </div>
-                      </Tooltip>
-                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>
-                        {formatBytes(m.size)} / {getFileTypeByName(m.filename)} / {m.createdtime.slice(0, 10)}
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </Card>
-
-          </Col>
-
-        </Row>
-      </div>
-
-      <Card title="工作日程">
-        <MySchedule />
-      </Card>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Row gutter={16}>
+            <Col span={12}><Card style={{ flex: 1 }} title="机构BD数量" /></Col>
+            <Col span={12}><Card style={{ flex: 1 }} title="项目进度" /></Col>
+          </Row>
+          <Card style={{ marginTop: 16 }} title="项目成本占比" extra={<Link to="/app/projects/list">全部项目</Link>} />
+        </Col>
+        <Col span={12}>
+          <Card title="项目进程时间轴"></Card>
+        </Col>
+      </Row>
 
     </LeftRightLayoutPure>
   );
