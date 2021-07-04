@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Radio } from 'antd';
+import { Breadcrumb, Card, Row, Col, Radio, Progress } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getURLParamValue,
@@ -93,12 +93,20 @@ function ProjectCostDetail(props) {
               <Card style={{ flex: 1 }} title="机构BD数量">
                 <div style={statStyle}>
                   <div style={statLabelStyle}>机构名称-TODO</div>
-                  <div style={statValueStyle}><span style={statValueNumStyle}>12</span>&nbsp;个项目</div>
+                  <div style={statValueStyle}><span style={statValueNumStyle}>12</span>个项目</div>
                   <Link to={`/app/org/bd?projId=${projectDetails.id}`} style={{ marginTop: 10, fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看机构BD详情</Link>
                 </div>
               </Card>
             </Col>
-            <Col span={12}><Card style={{ flex: 1 }} title="项目进度" /></Col>
+            <Col span={12}>
+              <Card style={{ flex: 1 }} title="项目进度">
+                <div style={statStyle}>
+                  <div style={statLabelStyle}>终审发布-TODO</div>
+                  <div style={statValueStyle}><span style={statValueNumStyle}>85%</span></div>
+                  <Progress style={{ marginTop: 10 }} percent={50} showInfo={false} />
+                </div>
+              </Card>
+            </Col>
           </Row>
           <Card
             style={{ marginTop: 16 }}
