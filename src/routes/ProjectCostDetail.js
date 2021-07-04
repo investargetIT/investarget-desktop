@@ -6,6 +6,7 @@ import {
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
+import { PieChart, Pie, Cell } from 'recharts';
 
 const { Step } = Steps;
 
@@ -70,6 +71,14 @@ function ProjectCostDetail(props) {
     );
   }
 
+  const data = [
+    { name: "Group A", value: 400 },
+    { name: "Group B", value: 300 },
+    { name: "Group C", value: 300 },
+    { name: "Group D", value: 200 }
+  ];
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -116,7 +125,31 @@ function ProjectCostDetail(props) {
             style={{ marginTop: 16 }}
             title="项目成本占比"
             extra={getCostPercentageExtra()}
-          />
+          >
+            <PieChart width={400} height={400}>
+              <Pie
+                data={data}
+                cx={120}
+                cy={200}
+                innerRadius={80}
+                outerRadius={120}
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <text x={125} y={180} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
+                总成本 
+              </text>
+              <text x={125} y={220} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
+                ¥ 200M 
+              </text>
+            </PieChart>
+          </Card>
+
         </Col>
         <Col span={12}>
           <Card title="项目进程时间轴">
