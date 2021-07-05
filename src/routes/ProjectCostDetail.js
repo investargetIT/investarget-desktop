@@ -7,6 +7,7 @@ import {
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { PieChart, Pie, Cell } from 'recharts';
+import * as api from '../api';
 
 const { Step } = Steps;
 
@@ -48,6 +49,11 @@ function ProjectCostDetail(props) {
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
     props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    async function getProjectDetails() {
+      const res = await api.getProjDetail(projectDetails.id);
+      setProjectDetails(res.data);
+    }
+    getProjectDetails();
   }, []);
 
   const options = [
@@ -114,7 +120,7 @@ function ProjectCostDetail(props) {
             <Col span={12}>
               <Card style={{ flex: 1 }} title="项目进度">
                 <div style={statStyle}>
-                  <div style={statLabelStyle}>终审发布-TODO</div>
+                  <div style={statLabelStyle}>{projectDetails.projstatus && projectDetails.projstatus.nameC}</div>
                   <div style={statValueStyle}><span style={statValueNumStyle}>85%</span></div>
                   <Progress style={{ marginTop: 10 }} percent={50} showInfo={false} />
                 </div>
