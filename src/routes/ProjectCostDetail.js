@@ -3,6 +3,9 @@ import { Breadcrumb, Card, Row, Col, Radio, Progress, Steps } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getURLParamValue,
+  hasPerm,
+  getCurrentUser,
+  requestAllData,
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
@@ -39,11 +42,14 @@ function ProjectCostDetail(props) {
   if (name) {
     projName = name;
   }
+  const [orgbdres, setOrgbdres] = useState([]);
   const [projectDetails, setProjectDetails] = useState({
     id: props.match.params.id,
     projtitle: projName,
     percentage: 0,
+    step: 0, // 项目进程时间轴所在的步骤
   });
+  const [allOrgBD, setAllOrgBD] = useState([]);
 
   const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
 
@@ -55,6 +61,7 @@ function ProjectCostDetail(props) {
       const res = await api.getProjDetail(projectDetails.id);
       const reqBdRes = await api.getSource('orgbdres');
       const { data: orgBDResList } = reqBdRes;
+      setOrgbdres(orgBDResList);
       const paramsForPercentage = { proj: projectDetails.id };
       const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
       let { response_count: resCount } = projPercentageCount.data;
@@ -67,16 +74,37 @@ function ProjectCostDetail(props) {
         return { ...m, resIndex };
       });
       const maxRes = Math.max(...resCount.map(m => m.resIndex));
-      let percentage = 0;
+      let percentage = 0, step = 0;
       if (maxRes > 3) {
         // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
         percentage = Math.round((maxRes - 3) / 11 * 100);
+        step = maxRes - 4;
       }
       window.echo('percentaget', percentage, projectDetails);
-      setProjectDetails({ ...projectDetails, ...res.data, percentage });
+      setProjectDetails({ ...projectDetails, ...res.data, percentage, step });
     }
 
-    getAndSetProjectWithProgress();
+    async function getAllOrgBD() {
+      const params = {
+        proj: projectDetails.id,
+        page_size: 1000,
+        response: orgbdres.map(m => m.id)
+      };
+      if (!hasPerm('BD.manageOrgBD')) {
+        params.manager = getCurrentUser();
+      }
+      const res = await requestAllData(api.getOrgBdList, params, 1000);
+      const { data: list } = res.data;
+      window.echo('all org bd', list);
+      setAllOrgBD(list);
+    }
+
+    async function requestdata() {
+      await getAndSetProjectWithProgress();
+      getAllOrgBD();
+    }
+    requestdata();
+   
   }, []);
 
   const options = [
@@ -182,7 +210,7 @@ function ProjectCostDetail(props) {
         </Col>
         <Col span={12}>
           <Card title="项目进程时间轴">
-            <Steps className="timeline-steps" direction="vertical" current={8} size="small">
+            <Steps className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
                 props.transactionStatus.map((status, index) => {
                   return (
