@@ -11,6 +11,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { PieChart, Pie, Cell } from 'recharts';
 import * as api from '../api';
+import { ViewInvestors } from '../components/TimelineView';
 
 const { Step } = Steps;
 
@@ -50,6 +51,7 @@ function ProjectCostDetail(props) {
     step: 0, // 项目进程时间轴所在的步骤
   });
   const [allOrgBD, setAllOrgBD] = useState([]);
+  const [showInvestorStep, setShowInvestorStep] = useState()
 
   const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
 
@@ -124,6 +126,23 @@ function ProjectCostDetail(props) {
         optionType="button"
       />
     );
+  }
+
+  const findRelatedStatusName = tranStatusName => {
+    switch (tranStatusName) {
+      case '获取项目概要':
+        return '正在看前期资料';
+      case '获取投资备忘录':
+        return '已见面';
+      case '签署保密协议':
+        return '已签NDA';
+      case 'Teaser Received':
+        return 'Received';
+      case 'CIM Received':
+        return 'Teaser Received';
+      default:
+        return tranStatusName;
+    }
   }
 
   const data = [
@@ -211,11 +230,25 @@ function ProjectCostDetail(props) {
             <Steps className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
                 props.transactionStatus.map((status, index) => {
+                  const list = allOrgBD.filter(item => {
+                    const response = orgbdres.filter(f => f.id === item.response);
+                    if (response.length === 0) return false;
+                    const curRes = response[0];
+                    return curRes.name === findRelatedStatusName(status.name);
+                  });
+                  const step = index + 1;
                   return (
                     <Step key={status.id} title={
                       <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
                         <div>{status.name}</div>
-                        <div>2021-04-18</div>
+                        <div>
+                          2021-04-18
+                          {list.length ? <ViewInvestors
+                            isShowInvestor={showInvestorStep === step}
+                            investors={list}
+                            onShowInvestorBtnClicked={() => setShowInvestorStep(step)}
+                          /> : null}
+                        </div>
                       </div>
                     } />
                   );

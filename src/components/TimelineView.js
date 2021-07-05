@@ -232,3 +232,4 @@ class ViewInvestors extends React.Component{
 }
 
 export default connect(mapStateToProps)(TimelineView)
+export { ViewInvestors };
