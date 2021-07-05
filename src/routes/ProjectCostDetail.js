@@ -80,7 +80,6 @@ function ProjectCostDetail(props) {
         percentage = Math.round((maxRes - 3) / 11 * 100);
         step = maxRes - 4;
       }
-      window.echo('percentaget', percentage, projectDetails);
       setProjectDetails({ ...projectDetails, ...res.data, percentage, step });
     }
 
@@ -95,7 +94,6 @@ function ProjectCostDetail(props) {
       }
       const res = await requestAllData(api.getOrgBdList, params, 1000);
       const { data: list } = res.data;
-      window.echo('all org bd', list);
       setAllOrgBD(list);
     }
 
