@@ -42,18 +42,41 @@ function ProjectCostDetail(props) {
   const [projectDetails, setProjectDetails] = useState({
     id: props.match.params.id,
     projtitle: projName,
+    percentage: 0,
   });
 
   const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
-    props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
-    async function getProjectDetails() {
+    // props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    
+    async function getAndSetProjectWithProgress() {
       const res = await api.getProjDetail(projectDetails.id);
-      setProjectDetails(res.data);
+      const reqBdRes = await api.getSource('orgbdres');
+      const { data: orgBDResList } = reqBdRes;
+      const paramsForPercentage = { proj: projectDetails.id };
+      const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
+      let { response_count: resCount } = projPercentageCount.data;
+      resCount = resCount.map(m => {
+        const relatedRes = orgBDResList.filter(f => f.id === m.response);
+        let resIndex = 0;
+        if (relatedRes.length > 0) {
+          resIndex = relatedRes[0].sort;
+        }
+        return { ...m, resIndex };
+      });
+      const maxRes = Math.max(...resCount.map(m => m.resIndex));
+      let percentage = 0;
+      if (maxRes > 3) {
+        // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
+        percentage = Math.round((maxRes - 3) / 11 * 100);
+      }
+      window.echo('percentaget', percentage, projectDetails);
+      setProjectDetails({ ...projectDetails, ...res.data, percentage });
     }
-    getProjectDetails();
+
+    getAndSetProjectWithProgress();
   }, []);
 
   const options = [
@@ -121,8 +144,8 @@ function ProjectCostDetail(props) {
               <Card style={{ flex: 1 }} title="项目进度">
                 <div style={statStyle}>
                   <div style={statLabelStyle}>{projectDetails.projstatus && projectDetails.projstatus.nameC}</div>
-                  <div style={statValueStyle}><span style={statValueNumStyle}>85%</span></div>
-                  <Progress style={{ marginTop: 10 }} percent={50} showInfo={false} />
+                  <div style={statValueStyle}><span style={statValueNumStyle}>{projectDetails.percentage}%</span></div>
+                  <Progress style={{ marginTop: 10, marginBottom: 4 }} size="small" strokeColor="#339bd2" percent={projectDetails.percentage} showInfo={false} />
                 </div>
               </Card>
             </Col>
