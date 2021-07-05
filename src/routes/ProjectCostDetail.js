@@ -11,7 +11,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { PieChart, Pie, Cell } from 'recharts';
 import * as api from '../api';
-import { ViewInvestors } from '../components/TimelineView';
+import ViewInvestorsInTimeline from '../components/ViewInvestorsInTimeline';
 
 const { Step } = Steps;
 
@@ -243,7 +243,7 @@ function ProjectCostDetail(props) {
                         <div>{status.name}</div>
                         <div>
                           2021-04-18
-                          {list.length ? <ViewInvestors
+                          {list.length ? <ViewInvestorsInTimeline
                             isShowInvestor={showInvestorStep === step}
                             investors={list}
                             onShowInvestorBtnClicked={() => setShowInvestorStep(step)}
