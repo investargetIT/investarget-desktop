@@ -174,7 +174,8 @@ function ProjectCostDetail(props) {
       </div>
 
       <Row gutter={16}>
-        <Col span={12}>
+
+        <Col span={14}>
           <Row gutter={16}>
             <Col span={12}>
               <Card style={{ flex: 1 }} title="机构BD数量-TODO">
@@ -200,32 +201,42 @@ function ProjectCostDetail(props) {
             title="项目成本占比-TODO"
             extra={getCostPercentageExtra()}
           >
-            <PieChart width={300} height={300}>
-              <Pie
-                data={data}
-                cx={120}
-                cy={150}
-                innerRadius={80}
-                outerRadius={120}
-                fill="#8884d8"
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <text x={125} y={130} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
-                总成本 
-              </text>
-              <text x={125} y={170} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
-                ¥ 200M 
-              </text>
-            </PieChart>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <PieChart width={300} height={300}>
+                <Pie
+                  data={data}
+                  cx={120}
+                  cy={150}
+                  innerRadius={80}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <text x={125} y={130} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
+                  总成本
+                </text>
+                <text x={125} y={170} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
+                  ¥ 200M
+                </text>
+              </PieChart>
+              <div>
+                <div style={{ display: 'flex' }}>
+                  <div>COlOR</div>
+                  <div>类别名称</div>
+                  <div>Percentage</div>
+                  <div>¥ 50,000,000</div>
+                </div>
+              </div>
+            </div>
           </Card>
-
         </Col>
-        <Col span={12}>
+
+        <Col span={10}>
           <Card title="项目进程时间轴">
             <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
