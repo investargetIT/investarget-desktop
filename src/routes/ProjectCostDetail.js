@@ -242,7 +242,6 @@ function ProjectCostDetail(props) {
                       <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
                         <div>{status.name}</div>
                         <div>
-                          2021-04-18
                           {list.length ? <ViewInvestorsInTimeline
                             isShowInvestor={showInvestorStep === step}
                             investors={list}
