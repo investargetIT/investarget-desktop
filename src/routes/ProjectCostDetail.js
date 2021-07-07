@@ -36,6 +36,27 @@ const statValueNumStyle = {
   fontSize: 24,
 }
 
+const pieChartLabelContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const pieChartLabelColorStyle = {
+  marginRight: 10,
+  width: 10,
+  height: 10,
+  opacity: 0.7,
+  background: '#339bd2',
+  borderRadius: '50%',
+};
+const pieChartLabelTextStyle = {
+  marginRight: 8,
+  color: '#595959',
+};
+const pieChartPercentageStyle = {
+  color: '#989889'
+};
+
 function ProjectCostDetail(props) {
 
   let projName = '';
@@ -224,13 +245,43 @@ function ProjectCostDetail(props) {
                   ¥ 200M
                 </text>
               </PieChart>
-              <div>
-                <div style={{ display: 'flex' }}>
-                  <div>COlOR</div>
-                  <div>类别名称</div>
-                  <div>Percentage</div>
-                  <div>¥ 50,000,000</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={pieChartLabelContainerStyle}>
+                    <div style={{ ...pieChartLabelColorStyle, background: '#0088FE' }} />
+                    <div style={pieChartLabelTextStyle}>类别名称一</div>
+                    <div style={pieChartPercentageStyle}>25%</div>
+                  </div>
+                  <div style={pieChartLabelTextStyle}>¥ 50,000,000</div>
                 </div>
+
+                <div style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={pieChartLabelContainerStyle}>
+                    <div style={{ ...pieChartLabelColorStyle, background: '#00C49F' }} />
+                    <div style={pieChartLabelTextStyle}>类别名称二</div>
+                    <div style={pieChartPercentageStyle}>25%</div>
+                  </div>
+                  <div style={pieChartLabelTextStyle}>¥ 50,000,000</div>
+                </div>
+
+                <div style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={pieChartLabelContainerStyle}>
+                    <div style={{ ...pieChartLabelColorStyle, background: '#FFBB28' }} />
+                    <div style={pieChartLabelTextStyle}>类别名称三</div>
+                    <div style={pieChartPercentageStyle}>25%</div>
+                  </div>
+                  <div style={pieChartLabelTextStyle}>¥ 50,000,000</div>
+                </div>
+
+                <div style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={pieChartLabelContainerStyle}>
+                    <div style={{ ...pieChartLabelColorStyle, background: '#FF8042' }} />
+                    <div style={pieChartLabelTextStyle}>类别名称四</div>
+                    <div style={pieChartPercentageStyle}>25%</div>
+                  </div>
+                  <div style={pieChartLabelTextStyle}>¥ 50,000,000</div>
+                </div>
+
               </div>
             </div>
           </Card>
