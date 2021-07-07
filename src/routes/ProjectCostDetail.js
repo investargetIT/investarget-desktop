@@ -200,11 +200,11 @@ function ProjectCostDetail(props) {
             title="项目成本占比-TODO"
             extra={getCostPercentageExtra()}
           >
-            <PieChart width={400} height={400}>
+            <PieChart width={300} height={300}>
               <Pie
                 data={data}
                 cx={120}
-                cy={200}
+                cy={150}
                 innerRadius={80}
                 outerRadius={120}
                 fill="#8884d8"
@@ -215,10 +215,10 @@ function ProjectCostDetail(props) {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <text x={125} y={180} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
+              <text x={125} y={130} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
                 总成本 
               </text>
-              <text x={125} y={220} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
+              <text x={125} y={170} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
                 ¥ 200M 
               </text>
             </PieChart>
@@ -227,7 +227,7 @@ function ProjectCostDetail(props) {
         </Col>
         <Col span={12}>
           <Card title="项目进程时间轴">
-            <Steps className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
+            <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
                 props.transactionStatus.map((status, index) => {
                   const list = allOrgBD.filter(item => {
