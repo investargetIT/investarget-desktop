@@ -7,21 +7,25 @@ import {
   DownOutlined,
 } from '@ant-design/icons';
 
-const imgStyle={width:'30px',height:'30px',margin:'4px'}
+const imgStyle = {
+  width: '30px',
+  height: '30px',
+  margin: '4px',
+};
 
-class ViewInvestorsInTimeline extends React.Component{
+class ViewInvestorsInTimeline extends React.Component {
+
   constructor(props) {
-    super(props)
+    super(props);
+
     this.state = {
-      visible:false,
-      list:props.investors,
-    }
+      visible: false,
+      list: props.investors.sort(function (a, b) {
+        return new Date(a.createdtime) - new Date(b.createdtime);
+      }),
+    };
   }
 
-  handleVisibleChange = (visible) => {
-    this.setState({ visible });
-  }
-  
   popoverContent(investor) {
     return (
       <div style={{minWidth: 100, textAlign: 'center'}} >
@@ -53,7 +57,7 @@ class ViewInvestorsInTimeline extends React.Component{
   render() {
     return (
       <div style={{ display: 'flex' }}>
-        <div>2021-04-18</div>
+        <div>{this.state.list && this.state.list.length > 0 && this.state.list[0].createdtime.slice(0, 10)}</div>
         <Popover
           className="custom-pop"
           content={this.timelineInvestors()}
@@ -67,4 +71,5 @@ class ViewInvestorsInTimeline extends React.Component{
   }
 
 }
+
 export default ViewInvestorsInTimeline;
