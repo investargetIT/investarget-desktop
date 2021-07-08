@@ -10,11 +10,12 @@ const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://mtest.i
 export { baseUrl, mobileUploadUrl, prodUrl }
 
 export class ApiError extends Error {
-  constructor(code, message) {
+  constructor(code, message, detail) {
     super(message)
-    this.name = 'ApiError'
-    this.code = code
-    this.toString = () => `name: ApiError, code: ${code}, message: ${message}`
+    this.name = 'ApiError';
+    this.code = code;
+    this.detail = detail;
+    this.toString = () => `name: ApiError, code: ${code}, message: ${message}, detail: ${detail}`;
   }
 }
 
@@ -29,9 +30,9 @@ function checkStatus(response) {
 }
 
 function parseErrorMessage(data) {
-  const { code, errormsg } = data
+  const { code, errormsg, detail } = data;
   if (code !== 1000) {
-    throw new ApiError(code, errormsg)
+    throw new ApiError(code, errormsg, detail);
   }
   return  data
 }
