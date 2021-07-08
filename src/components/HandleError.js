@@ -46,13 +46,15 @@ class HandleError extends React.Component {
   }
 
   handleApiError(code, msg, detail) {
+    console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`);
     const react = this
     switch (code) {
       case 3000:
         if (!HandleError.handleSessionExpiration) {
           HandleError.handleSessionExpiration = true
           Modal.error({
-            title: i18n('message.session_expire'),
+            // title: i18n('message.session_expire'),
+            title: msg,
             onOk() {
               HandleError.handleSessionExpiration = false
               react.props.dispatch({
@@ -65,28 +67,30 @@ class HandleError extends React.Component {
         break
       case 2010:
         Modal.error({
-          title: i18n('message.operation_fail'),
-          content: msg,
+          // title: i18n('message.operation_fail'),
+          title: msg,
+          // content: msg,
         })
         break
       case 2009:
         react.props.dispatch(routerRedux.replace('/403'))
         break
       case 20041:
-        Modal.error({ title: i18n('message.mobile_exist') })
+        // Modal.error({ title: i18n('message.mobile_exist') })
+        Modal.error({ title: msg });
         break
       case 20042:
-        Modal.error({ title: i18n('message.email_exist') })
+        // Modal.error({ title: i18n('message.email_exist') })
+        Modal.error({ title: msg });
         break
-      case 2001:
-        console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录密码错误
+      case 2001: // 用户可感知的错误已在相关页面处理了，登录密码错误
         break;
-      case 2002:
-        console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录用户不存在
+      case 2002: // 用户可感知的错误已在相关页面处理了，登录用户不存在
         break;
       case 1299:
         Modal.error({
-          title: i18n('message.choose_company'),
+          // title: i18n('message.choose_company'),
+          title: msg,
           onOk() {
             react.props.dispatch(
              routerRedux.replace("/")
@@ -95,31 +99,40 @@ class HandleError extends React.Component {
         })
         break
       case 4007:
-        Modal.error({ title: i18n('error'), content: i18n('project.message.project_message_missing') })
+        // Modal.error({ title: i18n('error'), content: i18n('project.message.project_message_missing') })
+        Modal.error({ title: msg });
         break
       case 2005:
-        Modal.error({ title: i18n('wrong_verify_code')})
+        // Modal.error({ title: i18n('wrong_verify_code')})
+        Modal.error({ title: msg });
         break;
       case 2026:
-        Modal.error({ title: '该投资人名下已存在相同投资事件' });
+        // Modal.error({ title: '该投资人名下已存在相同投资事件' });
+        Modal.error({ title: msg });
         break;
       case 8006:
-        Modal.error({ title: '视频会议时间冲突', content: msg });
+        // Modal.error({ title: '视频会议时间冲突', content: msg });
+        Modal.error({ title: msg });
         break;
       case 2004:
-        Modal.error({ title: '保存模版失败', content: msg });
+        // Modal.error({ title: '保存模版失败', content: msg });
+        Modal.error({ title: msg });
         break;
       case 5006:
-        Modal.error({ title: '机构BD创建失败', content: msg });
+        // Modal.error({ title: '机构BD创建失败', content: msg });
+        Modal.error({ title: msg });
         break;
       case 3008:
-        Modal.error({ title: '系统繁忙，请稍后再试', content: msg });
+        // Modal.error({ title: '系统繁忙，请稍后再试', content: msg });
+        Modal.error({ title: msg });
         break;
       case 2007:
-        Modal.error({ title: '机构BD创建失败', content: msg });
+        // Modal.error({ title: '机构BD创建失败', content: msg });
+        Modal.error({ title: msg });
         break;
       case 50061:
-        Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
+        // Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
+        Modal.error({ title: msg });
         break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
