@@ -11,16 +11,16 @@ import OrganizationList from "./routes/OrganizationList.js";
 import OrgExportList from './routes/OrgExportList';
 import ProjectList from './routes/ProjectList';
 import ProjectCostDetail from './routes/ProjectCostDetail';
+import PermList from './routes/PermList';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import AddProject from './routes/AddProject'
-// import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
+import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import AddUser from './routes/AddUser.js'
 // import LogList from './routes/LogList'
 // import ModifyPwd from './routes/ModifyPwd'
 // import BasicInfo from './routes/BasicInfo'
-// import PermList from './routes/PermList'
 // import DataRoom from './routes/DataRoom'
 // import EditOrganization from './routes/EditOrganization'
 // import OrgDetail from './routes/OrgDetail'
@@ -93,7 +93,8 @@ function RouterConfig({ history }) {
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/org/export" component={OrgExportList} />
         <Route path="/app/projects/list" component={ProjectList} />
-        <Route path="/app/projects/cost/:id" component={ProjectCostDetail} /> 
+        <Route path="/app/projects/cost/:id" component={ProjectCostDetail} />
+        <Route path={URI_14} component={PermList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -119,7 +120,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
-        <Route path={URI_14} component={PermList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />
