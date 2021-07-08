@@ -4,7 +4,12 @@ import { i18n, requestAllData } from '../utils/util'
 import { message, Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
-import { connect } from 'dva'
+import { connect } from 'dva';
+import {
+  PlusOutlined,
+  EditOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 
 class EditableCell extends React.Component {
   state = {
@@ -37,20 +42,12 @@ class EditableCell extends React.Component {
                 onChange={this.handleChange}
                 onPressEnter={this.check}
               />
-              <Icon
-                type="check"
-                className="editable-cell-icon-check"
-                onClick={this.check}
-              />
+              <CheckOutlined onClick={this.check} />
             </div>
             :
             <div className="editable-cell-text-wrapper">
               {value || ' '}
-              <Icon
-                type="edit"
-                className="editable-cell-icon"
-                onClick={this.edit}
-              />
+              <EditOutlined onClick={this.edit} />
             </div>
         }
       </div>
@@ -259,7 +256,7 @@ class PermList extends React.Component {
         title={i18n("user.permission_management")}>
 
         <div style={{ width: 300, marginBottom: 10 }}>
-          <Input size="large" value={this.state.newGroup} addonAfter={<Icon type="plus" onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
+          <Input size="large" value={this.state.newGroup} addonAfter={<PlusOutlined onClick={this.handleAdd} />} onChange={this.newGroupOnChange} />
         </div>
 
         <Table
