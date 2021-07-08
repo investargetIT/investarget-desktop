@@ -79,11 +79,9 @@ class HandleError extends React.Component {
         Modal.error({ title: i18n('message.email_exist') })
         break
       case 2001:
-        // Modal.error({ title: msg })
         console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录密码错误
-        break
+        break;
       case 2002:
-        // Modal.error({ title: i18n('message.mobile_not_exist')})
         console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录用户不存在
         break;
       case 1299:
