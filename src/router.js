@@ -13,14 +13,13 @@ import ProjectList from './routes/ProjectList';
 import ProjectCostDetail from './routes/ProjectCostDetail';
 import PermList from './routes/PermList';
 import LogList from './routes/LogList';
+import ModifyPwd from './routes/ModifyPwd';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import AddProject from './routes/AddProject'
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import AddUser from './routes/AddUser.js'
-
-// import ModifyPwd from './routes/ModifyPwd'
 // import BasicInfo from './routes/BasicInfo'
 // import DataRoom from './routes/DataRoom'
 // import EditOrganization from './routes/EditOrganization'
@@ -97,6 +96,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/cost/:id" component={ProjectCostDetail} />
         <Route path={URI_14} component={PermList} />
         <Route path={URI_11} component={LogList} />
+        <Route path={URI_9} component={ModifyPwd} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -107,7 +107,7 @@ function RouterConfig({ history }) {
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
         <Route path="/app/organization/edit/:id" component={EditOrganization} />
         <Route path="/app/organization/:id" component={OrgDetail} />
-        <Route path={URI_9} component={ModifyPwd} />
+        
         <Route path={URI_10} component={BasicInfo} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/bd" component={ProjectBDList} />

@@ -15,6 +15,8 @@ function ModifyPwd(props) {
     }
   }
 
+  const [form] = Form.useForm();
+
   function handleSubmit(e) {
     e.preventDefault()
     props.form.validateFieldsAndScroll((err, values) => {
@@ -43,10 +45,10 @@ function ModifyPwd(props) {
       location={props.location}
       title={i18n("account.change_password")}>
 
-      <Form style={{ width: 500, margin: '0 auto' }} onSubmit={handleSubmit}>
+      <Form form={form} style={{ width: 500, margin: '0 auto' }} onSubmit={handleSubmit}>
         <OldPassword />
         <Password label={i18n("account.new_password")} />
-        <ConfirmPassword />
+        <ConfirmPassword formRef={form} />
         <Submit />
       </Form>
 
@@ -59,4 +61,4 @@ function mapStateToProps(state) {
   return { currentUserID }
 }
 
-export default connect(mapStateToProps)(Form.create()(ModifyPwd))
+export default connect(mapStateToProps)(ModifyPwd);

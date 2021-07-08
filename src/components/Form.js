@@ -104,20 +104,16 @@ const FullName = props => <BasicFormItem label={i18n("account.username")} name="
 const Password = props => <BasicFormItem label={props.label || i18n("account.password")} name="password" required><Input size="large" type="password" /></BasicFormItem>
 
 const ConfirmPassword = (props, context) => {
-
-  function validator(rule, value, callback) {
-    const password = context.form.getFieldValue('password')
+  const validator = (_, value) => {
+    const { getFieldValue } = props.formRef;
+    const password = getFieldValue('password')
     if (value && password && value !== password) {
-      callback(i18n('validation.two_passwords_not_inconsistent'))
+      return Promise.reject(new Error(i18n('validation.two_passwords_not_inconsistent')));
     } else {
-      callback()
+      return Promise.resolve();
     }
   }
-
   return <BasicFormItem label={i18n("account.confirm_password")} name="confirm" required validator={validator}><Input size="large" type="password" /></BasicFormItem>
-}
-ConfirmPassword.contextTypes = {
-  form: PropTypes.object
 }
 
 const OldPassword = () => <BasicFormItem label={i18n("account.old_password")} name="old_password" required><Input size="large" type="password" /></BasicFormItem>
