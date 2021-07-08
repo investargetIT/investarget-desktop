@@ -24,7 +24,7 @@ class HandleError extends React.Component {
         this.handleFormError(error)
         break;
       case 'ApiError':
-        this.handleApiError(error.code, error.message)
+        this.handleApiError(error.code, error.message, error.detail);
         break
       default:
         console.error(error)
@@ -45,7 +45,7 @@ class HandleError extends React.Component {
     })
   }
 
-  handleApiError(code, msg) {
+  handleApiError(code, msg, detail) {
     const react = this
     switch (code) {
       case 3000:
@@ -80,11 +80,11 @@ class HandleError extends React.Component {
         break
       case 2001:
         // Modal.error({ title: msg })
-        console.error(code, msg); // 用户可感知的错误已在相关页面处理了，登录密码错误
+        console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录密码错误
         break
       case 2002:
         // Modal.error({ title: i18n('message.mobile_not_exist')})
-        console.error(code, msg); // 用户可感知的错误已在相关页面处理了，登录用户不存在
+        console.error(`name: ApiError, code: ${code}, message: ${msg}, detail: ${detail}`); // 用户可感知的错误已在相关页面处理了，登录用户不存在
         break;
       case 1299:
         Modal.error({
