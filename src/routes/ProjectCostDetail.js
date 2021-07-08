@@ -6,6 +6,7 @@ import {
   hasPerm,
   getCurrentUser,
   requestAllData,
+  handleError,
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
@@ -127,8 +128,12 @@ function ProjectCostDetail(props) {
     }
 
     async function requestdata() {
-      await getAndSetProjectWithProgress();
-      getAllOrgBD();
+      try {
+        await getAndSetProjectWithProgress();
+        await getAllOrgBD();
+      } catch (error) {
+        handleError(error);
+      }
     }
     requestdata();
    
