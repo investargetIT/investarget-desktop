@@ -9,6 +9,7 @@ import {
   formatBytes,
   getFileTypeByName,
   hasPerm,
+  handleError,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -108,7 +109,16 @@ function Dashboard(props) {
     }
 
     setLoadingOnGoingProjects(true);
-    fetchData();
+
+    async function fetchDataAndCatchError() {
+      try {
+        await fetchData();
+      } catch (error) {
+        handleError(error);
+      }
+    }
+    fetchDataAndCatchError();
+
 
     async function fetchNewsData() {
       const reqNews = await api.getWxMsg({ isShow: true });
