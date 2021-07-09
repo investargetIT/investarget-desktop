@@ -248,7 +248,7 @@ const UploadAvatar = (props, context) => {
       {...formItemLayout}
       label={props.name == 'avatar' ? i18n("user.photo") : i18n("user.card")}
       name={props.name}
-      valuePropName="fileList"
+      // valuePropName="fileList"
       getValueFromEvent={normFile}
     >
       <div className="dropbox">

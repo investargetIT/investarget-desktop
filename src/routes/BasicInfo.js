@@ -21,13 +21,17 @@ class BasicInfo extends React.Component {
 
   state = {
     avatarUrl: this.props.currentUser.photourl,
-    cardUrl:getImageUrl(this.props.currentUser.cardKey)
+    cardUrl: getImageUrl(this.props.currentUser.cardKey),
   }
-  getChildContext() {
-    return {
-      form: this.props.form
-    }
-  }
+
+  formRef = React.createRef();
+
+  // getChildContext() {
+  //   return {
+  //     form: this.props.form
+  //   }
+  // }
+
   handleSubmit(e) {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -105,6 +109,10 @@ class BasicInfo extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['title', 'tag'] })
+    if (this.formRef.current) {
+      const values = mapPropsToFields(this.props);
+      this.formRef.current.setFieldsValue(values);
+    }
   }
  
   render() {
@@ -113,7 +121,7 @@ class BasicInfo extends React.Component {
       location={this.props.location}
       title={i18n("menu.profile")}>
 
-      <Form style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
+      <Form ref={this.formRef} style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
         <UploadAvatar name="avatar" photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />
         <Group disabled />
         <Org disabled />
@@ -146,17 +154,17 @@ function mapStateToProps(state) {
 
 function mapPropsToFields(props) {
   return {
-    readOnlyGroup: { value: props.currentUser.groups.length > 0 ? props.currentUser.groups[0].name : '' },
-    organization: { value:  props.currentUser.org ? props.currentUser.org.orgname : ''},
-    username: { value: props.currentUser.username },
-    title: { value: props.currentUser.title && props.currentUser.title.id + ''},
-    tags: { value: props.currentUser.tags ? props.currentUser.tags.map(m => '' + m.id) : [] },
-    page: { value: props.currentUser.page + '' }, 
+    readOnlyGroup: props.currentUser.groups.length > 0 ? props.currentUser.groups[0].name : '',
+    organization: props.currentUser.org ? props.currentUser.org.orgname : '',
+    username: props.currentUser.username,
+    title: props.currentUser.title && props.currentUser.title.id + '',
+    tags: props.currentUser.tags ? props.currentUser.tags.map(m => '' + m.id) : [],
+    page: props.currentUser.page + '', 
   }
 }
 
-BasicInfo.childContextTypes = {
-  form: PropTypes.object
-}
+// BasicInfo.childContextTypes = {
+//   form: PropTypes.object
+// }
 
 export default connect(mapStateToProps)(BasicInfo);
