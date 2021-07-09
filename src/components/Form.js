@@ -8,6 +8,9 @@ import styles from './ProjectForm.css'
 import { UploadImage } from './Upload'
 import GlobalMobile from './GlobalMobile'
 import { baseUrl } from '../utils/request';
+import {
+  PlusOutlined,
+} from '@ant-design/icons';
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -228,13 +231,13 @@ const UploadAvatar = (props, context) => {
     height: 150
   }
 
-  function normFile(e) {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  }
+  // function normFile(e) {
+  //   console.log('Upload event:', e);
+  //   if (Array.isArray(e)) {
+  //     return e;
+  //   }
+  //   return e && e.fileList;
+  // }
 
   function handleChange(info) {
     if (info.file.status === 'done') {
@@ -249,7 +252,7 @@ const UploadAvatar = (props, context) => {
       label={props.name == 'avatar' ? i18n("user.photo") : i18n("user.card")}
       name={props.name}
       // valuePropName="fileList"
-      getValueFromEvent={normFile}
+      // getValueFromEvent={normFile}
     >
       <div className="dropbox">
         <Upload
@@ -258,7 +261,7 @@ const UploadAvatar = (props, context) => {
           onChange={handleChange}
           style={uploadStyle}>
           {props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, maxHeight: 150 }} alt="" /> :
-            <Icon type="plus" style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
+            <PlusOutlined style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
           }
         </Upload>
       </div>
