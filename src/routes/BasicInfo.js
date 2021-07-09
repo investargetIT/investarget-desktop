@@ -159,4 +159,4 @@ BasicInfo.childContextTypes = {
   form: PropTypes.object
 }
 
-export default connect(mapStateToProps)(Form.create({mapPropsToFields})(BasicInfo))
+export default connect(mapStateToProps)(BasicInfo);

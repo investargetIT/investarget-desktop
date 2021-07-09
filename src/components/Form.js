@@ -244,25 +244,26 @@ const UploadAvatar = (props, context) => {
   }
 
   return (
-    <FormItem {...formItemLayout} label={props.name=='avatar' ? i18n("user.photo") : i18n("user.card")}>
+    <FormItem
+      {...formItemLayout}
+      label={props.name == 'avatar' ? i18n("user.photo") : i18n("user.card")}
+      name={props.name}
+      valuePropName="fileList"
+      getValueFromEvent={normFile}
+    >
       <div className="dropbox">
-        {context.form.getFieldDecorator(props.name, {
-          valuePropName: 'fileList',
-          getValueFromEvent: normFile,
-        })(
-          <Upload
+        <Upload
           name="avatar"
           action={props.photoKey ? (baseUrl + "/service/qiniucoverupload?bucket=image&key=" + props.photoKey) : (baseUrl + "/service/qiniubigupload?bucket=image")}
           onChange={handleChange}
           style={uploadStyle}>
-            { props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150,maxHeight:150}} alt="" /> :
+          {props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, maxHeight: 150 }} alt="" /> :
             <Icon type="plus" style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: 28, color: '#999', width: 150, height: 150 }} />
-            }
-          </Upload>
-        )}
+          }
+        </Upload>
       </div>
     </FormItem>
-  )
+  );
 }
 UploadAvatar.contextTypes = {
   form: PropTypes.object
