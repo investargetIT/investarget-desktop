@@ -32,40 +32,35 @@ class BasicInfo extends React.Component {
   //   }
   // }
 
-  handleSubmit(e) {
-    e.preventDefault()
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if(!err) {
-        if (values.tags.length === 0) {
-          message.error(i18n('personal_info.message.tag_required'))
-          return
-        }
-        editUser([this.props.currentUser.id], {tags: values.tags, cardKey:values.cardKey, page: values.page}).then(data => {
-          const tags = data.data[0].tags
-          const card = data.data[0].cardKey
-          const page = data.data[0].page;
-          const userInfo = { ...this.props.currentUser, tags, card, page };
-          localStorage.setItem('user_info', JSON.stringify(userInfo))
-          this.props.dispatch({
-            type: 'currentUser/save',
-            userInfo
-          })
-          message.success(i18n('personal_info.message.update_success'))
+  handleSubmit(values) {
+    if (values.tags.length === 0) {
+      message.error(i18n('personal_info.message.tag_required'));
+      return;
+    }
+    editUser([this.props.currentUser.id], { tags: values.tags, cardKey: values.cardKey, page: values.page }).then(data => {
+      const tags = data.data[0].tags
+      const card = data.data[0].cardKey
+      const page = data.data[0].page;
+      const userInfo = { ...this.props.currentUser, tags, card, page };
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
+      this.props.dispatch({
+        type: 'currentUser/save',
+        userInfo
+      })
+      message.success(i18n('personal_info.message.update_success'))
 
-          let url = '/app';
-          if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
-            url = '/app/dataroom/project/list';
-          }
-          this.props.dispatch(routerRedux.replace(url));
-
-        }, error => {
-          this.props.dispatch({
-            type: 'app/findError',
-            payload: error
-          })
-        })
+      let url = '/app';
+      if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+        url = '/app/dataroom/project/list';
       }
-    })
+      this.props.dispatch(routerRedux.replace(url));
+
+    }, error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      });
+    });
   }
 
   handleUploaded(response) {
@@ -121,7 +116,7 @@ class BasicInfo extends React.Component {
       location={this.props.location}
       title={i18n("menu.profile")}>
 
-      <Form ref={this.formRef} style={{ width: 500, margin: '0 auto' }} onSubmit={this.handleSubmit.bind(this)}>
+      <Form ref={this.formRef} style={{ width: 500, margin: '0 auto' }} onFinish={this.handleSubmit.bind(this)}>
         <UploadAvatar name="avatar" photoKey={this.props.currentUser.photoKey} avatarUrl={this.state.avatarUrl} onUploaded={this.handleUploaded.bind(this)} />
         <Group disabled />
         <Org disabled />
