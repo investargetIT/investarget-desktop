@@ -3,8 +3,8 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop } from 'antd'
-import LeftRightLayout from '../components/LeftRightLayout'
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop, Breadcrumb } from 'antd'
+import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
 import {
@@ -332,7 +332,18 @@ class ProjectDetail extends React.Component {
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('project.project_detail')}>
+      <LeftRightLayoutPure location={this.props.location}>
+
+        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+          <Breadcrumb.Item>
+            <Link to="/app">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/app/projects/list">平台项目</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>项目详情</Breadcrumb.Item>
+        </Breadcrumb>
 
         <Row gutter={24}>
           <Col span={10} style={{ height: '100%' }}>
@@ -405,7 +416,7 @@ class ProjectDetail extends React.Component {
             onChange={this.handleTraderChange}
             notFoundContent={i18n('user.no_trader')} />
         </Modal>
-      </LeftRightLayout>
+      </LeftRightLayoutPure>
     )
   }
 }
