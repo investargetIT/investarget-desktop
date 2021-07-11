@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop, Breadcrumb } from 'antd'
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
@@ -345,40 +345,54 @@ class ProjectDetail extends React.Component {
           <Breadcrumb.Item>项目详情</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Row gutter={24}>
-          <Col span={10} style={{ height: '100%' }}>
-              <ProjectImage project={project} height={this.state.imageHeight}/>
-          </Col>
-          <Col span={14}>
-          <div ref={this.setHeader}>
-              <ProjectHead project={project} />
-              <SecretInfo project={project} />
-              <div style={blockStyle}>
-                { isFavorite ?
-                    <Button icon={<HeartFilled />} className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                  : <Button icon={<HeartOutlined />} className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
+        <Card style={{ marginBottom: 20 }}>
+          <Row gutter={24}>
+            <Col span={10} style={{ height: '100%' }}>
+              <ProjectImage project={project} height={this.state.imageHeight} />
+            </Col>
+            <Col span={14}>
+              <div ref={this.setHeader}>
+                <ProjectHead project={project} />
+                
+                <div style={blockStyle}>
+                  {isFavorite ?
+                    <Button icon={<HeartFilled />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                    : <Button icon={<HeartOutlined />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
 
-                { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-                  <Button className="white" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none'}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
-                : null }
+                  {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
+                    <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                    : null}
 
-                { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-                  <Button className="white" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none'}} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
-                : null }
+                  {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
+                    <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                    : null}
 
-                <a href={getPdfUrl(id)}>
-                  <Button  className="white" size="large" style={{backgroundColor: '#f2f2f2', border: 'none'}}>{i18n('project.project_pdf_download')}</Button>
-                </a>
+                  <a href={getPdfUrl(id)}>
+                    <Button className="white" size="large" style={{ backgroundColor: '#f2f2f2', border: 'none' }}>{i18n('project.project_pdf_download')}</Button>
+                  </a>
+                </div>
               </div>
-              </div>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        </Card>
+
+        <Card title={i18n('project.privacy_infomation')}>
+          <SecretInfo project={project} />
+        </Card>
+
 { hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
+
+        <Card title={i18n('project.profile')} style={{ marginBottom: 20 }}>
+          <ProjectIntro project={project} />
+        </Card>
+
+        <Card title={i18n('project.financials')} style={{ marginBottom: 20 }}>
+          {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
+        </Card>
 
               <Tabs animated={false}>
                 <TabPane tab={i18n('project.profile')} key="1">
                   <div style={{paddingLeft:120,paddingRight:120}}>
-                    <ProjectIntro project={project} />
                     <div style={{marginTop:60}}>
                       <h2 style={{fontSize:14,fontWeight: 600,marginBottom:20,color:'#656565'}}>
                         {i18n('project.project_process_timeline')}
@@ -386,9 +400,6 @@ class ProjectDetail extends React.Component {
                       <TimelineView projId={id} />
                     </div>
                   </div>
-                </TabPane>
-                <TabPane tab={i18n('project.financials')} key="2">
-                  {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
                 </TabPane>
                 <TabPane tab={i18n('project.details')} key="3">
                   <Detail project={project} />
@@ -535,7 +546,6 @@ function SecretInfo({ project }) {
   const contentStyle={verticalAlign:'top'}
   return (
     <div style={blockStyle}>
-      <h2 style={subtitleStyle2}>{i18n('project.privacy_infomation')}</h2>
       { project.contactPerson !== undefined ? (
         <div style={{padding: '20px 24px', fontSize: 14, color: '#656565', backgroundColor: 'rgb(233, 241, 243)'}}>
           <div>
