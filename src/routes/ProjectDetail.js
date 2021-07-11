@@ -327,6 +327,10 @@ class ProjectDetail extends React.Component {
     window.removeEventListener("resize", this.updateDimensions);
   }
 
+  handleTabChange = key => {
+    window.echo('ksssy', key);
+  }
+
   setHeader = node => this.header = this.header || node;
 
   render() {
@@ -374,6 +378,16 @@ class ProjectDetail extends React.Component {
               </div>
             </Col>
           </Row>
+
+          <Tabs
+            defaultActiveKey="details"
+            tabBarGutter={50}
+            onChange={this.handleTabChange}
+          >
+            <TabPane tab="详情" key="details" />
+            <TabPane tab="项目进程" key="progress" />
+          </Tabs>
+
         </Card>
 
         <Card title={i18n('project.privacy_infomation')}>
