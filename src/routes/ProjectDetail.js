@@ -390,6 +390,14 @@ class ProjectDetail extends React.Component {
           {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
         </Card>
 
+        <Card title={i18n('project.details')} style={{ marginBottom: 20 }}>
+          <Detail project={project} />
+        </Card>
+
+        <Card title={i18n('project.file_download')} style={{ marginBottom: 20 }}>
+          <DownloadFiles projectId={id} />
+        </Card>
+
               <Tabs animated={false}>
                 <TabPane tab={i18n('project.profile')} key="1">
                   <div style={{paddingLeft:120,paddingRight:120}}>
@@ -400,12 +408,6 @@ class ProjectDetail extends React.Component {
                       <TimelineView projId={id} />
                     </div>
                   </div>
-                </TabPane>
-                <TabPane tab={i18n('project.details')} key="3">
-                  <Detail project={project} />
-                </TabPane>
-                <TabPane tab={i18n('project.file_download')} key="4">
-                  <DownloadFiles projectId={id} />
                 </TabPane>
               </Tabs>
               <div><BackTop /></div>
