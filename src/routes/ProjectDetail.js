@@ -178,6 +178,7 @@ class ProjectDetail extends React.Component {
       loading: false,
       imageHeight: 0,
       activeKey: 1,
+      activeTabKey: 'details',
     }
   }
 
@@ -328,7 +329,7 @@ class ProjectDetail extends React.Component {
   }
 
   handleTabChange = key => {
-    window.echo('ksssy', key);
+    this.setState({ activeTabKey: key });
   }
 
   setHeader = node => this.header = this.header || node;
@@ -381,6 +382,7 @@ class ProjectDetail extends React.Component {
 
           <Tabs
             defaultActiveKey="details"
+            activeKey={this.state.activeTabKey}
             tabBarGutter={50}
             onChange={this.handleTabChange}
           >
@@ -390,41 +392,37 @@ class ProjectDetail extends React.Component {
 
         </Card>
 
-        <Card title={i18n('project.privacy_infomation')}>
-          <SecretInfo project={project} />
-        </Card>
+        {this.state.activeTabKey === 'details' &&
+          <div>
+            <Card title={i18n('project.privacy_infomation')}>
+              <SecretInfo project={project} />
+            </Card>
 
-{ hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null }
+            {hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null}
 
-        <Card title={i18n('project.profile')} style={{ marginBottom: 20 }}>
-          <ProjectIntro project={project} />
-        </Card>
+            <Card title={i18n('project.profile')} style={{ marginBottom: 20 }}>
+              <ProjectIntro project={project} />
+            </Card>
 
-        <Card title={i18n('project.financials')} style={{ marginBottom: 20 }}>
-          {project.country === undefined ? null: <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
-        </Card>
+            <Card title={i18n('project.financials')} style={{ marginBottom: 20 }}>
+              {project.country === undefined ? null : <ProjectFinanceYear projId={id} isCNY={isShowCNY(project, this.props.country)} />}
+            </Card>
 
-        <Card title={i18n('project.details')} style={{ marginBottom: 20 }}>
-          <Detail project={project} />
-        </Card>
+            <Card title={i18n('project.details')} style={{ marginBottom: 20 }}>
+              <Detail project={project} />
+            </Card>
 
-        <Card title={i18n('project.file_download')} style={{ marginBottom: 20 }}>
-          <DownloadFiles projectId={id} />
-        </Card>
+            <Card title={i18n('project.file_download')} style={{ marginBottom: 20 }}>
+              <DownloadFiles projectId={id} />
+            </Card>
+          </div>
+        }
 
-              <Tabs animated={false}>
-                <TabPane tab={i18n('project.profile')} key="1">
-                  <div style={{paddingLeft:120,paddingRight:120}}>
-                    <div style={{marginTop:60}}>
-                      <h2 style={{fontSize:14,fontWeight: 600,marginBottom:20,color:'#656565'}}>
-                        {i18n('project.project_process_timeline')}
-                      </h2>
-                      <TimelineView projId={id} />
-                    </div>
-                  </div>
-                </TabPane>
-              </Tabs>
-              <div><BackTop /></div>
+        {this.state.activeTabKey === 'progress' &&
+          <Card title={i18n('project.project_process_timeline')}>
+            <TimelineView projId={id} />
+          </Card>
+        }
 
         <Modal
           visible={this.state.visible}
