@@ -130,6 +130,8 @@ class HandleError extends React.Component {
         // Modal.error({ title: '机构BD创建失败', content: msg });
         Modal.error({ title: msg });
         break;
+      case 2051: // 修改密码时，原密码错误，修改失败
+        Modal.error({ title: msg });
       case 50061:
         // Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
         Modal.error({ title: msg });
