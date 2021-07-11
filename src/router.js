@@ -15,6 +15,7 @@ import PermList from './routes/PermList';
 import LogList from './routes/LogList';
 import ModifyPwd from './routes/ModifyPwd';
 import BasicInfo from './routes/BasicInfo';
+import ProjectDetail from './routes/ProjectDetail';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -29,7 +30,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
 // import ProjectListPublished from './routes/ProjectListPublished'
-// import ProjectDetail from './routes/ProjectDetail'
 // import OrgBdTableList from './routes/OrgBdTableList';
 // import DataRoomList from './routes/DataRoomList'
 // import EmailList from './routes/EmailList'
@@ -98,6 +98,7 @@ function RouterConfig({ history }) {
         <Route path={URI_11} component={LogList} />
         <Route path={URI_9} component={ModifyPwd} />
         <Route path={URI_10} component={BasicInfo} />
+        <Route path="/app/projects/:id" component={ProjectDetail} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -119,7 +120,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/add" component={AddProject} />
         <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
-        <Route path="/app/projects/:id" component={ProjectDetail} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />

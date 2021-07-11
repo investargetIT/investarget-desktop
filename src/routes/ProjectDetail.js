@@ -7,6 +7,10 @@ import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Bac
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
+import {
+  HeartOutlined,
+  HeartFilled,
+} from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -158,7 +162,7 @@ class ProjectDetail extends React.Component {
     super(props)
 
     this.state = {
-      id: Number(this.props.params.id),
+      id: Number(props.match.params.id),
       project: {},
       isFavorite: false,
       favorId: null,
@@ -340,8 +344,8 @@ class ProjectDetail extends React.Component {
               <SecretInfo project={project} />
               <div style={blockStyle}>
                 { isFavorite ?
-                    <Button icon="heart" className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                  : <Button icon="heart-o" className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
+                    <Button icon={<HeartFilled />} className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon={<HeartOutlined />} className="success" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc'}} onClick={this.favorProject}>{i18n('project.favor')}</Button> }
 
                 { project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
                   <Button className="white" size="large" style={{marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none'}} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
