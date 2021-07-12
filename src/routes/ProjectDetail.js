@@ -351,34 +351,31 @@ class ProjectDetail extends React.Component {
         </Breadcrumb>
 
         <Card style={{ marginBottom: 20 }}>
-          <Row gutter={24}>
-            <Col span={10} style={{ height: '100%' }}>
-              <ProjectImage project={project} height={this.state.imageHeight} />
-            </Col>
-            <Col span={14}>
-              <div ref={this.setHeader}>
-                <ProjectHead project={project} />
-                
-                <div style={blockStyle}>
-                  {isFavorite ?
-                    <Button icon={<HeartFilled />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                    : <Button icon={<HeartOutlined />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
+          <div style={{ display: 'flex' }}>
+            <ProjectImage project={project} height={this.state.imageHeight} />
 
-                  {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-                    <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
-                    : null}
+            <div style={{ marginLeft: 20 }} ref={this.setHeader}>
+              <ProjectHead project={project} />
 
-                  {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-                    <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
-                    : null}
+              <div style={blockStyle}>
+                {isFavorite ?
+                  <Button icon={<HeartFilled />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon={<HeartOutlined />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
 
-                  <a href={getPdfUrl(id)}>
-                    <Button className="white" size="large" style={{ backgroundColor: '#f2f2f2', border: 'none' }}>{i18n('project.project_pdf_download')}</Button>
-                  </a>
-                </div>
+                {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
+                  <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                  : null}
+
+                {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
+                  <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                  : null}
+
+                <a href={getPdfUrl(id)}>
+                  <Button className="white" size="large" style={{ backgroundColor: '#f2f2f2', border: 'none' }}>{i18n('project.project_pdf_download')}</Button>
+                </a>
               </div>
-            </Col>
-          </Row>
+            </div>
+          </div>
 
           <Tabs
             defaultActiveKey="details"
@@ -480,7 +477,7 @@ function ProjectImage({ project, height }) {
   const src = (project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl'
   return (
     <div style={{position:'relative'}}>
-      <img style={{width:'100%', height: height}} src={src} />
+      <img style={{ width: 280, height: 210 }} src={src} />
       { project.projstatus && project.projstatus.id == 7 ?
         <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>{i18n('project.finished')}</div>
       : null }
