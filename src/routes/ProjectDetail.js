@@ -613,10 +613,11 @@ function ProjectHead({ project, allCountries }) {
     }
     imgUrl = 'https://image.investarget.com/china.png'; // TODO: remove it later
     return (
-      <span style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+        <div style={{ minWidth: 68 }}>{i18n('project.country')}：</div>
         {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
-        <span>{countryName}</span>
-      </span>
+        <div>{countryName}</div>
+      </div>
     )
   }
 
@@ -628,8 +629,8 @@ function ProjectHead({ project, allCountries }) {
       </div>
       <p style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
         <span>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</span>
-        <span style={{ marginLeft: 20 }}>{i18n('address')}：{displayCountry()}</span>
-        <span style={{ marginLeft: 20 }}>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</span>
+        <span>{displayCountry()}</span>
+        <span>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</span>
       </p>
     </div>
   )
