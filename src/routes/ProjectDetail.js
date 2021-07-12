@@ -355,7 +355,7 @@ class ProjectDetail extends React.Component {
             <ProjectImage project={project} height={this.state.imageHeight} />
 
             <div style={{ marginLeft: 20 }} ref={this.setHeader}>
-              <ProjectHead project={project} />
+              <ProjectHead project={project} allCountries={this.props.country} />
 
               <div style={blockStyle}>
                 {isFavorite ?
@@ -585,7 +585,7 @@ function SecretInfo({ project }) {
   )
 }
 
-function ProjectHead({ project }) {
+function ProjectHead({ project, allCountries }) {
   const tagStyle = {
     flexShrink:0,
     marginLeft: 8,
@@ -598,6 +598,28 @@ function ProjectHead({ project }) {
     fontSize: 12,
     color: '#656565'
   }
+
+  function displayCountry() {
+    if (!project.country) return null;
+
+    const country = project.country
+    const countryName = country ? country.country : ''
+    let imgUrl = country && country.key && country.url
+    if (country && !imgUrl) {
+      const parentCountry = allCountries.filter(f => f.id === country.parent)[0]
+      if (parentCountry && parentCountry.url) {
+        imgUrl = parentCountry.url
+      }
+    }
+    imgUrl = 'https://image.investarget.com/china.png'; // TODO: remove it later
+    return (
+      <span style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+        {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
+        <span>{countryName}</span>
+      </span>
+    )
+  }
+
   return (
     <div>
       <div style={{ display: 'flex' }}>
@@ -606,7 +628,7 @@ function ProjectHead({ project }) {
       </div>
       <p style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
         <span>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</span>
-        <span style={{ marginLeft: 20 }}>{i18n('address')}：{project.country && project.country.country}</span>
+        <span style={{ marginLeft: 20 }}>{i18n('address')}：{displayCountry()}</span>
         <span style={{ marginLeft: 20 }}>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</span>
       </p>
     </div>
