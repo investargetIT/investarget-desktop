@@ -601,12 +601,11 @@ function ProjectHead({ project, allCountries }) {
 
   function displayCountry() {
     if (!project.country) return null;
-
     const country = project.country
     const countryName = country ? country.country : ''
     let imgUrl = country && country.key && country.url
     if (country && !imgUrl) {
-      const parentCountry = allCountries.filter(f => f.id === country.parent)[0]
+      const parentCountry = allCountries.filter(f => f.id === country.parent.id)[0]
       if (parentCountry && parentCountry.url) {
         imgUrl = parentCountry.url
       }
@@ -621,17 +620,27 @@ function ProjectHead({ project, allCountries }) {
     )
   }
 
+  function displayTranscationAmount() {
+    if (!project.country) return null;
+    if (isShowCNY(project, allCountries)) {
+      return project.financeAmount ? formatMoney(project.financeAmount, 'CNY') : 'N/A'
+    } else {
+      return project.financeAmount_USD ? formatMoney(project.financeAmount_USD) : 'N/A'
+    }
+  }
+
   return (
     <div>
       <div style={{ display: 'flex' }}>
         <h2 style={{ margin: 0, marginBottom: 10, color: '#282828', flexGrow: 1, fontSize: 20, lineHeight: '23px' }}>{project.projtitle}</h2>
         <div style={tagStyle}><img style={{lineHeight: '12px', marginRight: 10}} src="/images/label.png" />{project.projstatus && project.projstatus.name}</div>
       </div>
-      <p style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
-        <span>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</span>
-        <span>{displayCountry()}</span>
-        <span>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</span>
-      </p>
+      <div style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
+        <div>{displayCountry()}</div>
+        <div>{i18n('project.transaction_size')}：{displayTranscationAmount()}</div>
+        <div>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</div>
+        <div>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</div>
+      </div>
     </div>
   )
 }
