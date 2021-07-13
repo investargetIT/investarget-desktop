@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, BackTop, Breadcrumb, Card } from 'antd';
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineView from '../components/TimelineView'
@@ -179,6 +179,7 @@ class ProjectDetail extends React.Component {
       imageHeight: 0,
       activeKey: 1,
       activeTabKey: 'details',
+      progress: 0,
     }
   }
 
@@ -301,6 +302,7 @@ class ProjectDetail extends React.Component {
     }).catch( handleError);
 
     this.getFavorProject()
+    this.getAndSetProjectPercentage(id);
 
     // 获取投资人的交易师
     if (hasPerm('usersys.as_investor')) {
@@ -322,6 +324,30 @@ class ProjectDetail extends React.Component {
         this.setState({ investorOptions, investor }, this.updateDimensions)
       })
     }
+  }
+
+  getAndSetProjectPercentage = async projID => {
+    const reqBdRes = await api.getSource('orgbdres');
+    const { data: orgBDResList } = reqBdRes;
+
+    const paramsForPercentage = { proj: projID };
+    const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
+    let { response_count: resCount } = projPercentageCount.data;
+    resCount = resCount.map(m => {
+      const relatedRes = orgBDResList.filter(f => f.id === m.response);
+      let resIndex = 0;
+      if (relatedRes.length > 0) {
+        resIndex = relatedRes[0].sort;
+      }
+      return { ...m, resIndex };
+    });
+    const maxRes = Math.max(...resCount.map(m => m.resIndex));
+    let percentage = 0;
+    if (maxRes > 3) {
+      // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
+      percentage = Math.round((maxRes - 3) / 11 * 100);
+    }
+    this.setState({ progress: percentage });
   }
 
   componentWillUnmount() {
@@ -355,7 +381,7 @@ class ProjectDetail extends React.Component {
             <ProjectImage project={project} height={this.state.imageHeight} />
 
             <div style={{ marginLeft: 20 }} ref={this.setHeader}>
-              <ProjectHead project={project} allCountries={this.props.country} />
+              <ProjectHead project={project} allCountries={this.props.country} progress={this.state.progress} />
 
               <div style={blockStyle}>
                 {isFavorite ?
@@ -585,7 +611,7 @@ function SecretInfo({ project }) {
   )
 }
 
-function ProjectHead({ project, allCountries }) {
+function ProjectHead({ project, allCountries, progress }) {
   const tagStyle = {
     flexShrink:0,
     marginLeft: 8,
@@ -613,7 +639,7 @@ function ProjectHead({ project, allCountries }) {
     imgUrl = 'https://image.investarget.com/china.png'; // TODO: remove it later
     return (
       <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-        <div style={{ minWidth: 68 }}>{i18n('project.country')}：</div>
+        <div style={{ minWidth: 68 }}>{i18n('project.country')}TODO：</div>
         {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
         <div>{countryName}</div>
       </div>
@@ -637,8 +663,9 @@ function ProjectHead({ project, allCountries }) {
       </div>
       <div style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
         <div>{displayCountry()}</div>
-        <div>{i18n('project.transaction_size')}：{displayTranscationAmount()}</div>
-        <div>{i18n('project.release_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</div>
+        <div>{i18n('project.transaction_size')}：<span style={{ color: '#339bd2' }}>{displayTranscationAmount()}</span></div>
+        <div style={{ display: 'flex' }}>项目进度：<div style={{ width: 180 }}><Progress percent={progress} size="small" strokeColor="#339bd2" /></div></div>
+        <div>{i18n('project_bd.created_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</div>
         <div>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</div>
       </div>
     </div>
