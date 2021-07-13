@@ -641,7 +641,7 @@ function ProjectHead({ project, allCountries, progress }) {
       <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
         <div style={{ minWidth: 68 }}>{i18n('project.country')}TODO：</div>
         {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
-        <div>{countryName}</div>
+        <div style={{ color: '#595959' }}>{countryName}</div>
       </div>
     )
   }
@@ -661,12 +661,12 @@ function ProjectHead({ project, allCountries, progress }) {
         <h2 style={{ margin: 0, marginBottom: 10, color: '#282828', flexGrow: 1, fontSize: 20, lineHeight: '23px' }}>{project.projtitle}</h2>
         <div style={tagStyle}><img style={{lineHeight: '12px', marginRight: 10}} src="/images/label.png" />{project.projstatus && project.projstatus.name}</div>
       </div>
-      <div style={{ marginBottom: 30, fontSize: 12, color: '#989898' }}>
-        <div>{displayCountry()}</div>
-        <div>{i18n('project.transaction_size')}：<span style={{ color: '#339bd2' }}>{displayTranscationAmount()}</span></div>
-        <div style={{ display: 'flex' }}>项目进度：<div style={{ width: 180 }}><Progress percent={progress} size="small" strokeColor="#339bd2" /></div></div>
-        <div>{i18n('project_bd.created_time')}：{project.createdtime && project.createdtime.substr(0, 10)}</div>
-        <div>{i18n('industry_type')}：{project.industries && project.industries[0] && project.industries[0].name}</div>
+      <div style={{ marginBottom: 30, fontSize: 12, color: '#262626', display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ minWidth: 250, margin: '8px 0' }}>{displayCountry()}</div>
+        <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('project.transaction_size')}：<span style={{ color: '#339bd2' }}>{displayTranscationAmount()}</span></div>
+        <div style={{ display: 'flex', minWidth: 250, margin: '8px 0' }}>项目进度：<div style={{ width: 180 }}><Progress percent={progress} size="small" strokeColor="#339bd2" /></div></div>
+        <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('project_bd.created_time')}：<span style={{ color: '#595959' }}>{project.createdtime && project.createdtime.substr(0, 10)}</span></div>
+        <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('industry_type')}：<span style={{ color: '#595959' }}>{project.industries && project.industries[0] && project.industries[0].name}</span></div>
       </div>
     </div>
   )
