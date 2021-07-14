@@ -633,3 +633,6 @@ label.login-register-form__container__label {
 .timeline-icon-btn.ant-btn-link:hover {
   color: #339bd2;
 }
+.ant-tabs-top.project-details-tab > .ant-tabs-nav {
+  margin-bottom: 0;
+}

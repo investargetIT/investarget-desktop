@@ -376,7 +376,7 @@ class ProjectDetail extends React.Component {
           <Breadcrumb.Item>项目详情</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Card style={{ marginBottom: 20 }}>
+        <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: '0 20px', paddingTop: 20 }}>
           <div style={{ display: 'flex' }}>
             <ProjectImage project={project} height={this.state.imageHeight} />
 
@@ -404,6 +404,8 @@ class ProjectDetail extends React.Component {
           </div>
 
           <Tabs
+            style={{ marginTop: 20 }}
+            className="project-details-tab"
             defaultActiveKey="details"
             activeKey={this.state.activeTabKey}
             tabBarGutter={50}
@@ -502,8 +504,8 @@ const iconStyle = {
 function ProjectImage({ project, height }) {
   const src = (project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl'
   return (
-    <div style={{position:'relative'}}>
-      <img style={{ width: 280, height: 210 }} src={src} />
+    <div style={{ position:'relative' }}>
+      <img style={{ width: 280, height: 210, borderRadius: 4 }} src={src} />
       { project.projstatus && project.projstatus.id == 7 ?
         <div style={{position:'absolute',top:0,right:0,bottom:0,left:0,margin:'auto',width:60,height:60,borderRadius:'50%',backgroundColor:'rgba(255,255,255,.85)',textAlign:'center',lineHeight:'60px',fontSize:13,color:'#666',boxShadow:'0 0 3px 1px rgba(0,0,0,.3)'}}>{i18n('project.finished')}</div>
       : null }
