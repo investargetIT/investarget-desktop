@@ -383,10 +383,10 @@ class ProjectDetail extends React.Component {
             <div style={{ marginLeft: 20 }} ref={this.setHeader}>
               <ProjectHead project={project} allCountries={this.props.country} progress={this.state.progress} />
 
-              <div style={blockStyle}>
+              <div className="another-btn" style={blockStyle}>
                 {isFavorite ?
-                  <Button icon={<HeartFilled />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
-                  : <Button icon={<HeartOutlined />} className="success" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#237ccc' }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
+                  <Button icon={<HeartFilled />} type="primary" style={{ marginRight: 24, marginBottom: 8 }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
+                  : <Button icon={<HeartOutlined />} type="primary" style={{ marginRight: 24, marginBottom: 8 }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
 
                 {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
                   <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
