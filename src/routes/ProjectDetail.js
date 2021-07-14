@@ -636,10 +636,9 @@ function ProjectHead({ project, allCountries, progress }) {
         imgUrl = parentCountry.url
       }
     }
-    imgUrl = 'https://image.investarget.com/china.png'; // TODO: remove it later
     return (
       <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-        <div style={{ minWidth: 68 }}>{i18n('project.country')}TODO：</div>
+        <div style={{ minWidth: 68 }}>{i18n('project.country')}：</div>
         {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
         <div style={{ color: '#595959' }}>{countryName}</div>
       </div>
