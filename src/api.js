@@ -151,6 +151,15 @@ export function getProj(param) {
   return r('/proj/?' + qs.stringify(param))
 }
 
+export function getProjDidi(params) {
+  _.forIn(params, function(value, key) {
+    if (Array.isArray(value)) {
+      params[key] = value.join(',')
+    }
+  })
+  return r(`/proj/didi/?${qs.stringify(params)}`);
+}
+
 export function favoriteProj(param) {
   return r('/proj/favorite/', 'POST', param)
 }

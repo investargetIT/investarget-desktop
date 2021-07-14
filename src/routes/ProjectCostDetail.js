@@ -136,6 +136,15 @@ function ProjectCostDetail(props) {
       }
     }
     requestdata();
+
+    async function getProjDidiInfo() {
+      const params = {
+        // proj: projectDetails.id,
+      };
+      const res = await api.getProjDidi(params);
+      window.echo('didi', res);
+    }
+    getProjDidiInfo();
    
   }, []);
 
