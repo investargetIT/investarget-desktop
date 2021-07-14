@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Radio, Progress, Steps } from 'antd';
+import { Breadcrumb, Card, Row, Col, Radio, Progress, Steps, Tag } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getURLParamValue,
@@ -300,9 +300,9 @@ function ProjectCostDetail(props) {
                   const step = index + 1;
                   return (
                     <Step key={status.id} title={
-                      <div>
-                        <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
-                          <div>{status.name}</div>
+                      <div style={{ marginBottom: 16, padding: '5px 10px', background: '#f5f5f5', borderRadius: 4 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <div style={{ color: showInvestorStep === step ? '#000000' : '#595959' }}>{status.name}</div>
                           <div>
                             {list.length ? <ViewInvestorsInTimeline
                               isShowInvestor={showInvestorStep === step}
@@ -311,10 +311,10 @@ function ProjectCostDetail(props) {
                             /> : null}
                           </div>
                         </div>
-                        <div style={{ display: showInvestorStep === step ? 'block' : 'none' }}>
-                          {investorGroupByOrg.map(m => <div key={m.id}>
-                            {m.orgname}：{m.investors.map((n, i) => <span key={i}>{n.username}</span>)}
-                          </div>)}
+                        <div style={{ marginTop: 6, display: showInvestorStep === step ? 'block' : 'none' }}>
+                          {investorGroupByOrg.map(m => <Tag key={m.id} style={{ color: '#595959', marginBottom: 6 }}>
+                            {m.orgname}：{m.investors.map(n => n.username).join('、')}
+                          </Tag>)}
                         </div>
                       </div>
                     } />

@@ -57,15 +57,15 @@ class ViewInvestorsInTimeline extends React.Component {
   render() {
     return (
       <div style={{ display: 'flex' }}>
-        <div>{this.state.list && this.state.list.length > 0 && this.state.list[0].createdtime.slice(0, 10)}</div>
-        <Popover
+        <div style={{ color: '#989898' }}>{this.state.list && this.state.list.length > 0 && this.state.list[0].createdtime.slice(0, 10)}</div>
+        {/* <Popover
           className="custom-pop"
           content={this.timelineInvestors()}
           placement="bottom"
           trigger="click"
-        >
+        > */}
           <Button size="small" type="link" onClick={this.props.onShowInvestorBtnClicked}><DownOutlined /></Button>
-        </Popover>
+        {/* </Popover> */}
       </div>
     );
   }
