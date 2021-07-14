@@ -64,7 +64,7 @@ class ViewInvestorsInTimeline extends React.Component {
           placement="bottom"
           trigger="click"
         >
-          <Button size="small" type="link"><DownOutlined /></Button>
+          <Button size="small" type="link" onClick={this.props.onShowInvestorBtnClicked}><DownOutlined /></Button>
         </Popover>
       </div>
     );

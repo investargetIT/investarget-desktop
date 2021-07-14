@@ -160,6 +160,20 @@ function ProjectCostDetail(props) {
     );
   }
 
+  function getInvestorGroupByOrg(allInvestors) {
+    const allOrgs = allInvestors.map(m => m.org ? m.org : { id: 0, orgname: '暂无机构' });
+    allOrgs.forEach(element => {
+      let investors = [];
+      if (element.id === 0) {
+        investors = allInvestors.filter(f => !f.org);
+      } else {
+        investors = allInvestors.filter(f => f.org && (f.org.id == element.id));
+      }
+      element.investors = investors;
+    });
+    return allOrgs;
+  }
+
   const findRelatedStatusName = tranStatusName => {
     switch (tranStatusName) {
       case '获取项目概要':
@@ -184,7 +198,6 @@ function ProjectCostDetail(props) {
     { name: "Group D", value: 200 }
   ];
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -283,17 +296,25 @@ function ProjectCostDetail(props) {
                     const curRes = response[0];
                     return curRes.name === findRelatedStatusName(status.name);
                   });
+                  const investorGroupByOrg = getInvestorGroupByOrg(list);
                   const step = index + 1;
                   return (
                     <Step key={status.id} title={
-                      <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
-                        <div>{status.name}</div>
-                        <div>
-                          {list.length ? <ViewInvestorsInTimeline
-                            isShowInvestor={showInvestorStep === step}
-                            investors={list}
-                            onShowInvestorBtnClicked={() => setShowInvestorStep(step)}
-                          /> : null}
+                      <div>
+                        <div style={{ padding: '5px 10px', display: 'flex', justifyContent: 'space-between', background: '#f5f5f5', borderRadius: 4 }}>
+                          <div>{status.name}</div>
+                          <div>
+                            {list.length ? <ViewInvestorsInTimeline
+                              isShowInvestor={showInvestorStep === step}
+                              investors={list}
+                              onShowInvestorBtnClicked={() => setShowInvestorStep(step)}
+                            /> : null}
+                          </div>
+                        </div>
+                        <div style={{ display: showInvestorStep === step ? 'block' : 'none' }}>
+                          {investorGroupByOrg.map(m => <div key={m.id}>
+                            {m.orgname}：{m.investors.map((n, i) => <span key={i}>{n.username}</span>)}
+                          </div>)}
                         </div>
                       </div>
                     } />
