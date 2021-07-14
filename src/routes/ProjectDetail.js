@@ -581,27 +581,24 @@ function SecretInfo({ project }) {
       makeUsersName = makeUsers.map(m => m.user.username).join('、');
     }
   }
-  const spanStyle={width:'40%',minWidth:120,marginRight:16,display:'inline-block',verticalAlign:'top'}
-  const contentStyle={verticalAlign:'top'}
   return (
-    <div style={blockStyle}>
+    <div>
       { project.contactPerson !== undefined ? (
-        <div style={{padding: '20px 24px', fontSize: 14, color: '#656565', backgroundColor: 'rgb(233, 241, 243)'}}>
-          <div>
-            <span style={spanStyle}>{i18n('project.project_real_name')}：{project.realname}</span>
-            <span style={contentStyle}>{i18n('project.contact_person')}：{project.contactPerson}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.phone')}：{project.phoneNumber}</span>
-            <span style={contentStyle}>{i18n('project.email')}：{project.email}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.uploader')}：{project.supportUser ? project.supportUser.username : i18n('common.none')}</span>
-            <span style={contentStyle}>{i18n('project.take_user')}：{takeUsersName || i18n('common.none')}</span>
-          </div>
-          <div>
-            <span style={spanStyle}>{i18n('project.make_user')}：{makeUsersName || i18n('common.none')}</span>
-            <span style={contentStyle}></span>
+        <div style={{ padding: 30, fontSize: 14, color: '#595959', backgroundColor: '#f0f6fb', borderRadius: 4 }}>
+          <div style={{ marginBottom: 16 }}><span style={{ color: '#262626' }}>{i18n('project.project_real_name')}：</span>{project.realname}</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ marginBottom: 16 }}><span style={{ color: '#262626' }}>{i18n('project.contact_person')}：</span>{project.contactPerson}</div>
+              <div><span style={{ color: '#262626' }}>{i18n('project.uploader')}：</span>{project.supportUser ? project.supportUser.username : i18n('common.none')}</div>
+            </div>
+            <div>
+              <div style={{ marginBottom: 16 }}><span style={{ color: '#262626' }}>{i18n('project.phone')}：</span>{project.phoneNumber}</div>
+              <div><span style={{ color: '#262626' }}>{i18n('project.take_user')}：</span>{takeUsersName || i18n('common.none')}</div>
+            </div>
+            <div>
+              <div style={{ marginBottom: 16 }}><span style={{ color: '#262626' }}>{i18n('project.email')}：</span>{project.email}</div>
+              <div><span style={{ color: '#262626' }}>{i18n('project.make_user')}：</span>{makeUsersName || i18n('common.none')}</div>
+            </div>
           </div>
         </div>
       ) : (
