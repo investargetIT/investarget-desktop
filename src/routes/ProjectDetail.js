@@ -389,15 +389,15 @@ class ProjectDetail extends React.Component {
                   : <Button icon={<HeartOutlined />} type="primary" style={{ marginRight: 24, marginBottom: 8 }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
 
                 {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
-                  <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
+                  <Button style={{ marginRight: 24, marginBottom: 8 }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
                   : null}
 
                 {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
-                  <Button className="white" size="large" style={{ marginRight: 24, marginBottom: 8, backgroundColor: '#f2f2f2', border: 'none' }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
+                  <Button style={{ marginRight: 24, marginBottom: 8 }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
                   : null}
 
                 <a href={getPdfUrl(id)}>
-                  <Button className="white" size="large" style={{ backgroundColor: '#f2f2f2', border: 'none' }}>{i18n('project.project_pdf_download')}</Button>
+                  <Button>{i18n('project.project_pdf_download')}</Button>
                 </a>
               </div>
             </div>
