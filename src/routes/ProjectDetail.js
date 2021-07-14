@@ -657,9 +657,11 @@ function ProjectHead({ project, allCountries, progress }) {
 
   return (
     <div>
-      <div style={{ display: 'flex' }}>
-        <h2 style={{ margin: 0, marginBottom: 10, color: '#282828', flexGrow: 1, fontSize: 20, lineHeight: '23px' }}>{project.projtitle}</h2>
-        <div style={tagStyle}><img style={{lineHeight: '12px', marginRight: 10}} src="/images/label.png" />{project.projstatus && project.projstatus.name}</div>
+      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
+        <div style={{ marginRight: 10, color: '#282828', fontWeight: 'bold', fontSize: 20 }}>{project.projtitle}</div>
+        <div style={{ border: '1px solid #339bd2', borderRadius: 4, width: 72, height: 24, fontSize: 14, color: '#339bd2', background: '#f0f6fb', display: 'flex', justifyContent: 'center', alignItems: 'center' }} color="blue">
+          {project.projstatus && project.projstatus.name}
+        </div>
       </div>
       <div style={{ marginBottom: 30, fontSize: 14, color: '#262626', display: 'flex', flexWrap: 'wrap' }}>
         <div style={{ minWidth: 250, margin: '8px 0' }}>{displayCountry()}</div>
