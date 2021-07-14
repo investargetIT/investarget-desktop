@@ -627,3 +627,9 @@ label.login-register-form__container__label {
 .timeline-steps .ant-steps-item-title {
   width: 100%;
 }
+.timeline-icon-btn.ant-btn-link {
+  color: #989898;
+}
+.timeline-icon-btn.ant-btn-link:hover {
+  color: #339bd2;
+}

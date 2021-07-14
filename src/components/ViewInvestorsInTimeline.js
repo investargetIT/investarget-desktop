@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import {
   DownOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 
 const imgStyle = {
@@ -64,7 +65,9 @@ class ViewInvestorsInTimeline extends React.Component {
           placement="bottom"
           trigger="click"
         > */}
-          <Button size="small" type="link" onClick={this.props.onShowInvestorBtnClicked}><DownOutlined /></Button>
+          <Button className="timeline-icon-btn" size="small" type="link" onClick={this.props.onShowInvestorBtnClicked}>
+            {this.props.isShowInvestor ? <UpOutlined /> : <DownOutlined />}
+          </Button>
         {/* </Popover> */}
       </div>
     );
