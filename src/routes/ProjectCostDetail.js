@@ -140,7 +140,7 @@ function ProjectCostDetail(props) {
 
     async function getProjDidiInfo() {
       const params = {
-        // proj: projectDetails.id,
+        proj: projectDetails.id,
       };
       const res = await api.getProjDidi(params);
       window.echo('didi', res);
@@ -150,9 +150,10 @@ function ProjectCostDetail(props) {
   }, []);
 
   const options = [
-    { label: '全部渠道', value: 'all' },
-    { label: '线上', value: 'online' },
-    { label: '门店', value: 'store' },
+    { label: '总金额', value: 'all' },
+    { label: '商务', value: 'business' },
+    { label: '加班', value: 'overwork' },
+    { label: '出差', value: 'trip' },
   ];
 
   const onChange3 = e => {
