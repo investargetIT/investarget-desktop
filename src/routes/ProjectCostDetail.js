@@ -79,11 +79,12 @@ function ProjectCostDetail(props) {
 
   const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
   const [cost, setCost] = useState([
-    { id: 1, color: '#0088FE', name: '类别名称一', percentage: '25%', amount: '¥ 50,000,000' },
-    { id: 2, color: '#00C49F', name: '类别名称二', percentage: '25%', amount: '¥ 50,000,000' },
-    { id: 3, color: '#FFBB28', name: '类别名称三', percentage: '25%', amount: '¥ 50,000,000' },
-    { id: 4, color: '#FF8042', name: '类别名称四', percentage: '25%', amount: '¥ 50,000,000' },
+    // { id: 1, color: '#0088FE', name: '类别名称一', percentage: '25%', amount: '¥ 50,000,000' },
+    // { id: 2, color: '#00C49F', name: '类别名称二', percentage: '25%', amount: '¥ 50,000,000' },
+    // { id: 3, color: '#FFBB28', name: '类别名称三', percentage: '25%', amount: '¥ 50,000,000' },
+    // { id: 4, color: '#FF8042', name: '类别名称四', percentage: '25%', amount: '¥ 50,000,000' },
   ]);
+  const [totalCost, setTotalCost] = useState(0);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
@@ -148,20 +149,18 @@ function ProjectCostDetail(props) {
       const uniqueDidiTypes = _.uniqBy(allDidiTypes, 'id');
       uniqueDidiTypes.forEach(element => {
         const relatedData = res.data.data.filter(f => f.orderType.id === element.id);
-        const amount = relatedData.reduce((prev, curr) => curr.money + prev, 0);
-        element.money = amount;
+        const amount = relatedData.reduce((prev, curr) => curr.money+ prev, 0);
+        element.value = amount;
         element.amount = formatMoney(Math.round(amount), 'CNY');
       });
-      window.echo('uniqu with data', uniqueDidiTypes);
-      const totalCost = uniqueDidiTypes.reduce((prev, curr) => curr.money + prev, 0);
-      window.echo('total cost', totalCost);
-      setCost(uniqueDidiTypes.map((m, i) => ({ ...m, color: colors[i], percentage: `${Math.round(m.money/ totalCost * 100)}%` })));
+      const totalCost = uniqueDidiTypes.reduce((prev, curr) => curr.value + prev, 0);
+      setTotalCost(Math.round(totalCost));
+      setCost(uniqueDidiTypes.map((m, i) => ({ ...m, color: COLORS[i % COLORS.length], percentage: `${Math.round(m.value/ totalCost * 100)}%` })));
     }
     getProjDidiInfo();
    
   }, []);
 
-  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   const options = [
     { label: '总金额', value: 'all' },
     { label: '商务', value: 'business' },
@@ -268,13 +267,13 @@ function ProjectCostDetail(props) {
           </Row>
           <Card
             style={{ marginTop: 16 }}
-            title="项目成本占比-TODO"
+            title="项目成本占比"
             extra={getCostPercentageExtra()}
           >
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <PieChart width={300} height={300}>
                 <Pie
-                  data={data}
+                  data={cost}
                   cx={120}
                   cy={150}
                   innerRadius={80}
@@ -283,7 +282,7 @@ function ProjectCostDetail(props) {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {data.map((entry, index) => (
+                  {cost.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -291,7 +290,7 @@ function ProjectCostDetail(props) {
                   总成本
                 </text>
                 <text x={125} y={170} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
-                  ¥ 200M
+                  {formatMoney(totalCost, 'CNY')} 
                 </text>
               </PieChart>
               <div style={{ flex: 1 }}>
