@@ -7,6 +7,7 @@ import {
   getCurrentUser,
   requestAllData,
   handleError,
+  formatMoney,
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
@@ -142,13 +143,25 @@ function ProjectCostDetail(props) {
       const params = {
         proj: projectDetails.id,
       };
-      const res = await api.getProjDidi(params);
-      window.echo('didi', res);
+      const res = await requestAllData(api.getProjDidi, params, 100);
+      const allDidiTypes = res.data.data.map(m => m.orderType);
+      const uniqueDidiTypes = _.uniqBy(allDidiTypes, 'id');
+      uniqueDidiTypes.forEach(element => {
+        const relatedData = res.data.data.filter(f => f.orderType.id === element.id);
+        const amount = relatedData.reduce((prev, curr) => curr.money + prev, 0);
+        element.money = amount;
+        element.amount = formatMoney(Math.round(amount), 'CNY');
+      });
+      window.echo('uniqu with data', uniqueDidiTypes);
+      const totalCost = uniqueDidiTypes.reduce((prev, curr) => curr.money + prev, 0);
+      window.echo('total cost', totalCost);
+      setCost(uniqueDidiTypes.map((m, i) => ({ ...m, color: colors[i], percentage: `${Math.round(m.money/ totalCost * 100)}%` })));
     }
     getProjDidiInfo();
    
   }, []);
 
+  const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   const options = [
     { label: '总金额', value: 'all' },
     { label: '商务', value: 'business' },
