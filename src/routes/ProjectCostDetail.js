@@ -13,6 +13,7 @@ import { Link } from 'dva/router';
 import { PieChart, Pie, Cell } from 'recharts';
 import * as api from '../api';
 import ViewInvestorsInTimeline from '../components/ViewInvestorsInTimeline';
+import _ from 'lodash';
 
 const { Step } = Steps;
 
@@ -171,7 +172,8 @@ function ProjectCostDetail(props) {
 
   function getInvestorGroupByOrg(allInvestors) {
     const allOrgs = allInvestors.map(m => m.org ? m.org : { id: 0, orgname: '暂无机构' });
-    allOrgs.forEach(element => {
+    const uniqueOrgs = _.uniqBy(allOrgs, 'id');
+    uniqueOrgs.forEach(element => {
       let investors = [];
       if (element.id === 0) {
         investors = allInvestors.filter(f => !f.org);
@@ -180,7 +182,7 @@ function ProjectCostDetail(props) {
       }
       element.investors = investors;
     });
-    return allOrgs;
+    return uniqueOrgs;
   }
 
   const findRelatedStatusName = tranStatusName => {
