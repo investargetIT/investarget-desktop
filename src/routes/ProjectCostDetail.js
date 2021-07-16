@@ -313,12 +313,12 @@ function ProjectCostDetail(props) {
           <Card title="项目进程时间轴">
             <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
-                props.transactionStatus.map((status, index) => {
+                orgbdres.slice(3).map((status, index) => {
                   const list = allOrgBD.filter(item => {
                     const response = orgbdres.filter(f => f.id === item.response);
                     if (response.length === 0) return false;
                     const curRes = response[0];
-                    return curRes.name === findRelatedStatusName(status.name);
+                    return curRes.name === status.name;
                   });
                   const investorGroupByOrg = getInvestorGroupByOrg(list);
                   const step = index + 1;
