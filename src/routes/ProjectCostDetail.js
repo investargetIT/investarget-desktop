@@ -198,6 +198,14 @@ function ProjectCostDetail(props) {
     return uniqueOrgs;
   }
 
+  function handleShowInvestorsIconClick(step) {
+    if (showInvestorStep === step) {
+      setShowInvestorStep();
+      return;
+    }
+    setShowInvestorStep(step);
+  }
+
   const findRelatedStatusName = tranStatusName => {
     switch (tranStatusName) {
       case '获取项目概要':
@@ -331,7 +339,7 @@ function ProjectCostDetail(props) {
                             {list.length ? <ViewInvestorsInTimeline
                               isShowInvestor={showInvestorStep === step}
                               investors={list}
-                              onShowInvestorBtnClicked={() => setShowInvestorStep(step)}
+                              onShowInvestorBtnClicked={() => handleShowInvestorsIconClick(step)}
                             /> : null}
                           </div>
                         </div>
