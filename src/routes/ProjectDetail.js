@@ -687,29 +687,33 @@ function ProjectIntro({ project, country }) {
 
   return (
     <div style={blockStyle}>
-      <p dangerouslySetInnerHTML={introduce} style={{marginBottom: 60}}>
-      </p>
+
       <div style={{marginBottom: 60}}>
         {project.tags && project.tags.map(item =>
           <Tag key={item.id} style={tagStyle}>{item.name}</Tag>
         )}
       </div>
-      <table style={{width:'380px', textAlign:'center'}}>
-      <tbody>
-        <tr style={{...trStyle, backgroundColor:'#eee'}}>
-          <td>{i18n('project.transaction_type')}</td>
-          <td>{i18n('project.engagement_in_transaction')}</td>
-          <td>{i18n('project.transaction_size')}</td>
-          <td>{i18n('project.company_valuation')}</td>
-        </tr>
-        <tr style={trStyle}>
-          <td>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}</td>
-          <td>{project.character && project.character.character}</td>
-          <td>{showMoneyRelatedInfo(project, 'financeAmount', country) || '-'}</td>
-          <td>{showMoneyRelatedInfo(project, 'companyValuation', country) || '-'}</td>
-        </tr>
-      </tbody>
-      </table>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <p dangerouslySetInnerHTML={introduce} style={{ flex: 1, marginRight: 40 }} />
+
+        <table style={{ flex: 1, textAlign: 'center' }}>
+          <tbody>
+            <tr style={{ ...trStyle, backgroundColor: '#eee' }}>
+              <td>{i18n('project.transaction_type')}</td>
+              <td>{i18n('project.engagement_in_transaction')}</td>
+              <td>{i18n('project.transaction_size')}</td>
+              <td>{i18n('project.company_valuation')}</td>
+            </tr>
+            <tr style={trStyle}>
+              <td>{project.transactionType && project.transactionType[0] && project.transactionType[0].name}</td>
+              <td>{project.character && project.character.character}</td>
+              <td>{showMoneyRelatedInfo(project, 'financeAmount', country) || '-'}</td>
+              <td>{showMoneyRelatedInfo(project, 'companyValuation', country) || '-'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       
     </div>
   )
