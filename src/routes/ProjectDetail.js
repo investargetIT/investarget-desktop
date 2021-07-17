@@ -62,7 +62,6 @@ class ProjectFinanceYear extends React.Component {
     const { finance } = this.state
 
     const containerStyle = {
-      padding: 10,
     }
     const titleStyle = {
       fontWeight: 400,
@@ -77,11 +76,10 @@ class ProjectFinanceYear extends React.Component {
       color: '#ff6900',
     }
     const contentStyle = {
-      marginLeft: 120,
       height:320,
       width:510,
       borderCollapse:'collapse',
-      marginBottom:60
+      color: '#595959',
     }
     const labelStyle = {
       width: 250,
@@ -91,24 +89,28 @@ class ProjectFinanceYear extends React.Component {
       borderRight:'none',
       borderLeft:'none',
       width:'255px',
+      padding: '14px 20px',
     }
     const rightTd={
       border:'1px solid #eee',
       borderLeft:'none',
       borderRight:'none',
       width:'255px',
-      paddingLeft:'15%'
+      padding: '14px 20px',
     }
+    const trStyle={
+      border: '1px solid #eee',
+      borderLeft: 'none',
+      borderRight:'none'
+    };
 
     return finance.length > 0 ? (
-      <div>
+      <div style={{ width: '50%' }}>
         {
           finance.map(item =>
             <div key={item.fYear} style={containerStyle}>
-              <h3 style={titleStyle}>
-              <b> {i18n('project.fiscal_year')}
-                {item.fYear}</b>
-              </h3>
+              <div style={{ ...trStyle, backgroundColor: '#eee', color: '#262626', fontWeight: 'bold', padding: '14px 20px' }}>{i18n('project.fiscal_year')}{item.fYear}</div>
+
               <table style={contentStyle}>
               <tbody>
                 <tr>  
