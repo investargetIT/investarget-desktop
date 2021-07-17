@@ -683,7 +683,7 @@ function showMoneyRelatedInfo(project, type, allArea) {
 
 function ProjectIntro({ project, country }) {
   if (project.currency === undefined) return null;
-  const trStyle={border:'1px solid #eee',height:'40px',borderLeft:'none',borderRight:'none'}
+  const trStyle={border:'1px solid #eee',height: 50,borderLeft:'none',borderRight:'none'}
   const tagStyle = {backgroundColor:'#18D8BC',borderRadius:'4px',paddingRight:'20px',color:'white',width:'100px',textAlign:'center'}
   const introduce={__html:project.p_introducte}
 
