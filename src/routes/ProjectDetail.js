@@ -811,14 +811,11 @@ class DownloadFiles extends React.Component {
       width: '70%',
     }
     const sectionStyle = {
-      display: 'flex',
-      backgroundColor:'rgb(233, 241, 243)'
     }
 
     const titleStyle = {
-      flexShrink: 0,
-      width: 150,
-      paddingRight: 15,
+      width: 200,
+      marginRight: 20,
     }
     const listStyle = {
       flexGrow: 1,
@@ -853,6 +850,11 @@ class DownloadFiles extends React.Component {
       display:'flex',
       justifyContent:'space-between',
       minHeight:30,
+      fontSize: 14,
+      lineHeight: '22px',
+      padding: '14px 20px',
+      borderBottom: '1px solid #e6e6e6',
+      color: '#595959', 
     }
     const dirs = Array.from(new Set(this.state.attachments.map(item=>item.filetype)))
 
@@ -866,32 +868,26 @@ class DownloadFiles extends React.Component {
           const files = this.state.attachments.filter(item => item.filetype == dir)
           const isLast = index == dirs.length - 1
 
-          return (
-            <div key={index} style={sectionStyle}>
-              <div style={titleStyle}>{dir}</div>
-              <ul style={listStyle}>
-                {files.map(file => {
-                  return (
-                    <li key={file.key} style={liStyle}>
-                      <div title={file.filename} style={{maxWidth:200,wordWrap:'word-break:break-all'}}>
-                        {file.filename}
-                      </div>
-                      <a
-                        disabled={!file.url}
-                        download={file.filename}
-                        href={file.url}
-                      >
-                      <div style={imgContainer}>
-                        <img style={cloudStyle} src="/images/cloud.png" />
-                        <img style={arrowStyle} src="/images/arrow.png" />
-                      </div>
-                      </a>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )
+          return files.map(file => {
+            return (
+              <div key={file.key} style={liStyle}>
+                <div style={titleStyle}>{dir}</div>
+                <div title={file.filename} style={{ wordWrap: 'word-break:break-all', flex: 1, marginRight: 20 }}>
+                  {file.filename}
+                </div>
+                <a
+                  disabled={!file.url}
+                  download={file.filename}
+                  href={file.url}
+                >
+                  <div style={imgContainer}>
+                    <img style={cloudStyle} src="/images/cloud.png" />
+                    <img style={arrowStyle} src="/images/arrow.png" />
+                  </div>
+                </a>
+              </div>
+            )
+          })
         })}
       </div>
     )
