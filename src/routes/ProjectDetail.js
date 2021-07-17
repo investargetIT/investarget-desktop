@@ -27,7 +27,7 @@ function Field (props) {
 
 
 const blockStyle = {
-  marginBottom: 20,
+  color: '#595959',
 }
 const blockStyle2 = {
   marginBottom: 44,
@@ -419,7 +419,7 @@ class ProjectDetail extends React.Component {
 
         {this.state.activeTabKey === 'details' &&
           <div>
-            <Card title={i18n('project.privacy_infomation')}>
+            <Card title={i18n('project.privacy_infomation')} style={{ marginBottom: 20 }}>
               <SecretInfo project={project} />
             </Card>
 
@@ -688,18 +688,18 @@ function ProjectIntro({ project, country }) {
   return (
     <div style={blockStyle}>
 
-      <div style={{marginBottom: 60}}>
+      <div style={{marginBottom: 16}}>
         {project.tags && project.tags.map(item =>
-          <Tag key={item.id} style={tagStyle}>{item.name}</Tag>
+          <Tag key={item.id} style={{ color: '#595959', fontSize: 14 }}>{item.name}</Tag>
         )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <p dangerouslySetInnerHTML={introduce} style={{ flex: 1, marginRight: 40 }} />
+        <div dangerouslySetInnerHTML={introduce} style={{ flex: 1, marginRight: 40 }} />
 
         <table style={{ flex: 1, textAlign: 'center' }}>
           <tbody>
-            <tr style={{ ...trStyle, backgroundColor: '#eee' }}>
+            <tr style={{ ...trStyle, backgroundColor: '#eee', color: '#262626', fontWeight: 'bold' }}>
               <td>{i18n('project.transaction_type')}</td>
               <td>{i18n('project.engagement_in_transaction')}</td>
               <td>{i18n('project.transaction_size')}</td>
