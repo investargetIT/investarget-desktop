@@ -724,28 +724,25 @@ ProjectIntro = connect(mapStateToProps)(ProjectIntro);
 
 function Detail({ project }) {
   const containerStyle = {
-    
+    width: '70%', 
   }
   const style = {
-    marginBottom: 30,
   }
   const titleStyle = {
+    padding: '14px 20px',
     backgroundColor: '#f4f4f4',
     fontSize: 14,
-    fontWeight: 400,
-    paddingLeft: 120,
-    height: 24,
-    lineHeight: '28px',
-    marginTop: 16,
-    color: '#656565',
+    fontWeight: 'bold',
+    lineHeight: '22px',
+    color: '#262626',
+    borderBottom: '1px solid #e6e6e6',
   }
   const paraStyle = {
-    paddingLeft: 120,
-    paddingRight:120,
+    padding: '14px 20px',
     fontSize: 14,
     wordBreak: 'break-word',
     lineHeight: '24px',
-    marginTop:20
+    color: '#595959',
   }
 
   function createMarkup(str) {
@@ -757,8 +754,8 @@ function Detail({ project }) {
   function DetailItem({ label, content }) {
     return content&&content!='暂无' ? (
       <div style={style}>
-        <h3 style={titleStyle}>{label}</h3>
-        <p style={paraStyle} dangerouslySetInnerHTML={createMarkup(content)}></p>
+        <div style={titleStyle}>{label}</div>
+        <div style={paraStyle} dangerouslySetInnerHTML={createMarkup(content)} />
       </div>
     ) : null
   }
