@@ -808,14 +808,9 @@ class DownloadFiles extends React.Component {
 
   render() {
     const containerStyle = {
-      padding: 10,
+      width: '70%',
     }
     const sectionStyle = {
-      padding: '0px 20px',
-      paddingTop:'10px',
-      marginLeft:120,
-      marginBottom:10,
-      width:620,
       display: 'flex',
       backgroundColor:'rgb(233, 241, 243)'
     }
@@ -828,12 +823,14 @@ class DownloadFiles extends React.Component {
     const listStyle = {
       flexGrow: 1,
     }
-    const headerStyle={
+    const headerStyle = {
+      padding: '14px 20px',
+      backgroundColor: '#f4f4f4',
       fontSize: 14,
-      fontWeight: 400,
-      paddingLeft: 120,
-      color: '#656565',
-      marginBottom:20,
+      fontWeight: 'bold',
+      lineHeight: '22px',
+      color: '#262626',
+      borderBottom: '1px solid #e6e6e6',
     }
     const imgContainer={
       width:30,
@@ -861,8 +858,10 @@ class DownloadFiles extends React.Component {
 
     return (
       <div style={containerStyle}>
+
         {dirs.length?<div style={headerStyle}>{i18n('project.material_download')}</div>:
         <div style={headerStyle}>{i18n('project.no_materials')}</div>}
+
         {dirs.map((dir, index) => {
           const files = this.state.attachments.filter(item => item.filetype == dir)
           const isLast = index == dirs.length - 1
