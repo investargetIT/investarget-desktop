@@ -856,6 +856,7 @@ class DownloadFiles extends React.Component {
       padding: '14px 20px',
       borderBottom: '1px solid #e6e6e6',
       color: '#595959', 
+      alignItems: 'center',
     }
     const dirs = Array.from(new Set(this.state.attachments.map(item=>item.filetype)))
 
