@@ -10,6 +10,7 @@ import TimelineView from '../components/TimelineView'
 import {
   HeartOutlined,
   HeartFilled,
+  CloudDownloadOutlined,
 } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane
@@ -880,10 +881,7 @@ class DownloadFiles extends React.Component {
                   download={file.filename}
                   href={file.url}
                 >
-                  <div style={imgContainer}>
-                    <img style={cloudStyle} src="/images/cloud.png" />
-                    <img style={arrowStyle} src="/images/arrow.png" />
-                  </div>
+                  <Button type="link" icon={<CloudDownloadOutlined />}>下载</Button>
                 </a>
               </div>
             )
