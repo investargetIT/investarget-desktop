@@ -47,7 +47,7 @@ class MyPartner extends React.Component {
 
     const page = getURLParamValue(props, 'page');
     const pageSize = getURLParamValue(props, 'pageSize');
-    const search = getURLParamValue(props, search);
+    const search = getURLParamValue(props, 'search');
     const filters = getURLParamValue(props, 'filters');
 
     let nextFilters = null;
@@ -159,13 +159,11 @@ class MyPartner extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { search: nextSearch } = nextProps.location;
-    window.echo('next search', nextSearch);
     const { search: currentSearch } = this.props.location;
-    window.echo('cur serach', currentSearch);
     if (nextSearch !== currentSearch) {
       const page = getURLParamValue(nextProps, 'page');
       const pageSize = getURLParamValue(nextProps, 'pageSize');
-      const search = getURLParamValue(nextProps, search);
+      const search = getURLParamValue(nextProps, 'search');
       const filters = getURLParamValue(nextProps, 'filters');
       let nextFilters = null;
       if (filters) {
@@ -193,9 +191,13 @@ class MyPartner extends React.Component {
     console.log(userID)
   }
 
-  handlePageChange = pageIndex => {
+  handlePageChange = (pageIndex, pageSize1) => {
+    if (pageSize1 !== this.state.pageSize) {
+      this.handlePageSizeChange(pageSize1);
+      return;
+    }
     const pageSize = getURLParamValue(this.props, 'pageSize');
-    const search = getURLParamValue(this.props, search);
+    const search = getURLParamValue(this.props, 'search');
     const filters = getURLParamValue(this.props, 'filters');
 
     const parameters = { filters, search, page: pageIndex, pageSize };
@@ -203,14 +205,11 @@ class MyPartner extends React.Component {
     // this.setState({ pageIndex }, this.getPartner);
   }
 
-  handlePageSizeChange = (current, pageSize1) => {
-    window.echo('handle page size change', pageSize);
-    const search = getURLParamValue(this.props, search);
+  handlePageSizeChange = pageSize => {
+    const search = getURLParamValue(this.props, 'search');
     const filters = getURLParamValue(this.props, 'filters');
-    const parameters = { filters, search, page: 1, pageSize: pageSize1 };
-    window.echo('para', `/app/investor/my?${qs.stringify(parameters)}`);
+    const parameters = { filters, search, page: 1, pageSize };
     this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
-    // this.setState({ pageSize, pageIndex: 1 }, this.getPartner);
   }
 
   handleSearch = search => {
@@ -223,10 +222,9 @@ class MyPartner extends React.Component {
 
   handleFilter = filters => {
     const stringfy = JSON.stringify(filters);
-    const search = getURLParamValue(this.props, search);
+    const search = getURLParamValue(this.props, 'search');
     const pageSize = getURLParamValue(this.props, 'pageSize');
     const parameters = { filters: encodeURIComponent(stringfy), search, page: 1, pageSize };
-    window.echo('router prop', this.props);
     this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ filters, pageIndex: 1 }, this.getPartner);
   }
@@ -428,7 +426,6 @@ class MyPartner extends React.Component {
           showSizeChanger
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
-          onShowSizeChange={this.handlePageSizeChange}
         />
 
         {this.props.type === "investor" ? (
