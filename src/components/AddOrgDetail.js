@@ -172,7 +172,7 @@ ContactForm.childContextTypes = {
   form: PropTypes.object
 };
 
-ContactForm = Form.create()(ContactForm);
+// ContactForm = Form.create()(ContactForm);
 
 class ManageFundForm extends React.Component {
   
@@ -244,7 +244,7 @@ ManageFundForm.childContextTypes = {
   form: PropTypes.object
 };
 
-ManageFundForm = Form.create()(ManageFundForm);
+// ManageFundForm = Form.create()(ManageFundForm);
 
 class InvestEventForm extends React.Component {
   
@@ -357,7 +357,7 @@ InvestEventForm.childContextTypes = {
   form: PropTypes.object
 };
 
-InvestEventForm = Form.create()(InvestEventForm);
+// InvestEventForm = Form.create()(InvestEventForm);
 
 class CooperationForm extends React.Component {
   
@@ -420,7 +420,7 @@ CooperationForm.childContextTypes = {
   form: PropTypes.object
 };
 
-CooperationForm = Form.create()(CooperationForm);
+// CooperationForm = Form.create()(CooperationForm);
 
 class BuyoutForm extends React.Component {
   
@@ -487,7 +487,7 @@ BuyoutForm.childContextTypes = {
   form: PropTypes.object
 };
 
-BuyoutForm = Form.create()(BuyoutForm);
+// BuyoutForm = Form.create()(BuyoutForm);
 
 class AddOrgDetail extends React.Component {
 

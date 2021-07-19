@@ -703,12 +703,12 @@ class OrgDetail extends React.Component {
       hideUserInfo: false,
     }
 
-    this.id = props.params.id;
+    this.id = props.match.params.id;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.params.id !== this.id) {
-      this.id = nextProps.params.id;
+    if (nextProps.match.params.id !== this.id) {
+      this.id = nextProps.match.params.id;
       this.setState({
         reloading: true,
         data: [],
@@ -722,7 +722,7 @@ class OrgDetail extends React.Component {
     let orgTitleTable
     api.getSource('orgtitletable').then(data => {
       orgTitleTable = data.data
-      const id = this.props.params.id
+      const id = this.props.match.params.id
       return api.getOrgDetail(id, { lang: window.LANG })
     }).then(result => {
       let data = { ...result.data }
@@ -870,14 +870,14 @@ class OrgDetail extends React.Component {
   handleCancelChoose = () => this.setState({ chooseModalVisible: false })
   handleAddNewInvestor = () => this.setState({ chooseModalVisible: false, visible: true })
   handleChooseInvestor = () => this.setState({ chooseModalVisible: false }, this.props.dispatch(
-    routerRedux.push(`/app/organization/selectuser?orgID=${this.props.params.id}&titleID=${this.titleID}`)
+    routerRedux.push(`/app/organization/selectuser?orgID=${this.props.match.params.id}&titleID=${this.titleID}`)
   ))
 
   handleSubmit = e => {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const title = this.titleID
-        const org = this.props.params.id
+        const org = this.props.match.params.id
         const body = { ... values, org, title }
 
         api.addUnreachUser(body).then(data => {
@@ -971,7 +971,7 @@ class OrgDetail extends React.Component {
   }
 
   render() {
-    const id = this.props.params.id
+    const id = this.props.match.params.id
 
     // const isShowTabs = this.state.contact.length > 0 || this.state.manageFund.length > 0
     //   || this.state.investEvent.length > 0 || this.state.cooperation.length > 0 
@@ -1144,4 +1144,4 @@ class OrgDetail extends React.Component {
   }
 }
 
-export default connect()(Form.create()(OrgDetail))
+export default connect()(OrgDetail);
