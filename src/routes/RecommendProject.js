@@ -168,9 +168,15 @@ class RecommendProject extends React.Component {
         </Breadcrumb>
 
         <Card title={projTitle}>
-          <div style={{ marginBottom: '24px', width: '200px' }}>
-            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
-          </div>
+          <Search
+            style={{ marginBottom: 20, width: 300 }}
+            placeholder="请输入"
+            onSearch={this.handleSearch}
+            onChange={search => this.setState({ search })}
+            value={search}
+            size="middle"
+          />
+
           <Table
             style={tableStyle}
             rowSelection={rowSelection}
@@ -179,17 +185,18 @@ class RecommendProject extends React.Component {
             loading={loading}
             rowKey={record => record.id}
             pagination={false} />
-          <Pagination
-            style={paginationStyle}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
-            showQuickJumper />
-          <div>
-            <Button type="primary" disabled={selectedUsers.length == 0} onClick={this.recommendProject}>推荐</Button>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button style={{ width: 120 }} block type="primary" disabled={selectedUsers.length == 0} onClick={this.recommendProject}>推荐</Button>
+            <Pagination
+              style={paginationStyle}
+              total={total}
+              current={page}
+              pageSize={pageSize}
+              onChange={this.handlePageChange}
+              showSizeChanger
+              onShowSizeChange={this.handlePageSizeChange}
+              showQuickJumper />
           </div>
         </Card>
 
