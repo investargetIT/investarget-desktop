@@ -4,6 +4,7 @@ import {
   isLogin, 
   getUserInfo,
   handleError,
+  getURLParamValue,
 } from '../utils/util';
 import { MyInvestorListFilter, FamiliarFilter } from '../components/Filter'
 import { Tag, Table, Button, Pagination, Modal } from 'antd';
@@ -44,7 +45,10 @@ class MyPartner extends React.Component {
   constructor(props) {
     super(props);
 
-    const { page, pageSize, search, filters } = props.location.query;
+    const page = getURLParamValue(props, 'page');
+    const pageSize = getURLParamValue(props, 'pageSize');
+    const search = getURLParamValue(props, search);
+    const filters = getURLParamValue(props, 'filters');
 
     let nextFilters = null;
     if (filters) {
@@ -155,9 +159,14 @@ class MyPartner extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { search: nextSearch } = nextProps.location;
+    window.echo('next search', nextSearch);
     const { search: currentSearch } = this.props.location;
+    window.echo('cur serach', currentSearch);
     if (nextSearch !== currentSearch) {
-      const { filters, search, page, pageSize } = nextProps.location.query;
+      const page = getURLParamValue(nextProps, 'page');
+      const pageSize = getURLParamValue(nextProps, 'pageSize');
+      const search = getURLParamValue(nextProps, search);
+      const filters = getURLParamValue(nextProps, 'filters');
       let nextFilters = null;
       if (filters) {
         nextFilters = JSON.parse(decodeURIComponent(filters));
@@ -185,42 +194,51 @@ class MyPartner extends React.Component {
   }
 
   handlePageChange = pageIndex => {
-    const { search, pageSize, filters } = this.props.location.query;
+    const pageSize = getURLParamValue(this.props, 'pageSize');
+    const search = getURLParamValue(this.props, search);
+    const filters = getURLParamValue(this.props, 'filters');
+
     const parameters = { filters, search, page: pageIndex, pageSize };
-    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageIndex }, this.getPartner);
   }
 
-  handlePageSizeChange = (current, pageSize) => {
-    const { search, filters } = this.props.location.query;
-    const parameters = { filters, search, page: 1, pageSize };
-    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+  handlePageSizeChange = (current, pageSize1) => {
+    window.echo('handle page size change', pageSize);
+    const search = getURLParamValue(this.props, search);
+    const filters = getURLParamValue(this.props, 'filters');
+    const parameters = { filters, search, page: 1, pageSize: pageSize1 };
+    window.echo('para', `/app/investor/my?${qs.stringify(parameters)}`);
+    this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ pageSize, pageIndex: 1 }, this.getPartner);
   }
 
   handleSearch = search => {
-    const { pageSize, filters } = this.props.location.query;
+    const pageSize = getURLParamValue(this.props, 'pageSize');
+    const filters = getURLParamValue(this.props, 'filters');
     const parameters = { filters, search, page: 1, pageSize };
-    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ search, pageIndex: 1 }, this.getPartner);
   }
 
   handleFilter = filters => {
     const stringfy = JSON.stringify(filters);
-    const { search, pageSize } = this.props.location.query;
+    const search = getURLParamValue(this.props, search);
+    const pageSize = getURLParamValue(this.props, 'pageSize');
     const parameters = { filters: encodeURIComponent(stringfy), search, page: 1, pageSize };
-    this.props.router.push(`/app/investor/my?${qs.stringify(parameters)}`);
+    window.echo('router prop', this.props);
+    this.props.history.push(`/app/investor/my?${qs.stringify(parameters)}`);
     // this.setState({ filters, pageIndex: 1 }, this.getPartner);
   }
 
   handleFilterReset = filters => {
     let search = '';
-    const { pageSize } = this.props.location.query;
+    const pageSize = getURLParamValue(this.props, 'pageSize');
     if (pageSize) {
       const parameters = { pageSize };
       search = `?${qs.stringify(parameters)}`;
     }
-    this.props.router.push(`/app/investor/my${search}`);
+    this.props.history.push(`/app/investor/my${search}`);
     // this.setState({ filters, pageIndex: 1, search: null }, this.getPartner)
   }
 

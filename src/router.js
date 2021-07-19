@@ -17,6 +17,7 @@ import ModifyPwd from './routes/ModifyPwd';
 import BasicInfo from './routes/BasicInfo';
 import ProjectDetail from './routes/ProjectDetail';
 import RecommendProject from './routes/RecommendProject';
+import MyInvestor from './routes/MyInvestor';
 // import UserList from "./routes/UserList.js"
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
@@ -45,7 +46,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import AddMarketPlace from './routes/AddMarketPlace'
 // import EditMarketPlace from './routes/EditMarketPlace'
 // import MarketPlaceDetail from './routes/MarketPlaceDetail'
-// import MyInvestor from './routes/MyInvestor'
 // import MyTrader from './routes/MyTrader'
 // import SelectUserToPosition from './routes/SelectUserToPosition'
 // import AccessDenied from './routes/AccessDenied'
@@ -100,6 +100,7 @@ function RouterConfig({ history }) {
         <Route path={URI_10} component={BasicInfo} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
+        <Route path={URI_12} component={MyInvestor} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -137,7 +138,6 @@ function RouterConfig({ history }) {
         <Route path="/app/marketplace/add" component={AddMarketPlace} />
         <Route path="/app/marketplace/edit/:id" component={EditMarketPlace} />
         <Route path="/app/marketplace/:id" component={MarketPlaceDetail} />
-        <Route path={URI_12} component={MyInvestor} />
         <Route path={URI_13} component={MyTrader} />
         <Route path="/app/trader/add" component={SelectTraderToRelation} />
         <Route path="/app/agreement" component={Agreement} />
