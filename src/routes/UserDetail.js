@@ -62,21 +62,17 @@ const Field = (props) => {
 }
 
 class UserInvestEventForm extends React.Component {
-  
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+ 
+  investEventFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        this.addEvent(values).catch(handleError);
-      }
-    });
+  // getChildContext() {
+  //   return {
+  //     form: this.props.form
+  //   };
+  // }
+
+  handleSubmit = values => {
+    this.addEvent(values).catch(handleError);
   }
 
   addEvent = async values => {
@@ -111,14 +107,13 @@ class UserInvestEventForm extends React.Component {
       });
   }
 
-  handleTargetChange = () => this.props.form.setFieldsValue({ investDate: null });
+  handleTargetChange = () => this.investEventFormRef.current.setFieldsValue({ investDate: null });
   
   render() {
 
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-    const investarget = this.props.form.getFieldValue('investTarget');
+    const investarget = this.investEventFormRef.current && this.investEventFormRef.current.getFieldValue('investTarget');
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form ref={this.investEventFormRef} onFinish={this.handleSubmit}>
 
         <BasicFormItem label="投资项目" name="investTarget" required valueType="number" onChange={this.handleTargetChange}>
           <SelectProjectLibrary />
@@ -134,7 +129,7 @@ class UserInvestEventForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
+            disabled={hasErrors(this.investEventFormRef.current && this.investEventFormRef.current.getFieldsError())}
           >确定</Button>
         </FormItem>
 
@@ -143,13 +138,14 @@ class UserInvestEventForm extends React.Component {
   }
 }
 
-UserInvestEventForm.childContextTypes = {
-  form: PropTypes.object
-};
+// UserInvestEventForm.childContextTypes = {
+//   form: PropTypes.object
+// };
 
 // UserInvestEventForm = Form.create()(UserInvestEventForm);
 
 function hasErrors(fieldsError) {
+  if (!fieldsError) return true;
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 

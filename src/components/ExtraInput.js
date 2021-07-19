@@ -396,7 +396,8 @@ class SelectProjectLibrary extends React.Component {
     const { value, onChange, allowCreate, ...extraProps } = this.props
     return (
       <Select2
-        getData={this.getData}
+        // getData={this.getData}
+        fetchOptions={this.getData}
         getNameById={this.getOrgnameById}
         value={value}
         onChange={this.handleChange}
