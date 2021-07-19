@@ -18,7 +18,7 @@ import BasicInfo from './routes/BasicInfo';
 import ProjectDetail from './routes/ProjectDetail';
 import RecommendProject from './routes/RecommendProject';
 import MyInvestor from './routes/MyInvestor';
-// import UserList from "./routes/UserList.js"
+import UserList from "./routes/UserList.js";
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import AddProject from './routes/AddProject'
@@ -101,11 +101,11 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
         <Route path={URI_12} component={MyInvestor} />
+        <Route path={URI_6} component={UserList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
         <Route path="/app/orguser/list" component={OrgUserList} />
-        <Route path={URI_6} component={UserList} />
         <Route path="/app/user/add" component={AddUser} />
         <Route path="/app/organization/add" component={AddOrganization} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
