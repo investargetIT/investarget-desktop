@@ -16,7 +16,7 @@ function onValuesChange(props, values) {
 function mapPropsToFields(props) {
   return props.data;
 }
-const AddUserForm = Form.create({ onValuesChange, mapPropsToFields })(UserForm);
+// const AddUserForm = Form.create({ onValuesChange, mapPropsToFields })(UserForm);
 
 
 class AddUser extends React.Component {
@@ -256,8 +256,8 @@ class AddUser extends React.Component {
       <LeftRightLayout
         location={this.props.location}
         title={title}>
-
-        <AddUserForm type="add"
+        <UserForm
+          type="add"
           isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
           onValuesChange={this.handleAddFormValuesChange}
