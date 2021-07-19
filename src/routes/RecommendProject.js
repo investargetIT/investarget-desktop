@@ -16,7 +16,7 @@ class RecommendProject extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      projId: Number(this.props.params.id),
+      projId: Number(this.props.match.params.id),
       projTitle: '',
       search: null,
       page: 1,
