@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Input, Table, Pagination, Button, message } from 'antd'
+import { Card, Table, Pagination, Button, message, Breadcrumb } from 'antd';
 import { Search } from '../components/Search'
-import LeftRightLayout from '../components/LeftRightLayout'
+import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
+import { Link } from 'dva/router';
 
 import { hasPerm, isLogin, getCurrentUser } from '../utils/util'
 
@@ -150,37 +151,49 @@ class RecommendProject extends React.Component {
     ]
 
     return (
-      <LeftRightLayout location={this.props.location} title="推荐项目">
-        <div>
-          <h3 style={{lineHeight: 2, marginBottom: '24px'}}>项目名称：{projTitle}</h3>
+      <LeftRightLayoutPure location={this.props.location}>
 
-          <div>
-            <div style={{ marginBottom: '24px', width: '200px' }}>
-              <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
-            </div>
-            <Table
-              style={tableStyle}
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={list}
-              loading={loading}
-              rowKey={record => record.id}
-              pagination={false} />
-            <Pagination
-              style={paginationStyle}
-              total={total}
-              current={page}
-              pageSize={pageSize}
-              onChange={this.handlePageChange}
-              showSizeChanger
-              onShowSizeChange={this.handlePageSizeChange}
-              showQuickJumper />
-            <div>
-              <Button type="primary" disabled={selectedUsers.length == 0} onClick={this.recommendProject}>推荐</Button>
-            </div>
+        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+          <Breadcrumb.Item>
+            <Link to="/app">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/app/projects/list">平台项目</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to={`/app/projects/${this.state.projId}`}>项目详情</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>推荐投资人</Breadcrumb.Item>
+        </Breadcrumb>
+
+        <Card title={projTitle}>
+          <div style={{ marginBottom: '24px', width: '200px' }}>
+            <Search value={search} onChange={this.handleSearchChange} onSearch={this.handleSearch} />
           </div>
-        </div>
-      </LeftRightLayout>
+          <Table
+            style={tableStyle}
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={list}
+            loading={loading}
+            rowKey={record => record.id}
+            pagination={false} />
+          <Pagination
+            style={paginationStyle}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper />
+          <div>
+            <Button type="primary" disabled={selectedUsers.length == 0} onClick={this.recommendProject}>推荐</Button>
+          </div>
+        </Card>
+
+      </LeftRightLayoutPure>
     )
   }
 }
