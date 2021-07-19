@@ -19,6 +19,7 @@ import ProjectDetail from './routes/ProjectDetail';
 import RecommendProject from './routes/RecommendProject';
 import MyInvestor from './routes/MyInvestor';
 import UserList from "./routes/UserList.js";
+import UserDetail from './routes/UserDetail';
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import AddProject from './routes/AddProject'
@@ -37,7 +38,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import EmailList from './routes/EmailList'
 // import EmailDetail from './routes/EmailDetail'
 // import EditUser from './routes/EditUser'
-// import UserDetail from './routes/UserDetail'
 // import EditTimeline from './routes/EditTimeline'
 // import TimelineDetail from './routes/TimelineDetail'
 // import InboxList from './routes/InboxList'
@@ -102,6 +102,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/:id" component={ProjectDetail} />
         <Route path={URI_12} component={MyInvestor} />
         <Route path={URI_6} component={UserList} />
+        <Route path="/app/user/:id" component={UserDetail} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -129,7 +130,6 @@ function RouterConfig({ history }) {
         <Route path="/app/email/list" component={EmailList} />
         <Route path="/app/email/detail/:id" component={EmailDetail} />
         <Route path="/app/user/edit/:id" component={EditUser} />
-        <Route path="/app/user/:id" component={UserDetail} />
         <Route path="/app/timeline/add" component={AddTimeline} />
         <Route path="/app/timeline/edit/:id" component={EditTimeline} />
         <Route path="/app/timeline/:id" component={TimelineDetail} />

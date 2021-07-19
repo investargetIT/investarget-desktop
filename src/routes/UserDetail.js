@@ -36,6 +36,9 @@ import { Modal as GModal } from '../components/GlobalComponents';
 import * as api from '../api';
 import { connect } from 'dva';
 import { withRouter } from 'dva/router';
+import {
+  PlusOutlined,
+} from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -144,7 +147,7 @@ UserInvestEventForm.childContextTypes = {
   form: PropTypes.object
 };
 
-UserInvestEventForm = Form.create()(UserInvestEventForm);
+// UserInvestEventForm = Form.create()(UserInvestEventForm);
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -154,7 +157,7 @@ class UserDetail extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      userId: Number(this.props.params.id),
+      userId: Number(this.props.match.params.id),
       isShowForm: false,
       hideUserInfo: false,
       isUploading: false,
@@ -169,10 +172,10 @@ class UserDetail extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.params.id !== this.props.params.id) {
+    if (newProps.match.params.id !== this.props.match.params.id) {
       this.setState(
         {
-          userId: Number(newProps.params.id),
+          userId: Number(newProps.match.params.id),
           isShowForm: false,
           isUploading: false,
           username: '',
@@ -559,8 +562,7 @@ class UserDetail extends React.Component {
         {!this.state.hideUserInfo && <UserRemarkList typeId={userId} />}
 
         <h3 style={detailStyle}>{i18n('user.detail')}:          
-          <Icon 
-            type="plus" 
+          <PlusOutlined
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowForm: true })} 
           />
