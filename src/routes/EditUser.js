@@ -117,7 +117,7 @@ class EditUser extends React.Component {
     let _data = {  ...data }
     _data['groups'] = data.groups && data.groups.map(item => item.id)
     _data['title'] = data.title && data.title.id
-    _data['org'] = data.org && String(data.org.id);
+    _data['org'] = data.org && data.org.orgfullname;
     _data['orgarea'] = data.orgarea && data.orgarea.id
     _data['tags'] = data.tags ? data.tags.map(item => item.id) : []
     _data['userstatus'] = data.userstatus && data.userstatus.id
