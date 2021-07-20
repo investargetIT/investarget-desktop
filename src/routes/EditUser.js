@@ -25,19 +25,32 @@ class EditUser extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: {}
+      data: {},
+      loadingEditUser: false,
     }
     this.majorRelation = []
     this.minorRelation = []
     this.editUserFormRef = React.createRef();
   }
 
-  handleSubmit = e => {
-    const userId = Number(this.props.match.params.id)
-    this.form.validateFieldsAndScroll((err, values) => {
-      if(!err) {
-        console.log('Received values of form: ', values, this.majorRelation, this.minorRelation)
+  getOrAddOrg = async values => {
+    if (isNaN(values.org) && values.org != undefined) {
+      const res = await api.getOrg({ search: values.org });
+      if (res.data.count > 0) return { data: res.data.data[0] };
+      const body = { orgnameC: values.org };
+      if (values.cardKey) {
+        body.orgstatus = 2;
+      }
+      return api.addOrg(body);
+    }
+  }
 
+  handleSubmit = () => {
+    
+    this.editUserFormRef.current.validateFields()
+      .then(values => {
+        console.log('Received values of form: ', values, this.majorRelation, this.minorRelation);
+        const userId = Number(this.props.match.params.id);
         // 修改熟悉程度
         if (values.famlv) {
           const relation = {
@@ -78,40 +91,37 @@ class EditUser extends React.Component {
         // if (!hasPerm('usersys.admin_changeuser')) {
         //   body = { ...values, groups: undefined}
         // }
-        let promise = new Promise((resolve,reject)=>{
-          if(isNaN(body.org)&&body.org!=undefined){
-            resolve(api.addOrg({orgnameC:values.org}))
+        let promise = new Promise((resolve, reject) => {
+          if (isNaN(body.org) && body.org != undefined) {
+            resolve(this.getOrAddOrg(body));
           }
-          else{
+          else {
             resolve(null);
           }
         })
-        promise.then(data=>{
-          if(data){
-            body.org=data.data.id
+        promise.then(data => {
+          if (data) {
+            body.org = data.data.id
           }
           return api.editUser([userId], body)
-        })  
-        .then(result => {
-          let url = getURLParamValue(this.props, 'redirect') || "/app/user/list"
-          this.props.dispatch(routerRedux.replace(url))
         })
-        .catch(error => {
-          this.componentDidMount()
-          this.props.dispatch({ type: 'app/findError', payload: error })
-        })
-        
-        }
-              
-    })
+          .then(result => {
+            let url = getURLParamValue(this.props, 'redirect') || "/app/user/list"
+            this.props.dispatch(routerRedux.replace(url))
+          })
+          .catch(error => {
+            this.componentDidMount()
+            this.props.dispatch({ type: 'app/findError', payload: error })
+          })
+      })
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-      window.form = this.form
-    }
-  }
+  // handleRef = (inst) => {
+  //   if (inst) {
+  //     this.form = inst.props.form
+  //     window.form = this.form
+  //   }
+  // }
 
   getData = (data) => {
     let _data = {  ...data }
@@ -324,7 +334,7 @@ class EditUser extends React.Component {
 
         <UserForm
           ref={this.editUserFormRef}
-          wrappedComponentRef={this.handleRef}
+          // wrappedComponentRef={this.handleRef}
           data={this.state.data}
           type="edit"
           onSelectMajorTrader={this.handleSelectTrader.bind(this, 'major')}
@@ -337,7 +347,7 @@ class EditUser extends React.Component {
         />
 
         <div style={{textAlign: 'center'}}>
-          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
+          <Button type="primary" size="large" loading={this.state.loadingEditUser} onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
         </div>
 
         <UserRemarkList typeId={userId} />
