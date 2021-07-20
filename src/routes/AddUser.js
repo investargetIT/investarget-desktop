@@ -39,10 +39,9 @@ class AddUser extends React.Component {
     this.addUserFormRef = React.createRef();
   }
 
-  handleSubmit = e => {
-    this.form.validateFieldsAndScroll((err, values) => {
-      window.echo('ddd', values);
-      if(!err) {
+  handleSubmit = () => {
+    this.addUserFormRef.current.validateFields()
+      .then(values => {
         console.log('Received values of form: ', values)
         if (this.isTraderAddInvestor) {
           values.userstatus = 2
@@ -64,44 +63,43 @@ class AddUser extends React.Component {
             }
           } else {
             values['registersource'] = 3 // 标识注册来源
-            if(isNaN(values.org)&&values.org!=undefined){
+            if (isNaN(values.org) && values.org != undefined) {
               const body = { orgnameC: values.org };
               if (values.cardKey) {
                 body.orgstatus = 2;
               }
               return api.addOrg(body);
-            }      
-          }
-        })
-        .then(data=>{
-          if (data) values.org = data.data.id;
-          if (!isUserExist) {
-            if (values.cardKey) {
-              values.cardBucket = 'image';
             }
-            const registersource = this.isTraderAddInvestor ? 8 : 3;
-            return api.addUser(values, registersource);
           }
         })
-        .then(result => {
-          if (this.isTraderAddInvestor && result) {
-            const body = {
-              relationtype: true,
-              investoruser: result.data.id,
-              traderuser: isLogin().id
+          .then(data => {
+            if (data) values.org = data.data.id;
+            if (!isUserExist) {
+              if (values.cardKey) {
+                values.cardBucket = 'image';
+              }
+              const registersource = this.isTraderAddInvestor ? 8 : 3;
+              return api.addUser(values, registersource);
             }
-            return api.addUserRelation(body)
-          }
-        })
-        .then(data => {
-          if (!data && this.isTraderAddInvestor) return
-          this.props.dispatch(
-            routerRedux.replace(this.props.location.query.redirect || '/app/user/list')
-          )
-        })
-        .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
-      }
-    })
+          })
+          .then(result => {
+            if (this.isTraderAddInvestor && result) {
+              const body = {
+                relationtype: true,
+                investoruser: result.data.id,
+                traderuser: isLogin().id
+              }
+              return api.addUserRelation(body)
+            }
+          })
+          .then(data => {
+            if (!data && this.isTraderAddInvestor) return
+            this.props.dispatch(
+              routerRedux.replace(this.props.location.query.redirect || '/app/user/list')
+            )
+          })
+          .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+      })
   }
 
   handleRef = (inst) => {

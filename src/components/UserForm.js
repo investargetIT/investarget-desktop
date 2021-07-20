@@ -92,7 +92,7 @@ class UserForm extends React.Component {
     this.setState({ isFetchingNumber: true });
     api.getRandomPhoneNumber()
       .then(result => {
-        this.props.form.setFieldsValue({ mobile: result.data.toString(), mobileAreaCode: '86' });
+        this.props.forwardedRef.current.setFieldsValue({ mobile: result.data.toString(), mobileAreaCode: '86' });
         this.setState({ isDsiablePhoneInput: true });
       })
       .catch(handleError)
