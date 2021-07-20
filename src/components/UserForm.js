@@ -117,8 +117,6 @@ class UserForm extends React.Component {
 
   render() {
     const { forwardedRef, onValuesChange } = this.props;
-    const targetUserIsInvestor = forwardedRef.current && forwardedRef.current.getFieldValue('groups') && intersection(forwardedRef.current.getFieldValue('groups'), this.state.investorGroup).length > 0
-    const userIsApproved = forwardedRef.current && forwardedRef.current.getFieldValue('userstatus') === 2
     return (
       <Form ref={forwardedRef} onValuesChange={onValuesChange}>
 
@@ -239,14 +237,21 @@ class UserForm extends React.Component {
           }}
         </FormItem>
 
-        <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
-            <SelectTrader mode="multiple"
-              onSelect={this.props.onSelectMinorTrader}
-              onDeselect={this.props.onDeselectMinorTrader}
-              disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('major_trader') : []} />
-          </BasicFormItem>
-        </div>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.ifShowMajorTraderFormItem(getFieldValue)) {
+              return (
+                <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
+                  <SelectTrader mode="multiple"
+                    onSelect={this.props.onSelectMinorTrader}
+                    onDeselect={this.props.onDeselectMinorTrader}
+                    disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('major_trader') : []} />
+                </BasicFormItem>
+              );
+            }
+            return null;
+          }}
+        </FormItem>
 
         <BasicFormItem label={i18n('user.card')} name="cardKey">
           <UploadImage />
