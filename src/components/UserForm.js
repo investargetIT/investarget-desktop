@@ -109,6 +109,12 @@ class UserForm extends React.Component {
     }
   }
 
+  ifShowMajorTraderFormItem = getFieldValue => {
+    const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0;
+    const userIsApproved = getFieldValue('userstatus') === 2;
+    return targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm;
+  }
+
   render() {
     const { forwardedRef, onValuesChange } = this.props;
     const targetUserIsInvestor = forwardedRef.current && forwardedRef.current.getFieldValue('groups') && intersection(forwardedRef.current.getFieldValue('groups'), this.state.investorGroup).length > 0
@@ -215,16 +221,23 @@ class UserForm extends React.Component {
           )}
         </FormItem>
 
-        <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
-          <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
-            <SelectTrader
-            mode="single"
-            allowClear={true}
-            onChange={this.props.onMajorTraderChange}
-            onSelect={this.props.onSelectMajorTrader}
-            disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('minor_traders') : []} />
-          </BasicFormItem>
-        </div>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.ifShowMajorTraderFormItem(getFieldValue)) {
+              return (
+                <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
+                  <SelectTrader
+                    mode="single"
+                    allowClear={true}
+                    onChange={this.props.onMajorTraderChange}
+                    onSelect={this.props.onSelectMajorTrader}
+                    disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('minor_traders') : []} />
+                </BasicFormItem>
+              );
+            }
+            return null;
+          }}
+        </FormItem>
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
