@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName, requestAllData } from '../utils/util'
+import { i18n, intersection, subtracting, hasPerm, isLogin, getUserGroupIdByName, requestAllData, getURLParamValue } from '../utils/util'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
 import UserForm from '../components/UserForm'
@@ -17,7 +17,7 @@ function onValuesChange(props, values) {
 function mapPropsToFields(props) {
   return props.data
 }
-const EditUserForm = Form.create({ onValuesChange, mapPropsToFields })(UserForm)
+// const EditUserForm = Form.create({ onValuesChange, mapPropsToFields })(UserForm)
 
 
 class EditUser extends React.Component {
@@ -29,10 +29,11 @@ class EditUser extends React.Component {
     }
     this.majorRelation = []
     this.minorRelation = []
+    this.editUserFormRef = React.createRef();
   }
 
   handleSubmit = e => {
-    const userId = Number(this.props.params.id)
+    const userId = Number(this.props.match.params.id)
     this.form.validateFieldsAndScroll((err, values) => {
       if(!err) {
         console.log('Received values of form: ', values, this.majorRelation, this.minorRelation)
@@ -92,7 +93,7 @@ class EditUser extends React.Component {
           return api.editUser([userId], body)
         })  
         .then(result => {
-          let url = this.props.location.query.redirect || "/app/user/list"
+          let url = getURLParamValue(this.props, 'redirect') || "/app/user/list"
           this.props.dispatch(routerRedux.replace(url))
         })
         .catch(error => {
@@ -126,9 +127,9 @@ class EditUser extends React.Component {
     _data['onjob'] = data.onjob;
 
     // 如果正在编辑我的投资人，获取并设置投资人和交易师的熟悉程度
-    if (this.props.location.query.redirect === '/app/investor/my') {
+    if (getURLParamValue(this.props, 'redirect') === '/app/investor/my') {
       const relations = this.minorRelation.concat(this.majorRelation);
-      const famlv = relations.filter(f => f.investoruser.id === parseInt(this.props.params.id) && f.traderuser.id === isLogin().id)[0].familiar;
+      const famlv = relations.filter(f => f.investoruser.id === parseInt(this.props.match.params.id) && f.traderuser.id === isLogin().id)[0].familiar;
       _data['famlv'] = famlv;
     }
 
@@ -146,7 +147,7 @@ class EditUser extends React.Component {
 
 
   componentDidMount() {
-    const userId = Number(this.props.params.id)
+    const userId = Number(this.props.match.params.id)
     let userDetailInfo, investorGroup
     requestAllData(api.queryUserGroup, { type: 'investor' }, 100)
     .then(data => {
@@ -180,7 +181,7 @@ class EditUser extends React.Component {
   handleSelectTrader = (type, value) => {
     const isSelectMajorTrader = type === 'major'
     const body = {
-      investoruser: this.props.params.id,
+      investoruser: this.props.match.params.id,
       traderuser: value,
       relationtype: isSelectMajorTrader
     }
@@ -314,13 +315,14 @@ class EditUser extends React.Component {
   }
 
   render () {
-    const userId = Number(this.props.params.id)
+    const userId = Number(this.props.match.params.id)
     return (
       <LeftRightLayout
         location={this.props.location}
         title={i18n('user.edit_user')}>
 
-        <EditUserForm
+        <UserForm
+          ref={this.editUserFormRef}
           wrappedComponentRef={this.handleRef}
           data={this.state.data}
           type="edit"
@@ -330,7 +332,7 @@ class EditUser extends React.Component {
           onDeselectMinorTrader={this.handleDeselectTrader}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')}
-          showFamlvRadio={this.props.location.query.redirect === '/app/investor/my'}
+          showFamlvRadio={getURLParamValue(this.props, 'redirect') === '/app/investor/my'}
         />
 
         <div style={{textAlign: 'center'}}>
