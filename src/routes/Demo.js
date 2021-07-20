@@ -6,6 +6,8 @@ import { Table, Tag, Cascader, Button } from 'antd';
 function Demo(props) {
 
   const [isEdit, setIsEdit] = useState(false);
+  const [progress, setProgress] = useState('');
+  const [material, setMaterial] = useState('');
 
   function handleEditBtnClick() {
     setIsEdit(true);
@@ -27,13 +29,14 @@ function Demo(props) {
       dataIndex: 'age',
       key: 'age',
       render: (text, record) => {
-        return isEdit ? <Cascader options={options} onChange={onChange} placeholder="Please select" /> : <Tag>预沟通</Tag>;
+        return isEdit ? <Cascader options={options} onChange={onChange} placeholder="Please select" /> : progress;
       },
     },
     {
       title: '材料情况',
       dataIndex: 'address',
       key: 'address',
+      render: text => isEdit ? '' : material,
     },
     {
       title: '联系时间',
@@ -125,18 +128,28 @@ function Demo(props) {
       ],
     },
     {
-      value: 'jiangsu',
-      label: 'Jiangsu',
+      value: '正式路演',
+      label: '正式路演',
       children: [
         {
-          value: 'nanjing',
-          label: 'Nanjing',
-          children: [
-            {
-              value: 'zhonghuamen',
-              label: 'Zhong Hua Men',
-            },
-          ],
+          value: '无材料',
+          label: '无材料',
+        },
+        {
+          value: 'Teaser',
+          label: 'Teaser',
+        },
+        {
+          value: 'BP',
+          label: 'BP',
+        },
+        {
+          value: 'DP',
+          label: 'DP',
+        },
+        {
+          value: '补充材料',
+          label: '补充材料',
         },
       ],
     },
@@ -144,6 +157,13 @@ function Demo(props) {
 
   function onChange(value) {
     console.log(value);
+    setProgress(value[0]);
+    let material = '无材料';
+    if (value.length === 2) {
+      material = value[1];
+    }
+    setMaterial(material);
+    
   }
 
 	return (
