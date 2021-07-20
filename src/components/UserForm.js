@@ -204,11 +204,16 @@ class UserForm extends React.Component {
         </BasicFormItem>
         : null }
 
-        {forwardedRef.current && (forwardedRef.current.getFieldValue('onjob') !== undefined) ?
-          <FormItem {...formItemLayout} label="是否在职" name="onjob">
-            <Switch defaultChecked={forwardedRef.current && forwardedRef.current.getFieldValue('onjob')} />
-          </FormItem>
-          : null}
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => (
+            <FormItem {...formItemLayout} label="是否在职" name="onjob" valuePropName="checked">
+              <Switch
+                visibilityToggle={getFieldValue('onjob') !== undefined}
+                defaultChecked={getFieldValue('onjob')}
+              />
+            </FormItem>
+          )}
+        </FormItem>
 
         <div style={{ display: targetUserIsInvestor && userIsApproved && this.isEditUser && this.hasPerm ? 'block' : 'none' }}>
           <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
