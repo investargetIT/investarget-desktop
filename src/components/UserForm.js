@@ -209,14 +209,15 @@ class UserForm extends React.Component {
         : null }
 
         <FormItem noStyle shouldUpdate>
-          {({ getFieldValue }) => (
-            <FormItem {...formItemLayout} label="是否在职" name="onjob" valuePropName="checked">
-              <Switch
-                visibilityToggle={getFieldValue('onjob') !== undefined}
-                defaultChecked={getFieldValue('onjob')}
-              />
-            </FormItem>
-          )}
+          {({ getFieldValue }) => {
+            if (getFieldValue('onjob') !== undefined) {
+              return (
+                <FormItem {...formItemLayout} label="是否在职" name="onjob" valuePropName="checked">
+                  <Switch defaultChecked={getFieldValue('onjob')} />
+                </FormItem>
+              );
+            }
+          }}
         </FormItem>
 
         <FormItem noStyle shouldUpdate>
@@ -233,7 +234,6 @@ class UserForm extends React.Component {
                 </BasicFormItem>
               );
             }
-            return null;
           }}
         </FormItem>
 
@@ -249,7 +249,6 @@ class UserForm extends React.Component {
                 </BasicFormItem>
               );
             }
-            return null;
           }}
         </FormItem>
 
