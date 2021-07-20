@@ -36,6 +36,7 @@ class AddUser extends React.Component {
     this.orgID = redirectUrl && redirectUrl.indexOf('?') !== -1 ? redirectUrl.split('?')[1].split('=')[1] : null;
     this.existingUser = null;
     this.formData = { org: { value: this.orgID } };
+    this.addUserFormRef = React.createRef();
   }
 
   handleSubmit = e => {
@@ -260,6 +261,7 @@ class AddUser extends React.Component {
         title={title}>
         <UserForm
           type="add"
+          ref={this.addUserFormRef}
           isTraderAddInvestor={this.isTraderAddInvestor}
           wrappedComponentRef={this.handleRef}
           onValuesChange={this.handleAddFormValuesChange}

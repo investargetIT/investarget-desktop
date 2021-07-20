@@ -100,10 +100,11 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
-    const userIsApproved = getFieldValue('userstatus') === 2
+    const { forwardedRef, onValuesChange } = this.props;
+    const targetUserIsInvestor = forwardedRef.current && forwardedRef.current.getFieldValue('groups') && intersection(forwardedRef.current.getFieldValue('groups'), this.state.investorGroup).length > 0
+    const userIsApproved = forwardedRef.current && forwardedRef.current.getFieldValue('userstatus') === 2
     return (
-      <Form>
+      <Form ref={forwardedRef} onValuesChange={onValuesChange}>
 
          {/* { this.hasPerm || !this.isEditUser ? */}
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
@@ -193,9 +194,9 @@ class UserForm extends React.Component {
         </BasicFormItem>
         : null }
 
-        {getFieldValue('onjob') !== undefined ?
+        {forwardedRef.current && (forwardedRef.current.getFieldValue('onjob') !== undefined) ?
           <FormItem {...formItemLayout} label="是否在职" name="onjob">
-            <Switch defaultChecked={getFieldValue('onjob')} />
+            <Switch defaultChecked={forwardedRef.current && forwardedRef.current.getFieldValue('onjob')} />
           </FormItem>
           : null}
 
@@ -206,7 +207,7 @@ class UserForm extends React.Component {
             allowClear={true}
             onChange={this.props.onMajorTraderChange}
             onSelect={this.props.onSelectMajorTrader}
-            disabledOption={getFieldValue('minor_traders')} />
+            disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('minor_traders') : []} />
           </BasicFormItem>
         </div>
 
@@ -215,8 +216,7 @@ class UserForm extends React.Component {
             <SelectTrader mode="multiple"
               onSelect={this.props.onSelectMinorTrader}
               onDeselect={this.props.onDeselectMinorTrader}
-              // disabled={!getFieldValue('major_trader')}
-              disabledOption={getFieldValue('major_trader')} />
+              disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('major_trader') : []} />
           </BasicFormItem>
         </div>
 
@@ -230,4 +230,4 @@ class UserForm extends React.Component {
 }
 
 
-export default UserForm
+export default React.forwardRef((props, ref) => <UserForm {...props} forwardedRef={ref} />);
