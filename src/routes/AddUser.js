@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, isLogin, hasPerm } from '../utils/util'
+import { i18n, isLogin, hasPerm, getURLParamValue } from '../utils/util'
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { Form, Button, Modal } from 'antd'
@@ -21,20 +21,22 @@ function mapPropsToFields(props) {
 
 class AddUser extends React.Component {
 
-  state = {
-    visible: false,
-    confirmLoading: false,
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: false,
+      confirmLoading: false,
+    }
+ 
+    const redirectUrl = getURLParamValue(this.props, 'redirect');
+
+    this.isTraderAddInvestor = redirectUrl === URI_12
+    this.isAdminAddInvestor = redirectUrl ? redirectUrl.startsWith('/app/orguser/list') : false;
+    this.orgID = redirectUrl && redirectUrl.indexOf('?') !== -1 ? redirectUrl.split('?')[1].split('=')[1] : null;
+    this.existingUser = null;
+    this.formData = { org: { value: this.orgID } };
   }
-
-  isTraderAddInvestor = this.props.location.query.redirect === URI_12
-  isAdminAddInvestor = this.props.location.query.redirect ?
-    this.props.location.query.redirect.startsWith('/app/orguser/list') : false;
-
-  orgID = this.props.location.query.redirect && this.props.location.query.redirect.indexOf('?') !== -1 ? this.props.location.query.redirect.split('?')[1].split('=')[1] : null;
-
-  existingUser = null;
-
-  formData = { org: { value: this.orgID } };
 
   handleSubmit = e => {
     this.form.validateFieldsAndScroll((err, values) => {
