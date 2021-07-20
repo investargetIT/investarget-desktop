@@ -322,7 +322,7 @@ const SelectExistOrganization = (props) => {
         width: '100%',
       }}
       noResult="未找到相关机构"
-      {...props}
+      // {...props}
     />
   );
 };
@@ -795,7 +795,7 @@ class SelectTrader extends React.Component {
   render() {
     return (
       <Select
-      {...this.props}
+      // {...this.props}
       mode={this.props.mode}
       showSearch
       disabled={this.props.disabled}
@@ -1011,7 +1011,7 @@ class SelectUserGroup extends React.Component {
     return (
       <SelectNumber
       options={options}
-      value={value && value[0]} onChange={this.handleChange} {...extraProps} />
+      value={value && value[0]} onChange={this.handleChange} />
     )
   }
 }
