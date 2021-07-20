@@ -42,7 +42,8 @@ class AddUser extends React.Component {
   handleSubmit = () => {
     this.addUserFormRef.current.validateFields()
       .then(values => {
-        console.log('Received values of form: ', values)
+        window.echo('Received values of form: ', values);
+        return;
         if (this.isTraderAddInvestor) {
           values.userstatus = 2
         }
@@ -243,7 +244,6 @@ class AddUser extends React.Component {
   }
 
   handleAddFormValuesChange = values => {
-    window.echo('aa props value changes', values);
     for (const prop in values) {
       this.formData[prop] = { value: values[prop] };
     }
