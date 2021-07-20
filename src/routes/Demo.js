@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { withRouter } from 'dva/router';
-import { Table, Tag, Space } from 'antd';
+import { Table, Tag, Space, Button } from 'antd';
 
 function Demo(props) {
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  function handleEditBtnClick() {
+    setIsEdit(true);
+  }
+
+  function handleConfirmBtnClick() {
+    setIsEdit(false);
+  }
 
   const columns = [
     {
@@ -16,6 +26,9 @@ function Demo(props) {
       title: '机构进度',
       dataIndex: 'age',
       key: 'age',
+      render: (text, record) => {
+        return isEdit ? 'Not Edit' : <Tag>预沟通</Tag>;
+      },
     },
     {
       title: '材料情况',
@@ -61,24 +74,21 @@ function Demo(props) {
     },
     {
       title: '操作',
+      align: 'center',
       key: 'action',
-      render: (text, record) => (
-        <Space size="middle">
-          <a>编辑</a>
-        </Space>
-      ),
+      render: (text, record) => isEdit ? <Button type="link" onClick={handleConfirmBtnClick}>确定</Button> : <Button type="link" onClick={handleEditBtnClick}>编辑</Button>,
     },
   ];
   
   const data = [
     {
       key: '1',
-      name: 'Arena',
-      age: 32,
+      name: 'Avenue',
+      age: '预沟通',
+      address: 'Teaser',
       datetime: '2021/07/15',
       feedback: '对公司长期看好，但内部推动项目投决需要有一两个云上的客户才有机会，pingcap是凭借其在北美已经获取的2个云客户获得的投资',
       strategy: '本轮机会较小，保持交流，snowflak第二任ceo是由arena推荐进入，长期战略价值高​',
-      address: 'New York No. 1 Lake Park',
       tags: ['低'],
     },
   ];
