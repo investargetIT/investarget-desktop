@@ -23,6 +23,7 @@ import UserDetail from './routes/UserDetail';
 import OrgDetail from './routes/OrgDetail';
 import AddUser from './routes/AddUser.js';
 import EditUser from './routes/EditUser';
+import Demo from './routes/Demo';
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddOrganization from "./routes/AddOrganization.js"
 // import AddProject from './routes/AddProject'
@@ -106,6 +107,7 @@ function RouterConfig({ history }) {
         <Route path="/app/user/add" component={AddUser} />
         <Route path="/app/user/:id" component={UserDetail} />
         <Route path="/app/organization/:id" component={OrgDetail} />
+        <Route path="/app/demo" component={Demo} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
