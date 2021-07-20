@@ -100,7 +100,6 @@ class UserForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
     const targetUserIsInvestor = getFieldValue('groups') && intersection(getFieldValue('groups'), this.state.investorGroup).length > 0
     const userIsApproved = getFieldValue('userstatus') === 2
     return (
@@ -115,28 +114,25 @@ class UserForm extends React.Component {
         <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>
             <Col span={6}>
-              <FormItem required>
-                {
-                  getFieldDecorator('mobileAreaCode', {
-                    rules: [{ message: i18n('validation.not_empty'), required: true}], initialValue: '86'
-                  })(
-                    <Input prefix="+" disabled={this.state.isDsiablePhoneInput} />
-                  )
-                }
+              <FormItem
+                required
+                name="mobileAreaCode"
+                rules={[{ message: i18n('validation.not_empty'), required: true}]}
+                initialValue="86"
+              >
+                <Input prefix="+" disabled={this.state.isDsiablePhoneInput} />
               </FormItem>
             </Col>
             <Col span={14}>
-              <FormItem required>
-                {
-                  getFieldDecorator('mobile', {
-                    rules: [
-                      { message: i18n('validation.not_empty'), required: true},
-                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
-                    ]
-                  })(
-                    <Input onBlur={this.props.mobileOnBlur} disabled={this.state.isDsiablePhoneInput} />
-                  )
-                }
+              <FormItem
+                required
+                name="mobile"
+                rules={[
+                  { message: i18n('validation.not_empty'), required: true },
+                  { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
+                ]}
+              >
+                <Input onBlur={this.props.mobileOnBlur} disabled={this.state.isDsiablePhoneInput} />
               </FormItem>
             </Col>
             <Col span={4}>
@@ -199,7 +195,7 @@ class UserForm extends React.Component {
 
         {getFieldValue('onjob') !== undefined ?
           <FormItem {...formItemLayout} label="是否在职" name="onjob">
-            {getFieldDecorator('onjob')(<Switch defaultChecked={getFieldValue('onjob')} />)}
+            <Switch defaultChecked={getFieldValue('onjob')} />
           </FormItem>
           : null}
 
