@@ -99,6 +99,16 @@ class UserForm extends React.Component {
       .finally(() => this.setState({ isFetchingNumber: false }));
   }
 
+  checkMobileInfo = (_, value) => {
+    if (value == '') {
+      return Promise.reject(new Error(i18n('mobile_not_empty')));
+    } else if (!checkMobile(value)) {
+      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
+    } else {
+      return Promise.resolve();
+    }
+  }
+
   render() {
     const { forwardedRef, onValuesChange } = this.props;
     const targetUserIsInvestor = forwardedRef.current && forwardedRef.current.getFieldValue('groups') && intersection(forwardedRef.current.getFieldValue('groups'), this.state.investorGroup).length > 0
@@ -130,7 +140,7 @@ class UserForm extends React.Component {
                 name="mobile"
                 rules={[
                   { message: i18n('validation.not_empty'), required: true },
-                  { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
+                  { validator: this.checkMobileInfo }
                 ]}
               >
                 <Input onBlur={this.props.mobileOnBlur} disabled={this.state.isDsiablePhoneInput} />

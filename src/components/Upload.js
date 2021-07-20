@@ -1,10 +1,14 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Upload, Button, Icon, Modal, message } from 'antd'
+import { Upload, Button, Modal, message } from 'antd';
 import { i18n, getImageUrl } from '../utils/util'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import { baseUrl } from '../utils/request';
+import {
+  PlusOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 
 const fileExtensions = [
   '.pdf',
@@ -142,7 +146,7 @@ class UploadFile extends React.Component {
       {
         this.state.fileList.length == 0 ? (
           <Button>
-            <Icon type="upload" /> {i18n('common.upload')}
+            <UploadOutlined /> {i18n('common.upload')}
           </Button>
         ) : null
       }
@@ -275,7 +279,7 @@ class UploadImage extends React.Component {
     const { fileList, previewVisible, previewImage } = this.state
     const uploadButton = (
       <div style={buttonStyle}>
-        <Icon type="plus" style={iconStyle} />
+        <PlusOutlined style={iconStyle} />
       </div>
     )
     return (
