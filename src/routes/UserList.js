@@ -10,11 +10,14 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
+import { message, Progress, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
 import { SelectTrader } from '../components/ExtraInput';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import {
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -291,7 +294,7 @@ class UserList extends React.Component {
 
                 <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
-                    <Icon type="delete" />
+                    <DeleteOutlined />
                   </Button>
                 </Popconfirm>
               </span>

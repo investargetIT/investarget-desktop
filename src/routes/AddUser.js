@@ -27,6 +27,7 @@ class AddUser extends React.Component {
     this.state = {
       visible: false,
       confirmLoading: false,
+      loadingAddUser: false,
     }
  
     this.redirectUrl = getURLParamValue(this.props, 'redirect');
@@ -54,10 +55,10 @@ class AddUser extends React.Component {
   handleSubmit = () => {
     this.addUserFormRef.current.validateFields()
       .then(values => {
-        window.echo('Received values of form: ', values);
         if (this.isTraderAddInvestor) {
           values.userstatus = 2
         }
+        this.setState({ loadingAddUser: true });
         let isUserExist
         Promise.all([
           api.checkUserExist(values.mobile),
@@ -99,12 +100,14 @@ class AddUser extends React.Component {
             }
           })
           .then(data => {
+            this.setState({ loadingAddUser: false });
             if (!data && this.isTraderAddInvestor) return
             this.props.dispatch(
               routerRedux.replace(this.redirectUrl || '/app/user/list')
             )
           })
           .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
+          .finally(() => this.setState({ loadingAddUser: false }));
       })
   }
 
@@ -274,7 +277,12 @@ class AddUser extends React.Component {
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 
         <div style={{textAlign: 'center'}}>
-          <Button type="primary" size="large" onClick={this.handleSubmit}>{i18n("common.submit")}</Button>
+          <Button
+            type="primary"
+            loading={this.state.loadingAddUser}
+            size="large"
+            onClick={this.handleSubmit}
+          >{i18n("common.submit")}</Button>
         </div>
 
         <Modal title={i18n('user.message.user_exist')}
