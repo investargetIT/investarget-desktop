@@ -29,21 +29,32 @@ class AddUser extends React.Component {
       confirmLoading: false,
     }
  
-    const redirectUrl = getURLParamValue(this.props, 'redirect');
+    this.redirectUrl = getURLParamValue(this.props, 'redirect');
 
-    this.isTraderAddInvestor = redirectUrl === URI_12
-    this.isAdminAddInvestor = redirectUrl ? redirectUrl.startsWith('/app/orguser/list') : false;
-    this.orgID = redirectUrl && redirectUrl.indexOf('?') !== -1 ? redirectUrl.split('?')[1].split('=')[1] : null;
+    this.isTraderAddInvestor = this.redirectUrl === URI_12
+    this.isAdminAddInvestor = this.redirectUrl ? this.redirectUrl.startsWith('/app/orguser/list') : false;
+    this.orgID = this.redirectUrl && this.redirectUrl.indexOf('?') !== -1 ? this.redirectUrl.split('?')[1].split('=')[1] : null;
     this.existingUser = null;
     this.formData = { org: { value: this.orgID } };
     this.addUserFormRef = React.createRef();
+  }
+
+  getOrAddOrg = async values => {
+    if (isNaN(values.org) && values.org != undefined) {
+      const res = await api.getOrg({ search: values.org });
+      if (res.data.count > 0) return { data: res.data.data[0] };
+      const body = { orgnameC: values.org };
+      if (values.cardKey) {
+        body.orgstatus = 2;
+      }
+      return api.addOrg(body);
+    }
   }
 
   handleSubmit = () => {
     this.addUserFormRef.current.validateFields()
       .then(values => {
         window.echo('Received values of form: ', values);
-        return;
         if (this.isTraderAddInvestor) {
           values.userstatus = 2
         }
@@ -64,13 +75,7 @@ class AddUser extends React.Component {
             }
           } else {
             values['registersource'] = 3 // 标识注册来源
-            if (isNaN(values.org) && values.org != undefined) {
-              const body = { orgnameC: values.org };
-              if (values.cardKey) {
-                body.orgstatus = 2;
-              }
-              return api.addOrg(body);
-            }
+            return this.getOrAddOrg(values);
           }
         })
           .then(data => {
@@ -96,7 +101,7 @@ class AddUser extends React.Component {
           .then(data => {
             if (!data && this.isTraderAddInvestor) return
             this.props.dispatch(
-              routerRedux.replace(this.props.location.query.redirect || '/app/user/list')
+              routerRedux.replace(this.redirectUrl || '/app/user/list')
             )
           })
           .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
@@ -170,7 +175,7 @@ class AddUser extends React.Component {
     api.addUserRelation(body)
     .then(data => {
       this.setState({ visible: false, confirmLoading: false })
-      this.props.dispatch(routerRedux.replace(this.props.location.query.redirect))
+      this.props.dispatch(routerRedux.replace(this.redirectUrl));
     })
     .catch(err => {
       this.setState({ visible: false, confirmLoading: false })
