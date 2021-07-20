@@ -138,9 +138,9 @@ class EditUser extends React.Component {
       if (_data[item] == null) { _data[item] = '' }
     })
 
-    for (let prop in _data) {
-      _data[prop] = { value: _data[prop] }
-    }
+    // for (let prop in _data) {
+    //   _data[prop] = { value: _data[prop] }
+    // }
     _data['isInvestor'] = data.isInvestor
     return _data
   }
@@ -175,6 +175,7 @@ class EditUser extends React.Component {
         userDetailInfo = { ...userDetailInfo, minorTraderIDArr, isInvestor: true }
       }
       this.setState({ data: this.getData(userDetailInfo) })
+      this.editUserFormRef.current.setFieldsValue(this.getData(userDetailInfo));
     }).catch(error => console.error(error))
   }
 
