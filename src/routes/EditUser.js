@@ -49,6 +49,7 @@ class EditUser extends React.Component {
     
     this.editUserFormRef.current.validateFields()
       .then(values => {
+        this.setState({ loadingEditUser: true });
         console.log('Received values of form: ', values, this.majorRelation, this.minorRelation);
         const userId = Number(this.props.match.params.id);
         // 修改熟悉程度
@@ -106,10 +107,12 @@ class EditUser extends React.Component {
           return api.editUser([userId], body)
         })
           .then(result => {
+            this.setState({ loadingEditUser: false });
             let url = getURLParamValue(this.props, 'redirect') || "/app/user/list"
             this.props.dispatch(routerRedux.replace(url))
           })
           .catch(error => {
+            this.setState({ loadingEditUser: false });
             this.componentDidMount()
             this.props.dispatch({ type: 'app/findError', payload: error })
           })

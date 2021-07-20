@@ -106,8 +106,10 @@ class AddUser extends React.Component {
               routerRedux.replace(this.redirectUrl || '/app/user/list')
             )
           })
-          .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }))
-          .finally(() => this.setState({ loadingAddUser: false }));
+          .catch(error => {
+            this.setState({ loadingAddUser: false });
+            this.props.dispatch({ type: 'app/findError', payload: error })
+          })
       })
   }
 
