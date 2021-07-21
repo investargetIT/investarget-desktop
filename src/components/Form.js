@@ -276,8 +276,7 @@ UploadAvatar.contextTypes = {
 
 
 
-let CurrencyFormItem = ({ label, name, required, validator, currencyType }, context) => {
-  const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
+let CurrencyFormItem = ({ label, name, required, validator, currencyType, setFieldsValue }) => {
 
   function onChange(value) {
     const currency = getCurrencyFromId(currencyType || 2)
@@ -300,34 +299,18 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType }, cont
     <FormItem {...formItemLayout} label={label} required={required}>
       <Row>
         <Col span={16}>
-          <FormItem>
-          {
-            getFieldDecorator(name, {
-              rules: rules,
-              onChange: onChange
-            })(
-              <InputCurrency currencyType={currencyType || 2} />
-            )
-          }
+          <FormItem name={name} rules={rules} onChange={onChange}>
+            <InputCurrency currencyType={currencyType || 2} />
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem>
-          {
-            getFieldDecorator(`${name}_USD`, {
-              rules: rules
-            })(
-              <InputCurrency currencyType={2} disabled />
-            )
-          }
+          <FormItem name={`${name}_USD`} rules={rules}>
+            <InputCurrency currencyType={2} disabled />
           </FormItem>
         </Col>
       </Row>
     </FormItem>
   )
-}
-CurrencyFormItem.contextTypes = {
-  form: PropTypes.object
 }
 
 

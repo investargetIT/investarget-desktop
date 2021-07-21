@@ -19,13 +19,15 @@ const formStyle = {
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 16px'}
 
-const AddOrganizationForm = Form.create()(OrganizationForm)
+// const AddOrganizationForm = Form.create()(OrganizationForm)
 
 
 class AddOrganization extends React.Component {
 
   constructor(props) {
     super(props)
+
+    this.addOrgFormRef = React.createRef();
   }
 
   handleRef = (inst) => {
@@ -61,7 +63,7 @@ class AddOrganization extends React.Component {
         <div>
 
           <div style={formStyle}>
-            <AddOrganizationForm wrappedComponentRef={this.handleRef} />
+            <OrganizationForm wrappedComponentRef={this.handleRef} ref={this.addOrgFormRef} />
           </div>
 
           <div style={actionStyle}>

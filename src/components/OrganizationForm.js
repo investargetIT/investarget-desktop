@@ -63,16 +63,15 @@ class OrganizationForm extends React.Component {
   }
 
   handleCurrencyTypeChange = currencyType => {
-    const { getFieldDecorator, getFieldValue, setFieldsValue } = this.props.form
     const currency = getCurrencyFromId(currencyType || 2)
     exchange(currency).then((rate) => {
       const fields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
       const values = {}
       fields.forEach(field => {
-        let value = getFieldValue(field)
+        let value = this.props.forwardedRef.current.getFieldValue(field)
         values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
       })
-      setFieldsValue({...values, currencyType})
+      this.props.forwardedRef.current.setFieldsValue({...values, currencyType})
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -82,9 +81,8 @@ class OrganizationForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue, setFieldsValue } = this.props.form
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
 
         <BasicFormItem label={i18n('organization.cn_name')} name="orgnameC" required whitespace>
           <Input />
@@ -126,11 +124,44 @@ class OrganizationForm extends React.Component {
           <RadioCurrencyType onChange={this.handleCurrencyTypeChange} />
         </BasicFormItem>
 
-        <CurrencyFormItem label={i18n('organization.transaction_amount_from')} name="transactionAmountF" currencyType={this.props.form.getFieldValue('currency')}/>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('organization.transaction_amount_from')}
+                name="transactionAmountF"
+                currencyType={getFieldValue('currency')}
+                setFieldsValue={setFieldsValue}
+              />
+            );
+          }}
+        </FormItem>
 
-        <CurrencyFormItem label={i18n('organization.transaction_amount_to')} name="transactionAmountT" currencyType={this.props.form.getFieldValue('currency')} />
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('organization.transaction_amount_to')}
+                name="transactionAmountT"
+                currencyType={getFieldValue('currency')}
+                setFieldsValue={setFieldsValue}
+              />
+            );
+          }}
+        </FormItem>
 
-        <CurrencyFormItem label={i18n('organization.fund_size')} name="fundSize" currencyType={this.props.form.getFieldValue('currency')} />
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('organization.fund_size')}
+                name="fundSize"
+                currencyType={getFieldValue('currency')}
+                setFieldsValue={setFieldsValue}
+              />
+            );
+          }}
+        </FormItem>
 
         <BasicFormItem label={i18n('organization.company_email')} name="companyEmail" valueType="email">
           <Input type="email" />
@@ -143,32 +174,21 @@ class OrganizationForm extends React.Component {
         <FormItem {...formItemLayout} label={i18n('organization.telephone')}>
           <Row gutter={8}>
             <Col span={4}>
-              <FormItem>
-                {
-                  getFieldDecorator('mobileAreaCode', {
-                    rules: [{ message: '' }],
-                    initialValue: '86'
-                  })(
-                    <Input prefix="+" />
-                  )
-                }
+              <FormItem name="mobileAreaCode" rules={[{ message: '' }]} initialValue="86">
+                <Input prefix="+" />
               </FormItem>
             </Col>
             <Col span={4}>
-              <FormItem>{getFieldDecorator('mobileCode')(<Input placeholder="区号" />)}</FormItem>
+              <FormItem name="mobileCode"><Input placeholder="区号" /></FormItem>
             </Col>
             <Col span={16}>
-              <FormItem>
-                {
-                  getFieldDecorator('mobile', {
-                    rules: [
-                      { message: 'Please input' },
-                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
-                  ]
-                  })(
-                    <Input />
-                  )
-                }
+              <FormItem
+                name="mobile"
+                rules={[
+                  { message: 'Please input' },
+                  { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
+                ]}>
+                <Input />
               </FormItem>
             </Col>
           </Row>
@@ -217,4 +237,7 @@ class OrganizationForm extends React.Component {
   }
 }
 
-export default connect()(OrganizationForm)
+// export default connect()(OrganizationForm)
+// const OrganizationFormWithRef = React.forwardRef((props, ref) => <OrganizationForm {...props} forwardedRef={ref} />);
+// export default connect()(OrganizationFormWithRef);
+export default connect(null, null, null, { forwardRef: true })(OrganizationForm);
