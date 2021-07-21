@@ -37,32 +37,37 @@ class EditOrganization extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state ={ data: {} }
+    this.state = {
+      data: {},
+      loadingEditOrg: false,
+    }
+    this.editOrgFormRef = React.createRef();
   }
 
   cancel = (e) => {
     this.props.router.goBack()
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-      window.form = this.form // debug
-    }
-  }
+  // handleRef = (inst) => {
+  //   if (inst) {
+  //     this.form = inst.props.form
+  //     window.form = this.form // debug
+  //   }
+  // }
 
-  handleSubmit = (e) => {
-    const id = Number(this.props.match.params.id)
-    const { validateFieldsAndScroll } = this.form
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.editOrgFormRef.current.validateFields()
+      .then(values => {
+        this.setState({ loadingEditOrg: true });
+        const id = Number(this.props.match.params.id)
         api.editOrg(id, values).then((result) => {
-          this.props.router.goBack()
+          this.setState({ loadingEditOrg: false });
+          this.props.history.goBack()
         }, error => {
+          this.setState({ loadingEditOrg: false });
           handleError(error)
         })
-      }
-    })
+      });
   }
 
   componentDidMount() {
@@ -82,12 +87,13 @@ class EditOrganization extends React.Component {
         if (data[item] == null) { data[item] = '' }
       })
 
-      for (let i in data) {
-        data[i] = { 'value': data[i] }
-      }
+      // for (let i in data) {
+      //   data[i] = { 'value': data[i] }
+      // }
 
       console.log(data)
       this.setState({ data })
+      this.editOrgFormRef.current.setFieldsValue(data);
     }, error => {
       handleError(error)
     })
@@ -104,12 +110,13 @@ class EditOrganization extends React.Component {
 
           <div style={formStyle}>
             <OrganizationForm
+              ref={this.editOrgFormRef}
               wrappedComponentRef={this.handleRef}
               data={this.state.data}
             />
             <div style={actionStyle}>
               <Button size="large" onClick={this.cancel} style={actionBtnStyle}>{i18n('common.cancel')}</Button>
-              <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmit}>{i18n('common.save')}</Button>
+              <Button type="primary" size="large" loading={this.state.loadingEditOrg} style={actionBtnStyle} onClick={this.handleSubmit}>{i18n('common.save')}</Button>
             </div>
           </div>
 
