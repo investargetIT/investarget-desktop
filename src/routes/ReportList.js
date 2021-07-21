@@ -8,6 +8,11 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { Link, withRouter } from 'dva/router';
 import { WorkReportFilter } from '../components/Filter';
 import moment from 'moment';
+import {
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 const Option = Select.Option;
 
@@ -115,16 +120,16 @@ class ReportList extends React.Component {
           return (
             <div>
               <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
-                <Icon type="eye-o" style={{ fontSize: '16px' }} />
+                <EyeOutlined style={{ fontSize: '16px' }} />
               </Link>
               {record.user.id === getCurrentUser() &&
                 <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
-                  <Icon type="edit" style={{ fontSize: '16px' }} />
+                  <EditOutlined style={{ fontSize: '16px' }} />
                 </Link>
               }
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
                 <Link>
-                  <Icon type="delete" style={{ fontSize: '16px' }} />
+                  <DeleteOutlined style={{ fontSize: '16px' }} />
                 </Link>
               </Popconfirm>
             </div>
