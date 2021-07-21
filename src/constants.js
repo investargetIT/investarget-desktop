@@ -68,7 +68,7 @@ export const KEY_TO_URI = {
   "organization_bd": "/app/orgbd/project/list",
   "exportexcel_organization": "/app/org/export",
   "weekly_report": "/app/report/list",
-  "OKR": "/app/okr/list",
+  // "OKR": "/app/okr/list",
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
 }

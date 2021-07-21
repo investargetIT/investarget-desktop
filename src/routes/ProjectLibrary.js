@@ -250,7 +250,7 @@ class ProjectLibrary extends React.Component {
 
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_library.project_library')}>
-        <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        {/* <ProjectLibraryFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} /> */}
         <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }} className="clearfix">
           <Search3
             getApi={this.getLibProj}
