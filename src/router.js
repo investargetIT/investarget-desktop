@@ -26,6 +26,7 @@ import EditUser from './routes/EditUser';
 import Demo from './routes/Demo';
 import AddOrganization from "./routes/AddOrganization.js";
 import EditOrganization from './routes/EditOrganization';
+import Schedule from './routes/Schedule';
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddProject from './routes/AddProject'
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
@@ -57,7 +58,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import AddProjectBD from './routes/AddProjectBD'
 // import EditProjectBD from './routes/EditProjectBD'
 // import WxMessage from './routes/WxMessage'
-// import Schedule from './routes/Schedule'
 // import ScheduleList from './routes/ScheduleList'
 // import RecommendFriends from './components/RecommendFriends';
 // import RecommendProjects from './components/RecommendProjects';
@@ -110,6 +110,7 @@ function RouterConfig({ history }) {
         <Route path="/app/organization/add" component={AddOrganization} />
         <Route path="/app/organization/:id" component={OrgDetail} />
         <Route path="/app/demo" component={Demo} />
+        <Route path="/app/schedule" component={Schedule} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -144,7 +145,6 @@ function RouterConfig({ history }) {
         <Route path="/app/trader/add" component={SelectTraderToRelation} />
         <Route path="/app/agreement" component={Agreement} />
         <Route path="/app/wxmsg" component={WxMessage} />
-        <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/schedule/list" component={ScheduleList} />
         <Route path="/app/org/bd" component={OrgBDList} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
