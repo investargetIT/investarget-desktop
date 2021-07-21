@@ -16,6 +16,10 @@ import {
   DatePicker,
   Input,
 } from 'antd'
+import {
+  SearchOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 const RadioGroup = Radio.Group
 const CheckboxGroup = Checkbox.Group
 const { RangePicker } = DatePicker;
@@ -61,9 +65,6 @@ import {
   SelectProjectStatus,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
-import {
-  ReloadOutlined,
-} from '@ant-design/icons';
 
 
 export function BasicContainer(props) {
@@ -1200,8 +1201,8 @@ class WorkReportFilter extends React.Component {
           </div>
         </div>
         <div style={{ marginBottom: '16px', textAlign: 'center' }}>
-          <Button size="large" type="primary" icon="search" onClick={this.handleSearch}>{i18n('filter.filter')}</Button>
-          <Button size="large" style={{ marginLeft: 10 }} icon="reload" onClick={this.handleReset}>{i18n('filter.reset')}</Button>
+          <Button size="large" type="primary" icon={<SearchOutlined />} onClick={this.handleSearch}>{i18n('filter.filter')}</Button>
+          <Button size="large" style={{ marginLeft: 10 }} icon={<ReloadOutlined />} onClick={this.handleReset}>{i18n('filter.reset')}</Button>
         </div>
       </div>
     )

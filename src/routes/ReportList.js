@@ -1,7 +1,7 @@
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
-import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser } from '../utils/util';
+import { getUserInfo, i18n, handleError, hasPerm, getCurrentUser, getURLParamValue } from '../utils/util';
 import { connect } from 'dva';
 import { Icon, Table, Pagination, Popconfirm, Select, Button, Modal } from 'antd';
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -23,7 +23,8 @@ class ReportList extends React.Component {
   constructor(props) {
     super(props);
 
-    const { date } = props.location.query;
+    // const { date } = props.location.query;
+    const date = getURLParamValue(props, 'date');
     let filters = WorkReportFilter.defaultValue;
     if (date) {
       const startEndDate = [moment(date).startOf('week'), moment(date).startOf('week').add('days', 6)];

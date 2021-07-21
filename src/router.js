@@ -28,6 +28,7 @@ import AddOrganization from "./routes/AddOrganization.js";
 import EditOrganization from './routes/EditOrganization';
 import Schedule from './routes/ScheduleNew';
 import OrgUserList from './routes/OrgUserList.js'
+import ReportList from './routes/ReportList';
 // import AddProject from './routes/AddProject'
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import DataRoom from './routes/DataRoom'
@@ -72,7 +73,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 // import OrgBDProjList from './routes/OrgBDProjList';
 // import AddReport from './routes/AddReport';
-// import ReportList from './routes/ReportList';
 // import ReportDetail from './routes/ReportDetail';
 // import EditReport from './routes/EditReport';
 // import AddOKR from './routes/AddOKR';
@@ -112,6 +112,7 @@ function RouterConfig({ history }) {
         <Route path="/app/organization/:id" component={OrgDetail} />
         <Route path="/app/demo" component={Demo} />
         <Route path="/app/schedule" component={Schedule} />
+        <Route path="/app/report/list" component={ReportList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -154,7 +155,6 @@ function RouterConfig({ history }) {
         <Route path="/app/meetingbd/add" component={AddMeetingBD} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/report/add" component={AddReport} />
-        <Route path="/app/report/list" component={ReportList} />
         <Route path="/app/report/:id" component={ReportDetail} />
         <Route path="/app/report/edit/:id" component={EditReport} />
         <Route path="/app/okr/add" component={AddOKR} />
