@@ -25,11 +25,11 @@ import AddUser from './routes/AddUser.js';
 import EditUser from './routes/EditUser';
 import Demo from './routes/Demo';
 import AddOrganization from "./routes/AddOrganization.js";
+import EditOrganization from './routes/EditOrganization';
 // import OrgUserList from './routes/OrgUserList.js'
 // import AddProject from './routes/AddProject'
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import DataRoom from './routes/DataRoom'
-// import EditOrganization from './routes/EditOrganization'
 // import EditProject from './routes/EditProject'
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
@@ -106,6 +106,7 @@ function RouterConfig({ history }) {
         <Route path="/app/user/edit/:id" component={EditUser} />
         <Route path="/app/user/add" component={AddUser} />
         <Route path="/app/user/:id" component={UserDetail} />
+        <Route path="/app/organization/edit/:id" component={EditOrganization} />
         <Route path="/app/organization/add" component={AddOrganization} />
         <Route path="/app/organization/:id" component={OrgDetail} />
         <Route path="/app/demo" component={Demo} />
@@ -114,7 +115,6 @@ function RouterConfig({ history }) {
         <Route path="/403" component={AccessDenied} />
         <Route path="/app/orguser/list" component={OrgUserList} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
-        <Route path="/app/organization/edit/:id" component={EditOrganization} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/bd/add" component={AddProjectBD} />

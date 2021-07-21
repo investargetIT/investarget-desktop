@@ -21,16 +21,16 @@ const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 16px'}
 
 
-function onFieldsChange(props, changedFiedls) {
-  console.log(changedFiedls)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
+// function onFieldsChange(props, changedFiedls) {
+//   console.log(changedFiedls)
+// }
+// function mapPropsToFields(props) {
+//   return props.data
+// }
 
-var EditOrganizationForm = Form.create({
-  onFieldsChange, mapPropsToFields
-})(OrganizationForm)
+// var EditOrganizationForm = Form.create({
+//   onFieldsChange, mapPropsToFields
+// })(OrganizationForm)
 
 
 class EditOrganization extends React.Component {
@@ -52,7 +52,7 @@ class EditOrganization extends React.Component {
   }
 
   handleSubmit = (e) => {
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     const { validateFieldsAndScroll } = this.form
     validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -66,7 +66,7 @@ class EditOrganization extends React.Component {
   }
 
   componentDidMount() {
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     api.getOrgDetail(id).then(result => {
       // 数据转换
       let data = { ...result.data }
@@ -94,7 +94,7 @@ class EditOrganization extends React.Component {
   }
 
   render() {
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     return (
       <LeftRightLayout 
         location={this.props.location}
@@ -103,7 +103,7 @@ class EditOrganization extends React.Component {
         <div>
 
           <div style={formStyle}>
-            <EditOrganizationForm
+            <OrganizationForm
               wrappedComponentRef={this.handleRef}
               data={this.state.data}
             />
