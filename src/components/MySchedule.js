@@ -16,7 +16,7 @@ function MySchedule(props) {
   const [myScheduleList, setMyScheduleList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
   const [calendarMode, setCalendarMode] = useState('month');
-
+  let selectDateCausedByMonthChange = false;
   
   const [proj, setProj] = useState(); // 新增时选中的项目
   const [oldSelectedProj, setOldSelectedProj] = useState(); // 新增时原来选中的项目
@@ -375,7 +375,7 @@ function MySchedule(props) {
   }
 
   function onSelect(date) {
-    if (calendarMode == 'month' && date.diff(moment(), 'days') >= 0) {
+    if (calendarMode == 'month' && date.diff(moment(), 'days') >= 0 && !selectDateCausedByMonthChange) {
       setVisibleAdd(true);
       setSelectedDate(date.startOf('hour'));
     } else {
@@ -544,9 +544,11 @@ function MySchedule(props) {
     function onMonthSwitch(switchValue) {
       switch (switchValue) {
         case 'last_month':
+          selectDateCausedByMonthChange = true;
           onChange(value.clone().subtract(1, 'month'));
           break;
         case 'next_month':
+          selectDateCausedByMonthChange = true;
           onChange(value.clone().add(1, 'month'));
           break;
         default:
@@ -687,7 +689,7 @@ function MySchedule(props) {
         onPanelChange={onPanelChange}
         headerRender={({ value, type, onChange, onTypeChange }) => myCalendarHeaderRender(value, type, onChange, onTypeChange)}
         onSelect={onSelect}
-      // value={selectedDate}
+        value={selectedDate}
       />
       <div style={{ display: 'flex', fontSize: 14, lineHeight: '20px', color: '#262626', marginTop: 40 }}>
         <div>会议类型：</div>
