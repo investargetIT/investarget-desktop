@@ -299,8 +299,8 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType, setFie
     <FormItem {...formItemLayout} label={label} required={required}>
       <Row>
         <Col span={16}>
-          <FormItem name={name} rules={rules} onChange={onChange}>
-            <InputCurrency currencyType={currencyType || 2} />
+          <FormItem name={name} rules={rules}>
+            <InputCurrency currencyType={currencyType || 2} onChange={onChange} />
           </FormItem>
         </Col>
         <Col span={8}>

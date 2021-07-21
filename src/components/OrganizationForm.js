@@ -62,16 +62,16 @@ class OrganizationForm extends React.Component {
     }
   }
 
-  handleCurrencyTypeChange = currencyType => {
+  handleCurrencyTypeChange = (currencyType, getFieldValue, setFieldsValue) => {
     const currency = getCurrencyFromId(currencyType || 2)
     exchange(currency).then((rate) => {
       const fields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
       const values = {}
       fields.forEach(field => {
-        let value = this.props.forwardedRef.current.getFieldValue(field)
+        let value = getFieldValue(field)
         values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
       })
-      this.props.forwardedRef.current.setFieldsValue({...values, currencyType})
+      setFieldsValue({...values, currencyType})
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -127,9 +127,15 @@ class OrganizationForm extends React.Component {
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number" onChange={this.handleCurrencyTypeChange}>
-          <RadioCurrencyType onChange={this.handleCurrencyTypeChange} />
-        </BasicFormItem>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number">
+                <RadioCurrencyType onChange={value => this.handleCurrencyTypeChange(value, getFieldValue, setFieldsValue)} />
+              </BasicFormItem>
+            );
+          }}
+        </FormItem>
 
         <FormItem noStyle shouldUpdate>
           {({ getFieldValue, setFieldsValue }) => {
