@@ -27,6 +27,10 @@ class AddOrganization extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      loadingAddOrg: false,
+    };
+
     this.addOrgFormRef = React.createRef();
   }
 
@@ -41,11 +45,14 @@ class AddOrganization extends React.Component {
   }
 
   handleSubmit = () => {
-    this.addUserFormRef.current.validateFields()
+    this.addOrgFormRef.current.validateFields()
       .then(values => {
+        this.setState({ loadingAddOrg: true });
         api.addOrg(values).then((result) => {
+          this.setState({ loadingAddOrg: false });
           this.props.history.goBack()
         }, (error) => {
+          this.setState({ loadingAddOrg: false });
           this.props.dispatch({
             type: 'app/findError',
             payload: error
@@ -66,7 +73,7 @@ class AddOrganization extends React.Component {
 
           <div style={actionStyle}>
             <Button style={actionBtnStyle} size="large" onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button style={actionBtnStyle} type="primary" size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
+            <Button style={actionBtnStyle} type="primary" loading={this.state.loadingAddOrg} size="large" onClick={this.handleSubmit}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>

@@ -81,7 +81,7 @@ class OrganizationForm extends React.Component {
   }
 
   checkMobileInfo = (_, value) => {
-    if (value != '' && !checkMobile(value)) {
+    if (value && !checkMobile(value)) {
       return Promise.reject(new Error(i18n('mobile_incorrect_format')));
     }
     return Promise.resolve();
@@ -250,7 +250,5 @@ class OrganizationForm extends React.Component {
   }
 }
 
-// export default connect()(OrganizationForm)
-// const OrganizationFormWithRef = React.forwardRef((props, ref) => <OrganizationForm {...props} forwardedRef={ref} />);
-// export default connect()(OrganizationFormWithRef);
-export default connect(null, null, null, { forwardRef: true })(OrganizationForm);
+const ConnectedOrgForm = connect()(OrganizationForm);
+export default React.forwardRef((props, ref) => <ConnectedOrgForm {...props} forwardedRef={ref} />);
