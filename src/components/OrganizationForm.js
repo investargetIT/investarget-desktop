@@ -80,6 +80,13 @@ class OrganizationForm extends React.Component {
     })
   }
 
+  checkMobileInfo = (_, value) => {
+    if (value != '' && !checkMobile(value)) {
+      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
+    }
+    return Promise.resolve();
+  }
+
   render() {
     return (
       <Form ref={this.props.forwardedRef}>
@@ -186,7 +193,7 @@ class OrganizationForm extends React.Component {
                 name="mobile"
                 rules={[
                   { message: 'Please input' },
-                  { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
+                  { validator: this.checkMobileInfo},
                 ]}>
                 <Input />
               </FormItem>

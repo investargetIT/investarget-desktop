@@ -40,10 +40,9 @@ class AddOrganization extends React.Component {
     this.props.history.goBack()
   }
 
-  handleSubmit = (e) => {
-    const { validateFieldsAndScroll } = this.form
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.addUserFormRef.current.validateFields()
+      .then(values => {
         api.addOrg(values).then((result) => {
           this.props.history.goBack()
         }, (error) => {
@@ -52,8 +51,7 @@ class AddOrganization extends React.Component {
             payload: error
           })
         })
-      }
-    })
+      })
   }
 
 
