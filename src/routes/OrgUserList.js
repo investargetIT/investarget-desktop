@@ -8,6 +8,7 @@ import {
   getUserInfo,
   handleError,
   requestAllData,
+  getURLParamValue,
 } from '../utils/util';
 import * as api from '../api'
 
@@ -94,7 +95,7 @@ class OrgUserList extends React.Component {
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort: this.sort }
 
     // 机构所有用户
-    const org = parseInt(this.props.location.query.org)
+    const org = parseInt(getURLParamValue(this.props, 'org'));
     if (!org) return;
 
     try {
