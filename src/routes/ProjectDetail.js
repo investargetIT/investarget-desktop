@@ -387,13 +387,13 @@ class ProjectDetail extends React.Component {
               <ProjectHead project={project} allCountries={this.props.country} progress={this.state.progress} />
 
               <div className="another-btn">
-                {isFavorite ?
+                {/* {isFavorite ?
                   <Button icon={<HeartFilled />} type="primary" style={{ marginRight: 24, marginTop: 8 }} onClick={this.unfavorProject}>{i18n('project.unfavor')}</Button>
                   : <Button icon={<HeartOutlined />} type="primary" style={{ marginRight: 24, marginTop: 8 }} onClick={this.favorProject}>{i18n('project.favor')}</Button>}
 
                 {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && hasPerm('usersys.as_investor') ?
                   <Button style={{ marginRight: 24, marginTop: 8 }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
-                  : null}
+                  : null} */}
 
                 {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
                   <Button style={{ marginRight: 24, marginTop: 8 }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
