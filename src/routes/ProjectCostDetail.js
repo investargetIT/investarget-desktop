@@ -77,7 +77,7 @@ function ProjectCostDetail(props) {
   const [allOrgBD, setAllOrgBD] = useState([]);
   const [showInvestorStep, setShowInvestorStep] = useState()
 
-  const [costPercentageExtraValue, setPercentageExtraValue] = useState('all');
+  const [costPercentageExtraValue, setPercentageExtraValue] = useState('总金额');
   const [cost, setCost] = useState([
     // { id: 1, color: '#0088FE', name: '类别名称一', percentage: '25%', amount: '¥ 50,000,000' },
     // { id: 2, color: '#00C49F', name: '类别名称二', percentage: '25%', amount: '¥ 50,000,000' },
@@ -85,6 +85,7 @@ function ProjectCostDetail(props) {
     // { id: 4, color: '#FF8042', name: '类别名称四', percentage: '25%', amount: '¥ 50,000,000' },
   ]);
   const [totalCost, setTotalCost] = useState(0);
+  const [pieChartData, setPieChartData] = useState([]);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
@@ -155,21 +156,44 @@ function ProjectCostDetail(props) {
       });
       const totalCost = uniqueDidiTypes.reduce((prev, curr) => curr.value + prev, 0);
       setTotalCost(Math.round(totalCost));
-      setCost(uniqueDidiTypes.map((m, i) => ({ ...m, color: COLORS[i % COLORS.length], percentage: `${Math.round(m.value/ totalCost * 100)}%` })));
+      const overallCost = uniqueDidiTypes.map((m, i) => {
+        const color = getCellColor(m, i);
+        return { ...m, color, percentage: `${Math.round(m.value/ totalCost * 100)}%` };
+      });
+      setCost(overallCost);
+      setPieChartData(overallCost);
     }
     getProjDidiInfo();
    
   }, []);
 
+  function getCellColor(entry, i) {
+    const findColor = options.filter(f => f.value === entry.name);
+    let color = COLORS[i % COLORS.length];
+    if (findColor.length > 0) {
+      color = findColor[0].color;
+    }
+    return color;
+  }
+
   const options = [
-    { label: '总金额', value: 'all' },
-    { label: '商务', value: 'business' },
-    { label: '加班', value: 'overwork' },
-    { label: '出差', value: 'trip' },
+    { label: '总金额', value: '总金额' },
+    { label: '商务', value: '商务', color: '#00C49F' },
+    { label: '加班', value: '加班', color: '#FFBB28' },
+    { label: '出差', value: '出差', color: '#0088FE' },
   ];
 
   const onChange3 = e => {
-    setPercentageExtraValue(e.target.value);
+    const filter = cost.filter(f => f.name === e.target.value);
+    if (filter.length > 0) {
+      setPercentageExtraValue(e.target.value);
+      setPieChartData([]);
+      setTimeout(() => setPieChartData(cost.filter(f => f.name === e.target.value)), 200);
+    } else {
+      setPercentageExtraValue('总金额');
+      setPieChartData([]);
+      setTimeout(() => setPieChartData(cost), 200);
+    }
   };
 
   function getCostPercentageExtra() {
@@ -281,7 +305,7 @@ function ProjectCostDetail(props) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <PieChart width={300} height={300}>
                 <Pie
-                  data={cost}
+                  data={pieChartData}
                   cx={120}
                   cy={150}
                   innerRadius={80}
@@ -290,15 +314,15 @@ function ProjectCostDetail(props) {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {cost.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  {pieChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getCellColor(entry, index)} />
                   ))}
                 </Pie>
                 <text x={125} y={130} dy={8} textAnchor="middle" fill="#989898" fontSize="14px">
                   总成本
                 </text>
                 <text x={125} y={170} dy={8} textAnchor="middle" fill="#262626" fontSize="24px">
-                  {formatMoney(totalCost, 'CNY')} 
+                  {pieChartData.length === 1 ? pieChartData[0].amount : (pieChartData.length === 0 ? '' : formatMoney(totalCost, 'CNY'))} 
                 </text>
               </PieChart>
               <div style={{ flex: 1 }}>
