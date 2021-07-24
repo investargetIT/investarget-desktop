@@ -101,9 +101,9 @@ class ProjectBaseForm extends React.Component {
         </BasicFormItem>
         : null }
 
-        {/* <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
+        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
           <SelectExistProject />
-        </BasicFormItem> */}
+        </BasicFormItem>
 
         <div style={{textAlign: 'center'}}>
           <div style={paraStyle}>

@@ -643,21 +643,12 @@ const SelectExistProject = (props) => {
     })
   }
 
-  // const [value, setValue] = React.useState([]);
-  // return (
-  //   <Select2
-  //     value={value}
-  //     placeholder={i18n('account.select_org')}
-  //     fetchOptions={getOrg}
-  //     onChange={(newValue) => {
-  //       setValue(newValue);
-  //     }}
-  //     style={{
-  //       width: '100%',
-  //     }}
-  //     {...props}
-  //   />
-  // );
+  const getProjectNameById = (id) => {
+    return api.getProjLangDetail(id).then(result => {
+      return result.data.projtitle
+    })
+  }
+
   return (
     <Select2
       value={props.value}
@@ -666,13 +657,7 @@ const SelectExistProject = (props) => {
       onChange={props.onChange}
       size={props.size}
       style={props.style || {}}
-      // getData={this.getProject}
-      // getNameById={this.getProjectNameById}
-      
-      
-      
-      // noResult={this.props.noResult}
-      // {...props}
+      getNameById={getProjectNameById}
     />
   );
 };
