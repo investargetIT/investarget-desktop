@@ -414,7 +414,7 @@ class IndustryDynamicFormItem extends React.Component {
           rules={[{type: 'array'}]}
           initialValue={[1]}
         >
-
+          <Input />
         </FormItem>
         {industriesKeys.map((k, index) => {
           return (

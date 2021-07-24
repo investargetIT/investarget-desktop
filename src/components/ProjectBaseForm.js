@@ -51,8 +51,6 @@ class ProjectBaseForm extends React.Component {
   }
 
   render() {
-    // const { getFieldDecorator } = this.props.form
-    window.echo('dd pro', this.props.forwardedRef);
     return (
       <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean" initialValue={false}>
