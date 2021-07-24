@@ -506,6 +506,7 @@ class ProjectList extends React.Component {
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => this.enterLoading(1)}
+              onClick={() => this.props.history.push('/app/projects/add')}
             >
               添加新项目
             </Button>

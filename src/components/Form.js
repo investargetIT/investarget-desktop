@@ -316,9 +316,9 @@ let CurrencyFormItem = ({ label, name, required, validator, currencyType, setFie
 
 class IndustryDynamicFormItem extends React.Component {
 
-  static contextTypes = {
-    form: PropTypes.object
-  }
+  // static contextTypes = {
+  //   form: PropTypes.object
+  // }
 
   industryUuid = 1
 
@@ -330,9 +330,11 @@ class IndustryDynamicFormItem extends React.Component {
       disabled: [],
     }
 
-    const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
+    // const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
+    const { getFieldValue, setFieldsValue } = props.formRef;
+    window.echo('dynamic form', getFieldValue);
+    // getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
 
-    getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
     // set disabled
     var t = setInterval(() => {
       const keys = getFieldValue('industriesKeys')
@@ -403,25 +405,33 @@ class IndustryDynamicFormItem extends React.Component {
   }
 
   render() {
-    const { getFieldValue, getFieldDecorator } = this.context.form
+    // const { getFieldValue, getFieldDecorator } = this.context.form
     const industriesKeys = getFieldValue('industriesKeys')
 
     return (
       <div>
+        <FormItem
+          hidden
+          name="industriesKeys"
+          rules={[{type: 'array'}]}
+          initialValue={[1]}
+        >
+
+        </FormItem>
         {industriesKeys.map((k, index) => {
           return (
-            <FormItem {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)} key={k} label={index === 0 ? i18n('project.industry') : ''}>
-              {
-                getFieldDecorator(`industries-${k}`, {
-                  rules: [
-                    { type: 'number', message: i18n('validation.not_valid')},
-                    { required: true, message: i18n('validation.not_empty')},
-                  ],
-                  onChange: this.handleIndustryChange.bind(this, k)
-                })(
-                  <CascaderIndustry size="large" disabled={this.state.disabled} />
-                )
-              }
+            <FormItem
+              {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+              key={k}
+              label={index === 0 ? i18n('project.industry') : ''}
+              name={`industries-${k}`}
+              rules={[
+                { type: 'number', message: i18n('validation.not_valid')},
+                { required: true, message: i18n('validation.not_empty')},
+              ]}
+              onChange={this.handleIndustryChange.bind(this, k)}
+            >
+              <CascaderIndustry size="large" disabled={this.state.disabled} />
               <Icon
                 type="minus-circle-o"
                 disabled={industriesKeys.length === 1}
@@ -443,23 +453,22 @@ class IndustryDynamicFormItem extends React.Component {
             industriesKeys.map((k, index) => {
               const id = getFieldValue('industries-' + k)
               return (
-                <FormItem key={k} style={{ float: 'left', marginRight: '8px', marginBottom: '8px' }}>
-                  {
-                    getFieldDecorator(`industries-image-${k}`, {
-                      rules: [
-                        { type: 'string' },
-                        { validator: function(rule, value, callback) {
-                          if (!value) {
-                            callback(i18n('project.message.validation_industry_image_not_null'))
-                          } else {
-                            callback()
-                          }
-                        } }
-                      ],
-                    })(
-                      <UploadImage disabled={!id} />
-                    )
-                  }
+                <FormItem
+                  key={k}
+                  style={{ float: 'left', marginRight: '8px', marginBottom: '8px' }}
+                  name={`industries-image-${k}`}
+                  rules={[
+                    { type: 'string' },
+                    { validator: function(rule, value, callback) {
+                      if (!value) {
+                        callback(i18n('project.message.validation_industry_image_not_null'))
+                      } else {
+                        callback()
+                      }
+                    } }
+                  ]}
+                >
+                  <UploadImage disabled={!id} />
                 </FormItem>
               )
             })

@@ -16,10 +16,10 @@ const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
 
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-const AddProjectForm = Form.create({onValuesChange})(ProjectBaseForm)
+// function onValuesChange(props, values) {
+//   console.log(values)
+// }
+// const AddProjectForm = Form.create({onValuesChange})(ProjectBaseForm)
 
 
 function toData(formData) {
@@ -44,6 +44,8 @@ class AddProject extends React.Component {
 
   constructor(props) {
     super(props)
+
+    this.addProjectFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -66,17 +68,17 @@ class AddProject extends React.Component {
     })
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-    }
-  }
+  // handleRef = (inst) => {
+  //   if (inst) {
+  //     this.form = inst.props.form
+  //   }
+  // }
 
   render() {
     return(
       <LeftRightLayout location={this.props.location} title={i18n('project.upload_project')}>
         <div>
-          <AddProjectForm wrappedComponentRef={this.handleRef} />
+          <ProjectBaseForm ref={this.addProjectFormRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.addProject}>{i18n('common.submit')}</Button>

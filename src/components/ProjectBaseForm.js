@@ -51,9 +51,10 @@ class ProjectBaseForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    // const { getFieldDecorator } = this.props.form
+    window.echo('dd pro', this.props.forwardedRef);
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean" initialValue={false}>
           <RadioTrueOrFalse />
         </BasicFormItem>
@@ -74,7 +75,7 @@ class ProjectBaseForm extends React.Component {
           <TreeSelectTag />
         </BasicFormItem>
 
-        <IndustryDynamicFormItem industry={this.props.industry} />
+        {/* <IndustryDynamicFormItem industry={this.props.industry} formRef={this.props.forwardedRef} /> */}
 
         <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
           <CascaderCountry size="large" />
@@ -96,7 +97,7 @@ class ProjectBaseForm extends React.Component {
           <SelectIndustryGroup />
         </BasicFormItem> */}
 
-        { hasPerm('proj.admin_addproj') ? 
+        {/* { hasPerm('proj.admin_addproj') ? 
         <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
            <SelectExistUser />
         </BasicFormItem>
@@ -104,22 +105,20 @@ class ProjectBaseForm extends React.Component {
 
         <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
           <SelectExistProject />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         <div style={{textAlign: 'center'}}>
           <div style={paraStyle}>
-            <FormItem style={{'display': 'inline'}}>
-              {
-                getFieldDecorator('isAgreed', {
-                  valuePropName: 'checked',
-                  rules: [{type: 'boolean'}, {required: true}, {validator: (rule, value, callback) => {
-                    if (value) { callback() } else { callback('Please check the agreement') }
-                  }}],
-                  initialValue: true,
-                })(
-                  <Checkbox><Link to="/app/agreement" target="_blank">{i18n('project.agreement')}</Link></Checkbox>
-                )
-              }
+            <FormItem
+              style={{'display': 'inline'}}
+              name="isAgreed"
+              valuePropName="checked"
+              rules={[{type: 'boolean'}, {required: true}, {validator: (rule, value, callback) => {
+                if (value) { callback() } else { callback('Please check the agreement') }
+              }}]}
+              initialValue={true}
+            >
+              <Checkbox><Link to="/app/agreement" target="_blank">{i18n('project.agreement')}</Link></Checkbox>
             </FormItem>
           </div>
           <p style={paraStyle}>{i18n('project.agreement_tip')}</p>
@@ -135,4 +134,6 @@ function mapStateToPropsIndustry(state) {
   return { industry }
 }
 
-export default connect(mapStateToPropsIndustry)(ProjectBaseForm)
+// export default connect(mapStateToPropsIndustry)(ProjectBaseForm)
+const ConnectedProjectForm = connect(mapStateToPropsIndustry)(ProjectBaseForm);
+export default React.forwardRef((props, ref) => <ConnectedProjectForm {...props} forwardedRef={ref} />);
