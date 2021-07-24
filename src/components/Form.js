@@ -10,6 +10,8 @@ import GlobalMobile from './GlobalMobile'
 import { baseUrl } from '../utils/request';
 import {
   PlusOutlined,
+  PlusCircleOutlined,
+  MinusCircleOutlined,
 } from '@ant-design/icons';
 
 const FormItem = Form.Item
@@ -430,8 +432,7 @@ class IndustryDynamicFormItem extends React.Component {
               onChange={this.handleIndustryChange.bind(this, k)}
             >
               <CascaderIndustry size="large" disabled={this.state.disabled} />
-              <Icon
-                type="minus-circle-o"
+              <MinusCircleOutlined
                 disabled={industriesKeys.length === 1}
                 onClick={() => this.removeIndustry(k)}
                 className={styles['dynamic-delete-button']}
@@ -441,7 +442,7 @@ class IndustryDynamicFormItem extends React.Component {
         })}
         <FormItem {...formItemLayoutWithOutLabel}>
           <Button type="dashed" onClick={this.addIndustry} style={{ width: '100%' }}>
-            <Icon type="plus" />
+            <PlusCircleOutlined />
             {i18n('project.add_industry')}
           </Button>
         </FormItem>
