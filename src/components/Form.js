@@ -330,10 +330,8 @@ class IndustryDynamicFormItem extends React.Component {
       disabled: [],
     }
 
-    // const { getFieldDecorator, getFieldValue, setFieldsValue } = context.form
-    const { getFieldValue, setFieldsValue } = props.formRef;
-    window.echo('dynamic form', getFieldValue);
-    // getFieldDecorator('industriesKeys', { rules: [{type: 'array'}], initialValue: [1] })
+    const { getFieldValue, setFieldsValue } = props.formRef.current;
+    setFieldsValue({ industriesKeys: [] });
 
     // set disabled
     var t = setInterval(() => {
@@ -405,7 +403,7 @@ class IndustryDynamicFormItem extends React.Component {
   }
 
   render() {
-    // const { getFieldValue, getFieldDecorator } = this.context.form
+    const { getFieldValue } = this.props.formRef.current;
     const industriesKeys = getFieldValue('industriesKeys')
 
     return (

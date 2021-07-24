@@ -75,7 +75,7 @@ class ProjectBaseForm extends React.Component {
           <TreeSelectTag />
         </BasicFormItem>
 
-        {/* <IndustryDynamicFormItem industry={this.props.industry} formRef={this.props.forwardedRef} /> */}
+        {this.props.forwardedRef.current && <IndustryDynamicFormItem industry={this.props.industry} formRef={this.props.forwardedRef} />}
 
         <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
           <CascaderCountry size="large" />
