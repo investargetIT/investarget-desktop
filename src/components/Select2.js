@@ -28,6 +28,24 @@ function DebounceSelect({
     });
   }, []);
 
+  React.useEffect(() => {
+    if (!props.value) return;
+
+    // first, search from this.state.list, then, search from remote api
+    let item = options.filter(item => item.value == props.value)[0];
+    if (item) return;
+
+    if (!props.getNameById) return;
+
+    async function getLableAndSetOption() {
+      const label = await props.getNameById(props.value);
+      setOptions([{ label, value: props.value }]);
+      setTotal(1);
+      setPage(1);
+    }
+    getLableAndSetOption();
+  }, [props.value]);
+
   const debounceFetcher = React.useMemo(() => {
     const loadOptions = (value) => {
       fetchRef.current += 1;

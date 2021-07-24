@@ -97,13 +97,13 @@ class ProjectBaseForm extends React.Component {
           <SelectIndustryGroup />
         </BasicFormItem> */}
 
-        {/* { hasPerm('proj.admin_addproj') ? 
+        { hasPerm('proj.admin_addproj') ? 
         <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
            <SelectExistUser />
         </BasicFormItem>
         : null }
 
-        <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
+        {/* <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
           <SelectExistProject />
         </BasicFormItem> */}
 
