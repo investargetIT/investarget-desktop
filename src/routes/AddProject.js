@@ -53,19 +53,18 @@ class AddProject extends React.Component {
   }
 
   addProject = () => {
-    this.form.validateFields((err, values) => {
-      if (!err) {
+    this.addProjectFormRef.current.validateFields()
+      .then(values => {
         let param = toData(values)
         api.createProj(param).then(result => {
-          this.props.router.replace('/app/projects/published')
+          this.goBack();
         }, error => {
           this.props.dispatch({
             type: 'app/findError',
             payload: error
           })
         })
-      }
-    })
+      })
   }
 
   // handleRef = (inst) => {
