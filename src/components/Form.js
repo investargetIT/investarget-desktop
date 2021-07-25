@@ -333,7 +333,6 @@ class IndustryDynamicFormItem extends React.Component {
     }
 
     const { getFieldValue, setFieldsValue } = props.formRef.current;
-    setFieldsValue({ industriesKeys: [] });
 
     // set disabled
     var t = setInterval(() => {
@@ -418,35 +417,37 @@ class IndustryDynamicFormItem extends React.Component {
         </FormItem>
 
         <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => <Form.Item noStyle>
-            {
-              getFieldValue('industriesKeys').map((k, index) => {
-                return (
-                  <FormItem
-                    {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                    key={k}
-                    label={index === 0 ? i18n('project.industry') : ''}
-                    name={`industries-${k}`}
-                    rules={[
-                      { type: 'number', message: i18n('validation.not_valid') },
-                      { required: true, message: i18n('validation.not_empty') },
-                    ]}
-                    onChange={this.handleIndustryChange.bind(this, k)}
-                  >
-                    <div>
-                      <CascaderIndustry size="large" disabled={this.state.disabled} />
-                      <MinusCircleOutlined
-                        disabled={industriesKeys.length === 1}
-                        onClick={() => this.removeIndustry(k)}
-                        className={styles['dynamic-delete-button']}
-                      />
-                    </div>
-                  </FormItem>
-                );
-              })
-            }
-          </Form.Item>
-          }
+          {({ getFieldValue }) => {
+            const industriesKeys = getFieldValue('industriesKeys');
+            return (<Form.Item noStyle>
+              {
+                industriesKeys.map((k, index) => {
+                  return (
+                    <FormItem
+                      {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                      key={k}
+                      label={index === 0 ? i18n('project.industry') : ''}
+                      name={`industries-${k}`}
+                      rules={[
+                        { type: 'number', message: i18n('validation.not_valid') },
+                        { required: true, message: i18n('validation.not_empty') },
+                      ]}
+                      onChange={this.handleIndustryChange.bind(this, k)}
+                    >
+                      <div>
+                        <CascaderIndustry size="large" disabled={this.state.disabled} />
+                        <MinusCircleOutlined
+                          disabled={industriesKeys.length === 1}
+                          onClick={() => this.removeIndustry(k)}
+                          className={styles['dynamic-delete-button']}
+                        />
+                      </div>
+                    </FormItem>
+                  );
+                })
+              }
+            </Form.Item>);
+          }}
         </Form.Item>
 
         <FormItem {...formItemLayoutWithOutLabel}>
