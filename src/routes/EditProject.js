@@ -31,16 +31,16 @@ const formStyle = {
 }
 
 
-function onValuesChange(props, values) {
-  console.log('onValuesChange', values)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
-const BaseForm = Form.create({onValuesChange, mapPropsToFields})(ProjectBaseForm)
-const FinanceForm = Form.create({onValuesChange, mapPropsToFields})(ProjectFinanceForm)
-const ConnectForm = Form.create({onValuesChange, mapPropsToFields})(ProjectConnectForm)
-const DetailForm = Form.create({onValuesChange, mapPropsToFields})(ProjectDetailForm)
+// function onValuesChange(props, values) {
+//   console.log('onValuesChange', values)
+// }
+// function mapPropsToFields(props) {
+//   return props.data
+// }
+// const BaseForm = Form.create({onValuesChange, mapPropsToFields})(ProjectBaseForm)
+// const FinanceForm = Form.create({onValuesChange, mapPropsToFields})(ProjectFinanceForm)
+// const ConnectForm = Form.create({onValuesChange, mapPropsToFields})(ProjectConnectForm)
+// const DetailForm = Form.create({onValuesChange, mapPropsToFields})(ProjectDetailForm)
 
 
 function toFormData(data) {
@@ -285,14 +285,14 @@ class EditProject extends React.Component {
           <Tabs defaultActiveKey="1">
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <BaseForm wrappedComponentRef={this.handleBaseFormRef} data={data} />
+                <ProjectBaseForm wrappedComponentRef={this.handleBaseFormRef} data={data} />
                 <FormAction form="baseForm" />
               </div>
             </TabPane>
 
             <TabPane tab={i18n('project.financials')} key="2" forceRender>
               <div style={formStyle}>
-                <FinanceForm wrappedComponentRef={this.handleFinanceFormRef} data={data} />
+                <ProjectFinanceForm wrappedComponentRef={this.handleFinanceFormRef} data={data} />
                 <FormAction form="financeForm" />
               </div>
             </TabPane>
@@ -303,14 +303,14 @@ class EditProject extends React.Component {
 
             <TabPane tab={i18n('project.contact')} key="3" forceRender>
               <div style={formStyle}>
-                <ConnectForm wrappedComponentRef={this.handleConnectFormRef} data={data} />
+                <ProjectConnectForm wrappedComponentRef={this.handleConnectFormRef} data={data} />
                 <FormAction form="connectForm" />
               </div>
             </TabPane>
 
             <TabPane tab={i18n('project.details')} key="4" forceRender>
               <div style={formStyle}>
-                <DetailForm wrappedComponentRef={this.handleDetailFormRef} data={data} />
+                <ProjectDetailForm wrappedComponentRef={this.handleDetailFormRef} data={data} />
                 <FormAction form="detailForm" />
               </div>
             </TabPane>

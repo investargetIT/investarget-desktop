@@ -31,14 +31,14 @@ function toFormData(data) {
 }
 
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
-const AddYearForm = Form.create({ onValuesChange })(YearFinanceForm)
-const EditYearForm = Form.create({ onValuesChange, mapPropsToFields })(YearFinanceForm)
+// function onValuesChange(props, values) {
+//   console.log(values)
+// }
+// function mapPropsToFields(props) {
+//   return props.data
+// }
+// const AddYearForm = Form.create({ onValuesChange })(YearFinanceForm)
+// const EditYearForm = Form.create({ onValuesChange, mapPropsToFields })(YearFinanceForm)
 
 
 const Field = (props) => {
@@ -195,11 +195,11 @@ class ProjectYearFinance extends React.Component {
         }
 
         <Modal width={720} title={i18n('project.add_fiscal_year')} visible={this.state.showAddModal} onOk={this.handleConfirmAdd} onCancel={this.handleCancelAdd}>
-          <AddYearForm wrappedComponentRef={this.handleAddRef} currencyType={this.props.currencyType} mode="add" disabledYears={disabledYears} />
+          <YearFinanceForm wrappedComponentRef={this.handleAddRef} currencyType={this.props.currencyType} mode="add" disabledYears={disabledYears} />
         </Modal>
 
         <Modal width={720} title={i18n('project.edit_fiscal_year')} visible={this.state.showEditModal} onOk={this.handleConfirmEdit} onCancel={this.handleCancelEdit}>
-          <EditYearForm wrappedComponentRef={this.handleEditRef} currencyType={this.props.currencyType} data={this.state.editData} mode="edit" />
+          <YearFinanceForm wrappedComponentRef={this.handleEditRef} currencyType={this.props.currencyType} data={this.state.editData} mode="edit" />
         </Modal>
 
       </div>

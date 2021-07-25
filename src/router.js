@@ -30,9 +30,9 @@ import Schedule from './routes/ScheduleNew';
 import OrgUserList from './routes/OrgUserList.js'
 import ReportList from './routes/ReportList';
 import AddProject from './routes/AddProject';
+import EditProject from './routes/EditProject';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import DataRoom from './routes/DataRoom'
-// import EditProject from './routes/EditProject'
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -94,6 +94,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/org/export" component={OrgExportList} />
+        <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/projects/list" component={ProjectList} />
         <Route path="/app/projects/cost/:id" component={ProjectCostDetail} />
         <Route path={URI_14} component={PermList} />
@@ -126,7 +127,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />
         <Route path="/app/projects/published" component={ProjectListPublished} />
-        <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />
