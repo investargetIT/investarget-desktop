@@ -384,7 +384,7 @@ class IndustryDynamicFormItem extends React.Component {
   }
 
   handleIndustryChange = (k, id) => {
-    const { getFieldValue, setFieldsValue } = this.context.form
+    const { getFieldValue, setFieldsValue } = this.props.formRef.current;
 
     if (id) {
       let i = this.props.industry.filter(item => item.id == id)[0]
@@ -419,34 +419,37 @@ class IndustryDynamicFormItem extends React.Component {
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const industriesKeys = getFieldValue('industriesKeys');
-            return (<Form.Item noStyle>
-              {
-                industriesKeys.map((k, index) => {
-                  return (
+            return industriesKeys.map((k, index) => {
+              return (<FormItem
+                key={k}
+                {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                label={index === 0 ? i18n('project.industry') : ''}>
+                <Row>
+                  <Col span={22}>
                     <FormItem
-                      {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                      key={k}
-                      label={index === 0 ? i18n('project.industry') : ''}
                       name={`industries-${k}`}
                       rules={[
                         { type: 'number', message: i18n('validation.not_valid') },
                         { required: true, message: i18n('validation.not_empty') },
                       ]}
-                      onChange={this.handleIndustryChange.bind(this, k)}
                     >
-                      <div>
-                        <CascaderIndustry size="large" disabled={this.state.disabled} />
-                        <MinusCircleOutlined
-                          disabled={industriesKeys.length === 1}
-                          onClick={() => this.removeIndustry(k)}
-                          className={styles['dynamic-delete-button']}
-                        />
-                      </div>
+                      <CascaderIndustry
+                        size="large"
+                        disabled={this.state.disabled}
+                        onChange={this.handleIndustryChange.bind(this, k)}
+                      />
                     </FormItem>
-                  );
-                })
-              }
-            </Form.Item>);
+                  </Col>
+                  <Col span={2}>
+                    <MinusCircleOutlined
+                      disabled={industriesKeys.length === 1}
+                      onClick={() => this.removeIndustry(k)}
+                      className="dynamic-delete-button"
+                    />
+                  </Col>
+                </Row>
+              </FormItem>);
+            });
           }}
         </Form.Item>
 
@@ -458,35 +461,38 @@ class IndustryDynamicFormItem extends React.Component {
         </FormItem>
 
         <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => <FormItem {...formItemLayoutWithOutLabel}>
-            {
-              getFieldValue('industriesKeys').map((k, index) => {
-                const id = getFieldValue('industries-' + k)
-                return (
-                  <FormItem
-                    key={k}
-                    style={{ float: 'left', marginRight: '8px', marginBottom: '8px' }}
-                    name={`industries-image-${k}`}
-                    rules={[
-                      { type: 'string' },
-                      {
-                        validator: function (rule, value, callback) {
-                          if (!value) {
-                            callback(i18n('project.message.validation_industry_image_not_null'))
-                          } else {
-                            callback()
+          {({ getFieldValue }) => {
+            const industriesKeys = getFieldValue('industriesKeys');
+            return (<FormItem {...formItemLayoutWithOutLabel}>
+              {
+                industriesKeys.map((k, index) => {
+                  const id = getFieldValue('industries-' + k);
+                  const imageId = getFieldValue('industries-image-' + k);
+                  return (
+                    <FormItem
+                      key={k}
+                      style={{ float: 'left', marginRight: '8px', marginBottom: '8px' }}
+                      name={`industries-image-${k}`}
+                      rules={[
+                        { type: 'string' },
+                        {
+                          validator: function (rule, value, callback) {
+                            if (!value) {
+                              callback(i18n('project.message.validation_industry_image_not_null'))
+                            } else {
+                              callback()
+                            }
                           }
                         }
-                      }
-                    ]}
-                  >
-                    <UploadImage disabled={!id} />
-                  </FormItem>
-                );
-              })
-            }
-          </FormItem>
-          }
+                      ]}
+                    >
+                      <UploadImage disabled={!id} />
+                    </FormItem>
+                  );
+                })
+              }
+            </FormItem>);
+          }}
         </Form.Item>
 
       </div>
