@@ -231,48 +231,86 @@ class ProjectConnectForm1 extends React.Component {
     }
   }
 
-  isCurrentUserSupportUser = () => {
-    return this.currentUserId === this.props.form.getFieldValue('supportUser').id;
+  isCurrentUserSupportUser = getFieldValue => {
+    window.echo('suppport use', getFieldValue);
+    const supportUser = getFieldValue('supportUser');
+    window.echo('su us', supportUser);
+    if (!supportUser) return false;
+    return this.currentUserId === supportUser.id;
   }
 
   render() {
-    const { getFieldValue } = this.props.form;
     return (
-      <Form>
-        {
-          this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
-            <BasicFormItem label={i18n('project.contact_person')} name="contactPerson" required whitespace><Input /></BasicFormItem>
-          ) : null
-        }
+      <Form ref={this.props.forwardedRef}>
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
+              return (
+                <BasicFormItem
+                  label={i18n('project.contact_person')}
+                  name="contactPerson"
+                  required
+                  whitespace
+                >
+                  <Input />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </Form.Item>
 
-        {
-           this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
-            <BasicFormItem label={i18n('project.phone')} name="phoneNumber" required validator={this.phoneNumberValidator}><InputPhoneNumber /></BasicFormItem>
-          ) : null
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
+              return (
+                <BasicFormItem
+                  label={i18n('project.phone')}
+                  name="phoneNumber"
+                  required
+                  validator={this.phoneNumberValidator}
+                >
+                  <InputPhoneNumber />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </Form.Item>
 
-        {
-           this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
-            <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
-              <Input type="email" />
-            </BasicFormItem>
-          ) : null
-        }
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
+              return (
+                <BasicFormItem label={i18n('project.email')} name="email" required valueType="email">
+                  <Input type="email" />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </Form.Item>
 
-        {
-         this.isCurrentUserSupportUser() || hasPerm('proj.get_secretinfo') ? (
-            <BasicFormItem label={i18n('project.uploader')} name="supportUserName" initialValue={this.currentUserId}>
-              <Input disabled />
-            </BasicFormItem>
-          ) : null
-        } 
-
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
+              return (
+                <BasicFormItem label={i18n('project.uploader')} name="supportUserName" initialValue={this.currentUserId}>
+                  <Input disabled />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </Form.Item>
         
         {hasPerm('proj.admin_changeproj') ?
-          <BasicFormItem label={i18n('project.take_user')} name="takeUser" valueType="array">
-            {/* <SelectAllUser type="trader" /> */}
-            <SelectTrader mode="multiple" disabledOption={getFieldValue('makeUser')} />
-          </BasicFormItem>
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              return (
+                <BasicFormItem label={i18n('project.take_user')} name="takeUser" valueType="array">
+                  {/* <SelectAllUser type="trader" /> */}
+                  <SelectTrader mode="multiple" disabledOption={getFieldValue('makeUser')} />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
           :
           <BasicFormItem label={i18n('project.take_user')} name="takeUserName">
             <Input disabled />
@@ -280,10 +318,16 @@ class ProjectConnectForm1 extends React.Component {
         }
 
         {hasPerm('proj.admin_changeproj') ?
-          <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="array">
-            {/* <SelectAllUser type="trader" /> */}
-            <SelectTrader mode="multiple" disabledOption={getFieldValue('takeUser')} />
-          </BasicFormItem>
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              return (
+                <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="array">
+                  {/* <SelectAllUser type="trader" /> */}
+                  <SelectTrader mode="multiple" disabledOption={getFieldValue('takeUser')} />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
           :
           <BasicFormItem label={i18n('project.make_user')} name="makeUserName">
             <Input disabled />

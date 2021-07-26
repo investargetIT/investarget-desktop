@@ -115,6 +115,7 @@ class EditProject extends React.Component {
     }
 
     this.editProjectBaseFormRef = React.createRef();
+    this.editProjectConnectFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -305,7 +306,7 @@ class EditProject extends React.Component {
 
             <TabPane tab={i18n('project.contact')} key="3" forceRender>
               <div style={formStyle}>
-                <ProjectConnectForm wrappedComponentRef={this.handleConnectFormRef} data={data} />
+                <ProjectConnectForm ref={this.editProjectConnectFormRef} data={data} />
                 <FormAction form="connectForm" />
               </div>
             </TabPane>
