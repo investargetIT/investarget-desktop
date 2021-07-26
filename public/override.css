@@ -314,7 +314,7 @@ button[disabled], html input[disabled] {
   margin: 0 8px;
 } */
 
-.ant-tabs-nav .ant-tabs-tab {
+/* .ant-tabs-nav .ant-tabs-tab {
   margin-right: 0;
 }
 
@@ -333,7 +333,7 @@ button[disabled], html input[disabled] {
 .ant-transfer-list-header-title {
   position: relative;
   right: unset;
-}
+} */
 .login-register-form {
   width: 480px;
   padding: 30px 60px;
