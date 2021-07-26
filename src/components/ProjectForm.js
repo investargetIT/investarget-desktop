@@ -133,8 +133,7 @@ class ProjectFinanceForm1 extends React.Component {
   }
 
   // 处理货币相关表单联动
-  handleCurrencyTypeChange = (currencyId) => {
-    const { getFieldValue, setFieldsValue } = this.props.form
+  handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
     const currency = getCurrencyFromId(currencyId)
     exchange(currency).then((rate) => {
       const fields = ['financeAmount', 'companyValuation']
@@ -153,37 +152,49 @@ class ProjectFinanceForm1 extends React.Component {
   }
 
   render() {
-    // const { getFieldValue } = this.props.form
     return (
       <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.company_year')} name="companyYear" valueType="number">
           <SelectYear />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project.currency')} name="currency" required valueType="number" onChange={this.handleCurrencyTypeChange}>
-          <SelectCurrencyType />
-        </BasicFormItem>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <BasicFormItem
+                label={i18n('project.currency')}
+                name="currency"
+                required
+                valueType="number"
+              >
+                <SelectCurrencyType onChange={value => this.handleCurrencyTypeChange(value, getFieldValue, setFieldsValue)} />
+              </BasicFormItem>
+            );
+          }}
+        </FormItem>
 
         <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
+          {({ getFieldValue, setFieldsValue }) => {
             return (
               <CurrencyFormItem
                 label={i18n('project.transaction_size')}
                 name="financeAmount"
                 required
                 currencyType={getFieldValue('currency')}
+                setFieldsValue={setFieldsValue}
               />
             );
           }}
         </Form.Item>
 
         <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
+          {({ getFieldValue, setFieldsValue }) => {
             return (
               <CurrencyFormItem
                 label={i18n('project.company_valuation')}
                 name="companyValuation"
                 currencyType={getFieldValue('currency')}
+                setFieldsValue={setFieldsValue}
               />
             );
           }}
