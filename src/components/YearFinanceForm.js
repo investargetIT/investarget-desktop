@@ -30,17 +30,6 @@ import {
 
 class YearFinanceForm extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
-
-  getChildContext() {
-    return { form: this.props.form }
-  }
-
-  constructor(props) {
-    super(props)
-  }
 
   render() {
 
@@ -52,9 +41,33 @@ class YearFinanceForm extends React.Component {
           <SelectYear disabled={ mode == 'edit' } disabledYears={ mode == 'add' ? disabledYears : [] } />
         </BasicFormItem>
 
-        <CurrencyFormItem label={i18n('project.revenue')} name="revenue" required currencyType={currencyType} />
+        <Form.Item noStyle shouldUpdate>
+          {({ setFieldsValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('project.revenue')}
+                name="revenue"
+                required
+                currencyType={currencyType}
+                setFieldsValue={setFieldsValue}
+              />
+            );
+          }}
+        </Form.Item>
 
-        <CurrencyFormItem label={i18n('project.profits')} name="netIncome" required currencyType={currencyType} />
+        <Form.Item noStyle shouldUpdate>
+          {({ setFieldsValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('project.profits')}
+                name="netIncome"
+                required
+                currencyType={currencyType}
+                setFieldsValue={setFieldsValue}
+              />
+            );
+          }}
+        </Form.Item>
 
         <BasicFormItem label={i18n('project.EBITDA')} name="EBITDA" valueType="number" initialValue={0}>
           <InputNumber />
