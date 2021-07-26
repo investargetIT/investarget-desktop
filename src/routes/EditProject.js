@@ -113,6 +113,8 @@ class EditProject extends React.Component {
     this.state = {
       project: {}
     }
+
+    this.editProjectBaseFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -120,7 +122,7 @@ class EditProject extends React.Component {
   }
 
   getProject = () => {
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     api.getProjDetail(id).then(result => {
       let data = Object.assign({}, result.data);
       delete data.makeUser
@@ -157,7 +159,7 @@ class EditProject extends React.Component {
 
   // editProject = (formStr, ifBack) => {
   //   const form = this[formStr]
-  //   const id = Number(this.props.params.id)
+  //   const id = Number(this.props.match.params.id)
   //   form.validateFieldsAndScroll((err, values) => {
   //     if (!err) {
   //       let params = toData(values)
@@ -183,7 +185,7 @@ class EditProject extends React.Component {
   editProject = (formStr, ifBack) => {
     const react = this;
     const baseForm = react.baseForm;
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     baseForm.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const baseFormParams = toData(values);
@@ -266,7 +268,7 @@ class EditProject extends React.Component {
     if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
       return null;
     }
-    const id = Number(this.props.params.id)
+    const id = Number(this.props.match.params.id)
     const data = toFormData(this.state.project)
     
     const FormAction = ({form}) => {
@@ -285,7 +287,7 @@ class EditProject extends React.Component {
           <Tabs defaultActiveKey="1">
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <ProjectBaseForm wrappedComponentRef={this.handleBaseFormRef} data={data} />
+                <ProjectBaseForm ref={this.editProjectBaseFormRef} data={data} />
                 <FormAction form="baseForm" />
               </div>
             </TabPane>

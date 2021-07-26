@@ -37,7 +37,7 @@ import {
 } from '../components/ExtraInput'
 
 
-class ProjectBaseForm extends React.Component {
+class ProjectBaseForm1 extends React.Component {
 
   static childContextTypes = {
     form: PropTypes.object
@@ -57,7 +57,7 @@ class ProjectBaseForm extends React.Component {
 
   render() {
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean">
           <RadioTrueOrFalse />
         </BasicFormItem>
@@ -78,7 +78,7 @@ class ProjectBaseForm extends React.Component {
           <TreeSelectTag />
         </BasicFormItem>
 
-        <IndustryDynamicFormItem industry={this.props.industry} />
+        {this.props.forwardedRef.current && <IndustryDynamicFormItem industry={this.props.industry} formRef={this.props.forwardedRef} />}
 
         <BasicFormItem label={i18n('project.region')} name="country" required valueType="number">
           <CascaderCountry size="large" />
@@ -113,10 +113,12 @@ function mapStateToPropsIndustry(state) {
   const { industry } = state.app
   return { industry }
 }
-ProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm)
+// ProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm)
+const ConnectedProjectBaseForm = connect(mapStateToPropsIndustry)(ProjectBaseForm1);
+const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseForm {...props} forwardedRef={ref} />);
 
 
-class ProjectFinanceForm extends React.Component {
+class ProjectFinanceForm1 extends React.Component {
 
   static childContextTypes = {
     form: PropTypes.object
@@ -151,9 +153,9 @@ class ProjectFinanceForm extends React.Component {
   }
 
   render() {
-    const { getFieldValue } = this.props.form
+    // const { getFieldValue } = this.props.form
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.company_year')} name="companyYear" valueType="number">
           <SelectYear />
         </BasicFormItem>
@@ -162,9 +164,30 @@ class ProjectFinanceForm extends React.Component {
           <SelectCurrencyType />
         </BasicFormItem>
 
-        <CurrencyFormItem label={i18n('project.transaction_size')} name="financeAmount" required currencyType={getFieldValue('currency')} />
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('project.transaction_size')}
+                name="financeAmount"
+                required
+                currencyType={getFieldValue('currency')}
+              />
+            );
+          }}
+        </Form.Item>
 
-        <CurrencyFormItem label={i18n('project.company_valuation')} name="companyValuation" currencyType={getFieldValue('currency')} />
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('project.company_valuation')}
+                name="companyValuation"
+                currencyType={getFieldValue('currency')}
+              />
+            );
+          }}
+        </Form.Item>
 
         {/* <BasicFormItem label={i18n('project.disclose_financials')} name="financeIsPublic" valueType="boolean" valuePropName="checked">
           <Switch checkedChildren={'ON'} unCheckedChildren={'OFF'} />
@@ -176,10 +199,12 @@ class ProjectFinanceForm extends React.Component {
   }
 }
 
-ProjectFinanceForm = connect()(ProjectFinanceForm)
+// ProjectFinanceForm = connect()(ProjectFinanceForm)
+const ConnectedProjectFinanceForm = connect(mapStateToPropsIndustry)(ProjectFinanceForm1);
+const ProjectFinanceForm = React.forwardRef((props, ref) => <ConnectedProjectFinanceForm {...props} forwardedRef={ref} />);
 
 
-class ProjectConnectForm extends React.Component {
+class ProjectConnectForm1 extends React.Component {
 
   static childContextTypes = {
     form: PropTypes.object
@@ -192,7 +217,7 @@ class ProjectConnectForm extends React.Component {
   constructor(props) {
     super(props)
 
-    const { getFieldDecorator } = this.props.form
+    // const { getFieldDecorator } = this.props.form
     this.currentUserId = getCurrentUser()
   }
 
@@ -268,6 +293,7 @@ class ProjectConnectForm extends React.Component {
     )
   }
 }
+const ProjectConnectForm = React.forwardRef((props, ref) => <ProjectConnectForm1 {...props} forwardedRef={ref} />);
 
 
 class ProjectDetailForm extends React.Component {
