@@ -476,11 +476,11 @@ class IndustryDynamicFormItem extends React.Component {
                       rules={[
                         { type: 'string' },
                         {
-                          validator: function (rule, value, callback) {
+                          validator: function (_, value) {
                             if (!value) {
-                              callback(i18n('project.message.validation_industry_image_not_null'))
+                              return Promise.reject(i18n('project.message.validation_industry_image_not_null'));
                             } else {
-                              callback()
+                              return Promise.resolve();
                             }
                           }
                         }

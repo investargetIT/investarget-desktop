@@ -146,7 +146,9 @@ class EditProject extends React.Component {
     }
 
     this.editProjectBaseFormRef = React.createRef();
+    this.editProjectFinanceFormRef = React.createRef();
     this.editProjectConnectFormRef = React.createRef();
+    this.editProjectDetailsFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -189,86 +191,105 @@ class EditProject extends React.Component {
     })
   }
 
-  // editProject = (formStr, ifBack) => {
-  //   const form = this[formStr]
-  //   const id = Number(this.props.match.params.id)
-  //   form.validateFieldsAndScroll((err, values) => {
-  //     if (!err) {
-  //       let params = toData(values)
-  //       api.editProj(id, params).then(result => {
-  //         this.getProject()
-  //         if(ifBack){
-  //           this.goBack()
-  //         }
-  //         else{
-  //           message.success(i18n('project.message.project_updated'), 2)
-  //         }
-          
-  //       }, error => {
-  //        this.props.dispatch({
-  //         type: 'app/findError',
-  //         payload: error
-  //       })
-  //       })
-  //     }
-  //   })
-  // }
-
-  editProject = (formStr, ifBack) => {
+  editProject = async (formStr, ifBack) => {
     const react = this;
-    const baseForm = react.baseForm;
-    const id = Number(this.props.match.params.id)
-    baseForm.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        const baseFormParams = toData(values);
-        const financeForm = react.financeForm;
-        financeForm.validateFieldsAndScroll((err1, values1) => {
-          if (!err1) {
-            const financeFormParams = toData(values1);
-            const connectForm = react.connectForm;
-            connectForm.validateFieldsAndScroll((err2, values2) => {
-              if (!err2) {
-                const connectFormParams = toData(values2);
-                const detailForm = react.detailForm;
-                detailForm.validateFieldsAndScroll((err3, values3) => {
-                  if (!err3) {
-                    const detailFormParams = toData(values3);
-                    const params = {
-                      ...baseFormParams,
-                      ...financeFormParams,
-                      ...connectFormParams,
-                      ...detailFormParams,
-                    };
-                    api.editProj(id, params).then(result => {
-                      this.getProject()
-                      if (ifBack) {
-                        this.goBack()
-                      }
-                      else {
-                        message.success(i18n('project.message.project_updated'), 2)
-                      }
-                    }, error => {
-                      this.props.dispatch({
-                        type: 'app/findError',
-                        payload: error
-                      })
-                    })
-                  } else {
-                    message.error('项目详情内容有误，请检查', 2);
-                  }
-                })
-              } else {
-                message.error('联系方式内容有误，请检查', 2);
+    const id = Number(this.props.match.params.id);
+    try {
+      const baseFormValues = await react.editProjectBaseFormRef.current.validateFields();
+      const baseFormParams = toData(baseFormValues);
+      try {
+        const financeFormValues = await react.editProjectFinanceFormRef.current.validateFields();
+        const financeFormParams = toData(financeFormValues);
+        try {
+          const connectFormValues = await react.editProjectConnectFormRef.current.validateFields();
+          const connectFormParams = toData(connectFormValues);
+          try {
+            const detailsFormValues = await react.editProjectDetailsFormRef.current.validateFields();
+            const detailFormParams = toData(detailsFormValues);
+            const params = {
+              ...baseFormParams,
+              ...financeFormParams,
+              ...connectFormParams,
+              ...detailFormParams,
+            };
+            api.editProj(id, params).then(result => {
+              this.getProject()
+              if (ifBack) {
+                this.goBack()
               }
+              else {
+                message.success(i18n('project.message.project_updated'), 2)
+              }
+            }, error => {
+              this.props.dispatch({
+                type: 'app/findError',
+                payload: error
+              })
             })
-          } else {
-            message.error('财务信息内容有误，请检查', 2);
+          } catch (error) {
+            message.error('项目详情内容有误，请检查', 2);
           }
-        })
-      } else {
-        message.error('基本信息内容有误，请检查', 2);
+        } catch (error) {
+          message.error('联系方式内容有误，请检查', 2);
+        }
+      } catch (error) {
+        message.error('财务信息内容有误，请检查', 2);
       }
-    })
+    } catch (error) {
+      message.error('基本信息内容有误，请检查', 2);
+    }
+    
+    // baseForm.validateFieldsAndScroll((err, values) => {
+    //   if (!err) {
+    //     const baseFormParams = toData(values);
+    //     const financeForm = react.financeForm;
+    //     financeForm.validateFieldsAndScroll((err1, values1) => {
+    //       if (!err1) {
+    //         const financeFormParams = toData(values1);
+    //         const connectForm = react.connectForm;
+    //         connectForm.validateFieldsAndScroll((err2, values2) => {
+    //           if (!err2) {
+    //             const connectFormParams = toData(values2);
+    //             const detailForm = react.detailForm;
+    //             detailForm.validateFieldsAndScroll((err3, values3) => {
+    //               if (!err3) {
+    //                 const detailFormParams = toData(values3);
+    //                 const params = {
+    //                   ...baseFormParams,
+    //                   ...financeFormParams,
+    //                   ...connectFormParams,
+    //                   ...detailFormParams,
+    //                 };
+    //                 api.editProj(id, params).then(result => {
+    //                   this.getProject()
+    //                   if (ifBack) {
+    //                     this.goBack()
+    //                   }
+    //                   else {
+    //                     message.success(i18n('project.message.project_updated'), 2)
+    //                   }
+    //                 }, error => {
+    //                   this.props.dispatch({
+    //                     type: 'app/findError',
+    //                     payload: error
+    //                   })
+    //                 })
+    //               } else {
+    //                 message.error('项目详情内容有误，请检查', 2);
+    //               }
+    //             })
+    //           } else {
+    //             message.error('联系方式内容有误，请检查', 2);
+    //           }
+    //         })
+    //       } else {
+    //         message.error('财务信息内容有误，请检查', 2);
+    //       }
+    //     })
+    //   } else {
+    //     message.error('基本信息内容有误，请检查', 2);
+    //   }
+    // })
   }
 
   handleBaseFormRef = (inst) => {
@@ -299,12 +320,14 @@ class EditProject extends React.Component {
   setFormValue = () => {
     const newFormData = toFormDataNew(this.state.project);
     this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
+    this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);
     this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
+    this.editProjectDetailsFormRef.current.setFieldsValue(newFormData);
   }
 
   render() {
     if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
-      return null;
+      return <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')} />;
     }
     const id = Number(this.props.match.params.id)
     const data = toFormData(this.state.project)
@@ -332,7 +355,7 @@ class EditProject extends React.Component {
 
             <TabPane tab={i18n('project.financials')} key="2" forceRender>
               <div style={formStyle}>
-                <ProjectFinanceForm wrappedComponentRef={this.handleFinanceFormRef} data={data} />
+                <ProjectFinanceForm ref={this.editProjectFinanceFormRef} />
                 <FormAction form="financeForm" />
               </div>
             </TabPane>
@@ -350,7 +373,7 @@ class EditProject extends React.Component {
 
             <TabPane tab={i18n('project.details')} key="4" forceRender>
               <div style={formStyle}>
-                <ProjectDetailForm wrappedComponentRef={this.handleDetailFormRef} data={data} />
+                <ProjectDetailForm ref={this.editProjectDetailsFormRef} />
                 <FormAction form="detailForm" />
               </div>
             </TabPane>

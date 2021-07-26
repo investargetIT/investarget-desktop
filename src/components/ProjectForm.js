@@ -232,13 +232,12 @@ class ProjectConnectForm1 extends React.Component {
     this.currentUserId = getCurrentUser()
   }
 
-  phoneNumberValidator = (rule, value, callback) => {
-    console.log(rule, value, callback)
+  phoneNumberValidator = (_, value) => {
     const isPhoneNumber = /([0-9]+)-([0-9]+)/
     if (isPhoneNumber.test(value)) {
-      callback()
+      return Promise.resolve();
     } else {
-      callback(i18n('validation.please_input_correct_phone_number'))
+      return Promise.reject(i18n('validation.please_input_correct_phone_number'));
     }
   }
 
@@ -349,14 +348,14 @@ class ProjectConnectForm1 extends React.Component {
 const ProjectConnectForm = React.forwardRef((props, ref) => <ProjectConnectForm1 {...props} forwardedRef={ref} />);
 
 
-class ProjectDetailForm extends React.Component {
+class ProjectDetailForm1 extends React.Component {
   constructor(props) {
     super(props)
   }
 
   render() {
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
         <BasicFormItem label="公司简介" name="p_introducteC" initialValue={''}>
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
         </BasicFormItem>
@@ -421,6 +420,7 @@ class ProjectDetailForm extends React.Component {
     )
   }
 }
+const ProjectDetailForm = React.forwardRef((props, ref) => <ProjectDetailForm1 {...props} forwardedRef={ref} />);
 
 export {
   ProjectBaseForm,
