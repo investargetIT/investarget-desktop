@@ -7,7 +7,7 @@ const statisticFileId = statisticUrlParams.get('fileId');
 console.log('file id', statisticFileId);
 // const documentId = fileId;
 
-const statisticBaseUrl = 'http://apitest.investarget.com';
+const statisticBaseUrl = 'https://api.investarget.com';
 
 function statisticGetUserInfo() {
   const userInfoStr = localStorage.getItem('user_info');

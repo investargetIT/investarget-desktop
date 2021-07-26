@@ -8,7 +8,7 @@ const fileId = urlParams.get('fileId');
 
 const documentId = fileId;
 
-const baseUrl = 'http://apitest.investarget.com';
+const baseUrl = 'https://api.investarget.com';
 
 let submitComment = false;
 let isReply = false;
