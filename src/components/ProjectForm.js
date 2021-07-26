@@ -232,9 +232,7 @@ class ProjectConnectForm1 extends React.Component {
   }
 
   isCurrentUserSupportUser = getFieldValue => {
-    window.echo('suppport use', getFieldValue);
     const supportUser = getFieldValue('supportUser');
-    window.echo('su us', supportUser);
     if (!supportUser) return false;
     return this.currentUserId === supportUser.id;
   }

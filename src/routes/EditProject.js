@@ -76,6 +76,37 @@ function toFormData(data) {
   return formData
 }
 
+function toFormDataNew(data) {
+  var formData = {}
+
+  for (let prop in data) {
+    if (prop == 'industries') {
+      // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
+      let value = data['industries'];
+      let keys = _.range(1, 1 + value.length);
+      formData['industriesKeys'] = keys;
+      keys.forEach((key, index) => {
+        formData['industries-' + key] = value[index].industry.id;
+        formData['industries-image-' + key] = value[index].key;
+      })
+    } else if (prop === 'projTraders' && data[prop]) {
+      const { projTraders } = data;
+      const takeUser = projTraders.filter(f => f.type === 0);
+      const makeUser = projTraders.filter(f => f.type === 1);
+      formData.takeUser = takeUser.map(m => m.user.id.toString());
+      formData.makeUser = makeUser.map(m => m.user.id.toString());
+      formData.takeUserName = takeUser.map(m => m.user.usernameC).join('、');
+      formData.makeUserName = makeUser.map(m => m.user.usernameC).join('、');
+    } else if (prop === 'lastProject' && data[prop]) {
+      formData.lastProject = data.lastProject.id;
+    } else {
+      formData[prop] = data[prop];
+    }
+  }
+
+  return formData
+}
+
 function toData(formData) {
   var data = {}
 
@@ -149,7 +180,7 @@ class EditProject extends React.Component {
       })
       this.setState({
         project: data
-      })
+      }, this.setFormValue);
     }, error => {
       this.props.dispatch({
         type: 'app/findError',
@@ -265,6 +296,12 @@ class EditProject extends React.Component {
     this.getProject()
   }
 
+  setFormValue = () => {
+    const newFormData = toFormDataNew(this.state.project);
+    this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
+    this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
+  }
+
   render() {
     if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
       return null;
@@ -288,7 +325,7 @@ class EditProject extends React.Component {
           <Tabs defaultActiveKey="1">
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <ProjectBaseForm ref={this.editProjectBaseFormRef} data={data} />
+                <ProjectBaseForm ref={this.editProjectBaseFormRef} />
                 <FormAction form="baseForm" />
               </div>
             </TabPane>
@@ -306,7 +343,7 @@ class EditProject extends React.Component {
 
             <TabPane tab={i18n('project.contact')} key="3" forceRender>
               <div style={formStyle}>
-                <ProjectConnectForm ref={this.editProjectConnectFormRef} data={data} />
+                <ProjectConnectForm ref={this.editProjectConnectFormRef} />
                 <FormAction form="connectForm" />
               </div>
             </TabPane>
