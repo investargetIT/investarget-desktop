@@ -262,21 +262,22 @@ function DataRoomUser(props) {
         {isAbleToAddUser ?
           <div style={{ marginRight: 10 }}>
             <div style={{ display: 'flex' }}>
-              <div style={{ width: 160, marginRight: 8 }}>
+              <div style={{ marginRight: 10 }}>
                 <SelectExistInvestor
+                  style={{ width: 160 }}
                   value={newUser}
                   onChange={onSelectUser}
                   dataroom={dataroomId}
                 />
               </div>
-              <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
+              <div><Button type="primary" onClick={onAddUser} disabled={!newUser || !onAddUser}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
             </div>
           </div>
           : null}
 
         {/* { isAbleToAddUser ? <Col span={1} /> : null } */}
 
-        {onApplyTemplate && <div style={{ marginRight: 6 }}><Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button></div>}
+        {onApplyTemplate && <div style={{ marginRight: 10 }}><Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button></div>}
         {/* {onApplyTemplate && <Col span={1} />} */}
 
         <div>
