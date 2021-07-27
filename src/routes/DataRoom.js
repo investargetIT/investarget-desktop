@@ -1547,6 +1547,7 @@ class DataRoom extends React.Component {
 
         <div style={{ marginBottom: '16px' }} className="clearfix">
           <Search
+            size="default"
             style={{ width: 200, float: 'right' }}
             placeholder="文件名/文件内容"
             onSearch={this.handleDataroomSearch}
