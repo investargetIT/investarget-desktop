@@ -4,7 +4,6 @@ import {
   Popconfirm, 
   Row, 
   Col, 
-  Icon,
   Popover,
   Input,
   Table,
@@ -20,6 +19,10 @@ import {
 } from '../utils/util';
 import { Link } from 'dva/router';
 import moment from 'moment';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
@@ -220,7 +223,7 @@ function DataRoomUser(props) {
               onConfirm={() => handleDelete(record)}
             >
               <Button style={{ ...buttonStyle, color: undefined }}>
-                <Icon type="delete" />
+                <DeleteOutlined />
               </Button>
             </Popconfirm>
           }
@@ -266,7 +269,7 @@ function DataRoomUser(props) {
                   dataroom={dataroomId}
                 />
               </div>
-              <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><Icon type="plus" />{i18n('dataroom.add_user')}</Button></div>
+              <div><Button type="primary" size="large" onClick={onAddUser} disabled={!newUser || !onAddUser}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
             </div>
           </div>
           : null}
