@@ -31,6 +31,7 @@ import OrgUserList from './routes/OrgUserList.js'
 import ReportList from './routes/ReportList';
 import AddProject from './routes/AddProject';
 import EditProject from './routes/EditProject';
+import DataRoomList from './routes/DataRoomList';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 // import DataRoom from './routes/DataRoom'
 // import ProjectListRecommend from './routes/ProjectListRecommend'
@@ -38,7 +39,6 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 // import ProjectListInterest from './routes/ProjectListInterest'
 // import ProjectListPublished from './routes/ProjectListPublished'
 // import OrgBdTableList from './routes/OrgBdTableList';
-// import DataRoomList from './routes/DataRoomList'
 // import EmailList from './routes/EmailList'
 // import EmailDetail from './routes/EmailDetail'
 // import EditTimeline from './routes/EditTimeline'
@@ -115,6 +115,7 @@ function RouterConfig({ history }) {
         <Route path="/app/demo" component={Demo} />
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/report/list" component={ReportList} />
+        <Route path="/app/dataroom/project/list" component={DataRoomList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -127,7 +128,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />
         <Route path="/app/projects/published" component={ProjectListPublished} />
-        <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />
         <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />

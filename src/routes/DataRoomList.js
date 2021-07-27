@@ -12,6 +12,10 @@ import {
 import { queryDataRoom, getProjLangDetail } from '../api'
 import * as api from '../api'
 import { Search2 } from '../components/Search'
+import {
+  PlusOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 const rowStyle = {
   marginBottom: '24px',
@@ -195,7 +199,8 @@ class DataRoomList extends React.Component {
         <Card style={addCardStyle} bodyStyle={addCardBodyStyle}>
           <Link to={'/app/projects/list'}>
             <div style={{ textAlign: 'center', cursor: 'pointer', color: 'rgba(0,0,0,.65)' }}>
-              <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
+              {/* <Icon type="plus" style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} /> */}
+              <PlusOutlined style={{ fontSize: '84px', marginBottom: '16px', color: '#989898' }} />
               <br />
               <span style={{ fontSize: '16px', color: '#656565' }}>{i18n('dataroom.create_dataroom')}</span>
             </div>
@@ -228,7 +233,8 @@ class DataRoomList extends React.Component {
                 <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
               { hasPerm('dataroom.admin_deletedataroom') ? 
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Icon type="delete" style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} />
+                {/* <Icon type="delete" style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} /> */}
+                <DeleteOutlined style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} />
               </Popconfirm>
               : null }
             </div>
