@@ -1,6 +1,6 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, getURLParamValue } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
@@ -48,9 +48,11 @@ class FileMgmt extends React.Component {
     constructor(props) {
     super(props)
 
+    const parentID = getURLParamValue(props, 'parentID');
+
     this.state = {
       data: props.data,
-      parentId: parseInt(props.location.query.parentID, 10) || -999,
+      parentId: parseInt(parentID, 10) || -999,
       name: null,
       renameRows: [],
       selectedRows: [],
@@ -74,14 +76,14 @@ class FileMgmt extends React.Component {
 
   componentDidMount() {
     window.onpopstate = () => {
-      const query = qs.parse(location.search)
-      this.setState({ parentId: parseInt(query.parentID, 10) || -999 })
+      const parentID = getURLParamValue(props, 'parentID');
+      this.setState({ parentId: parseInt(parentID, 10) || -999 })
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const parentId = this.props.location.query.parentID
-    const parentId2 = nextProps.location.query.parentID
+    const parentId = getURLParamValue(this.props, 'parentID');
+    const parentId2 = getURLParamValue(nextProps, 'parentID');
     if (parentId !== parentId2) {
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
@@ -91,15 +93,15 @@ class FileMgmt extends React.Component {
   folderClicked(file) {
     if (!file) {
       this.props.onClickAllFilesBtn();
-      this.props.location.query.parentID = undefined
-      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
+      const newURLParams = updateURLParameter(this.props, 'parentID', undefined);
+      history.pushState(undefined, '', `?${newURLParams.toString()}`)
       this.setState({ parentId: -999 })
       return
     }
     if (file.isFolder) {
       this.props.onClickFolder(file);
-      this.props.location.query.parentID = file.id
-      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
+      const newURLParams = updateURLParameter(this.props, 'parentID', file.id);
+      history.pushState(undefined, '', `?${newURLParams.toString()}`)
       this.setState({ parentId: file.id })
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
@@ -485,7 +487,7 @@ class FileMgmt extends React.Component {
       },
     }
 
-    const unableToOperate = this.props.location.query.isClose === 'true'
+    const unableToOperate = getURLParamValue(this.props, 'isClose') === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
     const selectMoreThanOneRow = this.state.selectedRows.length > 0

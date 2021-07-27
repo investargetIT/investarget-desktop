@@ -4,7 +4,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import CompanyFileMgmt from '../components/CompanyFileMgmt';
 import * as api from '../api'
 import { Modal } from 'antd'
-import { hasPerm, isLogin, i18n, handleError } from '../utils/util'
+import { getURLParamValue, isLogin, i18n, handleError } from '../utils/util'
 import { 
   DataRoomUser, 
   DataRoomUserList, 
@@ -17,7 +17,11 @@ class DataRoom extends React.Component {
   constructor(props) {
     super(props)
 
-    const { id, isClose, projectID, projectTitle } = props.location.query
+    const id = getURLParamValue(props, 'id');
+    const isClose = getURLParamValue(props, 'isClose');
+    const projectTitle = getURLParamValue(props, 'projectTitle');
+    const parentID = getURLParamValue(props, 'parentID');
+
     this.state = {
       id: id,
       isClose: isClose == 'true' ? true : false,
@@ -40,7 +44,7 @@ class DataRoom extends React.Component {
 
       searchContent: '',
 
-      parentId: parseInt(props.location.query.parentID, 10) || -999,
+      parentId: parseInt(parentID, 10) || -999,
     }
 
     this.allDataroomFiles = [];
