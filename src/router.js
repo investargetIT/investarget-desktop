@@ -33,7 +33,7 @@ import AddProject from './routes/AddProject';
 import EditProject from './routes/EditProject';
 import DataRoomList from './routes/DataRoomList';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
-// import DataRoom from './routes/DataRoom'
+import DataRoom from './routes/DataRoom';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -116,6 +116,7 @@ function RouterConfig({ history }) {
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/report/list" component={ReportList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
+        <Route path="/app/dataroom/detail" component={DataRoom} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -129,7 +130,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />
         <Route path="/app/projects/published" component={ProjectListPublished} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
-        <Route path="/app/dataroom/detail" component={DataRoom} />
         <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />
         <Route path="/app/timeline/list" component={OrgBdTableList} />
         <Route path="/app/email/list" component={EmailList} />

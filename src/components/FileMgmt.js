@@ -1,6 +1,6 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting, getURLParamValue } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
@@ -54,9 +54,11 @@ class FileMgmt extends React.Component {
     constructor(props) {
     super(props)
 
+    const parentID = getURLParamValue(props, 'parentID');
+
     this.state = {
       data: props.data,
-      parentId: parseInt(props.location.query.parentID, 10) || -999,
+      parentId: parseInt(parentID, 10) || -999,
       name: null,
       renameRows: [],
       selectedRows: [],
@@ -798,7 +800,7 @@ class FileMgmt extends React.Component {
       },
     };
 
-    const unableToOperate = this.props.location.query.isClose === 'true'
+    const unableToOperate = getURLParamValue(this.props, 'isClose') === 'true';
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
     const selectMoreThanOneRow = this.state.selectedRows.length > 0

@@ -4,7 +4,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import FileMgmt from '../components/FileMgmt'
 import * as api from '../api'
 import { Modal, Select, Input, Tree, message, Collapse, notification, Progress } from 'antd';
-import { hasPerm, isLogin, i18n, handleError, requestAllData } from '../utils/util'
+import { hasPerm, isLogin, i18n, handleError, getURLParamValue } from '../utils/util'
 import { 
   DataRoomUser, 
   DataRoomUserList, 
@@ -85,7 +85,13 @@ class DataRoom extends React.Component {
   constructor(props) {
     super(props)
 
-    const { id, isClose, projectID, projectTitle } = props.location.query
+    // const { id, isClose, projectID, projectTitle } = props.location.query
+    const id = getURLParamValue(props, 'id');
+    const isClose = getURLParamValue(props, 'isClose');
+    const projectID = getURLParamValue(props, 'projectID');
+    const projectTitle = getURLParamValue(props, 'projectTitle');
+    const parentID = getURLParamValue(props, 'parentID');
+
     this.state = {
       id: id,
       projectID: projectID,
@@ -122,7 +128,7 @@ class DataRoom extends React.Component {
       pdfPasswordForTemp: '',
       searchContent: '',
 
-      parentId: parseInt(props.location.query.parentID, 10) || -999,
+      parentId: parseInt(parentID, 10) || -999,
 
       newDataroomFile: [],
       newDataroomFileWithParentDir: [],
