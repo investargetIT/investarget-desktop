@@ -188,7 +188,7 @@ class SelectOrgInvestorToBD extends React.Component {
     this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
-  // 这个方法是为了实现创建机构BD最后选择交易师时有顺序的展示
+  // 这个方法是为了实现创建机构看板最后选择交易师时有顺序的展示
   handleLoadTrader = investorUserRelation => {
     this.investorTrader.push(investorUserRelation);
     const listWithInvestor = this.state.list.filter(f => f.id !== null);

@@ -100,7 +100,7 @@ class OrgBDProjList extends React.Component {
   //   }
   //   this.setState({ loading: true })
 
-  //   // 首先请求所有以项目分组的机构BD
+  //   // 首先请求所有以项目分组的机构看板
   //   let reqProj = await api.getOrgBDProj(params);
   //   const { count: totalNum } = reqProj.data;
   //   if (totalNum > page_size) {
@@ -116,7 +116,7 @@ class OrgBDProjList extends React.Component {
 
   //   const list = _.uniqBy(orgBDProjects, 'id');
   //   if (list.length > 0) {
-  //     // 最后请求当前用户的未读机构BD的统计数据
+  //     // 最后请求当前用户的未读机构看板的统计数据
   //     const reqUnreadOrgBD = await api.getOrgBDProj({
   //       proj: list.map(m => m.id),
   //       isRead: false,
@@ -124,7 +124,7 @@ class OrgBDProjList extends React.Component {
   //       page_size: list.length,
   //     });
 
-  //     // 将未读机构BD项目与所有项目做匹配
+  //     // 将未读机构看板项目与所有项目做匹配
   //     list.forEach(element => {
   //       const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
   //       if (index > -1) {
@@ -146,14 +146,14 @@ class OrgBDProjList extends React.Component {
 
     this.setState({ loading: true })
 
-    // 首先请求所有以项目分组的机构BD
+    // 首先请求所有以项目分组的机构看板
     const reqProj = await api.getOrgBDProj(params);
     const { count: total } = reqProj.data;
 
     const list = reqProj.data.data.filter(f => f.proj).map(m => m.proj);
 
     if (list.length > 0) {
-      // 最后请求当前用户的未读机构BD的统计数据
+      // 最后请求当前用户的未读机构看板的统计数据
       const reqUnreadOrgBD = await api.getOrgBDProj({
         proj: list.map(m => m.id),
         isRead: false,
@@ -161,7 +161,7 @@ class OrgBDProjList extends React.Component {
         page_size: list.length,
       });
 
-      // 将未读机构BD项目与所有项目做匹配
+      // 将未读机构看板项目与所有项目做匹配
       list.forEach(element => {
         const index = reqUnreadOrgBD.data.data.map(m => m.proj.id).indexOf(element.id);
         if (index > -1) {
@@ -234,7 +234,7 @@ class OrgBDProjList extends React.Component {
     return (
       <LeftRightLayout 
         location={location} 
-        title="机构BD列表"
+        title="机构看板列表"
         right={<Search2 
           style={{width: 200}} 
           placeholder="项目名称"

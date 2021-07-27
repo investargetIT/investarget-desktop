@@ -35,7 +35,7 @@ export default class OrgBDList extends React.Component {
         name={i18n('menu.organization_bd') + (isAdd ? " / 查看BD": "")} 
         title={i18n('menu.bd_management')}
         // action={
-        //   isAdd ? { name: '返回机构BD', link: '/app/org/bd' }
+        //   isAdd ? { name: '返回机构看板', link: '/app/org/bd' }
         //     : (hasPerm('BD.manageOrgBD') ? { name: i18n('add_orgbd'), link: '/app/orgbd/add' } : undefined)
         // }
         right={this.state.isProj ? <Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button> : null}

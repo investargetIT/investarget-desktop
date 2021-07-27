@@ -414,7 +414,7 @@ class ReportForm extends React.Component {
 
   handleDeleteBtnClick = orgBdId => {
     Modal.confirm({
-      title: '是否确定删除该机构BD',
+      title: '是否确定删除该机构看板',
       content: '一旦确定，无法撤回',
       onOk: this.handleConfirmRemoveOrgBd.bind(this, orgBdId),
     });
@@ -445,7 +445,7 @@ class ReportForm extends React.Component {
 
   handleDeleteCommentBtnClick = (orgBdId, commentId) => {
     Modal.confirm({
-      title: '是否确定删除该机构BD备注',
+      title: '是否确定删除该机构看板备注',
       content: '一旦确定，无法撤回',
       onOk: this.handleConfirmDeleteComment.bind(this, orgBdId, commentId),
     });
@@ -505,7 +505,7 @@ class ReportForm extends React.Component {
     const comments = this.getOldOrgBdComments(values, orgBdId);
     const bdComments = await this.updateOrgBdComments(comments);
     updatedOrgBd.BDComments = bdComments;
-    message.success('机构BD已更新');
+    message.success('机构看板已更新');
     return updatedOrgBd;
   }
 
@@ -664,7 +664,7 @@ class ReportForm extends React.Component {
 
               <div style={{ lineHeight: 3 }}>
                 <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
-                <span onClick={() => this.addProjOrgBdFormItem(orgBDKeys)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
+                <span onClick={() => this.addProjOrgBdFormItem(orgBDKeys)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构看板</span>
               </div>
 
               {orgBdFormItems}
@@ -850,7 +850,7 @@ class ReportForm extends React.Component {
               <div>
                 <div style={{ lineHeight: 3 }}>
                   <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
-                  <span onClick={() => this.addProjOrgBdFormItem(newOrgBdKey)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构BD</span>
+                  <span onClick={() => this.addProjOrgBdFormItem(newOrgBdKey)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构看板</span>
                 </div>
 
                 {m.orgBds.map(m => {

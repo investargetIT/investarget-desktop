@@ -477,7 +477,7 @@ class IndexPage extends React.Component {
           <Link to="/app/orgbd/project/list">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>全部机构BD</p>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>全部机构看板</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDsuccess}</p>
                     </div>
                   </Col>
@@ -485,7 +485,7 @@ class IndexPage extends React.Component {
           <Link to="/app/orgbd/project/list">
                   <Col span={8}>
                     <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>新增机构BD</p>
+                      <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>新增机构看板</p>
                       <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{orgBDunsuccess}</p>
                     </div>
                   </Col>

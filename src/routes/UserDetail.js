@@ -317,7 +317,7 @@ class UserDetail extends React.Component {
     await this.mergeProjectBd(deleteUserId, mergeUserId);
     await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并机构BD' });
+    this.setState({ mergeUserMessage: '正在合并机构看板' });
     await this.mergeOrgBd(deleteUserId, mergeUserId);
     await sleep(1000);
 

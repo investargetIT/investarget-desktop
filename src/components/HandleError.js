@@ -119,7 +119,7 @@ class HandleError extends React.Component {
         Modal.error({ title: msg });
         break;
       case 5006:
-        // Modal.error({ title: '机构BD创建失败', content: msg });
+        // Modal.error({ title: '机构看板创建失败', content: msg });
         Modal.error({ title: msg });
         break;
       case 3008:
@@ -127,7 +127,7 @@ class HandleError extends React.Component {
         Modal.error({ title: msg });
         break;
       case 2007:
-        // Modal.error({ title: '机构BD创建失败', content: msg });
+        // Modal.error({ title: '机构看板创建失败', content: msg });
         Modal.error({ title: msg });
         break;
       case 2051: // 修改密码时，原密码错误，修改失败

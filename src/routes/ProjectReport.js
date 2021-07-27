@@ -253,11 +253,11 @@ class ProjectReport extends React.Component {
       { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
       { title: '项目开始时间', key: 'startTime', dataIndex: 'proj.publishDate', render: text => text ? text.slice(0, 16).replace('T', ' ') : '' },
       {
-        title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
+        title: '机构看板更新情况', key: 'orgbd', render: (_, record) => {
           const htmlContent = record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}`).join('\n');
           const contentWithoutLine = htmlContent.replace(/\n/g, ' ');
           return <Popover
-            title="机构BD更新情况"
+            title="机构看板更新情况"
             content={<div dangerouslySetInnerHTML={{ __html: htmlContent.replace(/\n/g, '<br>') }}></div>}
           >
             <div style={{color: "#428bca"}}>{contentWithoutLine.length >= 24 ? (contentWithoutLine.substr(0, 22) + "...") : contentWithoutLine}</div>
@@ -270,7 +270,7 @@ class ProjectReport extends React.Component {
       { title: '项目名称', key: 'projtitle', dataIndex: 'proj.projtitle' },
       { title: '项目开始时间', key: 'startTime', dataIndex: 'proj.publishDate', render: text => text ? text.slice(0, 16).replace('T', ' ') : '' },
       {
-        title: '机构BD更新情况', key: 'orgbd', render: (_, record) => {
+        title: '机构看板更新情况', key: 'orgbd', render: (_, record) => {
           return record.orgBds.map(m => `机构：${m.org ? m.org.orgname : '暂无'}，投资人：${m.username || '暂无'}，职位：${m.usertitle ? m.usertitle.name : '暂无'}，交易师：${m.manager.username}，当前状态：${m.response ? this.props.orgbdres.filter(f => f.id === m.response)[0].name : '暂无'}，最新备注：${(m.BDComments && m.BDComments.length) ? m.BDComments[m.BDComments.length - 1].comments : '暂无'}。`).join('\r\n');
         }
       },

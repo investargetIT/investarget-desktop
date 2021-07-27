@@ -432,7 +432,7 @@ class ProjectList extends React.Component {
 
     //           { record.projstatus.id >= 4 && record.projstatus.id < 8 && (hasPerm('BD.manageOrgBD') || hasPerm('BD.user_getOrgBD')) ?
     //           <Link to={'/app/org/bd?projId=' + record.id}>
-    //             <Button style={buttonStyle}>查看机构BD</Button>
+    //             <Button style={buttonStyle}>查看机构看板</Button>
     //           </Link>
     //           : null }
 

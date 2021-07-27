@@ -279,11 +279,11 @@ function ProjectCostDetail(props) {
         <Col span={14}>
           <Row gutter={16}>
             <Col span={12}>
-              <Card style={{ flex: 1 }} title="机构BD数量-TODO">
+              <Card style={{ flex: 1 }} title="机构看板数量-TODO">
                 <div style={statStyle}>
                   <div style={statLabelStyle}>机构名称</div>
                   <div style={statValueStyle}><span style={statValueNumStyle}>12</span>个项目</div>
-                  <Link to={`/app/org/bd?projId=${projectDetails.id}`} style={{ marginTop: 10, fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看机构BD详情</Link>
+                  <Link to={`/app/org/bd?projId=${projectDetails.id}`} style={{ marginTop: 10, fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看机构看板详情</Link>
                 </div>
               </Card>
             </Col>

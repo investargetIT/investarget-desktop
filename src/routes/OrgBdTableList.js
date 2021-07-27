@@ -394,7 +394,7 @@ class TimelineList extends React.Component {
       );
 
     if (status === this.state.currentBD.response || ![1, 2, 3].includes(status) || ([1, 2, 3].includes(status) && [1, 2, 3].includes(this.state.currentBD.response))) return;
-    // 如果机构BD存在联系人
+    // 如果机构看板存在联系人
     if (this.state.currentBD.bduser) {
       // 首先检查经理和投资人的关联
       api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
@@ -445,7 +445,7 @@ class TimelineList extends React.Component {
       } else {
         this.setState({ visible: false }, this.getOrgBdList)
       }
-      // 如果机构BD不存在联系人
+      // 如果机构看板不存在联系人
     } else {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
@@ -479,7 +479,7 @@ class TimelineList extends React.Component {
     }
   }
 
-  // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
+  // 如果机构看板有项目并且这个项目有承做，为承做和联系人建立联系
   addRelation = (investorID) => {
     let projMakeUserIds = [];
     const { projDetail: { projTraders } } = this.state.currentBD;

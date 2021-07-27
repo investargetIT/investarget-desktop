@@ -125,7 +125,7 @@ class NewOrgBDList extends React.Component {
         projTradersIds: [], // 项目承揽承做的 ID 数组
         activeUser: null, // 点击创建BD时对应的投资人
 
-        // 从Excel链接进来的创建机构BD相关状态
+        // 从Excel链接进来的创建机构看板相关状态
         displayCreateBDModalFromExcel: false,
         activeUserFromExcel: null,
     }
@@ -193,7 +193,7 @@ class NewOrgBDList extends React.Component {
     const reqBD = await api.getOrgBdList(params);
     const { count } = reqBD.data;
     if (count === 0) {
-      // 说明已经不存在相关的机构BD，显示弹出框
+      // 说明已经不存在相关的机构看板，显示弹出框
       this.setState({ displayCreateBDModalFromExcel: true });
     }
   }
@@ -221,7 +221,7 @@ class NewOrgBDList extends React.Component {
     if (activeUserID !== 'null') {
       this.setDefaultTrader(activeUserID);
     } else {
-      // 暂无投资人的机构BD设置默认交易师
+      // 暂无投资人的机构看板设置默认交易师
       this.setState({ traderList: this.allTrader, manager: this.allTrader[0].id.toString() });
     }
   }
@@ -632,8 +632,8 @@ class NewOrgBDList extends React.Component {
       .then(() => api.addOrgBD(body))
       .then(result => {
         Modal.success({
-          title: '机构BD创建成功',
-          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+          title: '机构看板创建成功',
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org);
@@ -658,8 +658,8 @@ class NewOrgBDList extends React.Component {
       .then(() => api.addOrgBD(body))
       .then(() => {
         Modal.success({
-          title: '机构BD创建成功',
-          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构BD任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
+          title: '机构看板创建成功',
+          content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
         this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org);
@@ -689,7 +689,7 @@ class NewOrgBDList extends React.Component {
 
   downloadExportFile = () => {
     var link = document.createElement('a');
-    link.download = '创建机构BD.xls';
+    link.download = '创建机构看板.xls';
 
     var tableContainer = document.querySelector('.export-create-orgbd');
     var table = tableContainer.querySelector('table');
@@ -701,7 +701,7 @@ class NewOrgBDList extends React.Component {
       element.style.verticalAlign = 'middle';
     });
 
-    link.href = tableToExcel(table, '创建机构BD');
+    link.href = tableToExcel(table, '创建机构看板');
     link.click();
   }
 
@@ -917,7 +917,7 @@ class NewOrgBDList extends React.Component {
         location={this.props.location} 
         breadcrumb={' > ' + i18n('menu.organization_bd') + ' > ' + i18n('project.create_org_bd') + ` > ${this.projDetail.projtitleC || "暂无项目"}`}
         title={i18n('menu.bd_management')}
-        action={{ name: '返回机构BD', link: '/app/org/bd' }}
+        action={{ name: '返回机构看板', link: '/app/org/bd' }}
       >
       {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 

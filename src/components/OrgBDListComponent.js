@@ -102,7 +102,7 @@ class OrgBDListComponent extends React.Component {
     }
 
     this.state = {
-        showUnreadOnly: this.showUnreadOnly, // 是否只显示未读的机构BD任务
+        showUnreadOnly: this.showUnreadOnly, // 是否只显示未读的机构看板任务
         filters,
         search,
         page: 1,
@@ -742,7 +742,7 @@ class OrgBDListComponent extends React.Component {
         );
 
     if (!status || [4, 5, 6].includes(status)) return;
-    // 如果机构BD存在联系人
+    // 如果机构看板存在联系人
     if (this.state.currentBD.bduser) {
       // 首先检查经理和投资人的关联
       api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
@@ -792,7 +792,7 @@ class OrgBDListComponent extends React.Component {
       } else {
         this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
       }
-    // 如果机构BD不存在联系人
+    // 如果机构看板不存在联系人
     } else {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
@@ -826,7 +826,7 @@ class OrgBDListComponent extends React.Component {
       }
     }
   
-  // 如果机构BD有项目并且这个项目有承做，为承做和联系人建立联系
+  // 如果机构看板有项目并且这个项目有承做，为承做和联系人建立联系
   addRelation = (investorID) => {
     if (this.state.currentBD.proj) {
       this.state.makeUserIds.forEach((userId) => {
@@ -1114,7 +1114,7 @@ class OrgBDListComponent extends React.Component {
       element.style.verticalAlign = 'middle';
     });
 
-    link.href = tableToExcel(table, '机构BD');
+    link.href = tableToExcel(table, '机构看板');
     link.click();
   }
 
@@ -1782,7 +1782,7 @@ class OrgBDListComponent extends React.Component {
 
 
         <Modal
-          title="机构BD黑名单"
+          title="机构看板黑名单"
           visible={this.props.showBlacklistModal}
           footer={null}
           onCancel={this.props.onCloseBlacklistModal}
