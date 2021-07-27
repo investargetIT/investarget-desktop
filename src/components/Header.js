@@ -164,7 +164,7 @@ function Header(props) {
       <div style={{height: 50,float: 'right'}} className="clearfix">
         { currentUser ? null : login }
         { currentUser ? null : register }
-        { lang }
+        {/* { lang } */}
         { currentUser ? <UserProfile user={currentUser} onMenuClick={handleMenuClicked} /> : null }
         {/* { currentUser ? chat : null } */}
       </div>
