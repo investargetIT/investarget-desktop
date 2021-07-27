@@ -1,6 +1,6 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting, getURLParamValue } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting, getURLParamValue, updateURLParameter } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
@@ -82,18 +82,17 @@ class FileMgmt extends React.Component {
 
   componentDidMount() {
     window.onpopstate = () => {
-      const query = qs.parse(location.search)
-      this.setState({ parentId: parseInt(query.parentID, 10) || -999 })
+      // const query = qs.parse(location.search)
+      const parentID = getURLParamValue(this.props, 'parentID');
+      this.setState({ parentId: parseInt(parentID, 10) || -999 })
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const parentId = this.props.location.query.parentID
-    const parentId2 = nextProps.location.query.parentID
-    // window.echo('component will receive', parentId, parentId2);
+    const parentId = getURLParamValue(this.props, 'parentID');
+    const parentId2 = getURLParamValue(nextProps, 'parentID');
     if (parentId !== parentId2) {
       // 切换目录时，清空选中的行
-      // window.echo('component will receive props');
       this.setState({ selectedRows: [] })
     }
   }
@@ -101,19 +100,16 @@ class FileMgmt extends React.Component {
   folderClicked(file) {
     if (!file) {
       this.props.onClickAllFilesBtn();
-      this.props.location.query.parentID = undefined
-      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
+      const newURLParams = updateURLParameter(this.props, 'parentID', undefined);
+      history.pushState(undefined, '', `?${newURLParams.toString()}`)
       this.setState({ parentId: -999 })
       return
     }
     if (file.isFolder) {
       this.props.onClickFolder(file);
-      this.props.location.query.parentID = file.id
-      history.pushState(undefined, '', `?${qs.stringify(this.props.location.query)}`)
+      const newURLParams = updateURLParameter(this.props, 'parentID', file.id);
+      history.pushState(undefined, '', `?${newURLParams.toString()}`)
       this.setState({ parentId: file.id })
-      // 切换目录时，清空选中的行
-      // window.echo('folder clicked');
-      // this.setState({ selectedRows: [] })
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
         window.open(file.fileurl);

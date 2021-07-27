@@ -543,3 +543,25 @@ export function getURLParamValue(props, name) {
   const params = new URLSearchParams(props.location.search);
   return params.get(name);
 }
+
+/**
+ * http://stackoverflow.com/a/10997390/11236
+ */
+export function updateURLParameter(props, param, paramVal) {
+  var newAdditionalURL = "";
+  var tempArray = props.location.search.split("?");
+  var additionalURL = tempArray[1];
+  var temp = "";
+  if (additionalURL) {
+    tempArray = additionalURL.split("&");
+    for (var i = 0; i < tempArray.length; i++) {
+      if (tempArray[i].split('=')[0] != param) {
+        newAdditionalURL += temp + tempArray[i];
+        temp = "&";
+      }
+    }
+  }
+
+  var rows_txt = temp + "" + param + "=" + paramVal;
+  return newAdditionalURL + rows_txt;
+}
