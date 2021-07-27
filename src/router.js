@@ -69,7 +69,7 @@ import DataRoom from './routes/DataRoom';
 // import TraderDetail from './routes/TraderDetail';
 // import MeetingBDList from './routes/MeetingBDList';
 // import AddMeetingBD from './routes/AddMeetingBD';
-// import CompanyDataRoomList from './routes/CompanyDataRoomList';
+import CompanyDataRoomList from './routes/CompanyDataRoomList';
 // import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 // import OrgBDProjList from './routes/OrgBDProjList';
 // import AddReport from './routes/AddReport';
@@ -115,6 +115,7 @@ function RouterConfig({ history }) {
         <Route path="/app/demo" component={Demo} />
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/report/list" component={ReportList} />
+        <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
@@ -129,7 +130,6 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />
         <Route path="/app/projects/published" component={ProjectListPublished} />
-        <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />
         <Route path="/app/timeline/list" component={OrgBdTableList} />
         <Route path="/app/email/list" component={EmailList} />
