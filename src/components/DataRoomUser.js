@@ -236,7 +236,7 @@ function DataRoomUser(props) {
   const panelHeader = (org) => {
     const { id: orgID } = org;
     return (
-      <div>
+      <div style={{ height: 48, display: 'flex', alignItems: 'center' }}>
         {org.orgname}
         {list.filter(f => orgID !== -1 ? (f.user.org && f.user.org.id === orgID) : !f.user.org ).map(item => (
           <Popover key={item.id} placement="top" content={generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate, onApplyTemplate, dataRoomTemp, onSendNewFileEmail, userWithNewDataroomFile, currentUserIsProjTrader)}>

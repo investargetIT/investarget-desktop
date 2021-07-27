@@ -114,6 +114,6 @@ html, body, :global(#root) {
   background-color: #eee;
   color: #555;
 }
-:global(.ant-collapse > .investarget-custom-panel.ant-collapse-item > .ant-collapse-header .arrow) {
-  top: 10px;
+:global(.ant-collapse > .investarget-custom-panel.ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
+  top: 18px;
 }
