@@ -11,13 +11,7 @@ import {
 import SimpleUserForm from './SimpleUserForm';
 import ContactForm from './ContactForm';
 
-function mapPropsToFields(props) {
-  return props.data;
-}
 const FormItem = Form.Item;
-const EditUserForm = Form.create({ mapPropsToFields })(SimpleUserForm);
-const EditContactForm = Form.create({ mapPropsToFields })(ContactForm);
-
 const Option = Select.Option
 const formItemLayout = {
   labelCol: {
@@ -167,13 +161,13 @@ class ModalModifyProjectBDStatus extends React.Component {
         </FormItem>
 
         {this.isShowUserForm() &&
-          <EditUserForm
+          <UserForm
             wrappedComponentRef={this.handleRef}
             data={toFormData(this.props.bd)}
           />
         }
         {this.isShowContactForm() &&
-          <EditContactForm
+          <ContactForm
             wrappedComponentRef={this.handleContactFormRef}
             data={toContactFormData(this.props.bd)}
           />

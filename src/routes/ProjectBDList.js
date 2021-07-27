@@ -11,6 +11,7 @@ import {
   hasPerm,
   getUserInfo,
   formatMoney,
+  getURLParamValue,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -46,7 +47,7 @@ class ProjectBDList extends React.Component {
       newComment: '',
       sort: 'isimportant',
       desc: 1,
-      source:this.props.location.query.status||0, 
+      source: getURLParamValue(this.props, 'status') || 0, 
       status: null, 
       isShowModifyStatusModal: false,
       currentBD:null
