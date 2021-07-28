@@ -8,14 +8,6 @@ import * as api from '../api'
 import moment from 'moment';
 import ProjectBDForm from '../components/ProjectBDForm'
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
-const EditProjectBDForm = Form.create({onValuesChange, mapPropsToFields})(ProjectBDForm)
-
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
 
@@ -60,9 +52,6 @@ function toFormData(data) {
     formData.country = { value: formData['country'] };
   }
 
-  for (let prop in formData) {
-    formData[prop] = { value: formData[prop] }
-  }
   return formData
 }
 
@@ -84,9 +73,10 @@ class EditProjectBD extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      id: parseInt(this.props.params.id),
+      id: parseInt(props.match.params.id),
       bd: {},
     }
+    this.editProjectBDFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -174,12 +164,12 @@ class EditProjectBD extends React.Component {
         financeValue = result.data['financeAmount'];
         return exchange(getCurrencyFromId(currency));
       } else {
-        this.setState({ bd: result.data });
+        this.setState({ bd: result.data }, this.setEditProjectBDFormValues);
       }
     }).then(rate => {
       if (rate) {
         bd.financeAmount_USD = Math.round(financeValue * rate);
-        this.setState({ bd });
+        this.setState({ bd }, this.setEditProjectBDFormValues);
       }
     })
     .catch(error => {
@@ -188,19 +178,23 @@ class EditProjectBD extends React.Component {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
   }
 
-  render() {
+  setEditProjectBDFormValues = () => {
     const data = toFormData(this.state.bd)
     if (data) {
       const countryObj = data.country;
       if (countryObj && this.props.country.length > 0) {
         const country = this.props.country.filter(f => f.id === countryObj.value.value)[0];
-        data.country.value.label = country.country
+        data.country.label = country.country
       }
     }
+    this.editProjectBDFormRef.current.setFieldsValue(data);
+  }
+
+  render() {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_bd.edit_project_bd')}>
         <div>
-          <EditProjectBDForm wrappedComponentRef={this.handleRef} data={data} />
+          <ProjectBDForm ref={this.editProjectBDFormRef} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleFormSubmit}>{i18n('common.submit')}</Button>
