@@ -250,8 +250,8 @@ class ProjectBDForm extends React.Component {
 
         {this.state.isSelect ? (
           <div>
-            <BasicFormItem label={i18n('project_bd.contact')} name="bduser" valueType="number" onChange={this.handleChangeBduser} initialValue={this.state._bduser}>
-              <SelectPartner />
+            <BasicFormItem label={i18n('project_bd.contact')} name="bduser" valueType="number" initialValue={this.state._bduser}>
+              <SelectPartner onChange={this.handleChangeBduser} />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
               <div>联系人不在库里？<a onClick={this.toggleManualInput}>手动输入</a></div>
