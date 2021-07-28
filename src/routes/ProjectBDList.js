@@ -457,7 +457,7 @@ class ProjectBDList extends React.Component {
   
               {/* 备注按钮 */}
               { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
-              <Button style={buttonStyle} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
+              <Button style={buttonStyle} onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
               : null }
   
   
@@ -590,13 +590,13 @@ class BDComments extends React.Component {
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
 
                 { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
-                <a href="javascript:void(0)" onClick={this.handleEditBtnClicked.bind(this, comment)}>编辑</a>
+                <a onClick={this.handleEditBtnClicked.bind(this, comment)}>编辑</a>
                 : null }
                 
                 &nbsp;
               {hasPerm('BD.manageProjectBD') ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                    <a>{i18n('common.delete')}</a>
                   </Popconfirm>
                   : null}
               </p>
