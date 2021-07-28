@@ -131,8 +131,7 @@ class ProjectBDForm extends React.Component {
   }
 
   // 处理货币相关表单联动
-  handleCurrencyTypeChange = (currencyId) => {
-    const { getFieldValue, setFieldsValue } = this.props.form
+  handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
     const currency = getCurrencyFromId(currencyId)
     exchange(currency).then((rate) => {
       const fields = ['financeAmount'];
@@ -178,17 +177,24 @@ class ProjectBDForm extends React.Component {
         </BasicFormItem>
         }
 
-        <BasicFormItem label={i18n('project_bd.finance_currency')} name="financeCurrency" valueType="number" onChange={this.handleCurrencyTypeChange}>
-          <SelectCurrencyType />
-        </BasicFormItem>
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <BasicFormItem label={i18n('project_bd.finance_currency')} name="financeCurrency" valueType="number">
+                <SelectCurrencyType onChange={value => this.handleCurrencyTypeChange(value, getFieldValue, setFieldsValue)} />
+              </BasicFormItem>
+            );
+          }}
+        </FormItem>
 
         <FormItem noStyle shouldUpdate>
-          {({ getFieldValue }) => {
+          {({ getFieldValue, setFieldsValue }) => {
             return (
               <CurrencyFormItem
                 label={i18n('project_bd.finance_amount')}
                 name="financeAmount"
                 currencyType={getFieldValue('financeCurrency')}
+                setFieldsValue={setFieldsValue}
               />
             );
           }}
