@@ -47,14 +47,6 @@ function range(start, end) {
 }
 class ProjectBDForm extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
-
-  getChildContext() {
-    return { form: this.props.form }
-  }
-
   constructor(props) {
     super(props)
 
@@ -105,7 +97,7 @@ class ProjectBDForm extends React.Component {
   }
 
   toggleManualInput = () => {
-    const { getFieldValue } = this.props.form
+    const { getFieldValue } = this.props.forwardedRef.current;
     this.setState({
       isSelect: false,
       _bduser: getFieldValue('bduser'),
@@ -113,7 +105,7 @@ class ProjectBDForm extends React.Component {
   }
 
   toggleSelect = () => {
-    const { getFieldValue } = this.props.form
+    const { getFieldValue } = this.props.forwardedRef.current;
     this.setState({
       isSelect: true,
       _username: getFieldValue('username'),
@@ -124,11 +116,11 @@ class ProjectBDForm extends React.Component {
     this.handleChangeBduser(this.state._bduser)
   }
 
-  handleCountryChange = country => {
-    this.props.form.setFieldsValue({
-      mobileAreaCode: country.areaCode,
-    });
-  }
+  // handleCountryChange = country => {
+  //   this.props.form.setFieldsValue({
+  //     mobileAreaCode: country.areaCode,
+  //   });
+  // }
 
   // 处理货币相关表单联动
   handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
@@ -158,7 +150,7 @@ class ProjectBDForm extends React.Component {
 
   render() {
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
         <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
           <Switch />
         </BasicFormItem>
@@ -300,7 +292,7 @@ class ProjectBDForm extends React.Component {
               <Input />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
-              <div>联系人在库里？<a href="javascript:void(0)" onClick={this.toggleSelect}>选择联系人</a></div>
+              <div>联系人在库里？<a onClick={this.toggleSelect}>选择联系人</a></div>
             </LayoutItem>
 
             <BasicFormItem label={i18n('project_bd.contact_title')} name="usertitle" valueType="number" initialValue={this.state._usertitle}>
@@ -374,8 +366,8 @@ function mapStateToProps(state) {
   const { country } = state.app;
   return { country };
 }
-export default connect(mapStateToProps)(ProjectBDForm)
-
+const ConnectedProjectBDForm = connect(mapStateToProps)(ProjectBDForm);
+export default React.forwardRef((props, ref) => <ConnectedProjectBDForm {...props} forwardedRef={ref} />);
 
 function LayoutItem({ label, children, style }) {
   return (

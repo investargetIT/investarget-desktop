@@ -37,6 +37,8 @@ class AddProjectBD extends React.Component {
   constructor(props) {
     super(props)
     console.log(props)
+
+    this.addProjectBDFormRef = React.createRef();
   }
 
   goBack = () => {
@@ -67,7 +69,7 @@ class AddProjectBD extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_bd.add_project_bd')}>
         <div>
-          <ProjectBDForm isAdd comName={comName} />
+          <ProjectBDForm ref={this.addProjectBDFormRef} isAdd comName={comName} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClicked}>{i18n('common.submit')}</Button>
