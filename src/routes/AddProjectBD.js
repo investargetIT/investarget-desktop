@@ -9,11 +9,6 @@ import FormError from '../utils/FormError';
 
 import ProjectBDForm from '../components/ProjectBDForm'
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-const AddProjectBDForm = Form.create({onValuesChange})(ProjectBDForm)
-
 function toData(formData) {
   if (!('bduser' in formData)) {
     formData['bduser'] = null
@@ -66,19 +61,13 @@ class AddProjectBD extends React.Component {
     await api.addProjBD(param);
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-    }
-  }
-
   render() {
     const state = this.props.location.state
     const comName = state ? state.com_name : ''
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_bd.add_project_bd')}>
         <div>
-          <AddProjectBDForm isAdd comName={comName} wrappedComponentRef={this.handleRef} />
+          <ProjectBDForm isAdd comName={comName} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClicked}>{i18n('common.submit')}</Button>

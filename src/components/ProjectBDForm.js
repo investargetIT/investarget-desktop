@@ -150,14 +150,14 @@ class ProjectBDForm extends React.Component {
     })
   }
 
-  render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form
-    const countryObj = getFieldValue('country');
-    let country = null;
-    if (countryObj && this.props.country.length > 0) {
-      country = this.props.country.filter(f => f.id === countryObj.value)[0];
+  checkMobileInfo = (_, value) => {
+    if (value && !checkMobile(value)) {
+      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
     }
-    const createuser = getFieldValue('createuser');
+    return Promise.resolve();
+  }
+
+  render() {
     return (
       <Form>
         <BasicFormItem label="重点BD" name="isimportant" valueType="boolean" valuePropName="checked">
@@ -182,7 +182,17 @@ class ProjectBDForm extends React.Component {
           <SelectCurrencyType />
         </BasicFormItem>
 
-        <CurrencyFormItem label={i18n('project_bd.finance_amount')} name="financeAmount" currencyType={getFieldValue('financeCurrency')} />
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            return (
+              <CurrencyFormItem
+                label={i18n('project_bd.finance_amount')}
+                name="financeAmount"
+                currencyType={getFieldValue('financeCurrency')}
+              />
+            );
+          }}
+        </FormItem>
 
         {/* <BasicFormItem label={i18n('project_bd.expirationtime')} name="expirationtime" valueType="object" initialValue={moment().startOf('hour')}>
           <DatePicker
@@ -215,11 +225,22 @@ class ProjectBDForm extends React.Component {
           <CascaderCountry size="large" isDetail />
         </BasicFormItem>
 
-        {['中国', 'China'].includes(country && (country.label || country.country)) ? 
-        <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-          <SelectOrganizatonArea showSearch />
-        </BasicFormItem>
-        : null }
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const countryObj = getFieldValue('country');
+            let country = null;
+            if (countryObj && this.props.country.length > 0) {
+              country = this.props.country.filter(f => f.id === countryObj.value)[0];
+            }
+            if (['中国', 'China'].includes(country && (country.label || country.country))) {
+              return (
+                <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
+                  <SelectOrganizatonArea showSearch />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </FormItem>
 
         {this.state.isSelect ? (
           <div>
@@ -227,23 +248,45 @@ class ProjectBDForm extends React.Component {
               <SelectPartner />
             </BasicFormItem>
             <LayoutItem label="" style={{marginTop:-24}}>
-              <div>联系人不在库里？<a href="javascript:void(0)" onClick={this.toggleManualInput}>手动输入</a></div>
+              <div>联系人不在库里？<a onClick={this.toggleManualInput}>手动输入</a></div>
             </LayoutItem>
-            {getFieldValue('bduser') ? (
-              <LayoutItem label={i18n('project_bd.contact_title')}>
-                {this.state.contactTitle}
-              </LayoutItem>
-            ) : null}
-            {getFieldValue('bduser') ? (
-              <LayoutItem label={i18n('project_bd.contact_mobile')}>
-                {this.state.contactMobile}
-              </LayoutItem>
-            ) : null}
-            {getFieldValue('bduser') ? (
-              <LayoutItem label={i18n('project_bd.email')}>
-                {this.state.email}
-              </LayoutItem>
-            ) : null}
+
+            <Form.Item noStyle shouldUpdate>
+              {({ getFieldValue }) => {
+                if (getFieldValue('bduser')) {
+                  return (
+                    <LayoutItem label={i18n('project_bd.contact_title')}>
+                      {this.state.contactTitle}
+                    </LayoutItem>
+                  );
+                }
+              }}
+            </Form.Item>
+
+            <Form.Item noStyle shouldUpdate>
+              {({ getFieldValue }) => {
+                if (getFieldValue('bduser')) {
+                  return (
+                    <LayoutItem label={i18n('project_bd.contact_mobile')}>
+                      {this.state.contactMobile}
+                    </LayoutItem>
+                  );
+                }
+              }}
+            </Form.Item>
+
+            <Form.Item noStyle shouldUpdate>
+              {({ getFieldValue }) => {
+                if (getFieldValue('bduser')) {
+                  return (
+                    <LayoutItem label={i18n('project_bd.email')}>
+                      {this.state.email}
+                    </LayoutItem>
+                  );
+                }
+              }}
+            </Form.Item>
+
           </div>
         ) : (
           <div>
@@ -261,25 +304,31 @@ class ProjectBDForm extends React.Component {
               <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')}>
                 <Row gutter={8}>
                   <Col span={6}>
-                    <FormItem>
-                      {
-                        getFieldDecorator('mobileAreaCode', {
-                          rules: [], initialValue: country && country.areaCode || '86'
-                        })(
-                          <Input prefix="+" />
-                          )
-                      }
+                    <FormItem noStyle shouldUpdate>
+                      {({ getFieldValue }) => {
+                        const countryObj = getFieldValue('country');
+                        let country = null;
+                        if (countryObj && this.props.country.length > 0) {
+                          country = this.props.country.filter(f => f.id === countryObj.value)[0];
+                        }
+                        return (
+                          <FormItem
+                            name="mobileAreaCode"
+                            rules={[]}
+                            initialValue={country && country.areaCode || '86'}
+                          >
+                            <Input prefix="+" />
+                          </FormItem>
+                        )
+                      }}
                     </FormItem>
                   </Col>
                   <Col span={18}>
-                    <FormItem>
-                      {
-                        getFieldDecorator('mobile', {
-                          rules: [{ validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() }]
-                        })(
-                          <Input onBlur={this.props.mobileOnBlur} />
-                          )
-                      }
+                    <FormItem
+                      name="mobile"
+                      rules={[{ validator: this.checkMobileInfo }]}
+                    >
+                      <Input onBlur={this.props.mobileOnBlur} />
                     </FormItem>
                   </Col>
                 </Row>
@@ -290,11 +339,20 @@ class ProjectBDForm extends React.Component {
 
           </div>
         )}
-        {hasPerm('BD.manageProjectBD') || getUserInfo().id === createuser ?
-        <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="array" required>
-          <SelectTrader mode="multiple" />
-        </BasicFormItem> :null}
 
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const createuser = getFieldValue('createuser');
+            if (hasPerm('BD.manageProjectBD') || getUserInfo().id === createuser) {
+              return (
+                <BasicFormItem label={i18n('project_bd.manager')} name="manager" valueType="array" required>
+                  <SelectTrader mode="multiple" />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </Form.Item>
+        
         {'isAdd' in this.props ? (
           <BasicFormItem label={i18n('remark.comment')} name="comments">
             <TextArea autosize={{ minRows: 2, maxRows: 6 }} />

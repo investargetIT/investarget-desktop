@@ -56,7 +56,7 @@ import DataRoom from './routes/DataRoom';
 // import Agreement from './routes/Agreement'
 // import ProjectLibraryItem from './routes/ProjectLibraryItem'
 import ProjectBDList from './routes/ProjectBDList';
-// import AddProjectBD from './routes/AddProjectBD'
+import AddProjectBD from './routes/AddProjectBD';
 // import EditProjectBD from './routes/EditProjectBD'
 // import WxMessage from './routes/WxMessage'
 // import ScheduleList from './routes/ScheduleList'
@@ -90,6 +90,7 @@ function RouterConfig({ history }) {
         <Route path="/password" component={ResetPassword} />
         <Route path="/register1" component={Register1} />
         <Route path="/register" component={Register} />
+        <Route path="/app/projects/bd/add" component={AddProjectBD} />
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/add" component={AddProject} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
@@ -125,7 +126,6 @@ function RouterConfig({ history }) {
         <Route path="/403" component={AccessDenied} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
-        <Route path="/app/projects/bd/add" component={AddProjectBD} />
         <Route path="/app/projects/bd/edit/:id" component={EditProjectBD} />
         <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
