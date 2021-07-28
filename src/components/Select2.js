@@ -3,7 +3,7 @@ import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 
 function DebounceSelect({
-  fetchOptions,
+  getData,
   allowCreate = false,
   noResult = '未找到相关信息',
   debounceTimeout = 800,
@@ -21,7 +21,7 @@ function DebounceSelect({
   const selectRef = React.useRef(null);
 
   React.useEffect(() => {
-    fetchOptions({ page_index: 1, page_size: 10 }).then(data => {
+    getData({ page_index: 1, page_size: 10 }).then(data => {
       const { list: newOptions, total } = data;
       setTotal(total);
       setOptions(newOptions);
@@ -55,7 +55,7 @@ function DebounceSelect({
       setFetching(true);
       setTotal(0);
       setPage(1);
-      fetchOptions({ search: value, page_index: page, page_size: 10 }).then(data => {
+      getData({ search: value, page_index: page, page_size: 10 }).then(data => {
         if (fetchId !== fetchRef.current) {
           // for fetch callback order
           return;
@@ -67,13 +67,13 @@ function DebounceSelect({
       });
     };
     return debounce(loadOptions, debounceTimeout);
-  }, [fetchOptions, debounceTimeout]);
+  }, [getData, debounceTimeout]);
 
   const loadMoreData = () => {
     setPage(page + 1);
     const params = { search, page_index: page + 1, page_size: 10 };
     setFetchingMore(true);
-    fetchOptions(params)
+    getData(params)
       .then(data => {
         const { total, list } = data;
         setTotal(total);
@@ -117,7 +117,7 @@ function DebounceSelect({
     );
   }
   // Remove unrecognized props
-  const { getData, getNameById, ...rest } = props;
+  const { getNameById, ...rest } = props;
   return (
     <Select
       size="large"

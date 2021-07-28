@@ -314,7 +314,7 @@ const SelectExistOrganization = (props) => {
     <Select2
       value={value}
       placeholder={i18n('account.select_org')}
-      fetchOptions={getOrg}
+      getData={getOrg}
       onChange={(newValue) => {
         setValue(newValue);
       }}
@@ -397,7 +397,7 @@ class SelectProjectLibrary extends React.Component {
     return (
       <Select2
         // getData={this.getData}
-        fetchOptions={this.getData}
+        getData={this.getData}
         getNameById={this.getOrgnameById}
         value={value}
         onChange={this.handleChange}
@@ -435,7 +435,7 @@ class SelectExistUser extends React.Component {
     return (
       <Select2
         style={this.props.style || {}}
-        fetchOptions={this.getUser}
+        getData={this.getUser}
         getNameById={this.getUsernameById}
         value={this.props.value}
         onChange={this.props.onChange}
@@ -472,7 +472,7 @@ const SelectExistInvestor = (props) => {
       style={props.style || {}}
       size={props.size}
       // getData={this.getInvestor}
-      fetchOptions={getInvestor}
+      getData={getInvestor}
       // getNameById={this.getUsernameById}
       value={props.value}
       onChange={props.onChange}
@@ -573,7 +573,7 @@ class SelectAllUser extends React.Component {
       <Select2
         style={this.props.style || {}}
         // getData={this.getUser}
-        fetchOptions={this.getUser}
+        getData={this.getUser}
         getNameById={this.getUsernameById}
         value={this.props.value}
         onChange={this.props.onChange}
@@ -612,7 +612,7 @@ class SelectPartner extends React.Component {
     return (
       <Select2
         style={this.props.style || {}}
-        fetchOptions={this.getPartner}
+        getData={this.getPartner}
         getNameById={this.getUsernameById}
         value={this.props.value}
         onChange={this.props.onChange}
@@ -654,7 +654,7 @@ const SelectExistProject = (props) => {
     <Select2
       value={props.value}
       placeholder={props.placeholder}
-      fetchOptions={getProject}
+      getData={getProject}
       onChange={props.onChange}
       size={props.size}
       style={props.style || {}}
