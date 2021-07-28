@@ -184,7 +184,9 @@ class EditProjectBD extends React.Component {
       const countryObj = data.country;
       if (countryObj && this.props.country.length > 0) {
         const country = this.props.country.filter(f => f.id === countryObj.value.value)[0];
-        data.country.label = country.country
+        if (country) {
+          data.country.label = country.country
+        }
       }
     }
     this.editProjectBDFormRef.current.setFieldsValue(data);
