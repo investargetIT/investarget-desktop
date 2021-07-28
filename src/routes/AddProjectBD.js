@@ -36,21 +36,27 @@ class AddProjectBD extends React.Component {
 
   constructor(props) {
     super(props)
-    console.log(props)
+
+    this.state = {
+      loadingAddProjectBD: false,
+    };
 
     this.addProjectBDFormRef = React.createRef();
   }
 
   goBack = () => {
-    this.props.router.goBack()
+    this.props.history.goBack()
   }
 
   handleSubmitBtnClicked = () => {
-    this.form.validateFields((err, values) => {
-      if (!err) {
-        this.addProjBD(values).then(this.props.router.goBack).catch(handleError);
-      }
-    });
+    this.addProjectBDFormRef.current.validateFields()
+      .then(values => {
+        this.setState({ loadingAddProjectBD: true });
+        this.addProjBD(values)
+          .then(this.goBack)
+          .catch(handleError)
+          .finally(() => this.setState({ loadingAddProjectBD: false }));
+      });
   }
 
   addProjBD = async (values) => {
@@ -72,7 +78,7 @@ class AddProjectBD extends React.Component {
           <ProjectBDForm ref={this.addProjectBDFormRef} isAdd comName={comName} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
-            <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClicked}>{i18n('common.submit')}</Button>
+            <Button type="primary" loading={this.state.loadingAddProjectBD} size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClicked}>{i18n('common.submit')}</Button>
           </div>
         </div>
       </LeftRightLayout>
