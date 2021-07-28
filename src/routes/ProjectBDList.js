@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Input, Popconfirm, Modal, Popover, Icon } from 'antd';
+import { Button, Table, Pagination, Input, Popconfirm, Modal, Popover } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -20,6 +20,7 @@ import { isLogin } from '../utils/util'
 import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
+import { DeleteOutlined } from '@ant-design/icons';
 
 class ProjectBDList extends React.Component {
 
@@ -465,8 +466,8 @@ class ProjectBDList extends React.Component {
             { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
             <div style={{ marginLeft: 7 }}>
             <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
-              <Button size="small" style={{ ...buttonStyle, color: undefined }}>
-                <Icon type="delete" />
+              <Button size="small" type="link">
+                <DeleteOutlined />
               </Button>
             </Popconfirm>
             </div>
