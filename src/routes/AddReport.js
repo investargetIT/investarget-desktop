@@ -48,8 +48,7 @@ class AddReport extends React.Component {
   constructor(props) {
     super(props)
 
-    // const { date } = props.location.query;
-    let date = '';
+    let date = undefined;
     const reportDate = getURLParamValue(props, 'date');
     if (reportDate) {
       date = reportDate;

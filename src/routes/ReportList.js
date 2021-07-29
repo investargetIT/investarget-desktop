@@ -28,7 +28,6 @@ class ReportList extends React.Component {
   constructor(props) {
     super(props);
 
-    // const { date } = props.location.query;
     const date = getURLParamValue(props, 'date');
     let filters = WorkReportFilter.defaultValue;
     if (date) {
