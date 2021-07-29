@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, getCurrentUser, handleError } from '../utils/util'
+import { i18n, getCurrentUser, handleError, getURLParamValue } from '../utils/util'
 import moment from 'moment';
 
 import { Form, Button, message, notification } from 'antd'
@@ -16,13 +16,13 @@ const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
 
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
-const AddReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
+// function onValuesChange(props, values) {
+//   console.log(values)
+// }
+// function mapPropsToFields(props) {
+//   return props.data
+// }
+// const AddReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
 
 
 function toData(formData) {
@@ -48,7 +48,12 @@ class AddReport extends React.Component {
   constructor(props) {
     super(props)
 
-    const { date } = props.location.query;
+    // const { date } = props.location.query;
+    let date = '';
+    const reportDate = getURLParamValue(props, 'date');
+    if (reportDate) {
+      date = reportDate;
+    }
 
     this.initialFormData = {
       time: {
@@ -97,10 +102,10 @@ class AddReport extends React.Component {
       };
       const res = await api.addWorkReport(body);
       const { id: reportId } = res.data;
-      this.props.router.replace(`/app/report/edit/${reportId}`);
+      this.props.history.replace(`/app/report/edit/${reportId}`);
     } catch (error) {
       handleError(error);
-      this.props.router.goBack();
+      this.props.history.goBack();
     }
   }
 

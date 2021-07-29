@@ -112,7 +112,7 @@ class ReportList extends React.Component {
     const { location } = this.props;
     const { total, list, loading, page, pageSize } = this.state;
     const columns = [
-      { title: '姓名', key: 'user', dataIndex: 'user.username' },
+      { title: '姓名', key: 'user', dataIndex: ['user', 'username'] },
       { title: '开始时间', key: 'startTime', dataIndex: 'startTime', render: text => text.slice(0, 10) },
       { title: '截止时间', key: 'endTime', dataIndex: 'endTime', render: text => text.slice(0, 10) },
       {
@@ -128,9 +128,9 @@ class ReportList extends React.Component {
                 </Link>
               }
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
-                <Link>
+                <Button type="link">
                   <DeleteOutlined style={{ fontSize: '16px' }} />
-                </Link>
+                </Button>
               </Popconfirm>
             </div>
           );
