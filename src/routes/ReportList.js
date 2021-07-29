@@ -105,7 +105,7 @@ class ReportList extends React.Component {
       const lastWeek = moment().subtract(1, 'weeks').format('YYYY-MM-DD');
       destination += `?date=${lastWeek}`;
     }
-    this.props.router.push(destination);
+    this.props.history.push(destination);
   }
 
   render() {
