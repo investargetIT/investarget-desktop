@@ -73,7 +73,7 @@ import CompanyDataRoomList from './routes/CompanyDataRoomList';
 import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
 // import OrgBDProjList from './routes/OrgBDProjList';
 import AddReport from './routes/AddReport';
-// import ReportDetail from './routes/ReportDetail';
+import ReportDetail from './routes/ReportDetail';
 // import EditReport from './routes/EditReport';
 // import AddOKR from './routes/AddOKR';
 // import OKRList from './routes/OKRList';
@@ -119,6 +119,7 @@ function RouterConfig({ history }) {
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/report/add" component={AddReport} />
         <Route path="/app/report/list" component={ReportList} />
+        <Route path="/app/report/:id" component={ReportDetail} />
         <Route path="/app/dataroom/company/detail" component={CompanyDataRoomDetail} />
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
@@ -155,7 +156,6 @@ function RouterConfig({ history }) {
         <Route path="/app/meeting/bd" component={MeetingBDList} />
         <Route path="/app/meetingbd/add" component={AddMeetingBD} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
-        <Route path="/app/report/:id" component={ReportDetail} />
         <Route path="/app/report/edit/:id" component={EditReport} />
         <Route path="/app/okr/add" component={AddOKR} />
         <Route path="/app/okr/list" component={OKRList} />

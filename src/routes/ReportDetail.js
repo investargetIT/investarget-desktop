@@ -22,20 +22,9 @@ let uuid = 0;
 let ppid = 0;
 class ReportDetail extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
-
   constructor(props) {
     super(props)
 
-    window.echo('report detail', props.params);
-
-    // const time = this.props.form.getFieldValue('time');
-    // const [ start, end ] = time;
-    // this.startDate = start.format('YYYY-MM-DD');
-    // this.endDate = end.format('YYYY-MM-DD');
-    
     this.state = {
       report: null,
       orgRemarks: [],
@@ -44,7 +33,7 @@ class ReportDetail extends React.Component {
       current: null,
       marketMsg: [],
     };
-    this.reportId = Number(props.params.id);
+    this.reportId = Number(props.match.params.id);
   }
 
   componentDidMount() {
