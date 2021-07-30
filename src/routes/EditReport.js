@@ -332,27 +332,26 @@ class EditReport extends React.Component {
   }
 
   goBack = () => {
-    this.props.router.goBack()
+    this.props.history.goBack()
   }
 
   handleSubmitBtnClick = () => {
-    this.form.validateFields((err, values) => {
-      if (!err) {
+    this.editReportFormRef.current.validateFields()
+      .then(values => {
         const ref = Modal.info({
           title: '正在保存周报',
           content: (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Spin /> 
+              <Spin />
             </div>
           ),
           okText: '保存中...',
         });
         this.addData(values).then(() => {
           ref.destroy();
-          this.props.router.replace('/app/report/list');
+          this.props.history.replace('/app/report/list');
         });
-      }
-    })
+      });
   }
 
   addData = async values => {
