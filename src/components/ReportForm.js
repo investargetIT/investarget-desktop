@@ -529,34 +529,33 @@ class ReportForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-
-    getFieldDecorator('org_keys', { initialValue: [] });
-    const orgKeys = getFieldValue('org_keys');
-    const orgFormItems = orgKeys.map(m => (
-      <div key={m} id={`org-form-items-${m}`}>
-        <hr style={{ borderTop: '2px dashed #ccc' }} />
-        <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
-
-          <div style={{ width: 200 }}>
-            <BasicFormItem name={`org_new_org_${m}`} layout valueType="number">
-              <SelectExistOrganization placeholder="选择机构" />
-            </BasicFormItem>
-          </div>
-
-          <div style={{ flex: 1, marginLeft: 40 }}>
-            <BasicFormItem name={`org_new_remark_${m}`} layout>
-              <Input.TextArea autosize={{ minRows: 4 }} placeholder="机构备注" />
-            </BasicFormItem>
-          </div>
-
-          <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('org_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
-          </div>
-
-        </div>
-      </div>
-    ));
+    const orgFormItems = (
+      <Form.Item noStyle shouldUpdate>
+        {({ getFieldValue }) => {
+          const orgKeys = getFieldValue('org_keys');
+          return orgKeys.map(m => (
+            <div key={m} id={`org-form-items-${m}`}>
+              <hr style={{ borderTop: '2px dashed #ccc' }} />
+              <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+                <div style={{ width: 200 }}>
+                  <BasicFormItem name={`org_new_org_${m}`} layout valueType="number">
+                    <SelectExistOrganization placeholder="选择机构" />
+                  </BasicFormItem>
+                </div>
+                <div style={{ flex: 1, marginLeft: 40 }}>
+                  <BasicFormItem name={`org_new_remark_${m}`} layout>
+                    <Input.TextArea autosize={{ minRows: 4 }} placeholder="机构备注" />
+                  </BasicFormItem>
+                </div>
+                <div style={{ width: 100, textAlign: 'center' }}>
+                  <img onClick={() => this.removeFormItem('org_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
+                </div>
+              </div>
+            </div>
+          ));
+        }}
+      </Form.Item>
+    );
 
     getFieldDecorator('market_keys', { initialValue: [] });
     const summaryKeys = getFieldValue('market_keys');
@@ -964,6 +963,12 @@ class ReportForm extends React.Component {
 
     return (
       <Form ref={this.props.forwardedRef}>
+
+        <Form.Item
+          name="org_keys"
+          initialValue={[]}
+          hidden
+        />
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <BasicFormItem name="time" valueType="array" layout>
