@@ -75,10 +75,6 @@ class ReportForm extends React.Component {
     };
   }
 
-  getChildContext() {
-    return { form: this.props.form }
-  }
-
   componentDidMount() {
     const time = this.props.forwardedRef.current.getFieldValue('time');
     const [ start, end ] = time;
@@ -580,7 +576,20 @@ class ReportForm extends React.Component {
       </Form.Item>
     );
 
-    // getFieldDecorator('proj_keys', { initialValue: [] });
+    getFieldDecorator('proj_keys', { initialValue: [] });
+    // const projFormItems = (
+    //   <Form.Item noStyle shouldUpdate>
+    //     {({ getFieldValue }) => {
+    //       const projKeys = getFieldValue('proj_keys');
+    //       return projKeys.map((m, i) => {
+    //         const orgBDKeys = `proj_keys_orgbd_${m}`;
+    //         getFieldDecorator(orgBDKeys, { initialValue: [] });
+
+    //       });
+    //     }}
+    //   </Form.Item>
+    // );
+
     const projKeys = getFieldValue('proj_keys');
     const projFormItems = projKeys.map((m, i) => {
       const orgBDKeys = `proj_keys_orgbd_${m}`;
