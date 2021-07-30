@@ -254,8 +254,12 @@ class EditReport extends React.Component {
       const m = `market-${element.id}`;
       formData[`summary_${m}`] = element.marketMsg;
     });
-
     return formData;
+  }
+
+  getReportTime = () => {
+    const { startTime, endTime } = this.state.report;
+    return [moment(startTime), moment(endTime)];
   }
 
   getReportDetail = async () => {
@@ -717,7 +721,7 @@ class EditReport extends React.Component {
     return(
       <LeftRightLayout location={this.props.location} title="工作周报">
         <div>
-          { this.state.report && <ReportForm ref={this.editReportFormRef} data={this.getFormData()} />}
+          { this.state.report && <ReportForm ref={this.editReportFormRef} time={this.getReportTime()} />}
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>

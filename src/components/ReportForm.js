@@ -57,17 +57,12 @@ let ppid2 = 0;
 let summaryFormItemId = 0;
 class ReportForm extends React.Component {
 
-  // static childContextTypes = {
-  //   form: PropTypes.object
-  // }
-
   constructor(props) {
     super(props)
-    // window.form = props.form
-    // const time = this.props.form.getFieldValue('time');
-    // const [ start, end ] = time;
-    // this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    // this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+
+    const [ start, end ] = this.props.time;
+    this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
 
     this.state = {
       orgRemarks: [],
@@ -76,11 +71,6 @@ class ReportForm extends React.Component {
   }
 
   componentDidMount() {
-    const time = this.props.forwardedRef.current.getFieldValue('time');
-    const [ start, end ] = time;
-    this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
-
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getOrgBd();
     this.getOrgRemark();
