@@ -16,13 +16,13 @@ const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
 
 
-function onValuesChange(props, values) {
-  console.log(values)
-}
-function mapPropsToFields(props) {
-  return props.data
-}
-const EditReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
+// function onValuesChange(props, values) {
+//   console.log(values)
+// }
+// function mapPropsToFields(props) {
+//   return props.data
+// }
+// const EditReportForm = Form.create({onValuesChange, mapPropsToFields})(ReportForm)
 
 
 function toData(formData) {
@@ -50,7 +50,7 @@ class EditReport extends React.Component {
 
     this.startTime = null;
     this.endTime = null;
-    this.reportId = Number(props.params.id);
+    this.reportId = Number(props.match.params.id);
 
     this.state = {
       report: null,
@@ -62,6 +62,7 @@ class EditReport extends React.Component {
     };
 
     this.interval = setInterval(this.autoSave, 60 * 1000);
+    this.editReportFormRef = React.createRef();
   }
 
   componentDidMount() {
@@ -222,38 +223,36 @@ class EditReport extends React.Component {
     const summaryKeys = this.state.marketMsg.map(m => `market-${m.id}`);
 
     const formData = {
-      time: {
-        value: [moment(startTime), moment(endTime)],
-      },
-      summary: { value: marketMsg },
-      suggestion: { value: others },
-      textproject_keys: { value: textProjKeys },
-      proj_keys: { value: newProjKeys },
-      market_keys: { value: summaryKeys },
+      time: [moment(startTime), moment(endTime)],
+      summary: marketMsg,
+      suggestion: others,
+      textproject_keys: textProjKeys,
+      proj_keys: newProjKeys,
+      market_keys: summaryKeys,
     };
 
     this.state.textProj.forEach(element => {
       const m = `textproj${element.id}`;
-      formData[`text_project_${m}`] = { value: element.projTitle };
-      formData[`newproject_${m}_thisplan`] = { value: element.thisPlan };
-      formData[`newproject_${m}_nextplan`] = { value: element.nextPlan };
+      formData[`text_project_${m}`] = element.projTitle;
+      formData[`newproject_${m}_thisplan`] = element.thisPlan;
+      formData[`newproject_${m}_nextplan`] = element.nextPlan;
     });
 
     this.state.existProj.forEach(m => {
-      formData[`existingproj_${m.proj.id}_thisplan`] = { value: m.thisPlan };
-      formData[`existingproj_${m.proj.id}_nextplan`] = { value: m.nextPlan };
+      formData[`existingproj_${m.proj.id}_thisplan`] = m.thisPlan;
+      formData[`existingproj_${m.proj.id}_nextplan`] = m.nextPlan;
     });
 
     this.state.newProj.forEach(element => {
       const m = `newsproj${element.id}`;
-      formData[`newproj_${m}`] = { value: element.proj.id };
-      formData[`newreport_${m}_thisplan`] = { value: element.thisPlan };
-      formData[`newreport_${m}_nextplan`] = { value: element.nextPlan };
+      formData[`newproj_${m}`] = element.proj.id;
+      formData[`newreport_${m}_thisplan`] = element.thisPlan;
+      formData[`newreport_${m}_nextplan`] = element.nextPlan;
     });
 
     this.state.marketMsg.forEach(element => {
       const m = `market-${element.id}`;
-      formData[`summary_${m}`] = { value: element.marketMsg };
+      formData[`summary_${m}`] = element.marketMsg;
     });
 
     return formData;
@@ -267,7 +266,11 @@ class EditReport extends React.Component {
     this.userId = user.id;
     await this.getReportProj();
     await this.getMarketMsg();
-    this.setState({ report: res.data });
+    this.setState({ report: res.data }, this.setEditReportFormValues);
+  }
+
+  setEditReportFormValues = () => {
+    this.editReportFormRef.current.setFieldsValue(this.getFormData());
   }
 
   getReportProj = async () => {
@@ -710,17 +713,11 @@ class EditReport extends React.Component {
     return result;
   }
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.form = inst.props.form
-    }
-  }
-
   render() {
     return(
       <LeftRightLayout location={this.props.location} title="工作周报">
         <div>
-          { this.state.report && <EditReportForm wrappedComponentRef={this.handleRef} data={this.getFormData()} />}
+          { this.state.report && <ReportForm ref={this.editReportFormRef} data={this.getFormData()} />}
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" size="large" style={actionBtnStyle} onClick={this.handleSubmitBtnClick}>{i18n('common.submit')}</Button>
