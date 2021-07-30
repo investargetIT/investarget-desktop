@@ -576,151 +576,283 @@ class ReportForm extends React.Component {
       </Form.Item>
     );
 
-    getFieldDecorator('proj_keys', { initialValue: [] });
-    // const projFormItems = (
-    //   <Form.Item noStyle shouldUpdate>
-    //     {({ getFieldValue }) => {
-    //       const projKeys = getFieldValue('proj_keys');
-    //       return projKeys.map((m, i) => {
-    //         const orgBDKeys = `proj_keys_orgbd_${m}`;
-    //         getFieldDecorator(orgBDKeys, { initialValue: [] });
-
-    //       });
-    //     }}
-    //   </Form.Item>
-    // );
-
-    const projKeys = getFieldValue('proj_keys');
-    const projFormItems = projKeys.map((m, i) => {
-      const orgBDKeys = `proj_keys_orgbd_${m}`;
-      getFieldDecorator(orgBDKeys, { initialValue: [] });
-      const projOrgBDKeys = getFieldValue(orgBDKeys);
-      const orgBdFormItems = projOrgBDKeys.map((m1, i1) => (
-        <div key={m1} style={{ display: 'flex' }}>
-
-          <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex' }}>
-              <div>机构：</div>
-              <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${m}_org_${m1}`} layout valueType="number">
-                  <SelectExistOrganization />
-                </BasicFormItem>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex' }}>
-              <div>投资人：</div>
-              <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${m}_bduser_${m1}`} valueType="number" layout>
-                  <SelectOrgInvestor
-                    allStatus
-                    onjob
-                    style={{ width: "100%" }}
-                    type="investor"
-                    mode="single"
-                    optionFilterProp="children"
-                    org={getFieldValue(`neworgbd_${m}_org_${m1}`)}
-                  />
-                </BasicFormItem>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex' }}>
-              <div>状态：</div>
-              <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="number" layout>
-                  <SelectNewBDStatus />
-                </BasicFormItem>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex' }}>
-              <div>备注：</div>
-              <div style={{ flex: 1 }}>
-                <BasicFormItem name={`neworgbd_${m}_comments_${m1}`} layout>
-                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
-                </BasicFormItem>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            style={{ margin: '0 10px' }}
-            size="small"
-            onClick={() => this.handleConfirmAddNewOrgBdFBtnClick(m, m1)}
-          >
-            确定
-          </Button>
-
-          <div style={{ width: 50, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem(orgBDKeys, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
-          </div>
-
-        </div>
-      ));
-
-      return (<div key={m} id={`project-form-items-${m}`}>
-        <hr style={{ borderTop: '2px dashed #ccc' }} />
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-
-          <div style={{ width: 200 }}>
-            <BasicFormItem name={`newproj_${m}`} valueType="number" layout>
-              <SelectExistProject placeholder="选择项目" />
-            </BasicFormItem>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div>
-
-              <div style={{ lineHeight: 3 }}>
-                <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
-                <span onClick={() => this.addProjOrgBdFormItem(orgBDKeys)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构看板</span>
-              </div>
-
-              {orgBdFormItems}
-
-              <div style={{ display: 'flex' }}>
+    const projFormItems = (
+      <Form.Item noStyle shouldUpdate>
+        {({ getFieldValue }) => {
+          const projKeys = getFieldValue('proj_keys');
+          return projKeys.map((m, i) => {
+            const orgBDKeys = `proj_keys_orgbd_${m}`;
+            const projOrgBDKeys = getFieldValue(orgBDKeys);
+            const orgBdFormItems = projOrgBDKeys.map((m1, i1) => (
+              <div key={m1} style={{ display: 'flex' }}>
+      
+                <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+      
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex' }}>
-                    <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
-                    <div>其他：</div>
+                    <div>机构：</div>
                     <div style={{ flex: 1 }}>
-                      <BasicFormItem name={`newreport_${m}_thisplan`} layout>
-                        <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
+                      <BasicFormItem name={`neworgbd_${m}_org_${m1}`} layout valueType="number">
+                        <SelectExistOrganization />
                       </BasicFormItem>
                     </div>
                   </div>
                 </div>
+      
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex' }}>
+                    <div>投资人：</div>
+                    <div style={{ flex: 1 }}>
+                      <BasicFormItem name={`neworgbd_${m}_bduser_${m1}`} valueType="number" layout>
+                        <SelectOrgInvestor
+                          allStatus
+                          onjob
+                          style={{ width: "100%" }}
+                          type="investor"
+                          mode="single"
+                          optionFilterProp="children"
+                          org={getFieldValue(`neworgbd_${m}_org_${m1}`)}
+                        />
+                      </BasicFormItem>
+                    </div>
+                  </div>
+                </div>
+      
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex' }}>
+                    <div>状态：</div>
+                    <div style={{ flex: 1 }}>
+                      <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="number" layout>
+                        <SelectNewBDStatus />
+                      </BasicFormItem>
+                    </div>
+                  </div>
+                </div>
+      
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex' }}>
+                    <div>备注：</div>
+                    <div style={{ flex: 1 }}>
+                      <BasicFormItem name={`neworgbd_${m}_comments_${m1}`} layout>
+                        <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+                      </BasicFormItem>
+                    </div>
+                  </div>
+                </div>
+      
+                <Button
+                  style={{ margin: '0 10px' }}
+                  size="small"
+                  onClick={() => this.handleConfirmAddNewOrgBdFBtnClick(m, m1)}
+                >
+                  确定
+                </Button>
+      
+                <div style={{ width: 50, textAlign: 'center' }}>
+                  <img onClick={() => this.removeFormItem(orgBDKeys, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+                </div>
+      
               </div>
+            ));
 
-            </div>
+            return (
+              <div key={m} id={`project-form-items-${m}`}>
+                <Form.Item
+                  name={orgBDKeys}
+                  initialValue={[]}
+                  hidden
+                />
 
-            <div>
-              <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
-              <div style={{ marginLeft: 82 }}>
-                <BasicFormItem name={`newreport_${m}_nextplan`} layout>
-                  <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
-                </BasicFormItem>
+                <hr style={{ borderTop: '2px dashed #ccc' }} />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                  <div style={{ width: 200 }}>
+                    <BasicFormItem name={`newproj_${m}`} valueType="number" layout>
+                      <SelectExistProject placeholder="选择项目" />
+                    </BasicFormItem>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div>
+
+                      <div style={{ lineHeight: 3 }}>
+                        <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
+                        <span onClick={() => this.addProjOrgBdFormItem(orgBDKeys)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构看板</span>
+                      </div>
+
+                      {orgBdFormItems}
+
+                      <div style={{ display: 'flex' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex' }}>
+                            <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+                            <div>其他：</div>
+                            <div style={{ flex: 1 }}>
+                              <BasicFormItem name={`newreport_${m}_thisplan`} layout>
+                                <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
+                              </BasicFormItem>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div>
+                      <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
+                      <div style={{ marginLeft: 82 }}>
+                        <BasicFormItem name={`newreport_${m}_nextplan`} layout>
+                          <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
+                        </BasicFormItem>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div style={{ width: 100, textAlign: 'center' }}>
+                    <img onClick={() => this.removeFormItem('proj_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+                  </div>
+
+                </div>
               </div>
-            </div>
+            );
 
-          </div>
+          });
+        }}
+      </Form.Item>
+    );
 
-          <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('proj_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
-          </div>
+    // const projKeys = getFieldValue('proj_keys');
+    // const projFormItems = projKeys.map((m, i) => {
+    //   const orgBDKeys = `proj_keys_orgbd_${m}`;
+    //   getFieldDecorator(orgBDKeys, { initialValue: [] });
+    //   const projOrgBDKeys = getFieldValue(orgBDKeys);
+    //   const orgBdFormItems = projOrgBDKeys.map((m1, i1) => (
+    //     <div key={m1} style={{ display: 'flex' }}>
 
-        </div>
-      </div>);
-    });
+    //       <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+
+    //       <div style={{ flex: 1 }}>
+    //         <div style={{ display: 'flex' }}>
+    //           <div>机构：</div>
+    //           <div style={{ flex: 1 }}>
+    //             <BasicFormItem name={`neworgbd_${m}_org_${m1}`} layout valueType="number">
+    //               <SelectExistOrganization />
+    //             </BasicFormItem>
+    //           </div>
+    //         </div>
+    //       </div>
+
+    //       <div style={{ flex: 1 }}>
+    //         <div style={{ display: 'flex' }}>
+    //           <div>投资人：</div>
+    //           <div style={{ flex: 1 }}>
+    //             <BasicFormItem name={`neworgbd_${m}_bduser_${m1}`} valueType="number" layout>
+    //               <SelectOrgInvestor
+    //                 allStatus
+    //                 onjob
+    //                 style={{ width: "100%" }}
+    //                 type="investor"
+    //                 mode="single"
+    //                 optionFilterProp="children"
+    //                 org={getFieldValue(`neworgbd_${m}_org_${m1}`)}
+    //               />
+    //             </BasicFormItem>
+    //           </div>
+    //         </div>
+    //       </div>
+
+    //       <div style={{ flex: 1 }}>
+    //         <div style={{ display: 'flex' }}>
+    //           <div>状态：</div>
+    //           <div style={{ flex: 1 }}>
+    //             <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="number" layout>
+    //               <SelectNewBDStatus />
+    //             </BasicFormItem>
+    //           </div>
+    //         </div>
+    //       </div>
+
+    //       <div style={{ flex: 1 }}>
+    //         <div style={{ display: 'flex' }}>
+    //           <div>备注：</div>
+    //           <div style={{ flex: 1 }}>
+    //             <BasicFormItem name={`neworgbd_${m}_comments_${m1}`} layout>
+    //               <Input.TextArea autosize={{ minRows: 4 }} placeholder="备注" />
+    //             </BasicFormItem>
+    //           </div>
+    //         </div>
+    //       </div>
+
+    //       <Button
+    //         style={{ margin: '0 10px' }}
+    //         size="small"
+    //         onClick={() => this.handleConfirmAddNewOrgBdFBtnClick(m, m1)}
+    //       >
+    //         确定
+    //       </Button>
+
+    //       <div style={{ width: 50, textAlign: 'center' }}>
+    //         <img onClick={() => this.removeFormItem(orgBDKeys, m1)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+    //       </div>
+
+    //     </div>
+    //   ));
+
+    //   return (<div key={m} id={`project-form-items-${m}`}>
+    //     <hr style={{ borderTop: '2px dashed #ccc' }} />
+    //     <div style={{ display: 'flex', alignItems: 'center' }}>
+
+    //       <div style={{ width: 200 }}>
+    //         <BasicFormItem name={`newproj_${m}`} valueType="number" layout>
+    //           <SelectExistProject placeholder="选择项目" />
+    //         </BasicFormItem>
+    //       </div>
+
+    //       <div style={{ flex: 1 }}>
+    //         <div>
+
+    //           <div style={{ lineHeight: 3 }}>
+    //             <span style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold' }}>本周工作</span>
+    //             <span onClick={() => this.addProjOrgBdFormItem(orgBDKeys)} style={{ marginLeft: 10, fontWeight: 'normal', color: '#10458F', cursor: 'pointer' }}>添加机构看板</span>
+    //           </div>
+
+    //           {orgBdFormItems}
+
+    //           <div style={{ display: 'flex' }}>
+    //             <div style={{ flex: 1 }}>
+    //               <div style={{ display: 'flex' }}>
+    //                 <div style={{ width: 10, marginLeft: 20, marginRight: 10 }}>•</div>
+    //                 <div>其他：</div>
+    //                 <div style={{ flex: 1 }}>
+    //                   <BasicFormItem name={`newreport_${m}_thisplan`} layout>
+    //                     <Input.TextArea autosize={{ minRows: 4 }} placeholder="本周其他与项目相关的工作" />
+    //                   </BasicFormItem>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           </div>
+
+    //         </div>
+
+    //         <div>
+    //           <div style={{ color: 'black', textDecoration: 'underline', fontWeight: 'bold', lineHeight: 3 }}>下周计划</div>
+    //           <div style={{ marginLeft: 82 }}>
+    //             <BasicFormItem name={`newreport_${m}_nextplan`} layout>
+    //               <Input.TextArea autosize={{ minRows: 4 }} placeholder="下周与项目相关的工作计划" />
+    //             </BasicFormItem>
+    //           </div>
+    //         </div>
+
+    //       </div>
+
+    //       <div style={{ width: 100, textAlign: 'center' }}>
+    //         <img onClick={() => this.removeFormItem('proj_keys', m)} style={{ width: 16, curso: 'pointer' }} src="/images/delete.png" />
+    //       </div>
+
+    //     </div>
+    //   </div>);
+    // });
 
     getFieldDecorator('textproject_keys', { initialValue: [] });
     const newProjKeys = getFieldValue('textproject_keys');
