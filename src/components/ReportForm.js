@@ -154,7 +154,7 @@ class ReportForm extends React.Component {
 
   addOrgFormItem = () => {
     uuid++;
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     // can use data-binding to get
     const keys = form.getFieldValue('org_keys');
     const nextKeys = keys.concat(uuid);
@@ -170,7 +170,7 @@ class ReportForm extends React.Component {
 
   addSummaryFormItem = () => {
     summaryFormItemId++;
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     const keys = form.getFieldValue('market_keys');
     const nextKeys = keys.concat(summaryFormItemId);
     form.setFieldsValue({
@@ -182,7 +182,7 @@ class ReportForm extends React.Component {
   }
 
   removeFormItem = (key, value) => {
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     const keyValues = form.getFieldValue(key);
     const body = {};
     body[key] = keyValues.filter(k => k !== value);
@@ -191,7 +191,7 @@ class ReportForm extends React.Component {
 
   addProjFormItem = () => {
     ppid++;
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     // can use data-binding to get
     const keys = form.getFieldValue('proj_keys');
     const nextKeys = keys.concat(ppid);
@@ -207,7 +207,7 @@ class ReportForm extends React.Component {
 
   addNewProjFormItem = () => {
     ppid2++;
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     const keys = form.getFieldValue('textproject_keys');
     const nextKeys = keys.concat(ppid2);
     form.setFieldsValue({
@@ -220,7 +220,7 @@ class ReportForm extends React.Component {
 
   addProjOrgBdFormItem = (key) => {
     uuid2++;
-    const { form } = this.props;
+    const { current: form } = this.props.forwardedRef;
     // can use data-binding to get
     const keys = form.getFieldValue(key);
     const nextKeys = keys.concat(uuid2);
@@ -232,7 +232,7 @@ class ReportForm extends React.Component {
   }
 
   handleConfirmBtnClick = orgBdId => {
-    this.props.form.validateFields((err, values) => {
+    this.props.forwardedRef.current.validateFields().then(values => {
       this.updateOrgBd(values, orgBdId)
         .then(newOrgBd => {
           const projIds = this.state.projOrgBds.map(m => m.proj.id);
@@ -262,7 +262,7 @@ class ReportForm extends React.Component {
   }
 
   handleConfirmAddNewOrgBdFBtnClick = (projIndex, orgBdIndex) => {
-    this.props.form.validateFields((err, values) => {
+    this.props.forwardedRef.current.validateFields().then(values => {
       const projId = values[`newproj_${projIndex}`];
       if (!projId) {
         Modal.warning({ title: '项目不能为空' });
@@ -308,7 +308,7 @@ class ReportForm extends React.Component {
   }
 
   handleConfirmAddOrgBdBtnClick = (projId, index) => {
-    this.props.form.validateFields((err, values) => {
+    this.props.forwardedRef.current.validateFields().then(values => {
       const org = values[`orgbd_${projId}_org_${index}`];
       const bduser = values[`orgbd_${projId}_bduser_${index}`];
       if (!org || !bduser) {
