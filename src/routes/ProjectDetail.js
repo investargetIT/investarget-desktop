@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
@@ -183,6 +183,7 @@ class ProjectDetail extends React.Component {
       activeKey: 1,
       activeTabKey: 'details',
       progress: 0,
+      loadingPdf: false,  // PDF 下载 loading 状态
     }
   }
 
@@ -363,6 +364,19 @@ class ProjectDetail extends React.Component {
 
   setHeader = node => this.header = this.header || node;
 
+  handleDownloadPDFBtnClick = async id => {
+    try {
+      this.setState({ loadingPdf: true });
+      const url = getPdfUrlWithoutBase(id);
+      const res = await api.getCustomizedUrl(url);
+      window.open(res.data);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      this.setState({ loadingPdf: false });
+    }
+  }
+
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
     return (
@@ -399,9 +413,9 @@ class ProjectDetail extends React.Component {
                   <Button style={{ marginRight: 24, marginTop: 8 }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
                   : null}
 
-                <a href={getPdfUrl(id)}>
-                  <Button>{i18n('project.project_pdf_download')}</Button>
-                </a>
+                {/* <a href={getPdfUrl(id)}> */}
+                  <Button loading={this.state.loadingPdf} onClick={this.handleDownloadPDFBtnClick.bind(this, id)}>{i18n('project.project_pdf_download')}</Button>
+                {/* </a> */}
               </div>
             </div>
           </div>

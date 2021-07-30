@@ -1028,3 +1028,5 @@ export const getDataroomFileReadRecord = params => {
   })
   return r(`/dataroom/userRecord/?${qs.stringify(params)}`);
 }
+
+export const getCustomizedUrl = url => r(url);
