@@ -57,17 +57,17 @@ let ppid2 = 0;
 let summaryFormItemId = 0;
 class ReportForm extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
+  // static childContextTypes = {
+  //   form: PropTypes.object
+  // }
 
   constructor(props) {
     super(props)
-    window.form = props.form
-    const time = this.props.form.getFieldValue('time');
-    const [ start, end ] = time;
-    this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+    // window.form = props.form
+    // const time = this.props.form.getFieldValue('time');
+    // const [ start, end ] = time;
+    // this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    // this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
 
     this.state = {
       orgRemarks: [],
@@ -80,6 +80,11 @@ class ReportForm extends React.Component {
   }
 
   componentDidMount() {
+    const time = this.props.forwardedRef.current.getFieldValue('time');
+    const [ start, end ] = time;
+    this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     this.getOrgBd();
     this.getOrgRemark();
@@ -958,7 +963,7 @@ class ReportForm extends React.Component {
     });
 
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <BasicFormItem name="time" valueType="array" layout>
@@ -1055,4 +1060,5 @@ function mapStateToProps(state) {
   return { orgbdres }
 }
 
-export default connect(mapStateToProps)(ReportForm)
+const ConnectedReportForm = connect(mapStateToProps)(ReportForm);
+export default React.forwardRef((props, ref) => <ConnectedReportForm {...props} forwardedRef={ref} />);
