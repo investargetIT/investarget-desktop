@@ -426,7 +426,7 @@ class ProjectDetail extends React.Component {
               <SecretInfo project={project} />
             </Card>
 
-            {hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null}
+            {/* {hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null} */}
 
             <Card title={i18n('project.profile')} style={{ marginBottom: 20 }}>
               <ProjectIntro project={project} />
