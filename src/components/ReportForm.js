@@ -129,15 +129,13 @@ class ReportForm extends React.Component {
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     const orgBds =  _.uniqBy(allOrgBds, 'id');
 
-    const { getFieldDecorator, setFieldsValue } = this.props.form;
+    const { setFieldsValue } = this.props.forwardedRef.current;
     orgBds.forEach(element => {
       const { id, response, BDComments } = element;
-      getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
       setFieldsValue({ [`oldorgbd-bdstatus_${id}`] : response });
       if (BDComments) {
         BDComments.forEach(element => {
           const { id: commentId, comments } = element;
-          getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: ''});
           setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
         });
       }
@@ -247,14 +245,12 @@ class ReportForm extends React.Component {
               this.setState({ projOrgBds: newProjOrgBds });
 
               // Set form data
-              const { getFieldDecorator, setFieldsValue } = this.props.form;
+              const { setFieldsValue } = this.props.forwardedRef.current;
               const { id, response, BDComments } = newOrgBd;
-              getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
               setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
               if (BDComments) {
                 BDComments.forEach(element => {
                   const { id: commentId, comments } = element;
-                  getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: '' });
                   setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
                 });
               }
@@ -296,14 +292,12 @@ class ReportForm extends React.Component {
             this.setState({ projOrgBds: newProjOrgBds });
           }
           // Set form data
-          const { getFieldDecorator, setFieldsValue } = this.props.form;
+          const { setFieldsValue } = this.props.forwardedRef.current;
           const { id, response, BDComments } = newOrgBd;
-          getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
           setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
           if (BDComments) {
             BDComments.forEach(element => {
               const { id: commentId, comments } = element;
-              getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: '' });
               setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
             });
           }
@@ -334,14 +328,12 @@ class ReportForm extends React.Component {
             this.setState({ projOrgBds: newProjOrgBds });
 
             // Set form data
-            const { getFieldDecorator, setFieldsValue } = this.props.form;
+            const { setFieldsValue } = this.props.forwardedRef.current;
             const { id, response, BDComments } = newOrgBd;
-            getFieldDecorator(`oldorgbd-bdstatus_${id}`, { initialValue: undefined });
             setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
             if (BDComments) {
               BDComments.forEach(element => {
                 const { id: commentId, comments } = element;
-                getFieldDecorator(`oldorgbd-comments_${id}_${commentId}`, { initialValue: '' });
                 setFieldsValue({ [`oldorgbd-comments_${id}_${commentId}`]: comments });
               });
             }
