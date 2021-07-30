@@ -557,25 +557,30 @@ class ReportForm extends React.Component {
       </Form.Item>
     );
 
-    getFieldDecorator('market_keys', { initialValue: [] });
-    const summaryKeys = getFieldValue('market_keys');
-    const summaryFormItems = summaryKeys.map((m, i) => (
-      <div key={m} id={`summary-form-items-${m}`}>
-        {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
-        <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
-          <div style={{ flex: 1, marginLeft: 40 }}>
-            <BasicFormItem name={`summary_${m}`} layout>
-              <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
-            </BasicFormItem>
-          </div>
-          <div style={{ width: 100, textAlign: 'center' }}>
-            <img onClick={() => this.removeFormItem('market_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
-          </div>
-        </div>
-      </div>
-    ));
+    const summaryFormItems = (
+      <Form.Item noStyle shouldUpdate>
+        {({ getFieldValue }) => {
+          const summaryKeys = getFieldValue('market_keys');
+          return summaryKeys.map((m, i) => (
+            <div key={m} id={`summary-form-items-${m}`}>
+              {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
+              <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+                <div style={{ flex: 1, marginLeft: 40 }}>
+                  <BasicFormItem name={`summary_${m}`} layout>
+                    <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
+                  </BasicFormItem>
+                </div>
+                <div style={{ width: 100, textAlign: 'center' }}>
+                  <img onClick={() => this.removeFormItem('market_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
+                </div>
+              </div>
+            </div>
+          ));
+        }}
+      </Form.Item>
+    );
 
-    getFieldDecorator('proj_keys', { initialValue: [] });
+    // getFieldDecorator('proj_keys', { initialValue: [] });
     const projKeys = getFieldValue('proj_keys');
     const projFormItems = projKeys.map((m, i) => {
       const orgBDKeys = `proj_keys_orgbd_${m}`;
@@ -966,6 +971,18 @@ class ReportForm extends React.Component {
 
         <Form.Item
           name="org_keys"
+          initialValue={[]}
+          hidden
+        />
+
+        <Form.Item
+          name="market_keys"
+          initialValue={[]}
+          hidden
+        />
+
+        <Form.Item
+          name="project_keys"
           initialValue={[]}
           hidden
         />
