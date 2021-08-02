@@ -33,7 +33,7 @@ import { Search } from './Search';
 import ModalModifyOrgBDStatus from './ModalModifyOrgBDStatus';
 import BDModal from './BDModal';
 import { getUser } from '../api';
-import { isLogin } from '../utils/util'
+import { isLogin, getURLParamValue } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
@@ -68,12 +68,12 @@ class OrgBDListComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.showUnreadOnly = props.location.query.showUnreadOnly ? true : false,
-    this.ids = (props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
-    this.projId = parseInt(props.location.query.projId, 10)
+    this.showUnreadOnly = getURLParamValue(props, 'showUnreadOnly') ? true : false,
+    this.ids = (getURLParamValue(props, 'ids') || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
+    this.projId = parseInt(getURLParamValue(props, 'projId'), 10)
     this.projId = !isNaN(this.projId) ? this.projId : null;
 
-    this.manager = parseInt(props.location.query.manager, 10);
+    this.manager = parseInt(getURLParamValue(props, 'manager'), 10);
     this.manager = !isNaN(this.manager) ? [this.manager] : [];
     
     let filters = {...OrgBDFilter.defaultValue, proj: this.projId, manager: this.manager };
@@ -159,7 +159,7 @@ class OrgBDListComponent extends React.Component {
     if (nextProps.refresh !== this.props.refresh) {
       this.getOrgBdList();
     }
-    if (nextProps.location.query.projId !== this.props.location.query.projId) {
+    if (getURLParamValue(nextProps, 'projId') !== getURLParamValue(this.props, 'projId')) {
       if (this.props.onProjChange) {
         this.props.onProjChange();
       }
@@ -1569,7 +1569,7 @@ class OrgBDListComponent extends React.Component {
                 { this.isAbleToModifyStatus(record) ? 
                 <span>
                   <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
-                  <a style={{ ...buttonStyle, marginRight: 4 }} href="javascript:void(0)" onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</a>
+                  <Button type="link" style={{ ...buttonStyle, marginRight: 4 }} onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</Button>
                 </span>
                 : null }
 
@@ -1894,7 +1894,7 @@ export function BDComments(props) {
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
                 {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                    <Button type="link">{i18n('common.delete')}</Button>
                   </Popconfirm>
                   : null}
               </p>
