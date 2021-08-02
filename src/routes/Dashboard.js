@@ -220,7 +220,7 @@ function Dashboard(props) {
 
           <Col span={8}>
 
-            <Card title="市场消息" bordered={false} style={{ marginBottom: 20, fontSize: 14, lineHeight: '22px', minHeight: 210 }} extra={<a href="#">查看更多</a>}>
+            <Card title="市场消息" bordered={false} style={{ marginBottom: 20, fontSize: 14, lineHeight: '22px', minHeight: 210 }} extra={<Link to="/app/wxmsg">查看更多</Link>}>
               <div style={{ color: '#262626' }}>{news ? trimTextIfExceedMaximumCount(news.content, 60) : i18n('no_news')}</div>
               {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
             </Card>
