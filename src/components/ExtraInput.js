@@ -957,7 +957,16 @@ class SelectOrgInvestor extends React.Component {
   }
 
   render() {
-    const {children, options, value, onChange, ...extraProps} = this.props
+    const {
+      children,
+      options,
+      value,
+      onChange,
+      allStatus,
+      onjob,
+      dispatch,
+      ...extraProps,
+    } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
     let _value
     if (value == undefined) {
