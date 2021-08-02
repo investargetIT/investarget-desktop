@@ -369,7 +369,7 @@ class ProjectDetail extends React.Component {
       this.setState({ loadingPdf: true });
       const url = getPdfUrlWithoutBase(id);
       const res = await api.getCustomizedUrl(url);
-      window.open(res.data);
+      window.location.href = res.data;
     } catch (error) {
       handleError(error);
     } finally {
