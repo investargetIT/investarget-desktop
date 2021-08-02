@@ -7,7 +7,7 @@ import {
   hasPerm, 
   getUserInfo, 
 } from '../utils/util';
-import LeftRightLayout from '../components/LeftRightLayout';
+import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import OrgBDListComponent from '../components/OrgBDListComponent';
 import { Button } from 'antd';
 
@@ -30,7 +30,7 @@ export default class OrgBDList extends React.Component {
   render() {
     let isAdd = false;
     return (
-      <LeftRightLayout 
+      <LeftRightLayoutPure
         location={this.props.location} 
         name={i18n('menu.organization_bd') + (isAdd ? " / 查看BD": "")} 
         title={i18n('menu.bd_management')}
@@ -51,7 +51,7 @@ export default class OrgBDList extends React.Component {
             onProjExistChange={isProj => this.setState({ isProj })}
           />
         }
-      </LeftRightLayout>)
+      </LeftRightLayoutPure>)
   }
 
 }

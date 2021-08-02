@@ -24,7 +24,6 @@ import {
   DatePicker,
   Row,
   Col,
-  Icon,
   Transfer,
 } from 'antd';
 import { Link } from 'dva/router';
@@ -40,6 +39,10 @@ import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
 import debounce from 'lodash/debounce';
+import {
+  DeleteOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 
 function tableToExcel(table, worksheetName) {
   var uri = 'data:application/vnd.ms-excel;base64,'
@@ -1582,7 +1585,7 @@ class OrgBDListComponent extends React.Component {
                 { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ?
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
                   <Button style={{ ...buttonStyle, color: undefined }}>
-                    <Icon type="delete" />
+                    <DeleteOutlined />
                   </Button>
                 </Popconfirm>
                 : null }
@@ -1651,7 +1654,7 @@ class OrgBDListComponent extends React.Component {
             {this.props.editable && this.isAbleToCreateBD() ?
               <div style={{ float: 'left', marginTop: 30 }}>
                 <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                  <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+                  <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
                 </Link>
               </div>
               : null}
@@ -1716,7 +1719,7 @@ class OrgBDListComponent extends React.Component {
             
             { this.props.editable && this.isAbleToCreateBD() ? 
             <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-              <Icon type="plus-circle-o" style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+              <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
             </Link>
             : null }
 
