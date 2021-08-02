@@ -2,7 +2,7 @@ import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
-import { getCurrentUser, hasPerm, i18n, requestAllData } from '../utils/util'
+import { getCurrentUser, hasPerm, i18n, requestAllData, getURLParamValue } from '../utils/util'
 import { Button, Modal, Checkbox, Steps, Radio, Tag, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader, SelectOrgLevel } from '../components/ExtraInput';
@@ -31,7 +31,7 @@ class NewOrgBD extends React.Component {
 
     this.state = {
       traderId,
-      projId: Number(this.props.location.query.projId),
+      projId: Number(getURLParamValue(props, 'projId')),
       projTitle: '',
       selectedOrgs: [],
       selectedOrgDetails: [],
@@ -92,7 +92,7 @@ class NewOrgBD extends React.Component {
 
   confirmFilterOption = () => {
     const ids = this.state.selectedOrgs.join(',');
-    const projId = this.props.location.query.projId || null;
+    const projId = getURLParamValue(this.props, 'projId') || null;
     const { removeInvestorWithNoTrader, removeInvestorWithoutRelatedTags, removeOrgWithNoInvestor } = this.state;
     window.open(`/app/org/newbd?ids=${encodeURIComponent(ids)}&projId=${projId}&trader=${removeInvestorWithNoTrader}&tag=${removeInvestorWithoutRelatedTags}&investor=${removeOrgWithNoInvestor}&tags=${encodeURIComponent(this.tags.join(','))}`);
   }

@@ -64,7 +64,7 @@ import WxMessage from './routes/WxMessage';
 // import RecommendProjects from './components/RecommendProjects';
 import OrgBDList from './routes/OrgBDList';
 // import AddOrgBD from './routes/AddOrgBD';
-// import NewOrgBD from './routes/NewOrgBD';
+import NewOrgBD from './routes/NewOrgBD';
 // import NewOrgBDNext from './routes/NewOrgBDNext';
 // import TraderDetail from './routes/TraderDetail';
 // import MeetingBDList from './routes/MeetingBDList';
@@ -128,6 +128,7 @@ function RouterConfig({ history }) {
         <Route path="/app/dataroom/detail" component={DataRoom} />
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
+        <Route path="/app/orgbd/add" component={NewOrgBD} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -153,7 +154,6 @@ function RouterConfig({ history }) {
         <Route path="/app/agreement" component={Agreement} />
         <Route path="/app/schedule/list" component={ScheduleList} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
-        <Route path="/app/orgbd/add" component={NewOrgBD} />
         <Route path="/app/trader/:id" component={TraderDetail} />
         <Route path="/app/meeting/bd" component={MeetingBDList} />
         <Route path="/app/meetingbd/add" component={AddMeetingBD} />
