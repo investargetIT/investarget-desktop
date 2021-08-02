@@ -24,7 +24,7 @@ import {
   SelectService, 
   SelectExistUser, 
   SelectExistProject,
-  SelectExistOrganization,
+  SelectExistOrganizationWithID,
   SelectNewBDStatus,
   SelectOrgInvestor,
 } from './ExtraInput'
@@ -517,7 +517,7 @@ class ReportForm extends React.Component {
               <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
                 <div style={{ width: 200 }}>
                   <BasicFormItem name={`org_new_org_${m}`} layout valueType="number">
-                    <SelectExistOrganization placeholder="选择机构" />
+                    <SelectExistOrganizationWithID placeholder="选择机构" />
                   </BasicFormItem>
                 </div>
                 <div style={{ flex: 1, marginLeft: 40 }}>
@@ -579,7 +579,7 @@ class ReportForm extends React.Component {
                           <div>机构：</div>
                           <div style={{ flex: 1 }}>
                             <BasicFormItem name={`neworgbd_${m}_org_${m1}`} layout valueType="number">
-                              <SelectExistOrganization />
+                              <SelectExistOrganizationWithID />
                             </BasicFormItem>
                           </div>
                         </div>
@@ -792,7 +792,7 @@ class ReportForm extends React.Component {
                     <div>机构：</div>
                     <div style={{ flex: 1 }}>
                       <BasicFormItem name={`orgbd_${m.proj.id}_org_${m1}`} layout valueType="number">
-                        <SelectExistOrganization />
+                        <SelectExistOrganizationWithID />
                       </BasicFormItem>
                     </div>
                   </div>

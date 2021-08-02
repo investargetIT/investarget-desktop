@@ -74,14 +74,13 @@ class EditReport extends React.Component {
   }
 
   autoSave = () => {
-    this.form.validateFields((err, values) => {
-      if (!err) {
+    this.editReportFormRef.current.validateFields()
+      .then(values => {
         this.autoSaveWorkReport(values);
         this.autoSaveOrgBds(values);
         this.autoSaveTextProj(values);
         this.autoSaveNewProj(values);
-      }
-    });
+      });
   }
 
   autoSaveNewProj = values => {

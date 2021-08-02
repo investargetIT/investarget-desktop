@@ -327,6 +327,46 @@ const SelectExistOrganization = (props) => {
   );
 };
 
+
+
+export const SelectExistOrganizationWithID = (props) => {
+  const [value, setValue] = React.useState([]);
+
+  function getOrg(params) {
+    return api.getOrg({ ...params, issub: false, orgstatus: 2 }).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, orgfullname: label, description } = item
+        return { value, label, description }
+      })
+      return { total, list }
+    });
+  }
+
+  function getOrgnameById(id) {
+    return api.getOrgDetailLang(id).then(result => {
+      return result.data.orgfullname
+    })
+  }
+
+  return (
+    <Select2
+      value={value}
+      placeholder={i18n('account.select_org')}
+      getData={getOrg}
+      getNameById={getOrgnameById}
+      onChange={(newValue) => {
+        setValue(newValue);
+      }}
+      style={{
+        width: '100%',
+      }}
+      noResult="未找到相关机构"
+      {...props}
+    />
+  );
+};
+
 // /**
 //  * SelectExistOrganization
 //  */
