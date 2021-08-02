@@ -71,7 +71,7 @@ import WxMessage from './routes/WxMessage';
 // import AddMeetingBD from './routes/AddMeetingBD';
 import CompanyDataRoomList from './routes/CompanyDataRoomList';
 import CompanyDataRoomDetail from './routes/CompanyDataRoomDetail';
-// import OrgBDProjList from './routes/OrgBDProjList';
+import OrgBDProjList from './routes/OrgBDProjList';
 import AddReport from './routes/AddReport';
 import ReportDetail from './routes/ReportDetail';
 import EditReport from './routes/EditReport';
@@ -126,6 +126,7 @@ function RouterConfig({ history }) {
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/detail" component={DataRoom} />
         <Route path="/app/wxmsg" component={WxMessage} />
+        <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -156,7 +157,6 @@ function RouterConfig({ history }) {
         <Route path="/app/trader/:id" component={TraderDetail} />
         <Route path="/app/meeting/bd" component={MeetingBDList} />
         <Route path="/app/meetingbd/add" component={AddMeetingBD} />
-        <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/okr/add" component={AddOKR} />
         <Route path="/app/okr/list" component={OKRList} />
         <Route path="/app/okr/edit/:id" component={EditOKR} />
