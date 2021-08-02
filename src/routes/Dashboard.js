@@ -225,7 +225,7 @@ function Dashboard(props) {
               {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
             </Card>
 
-            <Card title="公司培训文件" bordered={false} extra={<a href="#">全部文件</a>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
+            <Card title="公司培训文件" bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
               {files.map(m => (
                 <a key={m.id} href="/app" target="_blank">
                   <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
