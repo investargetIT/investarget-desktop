@@ -352,14 +352,10 @@ export const SelectExistOrganizationWithID = (props) => {
   return (
     <Select2
       value={value}
-      placeholder={i18n('account.select_org')}
       getData={getOrg}
       getNameById={getOrgnameById}
       onChange={(newValue) => {
         setValue(newValue);
-      }}
-      style={{
-        width: '100%',
       }}
       noResult="未找到相关机构"
       {...props}
