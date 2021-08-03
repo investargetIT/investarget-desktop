@@ -42,6 +42,7 @@ import debounce from 'lodash/debounce';
 import {
   DeleteOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 
 function tableToExcel(table, worksheetName) {
@@ -1622,33 +1623,36 @@ class OrgBDListComponent extends React.Component {
       <div>
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
-        {this.props.editable && this.state.projectDetails && this.state.projectDetails.lastProject &&
-          <div style={{ marginBottom: 20, textAlign: 'center' }}>
-            上一轮项目：
-            <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
-          </div>
-        }
-
-        {this.props.editable && !this.state.showUnreadOnly &&
+        {this.props.editable &&
           <Card title="机构看板" style={{ marginBottom: 20 }}>
-            <OrgBDFilter
-              defaultValue={filters}
-              onSearch={this.handleFilt}
-              onReset={this.handleReset}
-              onChange={this.handleFilt}
-            />
-            {this.state.filters.proj !== null &&
-              <div style={{ overflow: 'auto', marginBottom: 16 }}>
-                {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
-                  <div style={{ float: 'left', lineHeight: '32px' }}>
-                    {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
-                      (m, index) => <span key={m.id}>
-                        <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
-                        <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
-                      </span>
-                    )}
+            {this.state.projectDetails && this.state.projectDetails.lastProject &&
+              <div style={{ marginBottom: 20, textAlign: 'center' }}>
+                上一轮项目：
+                <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
+              </div>
+            }
+            {!this.state.showUnreadOnly &&
+              <div>
+                <OrgBDFilter
+                  defaultValue={filters}
+                  onSearch={this.handleFilt}
+                  onReset={this.handleReset}
+                  onChange={this.handleFilt}
+                />
+                {this.state.filters.proj !== null &&
+                  <div style={{ overflow: 'auto', marginBottom: 16 }}>
+                    {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
+                      <div style={{ float: 'left', lineHeight: '32px' }}>
+                        {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
+                          (m, index) => <span key={m.id}>
+                            <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
+                            <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
+                          </span>
+                        )}
+                      </div>
+                      : null}
                   </div>
-                  : null}
+                }
               </div>
             }
           </Card>
@@ -1656,24 +1660,22 @@ class OrgBDListComponent extends React.Component {
 
         <Card>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
-            <div>
-              {this.props.editable && this.isAbleToCreateBD() ?
-                <div style={{ marginTop: 30 }}>
+            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Search
+                style={{ width: 200 }}
+                placeholder="联系人/联系电话"
+                onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
+                onChange={search => this.setState({ search })}
+                value={search}
+              />
+              {this.isAbleToCreateBD() &&
+                <div className="another-btn">
+                  {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
                   <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                    <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+                    <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
                   </Link>
                 </div>
-                : null}
-
-              <div style={{ marginTop: 30 }} className="clearfix">
-                <Search
-                  style={{ width: 200 }}
-                  placeholder="联系人/联系电话"
-                  onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-                  onChange={search => this.setState({ search })}
-                  value={search}
-                />
-              </div>
+              }
             </div>
           }
 
