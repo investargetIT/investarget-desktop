@@ -12,7 +12,7 @@ import {
 } from '../utils/util';
 import * as api from '../api';
 import { 
-  message,
+  Card,
   Table, 
   Button, 
   Popconfirm, 
@@ -1620,7 +1620,7 @@ class OrgBDListComponent extends React.Component {
 
     return (
       <div>
-      {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
+        {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         {this.props.editable && this.state.projectDetails && this.state.projectDetails.lastProject &&
           <div style={{ marginBottom: 20, textAlign: 'center' }}>
@@ -1628,127 +1628,133 @@ class OrgBDListComponent extends React.Component {
             <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
           </div>
         }
-        { this.props.editable && !this.state.showUnreadOnly ?
-          <OrgBDFilter
-            defaultValue={filters}
-            onSearch={this.handleFilt}
-            onReset={this.handleReset}
-            onChange={this.handleFilt}
-          />
-        : null}
 
-        { this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly ?
-        <div style={{ overflow: 'auto', marginBottom: 16 }}>
+        {this.props.editable && !this.state.showUnreadOnly &&
+          <Card title="机构看板" style={{ marginBottom: 20 }}>
+            <OrgBDFilter
+              defaultValue={filters}
+              onSearch={this.handleFilt}
+              onReset={this.handleReset}
+              onChange={this.handleFilt}
+            />
+            {this.state.filters.proj !== null &&
+              <div style={{ overflow: 'auto', marginBottom: 16 }}>
+                {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
+                  <div style={{ float: 'left', lineHeight: '32px' }}>
+                    {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
+                      (m, index) => <span key={m.id}>
+                        <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
+                        <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
+                      </span>
+                    )}
+                  </div>
+                  : null}
+              </div>
+            }
+          </Card>
+        }
 
-          { this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ? 
-          <div style={{ float: 'left', lineHeight: '32px' }}>
-            {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
-              (m, index) => <span key={m.id}>
-                <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
-                <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
-              </span>
-            )}
+        <Card>
+          {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
+            <div>
+              {this.props.editable && this.isAbleToCreateBD() ?
+                <div style={{ marginTop: 30 }}>
+                  <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                    <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+                  </Link>
+                </div>
+                : null}
+
+              <div style={{ marginTop: 30 }} className="clearfix">
+                <Search
+                  style={{ width: 200 }}
+                  placeholder="联系人/联系电话"
+                  onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
+                  onChange={search => this.setState({ search })}
+                  value={search}
+                />
+              </div>
+            </div>
+          }
+
+          {this.state.filters.proj !== null ?
+            <Table
+              style={{ display: 'none' }}
+              className="new-org-db-style"
+              columns={columnsForExport}
+              dataSource={this.state.listForExport}
+              rowKey={record => record.id}
+              pagination={false}
+              size="middle"
+            />
+            : null}
+
+          <div style={{ padding: '10px 8px', backgroundColor: '#E9F1F3', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+            <div style={{ width: 40 }} />
+            <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
+            <div style={{ flex: 7, padding: '6px 8px' }}>职位</div>
+            <div style={{ flex: 7, padding: '6px 8px' }}>创建人</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
+            <div style={{ flex: 16, padding: '6px 8px' }}>任务时间</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>状态</div>
+            <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
+            <div style={{ flex: 20, padding: '6px 8px' }}>操作</div>
           </div>
-          : null }
 
-            {this.props.editable && this.isAbleToCreateBD() ?
-              <div style={{ float: 'left', marginTop: 30 }}>
+          {this.state.filters.proj !== null ?
+            <Table
+              className="new-org-db-style"
+              onChange={this.handleTableChange}
+              columns={columns}
+              expandedRowRender={expandedRowRender}
+              // expandRowByClick
+              dataSource={list}
+              rowKey={record => record.id}
+              loading={loading}
+              onExpand={this.onExpand.bind(this)}
+              expandedRowKeys={expanded}
+              pagination={false}
+              size={this.props.size || "middle"}
+              showHeader={false}
+            />
+            : null}
+
+          {this.props.pagination && this.state.filters.proj !== null ?
+            <div style={{ margin: '16px 0' }} className="clearfix">
+
+              {this.props.editable && this.isAbleToCreateBD() ?
                 <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
                   <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
                 </Link>
-              </div>
-              : null}
+                : null}
 
-          <div style={{ float: 'right', marginTop: 30 }} className="clearfix">
-            <Search
-              style={{ width: 200 }}
-              placeholder="联系人/联系电话"
-              onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-              onChange={search => this.setState({ search })}
-              value={search}
-            />
-          </div>
+              <Pagination
+                style={{ float: 'right' }}
+                size={this.props.paginationSize || 'middle'}
+                total={total}
+                current={page}
+                pageSize={pageSize}
+                onChange={page => this.setState({ page }, this.getOrgBdList)}
+                showSizeChanger
+                onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
+                showQuickJumper
+                pageSizeOptions={PAGE_SIZE_OPTIONS}
+              />
+            </div>
+            : null}
 
-        </div>
-        : null }
-
-        { this.state.filters.proj !== null ? 
-        <Table
-          style={{ display: 'none' }}
-          className="new-org-db-style"
-          columns={columnsForExport}
-          dataSource={this.state.listForExport}
-          rowKey={record=>record.id}
-          pagination={false}
-          size="middle"
-        />
-        : null }
-
-        <div style={{ padding: '10px 8px', backgroundColor: '#E9F1F3', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
-          <div style={{ width: 40 }} />
-          <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
-          <div style={{ flex: 7, padding: '6px 8px' }}>职位</div>
-          <div style={{ flex: 7, padding: '6px 8px' }}>创建人</div>
-          <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
-          <div style={{ flex: 16, padding: '6px 8px' }}>任务时间</div>
-          <div style={{ flex: 10, padding: '6px 8px' }}>状态</div>
-          <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
-          <div style={{ flex: 20, padding: '6px 8px' }}>操作</div>
-        </div>
-
-        { this.state.filters.proj !== null ? 
-        <Table
-          className="new-org-db-style"
-          onChange={this.handleTableChange}
-          columns={columns}
-          expandedRowRender={expandedRowRender}
-          // expandRowByClick
-          dataSource={list}
-          rowKey={record=>record.id}
-          loading={loading}
-          onExpand={this.onExpand.bind(this)}
-          expandedRowKeys={expanded}
-          pagination={false}
-          size={this.props.size || "middle"}
-          showHeader={false}
-        />
-        : null }
-
-        { this.props.pagination && this.state.filters.proj !== null ?    
-          <div style={{ margin: '16px 0' }} className="clearfix">
-            
-            { this.props.editable && this.isAbleToCreateBD() ? 
-            <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-              <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
-            </Link>
-            : null }
-
-            <Pagination
-              style={{ float: 'right' }}
-              size={this.props.paginationSize || 'middle'}
-              total={total}
-              current={page}
-              pageSize={pageSize}
-              onChange={page => this.setState({ page }, this.getOrgBdList)}
-              showSizeChanger
-              onShowSizeChange={(current, pageSize) => this.setState({ pageSize, page: 1 }, this.getOrgBdList)}
-              showQuickJumper
-              pageSizeOptions={PAGE_SIZE_OPTIONS}
-            />
-          </div>
-        : null }
-
-        { this.state.filters.proj !== null && !this.state.showUnreadOnly ? 
-        <Button
-          // disabled={this.state.selectedIds.length == 0}
-          style={{ backgroundColor: 'orange', border: 'none' }}
-          type="primary"
-          size="large"
-          loading={this.state.exportLoading}
-          onClick={this.handleExportBtnClicked}>
-          {i18n('project_library.export_excel')}
-        </Button>
-        : null }
+          {this.state.filters.proj !== null && !this.state.showUnreadOnly ?
+            <Button
+              // disabled={this.state.selectedIds.length == 0}
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              size="large"
+              loading={this.state.exportLoading}
+              onClick={this.handleExportBtnClicked}>
+              {i18n('project_library.export_excel')}
+            </Button>
+            : null}
+        </Card>
 
         { this.state.visible ? 
         <ModalModifyOrgBDStatus 

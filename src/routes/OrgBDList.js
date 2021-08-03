@@ -9,7 +9,8 @@ import {
 } from '../utils/util';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import OrgBDListComponent from '../components/OrgBDListComponent';
-import { Button } from 'antd';
+import { Button, Breadcrumb } from 'antd';
+import { Link } from 'dva/router';
 
 export default class OrgBDList extends React.Component {
   
@@ -40,6 +41,18 @@ export default class OrgBDList extends React.Component {
         // }
         right={this.state.isProj ? <Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button> : null}
       >
+
+        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+          <Breadcrumb.Item>
+            <Link to="/app">首页</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>BD管理</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/app/orgbd/project/list">机构BD</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>机构看板</Breadcrumb.Item>
+        </Breadcrumb>
+
         {this.state.displayContent &&
           <OrgBDListComponent
             editable
