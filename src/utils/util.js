@@ -499,6 +499,16 @@ export const requestAllData = async (request, params, page_size) => {
   return secondRes;
 }
 
+export const requestAllData2 = async (request, params, max_size) => {
+  const firstRes = await request({ ...params, max_size});
+  const { count } = firstRes.data;
+  if (count <= max_size) {
+    return firstRes;
+  }
+  const secondRes = await request({ ...params, max_size: count });
+  return secondRes;
+}
+
 function trimTextIfExceedMaximumCount(text, count) {
   if (text.length < count) {
     return text;

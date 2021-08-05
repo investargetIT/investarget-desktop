@@ -9,6 +9,7 @@ import {
   isShowCNY,
   requestAllData,
   getCurrentUser,
+  requestAllData2,
 } from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress } from 'antd'
@@ -77,6 +78,7 @@ class ProjectList extends React.Component {
       sendWechat: false,
       discloseFinance: false,
       unreadOrgBDNumber: 0,
+      onGogoingProjects: [],
     }
   }
 
@@ -250,6 +252,7 @@ class ProjectList extends React.Component {
 
   componentDidMount() {
     this.getMyTodoTasks();
+    this.getOngoingProjects();
     this.getProject()
   }
 
@@ -262,6 +265,20 @@ class ProjectList extends React.Component {
     this.setState({ unreadOrgBDNumber: numbers });
   }
 
+  getOngoingProjects = async () => {
+    const reqProjStatus = await api.getSource('projstatus');
+    const { data: statusList } = reqProjStatus;
+    const ongoingStatus = statusList.filter(f => ['终审发布', '交易中', 'Published', 'Contacting'].includes(f.name));
+    const params = {
+      projstatus: ongoingStatus.map(m => m.id),
+    }
+    if (!hasPerm('proj.admin_getproj')) {
+      params['user'] = getCurrentUser();
+    }
+    const reqProj = await requestAllData2(api.getProj, params, 100);
+    this.setState({ onGogoingProjects: reqProj.data.data })
+  }
+  
   // componentWillReceiveProps(nextProps) {
   //   const { page: nextPage } = nextProps.location.query;
   //   const { page: currentPage } = this.props.location.query;
@@ -491,8 +508,8 @@ class ProjectList extends React.Component {
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>本周任务平均处理时间-TODO</div>
-            <div style={statValueStyle}><span style={statValueNumStyle}>32</span>分钟</div>
+            <div style={statLabelStyle}>进行中的项目</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.onGogoingProjects.length}</span>个</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
