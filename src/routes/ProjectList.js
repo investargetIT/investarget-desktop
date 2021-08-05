@@ -6,7 +6,9 @@ import {
   getGroup, 
   hasPerm, 
   formatMoney, 
-  isShowCNY, 
+  isShowCNY,
+  requestAllData,
+  getCurrentUser,
 } from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress } from 'antd'
@@ -74,6 +76,7 @@ class ProjectList extends React.Component {
       confirmLoading: false,
       sendWechat: false,
       discloseFinance: false,
+      unreadOrgBDNumber: 0,
     }
   }
 
@@ -246,7 +249,17 @@ class ProjectList extends React.Component {
   }
 
   componentDidMount() {
+    this.getMyTodoTasks();
     this.getProject()
+  }
+
+  getMyTodoTasks = async () => {
+    const reqUnreadOrgBD = await requestAllData(api.getOrgBDProj, {
+      isRead: false,
+      manager: [getCurrentUser()],
+    }, 100);
+    const numbers = reqUnreadOrgBD.data.data.reduce((prev, curr) => curr.count + prev, 0);
+    this.setState({ unreadOrgBDNumber: numbers });
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -473,8 +486,8 @@ class ProjectList extends React.Component {
 
         <Card style={{ marginBottom: 20 }} bodyStyle={{ height: 104, padding: 0, display: 'flex', alignItems: 'center' }}>
           <div style={statStyle}>
-            <div style={statLabelStyle}>我的待办-TODO</div>
-            <div style={statValueStyle}><span style={statValueNumStyle}>8</span>个任务</div>
+            <div style={statLabelStyle}>我的待办</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.unreadOrgBDNumber}</span>个任务</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
