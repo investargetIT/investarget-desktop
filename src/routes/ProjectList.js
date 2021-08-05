@@ -508,12 +508,12 @@ class ProjectList extends React.Component {
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>进行中的项目</div>
+            <div style={statLabelStyle}>进行中的项目总数</div>
             <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.onGogoingProjects.length}</span>个</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>本周完成任务数-TODO</div>
+            <div style={statLabelStyle}>当年完成项目数-TODO</div>
             <div style={statValueStyle}><span style={statValueNumStyle}>24</span>个任务</div>
           </div>
         </Card>
