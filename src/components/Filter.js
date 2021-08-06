@@ -1127,7 +1127,9 @@ class OrgBDFilter extends React.Component {
           </Col>
         </Row>
 
-        <TabCheckboxOrgBDRes2 value={response} onChange={this.handleChange.bind(this, 'response')} />
+        <div style={{ marginTop: 6 }}>
+          <TabCheckboxOrgBDRes2 value={response} onChange={this.handleChange.bind(this, 'response')} />
+        </div>
 
         {/* <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} /> */}
       </div>

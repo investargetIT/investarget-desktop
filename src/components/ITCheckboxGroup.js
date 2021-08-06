@@ -1,9 +1,13 @@
 import React from 'react'
 import styles from './ITCheckboxGroup.css'
 import { appendToArray, removeFromArray } from '../utils/util';
-
+import {
+  UpOutlined,
+  DownOutlined,
+} from '@ant-design/icons';
 
 const containerStyle = {
+  paddingLeft: 6,
   paddingRight: 60,
   position: 'relative',
 }
@@ -258,28 +262,26 @@ function ToolMore(props) {
     zIndex: 1,
     right: 0,
     top: 0,
-    width: 60,
+    width: 48,
     height: 20,
     lineHeight: '20px',
     textAlign: 'right',
     cursor: 'pointer',
+    color: '#339bd2',
+    display: 'flex',
+    alignItems: 'center',
   }
   const labelStyle = {
-
-  }
-  const iconStyle = {
-    marginLeft: 8,
-    marginTop: 7,
-    verticalAlign:'top',
+    marginRight: 4,
   }
   const { expand } = props
   return (
     <div style={{...toolStyle, ...props.style}} onClick={props.onToggle} onMouseEnter={props.onMouseEnter}>
-      <span style={labelStyle}>{expand ? '收起' : '更多' }</span>
+      <div style={labelStyle}>{expand ? '收起' : '展开' }</div>
       {expand ? (
-        <img style={iconStyle} src="/images/arrow-up.png" />
+        <UpOutlined />
       ) : (
-        <img style={iconStyle} src="/images/arrow-down.png" />
+        <DownOutlined />
       )}
     </div>
   )
@@ -301,7 +303,7 @@ function Item(props) {
   }
   const checkedItemStyle = {
     ...itemStyle,
-    backgroundColor: '#237ccc',
+    backgroundColor: '#339bd2',
     color: '#fff',
   }
   const closeStyle = {
@@ -330,14 +332,14 @@ function Item2(props) {
     padding: '0 6px',
     height: 20,
     lineHeight: '20px',
-    color: '#656565',
+    color: '#595959',
     borderRadius: 4,
     listStyle: 'none',
     cursor: 'pointer',
   }
   const checkedItemStyle = {
     ...itemStyle,
-    backgroundColor: '#237ccc',
+    backgroundColor: '#339bd2',
     color: '#fff',
   }
   const closeStyle = {
