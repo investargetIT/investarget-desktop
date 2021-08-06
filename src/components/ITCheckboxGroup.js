@@ -224,7 +224,7 @@ class ITCheckboxGroup2 extends React.Component {
       <div style={containerStyle} onMouseLeave={this.handleMouseLeave}>
         <ul ref={el => {this.listEl = el}} className="clearfix" style={this.state.expand ? expandListStyle : listStyle}>
 
-          <Item2 label="不限" checked={value.length == 0} onCheck={this.handleClear} closable={false} />
+          <Item2 label={this.props.allLabel} checked={value.length == 0} onCheck={this.handleClear} closable={false} />
 
           {options.map(item => {
             const isChecked = value.includes(item.value)
@@ -240,13 +240,13 @@ class ITCheckboxGroup2 extends React.Component {
           })}
         </ul>
 
-        {this.state.isMultiLine ? (
+        {/* {this.state.isMultiLine ? ( */}
           <ToolMore
             expand={this.state.expand}
             onToggle={this.toggleExpand}
             onMouseEnter={this.handleMouseEnter}
           />
-        ) : null}
+        {/* ) : null} */}
       </div>
     )
   }

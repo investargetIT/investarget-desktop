@@ -1697,19 +1697,15 @@ function mapStateToPropsOrgBDRes(state) {
 TabCheckboxOrgBDRes = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes);
 
 class TabCheckboxOrgBDRes2 extends React.Component {
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
-  }
   render() {
-    const { options, value, onChange } = this.props
+    const { options, value, onChange, allLabel } = this.props
     return (
       <BasicContainer2 label="机构进度" align="top" style={{ width: '100%' }}>
-        <ITCheckboxGroup2 options={options} value={value} onChange={onChange} />
+        <ITCheckboxGroup2 options={options} value={value} onChange={onChange} allLabel={allLabel} />
       </BasicContainer2>
     )
   }
 }
-TabCheckboxOrgBDRes2 = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes2);
 
 class TabCheckboxService extends React.Component {
   componentDidMount() {

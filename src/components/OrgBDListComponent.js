@@ -138,6 +138,9 @@ class OrgBDListComponent extends React.Component {
         showReasonForBlacklist: false,
         reasonForBlacklist: '',
         projectDetails: null,
+
+        progressOptions: [], // 过滤条件中的状态加数量选项
+        allLabel: '全部', // 过滤条件全部状态的名称
     }
 
     this.allTrader = [];
@@ -158,7 +161,7 @@ class OrgBDListComponent extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.orgbdres.length !== this.props.orgbdres.length) {
-      this.getStatisticData().then(data => this.setState({ statistic: data }));
+      this.getStatisticData().then(this.setStatisticAsFilter);
     }
     if (nextProps.refresh !== this.props.refresh) {
       this.getOrgBdList();
@@ -381,8 +384,21 @@ class OrgBDListComponent extends React.Component {
       })
       .catch(handleError);
       if (this.props.orgbdres.length > 0) {
-        this.getStatisticData().then(data => this.setState({ statistic: data }));
+        this.getStatisticData().then(this.setStatisticAsFilter);
       }
+  }
+
+  setStatisticAsFilter = statistic => {
+    this.setState({ statistic });
+    const responseWithNum = [{ id: null, value: 'none', name: '暂无状态' }].concat(this.props.orgbdres).map((m, index) => {
+      return {
+        ...m,
+        value: m.id || 'none',
+        label: `${m.name}(${statistic.filter(f => f.status === m.id)[0] ? statistic.filter(f => f.status === m.id)[0].count : 0})`,
+      }
+    });
+    const allCount = statistic.reduce((prev, curr) => prev + curr.count, 0);
+    this.setState({ progressOptions: responseWithNum, allLabel: `全部(${allCount})` });
   }
 
   loadOrgBDDetails = async () => {
@@ -1644,8 +1660,10 @@ class OrgBDListComponent extends React.Component {
                   onSearch={this.handleFilt}
                   onReset={this.handleReset}
                   onChange={this.handleFilt}
+                  progressOptions={this.state.progressOptions}
+                  allLabel={this.state.allLabel}
                 />
-                {this.state.filters.proj !== null &&
+                {/* {this.state.filters.proj !== null &&
                   <div style={{ overflow: 'auto', marginBottom: 16 }}>
                     {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
                       <div style={{ float: 'left', lineHeight: '32px' }}>
@@ -1658,7 +1676,7 @@ class OrgBDListComponent extends React.Component {
                       </div>
                       : null}
                   </div>
-                }
+                } */}
               </div>
             }
           </Card>
