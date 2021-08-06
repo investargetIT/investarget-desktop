@@ -30,7 +30,8 @@ import _ from 'lodash'
 import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser, requestAllData } from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
-import { BasicContainer } from './Filter';
+import { ITCheckboxGroup2 } from './ITCheckboxGroup';
+import { BasicContainer, BasicContainer2 } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
@@ -1695,6 +1696,21 @@ function mapStateToPropsOrgBDRes(state) {
 }
 TabCheckboxOrgBDRes = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes);
 
+class TabCheckboxOrgBDRes2 extends React.Component {
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+  }
+  render() {
+    const { options, value, onChange } = this.props
+    return (
+      <BasicContainer2 label="机构进度" align="top" style={{ width: '100%' }}>
+        <ITCheckboxGroup2 options={options} value={value} onChange={onChange} />
+      </BasicContainer2>
+    )
+  }
+}
+TabCheckboxOrgBDRes2 = connect(mapStateToPropsOrgBDRes)(TabCheckboxOrgBDRes2);
+
 class TabCheckboxService extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['service'] });
@@ -2138,6 +2154,7 @@ export {
   SelectMultiOrgs,
   SelectMultiUsers,
   TabCheckboxOrgBDRes,
+  TabCheckboxOrgBDRes2,
   TreeSelectTag,
   SelectScheduleTypeWithoutMeeting,
   RadioProjTraderType,

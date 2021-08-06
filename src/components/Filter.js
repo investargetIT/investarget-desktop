@@ -58,7 +58,7 @@ import {
   SelectExistProject,
   RadioFamLv,
   SelectOrgLevel,
-  TabCheckboxOrgBDRes,
+  TabCheckboxOrgBDRes2,
   TabCheckboxAbroad,
   TabCheckboxIndustryGroup,
   SelectProjectForOrgBd,
@@ -78,9 +78,9 @@ export function BasicContainer(props) {
 
 export function BasicContainer2(props) {
   return (
-    <Row align="middle" gutter={16} style={{ margin: 0, marginBottom: 20 }}>
+    <Row align={props.align || 'middle'} gutter={16} style={{ margin: 0, marginBottom: 20, flexWrap: 'nowrap' }}>
       <Col style={{ padding: 0, width: 80, color: '#262626' }}>{ props.label + '：'}</Col>
-      <Col flex={1} >{ props.children }</Col>
+      <Col flex={1} style={props.style}>{ props.children }</Col>
     </Row>
   )
 }
@@ -1127,7 +1127,7 @@ class OrgBDFilter extends React.Component {
           </Col>
         </Row>
 
-        <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
+        <TabCheckboxOrgBDRes2 value={response} onChange={this.handleChange.bind(this, 'response')} />
 
         {/* <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} /> */}
       </div>
