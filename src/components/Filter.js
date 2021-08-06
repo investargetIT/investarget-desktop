@@ -1084,6 +1084,14 @@ class OrgBDFilter extends React.Component {
     this.props.onReset({ ...OrgBDFilter.defaultValue })
   }
 
+  componentWillReceiveProps(nextProps) {
+    const nextValueStr = JSON.stringify(nextProps.value);
+    const thisValueStr = JSON.stringify(this.state);
+    if (nextValueStr != thisValueStr) {
+      this.setState({ ...nextProps.value });
+    }
+  }
+
   render() {
     const { response, source_type, location, manager, org, proj, createuser } = this.state;
     const orgbdresOptions = this.props.orgbdres.map(m => ({ label: m.name, value: m.id }));
@@ -1121,7 +1129,7 @@ class OrgBDFilter extends React.Component {
 
         <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
 
-        <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
+        {/* <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} /> */}
       </div>
     )
   }

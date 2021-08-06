@@ -1288,6 +1288,11 @@ class OrgBDListComponent extends React.Component {
     };
   }
 
+  handleResetBtnClick = () => {
+    this.setState({ filters: OrgBDFilter.defaultValue });
+    this.handleReset(OrgBDFilter.defaultValue);
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1624,7 +1629,7 @@ class OrgBDListComponent extends React.Component {
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         {this.props.editable &&
-          <Card title="机构看板" style={{ marginBottom: 20 }}>
+          <Card title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
             {this.state.projectDetails && this.state.projectDetails.lastProject &&
               <div style={{ marginBottom: 20, textAlign: 'center' }}>
                 上一轮项目：
@@ -1635,6 +1640,7 @@ class OrgBDListComponent extends React.Component {
               <div>
                 <OrgBDFilter
                   defaultValue={filters}
+                  value={this.state.filters}
                   onSearch={this.handleFilt}
                   onReset={this.handleReset}
                   onChange={this.handleFilt}
