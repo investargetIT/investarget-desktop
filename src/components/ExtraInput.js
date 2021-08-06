@@ -774,6 +774,7 @@ class SelectProjectForOrgBd extends React.Component {
   render() {
     return (
       <Select2
+        size="middle"
         style={this.props.style || {}}
         getData={this.getProject}
         getNameById={this.getProjectNameById}

@@ -76,6 +76,15 @@ export function BasicContainer(props) {
   )
 }
 
+export function BasicContainer2(props) {
+  return (
+    <Row align="middle" gutter={16} style={{ margin: 0, marginBottom: 20 }}>
+      <Col style={{ padding: 0, width: 80, color: '#262626' }}>{ props.label + '：'}</Col>
+      <Col flex={1} >{ props.children }</Col>
+    </Row>
+  )
+}
+
 function FilterOperation(props) {
   return (
     <div style={{ marginBottom: '16px', textAlign: 'center' }}>
@@ -1081,23 +1090,34 @@ class OrgBDFilter extends React.Component {
 
     return (
       <div>
-        <BasicContainer label="项目">
-          <SelectProjectForOrgBd value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构看板项目" />
-        </BasicContainer>
+        <Row gutter={32}>
+          <Col span={12}>
+            <BasicContainer2 label="项目">
+              <SelectProjectForOrgBd style={{ width: '100%' }} value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构看板项目" />
+            </BasicContainer2>
+          </Col>
+          {this.state.proj !== null ?
+            <Col span={12}>
+              <BasicContainer2 label="机构">
+                <SelectMultiOrgs value={org} size="middle" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
+              </BasicContainer2>
+            </Col>
+            : null}
+        </Row>
 
-        { this.state.proj !== null ?
-        <BasicContainer label="机构">
-          <SelectMultiOrgs value={org} size="large" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
-        </BasicContainer>
-        : null }
+        <Row gutter={32}>
+          <Col span={12}>
+            <BasicContainer2 label={i18n('project_bd.bd_manager')}>
+              <SelectOrgUser style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+            </BasicContainer2>
+          </Col>
 
-        <BasicContainer label={i18n('project_bd.bd_manager')}>
-          <SelectOrgUser style={{ width: '100%' }} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
-        </BasicContainer>
-
-        <BasicContainer label="BD创建人">
-          <SelectOrgUser style={{ width: '100%' }} type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
-        </BasicContainer>
+          <Col span={12}>
+            <BasicContainer2 label="BD创建人">
+              <SelectOrgUser style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
+            </BasicContainer2>
+          </Col>
+        </Row>
 
         <TabCheckboxOrgBDRes value={response} onChange={this.handleChange.bind(this, 'response')} />
 
