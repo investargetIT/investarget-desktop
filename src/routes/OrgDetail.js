@@ -768,7 +768,7 @@ class OrgDetail extends React.Component {
         })
         return Promise.all([
           requestAllData(api.getUser, { org: data.id, title: orgStructure.map(m => m.title.id) }, 1000),
-          requestAllData(api.getUnreachUser, { org: data.id }, 1000),
+          // requestAllData(api.getUnreachUser, { org: data.id }, 1000),
         ])
       } else {
         return Promise.resolve()
@@ -790,19 +790,19 @@ class OrgDetail extends React.Component {
           newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key })
         }
       })
-      data[1].data.data.map(m => {
-        const index = newData.map(m => m.id).indexOf(m.title)
-        if (index > -1) {
-          const trader = {
-            id: m.trader_relation && m.trader_relation.traderuser.id,
-            name: m.trader_relation && m.trader_relation.traderuser.username
-          }
-          const isUnreachUser = true
-          const isMyInvestor = false
-          const key = 'unreach-' + m.id
-          newData[index].user.push({ ...m, trader, isUnreachUser, key, isMyInvestor })
-        }
-      })
+      // data[1].data.data.map(m => {
+      //   const index = newData.map(m => m.id).indexOf(m.title)
+      //   if (index > -1) {
+      //     const trader = {
+      //       id: m.trader_relation && m.trader_relation.traderuser.id,
+      //       name: m.trader_relation && m.trader_relation.traderuser.username
+      //     }
+      //     const isUnreachUser = true
+      //     const isMyInvestor = false
+      //     const key = 'unreach-' + m.id
+      //     newData[index].user.push({ ...m, trader, isUnreachUser, key, isMyInvestor })
+      //   }
+      // })
       this.setState({ data: newData })
     })
     .catch(err => {
@@ -905,26 +905,26 @@ class OrgDetail extends React.Component {
   /**
    * 鼠标停留在投资人上时判断是否有权限修改该投资人
    */
-  handleHoverInvestor = (positionID, userKey) => {
-    const newData = this.state.data.slice()
-    .map(m => {
-      const user = m.user.slice()
-      return {...m, user}
-    })
-    const positionIndex = newData.map(m => m.id).indexOf(positionID)
-    const index = newData[positionIndex].user.map(m => m.key).indexOf(userKey)
-    if (hasPerm('usersys.admin_changeuser')) {
-      newData[positionIndex].user[index].couldEdit = true;
-      this.setState({ data: newData });
-      return
-    }
-    api.checkUserRelation(userKey.split('-')[1], isLogin().id)
-    .then(result => {
-      if (!result.data) return
-      newData[positionIndex].user[index].couldEdit = true;
-      this.setState({ data: newData });
-    });
-  }
+  // handleHoverInvestor = (positionID, userKey) => {
+  //   const newData = this.state.data.slice()
+  //   .map(m => {
+  //     const user = m.user.slice()
+  //     return {...m, user}
+  //   })
+  //   const positionIndex = newData.map(m => m.id).indexOf(positionID)
+  //   const index = newData[positionIndex].user.map(m => m.key).indexOf(userKey)
+  //   if (hasPerm('usersys.admin_changeuser')) {
+  //     newData[positionIndex].user[index].couldEdit = true;
+  //     this.setState({ data: newData });
+  //     return
+  //   }
+  //   api.checkUserRelation(userKey.split('-')[1], isLogin().id)
+  //   .then(result => {
+  //     if (!result.data) return
+  //     newData[positionIndex].user[index].couldEdit = true;
+  //     this.setState({ data: newData });
+  //   });
+  // }
 
   onMobileUploadComplete(status, records) {
     if(!status) return;
@@ -1040,7 +1040,7 @@ class OrgDetail extends React.Component {
                 {basic}
               </TabPane>
 
-              { this.state.data.length > 0 ?
+              {/* { this.state.data.length > 0 ?
               <TabPane tab="组织架构" key="7">
                 <div>
                   {this.state.data.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
@@ -1057,7 +1057,7 @@ class OrgDetail extends React.Component {
                   </div>)}
                 </div>
               </TabPane>
-              : null }
+              : null } */}
 
               { this.state.contact.length > 0 ?
               <TabPane tab="联系方式" key="2">
