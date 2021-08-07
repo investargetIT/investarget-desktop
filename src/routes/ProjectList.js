@@ -24,6 +24,8 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
+import _ from 'lodash';
 
 const statStyle = {
   flex: 1,
@@ -79,6 +81,7 @@ class ProjectList extends React.Component {
       discloseFinance: false,
       unreadOrgBDNumber: 0,
       onGogoingProjects: [],
+      solvedProjectsThisYear: [],
     }
   }
 
@@ -253,7 +256,32 @@ class ProjectList extends React.Component {
   componentDidMount() {
     this.getMyTodoTasks();
     this.getOngoingProjects();
+    this.getFinishedProjectThisYear();
     this.getProject()
+  }
+
+  getFinishedProjectThisYear = async () => {
+    const startOfThisYear = moment().startOf('year');
+    const endOfThisYear = moment().endOf('year');
+    const startDate = `${startOfThisYear.format('YYYY-MM-DD')}T00:00:00`;
+    const endDate = `${endOfThisYear.format('YYYY-MM-DD')}T23:59:59`;
+
+    const stime = startDate;
+    const etime = endDate;
+    const stimeM = startDate;
+    const etimeM = endDate;
+    const page_size = 1000;
+
+    const params1 = { stimeM, etimeM, page_size, isSolved: 1 };
+    const params2 = { stime, etime, page_size, isSolved: 1 };
+    const res = await Promise.all([
+      requestAllData(api.getOrgBDProj, params1, 1000),
+      requestAllData(api.getOrgBDProj, params2, 1000),
+    ]);
+
+    const allSolvedProj = res.reduce((pre, cur) => pre.concat(cur.data.data.map(m => m.proj)), []);
+    const uniqueProj =  _.uniqBy(allSolvedProj, 'id');
+    this.setState({ solvedProjectsThisYear: uniqueProj });
   }
 
   getMyTodoTasks = async () => {
@@ -513,8 +541,8 @@ class ProjectList extends React.Component {
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
-            <div style={statLabelStyle}>当年完成项目数-TODO</div>
-            <div style={statValueStyle}><span style={statValueNumStyle}>24</span>个任务</div>
+            <div style={statLabelStyle}>当年完成项目数</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.solvedProjectsThisYear.length}</span>个</div>
           </div>
         </Card>
 
