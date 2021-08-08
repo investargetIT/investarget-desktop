@@ -1445,22 +1445,22 @@ class OrgBDListComponent extends React.Component {
             width: '7%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
-        {
-          title: i18n('org_bd.creator'),
-          width: '7%',
-          dataIndex: 'createuser.username',
-          key: 'createuser',
-          sorter: false,
-          render: (text, record) => {
-            if (record.new) {
-              return isLogin().username;
-            }
-            if (this.isAbleToModifyStatus(record)) {
-              return text;
-            }
-            return null;
-          }, 
-        },
+        // {
+        //   title: i18n('org_bd.creator'),
+        //   width: '7%',
+        //   dataIndex: 'createuser.username',
+        //   key: 'createuser',
+        //   sorter: false,
+        //   render: (text, record) => {
+        //     if (record.new) {
+        //       return isLogin().username;
+        //     }
+        //     if (this.isAbleToModifyStatus(record)) {
+        //       return text;
+        //     }
+        //     return null;
+        //   }, 
+        // },
         {
           title: i18n('org_bd.manager'),
           width: '10%',
@@ -1485,52 +1485,52 @@ class OrgBDListComponent extends React.Component {
             return null;
           },
         },
+        // {
+        //   title: '任务时间',
+        //   width: '16%',
+        //   key: 'createdtime',
+        //   sorter: false,
+        //   render: (text, record) => {
+        //     if (record.new) {
+        //       return <div>
+        //         {timeWithoutHour(new Date()) + " - "}
+        //         <DatePicker
+        //           placeholder="过期时间"
+        //           disabledDate={this.disabledDate}
+        //           // defaultValue={moment()}
+        //           showToday={false}
+        //           shape="circle"
+        //           value={record.expirationtime}
+        //           renderExtraFooter={() => {
+        //             return <div>
+        //               <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment() }) }}>Now</Button>
+        //             &nbsp;&nbsp;
+        //             <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
+        //             &nbsp;&nbsp;
+        //             <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'months') }) }}>Month</Button>
+        //             </div>
+        //           }}
+        //           onChange={v => { this.updateSelection(record, { expirationtime: v }) }}
+        //         />
+        //       </div>
+        //     } 
+        //     if (this.isAbleToModifyStatus(record)) {
+        //       if (record.response !== null) {
+        //         return '正常';
+        //       }
+        //       if (record.expirationtime === null) {
+        //         return '无过期时间';
+        //       }
+        //       const ms = moment(record.expirationtime).diff(moment());
+        //       const d = moment.duration(ms);
+        //       const remainDays = Math.ceil(d.asDays());
+        //       return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
+        //     }
+        //     return null;
+        //   },
+        // },
         {
-          title: '任务时间',
-          width: '16%',
-          key: 'createdtime',
-          sorter: false,
-          render: (text, record) => {
-            if (record.new) {
-              return <div>
-                {timeWithoutHour(new Date()) + " - "}
-                <DatePicker
-                  placeholder="过期时间"
-                  disabledDate={this.disabledDate}
-                  // defaultValue={moment()}
-                  showToday={false}
-                  shape="circle"
-                  value={record.expirationtime}
-                  renderExtraFooter={() => {
-                    return <div>
-                      <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment() }) }}>Now</Button>
-                    &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
-                    &nbsp;&nbsp;
-                    <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'months') }) }}>Month</Button>
-                    </div>
-                  }}
-                  onChange={v => { this.updateSelection(record, { expirationtime: v }) }}
-                />
-              </div>
-            } 
-            if (this.isAbleToModifyStatus(record)) {
-              if (record.response !== null) {
-                return '正常';
-              }
-              if (record.expirationtime === null) {
-                return '无过期时间';
-              }
-              const ms = moment(record.expirationtime).diff(moment());
-              const d = moment.duration(ms);
-              const remainDays = Math.ceil(d.asDays());
-              return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-            }
-            return null;
-          },
-        },
-        {
-          title: i18n('org_bd.status'),
+          title: '机构进度/材料',
           width: '10%',
           dataIndex: 'response',
           key: 'response',
@@ -1552,6 +1552,13 @@ class OrgBDListComponent extends React.Component {
           },
         },
         {
+          title: '创建时间',
+          width: '10%',
+          key: 'creation_time',
+          dataIndex: 'createdtime',
+          render: text => text.slice(0, 10),
+        },
+        {
           title: "最新备注",
           width: '20%',
           key: 'bd_latest_info',
@@ -1567,6 +1574,18 @@ class OrgBDListComponent extends React.Component {
             }
             return null;
           },
+        },
+        {
+          title: 'PM备注',
+          width: '10%',
+          key: 'pm_remark',
+          render: (_, record) => 'PM Remark',
+        },
+        {
+          title: '优先级',
+          width: '10%',
+          key: 'priority',
+          render: (_, record) => '低',
         },
       ];
         
