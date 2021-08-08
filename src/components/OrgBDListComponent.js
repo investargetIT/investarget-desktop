@@ -1716,21 +1716,21 @@ class OrgBDListComponent extends React.Component {
             />
             : null}
 
-          <div style={{ padding: '10px 8px', backgroundColor: '#E9F1F3', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+          <div style={{ padding: '10px 8px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             <div style={{ width: 40 }} />
             <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
             <div style={{ flex: 7, padding: '6px 8px' }}>职位</div>
-            <div style={{ flex: 7, padding: '6px 8px' }}>创建人</div>
             <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
-            <div style={{ flex: 16, padding: '6px 8px' }}>任务时间</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>状态</div>
+            <div style={{ flex: 20, padding: '6px 8px' }}>机构进度/材料</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>创建时间</div>
             <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
-            <div style={{ flex: 20, padding: '6px 8px' }}>操作</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>PM备注</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>优先级</div>
+            <div style={{ flex: 10, padding: '6px 8px' }}>操作</div>
           </div>
 
           {this.state.filters.proj !== null ?
             <Table
-              className="new-org-db-style"
               onChange={this.handleTableChange}
               columns={columns}
               expandedRowRender={expandedRowRender}
