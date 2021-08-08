@@ -1464,7 +1464,7 @@ class OrgBDListComponent extends React.Component {
         {
           title: i18n('org_bd.manager'),
           width: '10%',
-          dataIndex: 'manager.username',
+          dataIndex: ['manager', 'username'],
           key: 'manager',
           sorter: false,
           render: (text, record) => {
