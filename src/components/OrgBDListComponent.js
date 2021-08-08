@@ -45,6 +45,8 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+const priority = ['低', '中', '高'];
+
 function tableToExcel(table, worksheetName) {
   var uri = 'data:application/vnd.ms-excel;base64,'
   var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
@@ -1585,7 +1587,8 @@ class OrgBDListComponent extends React.Component {
           title: '优先级',
           width: '10%',
           key: 'priority',
-          render: (_, record) => '低',
+          dataIndex: 'isimportant',
+          render: text => typeof text === 'number' ? priority[text] : '未知',
         },
       ];
         
