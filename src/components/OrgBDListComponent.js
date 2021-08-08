@@ -1558,7 +1558,17 @@ class OrgBDListComponent extends React.Component {
           width: '10%',
           key: 'creation_time',
           dataIndex: 'createdtime',
-          render: text => text.slice(0, 10),
+          render: (text, record) => {
+            if (record.new) {
+              return (
+                <Input /> 
+              );
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              return text.slice(0, 10);
+            }
+            return null;
+          },
         },
         {
           title: "最新备注",
@@ -1588,7 +1598,17 @@ class OrgBDListComponent extends React.Component {
           width: '10%',
           key: 'priority',
           dataIndex: 'isimportant',
-          render: text => typeof text === 'number' ? priority[text] : '未知',
+          render: (text, record) => {
+            if (record.new) {
+              return (
+                <Input /> 
+              );
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              return typeof text === 'number' ? priority[text] : '未知';
+            }
+            return null;
+          },
         },
       ];
         

@@ -963,6 +963,7 @@ class SelectOrgInvestor extends React.Component {
       allStatus,
       onjob,
       dispatch,
+      allowEmpty,
       ...extraProps,
     } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
