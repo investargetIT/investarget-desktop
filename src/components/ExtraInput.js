@@ -1938,6 +1938,7 @@ class SelectMultiOrgs extends React.Component {
         filterOption={false}
         onSearch={this.fetchOrg}
         onChange={this.handleChange}
+        placeholder={this.props.placeholder}
       >
         {data.map(d => <Option key={d.value}>{d.text}</Option>)}
       </Select>

@@ -1107,7 +1107,7 @@ class OrgBDFilter extends React.Component {
           {this.state.proj !== null ?
             <Col span={12}>
               <BasicContainer2 label="机构">
-                <SelectMultiOrgs value={org} size="middle" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
+                <SelectMultiOrgs placeholder="请输入机构名称" value={org} size="middle" style={{ width: '100%' }} onChange={this.handleChange.bind(this, 'org')} proj={this.state.proj} />
               </BasicContainer2>
             </Col>
             : null}
@@ -1116,13 +1116,13 @@ class OrgBDFilter extends React.Component {
         <Row gutter={32}>
           <Col span={12}>
             <BasicContainer2 label={i18n('project_bd.bd_manager')}>
-              <SelectOrgUser style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+              <SelectOrgUser placeholder="请输入负责人名称" style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
             </BasicContainer2>
           </Col>
 
           <Col span={12}>
             <BasicContainer2 label="BD创建人">
-              <SelectOrgUser style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
+              <SelectOrgUser placeholder="请输入创建人名称" style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
             </BasicContainer2>
           </Col>
         </Row>

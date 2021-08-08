@@ -1686,11 +1686,12 @@ class OrgBDListComponent extends React.Component {
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Search
-                style={{ width: 200 }}
-                placeholder="联系人/联系电话"
+                style={{ width: 300 }}
+                placeholder="请输入投资人名称或电话"
                 onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
                 onChange={search => this.setState({ search })}
                 value={search}
+                size="middle"
               />
               {this.isAbleToCreateBD() &&
                 <div className="another-btn">
