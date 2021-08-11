@@ -1397,6 +1397,13 @@ class OrgBDListComponent extends React.Component {
             console.log('Cancel');
           },
         });
+        break;
+      case 'update_status':
+        react.handleModifyStatusBtnClicked(record);
+        break;
+      case 'add_remark':
+        react.handleOpenModal(record);
+        break;
     }
   }
 
