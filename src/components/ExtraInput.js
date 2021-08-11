@@ -820,6 +820,7 @@ class SelectTrader extends React.Component {
     return (
       <Select
       // {...this.props}
+      style={{ width: '100%' }}
       mode={this.props.mode}
       showSearch
       disabled={this.props.disabled}

@@ -25,6 +25,7 @@ import {
   Row,
   Col,
   Transfer,
+  Cascader,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -46,6 +47,64 @@ import {
 } from '@ant-design/icons';
 
 const priority = ['低', '中', '高'];
+const options = [
+  {
+    value: '暂未联系',
+    label: '暂未联系',
+  },
+  {
+    value: '预沟通',
+    label: '预沟通',
+    children: [
+      {
+        value: '无材料',
+        label: '无材料',
+      },
+      {
+        value: 'Teaser',
+        label: 'Teaser',
+      },
+      {
+        value: 'BP',
+        label: 'BP',
+      },
+      {
+        value: 'DP',
+        label: 'DP',
+      },
+      {
+        value: '补充材料',
+        label: '补充材料',
+      },
+    ],
+  },
+  {
+    value: '正式路演',
+    label: '正式路演',
+    children: [
+      {
+        value: '无材料',
+        label: '无材料',
+      },
+      {
+        value: 'Teaser',
+        label: 'Teaser',
+      },
+      {
+        value: 'BP',
+        label: 'BP',
+      },
+      {
+        value: 'DP',
+        label: 'DP',
+      },
+      {
+        value: '补充材料',
+        label: '补充材料',
+      },
+    ],
+  },
+];
 
 function tableToExcel(table, worksheetName) {
   var uri = 'data:application/vnd.ms-excel;base64,'
@@ -1311,6 +1370,16 @@ class OrgBDListComponent extends React.Component {
     this.handleReset(OrgBDFilter.defaultValue);
   }
 
+  handleProgressChange = value => {
+    window.echo('progress change', value);
+    // setProgress(value[0]);
+    // let material = '无材料';
+    // if (value.length === 2) {
+    //   material = value[1];
+    // }
+    // setMaterial(material);
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1421,13 +1490,14 @@ class OrgBDListComponent extends React.Component {
             allowEmpty 
             style={{width: "100%"}} 
             type="investor" 
-            mode="single" 
+            mode="single"
+            size="middle"
             optionFilterProp="children" 
             org={record.org.id} 
             value={record.orgUser} 
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
-          : <div style={{ width: 100 }}>                  
+          : <div style={{ width: 100, marginLeft: 40 }}>                  
               {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
@@ -1473,7 +1543,7 @@ class OrgBDListComponent extends React.Component {
             if (record.new) {
               return (
                 <SelectTrader
-                  style={{ width: "100%" }}
+                  style={{ width: 100 }}
                   data={this.state.traderList}
                   mode="single"
                   value={record.trader}
@@ -1533,18 +1603,14 @@ class OrgBDListComponent extends React.Component {
         // },
         {
           title: '机构进度/材料',
-          width: '10%',
+          width: '15%',
           dataIndex: 'response',
           key: 'response',
           sorter: false,
           render: (text, record) => {
             if (record.new) {
               return (
-                <Checkbox
-                  checked={record.isimportant}
-                  onChange={v => { this.updateSelection(record, { isimportant: v.target.checked }) }}>
-                  重点BD
-                </Checkbox>
+                <Cascader options={options} onChange={this.handleProgressChange} placeholder="Please select" />
               );
             }
             if (this.isAbleToModifyStatus(record)) {
@@ -1560,9 +1626,7 @@ class OrgBDListComponent extends React.Component {
           dataIndex: 'createdtime',
           render: (text, record) => {
             if (record.new) {
-              return (
-                <Input /> 
-              );
+              return null;
             }
             if (this.isAbleToModifyStatus(record)) {
               return text.slice(0, 10);
@@ -1761,9 +1825,9 @@ class OrgBDListComponent extends React.Component {
           <div style={{ padding: '10px 8px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             <div style={{ width: 40 }} />
             <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
-            <div style={{ flex: 7, padding: '6px 8px' }}>职位</div>
+            <div style={{ flex: 5, padding: '6px 8px' }}>职位</div>
             <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
-            <div style={{ flex: 20, padding: '6px 8px' }}>机构进度/材料</div>
+            <div style={{ flex: 15, padding: '6px 8px' }}>机构进度/材料</div>
             <div style={{ flex: 10, padding: '6px 8px' }}>创建时间</div>
             <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
             <div style={{ flex: 10, padding: '6px 8px' }}>PM备注</div>
