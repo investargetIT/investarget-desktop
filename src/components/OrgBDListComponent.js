@@ -26,6 +26,7 @@ import {
   Col,
   Transfer,
   Cascader,
+  Select,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -44,8 +45,10 @@ import {
   DeleteOutlined,
   PlusCircleOutlined,
   PlusOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 
+const { Option } = Select;
 const priority = ['低', '中', '高'];
 const options = [
   {
@@ -1380,6 +1383,23 @@ class OrgBDListComponent extends React.Component {
     // setMaterial(material);
   }
 
+  handleOperationChange(record, value) {
+    const react = this;
+    switch (value) {
+      case 'delete':
+        Modal.confirm({
+          title: i18n('message.confirm_delete'),
+          icon: <ExclamationCircleOutlined />,
+          onOk() {
+            react.handleDelete(record);
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+    }
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1514,7 +1534,7 @@ class OrgBDListComponent extends React.Component {
           {
             title: '职位',
             key: 'title',
-            width: '7%',
+            width: '10%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
         // {
@@ -1636,7 +1656,7 @@ class OrgBDListComponent extends React.Component {
         },
         {
           title: "最新备注",
-          width: '20%',
+          width: '15%',
           key: 'bd_latest_info',
           render: (text, record) => {
             if (record.new) {
@@ -1659,7 +1679,7 @@ class OrgBDListComponent extends React.Component {
         },
         {
           title: '优先级',
-          width: '10%',
+          width: '5%',
           key: 'priority',
           dataIndex: 'isimportant',
           render: (text, record) => {
@@ -1677,7 +1697,7 @@ class OrgBDListComponent extends React.Component {
       ];
         
         if (this.props.editable) columns.push({
-            title: i18n('org_bd.operation'), width: '20%', render: (text, record) => 
+            title: i18n('org_bd.operation'), width: '15%', render: (text, record) => 
             {
             if (record.new) {
               return (
@@ -1694,6 +1714,14 @@ class OrgBDListComponent extends React.Component {
             } else {
               const latestComment = record.BDComments && record.BDComments[0]
               const comments = latestComment ? latestComment.comments : ''
+              return (
+                <Select placeholder="操作" style={{ width: '100%' }} onChange={this.handleOperationChange.bind(this, record)}>
+                  {this.isAbleToModifyStatus(record) && <Option value="update_status">修改状态</Option>}
+                  {this.isAbleToModifyStatus(record) && <Option value="add_remark">添加备注</Option>}
+                  <Option value="add_pm_remark">添加PM备注</Option>
+                  {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) && <Option value="delete">删除</Option>}
+                </Select>
+              );
               return <span>
 
                 { /* 修改状态和备注按钮 */ }
@@ -1822,17 +1850,17 @@ class OrgBDListComponent extends React.Component {
             />
             : null}
 
-          <div style={{ padding: '10px 8px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
-            <div style={{ width: 40 }} />
-            <div style={{ flex: 10, padding: '6px 8px' }}>联系人</div>
-            <div style={{ flex: 5, padding: '6px 8px' }}>职位</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>负责人</div>
-            <div style={{ flex: 15, padding: '6px 8px' }}>机构进度/材料</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>创建时间</div>
-            <div style={{ flex: 20, padding: '6px 8px' }}>最新备注</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>PM备注</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>优先级</div>
-            <div style={{ flex: 10, padding: '6px 8px' }}>操作</div>
+          <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+            {/* <div style={{ width: 40 }} /> */}
+            <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
+            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
+            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>
+            <div style={{ flex: 5, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>
+            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>
           </div>
 
           {this.state.filters.proj !== null ?
