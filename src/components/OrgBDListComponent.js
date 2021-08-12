@@ -1081,13 +1081,15 @@ class OrgBDListComponent extends React.Component {
   saveNewBD(record) {
     let body = {
       'bduser': record.orgUser >= 0 ? record.orgUser : null,
-      'manager': record.trader,
+      'manager': Number(record.trader),
       'org': record.org.id,
       'proj': record.proj.id,
       'isimportant':record.isimportant,
       'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       'bd_status': 1,
     }
+    window.echo('save new bd', body);
+    return;
     api.getUserSession()
       .then(() => api.addOrgBD(body))
       .then(result => {
@@ -1692,7 +1694,15 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => {
             if (record.new) {
               return (
-                <Input /> 
+                <Select
+                  defaultValue={1}
+                  style={{ width: '100%' }}
+                  onChange={v => { this.updateSelection(record, { isimportant: v }) }}
+                >
+                  <Option value={1}>低</Option>
+                  <Option value={2}>中</Option>
+                  <Option value={3}>高</Option>
+                </Select> 
               );
             }
             if (this.isAbleToModifyStatus(record)) {
