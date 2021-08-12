@@ -1686,7 +1686,7 @@ class OrgBDListComponent extends React.Component {
         },
         {
           title: '优先级',
-          width: '5%',
+          width: '8%',
           key: 'priority',
           dataIndex: 'isimportant',
           render: (text, record) => {
@@ -1704,7 +1704,7 @@ class OrgBDListComponent extends React.Component {
       ];
         
         if (this.props.editable) columns.push({
-            title: i18n('org_bd.operation'), width: '15%', render: (text, record) => 
+            title: i18n('org_bd.operation'), width: '12%', render: (text, record) => 
             {
             if (record.new) {
               return (
@@ -1866,8 +1866,8 @@ class OrgBDListComponent extends React.Component {
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
             <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>
-            <div style={{ flex: 5, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>
-            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>
+            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>
+            <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>
           </div>
 
           {this.state.filters.proj !== null ?
