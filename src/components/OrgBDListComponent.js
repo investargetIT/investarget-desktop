@@ -1517,7 +1517,7 @@ class OrgBDListComponent extends React.Component {
             allStatus 
             onjob 
             allowEmpty 
-            style={{width: "100%"}} 
+            style={{ width: "100%" }}
             type="investor" 
             mode="single"
             size="middle"
@@ -1639,7 +1639,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => {
             if (record.new) {
               return (
-                <Cascader options={options} onChange={this.handleProgressChange} placeholder="Please select" />
+                <Cascader options={options} onChange={this.handleProgressChange} placeholder="机构进度/材料" />
               );
             }
             if (this.isAbleToModifyStatus(record)) {
@@ -2013,6 +2013,9 @@ class OrgBDListComponent extends React.Component {
 
 function mapStateToProps(state) {
   const { orgbdres, famlv } = state.app;
+  if (orgbdres.length > 0) {
+    window.echo('orgbdres', orgbdres);
+  }
   return { orgbdres, famlv };
 }
 
