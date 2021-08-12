@@ -1928,8 +1928,8 @@ class OrgBDListComponent extends React.Component {
             <div style={{ margin: '16px 0' }} className="clearfix">
 
               {this.props.editable && this.isAbleToCreateBD() ?
-                <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                  <PlusCircleOutlined style={{ fontSize: 24, color: '#08c', lineHeight: '33px', marginLeft: 54 }} />
+                <Link className="another-btn" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                  <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
                 </Link>
                 : null}
 
