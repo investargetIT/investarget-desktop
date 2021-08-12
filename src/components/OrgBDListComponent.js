@@ -205,6 +205,8 @@ class OrgBDListComponent extends React.Component {
 
         progressOptions: [], // 过滤条件中的状态加数量选项
         allLabel: '全部', // 过滤条件全部状态的名称
+        isPMComment: false, // 是否PM的备注
+
     }
 
     this.allTrader = [];
@@ -931,6 +933,7 @@ class OrgBDListComponent extends React.Component {
     const body = {
       orgBD: this.state.currentBD.id,
       comments: this.state.newComment,
+      isPMComment: this.state.isPMComment,
     };
     api.addOrgBDComment(body)
       .then(data => this.setState({ newComment: '' }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id)))
@@ -1403,7 +1406,10 @@ class OrgBDListComponent extends React.Component {
         react.handleModifyStatusBtnClicked(record);
         break;
       case 'add_remark':
-        react.handleOpenModal(record);
+        react.setState({ isPMComment: false }, () => react.handleOpenModal(record));
+        break;
+      case 'add_pm_remark':
+        react.setState({ isPMComment: true }, () => react.handleOpenModal(record));
         break;
     }
   }
