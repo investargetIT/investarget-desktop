@@ -1410,7 +1410,25 @@ class OrgBDListComponent extends React.Component {
   }
 
   getProgressOptions = () => {
-    return options; 
+    return this.props.orgbdres.map(m => {
+      if (!m.material) {
+        return { label: m.name, value: m.id };
+      }
+      return {
+        label: m.name,
+        value: m.id,
+        children: [
+          {
+            label: '无材料',
+            value: 0,
+          },
+          {
+            label: m.material,
+            value: m.material,
+          },
+        ],
+      };
+    });
   }
 
   render() {
