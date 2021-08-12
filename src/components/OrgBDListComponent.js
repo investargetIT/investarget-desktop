@@ -1380,7 +1380,7 @@ class OrgBDListComponent extends React.Component {
 
   handleProgressChange(record, value) {
     const response = value[0];
-    let material = undefined;
+    let material = '';
     if (value.length > 0 && value[1] !== 0) {
       material = value[1];
     }
@@ -1967,6 +1967,7 @@ class OrgBDListComponent extends React.Component {
           onCancel={() => this.setState({ visible: false })} 
           onOk={this.handleConfirmBtnClicked}
           bd={this.state.currentBD}
+          orgbdres={this.props.orgbdres}
         />
         : null }
 

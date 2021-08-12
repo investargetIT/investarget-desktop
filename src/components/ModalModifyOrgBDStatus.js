@@ -11,8 +11,8 @@ import {
   Input, 
   Row, 
   Col, 
-  Switch, 
-  Button, 
+  Cascader, 
+  Button,
 } from 'antd';
 import { SelectNewBDStatus } from './ExtraInput';
 
@@ -87,6 +87,7 @@ class ModalModifyOrgBDStatus extends React.Component {
     group: '', 
     mobileAreaCode: '86',
     comment: '',
+    material: '',
   }
 
   checkInvalid = () => {
@@ -97,7 +98,38 @@ class ModalModifyOrgBDStatus extends React.Component {
     const { username, mobile, email, status, group } = this.state;
     return ((username.length === 0 || !checkMobile(mobile) || email.length === 0 || group.length === 0) && status === 3 && this.props.bd.bduser === null && this.props.bd.bd_status.id !== 3)
   }
- 
+
+  getProgressOptions = () => {
+    return this.props.orgbdres.map(m => {
+      if (!m.material) {
+        return { label: m.name, value: m.id };
+      }
+      return {
+        label: m.name,
+        value: m.id,
+        children: [
+          {
+            label: '无材料',
+            value: 0,
+          },
+          {
+            label: m.material,
+            value: m.material,
+          },
+        ],
+      };
+    });
+  }
+
+  handleProgressChange = value => {
+    const response = value[0];
+    let material = '';
+    if (value.length > 0 && value[1] !== 0) {
+      material = value[1];
+    }
+    this.setState({ status: response, material });
+  }
+
   render() {
     const { visible, currentStatus, status, sendEmail, confirmLoading, onSendEmailChange, onOk, onCancel } = this.props
     return (
@@ -110,21 +142,36 @@ class ModalModifyOrgBDStatus extends React.Component {
       >
         <div style={{ width: '70%', margin: '0 auto', marginLeft: 50 }}>
           <Row>
-            <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >{i18n('org_bd.important')} : </Col>
+            <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >优先级：</Col>
             <Col span={16}>
-              <Switch
+              {/* <Switch
                 defaultChecked={this.state.isimportant}
                 onChange={checked => this.setState({ isimportant: checked })}
-              />
+              /> */}
+              <Select
+                defaultValue={this.state.isimportant}
+                style={{ width: '100%' }}
+                onChange={value => this.setState({ isimportant: value })}
+              >
+                <Option value={0}>低</Option>
+                <Option value={1}>中</Option>
+                <Option value={2}>高</Option>
+              </Select>
             </Col>
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
-              <SelectNewBDStatus
+              {/* <SelectNewBDStatus
                 style={{ width: '100%' }}
                 value={this.state.status}
                 onChange={status => this.setState({ status })}
+              /> */}
+              <Cascader
+                style={{ width: '100%' }}
+                options={this.getProgressOptions()}
+                onChange={this.handleProgressChange}
+                placeholder="机构进度/材料"
               />
             </Col>
           </Row>
