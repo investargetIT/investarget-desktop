@@ -500,8 +500,8 @@ class OrgBDListComponent extends React.Component {
     const newList = this.state.list.map((item) => {
       const items = orgBDDetails.filter(f => f.org.id === item.org.id)
         .sort((a, b) => {
-          const aImportant = a.isimportant ? 1 : 0;
-          const bImportant = b.isimportant ? 1 : 0;
+          const aImportant = a.isimportant;
+          const bImportant = b.isimportant;
           return bImportant - aImportant;
         });
       return { ...item, items, loaded: true };
@@ -597,8 +597,8 @@ class OrgBDListComponent extends React.Component {
     requestAllData(api.getOrgBdList, param1, 100)
     .then(result => {
       let list = result.data.data.sort((a, b) => {
-        const aImportant = a.isimportant ? 1 : 0;
-        const bImportant = b.isimportant ? 1 : 0;
+        const aImportant = a.isimportant;
+        const bImportant = b.isimportant;
         return bImportant - aImportant;
       });
       let promises = list.map(item=>{
@@ -813,7 +813,7 @@ class OrgBDListComponent extends React.Component {
   handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode, comment }, isModifyWechat) => {
     const body = {
       response: status,
-      isimportant: isimportant ? 1 : 0,
+      isimportant: isimportant,
       remark: comment,
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
@@ -1020,7 +1020,7 @@ class OrgBDListComponent extends React.Component {
     const id = Math.random();
     let list = this.state.list.map(item => 
       item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({id, key, new: true, isimportant: 1, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
+        {...item, items: item.items.concat({id, key, new: true, isimportant: 0, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
         item
     )
     this.setState({ list })
@@ -1720,9 +1720,9 @@ class OrgBDListComponent extends React.Component {
                   style={{ width: '100%' }}
                   onChange={v => { this.updateSelection(record, { isimportant: v }) }}
                 >
-                  <Option value={1}>低</Option>
-                  <Option value={2}>中</Option>
-                  <Option value={3}>高</Option>
+                  <Option value={0}>低</Option>
+                  <Option value={1}>中</Option>
+                  <Option value={2}>高</Option>
                 </Select> 
               );
             }
