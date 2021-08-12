@@ -1020,7 +1020,7 @@ class OrgBDListComponent extends React.Component {
     const id = Math.random();
     let list = this.state.list.map(item => 
       item.id === `${record.org.id}-${record.proj.id}` ?
-        {...item, items: item.items.concat({id, key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
+        {...item, items: item.items.concat({id, key, new: true, isimportant: 1, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: moment().add(1, 'weeks')})} :
         item
     )
     this.setState({ list })
@@ -1084,12 +1084,12 @@ class OrgBDListComponent extends React.Component {
       'manager': Number(record.trader),
       'org': record.org.id,
       'proj': record.proj.id,
-      'isimportant':record.isimportant,
-      'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
-      'bd_status': 1,
+      'isimportant': record.isimportant,
+      // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
+      // 'bd_status': 1,
+      'response': record.response,
+      'material': record.material,
     }
-    window.echo('save new bd', body);
-    return;
     api.getUserSession()
       .then(() => api.addOrgBD(body))
       .then(result => {
@@ -1375,14 +1375,13 @@ class OrgBDListComponent extends React.Component {
     this.handleReset(OrgBDFilter.defaultValue);
   }
 
-  handleProgressChange = value => {
-    window.echo('progress change', value);
-    // setProgress(value[0]);
-    // let material = '无材料';
-    // if (value.length === 2) {
-    //   material = value[1];
-    // }
-    // setMaterial(material);
+  handleProgressChange(record, value) {
+    const response = value[0];
+    let material = undefined;
+    if (value.length > 0 && value[1] !== 0) {
+      material = value[1];
+    }
+    this.updateSelection(record, { response, material });
   }
 
   handleOperationChange(record, value) {
@@ -1661,7 +1660,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => {
             if (record.new) {
               return (
-                <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange} placeholder="机构进度/材料" />
+                <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange.bind(this, record)} placeholder="机构进度/材料" />
               );
             }
             if (this.isAbleToModifyStatus(record)) {
@@ -2035,9 +2034,6 @@ class OrgBDListComponent extends React.Component {
 
 function mapStateToProps(state) {
   const { orgbdres, famlv } = state.app;
-  if (orgbdres.length > 0) {
-    window.echo('orgbdres', orgbdres);
-  }
   return { orgbdres, famlv };
 }
 
