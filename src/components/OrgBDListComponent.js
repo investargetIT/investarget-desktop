@@ -1409,6 +1409,10 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
+  getProgressOptions = () => {
+    return options; 
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1639,7 +1643,7 @@ class OrgBDListComponent extends React.Component {
           render: (text, record) => {
             if (record.new) {
               return (
-                <Cascader options={options} onChange={this.handleProgressChange} placeholder="机构进度/材料" />
+                <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange} placeholder="机构进度/材料" />
               );
             }
             if (this.isAbleToModifyStatus(record)) {
