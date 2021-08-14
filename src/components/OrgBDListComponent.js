@@ -51,11 +51,11 @@ import {
 const { Option } = Select;
 const priority = ['低', '中', '高'];
 const progressStyles = {
-  marginRight: 10,
+  margin: 2,
   backgroundColor: 'rgba(250, 221, 20, .15)',
   fontSize: 14,
   lineHeight: '20px',
-  padding: '6px 10px',
+  padding: '4px 10px',
   borderRadius: 20,
   color: '#262626',
 };
@@ -1610,7 +1610,7 @@ class OrgBDListComponent extends React.Component {
         // },
         {
           title: '机构进度/材料',
-          width: '17%',
+          width: '16%',
           dataIndex: 'response',
           key: 'response',
           sorter: false,
@@ -1623,20 +1623,20 @@ class OrgBDListComponent extends React.Component {
             if (this.isAbleToModifyStatus(record)) {
               let progress = null;
               if (text) {
-                progress = <span style={progressStyles}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</span>;
+                progress = <div style={progressStyles}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
               }
               let material = null;
               if (record.material) {
-                material = <span style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</span>;
+                material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
               }
-              return <div>{progress}{material}</div>;
+              return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
             }
             return null;
           },
         },
         {
           title: '创建时间',
-          width: '10%',
+          width: '11%',
           key: 'creation_time',
           dataIndex: 'createdtime',
           render: (text, record) => {
@@ -1858,8 +1858,8 @@ class OrgBDListComponent extends React.Component {
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
-            <div style={{ flex: 17, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
+            <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
+            <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
             <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>
@@ -1912,7 +1912,7 @@ class OrgBDListComponent extends React.Component {
               // disabled={this.state.selectedIds.length == 0}
               style={{ backgroundColor: 'orange', border: 'none' }}
               type="primary"
-              size="large"
+              // size="large"
               loading={this.state.exportLoading}
               onClick={this.handleExportBtnClicked}>
               {i18n('project_library.export_excel')}
