@@ -1387,6 +1387,16 @@ class OrgBDListComponent extends React.Component {
     });
   }
 
+  getProgressBackground = id => {
+    if (id === 6) {
+      return 'rgba(230, 69, 71, .15)';
+    }
+    if ([4, 5].includes(id)) {
+      return 'rgba(250, 173, 20, .15)';
+    }
+    return 'rgba(82, 196, 26, .15)';
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1623,7 +1633,7 @@ class OrgBDListComponent extends React.Component {
             if (this.isAbleToModifyStatus(record)) {
               let progress = null;
               if (text) {
-                progress = <div style={progressStyles}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+                progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
               }
               let material = null;
               if (record.material) {
@@ -1764,7 +1774,7 @@ class OrgBDListComponent extends React.Component {
             rowKey={record=>record.id}
             pagination={false}
             loading={!record.loaded}
-            rowClassName={this.handleRowClassName}
+            // rowClassName={this.handleRowClassName}
           />
           {this.props.editable && this.isAbleToCreateBD() ? 
             <Button 
