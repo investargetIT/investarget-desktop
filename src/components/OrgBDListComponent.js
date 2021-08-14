@@ -50,64 +50,15 @@ import {
 
 const { Option } = Select;
 const priority = ['低', '中', '高'];
-const options = [
-  {
-    value: '暂未联系',
-    label: '暂未联系',
-  },
-  {
-    value: '预沟通',
-    label: '预沟通',
-    children: [
-      {
-        value: '无材料',
-        label: '无材料',
-      },
-      {
-        value: 'Teaser',
-        label: 'Teaser',
-      },
-      {
-        value: 'BP',
-        label: 'BP',
-      },
-      {
-        value: 'DP',
-        label: 'DP',
-      },
-      {
-        value: '补充材料',
-        label: '补充材料',
-      },
-    ],
-  },
-  {
-    value: '正式路演',
-    label: '正式路演',
-    children: [
-      {
-        value: '无材料',
-        label: '无材料',
-      },
-      {
-        value: 'Teaser',
-        label: 'Teaser',
-      },
-      {
-        value: 'BP',
-        label: 'BP',
-      },
-      {
-        value: 'DP',
-        label: 'DP',
-      },
-      {
-        value: '补充材料',
-        label: '补充材料',
-      },
-    ],
-  },
-];
+const progressStyles = {
+  marginRight: 10,
+  backgroundColor: 'rgba(250, 221, 20, .15)',
+  fontSize: 14,
+  lineHeight: '20px',
+  padding: '6px 10px',
+  borderRadius: 20,
+  color: '#262626',
+};
 
 function tableToExcel(table, worksheetName) {
   var uri = 'data:application/vnd.ms-excel;base64,'
@@ -1537,7 +1488,7 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), width: '10%', dataIndex: 'username', key:'username', 
+        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username', 
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
@@ -1659,7 +1610,7 @@ class OrgBDListComponent extends React.Component {
         // },
         {
           title: '机构进度/材料',
-          width: '15%',
+          width: '17%',
           dataIndex: 'response',
           key: 'response',
           sorter: false,
@@ -1670,7 +1621,15 @@ class OrgBDListComponent extends React.Component {
               );
             }
             if (this.isAbleToModifyStatus(record)) {
-              return text && this.props.orgbdres.filter(f => f.id === text)[0].name;
+              let progress = null;
+              if (text) {
+                progress = <span style={progressStyles}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</span>;
+              }
+              let material = null;
+              if (record.material) {
+                material = <span style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</span>;
+              }
+              return <div>{progress}{material}</div>;
             }
             return null;
           },
@@ -1897,9 +1856,9 @@ class OrgBDListComponent extends React.Component {
           <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             {/* <div style={{ width: 40 }} /> */}
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
+            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
-            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
+            <div style={{ flex: 17, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
             <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>
