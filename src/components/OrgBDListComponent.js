@@ -157,6 +157,7 @@ class OrgBDListComponent extends React.Component {
         progressOptions: [], // 过滤条件中的状态加数量选项
         allLabel: '全部', // 过滤条件全部状态的名称
         isPMComment: false, // 是否PM的备注
+        showBlacklistModal: false,
 
     }
 
@@ -1967,9 +1968,9 @@ class OrgBDListComponent extends React.Component {
 
         <Modal
           title="机构看板黑名单"
-          visible={this.props.showBlacklistModal}
+          visible={this.state.showBlacklistModal}
           footer={null}
-          onCancel={this.props.onCloseBlacklistModal}
+          onCancel={() => this.setState({ showBlacklistModal: false })}
           maskClosable={false}
         >
           <Transfer
