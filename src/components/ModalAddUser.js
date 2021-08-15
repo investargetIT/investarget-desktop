@@ -1,8 +1,5 @@
 import React from 'react';
-import { 
-  Modal, 
-  Form,
-} from 'antd';
+import { Modal } from 'antd';
 import SimpleUserForm from './SimpleUserForm';
 import * as api from '../api';
 import { 
@@ -10,18 +7,16 @@ import {
   isLogin,
 } from '../utils/util';
 
-const AddUserForm = SimpleUserForm;
-
 class ModalAddUser extends React.Component {
 
-  state = {
-    isLoading: false,
-  }
+  constructor(props) {
+    super(props);
 
-  handleRef = (inst) => {
-    if (inst) {
-      this.addForm = inst.props.form
-    }
+    this.state = {
+      isLoading: false,
+    };
+
+    this.addUserFormRef = React.createRef();
   }
 
   handleSubmitBtnClicked = () => {
@@ -59,7 +54,7 @@ class ModalAddUser extends React.Component {
         confirmLoading={this.state.isLoading}
         onOk={this.handleSubmitBtnClicked}
       >
-        <AddUserForm wrappedComponentRef={this.handleRef} />
+        <SimpleUserForm ref={this.addUserFormRef} />
       </Modal>
     );
   }

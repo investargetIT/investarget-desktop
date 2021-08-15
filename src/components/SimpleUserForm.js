@@ -7,11 +7,11 @@ import {
 } from 'antd';
 import {
   BasicFormItem,
-} from '../components/Form'
+} from './Form'
 import {
   SelectUserGroup,
   SelectTitle,
-} from '../components/ExtraInput'
+} from './ExtraInput'
 import { 
   i18n,
   checkRealMobile, 
@@ -30,10 +30,24 @@ const formItemLayout = {
 };
 
 class SimpleUserForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+  
+  checkMobileInfo = (_, value) => {
+    if (value) {
+      if (checkRealMobile(value)) {
+        return Promise.resolve();
+      }
+      return Promise.reject('手机号码格式错误')
+    }
+    return Promise.resolve();
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef}>
 
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />
@@ -44,28 +58,25 @@ class SimpleUserForm extends React.Component {
         <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
           <Row gutter={8}>
             <Col span={6}>
-              <FormItem required>
-                {
-                  getFieldDecorator('mobileAreaCode', {
-                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86'
-                  })(
-                    <Input prefix="+" />
-                  )
-                }
+              <FormItem
+                required
+                name="mobileAreaCode"
+                rules={[{ message: i18n('validation.not_empty'), required: true }]}
+                initialValue="86"
+              >
+                <Input prefix="+" />
               </FormItem>
             </Col>
             <Col span={18}>
-              <FormItem required>
-                {
-                  getFieldDecorator('mobile', {
-                    rules: [
-                      { message: i18n('validation.not_empty'), required: true },
-                      { validator: (rule, value, callback) => value ? checkRealMobile(value) ? callback() : callback('手机号码格式错误') : callback() },
-                    ]
-                  })(
-                    <Input />
-                  )
-                }
+              <FormItem
+                required
+                name="mobile"
+                rules={[
+                  { message: i18n('validation.not_empty'), required: true },
+                  { validator: this.checkMobileInfo },
+                ]}
+              >
+                <Input />
               </FormItem>
             </Col>
           </Row>
@@ -84,4 +95,5 @@ class SimpleUserForm extends React.Component {
   }
 }
 
-export default SimpleUserForm; 
+// export default SimpleUserForm;
+export default React.forwardRef((props, ref) => <SimpleUserForm {...props} forwardedRef={ref} />);
