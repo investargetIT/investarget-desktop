@@ -12,6 +12,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
   DeleteOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import { OrganizationListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -232,7 +233,7 @@ class OrganizationList extends React.Component {
           <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
 
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button style={buttonStyle} disabled={!record.action.change} size="small" >{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} disabled={!record.action.change} size="small" ><EditOutlined /></Button>
             </Link>
 
             <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteOrg.bind(null, record.id)}>
