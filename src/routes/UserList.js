@@ -17,6 +17,7 @@ import { SelectTrader } from '../components/ExtraInput';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import {
   DeleteOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group
@@ -286,10 +287,10 @@ class UserList extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span className="span-operation" style={{display:'flex',justifyContent:'space-between',flexWrap:'wrap'}}>
+              <span className="span-operation">
 
                 <Link to={'/app/user/edit/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
+                  <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
                 </Link>
 
                 <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteUser.bind(null, record.id)}>
