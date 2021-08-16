@@ -23,6 +23,7 @@ import { ApiError } from '../utils/request';
 import {
   DeleteOutlined,
   PlusOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 import _ from 'lodash';
@@ -431,12 +432,11 @@ class ProjectList extends React.Component {
             <div style={{ display: 'flex', alignItems: 'center' }} className="operation">
               <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
                 <Link to={'/app/projects/edit/' + record.id}>
-                  <Button style={newButtonStyle} disabled={!record.action.change}>{i18n("common.edit")}</Button>
+                  <Button style={newButtonStyle} disabled={!record.action.change}><EditOutlined /></Button>
                 </Link>
               </div>
               <div style={{ marginLeft: 20 }}>
                 <Button size="small" style={newButtonStyle} disabled={!record.action.delete} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
-                  删除
                   <DeleteOutlined />
                 </Button>
               </div>
