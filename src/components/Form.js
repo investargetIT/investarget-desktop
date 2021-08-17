@@ -50,7 +50,7 @@ const tailFormItemLayout = {
 
 
 
-function BasicFormItem(props, context) {
+export function BasicFormItem(props, context) {
   const rules = [
     { type: props.valueType, message: i18n('validation.not_valid')},
     { required: props.required, message: i18n('validation.not_empty')},
@@ -515,7 +515,7 @@ module.exports = {
   Agreement,
   Submit,
   UploadAvatar,
-  BasicFormItem,
+  // BasicFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
   Group
