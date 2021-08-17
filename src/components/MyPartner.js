@@ -20,6 +20,7 @@ import CardContainer from '../components/CardContainer'
 import { Search } from './Search';
 import { withRouter } from 'dva/router';
 import qs from 'qs';
+import { EditOutlined } from '@ant-design/icons';
 
 const styles = {
   groupModifyButton: {
@@ -339,7 +340,7 @@ class MyPartner extends React.Component {
         render: (text, record) => (
           <span>
             <Link to={'/app/user/edit/' + record.investoruser.id + '?redirect=' + this.redirect} target="_blank">
-              <Button style={buttonStyle} size="small" onClick={this.handleEditBtnClick.bind(this, record)}>{i18n("common.edit")}</Button>
+              <Button style={buttonStyle} size="small" onClick={this.handleEditBtnClick.bind(this, record)}><EditOutlined /></Button>
             </Link>
             {/* { !this.state.friendList.includes(record.investoruser.id) ?
               <Button style={buttonStyle} disabled={record.isAlreadyAdded} onClick={this.handleAddFriend.bind(this, record.investoruser.id)} size="small">{i18n("add_friend")}</Button>

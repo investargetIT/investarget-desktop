@@ -15,6 +15,10 @@ import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Icon, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { OrgUserListFilter } from '../components/Filter'
+import {
+  EyeOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -244,11 +248,11 @@ class OrgUserList extends React.Component {
               <span style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
               <div>
                 <Link to={'/app/user/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.get} size="small">{i18n("common.view")}</Button>
+                  <Button style={buttonStyle} disabled={!record.action.get} size="small"><EyeOutlined /></Button>
                 </Link>
                 
                 <Link to={`/app/user/edit/${record.id}?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`}>
-                  <Button style={buttonStyle} disabled={!record.action.change} size="small">{i18n("common.edit")}</Button>
+                  <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
                 </Link>
                
               </div>
