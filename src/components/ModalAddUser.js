@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as api from '../api';
 import {
   Modal,
@@ -35,9 +35,10 @@ const formItemLayout = {
 
 const ModalAddUser = props => {
 
-  const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const [addForm] = Form.useForm();
 
-  function checkMobileInfo (_, value) {
+  function checkMobileInfo(_, value) {
     if (value) {
       if (checkRealMobile(value)) {
         return Promise.resolve();
@@ -47,8 +48,10 @@ const ModalAddUser = props => {
     return Promise.resolve();
   }
 
-  function handleSubmitBtnClicked () {
-    this.addForm.validateFields((err, values) => {
+  function handleSubmitBtnClicked() {
+    window.echo('tttt', addForm.validateFields);
+    return;
+    addForm.validateFields((err, values) => {
       if (!err) {
         this.setState({ isLoading: true });
         this.addUserAndRelation(values)
@@ -78,10 +81,10 @@ const ModalAddUser = props => {
       title={`为 ${props.org.orgname} 添加投资人`}
       visible={true}
       onCancel={props.onCancel}
-      // confirmLoading={this.state.isLoading}
+      confirmLoading={isLoading}
       onOk={handleSubmitBtnClicked}
     >
-      <Form form={form}>
+      <Form form={addForm}>
 
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />
