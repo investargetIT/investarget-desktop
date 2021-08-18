@@ -156,7 +156,7 @@ class OrgBDListComponent extends React.Component {
 
         progressOptions: [], // 过滤条件中的状态加数量选项
         allLabel: '全部', // 过滤条件全部状态的名称
-        isPMComment: false, // 是否PM的备注
+        isPMComment: 0, // 是否PM的备注
         showBlacklistModal: false,
 
     }
@@ -1359,10 +1359,10 @@ class OrgBDListComponent extends React.Component {
         react.handleModifyStatusBtnClicked(record);
         break;
       case 'add_remark':
-        react.setState({ isPMComment: false }, () => react.handleOpenModal(record));
+        react.setState({ isPMComment: 0 }, () => react.handleOpenModal(record));
         break;
       case 'add_pm_remark':
-        react.setState({ isPMComment: true }, () => react.handleOpenModal(record));
+        react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
         break;
     }
   }
@@ -1670,7 +1670,13 @@ class OrgBDListComponent extends React.Component {
               return '暂无';
             }
             if (this.isAbleToModifyStatus(record)) {
-              let latestComment = record.BDComments && record.BDComments.length && record.BDComments[record.BDComments.length - 1].comments || null;
+              let latestComment = '';
+              if (record.BDComments && record.BDComments.length) {
+                const commonComments = record.BDComments.filter(f => !f.isPMComment);
+                if (commonComments.length > 0) {
+                  latestComment = commonComments[commonComments.length - 1].comments;
+                }
+              }
               return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
                 <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
               </Popover> : "暂无";
@@ -1682,7 +1688,24 @@ class OrgBDListComponent extends React.Component {
           title: 'PM备注',
           width: '10%',
           key: 'pm_remark',
-          render: (_, record) => 'PM Remark',
+          render: (_, record) => {
+            if (record.new) {
+              return '暂无';
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              let latestPMComment = '';
+              if (record.BDComments && record.BDComments.length) {
+                const pmComments = record.BDComments.filter(f => f.isPMComment);
+                if (pmComments.length > 0) {
+                  latestPMComment = pmComments[pmComments.length - 1].comments;
+                }
+              }
+              return latestPMComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
+                <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
+              </Popover> : "暂无";
+            }
+            return null;
+          },
         },
         {
           title: '优先级',
