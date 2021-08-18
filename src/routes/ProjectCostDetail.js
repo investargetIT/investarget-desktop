@@ -13,7 +13,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { PieChart, Pie, Cell } from 'recharts';
 import * as api from '../api';
-import ViewInvestorsInTimeline from '../components/ViewInvestorsInTimeline';
+import OrgBDListComponent from '../components/OrgBDListComponent';
 import _ from 'lodash';
 
 const { Step } = Steps;
@@ -342,8 +342,15 @@ function ProjectCostDetail(props) {
         </Col>
 
         <Col span={10}>
-          <Card title="项目进程时间轴">
-            <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
+          <Card title="机构看板" bodyStyle={{ padding: 0 }}>
+          <OrgBDListComponent
+            allManager
+            location={props.location}
+            pageSize={10}
+            pagination
+            fromProjectCostCenter
+          />
+            {/* <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
                 orgbdres.slice(3).map((status, index) => {
                   const list = allOrgBD.filter(item => {
@@ -377,7 +384,7 @@ function ProjectCostDetail(props) {
                   );
                 })
               }
-            </Steps>
+            </Steps> */}
           </Card>
         </Col>
       </Row>

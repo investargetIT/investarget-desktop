@@ -360,7 +360,7 @@ class ProjectList extends React.Component {
           if (record.action.get) {
             return (
               <span className="span-title">
-                <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}`}>{record.projtitle}</Link>
+                <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>{record.projtitle}</Link>
               </span>
             )
           } else {

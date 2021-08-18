@@ -1516,8 +1516,8 @@ class OrgBDListComponent extends React.Component {
             value={record.orgUser} 
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
-          : <div style={{ width: 100, marginLeft: 40 }}>                  
-              {record.isimportant > 1 && <img style={importantImg} src="../../images/important.png" />}
+          : <div style={{ paddingLeft: this.props.fromProjectCostCenter ? 15 : 30 }}>                  
+              {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />}
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
                 <span style={{color:'#428BCA'}}>
@@ -1646,93 +1646,97 @@ class OrgBDListComponent extends React.Component {
             return null;
           },
         },
-        {
-          title: '创建时间',
-          width: '11%',
-          key: 'creation_time',
-          dataIndex: 'createdtime',
-          render: (text, record) => {
-            if (record.new) {
-              return null;
-            }
-            if (this.isAbleToModifyStatus(record)) {
-              return text.slice(0, 10);
-            }
-            return null;
-          },
-        },
-        {
-          title: "最新备注",
-          width: '15%',
-          key: 'bd_latest_info',
-          render: (text, record) => {
-            if (record.new) {
-              return '暂无';
-            }
-            if (this.isAbleToModifyStatus(record)) {
-              let latestComment = '';
-              if (record.BDComments && record.BDComments.length) {
-                const commonComments = record.BDComments.filter(f => !f.isPMComment);
-                if (commonComments.length > 0) {
-                  latestComment = commonComments[commonComments.length - 1].comments;
-                }
-              }
-              return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
-                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-              </Popover> : "暂无";
-            }
-            return null;
-          },
-        },
-        {
-          title: 'PM备注',
-          width: '10%',
-          key: 'pm_remark',
-          render: (_, record) => {
-            if (record.new) {
-              return '暂无';
-            }
-            if (this.isAbleToModifyStatus(record)) {
-              let latestPMComment = '';
-              if (record.BDComments && record.BDComments.length) {
-                const pmComments = record.BDComments.filter(f => f.isPMComment);
-                if (pmComments.length > 0) {
-                  latestPMComment = pmComments[pmComments.length - 1].comments;
-                }
-              }
-              return latestPMComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
-                <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
-              </Popover> : "暂无";
-            }
-            return null;
-          },
-        },
-        {
-          title: '优先级',
-          width: '8%',
-          key: 'priority',
-          dataIndex: 'isimportant',
-          render: (text, record) => {
-            if (record.new) {
-              return (
-                <Select
-                  defaultValue={1}
-                  style={{ width: '100%' }}
-                  onChange={v => { this.updateSelection(record, { isimportant: v }) }}
-                >
-                  <Option value={0}>低</Option>
-                  <Option value={1}>中</Option>
-                  <Option value={2}>高</Option>
-                </Select> 
-              );
-            }
-            if (this.isAbleToModifyStatus(record)) {
-              return typeof text === 'number' ? priority[text] : '未知';
-            }
-            return null;
-          },
-        },
       ];
+      if (!this.props.fromProjectCostCenter) {
+        columns.push(
+          {
+            title: '创建时间',
+            width: '11%',
+            key: 'creation_time',
+            dataIndex: 'createdtime',
+            render: (text, record) => {
+              if (record.new) {
+                return null;
+              }
+              if (this.isAbleToModifyStatus(record)) {
+                return text.slice(0, 10);
+              }
+              return null;
+            },
+          },
+          {
+            title: "最新备注",
+            width: '15%',
+            key: 'bd_latest_info',
+            render: (text, record) => {
+              if (record.new) {
+                return '暂无';
+              }
+              if (this.isAbleToModifyStatus(record)) {
+                let latestComment = '';
+                if (record.BDComments && record.BDComments.length) {
+                  const commonComments = record.BDComments.filter(f => !f.isPMComment);
+                  if (commonComments.length > 0) {
+                    latestComment = commonComments[commonComments.length - 1].comments;
+                  }
+                }
+                return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+                  <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+                </Popover> : "暂无";
+              }
+              return null;
+            },
+          },
+          {
+            title: 'PM备注',
+            width: '10%',
+            key: 'pm_remark',
+            render: (_, record) => {
+              if (record.new) {
+                return '暂无';
+              }
+              if (this.isAbleToModifyStatus(record)) {
+                let latestPMComment = '';
+                if (record.BDComments && record.BDComments.length) {
+                  const pmComments = record.BDComments.filter(f => f.isPMComment);
+                  if (pmComments.length > 0) {
+                    latestPMComment = pmComments[pmComments.length - 1].comments;
+                  }
+                }
+                return latestPMComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
+                  <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
+                </Popover> : "暂无";
+              }
+              return null;
+            },
+          },
+          {
+            title: '优先级',
+            width: '8%',
+            key: 'priority',
+            dataIndex: 'isimportant',
+            render: (text, record) => {
+              if (record.new) {
+                return (
+                  <Select
+                    defaultValue={1}
+                    style={{ width: '100%' }}
+                    onChange={v => { this.updateSelection(record, { isimportant: v }) }}
+                  >
+                    <Option value={0}>低</Option>
+                    <Option value={1}>中</Option>
+                    <Option value={2}>高</Option>
+                  </Select>
+                );
+              }
+              if (this.isAbleToModifyStatus(record)) {
+                return typeof text === 'number' ? priority[text] : '未知';
+              }
+              return null;
+            },
+          },
+        )
+      }
         
         if (this.props.editable) columns.push({
             title: i18n('org_bd.operation'), width: '12%', render: (text, record) => 
@@ -1894,11 +1898,11 @@ class OrgBDListComponent extends React.Component {
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
             <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
-            <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>
-            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>
-            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>
-            <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>}
           </div>
 
           {this.state.filters.proj !== null ?
@@ -1942,7 +1946,7 @@ class OrgBDListComponent extends React.Component {
             </div>
             : null}
 
-          {this.state.filters.proj !== null && !this.state.showUnreadOnly ?
+          {!this.props.fromProjectCostCenter && this.state.filters.proj !== null && !this.state.showUnreadOnly ?
             <Button
               // disabled={this.state.selectedIds.length == 0}
               style={{ backgroundColor: 'orange', border: 'none' }}
