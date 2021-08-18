@@ -764,11 +764,12 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
-  handleConfirmAudit = ({ status, isimportant, username, mobile, wechat, email, group, mobileAreaCode, comment }, isModifyWechat) => {
+  handleConfirmAudit = ({ status, isimportant, material, username, mobile, wechat, email, group, mobileAreaCode, comment }, isModifyWechat) => {
     const body = {
       response: status,
       isimportant: isimportant,
       remark: comment,
+      material,
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
@@ -1516,7 +1517,7 @@ class OrgBDListComponent extends React.Component {
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
           : <div style={{ width: 100, marginLeft: 40 }}>                  
-              {record.isimportant ? <img style={importantImg} src = "../../images/important.png"/> :null} 
+              {record.isimportant > 1 && <img style={importantImg} src="../../images/important.png" />}
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
                 <span style={{color:'#428BCA'}}>
