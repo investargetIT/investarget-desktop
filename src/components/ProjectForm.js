@@ -341,6 +341,22 @@ class ProjectConnectForm1 extends React.Component {
             <Input disabled />
           </BasicFormItem>
         }
+
+        {hasPerm('proj.admin_changeproj') ?
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              return (
+                <BasicFormItem label="PM" name="PM">
+                  <SelectTrader />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
+          :
+          <BasicFormItem label="PM" name="PMName">
+            <Input disabled />
+          </BasicFormItem>
+        }
       </Form>
     )
   }
