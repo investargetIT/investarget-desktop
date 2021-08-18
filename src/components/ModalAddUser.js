@@ -49,23 +49,20 @@ const ModalAddUser = props => {
   }
 
   function handleSubmitBtnClicked() {
-    window.echo('tttt', addForm.validateFields);
-    return;
-    addForm.validateFields((err, values) => {
-      if (!err) {
-        this.setState({ isLoading: true });
-        this.addUserAndRelation(values)
-          .then(this.props.onCancel)
+    addForm.validateFields()
+      .then(values => {
+        setIsLoading(true);
+        addUserAndRelation(values)
+          .then(props.onCancel)
           .catch(handleError) // 可能会添加一个已经存在的投资人所以要捕获这个错误
-          .finally(() => this.setState({ isLoading: false }));
-      }
-    })
+          .finally(() => setIsLoading(false));
+      });
   }
 
   async function addUserAndRelation(values) {
     values.userstatus = 1; // 默认待审核
     values.registersource = 3; // 标记注册来源
-    values.org = this.props.org.id;
+    values.org = props.org.id;
     const user = await api.addUser(values);
     const investoruserid = user.data.id;
     const body = {
