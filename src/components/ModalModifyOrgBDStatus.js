@@ -87,7 +87,7 @@ class ModalModifyOrgBDStatus extends React.Component {
     group: '', 
     mobileAreaCode: '86',
     comment: '',
-    material: '0',
+    material: '',
   }
 
   checkInvalid = () => {
@@ -123,11 +123,10 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   handleProgressChange = value => {
     const response = value[0];
-    let material = '0';
+    let material = '';
     if (value.length > 0 && value[1] !== 0) {
       material = value[1];
     }
-    window.echo('material', material);
     this.setState({ status: response, material });
   }
 
