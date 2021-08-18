@@ -39,17 +39,17 @@ import {
 
 class ProjectBaseForm1 extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
+  // static childContextTypes = {
+  //   form: PropTypes.object
+  // }
 
-  getChildContext() {
-    return { form: this.props.form }
-  }
+  // getChildContext() {
+  //   return { form: this.props.form }
+  // }
 
-  constructor(props) {
-    super(props)
-  }
+  // constructor(props) {
+  //   super(props)
+  // }
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['industry'] })

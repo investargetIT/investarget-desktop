@@ -20,7 +20,7 @@ import { isLogin } from '../utils/util'
 import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 class ProjectBDList extends React.Component {
 
@@ -448,21 +448,15 @@ class ProjectBDList extends React.Component {
             <div>
               {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
-                  <Button style={buttonStyle} className="buttonStyle" size="small">{i18n('common.edit')}</Button>
+                  <Button style={{}} className="buttonStyle" size="small" type="link"><EditOutlined /></Button>
                 </Link>
                 :
                 getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
                 <Button style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
                 : null
               }
-  
-              {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
-              <Button style={buttonStyle} onClick={this.handleOpenModal.bind(this, record.id)}>行动计划</Button>
-              : null }
-  
-  
             </div>
+
             { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
             <div style={{ marginLeft: 7 }}>
             <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
@@ -472,6 +466,14 @@ class ProjectBDList extends React.Component {
             </Popconfirm>
             </div>
             : null }
+
+            <div>
+              {/* 备注按钮 */}
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+              <Button style={{}} onClick={this.handleOpenModal.bind(this, record.id)} type="link" size="small">行动计划</Button>
+              : null }
+            </div>
+
           </span>)
         }}
       );

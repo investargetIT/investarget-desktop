@@ -7,9 +7,7 @@ import {
   Row,
   Col,
 } from 'antd';
-import {
-  BasicFormItem,
-} from './Form'
+// import { BasicFormItem } from './Form';
 import {
   SelectUserGroup,
   SelectTitle,
@@ -32,6 +30,48 @@ const formItemLayout = {
     sm: { span: 14 },
   },
 };
+
+const BasicFormItem = props => {
+  const rules = [
+    { type: props.valueType, message: i18n('validation.not_valid')},
+    { required: props.required, message: i18n('validation.not_empty')},
+  ]
+
+  if (props.whitespace) {
+    rules.push({ whitespace: props.whitespace })
+  }
+  if (props.validator) {
+    rules.push({ validator: props.validator })
+  }
+
+  let options = { rules: rules }
+  if ('initialValue' in props) {
+    options.initialValue = props.initialValue
+  }
+  if ('valuePropName' in props) {
+    options.valuePropName = props.valuePropName
+  }
+  if ('onChange' in props) {
+    options.onChange = props.onChange
+  }
+  if ('getValueFromEvent' in props) {
+    options.getValueFromEvent = props.getValueFromEvent;
+  }
+  if ('hidden' in props) {
+    options.hidden = props.hidden;
+  }
+
+  return (
+    <FormItem
+      name={props.name}
+      {...(props.layout || formItemLayout)}
+      {...props.layout} label={props.label}
+      {...options}
+    >
+      {props.children}
+    </FormItem>
+  )
+}
 
 const ModalAddUser = props => {
 
