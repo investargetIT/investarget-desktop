@@ -1333,7 +1333,7 @@ class OrgBDListComponent extends React.Component {
 
   handleProgressChange(record, value) {
     const response = value[0];
-    let material = '';
+    let material = null;
     if (value.length > 0 && value[1] !== 0) {
       material = value[1];
     }
