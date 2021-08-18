@@ -143,6 +143,7 @@ class OrgBDListComponent extends React.Component {
         traderList: [],
         projTradersIds: [], // 项目承揽或承做
         makeUserIds: [],
+        pm: null, // 项目PM
         statistic: [],
         org: null, // 为哪个机构添加投资人
         exportLoading: false,
@@ -311,13 +312,16 @@ class OrgBDListComponent extends React.Component {
       try {
         const projResult = await api.getProjDetail(proj);
         this.setState({ projectDetails: projResult.data });
-        const { projTraders } = projResult.data;
+        const { projTraders, PM } = projResult.data;
         if (projTraders) {
           projMakeTakeTraderIds = projTraders.filter(f => f.user).map(m => m.user.id);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
             makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
           });
+        }
+        if (PM) {
+          this.setState({ pm: PM.id });
         }
         if (this.props.editable) {
           this.writeSetting();
@@ -1127,6 +1131,17 @@ class OrgBDListComponent extends React.Component {
     return false;
   }
 
+  isAbleToAddPMRemark = record => {
+    if (hasPerm('BD.manageOrgBD')) {
+      return true;
+    }
+    const currentUserID = getUserInfo() && getUserInfo().id;
+    if ([this.state.pm, record.manager.id, record.createuser.id].includes(currentUserID)) {
+      return true;
+    }
+    return false; 
+  }
+
   handleAddInvestorBtnClicked = org => {
     this.setState({ org });
   }
@@ -1760,7 +1775,7 @@ class OrgBDListComponent extends React.Component {
                 <Select placeholder="操作" style={{ width: '100%' }} onChange={this.handleOperationChange.bind(this, record)}>
                   {this.isAbleToModifyStatus(record) && <Option value="update_status">修改状态</Option>}
                   {this.isAbleToModifyStatus(record) && <Option value="add_remark">添加备注</Option>}
-                  <Option value="add_pm_remark">添加PM备注</Option>
+                  {this.isAbleToAddPMRemark(record) && <Option value="add_pm_remark">添加PM备注</Option>}
                   {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) && <Option value="delete">删除</Option>}
                 </Select>
               );
