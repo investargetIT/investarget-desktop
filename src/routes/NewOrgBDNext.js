@@ -10,6 +10,7 @@ import {
   getUserInfo,
   intersection, 
   requestAllData,
+  getURLParamValue,
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -27,6 +28,7 @@ import {
   Tag,
   Col,
   Switch,
+  Select,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
@@ -46,6 +48,7 @@ import OrgBDListComponent from '../components/OrgBDListComponent';
 import { connect } from 'dva';
 import './NewOrgBDNext.css';
 
+const Option = Select.Option;
 var cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
 
 class H3 extends React.Component {
@@ -80,25 +83,32 @@ class NewOrgBDList extends React.Component {
   constructor(props) {
     super(props);
 
+    const ids = getURLParamValue(props, 'ids');
+    const projId = getURLParamValue(props, 'projId');
+    const trader = getURLParamValue(props, 'trader');
+    const tag = getURLParamValue(props, 'tag');
+    const investor = getURLParamValue(props, 'investor');
+    const tags = getURLParamValue(props, 'tags');
+
     this.orgList = {}
     this.userList = {}
-    this.ids = (this.props.location.query.ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
-    this.projId = parseInt(this.props.location.query.projId, 10);
+    this.ids = (ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
+    this.projId = parseInt(projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
-    this.filterInvestorWithoutTrader = this.props.location.query.trader === 'true' ? true : false;
-    this.filterInvestorWithoutRelatedTags = this.props.location.query.tag === 'true' ? true : false;
-    this.filterOrgWithoutInvestor = this.props.location.query.investor === 'true' ? true : false;
-    this.tags = (this.props.location.query.tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
+    this.filterInvestorWithoutTrader = trader === 'true' ? true : false;
+    this.filterInvestorWithoutRelatedTags = tag === 'true' ? true : false;
+    this.filterOrgWithoutInvestor = investor === 'true' ? true : false;
+    this.tags = (tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
     this.projDetail = {}
 
     // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
-    this.activeUserKey = this.props.location.query.activeUserKey;
+    this.activeUserKey = getURLParamValue(props, 'activeUserKey');
 
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: '',
         page: 1,
-        pageSize: this.props.location.query.ids ? this.ids.length + 1 : (getUserInfo().page || 10),
+        pageSize: ids ? this.ids.length + 1 : (getUserInfo().page || 10),
         total: 0,
         manager: null,
         originalList: [],
@@ -113,12 +123,12 @@ class NewOrgBDList extends React.Component {
         selectVisible: false,
         sort:undefined,
         desc:undefined,
-        source:this.props.location.query.status||0,
+        source: getURLParamValue(props, 'status') || 0,
         expanded: [],
         selectedKeys: [],
         expirationtime: moment().add(1, 'weeks'),
         ifimportantMap: {},
-        isimportant: false,
+        isimportant: 0,
         traderList: [],
         org: null, // 为哪个机构添加投资人
         historyBDRefresh: 0,
@@ -508,18 +518,18 @@ class NewOrgBDList extends React.Component {
     }
   }
 
-  handleSwitchChange = (record, ifimportant) => {
-    let id=record.id
-    this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
-    const userList = this.props.value
-    const index = _.findIndex(userList, function(item) {
-      return item.investor+"_"+item.org == id
-    })
-    if (index > -1) {
-      userList[index].isimportant=ifimportant
-      this.props.onChange(userList)
-    }
-  }
+  // handleSwitchChange = (record, ifimportant) => {
+  //   let id=record.id
+  //   this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
+  //   const userList = this.props.value
+  //   const index = _.findIndex(userList, function(item) {
+  //     return item.investor+"_"+item.org == id
+  //   })
+  //   if (index > -1) {
+  //     userList[index].isimportant=ifimportant
+  //     this.props.onChange(userList)
+  //   }
+  // }
 
   handleDeleteUser(userKey) {
     this.setState({ selectedKeys: this.state.selectedKeys.filter(key => key !== userKey) })
@@ -635,7 +645,7 @@ class NewOrgBDList extends React.Component {
           title: '机构看板创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
-        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org);
       })
       .catch(handleError);
@@ -661,7 +671,7 @@ class NewOrgBDList extends React.Component {
           title: '机构看板创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
-        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: false, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0, historyBDRefresh: this.state.historyBDRefresh + 1 });
         this.loadDataForSingleOrg(user.org);
       })
       .catch(handleError);
@@ -931,8 +941,8 @@ class NewOrgBDList extends React.Component {
         <div style={{ marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <H3 size="1.2em" style={{ marginTop: 'unset', marginBottom: 'unset' }}>○ 选择机构列表</H3>
           <Search
-            size="large"
-            style={{ width: 200 }}
+            size="middle"
+            style={{ width: 300 }}
             placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
             value={search}
             onChange={search => this.setState({ search })}
@@ -940,7 +950,7 @@ class NewOrgBDList extends React.Component {
         </div>
 
         <Table
-          className="new-org-db-style"
+          // className="new-org-db-style"
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
@@ -968,7 +978,6 @@ class NewOrgBDList extends React.Component {
           // disabled={this.state.selectedIds.length == 0}
           style={{ marginTop: 10, backgroundColor: 'orange', border: 'none' }}
           type="primary"
-          size="large"
           // loading={this.state.exportLoading}
           onClick={this.downloadExportFile}
         >
@@ -1010,7 +1019,7 @@ class NewOrgBDList extends React.Component {
                 value={this.state.manager}
                 onChange={manager => this.setState({ manager })} />
 
-              <H3>2.选择过期时间</H3>
+              {/* <H3>2.选择过期时间</H3>
               <DatePicker
                 style={{ marginBottom: '15px' }}
                 placeholder="过期时间"
@@ -1029,12 +1038,21 @@ class NewOrgBDList extends React.Component {
                   </div>
                 }}
                 onChange={v => { this.setState({ expirationtime: v }) }}
-              />
-              <span style={{ marginLeft: 40 }}>重点BD</span>
-              <Switch
+              /> */}
+              <H3>2.优先级</H3>
+              {/* <Switch
                 defaultChecked={this.state.isimportant}
                 onChange={checked => this.setState({ isimportant: checked })}
-              />
+              /> */}
+              <Select
+                defaultValue={this.state.isimportant}
+                // style={{ width: '100%' }}
+                onChange={value => this.setState({ isimportant: value })}
+              >
+                <Option value={0}>低</Option>
+                <Option value={1}>中</Option>
+                <Option value={2}>高</Option>
+              </Select>
 
               <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
             </div>
@@ -1059,7 +1077,7 @@ class NewOrgBDList extends React.Component {
                 value={this.state.manager}
                 onChange={manager => this.setState({ manager })} />
 
-              <H3>2.选择过期时间</H3>
+              {/* <H3>2.选择过期时间</H3>
               <DatePicker
                 style={{ marginBottom: '15px' }}
                 placeholder="过期时间"
@@ -1078,12 +1096,16 @@ class NewOrgBDList extends React.Component {
                   </div>
                 }}
                 onChange={v => { this.setState({ expirationtime: v }) }}
-              />
-              <span style={{ marginLeft: 40 }}>重点BD</span>
-              <Switch
-                defaultChecked={this.state.isimportant}
-                onChange={checked => this.setState({ isimportant: checked })}
-              />
+              /> */}
+               <H3>2.优先级</H3>
+              <Select
+                defaultValue={this.state.isimportant}
+                onChange={value => this.setState({ isimportant: value })}
+              >
+                <Option value={0}>低</Option>
+                <Option value={1}>中</Option>
+                <Option value={2}>高</Option>
+              </Select>
 
               <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
             </div>
