@@ -121,7 +121,7 @@ class ProjectBaseForm1 extends React.Component {
           <CascaderCountry size="large" />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
+        {/* <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
           <SelectRole />
         </BasicFormItem>
 
@@ -131,7 +131,7 @@ class ProjectBaseForm1 extends React.Component {
 
         <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
           <SelectService mode="multiple" />
-        </BasicFormItem>
+        </BasicFormItem> */}
 
         {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
