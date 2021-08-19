@@ -651,3 +651,7 @@ label.login-register-form__container__label {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+.edit-proj-status .ant-form-item {
+  margin-bottom: 0;
+}

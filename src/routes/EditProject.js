@@ -217,6 +217,9 @@ class EditProject extends React.Component {
             };
             api.editProj(id, params).then(result => {
               this.getProject()
+              if (baseFormParams.sendWechat) {
+                api.sendProjPdfToWechatGroup(id);
+              }
               if (ifBack) {
                 this.goBack()
               }

@@ -36,6 +36,43 @@ import {
   SelectExistProject,
 } from '../components/ExtraInput'
 
+class SelectProjectStatus extends React.Component {
+
+  handleChange = (value) => {
+    this.props.onChange(Number(value))
+  }
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['projstatus'] })
+  }
+
+  render() {
+    const {options, children, dispatch, status, value, onChange, ...extraProps} = this.props
+    let _options = []
+
+    if (status < 4) {
+      _options = options.filter(item => item.value <= status + 1)
+    } else {
+      _options = options
+    }
+
+    return (
+      <Select value={String(value)} onChange={this.handleChange} {...extraProps}>
+        {
+          _options.map(item =>
+            <Option key={item.value} value={String(item.value)}>{item.label}</Option>
+          )
+        }
+      </Select>
+    )
+  }
+}
+
+SelectProjectStatus = connect(function(state) {
+  const { projstatus } = state.app
+  const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
+  return { options }
+})(SelectProjectStatus)
 
 class ProjectBaseForm1 extends React.Component {
 
@@ -103,6 +140,24 @@ class ProjectBaseForm1 extends React.Component {
         <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
           <SelectExistProject />
         </BasicFormItem>
+
+        <BasicFormItem label="项目状态" name="projstatus" valueType="number">
+          <SelectProjectStatus />
+        </BasicFormItem>
+
+        <div className="edit-proj-status">
+          <Form.Item name="financeIsPublic" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
+            <Checkbox>是否公开财务信息？</Checkbox>
+          </Form.Item>
+
+          <Form.Item name="isSendEmail" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
+            <Checkbox>是否发送邮件？</Checkbox>
+          </Form.Item>
+
+          <Form.Item name="sendWechat" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
+            <Checkbox>是否分享到微信群？</Checkbox>
+          </Form.Item>
+        </div>
 
       </Form>
     )
