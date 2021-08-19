@@ -1985,7 +1985,7 @@ class OrgBDListComponent extends React.Component {
         : null }
 
         <Modal
-          title={i18n('remark.comment')}
+          title={this.state.isPMComment ? 'PM备注' : i18n('remark.comment')}
           visible={this.state.commentVisible}
           footer={null}
           onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
@@ -1997,7 +1997,8 @@ class OrgBDListComponent extends React.Component {
             newComment={this.state.newComment}
             onChange={e => this.setState({ newComment: e.target.value })}
             onAdd={this.handleAddComment}
-            onDelete={this.handleDeleteComment} 
+            onDelete={this.handleDeleteComment}
+            isPMComment={this.state.isPMComment}
           />
         </Modal>
 
@@ -2101,7 +2102,7 @@ export function SimpleLine(props) {
 }
 
 export function BDComments(props) {
-  const { comments, newComment, onChange, onDelete, onAdd, bd } = props
+  const { comments, newComment, onChange, onDelete, onAdd, bd, isPMComment } = props
   return (
     <div>
       <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -2109,7 +2110,7 @@ export function BDComments(props) {
         <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
       </div>
       <div>
-        {comments.length ? comments.map(comment => {
+        {comments.length ? comments.filter(f => f.isPMComment == Boolean(isPMComment)).map(comment => {
           let content = comment.comments;
           const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
           if (oldStatusMatch) {
