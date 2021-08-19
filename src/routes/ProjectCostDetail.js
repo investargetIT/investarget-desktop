@@ -8,6 +8,7 @@ import {
   requestAllData,
   handleError,
   formatMoney,
+  trimTextIfExceedMaximumCount,
 } from '../utils/util';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
@@ -87,6 +88,9 @@ function ProjectCostDetail(props) {
   const [totalCost, setTotalCost] = useState(0);
   const [pieChartData, setPieChartData] = useState([]);
 
+  const [totalOrgBdNum, setTotalOrgBdNum] = useState(0);
+  const [orgBdOrgName, setOrgBdOrgName] = useState('');
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
     // props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
@@ -164,6 +168,20 @@ function ProjectCostDetail(props) {
       setPieChartData(overallCost);
     }
     getProjDidiInfo();
+
+    async function getOrgBDNum() {
+      const params = {
+        proj: projectDetails.id,
+      };
+      const res = await api.getOrgBdList(params);
+      setTotalOrgBdNum(res.data.count);
+      const allOrg = res.data.data.map(m => m.org);
+      const uniqueOrg = _.uniqBy(allOrg, 'id');
+      const orgNameStr = uniqueOrg.filter(f => f.orgname).map(m => m.orgname).join('-');
+      const displayStr = trimTextIfExceedMaximumCount(orgNameStr, 10);
+      setOrgBdOrgName(displayStr);
+    }
+    getOrgBDNum();
    
   }, []);
 
@@ -279,10 +297,10 @@ function ProjectCostDetail(props) {
         <Col span={14}>
           <Row gutter={16}>
             <Col span={12}>
-              <Card style={{ flex: 1 }} title="机构看板数量-TODO">
+              <Card style={{ flex: 1 }} title="机构看板数量">
                 <div style={statStyle}>
-                  <div style={statLabelStyle}>机构名称</div>
-                  <div style={statValueStyle}><span style={statValueNumStyle}>12</span>个项目</div>
+                  <div style={statLabelStyle}>{orgBdOrgName}</div>
+                  <div style={statValueStyle}><span style={statValueNumStyle}>{totalOrgBdNum}</span>个投资人</div>
                   <Link to={`/app/org/bd?projId=${projectDetails.id}`} style={{ marginTop: 10, fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看机构看板详情</Link>
                 </div>
               </Card>
