@@ -4,6 +4,10 @@ import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
 import { handleError, time, i18n, hasPerm, getUserInfo, requestAllData } from '../utils/util';
 import * as api from '../api'
 import RemarkList2 from './RemarkList2'
+import {
+  DeleteOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 
 const addIconStyle = {
   cursor: 'pointer',
@@ -116,9 +120,11 @@ class RemarkList extends React.Component {
                   <p style={remarkTimeStyle}>
                     { time(item.createdtime+item.timezone) }
                     {/* TODO// 操作与权限挂钩 */}
-                    <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>{i18n('common.edit')}</a>
+                    {/* <a style={remarkActionStyle} onClick={this.showEditRemark.bind(this, item.id)}>{i18n('common.edit')}</a> */}
+                    <Button type="link" onClick={this.showEditRemark.bind(this, item.id)}><EditOutlined /></Button>
                     <Popconfirm title={i18n('remark.remove_remark')} onConfirm={this.confirmDeleteRemark.bind(this, item.id)}>
-                      <a style={remarkActionStyle}>{i18n('common.delete')}</a>
+                      {/* <a style={remarkActionStyle}>{i18n('common.delete')}</a> */}
+                      <Button type="link"><DeleteOutlined /></Button>
                     </Popconfirm>
                   </p>
                   <p style={remarkTextStyle}>{item.remark}</p>

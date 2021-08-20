@@ -246,7 +246,6 @@ class OKRList extends React.Component {
 
   handleDeleteBtnClick = (record, e) => {
     e.preventDefault();
-    window.echo('delete okr', record);
     Modal.confirm({
       title: '是否确定删除该OKR?',
       content: '一旦删除，无法撤销',

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input, Button, Popconfirm, Icon } from 'antd'
 import { time, i18n, hasPerm, getUserInfo } from '../utils/util'
+import { DeleteOutlined } from '@ant-design/icons';
 
 
 const addIconStyle = {
@@ -210,7 +211,8 @@ class Remark extends React.Component {
             <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
               disabled={!hasPermission}
             >
-              <Icon type="delete" />
+              {/* <Icon type="delete" /> */}
+              <DeleteOutlined />
             </Button>
           </Popconfirm>
         </div>

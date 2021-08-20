@@ -18,6 +18,7 @@ import CloseTimelineModal from '../components/CloseTimelineModal'
 import { Search } from '../components/Search'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import * as api from '../api';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right' }
@@ -692,7 +693,8 @@ function BDComments(props) {
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
                 {hasPerm('BD.manageOrgBD') ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                    <a href="javascript:void(0)">{i18n('common.delete')}</a>
+                    {/* <a href="javascript:void(0)">{i18n('common.delete')}</a> */}
+                    <Button type="link"><DeleteOutlined /></Button>
                   </Popconfirm>
                   : null}
               </p>

@@ -59,7 +59,8 @@ const PositionWithUser = props => {
           <span style={{ fontSize: 16, fontWeight: 'bold' }}>{user.name}</span>&nbsp;&nbsp;&nbsp;&nbsp;
           <Link to={"/app/user/edit/" + user.id + '?redirect=' + props.pathname}><span style={{ textDecoration: 'underline' }}>编辑</span></Link>&nbsp;&nbsp;
           <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
-            <Icon type="delete" style={{ color:'#428BCA', cursor: 'pointer', marginBottom: 4 }} />
+            {/* <Icon type="delete" style={{ color:'#428BCA', cursor: 'pointer', marginBottom: 4 }} /> */}
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         </div>
         {user.trader.id ?

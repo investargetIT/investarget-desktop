@@ -18,6 +18,7 @@ import {
 } from 'antd';
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane;
 
@@ -92,7 +93,7 @@ class AttachmentList extends React.Component {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
             <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
+              <DeleteOutlined />
             </Button>
           </Popconfirm>
         ),
@@ -193,7 +194,7 @@ class InvestEvent extends React.Component {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
             <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
+              <DeleteOutlined />
             </Button>
           </Popconfirm>
         ),

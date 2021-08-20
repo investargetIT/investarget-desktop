@@ -5,6 +5,8 @@ import * as api from '../api'
 import YearFinanceForm from './YearFinanceForm'
 import { SelectYear } from './ExtraInput'
 import { i18n } from '../utils/util'
+import { DeleteOutlined } from '@ant-design/icons';
+
 const TabPane = Tabs.TabPane
 
 const titleStyle = {
@@ -177,7 +179,10 @@ class ProjectYearFinance extends React.Component {
                 <h3 style={subTitleStyle}>
                   {item.fYear}
                   <a style={{marginLeft: '8px'}} onClick={this.handleEditYear.bind(this, item.id)}>{i18n('common.edit')}</a>
-                  <Popconfirm title={i18n('project.delete_fiscal_year') + '?'} onConfirm={this.handleDeleteYear.bind(this, item.id)}><a style={{marginLeft: '8px'}}>{i18n('common.delete')}</a></Popconfirm>
+                  <Popconfirm title={i18n('project.delete_fiscal_year') + '?'} onConfirm={this.handleDeleteYear.bind(this, item.id)}>
+                    {/* <a style={{marginLeft: '8px'}}>{i18n('common.delete')}</a> */}
+                    <Button type="link"><DeleteOutlined /></Button>
+                  </Popconfirm>
                 </h3>
                 <div style={{display:'flex', flexWrap: 'wrap'}}>
                   <Field label={i18n('project.revenue') + ' : '} value={item.revenue} />
