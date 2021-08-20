@@ -34,6 +34,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import AddOrgDetail from '../components/AddOrgDetail';
 import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane;
 const buttonStyle={textDecoration:'underline',border:'none',background:'none'};
@@ -59,7 +60,6 @@ const PositionWithUser = props => {
           <span style={{ fontSize: 16, fontWeight: 'bold' }}>{user.name}</span>&nbsp;&nbsp;&nbsp;&nbsp;
           <Link to={"/app/user/edit/" + user.id + '?redirect=' + props.pathname}><span style={{ textDecoration: 'underline' }}>编辑</span></Link>&nbsp;&nbsp;
           <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
-            {/* <Icon type="delete" style={{ color:'#428BCA', cursor: 'pointer', marginBottom: 4 }} /> */}
             <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         </div>
@@ -180,9 +180,7 @@ class Contact extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       },
@@ -266,9 +264,7 @@ class ManageFund extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       },
@@ -354,9 +350,7 @@ class InvestEvent extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       },
@@ -439,9 +433,7 @@ class Cooperation extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       },
@@ -524,9 +516,7 @@ class Buyout extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       },
@@ -628,9 +618,7 @@ class AttachmentList extends React.Component {
       columns.push({
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
-              <Icon type="delete" />
-            </Button>
+            <Button type="link"><DeleteOutlined /></Button>
           </Popconfirm>
         ),
       });

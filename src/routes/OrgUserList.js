@@ -18,6 +18,7 @@ import { OrgUserListFilter } from '../components/Filter'
 import {
   EyeOutlined,
   EditOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group
@@ -257,8 +258,8 @@ class OrgUserList extends React.Component {
                
               </div>
                 <Popconfirm title="确定删除吗？" onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button style={buttonStyle} disabled={!record.action.delete} size="small">
-                    <Icon type="delete" />
+                  <Button type="link" disabled={!record.action.delete} size="small">
+                    <DeleteOutlined />
                   </Button>
                 </Popconfirm>
               </span>

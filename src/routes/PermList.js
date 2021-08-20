@@ -1,7 +1,7 @@
 import React from 'react'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { i18n, requestAllData } from '../utils/util'
-import { message, Input, Popconfirm, Icon, Button, Checkbox, Table } from 'antd'
+import { message, Input, Popconfirm, Button, Checkbox, Table } from 'antd'
 import { createGroup, deleteUserGroup, queryPermList, queryUserGroup, updateUserGroup } from '../api'
 import { CONTENT_TYPE_ID_TO_PERM_GROUP } from '../constants'
 import { connect } from 'dva';
@@ -9,6 +9,7 @@ import {
   PlusOutlined,
   EditOutlined,
   CheckOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 
 class EditableCell extends React.Component {
@@ -78,7 +79,7 @@ class PermList extends React.Component {
           this.state.groups.length > 1 ?
           (
             <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.id)}>
-              <a>{i18n("common.delete")}</a>
+              <Button type="link"><DeleteOutlined /></Button>
             </Popconfirm>
           ) : null
         )
