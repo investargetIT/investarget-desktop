@@ -593,13 +593,13 @@ class BDComments extends React.Component {
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
 
                 { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
-                <a onClick={this.handleEditBtnClicked.bind(this, comment)}>编辑</a>
+                <Button type="link" onClick={this.handleEditBtnClicked.bind(this, comment)}><EditOutlined /></Button>
                 : null }
                 
                 &nbsp;
               {hasPerm('BD.manageProjectBD') ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                    <a>{i18n('common.delete')}</a>
+                    <Button type="link"><DeleteOutlined /></Button>
                   </Popconfirm>
                   : null}
               </p>

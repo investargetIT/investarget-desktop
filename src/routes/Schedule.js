@@ -33,9 +33,9 @@ const EditScheduleForm = Form.create({ mapPropsToFields })(ScheduleForm)
  
 const eventTitleStyle = {
   float: 'right',
-  fontSize: '12px',
+  // fontSize: '12px',
   fontWeight: 'normal',
-  marginLeft: 8,
+  // marginLeft: 8,
 }
 
 
@@ -652,10 +652,10 @@ class Schedule extends React.Component {
       <div style={{marginRight:32}}>
         {i18n('schedule.event')}
         <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteEvent}>
-          <a href="javascript:void(0)" style={eventTitleStyle}>{i18n('common.delete')}</a>
+          <Button type="link" style={eventTitleStyle}><DeleteOutlined /></Button>
         </Popconfirm>
         { this.isEventEditable() && 
-        <a href="javascript:void(0)" style={eventTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
+        <Button type="link"style={eventTitleStyle} onClick={this.showEditModal}><EditOutlined /></Button>
         }
       </div>
     )
