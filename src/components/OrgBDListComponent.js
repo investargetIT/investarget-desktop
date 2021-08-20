@@ -1820,11 +1820,10 @@ class OrgBDListComponent extends React.Component {
             loading={!record.loaded}
             // rowClassName={this.handleRowClassName}
           />
-          {this.props.editable && this.isAbleToCreateBD() ? 
-            <Button 
-              style={{float: 'right', margin: '5px 15px 5px 0'}} 
-              onClick={this.handleAddNew.bind(this, record)}
-            >新增BD</Button> : null
+          {this.props.editable && this.isAbleToCreateBD() &&
+            <Button style={{ marginLeft: 24, marginTop: 10 }} type="link" onClick={this.handleAddNew.bind(this, record)} size="large">
+              <PlusCircleOutlined style={{ fontSize: 22 }} />
+            </Button>
           }
         </div>
 
