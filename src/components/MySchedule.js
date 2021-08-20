@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Calendar, Select, Radio, Modal, Row, Col, Popconfirm } from 'antd';
+import { Calendar, Select, Radio, Modal, Row, Col, Popconfirm, Button } from 'antd';
 import moment from 'moment';
 import { requestAllData, getCurrentUser, handleError, hasPerm, i18n, getUserInfo, time } from '../utils/util';
 import * as api from '../api';
 import {
   RightOutlined,
   LeftOutlined,
+  DeleteOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import ScheduleForm from './ScheduleForm';
 import { connect } from 'dva';
@@ -630,9 +632,7 @@ function MySchedule(props) {
 
   const eventTitleStyle = {
     float: 'right',
-    fontSize: '12px',
     fontWeight: 'normal',
-    marginLeft: 8,
   }
 
   const isEventEditable = () => {
@@ -664,10 +664,10 @@ function MySchedule(props) {
     <div style={{ marginRight: 32 }}>
       {i18n('schedule.event')}
       <Popconfirm title={i18n('delete_confirm')} onConfirm={deleteEvent}>
-        <a href="#" style={eventTitleStyle}>{i18n('common.delete')}</a>
+        <Button type="link" style={eventTitleStyle}><DeleteOutlined /></Button>
       </Popconfirm>
       {isEventEditable() &&
-        <a href="#" style={eventTitleStyle} onClick={showEditModal}>{i18n('common.edit')}</a>
+        <Button type="link" style={eventTitleStyle} onClick={showEditModal}><EditOutlined /></Button>
       }
     </div>
   );

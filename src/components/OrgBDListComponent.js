@@ -2123,7 +2123,7 @@ export function BDComments(props) {
                 <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
                 {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
                   <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
-                    <Button type="link">{i18n('common.delete')}</Button>
+                    <Button type="link"><DeleteOutlined /></Button>
                   </Popconfirm>
                   : null}
               </p>
