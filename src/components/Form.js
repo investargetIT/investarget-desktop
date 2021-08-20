@@ -359,7 +359,7 @@ class IndustryDynamicFormItem extends React.Component {
 
   // Industry 多 field
   removeIndustry = (k) => {
-    const { getFieldValue, setFieldsValue, validateFields } = this.context.form
+    const { getFieldValue, setFieldsValue } = this.props.formRef.current;
     var keys = getFieldValue('industriesKeys')
     if (keys.length === 1) {
       return
@@ -425,22 +425,24 @@ class IndustryDynamicFormItem extends React.Component {
                 {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
                 label={index === 0 ? i18n('project.industry') : ''}>
                 <Row>
-                  <Col span={22}>
-                    <FormItem
-                      name={`industries-${k}`}
-                      rules={[
-                        { type: 'number', message: i18n('validation.not_valid') },
-                        { required: true, message: i18n('validation.not_empty') },
-                      ]}
-                    >
-                      <CascaderIndustry
-                        size="large"
-                        disabled={this.state.disabled}
-                        onChange={this.handleIndustryChange.bind(this, k)}
-                      />
-                    </FormItem>
+                  <Col span={21}>
+                    <div className="edit-proj-status">
+                      <FormItem
+                        name={`industries-${k}`}
+                        rules={[
+                          { type: 'number', message: i18n('validation.not_valid') },
+                          { required: true, message: i18n('validation.not_empty') },
+                        ]}
+                      >
+                        <CascaderIndustry
+                          size="large"
+                          disabled={this.state.disabled}
+                          onChange={this.handleIndustryChange.bind(this, k)}
+                        />
+                      </FormItem>
+                    </div>
                   </Col>
-                  <Col span={2}>
+                  <Col span={2} offset={1}>
                     <MinusCircleOutlined
                       disabled={industriesKeys.length === 1}
                       onClick={() => this.removeIndustry(k)}

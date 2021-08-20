@@ -145,7 +145,8 @@ class EditProject extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      project: {}
+      project: {},
+      loadingEdit: false,
     }
 
     this.editProjectBaseFormRef = React.createRef();
@@ -195,6 +196,7 @@ class EditProject extends React.Component {
   }
 
   editProject = async (formStr, ifBack) => {
+    this.setState({ loadingEdit: true });
     const react = this;
     const id = Number(this.props.match.params.id);
     try {
@@ -216,6 +218,7 @@ class EditProject extends React.Component {
               ...detailFormParams,
             };
             api.editProj(id, params).then(result => {
+              this.setState({ loadingEdit: false });
               this.getProject()
               if (baseFormParams.sendWechat) {
                 api.sendProjPdfToWechatGroup(id);
@@ -227,6 +230,7 @@ class EditProject extends React.Component {
                 message.success(i18n('project.message.project_updated'), 2)
               }
             }, error => {
+              this.setState({ loadingEdit: false });
               this.props.dispatch({
                 type: 'app/findError',
                 payload: error
@@ -338,11 +342,11 @@ class EditProject extends React.Component {
     const id = Number(this.props.match.params.id)
     const data = toFormData(this.state.project)
     
-    const FormAction = ({form}) => {
+    const FormAction = ({ form, loadingEdit }) => {
       return (
         <div style={actionStyle}>
-          <Button type="primary" size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
-          <Button size="large" style={actionBtnStyle} onClick={this.editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
+          <Button type="primary" size="large" loading={loadingEdit} style={actionBtnStyle} onClick={this.editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
+          <Button size="large" loading={loadingEdit} style={actionBtnStyle} onClick={this.editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
         </div>
       )
     }
@@ -355,7 +359,7 @@ class EditProject extends React.Component {
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
                 <ProjectBaseForm ref={this.editProjectBaseFormRef} />
-                <FormAction form="baseForm" />
+                <FormAction form="baseForm" loadingEdit={this.state.loadingEdit} />
               </div>
             </TabPane>
 
