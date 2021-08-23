@@ -77,17 +77,27 @@ class SelectInvestorGroup extends React.Component {
 
 class ModalModifyOrgBDStatus extends React.Component {
 
-  state = {
-    username: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.username ||'', 
-    mobile: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/,''):'',
-    wechat: '', 
-    email: !this.props.bd.bduser&&this.props.projectBD&&this.props.bd.useremail ||'', 
-    isimportant: this.props.bd.isimportant||null, 
-    status: this.props.bd.response, 
-    group: '', 
-    mobileAreaCode: '86',
-    comment: '',
-    material: null,
+  constructor(props) {
+    super(props);
+
+    const progressValue = [props.bd.response];
+    if (props.bd.material) {
+      progressValue.push(props.bd.material);
+    }
+
+    this.state = {
+      username: !this.props.bd.bduser && this.props.projectBD && this.props.bd.username || '',
+      mobile: !this.props.bd.bduser && this.props.projectBD && this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/, '') : '',
+      wechat: '',
+      email: !this.props.bd.bduser && this.props.projectBD && this.props.bd.useremail || '',
+      isimportant: this.props.bd.isimportant || null,
+      status: this.props.bd.response,
+      group: '',
+      mobileAreaCode: '86',
+      comment: '',
+      material: this.props.bd.material,
+      progressValue, 
+    }
   }
 
   checkInvalid = () => {
@@ -123,11 +133,15 @@ class ModalModifyOrgBDStatus extends React.Component {
 
   handleProgressChange = value => {
     const response = value[0];
+    const progressValue = [response];
     let material = null;
-    if (value.length > 0 && value[1] !== 0) {
-      material = value[1];
+    if (value.length > 0) {
+      progressValue.push(value[1]);
+      if (value[1] !== 0) {
+        material = value[1];
+      }
     }
-    this.setState({ status: response, material });
+    this.setState({ status: response, material, progressValue });
   }
 
   render() {
@@ -170,6 +184,7 @@ class ModalModifyOrgBDStatus extends React.Component {
               <Cascader
                 style={{ width: '100%' }}
                 options={this.getProgressOptions()}
+                value={this.state.progressValue}
                 onChange={this.handleProgressChange}
                 placeholder="机构进度/材料"
               />
