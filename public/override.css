@@ -655,3 +655,6 @@ label.login-register-form__container__label {
 .edit-proj-status .ant-form-item {
   margin-bottom: 0;
 }
+.orgbd-operation-icon-btn .ant-btn {
+  padding: 4px 6px;
+}

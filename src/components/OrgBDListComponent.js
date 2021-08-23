@@ -27,6 +27,7 @@ import {
   Transfer,
   Cascader,
   Select,
+  Tooltip,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -46,6 +47,9 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
   ExclamationCircleOutlined,
+  EditOutlined,
+  FormOutlined,
+  HighlightOutlined,
 } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -1371,7 +1375,7 @@ class OrgBDListComponent extends React.Component {
         });
         break;
       case 'update_status':
-        react.handleModifyStatusBtnClicked(record);
+        react.setState({ isPMComment: 0 }, () => react.handleModifyStatusBtnClicked(record));
         break;
       case 'add_remark':
         react.setState({ isPMComment: 0 }, () => react.handleOpenModal(record));
@@ -1771,6 +1775,38 @@ class OrgBDListComponent extends React.Component {
             } else {
               const latestComment = record.BDComments && record.BDComments[0]
               const comments = latestComment ? latestComment.comments : ''
+              return (
+                <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
+                  {this.isAbleToModifyStatus(record) &&
+                    <Tooltip title="修改状态">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
+                        <FormOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
+                  {this.isAbleToModifyStatus(record) &&
+                    <Tooltip title="添加机构反馈">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
+                        <EditOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
+                  {this.isAbleToAddPMRemark(record) &&
+                    <Tooltip title="添加应对策略">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
+                        <HighlightOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
+                  {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) &&
+                    <Tooltip title="删除">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
+                        <DeleteOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
+                </div>
+              );
               return (
                 <Select placeholder="操作" style={{ width: '100%' }} onChange={this.handleOperationChange.bind(this, record)}>
                   {this.isAbleToModifyStatus(record) && <Option value="update_status">修改状态</Option>}
