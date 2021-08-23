@@ -1486,7 +1486,7 @@ class OrgBDListComponent extends React.Component {
         },
       },
       {
-        title: "最新备注", 
+        title: "机构反馈", 
         key:'bd_latest_info',
         width: '25%',
         dataIndex: 'BDComments',
@@ -1680,7 +1680,7 @@ class OrgBDListComponent extends React.Component {
             },
           },
           {
-            title: "最新备注",
+            title: "机构反馈",
             width: '15%',
             key: 'bd_latest_info',
             render: (text, record) => {
@@ -1695,7 +1695,7 @@ class OrgBDListComponent extends React.Component {
                     latestComment = commonComments[commonComments.length - 1].comments;
                   }
                 }
-                return latestComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
+                return latestComment ? <Popover placement="leftTop" title="机构反馈" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
                   <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
                 </Popover> : "暂无";
               }
@@ -1703,7 +1703,7 @@ class OrgBDListComponent extends React.Component {
             },
           },
           {
-            title: 'PM备注',
+            title: '机构反馈',
             width: '10%',
             key: 'pm_remark',
             render: (_, record) => {
@@ -1718,7 +1718,7 @@ class OrgBDListComponent extends React.Component {
                     latestPMComment = pmComments[pmComments.length - 1].comments;
                   }
                 }
-                return latestPMComment ? <Popover placement="leftTop" title="最新备注" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
+                return latestPMComment ? <Popover placement="leftTop" title="机构反馈" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
                   <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
                 </Popover> : "暂无";
               }
@@ -1774,8 +1774,8 @@ class OrgBDListComponent extends React.Component {
               return (
                 <Select placeholder="操作" style={{ width: '100%' }} onChange={this.handleOperationChange.bind(this, record)}>
                   {this.isAbleToModifyStatus(record) && <Option value="update_status">修改状态</Option>}
-                  {this.isAbleToModifyStatus(record) && <Option value="add_remark">添加备注</Option>}
-                  {this.isAbleToAddPMRemark(record) && <Option value="add_pm_remark">添加PM备注</Option>}
+                  {this.isAbleToModifyStatus(record) && <Option value="add_remark">添加机构反馈</Option>}
+                  {this.isAbleToAddPMRemark(record) && <Option value="add_pm_remark">添加应对策略</Option>}
                   {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) && <Option value="delete">删除</Option>}
                 </Select>
               );
@@ -1913,8 +1913,8 @@ class OrgBDListComponent extends React.Component {
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
             <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
             {!this.props.fromProjectCostCenter && <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>最新备注</div>}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>PM备注</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>}
             {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>}
             {!this.props.fromProjectCostCenter && <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>}
           </div>
@@ -1984,7 +1984,7 @@ class OrgBDListComponent extends React.Component {
         : null }
 
         <Modal
-          title={this.state.isPMComment ? 'PM备注' : i18n('remark.comment')}
+          title={this.state.isPMComment ? '应对策略' : '机构反馈'}
           visible={this.state.commentVisible}
           footer={null}
           onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
