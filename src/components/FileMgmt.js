@@ -322,9 +322,10 @@ class FileMgmt extends React.Component {
     const { is_superuser, permissions } = isLogin();
     if (!is_superuser && permissions.includes('usersys.as_investor')) {
       // 对于投资人，隐藏空目录，除非是刚新建的目录
-      return this.props.data.filter(
-        f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile || !f.id || f.justCreated)
+      const result = this.props.data.filter(
+        f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile || !f.id || f.justCreated || f.isCreatingFolder)
       ).sort(sortByFileTypeAndName);
+      return result;
     }
     return this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName);
   }
