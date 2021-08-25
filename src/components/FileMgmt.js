@@ -509,6 +509,18 @@ class FileMgmt extends React.Component {
     return false;
   }
 
+  isProjectOwner = () => {
+    const userInfo = isLogin();
+    if (userInfo.groups && userInfo.groups.length > 0) {
+      // ID 14 为项目方
+      const projectOwnerRole = userInfo.groups.filter(f => f.id === 14 || f.name == '项目方');
+      if (projectOwnerRole.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   render () {
     // window.echo('file annotation list', this.props.fileAnnotationList);
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
@@ -833,7 +845,7 @@ class FileMgmt extends React.Component {
             </Button>
           : null }
 
-          { hasEnoughPerm || this.props.isProjTrader ?
+          { !this.isProjectOwner() && (hasEnoughPerm || this.props.isProjTrader) ?
           <Button
             size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
