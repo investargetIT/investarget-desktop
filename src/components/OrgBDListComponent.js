@@ -689,18 +689,31 @@ class OrgBDListComponent extends React.Component {
 
   handleConfirmBtnClicked = state => {
     let comments = '';
-    // 由非空状态变为不跟进，记录之前状态，相关issue #285
-    if (state.status === 6 && ![6, null].includes(this.state.currentBD.response)) {
+    // // 由非空状态变为不跟进，记录之前状态，相关issue #285
+    // if (state.status === 6 && ![6, null].includes(this.state.currentBD.response)) {
+    //   const oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
+    //   comments = [state.comment.trim(), `之前状态${oldStatus}`].filter(f => f !== '').join('，');
+    // } else {
+    //   comments = state.comment.trim();
+    // }
+
+    // 记录进度材料变化
+    if (state.status != this.state.currentBD.response || state.material !== this.state.currentBD.material) {
       const oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
-      comments = [state.comment.trim(), `之前状态${oldStatus}`].filter(f => f !== '').join('，');
+      const oldMaterial = this.state.currentBD.material;
+      const newStatus = this.props.orgbdres.filter(f => f.id === state.status)[0].name;
+      const newMaterial = state.material;
+      comments = [state.comment.trim(), `之前状态：${oldStatus}`, `之前材料：${oldMaterial}`, `现在状态：${newStatus}`, `现在材料：${newMaterial}`].filter(f => f !== '').join('，');
     } else {
       comments = state.comment.trim();
     }
+
     // 添加备注
     if (comments.length > 0) {
       const body = {
         orgBD: this.state.currentBD.id,
         comments,
+        isPMComment: 0,
       };
       api.addOrgBDComment(body);
     }
@@ -832,7 +845,8 @@ class OrgBDListComponent extends React.Component {
       if (wechat.length > 0) {
         api.addOrgBDComment({
           orgBD: this.state.currentBD.id,
-          comments: `${i18n('user.wechat')}: ${wechat}`
+          comments: `${i18n('user.wechat')}: ${wechat}`,
+          isPMComment: 0,
         }).then(data => {
           this.setState({ visible: false }, () => this.getOrgBdListDetail(this.state.currentBD.org.id, this.state.currentBD.proj && this.state.currentBD.proj.id))
         });
@@ -843,7 +857,8 @@ class OrgBDListComponent extends React.Component {
     } else {
       api.addOrgBDComment({
         orgBD: this.state.currentBD.id,
-        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`
+        comments: `${i18n('account.username')}: ${username} ${i18n('account.mobile')}: ${mobile} ${i18n('user.wechat')}: ${wechat} ${i18n('account.email')}: ${email}`,
+        isPMComment: 0,
       });
       const newUser = { mobile, wechat, email, mobileAreaCode, groups: [Number(group)], userstatus: 2 };
       if (window.LANG === 'en') {
