@@ -90,7 +90,7 @@ class ModalModifyOrgBDStatus extends React.Component {
       mobile: !this.props.bd.bduser && this.props.projectBD && this.props.bd.usermobile ? this.props.bd.usermobile.replace(/^\d{2}-/, '') : '',
       wechat: '',
       email: !this.props.bd.bduser && this.props.projectBD && this.props.bd.useremail || '',
-      isimportant: this.props.bd.isimportant || null,
+      isimportant: this.props.bd.isimportant || 0,
       status: this.props.bd.response,
       group: '',
       mobileAreaCode: '86',
