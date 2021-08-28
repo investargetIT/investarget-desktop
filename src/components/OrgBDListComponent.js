@@ -1439,18 +1439,21 @@ class OrgBDListComponent extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
     const columns = [
-        {
-          title: i18n('org_bd.org'),
-          key:'org', 
-          sorter: false, 
-          render: (text, record) => record.org ? 
+      {
+        title: i18n('org_bd.org'),
+        key: 'org',
+        sorter: false,
+        render: (_, record) => {
+          if (!record.org) return null;
+          return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
               <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
               <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
             </div>
-            : null, 
+          );
         },
+      },
         // {
         //   title: '职位',
         //   width: '10%',
