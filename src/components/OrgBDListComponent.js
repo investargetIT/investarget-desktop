@@ -1444,9 +1444,10 @@ class OrgBDListComponent extends React.Component {
           key:'org', 
           sorter: false, 
           render: (text, record) => record.org ? 
-            <div>
-              {record.org.orgname}
-              <a style={{ marginLeft: 10 }} onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</a>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
+              <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
             </div>
             : null, 
         },
