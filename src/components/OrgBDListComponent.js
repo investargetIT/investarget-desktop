@@ -172,6 +172,9 @@ class OrgBDListComponent extends React.Component {
         isPMComment: 0, // 是否PM的备注
         showBlacklistModal: false,
 
+        isUpdatePriorityModalVisible: false,
+        currentPriority: 0,
+        currentPriorityRecord: null,
     }
 
     this.allTrader = [];
@@ -1441,6 +1444,19 @@ class OrgBDListComponent extends React.Component {
     return 'rgba(82, 196, 26, .15)';
   }
 
+  handleUpdatePriorityBtnClick(priority, record) {
+    this.setState({ isUpdatePriorityModalVisible: true, currentPriority: priority, currentPriorityRecord: record });
+  }
+
+  handleUpdatePriority = async () => {
+    try {
+      await Promise.all(this.state.currentPriorityRecord.items.map(m => api.modifyOrgBD(m.id, { isimportant: this.state.currentPriority })));
+      this.setState({ isUpdatePriorityModalVisible: false }, () => this.getOrgBdListDetail(this.state.currentPriorityRecord.org.id, this.state.currentPriorityRecord.proj && this.state.currentPriorityRecord.proj.id));
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1464,7 +1480,7 @@ class OrgBDListComponent extends React.Component {
           const popoverContent = (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div>优先级{priorityName}</div>
-              <Button type="link" icon={<EditOutlined />}>修改</Button>
+              <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
             </div>
           );
           return (
@@ -2134,6 +2150,28 @@ class OrgBDListComponent extends React.Component {
             value={this.state.reasonForBlacklist}
             onChange={e => this.setState({ reasonForBlacklist: e.target.value })}
           />
+        </Modal>
+
+        <Modal
+          className="another-btn"
+          title="修改机构优先级"
+          visible={this.state.isUpdatePriorityModalVisible}
+          onOk={this.handleUpdatePriority}
+          onCancel={() => this.setState({ isUpdatePriorityModalVisible: false })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>机构优先级：</div>
+            <Select
+              defaultValue={this.state.currentPriority}
+              style={{ width: 180 }}
+              placeholder="请选择优先级"
+              onChange={value => this.setState({ currentPriority: value })}
+            >
+              <Option value={0}>低</Option>
+              <Option value={1}>中</Option>
+              <Option value={2}>高</Option>
+            </Select>
+          </div>
         </Modal>
 
 
