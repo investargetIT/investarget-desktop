@@ -54,6 +54,14 @@ import {
 
 const { Option } = Select;
 const priority = ['低', '中', '高'];
+const priorityColor = ['#7ed321', '#0084a9', '#ff617f'];
+const priorityStyles = {
+  width: 8,
+  height: 8,
+  borderRadius: '50%',
+  backgroundColor: '#ff617f',
+  opacity: 0.5,
+};
 const progressStyles = {
   margin: 2,
   backgroundColor: 'rgba(250, 221, 20, .15)',
@@ -1445,10 +1453,16 @@ class OrgBDListComponent extends React.Component {
         sorter: false,
         render: (_, record) => {
           if (!record.org) return null;
+          let displayPriorityColor = priorityColor[0]; // 默认优先级低
+          const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
+          allItemPriorities.sort((first, second) => second - first);
+          if (allItemPriorities.length > 0) {
+            displayPriorityColor = priorityColor[allItemPriorities[0]];
+          }
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
+              <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
               <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
             </div>
           );
