@@ -1454,15 +1454,25 @@ class OrgBDListComponent extends React.Component {
         render: (_, record) => {
           if (!record.org) return null;
           let displayPriorityColor = priorityColor[0]; // 默认优先级低
+          let priorityName = priority[0];
           const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
           allItemPriorities.sort((first, second) => second - first);
           if (allItemPriorities.length > 0) {
             displayPriorityColor = priorityColor[allItemPriorities[0]];
+            priorityName = priority[allItemPriorities[0]];
           }
+          const popoverContent = (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div>优先级{priorityName}</div>
+              <Button type="link" icon={<EditOutlined />}>修改</Button>
+            </div>
+          );
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
-              <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
+              <Popover content={popoverContent}>
+                <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
+              </Popover>
               <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
             </div>
           );
