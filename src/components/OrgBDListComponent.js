@@ -1740,7 +1740,7 @@ class OrgBDListComponent extends React.Component {
             },
           },
           {
-            title: '机构反馈',
+            title: '应对策略',
             width: '10%',
             key: 'pm_remark',
             render: (_, record) => {
@@ -1762,31 +1762,31 @@ class OrgBDListComponent extends React.Component {
               return null;
             },
           },
-          {
-            title: '优先级',
-            width: '8%',
-            key: 'priority',
-            dataIndex: 'isimportant',
-            render: (text, record) => {
-              if (record.new) {
-                return (
-                  <Select
-                    defaultValue={1}
-                    style={{ width: '100%' }}
-                    onChange={v => { this.updateSelection(record, { isimportant: v }) }}
-                  >
-                    <Option value={0}>低</Option>
-                    <Option value={1}>中</Option>
-                    <Option value={2}>高</Option>
-                  </Select>
-                );
-              }
-              if (this.isAbleToModifyStatus(record)) {
-                return typeof text === 'number' ? priority[text] : '未知';
-              }
-              return null;
-            },
-          },
+          // {
+          //   title: '优先级',
+          //   width: '8%',
+          //   key: 'priority',
+          //   dataIndex: 'isimportant',
+          //   render: (text, record) => {
+          //     if (record.new) {
+          //       return (
+          //         <Select
+          //           defaultValue={1}
+          //           style={{ width: '100%' }}
+          //           onChange={v => { this.updateSelection(record, { isimportant: v }) }}
+          //         >
+          //           <Option value={0}>低</Option>
+          //           <Option value={1}>中</Option>
+          //           <Option value={2}>高</Option>
+          //         </Select>
+          //       );
+          //     }
+          //     if (this.isAbleToModifyStatus(record)) {
+          //       return typeof text === 'number' ? priority[text] : '未知';
+          //     }
+          //     return null;
+          //   },
+          // },
         )
       }
         
@@ -1995,7 +1995,7 @@ class OrgBDListComponent extends React.Component {
             {!this.props.fromProjectCostCenter && <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>}
             {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
             {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>}
+            {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
             {!this.props.fromProjectCostCenter && <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>}
           </div>
 
