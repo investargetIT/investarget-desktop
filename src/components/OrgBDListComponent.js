@@ -1926,14 +1926,25 @@ class OrgBDListComponent extends React.Component {
         <Card>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Search
-                style={{ width: 300 }}
-                placeholder="请输入投资人名称或电话"
-                onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-                onChange={search => this.setState({ search })}
-                value={search}
-                size="middle"
-              />
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Search
+                  style={{ width: 300, marginRight: 20 }}
+                  placeholder="请输入投资人名称或电话"
+                  onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
+                  onChange={search => this.setState({ search })}
+                  value={search}
+                  size="middle"
+                />
+                <div style={{ display: 'flex', alignItems: 'center', fontSize: 14, color: '#595959' }}>
+                  <div style={{ marginRight: 4 }}>机构优先级：</div>
+                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
+                  <div style={{ marginRight: 16 }}>高</div>
+                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#0084a9', opacity: 0.5 }} />
+                  <div style={{ marginRight: 16 }}>中</div>
+                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#7ed321', opacity: 0.5 }} />
+                  <div style={{ marginRight: 16 }}>低</div>
+                </div>
+              </div>
               {this.isAbleToCreateBD() &&
                 <div className="another-btn">
                   {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
