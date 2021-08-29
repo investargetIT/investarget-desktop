@@ -172,9 +172,11 @@ class OrgBDListComponent extends React.Component {
         isPMComment: 0, // 是否PM的备注
         showBlacklistModal: false,
 
+        // 修改机构优先级相关状态
         isUpdatePriorityModalVisible: false,
         currentPriority: 0,
         currentPriorityRecord: null,
+        loadingUpdatingOrgPriority: false,
     }
 
     this.allTrader = [];
@@ -1450,10 +1452,13 @@ class OrgBDListComponent extends React.Component {
 
   handleUpdatePriority = async () => {
     try {
+      this.setState({ loadingUpdatingOrgPriority: true });
       await Promise.all(this.state.currentPriorityRecord.items.map(m => api.modifyOrgBD(m.id, { isimportant: this.state.currentPriority })));
       this.setState({ isUpdatePriorityModalVisible: false }, () => this.getOrgBdListDetail(this.state.currentPriorityRecord.org.id, this.state.currentPriorityRecord.proj && this.state.currentPriorityRecord.proj.id));
     } catch (error) {
       handleError(error);
+    } finally {
+      this.setState({ loadingUpdatingOrgPriority: false });
     }
   }
 
@@ -2158,6 +2163,7 @@ class OrgBDListComponent extends React.Component {
           visible={this.state.isUpdatePriorityModalVisible}
           onOk={this.handleUpdatePriority}
           onCancel={() => this.setState({ isUpdatePriorityModalVisible: false })}
+          confirmLoading={this.state.loadingUpdatingOrgPriority}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div>机构优先级：</div>
