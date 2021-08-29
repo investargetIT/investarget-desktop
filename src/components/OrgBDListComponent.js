@@ -712,11 +712,14 @@ class OrgBDListComponent extends React.Component {
 
     // 记录进度材料变化
     if (state.status != this.state.currentBD.response || state.material !== this.state.currentBD.material) {
-      const oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
+      let oldStatus = '';
+      if (this.state.currentBD.response) {
+        oldStatus = this.props.orgbdres.filter(f => f.id === this.state.currentBD.response)[0].name;
+      }
       const oldMaterial = this.state.currentBD.material;
       const newStatus = this.props.orgbdres.filter(f => f.id === state.status)[0].name;
       const newMaterial = state.material;
-      comments = [state.comment.trim(), `之前状态：${oldStatus}`, `之前材料：${oldMaterial}`, `现在状态：${newStatus}`, `现在材料：${newMaterial}`].filter(f => f !== '').join('，');
+      comments = [state.comment.trim(), `之前状态：${oldStatus || '无'}`, `之前材料：${oldMaterial || '无'}`, `现在状态：${newStatus || '无'}`, `现在材料：${newMaterial || '无'}`].filter(f => f !== '').join('，');
     } else {
       comments = state.comment.trim();
     }
@@ -803,7 +806,7 @@ class OrgBDListComponent extends React.Component {
       response: status,
       isimportant: isimportant,
       remark: comment,
-      material,
+      material: material || '',
     }
     api.modifyOrgBD(this.state.currentBD.id, body)
       .then(result => 
