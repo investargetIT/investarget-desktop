@@ -1272,8 +1272,7 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
-  handleOrgBlackListSearchChange = (direction, event) => {
-    const { value } = event.target;
+  handleOrgBlackListSearchChange = (_, value) => {
     this.searchOrg(value);
   }
 
@@ -2142,7 +2141,7 @@ class OrgBDListComponent extends React.Component {
             targetKeys={this.state.orgBlackList.map(m => m.id)}
             onChange={this.handleOrgBlackListChange}
             render={this.renderBlacklistItem}
-            onSearchChange={this.handleOrgBlackListSearchChange}
+            onSearch={this.handleOrgBlackListSearchChange}
           />
         </Modal>
 
