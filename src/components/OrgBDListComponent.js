@@ -2243,7 +2243,9 @@ export function BDComments(props) {
         <Button onClick={onAdd} type="primary" disabled={newComment == ''}>{i18n('common.add')}</Button>
       </div>
       <div>
-        {comments.length ? comments.filter(f => f.isPMComment == Boolean(isPMComment)).map(comment => {
+        {comments.length ? comments.filter(f => f.isPMComment == Boolean(isPMComment))
+          .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+          .map(comment => {
           let content = comment.comments;
           const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
           if (oldStatusMatch) {
