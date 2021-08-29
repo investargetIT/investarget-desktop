@@ -155,13 +155,9 @@ class ModalModifyOrgBDStatus extends React.Component {
         footer={null}
       >
         <div style={{ width: '70%', margin: '0 auto', marginLeft: 50 }}>
-          <Row>
+          {/* <Row>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10 }} >优先级：</Col>
             <Col span={16}>
-              {/* <Switch
-                defaultChecked={this.state.isimportant}
-                onChange={checked => this.setState({ isimportant: checked })}
-              /> */}
               <Select
                 defaultValue={this.state.isimportant}
                 style={{ width: '100%' }}
@@ -172,7 +168,7 @@ class ModalModifyOrgBDStatus extends React.Component {
                 <Option value={2}>高</Option>
               </Select>
             </Col>
-          </Row>
+          </Row> */}
           <Row style={{ marginTop: 10 }}>
             <Col span={8} style={{ textAlign: 'right', paddingRight: 10, lineHeight: '32px' }} >{i18n('project_bd.status')} : </Col>
             <Col span={16}>
