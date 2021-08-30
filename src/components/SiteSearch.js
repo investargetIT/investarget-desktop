@@ -4,13 +4,11 @@ import { connect } from 'dva'
 import { Link } from 'dva/router'
 import classNames from 'classnames'
 import _ from 'lodash'
-
+import debounce from 'lodash/debounce';
 import * as api from '../api'
-import { i18n, handleError, isParent } from '../utils/util'
+import { i18n, handleError, isParent, requestAllData } from '../utils/util';
 import styles from './SiteSearch.css'
-import {
-  SearchOutlined,
-} from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 
 
 const searchStyle = {
@@ -80,6 +78,7 @@ class SiteSearch extends React.Component {
     }
 
     this.handleScroll = _.throttle(this.handleScroll, 300)
+    this.searchData = debounce(this.searchData, 800);
   }
 
   isLoading = false
@@ -125,16 +124,25 @@ class SiteSearch extends React.Component {
     this.props.dispatch({ type: 'app/globalSearch', payload: search })
   }
 
-  reloadData = (search) => {
-    this.setState({ page: 1, reloading: true })
-    const param = { page_index: 1, page_size: 10, com_name: search }
-    api.getLibProjSimple(param).then(result => {
-      const { count, data } = result.data
-      this.setState({ total: count, results: data, reloading: false })
-    }).catch(error => {
-      handleError(error)
-      this.setState({ reloading: false })
-    })
+  // reloadData = (search) => {
+  //   this.setState({ page: 1, reloading: true })
+  //   const param = { page_index: 1, page_size: 10, com_name: search }
+  //   api.getLibProjSimple(param).then(result => {
+  //     const { count, data } = result.data
+  //     this.setState({ total: count, results: data, reloading: false })
+  //   }).catch(error => {
+  //     handleError(error)
+  //     this.setState({ reloading: false })
+  //   })
+  // }
+
+  searchData = async content => {
+    window.echo('seach dd');
+    const result = await Promise.all([
+      requestAllData(api.getLibProjSimple, { com_name: content }, 50),
+      requestAllData(api.getProj, { search: content }, 50),
+    ]);
+    window.echo('search result', result);
   }
 
   loadMoreData = () => {
@@ -159,7 +167,8 @@ class SiteSearch extends React.Component {
     console.log(nextProps.search)
     const { search } = nextProps
     if (search) {
-      this.reloadData(search)
+      // this.reloadData(search)
+      this.searchData(search);
     }
   }
 
