@@ -126,7 +126,7 @@ export default {
     },
     *globalSearch({ payload: search }, { select, put }) {
       yield put({ type: 'saveSearch', payload: search })
-      yield put(routerRedux.push('/app/projects/library?search=' + search))
+      // yield put(routerRedux.push('/app/projects/library?search=' + search))
     },
     *getGroup({}, { call, put, select }) {
       const group = yield select(state => state.app.group);

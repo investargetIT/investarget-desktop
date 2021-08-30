@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon, Input } from 'antd'
 import { connect } from 'dva'
-import { Link } from 'dva/router'
+import { routerRedux } from 'dva/router';
 import classNames from 'classnames'
 import _ from 'lodash'
 import debounce from 'lodash/debounce';
@@ -77,7 +77,7 @@ class SiteSearch extends React.Component {
       loading: false,
     }
 
-    this.handleScroll = _.throttle(this.handleScroll, 300)
+    // this.handleScroll = _.throttle(this.handleScroll, 300)
     this.searchData = debounce(this.searchData, 800);
   }
 
@@ -101,27 +101,32 @@ class SiteSearch extends React.Component {
     }
   }
 
-  handleScroll = (e) => {
-    if (this.isLoading) {
-      e.preventDefault();
-      return;
-    }
-    const el = this.refs.results
-    const distance = el.scrollHeight - el.clientHeight - el.scrollTop
-    const { results, total } = this.state
-    if (distance < 24 && results.length < total && !this.isLoading) {
-      this.isLoading = true
-      this.loadMoreData()
-    }
-  }
+  // handleScroll = (e) => {
+  //   if (this.isLoading) {
+  //     e.preventDefault();
+  //     return;
+  //   }
+  //   const el = this.refs.results
+  //   const distance = el.scrollHeight - el.clientHeight - el.scrollTop
+  //   const { results, total } = this.state
+  //   if (distance < 24 && results.length < total && !this.isLoading) {
+  //     this.isLoading = true
+  //     this.loadMoreData()
+  //   }
+  // }
 
-  handleClickItem = (com_name) => {
-    this.onSearch(com_name)
+  handleClickItem = item => {
+    this.onSearch(item);
     this.hideResults()
   }
 
-  onSearch = (search) => {
-    this.props.dispatch({ type: 'app/globalSearch', payload: search })
+  onSearch = (item) => {
+    this.props.dispatch({ type: 'app/globalSearch', payload: item.com_name });
+    if (item.isFromProjectList) {
+      this.props.dispatch(routerRedux.push(`/app/projects/${item.id}`));
+    } else {
+      this.props.dispatch(routerRedux.push(`/app/projects/library?search=${item.com_name}`));
+    }
   }
 
   // reloadData = (search) => {
@@ -137,31 +142,40 @@ class SiteSearch extends React.Component {
   // }
 
   searchData = async content => {
-    window.echo('seach dd');
-    const result = await Promise.all([
-      requestAllData(api.getLibProjSimple, { com_name: content }, 50),
-      requestAllData(api.getProj, { search: content }, 50),
-    ]);
-    window.echo('search result', result);
+    try {
+      this.setState({ reloading: true });
+      const res = await Promise.all([
+        requestAllData(api.getLibProjSimple, { com_name: content }, 50),
+        requestAllData(api.getProj, { search: content }, 50),
+      ]);
+      const res1 = res[0].data.data;
+      const res2 = res[1].data.data.map(m => ({ ...m, com_name: m.projtitle, isFromProjectList: true }));
+      const allResult = res1.concat(res2);
+      const total = res[0].data.count + res[1].data.count;
+      this.setState({ total, results: allResult, reloading: false });
+    } catch (error) {
+      handleError(error);
+      this.setState({ reloading: false });
+    }
   }
 
-  loadMoreData = () => {
-    const nextPage = this.state.page + 1
-    this.setState({ loading: true, page: nextPage })
-    const param = { page_index: nextPage, page_size: 10, com_name: this.props.search }
-    api.getLibProjSimple(param).then(result => {
-      const { count, data } = result.data
-      this.setState({ results: [...this.state.results, ...data], loading: false }, () => {
-        // this.isLoading = false
-      })
-      this.isLoading = false
-    }).catch(error => {
-      handleError(error)
-      this.setState({ loading: false }, () => {
-        this.isLoading = false
-      })
-    })
-  }
+  // loadMoreData = () => {
+  //   const nextPage = this.state.page + 1
+  //   this.setState({ loading: true, page: nextPage })
+  //   const param = { page_index: nextPage, page_size: 10, com_name: this.props.search }
+  //   api.getLibProjSimple(param).then(result => {
+  //     const { count, data } = result.data
+  //     this.setState({ results: [...this.state.results, ...data], loading: false }, () => {
+  //       // this.isLoading = false
+  //     })
+  //     this.isLoading = false
+  //   }).catch(error => {
+  //     handleError(error)
+  //     this.setState({ loading: false }, () => {
+  //       this.isLoading = false
+  //     })
+  //   })
+  // }
 
   componentWillReceiveProps(nextProps) {
     console.log(nextProps.search)
@@ -211,13 +225,15 @@ class SiteSearch extends React.Component {
     } else {
       if (results.length > 0) {
         content = (
-          <ul style={listStyle} ref="results" onScroll={this.handleScroll}>
+          <ul style={listStyle} ref="results" 
+          // onScroll={this.handleScroll}
+          >
             {results.map(item =>
               <li
                 key={item.id}
                 style={itemStyle}
                 className={styles['result-item']}
-                onClick={this.handleClickItem.bind(this, item.com_name)}
+                onClick={this.handleClickItem.bind(this, item)}
               >
                 {item.com_name}
               </li>
