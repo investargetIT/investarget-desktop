@@ -8,6 +8,9 @@ import _ from 'lodash'
 import * as api from '../api'
 import { i18n, handleError, isParent } from '../utils/util'
 import styles from './SiteSearch.css'
+import {
+  SearchOutlined,
+} from '@ant-design/icons';
 
 
 const searchStyle = {
@@ -30,7 +33,8 @@ const searchIconStyle = {
   right: 8,
   top: 15,
   zIndex: 1,
-  fontSize: 20,
+  fontSize: 16,
+  color: '#595959',
 }
 const resultStyle = {
   position: 'absolute',
@@ -231,7 +235,7 @@ class SiteSearch extends React.Component {
           onKeyUp={this.handleKeyUp}
           onBlur={this.handleBlur}
         />
-        <Icon type="search" style={searchIconStyle}/>
+        <SearchOutlined style={searchIconStyle} />
         <div style={{ ...resultStyle, display: visible ? 'block' : 'none' }}>
           {content}
         </div>
