@@ -1765,9 +1765,30 @@ class OrgBDListComponent extends React.Component {
                     latestComment = commonComments[commonComments.length - 1].comments;
                   }
                 }
-                return latestComment ? <Popover placement="leftTop" title="机构反馈" content={<p style={{ maxWidth: 400 }}>{latestComment}</p>}>
-                  <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-                </Popover> : "暂无";
+                if (!latestComment) return '暂无';
+
+                const comments = record.BDComments;
+                const popoverContent = comments.filter(f => !f.isPMComment)
+                  .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+                  .map(comment => {
+                  let content = comment.comments;
+                  const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+                  if (oldStatusMatch) {
+                    const oldStatus = oldStatusMatch[0];
+                    content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+                  }
+                  return (
+                    <div key={comment.id} style={{ marginBottom: 8 }}>
+                      <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                    </div>
+                  );
+                });
+                return (
+                  <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+                    <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+                  </Popover>
+                );
               }
               return null;
             },
@@ -1788,9 +1809,30 @@ class OrgBDListComponent extends React.Component {
                     latestPMComment = pmComments[pmComments.length - 1].comments;
                   }
                 }
-                return latestPMComment ? <Popover placement="leftTop" title="机构反馈" content={<p style={{ maxWidth: 400 }}>{latestPMComment}</p>}>
-                  <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
-                </Popover> : "暂无";
+                if (!latestPMComment) return '暂无';
+                
+                const comments = record.BDComments;
+                const popoverContent = comments.filter(f => f.isPMComment)
+                  .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+                  .map(comment => {
+                  let content = comment.comments;
+                  const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+                  if (oldStatusMatch) {
+                    const oldStatus = oldStatusMatch[0];
+                    content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+                  }
+                  return (
+                    <div key={comment.id} style={{ marginBottom: 8 }}>
+                      <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                    </div>
+                  );
+                });
+                return (
+                  <Popover placement="leftTop" title="应对策略" content={popoverContent}>
+                    <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
+                  </Popover>
+                );
               }
               return null;
             },
