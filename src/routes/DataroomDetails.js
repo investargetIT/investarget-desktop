@@ -10,7 +10,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 function DataroomDetails(props) {
 
-  const id = getURLParamValue(props, 'id');
+  const dataroomID = getURLParamValue(props, 'id');
   const isClose = getURLParamValue(props, 'isClose');
   const projectID = getURLParamValue(props, 'projectID');
   const projectTitle = getURLParamValue(props, 'projectTitle');
@@ -106,8 +106,8 @@ function DataroomDetails(props) {
                     style={{ width: 200 }}
                     value={newUser}
                     placeholder="请选择联系人"
-                    onChange={onSelectUser}
-                    dataroom={dataroomId}
+                    onChange={value => setNewUser(value)}
+                    dataroom={dataroomID}
                   />
                 </div>
                 <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
