@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
-import { Breadcrumb } from 'antd';
-import { getURLParamValue } from '../utils/util';
+import { Breadcrumb, Button, Card } from 'antd';
+import { getURLParamValue, handleError, hasPerm, isLogin, i18n } from '../utils/util';
+import { SelectExistInvestor } from '../components/ExtraInput';
+import * as api from '../api';
+import { PlusOutlined } from '@ant-design/icons';
 
 function DataroomDetails(props) {
 
@@ -13,7 +16,69 @@ function DataroomDetails(props) {
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
 
-  const [projTitle, setProjectTitle] = useState(projectTitle);
+  const isAbleToAddUser = hasPerm('usersys.as_trader');
+
+  const [projTitle, setProjTitle] = useState(projectTitle);
+  const [projID, setProjectID] = useState(projectID);
+  const [isProjTrader, setIsProjTrader] = useState(false);
+  const [makeUserIds, setMakeUserIds] = useState([]);
+  const [hasPermissionForDataroomTemp, setHasPermissionForDataroomTemp] = useState(false);
+  const [newUser, setNewUser] = useState(null);
+
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+
+    function getProjectDetails() {
+      api.getProjLangDetail(projID).then(res => {
+        const { projTraders } = res.data;
+        const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
+        const isSuperUser = isLogin().is_superuser;
+        setProjTitle(res.data.projtitle);
+        if (isProjTrader || isSuperUser) {
+          setIsProjTrader(isProjTrader);
+          setHasPermissionForDataroomTemp(true);
+          setMakeUserIds(projTraders ? projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id) : []);
+        }
+      }).catch(handleError);
+    }
+    getProjectDetails();
+
+    // this.getDataRoomFile()
+    // this.getDataRoomFileAnnotations(); 
+    // this.getAllUserFile()
+    // this.getDataRoomTemp();
+    // if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+    //   this.getNewDataRoomFile();
+    // }
+
+    
+
+  }, []);
+
+  function onApplyTemplate() {
+    // this.setState({ showDataRoomTempModal: true });
+    window.echo('handle applydd');
+    // TODO
+  }
+
+  function handleAddUser() {
+
+    // TODO
+
+    // const { id, newUser } = this.state
+    // const param = { dataroom: id, user: newUser, trader: isLogin().id };
+    // api.addUserDataRoom(param).then(result => {
+    //   this.setState({ newUser: null })
+    //   this.getAllUserFile()
+    //   const { id: dataroomUserfile, dataroom, user } = result.data;
+    //   const body = { dataroomUserfile, dataroom, user };
+    //   if (this.state.hasPermissionForDataroomTemp) {
+    //     this.handleSaveTemplate(body);
+    //   }
+    // }).catch(error => {
+    //   handleError(error)
+    // })
+  }
 
   return (
     <LeftRightLayoutPure location={props.location}>
@@ -28,7 +93,29 @@ function DataroomDetails(props) {
         <Breadcrumb.Item>项目文件</Breadcrumb.Item>
       </Breadcrumb>
 
-      <div style={{ marginLeft: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
+      <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
+
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={onApplyTemplate}>应用模版</Button>}
+          {isAbleToAddUser &&
+            <div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ marginRight: 10 }}>
+                  <SelectExistInvestor
+                    style={{ width: 200 }}
+                    value={newUser}
+                    placeholder="请选择联系人"
+                    onChange={onSelectUser}
+                    dataroom={dataroomId}
+                  />
+                </div>
+                <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
+              </div>
+            </div>
+          }
+        </div>
+      </Card>
 
     </LeftRightLayoutPure>
   );
