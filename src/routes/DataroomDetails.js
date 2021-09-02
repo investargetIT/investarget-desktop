@@ -18,8 +18,8 @@ function DataroomDetails(props) {
   const projectID = getURLParamValue(props, 'projectID');
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
-
   const isAbleToAddUser = hasPerm('usersys.as_trader');
+  let allDataroomFiles = [];
 
   const [projTitle, setProjTitle] = useState(projectTitle);
   const [projID, setProjectID] = useState(projectID);
@@ -44,6 +44,7 @@ function DataroomDetails(props) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [fileUserList, setFileUserList] = useState([]);
   const [targetUserFileList, setTargetUserFileList] = useState([]);
+  const [data, setData] = useState([]);
 
   async function getOrgBdOfUsers(users) {
     const pageSize = 100;
@@ -166,6 +167,19 @@ function DataroomDetails(props) {
     })
   }
 
+  function formatData(data) {
+    return data.map(item => {
+      const parentId = item.parent || -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+    })
+  }
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
 
@@ -199,11 +213,39 @@ function DataroomDetails(props) {
       setPdfPasswordForTemp(dataRoomTemplate.length > 0 ? dataRoomTemplate[0].password : '');
     }
 
+    function investorGetDataRoomFile() {
+      return api.queryDataRoomDir(dataroomID).then(result => {
+        setData(formatData(result.data))
+        const param = { dataroom: dataroomID };
+        return api.queryUserDataRoom(param).then(result => {
+          const data = result.data.data[0]
+          return api.queryUserDataRoomFile(data.id).then(result => {
+            const files = result.data.files
+            const data = [...this.state.data, ...files]
+            allDataroomFiles = data;
+            setData(formatData(data));
+          })
+        })
+      })
+    }
+
+    function getDataRoomFile() {
+      let param = { dataroom: dataroomID };
+      api.queryDataRoomFile(param).then(result => {
+        var { count, data } = result.data
+        data = formatData(data)
+        allDataroomFiles = data;
+        setData(data);
+      }).catch(_ => {
+        investorGetDataRoomFile();
+      })
+    }
+
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
+    getDataRoomFile();
 
-    // this.getDataRoomFile()
     // this.getDataRoomFileAnnotations(); 
     // if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
     //   this.getNewDataRoomFile();
