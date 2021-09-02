@@ -183,6 +183,22 @@ function DataroomDetails(props) {
     })
   }
 
+  async function getDataRoomTemp() {
+    const reqDataroomTemp = await api.getDataroomTemp({ dataroom: dataroomID });
+    let allUserInfo = [];
+    const allTempUserIds = reqDataroomTemp.data.data.map(m => m.user);
+    if (allTempUserIds.length > 0) {
+      const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
+      allUserInfo = allUsersReq.data.data;
+    }
+    const dataRoomTemplate = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: allUserInfo.filter(f => f.id === m.user)[0] }));
+
+    setDataRoomTemp(dataRoomTemplate);
+    setSelectedDataroomTemp(dataRoomTemplate.length > 0 ? '' + dataRoomTemplate[0].id : '');
+    setPdfPassword(dataRoomTemplate.length > 0 ? dataRoomTemplate[0].password : '');
+    setPdfPasswordForTemp(dataRoomTemplate.length > 0 ? dataRoomTemplate[0].password : '');
+  }
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
 
@@ -198,22 +214,6 @@ function DataroomDetails(props) {
           setMakeUserIds(projTraders ? projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id) : []);
         }
       }).catch(handleError);
-    }
-
-    async function getDataRoomTemp() {
-      const reqDataroomTemp = await api.getDataroomTemp({ dataroom: dataroomID });
-      let allUserInfo = [];
-      const allTempUserIds = reqDataroomTemp.data.data.map(m => m.user);
-      if (allTempUserIds.length > 0) {
-        const allUsersReq = await api.batchGetUserSimpleInfo({ id: allTempUserIds, page_size: allTempUserIds.length });
-        allUserInfo = allUsersReq.data.data;
-      }
-      const dataRoomTemplate = reqDataroomTemp.data.data.map((m, i) => ({ ...m, userInfo: allUserInfo.filter(f => f.id === m.user)[0] }));
- 
-      setDataRoomTemp(dataRoomTemplate);
-      setSelectedDataroomTemp(dataRoomTemplate.length > 0 ? '' + dataRoomTemplate[0].id : '');
-      setPdfPassword(dataRoomTemplate.length > 0 ? dataRoomTemplate[0].password : '');
-      setPdfPasswordForTemp(dataRoomTemplate.length > 0 ? dataRoomTemplate[0].password : '');
     }
 
     function investorGetDataRoomFile() {
@@ -288,7 +288,19 @@ function DataroomDetails(props) {
   }
 
   function handleConfirmSelectDataroomTemp() {
-
+    const body = { user: dataRoomTempModalUserId };
+    api.applyDataroomTemp(selectedDataroomTemp, body).then(() => {
+      Modal.success({
+        title: i18n('success'),
+        content: '应用模版成功',
+      });
+      setShowDataRoomTempModal(false);
+      getAllUserFile();
+    });
+    api.editDataroomTemp(
+      selectedDataroomTemp,
+      { password: pdfPasswordForTemp },
+    ).then(getDataRoomTemp);
   }
 
   return (
