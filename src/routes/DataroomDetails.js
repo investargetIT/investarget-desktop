@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
 import { Breadcrumb, Button, Card, Modal, Select, Input } from 'antd';
-import { getURLParamValue, handleError, hasPerm, isLogin, i18n } from '../utils/util';
+import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
 import { PlusOutlined } from '@ant-design/icons';
@@ -45,6 +45,7 @@ function DataroomDetails(props) {
   const [fileUserList, setFileUserList] = useState([]);
   const [targetUserFileList, setTargetUserFileList] = useState([]);
   const [data, setData] = useState([]);
+  const [fileAnnotationList, setFileAnnotationList] = useState([]);
 
   async function getOrgBdOfUsers(users) {
     const pageSize = 100;
@@ -241,12 +242,17 @@ function DataroomDetails(props) {
       })
     }
 
+    async function getDataRoomFileAnnotations() {
+      const req = await requestAllData(api.getAnnotations, { dataroom: dataroomID }, 10);
+      setFileAnnotationList(req.data.data);
+    }
+
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
     getDataRoomFile();
+    getDataRoomFileAnnotations();
 
-    // this.getDataRoomFileAnnotations(); 
     // if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
     //   this.getNewDataRoomFile();
     // }
