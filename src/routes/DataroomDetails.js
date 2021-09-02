@@ -46,6 +46,8 @@ function DataroomDetails(props) {
   const [targetUserFileList, setTargetUserFileList] = useState([]);
   const [data, setData] = useState([]);
   const [fileAnnotationList, setFileAnnotationList] = useState([]);
+  const [newDataroomFile, setNewDataroomFile] = useState([]);
+  const [showNewFileModal, setShowNewFileModal] = useState(false); 
 
   async function getOrgBdOfUsers(users) {
     const pageSize = 100;
@@ -247,18 +249,23 @@ function DataroomDetails(props) {
       setFileAnnotationList(req.data.data);
     }
 
+    async function getNewDataRoomFile() {
+      const res = await api.getNewDataroomFile(dataroomID, isLogin().id);
+      const { data } = res;
+      if (data.length === 0) return;
+      setNewDataroomFile(data);
+      setShowNewFileModal(true); 
+    }
+
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
     getDataRoomFile();
     getDataRoomFileAnnotations();
 
-    // if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
-    //   this.getNewDataRoomFile();
-    // }
-
-    
-
+    if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+      getNewDataRoomFile();
+    }
   }, []);
 
   function handleAddUser() {
