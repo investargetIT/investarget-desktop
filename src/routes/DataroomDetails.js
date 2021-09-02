@@ -268,23 +268,21 @@ function DataroomDetails(props) {
     }
   }, []);
 
+  function handleSaveTemplate(body) {
+    api.addDataroomTemp(body).then(getDataRoomTemp).catch(handleError);
+  }
+
   function handleAddUser() {
-
-    // TODO
-
-    // const { id, newUser } = this.state
-    // const param = { dataroom: id, user: newUser, trader: isLogin().id };
-    // api.addUserDataRoom(param).then(result => {
-    //   this.setState({ newUser: null })
-    //   this.getAllUserFile()
-    //   const { id: dataroomUserfile, dataroom, user } = result.data;
-    //   const body = { dataroomUserfile, dataroom, user };
-    //   if (this.state.hasPermissionForDataroomTemp) {
-    //     this.handleSaveTemplate(body);
-    //   }
-    // }).catch(error => {
-    //   handleError(error)
-    // })
+    const param = { dataroom: dataroomID, user: newUser, trader: isLogin().id };
+    api.addUserDataRoom(param).then(result => {
+      setNewUser(null);
+      getAllUserFile()
+      const { id: dataroomUserfile, dataroom, user } = result.data;
+      const body = { dataroomUserfile, dataroom, user };
+      if (hasPermissionForDataroomTemp) {
+        handleSaveTemplate(body);
+      }
+    }).catch(handleError);
   }
 
   function handleConfirmSelectDataroomTemp() {
