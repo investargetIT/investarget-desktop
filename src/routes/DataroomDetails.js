@@ -50,20 +50,10 @@ function DataroomDetails(props) {
   const [showNewFileModal, setShowNewFileModal] = useState(false); 
 
   async function getOrgBdOfUsers(users) {
-    const pageSize = 100;
-    let result = await api.getOrgBdList({
+    const result = await requestAllData(api.getOrgBdList, {
       bduser: users.map(m => m.id),
-      proj: projectID,
-      page_size: pageSize,
-    });
-    const { count } = result.data;
-    if (count > pageSize) {
-      result = await api.getOrgBdList({
-        bduser: users.map(m => m.id),
-        proj: projectID,
-        page_size: count,
-      });
-    }
+      proj: projectID, 
+    }, 100);
 
     if (currentBD) {
       const comments = result.data.data.filter(item => item.id == currentBD.id)[0].BDComments || [];
@@ -104,6 +94,7 @@ function DataroomDetails(props) {
         dataroomUserOrgBd.push({ id: org.id, org, orgbd: [element] });
       }
     }
+    // window.echo('dataroom user org bd', dataroomUserOrgBd);
     setDataroomUsersOrgBdByOrg(dataroomUserOrgBd); 
   }
 
@@ -577,7 +568,7 @@ function DataroomDetails(props) {
         <Table
           columns={columns}
           // expandedRowRender={expandedRowRender}
-          // dataSource={list}
+          dataSource={dataroomUsersOrgBdByOrg}
           rowKey={record => record.id}
           // loading={loading}
           // onExpand={this.onExpand.bind(this)}
