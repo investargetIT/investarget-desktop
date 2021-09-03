@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
-import { Breadcrumb, Button, Card, Modal, Select, Input } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
@@ -301,6 +301,234 @@ function DataroomDetails(props) {
     ).then(getDataRoomTemp);
   }
 
+  const columns = [
+    {
+      title: i18n('org_bd.org'),
+      key: 'org',
+      sorter: false,
+      render: (_, record) => {
+        if (!record.org) return null;
+        // let displayPriorityColor = priorityColor[0]; // 默认优先级低
+        // let priorityName = priority[0];
+        // const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
+        // allItemPriorities.sort((first, second) => second - first);
+        // if (allItemPriorities.length > 0) {
+        //   displayPriorityColor = priorityColor[allItemPriorities[0]];
+        //   priorityName = priority[allItemPriorities[0]];
+        // }
+        // const popoverContent = (
+        //   <div style={{ display: 'flex', alignItems: 'center' }}>
+        //     <div>优先级{priorityName}</div>
+        //     <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
+        //   </div>
+        // );
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+            {/* <Popover content={popoverContent}>
+              <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
+            </Popover> */}
+            {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const expandedRowRender = (record) => {
+    const columns = [
+      {
+        title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key: 'username',
+        render: (text, record) => {
+          return record.new ?
+            <SelectOrgInvestor
+              allStatus
+              onjob
+              allowEmpty
+              style={{ width: "100%" }}
+              type="investor"
+              mode="single"
+              size="middle"
+              optionFilterProp="children"
+              org={record.org.id}
+              value={record.orgUser}
+              onChange={v => { this.updateSelection(record, { orgUser: v }) }}
+            />
+            : <div style={{ paddingLeft: this.props.fromProjectCostCenter ? 15 : 30 }}>
+              {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />}
+              {record.username ?
+                <Popover placement="topRight" content={this.content(record)}>
+                  <span style={{ color: '#428BCA' }}>
+                    <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
+                  </span>
+                </Popover>
+                : '暂无'}
+            </div>
+        }, sorter: false
+      },
+      {
+        title: '职位',
+        key: 'title',
+        width: '10%',
+        render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
+      },
+      {
+        title: i18n('org_bd.manager'),
+        width: '10%',
+        dataIndex: ['manager', 'username'],
+        key: 'manager',
+        sorter: false,
+        render: (text, record) => {
+          if (record.new) {
+            return (
+              <SelectTrader
+                style={{ width: 100 }}
+                data={this.state.traderList}
+                mode="single"
+                value={record.trader}
+                onChange={v => { this.updateSelection(record, { trader: v }) }}
+              />
+            );
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            return text;
+          }
+          return null;
+        },
+      },
+      {
+        title: '机构进度/材料',
+        width: '16%',
+        dataIndex: 'response',
+        key: 'response',
+        sorter: false,
+        render: (text, record) => {
+          if (record.new) {
+            return (
+              <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange.bind(this, record)} placeholder="机构进度/材料" />
+            );
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            let progress = null;
+            if (text) {
+              progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+            }
+            let material = null;
+            if (record.material) {
+              material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
+            }
+            return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
+          }
+          return null;
+        },
+      },
+    ];
+    if (!this.props.fromProjectCostCenter) {
+      columns.push(
+        {
+          title: "机构反馈",
+          width: '15%',
+          key: 'bd_latest_info',
+          render: (text, record) => {
+            if (record.new) {
+              return '暂无';
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              let latestComment = '';
+              if (record.BDComments && record.BDComments.length) {
+                const commonComments = record.BDComments.filter(f => !f.isPMComment);
+                if (commonComments.length > 0) {
+                  latestComment = commonComments[commonComments.length - 1].comments;
+                }
+              }
+              if (!latestComment) return '暂无';
+
+              const comments = record.BDComments;
+              const popoverContent = comments.filter(f => !f.isPMComment)
+                .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+                .map(comment => {
+                  let content = comment.comments;
+                  const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+                  if (oldStatusMatch) {
+                    const oldStatus = oldStatusMatch[0];
+                    content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+                  }
+                  return (
+                    <div key={comment.id} style={{ marginBottom: 8 }}>
+                      <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                    </div>
+                  );
+                });
+              return (
+                <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+                  <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+                </Popover>
+              );
+            }
+            return null;
+          },
+        },
+        {
+          title: '应对策略',
+          width: '10%',
+          key: 'pm_remark',
+          render: (_, record) => {
+            if (record.new) {
+              return '暂无';
+            }
+            if (this.isAbleToModifyStatus(record)) {
+              let latestPMComment = '';
+              if (record.BDComments && record.BDComments.length) {
+                const pmComments = record.BDComments.filter(f => f.isPMComment);
+                if (pmComments.length > 0) {
+                  latestPMComment = pmComments[pmComments.length - 1].comments;
+                }
+              }
+              if (!latestPMComment) return '暂无';
+
+              const comments = record.BDComments;
+              const popoverContent = comments.filter(f => f.isPMComment)
+                .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+                .map(comment => {
+                  let content = comment.comments;
+                  const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+                  if (oldStatusMatch) {
+                    const oldStatus = oldStatusMatch[0];
+                    content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+                  }
+                  return (
+                    <div key={comment.id} style={{ marginBottom: 8 }}>
+                      <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                    </div>
+                  );
+                });
+              return (
+                <Popover placement="leftTop" title="应对策略" content={popoverContent}>
+                  <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
+                </Popover>
+              );
+            }
+            return null;
+          },
+        },
+      )
+    }
+
+    return (
+      <Table
+        showHeader={false}
+        columns={columns}
+        dataSource={record.items}
+        size={"small"}
+        rowKey={record => record.id}
+        pagination={false}
+        loading={!record.loaded}
+      />
+    );
+  };
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -345,6 +573,20 @@ function DataroomDetails(props) {
           <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>
           <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
         </div>
+
+        <Table
+          columns={columns}
+          // expandedRowRender={expandedRowRender}
+          // dataSource={list}
+          rowKey={record => record.id}
+          // loading={loading}
+          // onExpand={this.onExpand.bind(this)}
+          // expandedRowKeys={expanded}
+          pagination={false}
+          size="middle"
+          showHeader={false}
+        />
+
       </Card>
 
       {showDataRoomTempModal &&
