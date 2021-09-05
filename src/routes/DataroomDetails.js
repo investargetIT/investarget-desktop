@@ -65,9 +65,12 @@ function DataroomDetails(props) {
   const [data, setData] = useState([]);
   const [fileAnnotationList, setFileAnnotationList] = useState([]);
   const [newDataroomFile, setNewDataroomFile] = useState([]);
-  const [showNewFileModal, setShowNewFileModal] = useState(false); 
+  const [showNewFileModal, setShowNewFileModal] = useState(false);
+  const [expandedRows, setExpandedRows] = useState([]);
+  const [loadingOrgBD, setLoadingOrgBD] = useState(false);
 
   async function getOrgBdOfUsers(users) {
+    setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
       bduser: users.map(m => m.id),
       proj: projectID, 
@@ -113,7 +116,9 @@ function DataroomDetails(props) {
       }
     }
     window.echo('dataroom user org bd', dataroomUserOrgBd);
-    setDataroomUsersOrgBdByOrg(dataroomUserOrgBd); 
+    setLoadingOrgBD(false);
+    setDataroomUsersOrgBdByOrg(dataroomUserOrgBd);
+    setExpandedRows(dataroomUserOrgBd.map(m => m.id));
   }
 
   async function checkUserNewFile(userIds) {
@@ -543,9 +548,9 @@ function DataroomDetails(props) {
           expandedRowRender={expandedRowRender}
           dataSource={dataroomUsersOrgBdByOrg}
           rowKey={record => record.id}
-          // loading={loading}
+          loading={loadingOrgBD}
           // onExpand={this.onExpand.bind(this)}
-          // expandedRowKeys={expanded}
+          expandedRowKeys={expandedRows}
           pagination={false}
           size="middle"
           showHeader={false}
