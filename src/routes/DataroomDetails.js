@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
@@ -70,6 +70,7 @@ function DataroomDetails(props) {
   const [loadingOrgBD, setLoadingOrgBD] = useState(false);
 
   async function getOrgBdOfUsers(users) {
+    window.echo('all users', users);
     setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
       bduser: users.map(m => m.id),
@@ -325,6 +326,78 @@ function DataroomDetails(props) {
     return 'rgba(82, 196, 26, .15)';
   }
 
+  function handleSendEmail(item) {
+    api.sendEmailToDataroomUser(item.id)
+      .then(_ => {
+        Modal.success({ title: '邮件发送成功' });
+      })
+      .catch(handleError);
+  }
+
+  function handleSendNewFileEmail(item) {
+    api.sendNewFileEmail(item.id)
+      .then(result => {
+        echo(result);
+        Modal.success({ title: '邮件发送成功' });
+      })
+      .catch(handleError);
+  }
+
+  function handleDeleteUser(item) {
+    const { id: dataroomUserId, user: { id: userId } } = item;
+    const userDataroomTemp = dataRoomTemp.filter(f => f.user === userId);
+    api.deleteUserDataRoom(dataroomUserId).then(_ => {
+      getAllUserFile();
+      if (userDataroomTemp.length > 0) {
+        api.deleteDataroomTemp(userDataroomTemp[0].id);
+      }
+    }).catch(error => {
+      handleError(error)
+    });
+  }
+
+  function generatePopoverContent(item) {
+    const { user: { id: userId } } = item;
+    return (
+      <div>
+        {hasPerm('usersys.as_trader') ?
+          <div style={{ color: '#989898' }}>
+            <div><Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link></div>
+            <div>机构名称：{item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}</div>
+          </div>
+          :
+          <div style={{ color: '#989898' }}>
+            <div>{item.user.username}</div>
+            <div>机构名称：{item.user.org ? item.user.org.orgname : '暂无机构'}</div>
+          </div>
+        }
+
+        <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
+
+        {(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.admin_deletedataroom') || isProjTrader) &&
+          <div style={{ textAlign: 'center', marginTop: 10 }}>
+            {(hasPerm('dataroom.admin_adddataroom') || isProjTrader) &&
+              <Popconfirm title="确定发送邮件通知该用户？" onConfirm={() => handleSendEmail(item)}>
+                <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+              </Popconfirm>
+            }
+            {(hasPerm('dataroom.admin_adddataroom') || isProjTrader) &&
+              <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
+                <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+              </Popconfirm>
+            }
+            {(hasPerm('dataroom.admin_deletedataroom') || isProjTrader) &&
+              <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
+                <Button type="primary">移除</Button>
+              </Popconfirm>
+            }
+          </div>
+        }
+
+      </div>
+    );
+  }
+
   const columns = [
     {
       title: i18n('org_bd.org'),
@@ -332,27 +405,18 @@ function DataroomDetails(props) {
       sorter: false,
       render: (_, record) => {
         if (!record.org) return null;
-        // let displayPriorityColor = priorityColor[0]; // 默认优先级低
-        // let priorityName = priority[0];
-        // const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
-        // allItemPriorities.sort((first, second) => second - first);
-        // if (allItemPriorities.length > 0) {
-        //   displayPriorityColor = priorityColor[allItemPriorities[0]];
-        //   priorityName = priority[allItemPriorities[0]];
-        // }
-        // const popoverContent = (
-        //   <div style={{ display: 'flex', alignItems: 'center' }}>
-        //     <div>优先级{priorityName}</div>
-        //     <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
-        //   </div>
-        // );
         return (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
-            {/* <Popover content={popoverContent}>
-              <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
-            </Popover> */}
-            {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
+            {list.filter(f => f.user && f.user.org && f.user.org.id === record.id)
+              .map(item => (
+                <Popover
+                  key={item.user.id}
+                  content={generatePopoverContent(item)}
+                >
+                  <Tag style={{ cursor: 'default' }}>{item.user.username}</Tag>
+                </Popover>
+              ))}
           </div>
         );
       },

@@ -3,12 +3,10 @@ var theme = {
 
 
   // Colors
-  // "primary-color": "#428BCA",
+  "primary-color": "#339bd2",
   // "success-color": "#1CAF9A",
   // "warning-color": "#F0AD4E",
   "error-color": "#E64547",
-  "btn-primary-bg": "#13356C",
-  "checkbox-color": "#13356C",
   "border-radius-base": "4px",
 
   // "body-background": "#f2f2f2",
