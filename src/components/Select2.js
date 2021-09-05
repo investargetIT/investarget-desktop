@@ -1,6 +1,7 @@
 import React from 'react';
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
+import _ from 'lodash';
 
 function DebounceSelect({
   getData,
@@ -24,7 +25,8 @@ function DebounceSelect({
     getData({ page_index: 1, page_size: 10 }).then(data => {
       const { list: newOptions, total } = data;
       setTotal(total);
-      setOptions(newOptions);
+      const uniqOptions = _.uniqBy(newOptions, 'value');
+      setOptions(uniqOptions);
     });
   }, []);
 
@@ -62,7 +64,8 @@ function DebounceSelect({
         }
         const { list: newOptions, total } = data;
         setTotal(total);
-        setOptions(newOptions);
+        const uniqOptions = _.uniqBy(newOptions, 'value'); 
+        setOptions(uniqOptions);
         setFetching(false);
       });
     };
@@ -77,7 +80,8 @@ function DebounceSelect({
       .then(data => {
         const { total, list } = data;
         setTotal(total);
-        setOptions([...options, ...list]);
+        const uniqOptions = _.uniqBy([...options, ...list], 'value');
+        setOptions(uniqOptions);
         setFetchingMore(false);
       })
       .catch(error => {
