@@ -17,6 +17,7 @@ function DataroomFileManage({
 
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [iframe, setIframe] = useState('<iframe style="border: none;" src="https://movier.github.io/" width="100%" height="800"></iframe>');
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -120,10 +121,15 @@ function DataroomFileManage({
       {selectedFile &&
         <Col span={16}>
           <Card title={selectedFile.filename}>
-          <div style={{ color: '#262626', display: 'flex' }}>
-            {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
-            <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
-          </div>
+            <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
+              {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
+              <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
+            </div>
+            <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
+            <div
+              style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+              dangerouslySetInnerHTML={{ __html: iframe }}
+            />
           </Card>
         </Col>
       }
