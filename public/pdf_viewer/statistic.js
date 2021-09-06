@@ -44,8 +44,7 @@ const dataroomFileOperationRequest = async (documentId, operationType) => {
     file: parseInt(documentId),
     type: operationType,
   };
-
-  const reqDiscussion = await fetch(`${baseUrl}/dataroom/userRecord/`, {
+  const reqDiscussion = await fetch(`${statisticBaseUrl}/dataroom/userRecord/`, {
     method: 'POST',
     credentials: 'include',
     headers: {
