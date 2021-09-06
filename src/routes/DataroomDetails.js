@@ -9,6 +9,7 @@ import * as api from '../api';
 import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
+import DataroomFileManage from '../components/DataroomFileManage';
 
 const { Option } = Select;
 const { DirectoryTree } = Tree;
@@ -567,7 +568,7 @@ function DataroomDetails(props) {
 
   function formatSearchData (data) {
     return data.map(item => {
-      const parentId = this.state.parentId; 
+      const parentId = parentId; 
       const name = item.filename
       const rename = item.filename
       const unique = item.id
@@ -594,7 +595,7 @@ function DataroomDetails(props) {
 
   async function handleDataroomSearch(content) {
     if (!content) {
-      setData(this.allDataroomFiles);
+      setData(allDataroomFiles);
       return;
     }
     setLoading(true);
@@ -699,6 +700,14 @@ function DataroomDetails(props) {
         />
 
       </Card>
+
+      <DataroomFileManage
+        setData={setData}
+        setLoading={setLoading}
+        allDataroomFiles={allDataroomFiles}
+        parentId={parentId}
+        dataroomID={dataroomID}
+      />
 
       <Row gutter={20}>
         <Col span={8}>
