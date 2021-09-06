@@ -626,7 +626,10 @@ function DataroomDetails(props) {
     let rootDirectory = data.filter(f => !f.parent);
     rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
     rootDirectory.forEach(element => recursiveFindChildren(element));
-    return rootDirectory;
+
+    const rootDir = { title: '全部文件', key: -999, id: -999 };
+    rootDir['children'] = rootDirectory;
+    return [rootDir];
   }
 
   const onSelect = (keys, info) => {
