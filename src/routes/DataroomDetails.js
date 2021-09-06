@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { Search } from '../components/Search';
 
 const { Option } = Select;
+const { DirectoryTree } = Tree;
 const priority = ['低', '中', '高'];
 const priorityColor = ['#7ed321', '#0084a9', '#ff617f'];
 const priorityStyles = {
@@ -74,7 +75,6 @@ function DataroomDetails(props) {
   const [searchContent, setSearchContent] = useState('');
 
   async function getOrgBdOfUsers(users) {
-    window.echo('all users', users);
     setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
       bduser: users.map(m => m.id),
@@ -120,7 +120,6 @@ function DataroomDetails(props) {
         dataroomUserOrgBd.push({ id: org.id, org, orgbd: [element] });
       }
     }
-    window.echo('dataroom user org bd', dataroomUserOrgBd);
     setLoadingOrgBD(false);
     setDataroomUsersOrgBdByOrg(dataroomUserOrgBd);
     setExpandedRows(dataroomUserOrgBd.map(m => m.id));
@@ -612,6 +611,32 @@ function DataroomDetails(props) {
     setData(newData);
   }
 
+  function recursiveFindChildren(item) {
+    const children = data.filter(f => f.parent === item.id);
+    if (children.length === 0) {
+      return;
+    }
+    item['children'] = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    children.forEach(element => {
+      return recursiveFindChildren(element);
+    });
+  }
+
+  function generateTreeData() {
+    let rootDirectory = data.filter(f => !f.parent);
+    rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    rootDirectory.forEach(element => recursiveFindChildren(element));
+    return rootDirectory;
+  }
+
+  const onSelect = (keys, info) => {
+    console.log('Trigger Select', keys, info);
+  };
+
+  const onExpand = () => {
+    console.log('Trigger Expand');
+  };
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -676,11 +701,19 @@ function DataroomDetails(props) {
         <Col span={8}>
           <Card>
             <Search
+              style={{ marginBottom: 30 }}
               size="default"
               placeholder="请输入文件名称或内容"
               onSearch={handleDataroomSearch}
               onChange={searchContent => setSearchContent(searchContent)}
               value={searchContent}
+            />
+            <DirectoryTree
+              multiple
+              defaultExpandAll
+              onSelect={onSelect}
+              onExpand={onExpand}
+              treeData={generateTreeData()}
             />
           </Card>
         </Col>
