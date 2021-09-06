@@ -11,6 +11,7 @@ function DataroomFileManage({
   allDataroomFiles,
   parentId,
   dataroomID,
+  data,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -61,6 +62,35 @@ function DataroomFileManage({
     setData(newData);
   }
 
+  function recursiveFindChildren(item) {
+    const children = data.filter(f => f.parent === item.id);
+    if (children.length === 0) {
+      return;
+    }
+    item['children'] = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    children.forEach(element => {
+      return recursiveFindChildren(element);
+    });
+  }
+
+  function generateTreeData() {
+    let rootDirectory = data.filter(f => !f.parent);
+    rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    rootDirectory.forEach(element => recursiveFindChildren(element));
+
+    const rootDir = { title: '全部文件', key: -999, id: -999 };
+    rootDir['children'] = rootDirectory;
+    return [rootDir];
+  }
+
+  const onSelect = (keys, info) => {
+    console.log('Trigger Select', keys, info);
+  };
+
+  const onExpand = () => {
+    console.log('Trigger Expand');
+  };
+
   return (
     <Row gutter={20}>
       <Col span={8}>
@@ -73,13 +103,13 @@ function DataroomFileManage({
             onChange={searchContent => setSearchContent(searchContent)}
             value={searchContent}
           />
-          {/* <DirectoryTree
+          <DirectoryTree
             multiple
             defaultExpandAll
             onSelect={onSelect}
             onExpand={onExpand}
             treeData={generateTreeData()}
-          /> */}
+          />
         </Card>
       </Col>
       <Col span={16}>
