@@ -17,7 +17,7 @@ function DataroomFileManage({
 
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [iframe, setIframe] = useState('<iframe style="border: none;" src="https://movier.github.io/" width="100%" height="800"></iframe>');
+  const [previewFileUrl, setPreviewFileUrl] = useState('https://movier.github.io/');
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -128,7 +128,7 @@ function DataroomFileManage({
             <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
             <div
               style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-              dangerouslySetInnerHTML={{ __html: iframe }}
+              dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
             />
           </Card>
         </Col>
