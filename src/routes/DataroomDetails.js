@@ -8,6 +8,7 @@ import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
 import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
+import { Search } from '../components/Search';
 
 const { Option } = Select;
 const priority = ['低', '中', '高'];
@@ -68,6 +69,9 @@ function DataroomDetails(props) {
   const [showNewFileModal, setShowNewFileModal] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
   const [loadingOrgBD, setLoadingOrgBD] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [parentId, setParentId] = useState(parseInt(parentID, 10) || -999);
+  const [searchContent, setSearchContent] = useState('');
 
   async function getOrgBdOfUsers(users) {
     window.echo('all users', users);
@@ -562,6 +566,52 @@ function DataroomDetails(props) {
     );
   };
 
+  function formatSearchData (data) {
+    return data.map(item => {
+      const parentId = this.state.parentId; 
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+    })
+  }
+
+  function findAllParents(fileId) {
+    let allParents = [];
+    function findParents (id) {
+      const currentFile = allDataroomFiles.filter(f => f.id === id);
+      const parent = allDataroomFiles.filter(f => f.id === currentFile[0].parent);
+      allParents = allParents.concat(parent);
+      if (parent.length > 0) {
+        findParents(parent[0].id);
+      }
+      return allParents;
+    }
+    return findParents(fileId);
+  }
+
+  async function handleDataroomSearch(content) {
+    if (!content) {
+      setData(this.allDataroomFiles);
+      return;
+    }
+    setLoading(true);
+    const req = await api.searchDataroom(dataroomID, content);
+    const { data } = req.data;
+
+    let newData = formatSearchData(data);
+    if (parentId !== -999) {
+      const allParents = findAllParents(parentId);
+      const parentFolder = allDataroomFiles.filter(f => f.id === parentId);
+      newData = newData.concat(allParents).concat(parentFolder);
+    }
+    setLoading(false);
+    setData(newData);
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -624,7 +674,15 @@ function DataroomDetails(props) {
 
       <Row gutter={20}>
         <Col span={8}>
-          <Card></Card>
+          <Card>
+            <Search
+              size="default"
+              placeholder="请输入文件名称或内容"
+              onSearch={handleDataroomSearch}
+              onChange={searchContent => setSearchContent(searchContent)}
+              value={searchContent}
+            />
+          </Card>
         </Col>
         <Col span={16}>
           <Card></Card>
