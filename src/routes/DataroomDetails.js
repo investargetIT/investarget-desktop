@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
@@ -577,7 +577,7 @@ function DataroomDetails(props) {
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-      <Card>
+      <Card style={{ marginBottom: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
           {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
           {isAbleToAddUser &&
@@ -621,6 +621,15 @@ function DataroomDetails(props) {
         />
 
       </Card>
+
+      <Row gutter={20}>
+        <Col span={8}>
+          <Card></Card>
+        </Col>
+        <Col span={16}>
+          <Card></Card>
+        </Col>
+      </Row>
 
       {showDataRoomTempModal &&
         <Modal
