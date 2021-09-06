@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col, Card, Tree } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
+import { formatBytes, time } from '../utils/util';
 
 const { DirectoryTree } = Tree;
 
@@ -15,6 +16,7 @@ function DataroomFileManage({
 }) {
 
   const [searchContent, setSearchContent] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -84,7 +86,10 @@ function DataroomFileManage({
   }
 
   const onSelect = (keys, info) => {
-    console.log('Trigger Select', keys, info);
+    if (keys.length < 1) return;
+    const item = data.filter(f => f.id === keys[0]);
+    if (item.length === 0) return;
+    setSelectedFile(item[0]);
   };
 
   const onExpand = () => {
@@ -104,7 +109,7 @@ function DataroomFileManage({
             value={searchContent}
           />
           <DirectoryTree
-            multiple
+            checkable
             defaultExpandAll
             onSelect={onSelect}
             onExpand={onExpand}
@@ -112,9 +117,16 @@ function DataroomFileManage({
           />
         </Card>
       </Col>
-      <Col span={16}>
-        <Card></Card>
-      </Col>
+      {selectedFile &&
+        <Col span={16}>
+          <Card title={selectedFile.filename}>
+          <div style={{ color: '#262626', display: 'flex' }}>
+            {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
+            <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
+          </div>
+          </Card>
+        </Col>
+      }
     </Row>
   );
 }
