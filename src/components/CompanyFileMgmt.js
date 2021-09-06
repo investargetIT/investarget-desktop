@@ -106,16 +106,23 @@ class FileMgmt extends React.Component {
       // 切换目录时，清空选中的行
       this.setState({ selectedRows: [] })
     } else {
-      const type = file.filename.split('.')[1];
-      const officeFileType = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
-      if (!officeFileType.includes(type)) {
-        window.open(file.fileurl);
-      } else {
+      if (/\.pdf$/i.test(file.filename)) {
+        const { dataroom: dataroomId, id: fileId } = file;
+        const originalEmail = isLogin().email || 'Investarget'
+        const watermark = originalEmail.replace('@', '[at]');
+        const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
+        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+          '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
+          '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
+        window.open(url)
+      } else if ((/\.(doc|docx|xls|xlsx|ppt|pptx)$/i).test(file.filename)) {
         api.downloadUrl(file.bucket, file.realfilekey)
           .then(result => {
             this.setState({ downloadUrl: result.data });
             setTimeout(() => this.setState({ downloadUrl: null }), 1000);
           })
+      } else {
+        window.open(file.fileurl);
       }
     }
   }

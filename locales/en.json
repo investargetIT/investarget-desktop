@@ -262,6 +262,8 @@
     "manager": "Manager",
     "take_user": "Take User",
     "make_user": "Make User",
+    "development": "Project Development",
+    "team": "Project Team",
     "has_attachments": "Has attachments",
     "add_directory": "Add Directory",
     "click_drag_upload": "点击或拖拽上传",

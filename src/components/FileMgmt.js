@@ -320,9 +320,10 @@ class FileMgmt extends React.Component {
     const { is_superuser, permissions } = isLogin();
     if (!is_superuser && permissions.includes('usersys.as_investor')) {
       // 对于投资人，隐藏空目录，除非是刚新建的目录
-      return this.props.data.filter(
-        f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile || !f.id || f.justCreated)
+      const result = this.props.data.filter(
+        f => f.parentId === this.state.parentId && (this.ifContainFiles(f) || f.isFile || !f.id || f.justCreated || f.isCreatingFolder)
       ).sort(sortByFileTypeAndName);
+      return result;
     }
     return this.props.data.filter(f => f.parentId === this.state.parentId).sort(sortByFileTypeAndName);
   }
@@ -503,6 +504,18 @@ class FileMgmt extends React.Component {
       }
     }
 
+    return false;
+  }
+
+  isProjectOwner = () => {
+    const userInfo = isLogin();
+    if (userInfo.groups && userInfo.groups.length > 0) {
+      // ID 14 为项目方
+      const projectOwnerRole = userInfo.groups.filter(f => f.id === 14 || f.name == '项目方');
+      if (projectOwnerRole.length > 0) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -830,7 +843,7 @@ class FileMgmt extends React.Component {
             </Button>
           : null }
 
-          { hasEnoughPerm || this.props.isProjTrader ?
+          { !this.isProjectOwner() && (hasEnoughPerm || this.props.isProjTrader) ?
           <Button
             size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}

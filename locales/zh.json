@@ -269,6 +269,8 @@
     "manager": "负责人",
     "take_user": "承揽",
     "make_user": "承做",
+    "development": "项目开发",
+    "team": "项目团队",
     "has_attachments": "已有附件",
     "add_directory": "添加目录",
     "click_drag_upload": "点击或拖拽上传",

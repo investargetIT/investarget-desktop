@@ -310,6 +310,11 @@ class ProjectConnectForm1 extends React.Component {
     return this.currentUserId === supportUser.id;
   }
 
+  projectTeamValidator = (_, value, callback) => {
+    if (value.length === 1) return callback('请至少选择两位项目团队成员');
+    return callback();
+  }
+
   render() {
     return (
       <Form ref={this.props.forwardedRef}>
@@ -383,7 +388,7 @@ class ProjectConnectForm1 extends React.Component {
             }}
           </Form.Item>
           :
-          <BasicFormItem label={i18n('project.take_user')} name="takeUserName">
+          <BasicFormItem label={i18n('project.development')} name="takeUserName">
             <Input disabled />
           </BasicFormItem>
         }
@@ -400,7 +405,7 @@ class ProjectConnectForm1 extends React.Component {
             }}
           </Form.Item>
           :
-          <BasicFormItem label={i18n('project.make_user')} name="makeUserName">
+          <BasicFormItem label={i18n('project.team')} name="makeUserName">
             <Input disabled />
           </BasicFormItem>
         }
