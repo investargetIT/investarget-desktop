@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col, Card, Tree } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time } from '../utils/util';
+import { formatBytes, time, isLogin } from '../utils/util';
 
 const { DirectoryTree } = Tree;
 
@@ -90,12 +90,28 @@ function DataroomFileManage({
     if (keys.length < 1) return;
     const item = data.filter(f => f.id === keys[0]);
     if (item.length === 0) return;
-    setSelectedFile(item[0]);
+    const currentFile = item[0];
+    setSelectedFile(currentFile);
+    if (currentFile.isFile) {
+      const url = getPreviewFileUrl(currentFile);
+      setPreviewFileUrl(url);
+    }
   };
 
   const onExpand = () => {
     console.log('Trigger Expand');
   };
+
+  function getPreviewFileUrl(file) {
+    const { dataroom: dataroomId, id: fileId } = file;
+    const originalEmail = isLogin().email || 'Investarget';
+    const watermark = originalEmail.replace('@', '[at]');
+    const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
+    const url = window.location.origin + '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+      '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
+      '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
+    return url;
+  }
 
   return (
     <Row gutter={20}>
@@ -125,11 +141,15 @@ function DataroomFileManage({
               {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
               <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
             </div>
-            <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
-            <div
-              style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-              dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
-            />
+            {selectedFile.isFile &&
+              <div>
+                <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
+                <div
+                  style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+                  dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
+                />
+              </div>
+            }
           </Card>
         </Col>
       }

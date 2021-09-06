@@ -7,7 +7,7 @@ const statisticFileId = statisticUrlParams.get('fileId');
 console.log('file id', statisticFileId);
 // const documentId = fileId;
 
-const statisticBaseUrl = 'https://api.investarget.com';
+const statisticBaseUrl = 'http://apitest.investarget.com';
 
 function statisticGetUserInfo() {
   const userInfoStr = localStorage.getItem('user_info');
@@ -45,7 +45,7 @@ const dataroomFileOperationRequest = async (documentId, operationType) => {
     type: operationType,
   };
 
-  const reqDiscussion = await fetch(`${baseUrl}/dataroom/userRecord/`, {
+  const reqDiscussion = await fetch(`${statisticBaseUrl}/dataroom/userRecord/`, {
     method: 'POST',
     credentials: 'include',
     headers: {
