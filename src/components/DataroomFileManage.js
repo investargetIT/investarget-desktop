@@ -3,10 +3,11 @@ import { Row, Col, Card, Tree, Select, Tag } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
+import { CheckCircleFilled } from '@ant-design/icons';
 
 const { DirectoryTree } = Tree;
 
-function tagRender(props) {
+function tagRender(props, isReadFile) {
   const { label, closable, onClose } = props;
   const onPreventMouseDown = event => {
     event.preventDefault();
@@ -20,6 +21,7 @@ function tagRender(props) {
       style={{ marginRight: 3 }}
     >
       {label}
+      {isReadFile && <CheckCircleFilled style={{ color: '#339bd2', marginLeft: 4 }} />}
     </Tag>
   );
 }
@@ -35,6 +37,7 @@ function DataroomFileManage({
   fileUserList,
   onSelectFileUser,
   onDeselectFileUser,
+  readFileUserList,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -141,6 +144,16 @@ function DataroomFileManage({
     return result;
   }
 
+  function renderTagContent(props) {
+    const { value } = props;
+    let isReadFile = false;
+    const filterReadUser = readFileUserList.filter(f => f.file === selectedFile.id && f.user === parseInt(value));
+    if (filterReadUser.length > 0) {
+      isReadFile = true;
+    }
+    return tagRender(props, isReadFile);
+  }
+
   return (
     <Row gutter={20}>
       <Col span={8}>
@@ -176,7 +189,7 @@ function DataroomFileManage({
                 <Select
                   mode="multiple"
                   showArrow
-                  tagRender={tagRender}
+                  tagRender={renderTagContent}
                   style={{ flex: 1 }}
                   value={getVisibleUsers()}
                   optionLabelProp="children"

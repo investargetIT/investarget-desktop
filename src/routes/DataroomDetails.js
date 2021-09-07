@@ -64,6 +64,7 @@ function DataroomDetails(props) {
   const [userDataroomMap, setUserDataroomMap] = useState({});
   const [selectedUser, setSelectedUser] = useState(null);
   const [fileUserList, setFileUserList] = useState([]);
+  const [readFileUserList, setReadFileUserList] = useState([]);
   const [targetUserFileList, setTargetUserFileList] = useState([]);
   const [data, setData] = useState([]);
   const [fileAnnotationList, setFileAnnotationList] = useState([]);
@@ -276,11 +277,17 @@ function DataroomDetails(props) {
       setShowNewFileModal(true); 
     }
 
+    async function getDataroomFileReadingRecord() {
+      const req = await requestAllData(api.getDataroomFileReadRecord, { dataroom: dataroomID }, 100);
+      setReadFileUserList(req.data.data);
+    }
+
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
     getDataRoomFile();
     getDataRoomFileAnnotations();
+    getDataroomFileReadingRecord();
 
     if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
       getNewDataRoomFile();
@@ -768,6 +775,7 @@ function DataroomDetails(props) {
         fileUserList={fileUserList}
         onSelectFileUser={handleSelectFileUser}
         onDeselectFileUser={handleDeselectFileUser}
+        readFileUserList={readFileUserList}
       />
 
       {/* <Row gutter={20}>
