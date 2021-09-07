@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { i18n } from '../utils/util';
+import { i18n, time } from '../utils/util';
 import { Table, Popover } from 'antd';
 
 export default function() {
@@ -92,6 +92,41 @@ export default function() {
           {record.createdtime.slice(0, 10)}
         </span>
       ),
+    },
+    {
+      title: '行动计划',
+      key: 'comment',
+      render: (_, record) => {
+        let latestComment = '';
+        if (record.BDComments && record.BDComments.length) {
+          const comments = record.BDComments;
+          if (comments.length > 0) {
+            latestComment = comments[comments.length - 1].comments;
+          }
+        }
+        if (!latestComment) return '暂无';
+
+        const popoverContent = record.BDComments.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+          .map(comment => {
+            let content = comment.comments;
+            const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+            if (oldStatusMatch) {
+              const oldStatus = oldStatusMatch[0];
+              content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+            }
+            return (
+              <div key={comment.id} style={{ marginBottom: 8 }}>
+                <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              </div>
+            );
+          });
+        return (
+          <Popover title="行动计划" content={popoverContent}>
+            <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+          </Popover>
+        );
+      },
     },
   ];
 
