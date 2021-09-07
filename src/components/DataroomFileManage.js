@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
@@ -21,7 +21,11 @@ function tagRender(props, isReadFile) {
       style={{ marginRight: 3 }}
     >
       {label}
-      {isReadFile && <CheckCircleFilled style={{ color: '#339bd2', marginLeft: 4 }} />}
+      {isReadFile &&
+        <Popover content={`${label}：已读`}>
+          <CheckCircleFilled style={{ color: '#339bd2', marginLeft: 4 }} />
+        </Popover>
+      }
     </Tag>
   );
 }
