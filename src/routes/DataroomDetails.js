@@ -708,6 +708,8 @@ function DataroomDetails(props) {
         parentId={parentId}
         dataroomID={dataroomID}
         data={data}
+        userOptions={userOptions}
+        fileUserList={fileUserList}
       />
 
       {/* <Row gutter={20}>

@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Tree } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
 
 const { DirectoryTree } = Tree;
+
+function tagRender(props) {
+  const { label, closable, onClose } = props;
+  const onPreventMouseDown = event => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  return (
+    <Tag
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+      style={{ marginRight: 3 }}
+    >
+      {label}
+    </Tag>
+  );
+}
 
 function DataroomFileManage({
   setData,
@@ -13,6 +31,8 @@ function DataroomFileManage({
   parentId,
   dataroomID,
   data,
+  userOptions,
+  fileUserList,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -113,6 +133,12 @@ function DataroomFileManage({
     return url;
   }
 
+  function getVisibleUsers() {
+    const result = fileUserList.filter(item => item.file == selectedFile.id)
+      .map(item => String(item.user));
+    return result;
+  }
+
   return (
     <Row gutter={20}>
       <Col span={8}>
@@ -141,6 +167,28 @@ function DataroomFileManage({
               {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
               <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
             </div>
+
+            {selectedFile.isFile &&
+              <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
+                <div>可见用户：</div>
+                <Select
+                  mode="multiple"
+                  showArrow
+                  tagRender={tagRender}
+                  style={{ flex: 1 }}
+                  value={getVisibleUsers()}
+                  optionLabelProp="children"
+                  filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+                >
+                  {userOptions.map(option => (
+                    <Select.Option
+                      key={option.value}
+                      value={String(option.value)}>{option.label}</Select.Option>
+                  ))}
+                </Select>
+              </div>
+            }
+
             {selectedFile.isFile &&
               <div>
                 <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
