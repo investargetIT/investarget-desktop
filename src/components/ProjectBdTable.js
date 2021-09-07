@@ -5,9 +5,11 @@ import { Table, Popover } from 'antd';
 export default function() {
 
   const [projBdList, setProjBdList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       const params = {
         page_size: 8,
         sort: 'createdtime',
@@ -15,6 +17,7 @@ export default function() {
       }
       const req = await api.getProjBDList(params);
       setProjBdList(req.data.data);
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -137,6 +140,7 @@ export default function() {
         dataSource={projBdList}
         rowKey={record => record.id}
         pagination={false}
+        loading={loading}
       />
     </div>
   );
