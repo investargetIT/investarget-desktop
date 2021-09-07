@@ -33,6 +33,8 @@ function DataroomFileManage({
   data,
   userOptions,
   fileUserList,
+  onSelectFileUser,
+  onDeselectFileUser,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -179,6 +181,8 @@ function DataroomFileManage({
                   value={getVisibleUsers()}
                   optionLabelProp="children"
                   filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+                  onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId))}
+                  onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId))}
                 >
                   {userOptions.map(option => (
                     <Select.Option

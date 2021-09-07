@@ -641,6 +641,62 @@ function DataroomDetails(props) {
   //   console.log('Trigger Expand');
   // };
 
+  async function toggleUserDataroomFiles(user, data, isAdd) {
+    const dataroomUserfile = userDataroomMap[user];
+
+    // Delete
+    if (!isAdd) {
+      await Promise.all(data.map(m => api.deleteUserDataroomFile(m.id)));
+      const removedFiles = data.map(m => m.file);
+      const newTargetUserFileList = targetUserFileList.filter(f => !removedFiles.includes(f.file));
+      const newFileUserList = fileUserList.filter(f => f.user !== user || !removedFiles.includes(f.file));
+      setFileUserList(newFileUserList);
+      setTargetUserFileList(newTargetUserFileList);
+      return;
+    }
+
+    // Add
+    const res = [];
+    for (let index = 0; index < data.length; index++) {
+      const m = data[index];
+      const body = {
+        dataroom: dataroomID,
+        dataroomUserfile,
+        file: m.file,
+      };
+      try {
+        const addFileToUser = await api.addUserDataroomFile(body);
+        res.push(addFileToUser);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    const newFiles = res.map(m => {
+      const { id, file, dataroomUserfile: dataroomUserfileId } = m.data;
+      return { id, file, dataroomUserfileId, user };
+    });
+    const newTargetUserFileList = targetUserFileList.concat(newFiles);
+    const newFileUserList = fileUserList.concat(newFiles);
+    setFileUserList(newFileUserList);
+    setTargetUserFileList(newTargetUserFileList);
+
+    // check new file
+    const res1 = await api.getNewDataroomFile(dataroomID, user);
+    if (res1.data.length > 0) {
+      setUserWithNewDataroomFile(userWithNewDataroomFile.concat(user)) 
+    }
+  }
+
+  function handleSelectFileUser(file, user) {
+    const data = { file };
+    toggleUserDataroomFiles(user, [data], true);
+  }
+
+  function handleDeselectFileUser(file, user) {
+    const removedFiles = fileUserList.filter(item => item.file === file && item.user === user);
+    toggleUserDataroomFiles(user, removedFiles, false);
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -710,6 +766,8 @@ function DataroomDetails(props) {
         data={data}
         userOptions={userOptions}
         fileUserList={fileUserList}
+        onSelectFileUser={handleSelectFileUser}
+        onDeselectFileUser={handleDeselectFileUser}
       />
 
       {/* <Row gutter={20}>
