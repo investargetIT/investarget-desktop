@@ -135,7 +135,7 @@ function Dashboard(props) {
     fetchNewsData();
 
     async function fetchCompanyFile() {
-      const reqComDataroom = await api.getCompanyDataRoom();
+      const reqComDataroom = await api.queryDataRoom({ isCompanyFile: 1 });
       const { count, data: companyDataroom } = reqComDataroom.data;
       if (count == 0) return;
       const dataroomId = companyDataroom[0].id;
@@ -143,8 +143,8 @@ function Dashboard(props) {
         dataroom: dataroomId,
         isFile: true,
         page_size: 4, // not working
-        sort: 'createdtime', // not working
-        desc: 1, // not working
+        sort: 'createdtime',
+        desc: 1,
       }
       const reqComFile = await api.queryDataRoomFile(params);
       setFiles(reqComFile.data.data.slice(0, 4))

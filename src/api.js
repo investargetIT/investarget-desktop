@@ -535,7 +535,7 @@ export const deleteUserInvestEvent = id => r('/user/event/' + id + '/', 'DELETE'
 /**
  * DataRoom
  */
-export const getCompanyDataRoom = params => r('/dataroom/com/?' + qs.stringify(params));
+// export const getCompanyDataRoom = params => r('/dataroom/com/?' + qs.stringify(params));
 
 export const queryDataRoom = (param) => {
   return r('/dataroom/?' + qs.stringify(param))

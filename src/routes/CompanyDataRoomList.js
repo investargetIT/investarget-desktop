@@ -96,11 +96,11 @@ class DataRoomList extends React.Component {
 
   getDataRoomList = () => {
     const { search, page, pageSize } = this.state
-    const params = { search, page_index: page, page_size: pageSize }
+    const params = { search, page_index: page, page_size: pageSize, isCompanyFile: 1 }
     this.setState({ loading: true })
 
     // if (hasPerm('usersys.as_admin')) {
-      api.getCompanyDataRoom(params).then(result => {
+      api.queryDataRoom(params).then(result => {
         const { count: total, data: list } = result.data
         this.setState({ loading: false, total, list })
       }).catch(error => {
