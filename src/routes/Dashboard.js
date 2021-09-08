@@ -10,6 +10,7 @@ import {
   getFileTypeByName,
   hasPerm,
   handleError,
+  isLogin,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -40,6 +41,7 @@ function Dashboard(props) {
   const [files, setFiles] = useState([]);
   const [projNum, setProjNum] = useState(0);
   const [loadingOnGoingProjects, setLoadingOnGoingProjects] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState(null);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -153,6 +155,27 @@ function Dashboard(props) {
 
   }, []);
 
+  function handleCompanyFileClick(file) {
+    if (/\.pdf$/i.test(file.filename)) {
+      const { dataroom: dataroomId, id: fileId } = file;
+      const originalEmail = isLogin().email || 'Investarget'
+      const watermark = originalEmail.replace('@', '[at]');
+      const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
+      const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+        '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
+        '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
+      window.open(url)
+    } else if ((/\.(doc|docx|xls|xlsx|ppt|pptx)$/i).test(file.filename)) {
+      api.downloadUrl(file.bucket, file.realfilekey)
+        .then(result => {
+          setDownloadUrl(result.data);
+          setTimeout(() => setDownloadUrl(null), 1000);
+        })
+    } else {
+      window.open(file.fileurl);
+    }
+  }
+
   function getFileIconByType(fileType) {
     switch (fileType) {
       case 'PDF':
@@ -227,21 +250,19 @@ function Dashboard(props) {
 
             <Card title="公司培训文件" bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
               {files.map(m => (
-                <a key={m.id} href="/app" target="_blank">
-                  <div style={{ height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
-                    {getFileIconByType(getFileTypeByName(m.filename))} 
-                    <div style={{ marginLeft: 8 }}>
-                      <Tooltip title={getFilenameWithoutExt(m.filename)}>
-                        <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>
-                          {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
-                        </div>
-                      </Tooltip>
-                      <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>
-                        {formatBytes(m.size)} / {getFileTypeByName(m.filename)} / {m.createdtime.slice(0, 10)}
+                <div key={m.id} onClick={() => handleCompanyFileClick(m)} style={{ cursor: 'pointer', height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
+                  {getFileIconByType(getFileTypeByName(m.filename))}
+                  <div style={{ marginLeft: 8 }}>
+                    <Tooltip title={getFilenameWithoutExt(m.filename)}>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#262626' }}>
+                        {trimTextIfExceedMaximumCount(getFilenameWithoutExt(m.filename), 20)}
                       </div>
+                    </Tooltip>
+                    <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>
+                      {formatBytes(m.size)} / {getFileTypeByName(m.filename)} / {m.createdtime.slice(0, 10)}
                     </div>
                   </div>
-                </a>
+                </div>
               ))}
             </Card>
 
@@ -254,6 +275,7 @@ function Dashboard(props) {
         <MySchedule />
       </Card>
 
+      <iframe style={{display: 'none' }} src={downloadUrl}></iframe>
     </LeftRightLayoutPure>
   );
 }
