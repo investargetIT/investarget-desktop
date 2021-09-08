@@ -134,8 +134,7 @@ class ProjectList extends React.Component {
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false });
-      this.getAndSetProjectPercentage();
+      this.setState({ total, list, loading: false }, this.getAndSetProjectPercentage);
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
