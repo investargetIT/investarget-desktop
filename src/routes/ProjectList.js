@@ -348,14 +348,15 @@ class ProjectList extends React.Component {
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       {
-        title: i18n('project.image'),
         key: 'image',
         render: (text, record) => {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
           return (
-            <img src={imgUrl} style={{width: '80px', height: '50px'}} />
-          )
+            <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
+              <img src={imgUrl} style={{width: '80px', height: '50px'}} />
+            </Link>
+          );
         }
       },
       {
@@ -365,7 +366,7 @@ class ProjectList extends React.Component {
           if (record.action.get) {
             return (
               <span className="span-title">
-                <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>{record.projtitle}</Link>
+                <Link to={`/app/projects/${record.id}`}>{record.projtitle}</Link>
               </span>
             )
           } else {
