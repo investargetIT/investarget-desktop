@@ -118,6 +118,12 @@ function ProjectCostDetail(props) {
         percentage = Math.round((maxRes - 3) / 11 * 100);
         step = maxRes - 4;
       }
+      if (res.data.projstatus) {
+        if (res.data.projstatus.nameC.includes('已完成')) {
+          percentage = 100;
+          step = 11;
+        }
+      }
       setProjectDetails({ ...projectDetails, ...res.data, percentage, step });
     }
 

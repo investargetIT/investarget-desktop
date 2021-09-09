@@ -302,11 +302,10 @@ class ProjectDetail extends React.Component {
 
     api.getProjLangDetail(id).then(result => {
       const project = result.data
-      this.setState({ project }, this.updateDimensions)
+      this.setState({ project }, () => this.getAndSetProjectPercentage(id))
     }).catch( handleError);
 
     this.getFavorProject()
-    this.getAndSetProjectPercentage(id);
 
     // 获取投资人的交易师
     if (hasPerm('usersys.as_investor')) {
@@ -350,6 +349,11 @@ class ProjectDetail extends React.Component {
     if (maxRes > 3) {
       // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
       percentage = Math.round((maxRes - 3) / 11 * 100);
+    }
+    if (this.state.project.projstatus) {
+      if (this.state.project.projstatus.name.includes('已完成') || this.state.project.projstatus.name.includes('Completed')) {
+        percentage = 100;
+      }
     }
     this.setState({ progress: percentage });
   }
@@ -395,7 +399,7 @@ class ProjectDetail extends React.Component {
 
         <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: '0 20px', paddingTop: 20 }}>
           <div style={{ display: 'flex' }}>
-            <ProjectImage project={project} height={this.state.imageHeight} />
+            <ProjectImage project={project} />
 
             <div style={{ marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={this.setHeader}>
               <ProjectHead project={project} allCountries={this.props.country} progress={this.state.progress} />
@@ -518,7 +522,7 @@ const iconStyle = {
 
 
 
-function ProjectImage({ project, height }) {
+function ProjectImage({ project }) {
   const src = (project.industries && project.industries[0]) ? project.industries[0].url : 'defaultUrl'
   return (
     <div style={{ position:'relative' }}>

@@ -151,6 +151,12 @@ class ProjectList extends React.Component {
     const projPercentage = [];
     for (let index = 0; index < this.state.list.length; index++) {
       const element = this.state.list[index];
+      if (element.projstatus) {
+        if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
+          projPercentage.push({ id: element.id, percentage: 100 });
+          continue;
+        }
+      }
       const paramsForPercentage = { proj: element.id };
       const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
       let { response_count: resCount } = projPercentageCount.data;
