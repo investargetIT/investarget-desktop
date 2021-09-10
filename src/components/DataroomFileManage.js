@@ -164,17 +164,21 @@ function DataroomFileManage({
   }
 
   function titleRender(item) {
-    let icon = <FolderOutlined />;
+    let fileIcon = <FolderOutlined />;
     if (item.isFile) {
-      icon = <FileTextOutlined />;
+      fileIcon = <FileTextOutlined />;
+    }
+    let operationIcon = null;
+    if (item.isFolder) {
+      operationIcon = <PlusOutlined />;
     }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
-          <span style={{ marginRight: 4 }}>{icon}</span>
+          <span style={{ marginRight: 4 }}>{fileIcon}</span>
           <span>{item.title}</span>
         </div>
-        <div><PlusOutlined /></div>
+        <div>{operationIcon}</div>
       </div>
     );
   }
