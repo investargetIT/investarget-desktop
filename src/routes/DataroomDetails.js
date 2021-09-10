@@ -244,7 +244,7 @@ function DataroomDetails(props) {
         return api.queryUserDataRoom(param).then(result => {
           const data1 = result.data.data[0]
           return api.queryUserDataRoomFile(data1.id).then(result => {
-            const files = result.data.files
+            const files = result.data.files || [];
             const data = [...stateData, ...files]
             allDataroomFiles = data;
             setData(formatData(data));
