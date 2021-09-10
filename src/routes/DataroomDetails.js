@@ -705,6 +705,18 @@ function DataroomDetails(props) {
     toggleUserDataroomFiles(user, removedFiles, false);
   }
 
+  function handleOrgBDExpand(_, record) {
+    const currentId = record.id;
+    const newExpanded = expandedRows;
+    const expandIndex = newExpanded.indexOf(currentId);
+    if (expandIndex < 0) {
+      newExpanded.push(currentId);
+    } else {
+      newExpanded.splice(expandIndex, 1);
+    }
+    setExpandedRows(newExpanded);
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -756,7 +768,7 @@ function DataroomDetails(props) {
           dataSource={dataroomUsersOrgBdByOrg}
           rowKey={record => record.id}
           loading={loadingOrgBD}
-          // onExpand={this.onExpand.bind(this)}
+          onExpand={handleOrgBDExpand}
           expandedRowKeys={expandedRows}
           pagination={false}
           size="middle"
