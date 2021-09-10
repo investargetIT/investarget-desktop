@@ -4,6 +4,11 @@ import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  FolderOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
 
 const { DirectoryTree } = Tree;
 
@@ -158,6 +163,22 @@ function DataroomFileManage({
     return tagRender(props, isReadFile);
   }
 
+  function titleRender(item) {
+    let icon = <FolderOutlined />;
+    if (item.isFile) {
+      icon = <FileTextOutlined />;
+    }
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <span style={{ marginRight: 4 }}>{icon}</span>
+          <span>{item.title}</span>
+        </div>
+        <div><PlusOutlined /></div>
+      </div>
+    );
+  }
+
   return (
     <Row gutter={20}>
       <Col span={8}>
@@ -176,6 +197,8 @@ function DataroomFileManage({
             onSelect={onSelect}
             onExpand={onExpand}
             treeData={generateTreeData()}
+            titleRender={titleRender}
+            icon={null}
           />
         </Card>
       </Col>
