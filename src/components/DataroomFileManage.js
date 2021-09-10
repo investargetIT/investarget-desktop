@@ -46,7 +46,7 @@ function DataroomFileManage({
 
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewFileUrl, setPreviewFileUrl] = useState('https://movier.github.io/');
+  const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -172,7 +172,7 @@ function DataroomFileManage({
           />
           <DirectoryTree
             checkable
-            defaultExpandAll
+            defaultExpandedKeys={[-999]}
             onSelect={onSelect}
             onExpand={onExpand}
             treeData={generateTreeData()}

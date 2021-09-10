@@ -777,19 +777,21 @@ function DataroomDetails(props) {
 
       </Card>
 
-      <DataroomFileManage
-        setData={setData}
-        setLoading={setLoading}
-        allDataroomFiles={allDataroomFiles}
-        parentId={parentId}
-        dataroomID={dataroomID}
-        data={data}
-        userOptions={userOptions}
-        fileUserList={fileUserList}
-        onSelectFileUser={handleSelectFileUser}
-        onDeselectFileUser={handleDeselectFileUser}
-        readFileUserList={readFileUserList}
-      />
+      {data.length > 0 &&
+        <DataroomFileManage
+          setData={setData}
+          setLoading={setLoading}
+          allDataroomFiles={allDataroomFiles}
+          parentId={parentId}
+          dataroomID={dataroomID}
+          data={data}
+          userOptions={userOptions}
+          fileUserList={fileUserList}
+          onSelectFileUser={handleSelectFileUser}
+          onDeselectFileUser={handleDeselectFileUser}
+          readFileUserList={readFileUserList}
+        />
+      }
 
       {/* <Row gutter={20}>
         <Col span={8}>
