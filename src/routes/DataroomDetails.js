@@ -237,14 +237,15 @@ function DataroomDetails(props) {
     }
 
     function investorGetDataRoomFile() {
+      const stateData = data;
       return api.queryDataRoomDir(dataroomID).then(result => {
         setData(formatData(result.data))
         const param = { dataroom: dataroomID };
         return api.queryUserDataRoom(param).then(result => {
-          const data = result.data.data[0]
-          return api.queryUserDataRoomFile(data.id).then(result => {
+          const data1 = result.data.data[0]
+          return api.queryUserDataRoomFile(data1.id).then(result => {
             const files = result.data.files
-            const data = [...this.state.data, ...files]
+            const data = [...stateData, ...files]
             allDataroomFiles = data;
             setData(formatData(data));
           })
