@@ -7,6 +7,7 @@ import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
   FolderOutlined,
+  FolderAddOutlined,
   FileTextOutlined,
 } from '@ant-design/icons';
 
@@ -164,13 +165,29 @@ function DataroomFileManage({
   }
 
   function titleRender(item) {
+    
+    function popoverContent() {
+      return (
+        <div style={{ color: '#262626', lineHeight: '22px' }}>
+          <div style={{ padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FileTextOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />上传文件</div>
+          <div style={{ padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FolderOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />上传文件夹</div>
+          <div style={{ padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FolderAddOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />新增文件夹</div>
+        </div>
+      );
+    }
+
     let fileIcon = <FolderOutlined />;
     if (item.isFile) {
       fileIcon = <FileTextOutlined />;
     }
+
     let operationIcon = null;
     if (item.isFolder) {
-      operationIcon = <PlusOutlined />;
+      operationIcon = (
+        <Popover style={{ padding: 0 }} content={popoverContent()}>
+          <PlusOutlined />
+        </Popover>
+      );
     }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
