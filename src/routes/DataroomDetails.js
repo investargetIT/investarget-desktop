@@ -717,6 +717,40 @@ function DataroomDetails(props) {
     setExpandedRows(newExpanded);
   }
 
+  function handleUploadFile(file, parentId) {
+    const body = {
+      dataroom: parseInt(dataroomID),
+      filename: file.name,
+      isFile: true,
+      orderNO: 1,
+      parent: parentId == -999 ? null : parentId,
+      key: file.response.result.key,
+      size: file.size,
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
+    }
+
+    api.addDataRoomFile(body).then(result => {
+      const item = result.data
+      const parentId = item.parent || -999
+
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = [...data];
+      newData.push(newItem)
+      setData(newData);
+    }).catch(error => {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -790,6 +824,7 @@ function DataroomDetails(props) {
           onSelectFileUser={handleSelectFileUser}
           onDeselectFileUser={handleDeselectFileUser}
           readFileUserList={readFileUserList}
+          onUploadFile={handleUploadFile}
         />
       }
 
