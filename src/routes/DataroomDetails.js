@@ -259,6 +259,7 @@ function DataroomDetails(props) {
         var { count, data } = result.data
         data = formatData(data)
         allDataroomFiles = data;
+        window.echo('get dataroom file', data);
         setData(data);
       }).catch(_ => {
         investorGetDataRoomFile();
@@ -751,6 +752,93 @@ function DataroomDetails(props) {
     })
   }
 
+  async function createOrFindFolder(folderName, parentFolderID) {
+    // 检查当前目录下是否有同名文件夹
+    const files = data.filter(f => f.parentId === parentFolderID);
+    const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+    if (sameNameFolderIndex > -1) {
+      window.echo('find duplaicate folder', files[sameNameFolderIndex]);
+      return files[sameNameFolderIndex].id;
+    }
+
+    const body = {
+      dataroom: Number(dataroomID),
+      filename: folderName,
+      isFile: false,
+      orderNO: 1,
+      parent: parentFolderID == -999 ? null : parentFolderID,
+    }
+    const data1 = await api.addDataRoomFile(body);
+    const item = data1.data
+    const parentId = item.parent || -999
+    const name = item.filename
+    const rename = item.filename
+    const unique = item.id
+    const isFolder = !item.isFile
+    const date = item.lastmodifytime || item.createdtime
+    const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
+    const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+    const newData = data.slice();
+    newData.push(newItem);
+    setData(newData);
+    return unique;
+  }
+
+  async function createOrFindFolderLoop(folderArr, initialParentId) {
+    let parentFolderID = initialParentId;
+    for (let index = 0; index < folderArr.length; index++) {
+      const folderName = folderArr[index];
+      const newFolderId = await createOrFindFolder(folderName, parentFolderID);
+      parentFolderID = newFolderId;
+    }
+    return parentFolderID;
+  }
+
+  async function handleUploadFileWithDir(file, parentId) {
+    window.echo('parent id', parentId);
+    const { webkitRelativePath } = file;
+    const splitPath = webkitRelativePath.split('/');
+    const dirArray = splitPath.slice(0, splitPath.length - 1);
+    const finalFolderID = await createOrFindFolderLoop(dirArray, parentId);
+    window.echo('final folder ID', finalFolderID);
+    const files = data.filter(f => f.parentId === finalFolderID);
+    if (files.some(item => item.name == file.name)) {
+      message.warning(`文件 ${file.webkitRelativePath} 已存在`);
+      return;
+    }
+    const body = {
+      dataroom: parseInt(dataroomID),
+      filename: file.name,
+      isFile: true,
+      orderNO: 1,
+      parent: finalFolderID == -999 ? null : finalFolderID,
+      key: file.response.result.key,
+      size: file.size,
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
+    }
+
+    api.addDataRoomFile(body).then(data1 => {
+      const item = data1.data
+      const parentId = item.parent || -999
+
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = data.slice();
+      newData.push(newItem)
+      setData(newData);
+    }).catch(error => {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -825,6 +913,7 @@ function DataroomDetails(props) {
           onDeselectFileUser={handleDeselectFileUser}
           readFileUserList={readFileUserList}
           onUploadFile={handleUploadFile}
+          onUploadFileWithDir={handleUploadFileWithDir}
         />
       }
 

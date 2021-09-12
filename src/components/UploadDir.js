@@ -30,7 +30,7 @@ class UploadDir extends React.Component {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
-    
+    window.echo('change file', files); 
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);

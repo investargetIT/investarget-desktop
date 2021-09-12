@@ -11,6 +11,7 @@ import {
   FileTextOutlined,
 } from '@ant-design/icons';
 import { baseUrl } from '../utils/request';
+import UploadDir from './UploadDir';
 
 const { DirectoryTree } = Tree;
 
@@ -78,6 +79,7 @@ function DataroomFileManage({
   onDeselectFileUser,
   readFileUserList,
   onUploadFile,
+  onUploadFileWithDir,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -131,24 +133,26 @@ function DataroomFileManage({
     setData(newData);
   }
 
-  function recursiveFindChildren(item) {
-    const children = data.filter(f => f.parent === item.id);
+  function recursiveFindChildren(item, allData) {
+    const children = allData.filter(f => f.parent === item.id);
     if (children.length === 0) {
       return;
     }
     item['children'] = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
     children.forEach(element => {
-      return recursiveFindChildren(element);
+      return recursiveFindChildren(element, allData);
     });
   }
 
-  function generateTreeData(data) {
-    let rootDirectory = data.filter(f => !f.parent);
+  function generateTreeData(allData) {
+    window.echo('all data', allData);
+    let rootDirectory = allData.filter(f => !f.parent);
     rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-    rootDirectory.forEach(element => recursiveFindChildren(element));
+    rootDirectory.forEach(element => recursiveFindChildren(element, allData));
 
     const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
     rootDir['children'] = rootDirectory;
+    window.echo('root dir', rootDir);
     return [rootDir];
   }
 
@@ -254,14 +258,109 @@ function DataroomFileManage({
         },
       };
 
+      const uploadDirProps = {
+        beforeUpload: file => {
+          console.log(file)
+          const fileType = file.type
+          const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
+          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+          if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
+            window.echo('mime type or file name suffix not valid');
+            window.echo('mime type', fileType);
+            window.echo('file name', file.name);
+            Modal.error({
+              title: '不支持的文件类型',
+              content: `${file.name} 文件类型有误，请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件`,
+            })
+            return false
+          }
+          
+          if (checkFileWithFolderIfExist(file, item.id)) {
+            message.warning(`文件 ${file.webkitRelativePath || file.name} 已存在，无法上传`);
+            return false;
+          }
+  
+          return true; 
+        },
+        async onChange(info) {
+          if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+          }
+          if (info.file.status === 'done') {
+            if (!info.file.name || !info.file.size) {
+              const file = info.fileList.filter(f => f.status === 'done' && f.uid === info.file.uid)[0];
+              info.file.name = file.name;
+              info.file.size = file.size;
+            }
+            message.success(`${info.file.name} file uploaded successfully`)
+            // react.setState({ loading: false })
+            await onUploadFileWithDir(info.file, item.id);
+          } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+            // react.setState({ loading: false })
+          } else if (info.file.status === 'uploading') {
+            // react.setState({ loading: true })
+          }
+        },
+      };
+
+      function tryToFindFolder(folderName, parentFolderID) {
+        const files = data.filter(f => f.parentId === parentFolderID);
+        const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+        if (sameNameFolderIndex > -1) {
+          return files[sameNameFolderIndex].id;
+        }
+        return null;
+      }
+
+      function findFolderLoop(folderArr, initialParentId) {
+        let parentFolderID = initialParentId;
+        for (let index = 0; index < folderArr.length; index++) {
+          const folderName = folderArr[index];
+          const newFolderId = tryToFindFolder(folderName, parentFolderID);
+          if (newFolderId) {
+            parentFolderID = newFolderId;
+          } else {
+            return null; 
+          }
+        }
+        return parentFolderID;
+      }
+
+
+      function checkFileWithFolderIfExist(file, initialParentId) {
+        const { webkitRelativePath } = file;
+        const splitPath = webkitRelativePath.split('/');
+        const folderArr = splitPath.slice(0, splitPath.length - 1);
+
+        const finalFolderID = findFolderLoop(folderArr, initialParentId);
+
+        if (finalFolderID) {
+          const files = data.filter(f => f.parentId === finalFolderID);
+          if (files.some(item => item.name == file.name)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
+          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
           <Upload {...props}>
-            <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            
               <FileTextOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />上传文件
-            </div>
+            
           </Upload>
-          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FolderOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />上传文件夹</div>
+          </div>
+          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+          <UploadDir {...uploadDirProps}>
+            
+              <FolderOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />上传文件夹
+              
+          </UploadDir>
+          </div>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FolderAddOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />新增文件夹</div>
         </div>
       );
@@ -292,7 +391,8 @@ function DataroomFileManage({
   }
 
   useEffect(() => {
-    const newTreeData = generateTreeData(data);
+    window.echo('use effect', data);
+    const newTreeData = generateTreeData(data.slice());
     setDirData(newTreeData);
   }, [data]);
 
