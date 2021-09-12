@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
+import _ from 'lodash';
 
 const { DirectoryTree } = Tree;
 
@@ -134,24 +135,82 @@ function DataroomFileManage({
   }
 
   function recursiveFindChildren(item, allData) {
+    window.echo('all data', _.cloneDeep(allData));
+
     const children = allData.filter(f => f.parent === item.id);
-    if (children.length === 0) {
-      return;
-    }
-    item['children'] = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-    children.forEach(element => {
-      return recursiveFindChildren(element, allData);
+    item.children = children.map(m => {
+      const newM = _.cloneDeep(m);
+      newM.title = newM.filename;
+      newM.key = newM.id;
+      newM.isLeaf = newM.isFile;
+      return newM;
     });
+    const itemIndex = allData.map(m => m.id).indexOf(item.id);
+    window.echo('item index', itemIndex);
+    allData[itemIndex] = item;
+    children.forEach(element => {
+      recursiveFindChildren(element, allData);
+    });
+  
+    if (item.id === 28922) {
+      window.echo('chii', item);
+    }
+  }
+
+  function getObject(array, key, value) {
+    var o;
+    array.some(function iter(a) {
+        if (a[key] === value) {
+            o = a;
+            return true;
+        }
+        return Array.isArray(a.children) && a.children.some(iter);
+    });
+    return o;
+}
+
+  let recursiveData = [];
+  function recursiveSwitchSturcture(flatData, parentID) {
+    window.echo('flat data', _.cloneDeep(flatData));
+    if (flatData.length === 0) return;
+
+    const children = flatData.filter(f => f.parentId === parentID);
+    window.echo('childre', children);
+    // Delete all children items in original data
+    for (let index = 0; index < children.length; index++) {
+      const element = children[index];
+      const elementIndex = flatData.map(m => m.id).indexOf(element.id);
+      flatData.splice(elementIndex, 1); 
+    }
+
+    const newObject = getObject(recursiveData, 'id', parentID);
+    window.echo('new object', newObject);
+    const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    if (newObject) {
+      newObject.children = newChildren;
+      window.echo('new object', newObject);
+    } else {
+      recursiveData = newChildren.map(m => ({ ...m, children: [] }));
+    }
+
+    children.forEach(item => {
+      item.children = recursiveSwitchSturcture(flatData, item.id);
+    });
+
   }
 
   function generateTreeData(allData) {
     window.echo('all data', allData);
-    let rootDirectory = allData.filter(f => !f.parent);
-    rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-    rootDirectory.forEach(element => recursiveFindChildren(element, allData));
-
+    const newCloneData = _.cloneDeep(allData);
+    // let rootDirectory = newCloneData.filter(f => !f.parent);
+    // rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
+    // rootDirectory.forEach(element => {
+    //   recursiveFindChildren(element, newCloneData);
+    //   return newCloneData;
+    // });
+    recursiveSwitchSturcture(newCloneData, -999);
     const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
-    rootDir['children'] = rootDirectory;
+    rootDir['children'] = recursiveData;
     window.echo('root dir', rootDir);
     return [rootDir];
   }
