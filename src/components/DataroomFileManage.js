@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
@@ -87,7 +87,11 @@ function DataroomFileManage({
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
   const [dirData, setDirData] = useState([]);
+
+  // Create new folder related states
+  const [currentCreateFolder, setCurrentCreateFolder] = useState(null);
   const [displayNewFolderModal, setDisplayNewFolderModal] = useState(false);
+  const [newFolderName, setNewFolderName]= useState('');
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -370,10 +374,6 @@ function DataroomFileManage({
         return false;
       }
 
-      function handleCreateNewFolderClick(folder) {
-        setDisplayNewFolderModal(true);
-      }
-
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
@@ -423,6 +423,16 @@ function DataroomFileManage({
     const newTreeData = generateTreeData(data);
     setDirData(newTreeData);
   }, [data]);
+
+  function handleCreateNewFolderClick(folder) {
+    setCurrentCreateFolder(folder);
+    setDisplayNewFolderModal(true);
+  }
+
+  function handleConfirmCreateFolder() {
+    window.echo('confirm create', newFolderName);
+    window.echo('current creat folder', currentCreateFolder);
+  }
 
   return (
     <div>
@@ -500,8 +510,17 @@ function DataroomFileManage({
         title="新增文件夹"
         visible={displayNewFolderModal}
         onCancel={() => setDisplayNewFolderModal(false)}
+        onOk={handleConfirmCreateFolder}
       >
-        <div>文件夹名称</div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div>文件夹名称：</div>
+          <Input
+            style={{ flex: 1 }}
+            placeholder="请输入新文件夹名称"
+            value={newFolderName}
+            onChange={e => setNewFolderName(e.target.value)}
+          />
+        </div>
       </Modal>
     </div>
   );
