@@ -259,7 +259,6 @@ function DataroomDetails(props) {
         var { count, data } = result.data
         data = formatData(data)
         allDataroomFiles = data;
-        window.echo('get dataroom file', data);
         setData(data);
       }).catch(_ => {
         investorGetDataRoomFile();
@@ -757,7 +756,7 @@ function DataroomDetails(props) {
     const files = data.filter(f => f.parentId === parentFolderID);
     const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
     if (sameNameFolderIndex > -1) {
-      window.echo('find duplaicate folder', files[sameNameFolderIndex]);
+      console.warning('find duplaicate folder', files[sameNameFolderIndex]);
       return files[sameNameFolderIndex].id;
     }
 
@@ -795,12 +794,10 @@ function DataroomDetails(props) {
   }
 
   async function handleUploadFileWithDir(file, parentId) {
-    window.echo('parent id', parentId);
     const { webkitRelativePath } = file;
     const splitPath = webkitRelativePath.split('/');
     const dirArray = splitPath.slice(0, splitPath.length - 1);
     const finalFolderID = await createOrFindFolderLoop(dirArray, parentId);
-    window.echo('final folder ID', finalFolderID);
     const files = data.filter(f => f.parentId === finalFolderID);
     if (files.some(item => item.name == file.name)) {
       message.warning(`文件 ${file.webkitRelativePath} 已存在`);

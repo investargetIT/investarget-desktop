@@ -134,28 +134,28 @@ function DataroomFileManage({
     setData(newData);
   }
 
-  function recursiveFindChildren(item, allData) {
-    window.echo('all data', _.cloneDeep(allData));
+  // function recursiveFindChildren(item, allData) {
+  //   window.echo('all data', _.cloneDeep(allData));
 
-    const children = allData.filter(f => f.parent === item.id);
-    item.children = children.map(m => {
-      const newM = _.cloneDeep(m);
-      newM.title = newM.filename;
-      newM.key = newM.id;
-      newM.isLeaf = newM.isFile;
-      return newM;
-    });
-    const itemIndex = allData.map(m => m.id).indexOf(item.id);
-    window.echo('item index', itemIndex);
-    allData[itemIndex] = item;
-    children.forEach(element => {
-      recursiveFindChildren(element, allData);
-    });
+  //   const children = allData.filter(f => f.parent === item.id);
+  //   item.children = children.map(m => {
+  //     const newM = _.cloneDeep(m);
+  //     newM.title = newM.filename;
+  //     newM.key = newM.id;
+  //     newM.isLeaf = newM.isFile;
+  //     return newM;
+  //   });
+  //   const itemIndex = allData.map(m => m.id).indexOf(item.id);
+  //   window.echo('item index', itemIndex);
+  //   allData[itemIndex] = item;
+  //   children.forEach(element => {
+  //     recursiveFindChildren(element, allData);
+  //   });
   
-    if (item.id === 28922) {
-      window.echo('chii', item);
-    }
-  }
+  //   if (item.id === 28922) {
+  //     window.echo('chii', item);
+  //   }
+  // }
 
   function getObject(array, key, value) {
     var o;
@@ -171,11 +171,9 @@ function DataroomFileManage({
 
   let recursiveData = [];
   function recursiveSwitchSturcture(flatData, parentID) {
-    window.echo('flat data', _.cloneDeep(flatData));
     if (flatData.length === 0) return;
 
     const children = flatData.filter(f => f.parentId === parentID);
-    window.echo('childre', children);
     // Delete all children items in original data
     for (let index = 0; index < children.length; index++) {
       const element = children[index];
@@ -184,11 +182,9 @@ function DataroomFileManage({
     }
 
     const newObject = getObject(recursiveData, 'id', parentID);
-    window.echo('new object', newObject);
     const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
     if (newObject) {
       newObject.children = newChildren;
-      window.echo('new object', newObject);
     } else {
       recursiveData = newChildren.map(m => ({ ...m, children: [] }));
     }
@@ -200,7 +196,6 @@ function DataroomFileManage({
   }
 
   function generateTreeData(allData) {
-    window.echo('all data', allData);
     const newCloneData = _.cloneDeep(allData);
     // let rootDirectory = newCloneData.filter(f => !f.parent);
     // rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
@@ -211,7 +206,6 @@ function DataroomFileManage({
     recursiveSwitchSturcture(newCloneData, -999);
     const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
     rootDir['children'] = recursiveData;
-    window.echo('root dir', rootDir);
     return [rootDir];
   }
 
@@ -450,7 +444,6 @@ function DataroomFileManage({
   }
 
   useEffect(() => {
-    window.echo('use effect', data);
     const newTreeData = generateTreeData(data.slice());
     setDirData(newTreeData);
   }, [data]);
