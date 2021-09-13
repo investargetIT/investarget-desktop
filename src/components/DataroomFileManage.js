@@ -13,6 +13,7 @@ import {
 import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
+import { connect } from 'dva';
 
 const { DirectoryTree } = Tree;
 
@@ -81,6 +82,7 @@ function DataroomFileManage({
   readFileUserList,
   onUploadFile,
   onUploadFileWithDir,
+  dispatch,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -92,6 +94,7 @@ function DataroomFileManage({
   const [currentCreateFolder, setCurrentCreateFolder] = useState(null);
   const [displayNewFolderModal, setDisplayNewFolderModal] = useState(false);
   const [newFolderName, setNewFolderName]= useState('');
+  const [createFolderLoading, setCreateFolderLoading] = useState(false);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -430,8 +433,48 @@ function DataroomFileManage({
   }
 
   function handleConfirmCreateFolder() {
-    window.echo('confirm create', newFolderName);
-    window.echo('current creat folder', currentCreateFolder);
+    const newData = data.slice();
+    const value = currentCreateFolder;
+
+    // Check duplicate folder name 
+    const currentFiles = newData.filter(f => f.parentId == value.id);
+    if (currentFiles.some(item => Object.is(item.name, newFolderName))) {
+      Modal.error({
+        title: '不支持的文件夹名字',
+        content: '已存在相同的文件夹名字',
+      });
+      return;
+    }
+
+    setCreateFolderLoading(true);
+    const body = {
+      dataroom: Number(dataroomID),
+      filename: newFolderName,
+      isFile: false,
+      orderNO: 1,
+      parent: currentCreateFolder.id == -999 ? null : currentCreateFolder.id,
+    }
+    api.addDataRoomFile(body).then(data1 => {
+      const item = data1.data
+      const parentId = item.parent || -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+      newData.push(newItem)
+      setData(newData);
+      setCreateFolderLoading(false);
+      setDisplayNewFolderModal(false);
+    }).catch(error => {
+      setCreateFolderLoading(false);
+      dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   return (
@@ -511,6 +554,8 @@ function DataroomFileManage({
         visible={displayNewFolderModal}
         onCancel={() => setDisplayNewFolderModal(false)}
         onOk={handleConfirmCreateFolder}
+        okButtonProps={{ disabled: !newFolderName }}
+        confirmLoading={createFolderLoading}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div>文件夹名称：</div>
@@ -526,4 +571,4 @@ function DataroomFileManage({
   );
 }
 
-export default DataroomFileManage;
+export default connect()(DataroomFileManage);
