@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
@@ -87,6 +87,7 @@ function DataroomFileManage({
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
   const [dirData, setDirData] = useState([]);
+  const [displayNewFolderModal, setDisplayNewFolderModal] = useState(false);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -369,23 +370,27 @@ function DataroomFileManage({
         return false;
       }
 
+      function handleCreateNewFolderClick(folder) {
+        setDisplayNewFolderModal(true);
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-          <Upload {...props}>
-            
+            <Upload {...props}>
               <FileTextOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />上传文件
-            
-          </Upload>
+            </Upload>
           </div>
+
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-          <UploadDir {...uploadDirProps}>
-            
-              <FolderOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />上传文件夹
-              
-          </UploadDir>
+            <UploadDir {...uploadDirProps}>
+              <FolderOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />上传文件夹
+            </UploadDir>
           </div>
-          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}><FolderAddOutlined style={{ marginRight: 8, color: '#bfbfbf'}} />新增文件夹</div>
+
+          <div onClick={() => handleCreateNewFolderClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            <FolderAddOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />新增文件夹
+          </div>
         </div>
       );
     }
@@ -420,75 +425,85 @@ function DataroomFileManage({
   }, [data]);
 
   return (
-    <Row gutter={20}>
-      <Col span={8}>
-        <Card>
-          <Search
-            style={{ marginBottom: 30 }}
-            size="default"
-            placeholder="请输入文件名称或内容"
-            onSearch={handleDataroomSearch}
-            onChange={searchContent => setSearchContent(searchContent)}
-            value={searchContent}
-          />
-          {dirData.length > 0 &&
-            <DirectoryTree
-              checkable
-              defaultExpandedKeys={[-999]}
-              onSelect={onSelect}
-              onExpand={onExpand}
-              treeData={dirData}
-              titleRender={titleRender}
-              icon={null}
-              expandAction="doubleClick"
+    <div>
+      <Row gutter={20}>
+        <Col span={8}>
+          <Card>
+            <Search
+              style={{ marginBottom: 30 }}
+              size="default"
+              placeholder="请输入文件名称或内容"
+              onSearch={handleDataroomSearch}
+              onChange={searchContent => setSearchContent(searchContent)}
+              value={searchContent}
             />
-          }
-        </Card>
-      </Col>
-      {selectedFile &&
-        <Col span={16}>
-          <Card title={selectedFile.filename}>
-            <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
-              {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
-              <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
-            </div>
-
-            {selectedFile.isFile &&
-              <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
-                <div>可见用户：</div>
-                <Select
-                  mode="multiple"
-                  showArrow
-                  tagRender={renderTagContent}
-                  style={{ flex: 1 }}
-                  value={getVisibleUsers()}
-                  optionLabelProp="children"
-                  filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-                  onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId))}
-                  onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId))}
-                >
-                  {userOptions.map(option => (
-                    <Select.Option
-                      key={option.value}
-                      value={String(option.value)}>{option.label}</Select.Option>
-                  ))}
-                </Select>
-              </div>
-            }
-
-            {selectedFile.isFile &&
-              <div>
-                <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
-                <div
-                  style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-                  dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
-                />
-              </div>
+            {dirData.length > 0 &&
+              <DirectoryTree
+                checkable
+                defaultExpandedKeys={[-999]}
+                onSelect={onSelect}
+                onExpand={onExpand}
+                treeData={dirData}
+                titleRender={titleRender}
+                icon={null}
+                expandAction="doubleClick"
+              />
             }
           </Card>
         </Col>
-      }
-    </Row>
+        {selectedFile &&
+          <Col span={16}>
+            <Card title={selectedFile.filename}>
+              <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
+                {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
+                <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
+              </div>
+
+              {selectedFile.isFile &&
+                <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
+                  <div>可见用户：</div>
+                  <Select
+                    mode="multiple"
+                    showArrow
+                    tagRender={renderTagContent}
+                    style={{ flex: 1 }}
+                    value={getVisibleUsers()}
+                    optionLabelProp="children"
+                    filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+                    onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId))}
+                    onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId))}
+                  >
+                    {userOptions.map(option => (
+                      <Select.Option
+                        key={option.value}
+                        value={String(option.value)}>{option.label}</Select.Option>
+                    ))}
+                  </Select>
+                </div>
+              }
+
+              {selectedFile.isFile &&
+                <div>
+                  <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
+                  <div
+                    style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+                    dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
+                  />
+                </div>
+              }
+            </Card>
+          </Col>
+        }
+      </Row>
+
+      <Modal
+        title="新增文件夹"
+        visible={displayNewFolderModal}
+        onCancel={() => setDisplayNewFolderModal(false)}
+      >
+        <div>文件夹名称</div>
+      </Modal>
+    </div>
   );
 }
 
