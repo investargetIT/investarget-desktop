@@ -486,6 +486,7 @@ function DetaroomDetailsForCompanyFile(props) {
 
       {data.length > 0 &&
         <DataroomFileManage
+          isCompanyDataroom
           setData={setData}
           setLoading={setLoading}
           allDataroomFiles={allDataroomFiles}

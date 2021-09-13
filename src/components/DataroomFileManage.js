@@ -83,6 +83,7 @@ function DataroomFileManage({
   onUploadFile,
   onUploadFileWithDir,
   dispatch,
+  isCompanyDataroom,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -512,7 +513,7 @@ function DataroomFileManage({
                 <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
               </div>
 
-              {selectedFile.isFile &&
+              {!isCompanyDataroom && selectedFile.isFile &&
                 <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
                   <div>可见用户：</div>
                   <Select
