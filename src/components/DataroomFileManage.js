@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin } from '../utils/util';
@@ -9,6 +9,7 @@ import {
   FolderOutlined,
   FolderAddOutlined,
   FileTextOutlined,
+  ExpandOutlined,
 } from '@ant-design/icons';
 import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
@@ -478,6 +479,11 @@ function DataroomFileManage({
     })
   }
 
+  function handleOpenFileInNewWindowClick() {
+    const fileUrl = getPreviewFileUrl(selectedFile);
+    window.open(fileUrl);
+  }
+
   return (
     <div>
       <Row gutter={20}>
@@ -538,7 +544,12 @@ function DataroomFileManage({
 
               {selectedFile.isFile &&
                 <div>
-                  <div style={{ color: '#262626', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>预览文件</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5' }}>
+                    <div style={{ color: '#262626', fontWeight: 'bold' }}>预览文件</div>
+                    <div style={{ color: '#595959', cursor: 'pointer' }} onClick={handleOpenFileInNewWindowClick}>
+                      <Tooltip title="在新窗口中打开"><ExpandOutlined /></Tooltip>
+                    </div>
+                  </div>
                   <div
                     style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
                     dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
