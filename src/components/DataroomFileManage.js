@@ -134,29 +134,6 @@ function DataroomFileManage({
     setData(newData);
   }
 
-  // function recursiveFindChildren(item, allData) {
-  //   window.echo('all data', _.cloneDeep(allData));
-
-  //   const children = allData.filter(f => f.parent === item.id);
-  //   item.children = children.map(m => {
-  //     const newM = _.cloneDeep(m);
-  //     newM.title = newM.filename;
-  //     newM.key = newM.id;
-  //     newM.isLeaf = newM.isFile;
-  //     return newM;
-  //   });
-  //   const itemIndex = allData.map(m => m.id).indexOf(item.id);
-  //   window.echo('item index', itemIndex);
-  //   allData[itemIndex] = item;
-  //   children.forEach(element => {
-  //     recursiveFindChildren(element, allData);
-  //   });
-  
-  //   if (item.id === 28922) {
-  //     window.echo('chii', item);
-  //   }
-  // }
-
   function getObject(array, key, value) {
     var o;
     array.some(function iter(a) {
@@ -197,12 +174,6 @@ function DataroomFileManage({
 
   function generateTreeData(allData) {
     const newCloneData = _.cloneDeep(allData);
-    // let rootDirectory = newCloneData.filter(f => !f.parent);
-    // rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-    // rootDirectory.forEach(element => {
-    //   recursiveFindChildren(element, newCloneData);
-    //   return newCloneData;
-    // });
     recursiveSwitchSturcture(newCloneData, -999);
     const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
     rootDir['children'] = recursiveData;
@@ -444,7 +415,7 @@ function DataroomFileManage({
   }
 
   useEffect(() => {
-    const newTreeData = generateTreeData(data.slice());
+    const newTreeData = generateTreeData(data);
     setDirData(newTreeData);
   }, [data]);
 

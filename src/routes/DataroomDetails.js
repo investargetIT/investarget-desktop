@@ -779,6 +779,7 @@ function DataroomDetails(props) {
     const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
     const newData = data.slice();
     newData.push(newItem);
+    allDataroomFiles = newData;
     setData(newData);
     return unique;
   }
@@ -798,7 +799,7 @@ function DataroomDetails(props) {
     const splitPath = webkitRelativePath.split('/');
     const dirArray = splitPath.slice(0, splitPath.length - 1);
     const finalFolderID = await createOrFindFolderLoop(dirArray, parentId);
-    const files = data.filter(f => f.parentId === finalFolderID);
+    const files = allDataroomFiles.filter(f => f.parentId === finalFolderID);
     if (files.some(item => item.name == file.name)) {
       message.warning(`文件 ${file.webkitRelativePath} 已存在`);
       return;
@@ -825,8 +826,8 @@ function DataroomDetails(props) {
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
-      const newData = data.slice();
-      newData.push(newItem)
+      const newData = allDataroomFiles.slice();
+      newData.push(newItem);
       setData(newData);
     }).catch(error => {
       props.dispatch({
