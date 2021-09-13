@@ -366,14 +366,28 @@ function ProjectCostDetail(props) {
         </Col>
 
         <Col span={10}>
-          <Card title="机构看板" bodyStyle={{ padding: 0 }}>
-          <OrgBDListComponent
-            allManager
-            location={props.location}
-            pageSize={10}
-            pagination
-            fromProjectCostCenter
-          />
+          <Card
+            title="机构看板"
+            bodyStyle={{ padding: 0 }}
+            extra={
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: 14, color: '#595959' }}>
+                <div style={{ marginRight: 4 }}>机构优先级：</div>
+                <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
+                <div style={{ marginRight: 16 }}>高</div>
+                <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#0084a9', opacity: 0.5 }} />
+                <div style={{ marginRight: 16 }}>中</div>
+                <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#7ed321', opacity: 0.5 }} />
+                <div>低</div>
+              </div>
+            }
+          >
+            <OrgBDListComponent
+              allManager
+              location={props.location}
+              pageSize={10}
+              pagination
+              fromProjectCostCenter
+            />
             {/* <Steps style={{ marginBottom: 7 }} className="timeline-steps" direction="vertical" current={projectDetails.step} size="small">
               {
                 orgbdres.slice(3).map((status, index) => {
