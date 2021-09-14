@@ -10,6 +10,11 @@ import {
   FolderAddOutlined,
   FileTextOutlined,
   ExpandOutlined,
+  EllipsisOutlined,
+  CloudDownloadOutlined,
+  EditOutlined,
+  ExportOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
@@ -400,26 +405,53 @@ function DataroomFileManage({
       );
     }
 
+    function morePopoverContent() {
+      return (
+        <div style={{ color: '#262626', lineHeight: '22px' }}>
+          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
+          </div>
+
+          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
+          </div>
+
+          <div onClick={() => handleCreateNewFolderClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
+          </div>
+
+          <div onClick={() => handleCreateNewFolderClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+            <DeleteOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />删除
+          </div>
+        </div>
+      );
+    }
+
     let fileIcon = <FolderOutlined />;
     if (item.isFile) {
       fileIcon = <FileTextOutlined />;
     }
 
-    let operationIcon = null;
+    let addOperationIcon = null;
     if (item.isFolder) {
-      operationIcon = (
-        <Popover style={{ padding: 0 }} content={popoverContent()}>
+      addOperationIcon = (
+        <Popover content={popoverContent()}>
           <PlusOutlined />
         </Popover>
       );
     }
+    const moreOperationIcon = (
+      <Popover content={morePopoverContent()}>
+        <EllipsisOutlined style={{ marginLeft: 4 }} />
+      </Popover>
+    );
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <span style={{ marginRight: 4 }}>{fileIcon}</span>
           <span>{item.title}</span>
         </div>
-        <div>{operationIcon}</div>
+        <div>{addOperationIcon}{moreOperationIcon}</div>
       </div>
     );
   }
