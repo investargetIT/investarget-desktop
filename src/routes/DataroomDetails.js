@@ -907,11 +907,14 @@ function DataroomDetails(props) {
           data={data}
           userOptions={userOptions}
           fileUserList={fileUserList}
+          targetUserFileList={targetUserFileList}
           onSelectFileUser={handleSelectFileUser}
           onDeselectFileUser={handleDeselectFileUser}
           readFileUserList={readFileUserList}
           onUploadFile={handleUploadFile}
           onUploadFileWithDir={handleUploadFileWithDir}
+          setFileUserList={setFileUserList}
+          setTargetUserFileList={setTargetUserFileList}
         />
       }
 

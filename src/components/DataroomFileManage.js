@@ -83,6 +83,7 @@ function DataroomFileManage({
   data,
   userOptions,
   fileUserList,
+  targetUserFileList,
   onSelectFileUser,
   onDeselectFileUser,
   readFileUserList,
@@ -90,6 +91,8 @@ function DataroomFileManage({
   onUploadFileWithDir,
   dispatch,
   isCompanyDataroom,
+  setFileUserList,
+  setTargetUserFileList,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -406,6 +409,46 @@ function DataroomFileManage({
     }
 
     function morePopoverContent() {
+
+      function handleDeleteFileClick(item){
+        Modal.confirm({
+          title: '删除文件',
+          content: `确认删除文件“${item.filename}”吗？`,
+          onOk() {
+            handleDeleteFiles([item.id]);
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+      }
+
+      function handleDeleteFiles(idArr) {
+        const body = {
+          filelist: idArr
+        }
+        api.deleteDataRoomFile(body).then(_ => {
+          const newData = data.slice()
+          idArr.map(d => {
+            const index = newData.map(m => m.id).indexOf(d);
+            newData.splice(index, 1);
+          });
+          setData(newData);
+
+          if (!isCompanyDataroom) {
+            const newFileUserList = fileUserList.filter(f => !idArr.includes(f.file));
+            const newTargetUserFileList = targetUserFileList.filter(f => !idArr.includes(f.file));
+            setFileUserList(newFileUserList);
+            setTargetUserFileList(newTargetUserFileList); 
+          }
+        }).catch(error => {
+          dispatch({
+            type: 'app/findError',
+            payload: error
+          })
+        })
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
@@ -420,7 +463,7 @@ function DataroomFileManage({
             <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
           </div>
 
-          <div onClick={() => handleCreateNewFolderClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+          <div onClick={() => handleDeleteFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <DeleteOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />删除
           </div>
         </div>
