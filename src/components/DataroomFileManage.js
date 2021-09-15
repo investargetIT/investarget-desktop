@@ -115,6 +115,7 @@ function DataroomFileManage({
   // Move files
   const [displayMoveFileModal, setDisplayMoveFileModal] = useState(false);
   const [currentMoveFile, setCurrentMoveFile] = useState(null);
+  const [treeDataForMoveFile, setTreeDataForMoveFile] = useState([]);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -523,6 +524,10 @@ function DataroomFileManage({
   useEffect(() => {
     const newTreeData = generateTreeData(data);
     setDirData(newTreeData);
+
+    const newDataForMoveFile = data.filter(f => f.isFolder);
+    const newTreeDataForMoveFile = generateTreeData(newDataForMoveFile);
+    setTreeDataForMoveFile(newTreeDataForMoveFile);
   }, [data]);
 
   function handleCreateNewFolderClick(folder) {
@@ -761,10 +766,9 @@ function DataroomFileManage({
       >
         {dirData.length > 0 &&
           <DirectoryTree
-            checkable
             defaultExpandedKeys={[-999]}
             onSelect={onSelectFolderForMoveFiles}
-            treeData={dirData}
+            treeData={treeDataForMoveFile}
           />
         }
       </Modal>
