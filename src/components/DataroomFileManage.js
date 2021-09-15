@@ -106,11 +106,15 @@ function DataroomFileManage({
   const [newFolderName, setNewFolderName]= useState('');
   const [createFolderLoading, setCreateFolderLoading] = useState(false);
 
-    // Rename folder related states
-    const [currentRenameFolder, setCurrentRenameFolder] = useState(null);
-    const [displayRenameFolderModal, setDisplayRenameFolderModal] = useState(false);
-    const [renameFolderName, setRenameFolderName]= useState('');
-    const [renameFolderLoading, setRenameFolderLoading] = useState(false);
+  // Rename folder related states
+  const [currentRenameFolder, setCurrentRenameFolder] = useState(null);
+  const [displayRenameFolderModal, setDisplayRenameFolderModal] = useState(false);
+  const [renameFolderName, setRenameFolderName] = useState('');
+  const [renameFolderLoading, setRenameFolderLoading] = useState(false);
+
+  // Move files
+  const [displayMoveFileModal, setDisplayMoveFileModal] = useState(false);
+  const [currentMoveFile, setCurrentMoveFile] = useState(null);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -461,6 +465,11 @@ function DataroomFileManage({
         setRenameFolderName(file.filename); 
       }
 
+      function handleMoveFileClick(file) {
+        setCurrentMoveFile(file);
+        setDisplayMoveFileModal(true);
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
@@ -471,7 +480,7 @@ function DataroomFileManage({
             <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
           </div>
 
-          <div onClick={() => handleCreateNewFolderClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+          <div onClick={() => handleMoveFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
           </div>
 
@@ -606,6 +615,29 @@ function DataroomFileManage({
     window.open(fileUrl);
   }
 
+  function onSelectFolderForMoveFiles(keys) {
+    window.echo('on select', keys);
+    // this.selectedKeys = keys
+  }
+
+  function tree(id) {
+    data.filter(f => f.isFolder && f.parentId === id).map(item => {
+      const children = data.filter(f => f.isFolder && f.parentId === item.id);
+      if (children.length > 0) {
+        return (
+          <TreeNode key={item.unique} title={item.name}>
+            {tree(item.id)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.id} title={item.filename} />;
+    });
+  }
+
+  function handleConfirmMoveFile() {
+    window.echo('confirm move file');
+  }
+
   return (
     <div>
       <Row gutter={20}>
@@ -719,6 +751,22 @@ function DataroomFileManage({
             onChange={e => setRenameFolderName(e.target.value)}
           />
         </div>
+      </Modal>
+
+      <Modal
+        title="移动至"
+        visible={displayMoveFileModal}
+        onOk={handleConfirmMoveFile}
+        onCancel={() => setDisplayMoveFileModal(false)}
+      >
+        {dirData.length > 0 &&
+          <DirectoryTree
+            checkable
+            defaultExpandedKeys={[-999]}
+            onSelect={onSelectFolderForMoveFiles}
+            treeData={dirData}
+          />
+        }
       </Modal>
 
     </div>
