@@ -118,6 +118,8 @@ function DataroomFileManage({
   const [treeDataForMoveFile, setTreeDataForMoveFile] = useState([]);
   const [folderToMove, setFolderToMove] = useState(null);
   const [moveFileLoading, setMoveFileLoading] = useState(false);
+  const [moveFileSearchContent, setMoveFileSearchContent] = useState('');
+  const [moveFileSearchResult, setMoveFileSearchResult] = useState([]);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -163,6 +165,15 @@ function DataroomFileManage({
     }
     setLoading(false);
     setData(newData);
+  }
+
+  async function handleMoveFileSearch(content) {
+    if (!content) {
+      setMoveFileSearchResult([]);
+      return;
+    }
+    const relatedFolders = data.filter(f => f.isFolder && f.filename.includes(content));
+    setMoveFileSearchResult(relatedFolders);
   }
 
   function getObject(array, key, value) {
@@ -784,13 +795,33 @@ function DataroomFileManage({
         okButtonProps={{ disabled: !folderToMove }}
         confirmLoading={moveFileLoading}
       >
-        {dirData.length > 0 &&
+        <Search
+          style={{ marginBottom: 20 }}
+          size="default"
+          placeholder="请输入目标位置"
+          onSearch={handleMoveFileSearch}
+          onChange={searchContent => setMoveFileSearchContent(searchContent)}
+          value={moveFileSearchContent}
+        />
+
+        {moveFileSearchResult.length === 0 &&
           <DirectoryTree
             defaultExpandedKeys={[-999]}
             onSelect={onSelectFolderForMoveFiles}
             treeData={treeDataForMoveFile}
           />
         }
+
+        {moveFileSearchResult.map(m => (
+          <div
+            key={m.id}
+            style={{ padding: '16px 20px', borderBottom: '1px solid #e6e6e6', backgroundColor: folderToMove === m.id ? '#f0f6fb' : undefined }}
+            onClick={() => setFolderToMove(m.id)}
+          >
+            <FolderOutlined style={{ marginRight: 8 }}  />
+            {m.filename}
+          </div>
+        ))}
       </Modal>
 
     </div>
