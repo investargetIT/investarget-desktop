@@ -116,6 +116,8 @@ function DataroomFileManage({
   const [displayMoveFileModal, setDisplayMoveFileModal] = useState(false);
   const [currentMoveFile, setCurrentMoveFile] = useState(null);
   const [treeDataForMoveFile, setTreeDataForMoveFile] = useState([]);
+  const [folderToMove, setFolderToMove] = useState(null);
+  const [moveFileLoading, setMoveFileLoading] = useState(false);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -621,26 +623,42 @@ function DataroomFileManage({
   }
 
   function onSelectFolderForMoveFiles(keys) {
-    window.echo('on select', keys);
-    // this.selectedKeys = keys
-  }
-
-  function tree(id) {
-    data.filter(f => f.isFolder && f.parentId === id).map(item => {
-      const children = data.filter(f => f.isFolder && f.parentId === item.id);
-      if (children.length > 0) {
-        return (
-          <TreeNode key={item.unique} title={item.name}>
-            {tree(item.id)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode key={item.id} title={item.filename} />;
-    });
+    setFolderToMove(keys[0]);
   }
 
   function handleConfirmMoveFile() {
-    window.echo('confirm move file');
+    const files = [currentMoveFile];
+    const targetID = folderToMove;
+    const targetFile = data.filter(f => f.id === targetID)[0];
+    if (files.filter(f => f.dataroom !== targetFile.dataroom).length > 0) {
+      Modal.error({
+        title: i18n('dataroom.message.error_move_files_title'),
+        content: i18n('dataroom.message.error_move_files_content')
+      })
+      return
+    }
+    files.map(m => {
+      const body = {
+        id: m.id,
+        parent: targetID == -999 ? null : targetID
+      }
+      setMoveFileLoading(true);
+      api.editDataRoomFile(body).then(_ => {
+        const newData = data.slice();
+        const index = newData.map(m => m.id).indexOf(m.id);
+        newData[index].parentId = targetID;
+        newData[index].parent = targetID;
+        setData(newData);
+        setMoveFileLoading(false);
+        setDisplayMoveFileModal(false);
+      }).catch(error => {
+        setMoveFileLoading(false);
+        dispatch({
+          type: 'app/findError',
+          payload: error,
+        });
+      });
+    });
   }
 
   return (
@@ -763,6 +781,8 @@ function DataroomFileManage({
         visible={displayMoveFileModal}
         onOk={handleConfirmMoveFile}
         onCancel={() => setDisplayMoveFileModal(false)}
+        okButtonProps={{ disabled: !folderToMove }}
+        confirmLoading={moveFileLoading}
       >
         {dirData.length > 0 &&
           <DirectoryTree
