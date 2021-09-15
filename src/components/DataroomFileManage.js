@@ -106,6 +106,12 @@ function DataroomFileManage({
   const [newFolderName, setNewFolderName]= useState('');
   const [createFolderLoading, setCreateFolderLoading] = useState(false);
 
+    // Rename folder related states
+    const [currentRenameFolder, setCurrentRenameFolder] = useState(null);
+    const [displayRenameFolderModal, setDisplayRenameFolderModal] = useState(false);
+    const [renameFolderName, setRenameFolderName]= useState('');
+    const [renameFolderLoading, setRenameFolderLoading] = useState(false);
+
   function formatSearchData (data) {
     return data.map(item => {
       const parentId = parentId; 
@@ -449,13 +455,19 @@ function DataroomFileManage({
         })
       }
 
+      function handleRenameFileClick(file) {
+        setCurrentRenameFolder(file);
+        setDisplayRenameFolderModal(true);
+        setRenameFolderName(file.filename); 
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
 
-          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+          <div onClick={() => handleRenameFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
           </div>
 
@@ -552,6 +564,41 @@ function DataroomFileManage({
         payload: error
       })
     })
+  }
+
+  function handleConfirmRenameFile() {
+    const newData = data.slice();
+    const value = currentRenameFolder;
+
+    // Check duplicate folder name 
+    const currentFiles = newData.filter(f => f.parentId == value.parentId);
+    if (currentFiles.some(item => Object.is(item.name, renameFolderName))) {
+      Modal.error({
+        title: '不支持的文件夹名字',
+        content: '已存在相同的文件夹名字',
+      });
+      return;
+    }
+
+    setRenameFolderLoading(true);
+    const body = {
+      id: value.id,
+      filename: renameFolderName ,
+    }
+    api.editDataRoomFile(body).then(_ => {
+      const index = newData.map(m => m.id).indexOf(value.id);
+      newData[index].name = renameFolderName;
+      newData[index].filename = renameFolderName;
+      setData(newData);
+      setRenameFolderLoading(false);
+      setDisplayRenameFolderModal(false);
+    }).catch(error => {
+      setRenameFolderLoading(false);
+      dispatch({
+        type: 'app/findError',
+        payload: error,
+      });
+    });
   }
 
   function handleOpenFileInNewWindowClick() {
@@ -654,6 +701,26 @@ function DataroomFileManage({
           />
         </div>
       </Modal>
+
+      <Modal
+        title="修改文件夹名称"
+        visible={displayRenameFolderModal}
+        onCancel={() => setDisplayRenameFolderModal(false)}
+        onOk={handleConfirmRenameFile}
+        okButtonProps={{ disabled: !renameFolderName }}
+        confirmLoading={renameFolderLoading}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div>文件夹名称：</div>
+          <Input
+            style={{ flex: 1 }}
+            placeholder="请输入文件夹名称"
+            value={renameFolderName}
+            onChange={e => setRenameFolderName(e.target.value)}
+          />
+        </div>
+      </Modal>
+
     </div>
   );
 }
