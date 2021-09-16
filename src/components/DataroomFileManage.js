@@ -121,6 +121,10 @@ function DataroomFileManage({
   const [moveFileSearchContent, setMoveFileSearchContent] = useState('');
   const [moveFileSearchResult, setMoveFileSearchResult] = useState([]);
 
+  // Download files
+  const [displayDownloadFileModal, setDisplayDownloadFileModal] = useState(false);
+  const [currentDownloadFile, setCurrentDownloadFile] = useState(null);
+
   function formatSearchData (data) {
     return data.map(item => {
       const parentId = parentId; 
@@ -484,9 +488,14 @@ function DataroomFileManage({
         setDisplayMoveFileModal(true);
       }
 
+      function handleDownloadFileClick(file) {
+        setCurrentDownloadFile(file);
+        setDisplayDownloadFileModal(true);
+      }
+
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
-          <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+          <div onClick={() => handleDownloadFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
 
@@ -822,6 +831,15 @@ function DataroomFileManage({
             {m.filename}
           </div>
         ))}
+      </Modal>
+
+      <Modal
+        title="下载文件"
+        footer={null}
+        visible={displayDownloadFileModal}
+        onCancel={() => setDisplayDownloadFileModal(false)}
+      >
+
       </Modal>
 
     </div>
