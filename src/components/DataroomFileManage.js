@@ -840,7 +840,7 @@ function DataroomFileManage({
             />
             {dirData.length > 0 &&
               <DirectoryTree
-                checkable
+                // checkable
                 defaultExpandedKeys={[-999]}
                 onSelect={onSelect}
                 onExpand={onExpand}
