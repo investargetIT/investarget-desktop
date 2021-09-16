@@ -94,6 +94,7 @@ function DataroomFileManage({
   setFileUserList,
   setTargetUserFileList,
   isProjTrader,
+  newDataroomFile,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -687,6 +688,9 @@ function DataroomFileManage({
 
   const downloadFileModalFooter = (
     <div style={{ marginRight: 4 }}>
+      {!isLogin().is_superuser && hasPerm('usersys.as_investor') &&
+        <Button disabled={newDataroomFile.length === 0}>下载新文件</Button>
+      }
       <Button>下载全部文件</Button>
       <Button type="primary">下载所选文件</Button>
     </div>

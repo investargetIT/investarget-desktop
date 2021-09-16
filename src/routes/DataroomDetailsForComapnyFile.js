@@ -501,6 +501,7 @@ function DetaroomDetailsForCompanyFile(props) {
           onUploadFile={handleUploadFile}
           onUploadFileWithDir={handleUploadFileWithDir}
           isProjTrader={isProjTrader}
+          newDataroomFile={newDataroomFile}
         />
       }
 

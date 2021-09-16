@@ -916,6 +916,7 @@ function DataroomDetails(props) {
           setFileUserList={setFileUserList}
           setTargetUserFileList={setTargetUserFileList}
           isProjTrader={isProjTrader}
+          newDataroomFile={newDataroomFile}
         />
       }
 
