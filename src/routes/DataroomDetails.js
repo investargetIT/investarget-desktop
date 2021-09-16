@@ -915,6 +915,7 @@ function DataroomDetails(props) {
           onUploadFileWithDir={handleUploadFileWithDir}
           setFileUserList={setFileUserList}
           setTargetUserFileList={setTargetUserFileList}
+          isProjTrader={isProjTrader}
         />
       }
 

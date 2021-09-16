@@ -500,6 +500,7 @@ function DetaroomDetailsForCompanyFile(props) {
           readFileUserList={readFileUserList}
           onUploadFile={handleUploadFile}
           onUploadFileWithDir={handleUploadFileWithDir}
+          isProjTrader={isProjTrader}
         />
       }
 

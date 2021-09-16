@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -93,6 +93,7 @@ function DataroomFileManage({
   isCompanyDataroom,
   setFileUserList,
   setTargetUserFileList,
+  isProjTrader,
 }) {
 
   const [searchContent, setSearchContent] = useState('');
@@ -124,6 +125,7 @@ function DataroomFileManage({
   // Download files
   const [displayDownloadFileModal, setDisplayDownloadFileModal] = useState(false);
   const [currentDownloadFile, setCurrentDownloadFile] = useState(null);
+  const [pdfPassword, setPdfPassword] = useState('');
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -839,7 +841,23 @@ function DataroomFileManage({
         visible={displayDownloadFileModal}
         onCancel={() => setDisplayDownloadFileModal(false)}
       >
-
+        {((hasPerm('usersys.as_trader') || (isLogin() && isLogin().is_superuser)) || isProjTrader) &&
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ width: 140, textAlign: 'right' }}>设置PDF编辑密码：</div>
+              <Input
+                style={{ width: 280 }}
+                placeholder="请输入密码，不输入则默认不加密"
+                value={pdfPassword}
+                onChange={e => setPdfPassword(e.target.value)}
+              />
+            </div>
+            <div style={{ marginTop: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ width: 140 }} />
+              <div style={{ width: 280, fontSize: 12, paddingLeft: 10 }}>该密码仅针对pdf文件有效</div>
+            </div>
+          </div>
+        }
       </Modal>
 
     </div>
