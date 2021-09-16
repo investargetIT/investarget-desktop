@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin, hasPerm, } from '../utils/util';
@@ -684,6 +684,13 @@ function DataroomFileManage({
     });
   }
 
+  const downloadFileModalFooter = (
+    <div style={{ marginRight: 4 }}>
+      <Button>下载全部文件</Button>
+      <Button type="primary">下载所选文件</Button>
+    </div>
+  );
+
   return (
     <div>
       <Row gutter={20}>
@@ -838,9 +845,9 @@ function DataroomFileManage({
 
       <Modal
         title="下载文件"
-        footer={null}
         visible={displayDownloadFileModal}
         onCancel={() => setDisplayDownloadFileModal(false)}
+        footer={downloadFileModalFooter}
       >
         {((hasPerm('usersys.as_trader') || (isLogin() && isLogin().is_superuser)) || isProjTrader) &&
           <div>
