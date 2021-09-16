@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin, hasPerm, } from '../utils/util';
@@ -126,6 +126,7 @@ function DataroomFileManage({
   const [displayDownloadFileModal, setDisplayDownloadFileModal] = useState(false);
   const [currentDownloadFile, setCurrentDownloadFile] = useState(null);
   const [pdfPassword, setPdfPassword] = useState('');
+  const [noWatermark, setNoWatermark] = useState(false);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -855,6 +856,20 @@ function DataroomFileManage({
             <div style={{ marginTop: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <div style={{ width: 140 }} />
               <div style={{ width: 280, fontSize: 12, paddingLeft: 10 }}>该密码仅针对pdf文件有效</div>
+            </div>
+          </div>
+        }
+
+        {(hasPerm('dataroom.downloadNoWatermarkFile') || isProjTrader) &&
+          <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ width: 140 }} />
+            <div style={{ width: 280 }}>
+              <Checkbox
+                checked={noWatermark}
+                onChange={e => setNoWatermark(e.target.checked)}
+              >
+                文件无水印
+              </Checkbox>
             </div>
           </div>
         }
