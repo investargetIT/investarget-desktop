@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -74,6 +74,55 @@ function tagRender(props, isReadFile) {
   );
 }
 
+class MyProgress extends React.Component {
+  state = {
+    remainingSecodes: null,
+    allSeconds: null,
+  };
+
+  async componentDidMount() {
+    const {
+      dataroomId,
+      requestParams: params,
+      downloadUser,
+      noWatermark,
+      isDownloadingSelectedFiles,
+      notificationKey,
+    } = this.props;
+
+    const timeInterval = 2000;
+
+    this.intervalId = setInterval(async () => {
+      try {
+        const result = await api.createAndCheckDataroomZip(dataroomId, params);
+        const { seconds, all } = result.data;
+        // 8005表示文件打包压缩已经完成，随时可以下载
+        if (result.data.code === 8005) {
+          // 设置 allSeconds 的值只是为了让进度条显示为 100%，任何数值都可以
+          this.setState({ remainingSecodes: 0, allSeconds: 1 });
+          clearInterval(this.intervalId);
+          this.props.onFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey);
+        } else {
+          this.setState({ remainingSecodes: seconds, allSeconds: all });
+        }
+      } catch (error) {
+        clearInterval(this.intervalId);
+        this.props.onError(notificationKey);
+        handleError(error);
+      }
+    }, timeInterval);
+  }
+
+  render() {
+    let percent = 0;
+    if (typeof this.state.remainingSecodes === 'number' && typeof this.state.allSeconds === 'number' && this.state.allSeconds !== 0) {
+      percent = Math.floor((this.state.allSeconds - this.state.remainingSecodes) * 100 / this.state.allSeconds);
+    }
+    return <Progress percent={percent} />;
+  }
+
+}
+
 function DataroomFileManage({
   setData,
   setLoading,
@@ -95,8 +144,8 @@ function DataroomFileManage({
   setTargetUserFileList,
   isProjTrader,
   newDataroomFile,
+  allUserWithFile,
 }) {
-
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
@@ -129,6 +178,7 @@ function DataroomFileManage({
   const [pdfPassword, setPdfPassword] = useState('');
   const [noWatermark, setNoWatermark] = useState(false);
   const [userForDownloadFile, setUserForDownloadFile] = useState(null);
+  const [downloadUrl, setDownloadUrl] = useState(null);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -689,12 +739,91 @@ function DataroomFileManage({
   const downloadFileModalFooter = (
     <div style={{ marginRight: 4 }}>
       {!isLogin().is_superuser && hasPerm('usersys.as_investor') &&
-        <Button disabled={newDataroomFile.length === 0}>下载新文件</Button>
+        <Button disabled={newDataroomFile.length === 0} onClick={handleDownloadNewFileBtnClicked}>下载新文件</Button>
       }
-      <Button>下载全部文件</Button>
-      <Button type="primary">下载所选文件</Button>
+      <Button onClick={handleDownloadAllFilesBtnClicked}>下载全部文件</Button>
+      <Button onClick={handleDownloadSelectFileBtnClicked} type="primary">下载所选文件</Button>
     </div>
   );
+
+  function handleDownloadAllFilesBtnClicked() {
+    setDisplayDownloadFileModal(false);
+    checkDataRoomStatus(noWatermark);
+  }
+
+  function handleDownloadSelectFileBtnClicked() {
+    setDisplayDownloadFileModal(false);
+    checkDataRoomStatus(noWatermark, true, currentDownloadFile.id);
+  }
+
+  function handleDownloadNewFileBtnClicked() {
+    setDisplayDownloadFileModal(false);
+    const files = newDataroomFile.map(m => m.id).join(',');
+    checkDataRoomStatus(noWatermark, true, files);
+  }
+
+  async function checkDataRoomStatus(noWatermark, isDownloadingSelectedFiles, files) {
+   
+    let downloadUser = isLogin();
+    if (userForDownloadFile) {
+      const filterDownloadUser = allUserWithFile.filter(f => f.id === userForDownloadFile);
+      if (filterDownloadUser.length > 0) {
+        downloadUser = filterDownloadUser[0];
+      }
+    }
+    const user = downloadUser && downloadUser.id;
+    const params = { user };
+
+    if (noWatermark) {
+      params.nowater = 1;
+    } else {
+      const water = downloadUser ? downloadUser.username + ',' + (downloadUser.org ? downloadUser.org.orgname : '多维海拓') + ',' + downloadUser.email : null;
+      params.water = water;
+    }
+
+    const password = pdfPassword;
+    if (password) {
+      params.password = password;
+    }
+
+    if (isDownloadingSelectedFiles) {
+      params.files = files;
+    }
+
+    const downloadNotificationKey = JSON.stringify({ ...params, id: dataroomID });
+
+    notification.open({
+      key: downloadNotificationKey,
+      message: 'Dataroom 文件打包',
+      description: <MyProgress
+        notificationKey={downloadNotificationKey}
+        dataroomId={dataroomID}
+        requestParams={params}
+        downloadUser={downloadUser}
+        noWatermark={noWatermark}
+        isDownloadingSelectedFiles={isDownloadingSelectedFiles}
+        onFinish={handleDownloadFinish}
+        onError={key => notification.close(key)}
+      />,
+      duration: 0,
+      placement: 'bottomRight',
+    });
+  }
+
+  function handleDownloadFinish(dataroomId, downloadUser, isDownloadingSelectedFiles, noWatermark, notificationKey) {
+    const part = isDownloadingSelectedFiles ? 1 : 0;
+    const nowater = noWatermark ? 1 : 0;
+
+    const url = api.downloadDataRoom(dataroomId, downloadUser && downloadUser.id, part, nowater);
+    setDownloadUrl(url);
+    setUserForDownloadFile(null);
+
+    // 重置下载链接， 防止相同下载链接不执行
+    setTimeout(() => setDownloadUrl(null), 1000);
+
+    // 如果打包完成，自动关闭通知
+    setTimeout(() => notification.close(notificationKey), 3000);
+  }
 
   return (
     <div>
@@ -866,12 +995,12 @@ function DataroomFileManage({
               filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
               onSelect={value => setUserForDownloadFile(value)}
             >
-              {userOptions.map(option => (
+              {allUserWithFile.map(option => (
                 <Select.Option
-                  key={option.value}
-                  value={String(option.value)}
+                  key={option.id}
+                  value={option.id}
                 >
-                  {option.label}
+                  {option.username}
                 </Select.Option>
               ))}
             </Select>
@@ -910,6 +1039,8 @@ function DataroomFileManage({
           </div>
         }
       </Modal>
+
+      <iframe style={{ display: 'none' }} src={downloadUrl}></iframe>
 
     </div>
   );

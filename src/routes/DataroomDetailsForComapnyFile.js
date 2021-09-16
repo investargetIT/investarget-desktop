@@ -502,6 +502,7 @@ function DetaroomDetailsForCompanyFile(props) {
           onUploadFileWithDir={handleUploadFileWithDir}
           isProjTrader={isProjTrader}
           newDataroomFile={newDataroomFile}
+          allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
         />
       }
 

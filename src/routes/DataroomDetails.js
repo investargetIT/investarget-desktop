@@ -917,33 +917,9 @@ function DataroomDetails(props) {
           setTargetUserFileList={setTargetUserFileList}
           isProjTrader={isProjTrader}
           newDataroomFile={newDataroomFile}
+          allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
         />
       }
-
-      {/* <Row gutter={20}>
-        <Col span={8}>
-          <Card>
-            <Search
-              style={{ marginBottom: 30 }}
-              size="default"
-              placeholder="请输入文件名称或内容"
-              onSearch={handleDataroomSearch}
-              onChange={searchContent => setSearchContent(searchContent)}
-              value={searchContent}
-            />
-            <DirectoryTree
-              multiple
-              defaultExpandAll
-              onSelect={onSelect}
-              onExpand={onExpand}
-              treeData={generateTreeData()}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card></Card>
-        </Col>
-      </Row> */}
 
       {showDataRoomTempModal &&
         <Modal
