@@ -127,6 +127,7 @@ function DataroomFileManage({
   const [currentDownloadFile, setCurrentDownloadFile] = useState(null);
   const [pdfPassword, setPdfPassword] = useState('');
   const [noWatermark, setNoWatermark] = useState(false);
+  const [userForDownloadFile, setUserForDownloadFile] = useState(null);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -849,6 +850,30 @@ function DataroomFileManage({
         onCancel={() => setDisplayDownloadFileModal(false)}
         footer={downloadFileModalFooter}
       >
+        {!isCompanyDataroom &&
+          <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ width: 140, textAlign: 'right' }}>投资人：</div>
+            <Select
+              showArrow
+              placeholder="请选择投资人"
+              style={{ width: 280 }}
+              value={userForDownloadFile}
+              optionLabelProp="children"
+              filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+              onSelect={value => setUserForDownloadFile(value)}
+            >
+              {userOptions.map(option => (
+                <Select.Option
+                  key={option.value}
+                  value={String(option.value)}
+                >
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        }
+
         {((hasPerm('usersys.as_trader') || (isLogin() && isLogin().is_superuser)) || isProjTrader) &&
           <div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
