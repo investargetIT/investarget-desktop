@@ -383,13 +383,13 @@ function DetaroomDetailsForCompanyFile(props) {
     })
   }
 
-  async function createOrFindFolder(folderName, parentFolderID) {
+  async function createOrFindFolder(folderName, parentFolderID, data) {
     // 检查当前目录下是否有同名文件夹
     const files = data.filter(f => f.parentId === parentFolderID);
     const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
     if (sameNameFolderIndex > -1) {
-      console.warning('find duplaicate folder', files[sameNameFolderIndex]);
-      return files[sameNameFolderIndex].id;
+      console.warn('find duplaicate folder', files[sameNameFolderIndex]);
+      return { unique: files[sameNameFolderIndex].id, newData: data };
     }
 
     const body = {
@@ -411,26 +411,26 @@ function DetaroomDetailsForCompanyFile(props) {
     const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
     const newData = data.slice();
     newData.push(newItem);
-    allDataroomFiles = newData;
-    setData(newData);
-    return unique;
+    return { unique, newData };
   }
 
-  async function createOrFindFolderLoop(folderArr, initialParentId) {
+  async function createOrFindFolderLoop(folderArr, initialParentId, data) {
     let parentFolderID = initialParentId;
+    let initialData = data;
     for (let index = 0; index < folderArr.length; index++) {
       const folderName = folderArr[index];
-      const newFolderId = await createOrFindFolder(folderName, parentFolderID);
+      const { unique: newFolderId, newData } = await createOrFindFolder(folderName, parentFolderID, initialData);
+      initialData = newData
       parentFolderID = newFolderId;
     }
-    return parentFolderID;
+    return { parentFolderID, newData: initialData };
   }
 
-  async function handleUploadFileWithDir(file, parentId) {
+  async function handleUploadFileWithDir(file, parentId, data) {
     const { webkitRelativePath } = file;
     const splitPath = webkitRelativePath.split('/');
     const dirArray = splitPath.slice(0, splitPath.length - 1);
-    const finalFolderID = await createOrFindFolderLoop(dirArray, parentId);
+    const { parentFolderID: finalFolderID, newData } = await createOrFindFolderLoop(dirArray, parentId, data);
     const files = allDataroomFiles.filter(f => f.parentId === finalFolderID);
     if (files.some(item => item.name == file.name)) {
       message.warning(`文件 ${file.webkitRelativePath} 已存在`);
@@ -447,8 +447,8 @@ function DetaroomDetailsForCompanyFile(props) {
       bucket: 'file',
       realfilekey: file.response.result.realfilekey,
     }
-
-    api.addDataRoomFile(body).then(data1 => {
+    const newNewData = newData.slice();
+    await api.addDataRoomFile(body).then(data1 => {
       const item = data1.data
       const parentId = item.parent || -999
 
@@ -458,15 +458,15 @@ function DetaroomDetailsForCompanyFile(props) {
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
-      const newData = allDataroomFiles.slice();
-      newData.push(newItem);
-      setData(newData);
+      newNewData.push(newItem);
     }).catch(error => {
       props.dispatch({
         type: 'app/findError',
         payload: error
       })
     })
+
+    return newNewData;
   }
 
   return (

@@ -419,7 +419,6 @@ function DataroomFileManage({
             }
             message.success(`${info.file.name} file uploaded successfully`)
             // react.setState({ loading: false })
-            await onUploadFileWithDir(info.file, item.id);
           } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
             // react.setState({ loading: false })
@@ -427,6 +426,15 @@ function DataroomFileManage({
             // react.setState({ loading: true })
           }
         },
+        async onFinishUploadAllFiles(allFiles) {
+          let newData = data;
+          for (let index = 0; index < allFiles.length; index++) {
+            const info = allFiles[index];
+            const newNewData = await onUploadFileWithDir(info.file, item.id, newData);
+            newData = newNewData;
+          }
+          setData(newData);
+        }
       };
 
       function tryToFindFolder(folderName, parentFolderID) {

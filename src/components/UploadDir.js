@@ -31,6 +31,7 @@ class UploadDir extends React.Component {
     event.preventDefault();
     const { files } = event.target;
     window.echo('change file', files); 
+    const allFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
@@ -58,7 +59,7 @@ class UploadDir extends React.Component {
         try {
           const result = await api.qiniuUpload('file', file);
           const { data } = result;
-          await this.props.onChange({
+          const currentFileResult = {
             file: {
               lastModified,
               lastModifiedDate,
@@ -69,7 +70,9 @@ class UploadDir extends React.Component {
               status: 'done',
               response: { result: data },
             },
-          });
+          };
+          allFileResult.push(currentFileResult)
+          await this.props.onChange(currentFileResult);
         } catch (error) {
           console.error(error);
           await this.props.onChange({
@@ -94,6 +97,8 @@ class UploadDir extends React.Component {
         }
       }
     }
+
+    this.props.onFinishUploadAllFiles(allFileResult);
   }
 
   render() {
