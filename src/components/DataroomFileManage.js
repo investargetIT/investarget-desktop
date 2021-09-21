@@ -866,37 +866,18 @@ function DataroomFileManage({
               onChange={searchContent => setSearchContent(searchContent)}
               value={searchContent}
             />
-            <div style={{ position: 'relative' }}>
-              {dirData.length > 0 &&
-                <DirectoryTree
-                  // checkable
-                  defaultExpandedKeys={[-999]}
-                  onSelect={onSelect}
-                  onExpand={onExpand}
-                  treeData={dirData}
-                  titleRender={titleRender}
-                  icon={null}
-                  expandAction="doubleClick"
-                />
-              }
-              {uploadDirProgress &&
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(255, 255, 255, .5)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    paddingTop: 100,
-                  }}
-                >
-                  <Progress type="circle" percent={uploadDirProgress} />
-                </div>
-              }
-            </div>
+            {dirData.length > 0 &&
+              <DirectoryTree
+                // checkable
+                defaultExpandedKeys={[-999]}
+                onSelect={onSelect}
+                onExpand={onExpand}
+                treeData={dirData}
+                titleRender={titleRender}
+                icon={null}
+                expandAction="doubleClick"
+              />
+            }
           </Card>
         </Col>
         {selectedFile &&
@@ -1086,6 +1067,18 @@ function DataroomFileManage({
           </div>
         }
       </Modal>
+
+      {uploadDirProgress &&
+        <Modal
+          title="正在上传文件夹"
+          visible
+          footer={null}
+          closable={false}
+          bodyStyle={{ textAlign: 'center' }}
+        >
+          <Progress type="circle" percent={uploadDirProgress} />
+        </Modal>
+      }
 
       <iframe style={{ display: 'none' }} src={downloadUrl}></iframe>
 
