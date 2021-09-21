@@ -227,7 +227,7 @@ function DetaroomDetailsForCompanyFile(props) {
           return api.queryUserDataRoomFile(data1.id).then(result => {
             const files = result.data.files || [];
             const data = [...stateData, ...files]
-            setAllDataroomFiles(data);
+            setAllDataroomFiles(formatData(data));
             setData(formatData(data));
           })
         })
