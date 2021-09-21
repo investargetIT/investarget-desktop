@@ -151,6 +151,8 @@ function DataroomFileManage({
   const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
   const [dirData, setDirData] = useState([]);
 
+  const [uploadDirProgress, setUploadDirProgress] = useState(null);
+
   // Create new folder related states
   const [currentCreateFolder, setCurrentCreateFolder] = useState(null);
   const [displayNewFolderModal, setDisplayNewFolderModal] = useState(false);
@@ -444,7 +446,15 @@ function DataroomFileManage({
             newData = newNewData;
           }
           setData(newData);
-        }
+        },
+        updateUploadProgress(percent) {
+          setUploadDirProgress(percent);
+          if (percent === 100) {
+            setTimeout(() => {
+              setUploadDirProgress(null)
+            }, 2000);
+          }
+        },
       };
 
       function tryToFindFolder(folderName, parentFolderID) {
@@ -856,18 +866,37 @@ function DataroomFileManage({
               onChange={searchContent => setSearchContent(searchContent)}
               value={searchContent}
             />
-            {dirData.length > 0 &&
-              <DirectoryTree
-                // checkable
-                defaultExpandedKeys={[-999]}
-                onSelect={onSelect}
-                onExpand={onExpand}
-                treeData={dirData}
-                titleRender={titleRender}
-                icon={null}
-                expandAction="doubleClick"
-              />
-            }
+            <div style={{ position: 'relative' }}>
+              {dirData.length > 0 &&
+                <DirectoryTree
+                  // checkable
+                  defaultExpandedKeys={[-999]}
+                  onSelect={onSelect}
+                  onExpand={onExpand}
+                  treeData={dirData}
+                  titleRender={titleRender}
+                  icon={null}
+                  expandAction="doubleClick"
+                />
+              }
+              {uploadDirProgress &&
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(255, 255, 255, .5)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    paddingTop: 100,
+                  }}
+                >
+                  <Progress type="circle" percent={uploadDirProgress} />
+                </div>
+              }
+            </div>
           </Card>
         </Col>
         {selectedFile &&
