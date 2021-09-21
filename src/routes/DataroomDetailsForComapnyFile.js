@@ -21,8 +21,8 @@ function DetaroomDetailsForCompanyFile(props) {
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
   const isAbleToAddUser = hasPerm('usersys.as_trader');
-  let allDataroomFiles = [];
 
+  const [allDataroomFiles, setAllDataroomFiles] = useState([]);
   const [projTitle, setProjTitle] = useState(projectTitle);
   const [projID, setProjectID] = useState(projectID);
   const [isProjTrader, setIsProjTrader] = useState(false);
@@ -227,7 +227,7 @@ function DetaroomDetailsForCompanyFile(props) {
           return api.queryUserDataRoomFile(data1.id).then(result => {
             const files = result.data.files || [];
             const data = [...stateData, ...files]
-            allDataroomFiles = data;
+            setAllDataroomFiles(data);
             setData(formatData(data));
           })
         })
@@ -239,7 +239,7 @@ function DetaroomDetailsForCompanyFile(props) {
       api.queryDataRoomFile(param).then(result => {
         var { count, data } = result.data
         data = formatData(data)
-        allDataroomFiles = data;
+        setAllDataroomFiles(data);
         setData(data);
       }).catch(_ => {
         investorGetDataRoomFile();

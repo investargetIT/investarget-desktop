@@ -40,8 +40,8 @@ function DataroomDetails(props) {
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
   const isAbleToAddUser = hasPerm('usersys.as_trader');
-  let allDataroomFiles = [];
 
+  const [allDataroomFiles, setAllDataroomFiles] = useState([]);
   const [projTitle, setProjTitle] = useState(projectTitle);
   const [projID, setProjectID] = useState(projectID);
   const [isProjTrader, setIsProjTrader] = useState(false);
@@ -246,7 +246,7 @@ function DataroomDetails(props) {
           return api.queryUserDataRoomFile(data1.id).then(result => {
             const files = result.data.files || [];
             const data = [...stateData, ...files]
-            allDataroomFiles = data;
+            setAllDataroomFiles(data);
             setData(formatData(data));
           })
         })
@@ -258,7 +258,7 @@ function DataroomDetails(props) {
       api.queryDataRoomFile(param).then(result => {
         var { count, data } = result.data
         data = formatData(data)
-        allDataroomFiles = data;
+        setAllDataroomFiles(data);
         setData(data);
       }).catch(_ => {
         investorGetDataRoomFile();
@@ -574,80 +574,6 @@ function DataroomDetails(props) {
     );
   };
 
-  // function formatSearchData (data) {
-  //   return data.map(item => {
-  //     const parentId = parentId; 
-  //     const name = item.filename
-  //     const rename = item.filename
-  //     const unique = item.id
-  //     const isFolder = !item.isFile
-  //     const date = item.lastmodifytime || item.createdtime
-  //     const timezone = item.timezone || '+08:00'
-  //     return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
-  //   })
-  // }
-
-  // function findAllParents(fileId) {
-  //   let allParents = [];
-  //   function findParents (id) {
-  //     const currentFile = allDataroomFiles.filter(f => f.id === id);
-  //     const parent = allDataroomFiles.filter(f => f.id === currentFile[0].parent);
-  //     allParents = allParents.concat(parent);
-  //     if (parent.length > 0) {
-  //       findParents(parent[0].id);
-  //     }
-  //     return allParents;
-  //   }
-  //   return findParents(fileId);
-  // }
-
-  // async function handleDataroomSearch(content) {
-  //   if (!content) {
-  //     setData(allDataroomFiles);
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   const req = await api.searchDataroom(dataroomID, content);
-  //   const { data } = req.data;
-
-  //   let newData = formatSearchData(data);
-  //   if (parentId !== -999) {
-  //     const allParents = findAllParents(parentId);
-  //     const parentFolder = allDataroomFiles.filter(f => f.id === parentId);
-  //     newData = newData.concat(allParents).concat(parentFolder);
-  //   }
-  //   setLoading(false);
-  //   setData(newData);
-  // }
-
-  // function recursiveFindChildren(item) {
-  //   const children = data.filter(f => f.parent === item.id);
-  //   if (children.length === 0) {
-  //     return;
-  //   }
-  //   item['children'] = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-  //   children.forEach(element => {
-  //     return recursiveFindChildren(element);
-  //   });
-  // }
-
-  // function generateTreeData() {
-  //   let rootDirectory = data.filter(f => !f.parent);
-  //   rootDirectory = rootDirectory.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-  //   rootDirectory.forEach(element => recursiveFindChildren(element));
-
-  //   const rootDir = { title: '全部文件', key: -999, id: -999 };
-  //   rootDir['children'] = rootDirectory;
-  //   return [rootDir];
-  // }
-
-  // const onSelect = (keys, info) => {
-  //   console.log('Trigger Select', keys, info);
-  // };
-
-  // const onExpand = () => {
-  //   console.log('Trigger Expand');
-  // };
 
   async function toggleUserDataroomFiles(user, data, isAdd) {
     const dataroomUserfile = userDataroomMap[user];
