@@ -290,8 +290,16 @@ function DataroomFileManage({
     const currentFile = item[0];
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
-      const url = getPreviewFileUrl(currentFile);
-      setPreviewFileUrl(url);
+      if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(currentFile.filename)) {
+        window.open(currentFile.fileurl);
+      } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(currentFile.filename)) {
+        Modal.warning({
+          title: '该文件不支持在线预览',
+        });
+      } else {
+        const url = getPreviewFileUrl(currentFile);
+        setPreviewFileUrl(url);
+      }
     }
   };
 
