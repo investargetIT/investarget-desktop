@@ -37,7 +37,7 @@ class ReportList extends React.Component {
 
     this.state = {
       page: 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: getUserInfo() ? getUserInfo().page : 10,
       total: 0,
       list: [],
       loading: false,
