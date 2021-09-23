@@ -219,6 +219,11 @@ function DataroomFileManage({
     const req = await api.searchDataroom(dataroomID, content);
     const { data } = req.data;
 
+    if (data.length === 0) {
+      Modal.warning({ title: '未找到相关内容' });
+      return;
+    }
+
     let newData = formatSearchData(data);
     // if (parentId !== -999) {
     //   const allParents = findAllParents(parentId);
