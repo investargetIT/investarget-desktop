@@ -148,7 +148,7 @@ function DataroomFileManage({
 }) {
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewFileUrl, setPreviewFileUrl] = useState('https://www.investarget.com');
+  const [previewFileUrl, setPreviewFileUrl] = useState(null);
   const [dirData, setDirData] = useState([]);
 
   const [uploadDirProgress, setUploadDirProgress] = useState(null);
@@ -911,7 +911,7 @@ function DataroomFileManage({
                 </div>
               }
 
-              {selectedFile.isFile &&
+              {selectedFile.isFile && previewFileUrl &&
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5' }}>
                     <div style={{ color: '#262626', fontWeight: 'bold' }}>预览文件</div>
