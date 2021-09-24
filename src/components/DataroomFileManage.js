@@ -249,19 +249,19 @@ function DataroomFileManage({
     }
 
     const newData = formatData(data);
-    const flatData = [];
+    let flatData = [];
     for (let index = 0; index < newData.length; index++) {
       const element = newData[index];
       element.parent = -999;
       element.parentId = -999;
-      const allChildren = findAllChildren(element.id);
-      const formatChildren = formatData(allChildren);
-      const allData = formatChildren.concat(element);
-      flatData.push(allData);
+      element.key = element.id + '-' + index;
+      flatData.push(element);
+      let allChildren = findAllChildren(element.id);
+      allChildren = allChildren.map(m => ({ ...m, key: m.id + '-' + index }));
+      flatData = flatData.concat(allChildren);
     }
-
     setLoading(false);
-    setData(newData);
+    setData(formatData(flatData));
   }
 
   async function handleMoveFileSearch(content) {
@@ -285,35 +285,40 @@ function DataroomFileManage({
     return o;
 }
 
-  let recursiveData = [];
-  function recursiveSwitchSturcture(flatData, parentID) {
-    if (flatData.length === 0) return;
+  function switchStructure(flatData1, parentID1) {
+    let recursiveData = [];
+    function recursiveSwitchSturcture(flatData, parentID) {
+      if (flatData.length === 0) return;
 
-    const children = flatData.filter(f => f.parentId === parentID);
-    // Delete all children items in original data
-    for (let index = 0; index < children.length; index++) {
-      const element = children[index];
-      const elementIndex = flatData.map(m => m.id).indexOf(element.id);
-      flatData.splice(elementIndex, 1); 
+      const children = flatData.filter(f => f.parentId === parentID);
+      // Delete all children items in original data
+      for (let index = 0; index < children.length; index++) {
+        const element = children[index];
+        const elementIndex = flatData.map(m => m.id).indexOf(element.id);
+        flatData.splice(elementIndex, 1);
+      }
+
+      const newObject = getObject(recursiveData, 'id', parentID);
+      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.key || m.id, isLeaf: m.isFile }));
+      if (newObject) {
+        newObject.children = newChildren;
+      } else {
+        recursiveData = newChildren.map(m => ({ ...m, children: [] }));
+      }
+
+      children.forEach(item => {
+        item.children = recursiveSwitchSturcture(flatData, item.id);
+      });
+
     }
+    recursiveSwitchSturcture(flatData1, parentID1);
 
-    const newObject = getObject(recursiveData, 'id', parentID);
-    const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.id, isLeaf: m.isFile }));
-    if (newObject) {
-      newObject.children = newChildren;
-    } else {
-      recursiveData = newChildren.map(m => ({ ...m, children: [] }));
-    }
-
-    children.forEach(item => {
-      item.children = recursiveSwitchSturcture(flatData, item.id);
-    });
-
+    return recursiveData;
   }
 
   function generateTreeData(allData) {
     const newCloneData = _.cloneDeep(allData);
-    recursiveSwitchSturcture(newCloneData, -999);
+    const recursiveData = switchStructure(newCloneData, -999);
     const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
     rootDir['children'] = recursiveData;
     return [rootDir];
