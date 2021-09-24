@@ -210,6 +210,30 @@ function DataroomFileManage({
   //   return findParents(fileId);
   // }
 
+  function findAllChildren(folderId) {
+    let allChildren = [];
+    function findChildren (id) {
+      const children = allDataroomFiles.filter(f => f.parent === id);
+      allChildren = allChildren.concat(children);
+      children.map(m => findChildren(m.id));
+      return allChildren;
+    }
+    return findChildren(folderId);
+  }
+
+  function formatData(data) {
+    return data.map(item => {
+      const parentId = item.parent || -999
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const timezone = item.timezone || '+08:00'
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+    })
+  }
+
   async function handleDataroomSearch(content) {
     if (!content) {
       setData(allDataroomFiles);
@@ -224,12 +248,17 @@ function DataroomFileManage({
       return;
     }
 
-    let newData = formatSearchData(data);
-    // if (parentId !== -999) {
-    //   const allParents = findAllParents(parentId);
-    //   const parentFolder = allDataroomFiles.filter(f => f.id === parentId);
-    //   newData = newData.concat(allParents).concat(parentFolder);
-    // }
+    const newData = formatData(data);
+    const flatData = [];
+    for (let index = 0; index < newData.length; index++) {
+      const element = newData[index];
+      element.parent = -999;
+      element.parentId = -999;
+      const allChildren = findAllChildren(element.id);
+      const formatChildren = formatData(allChildren);
+      const allData = formatChildren.concat(element);
+      flatData.push(allData);
+    }
 
     setLoading(false);
     setData(newData);
