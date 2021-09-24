@@ -326,12 +326,12 @@ function DataroomFileManage({
     const currentFile = item[0];
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
-      if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(currentFile.filename)) {
-        window.open(currentFile.fileurl);
-      } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(currentFile.filename)) {
+      if ((/\.avi$/i).test(currentFile.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
         });
+      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename)) {
+        setPreviewFileUrl(currentFile.fileurl);
       } else {
         const url = getPreviewFileUrl(currentFile);
         setPreviewFileUrl(url);
@@ -755,8 +755,7 @@ function DataroomFileManage({
   }
 
   function handleOpenFileInNewWindowClick() {
-    const fileUrl = getPreviewFileUrl(selectedFile);
-    window.open(fileUrl);
+    window.open(previewFileUrl);
   }
 
   function onSelectFolderForMoveFiles(keys) {
