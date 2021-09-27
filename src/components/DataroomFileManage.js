@@ -254,10 +254,10 @@ function DataroomFileManage({
       const element = newData[index];
       element.parent = -999;
       element.parentId = -999;
-      element.key = element.id + '-' + index;
+      element.treeKey = element.id + '-' + index;
       flatData.push(element);
       let allChildren = findAllChildren(element.id);
-      allChildren = allChildren.map(m => ({ ...m, key: m.id + '-' + index }));
+      allChildren = allChildren.map(m => ({ ...m, treeKey: m.id + '-' + index }));
       flatData = flatData.concat(allChildren);
     }
     setLoading(false);
@@ -299,7 +299,7 @@ function DataroomFileManage({
       }
 
       const newObject = getObject(recursiveData, 'id', parentID);
-      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.key || m.id, isLeaf: m.isFile }));
+      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.treeKey || m.id, isLeaf: m.isFile }));
       if (newObject) {
         newObject.children = newChildren;
       } else {
@@ -326,7 +326,7 @@ function DataroomFileManage({
 
   const onSelect = (keys, info) => {
     if (keys.length < 1) return;
-    const item = data.filter(f => f.id === keys[0]);
+    const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
     const currentFile = item[0];
     setSelectedFile(currentFile);
