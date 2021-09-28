@@ -1780,7 +1780,16 @@ class OrgBDListComponent extends React.Component {
                   return (
                     <div key={comment.id} style={{ marginBottom: 8 }}>
                       <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
-                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                      <div style={{ display: 'flex' }}>
+                        {comment.createuser &&
+                          <div style={{ marginRight: 10 }}>
+                            <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                              <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                            </a>
+                          </div>
+                        }
+                        <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                      </div>
                     </div>
                   );
                 });
@@ -2280,6 +2289,7 @@ export function SimpleLine(props) {
 
 export function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd, bd, isPMComment } = props
+  window.echo('comments', comments);
   return (
     <div>
       <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -2306,7 +2316,16 @@ export function BDComments(props) {
                   </Popconfirm>
                   : null}
               </p>
-              <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              <div style={{ display: 'flex' }}>
+                {comment.createuser &&
+                  <div style={{ marginRight: 10 }}>
+                    <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                      <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                    </a>
+                  </div>
+                }
+                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              </div>
             </div>
           );
         }) : <p>{i18n('remark.no_comments')}</p>}
