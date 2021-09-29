@@ -177,6 +177,11 @@ class OrgBDListComponent extends React.Component {
         currentPriority: 0,
         currentPriorityRecord: null,
         loadingUpdatingOrgPriority: false,
+
+        // 编辑机构看板
+        activeOrgBDForEditing: null,
+        displayModalForEditing: false,
+        loadingEditingOrgBD: false,
     }
 
     this.allTrader = [];
@@ -1073,6 +1078,69 @@ class OrgBDListComponent extends React.Component {
       })
   }
 
+  updateActiveOrgBDForEditing(record, change) {
+    const newRecord = { ...record, ...change };
+    this.setState({ activeOrgBDForEditing: newRecord });
+
+    if(!change.bduser) return;
+
+    const params = {
+      investoruser: change.bduser,
+      page_size: 1000,
+    };
+    requestAllData(api.getUserRelation, params, 1000)
+      .then(result => {
+        const newTraderList = [];
+        result.data.data.forEach(element => {
+          const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].score;
+          const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
+          trader.username += '(' + familiar + '分)';
+          trader.familiar = familiar;
+          newTraderList.push(trader);
+        });
+        this.allTrader.forEach(element => {
+          if (!newTraderList.map(m => m.id).includes(element.id)) {
+            newTraderList.push({ ...element, familiar: -1 });
+          }
+        });
+
+        // 按照熟悉程度排序
+        newTraderList.sort(function(a, b) {
+          return b.familiar - a.familiar;
+        });
+
+        newRecord.manager = newTraderList[0];
+        this.setState({ traderList: newTraderList, activeOrgBDForEditing: newRecord });
+      });
+  }
+
+  handleEditOrgBD = () => {
+    const record = this.state.activeOrgBDForEditing;
+    let body = {
+      'bduser': record.bduser >= 0 ? record.bduser: null,
+      'manager': Number(record.manager.id),
+      'org': record.org.id,
+      'proj': record.proj.id,
+      // 'isimportant': record.isimportant,
+      // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
+      // 'bd_status': 1,
+      'response': record.response,
+      'material': record.material,
+    }
+    this.setState({ loadingEditingOrgBD: true });
+    // api.getUserSession()
+      // .then(() => 
+      api.modifyOrgBD(record.id, body)
+      .then(result => {
+        if (result && result.data) {
+          this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
+          this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
+        }
+      })
+      .catch(handleError)
+      .finally(() => this.setState({ loadingEditingOrgBD: false }));
+  }
+
   saveNewBD(record) {
     let body = {
       'bduser': record.orgUser >= 0 ? record.orgUser : null,
@@ -1389,6 +1457,15 @@ class OrgBDListComponent extends React.Component {
     this.updateSelection(record, { response, material });
   }
 
+  handleProgressChangeForEditingOrgBD(record, value) {
+    const response = value[0];
+    let material = null;
+    if (value.length > 0 && value[1] !== 0) {
+      material = value[1];
+    }
+    this.updateActiveOrgBDForEditing(record, { response, material });
+  }
+
   handleOperationChange(record, value) {
     const react = this;
     switch (value) {
@@ -1412,6 +1489,9 @@ class OrgBDListComponent extends React.Component {
         break;
       case 'add_pm_remark':
         react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
+        break;
+      case 'edit':
+        react.setState({ activeOrgBDForEditing: record, displayModalForEditing: true });
         break;
     }
   }
@@ -1462,6 +1542,14 @@ class OrgBDListComponent extends React.Component {
     } finally {
       this.setState({ loadingUpdatingOrgPriority: false });
     }
+  }
+
+  generateProgressValueForEditing = bd => {
+    const progressValue = [bd.response];
+    if (bd.material) {
+      progressValue.push(bd.material);
+    }
+    return progressValue;
   }
 
   render() {
@@ -1894,6 +1982,13 @@ class OrgBDListComponent extends React.Component {
               const comments = latestComment ? latestComment.comments : ''
               return (
                 <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
+                  {this.isAbleToAddPMRemark(record) &&
+                    <Tooltip title="编辑">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
+                        <EditOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
                   {this.isAbleToModifyStatus(record) &&
                     <Tooltip title="修改状态">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
@@ -1904,7 +1999,7 @@ class OrgBDListComponent extends React.Component {
                   {this.isAbleToModifyStatus(record) &&
                     <Tooltip title="添加机构反馈">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
-                        <EditOutlined />
+                        <HighlightOutlined />
                       </Button>
                     </Tooltip>
                   }
@@ -2233,6 +2328,57 @@ class OrgBDListComponent extends React.Component {
           </div>
         </Modal>
 
+        {this.state.displayModalForEditing &&
+          <Modal
+            title="编辑机构看板"
+            visible
+            onCancel={() => this.setState({ displayModalForEditing: false })}
+            onOk={this.handleEditOrgBD}
+            confirmLoading={this.state.loadingEditingOrgBD}
+          >
+            <div style={{ marginBottom: 30 }}>
+              <div>机构名称</div>
+              <Input style={{ width: '100%' }} disabled value={this.state.activeOrgBDForEditing.org.orgname} />
+            </div>
+
+            <div style={{ marginBottom: 30 }}>
+              <div>联系人</div>
+              <SelectOrgInvestor
+                allStatus
+                onjob
+                allowEmpty
+                style={{ width: '100%' }}
+                type="investor"
+                mode="single"
+                size="middle"
+                optionFilterProp="children"
+                org={this.state.activeOrgBDForEditing.org.id}
+                value={this.state.activeOrgBDForEditing.bduser}
+                onChange={v => { this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { bduser: v }) }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 30 }}>
+              <div>负责人</div>
+              <SelectTrader
+                data={this.state.traderList}
+                mode="single"
+                value={this.state.activeOrgBDForEditing.manager.id.toString()}
+                onChange={v => { this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { manager: { id: v } }) }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 30 }}>
+              <div>机构进度/材料</div>
+              <Cascader
+                style={{ width: '100%' }}
+                options={this.getProgressOptions()}
+                onChange={this.handleProgressChangeForEditingOrgBD.bind(this, this.state.activeOrgBDForEditing)}
+                value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
+              />
+            </div>
+          </Modal>
+        }
 
       </div>
     );
