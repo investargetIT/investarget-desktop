@@ -82,6 +82,7 @@ import EditReport from './routes/EditReport';
 // import EditOKR from './routes/EditOKR';
 // import InternOnlineTest from './routes/InternOnlineTest';
 // import ProjectReport from './routes/ProjectReport';
+import PersonalCenter from './routes/PersonalCenter';
 
 function RouterConfig({ history }) {
   return (
@@ -108,6 +109,7 @@ function RouterConfig({ history }) {
         <Route path={URI_11} component={LogList} />
         <Route path={URI_9} component={ModifyPwd} />
         <Route path={URI_10} component={BasicInfo} />
+        <Route path="/app/personal-center" component={PersonalCenter} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
         <Route path={URI_12} component={MyInvestor} />
