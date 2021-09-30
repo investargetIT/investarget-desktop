@@ -819,7 +819,9 @@ function DataroomFileManage({
 
   function handleDownloadSelectFileBtnClicked() {
     setDisplayDownloadFileModal(false);
-    checkDataRoomStatus(noWatermark, true, currentDownloadFile.id);
+    let allChildren = findAllChildren(currentDownloadFile.id);
+    const allFilesIDs = allChildren.map(m => m.id).concat(currentDownloadFile.id);
+    checkDataRoomStatus(noWatermark, true, allFilesIDs.join(','));
   }
 
   function handleDownloadNewFileBtnClicked() {
