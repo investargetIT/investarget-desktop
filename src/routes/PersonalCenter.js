@@ -48,6 +48,40 @@ function PersonalCenter(props) {
     },
   ];
 
+  const columns2 = [
+    {
+      title: '年度',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '绩效考核结果',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '附件',
+      dataIndex: 'address',
+      key: 'address',
+      render: text => <a href="#">{text}</a>,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+    }
+  ];
+
+  const data2 = [
+    {
+      key: '1',
+      name: '2020.10.01 - 2021.09.30',
+      age: '合格',
+      address: 'Vincent Ch…年绩效考核.doc',
+      remark: '沟通能力必须提高',
+    },
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -131,7 +165,11 @@ function PersonalCenter(props) {
             <Tabs defaultActiveKey="1" onChange={tabChange}>
               <TabPane tab="人事档案及绩效" key="1">
                 <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
-                <Table columns={columns1} dataSource={data1} pagination={false} />
+                <Table style={{ marginBottom: 40 }} columns={columns1} dataSource={data1} pagination={false} />
+
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
+                <Table style={{ marginBottom: 40 }} columns={columns2} dataSource={data2} pagination={false} />
+
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
                 Content of Tab Pane 2
