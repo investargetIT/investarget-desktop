@@ -143,6 +143,47 @@ function PersonalCenter(props) {
     },
   ];
 
+  const columns5 = [
+    {
+      title: '日期',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '沟通方式',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '沟通人',
+      dataIndex: 'address',
+      key: 'address',
+      render: text => <a href="#">{text}</a>,
+    },
+    {
+      title: '沟通主要内容',
+      dataIndex: 'remark',
+      key: 'remark',
+    }
+  ];
+
+  const data5 = [
+    {
+      key: '1',
+      name: '2020.10.01',
+      age: '1v1线下沟通',
+      address: 'Amy Zhao',
+      remark: '新人入职注意事项',
+    },
+    {
+      key: '2',
+      name: '2020.10.01',
+      age: '1v1线下沟通',
+      address: 'Amy Zhao',
+      remark: '工作流程说明',
+    },
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -236,6 +277,9 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后工作概况<span style={{ fontWeight: 'normal', marginLeft: 10, fontSize: 14, color: '#989898' }}>推荐人：王大明/投资经理</span></div>
                 <Table style={{ marginBottom: 40 }} columns={columns4} dataSource={data4} pagination={false} />
+
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
+                <Table style={{ marginBottom: 40 }} columns={columns5} dataSource={data5} pagination={false} />
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
