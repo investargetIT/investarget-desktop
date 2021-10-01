@@ -2,12 +2,52 @@ import React from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card } from 'antd';
+import { Breadcrumb, Card, Tabs, Table } from 'antd';
 import {
   ManOutlined,
 } from '@ant-design/icons';
 
+const { TabPane } = Tabs;
+
 function PersonalCenter(props) {
+
+  function tabChange(key) {
+    console.log(key);
+  }
+
+  const columns1 = [
+    {
+      title: '起止时间',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '任职部门',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '任职岗位',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
+
+  const data1 = [
+    {
+      key: '1',
+      name: '2020.10.01 - 2021.09.30',
+      age: '战略投资',
+      address: '投资经理',
+    },
+    {
+      key: '2',
+      name: '2021.10.01 - 现在',
+      age: '战略投资',
+      address: '高级投资经理',
+    },
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -87,7 +127,20 @@ function PersonalCenter(props) {
           </Card>
         </div>
         <div style={{ flex: 1 }}>
-          <Card></Card>
+          <Card>
+            <Tabs defaultActiveKey="1" onChange={tabChange}>
+              <TabPane tab="人事档案及绩效" key="1">
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
+                <Table columns={columns1} dataSource={data1} pagination={false} />
+              </TabPane>
+              <TabPane tab="参与过的项目" key="2">
+                Content of Tab Pane 2
+              </TabPane>
+              <TabPane tab="职员列表" key="3">
+                Content of Tab Pane 3
+              </TabPane>
+            </Tabs>
+          </Card>
         </div>
       </div>
 
