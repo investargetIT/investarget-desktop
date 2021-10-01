@@ -51,6 +51,7 @@ import {
   FormOutlined,
   HighlightOutlined,
 } from '@ant-design/icons';
+import QRCode from 'qrcode.react';
 
 const { Option } = Select;
 const priority = ['低', '中', '高'];
@@ -182,6 +183,8 @@ class OrgBDListComponent extends React.Component {
         activeOrgBDForEditing: null,
         displayModalForEditing: false,
         loadingEditingOrgBD: false,
+
+        displayQRCode: false,
     }
 
     this.allTrader = [];
@@ -1552,6 +1555,10 @@ class OrgBDListComponent extends React.Component {
     return progressValue;
   }
 
+  handleDisplayQRCodeBtnClick = () => {
+    this.setState({ displayQRCode: true });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2132,7 +2139,7 @@ class OrgBDListComponent extends React.Component {
                   value={search}
                   size="middle"
                 />
-                <div style={{ display: 'flex', alignItems: 'center', fontSize: 14, color: '#595959' }}>
+                <div style={{ marginRight: 20, display: 'flex', alignItems: 'center', fontSize: 14, color: '#595959' }}>
                   <div style={{ marginRight: 4 }}>机构优先级：</div>
                   <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
                   <div style={{ marginRight: 16 }}>高</div>
@@ -2141,6 +2148,7 @@ class OrgBDListComponent extends React.Component {
                   <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#7ed321', opacity: 0.5 }} />
                   <div style={{ marginRight: 16 }}>低</div>
                 </div>
+                <Button onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
               </div>
               {this.isAbleToCreateBD() &&
                 <div className="another-btn">
@@ -2379,6 +2387,18 @@ class OrgBDListComponent extends React.Component {
             </div>
           </Modal>
         }
+
+        <Modal
+          title="手机二维码"
+          visible={this.state.displayQRCode}
+          onCancel={() => this.setState({ displayQRCode: false })}
+          onOk={() => this.setState({ displayQRCode: false })}
+        >
+          <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
+            <QRCode value="https://www.baidu.com" />
+          </div>
+          <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
+        </Modal>
 
       </div>
     );
