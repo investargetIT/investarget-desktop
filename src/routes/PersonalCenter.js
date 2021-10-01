@@ -82,6 +82,33 @@ function PersonalCenter(props) {
     },
   ];
 
+  const columns3 = [
+    {
+      title: '时间',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '工作单位',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '职位',
+      dataIndex: 'address',
+      key: 'address',
+      render: text => <a href="#">{text}</a>,
+    },
+    {
+      title: '主要职责',
+      dataIndex: 'remark',
+      key: 'remark',
+    }
+  ];
+
+  const data3 = [
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -169,6 +196,9 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
                 <Table style={{ marginBottom: 40 }} columns={columns2} dataSource={data2} pagination={false} />
+
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
+                <Table style={{ marginBottom: 40 }} columns={columns3} dataSource={data3} pagination={false} />
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
