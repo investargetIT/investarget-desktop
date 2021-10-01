@@ -184,6 +184,40 @@ function PersonalCenter(props) {
     },
   ];
 
+  const columns6 = [
+    {
+      title: '日期',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '培训形式',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '培训内容',
+      dataIndex: 'address',
+      key: 'address',
+      render: text => <a href="#">{text}</a>,
+    },
+    {
+      title: '状态',
+      dataIndex: 'remark',
+      key: 'remark',
+    }
+  ];
+
+  const data6 = [
+    {
+      key: '1',
+      name: '2020.10.30',
+      age: '线下',
+      address: '新人入职注意事项',
+      remark: '已完成',
+    },
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -280,6 +314,9 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
                 <Table style={{ marginBottom: 40 }} columns={columns5} dataSource={data5} pagination={false} />
+
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
+                <Table style={{ marginBottom: 40 }} columns={columns6} dataSource={data6} pagination={false} />
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
