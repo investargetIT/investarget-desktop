@@ -109,6 +109,40 @@ function PersonalCenter(props) {
   const data3 = [
   ];
 
+  const columns4 = [
+    {
+      title: '招聘方式',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '劳动合同签订/续签日期',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '劳动合同期限',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: '附件',
+      dataIndex: 'remark',
+      key: 'remark',
+      render: text => <a href="#">{text}</a>,
+    }
+  ];
+
+  const data4 = [
+    {
+      key: '1',
+      name: '公开招聘',
+      age: '2020.10.01 - 2023.09.30',
+      address: '三年',
+      remark: '劳动合同.doc',
+    },
+  ];
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -199,6 +233,9 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
                 <Table style={{ marginBottom: 40 }} columns={columns3} dataSource={data3} pagination={false} />
+
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后工作概况<span style={{ fontWeight: 'normal', marginLeft: 10, fontSize: 14, color: '#989898' }}>推荐人：王大明/投资经理</span></div>
+                <Table style={{ marginBottom: 40 }} columns={columns4} dataSource={data4} pagination={false} />
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
