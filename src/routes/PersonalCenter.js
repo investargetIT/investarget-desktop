@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty } from 'antd';
 import {
   ManOutlined,
 } from '@ant-design/icons';
+import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
+import {
+  hasPerm,
+  getUserInfo,
+} from '../utils/util';
 
 const { TabPane } = Tabs;
 
 function PersonalCenter(props) {
+
+  const userInfo = getUserInfo();
+
+  const [projList, setProjList] = useState([]);
+
+  useEffect(() => {
+    async function loadWorkingProjects() {
+      const params = {
+        max_size: 2,
+        sort: 'publishDate',
+        desc: 1,
+      }
+      if (!hasPerm('proj.admin_getproj')) {
+        params['user'] = userInfo.id;
+      }
+      const reqProj = await api.getProj(params);
+      const { data: projList } = reqProj.data;
+      setProjList(projList);
+    }
+    loadWorkingProjects();
+  }, []);
 
   function tabChange(key) {
     console.log(key);
@@ -320,7 +346,12 @@ function PersonalCenter(props) {
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
-                Content of Tab Pane 2
+                <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 160px -18px' }}>
+                  {projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
+                    <ProjectCardForUserCenter record={m} country={props.country} />
+                  </div>)}
+                  {projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
+                </div>
               </TabPane>
               <TabPane tab="职员列表" key="3">
                 Content of Tab Pane 3
@@ -334,6 +365,9 @@ function PersonalCenter(props) {
   );
 }
 
+function mapStateToProps(state) {
+  const { country } = state.app;
+  return { country };
+}
 
-
-export default connect()(PersonalCenter);
+export default connect(mapStateToProps)(PersonalCenter);
