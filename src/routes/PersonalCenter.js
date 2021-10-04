@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table, Empty } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty, Popover } from 'antd';
 import {
   ManOutlined,
 } from '@ant-design/icons';
@@ -244,6 +244,22 @@ function PersonalCenter(props) {
     },
   ];
 
+  function popoverContent() {
+    return (
+      <div>
+        <img style={{ width: 240, height: 240 }} src="/images/avatar2.png" />
+        <div style={{ padding: '30px 20px' }}>
+          <div style={{ fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>Vincent Chen</div>
+          <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>高级投资经理</div>
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>战略投资</div>
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>Eric Shen</div>
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div>
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>2020.10.01</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -346,7 +362,7 @@ function PersonalCenter(props) {
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
-                <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 160px -18px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 20px -18px' }}>
                   {projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
                     <ProjectCardForUserCenter record={m} country={props.country} />
                   </div>)}
@@ -354,7 +370,41 @@ function PersonalCenter(props) {
                 </div>
               </TabPane>
               <TabPane tab="职员列表" key="3">
-                Content of Tab Pane 3
+                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>部门名称</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar2.png" />
+                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                    </div>
+                  </Popover>
+
+                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar3.png" />
+                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                    </div>
+                  </Popover>
+
+                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar4.png" />
+                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                    </div>
+                  </Popover>
+
+                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar5.png" />
+                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                    </div>
+                  </Popover>
+
+                </div>
               </TabPane>
             </Tabs>
           </Card>

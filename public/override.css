@@ -658,3 +658,7 @@ label.login-register-form__container__label {
 .orgbd-operation-icon-btn .ant-btn {
   padding: 4px 6px;
 }
+
+.popover-staff .ant-popover-inner-content {
+  padding: 0;
+}
