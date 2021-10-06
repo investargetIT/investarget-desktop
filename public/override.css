@@ -662,3 +662,9 @@ label.login-register-form__container__label {
 .popover-staff .ant-popover-inner-content {
   padding: 0;
 }
+.tabs-personal-info.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab {
+  margin-bottom: 0;
+}
+.tabs-personal-info.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active {
+  background-color: #f0f6fb;
+}
