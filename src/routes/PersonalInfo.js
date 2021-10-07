@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
-import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker } from 'antd';
+import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
 import { Link } from 'dva/router';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -11,6 +11,24 @@ const { TextArea } = Input;
 function PersonalInfo(props) {
 
   const [form] = Form.useForm();
+
+  const uploadProps = {
+    name: 'file',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
   function handleValuesChange(values) {
     window.echo('values change', values);
@@ -69,7 +87,11 @@ function PersonalInfo(props) {
                   <Button type="primary">更新基本信息</Button>
                 </Form.Item>
               </Form>
-              <div>Right</div>
+              <div>
+                <Upload {...uploadProps}>
+                  <Button icon={<CloudUploadOutlined />}>上传图片</Button>
+                </Upload>
+              </div>
             </div>
           </TabPane>
           <TabPane tab="工作经历" key="2">
