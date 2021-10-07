@@ -10,11 +10,10 @@ const { TabPane } = Tabs;
 function PersonalInfo(props) {
 
   const [form] = Form.useForm();
-  const [requiredMark, setRequiredMarkType] = useState('optional');
 
-  const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
+  function handleValuesChange(values) {
+    window.echo('values change', values);
+  }
 
   function callback(key) {
     console.log(key);
@@ -35,33 +34,33 @@ function PersonalInfo(props) {
       <Card bodyStyle={{ padding: '20px 0' }}>
         <Tabs className="tabs-personal-info" defaultActiveKey="1" onChange={callback} tabPosition="left" tabBarStyle={{ width: 240 }}>
           <TabPane tab="基本设置" key="1">
-            <Form
-              form={form}
-              layout="vertical"
-              initialValues={{ requiredMarkValue: requiredMark }}
-              onValuesChange={onRequiredTypeChange}
-              requiredMark={requiredMark}
-            >
-              <Form.Item label="Required Mark" name="requiredMarkValue">
-                <Radio.Group>
-                  <Radio.Button value="optional">Optional</Radio.Button>
-                  <Radio.Button value>Required</Radio.Button>
-                  <Radio.Button value={false}>Hidden</Radio.Button>
-                </Radio.Group>
-              </Form.Item>
-              <Form.Item label="Field A" required tooltip="This is a required field">
-                <Input placeholder="input placeholder" />
-              </Form.Item>
-              <Form.Item
-                label="Field B"
-                tooltip={{ title: 'Tooltip with customize icon', icon: <InfoCircleOutlined /> }}
+            <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>基本设置</div>
+            <div style={{ display: 'flex' }}>
+              <Form
+                style={{ width: 320, marginRight: 80 }}
+                form={form}
+                layout="vertical"
+                initialValues={{}}
+                onValuesChange={handleValuesChange}
               >
-                <Input placeholder="input placeholder" />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary">Submit</Button>
-              </Form.Item>
-            </Form>
+                <Form.Item label="姓名" name="username">
+                  <Input placeholder="input placeholder" />
+                </Form.Item>
+                <Form.Item label="毕业学校" name="education">
+                  <Input placeholder="input placeholder" />
+                </Form.Item>
+                <Form.Item label="学历" name="degree">
+                  <Input placeholder="input placeholder" />
+                </Form.Item>
+                <Form.Item label="专业" name="major">
+                  <Input placeholder="input placeholder" />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary">Submit</Button>
+                </Form.Item>
+              </Form>
+              <div>Right</div>
+            </div>
           </TabPane>
           <TabPane tab="工作经历" key="2">
             Content of Tab Pane 2
