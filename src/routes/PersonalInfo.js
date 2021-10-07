@@ -7,6 +7,7 @@ import { CloudUploadOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
+const { RangePicker } = DatePicker;
 
 function PersonalInfo(props) {
 
@@ -51,7 +52,7 @@ function PersonalInfo(props) {
       </Breadcrumb>
 
       <Card bodyStyle={{ padding: '20px 0' }}>
-        <Tabs className="tabs-personal-info" defaultActiveKey="1" onChange={callback} tabPosition="left" tabBarStyle={{ width: 240 }}>
+        <Tabs className="tabs-personal-info" defaultActiveKey="2" onChange={callback} tabPosition="left" tabBarStyle={{ width: 240 }}>
           <TabPane tab="基本设置" key="1">
             <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>基本设置</div>
             <div style={{ display: 'flex' }}>
@@ -95,7 +96,30 @@ function PersonalInfo(props) {
             </div>
           </TabPane>
           <TabPane tab="工作经历" key="2">
-            Content of Tab Pane 2
+          <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>工作经历</div>
+            <Form
+              style={{ width: 320, marginRight: 80 }}
+              form={form}
+              layout="vertical"
+              initialValues={{}}
+              onValuesChange={handleValuesChange}
+            >
+              <Form.Item label="起止时间" name="duration">
+                <RangePicker style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item label="工作单位" name="company">
+                <Input placeholder="请输入工作单位" />
+              </Form.Item>
+              <Form.Item label="职位" name="title">
+                <Input placeholder="请输入职位" />
+              </Form.Item>
+              <Form.Item label="主要职责" name="responsibility">
+                <TextArea placeholder="请输入主要职责" rows={4} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary">保存</Button>
+              </Form.Item>
+            </Form>
           </TabPane>
         </Tabs>
       </Card>
