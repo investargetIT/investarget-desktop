@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
-import { Breadcrumb, Card, Tabs, Form, Input, Button, Radio } from 'antd';
+import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker } from 'antd';
 import { Link } from 'dva/router';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
+const { TextArea } = Input;
 
 function PersonalInfo(props) {
 
@@ -44,19 +45,28 @@ function PersonalInfo(props) {
                 onValuesChange={handleValuesChange}
               >
                 <Form.Item label="姓名" name="username">
-                  <Input placeholder="input placeholder" />
+                  <Input placeholder="请输入姓名" />
+                </Form.Item>
+                <Form.Item label="出生日期" name="birthday">
+                  <DatePicker style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item label="毕业学校" name="education">
-                  <Input placeholder="input placeholder" />
+                  <Input placeholder="请输入毕业学校" />
                 </Form.Item>
                 <Form.Item label="学历" name="degree">
-                  <Input placeholder="input placeholder" />
+                  <Input placeholder="请输入学历" />
                 </Form.Item>
                 <Form.Item label="专业" name="major">
-                  <Input placeholder="input placeholder" />
+                  <Input placeholder="请输入专业" />
+                </Form.Item>
+                <Form.Item label="特长爱好" name="hobby">
+                  <TextArea placeholder="请输入特长爱好" rows={4} />
+                </Form.Item>
+                <Form.Item label="其他" name="others">
+                  <TextArea placeholder="请输入" rows={4} />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary">Submit</Button>
+                  <Button type="primary">更新基本信息</Button>
                 </Form.Item>
               </Form>
               <div>Right</div>
