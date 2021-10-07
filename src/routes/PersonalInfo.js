@@ -3,11 +3,28 @@ import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
 import { Link } from 'dva/router';
-import { CloudUploadOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 20, offset: 4 },
+  },
+};
 
 function PersonalInfo(props) {
 
@@ -38,6 +55,10 @@ function PersonalInfo(props) {
   function callback(key) {
     console.log(key);
   }
+
+  const onFinish = values => {
+    console.log('Received values of form:', values);
+  };
 
 	return (
     <LeftRightLayoutPure location={props.location}>
@@ -98,28 +119,60 @@ function PersonalInfo(props) {
           <TabPane tab="工作经历" key="2">
           <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>工作经历</div>
             <Form
-              style={{ width: 320, marginRight: 80 }}
-              form={form}
+              name="dynamic_form_item"
               layout="vertical"
-              initialValues={{}}
-              onValuesChange={handleValuesChange}
+              style={{ width: 320, marginRight: 80 }}
+              onFinish={onFinish}
             >
-              <Form.Item label="起止时间" name="duration">
-                <RangePicker style={{ width: '100%' }} />
-              </Form.Item>
-              <Form.Item label="工作单位" name="company">
-                <Input placeholder="请输入工作单位" />
-              </Form.Item>
-              <Form.Item label="职位" name="title">
-                <Input placeholder="请输入职位" />
-              </Form.Item>
-              <Form.Item label="主要职责" name="responsibility">
-                <TextArea placeholder="请输入主要职责" rows={4} />
-              </Form.Item>
+              <Form.List
+                name="names"
+              >
+                {(fields, { add, remove }, { errors }) => (
+                  <div>
+                    {fields.map((field, index) => (
+                      <Form.Item
+                        key={field.key}
+                      >
+                        <Form.Item label="起止时间" name="duration">
+                          <RangePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                        <Form.Item label="工作单位" name="company">
+                          <Input placeholder="请输入工作单位" />
+                        </Form.Item>
+                        <Form.Item label="职位" name="title">
+                          <Input placeholder="请输入职位" />
+                        </Form.Item>
+                        <Form.Item label="主要职责" name="responsibility">
+                          <TextArea placeholder="请输入主要职责" rows={4} />
+                        </Form.Item>
+                        {fields.length > 1 ? (
+                          <MinusCircleOutlined
+                            className="dynamic-delete-button"
+                            onClick={() => remove(field.name)}
+                          />
+                        ) : null}
+                      </Form.Item>
+                    ))}
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        onClick={() => add()}
+                        style={{ width: '60%' }}
+                        icon={<PlusOutlined />}
+                      >
+                        Add field
+                      </Button>
+                    </Form.Item>
+                  </div>
+                )}
+              </Form.List>
               <Form.Item>
-                <Button type="primary">保存</Button>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
               </Form.Item>
             </Form>
+
           </TabPane>
         </Tabs>
       </Card>
