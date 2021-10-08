@@ -3,7 +3,7 @@ import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
 import { Link } from 'dva/router';
-import { CloudUploadOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -126,49 +126,56 @@ function PersonalInfo(props) {
             >
               <Form.List
                 name="names"
+                initialValue={[{ fieldKey: 0, isListField: true, key: 0, name: 0 }]}
               >
-                {(fields, { add, remove }, { errors }) => (
-                  <div>
-                    {fields.map((field, index) => (
-                      <Form.Item
-                        key={field.key}
-                      >
-                        <Form.Item label="起止时间" name="duration">
-                          <RangePicker style={{ width: '100%' }} />
+                {(fields, { add, remove }, { errors }) => {
+                  return (
+                    <div>
+                      {fields.map((field, index) => (
+                        <Form.Item
+                          key={field.key}
+                        >
+                          <Form.Item label="起止时间" name="duration">
+                            <RangePicker style={{ width: '100%' }} />
+                          </Form.Item>
+                          <Form.Item label="工作单位" name="company">
+                            <Input placeholder="请输入工作单位" />
+                          </Form.Item>
+                          <Form.Item label="职位" name="title">
+                            <Input placeholder="请输入职位" />
+                          </Form.Item>
+                          <Form.Item label="主要职责" name="responsibility">
+                            <TextArea placeholder="请输入主要职责" rows={4} />
+                          </Form.Item>
+                          <Form.Item>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                              <Button
+                                type="link"
+                                onClick={add}
+                                icon={<PlusOutlined />}
+                              >
+                                新增记录
+                              </Button>
+                              {fields.length > 1 &&
+                                <Button
+                                  type="link"
+                                  onClick={() => remove(field.name)}
+                                  icon={<DeleteOutlined />}
+                                >
+                                  删除
+                                </Button>
+                              }
+                            </div>
+                          </Form.Item>
                         </Form.Item>
-                        <Form.Item label="工作单位" name="company">
-                          <Input placeholder="请输入工作单位" />
-                        </Form.Item>
-                        <Form.Item label="职位" name="title">
-                          <Input placeholder="请输入职位" />
-                        </Form.Item>
-                        <Form.Item label="主要职责" name="responsibility">
-                          <TextArea placeholder="请输入主要职责" rows={4} />
-                        </Form.Item>
-                        {fields.length > 1 ? (
-                          <MinusCircleOutlined
-                            className="dynamic-delete-button"
-                            onClick={() => remove(field.name)}
-                          />
-                        ) : null}
-                      </Form.Item>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        style={{ width: '60%' }}
-                        icon={<PlusOutlined />}
-                      >
-                        Add field
-                      </Button>
-                    </Form.Item>
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  );
+                }}
               </Form.List>
               <Form.Item>
                 <Button type="primary" htmlType="submit">
-                  Submit
+                  保存 
                 </Button>
               </Form.Item>
             </Form>
