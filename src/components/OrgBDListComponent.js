@@ -50,6 +50,7 @@ import {
   EditOutlined,
   FormOutlined,
   HighlightOutlined,
+  ExpandAltOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 
@@ -1696,8 +1697,13 @@ class OrgBDListComponent extends React.Component {
             value={record.orgUser} 
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
-          : <div style={{ paddingLeft: this.props.fromProjectCostCenter ? 15 : 30 }}>                  
-              {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />}
+          : <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 30 }}>
+              <Tooltip title="编辑">
+                <Button type="link">
+                  <ExpandAltOutlined />
+                </Button>
+              </Tooltip>
+              {/* {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />} */}
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
                 <span style={{color:'#428BCA'}}>
@@ -1706,7 +1712,7 @@ class OrgBDListComponent extends React.Component {
                   : record.username } */}
                   <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
                 </span>                                  
-              </Popover> 
+              </Popover>
               : '暂无' }
             </div>
           },sorter:false},
