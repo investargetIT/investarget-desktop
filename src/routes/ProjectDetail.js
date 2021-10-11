@@ -152,7 +152,7 @@ class ProjectFinanceYear extends React.Component {
           )
         }
       </div>
-    ) : null
+    ) : '暂无' 
   }
 
 }
@@ -715,7 +715,7 @@ function ProjectIntro({ project, country }) {
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex' }}>
         <div dangerouslySetInnerHTML={introduce} style={{ flex: 1, marginRight: 40 }} />
 
         <table style={{ flex: 1, textAlign: 'center' }}>
