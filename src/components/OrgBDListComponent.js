@@ -2100,7 +2100,7 @@ class OrgBDListComponent extends React.Component {
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         {this.props.editable &&
-          <Card title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
+          <Card title="机构看板" style={{ marginBottom: 20, minWidth: 565 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
             {this.state.projectDetails && this.state.projectDetails.lastProject &&
               <div style={{ marginBottom: 20, textAlign: 'center' }}>
                 上一轮项目：
@@ -2137,10 +2137,10 @@ class OrgBDListComponent extends React.Component {
           </Card>
         }
 
-        <Card>
+        <Card style={{ minWidth: 565 }}>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Search
                   style={{ width: 300, marginRight: 20 }}
                   placeholder="请输入投资人名称或电话"
@@ -2149,7 +2149,7 @@ class OrgBDListComponent extends React.Component {
                   value={search}
                   size="middle"
                 />
-                <div style={{ marginRight: 20, display: 'flex', alignItems: 'center', fontSize: 14, color: '#595959' }}>
+                <div style={{ marginRight: 20, display: 'flex', flexWrap: 'wrap', alignItems: 'center', fontSize: 14, color: '#595959' }}>
                   <div style={{ marginRight: 4 }}>机构优先级：</div>
                   <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
                   <div style={{ marginRight: 16 }}>高</div>
@@ -2348,6 +2348,7 @@ class OrgBDListComponent extends React.Component {
 
         {this.state.displayModalForEditing &&
           <Modal
+            wrapClassName="modal-orgbd-edit"
             title="编辑机构看板"
             visible
             onCancel={() => this.setState({ displayModalForEditing: false })}
