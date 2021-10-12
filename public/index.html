@@ -11,6 +11,31 @@
   <script type='text/javascript' src='/webim.config.js'></script>
   <script type='text/javascript' src='/lib/easemob/strophe-1.2.8.js'></script>
   <script type='text/javascript' src='/lib/easemob/websdk-1.4.12.js'></script>
+  <script>
+    function setSource() {
+      switch (window.location.host) {
+        case 'saas.investarget.com':
+          localStorage.setItem('source', 1);
+          break;
+        case 'saastest.investarget.com':
+          localStorage.setItem('source', 1);
+          break;
+        case '39.107.14.53:802':
+          localStorage.setItem('source', 2);
+          break;
+        case 'aura.investarget.com':
+          localStorage.setItem('source', 3);
+          break;
+        case 'delovabio.investarget.com':
+          localStorage.setItem('source', 4);
+          break;
+        case 'redcloudbio.investarget.com':
+          localStorage.setItem('source', 5);
+          break;
+      }
+    }
+    setSource();
+  </script>
 </head>
 <body>
   <link rel="stylesheet" href="/override.css" />
