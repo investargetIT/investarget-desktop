@@ -2100,7 +2100,7 @@ class OrgBDListComponent extends React.Component {
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         {this.props.editable &&
-          <Card title="机构看板" style={{ marginBottom: 20, minWidth: 565 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
+          <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20, minWidth: 565 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
             {this.state.projectDetails && this.state.projectDetails.lastProject &&
               <div style={{ marginBottom: 20, textAlign: 'center' }}>
                 上一轮项目：
@@ -2139,7 +2139,7 @@ class OrgBDListComponent extends React.Component {
 
         <Card style={{ minWidth: 565 }}>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
-            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="orgbd-operation remove-on-mobile" style={{ marginBottom: 20, justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Search
                   style={{ width: 300, marginRight: 20 }}
@@ -2217,7 +2217,7 @@ class OrgBDListComponent extends React.Component {
             <div style={{ margin: '16px 0' }} className="clearfix">
 
               {this.props.editable && this.isAbleToCreateBD() ?
-                <Link className="another-btn" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                <Link className="another-btn remove-on-mobile" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
                   <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
                 </Link>
                 : null}
@@ -2239,6 +2239,7 @@ class OrgBDListComponent extends React.Component {
 
           {!this.props.fromProjectCostCenter && this.state.filters.proj !== null && !this.state.showUnreadOnly ?
             <Button
+              className="remove-on-mobile"
               // disabled={this.state.selectedIds.length == 0}
               style={{ backgroundColor: 'orange', border: 'none' }}
               type="primary"

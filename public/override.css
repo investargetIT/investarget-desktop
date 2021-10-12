@@ -668,7 +668,13 @@ label.login-register-form__container__label {
 .tabs-personal-info.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active {
   background-color: #f0f6fb;
 }
+.orgbd-operation {
+  display: flex;
+}
 @media (max-width: 767px) {
+  .remove-on-mobile {
+    display: none;
+  }
   .modal-orgbd-edit.ant-modal-wrap {
     width: 100vw;
   }
