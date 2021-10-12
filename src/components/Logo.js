@@ -11,7 +11,7 @@ const logoStyle = {
 }
 const logoImgStyle = {
   verticalAlign: 'top',
-  height: '100%',
+  height: '80%',
 }
 
 

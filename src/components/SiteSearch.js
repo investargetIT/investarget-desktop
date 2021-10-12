@@ -251,7 +251,7 @@ class SiteSearch extends React.Component {
     }
 
     return (
-      <div style={searchStyle} ref="site_search">
+      <div className="remove-on-mobile" style={searchStyle} ref="site_search">
         <input
           placeholder={i18n('site_search')}
           style={searchInputStyle}
