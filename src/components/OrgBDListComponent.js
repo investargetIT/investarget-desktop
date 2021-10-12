@@ -1569,6 +1569,7 @@ class OrgBDListComponent extends React.Component {
       {
         title: i18n('org_bd.org'),
         key: 'org',
+        fixed: 'left',
         sorter: false,
         render: (_, record) => {
           if (!record.org) return null;
@@ -1599,7 +1600,7 @@ class OrgBDListComponent extends React.Component {
       },
         // {
         //   title: '职位',
-        //   width: '10%',
+        //   key: 'position',
         // },
         // {
         //   title: '职位',
@@ -1681,7 +1682,7 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username', 
+        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username', fixed: 'left',
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
@@ -2076,6 +2077,7 @@ class OrgBDListComponent extends React.Component {
       return (
         <div>
           <Table
+            scroll={{ x: 1000 }} 
             showHeader={false}
             columns={columns}
             dataSource={record.items}
@@ -2100,7 +2102,7 @@ class OrgBDListComponent extends React.Component {
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
 
         {this.props.editable &&
-          <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20, minWidth: 565 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
+          <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
             {this.state.projectDetails && this.state.projectDetails.lastProject &&
               <div style={{ marginBottom: 20, textAlign: 'center' }}>
                 上一轮项目：
@@ -2137,7 +2139,7 @@ class OrgBDListComponent extends React.Component {
           </Card>
         }
 
-        <Card style={{ minWidth: 565 }}>
+        <Card>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div className="orgbd-operation remove-on-mobile" style={{ marginBottom: 20, justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -2183,7 +2185,7 @@ class OrgBDListComponent extends React.Component {
             />
             : null}
 
-          <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+          <div className="remove-on-mobile orgbd-table-header" style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', height: 41, alignItems: 'center' }}>
             {/* <div style={{ width: 40 }} /> */}
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
@@ -2198,6 +2200,7 @@ class OrgBDListComponent extends React.Component {
 
           {this.state.filters.proj !== null ?
             <Table
+              scroll={{ x: true }}
               onChange={this.handleTableChange}
               columns={columns}
               expandedRowRender={expandedRowRender}
