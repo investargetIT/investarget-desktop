@@ -88,10 +88,13 @@ class SiderMenu extends React.Component {
         type: 'app/toggleMenu',
         payload: true
       });
-      this.props.dispatch({
-        type: 'app/showOrHideTooNarrowWarning',
-        payload: true
-      });
+      // 机构看板做过移动端优化了，所以不需要显示窗口过窄警告
+      if (window.location.pathname !== '/app/org/bd') {
+        this.props.dispatch({
+          type: 'app/showOrHideTooNarrowWarning',
+          payload: true
+        });
+      }
       this.setState({ showCollapseIcon: false }); 
     } else if (w < 1200) {
       this.props.dispatch({
