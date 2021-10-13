@@ -119,13 +119,6 @@ class EditUser extends React.Component {
       })
   }
 
-  // handleRef = (inst) => {
-  //   if (inst) {
-  //     this.form = inst.props.form
-  //     window.form = this.form
-  //   }
-  // }
-
   getData = (data) => {
     let _data = {  ...data }
     _data['groups'] = data.groups && data.groups.map(item => item.id)
@@ -302,8 +295,6 @@ class EditUser extends React.Component {
   }
 
   getPhoneAddress = async (mobile) => {
-    window.echo('org area', this.props.orgarea);
-    window.echo('country', this.props.country);
     const res = await api.getPhoneAddress(mobile);
     const { data: result } = res;
     const { att } = result;
@@ -312,20 +303,17 @@ class EditUser extends React.Component {
     const countryIndex = this.props.country.map(m => m.country).indexOf(country);
     if (countryIndex > -1) {
       const countryId = this.props.country[countryIndex].id;
-      this.form.setFieldsValue({ country: countryId });
+      this.editUserFormRef.current.setFieldsValue({ country: countryId });
     }
     const cityIndex = this.props.orgarea.map(m => m.name).indexOf(city);
     const provinceIndex = this.props.orgarea.map(m => m.name).indexOf(province);
     if (cityIndex > -1) {
       const cityId = this.props.orgarea[cityIndex].id;
-      this.form.setFieldsValue({ orgarea: cityId });
+      this.editUserFormRef.current.setFieldsValue({ orgarea: cityId });
     } else if (provinceIndex > -1) {
       const provinceId = this.props.orgarea[provinceIndex].id;
-      this.form.setFieldsValue({ orgarea: provinceId });
+      this.editUserFormRef.current.setFieldsValue({ orgarea: provinceId });
     }
-    // if (countryIndex > -1 || cityIndex > -1 || provinceIndex > -1) {
-    //   this.forceUpdate();
-    // }
   }
 
   render () {
