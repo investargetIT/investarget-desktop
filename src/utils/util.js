@@ -316,7 +316,7 @@ function exchange(source) {
     return api.getExchangeRate(param).then((result) => {
       var rate = result.data.rate
       exchangeCache[source] = rate
-      return rate
+      return Number(rate)
     })
   }
 }
