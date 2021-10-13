@@ -1470,6 +1470,7 @@ class OrgBDListComponent extends React.Component {
     this.updateActiveOrgBDForEditing(record, { response, material });
   }
 
+  // Test
   handleOperationChange(record, value) {
     const react = this;
     switch (value) {
