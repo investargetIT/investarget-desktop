@@ -147,16 +147,16 @@ class AddUser extends React.Component {
     const countryIndex = this.props.country.map(m => m.country).indexOf(country);
     if (countryIndex > -1) {
       const countryId = this.props.country[countryIndex].id;
-      this.formData.country = { value: countryId };
+      this.addUserFormRef.current.setFieldsValue({ country: countryId });
     }
     const cityIndex = this.props.orgarea.map(m => m.name).indexOf(city);
     const provinceIndex = this.props.orgarea.map(m => m.name).indexOf(province);
     if (cityIndex > -1) {
       const cityId = this.props.orgarea[cityIndex].id;
-      this.formData.orgarea = { value: cityId };
+      this.addUserFormRef.current.setFieldsValue({ orgarea: cityId });
     } else if (provinceIndex > -1) {
       const provinceId = this.props.orgarea[provinceIndex].id;
-      this.formData.orgarea = { value: provinceId };
+      this.addUserFormRef.current.setFieldsValue({ orgarea: provinceId });
     }
     if (countryIndex > -1 || cityIndex > -1 || provinceIndex > -1) {
       this.forceUpdate();
@@ -193,39 +193,6 @@ class AddUser extends React.Component {
   }
 
   handleCancel = () => this.setState({ visible: false })
-
-  // handleOrgChange(org) {
-  //   const usernameC = this.form.getFieldValue('usernameC');
-  //   if (usernameC) {
-  //     this.checkIfExistsUserWithSameNameInThisOrg(org, usernameC);
-  //   }
-  // }
-
-  // checkIfExistsUserWithSameNameInThisOrg = (org, username) => {
-  //   const react = this;
-  //   let userID;
-  //   api.getUser({ org, usernameC: username })
-  //     .then(result => {
-  //       if (result.data.count > 0) {
-  //         userID = result.data.data[0].id;
-  //         return api.checkUserRelation(userID, isLogin().id);
-  //       }
-  //     })
-  //     .then(result => {
-  //       if (result === undefined) return;
-  //       let editable = '';
-  //       if (result.data || hasPerm('usersys.admin_changeuser')) {
-  //         editable = 'edit/';
-  //       }
-  //       Modal.warning({
-  //         title: '该机构已有同名投资人',
-  //         okText: '确定',
-  //         onOk() {
-  //           react.props.history.push(`/app/user/${editable}${userID}`);
-  //         }
-  //       });
-  //     })
-  // };
 
   checkIfExistsUserWithSameName = async (username) => {
     const resUser = await api.getUser({ usernameC: username });
