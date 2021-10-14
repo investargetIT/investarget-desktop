@@ -337,6 +337,7 @@ class OrgBDListComponent extends React.Component {
       }
       try {
         const projResult = await api.getProjDetail(proj);
+        window.echo('proj res', projResult.data);
         this.setState({ projectDetails: projResult.data });
         const { projTraders, PM } = projResult.data;
         if (projTraders) {
@@ -2417,6 +2418,7 @@ class OrgBDListComponent extends React.Component {
 
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
+              <div style={{ fontWeight: 'bold', lineHeight: '28px', textAlign: 'center' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
               <Table
                 scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
