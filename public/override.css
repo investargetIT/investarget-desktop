@@ -671,11 +671,23 @@ label.login-register-form__container__label {
 .orgbd-operation, .orgbd-table-header {
   display: flex;
 }
+.table-orgbd-mobile {
+  display: none;
+}
+.table-orgbd-desktop {
+  display: block;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
   }
   .modal-orgbd-edit.ant-modal-wrap {
     width: 100vw;
+  }
+  .table-orgbd-mobile {
+    display: block;
+  }
+  .table-orgbd-desktop {
+    display: none;
   }
 }

@@ -2199,23 +2199,44 @@ class OrgBDListComponent extends React.Component {
             {!this.props.fromProjectCostCenter && <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>}
           </div>
 
-          {this.state.filters.proj !== null ?
-            <Table
-              scroll={{ x: true }}
-              onChange={this.handleTableChange}
-              columns={columns}
-              expandedRowRender={expandedRowRender}
-              // expandRowByClick
-              dataSource={list}
-              rowKey={record => record.id}
-              loading={loading}
-              onExpand={this.onExpand.bind(this)}
-              expandedRowKeys={expanded}
-              pagination={false}
-              size={this.props.size || "middle"}
-              showHeader={false}
-            />
-            : null}
+          {this.state.filters.proj !== null &&
+            <div className="table-orgbd-desktop">
+              <Table
+                scroll={{ x: true }}
+                onChange={this.handleTableChange}
+                columns={columns}
+                expandedRowRender={expandedRowRender}
+                // expandRowByClick
+                dataSource={list}
+                rowKey={record => record.id}
+                loading={loading}
+                onExpand={this.onExpand.bind(this)}
+                expandedRowKeys={expanded}
+                pagination={false}
+                size={this.props.size || "middle"}
+                showHeader={false}
+              />
+            </div>
+          }
+
+          {this.state.filters.proj !== null &&
+            <div className="table-orgbd-mobile">
+              <Table
+                scroll={{ x: true }}
+                onChange={this.handleTableChange}
+                columns={columns}
+                // expandedRowRender={expandedRowRender}
+                dataSource={list}
+                rowKey={record => record.id}
+                loading={loading}
+                onExpand={this.onExpand.bind(this)}
+                expandedRowKeys={expanded}
+                pagination={false}
+                size={this.props.size || "middle"}
+                showHeader={false}
+              />
+            </div>
+          }
 
           {this.props.pagination && this.state.filters.proj !== null ?
             <div style={{ margin: '16px 0' }} className="clearfix">
