@@ -1576,7 +1576,6 @@ class OrgBDListComponent extends React.Component {
       {
         title: i18n('org_bd.org'),
         key: 'org',
-        fixed: 'left',
         sorter: false,
         render: (_, record) => {
           if (!record.org) return null;
@@ -1630,11 +1629,11 @@ class OrgBDListComponent extends React.Component {
           );
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
               <Popover content={popoverContent}>
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
               </Popover>
-              <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
+              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+              {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
             </div>
           );
         },
@@ -1710,6 +1709,31 @@ class OrgBDListComponent extends React.Component {
           return null;
         },
       },
+      {
+        title: '机构进度/材料',
+        dataIndex: 'response',
+        key: 'response',
+        sorter: false,
+        render: (text, record) => {
+          if (record.new) {
+            return (
+              <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange.bind(this, record)} placeholder="机构进度/材料" />
+            );
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            let progress = null;
+            if (text) {
+              progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+            }
+            let material = null;
+            if (record.material) {
+              material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
+            }
+            return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
+          }
+          return null;
+        },
+      },
     ];
 
 
@@ -1766,7 +1790,7 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username', fixed: 'left',
+        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username',
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
