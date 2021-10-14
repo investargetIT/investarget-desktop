@@ -1612,6 +1612,7 @@ class OrgBDListComponent extends React.Component {
         title: i18n('org_bd.org'),
         key: 'org',
         fixed: 'left',
+        width: 100,
         sorter: false,
         render: (_, record) => {
           if (!record.org) return null;
@@ -1638,35 +1639,77 @@ class OrgBDListComponent extends React.Component {
           );
         },
       },
-      // {
-      //   title: '职位',
-      //   key: 'position',
-      // },
-      // {
-      //   title: '职位',
-      //   width: '10%',
-      // },
-      // {
-      //   title: '职位',
-      //   width: '10%',
-      // },
-      // {
-      //   title: '职位',
-      //   width: '10%',
-      // },
-      // {
-      //   title: '职位',
-      //   width: '10%',
-      // },
-      // {
-      //   title: '最新备注',
-      //   width: '20%',
-      // },
-      // {
-      //   title: '操作',
-      //   width: '20%',
-      // }
-      // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
+      {
+        title: i18n('org_bd.contact'),
+        dataIndex: 'username',
+        key: 'username',
+        width: 100,
+        fixed: 'left',
+        render: (_, record) => {
+          return record.new ?
+            <SelectOrgInvestor
+              allStatus
+              onjob
+              allowEmpty
+              style={{ width: "100%" }}
+              type="investor"
+              mode="single"
+              size="middle"
+              optionFilterProp="children"
+              org={record.org.id}
+              value={record.orgUser}
+              onChange={v => { this.updateSelection(record, { orgUser: v }) }}
+            />
+            :
+            <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
+              {!this.props.fromProjectCostCenter && (
+                this.isAbleToAddPMRemark(record) ?
+                  <Tooltip title="编辑">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
+                      <ExpandAltOutlined />
+                    </Button>
+                  </Tooltip>
+                  : <div style={{ width: 46, height: 32 }} />
+              )}
+              {record.username ?
+                <Popover placement="topRight" content={this.content(record)}>
+                  <div style={{ color: '#428BCA' }}>
+                    <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
+                  </div>
+                </Popover>
+                : '暂无'}
+            </div>
+        },
+        sorter: false
+      },
+      {
+        title: '职位',
+        key: 'title',
+        render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
+      },
+      {
+        title: i18n('org_bd.manager'),
+        dataIndex: ['manager', 'username'],
+        key: 'manager',
+        sorter: false,
+        render: (text, record) => {
+          if (record.new) {
+            return (
+              <SelectTrader
+                style={{ width: 100 }}
+                data={this.state.traderList}
+                mode="single"
+                value={record.trader}
+                onChange={v => { this.updateSelection(record, { trader: v }) }}
+              />
+            );
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            return text;
+          }
+          return null;
+        },
+      },
     ];
 
 
@@ -2242,7 +2285,6 @@ class OrgBDListComponent extends React.Component {
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-desktop">
               <Table
-                scroll={{ x: true }}
                 onChange={this.handleTableChange}
                 columns={columns}
                 expandedRowRender={expandedRowRender}
@@ -2262,14 +2304,12 @@ class OrgBDListComponent extends React.Component {
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
               <Table
-                scroll={{ x: true }}
+                scroll={{ x: 1000 }}
                 onChange={this.handleTableChange}
                 columns={columnsForMobile}
                 dataSource={this.generateDataSourceForMobile(list)}
                 rowKey={record => record.id}
                 loading={loading}
-                onExpand={this.onExpand.bind(this)}
-                expandedRowKeys={expanded}
                 pagination={false}
                 size={this.props.size || "middle"}
               />
