@@ -1608,10 +1608,10 @@ class OrgBDListComponent extends React.Component {
 
     const columnsForMobile = [
       {
-        title: i18n('org_bd.org'),
+        title: `${i18n('org_bd.org')}/${i18n('org_bd.contact')}`,
         key: 'org',
         fixed: 'left',
-        width: 100,
+        width: 110,
         sorter: false,
         render: (_, record) => {
           if (!record.org) return null;
@@ -1629,57 +1629,19 @@ class OrgBDListComponent extends React.Component {
           );
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Popover content={popoverContent}>
-                <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
-              </Popover>
-              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
-              {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
+              {this.isAbleToAddPMRemark(record) ?
+                <Tooltip title="编辑">
+                  <ExpandAltOutlined style={{ color: '#339bd2', marginRight: 8 }} onClick={this.handleOperationChange.bind(this, record, 'edit')} />
+                </Tooltip>
+                : <div style={{ width: 14, height: 14, marginRight: 8 }} />}
+              <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor, marginRight: 8 }} />
+              <div style={{ flex: 1, wordBreak: 'break-word' }}>
+                <div style={{ fontSize: 12, color: '#262626', fontWeight: 'bold' }}>{record.org.orgname}</div>
+                <div style={{ color: '#595959' }}>{record.username || '暂无'}</div>
+              </div>
             </div>
           );
         },
-      },
-      {
-        title: i18n('org_bd.contact'),
-        dataIndex: 'username',
-        key: 'username',
-        width: 100,
-        fixed: 'left',
-        render: (_, record) => {
-          return record.new ?
-            <SelectOrgInvestor
-              allStatus
-              onjob
-              allowEmpty
-              style={{ width: "100%" }}
-              type="investor"
-              mode="single"
-              size="middle"
-              optionFilterProp="children"
-              org={record.org.id}
-              value={record.orgUser}
-              onChange={v => { this.updateSelection(record, { orgUser: v }) }}
-            />
-            :
-            <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
-              {!this.props.fromProjectCostCenter && (
-                this.isAbleToAddPMRemark(record) ?
-                  <Tooltip title="编辑">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
-                      <ExpandAltOutlined />
-                    </Button>
-                  </Tooltip>
-                  : <div style={{ width: 46, height: 32 }} />
-              )}
-              {record.username ?
-                <Popover placement="topRight" content={this.content(record)}>
-                  <div style={{ color: '#428BCA' }}>
-                    <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
-                  </div>
-                </Popover>
-                : '暂无'}
-            </div>
-        },
-        sorter: false
       },
       {
         title: '职位',
@@ -2328,7 +2290,7 @@ class OrgBDListComponent extends React.Component {
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
               <Table
-                scroll={{ x: 1000 }}
+                scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
                 columns={columnsForMobile}
                 dataSource={this.generateDataSourceForMobile(list)}
