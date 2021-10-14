@@ -1696,7 +1696,135 @@ class OrgBDListComponent extends React.Component {
           return null;
         },
       },
+      {
+        title: '创建时间',
+        width: '11%',
+        key: 'creation_time',
+        dataIndex: 'createdtime',
+        render: (text, record) => {
+          if (record.new) {
+            return null;
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            return text.slice(0, 10);
+          }
+          return null;
+        },
+      },
+      {
+        title: "机构反馈",
+        key: 'bd_latest_info',
+        render: (text, record) => {
+          if (record.new) {
+            return '暂无';
+          }
+          if (this.isAbleToModifyStatus(record)) {
+            let latestComment = '';
+            if (record.BDComments && record.BDComments.length) {
+              const commonComments = record.BDComments.filter(f => !f.isPMComment);
+              if (commonComments.length > 0) {
+                latestComment = commonComments[commonComments.length - 1].comments;
+              }
+            }
+            if (!latestComment) return '暂无';
+
+            const comments = record.BDComments;
+            const popoverContent = comments.filter(f => !f.isPMComment)
+              .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+              .map(comment => {
+              let content = comment.comments;
+              const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+              if (oldStatusMatch) {
+                const oldStatus = oldStatusMatch[0];
+                content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+              }
+              return (
+                <div key={comment.id} style={{ marginBottom: 8 }}>
+                  <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                  <div style={{ display: 'flex' }}>
+                    {comment.createuser &&
+                      <div style={{ marginRight: 10 }}>
+                        <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                          <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                        </a>
+                      </div>
+                    }
+                    <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                  </div>
+                </div>
+              );
+            });
+            return (
+              <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+                <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+              </Popover>
+            );
+          }
+          return null;
+        },
+      },
     ];
+    if (this.props.editable) {
+      columnsForMobile.push({
+        title: i18n('org_bd.operation'), width: '12%', render: (text, record) => {
+          if (record.new) {
+            return (
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                <div style={{ marginRight: 4 }}>
+                  <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
+                  &nbsp;&nbsp;
+                  <Popconfirm title="确定取消？" onConfirm={this.discardNewBD.bind(this, record)}>
+                    <a style={buttonStyle} size="small">取消</a>
+                  </Popconfirm>
+                </div>
+              </div>
+            )
+          } else {
+            const latestComment = record.BDComments && record.BDComments[0]
+            const comments = latestComment ? latestComment.comments : ''
+            return (
+              <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
+                {/* {this.isAbleToAddPMRemark(record) &&
+              <Tooltip title="编辑">
+                <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
+                  <EditOutlined />
+                </Button>
+              </Tooltip>
+            } */}
+                {this.isAbleToModifyStatus(record) &&
+                  <Tooltip title="修改状态">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
+                      <FormOutlined />
+                    </Button>
+                  </Tooltip>
+                }
+                {this.isAbleToModifyStatus(record) &&
+                  <Tooltip title="添加机构反馈">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
+                      <HighlightOutlined />
+                    </Button>
+                  </Tooltip>
+                }
+                {/* {this.isAbleToAddPMRemark(record) &&
+              <Tooltip title="添加应对策略">
+                <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
+                  <HighlightOutlined />
+                </Button>
+              </Tooltip>
+            } */}
+                {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) &&
+                  <Tooltip title="删除">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
+                      <DeleteOutlined />
+                    </Button>
+                  </Tooltip>
+                }
+              </div>
+            );
+          }
+        }
+      })
+    }
 
 
     const columnsForExport = [
