@@ -1561,6 +1561,12 @@ class OrgBDListComponent extends React.Component {
     this.setState({ displayQRCode: true });
   }
 
+  generateDataSourceForMobile = originalList => {
+    const newDataSource = originalList.reduce((prev, curr) => prev.concat(curr.items), []);
+    window.echo('new data', newDataSource);
+    return newDataSource;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -1599,36 +1605,70 @@ class OrgBDListComponent extends React.Component {
           );
         },
       },
-        // {
-        //   title: '职位',
-        //   key: 'position',
-        // },
-        // {
-        //   title: '职位',
-        //   width: '10%',
-        // },
-        // {
-        //   title: '职位',
-        //   width: '10%',
-        // },
-        // {
-        //   title: '职位',
-        //   width: '10%',
-        // },
-        // {
-        //   title: '职位',
-        //   width: '10%',
-        // },
-        // {
-        //   title: '最新备注',
-        //   width: '20%',
-        // },
-        // {
-        //   title: '操作',
-        //   width: '20%',
-        // }
-        // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
-      ]
+    ];
+
+    const columnsForMobile = [
+      {
+        title: i18n('org_bd.org'),
+        key: 'org',
+        fixed: 'left',
+        sorter: false,
+        render: (_, record) => {
+          if (!record.org) return null;
+          let displayPriorityColor = priorityColor[0]; // 默认优先级低
+          let priorityName = priority[0];
+          if (typeof record.isimportant === 'number') {
+            displayPriorityColor = priorityColor[record.isimportant];
+            priorityName = priority[record.isimportant];
+          }
+          const popoverContent = (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div>优先级{priorityName}</div>
+              <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, typeof record.isimportant === 'number' ? record.isimportant : 0, record)} icon={<EditOutlined />}>修改</Button>
+            </div>
+          );
+          return (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+              <Popover content={popoverContent}>
+                <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
+              </Popover>
+              <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
+            </div>
+          );
+        },
+      },
+      // {
+      //   title: '职位',
+      //   key: 'position',
+      // },
+      // {
+      //   title: '职位',
+      //   width: '10%',
+      // },
+      // {
+      //   title: '职位',
+      //   width: '10%',
+      // },
+      // {
+      //   title: '职位',
+      //   width: '10%',
+      // },
+      // {
+      //   title: '职位',
+      //   width: '10%',
+      // },
+      // {
+      //   title: '最新备注',
+      //   width: '20%',
+      // },
+      // {
+      //   title: '操作',
+      //   width: '20%',
+      // }
+      // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.id || '暂无'},
+    ];
+
 
     const columnsForExport = [
       { title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname', width: '15%' },
@@ -2224,16 +2264,14 @@ class OrgBDListComponent extends React.Component {
               <Table
                 scroll={{ x: true }}
                 onChange={this.handleTableChange}
-                columns={columns}
-                // expandedRowRender={expandedRowRender}
-                dataSource={list}
+                columns={columnsForMobile}
+                dataSource={this.generateDataSourceForMobile(list)}
                 rowKey={record => record.id}
                 loading={loading}
                 onExpand={this.onExpand.bind(this)}
                 expandedRowKeys={expanded}
                 pagination={false}
                 size={this.props.size || "middle"}
-                showHeader={false}
               />
             </div>
           }
