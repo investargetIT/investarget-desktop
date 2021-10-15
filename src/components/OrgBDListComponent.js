@@ -1792,13 +1792,13 @@ class OrgBDListComponent extends React.Component {
                 </Button>
               </Tooltip>
             } */}
-                {this.isAbleToModifyStatus(record) &&
+                {/* {this.isAbleToModifyStatus(record) &&
                   <Tooltip title="修改状态">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
                       <FormOutlined />
                     </Button>
                   </Tooltip>
-                }
+                } */}
                 {this.isAbleToModifyStatus(record) &&
                   <Tooltip title="添加机构反馈">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
@@ -2206,13 +2206,13 @@ class OrgBDListComponent extends React.Component {
                       </Button>
                     </Tooltip>
                   } */}
-                  {this.isAbleToModifyStatus(record) &&
+                  {/* {this.isAbleToModifyStatus(record) &&
                     <Tooltip title="修改状态">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
                         <FormOutlined />
                       </Button>
                     </Tooltip>
-                  }
+                  } */}
                   {this.isAbleToModifyStatus(record) &&
                     <Tooltip title="添加机构反馈">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
