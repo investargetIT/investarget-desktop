@@ -316,10 +316,13 @@ function exchange(source) {
       'scur': source,
     }
     return api.getExchangeRate(param).then((result) => {
-      var rate = result.data.rate
-      exchangeCache[source] = rate
+      var rate = result.data[0].exchange;
+      exchangeCache[source] = Number(rate);
       return Number(rate)
-    })
+    }).catch(() => {
+      exchangeCache[source] = 1;
+      return 1;
+    });
   }
 }
 
