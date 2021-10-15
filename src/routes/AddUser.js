@@ -141,9 +141,9 @@ class AddUser extends React.Component {
   getPhoneAddress = async (mobile) => {
     const res = await api.getPhoneAddress(mobile);
     const { data: result } = res;
-    const { att } = result;
-    if (!att) return;
-    const [country, province, city] = att.split(',');
+    const { city, province } = result;
+    if (!city && !province) return;
+    const country = '中国';
     const countryIndex = this.props.country.map(m => m.country).indexOf(country);
     if (countryIndex > -1) {
       const countryId = this.props.country[countryIndex].id;
