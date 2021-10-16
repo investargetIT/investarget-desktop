@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker } from 'antd';
 import {
   ManOutlined,
   PlusOutlined,
@@ -14,6 +14,7 @@ import {
   getUserInfo,
 } from '../utils/util';
 
+const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
 function PersonalCenter(props) {
@@ -328,6 +329,14 @@ function PersonalCenter(props) {
     );
   }
 
+  const onFinish = (values) => {
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -508,6 +517,47 @@ function PersonalCenter(props) {
           </Card>
         </div>
       </div>
+
+      <Modal
+        title="新增岗位及晋升记录"
+        visible
+      >
+        <Form
+          style={{ width: 400 }}
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="起止时间"
+            name="duration"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <RangePicker />
+          </Form.Item>
+
+          <Form.Item
+            label="任职部门"
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="任职岗位"
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+        </Form>
+      </Modal>
 
     </LeftRightLayoutPure>
   );
