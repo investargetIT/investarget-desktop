@@ -6,6 +6,7 @@ import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button } from 'antd';
 import {
   ManOutlined,
   PlusOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 import {
@@ -58,6 +59,17 @@ function PersonalCenter(props) {
       dataIndex: 'address',
       key: 'address',
     },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data1 = [
@@ -96,7 +108,18 @@ function PersonalCenter(props) {
       title: '备注',
       dataIndex: 'remark',
       key: 'remark',
-    }
+    },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data2 = [
@@ -130,7 +153,18 @@ function PersonalCenter(props) {
       title: '主要职责',
       dataIndex: 'remark',
       key: 'remark',
-    }
+    },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data3 = [
@@ -157,7 +191,18 @@ function PersonalCenter(props) {
       dataIndex: 'remark',
       key: 'remark',
       render: text => <a href="#">{text}</a>,
-    }
+    },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data4 = [
@@ -191,7 +236,18 @@ function PersonalCenter(props) {
       title: '沟通主要内容',
       dataIndex: 'remark',
       key: 'remark',
-    }
+    },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data5 = [
@@ -232,7 +288,18 @@ function PersonalCenter(props) {
       title: '状态',
       dataIndex: 'remark',
       key: 'remark',
-    }
+    },
+    {
+      title: '操作',
+      align: 'center',
+      key: 'operation',
+      render: () => (
+        <div>
+          <Button type="link">编辑</Button>
+          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+        </div>
+      ),
+    },
   ];
 
   const data6 = [
