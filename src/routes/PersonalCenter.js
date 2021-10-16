@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table, Empty, Popover } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button } from 'antd';
 import {
   ManOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 import {
@@ -342,23 +343,53 @@ function PersonalCenter(props) {
           <Card>
             <Tabs defaultActiveKey="1" onChange={tabChange}>
               <TabPane tab="人事档案及绩效" key="1">
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
-                <Table style={{ marginBottom: 40 }} columns={columns1} dataSource={data1} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
+                  <Table columns={columns1} dataSource={data1} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
-                <Table style={{ marginBottom: 40 }} columns={columns2} dataSource={data2} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
+                  <Table columns={columns2} dataSource={data2} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
-                <Table style={{ marginBottom: 40 }} columns={columns3} dataSource={data3} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
+                  <Table columns={columns3} dataSource={data3} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后工作概况<span style={{ fontWeight: 'normal', marginLeft: 10, fontSize: 14, color: '#989898' }}>推荐人：王大明/投资经理</span></div>
-                <Table style={{ marginBottom: 40 }} columns={columns4} dataSource={data4} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后工作概况<span style={{ fontWeight: 'normal', marginLeft: 10, fontSize: 14, color: '#989898' }}>推荐人：王大明/投资经理</span></div>
+                  <Table columns={columns4} dataSource={data4} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
-                <Table style={{ marginBottom: 40 }} columns={columns5} dataSource={data5} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
+                  <Table columns={columns5} dataSource={data5} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
-                <Table style={{ marginBottom: 40 }} columns={columns6} dataSource={data6} pagination={false} />
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
+                  <Table columns={columns6} dataSource={data6} pagination={false} />
+                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                  </div>
+                </div>
 
               </TabPane>
               <TabPane tab="参与过的项目" key="2">
