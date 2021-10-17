@@ -22,6 +22,7 @@ function PersonalCenter(props) {
   const userInfo = getUserInfo();
 
   const [projList, setProjList] = useState([]);
+  const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
 
   useEffect(() => {
     async function loadWorkingProjects() {
@@ -66,7 +67,7 @@ function PersonalCenter(props) {
       key: 'operation',
       render: () => (
         <div>
-          <Button type="link">编辑</Button>
+          <Button type="link" onClick={() => setDisplayPromotionHistoryModal(true)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
@@ -423,7 +424,7 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
                   <Table columns={columns1} dataSource={data1} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => setDisplayPromotionHistoryModal(true)}>新增记录</Button>
                   </div>
                 </div>
 
@@ -520,7 +521,8 @@ function PersonalCenter(props) {
 
       <Modal
         title="新增岗位及晋升记录"
-        visible
+        visible={displayPromotionHistoryModal}
+        onCancel={() => setDisplayPromotionHistoryModal(false)}
       >
         <Form
           style={{ width: 400 }}
