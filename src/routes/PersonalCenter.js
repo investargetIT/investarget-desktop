@@ -23,6 +23,8 @@ function PersonalCenter(props) {
 
   const [projList, setProjList] = useState([]);
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
+  const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
+
 
   useEffect(() => {
     async function loadWorkingProjects() {
@@ -117,7 +119,7 @@ function PersonalCenter(props) {
       key: 'operation',
       render: () => (
         <div>
-          <Button type="link">编辑</Button>
+          <Button type="link" onClick={() => setDisplayAssessmentHistoryModal(true)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
@@ -432,7 +434,7 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
                   <Table columns={columns2} dataSource={data2} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => setDisplayAssessmentHistoryModal(true)}>新增记录</Button>
                   </div>
                 </div>
 
@@ -523,6 +525,48 @@ function PersonalCenter(props) {
         title="新增岗位及晋升记录"
         visible={displayPromotionHistoryModal}
         onCancel={() => setDisplayPromotionHistoryModal(false)}
+      >
+        <Form
+          style={{ width: 400 }}
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="起止时间"
+            name="duration"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <RangePicker />
+          </Form.Item>
+
+          <Form.Item
+            label="任职部门"
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="任职岗位"
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+        </Form>
+      </Modal>
+
+      <Modal
+        title="新增试用期内及年度考核记录"
+        visible={displayAssessmentHistoryModal}
+        onCancel={() => setDisplayAssessmentHistoryModal(false)}
       >
         <Form
           style={{ width: 400 }}
