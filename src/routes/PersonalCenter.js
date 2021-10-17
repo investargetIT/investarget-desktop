@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker, Radio, Upload } from 'antd';
 import {
   ManOutlined,
   PlusOutlined,
   DeleteOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 import {
@@ -579,7 +580,7 @@ function PersonalCenter(props) {
           autoComplete="off"
         >
           <Form.Item
-            label="起止时间"
+            label="年度"
             name="duration"
             rules={[{ required: true, message: 'Please input your username!' }]}
           >
@@ -587,19 +588,31 @@ function PersonalCenter(props) {
           </Form.Item>
 
           <Form.Item
-            label="任职部门"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            label="绩效考核结果"
+            name="result"
           >
-            <Input />
+            <Radio.Group>
+              <Radio value={1}>合格</Radio>
+              <Radio value={2}>未合格</Radio>
+            </Radio.Group>
           </Form.Item>
 
           <Form.Item
-            label="任职岗位"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            label="上传附件"
+            name="username"
+            valuePropName="fileList"
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
-            <Input />
+            <Upload>
+              <Button icon={<UploadOutlined />} type="link">上传附件</Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item
+            label="备注"
+            name="remark"
+          >
+            <Input.TextArea rows={3} />
           </Form.Item>
 
         </Form>
