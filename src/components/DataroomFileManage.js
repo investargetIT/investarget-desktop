@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin, hasPerm, handleError } from '../utils/util';
@@ -148,6 +148,7 @@ function DataroomFileManage({
 }) {
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [subFilesOfSelectedFolder, setSubFilesOfSelectedFolder] = useState([]);
   const [previewFileUrl, setPreviewFileUrl] = useState(null);
   const [dirData, setDirData] = useState([]);
 
@@ -341,6 +342,10 @@ function DataroomFileManage({
         const url = getPreviewFileUrl(currentFile);
         setPreviewFileUrl(url);
       }
+    } else {
+      const allChildren = findAllChildren(currentFile.id);
+      const allSubFiles = allChildren.filter(f => f.isFile);
+      setSubFilesOfSelectedFolder(allSubFiles);
     }
   };
 
@@ -365,10 +370,26 @@ function DataroomFileManage({
     return result;
   }
 
+  function getVisibleUsersOfFile(fileID) {
+    const result = fileUserList.filter(item => item.file == fileID)
+      .map(item => String(item.user));
+    return result;
+  }
+
   function renderTagContent(props) {
     const { value } = props;
     let isReadFile = false;
     const filterReadUser = readFileUserList.filter(f => f.file === selectedFile.id && f.user === parseInt(value));
+    if (filterReadUser.length > 0) {
+      isReadFile = true;
+    }
+    return tagRender(props, isReadFile);
+  }
+
+  function renderTagContentOfFile(props, fileID) {
+    const { value } = props;
+    let isReadFile = false;
+    const filterReadUser = readFileUserList.filter(f => f.file === fileID && f.user === parseInt(value));
     if (filterReadUser.length > 0) {
       isReadFile = true;
     }
@@ -959,20 +980,20 @@ function DataroomFileManage({
                   <div style={{ flex: 2 }}>可见用户</div>
                 </div>
                 <div style={{ padding: '16px 0' }}>
-                  {[1, 2, 3].map(m => (
-                    <div key={m} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
-                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}>这是文件的名称</div>
+                  {subFilesOfSelectedFolder.length > 0 ? subFilesOfSelectedFolder.map(m => (
+                    <div key={m.id} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
+                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}>{m.filename}</div>
                       <div style={{ flex: 2 }}>
                         <Select
                           mode="multiple"
                           showArrow
-                          tagRender={renderTagContent}
+                          tagRender={renderTagContentOfFile}
                           style={{ width: '100%' }}
-                          value={getVisibleUsers()}
+                          value={getVisibleUsersOfFile(m.id)}
                           optionLabelProp="children"
                           filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-                          onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId))}
-                          onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId))}
+                          onSelect={userId => onSelectFileUser(m.id, Number(userId))}
+                          onDeselect={userId => onDeselectFileUser(m.id, Number(userId))}
                         >
                           {userOptions.map(option => (
                             <Select.Option
@@ -982,7 +1003,7 @@ function DataroomFileManage({
                         </Select>
                       </div>
                     </div>
-                  ))}
+                  )) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                 </div>
               </div>
             }
