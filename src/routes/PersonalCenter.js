@@ -175,50 +175,50 @@ function PersonalCenter(props) {
   const data3 = [
   ];
 
-  const columns4 = [
-    {
-      title: '招聘方式',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '劳动合同签订/续签日期',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: '劳动合同期限',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: '附件',
-      dataIndex: 'remark',
-      key: 'remark',
-      render: text => <a href="#">{text}</a>,
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: () => (
-        <div>
-          <Button type="link">编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const columns4 = [
+  //   {
+  //     title: '招聘方式',
+  //     dataIndex: 'name',
+  //     key: 'name',
+  //   },
+  //   {
+  //     title: '劳动合同签订/续签日期',
+  //     dataIndex: 'age',
+  //     key: 'age',
+  //   },
+  //   {
+  //     title: '劳动合同期限',
+  //     dataIndex: 'address',
+  //     key: 'address',
+  //   },
+  //   {
+  //     title: '附件',
+  //     dataIndex: 'remark',
+  //     key: 'remark',
+  //     render: text => <a href="#">{text}</a>,
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: () => (
+  //       <div>
+  //         <Button type="link">编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
-  const data4 = [
-    {
-      key: '1',
-      name: '公开招聘',
-      age: '2020.10.01 - 2023.09.30',
-      address: '三年',
-      remark: '劳动合同.doc',
-    },
-  ];
+  // const data4 = [
+  //   {
+  //     key: '1',
+  //     name: '公开招聘',
+  //     age: '2020.10.01 - 2023.09.30',
+  //     address: '三年',
+  //     remark: '劳动合同.doc',
+  //   },
+  // ];
 
   const columns5 = [
     {
@@ -447,13 +447,13 @@ function PersonalCenter(props) {
                   </div>
                 </div>
 
-                <div style={{ marginBottom: 40 }}>
+                {/* <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后工作概况<span style={{ fontWeight: 'normal', marginLeft: 10, fontSize: 14, color: '#989898' }}>推荐人：王大明/投资经理</span></div>
                   <Table columns={columns4} dataSource={data4} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
                   </div>
-                </div>
+                </div> */}
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
