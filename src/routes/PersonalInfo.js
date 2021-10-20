@@ -138,6 +138,7 @@ function PersonalInfo(props) {
   }
 
   function handleFinishUploadResume(key) {
+    message.success('简历上传成功');
     api.editUser([props.currentUser.id], { resumeBucket: 'file', resumeKey: key }).then(data => {
       const resumeKey = data.data[0].resumeKey;
       const resumeurl = data.data[0].resumeurl;
@@ -216,6 +217,7 @@ function PersonalInfo(props) {
           </TabPane>
           <TabPane tab="工作经历" key="2">
           <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>工作经历</div>
+            {userInfo.resumeurl && <div style={{ marginBottom: 20 }}><a href={userInfo.resumeurl} target="_blank">查看现有简历</a></div>}
             <UploadFile name="上传简历" onChange={handleFinishUploadResume} />
             {/* <Form
               name="dynamic_form_item"
