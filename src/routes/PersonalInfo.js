@@ -90,6 +90,26 @@ function PersonalInfo(props) {
     });
   }
 
+  function handleUploaded(response) {
+    // this.setState({ avatarUrl: response.url })
+    // editUser([this.props.currentUser.id], { photoBucket: 'image', photoKey: response.key }).then(data => {
+    //   const photoKey = data.data[0].photoKey
+    //   const photourl = data.data[0].photourl
+    //   const photoBucket = data.data[0].photoBucket
+    //   const userInfo = { ...this.props.currentUser, photoKey, photourl, photoBucket }
+    //   localStorage.setItem('user_info', JSON.stringify(userInfo))
+    //   this.props.dispatch({
+    //     type: 'currentUser/save',
+    //     userInfo
+    //   })
+    // }, error => {
+    //   this.props.dispatch({
+    //     type: 'app/findError',
+    //     payload: error
+    //   })
+    // })
+  }
+
   function  getInitialValuesFromCurrentUser() {
     const { username, bornTime: bornTimeStr, school, education, specialty, specialtyhobby, remark } = userInfo;
     const bornTime = moment(bornTimeStr);
@@ -145,11 +165,13 @@ function PersonalInfo(props) {
                   <Button type="primary" htmlType="submit" loading={loadingUpdateUserInfo}>更新基本信息</Button>
                 </Form.Item>
               </Form>
-              <div>
-                <Upload {...uploadProps}>
-                  <Button icon={<CloudUploadOutlined />}>上传图片</Button>
-                </Upload>
-              </div>
+              <Upload {...uploadProps}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div>头像</div>
+                  {props.currentUser.photourl && <img src={props.currentUser.photourl} alt="avatar" style={{ marginTop: 8, marginBottom: 20, width: 152, height: 152, borderRadius: '50%' }} />}
+                  <div style={{ textAlign: 'center' }}><Button icon={<CloudUploadOutlined />}>上传图片</Button></div>
+                </div>
+              </Upload>
             </div>
           </TabPane>
           <TabPane tab="工作经历" key="2">
