@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { getUserInfo } from '../utils/util';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -28,6 +29,8 @@ const formItemLayoutWithOutLabel = {
 
 function PersonalInfo(props) {
 
+  const userInfo = getUserInfo();
+  window.echo('user info', userInfo);
   const [form] = Form.useForm();
 
   const uploadProps = {
@@ -60,6 +63,20 @@ function PersonalInfo(props) {
     console.log('Received values of form:', values);
   };
 
+  function handlePersonalInfoFormOnFinish(values) {
+    window.echo('finish for', values);
+    let { bornTime } = values;
+    if (bornTime) {
+      bornTime = bornTime.format('YYYY-MM-DD');
+    }
+    const params = { ...values, bornTime };
+    window.echo('params', params);
+  }
+
+  function  getInitialValuesFromCurrentUser() {
+
+  }
+  
 	return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -83,30 +100,32 @@ function PersonalInfo(props) {
                 layout="vertical"
                 initialValues={{}}
                 onValuesChange={handleValuesChange}
+                onFinish={handlePersonalInfoFormOnFinish}
+                initialValues={getInitialValuesFromCurrentUser()}
               >
                 <Form.Item label="姓名" name="username">
                   <Input placeholder="请输入姓名" />
                 </Form.Item>
-                <Form.Item label="出生日期" name="birthday">
+                <Form.Item label="出生日期" name="bornTime">
                   <DatePicker style={{ width: '100%' }} />
                 </Form.Item>
-                <Form.Item label="毕业学校" name="education">
+                <Form.Item label="毕业学校" name="school">
                   <Input placeholder="请输入毕业学校" />
                 </Form.Item>
-                <Form.Item label="学历" name="degree">
+                <Form.Item label="学历" name="education">
                   <Input placeholder="请输入学历" />
                 </Form.Item>
-                <Form.Item label="专业" name="major">
+                <Form.Item label="专业" name="specialty">
                   <Input placeholder="请输入专业" />
                 </Form.Item>
-                <Form.Item label="特长爱好" name="hobby">
+                <Form.Item label="特长爱好" name="specialtyhobby">
                   <TextArea placeholder="请输入特长爱好" rows={4} />
                 </Form.Item>
-                <Form.Item label="其他" name="others">
+                <Form.Item label="其他" name="remark">
                   <TextArea placeholder="请输入" rows={4} />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary">更新基本信息</Button>
+                  <Button type="primary" htmlType="submit">更新基本信息</Button>
                 </Form.Item>
               </Form>
               <div>
