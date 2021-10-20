@@ -5,6 +5,8 @@ import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, messag
 import { Link } from 'dva/router';
 import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { getUserInfo } from '../utils/util';
+import * as api from '../api';
+import { routerRedux } from 'dva/router';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -71,12 +73,37 @@ function PersonalInfo(props) {
     }
     const params = { ...values, bornTime };
     window.echo('params', params);
+
+    api.editUser([props.currentUser.id], params).then(data => {
+      // const tags = data.data[0].tags
+      // const card = data.data[0].cardKey
+      // const page = data.data[0].page;
+      const userInfo = { ...props.currentUser, ...params };
+      localStorage.setItem('user_info', JSON.stringify(userInfo))
+      this.props.dispatch({
+        type: 'currentUser/save',
+        userInfo
+      })
+      message.success(i18n('personal_info.message.update_success'))
+
+      let url = '/app';
+      if (!getUserInfo().is_superuser && hasPerm('usersys.as_investor')) {
+        url = '/app/dataroom/project/list';
+      }
+      props.dispatch(routerRedux.replace(url));
+
+    }, error => {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error
+      });
+    });
   }
 
   function  getInitialValuesFromCurrentUser() {
 
   }
-  
+
 	return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -90,7 +117,7 @@ function PersonalInfo(props) {
       </Breadcrumb>
 
       <Card bodyStyle={{ padding: '20px 0' }}>
-        <Tabs className="tabs-personal-info" defaultActiveKey="2" onChange={callback} tabPosition="left" tabBarStyle={{ width: 240 }}>
+        <Tabs className="tabs-personal-info" defaultActiveKey="1" onChange={callback} tabPosition="left" tabBarStyle={{ width: 240 }}>
           <TabPane tab="基本设置" key="1">
             <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>基本设置</div>
             <div style={{ display: 'flex' }}>
@@ -206,4 +233,8 @@ function PersonalInfo(props) {
   )
 }
 
-export default connect()(PersonalInfo);
+function mapStateToProps(state) {
+  const { currentUser } = state;
+  return { currentUser };
+}
+export default connect(mapStateToProps)(PersonalInfo);
