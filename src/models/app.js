@@ -44,7 +44,8 @@ export default {
       {id: 3, name: '未开始'},
       {id: 4, name: '正在进行'},
       {id: 5, name: '已完成'},
-    ], 
+    ],
+    education: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {

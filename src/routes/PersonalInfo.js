@@ -4,36 +4,22 @@ import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { getUserInfo } from '../utils/util';
+import { getUserInfo, i18n } from '../utils/util';
 import * as api from '../api';
 import { routerRedux } from 'dva/router';
+import { SelectEducation } from '../components/ExtraInput';
+import moment from 'moment';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
-  },
-};
-
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
-  window.echo('user info', userInfo);
   const [form] = Form.useForm();
+
+  const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);
 
   const uploadProps = {
     name: 'file',
@@ -54,7 +40,7 @@ function PersonalInfo(props) {
   };
 
   function handleValuesChange(values) {
-    window.echo('values change', values);
+    console.log('values change', values);
   }
 
   function callback(key) {
@@ -66,23 +52,26 @@ function PersonalInfo(props) {
   };
 
   function handlePersonalInfoFormOnFinish(values) {
-    window.echo('finish for', values);
     let { bornTime } = values;
     if (bornTime) {
-      bornTime = bornTime.format('YYYY-MM-DD');
+      bornTime = bornTime.format('YYYY-MM-DDT00:00:00');
     }
     const params = { ...values, bornTime };
-    window.echo('params', params);
-
+    setLoadingUpdateUserInfo(true);
     api.editUser([props.currentUser.id], params).then(data => {
-      // const tags = data.data[0].tags
-      // const card = data.data[0].cardKey
-      // const page = data.data[0].page;
-      const userInfo = { ...props.currentUser, ...params };
+      setLoadingUpdateUserInfo(false);
+      const username = data.data[0].username;
+      const bornTime = data.data[0].bornTime;
+      const school = data.data[0].school;
+      const education = data.data[0].education;
+      const specialty = data.data[0].specialty;
+      const specialtyhobby = data.data[0].specialtyhobby;
+      const remark = data.data[0].remark;
+      const userInfo = { ...props.currentUser, username, bornTime, school, education, specialty, specialtyhobby, remark };
       localStorage.setItem('user_info', JSON.stringify(userInfo))
-      this.props.dispatch({
+      props.dispatch({
         type: 'currentUser/save',
-        userInfo
+        userInfo,
       })
       message.success(i18n('personal_info.message.update_success'))
 
@@ -93,6 +82,7 @@ function PersonalInfo(props) {
       props.dispatch(routerRedux.replace(url));
 
     }, error => {
+      setLoadingUpdateUserInfo(false);
       props.dispatch({
         type: 'app/findError',
         payload: error
@@ -101,7 +91,9 @@ function PersonalInfo(props) {
   }
 
   function  getInitialValuesFromCurrentUser() {
-
+    const { username, bornTime: bornTimeStr, school, education, specialty, specialtyhobby, remark } = userInfo;
+    const bornTime = moment(bornTimeStr);
+    return { username, bornTime, school, education, specialty, specialtyhobby, remark };
   }
 
 	return (
@@ -140,7 +132,7 @@ function PersonalInfo(props) {
                   <Input placeholder="请输入毕业学校" />
                 </Form.Item>
                 <Form.Item label="学历" name="education">
-                  <Input placeholder="请输入学历" />
+                  <SelectEducation size="middle" placeholder="请选择学历" />
                 </Form.Item>
                 <Form.Item label="专业" name="specialty">
                   <Input placeholder="请输入专业" />
@@ -152,7 +144,7 @@ function PersonalInfo(props) {
                   <TextArea placeholder="请输入" rows={4} />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">更新基本信息</Button>
+                  <Button type="primary" htmlType="submit" loading={loadingUpdateUserInfo}>更新基本信息</Button>
                 </Form.Item>
               </Form>
               <div>

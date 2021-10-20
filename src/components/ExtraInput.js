@@ -178,6 +178,15 @@ const SelectRole = withOptionsAsync(SelectNumber, ['character'], function(state)
 })
 
 /**
+ * SelectDegree
+ */
+const SelectEducation = withOptionsAsync(SelectNumber, ['education'], function(state) {
+  const { education } = state.app;
+  const options = education ? education.map(item => ({ value: item.id, label: item.education })) : [];
+  return { options };
+});
+
+/**
  * SelectYear
  */
 const SelectYear = withYear(SelectNumber)
@@ -2087,6 +2096,7 @@ export {
   RadioGroup2,
   SelectTag,
   SelectRole,
+  SelectEducation,
   SelectYear,
   SelectTransactionType,
   SelectCurrencyType,
