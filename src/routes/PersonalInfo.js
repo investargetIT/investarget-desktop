@@ -9,6 +9,7 @@ import * as api from '../api';
 import { routerRedux } from 'dva/router';
 import { SelectEducation } from '../components/ExtraInput';
 import moment from 'moment';
+import { baseUrl } from '../utils/request';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -23,21 +24,40 @@ function PersonalInfo(props) {
 
   const uploadProps = {
     name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    headers: {
-      authorization: 'authorization-text',
-    },
+    action: userInfo.photoKey ? baseUrl + "/service/qiniucoverupload?bucket=image&key=" + userInfo.photoKey : baseUrl + "/service/qiniubigupload?bucket=image",
+    showUploadList: { showRemoveIcon: false },
     onChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} file uploaded successfully`);
+        onUploaded(info.file.response.result);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
   };
+
+  function onUploaded(result) {
+    const { key } = result;
+    api.editUser([props.currentUser.id], { photoBucket: 'image', photoKey: key }).then(data => {
+      const photoKey = data.data[0].photoKey;
+      const photourl = data.data[0].photourl;
+      const photoBucket = data.data[0].photoBucket;
+      const userInfo = { ...props.currentUser, photoKey, photourl, photoBucket };
+      localStorage.setItem('user_info', JSON.stringify(userInfo));
+      props.dispatch({
+        type: 'currentUser/save',
+        userInfo,
+      });
+    }, error => {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      });
+    });
+  }
 
   function handleValuesChange(values) {
     console.log('values change', values);
