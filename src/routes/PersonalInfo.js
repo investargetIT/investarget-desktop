@@ -182,7 +182,7 @@ function PersonalInfo(props) {
                 initialValues={getInitialValuesFromCurrentUser()}
               >
                 <Form.Item label="姓名" name="username">
-                  <Input placeholder="请输入姓名" />
+                  <Input placeholder="请输入姓名" disabled />
                 </Form.Item>
                 <Form.Item label="出生日期" name="bornTime">
                   <DatePicker style={{ width: '100%' }} />
