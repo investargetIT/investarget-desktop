@@ -10,6 +10,7 @@ import { routerRedux } from 'dva/router';
 import { SelectEducation } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
+import { UploadFile } from '../components/Upload';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -136,6 +137,25 @@ function PersonalInfo(props) {
     return { username, bornTime, school, education, specialty, specialtyhobby, remark };
   }
 
+  function handleFinishUploadResume(key) {
+    api.editUser([props.currentUser.id], { resumeBucket: 'file', resumeKey: key }).then(data => {
+      const resumeKey = data.data[0].resumeKey;
+      const resumeurl = data.data[0].resumeurl;
+      const resumeBucket = data.data[0].resumeBucket;
+      const userInfo = { ...props.currentUser, resumeKey, resumeurl, resumeBucket };
+      localStorage.setItem('user_info', JSON.stringify(userInfo));
+      props.dispatch({
+        type: 'currentUser/save',
+        userInfo,
+      });
+    }, error => {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      });
+    });
+  }
+
 	return (
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
@@ -196,7 +216,8 @@ function PersonalInfo(props) {
           </TabPane>
           <TabPane tab="工作经历" key="2">
           <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>工作经历</div>
-            <Form
+            <UploadFile name="上传简历" onChange={handleFinishUploadResume} />
+            {/* <Form
               name="dynamic_form_item"
               layout="vertical"
               style={{ width: 320, marginRight: 80 }}
@@ -256,7 +277,7 @@ function PersonalInfo(props) {
                   保存 
                 </Button>
               </Form.Item>
-            </Form>
+            </Form> */}
 
           </TabPane>
         </Tabs>

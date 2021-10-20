@@ -146,7 +146,7 @@ class UploadFile extends React.Component {
       {
         this.state.fileList.length == 0 ? (
           <Button>
-            <UploadOutlined /> {i18n('common.upload')}
+            <UploadOutlined /> {this.props.name || i18n('common.upload')}
           </Button>
         ) : null
       }
