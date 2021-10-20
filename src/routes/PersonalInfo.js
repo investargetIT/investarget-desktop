@@ -102,9 +102,7 @@ function PersonalInfo(props) {
         <Breadcrumb.Item>
           <Link to="/app">首页</Link>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <Link to="/app/personal-center">用户中心</Link>
-        </Breadcrumb.Item>
+        <Breadcrumb.Item>用户中心</Breadcrumb.Item>
         <Breadcrumb.Item>个人设置</Breadcrumb.Item>
       </Breadcrumb>
 

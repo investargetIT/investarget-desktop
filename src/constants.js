@@ -30,7 +30,7 @@ export const URI_6 = "/app/user/list"
 export const URI_7 = "/app/dataroom/project/list"
 export const URI_8 = "/app/inbox/list"
 export const URI_9 = "/app/modify_password"
-export const URI_10 = "/app/personal_info"
+export const URI_10 = "/app/personal-info"
 export const URI_11 = "/app/log/list"
 export const URI_12 = "/app/investor/my"
 export const URI_13 = "/app/trader/my"
@@ -95,7 +95,7 @@ export const URI_TO_KEY = {
   "/app/dataroom/company/list": "company_dataroom",
   "/app/inbox/list": "reminder",
   "/app/modify_password": "change_password",
-  "/app/personal_info": "profile",
+  "/app/personal-info": "profile",
   "/app/perm/list": "permission_management",
   "/app/log/list": "log",
 }
