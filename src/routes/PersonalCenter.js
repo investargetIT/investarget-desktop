@@ -14,6 +14,7 @@ import {
   hasPerm,
   getUserInfo,
 } from '../utils/util';
+import { SelectIndustryGroup, SelectTitle } from '../components/ExtraInput';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -564,20 +565,19 @@ function PersonalCenter(props) {
 
           <Form.Item
             label="任职部门"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            name="indGroup"
+            rules={[{ required: true, message: '请选择部门' }]}
           >
-            <Input />
+            <SelectIndustryGroup size="middle" />
           </Form.Item>
 
           <Form.Item
             label="任职岗位"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            name="title"
+            rules={[{ required: true, message: '请选择岗位' }]}
           >
-            <Input />
+            <SelectTitle size="middle" />
           </Form.Item>
-
         </Form>
       </Modal>
 
