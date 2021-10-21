@@ -390,7 +390,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/birthday.svg" />
                   <div>出生日期</div>
                 </div>
-                <div style={{ color: '#595959' }}>1990.10.01</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.bornTime ? userInfoDetails.bornTime.slice(0, 10) : '暂无'}</div>
               </div>
 
               <div style={{ marginBottom: 12, fontSize: 14, lineHeight: '22px', display: 'flex', justifyContent: 'space-between' }}>
@@ -398,7 +398,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/school.svg" />
                   <div>毕业学校</div>
                 </div>
-                <div style={{ color: '#595959' }}>上海交通大学</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.school || '暂无'}</div>
               </div>
 
               <div style={{ marginBottom: 12, fontSize: 14, lineHeight: '22px', display: 'flex', justifyContent: 'space-between' }}>
@@ -406,7 +406,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/education.svg" />
                   <div>学历</div>
                 </div>
-                <div style={{ color: '#595959' }}>学士</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.education ? userInfoDetails.education.name : '暂无'}</div>
               </div>
 
               <div style={{ marginBottom: 12, fontSize: 14, lineHeight: '22px', display: 'flex', justifyContent: 'space-between' }}>
@@ -414,7 +414,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/profession.svg" />
                   <div>专业</div>
                 </div>
-                <div style={{ color: '#595959' }}>工商管理</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.specialty || '暂无'}</div>
               </div>
 
               <div style={{ marginBottom: 12, fontSize: 14, lineHeight: '22px', display: 'flex', justifyContent: 'space-between' }}>
@@ -422,7 +422,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/specialty.svg" />
                   <div>特长爱好</div>
                 </div>
-                <div style={{ color: '#595959' }}>打球、听音乐</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.specialtyhobby || '暂无'}</div>
               </div>
 
               <div style={{ marginBottom: 12, fontSize: 14, lineHeight: '22px', display: 'flex', justifyContent: 'space-between' }}>
@@ -430,7 +430,7 @@ function PersonalCenter(props) {
                   <img style={{ marginRight: 8 }}  src="/images/others.svg" />
                   <div>其他</div>
                 </div>
-                <div style={{ color: '#595959' }}>暂无</div>
+                <div style={{ color: '#595959' }}>{userInfoDetails.remark || '暂无'}</div>
               </div>
 
             </div>
