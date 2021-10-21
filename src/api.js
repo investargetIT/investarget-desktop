@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
-import { qsArrayToString, getUserInfo as getCurrentUserInfo } from './utils/util'
+import { getUserInfo as getCurrentUserInfo } from './utils/util'
 import _ from 'lodash'
 import { 
   ApiError, 
@@ -1032,3 +1032,4 @@ export const getDataroomFileReadRecord = params => {
 export const getCustomizedUrl = url => r(url);
 
 export const addPromotionHistory = body => r('/user/workingposition/', 'POST', body);
+export const getPromotionHistory = params => r(`/user/workingposition/?${qs.stringify(params)}`);

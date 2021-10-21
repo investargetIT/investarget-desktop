@@ -13,6 +13,7 @@ import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 import {
   hasPerm,
   getUserInfo,
+  requestAllData,
 } from '../utils/util';
 import { SelectIndustryGroup, SelectTitle } from '../components/ExtraInput';
 
@@ -36,6 +37,7 @@ function PersonalCenter(props) {
   const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
 
   const [promotionHistoryForm] = Form.useForm();
+  const [promotionHistory, setPromotionHistory] = useState([]);
 
   useEffect(() => {
     async function loadUserInfo() {
@@ -43,6 +45,16 @@ function PersonalCenter(props) {
       setUserInfoDetails(reqUser.data)
     }
     loadUserInfo();
+
+    async function getPromotionHistory() {
+      const res = await requestAllData(
+        api.getPromotionHistory,
+        { user: userID },
+        10,
+      );
+      setPromotionHistory(res.data.data);
+    }
+    getPromotionHistory();
 
     async function loadWorkingProjects() {
       const params = {
@@ -64,21 +76,24 @@ function PersonalCenter(props) {
     console.log(key);
   }
 
-  const columns1 = [
+  const promotionHistoryColumn = [
     {
       title: '起止时间',
-      dataIndex: 'name',
-      key: 'name',
+      key: 'duration',
+      render: (_, record) => {
+        const { startDate, endDate } = record;
+        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate.slice(0, 10).replaceAll('-', '.')}`;
+      },
     },
     {
       title: '任职部门',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: ['indGroup', 'name'],
+      key: 'indGroup',
     },
     {
       title: '任职岗位',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: ['title', 'name'],
+      key: 'title',
     },
     {
       title: '操作',
@@ -90,21 +105,6 @@ function PersonalCenter(props) {
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
-    },
-  ];
-
-  const data1 = [
-    {
-      key: '1',
-      name: '2020.10.01 - 2021.09.30',
-      age: '战略投资',
-      address: '投资经理',
-    },
-    {
-      key: '2',
-      name: '2021.10.01 - 现在',
-      age: '战略投资',
-      address: '高级投资经理',
     },
   ];
 
@@ -463,7 +463,7 @@ function PersonalCenter(props) {
               <TabPane tab="人事档案及绩效" key="1">
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
-                  <Table columns={columns1} dataSource={data1} pagination={false} />
+                  <Table columns={promotionHistoryColumn} dataSource={promotionHistory} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => setDisplayPromotionHistoryModal(true)}>新增记录</Button>
                   </div>
