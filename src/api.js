@@ -1030,3 +1030,5 @@ export const getDataroomFileReadRecord = params => {
 }
 
 export const getCustomizedUrl = url => r(url);
+
+export const addPromotionHistory = body => r('/user/workingposition/', 'POST', body);

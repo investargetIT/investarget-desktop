@@ -40,7 +40,6 @@ function PersonalCenter(props) {
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
-      window.echo('req user', reqUser);
       setUserInfoDetails(reqUser.data)
     }
     loadUserInfo();
@@ -362,8 +361,20 @@ function PersonalCenter(props) {
       });
   }
 
-  function updatePromotionHistory(values) {
-    window.echo('update promotion history', values);
+  async function updatePromotionHistory(values) {
+    const { duration, indGroup, title } = values;
+    const [ start, end ] = duration;
+    const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+    const body = {
+      user: userID,
+      indGroup,
+      title,
+      startDate,
+      endDate,
+    };
+    await api.addPromotionHistory(body);
+    setDisplayPromotionHistoryModal(false);
   }
 
   if (!userInfoDetails) return null;
