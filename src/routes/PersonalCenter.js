@@ -19,8 +19,15 @@ const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
 function PersonalCenter(props) {
-
   const userInfo = getUserInfo();
+
+  let userID = 1;
+  if (userInfo) {
+    userID = userInfo.id;
+  }
+  if (props.match.params.id) {
+    userID = parseInt(props.match.params.id);
+  }
 
   const [projList, setProjList] = useState([]);
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);

@@ -110,6 +110,7 @@ function RouterConfig({ history }) {
         <Route path={URI_11} component={LogList} />
         <Route path={URI_9} component={ModifyPwd} />
         {/* <Route path={URI_10} component={BasicInfo} /> */}
+        <Route path="/app/personal-center/:id" component={PersonalCenter} />
         <Route path="/app/personal-center" component={PersonalCenter} />
         <Route path={URI_10} component={PersonalInfo} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
