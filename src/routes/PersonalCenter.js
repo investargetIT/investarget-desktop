@@ -14,8 +14,10 @@ import {
   hasPerm,
   getUserInfo,
   requestAllData,
+  handleError,
 } from '../utils/util';
 import { SelectIndustryGroup, SelectTitle } from '../components/ExtraInput';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -38,6 +40,7 @@ function PersonalCenter(props) {
 
   const [promotionHistoryForm] = Form.useForm();
   const [promotionHistory, setPromotionHistory] = useState([]);
+  const [currentEditPromotionHistory, setCurrentEditPromotionHistory] = useState(null);
 
   async function getPromotionHistory() {
     const res = await requestAllData(
@@ -77,6 +80,14 @@ function PersonalCenter(props) {
     console.log(key);
   }
 
+  function handleEditPromotionHistoryBtnClick(record) {
+    setCurrentEditPromotionHistory(record);
+    const { startDate, endDate, indGroup, title } = record;
+    const duration = [moment(startDate), moment(endDate)];
+    promotionHistoryForm.setFieldsValue({ duration, indGroup: indGroup.id, title: title.id });
+    setDisplayPromotionHistoryModal(true);
+  }
+
   const promotionHistoryColumn = [
     {
       title: '起止时间',
@@ -100,9 +111,9 @@ function PersonalCenter(props) {
       title: '操作',
       align: 'center',
       key: 'operation',
-      render: () => (
+      render: (_, record) => (
         <div>
-          <Button type="link" onClick={() => setDisplayPromotionHistoryModal(true)}>编辑</Button>
+          <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
@@ -374,7 +385,18 @@ function PersonalCenter(props) {
       startDate,
       endDate,
     };
-    await api.addPromotionHistory(body);
+    try {
+      if (currentEditPromotionHistory) {
+        // Edit promotion history
+        const { id } = currentEditPromotionHistory;
+        await api.editPromotionHistory(id, body);
+        setCurrentEditPromotionHistory(null);
+      } else {
+        await api.addPromotionHistory(body);
+      }
+    } catch (error) {
+      handleError(error);
+    }
     getPromotionHistory();
     setDisplayPromotionHistoryModal(false);
   }
@@ -475,7 +497,10 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
                   <Table columns={columns2} dataSource={data2} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />} onClick={() => setDisplayAssessmentHistoryModal(true)}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      setCurrentEditPromotionHistory(null);
+                      setDisplayAssessmentHistoryModal(true);
+                    }}>新增记录</Button>
                   </div>
                 </div>
 

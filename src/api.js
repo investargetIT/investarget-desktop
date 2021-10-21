@@ -1033,3 +1033,4 @@ export const getCustomizedUrl = url => r(url);
 
 export const addPromotionHistory = body => r('/user/workingposition/', 'POST', body);
 export const getPromotionHistory = params => r(`/user/workingposition/?${qs.stringify(params)}`);
+export const editPromotionHistory = (id, body) => r(`/user/workingposition/${id}/`, 'PUT', body);
