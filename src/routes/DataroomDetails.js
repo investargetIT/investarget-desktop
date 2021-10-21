@@ -290,7 +290,7 @@ function DataroomDetails(props) {
     getDataRoomFileAnnotations();
     getDataroomFileReadingRecord();
 
-    if (!isLogin().is_superuser && hasPerm('usersys.as_investor')) {
+    if (isLogin() && !isLogin().is_superuser && hasPerm('usersys.as_investor')) {
       getNewDataRoomFile();
     }
   }, []);
