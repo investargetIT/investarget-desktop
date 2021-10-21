@@ -88,6 +88,29 @@ function PersonalCenter(props) {
     setDisplayPromotionHistoryModal(true);
   }
 
+  function handleDeletePromotionHistoryBtnClick(record) {
+    Modal.confirm({
+      title: '删除',
+      content: '确认删除该条记录吗？',
+      onOk() {
+        console.log('OK');
+        handleDeletePromotionHistory(record);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
+  }
+
+  async function handleDeletePromotionHistory(record) {
+    try {
+      await api.deletePromotionHistory(record.id);
+      await getPromotionHistory();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
   const promotionHistoryColumn = [
     {
       title: '起止时间',
@@ -114,7 +137,7 @@ function PersonalCenter(props) {
       render: (_, record) => (
         <div>
           <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeletePromotionHistoryBtnClick(record)}>删除</Button>
         </div>
       ),
     },
