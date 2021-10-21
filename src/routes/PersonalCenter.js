@@ -39,6 +39,15 @@ function PersonalCenter(props) {
   const [promotionHistoryForm] = Form.useForm();
   const [promotionHistory, setPromotionHistory] = useState([]);
 
+  async function getPromotionHistory() {
+    const res = await requestAllData(
+      api.getPromotionHistory,
+      { user: userID },
+      10,
+    );
+    setPromotionHistory(res.data.data);
+  }
+
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
@@ -46,14 +55,6 @@ function PersonalCenter(props) {
     }
     loadUserInfo();
 
-    async function getPromotionHistory() {
-      const res = await requestAllData(
-        api.getPromotionHistory,
-        { user: userID },
-        10,
-      );
-      setPromotionHistory(res.data.data);
-    }
     getPromotionHistory();
 
     async function loadWorkingProjects() {
@@ -374,6 +375,7 @@ function PersonalCenter(props) {
       endDate,
     };
     await api.addPromotionHistory(body);
+    getPromotionHistory();
     setDisplayPromotionHistoryModal(false);
   }
 
