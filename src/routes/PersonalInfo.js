@@ -19,6 +19,7 @@ const { RangePicker } = DatePicker;
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
+  window.echo('user info', userInfo);
   const [form] = Form.useForm();
 
   const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);
@@ -132,8 +133,12 @@ function PersonalInfo(props) {
   }
 
   function  getInitialValuesFromCurrentUser() {
-    const { username, bornTime: bornTimeStr, school, education, specialty, specialtyhobby, remark } = userInfo;
+    const { username, bornTime: bornTimeStr, school, education: educationObj, specialty, specialtyhobby, remark } = userInfo;
     const bornTime = moment(bornTimeStr);
+    let education = undefined;
+    if (educationObj) {
+      education = educationObj.id;
+    }
     return { username, bornTime, school, education, specialty, specialtyhobby, remark };
   }
 

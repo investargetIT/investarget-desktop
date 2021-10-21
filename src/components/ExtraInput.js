@@ -182,7 +182,7 @@ const SelectRole = withOptionsAsync(SelectNumber, ['character'], function(state)
  */
 const SelectEducation = withOptionsAsync(SelectNumber, ['education'], function(state) {
   const { education } = state.app;
-  const options = education ? education.map(item => ({ value: item.id, label: item.education })) : [];
+  const options = education ? education.map(item => ({ value: item.id, label: item.name })) : [];
   return { options };
 });
 
