@@ -529,10 +529,11 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
-                  <Table columns={columns3} dataSource={data3} pagination={false} />
+                  {userInfoDetails.resumeurl ? <div><a href={userInfoDetails.resumeurl} target="_blank">查看简历</a></div> : <div>暂无</div>}
+                  {/* <Table columns={columns3} dataSource={data3} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <div style={{ marginBottom: 40 }}>
