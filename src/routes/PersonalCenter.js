@@ -29,12 +29,20 @@ function PersonalCenter(props) {
     userID = parseInt(props.match.params.id);
   }
 
+  const [userInfoDetails, setUserInfoDetails] = useState(null);
   const [projList, setProjList] = useState([]);
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
   const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
 
 
   useEffect(() => {
+    async function loadUserInfo() {
+      const reqUser = await api.getUserInfo(userID);
+      window.echo('req user', reqUser);
+      setUserInfoDetails(reqUser.data)
+    }
+    loadUserInfo();
+
     async function loadWorkingProjects() {
       const params = {
         max_size: 2,
@@ -348,6 +356,8 @@ function PersonalCenter(props) {
     console.log('Failed:', errorInfo);
   };
 
+  if (!userInfoDetails) return null;
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -364,11 +374,11 @@ function PersonalCenter(props) {
           <Card bodyStyle={{ padding: 0 }}>
             <div style={{ padding: '40px 60px' }}>
               <div style={{ textAlign: 'center' }}>
-                <img style={{ width: 100, height: 100, borderRadius: '50%' }} src="/images/avatar1.png" />
+                <img style={{ width: 100, height: 100, borderRadius: '50%' }} src={userInfoDetails.photourl} />
               </div>
-              <div style={{ marginTop: 12, fontSize: 20, textAlign: 'center', lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>Vincent Chen <ManOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} /></div>
-              <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>高级投资经理</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>战略投资</div>
+              <div style={{ marginTop: 12, fontSize: 20, textAlign: 'center', lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>{userInfoDetails.username} <ManOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} /></div>
+              <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{userInfoDetails.title ? userInfoDetails.title.name : '暂无'}</div>
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{userInfoDetails.indGroup ? userInfoDetails.indGroup.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>Eric Shen</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>2020.10.01</div>
