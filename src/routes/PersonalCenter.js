@@ -35,6 +35,7 @@ function PersonalCenter(props) {
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
   const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
 
+  const [promotionHistoryForm] = Form.useForm();
 
   useEffect(() => {
     async function loadUserInfo() {
@@ -349,13 +350,21 @@ function PersonalCenter(props) {
     );
   }
 
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
+  function handlePromtionHistoryFormSubmit() {
+    promotionHistoryForm
+      .validateFields()
+      .then((values) => {
+        promotionHistoryForm.resetFields();
+        updatePromotionHistory(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  function updatePromotionHistory(values) {
+    window.echo('update promotion history', values);
+  }
 
   if (!userInfoDetails) return null;
 
@@ -544,21 +553,18 @@ function PersonalCenter(props) {
         title="新增岗位及晋升记录"
         visible={displayPromotionHistoryModal}
         onCancel={() => setDisplayPromotionHistoryModal(false)}
+        onOk={handlePromtionHistoryFormSubmit}
       >
         <Form
           style={{ width: 400 }}
-          name="basic"
+          form={promotionHistoryForm}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
         >
           <Form.Item
             label="起止时间"
             name="duration"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[{ required: true, message: '请设定起止时间' }]}
           >
             <RangePicker />
           </Form.Item>
@@ -592,8 +598,6 @@ function PersonalCenter(props) {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item
