@@ -57,7 +57,12 @@ function PersonalCenter(props) {
   }
 
   async function getKPIRecordList() {
-
+    const res = await requestAllData(
+      api.getKPIRecord,
+      { user: userID },
+      10,
+    );
+    setKPIRecordList(res.data.data);
   }
 
   useEffect(() => {
@@ -153,22 +158,26 @@ function PersonalCenter(props) {
     },
   ];
 
-  const columns2 = [
+  const KPIRecordColumns = [
     {
       title: '年度',
-      dataIndex: 'name',
-      key: 'name',
+      key: 'duration',
+      render: (_, record) => {
+        const { startDate, endDate } = record;
+        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate.slice(0, 10).replaceAll('-', '.')}`;
+      },
     },
     {
       title: '绩效考核结果',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: ['level', 'name'],
+      key: 'level',
+      render: text => text || '暂无',
     },
     {
       title: '附件',
-      dataIndex: 'address',
-      key: 'address',
-      render: text => <a href="#">{text}</a>,
+      dataIndex: 'performanceTableUrl',
+      key: 'attachment',
+      render: text => text ? <a target="_blank" href={text}>查看附件</a> : '暂无',
     },
     {
       title: '备注',
@@ -185,16 +194,6 @@ function PersonalCenter(props) {
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
-    },
-  ];
-
-  const data2 = [
-    {
-      key: '1',
-      name: '2020.10.01 - 2021.09.30',
-      age: '合格',
-      address: 'Vincent Ch…年绩效考核.doc',
-      remark: '沟通能力必须提高',
     },
   ];
 
@@ -569,7 +568,7 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
-                  <Table columns={columns2} dataSource={data2} pagination={false} />
+                  <Table columns={KPIRecordColumns} dataSource={KPIRecordList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
                       setCurrentEditPromotionHistory(null);
