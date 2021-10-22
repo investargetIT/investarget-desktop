@@ -830,6 +830,7 @@ class SelectTrader extends React.Component {
       <Select
       // {...this.props}
       style={{ width: '100%' }}
+      placeholder={this.props.placeholder}
       mode={this.props.mode}
       showSearch
       disabled={this.props.disabled}
@@ -1854,6 +1855,11 @@ const RadioTrueOrFalse = withOptions(RadioGroup2, [
   { value: false, label: i18n('common.no') },
 ])
 
+const SelectGender = withOptions(RadioGroup2, [
+  { value: false, label: '男' },
+  { value: true, label: '女' },
+]);
+
 const RadioProjTraderType = withOptions(RadioGroup2, [
   { value: null, label: '不限' },
   { value: 0, label: '承揽' },
@@ -2111,6 +2117,7 @@ export {
   SelectExistInvestor,
   SelectTrader,
   SelectAllUser,
+  SelectGender,
   SelectTransactionStatus,
   SelectProjectStatus,
   SelectUserGroup,

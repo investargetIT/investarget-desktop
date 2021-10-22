@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
-import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message } from 'antd';
+import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { getUserInfo, i18n } from '../utils/util';
 import * as api from '../api';
 import { routerRedux } from 'dva/router';
-import { SelectEducation } from '../components/ExtraInput';
+import { SelectEducation, SelectGender, SelectTrader } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 import { UploadFile } from '../components/Upload';
@@ -19,7 +19,6 @@ const { RangePicker } = DatePicker;
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
-  window.echo('user info', userInfo);
   const [form] = Form.useForm();
 
   const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);
@@ -74,22 +73,29 @@ function PersonalInfo(props) {
   };
 
   function handlePersonalInfoFormOnFinish(values) {
-    let { bornTime } = values;
+    let { bornTime, entryTime } = values;
     if (bornTime) {
       bornTime = bornTime.format('YYYY-MM-DDT00:00:00');
     }
-    const params = { ...values, bornTime };
+    if (entryTime) {
+      entryTime = entryTime.format('YYYY-MM-DDT00:00:00');
+    }
+    const params = { ...values, bornTime, entryTime };
     setLoadingUpdateUserInfo(true);
     api.editUser([props.currentUser.id], params).then(data => {
       setLoadingUpdateUserInfo(false);
       const username = data.data[0].username;
       const bornTime = data.data[0].bornTime;
+      const entryTime = data.data[0].entryTime;
       const school = data.data[0].school;
       const education = data.data[0].education;
       const specialty = data.data[0].specialty;
       const specialtyhobby = data.data[0].specialtyhobby;
       const remark = data.data[0].remark;
-      const userInfo = { ...props.currentUser, username, bornTime, school, education, specialty, specialtyhobby, remark };
+      const gender = data.data[0].gender;
+      const mentor = data.data[0].mentor;
+      const directSupervisor = data.data[0].directSupervisor;
+      const userInfo = { ...props.currentUser, username, bornTime, entryTime, school, education, specialty, specialtyhobby, remark, gender, mentor, directSupervisor };
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       props.dispatch({
         type: 'currentUser/save',
@@ -133,13 +139,28 @@ function PersonalInfo(props) {
   }
 
   function  getInitialValuesFromCurrentUser() {
-    const { username, bornTime: bornTimeStr, school, education: educationObj, specialty, specialtyhobby, remark } = userInfo;
-    const bornTime = moment(bornTimeStr);
+    const {
+      username,
+      bornTime: bornTimeStr,
+      school,
+      education: educationObj,
+      specialty,
+      specialtyhobby,
+      remark,
+      gender,
+      entryTime: entryTimeStr,
+      mentor: mentorObj,
+      directSupervisor: directSupervisorObj,
+    } = userInfo;
+    const bornTime = bornTimeStr ? moment(bornTimeStr) : undefined;
+    const entryTime = entryTimeStr ? moment(entryTimeStr) : undefined;
     let education = undefined;
     if (educationObj) {
       education = educationObj.id;
     }
-    return { username, bornTime, school, education, specialty, specialtyhobby, remark };
+    const mentor = mentorObj ? mentorObj.id.toString() : undefined;
+    const directSupervisor = directSupervisorObj ? directSupervisorObj.id.toString() : undefined;
+    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor };
   }
 
   function handleFinishUploadResume(key) {
@@ -188,6 +209,19 @@ function PersonalInfo(props) {
               >
                 <Form.Item label="姓名" name="username">
                   <Input placeholder="请输入姓名" disabled />
+                </Form.Item>
+                <Form.Item label="部门主管" name="mentor">
+                  <SelectTrader placeholder="请选择部门主管" />
+                </Form.Item>
+                <Form.Item label="直属上级" name="directSupervisor">
+                  <SelectTrader placeholder="请选择直属上级" />
+                </Form.Item>
+                <Form.Item label="入职日期" name="entryTime">
+                  <DatePicker style={{ width: '100%' }} />
+                </Form.Item>
+                <Divider />
+                <Form.Item label="性别" name="gender">
+                  <SelectGender />
                 </Form.Item>
                 <Form.Item label="出生日期" name="bornTime">
                   <DatePicker style={{ width: '100%' }} />
