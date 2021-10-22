@@ -1036,3 +1036,5 @@ export const getPromotionHistory = params => r(`/user/workingposition/?${qs.stri
 export const editPromotionHistory = (id, body) => r(`/user/workingposition/${id}/`, 'PUT', body);
 export const deletePromotionHistory = id => r(`/user/workingposition/${id}/`, 'DELETE');
 
+export const checkToken = () => r('/user/checkToken/');
+

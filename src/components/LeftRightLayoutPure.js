@@ -9,6 +9,8 @@ import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
 import styles from './LeftRightLayout.css'
+import * as api from '../api';
+import { handleError } from '../utils/util';
 
 
 const { Content, Sider } = Layout
@@ -48,6 +50,10 @@ const actionStyle = {
 
 
 class LeftRightLayoutPure extends React.Component {
+
+  componentDidMount() {
+    api.checkToken().catch(handleError);
+  }
 
   reload() {
     window.location.reload()
