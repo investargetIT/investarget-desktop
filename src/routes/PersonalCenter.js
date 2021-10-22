@@ -54,6 +54,7 @@ function PersonalCenter(props) {
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
+      window.echo('req user', reqUser.data);
       setUserInfoDetails(reqUser.data)
     }
     loadUserInfo();
@@ -644,7 +645,7 @@ function PersonalCenter(props) {
             name="title"
             rules={[{ required: true, message: '请选择岗位' }]}
           >
-            <SelectTitle size="middle" />
+            <SelectTitle size="middle" showSearch />
           </Form.Item>
         </Form>
       </Modal>
