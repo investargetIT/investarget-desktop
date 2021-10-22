@@ -103,6 +103,14 @@ function PersonalCenter(props) {
     setDisplayPromotionHistoryModal(true);
   }
 
+  function handleEditKPIRecordBtnClick(record) {
+    setCurrentEditKPIRecord(record);
+    const { startDate, endDate, level, remark } = record;
+    const duration = [moment(startDate), moment(endDate)];
+    KPIForm.setFieldsValue({ duration, level, remark });
+    setDisplayAssessmentHistoryModal(true);
+  }
+
   function handleDeletePromotionHistoryBtnClick(record) {
     Modal.confirm({
       title: '删除',
@@ -188,9 +196,9 @@ function PersonalCenter(props) {
       title: '操作',
       align: 'center',
       key: 'operation',
-      render: () => (
+      render: (_, record) => (
         <div>
-          <Button type="link" onClick={() => setDisplayAssessmentHistoryModal(true)}>编辑</Button>
+          <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />}>删除</Button>
         </div>
       ),
