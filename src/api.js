@@ -1038,3 +1038,8 @@ export const deletePromotionHistory = id => r(`/user/workingposition/${id}/`, 'D
 
 export const checkToken = () => r('/user/checkToken/');
 
+export const addKPIRecord = body => r('/user/performanceappraisal/', 'POST', body);
+export const getKPIRecord = params => r(`/user/performanceappraisal/?${qs.stringify(params)}`);
+export const editKPIRecord = (id, body) => r(`/user/performanceappraisal/${id}/`, 'PUT', body);
+export const deleteKPIRecord = id => r(`/user/performanceappraisal/${id}/`, 'DELETE');
+

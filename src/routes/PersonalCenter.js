@@ -43,6 +43,8 @@ function PersonalCenter(props) {
   const [promotionHistory, setPromotionHistory] = useState([]);
   const [currentEditPromotionHistory, setCurrentEditPromotionHistory] = useState(null);
 
+  const [KPIForm] = Form.useForm();
+
   async function getPromotionHistory() {
     const res = await requestAllData(
       api.getPromotionHistory,
@@ -398,6 +400,18 @@ function PersonalCenter(props) {
       });
   }
 
+  function handleKPIFormSubmit() {
+    KPIForm
+      .validateFields()
+      .then((values) => {
+        KPIForm.resetFields();
+        updateKPIRecords(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  }
+
   async function updatePromotionHistory(values) {
     const { duration, indGroup, title } = values;
     const [ start, end ] = duration;
@@ -424,6 +438,10 @@ function PersonalCenter(props) {
     }
     getPromotionHistory();
     setDisplayPromotionHistoryModal(false);
+  }
+
+  async function updateKPIRecords(values) {
+    window.echo('update kpi records', values);
   }
 
   if (!userInfoDetails) return <LeftRightLayoutPure location={props.location} />;
@@ -655,38 +673,37 @@ function PersonalCenter(props) {
         title="新增试用期内及年度考核记录"
         visible={displayAssessmentHistoryModal}
         onCancel={() => setDisplayAssessmentHistoryModal(false)}
+        onOk={handleKPIFormSubmit}
       >
         <Form
           style={{ width: 400 }}
-          name="basic"
+          form={KPIForm}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
-          autoComplete="off"
         >
           <Form.Item
             label="年度"
             name="duration"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[{ required: true, message: '请设定起止时间' }]}
           >
             <RangePicker />
           </Form.Item>
 
           <Form.Item
             label="绩效考核结果"
-            name="result"
+            name="level"
+            required
           >
             <Radio.Group>
               <Radio value={1}>合格</Radio>
-              <Radio value={2}>未合格</Radio>
+              <Radio value={0}>未合格</Radio>
             </Radio.Group>
           </Form.Item>
 
           <Form.Item
             label="上传附件"
-            name="username"
+            name="performanceTableKey"
             valuePropName="fileList"
-            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Upload>
               <Button icon={<UploadOutlined />} type="link">上传附件</Button>
