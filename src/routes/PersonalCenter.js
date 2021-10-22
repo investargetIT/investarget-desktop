@@ -36,14 +36,16 @@ function PersonalCenter(props) {
 
   const [userInfoDetails, setUserInfoDetails] = useState(null);
   const [projList, setProjList] = useState([]);
+  
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
-  const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
-
   const [promotionHistoryForm] = Form.useForm();
   const [promotionHistory, setPromotionHistory] = useState([]);
   const [currentEditPromotionHistory, setCurrentEditPromotionHistory] = useState(null);
 
+  const [displayAssessmentHistoryModal, setDisplayAssessmentHistoryModal] = useState(false);
   const [KPIForm] = Form.useForm();
+  const [KPIRecordList, setKPIRecordList] = useState([]);
+  const [currentEditKPIRecord, setCurrentEditKPIRecord] = useState(null);
 
   async function getPromotionHistory() {
     const res = await requestAllData(
@@ -54,15 +56,19 @@ function PersonalCenter(props) {
     setPromotionHistory(res.data.data);
   }
 
+  async function getKPIRecordList() {
+
+  }
+
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
-      window.echo('req user', reqUser.data);
       setUserInfoDetails(reqUser.data)
     }
     loadUserInfo();
 
     getPromotionHistory();
+    getKPIRecordList();
 
     async function loadWorkingProjects() {
       const params = {
@@ -441,7 +447,32 @@ function PersonalCenter(props) {
   }
 
   async function updateKPIRecords(values) {
-    window.echo('update kpi records', values);
+    const { duration, level, performanceTableKey, remark } = values;
+    const [ start, end ] = duration;
+    const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
+    const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+    const body = {
+      user: userID,
+      // level,
+      startDate,
+      endDate,
+      performanceTableBucket: performanceTableKey ? 'file' : undefined,
+      performanceTableKey,
+      remark,
+    };
+    try {
+      if (currentEditKPIRecord) {
+        const { id } = currentEditKPIRecord;
+        await api.editKPIRecord(id, body);
+        setCurrentEditKPIRecord(null);
+      } else {
+        await api.addKPIRecord(body);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+    getKPIRecordList();
+    setDisplayAssessmentHistoryModal(false);
   }
 
   if (!userInfoDetails) return <LeftRightLayoutPure location={props.location} />;
