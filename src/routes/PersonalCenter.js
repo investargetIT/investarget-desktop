@@ -5,6 +5,7 @@ import { Link } from 'dva/router';
 import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker, Radio, Upload } from 'antd';
 import {
   ManOutlined,
+  WomanOutlined,
   PlusOutlined,
   DeleteOutlined,
   UploadOutlined,
@@ -425,7 +426,7 @@ function PersonalCenter(props) {
     setDisplayPromotionHistoryModal(false);
   }
 
-  if (!userInfoDetails) return null;
+  if (!userInfoDetails) return <LeftRightLayoutPure location={props.location} />;
 
   return (
     <LeftRightLayoutPure location={props.location}>
@@ -445,12 +446,12 @@ function PersonalCenter(props) {
               <div style={{ textAlign: 'center' }}>
                 <img style={{ width: 100, height: 100, borderRadius: '50%' }} src={userInfoDetails.photourl} />
               </div>
-              <div style={{ marginTop: 12, fontSize: 20, textAlign: 'center', lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>{userInfoDetails.username} <ManOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} /></div>
+              <div style={{ marginTop: 12, fontSize: 20, textAlign: 'center', lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>{userInfoDetails.username} {userInfoDetails.gender ? <WomanOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} /> : <ManOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} />}</div>
               <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{userInfoDetails.title ? userInfoDetails.title.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{userInfoDetails.indGroup ? userInfoDetails.indGroup.name : '暂无'}</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>Eric Shen</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>2020.10.01</div>
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>{userInfoDetails.mentor ? userInfoDetails.mentor.username : '暂无'}</div>
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>{userInfoDetails.directSupervisor ? userInfoDetails.directSupervisor.username : '暂无'}</div>
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>{userInfoDetails.entryTime ? userInfoDetails.entryTime.slice(0, 10) : '暂无'}</div>
             </div>
             <div style={{ width: 240, margin: '0 auto', marginBottom: 100, padding: '20px 0', borderTop: '1px solid #E6E6E6' }}>
               <div style={{ marginBottom: 20, fontSize: 14, lineHeight: '20px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>基本信息</div>
