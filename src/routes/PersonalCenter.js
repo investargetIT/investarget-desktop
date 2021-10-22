@@ -125,10 +125,33 @@ function PersonalCenter(props) {
     })
   }
 
+  function handleDeleteKPIRecordBtnClick(record) {
+    Modal.confirm({
+      title: '删除',
+      content: '确认删除该条记录吗？',
+      onOk() {
+        console.log('OK');
+        handleDeleteKPIRecord(record);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
+  }
+
   async function handleDeletePromotionHistory(record) {
     try {
       await api.deletePromotionHistory(record.id);
       await getPromotionHistory();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function handleDeleteKPIRecord(record) {
+    try {
+      await api.deleteKPIRecord(record.id);
+      await getKPIRecordList();
     } catch (error) {
       handleError(error);
     }
@@ -199,7 +222,7 @@ function PersonalCenter(props) {
       render: (_, record) => (
         <div>
           <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteKPIRecordBtnClick(record)}>删除</Button>
         </div>
       ),
     },
