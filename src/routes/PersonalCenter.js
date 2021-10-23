@@ -71,6 +71,15 @@ function PersonalCenter(props) {
     setKPIRecordList(res.data.data);
   }
 
+  async function getMentorTrackList() {
+    const res = await requestAllData(
+      api.getMentorTrack,
+      { user: userID },
+      10,
+    );
+    setMentorTrackList(res.data.data);
+  }
+
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
@@ -80,6 +89,7 @@ function PersonalCenter(props) {
 
     getPromotionHistory();
     getKPIRecordList();
+    getMentorTrackList();
 
     async function loadWorkingProjects() {
       const params = {
@@ -317,27 +327,30 @@ function PersonalCenter(props) {
   //   },
   // ];
 
-  const columns5 = [
+  const mentorTrackColumns = [
     {
       title: '日期',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'communicateDate',
+      key: 'date',
+      render: text => text.slice(0, 10).replaceAll('-', '.'),
     },
     {
       title: '沟通方式',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'communicateType',
+      key: 'type',
+      render: text => text || '暂无',
     },
     {
       title: '沟通人',
-      dataIndex: 'address',
-      key: 'address',
-      render: text => <a href="#">{text}</a>,
+      dataIndex: ['communicateUser', 'username'],
+      key: 'mentor',
+      render: text => text || '暂无',
     },
     {
       title: '沟通主要内容',
-      dataIndex: 'remark',
-      key: 'remark',
+      dataIndex: 'communicateContent',
+      key: 'content',
+      render: text => text || '暂无',
     },
     {
       title: '操作',
@@ -551,7 +564,7 @@ function PersonalCenter(props) {
     } catch (error) {
       handleError(error);
     }
-    // getMentorTrackList();
+    getMentorTrackList();
     setDisplayMentorTrackModal(false);
   }
 
@@ -695,7 +708,7 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
-                  <Table columns={columns5} dataSource={data5} pagination={false} />
+                  <Table columns={mentorTrackColumns} dataSource={mentorTrackList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
                       setCurrentEditMentorTrackRecord(null);
