@@ -1043,3 +1043,8 @@ export const getKPIRecord = params => r(`/user/performanceappraisal/?${qs.string
 export const editKPIRecord = (id, body) => r(`/user/performanceappraisal/${id}/`, 'PUT', body);
 export const deleteKPIRecord = id => r(`/user/performanceappraisal/${id}/`, 'DELETE');
 
+export const addMentorTrack = body => r('/user/mentortracking/', 'POST', body);
+export const getMentorTrack = params => r(`/user/mentortracking/?${qs.stringify(params)}`);
+export const editMentorTrack = (id, body) => r(`/user/mentortracking/${id}/`, 'PUT', body);
+export const deleteMentorTrack = id => r(`/user/mentortracking/${id}/`, 'DELETE');
+

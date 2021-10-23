@@ -48,6 +48,11 @@ function PersonalCenter(props) {
   const [KPIRecordList, setKPIRecordList] = useState([]);
   const [currentEditKPIRecord, setCurrentEditKPIRecord] = useState(null);
 
+  const [displayMentorTrackModal, setDisplayMentorTrackModal] = useState(false);
+  const [mentorTrackForm] = Form.useForm();
+  const [mentorTrackList, setMentorTrackList] = useState([]);
+  const [currentEditMentorTrackRecord, setCurrentEditMentorTrackRecord] = useState(null);
+
   async function getPromotionHistory() {
     const res = await requestAllData(
       api.getPromotionHistory,
@@ -449,6 +454,18 @@ function PersonalCenter(props) {
       });
   }
 
+  function handleMentorTrackFormSubmit() {
+    mentorTrackForm
+      .validateFields()
+      .then((values) => {
+        mentorTrackForm.resetFields();
+        updateMentorTrackRecord(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  }
+
   async function updatePromotionHistory(values) {
     const { duration, indGroup, title } = values;
     const [ start, end ] = duration;
@@ -505,6 +522,10 @@ function PersonalCenter(props) {
     }
     getKPIRecordList();
     setDisplayAssessmentHistoryModal(false);
+  }
+
+  async function updateMentorTrackRecord(values) {
+
   }
 
   const KPIAttachmentUploadProps = {
@@ -610,7 +631,10 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
                   <Table columns={promotionHistoryColumn} dataSource={promotionHistory} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />} onClick={() => setDisplayPromotionHistoryModal(true)}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      setCurrentEditPromotionHistory(null);
+                      setDisplayPromotionHistoryModal(true);
+                    }}>新增记录</Button>
                   </div>
                 </div>
 
@@ -646,7 +670,10 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后导师计划跟踪记录</div>
                   <Table columns={columns5} dataSource={data5} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      setCurrentEditMentorTrackRecord(null);
+                      setDisplayMentorTrackModal(true);
+                    }}>新增记录</Button>
                   </div>
                 </div>
 
@@ -710,7 +737,7 @@ function PersonalCenter(props) {
       </div>
 
       <Modal
-        title="新增岗位及晋升记录"
+        title="岗位及晋升记录"
         visible={displayPromotionHistoryModal}
         onCancel={() => setDisplayPromotionHistoryModal(false)}
         onOk={handlePromtionHistoryFormSubmit}
@@ -748,7 +775,7 @@ function PersonalCenter(props) {
       </Modal>
 
       <Modal
-        title="新增试用期内及年度考核记录"
+        title="试用期内及年度考核记录"
         visible={displayAssessmentHistoryModal}
         onCancel={() => setDisplayAssessmentHistoryModal(false)}
         onOk={handleKPIFormSubmit}
@@ -796,6 +823,44 @@ function PersonalCenter(props) {
             <Input.TextArea rows={3} />
           </Form.Item>
 
+        </Form>
+      </Modal>
+
+      <Modal
+        title="入职后导师计划跟踪记录"
+        visible={displayMentorTrackModal}
+        onCancel={() => setDisplayMentorTrackModal(false)}
+        onOk={handleMentorTrackFormSubmit}
+      >
+        <Form
+          style={{ width: 400 }}
+          form={mentorTrackForm}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+        >
+          <Form.Item
+            label="日期"
+            name="communicateDate"
+            rules={[{ required: true, message: '请设定时间' }]}
+          >
+            <DatePicker />
+          </Form.Item>
+
+          {/* <Form.Item
+            label="任职部门"
+            name="indGroup"
+            rules={[{ required: true, message: '请选择部门' }]}
+          >
+            <SelectIndustryGroup size="middle" />
+          </Form.Item>
+
+          <Form.Item
+            label="任职岗位"
+            name="title"
+            rules={[{ required: true, message: '请选择岗位' }]}
+          >
+            <SelectTitle size="middle" showSearch />
+          </Form.Item> */}
         </Form>
       </Modal>
 
