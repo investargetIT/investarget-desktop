@@ -17,7 +17,7 @@ import {
   requestAllData,
   handleError,
 } from '../utils/util';
-import { SelectIndustryGroup, SelectTitle } from '../components/ExtraInput';
+import { SelectIndustryGroup, SelectTitle, SelectTrader } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 
@@ -838,29 +838,36 @@ function PersonalCenter(props) {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
         >
+          
           <Form.Item
             label="日期"
             name="communicateDate"
             rules={[{ required: true, message: '请设定时间' }]}
           >
-            <DatePicker />
-          </Form.Item>
-
-          {/* <Form.Item
-            label="任职部门"
-            name="indGroup"
-            rules={[{ required: true, message: '请选择部门' }]}
-          >
-            <SelectIndustryGroup size="middle" />
+            <DatePicker style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
-            label="任职岗位"
-            name="title"
-            rules={[{ required: true, message: '请选择岗位' }]}
+            label="沟通方式"
+            name="communicateType"
           >
-            <SelectTitle size="middle" showSearch />
-          </Form.Item> */}
+            <Input placeholder="请填写沟通方式" />
+          </Form.Item>
+
+          <Form.Item
+            label="沟通人"
+            name="communicateUser"
+          >
+            <SelectTrader placeholder="请选择沟通人" />
+          </Form.Item>
+
+          <Form.Item
+            label="主要内容"
+            name="communicateContent"
+          >
+            <Input.TextArea rows={3} />
+          </Form.Item>
+
         </Form>
       </Modal>
 
