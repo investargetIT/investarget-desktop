@@ -155,6 +155,20 @@ function PersonalCenter(props) {
     })
   }
 
+  function handleDeleteMentorTrackBtnClick(record) {
+    Modal.confirm({
+      title: '删除',
+      content: '确认删除该条记录吗？',
+      onOk() {
+        console.log('OK');
+        handleDeleteMentorTrackRecord(record);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
+  }
+
   async function handleDeletePromotionHistory(record) {
     try {
       await api.deletePromotionHistory(record.id);
@@ -168,6 +182,15 @@ function PersonalCenter(props) {
     try {
       await api.deleteKPIRecord(record.id);
       await getKPIRecordList();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function handleDeleteMentorTrackRecord(record) {
+    try {
+      await api.deleteMentorTrack(record.id);
+      await getMentorTrackList();
     } catch (error) {
       handleError(error);
     }
@@ -244,43 +267,43 @@ function PersonalCenter(props) {
     },
   ];
 
-  const columns3 = [
-    {
-      title: '时间',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '工作单位',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: '职位',
-      dataIndex: 'address',
-      key: 'address',
-      render: text => <a href="#">{text}</a>,
-    },
-    {
-      title: '主要职责',
-      dataIndex: 'remark',
-      key: 'remark',
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: () => (
-        <div>
-          <Button type="link">编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const columns3 = [
+  //   {
+  //     title: '时间',
+  //     dataIndex: 'name',
+  //     key: 'name',
+  //   },
+  //   {
+  //     title: '工作单位',
+  //     dataIndex: 'age',
+  //     key: 'age',
+  //   },
+  //   {
+  //     title: '职位',
+  //     dataIndex: 'address',
+  //     key: 'address',
+  //     render: text => <a href="#">{text}</a>,
+  //   },
+  //   {
+  //     title: '主要职责',
+  //     dataIndex: 'remark',
+  //     key: 'remark',
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: () => (
+  //       <div>
+  //         <Button type="link">编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
-  const data3 = [
-  ];
+  // const data3 = [
+  // ];
 
   // const columns4 = [
   //   {
@@ -356,10 +379,10 @@ function PersonalCenter(props) {
       title: '操作',
       align: 'center',
       key: 'operation',
-      render: () => (
+      render: (_, record) => (
         <div>
           <Button type="link">编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteMentorTrackBtnClick(record)}>删除</Button>
         </div>
       ),
     },
