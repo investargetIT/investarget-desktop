@@ -54,12 +54,16 @@ function PersonalCenter(props) {
   const [currentEditMentorTrackRecord, setCurrentEditMentorTrackRecord] = useState(null);
 
   async function getPromotionHistory() {
-    const res = await requestAllData(
-      api.getPromotionHistory,
-      { user: userID },
-      10,
-    );
-    setPromotionHistory(res.data.data);
+    try {
+      const res = await requestAllData(
+        api.getPromotionHistory,
+        { user: userID },
+        10,
+      );
+      setPromotionHistory(res.data.data);
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   async function getKPIRecordList() {
@@ -125,6 +129,14 @@ function PersonalCenter(props) {
     const duration = [moment(startDate), moment(endDate)];
     KPIForm.setFieldsValue({ duration, level, remark });
     setDisplayAssessmentHistoryModal(true);
+  }
+
+  function handleEditMentorTrackRecordBtnClick(record) {
+    setCurrentEditMentorTrackRecord(record);
+    const { communicateDate: date, communicateType, communicateUser, communicateContent } = record;
+    const communicateDate = moment(date);
+    mentorTrackForm.setFieldsValue({ communicateDate, communicateType, communicateUser: communicateUser && communicateUser.id.toString(), communicateContent });
+    setDisplayMentorTrackModal(true);
   }
 
   function handleDeletePromotionHistoryBtnClick(record) {
@@ -381,7 +393,7 @@ function PersonalCenter(props) {
       key: 'operation',
       render: (_, record) => (
         <div>
-          <Button type="link">编辑</Button>
+          <Button type="link" onClick={() => handleEditMentorTrackRecordBtnClick(record)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteMentorTrackBtnClick(record)}>删除</Button>
         </div>
       ),
@@ -561,7 +573,6 @@ function PersonalCenter(props) {
   }
 
   async function updateMentorTrackRecord(values) {
-    window.echo('values', values);
     const {
       communicateDate: communicateDateMoment,
       communicateType,
