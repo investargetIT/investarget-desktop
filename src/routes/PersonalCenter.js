@@ -525,7 +525,34 @@ function PersonalCenter(props) {
   }
 
   async function updateMentorTrackRecord(values) {
-
+    window.echo('values', values);
+    const {
+      communicateDate: communicateDateMoment,
+      communicateType,
+      communicateUser,
+      communicateContent,
+    } = values;
+    const communicateDate = `${communicateDateMoment.format('YYYY-MM-DD')}T00:00:00`;
+    const body = {
+      user: userID,
+      communicateDate,
+      communicateType,
+      communicateUser,
+      communicateContent,
+    };
+    try {
+      if (currentEditMentorTrackRecord) {
+        const { id } = currentEditMentorTrackRecord;
+        await api.editMentorTrack(id, body);
+        setCurrentEditMentorTrackRecord(null);
+      } else {
+        await api.addMentorTrack(body);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+    // getMentorTrackList();
+    setDisplayMentorTrackModal(false);
   }
 
   const KPIAttachmentUploadProps = {
@@ -838,7 +865,7 @@ function PersonalCenter(props) {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
         >
-          
+
           <Form.Item
             label="日期"
             name="communicateDate"
