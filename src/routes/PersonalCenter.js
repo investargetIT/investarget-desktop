@@ -19,6 +19,7 @@ import {
 } from '../utils/util';
 import { SelectIndustryGroup, SelectTitle } from '../components/ExtraInput';
 import moment from 'moment';
+import { baseUrl } from '../utils/request';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -477,10 +478,11 @@ function PersonalCenter(props) {
   }
 
   async function updateKPIRecords(values) {
-    const { duration, level, performanceTableKey, remark } = values;
+    const { duration, level, performanceTableKey: performanceTableKeyObj, remark } = values;
     const [ start, end ] = duration;
     const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
     const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+    const performanceTableKey = performanceTableKeyObj && performanceTableKeyObj.length > 0 && performanceTableKeyObj[0].response ? performanceTableKeyObj[0].response.result.key : undefined;
     const body = {
       user: userID,
       // level,
@@ -504,6 +506,21 @@ function PersonalCenter(props) {
     getKPIRecordList();
     setDisplayAssessmentHistoryModal(false);
   }
+
+  const KPIAttachmentUploadProps = {
+    name: 'file',
+    action: baseUrl + "/service/qiniubigupload?bucket=file",
+  };
+
+  const normFile = (e) => {
+    console.log('Upload event:', e);
+  
+    if (Array.isArray(e)) {
+      return e;
+    }
+  
+    return e && e.fileList;
+  };
 
   if (!userInfoDetails) return <LeftRightLayoutPure location={props.location} />;
 
@@ -765,8 +782,9 @@ function PersonalCenter(props) {
             label="上传附件"
             name="performanceTableKey"
             valuePropName="fileList"
+            getValueFromEvent={normFile}
           >
-            <Upload>
+            <Upload {...KPIAttachmentUploadProps}>
               <Button icon={<UploadOutlined />} type="link">上传附件</Button>
             </Upload>
           </Form.Item>
