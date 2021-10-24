@@ -1048,3 +1048,7 @@ export const getMentorTrack = params => r(`/user/mentortracking/?${qs.stringify(
 export const editMentorTrack = (id, body) => r(`/user/mentortracking/${id}/`, 'PUT', body);
 export const deleteMentorTrack = id => r(`/user/mentortracking/${id}/`, 'DELETE');
 
+export const addTrainingRecord = body => r('/user/trainingrecords/', 'POST', body);
+export const getTrainingRecord = params => r(`/user/trainingrecords/?${qs.stringify(params)}`);
+export const editTrainingRecord = (id, body) => r(`/user/trainingrecords/${id}/`, 'PUT', body);
+export const deleteTrainingRecord = id => r(`/user/trainingrecords/${id}/`, 'DELETE');
