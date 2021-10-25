@@ -89,6 +89,15 @@ function PersonalCenter(props) {
     setMentorTrackList(res.data.data);
   }
 
+  async function getTrainingRecordList() {
+    const res = await requestAllData(
+      api.getTrainingRecord,
+      { user: userID },
+      10,
+    );
+    setTrainingRecordList(res.data.data);
+  }
+
   useEffect(() => {
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
@@ -405,44 +414,28 @@ function PersonalCenter(props) {
     },
   ];
 
-  const data5 = [
-    {
-      key: '1',
-      name: '2020.10.01',
-      age: '1v1线下沟通',
-      address: 'Amy Zhao',
-      remark: '新人入职注意事项',
-    },
-    {
-      key: '2',
-      name: '2020.10.01',
-      age: '1v1线下沟通',
-      address: 'Amy Zhao',
-      remark: '工作流程说明',
-    },
-  ];
-
-  const columns6 = [
+  const trainingRecordColumns = [
     {
       title: '日期',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'trainingDate',
+      key: 'date',
+      render: text => text.slice(0, 10).replaceAll('-', '.'),
     },
     {
       title: '培训形式',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: ['trainingType', 'name'],
+      key: 'type',
     },
     {
       title: '培训内容',
-      dataIndex: 'address',
-      key: 'address',
-      render: text => <a href="#">{text}</a>,
+      dataIndex: 'trainingContent',
+      key: 'content',
+      render: text => text || '暂无',
     },
     {
       title: '状态',
-      dataIndex: 'remark',
-      key: 'remark',
+      dataIndex: ['trainingStatus', 'name'],
+      key: 'status',
     },
     {
       title: '操作',
@@ -645,7 +638,7 @@ function PersonalCenter(props) {
     } catch (error) {
       handleError(error);
     }
-    // getTrainingRecordList();
+    getTrainingRecordList();
     setDisplayTrainingRecordModal(false);
   }
 
@@ -800,7 +793,7 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
-                  <Table columns={columns6} dataSource={data6} pagination={false} />
+                  <Table columns={trainingRecordColumns} dataSource={trainingRecordList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
                       setCurrentEditTrainingRecord(null);
