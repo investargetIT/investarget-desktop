@@ -760,7 +760,10 @@ function PersonalCenter(props) {
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
                   <Table columns={columns6} dataSource={data6} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
+                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      setCurrentEditTrainingRecord(null);
+                      setDisplayTrainingRecordModal(true);
+                    }}>新增记录</Button>
                   </div>
                 </div>
 
@@ -952,10 +955,9 @@ function PersonalCenter(props) {
 
       <Modal
         title="入职后培训记录"
-        // visible={displayMentorTrackModal}
-        visible
-        // onCancel={() => setDisplayMentorTrackModal(false)}
-        // onOk={handleMentorTrackFormSubmit}
+        visible={displayTrainingRecordModal}
+        onCancel={() => setDisplayTrainingRecordModal(false)}
+        // onOk={handleTrainingRecordFormSubmit}
       >
         <Form
           style={{ width: 400 }}
