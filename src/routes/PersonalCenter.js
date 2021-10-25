@@ -37,6 +37,7 @@ function PersonalCenter(props) {
 
   const [userInfoDetails, setUserInfoDetails] = useState(null);
   const [projList, setProjList] = useState([]);
+  const [allEmployeesWithGroups, setAllEmployeesWithGroups] = useState([]);
   
   const [displayPromotionHistoryModal, setDisplayPromotionHistoryModal] = useState(false);
   const [promotionHistoryForm] = Form.useForm();
@@ -120,10 +121,21 @@ function PersonalCenter(props) {
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
-      window.echo('proj list', projList);
       setProjList(projList);
     }
     loadWorkingProjects();
+
+    async function loadEmployees() {
+      const allGroups = await api.getSource('industryGroup');
+      const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.data.map(m => m.id) }, 10);
+      const emplyeesWithGroups = allGroups.data.map(m => {
+        const employees = allEmployees.data.data.filter(f => f.indGroup === m.id);
+        return { ...m, employees };
+      });
+      window.echo('employeesWithGroups', emplyeesWithGroups);
+      setAllEmployeesWithGroups(emplyeesWithGroups);
+    }
+    loadEmployees();
   }, []);
 
   function tabChange(key) {
@@ -844,41 +856,45 @@ function PersonalCenter(props) {
                 </div>
               </TabPane>
               <TabPane tab="职员列表" key="3">
-                <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>部门名称</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar2.png" />
-                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                    </div>
-                  </Popover>
+                {allEmployeesWithGroups.map(m => (
+                  <div key={m.id}>
+                    <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>部门名称</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar2.png" />
+                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                        </div>
+                      </Popover>
 
-                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar3.png" />
-                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                    </div>
-                  </Popover>
+                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar3.png" />
+                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                        </div>
+                      </Popover>
 
-                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar4.png" />
-                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                    </div>
-                  </Popover>
+                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar4.png" />
+                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                        </div>
+                      </Popover>
 
-                  <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                    <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                      <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar5.png" />
-                      <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                      <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                    </div>
-                  </Popover>
+                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
+                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar5.png" />
+                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
+                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
+                        </div>
+                      </Popover>
 
-                </div>
+                    </div>
+                  </div>
+                ))}
               </TabPane>
             </Tabs>
           </Card>
