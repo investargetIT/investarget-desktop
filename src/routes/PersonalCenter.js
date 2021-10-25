@@ -166,7 +166,7 @@ function PersonalCenter(props) {
   function handleEditPromotionHistoryBtnClick(record) {
     setCurrentEditPromotionHistory(record);
     const { startDate, endDate, indGroup, title } = record;
-    const duration = [moment(startDate), moment(endDate)];
+    const duration = [moment(startDate), endDate ? moment(endDate) : undefined];
     promotionHistoryForm.setFieldsValue({ duration, indGroup: indGroup.id, title: title.id });
     setDisplayPromotionHistoryModal(true);
   }
@@ -293,7 +293,7 @@ function PersonalCenter(props) {
       key: 'duration',
       render: (_, record) => {
         const { startDate, endDate } = record;
-        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate.slice(0, 10).replaceAll('-', '.')}`;
+        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate ? endDate.slice(0, 10).replaceAll('-', '.') : '至今'}`;
       },
     },
     {
@@ -593,7 +593,7 @@ function PersonalCenter(props) {
     const { duration, indGroup, title } = values;
     const [ start, end ] = duration;
     const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    const endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
+    const endDate = end ? `${end.format('YYYY-MM-DD')}T23:59:59` : '';
     const body = {
       user: userID,
       indGroup,
@@ -903,6 +903,7 @@ function PersonalCenter(props) {
                     </div>
                   </div>
                 ))}
+                {allEmployeesWithGroups.length === 0 && <Empty style={{ margin: '20px auto' }} />}
               </TabPane>
             </Tabs>
           </Card>
@@ -926,7 +927,7 @@ function PersonalCenter(props) {
             name="duration"
             rules={[{ required: true, message: '请设定起止时间' }]}
           >
-            <RangePicker />
+            <RangePicker allowEmpty={[false, true]} placeholder={['开始日期', '留空默认至今']} />
           </Form.Item>
 
           <Form.Item
