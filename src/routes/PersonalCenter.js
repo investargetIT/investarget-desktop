@@ -892,7 +892,9 @@ function PersonalCenter(props) {
                       {m.employees.map(n => (
                         <Popover key={n.id} placement="right" content={popoverContent(n, m)} overlayClassName="popover-staff">
                           <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                            <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src={n.photourl || '/images/avatar2.png'} />
+                            <Link to={`/app/personal-center/${n.id}`}>
+                              <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src={n.photourl || '/images/avatar2.png'} />
+                            </Link>
                             <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>{n.username}</div>
                             <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>{getTitleName(n.title)}</div>
                           </div>
