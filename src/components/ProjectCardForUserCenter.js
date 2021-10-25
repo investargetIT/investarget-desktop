@@ -6,6 +6,7 @@ import {
   FolderFilled,
   LockFilled,
 } from '@ant-design/icons';
+import _ from 'lodash';
 
 const cardStyle = {
   height: '100%',
@@ -50,6 +51,8 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   const dataroomId = record.id
   const projId = record.id
   const projTitle = record.projtitle
+  let projTraders = record.projTraders ? record.projTraders.map(m => m.user) : [];
+  projTraders = _.uniqBy(projTraders, 'id');
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 
@@ -77,6 +80,9 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
         </div>
         <div style={cardTimeStyle}>创建时间：{record.createdtime.slice(0, 10)}</div>
         <div style={cardTimeStyle}>项目职能：业务开发</div>
+        <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
+          {projTraders.map((m, i) => <img key={m.id} style={{ marginRight: -6, zIndex: projTraders.length - i, width: 20, height: 20, borderRadius: '50%' }} src={m.photourl} />)}
+        </div>
       </div>
 
       {/* {displayHoverContent &&
