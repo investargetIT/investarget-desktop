@@ -17,7 +17,7 @@ import {
   requestAllData,
   handleError,
 } from '../utils/util';
-import { SelectIndustryGroup, SelectTitle, SelectTrader } from '../components/ExtraInput';
+import { SelectIndustryGroup, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 
@@ -52,6 +52,11 @@ function PersonalCenter(props) {
   const [mentorTrackForm] = Form.useForm();
   const [mentorTrackList, setMentorTrackList] = useState([]);
   const [currentEditMentorTrackRecord, setCurrentEditMentorTrackRecord] = useState(null);
+
+  const [displayTrainingRecordModal, setDisplayTrainingRecordModal] = useState(false);
+  const [TrainingRecordForm] = Form.useForm();
+  const [trainingRecordList, setTrainingRecordList] = useState([]);
+  const [currentEditTrainingRecord, setCurrentEditTrainingRecord] = useState(null);
 
   async function getPromotionHistory() {
     try {
@@ -916,7 +921,7 @@ function PersonalCenter(props) {
           <Form.Item
             label="日期"
             name="communicateDate"
-            rules={[{ required: true, message: '请设定时间' }]}
+            rules={[{ required: true, message: '请设定日期' }]}
           >
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
@@ -941,6 +946,54 @@ function PersonalCenter(props) {
           >
             <Input.TextArea rows={3} />
           </Form.Item>
+
+        </Form>
+      </Modal>
+
+      <Modal
+        title="入职后培训记录"
+        // visible={displayMentorTrackModal}
+        visible
+        // onCancel={() => setDisplayMentorTrackModal(false)}
+        // onOk={handleMentorTrackFormSubmit}
+      >
+        <Form
+          style={{ width: 400 }}
+          form={mentorTrackForm}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+        >
+
+          <Form.Item
+            label="日期"
+            name="trainingDate"
+            rules={[{ required: true, message: '请设定日期' }]}
+          >
+            <DatePicker style={{ width: '100%' }} />
+          </Form.Item>
+
+          <Form.Item
+            label="培训形式"
+            name="trainingType"
+          >
+            <SelectTraingType />
+          </Form.Item>
+
+          <Form.Item
+            label="培训内容"
+            name="trainingContent"
+          >
+            <Input.TextArea rows={3} />
+          </Form.Item>
+
+          <Form.Item
+            label="状态"
+            name="trainingStatus"
+          >
+            <SelectTraingStatus />
+          </Form.Item>
+
+          
 
         </Form>
       </Modal>

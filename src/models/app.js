@@ -46,6 +46,8 @@ export default {
       {id: 5, name: '已完成'},
     ],
     education: [],
+    trainingStatus: [],
+    trainingType: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {

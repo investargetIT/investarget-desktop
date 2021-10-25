@@ -213,6 +213,24 @@ const SelectCurrencyType = withOptionsAsync(SelectNumber, ['currencyType'], func
 })
 
 /**
+ * Select training type
+ */
+ const SelectTraingType = withOptionsAsync(SelectNumber, ['trainingType'], function(state) {
+  const { trainingType } = state.app
+  const options = trainingType ? trainingType.map(item =>({ value: item.id, label: item.name })) : []
+  return { options }
+})
+
+/**
+ * Select training type
+ */
+ const SelectTraingStatus = withOptionsAsync(SelectNumber, ['trainingStatus'], function(state) {
+  const { trainingStatus } = state.app
+  const options = trainingStatus ? trainingStatus.map(item =>({ value: item.id, label: item.name })) : []
+  return { options }
+})
+
+/**
  * SelectOrganizationType
  */
 
@@ -2109,6 +2127,8 @@ export {
   SelectOrganizationType,
   SelectTransactionPhase,
   SelectOrganizatonArea,
+  SelectTraingStatus,
+  SelectTraingType,
   // SelectOrganization,
   SelectExistOrganization,
   SelectExistUser,
