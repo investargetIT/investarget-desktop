@@ -47,12 +47,13 @@ const cardIconBgStyle = {
   alignItems: 'center',
 }
 
-export default function ProjectCardForUserCenter({ record, country: allCountries }) {
+export default function ProjectCardForUserCenter({ record, country: allCountries, currentUser }) {
   const dataroomId = record.id
   const projId = record.id
   const projTitle = record.projtitle
-  const projTraders = record.projTraders ? record.projTraders.map(m => m.user) : [];
-  const uniqProjTraders = _.uniqBy(projTraders, 'id');
+  const projTraders = record.projTraders || [];
+  const projTradersUsers= projTraders.map(m => m.user);
+  const uniqProjTraders = _.uniqBy(projTradersUsers, 'id');
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 
@@ -67,7 +68,12 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   // }
 
   function getUserFunction() {
-    return '业务开发';
+    let roles = projTraders.filter(f => f.user && f.user.id === currentUser);
+    roles = roles.map(m => m.type === 0 ? '承揽' : '承做');
+    if (roles.length > 0) {
+      return roles.join('、');
+    }
+    return '暂无';
   }
 
   function displayFullTraderAvatars() {

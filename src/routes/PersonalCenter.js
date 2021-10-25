@@ -879,7 +879,7 @@ function PersonalCenter(props) {
               <TabPane tab="参与过的项目" key="2">
                 <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 20px -18px' }}>
                   {projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
-                    <ProjectCardForUserCenter record={m} country={props.country} />
+                    <ProjectCardForUserCenter record={m} country={props.country} currentUser={userID} />
                   </div>)}
                   {projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
                 </div>
