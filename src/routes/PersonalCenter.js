@@ -153,6 +153,14 @@ function PersonalCenter(props) {
     setDisplayMentorTrackModal(true);
   }
 
+  function handleEditTrainingRecordBtnClick(record) {
+    setCurrentEditTrainingRecord(record);
+    const { trainingDate: date, trainingType, trainingContent, trainingStatus } = record;
+    const trainingDate = moment(date);
+    trainingRecordForm.setFieldsValue({ trainingDate, trainingType: trainingType && trainingType.id , trainingStatus: trainingStatus && trainingStatus.id, trainingContent });
+    setDisplayTrainingRecordModal(true);
+  }
+
   function handleDeletePromotionHistoryBtnClick(record) {
     Modal.confirm({
       title: '删除',
@@ -466,7 +474,7 @@ function PersonalCenter(props) {
       key: 'operation',
       render: () => (
         <div>
-          <Button type="link">编辑</Button>
+          <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
         </div>
       ),
