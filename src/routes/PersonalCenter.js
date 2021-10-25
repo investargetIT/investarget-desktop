@@ -195,6 +195,20 @@ function PersonalCenter(props) {
     })
   }
 
+  function handleDeleteTrainingRecordBtnClick(record) {
+    Modal.confirm({
+      title: '删除',
+      content: '确认删除该条记录吗？',
+      onOk() {
+        console.log('OK');
+        handleDeleteTrainingRecord(record);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    })
+  }
+
   async function handleDeletePromotionHistory(record) {
     try {
       await api.deletePromotionHistory(record.id);
@@ -217,6 +231,15 @@ function PersonalCenter(props) {
     try {
       await api.deleteMentorTrack(record.id);
       await getMentorTrackList();
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function handleDeleteTrainingRecord(record) {
+    try {
+      await api.deleteTrainingRecord(record.id);
+      await getTrainingRecordList();
     } catch (error) {
       handleError(error);
     }
@@ -444,7 +467,7 @@ function PersonalCenter(props) {
       render: () => (
         <div>
           <Button type="link">编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />}>删除</Button>
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
         </div>
       ),
     },
