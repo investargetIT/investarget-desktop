@@ -35,6 +35,8 @@ function PersonalCenter(props) {
     userID = parseInt(props.match.params.id);
   }
 
+  const [currentActiveTab, setCurrentActiveTab] = useState('1');
+
   const [userInfoDetails, setUserInfoDetails] = useState(null);
   const [projList, setProjList] = useState([]);
   const [allEmployeesWithGroups, setAllEmployeesWithGroups] = useState([]);
@@ -99,51 +101,66 @@ function PersonalCenter(props) {
     setTrainingRecordList(res.data.data);
   }
 
+  async function loadUserInfo() {
+    const reqUser = await api.getUserInfo(userID);
+    setUserInfoDetails(reqUser.data)
+  }
+
+  async function loadWorkingProjects() {
+    const params = {
+      max_size: 10,
+      sort: 'publishDate',
+      desc: 1,
+    }
+    if (!hasPerm('proj.admin_getproj')) {
+      params['user'] = userID;
+    }
+    const reqProj = await api.getProj(params);
+    const { data: projList } = reqProj.data;
+    setProjList(projList);
+
+    // 请求项目详情获取所有承揽承做
+    const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjLangDetail(m.id)));
+    setProjList(reqAllProjDetails.map(m => m.data));
+  }
+
+  async function loadEmployees() {
+    const allGroups = await api.getSource('industryGroup');
+    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.data.map(m => m.id) }, 10);
+    const emplyeesWithGroups = allGroups.data.map(m => {
+      const employees = allEmployees.data.data.filter(f => f.indGroup === m.id);
+      return { ...m, employees };
+    });
+    setAllEmployeesWithGroups(emplyeesWithGroups);
+  }
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'title' });
-    async function loadUserInfo() {
-      const reqUser = await api.getUserInfo(userID);
-      setUserInfoDetails(reqUser.data)
-    }
+    
     loadUserInfo();
-
     getPromotionHistory();
     getKPIRecordList();
     getMentorTrackList();
-
-    async function loadWorkingProjects() {
-      const params = {
-        max_size: 10,
-        sort: 'publishDate',
-        desc: 1,
-      }
-      if (!hasPerm('proj.admin_getproj')) {
-        params['user'] = userID;
-      }
-      const reqProj = await api.getProj(params);
-      const { data: projList } = reqProj.data;
-      setProjList(projList);
-
-      // 请求项目详情获取所有承揽承做
-      const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjLangDetail(m.id)));
-      setProjList(reqAllProjDetails.map(m => m.data));
-    }
     loadWorkingProjects();
-
-    async function loadEmployees() {
-      const allGroups = await api.getSource('industryGroup');
-      const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.data.map(m => m.id) }, 10);
-      const emplyeesWithGroups = allGroups.data.map(m => {
-        const employees = allEmployees.data.data.filter(f => f.indGroup === m.id);
-        return { ...m, employees };
-      });
-      setAllEmployeesWithGroups(emplyeesWithGroups);
-    }
     loadEmployees();
   }, []);
 
+  useEffect(() => {
+    if (props.match.params.id) {
+      userID = parseInt(props.match.params.id);
+      setCurrentActiveTab('1');
+      loadUserInfo();
+      getPromotionHistory();
+      getKPIRecordList();
+      getMentorTrackList();
+      loadWorkingProjects();
+      loadEmployees();
+    }
+  }, [props.match]);
+
   function tabChange(key) {
     console.log(key);
+    setCurrentActiveTab(key);
   }
 
   function handleEditPromotionHistoryBtnClick(record) {
@@ -795,7 +812,7 @@ function PersonalCenter(props) {
         </div>
         <div style={{ flex: 1 }}>
           <Card>
-            <Tabs defaultActiveKey="1" onChange={tabChange}>
+            <Tabs defaultActiveKey="1" onChange={tabChange} activeKey={currentActiveTab}>
               <TabPane tab="人事档案及绩效" key="1">
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>

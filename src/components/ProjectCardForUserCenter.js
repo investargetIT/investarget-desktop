@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card } from 'antd';
+import { Card, Popover } from 'antd';
 import { Link } from 'dva/router';
 import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
 import {
@@ -70,6 +70,18 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
     return '业务开发';
   }
 
+  function displayFullTraderAvatars() {
+    return (
+      <div style={{ marginTop: 10, display: 'flex', justifyContent: 'center' }}>
+        {uniqProjTraders.map((m, i) => (
+          <Link key={m.id} to={`/app/personal-center/${m.id}`}>
+          <img  style={{ marginRight: i < uniqProjTraders.length -1 ? 10 : 0, width: 30, height: 30, borderRadius: '50%' }} src={m.photourl} />
+          </Link>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <Card style={cardStyle} bodyStyle={cardBodyStyle}>
 
@@ -84,11 +96,15 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
         </div>
         <div style={cardTimeStyle}>创建时间：{record.createdtime.slice(0, 10)}</div>
         <div style={cardTimeStyle}>项目职能：{getUserFunction()}</div>
-        <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
-          {uniqProjTraders.map((m, i) => (
-            <img key={m.id} style={{ marginRight: -6, zIndex: uniqProjTraders.length - i, width: 20, height: 20, borderRadius: '50%' }} src={m.photourl} />
-          ))}
-        </div>
+        
+          <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
+          <Popover content={displayFullTraderAvatars()}>
+            {uniqProjTraders.map((m, i) => (
+              <img key={m.id} style={{ marginRight: -6, zIndex: uniqProjTraders.length - i, width: 20, height: 20, borderRadius: '50%' }} src={m.photourl} />
+            ))}
+            </Popover>
+          </div>
+        
       </div>
 
       {/* {displayHoverContent &&
