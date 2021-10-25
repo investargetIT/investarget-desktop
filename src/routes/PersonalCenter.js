@@ -125,7 +125,7 @@ function PersonalCenter(props) {
       setProjList(projList);
 
       // 请求项目详情获取所有承揽承做
-      const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjDetail(m.id)));
+      const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjLangDetail(m.id)));
       setProjList(reqAllProjDetails.map(m => m.data));
     }
     loadWorkingProjects();

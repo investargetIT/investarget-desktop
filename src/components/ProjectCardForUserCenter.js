@@ -26,7 +26,7 @@ const cardImageStyle = {
 const cardTitleStyle = {
   fontSize: '15px',
   marginBottom: '16px',
-  height: '20px',
+  height: '50px',
   overflow: 'hidden'
 }
 const cardTimeStyle = {
@@ -51,8 +51,8 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   const dataroomId = record.id
   const projId = record.id
   const projTitle = record.projtitle
-  let projTraders = record.projTraders ? record.projTraders.map(m => m.user) : [];
-  projTraders = _.uniqBy(projTraders, 'id');
+  const projTraders = record.projTraders ? record.projTraders.map(m => m.user) : [];
+  const uniqProjTraders = _.uniqBy(projTraders, 'id');
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 
@@ -65,6 +65,10 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   // function handleMouseLeave() {
   //   setDisplayHoverContent(false);
   // }
+
+  function getUserFunction() {
+    return '业务开发';
+  }
 
   return (
     <Card style={cardStyle} bodyStyle={cardBodyStyle}>
@@ -79,9 +83,11 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
           <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
         </div>
         <div style={cardTimeStyle}>创建时间：{record.createdtime.slice(0, 10)}</div>
-        <div style={cardTimeStyle}>项目职能：业务开发</div>
+        <div style={cardTimeStyle}>项目职能：{getUserFunction()}</div>
         <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
-          {projTraders.map((m, i) => <img key={m.id} style={{ marginRight: -6, zIndex: projTraders.length - i, width: 20, height: 20, borderRadius: '50%' }} src={m.photourl} />)}
+          {uniqProjTraders.map((m, i) => (
+            <img key={m.id} style={{ marginRight: -6, zIndex: uniqProjTraders.length - i, width: 20, height: 20, borderRadius: '50%' }} src={m.photourl} />
+          ))}
         </div>
       </div>
 
