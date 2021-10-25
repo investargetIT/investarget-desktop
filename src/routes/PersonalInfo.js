@@ -7,7 +7,7 @@ import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/i
 import { getUserInfo, i18n } from '../utils/util';
 import * as api from '../api';
 import { routerRedux } from 'dva/router';
-import { SelectEducation, SelectGender, SelectTrader } from '../components/ExtraInput';
+import { SelectEducation, SelectGender, SelectTrader, SelectIndustryGroup } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 import { UploadFile } from '../components/Upload';
@@ -84,18 +84,7 @@ function PersonalInfo(props) {
     setLoadingUpdateUserInfo(true);
     api.editUser([props.currentUser.id], params).then(data => {
       setLoadingUpdateUserInfo(false);
-      const username = data.data[0].username;
-      const bornTime = data.data[0].bornTime;
-      const entryTime = data.data[0].entryTime;
-      const school = data.data[0].school;
-      const education = data.data[0].education;
-      const specialty = data.data[0].specialty;
-      const specialtyhobby = data.data[0].specialtyhobby;
-      const remark = data.data[0].remark;
-      const gender = data.data[0].gender;
-      const mentor = data.data[0].mentor;
-      const directSupervisor = data.data[0].directSupervisor;
-      const userInfo = { ...props.currentUser, username, bornTime, entryTime, school, education, specialty, specialtyhobby, remark, gender, mentor, directSupervisor };
+      const userInfo = { ...props.currentUser, ...data.data[0] };
       localStorage.setItem('user_info', JSON.stringify(userInfo))
       props.dispatch({
         type: 'currentUser/save',
@@ -151,6 +140,7 @@ function PersonalInfo(props) {
       entryTime: entryTimeStr,
       mentor: mentorObj,
       directSupervisor: directSupervisorObj,
+      indGroup: indGroupObj
     } = userInfo;
     const bornTime = bornTimeStr ? moment(bornTimeStr) : undefined;
     const entryTime = entryTimeStr ? moment(entryTimeStr) : undefined;
@@ -160,7 +150,8 @@ function PersonalInfo(props) {
     }
     const mentor = mentorObj ? mentorObj.id.toString() : undefined;
     const directSupervisor = directSupervisorObj ? directSupervisorObj.id.toString() : undefined;
-    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor };
+    const indGroup = indGroupObj ? indGroupObj.id : undefined;
+    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor, indGroup };
   }
 
   function handleFinishUploadResume(key) {
@@ -209,6 +200,9 @@ function PersonalInfo(props) {
               >
                 <Form.Item label="姓名" name="username">
                   <Input placeholder="请输入姓名" disabled />
+                </Form.Item>
+                <Form.Item label="行业组" name="indGroup">
+                  <SelectIndustryGroup size="middle" placeholder="请选择行业组" />
                 </Form.Item>
                 <Form.Item label="部门主管" name="mentor">
                   <SelectTrader placeholder="请选择部门主管" />
