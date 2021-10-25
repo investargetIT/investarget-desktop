@@ -54,7 +54,7 @@ function PersonalCenter(props) {
   const [currentEditMentorTrackRecord, setCurrentEditMentorTrackRecord] = useState(null);
 
   const [displayTrainingRecordModal, setDisplayTrainingRecordModal] = useState(false);
-  const [TrainingRecordForm] = Form.useForm();
+  const [trainingRecordForm] = Form.useForm();
   const [trainingRecordList, setTrainingRecordList] = useState([]);
   const [currentEditTrainingRecord, setCurrentEditTrainingRecord] = useState(null);
 
@@ -519,6 +519,18 @@ function PersonalCenter(props) {
       });
   }
 
+  function handleTrainingRecordFormSubmit() {
+    trainingRecordForm
+      .validateFields()
+      .then((values) => {
+        trainingRecordForm.resetFields();
+        updateTrainingRecord(values);
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  }
+
   async function updatePromotionHistory(values) {
     const { duration, indGroup, title } = values;
     const [ start, end ] = duration;
@@ -605,6 +617,36 @@ function PersonalCenter(props) {
     }
     getMentorTrackList();
     setDisplayMentorTrackModal(false);
+  }
+
+  async function updateTrainingRecord(values) {
+    const {
+      trainingDate: trainingDateMoment,
+      trainingType,
+      trainingStatus,
+      trainingContent,
+    } = values;
+    const trainingDate = `${trainingDateMoment.format('YYYY-MM-DD')}T00:00:00`;
+    const body = {
+      user: userID,
+      trainingDate,
+      trainingType,
+      trainingStatus,
+      trainingContent,
+    };
+    try {
+      if (currentEditTrainingRecord) {
+        const { id } = currentEditTrainingRecord;
+        await api.editTrainingRecord(id, body);
+        setCurrentEditTrainingRecord(null);
+      } else {
+        await api.addTrainingRecord(body);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+    // getTrainingRecordList();
+    setDisplayTrainingRecordModal(false);
   }
 
   const KPIAttachmentUploadProps = {
@@ -957,11 +999,11 @@ function PersonalCenter(props) {
         title="入职后培训记录"
         visible={displayTrainingRecordModal}
         onCancel={() => setDisplayTrainingRecordModal(false)}
-        // onOk={handleTrainingRecordFormSubmit}
+        onOk={handleTrainingRecordFormSubmit}
       >
         <Form
           style={{ width: 400 }}
-          form={mentorTrackForm}
+          form={trainingRecordForm}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
         >
@@ -977,6 +1019,7 @@ function PersonalCenter(props) {
           <Form.Item
             label="培训形式"
             name="trainingType"
+            required
           >
             <SelectTraingType />
           </Form.Item>
