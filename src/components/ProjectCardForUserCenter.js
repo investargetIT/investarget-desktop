@@ -75,7 +75,7 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
         <div style={cardTitleStyle}>
           <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
         </div>
-        <div style={cardTimeStyle}>创建时间：2021-04-18</div>
+        <div style={cardTimeStyle}>创建时间：{record.createdtime.slice(0, 10)}</div>
         <div style={cardTimeStyle}>项目职能：业务开发</div>
       </div>
 

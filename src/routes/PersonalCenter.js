@@ -111,15 +111,16 @@ function PersonalCenter(props) {
 
     async function loadWorkingProjects() {
       const params = {
-        max_size: 2,
+        max_size: 10,
         sort: 'publishDate',
         desc: 1,
       }
       if (!hasPerm('proj.admin_getproj')) {
-        params['user'] = userInfo.id;
+        params['user'] = userID;
       }
       const reqProj = await api.getProj(params);
       const { data: projList } = reqProj.data;
+      window.echo('proj list', projList);
       setProjList(projList);
     }
     loadWorkingProjects();
