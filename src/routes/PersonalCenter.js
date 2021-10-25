@@ -100,6 +100,7 @@ function PersonalCenter(props) {
   }
 
   useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'title' });
     async function loadUserInfo() {
       const reqUser = await api.getUserInfo(userID);
       setUserInfoDetails(reqUser.data)
@@ -132,7 +133,6 @@ function PersonalCenter(props) {
         const employees = allEmployees.data.data.filter(f => f.indGroup === m.id);
         return { ...m, employees };
       });
-      window.echo('employeesWithGroups', emplyeesWithGroups);
       setAllEmployeesWithGroups(emplyeesWithGroups);
     }
     loadEmployees();
@@ -504,14 +504,14 @@ function PersonalCenter(props) {
     },
   ];
 
-  function popoverContent() {
+  function popoverContent(user, indGroup) {
     return (
       <div>
-        <img style={{ width: 240, height: 240 }} src="/images/avatar2.png" />
+        <img style={{ width: 240, height: 240 }} src={user.photourl || "/images/avatar2.png"} />
         <div style={{ padding: '30px 20px' }}>
-          <div style={{ fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>Vincent Chen</div>
-          <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>高级投资经理</div>
-          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>战略投资</div>
+          <div style={{ fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>{user.username}</div>
+          <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{getTitleName(user.title)}</div>
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{indGroup.name}</div>
           <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>Eric Shen</div>
           <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div>
           <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>2020.10.01</div>
@@ -701,6 +701,14 @@ function PersonalCenter(props) {
     return e && e.fileList;
   };
 
+  function getTitleName(titleID) {
+    const filterTitle = props.title.filter(f => f.id === titleID);
+    if (filterTitle.length > 0) {
+      return filterTitle[0].name;
+    }
+    return '';
+  }
+
   if (!userInfoDetails) return <LeftRightLayoutPure location={props.location} />;
 
   return (
@@ -858,40 +866,17 @@ function PersonalCenter(props) {
               <TabPane tab="职员列表" key="3">
                 {allEmployeesWithGroups.map(m => (
                   <div key={m.id}>
-                    <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>部门名称</div>
+                    <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>{m.name}</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar2.png" />
-                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                        </div>
-                      </Popover>
-
-                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar3.png" />
-                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                        </div>
-                      </Popover>
-
-                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar4.png" />
-                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                        </div>
-                      </Popover>
-
-                      <Popover placement="right" content={popoverContent()} overlayClassName="popover-staff">
-                        <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
-                          <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src="/images/avatar5.png" />
-                          <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>Eric Shen</div>
-                          <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>董事</div>
-                        </div>
-                      </Popover>
-
+                      {m.employees.map(n => (
+                        <Popover key={n.id} placement="right" content={popoverContent(n, m)} overlayClassName="popover-staff">
+                          <div style={{ marginRight: 20, marginBottom: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: 190, height: 216, border: '1px solid #e6e6e6', borderRadius: 4 }}>
+                            <img style={{ marginBottom: 24, width: 72, height: 72, borderRadius: '50%' }} src={n.photourl || '/images/avatar2.png'} />
+                            <div style={{ fontWeight: 500, marginBottom: 4, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)' }}>{n.username}</div>
+                            <div style={{ fontSize: 14, lineHeight: '20px', color: '#989898' }}>{getTitleName(n.title)}</div>
+                          </div>
+                        </Popover>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -1089,8 +1074,8 @@ function PersonalCenter(props) {
 }
 
 function mapStateToProps(state) {
-  const { country } = state.app;
-  return { country };
+  const { country, title } = state.app;
+  return { country, title };
 }
 
 export default connect(mapStateToProps)(PersonalCenter);
