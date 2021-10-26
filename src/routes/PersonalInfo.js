@@ -19,9 +19,14 @@ const { RangePicker } = DatePicker;
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
+  // window.echo('user info', userInfo);
   const [form] = Form.useForm();
 
   const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);
+
+  useEffect(() => {
+    props.dispatch({ type: 'app/getIndustryGroup' });
+  }, []);
 
   const uploadProps = {
     name: 'file',
@@ -151,7 +156,17 @@ function PersonalInfo(props) {
     const mentor = mentorObj ? mentorObj.id.toString() : undefined;
     const directSupervisor = directSupervisorObj ? directSupervisorObj.id.toString() : undefined;
     const indGroup = indGroupObj ? indGroupObj.id : undefined;
-    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor, indGroup };
+    const teamLeader = getTeamLeaderFromIndGroup(indGroup);
+    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor, indGroup, teamLeader };
+  }
+
+  function getTeamLeaderFromIndGroup(indGroupID) {
+    if (!indGroupID) return '暂无';
+    if (props.industryGroup.length === 0) return '暂无';
+    const filterIndustry = props.industryGroup.filter(f => f.id === indGroupID);
+    if (filterIndustry.length === 0) return '暂无';
+    if (!filterIndustry[0].manager) return '暂无';
+    return filterIndustry[0].manager.username;
   }
 
   function handleFinishUploadResume(key) {
@@ -199,17 +214,17 @@ function PersonalInfo(props) {
                 initialValues={getInitialValuesFromCurrentUser()}
               >
                 <Form.Item label="姓名" name="username">
-                  <Input placeholder="请输入姓名" disabled />
+                  <Input disabled />
                 </Form.Item>
                 <Form.Item label="行业组" name="indGroup">
                   <SelectIndustryGroup size="middle" placeholder="请选择行业组" />
                 </Form.Item>
-                <Form.Item label="部门主管" name="mentor">
-                  <SelectTrader placeholder="请选择部门主管" />
+                <Form.Item label="部门主管" name="teamLeader">
+                  <Input disabled />
                 </Form.Item>
-                <Form.Item label="直属上级" name="directSupervisor">
+                {/* <Form.Item label="直属上级" name="directSupervisor">
                   <SelectTrader placeholder="请选择直属上级" />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item label="入职日期" name="entryTime">
                   <DatePicker style={{ width: '100%' }} />
                 </Form.Item>
@@ -323,6 +338,7 @@ function PersonalInfo(props) {
 
 function mapStateToProps(state) {
   const { currentUser } = state;
-  return { currentUser };
+  const { industryGroup } = state.app;
+  return { currentUser, industryGroup };
 }
 export default connect(mapStateToProps)(PersonalInfo);
