@@ -126,14 +126,12 @@ function PersonalCenter(props) {
   }
 
   async function loadEmployees() {
-    const allGroups = await api.getSource('industryGroup');
-    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.data.map(m => m.id) }, 10);
-    // window.echo('all employees', allEmployees);
-    const emplyeesWithGroups = allGroups.data.map(m => {
+    const allGroups = await props.dispatch({ type: 'app/getIndustryGroup' });
+    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.map(m => m.id) }, 10);
+    const emplyeesWithGroups = allGroups.map(m => {
       const employees = allEmployees.data.data.filter(f => f.indGroup && (f.indGroup.id === m.id));
       return { ...m, employees };
     });
-    // window.echo('employee groups', emplyeesWithGroups);
     setAllEmployeesWithGroups(emplyeesWithGroups);
   }
 
@@ -1099,8 +1097,8 @@ function PersonalCenter(props) {
 }
 
 function mapStateToProps(state) {
-  const { country, title } = state.app;
-  return { country, title };
+  const { country, title, industryGroup } = state.app;
+  return { country, title, industryGroup };
 }
 
 export default connect(mapStateToProps)(PersonalCenter);

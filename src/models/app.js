@@ -120,6 +120,23 @@ export default {
         yield put({ type: 'getSource', payload: sourceType })
       }
     },
+    *getIndustryGroup(_, { call, put, select }) {
+      const tryData = yield select(state => state.app['industryGroup']);
+      if (tryData.length > 0) return;
+      const { data } = yield call(api.getSource, 'industryGroup');
+      const allManagers = data.filter(f => f.manager).map(m => m.manager);
+      const reqManagerList = yield call(requestAllData, api.getUser, { id: allManagers }, 10);
+      const indGroups = data.map(m => {
+        const filterManager = reqManagerList.data.data.filter(f => f.id === m.manager);
+        let manager = null;
+        if (filterManager.length > 0) {
+          manager  = filterManager[0];
+        }
+        return { ...m, manager };
+      });
+      yield put({ type: 'saveSource', payload: { sourceType: 'industryGroup', data: indGroups } });
+      return indGroups;
+    },
     *requestLibIndustry({}, { call, put }) {
       const { data } = yield call(api.getLibIndustry)
       yield put({ type: 'saveLibIndustry', payload: data.data })
