@@ -78,13 +78,15 @@ class Home extends React.Component {
   }
 
   render() {
-    return <LeftRightLayout location={this.props.location}>
+    return (
+    <div style={{ padding: 20 }}>
       <h1>{i18n('common.choose')}</h1>
       <RadioGroup onChange={this.onChange} options={options} />
       <div style={{ marginTop: 20 }}>
         <Button onClick={this.onClick} type="primary">{i18n('common.confirm')}</Button>
       </div>
-    </LeftRightLayout>
+    </div>
+    );
   }
 }
 

@@ -2,7 +2,7 @@ import { Form, Input, Button, Checkbox, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
-import { i18n, handleError } from '../utils/util'
+import { i18n, handleError, getURLParamValue } from '../utils/util'
 import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
@@ -70,7 +70,6 @@ class Login extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       errorMsg: null,
     };
@@ -85,8 +84,8 @@ class Login extends React.Component {
         console.error(e.message)
       }
     }
-    if (!localStorage.getItem('source') && this.props.location.query.source) {
-      localStorage.setItem('source', Number(this.props.location.query.source));
+    if (!localStorage.getItem('source') && getURLParamValue(props, 'source')) {
+      localStorage.setItem('source', Number(getURLParamValue(props, 'source')));
     }
   }
 

@@ -15,7 +15,7 @@ function r(url, method, body) {
   const source = parseInt(localStorage.getItem('source'), 10)
 
   if (!source) {
-    throw new ApiError(1299, 'data source missing')
+    throw new ApiError(1299, 'data source missing');
   }
 
   const options = {

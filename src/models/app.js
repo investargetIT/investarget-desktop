@@ -160,8 +160,8 @@ export default {
     setup({ history, dispatch }) {
       return history.listen(({ pathname }) => {
 
-        dispatch({ type: 'getSourceList', payload: ['transactionPhases'] });
-        dispatch({ type: 'getSourceList', payload: ['currencyType'] });
+        // dispatch({ type: 'getSourceList', payload: ['transactionPhases'] });
+        // dispatch({ type: 'getSourceList', payload: ['currencyType'] });
         const key = URI_TO_KEY[pathname]
         const selectedKeys = key ? [key] : []
 
@@ -175,7 +175,7 @@ export default {
           history.replace('/app')
         }
 
-        if (pathname === '/app' && !isLogin()) {
+        if (pathname.includes('/app') && !isLogin()) {
           history.replace('/')
         }
       })
