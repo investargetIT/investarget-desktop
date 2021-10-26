@@ -74,6 +74,20 @@ function PersonalCenter(props) {
     }
   }
 
+  async function getEmployeeRelationList() {
+    try {
+      const res = await requestAllData(
+        api.getEmployeeRelation,
+        { user: userID },
+        10,
+      );
+      window.echo('relations', res);
+      // setPromotionHistory(res.data.data);
+    } catch (error) {
+      // handleError(error);
+    }
+  }
+
   async function getKPIRecordList() {
     const res = await requestAllData(
       api.getKPIRecord,
@@ -139,6 +153,7 @@ function PersonalCenter(props) {
     props.dispatch({ type: 'app/getSource', payload: 'title' });
     
     loadUserInfo();
+    getEmployeeRelationList();
     getPromotionHistory();
     getKPIRecordList();
     getMentorTrackList();
@@ -152,6 +167,7 @@ function PersonalCenter(props) {
       userID = parseInt(props.match.params.id);
       setCurrentActiveTab('1');
       loadUserInfo();
+      getEmployeeRelationList();
       getPromotionHistory();
       getKPIRecordList();
       getMentorTrackList();

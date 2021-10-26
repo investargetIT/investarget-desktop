@@ -1052,3 +1052,6 @@ export const addTrainingRecord = body => r('/user/trainingrecords/', 'POST', bod
 export const getTrainingRecord = params => r(`/user/trainingrecords/?${qs.stringify(params)}`);
 export const editTrainingRecord = (id, body) => r(`/user/trainingrecords/${id}/`, 'PUT', body);
 export const deleteTrainingRecord = id => r(`/user/trainingrecords/${id}/`, 'DELETE');
+
+export const addEmployeeRelation = body => r('/user/personnelrelations/', 'POST', body);
+export const getEmployeeRelation = params => r(`/user/personnelrelations/?${qs.stringify(params)}`);

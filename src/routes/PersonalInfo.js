@@ -77,7 +77,20 @@ function PersonalInfo(props) {
     console.log('Received values of form:', values);
   };
 
-  function handlePersonalInfoFormOnFinish(values) {
+  async function handlePersonalInfoFormOnFinish(allData) {
+    const { mentor, ...values } = allData;
+    if (mentor) {
+      // 设置人事关系
+      const body = {
+        user: props.currentUser.id,
+        type: 1,
+        supervisorOrMentor: parseInt(mentor),
+        startDate: '2021-10-10T00:00:00',
+        endDate: '2022-10-11T00:00:00',
+      };
+      await api.addEmployeeRelation(body);
+    }
+    
     let { bornTime, entryTime } = values;
     if (bornTime) {
       bornTime = bornTime.format('YYYY-MM-DDT00:00:00');
