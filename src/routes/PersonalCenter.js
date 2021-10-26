@@ -98,7 +98,7 @@ function PersonalCenter(props) {
       { user: userID },
       10,
     );
-    window.echo('training record', res);
+    // window.echo('training record', res);
     setTrainingRecordList(res.data.data);
   }
 
@@ -128,10 +128,12 @@ function PersonalCenter(props) {
   async function loadEmployees() {
     const allGroups = await api.getSource('industryGroup');
     const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.data.map(m => m.id) }, 10);
+    // window.echo('all employees', allEmployees);
     const emplyeesWithGroups = allGroups.data.map(m => {
-      const employees = allEmployees.data.data.filter(f => f.indGroup === m.id);
+      const employees = allEmployees.data.data.filter(f => f.indGroup && (f.indGroup.id === m.id));
       return { ...m, employees };
     });
+    // window.echo('employee groups', emplyeesWithGroups);
     setAllEmployeesWithGroups(emplyeesWithGroups);
   }
 
@@ -537,8 +539,8 @@ function PersonalCenter(props) {
           <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{getTitleName(user.title)}</div>
           <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{indGroup.name}</div>
           <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>Eric Shen</div>
-          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div>
-          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>2020.10.01</div>
+          {/* <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>Amy Zhao</div> */}
+          <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>{user.entryTime ? user.entryTime.slice(0, 10) : '暂无'}</div>
         </div>
       </div>
     );
@@ -757,7 +759,7 @@ function PersonalCenter(props) {
               <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{userInfoDetails.title ? userInfoDetails.title.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{userInfoDetails.indGroup ? userInfoDetails.indGroup.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>{userInfoDetails.mentor ? userInfoDetails.mentor.username : '暂无'}</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>{userInfoDetails.directSupervisor ? userInfoDetails.directSupervisor.username : '暂无'}</div>
+              {/* <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>{userInfoDetails.directSupervisor ? userInfoDetails.directSupervisor.username : '暂无'}</div> */}
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>{userInfoDetails.entryTime ? userInfoDetails.entryTime.slice(0, 10) : '暂无'}</div>
             </div>
             <div style={{ width: 240, margin: '0 auto', marginBottom: 100, padding: '20px 0', borderTop: '1px solid #E6E6E6' }}>

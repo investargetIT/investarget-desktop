@@ -1096,7 +1096,7 @@ const SelectTitle = withOptionsAsync(SelectNumber, ['title'], function(state) {
  */
  const SelectKPIResult = withOptionsAsync(SelectNumber, ['palevel'], function(state) {
   const { palevel } = state.app
-  const options = palevel ? palevel.map(item => ({ value: item.id, label: item.name })) : []
+  const options = palevel ? palevel.map(item => ({ value: item.id, label: item.level })) : []
   return { options }
 })
 
