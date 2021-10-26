@@ -217,7 +217,7 @@ const SelectCurrencyType = withOptionsAsync(SelectNumber, ['currencyType'], func
  */
  const SelectTraingType = withOptionsAsync(SelectNumber, ['trainingType'], function(state) {
   const { trainingType } = state.app
-  const options = trainingType ? trainingType.map(item =>({ value: item.id, label: item.name })) : []
+  const options = trainingType ? trainingType.map(item =>({ value: item.id, label: item.type })) : []
   return { options }
 })
 
@@ -226,7 +226,7 @@ const SelectCurrencyType = withOptionsAsync(SelectNumber, ['currencyType'], func
  */
  const SelectTraingStatus = withOptionsAsync(SelectNumber, ['trainingStatus'], function(state) {
   const { trainingStatus } = state.app
-  const options = trainingStatus ? trainingStatus.map(item =>({ value: item.id, label: item.name })) : []
+  const options = trainingStatus ? trainingStatus.map(item =>({ value: item.id, label: item.status })) : []
   return { options }
 })
 
@@ -1088,6 +1088,15 @@ SelectUserGroup = connect(
 const SelectTitle = withOptionsAsync(SelectNumber, ['title'], function(state) {
   const { title } = state.app
   const options = title ? title.map(item => ({ value: item.id, label: item.name })) : []
+  return { options }
+})
+
+/**
+ * 选择考核结果
+ */
+ const SelectKPIResult = withOptionsAsync(SelectNumber, ['palevel'], function(state) {
+  const { palevel } = state.app
+  const options = palevel ? palevel.map(item => ({ value: item.id, label: item.name })) : []
   return { options }
 })
 
@@ -2142,6 +2151,7 @@ export {
   SelectProjectStatus,
   SelectUserGroup,
   SelectTitle,
+  SelectKPIResult,
   SelectBDStatus,
   SelectIndustryGroup,
   SelectNewBDStatus,

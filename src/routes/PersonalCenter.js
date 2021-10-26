@@ -17,7 +17,7 @@ import {
   requestAllData,
   handleError,
 } from '../utils/util';
-import { SelectIndustryGroup, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
+import { SelectIndustryGroup, SelectKPIResult, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 
@@ -98,6 +98,7 @@ function PersonalCenter(props) {
       { user: userID },
       10,
     );
+    window.echo('training record', res);
     setTrainingRecordList(res.data.data);
   }
 
@@ -141,6 +142,7 @@ function PersonalCenter(props) {
     getPromotionHistory();
     getKPIRecordList();
     getMentorTrackList();
+    getTrainingRecordList();
     loadWorkingProjects();
     loadEmployees();
   }, []);
@@ -153,6 +155,7 @@ function PersonalCenter(props) {
       getPromotionHistory();
       getKPIRecordList();
       getMentorTrackList();
+      getTrainingRecordList();
       loadWorkingProjects();
       loadEmployees();
     }
@@ -488,7 +491,7 @@ function PersonalCenter(props) {
     },
     {
       title: '培训形式',
-      dataIndex: ['trainingType', 'name'],
+      dataIndex: ['trainingType', 'type'],
       key: 'type',
     },
     {
@@ -499,14 +502,14 @@ function PersonalCenter(props) {
     },
     {
       title: '状态',
-      dataIndex: ['trainingStatus', 'name'],
+      dataIndex: ['trainingStatus', 'status'],
       key: 'status',
     },
     {
       title: '操作',
       align: 'center',
       key: 'operation',
-      render: () => (
+      render: (_, record) => (
         <div>
           <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}>编辑</Button>
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
@@ -593,7 +596,7 @@ function PersonalCenter(props) {
     const { duration, indGroup, title } = values;
     const [ start, end ] = duration;
     const startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
-    const endDate = end ? `${end.format('YYYY-MM-DD')}T23:59:59` : '';
+    const endDate = end ? `${end.format('YYYY-MM-DD')}T23:59:59` : undefined;
     const body = {
       user: userID,
       indGroup,
@@ -625,7 +628,7 @@ function PersonalCenter(props) {
     const performanceTableKey = performanceTableKeyObj && performanceTableKeyObj.length > 0 && performanceTableKeyObj[0].response ? performanceTableKeyObj[0].response.result.key : undefined;
     const body = {
       user: userID,
-      // level,
+      level,
       startDate,
       endDate,
       performanceTableBucket: performanceTableKey ? 'file' : undefined,
@@ -971,12 +974,8 @@ function PersonalCenter(props) {
           <Form.Item
             label="绩效考核结果"
             name="level"
-            required
           >
-            <Radio.Group>
-              <Radio value={1}>合格</Radio>
-              <Radio value={0}>未合格</Radio>
-            </Radio.Group>
+            <SelectKPIResult size="middle" />
           </Form.Item>
 
           <Form.Item

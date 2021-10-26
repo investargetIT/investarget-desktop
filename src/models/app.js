@@ -48,6 +48,7 @@ export default {
     education: [],
     trainingStatus: [],
     trainingType: [],
+    palevel: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
