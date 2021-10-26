@@ -653,7 +653,6 @@ function PersonalCenter(props) {
   async function updateMentorTrackRecord(values) {
     const {
       communicateDate: communicateDateMoment,
-      communicateType,
       communicateUser,
       communicateContent,
     } = values;
@@ -661,7 +660,7 @@ function PersonalCenter(props) {
     const body = {
       user: userID,
       communicateDate,
-      communicateType,
+      communicateType: '1v1线下沟通',
       communicateUser,
       communicateContent,
     };
@@ -1020,12 +1019,12 @@ function PersonalCenter(props) {
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             label="沟通方式"
             name="communicateType"
           >
             <Input placeholder="请填写沟通方式" />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item
             label="沟通人"
