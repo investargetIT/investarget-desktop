@@ -222,6 +222,9 @@ function PersonalInfo(props) {
                 <Form.Item label="部门主管" name="teamLeader">
                   <Input disabled />
                 </Form.Item>
+                <Form.Item label="导师" name="mentor">
+                  <SelectTrader placeholder="请选择导师" />
+                </Form.Item>
                 {/* <Form.Item label="直属上级" name="directSupervisor">
                   <SelectTrader placeholder="请选择直属上级" />
                 </Form.Item> */}
