@@ -3,8 +3,8 @@ import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider } from 'antd';
 import { Link } from 'dva/router';
-import { CloudUploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { getUserInfo, i18n } from '../utils/util';
+import { CloudUploadOutlined } from '@ant-design/icons';
+import { getUserInfo, i18n, hasPerm, handleError, requestAllData } from '../utils/util';
 import * as api from '../api';
 import { routerRedux } from 'dva/router';
 import { SelectEducation, SelectGender, SelectTrader, SelectIndustryGroup } from '../components/ExtraInput';
@@ -19,7 +19,6 @@ const { RangePicker } = DatePicker;
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
-  // window.echo('user info', userInfo);
   const [form] = Form.useForm();
 
   const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);
@@ -79,16 +78,29 @@ function PersonalInfo(props) {
 
   async function handlePersonalInfoFormOnFinish(allData) {
     const { mentor, ...values } = allData;
+    setLoadingUpdateUserInfo(true);
     if (mentor) {
-      // 设置人事关系
-      const body = {
-        user: props.currentUser.id,
-        type: 1,
-        supervisorOrMentor: parseInt(mentor),
-        startDate: '2021-10-10T00:00:00',
-        endDate: '2022-10-11T00:00:00',
-      };
-      await api.addEmployeeRelation(body);
+      try {
+        // 先删除原来的导师关系
+        if (userInfo.mentor) {
+          const reqPreviousData = await requestAllData(
+            api.getEmployeeRelation,
+            { user: props.currentUser.id },
+            10,
+          );
+          await Promise.all(reqPreviousData.data.data.map(m => api.deleteEmployeeRelation(m.id)));
+        }
+        // 设置人事关系
+        const body = {
+          user: props.currentUser.id,
+          type: 1,
+          supervisorOrMentor: parseInt(mentor),
+          startDate: moment().format('YYYY-MM-DDT00:00:00'),
+        };
+        await api.addEmployeeRelation(body);
+      } catch (error) {
+        handleError(error);
+      }
     }
     
     let { bornTime, entryTime } = values;
@@ -99,7 +111,6 @@ function PersonalInfo(props) {
       entryTime = entryTime.format('YYYY-MM-DDT00:00:00');
     }
     const params = { ...values, bornTime, entryTime };
-    setLoadingUpdateUserInfo(true);
     api.editUser([props.currentUser.id], params).then(data => {
       setLoadingUpdateUserInfo(false);
       const userInfo = { ...props.currentUser, ...data.data[0] };
@@ -235,7 +246,7 @@ function PersonalInfo(props) {
                 <Form.Item label="部门主管" name="teamLeader">
                   <Input disabled />
                 </Form.Item>
-                <Form.Item label="导师" name="mentor">
+                <Form.Item label="Mentor" name="mentor">
                   <SelectTrader placeholder="请选择导师" />
                 </Form.Item>
                 {/* <Form.Item label="直属上级" name="directSupervisor">
