@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker, Radio, Upload } from 'antd';
+import { Breadcrumb, Card, Tabs, Table, Empty, Popover, Button, Modal, Form, Input, DatePicker, Select, Upload } from 'antd';
 import {
   ManOutlined,
   WomanOutlined,
@@ -55,6 +55,7 @@ function PersonalCenter(props) {
   const [mentorTrackForm] = Form.useForm();
   const [mentorTrackList, setMentorTrackList] = useState([]);
   const [currentEditMentorTrackRecord, setCurrentEditMentorTrackRecord] = useState(null);
+  const [mentorMenteeList, setMentorMenteeList] = useState([]);
 
   const [displayTrainingRecordModal, setDisplayTrainingRecordModal] = useState(false);
   const [trainingRecordForm] = Form.useForm();
@@ -112,13 +113,25 @@ function PersonalCenter(props) {
       { user: userID },
       10,
     );
-    // window.echo('training record', res);
     setTrainingRecordList(res.data.data);
   }
 
   async function loadUserInfo() {
     const reqUser = await api.getUserInfo(userID);
-    setUserInfoDetails(reqUser.data)
+    setUserInfoDetails(reqUser.data);
+    getMentorMenteeList(reqUser.data);
+  }
+
+  async function getMentorMenteeList(user) {
+    // window.echo('user', user);
+    if (!user.mentor) {
+      setMentorMenteeList([]);
+      return;
+    };
+    if (user.mentor.id !== user.id) {
+      // 当前用户是学员
+      setMentorMenteeList([user.mentor]);  
+    }
   }
 
   async function loadWorkingProjects() {
@@ -202,7 +215,7 @@ function PersonalCenter(props) {
     setCurrentEditMentorTrackRecord(record);
     const { communicateDate: date, communicateType, communicateUser, communicateContent } = record;
     const communicateDate = moment(date);
-    mentorTrackForm.setFieldsValue({ communicateDate, communicateType, communicateUser: communicateUser && communicateUser.id.toString(), communicateContent });
+    mentorTrackForm.setFieldsValue({ communicateDate, communicateType, communicateUser: communicateUser && communicateUser.id, communicateContent });
     setDisplayMentorTrackModal(true);
   }
 
@@ -629,11 +642,11 @@ function PersonalCenter(props) {
       } else {
         await api.addPromotionHistory(body);
       }
+      getPromotionHistory();
+      setDisplayPromotionHistoryModal(false);
     } catch (error) {
       handleError(error);
     }
-    getPromotionHistory();
-    setDisplayPromotionHistoryModal(false);
   }
 
   async function updateKPIRecords(values) {
@@ -1046,7 +1059,12 @@ function PersonalCenter(props) {
             label="沟通人"
             name="communicateUser"
           >
-            <SelectTrader placeholder="请选择沟通人" />
+            {/* <SelectTrader placeholder="请选择沟通人" /> */}
+            <Select style={{ width: '100%' }}>
+              {mentorMenteeList.map(m => (
+                <Select.Option key={m.id} value={m.id}>{m.username}</Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
