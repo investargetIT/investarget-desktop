@@ -79,13 +79,12 @@ function PersonalCenter(props) {
     try {
       const res = await requestAllData(
         api.getEmployeeRelation,
-        { user: userID },
+        { supervisorOrMentor: userID },
         10,
       );
-      window.echo('relations', res);
-      // setPromotionHistory(res.data.data);
+      setMentorMenteeList(res.data.data.map(m => m.user).filter(f => f.id !== userID));
     } catch (error) {
-      // handleError(error);
+      handleError(error);
     }
   }
 
@@ -123,7 +122,6 @@ function PersonalCenter(props) {
   }
 
   async function getMentorMenteeList(user) {
-    // window.echo('user', user);
     if (!user.mentor) {
       setMentorMenteeList([]);
       return;
@@ -131,6 +129,8 @@ function PersonalCenter(props) {
     if (user.mentor.id !== user.id) {
       // 当前用户是学员
       setMentorMenteeList([user.mentor]);  
+    } else {
+      getEmployeeRelationList();
     }
   }
 
@@ -166,7 +166,6 @@ function PersonalCenter(props) {
     props.dispatch({ type: 'app/getSource', payload: 'title' });
     
     loadUserInfo();
-    getEmployeeRelationList();
     getPromotionHistory();
     getKPIRecordList();
     getMentorTrackList();
@@ -180,7 +179,6 @@ function PersonalCenter(props) {
       userID = parseInt(props.match.params.id);
       setCurrentActiveTab('1');
       loadUserInfo();
-      getEmployeeRelationList();
       getPromotionHistory();
       getKPIRecordList();
       getMentorTrackList();
