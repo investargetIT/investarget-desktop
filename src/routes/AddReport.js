@@ -160,8 +160,9 @@ class AddReport extends React.Component {
   }
 
   updateOrgBd = async (values, orgBdId) => {
-    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
-    await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`].response;
+    const material = values[`oldorgbd-bdstatus_${orgBdId}`].material;
+    await api.modifyOrgBD(orgBdId, { response: newBdStatus, material });
     const comments = this.getOldOrgBdComments(values, orgBdId);
     await this.updateOrgBdComments(comments);
   }

@@ -28,7 +28,7 @@ import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser, requestAllData } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser, requestAllData, getURLParamValue } from '../utils/util'
 import ITCheckboxGroup from './ITCheckboxGroup'
 import { ITCheckboxGroup2 } from './ITCheckboxGroup';
 import { BasicContainer, BasicContainer2 } from './Filter';
@@ -1151,6 +1151,17 @@ let SelectNewBDStatus = props => {
     });
   }
 
+  function getValue() {
+    if (!props.value) return undefined;
+    const { response, material } = props.value;
+    const progressValue = [response];
+    if (material) {
+      progressValue.push(material);
+    }
+    window.echo(' va;;le', progressValue);
+    return progressValue;
+  }
+
   function handleProgressChange(value) {
     window.echo('value', value);
     const response = value[0];
@@ -1168,6 +1179,7 @@ let SelectNewBDStatus = props => {
       options={getProgressOptions()}
       onChange={handleProgressChange}
       placeholder="机构进度/材料"
+      value={getValue()}
     />
   )
 }

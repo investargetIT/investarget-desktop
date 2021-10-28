@@ -131,8 +131,8 @@ class ReportForm extends React.Component {
 
     const { setFieldsValue } = this.props.forwardedRef.current;
     orgBds.forEach(element => {
-      const { id, response, BDComments } = element;
-      setFieldsValue({ [`oldorgbd-bdstatus_${id}`] : response });
+      const { id, response, BDComments, material } = element;
+      setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: { response, material } });
       if (BDComments) {
         BDComments.forEach(element => {
           const { id: commentId, comments } = element;
@@ -246,8 +246,8 @@ class ReportForm extends React.Component {
 
               // Set form data
               const { setFieldsValue } = this.props.forwardedRef.current;
-              const { id, response, BDComments } = newOrgBd;
-              setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
+              const { id, response, BDComments, material } = newOrgBd;
+              setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: { response, material } });
               if (BDComments) {
                 BDComments.forEach(element => {
                   const { id: commentId, comments } = element;
@@ -294,8 +294,8 @@ class ReportForm extends React.Component {
           }
           // Set form data
           const { setFieldsValue } = this.props.forwardedRef.current;
-          const { id, response, BDComments } = newOrgBd;
-          setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
+          const { id, response, BDComments, material } = newOrgBd;
+          setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: { response, material } });
           if (BDComments) {
             BDComments.forEach(element => {
               const { id: commentId, comments } = element;
@@ -331,8 +331,8 @@ class ReportForm extends React.Component {
 
             // Set form data
             const { setFieldsValue } = this.props.forwardedRef.current;
-            const { id, response, BDComments } = newOrgBd;
-            setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: response });
+            const { id, response, BDComments, material } = newOrgBd;
+            setFieldsValue({ [`oldorgbd-bdstatus_${id}`]: { response, material } });
             if (BDComments) {
               BDComments.forEach(element => {
                 const { id: commentId, comments } = element;
@@ -485,8 +485,9 @@ class ReportForm extends React.Component {
   }
 
   updateOrgBd = async (values, orgBdId) => {
-    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`];
-    const orgBdRes = await api.modifyOrgBD(orgBdId, { response: newBdStatus });
+    const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`].response;
+    const material = values[`oldorgbd-bdstatus_${orgBdId}`].material;
+    const orgBdRes = await api.modifyOrgBD(orgBdId, { response: newBdStatus, material });
     const { data: updatedOrgBd } = orgBdRes;
     const comments = this.getOldOrgBdComments(values, orgBdId);
     const bdComments = await this.updateOrgBdComments(comments);
