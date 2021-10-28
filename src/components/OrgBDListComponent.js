@@ -1244,7 +1244,7 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.pm, record.manager.id, record.createuser.id].includes(currentUserID)) {
+    if ([this.state.pm, record.manager && record.manager.id, record.createuser && record.createuser.id].includes(currentUserID)) {
       return true;
     }
     return false; 
