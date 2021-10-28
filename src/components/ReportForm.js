@@ -274,9 +274,10 @@ class ReportForm extends React.Component {
         Modal.warning({ title: '机构和投资人不能为空' });
         return;
       }
-      const bdstatus = values[`neworgbd_${projIndex}_bdstatus_${orgBdIndex}`];
+      const bdstatus = values[`neworgbd_${projIndex}_bdstatus_${orgBdIndex}`].response;
+      const material = values[`neworgbd_${projIndex}_bdstatus_${orgBdIndex}`].material;
       const comments = values[`neworgbd_${projIndex}_comments_${orgBdIndex}`];
-      const orgbd = { bduser, org, proj: projId, bdstatus, comments };
+      const orgbd = { bduser, org, proj: projId, bdstatus, material, comments };
       this.addOrgBd(orgbd)
         .then(newOrgBd => {
           const projIds = this.state.projOrgBds.map(m => m.proj.id);
@@ -315,9 +316,10 @@ class ReportForm extends React.Component {
         Modal.warning({ title: '机构和投资人不能为空' });
         return;
       }
-      const bdstatus = values[`orgbd_${projId}_bdstatus_${index}`];
+      const bdstatus = values[`orgbd_${projId}_bdstatus_${index}`].response;
+      const material = values[`orgbd_${projId}_bdstatus_${index}`].material;
       const comments = values[`orgbd_${projId}_comments_${index}`];
-      const orgbd = { bduser, org, proj: projId, bdstatus, comments };
+      const orgbd = { bduser, org, proj: projId, bdstatus, material, comments };
       this.addOrgBd(orgbd)
         .then(newOrgBd => {
           const projIds = this.state.projOrgBds.map(m => m.proj.id);
@@ -345,12 +347,13 @@ class ReportForm extends React.Component {
   }
 
   addOrgBd = async element => {
-      const { bduser, org, proj, bdstatus: response, comments } = element;
+      const { bduser, org, proj, bdstatus: response, material, comments } = element;
       const body = {
         bduser,
         org,
         proj,
         response,
+        material,
         manager: getCurrentUser(),
         lastmodifytime: this.startDate,
         createdtime: this.startDate,
@@ -506,6 +509,11 @@ class ReportForm extends React.Component {
     return result;
   }
 
+  handleFormValuesChange = (changedValues, allValues) => {
+    window.echo('changed value', changedValues);
+    window.echo('all values', allValues);
+  }
+
   render() {
     const orgFormItems = (
       <Form.Item noStyle shouldUpdate>
@@ -608,7 +616,7 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
-                            <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="number" layout>
+                            <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="object" layout>
                               <SelectNewBDStatus />
                             </BasicFormItem>
                           </div>
@@ -821,7 +829,7 @@ class ReportForm extends React.Component {
                   <div style={{ display: 'flex' }}>
                     <div>状态：</div>
                     <div style={{ flex: 1 }}>
-                      <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${m1}`} valueType="number" layout>
+                      <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${m1}`} valueType="object" layout>
                         <SelectNewBDStatus />
                       </BasicFormItem>
                     </div>
@@ -905,7 +913,7 @@ class ReportForm extends React.Component {
                         <div style={{ display: 'flex' }}>
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
-                            <BasicFormItem name={`oldorgbd-bdstatus_${m.id}`} valueType="number" layout>
+                            <BasicFormItem name={`oldorgbd-bdstatus_${m.id}`} valueType="object" layout>
                               <SelectNewBDStatus />
                             </BasicFormItem>
                           </div>
@@ -986,7 +994,7 @@ class ReportForm extends React.Component {
     });
 
     return (
-      <Form ref={this.props.forwardedRef}>
+      <Form ref={this.props.forwardedRef} onValuesChange={this.handleFormValuesChange}>
 
         <Form.Item
           name="org_keys"

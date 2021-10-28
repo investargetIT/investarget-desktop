@@ -1,5 +1,5 @@
 import { connect } from 'dva'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   InputNumber,
   Select,
@@ -1118,11 +1118,64 @@ const SelectIndustryGroup = withOptionsAsync(SelectNumber, ['industryGroup'], fu
   return { options };
 })
 
-const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(state) {
-  const { orgbdres } = state.app
-  const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
-  return { options, allowClear: true }
-})
+// const SelectNewBDStatus = withOptionsAsync(SelectNumber, ['orgbdres'], function(state) {
+//   const { orgbdres } = state.app
+//   const options = orgbdres ? orgbdres.map(item => ({value: item.id, label: item.name})) : []
+//   return { options, allowClear: true }
+// })
+
+let SelectNewBDStatus = props => {
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+  }, []);
+
+  function getProgressOptions() {
+    return props.orgbdres.map(m => {
+      if (!m.material) {
+        return { label: m.name, value: m.id };
+      }
+      return {
+        label: m.name,
+        value: m.id,
+        children: [
+          {
+            label: '无材料',
+            value: 0,
+          },
+          {
+            label: m.material,
+            value: m.material,
+          },
+        ],
+      };
+    });
+  }
+
+  function handleProgressChange(value) {
+    window.echo('value', value);
+    const response = value[0];
+    window.echo('response', response);
+    let material = null;
+    if (value.length > 0 && value[1] !== 0) {
+      material = value[1];
+    }
+    window.echo('material', material);
+    props.onChange({ response, material });
+  }
+
+  return (
+    <Cascader
+      options={getProgressOptions()}
+      onChange={handleProgressChange}
+      placeholder="机构进度/材料"
+    />
+  )
+}
+SelectNewBDStatus = connect(state => {
+  const { orgbdres } = state.app;
+  return { orgbdres };
+})(SelectNewBDStatus);
+
 const SelectOrgLevel = withOptionsAsync(RadioGroup2, ['orglv'], function(state) {
   const { orglv } = state.app
   const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : []
