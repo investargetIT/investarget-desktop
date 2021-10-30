@@ -28,6 +28,7 @@ import {
   Cascader,
   Select,
   Tooltip,
+  Form,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -186,6 +187,9 @@ class OrgBDListComponent extends React.Component {
         loadingEditingOrgBD: false,
 
         displayQRCode: false,
+
+        // 创建机构看板
+        displayModalForCreating: false,
     }
 
     this.allTrader = [];
@@ -1568,6 +1572,10 @@ class OrgBDListComponent extends React.Component {
     return newDataSource;
   }
 
+  handleAddNewOrgBDBtnClick = () => {
+    this.setState({ displayModalForCreating: true });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2365,7 +2373,7 @@ class OrgBDListComponent extends React.Component {
                 <div className="another-btn">
                   {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
                   <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                    <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
+                    <Button type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
                   </Link>
                 </div>
               }
@@ -2436,9 +2444,10 @@ class OrgBDListComponent extends React.Component {
             <div style={{ margin: '16px 0' }} className="clearfix">
 
               {this.props.editable && this.isAbleToCreateBD() ?
-                <Link className="another-btn remove-on-mobile" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                  <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
-                </Link>
+                // <Link className="another-btn remove-on-mobile" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                //   <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
+                // </Link>
+                <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
                 : null}
 
               <Pagination
@@ -2616,6 +2625,24 @@ class OrgBDListComponent extends React.Component {
                 value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
               />
             </div>
+          </Modal>
+        }
+
+        {this.state.displayModalForCreating &&
+          <Modal
+            wrapClassName="modal-orgbd-edit"
+            title="创建机构看板"
+            visible
+            onCancel={() => this.setState({ displayModalForCreating: false })}
+          // onOk={this.handleEditOrgBD}
+          // confirmLoading={this.state.loadingEditingOrgBD}
+          >
+            <Form>
+              <div style={{ marginBottom: 30 }}>
+                <div>机构</div>
+                <Input style={{ width: '100%' }} />
+              </div>
+            </Form>
           </Modal>
         }
 
