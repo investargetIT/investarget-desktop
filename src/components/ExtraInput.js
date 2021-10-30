@@ -1010,16 +1010,14 @@ class SelectOrgInvestor extends React.Component {
         showSearch
         filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         onChange={this.handleChange}
-        // dropdownStyle={{ zIndex: 0 }}
         autoFocus
         size="large"
-        dropdownStyle={{ zIndex: 0 }}
         {...extraProps}
       >
         {_options && _options.map((item, index) => (
           <Option key={index} value={item.value}>
             {item.user ?
-              <Popover placement="right" content={this.content(item.user)}>{item.label}</Popover>
+              <Popover zIndex={9999} placement="right" content={this.content(item.user)}>{item.label}</Popover>
               : item.label}
           </Option>
         ))}
