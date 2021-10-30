@@ -1163,19 +1163,15 @@ let SelectNewBDStatus = props => {
     if (material) {
       progressValue.push(material);
     }
-    window.echo(' va;;le', progressValue);
     return progressValue;
   }
 
   function handleProgressChange(value) {
-    window.echo('value', value);
     const response = value[0];
-    window.echo('response', response);
     let material = null;
     if (value.length > 0 && value[1] !== 0) {
       material = value[1];
     }
-    window.echo('material', material);
     props.onChange({ response, material });
   }
 
@@ -1657,7 +1653,6 @@ TabCheckboxAbroad = connect(mapStateToPropsAbroad)(TabCheckboxAbroad);
 function mapStateToPropsAbroad(state) {
   const { country } = state.app
   var list = country.filter(item => item.level === 3);
-  window.echo('list', list);
   const abroadCountry = ['香港', '澳门', '台湾', '其他', 'HongKong', 'Macao', 'Taiwan', 'Others'];
   const options = [
     {
