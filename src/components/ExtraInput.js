@@ -957,7 +957,7 @@ class SelectOrgInvestor extends React.Component {
     const mobile = user.mobile;
     const email = user.email;
     const title = user.title && this.props.title.filter(f => f.id === user.title)[0].name;
-    return <div style={{minWidth: 180, maxWidth: 600}}>
+    return <div style={{ minWidth: 180, maxWidth: 600 }}>
       <Row style={{ textAlign: 'center', margin: '10px 0' }}>
         {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
       </Row>
@@ -993,6 +993,8 @@ class SelectOrgInvestor extends React.Component {
       onjob,
       dispatch,
       allowEmpty,
+      title,
+      tag,
       ...extraProps,
     } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
@@ -1002,22 +1004,25 @@ class SelectOrgInvestor extends React.Component {
     } else {
       _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
     }
-
     return (
-      <Select value={_value} 
-      showSearch
-      filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-      onChange={this.handleChange}
-      // dropdownStyle={{ zIndex: 0 }}
-      autoFocus
-      size="large" {...extraProps}>
-        {_options && _options.map((item, index) =>
+      <Select
+        value={_value}
+        showSearch
+        filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        onChange={this.handleChange}
+        // dropdownStyle={{ zIndex: 0 }}
+        autoFocus
+        size="large"
+        dropdownStyle={{ zIndex: 0 }}
+        {...extraProps}
+      >
+        {_options && _options.map((item, index) => (
           <Option key={index} value={item.value}>
             {item.user ?
               <Popover placement="right" content={this.content(item.user)}>{item.label}</Popover>
               : item.label}
           </Option>
-        )}
+        ))}
       </Select>
     )
 
