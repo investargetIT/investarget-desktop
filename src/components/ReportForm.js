@@ -618,7 +618,7 @@ class ReportForm extends React.Component {
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
                             <BasicFormItem name={`neworgbd_${m}_bdstatus_${m1}`} valueType="object" layout>
-                              <SelectNewBDStatus />
+                              <SelectNewBDStatus size="large" />
                             </BasicFormItem>
                           </div>
                         </div>
@@ -831,7 +831,7 @@ class ReportForm extends React.Component {
                     <div>状态：</div>
                     <div style={{ flex: 1 }}>
                       <BasicFormItem name={`orgbd_${m.proj.id}_bdstatus_${m1}`} valueType="object" layout>
-                        <SelectNewBDStatus />
+                        <SelectNewBDStatus size="large" />
                       </BasicFormItem>
                     </div>
                   </div>
@@ -915,7 +915,7 @@ class ReportForm extends React.Component {
                           <div>状态：</div>
                           <div style={{ flex: 1 }}>
                             <BasicFormItem name={`oldorgbd-bdstatus_${m.id}`} valueType="object" layout>
-                              <SelectNewBDStatus />
+                              <SelectNewBDStatus size="large" />
                             </BasicFormItem>
                           </div>
                         </div>

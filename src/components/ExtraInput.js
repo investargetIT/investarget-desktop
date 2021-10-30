@@ -958,9 +958,9 @@ class SelectOrgInvestor extends React.Component {
     const email = user.email;
     const title = user.title && this.props.title.filter(f => f.id === user.title)[0].name;
     return <div style={{ minWidth: 180, maxWidth: 600 }}>
-      <Row style={{ textAlign: 'center', margin: '10px 0' }}>
+      <div style={{ textAlign: 'center', margin: '10px 0' }}>
         {photourl ? <img src={photourl} style={{ width: '50px', height: '50px', borderRadius: '50px' }} /> : '暂无头像'}
-      </Row>
+      </div>
 
       {mobile ?
         <SimpleLine title={i18n('user.mobile')} value={mobile} />
@@ -1185,6 +1185,7 @@ let SelectNewBDStatus = props => {
       onChange={handleProgressChange}
       placeholder="机构进度/材料"
       value={getValue()}
+      size={props.size}
     />
   )
 }
