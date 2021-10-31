@@ -38,7 +38,7 @@ import BDModal from './BDModal';
 import { getUser } from '../api';
 import { isLogin, getURLParamValue } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { SelectOrgInvestor, SelectTrader } from './ExtraInput';
+import { SelectExistOrganizationWithID, SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
@@ -2637,12 +2637,18 @@ class OrgBDListComponent extends React.Component {
           // onOk={this.handleEditOrgBD}
           // confirmLoading={this.state.loadingEditingOrgBD}
           >
-            <Form>
-              <div style={{ marginBottom: 30 }}>
-                <div>机构</div>
-                <Input style={{ width: '100%' }} />
-              </div>
-            </Form>
+          <Form>
+            <Form.Item
+              name="org"
+              label="机构"
+              rules={[
+                { required: true, message: '机构不能为空' },
+                { type: 'number' },
+              ]}
+            >
+              <SelectExistOrganizationWithID size="middle" />
+            </Form.Item>
+          </Form>
           </Modal>
         }
 
