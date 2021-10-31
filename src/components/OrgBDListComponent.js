@@ -38,7 +38,7 @@ import BDModal from './BDModal';
 import { getUser } from '../api';
 import { isLogin, getURLParamValue } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { SelectExistOrganizationWithID, SelectOrgInvestor, SelectTrader } from './ExtraInput';
+import { SelectExistOrganizationWithID, SelectNewBDStatus, SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
 import ModalAddUser from './ModalAddUser';
@@ -2634,21 +2634,84 @@ class OrgBDListComponent extends React.Component {
             title="创建机构看板"
             visible
             onCancel={() => this.setState({ displayModalForCreating: false })}
-          // onOk={this.handleEditOrgBD}
-          // confirmLoading={this.state.loadingEditingOrgBD}
           >
-          <Form>
-            <Form.Item
-              name="org"
-              label="机构"
-              rules={[
-                { required: true, message: '机构不能为空' },
-                { type: 'number' },
-              ]}
+            <Form
+              style={{ width: '90%' }}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
             >
-              <SelectExistOrganizationWithID size="middle" />
-            </Form.Item>
-          </Form>
+              <Form.Item
+                name="org"
+                label="机构"
+                placeholder="请选择机构"
+                rules={[
+                  { required: true, message: '机构不能为空' },
+                  { type: 'number' },
+                ]}
+              >
+                <SelectExistOrganizationWithID size="middle" />
+              </Form.Item>
+
+              <Form.Item
+                name="isimportant"
+                label="优先级"
+                rules={[{ type: 'number' }]}
+              >
+                <Select>
+                  <Option value={0}>低</Option>
+                  <Option value={1}>中</Option>
+                  <Option value={2}>高</Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item noStyle shouldUpdate>
+                {({ getFieldValue }) => {
+                  return (
+                    <Form.Item
+                      name="user"
+                      label="联系人"
+                      placeholder="请选择联系人"
+                      rules={[
+                        { required: true }
+                      ]}
+                    >
+                      <SelectOrgInvestor
+                        allStatus
+                        onjob
+                        allowEmpty
+                        style={{ width: '100%' }}
+                        type="investor"
+                        mode="single"
+                        size="middle"
+                        optionFilterProp="children"
+                        org={getFieldValue('org')}
+                      />
+                    </Form.Item>
+                  )
+                }}
+              </Form.Item>
+
+
+              <Form.Item
+                name="manager"
+                label="负责人"
+                placeholder="请选择负责人"
+                rules={[{ required: true }]}
+              >
+                <SelectTrader
+                  data={this.state.traderList}
+                  mode="single"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="progress"
+                label="机构进度/材料"
+              >
+                <SelectNewBDStatus />
+              </Form.Item>
+
+            </Form>
           </Modal>
         }
 
