@@ -792,12 +792,14 @@ function DataroomFileManage({
     const files = [currentMoveFile];
     const targetID = folderToMove;
     const targetFile = data.filter(f => f.id === targetID)[0];
-    if (files.filter(f => f.dataroom !== targetFile.dataroom).length > 0) {
-      Modal.error({
-        title: i18n('dataroom.message.error_move_files_title'),
-        content: i18n('dataroom.message.error_move_files_content')
-      })
-      return
+    if (targetFile) {
+      if (files.filter(f => f.dataroom !== targetFile.dataroom).length > 0) {
+        Modal.error({
+          title: i18n('dataroom.message.error_move_files_title'),
+          content: i18n('dataroom.message.error_move_files_content')
+        })
+        return
+      }
     }
     files.map(m => {
       const body = {
