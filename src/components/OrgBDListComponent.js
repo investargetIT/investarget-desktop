@@ -182,6 +182,7 @@ class OrgBDListComponent extends React.Component {
         loadingUpdatingOrgPriority: false,
 
         // 编辑机构看板
+        originalOrgBDForEditing: null,
         activeOrgBDForEditing: null,
         displayModalForEditing: false,
         loadingEditingOrgBD: false,
@@ -715,6 +716,23 @@ class OrgBDListComponent extends React.Component {
     return api.addTimeline(params);
   }
 
+  generateProgressChangeComment = async () => {
+    const { id: oldID, response: oldResponse, material: oldMaterial } = this.state.originalOrgBDForEditing;
+    const { id: newID, response: newResponse, material: newMaterial } = this.state.activeOrgBDForEditing;
+    if (oldID !== newID) return;
+    if (oldResponse === newResponse && oldMaterial === newMaterial) return;
+    const orgBD = oldID;
+    const oldStatus = this.props.orgbdres.filter(f => f.id === oldResponse)[0].name;
+    const newStatus = this.props.orgbdres.filter(f => f.id === newResponse)[0].name;
+    const comments = [`之前状态：${oldStatus || '无'}`, `之前材料：${oldMaterial || '无'}`, `现在状态：${newStatus || '无'}`, `现在材料：${newMaterial || '无'}`].join('，');
+    const body = {
+      orgBD,
+      comments,
+      isPMComment: 0,
+    };
+    await api.addOrgBDComment(body);
+  }
+
   handleConfirmBtnClicked = state => {
     let comments = '';
     // // 由非空状态变为不跟进，记录之前状态，相关issue #285
@@ -1135,17 +1153,16 @@ class OrgBDListComponent extends React.Component {
       // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       // 'bd_status': 1,
       'response': record.response,
-      'material': record.material,
+      'material': record.material || '',
     }
     this.setState({ loadingEditingOrgBD: true });
     // api.getUserSession()
       // .then(() => 
       api.modifyOrgBD(record.id, body)
-      .then(result => {
-        if (result && result.data) {
-          this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
-          this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
-        }
+      .then(this.generateProgressChangeComment)
+      .then(() => {
+        this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
+        this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
       })
       .catch(handleError)
       .finally(() => this.setState({ loadingEditingOrgBD: false }));
@@ -1502,7 +1519,7 @@ class OrgBDListComponent extends React.Component {
         react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
         break;
       case 'edit':
-        react.setState({ activeOrgBDForEditing: record, displayModalForEditing: true });
+        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true });
         break;
     }
   }

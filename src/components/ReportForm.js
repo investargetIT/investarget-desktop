@@ -353,7 +353,7 @@ class ReportForm extends React.Component {
         org,
         proj,
         response,
-        material,
+        material: material || '',
         manager: getCurrentUser(),
         lastmodifytime: this.startDate,
         createdtime: this.startDate,
@@ -486,7 +486,7 @@ class ReportForm extends React.Component {
 
   updateOrgBd = async (values, orgBdId) => {
     const newBdStatus = values[`oldorgbd-bdstatus_${orgBdId}`].response;
-    const material = values[`oldorgbd-bdstatus_${orgBdId}`].material;
+    const material = values[`oldorgbd-bdstatus_${orgBdId}`].material || '';
     const orgBdRes = await api.modifyOrgBD(orgBdId, { response: newBdStatus, material });
     const { data: updatedOrgBd } = orgBdRes;
     const comments = this.getOldOrgBdComments(values, orgBdId);
