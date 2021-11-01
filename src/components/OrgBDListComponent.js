@@ -1569,7 +1569,6 @@ class OrgBDListComponent extends React.Component {
 
   generateDataSourceForMobile = originalList => {
     const newDataSource = originalList.reduce((prev, curr) => prev.concat(curr.items), []);
-    window.echo('new data', newDataSource);
     return newDataSource;
   }
 
@@ -1603,18 +1602,13 @@ class OrgBDListComponent extends React.Component {
       'response': record.progress.response,
       'material': record.progress.material,
     };
-    window.echo('body', body);
     api.getUserSession()
       .then(() => api.addOrgBD(body))
       .then(() => {
         this.setState({ displayModalForCreating: false });
         this.getOrgBdList();
       })
-      .catch(error => {
-        this.setState({ displayModalForCreating: false });
-        this.getOrgBdList();
-        handleError(error);
-      });
+      .catch(handleError);
   }
 
   render() {
