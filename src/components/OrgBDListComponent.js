@@ -1872,10 +1872,10 @@ class OrgBDListComponent extends React.Component {
 
 
     const columnsForExport = [
-      { title: i18n('org_bd.org'), key:'org', dataIndex: 'org.orgname', className: 'orgname', width: '15%' },
+      { title: i18n('org_bd.org'), key:'org', dataIndex: ['org', 'orgname'], className: 'orgname', width: '15%' },
       { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '10%' },
       {
-        title: i18n('org_bd.manager'), dataIndex: 'manager.username', key: 'manager', width: '10%', render: (text, record) => {
+        title: i18n('org_bd.manager'), dataIndex: ['manager', 'username'], key: 'manager', width: '10%', render: (text, record) => {
           if (this.isAbleToModifyStatus(record)) {
             return text;
           }
@@ -1884,14 +1884,18 @@ class OrgBDListComponent extends React.Component {
       },
       {
         title: i18n('org_bd.status'), 
-        dataIndex: 'response', 
-        key:'response',
+        key:'progress',
         width: '10%',
-        render: (text, record) => {
-          if (this.isAbleToModifyStatus(record)) {
-            return text && this.props.orgbdres.filter(f => f.id === text)[0].name
+        render: (_, record) => {
+          const { response, material } = record;
+          let text = '';
+          if (response && this.props.orgbdres.length > 0) {
+            text = text + this.props.orgbdres.filter(f => f.id === response)[0].name;
           }
-          return null;
+          if (material) {
+            text += `/${material}`
+          }
+          return text;
         },
       },
       {
