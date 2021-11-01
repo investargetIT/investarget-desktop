@@ -195,6 +195,7 @@ class OrgBDListComponent extends React.Component {
     this.allTrader = [];
     this.selectedOrgForBlacklist = [];
     this.searchOrg = debounce(this.searchOrg, 800);
+    this.orgBDFormRef = React.createRef(); 
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -1576,6 +1577,46 @@ class OrgBDListComponent extends React.Component {
     this.setState({ displayModalForCreating: true });
   }
 
+  handleOrgBDFormValuesChange = (changedValues, allValues) => {
+    // window.echo('changed values', changedValues);
+    // window.echo('all values', allValues);
+  }
+
+  handleSubmitOrgBDForm = () => {
+    this.orgBDFormRef.current
+      .validateFields()
+      .then(values => {
+        this.addNewBD(values);
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info);
+      });
+  }
+
+  addNewBD = record => {
+    const body = {
+      'org': record.org,
+      'isimportant': record.isimportant,
+      'bduser': record.orgUser >= 0 ? record.orgUser : null,
+      'manager': Number(record.trader),
+      'proj': this.projId,
+      'response': record.progress.response,
+      'material': record.progress.material,
+    };
+    window.echo('body', body);
+    api.getUserSession()
+      .then(() => api.addOrgBD(body))
+      .then(() => {
+        this.setState({ displayModalForCreating: false });
+        this.getOrgBdList();
+      })
+      .catch(error => {
+        this.setState({ displayModalForCreating: false });
+        this.getOrgBdList();
+        handleError(error);
+      });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2634,11 +2675,14 @@ class OrgBDListComponent extends React.Component {
             title="创建机构看板"
             visible
             onCancel={() => this.setState({ displayModalForCreating: false })}
+            onOk={this.handleSubmitOrgBDForm}
           >
             <Form
               style={{ width: '90%' }}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 16 }}
+              ref={this.orgBDFormRef}
+              onValuesChange={this.handleOrgBDFormValuesChange}
             >
               <Form.Item
                 name="org"
@@ -2668,7 +2712,7 @@ class OrgBDListComponent extends React.Component {
                 {({ getFieldValue }) => {
                   return (
                     <Form.Item
-                      name="user"
+                      name="orgUser"
                       label="联系人"
                       placeholder="请选择联系人"
                       rules={[
@@ -2693,7 +2737,7 @@ class OrgBDListComponent extends React.Component {
 
 
               <Form.Item
-                name="manager"
+                name="trader"
                 label="负责人"
                 placeholder="请选择负责人"
                 rules={[{ required: true }]}
