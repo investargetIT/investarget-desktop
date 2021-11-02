@@ -261,6 +261,7 @@ export function getCurrencyFromId(id) {
     5: 'GBP', // 英镑
     6: 'JPY', // 日元
     7: 'KRW', // 韩元
+    8: 'HKD', // 港币
     12: 'CNY', // 人民币及美元
   }
   return map[id]
@@ -274,6 +275,7 @@ function getCurrencySign(currency) {
     'GBP': '\uffe1',
     'JPY': '\uffe5',
     'KRW': '\u20a9',
+    'HKD': '$',
   }
   return map[currency]
 }
@@ -314,10 +316,13 @@ function exchange(source) {
       'scur': source,
     }
     return api.getExchangeRate(param).then((result) => {
-      var rate = result.data.rate
-      exchangeCache[source] = rate
-      return rate
-    })
+    var rate = result.data[0].exchange;
+      exchangeCache[source] = Number(rate);
+      return Number(rate)
+    }).catch(() => {
+      exchangeCache[source] = 1;
+      return 1;
+    });
   }
 }
 

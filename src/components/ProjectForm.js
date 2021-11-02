@@ -211,7 +211,7 @@ class ProjectConnectForm extends React.Component {
   }
 
   projectTeamValidator = (_, value, callback) => {
-    if (value.length === 1) return callback('请至少选择两位项目团队成员');
+    if (value && value.length === 1) return callback('请至少选择两位项目团队成员');
     return callback();
   }
 
