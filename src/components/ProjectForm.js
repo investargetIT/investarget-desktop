@@ -310,10 +310,10 @@ class ProjectConnectForm1 extends React.Component {
     return this.currentUserId === supportUser.id;
   }
 
-  projectTeamValidator = (_, value, callback) => {
-    if (value.length === 1) return callback('请至少选择两位项目团队成员');
-    return callback();
-  }
+  // projectTeamValidator = (_, value, callback) => {
+  //   if (value.length === 1) return callback('请至少选择两位项目团队成员');
+  //   return callback();
+  // }
 
   render() {
     return (
