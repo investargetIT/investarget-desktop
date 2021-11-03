@@ -41,12 +41,25 @@ class DataRoom extends React.Component {
       searchContent: '',
 
       parentId: parseInt(props.location.query.parentID, 10) || -999,
+
+      projectID,
+      isProjTrader: false,
     }
 
     this.allDataroomFiles = [];
   }
 
   componentDidMount() {
+    api.getProjLangDetail(this.state.projectID)
+      .then(res => {
+        const { projTraders } = res.data;
+        const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
+        this.setState({
+          title: res.data.projtitle,
+          isProjTrader,
+        });
+      })
+      .catch(handleError);
     this.getDataRoomFile()
     this.getAllUserFile()
   }
@@ -556,7 +569,8 @@ class DataRoom extends React.Component {
           onDownloadBtnClicked={() => this.setState({ visible: true})}
           onClickAllFilesBtn={this.handleClickAllFilesBtn}
           onClickFolder={this.handleClickFolder}
-           />
+          isProjTrader={this.state.isProjTrader}
+        />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 

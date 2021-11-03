@@ -504,7 +504,7 @@ class FileMgmt extends React.Component {
       return (
         <div style={{ textAlign: 'right' }}>
 
-          { hasEnoughPerm ?
+          { hasEnoughPerm || this.props.isProjTrader ?
           <Upload {...props}>
             <Button size="large" type="primary" style={{...buttonStyle, color: '#237ccc'}} onClick={this.handleUploadBtnClicked}>
             <img style={{marginRight: 4, marginBottom: 3}} src="/images/upload.png" />{i18n('dataroom.upload')}
@@ -518,14 +518,14 @@ class FileMgmt extends React.Component {
             </Button>
           : null } */}
 
-          { hasEnoughPerm ?
+          { hasEnoughPerm || this.props.isProjTrader ?
           <Button
             size="large"
             onClick={this.props.onCreateNewFolder.bind(this, this.state.parentId)}
             style={buttonStyle}><img style={{marginRight: 4, marginBottom: 3}} src="/images/create_folder.png" />{i18n('dataroom.new_folder')}</Button>
           : null }
 
-          {selectMoreThanOneRow && hasPerm('dataroom.admin_deletedataroom') ?
+          {selectMoreThanOneRow && (hasPerm('dataroom.admin_deletedataroom') || this.props.isProjTrader) ?
             <Button onClick={this.handleDelete} size="large" style={buttonStyle}>{i18n('dataroom.delete')}</Button>
           : null}
 
