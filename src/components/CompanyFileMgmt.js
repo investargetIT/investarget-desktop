@@ -1,9 +1,10 @@
 import React from 'react'
-import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip } from 'antd'
+import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
 import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
 import { baseUrl } from '../utils/request';
+import UploadDir from './UploadDir';
 
 const confirm = Modal.confirm
 const TreeNode = Tree.TreeNode
@@ -58,6 +59,7 @@ class FileMgmt extends React.Component {
       action: null,
       loading: false,
       downloadUrl: null,
+      uploadDirProgress: null,
     }
 
     // this.handleNameChange = this.handleNameChange.bind(this)
@@ -289,6 +291,46 @@ class FileMgmt extends React.Component {
     this.uploadDir = this.state.parentId;
   }
 
+  tryToFindFolder = (folderName, parentFolderID) => {
+    const files = this.props.data.filter(f => f.parentId === parentFolderID);
+    const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+    if (sameNameFolderIndex > -1) {
+      return files[sameNameFolderIndex].id;
+    }
+    return null;
+  }
+
+  findFolderLoop = (folderArr, initialParentId) => {
+    let parentFolderID = initialParentId;
+    for (let index = 0; index < folderArr.length; index++) {
+      const folderName = folderArr[index];
+      const newFolderId = this.tryToFindFolder(folderName, parentFolderID);
+      if (newFolderId) {
+        parentFolderID = newFolderId;
+      } else {
+        return null; 
+      }
+    }
+    return parentFolderID;
+  }
+
+  checkFileWithFolderIfExist = (file, initialParentId) => {
+    const { webkitRelativePath } = file;
+    const splitPath = webkitRelativePath.split('/');
+    const folderArr = splitPath.slice(0, splitPath.length - 1);
+
+    const finalFolderID = this.findFolderLoop(folderArr, initialParentId);
+
+    if (finalFolderID) {
+      const files = this.props.data.filter(f => f.parentId === finalFolderID);
+      if (files.some(item => item.name == file.name)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   render () {
     const isAdmin = hasPerm('dataroom.admin_changedataroom')
     
@@ -492,6 +534,60 @@ class FileMgmt extends React.Component {
       },
     }
 
+    const uploadDirProps = {
+      beforeUpload: file => {
+        console.log(file)
+        const fileType = file.type
+        const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
+        const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+        if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
+          window.echo('mime type or file name suffix not valid');
+          window.echo('mime type', fileType);
+          window.echo('file name', file.name);
+          Modal.error({
+            title: '不支持的文件类型',
+            content: `${file.name} 文件类型有误，请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件`,
+          })
+          return false
+        }
+        
+        if (this.checkFileWithFolderIfExist(file, this.state.parentId)) {
+          message.warning(`文件 ${file.webkitRelativePath || file.name} 已存在，无法上传`);
+          return false;
+        }
+
+        return true; 
+      },
+      async onChange(info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          if (!info.file.name || !info.file.size) {
+            const file = info.fileList.filter(f => f.status === 'done' && f.uid === info.file.uid)[0];
+            info.file.name = file.name;
+            info.file.size = file.size;
+          }
+          message.success(`${info.file.name} file uploaded successfully`)
+          react.setState({ loading: false })
+          await react.props.onUploadFileWithDir(info.file, react.uploadDir);
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+          react.setState({ loading: false })
+        } else if (info.file.status === 'uploading') {
+          react.setState({ loading: true })
+        }
+      },
+      updateUploadProgress(percent) {
+        react.setState({ uploadDirProgress: percent });
+        if (percent === 100) {
+          setTimeout(() => {
+            react.setState({ uploadDirProgress: null });
+          }, 2000);
+        }
+      },
+    };
+
     const unableToOperate = this.props.location.query.isClose === 'true'
     const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
     const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
@@ -511,6 +607,14 @@ class FileMgmt extends React.Component {
             </Button>
           </Upload>
           : null }
+
+          {hasEnoughPerm || this.props.isProjTrader ?
+            <UploadDir {...uploadDirProps}>
+              <Button size="large" type="primary" style={{ ...buttonStyle, color: '#237ccc' }} onClick={this.handleUploadBtnClicked}>
+                <img style={{ marginRight: 4, marginBottom: 3 }} src="/images/upload.png" />{i18n('dataroom.upload_directory')}
+              </Button>
+            </UploadDir>
+            : null}
 
           {/* { hasDownloadPerm ?
             <Button size="large" type="primary" style={buttonStyle} onClick={this.handleDownloadBtnClicked} loading={this.props.isDownloadBtnLoading}>
@@ -568,14 +672,34 @@ class FileMgmt extends React.Component {
           ) : null} */}
         </div>
 
-        <Table
-          size="small"
-          columns={columns}
-          rowKey={record => record.unique}
-          rowSelection={rowSelection}
-          dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort((a, b) => new Date(b.date + b.timezone).getTime() - new Date(a.date + a.timezone).getTime())}
-          loading={this.state.loading}
-          pagination={false} />
+        <div style={{ position: 'relative' }}>
+          <Table
+            size="small"
+            columns={columns}
+            rowKey={record => record.unique}
+            rowSelection={rowSelection}
+            dataSource={this.props.data.filter(f => f.parentId === this.state.parentId).sort((a, b) => new Date(b.date + b.timezone).getTime() - new Date(a.date + a.timezone).getTime())}
+            loading={this.state.loading}
+            pagination={false} />
+
+          {this.state.uploadDirProgress &&
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(255, 255, 255, .5)',
+                display: 'flex',
+                justifyContent: 'center',
+                paddingTop: 100,
+              }}
+            >
+              <Progress type="circle" percent={this.state.uploadDirProgress} />
+            </div>
+          }
+        </div>
 
         <div style={{display: (this.props.selectedUser && selectMoreThanOneRow) ? 'block' : 'none', marginTop: 16}}>
           <Button type="primary" size="large" style={{marginRight:8}} onClick={this.handleMultiVisible}>{i18n('dataroom.visible')}</Button>
