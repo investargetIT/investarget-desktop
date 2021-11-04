@@ -193,6 +193,9 @@ class OrgBDListComponent extends React.Component {
 
         // 创建机构看板
         displayModalForCreating: false,
+
+        // 创建时间排序
+        sortByTime: null,
     }
 
     this.allTrader = [];
@@ -1630,6 +1633,14 @@ class OrgBDListComponent extends React.Component {
       .catch(handleError);
   }
 
+  handleSortByTime = direction => {
+    if (this.state.sortByTime === direction) {
+      this.setState({ sortByTime: null });
+    } else {
+      this.setState({ sortByTime: direction });
+    }
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2460,8 +2471,8 @@ class OrgBDListComponent extends React.Component {
               <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8, display: 'flex', alignItems: 'center' }}>
                 <div style={{ marginRight: 4 }}>创建时间</div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <CaretUpFilled style={{ fontSize: 12 }} />
-                  <CaretDownFilled style={{ fontSize: 12 }} />
+                  <CaretUpFilled style={{ fontSize: 12, color: this.state.sortByTime === 'asc' ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('asc')}/>
+                  <CaretDownFilled style={{ fontSize: 12, color: this.state.sortByTime === 'desc' ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('desc')} />
                 </div>
               </div>
             }
