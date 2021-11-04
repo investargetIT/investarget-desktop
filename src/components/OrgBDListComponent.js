@@ -52,6 +52,8 @@ import {
   FormOutlined,
   HighlightOutlined,
   ExpandAltOutlined,
+  CaretUpFilled,
+  CaretDownFilled,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 
@@ -2454,7 +2456,15 @@ class OrgBDListComponent extends React.Component {
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
             <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>创建时间</div>}
+            {!this.props.fromProjectCostCenter &&
+              <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8, display: 'flex', alignItems: 'center' }}>
+                <div style={{ marginRight: 4 }}>创建时间</div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <CaretUpFilled style={{ fontSize: 12 }} />
+                  <CaretDownFilled style={{ fontSize: 12 }} />
+                </div>
+              </div>
+            }
             {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>} */}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
