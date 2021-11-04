@@ -152,8 +152,6 @@ class OrgBDListComponent extends React.Component {
         newComment: '',
         status: null,
         commentVisible: false,
-        sort:undefined,
-        desc:undefined,
         source: this.props.status||0,
         userDetail:[],
         expanded: [],
@@ -194,8 +192,10 @@ class OrgBDListComponent extends React.Component {
         // 创建机构看板
         displayModalForCreating: false,
 
-        // 创建时间排序
+        // 创建时间排序，置空的话必须设置为 undefined，设置为 null 的话，参数会传空，服务端会报错
         sortByTime: null,
+        sort: undefined,
+        desc: undefined,
     }
 
     this.allTrader = [];
@@ -1634,10 +1634,11 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleSortByTime = direction => {
-    if (this.state.sortByTime === direction) {
-      this.setState({ sortByTime: null });
+    const desc = direction === 'desc' ? 1 : 0;
+    if (this.state.sort === 'createdtime' && this.state.desc === desc) {
+      this.setState({ sort: undefined, desc: undefined }, this.getOrgBdList);
     } else {
-      this.setState({ sortByTime: direction });
+      this.setState({ sort: 'createdtime', desc }, this.getOrgBdList);
     }
   }
 
@@ -2471,8 +2472,8 @@ class OrgBDListComponent extends React.Component {
               <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8, display: 'flex', alignItems: 'center' }}>
                 <div style={{ marginRight: 4 }}>创建时间</div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <CaretUpFilled style={{ fontSize: 12, color: this.state.sortByTime === 'asc' ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('asc')}/>
-                  <CaretDownFilled style={{ fontSize: 12, color: this.state.sortByTime === 'desc' ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('desc')} />
+                  <CaretUpFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 0 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('asc')}/>
+                  <CaretDownFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 1 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('desc')} />
                 </div>
               </div>
             }
