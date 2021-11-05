@@ -642,17 +642,23 @@ function DataroomFileManage({
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
 
-          <div onClick={() => handleRenameFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-            <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
-          </div>
+          {item.id !== -999 &&
+            <div onClick={() => handleRenameFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+              <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
+            </div>
+          }
 
-          <div onClick={() => handleMoveFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-            <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
-          </div>
+          {item.id !== -999 &&
+            <div onClick={() => handleMoveFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+              <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
+            </div>
+          }
 
-          <div onClick={() => handleDeleteFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-            <DeleteOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />删除
-          </div>
+          {item.id !== -999 &&
+            <div onClick={() => handleDeleteFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
+              <DeleteOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />删除
+            </div>
+          }
         </div>
       );
     }
