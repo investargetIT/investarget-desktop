@@ -224,6 +224,7 @@ function DataroomFileManage({
 
   function formatData(data) {
     return data.map(item => {
+      const parent = item.parent || -999;
       const parentId = item.parent || -999
       const name = item.filename
       const rename = item.filename
@@ -231,7 +232,7 @@ function DataroomFileManage({
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const timezone = item.timezone || '+08:00'
-      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone, parent }
     })
   }
 
@@ -730,6 +731,7 @@ function DataroomFileManage({
     }
     api.addDataRoomFile(body).then(data1 => {
       const item = data1.data
+      const parent = item.parent || -999;
       const parentId = item.parent || -999
       const name = item.filename
       const rename = item.filename
@@ -737,7 +739,7 @@ function DataroomFileManage({
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
-      const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated, parent }
       newData.push(newItem)
       setData(newData);
       setCreateFolderLoading(false);

@@ -173,6 +173,7 @@ function DetaroomDetailsForCompanyFile(props) {
 
   function formatData(data) {
     return data.map(item => {
+      const parent = item.parent || -999;
       const parentId = item.parent || -999
       const name = item.filename
       const rename = item.filename
@@ -180,7 +181,7 @@ function DetaroomDetailsForCompanyFile(props) {
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
       const timezone = item.timezone || '+08:00'
-      return { ...item, parentId, name, rename, unique, isFolder, date, timezone }
+      return { ...item, parentId, name, rename, unique, isFolder, date, timezone, parent }
     })
   }
 
@@ -364,14 +365,14 @@ function DetaroomDetailsForCompanyFile(props) {
 
     api.addDataRoomFile(body).then(result => {
       const item = result.data
+      const parent = item.parent || -999;
       const parentId = item.parent || -999
-
       const name = item.filename
       const rename = item.filename
       const unique = item.id
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
-      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date, parent }
       const newData = [...data];
       newData.push(newItem)
       setData(newData);
@@ -401,6 +402,7 @@ function DetaroomDetailsForCompanyFile(props) {
     }
     const data1 = await api.addDataRoomFile(body);
     const item = data1.data
+    const parent = item.parent || -999;
     const parentId = item.parent || -999
     const name = item.filename
     const rename = item.filename
@@ -408,7 +410,7 @@ function DetaroomDetailsForCompanyFile(props) {
     const isFolder = !item.isFile
     const date = item.lastmodifytime || item.createdtime
     const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
-    const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+    const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated, parent }
     const newData = data.slice();
     newData.push(newItem);
     return { unique, newData };
@@ -450,14 +452,14 @@ function DetaroomDetailsForCompanyFile(props) {
     const newNewData = newData.slice();
     await api.addDataRoomFile(body).then(data1 => {
       const item = data1.data
+      const parent = item.parent || -999;
       const parentId = item.parent || -999
-
       const name = item.filename
       const rename = item.filename
       const unique = item.id
       const isFolder = !item.isFile
       const date = item.lastmodifytime || item.createdtime
-      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date, parent }
       newNewData.push(newItem);
     }).catch(error => {
       props.dispatch({
