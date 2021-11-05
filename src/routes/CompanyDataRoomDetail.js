@@ -21,6 +21,7 @@ class DataRoom extends React.Component {
     const isClose = getURLParamValue(props, 'isClose');
     const projectTitle = getURLParamValue(props, 'projectTitle');
     const parentID = getURLParamValue(props, 'parentID');
+    const projectID = getURLParamValue(props, 'projectID');
 
     this.state = {
       id: id,
@@ -45,12 +46,25 @@ class DataRoom extends React.Component {
       searchContent: '',
 
       parentId: parseInt(parentID, 10) || -999,
+
+      projectID,
+      isProjTrader: false,
     }
 
     this.allDataroomFiles = [];
   }
 
   componentDidMount() {
+    api.getProjLangDetail(this.state.projectID)
+      .then(res => {
+        const { projTraders } = res.data;
+        const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
+        this.setState({
+          title: res.data.projtitle,
+          isProjTrader,
+        });
+      })
+      .catch(handleError);
     this.getDataRoomFile()
     this.getAllUserFile()
   }
@@ -477,6 +491,7 @@ class DataRoom extends React.Component {
   }
 
   handleClickAllFilesBtn = () => {
+    if (!this.state.searchContent) return;
     this.setState(
       { searchContent: '', parentId: -999 },
       () => this.handleDataroomSearch(this.state.searchContent),
@@ -500,6 +515,92 @@ class DataRoom extends React.Component {
       return allParents;
     }
     return findParents(fileId);
+  }
+
+  createOrFindFolder = async (folderName, parentFolderID) => {
+    // 检查当前目录下是否有同名文件夹
+    const files = this.state.data.filter(f => f.parentId === parentFolderID);
+    const sameNameFolderIndex = files.map(item => item.name).indexOf(folderName);
+    if (sameNameFolderIndex > -1) {
+      window.echo('find duplaicate folder', files[sameNameFolderIndex]);
+      return files[sameNameFolderIndex].id;
+    }
+
+    const body = {
+      dataroom: Number(this.state.id),
+      filename: folderName,
+      isFile: false,
+      orderNO: 1,
+      parent: parentFolderID == -999 ? null : parentFolderID,
+    }
+    const data = await api.addDataRoomFile(body);
+    const item = data.data
+    const parentId = item.parent || -999
+    const name = item.filename
+    const rename = item.filename
+    const unique = item.id
+    const isFolder = !item.isFile
+    const date = item.lastmodifytime || item.createdtime
+    const justCreated = true; // 以此为标识用户刚新建的文件夹，否则会被自动隐藏空文件夹功能隐藏
+    const newItem = { ...item, parentId, name, rename, unique, isFolder, date, justCreated }
+    const newData = this.state.data.slice();
+    newData.push(newItem);
+    this.setState({ data: newData });
+    return unique;
+  }
+  
+  createOrFindFolderLoop = async (folderArr, initialParentId) => {
+    let parentFolderID = initialParentId;
+    for (let index = 0; index < folderArr.length; index++) {
+      const folderName = folderArr[index];
+      const newFolderId = await this.createOrFindFolder(folderName, parentFolderID);
+      parentFolderID = newFolderId;
+    }
+    return parentFolderID;
+  }
+
+  async handleUploadFileWithDir(file, parentId) {
+    const { webkitRelativePath } = file;
+    const splitPath = webkitRelativePath.split('/');
+    const dirArray = splitPath.slice(0, splitPath.length - 1);
+    const finalFolderID = await this.createOrFindFolderLoop(dirArray, parentId);
+
+    const files = this.state.data.filter(f => f.parentId === finalFolderID);
+    if (files.some(item => item.name == file.name)) {
+      message.warning(`文件 ${file.webkitRelativePath} 已存在`);
+      return;
+    }
+    const body = {
+      dataroom: parseInt(this.state.id),
+      filename: file.name,
+      isFile: true,
+      orderNO: 1,
+      parent: finalFolderID == -999 ? null : finalFolderID,
+      key: file.response.result.key,
+      size: file.size,
+      bucket: 'file',
+      realfilekey: file.response.result.realfilekey,
+    }
+
+    api.addDataRoomFile(body).then(data => {
+      const item = data.data
+      const parentId = item.parent || -999
+
+      const name = item.filename
+      const rename = item.filename
+      const unique = item.id
+      const isFolder = !item.isFile
+      const date = item.lastmodifytime || item.createdtime
+      const newItem = { ...item, parentId, name, rename, unique, isFolder, date }
+      const newData = this.state.data.slice();
+      newData.push(newItem)
+      this.setState({ data: newData });
+    }).catch(error => {
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
+      })
+    })
   }
 
   render () {
@@ -560,7 +661,9 @@ class DataRoom extends React.Component {
           onDownloadBtnClicked={() => this.setState({ visible: true})}
           onClickAllFilesBtn={this.handleClickAllFilesBtn}
           onClickFolder={this.handleClickFolder}
-           />
+          isProjTrader={this.state.isProjTrader}
+          onUploadFileWithDir={this.handleUploadFileWithDir.bind(this)}
+        />
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
