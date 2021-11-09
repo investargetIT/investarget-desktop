@@ -153,45 +153,45 @@ class UserList extends React.Component {
     );
   }
    
-  showModifyTraderModal = () =>{ 
-    this.setState({visible:true})
-  }
+  // showModifyTraderModal = () =>{ 
+  //   this.setState({visible:true})
+  // }
  
-  comfirmModify = () =>{
-    let promises=this.state.selectedRecords.map(user=>{
-      let body = {
-      investoruser: user.id,
-      traderuser: this.state.trader,
-      relationtype: true
-      }
-      let weakTraders=[]
-      if([2, 3].includes(user.userstatus)){    //审核通过
-        return api.getUserRelation({investoruser: user.id})
-        .then(result=>{         
-          result.data.data.forEach(item=>{
-            if(item.relationtype==false){
-              weakTraders.push(item)     //获取弱交易师
-            }
-          })
-          let existUser=weakTraders.find(item=>{return item.traderuser.id==this.state.trader})
-          if(existUser){          
-            return api.deleteUserRelation([existUser.id])    //删除已存在的弱交易师
-          }
-          weakTraders=[]
-        })
-        .then(data=>{
-          if(user.trader_relation&&user.trader_relation.traderuser.username){
-            return api.editUserRelation([{ ...body, id: user.trader_relation.id }])   //修改已存在的强交易师
-          }else{
-            return api.addUserRelation(body)               //添加强交易师
-          }
-        })       
-      }
-    })
-    Promise.all(promises).then((data)=>{
-      this.setState({selectedUsers:[], selectedRecords:[], trader:null, visible:false}, this.getUser)
-    })
-  }
+  // comfirmModify = () =>{
+  //   let promises=this.state.selectedRecords.map(user=>{
+  //     let body = {
+  //     investoruser: user.id,
+  //     traderuser: this.state.trader,
+  //     relationtype: true
+  //     }
+  //     let weakTraders=[]
+  //     if([2, 3].includes(user.userstatus)){    //审核通过
+  //       return api.getUserRelation({investoruser: user.id})
+  //       .then(result=>{         
+  //         result.data.data.forEach(item=>{
+  //           if(item.relationtype==false){
+  //             weakTraders.push(item)     //获取弱交易师
+  //           }
+  //         })
+  //         let existUser=weakTraders.find(item=>{return item.traderuser.id==this.state.trader})
+  //         if(existUser){          
+  //           return api.deleteUserRelation([existUser.id])    //删除已存在的弱交易师
+  //         }
+  //         weakTraders=[]
+  //       })
+  //       .then(data=>{
+  //         if(user.trader_relation&&user.trader_relation.traderuser.username){
+  //           return api.editUserRelation([{ ...body, id: user.trader_relation.id }])   //修改已存在的强交易师
+  //         }else{
+  //           return api.addUserRelation(body)               //添加强交易师
+  //         }
+  //       })       
+  //     }
+  //   })
+  //   Promise.all(promises).then((data)=>{
+  //     this.setState({selectedUsers:[], selectedRecords:[], trader:null, visible:false}, this.getUser)
+  //   })
+  // }
   componentDidMount() {
     this.getUser()
 
@@ -333,7 +333,7 @@ class UserList extends React.Component {
           </div>
         </div>
 
-        <Modal
+        {/* <Modal
           title="请选择交易师"
           visible={this.state.visible}
           onOk={this.comfirmModify}
@@ -351,7 +351,7 @@ class UserList extends React.Component {
 
           <Button style={{ marginLeft: 10 }} disabled={this.state.trader === null} type="primary" onClick={this.comfirmModify}>{i18n('common.confirm')}</Button>
 
-        </Modal>
+        </Modal> */}
 
         <Table
           onChange={this.handleTableChange}
@@ -362,11 +362,15 @@ class UserList extends React.Component {
           rowKey={record => record.id}
           pagination={false} />
 
-        <div style={{ margin: '16px 0' }} className="clearfix">
-        <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0' }}>
+        {/* <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button> */}
         
+        <div style={{ display: 'flex' }}>
+          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+          表示该用户的联系方式可用
+        </div>
+
         <Pagination
-          style={{ float: 'right' }}
           total={total}
           current={page}
           pageSize={pageSize}
@@ -376,11 +380,7 @@ class UserList extends React.Component {
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}
         />
-        </div>
 
-        <div style={{ display: 'flex' }}>
-          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
-          表示该用户的联系方式可用
         </div>
 
       </LeftRightLayout>
