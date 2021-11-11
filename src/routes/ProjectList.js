@@ -83,6 +83,9 @@ class ProjectList extends React.Component {
       unreadOrgBDNumber: 0,
       onGogoingProjects: [],
       solvedProjectsThisYear: [],
+
+      sort: undefined,
+      desc: undefined,
     }
   }
 
@@ -129,8 +132,8 @@ class ProjectList extends React.Component {
   }
 
   getProject = () => {
-    const { filters, search, page, pageSize } = this.state
-    const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize }
+    const { filters, search, page, pageSize, sort, desc } = this.state
+    const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize, sort, desc }
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
@@ -333,6 +336,16 @@ class ProjectList extends React.Component {
     });
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    this.setState(
+      {
+        sort: sorter.column ? sorter.column.key : undefined,
+        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
+      },
+      this.getProject,
+    );
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
@@ -423,6 +436,7 @@ class ProjectList extends React.Component {
         title: '发布时间',
         key: 'publishDate',
         dataIndex: 'publishDate',
+        sorter: true,
         render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
       },
       {
@@ -582,6 +596,7 @@ class ProjectList extends React.Component {
             rowKey={record => record.id}
             loading={loading}
             pagination={false}
+            onChange={this.handleTableChange}
           />
 
           <div style={{ margin: '16px 0' }} className="clearfix">
