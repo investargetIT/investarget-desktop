@@ -2354,7 +2354,6 @@ class OrgBDListComponent extends React.Component {
       return (
         <div>
           <Table
-            scroll={{ x: 1000 }} 
             showHeader={false}
             columns={columns}
             dataSource={record.items}
