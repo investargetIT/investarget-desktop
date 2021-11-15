@@ -35,6 +35,7 @@ import DataRoomList from './routes/DataRoomList';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 import DataRoom from './routes/DataRoom';
 import DataroomDetails from './routes/DataroomDetails';
+import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -124,7 +125,7 @@ function RouterConfig({ history }) {
         <Route path="/app/orguser/list" component={OrgUserList} />
         <Route path="/app/organization/add" component={AddOrganization} />
         <Route path="/app/organization/:id" component={OrgDetail} />
-        <Route path="/app/demo" component={Demo} />
+        {/* <Route path="/app/demo" component={Demo} /> */}
         <Route path="/app/schedule" component={Schedule} />
         <Route path="/app/report/edit/:id" component={EditReport} />
         <Route path="/app/report/add" component={AddReport} />
@@ -137,6 +138,7 @@ function RouterConfig({ history }) {
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
+        <Route path="/app/demo" component={ReactDataSheetDemo} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />

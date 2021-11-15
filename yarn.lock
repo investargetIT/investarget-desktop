@@ -6326,6 +6326,11 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-datasheet@^1.4.9:
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/react-datasheet/-/react-datasheet-1.4.9.tgz#fe1c1adcccb62f07a94262ac1c3a8a285740694a"
+  integrity sha512-/UoIw/bnqeFT205IE+eESm0APLUnSl0ZPqG6mrKszgNB578cm+06GuPg79UxFOiobVeWXtrLwa/yNUQc+OiOfQ==
+
 react-dev-utils@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-2.0.1.tgz#5843504d89f038f046258a871fc26071775fc065"
