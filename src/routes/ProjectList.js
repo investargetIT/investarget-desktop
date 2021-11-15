@@ -12,7 +12,7 @@ import {
   requestAllData2,
 } from '../utils/util';
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress } from 'antd'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { ProjectListFilter } from '../components/Filter'
 import { NewProjectListFilter } from '../components/Filter';
@@ -366,9 +366,11 @@ class ProjectList extends React.Component {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
           return (
-            <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
-              <img src={imgUrl} style={{width: '80px', height: '50px'}} />
-            </Link>
+            <Tooltip title="项目成本中心">
+              <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
+                <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
+              </Link>
+            </Tooltip>
           );
         }
       },
@@ -378,9 +380,11 @@ class ProjectList extends React.Component {
         render: (_, record) => {
           if (record.action.get) {
             return (
-              <span className="span-title">
-                <Link to={`/app/projects/${record.id}`}>{record.projtitle}</Link>
-              </span>
+              <Tooltip title="项目详情">
+                <span className="span-title">
+                  <Link to={`/app/projects/${record.id}`}>{record.projtitle}</Link>
+                </span>
+              </Tooltip>
             )
           } else {
             this.props.dispatch({
