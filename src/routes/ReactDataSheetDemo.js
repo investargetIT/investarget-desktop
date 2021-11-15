@@ -17,6 +17,10 @@ class BasicSheet extends React.Component {
           { value: 'B', readOnly: true },
           { value: 'C', readOnly: true },
           { value: 'D', readOnly: true },
+          { value: 'E', readOnly: true },
+          { value: 'F', readOnly: true },
+          { value: 'G', readOnly: true },
+          { value: 'H', readOnly: true },
         ],
         [
           { readOnly: true, value: 1 },
@@ -66,9 +70,9 @@ class BasicSheet extends React.Component {
         location={this.props.location}
         title={i18n('menu.project_bd')}
         action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}
+        innerStyle={{ overflowX: 'scroll' }}
       >
         <Datasheet
-          style={{ width: '100%' }}
           data={this.state.grid}
           valueRenderer={this.valueRenderer}
           onContextMenu={this.onContextMenu}

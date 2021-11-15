@@ -680,8 +680,7 @@ label.login-register-form__container__label {
 
 /* React Data Sheet */
 .data-grid-container .data-grid {
-  width: 100%;
-  margin: auto;
+  width: 2000px;
 }
 .data-grid-container .data-grid .cell > input {
   width: 100%;
