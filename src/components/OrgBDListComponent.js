@@ -2441,9 +2441,7 @@ class OrgBDListComponent extends React.Component {
               {this.isAbleToCreateBD() &&
                 <div className="another-btn">
                   {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
-                  <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                    <Button type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
-                  </Link>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
                 </div>
               }
             </div>
@@ -2521,10 +2519,9 @@ class OrgBDListComponent extends React.Component {
             <div style={{ margin: '16px 0' }} className="clearfix">
 
               {this.props.editable && this.isAbleToCreateBD() ?
-                // <Link className="another-btn remove-on-mobile" to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                //   <Button type="primary" icon={<PlusOutlined />}>新增机构</Button>
-                // </Link>
-                <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
+                <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
+                    <Button type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
+                  </Link>
                 : null}
 
               <Pagination
