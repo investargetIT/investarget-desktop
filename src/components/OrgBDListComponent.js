@@ -29,6 +29,7 @@ import {
   Select,
   Tooltip,
   Form,
+  Upload,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter } from './Filter';
@@ -2373,6 +2374,10 @@ class OrgBDListComponent extends React.Component {
       );
     }
 
+    const importOrgBDProps = {
+
+    };
+
     return (
       <div>
         {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
@@ -2436,7 +2441,10 @@ class OrgBDListComponent extends React.Component {
                   <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#7ed321', opacity: 0.5 }} />
                   <div style={{ marginRight: 16 }}>低</div>
                 </div>
-                <Button onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
+                <Button style={{ marginRight: 20 }} onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
+                <Upload {...importOrgBDProps}>
+                  <Button>导入机构看板</Button>
+                </Upload>
               </div>
               {this.isAbleToCreateBD() &&
                 <div className="another-btn">
