@@ -1647,6 +1647,10 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
+  handleDownloadOrgBDTemplateBtnClick = () => {
+
+  }
+  
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2451,8 +2455,8 @@ class OrgBDListComponent extends React.Component {
 
         <Card>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
-            <div className="orgbd-operation remove-on-mobile" style={{ marginBottom: 20, justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
                 <Search
                   style={{ width: 300, marginRight: 20 }}
                   placeholder="请输入投资人名称或电话"
@@ -2472,11 +2476,12 @@ class OrgBDListComponent extends React.Component {
                 </div>
                 <Button style={{ marginRight: 20 }} onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
                 <Upload {...importOrgBDProps}>
-                  <Button loading={this.state.loadingImportOrgBD}>导入机构看板</Button>
+                  <Button loading={this.state.loadingImportOrgBD} style={{ marginRight: 20 }}>导入机构看板</Button>
                 </Upload>
+                <Button onClick={this.handleDownloadOrgBDTemplateBtnClick}>模板下载</Button>
               </div>
               {this.isAbleToCreateBD() &&
-                <div className="another-btn">
+                <div className="another-btn" style={{ marginBottom: 20 }}>
                   {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
                   <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
                 </div>
