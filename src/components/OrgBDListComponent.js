@@ -199,6 +199,8 @@ class OrgBDListComponent extends React.Component {
         sortByTime: null,
         sort: undefined,
         desc: undefined,
+
+        loadingImportOrgBD: false,
     }
 
     this.allTrader = [];
@@ -2382,13 +2384,24 @@ class OrgBDListComponent extends React.Component {
       accept: '.xls,application/vnd.ms-excel',
       data: { proj: this.projId },
       showUploadList: false,
-      onChange(info) {
+      headers: { token: getUserInfo().token },
+      beforeUpload: () => {
+        this.setState({ loadingImportOrgBD: true });
+      },
+      onChange: (info) => {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
+          this.setState({ loadingImportOrgBD: false });
+          if (info.file.response && info.file.response.code === 1000) {
+            message.success('文件导入成功');
+            this.getOrgBdList();
+          } else {
+            message.success('文件导入失败');
+          }
         } else if (info.file.status === 'error') {
+          this.setState({ loadingImportOrgBD: false });
           message.error(`${info.file.name} file upload failed.`);
         }
       },
@@ -2459,7 +2472,7 @@ class OrgBDListComponent extends React.Component {
                 </div>
                 <Button style={{ marginRight: 20 }} onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
                 <Upload {...importOrgBDProps}>
-                  <Button>导入机构看板</Button>
+                  <Button loading={this.state.loadingImportOrgBD}>导入机构看板</Button>
                 </Upload>
               </div>
               {this.isAbleToCreateBD() &&
