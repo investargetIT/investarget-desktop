@@ -201,6 +201,8 @@ class OrgBDListComponent extends React.Component {
         desc: undefined,
 
         loadingImportOrgBD: false,
+        downloadUrl: null, // 模板下载链接
+        loadingDownloadTemplate: false,
     }
 
     this.allTrader = [];
@@ -1648,7 +1650,14 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleDownloadOrgBDTemplateBtnClick = () => {
-    window.open('');
+    this.setState({ loadingDownloadTemplate: true });
+    api.downloadUrl('file', 'sample.xls')
+      .then(result => {
+        this.setState({ downloadUrl: result.data });
+        setTimeout(() => this.setState({ downloadUrl: null }), 1000);
+      })
+      .catch(handleError)
+      .finally(() => this.setState({ loadingDownloadTemplate: false }));
   }
 
   render() {
@@ -2478,7 +2487,7 @@ class OrgBDListComponent extends React.Component {
                 <Upload {...importOrgBDProps}>
                   <Button loading={this.state.loadingImportOrgBD} style={{ marginRight: 20 }}>导入机构看板</Button>
                 </Upload>
-                <Button onClick={this.handleDownloadOrgBDTemplateBtnClick}>模板下载</Button>
+                <Button loading={this.state.loadingDownloadTemplate} onClick={this.handleDownloadOrgBDTemplateBtnClick}>模板下载</Button>
               </div>
               {this.isAbleToCreateBD() &&
                 <div className="another-btn" style={{ marginBottom: 20 }}>
@@ -2845,6 +2854,8 @@ class OrgBDListComponent extends React.Component {
           </div>
           <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
         </Modal>
+
+        <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
       </div>
     );
