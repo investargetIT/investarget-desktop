@@ -1001,7 +1001,7 @@ class OrgBDListComponent extends React.Component {
     const title = user.usertitle && user.usertitle.name;
     return <div style={{minWidth: 180, maxWidth: 600}}>
           <Row style={{textAlign:'center',margin:'10px 0'}}>
-            {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
+            {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px', margin: '0 auto'}}/>:'暂无头像'}
           </Row>
 
           { mobile ? 
@@ -1648,9 +1648,9 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleDownloadOrgBDTemplateBtnClick = () => {
-
+    window.open('');
   }
-  
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
