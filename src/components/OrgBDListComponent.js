@@ -1686,9 +1686,41 @@ class OrgBDListComponent extends React.Component {
               <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
             </div>
           );
+
+          function popoverContent1() {
+          // const popoverContent = comments.filter(f => !f.isPMComment)
+          //   .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+          //   .map(comment => {
+          //     let content = comment.comments;
+          //     const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+          //     if (oldStatusMatch) {
+          //       const oldStatus = oldStatusMatch[0];
+          //       content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+          //     }
+          //     return (
+          //       <div key={comment.id} style={{ marginBottom: 8 }}>
+          //         <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+          //         <div style={{ display: 'flex' }}>
+          //           {comment.createuser &&
+          //             <div style={{ marginRight: 10 }}>
+          //               <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+          //                 <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+          //               </a>
+          //             </div>
+          //           }
+          //           <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+          //         </div>
+          //       </div>
+          //     );
+          //   });
+          return '';
+          }
+
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+              <Popover title="机构备注" content={popoverContent1()}>
+                <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+              </Popover>
               <Popover content={popoverContent}>
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
               </Popover>
