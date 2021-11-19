@@ -115,6 +115,11 @@ export function getOrgDetail(id, param) {
 }
 
 export function getOrgRemark(param) {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/org/remark/?' + qs.stringify(param))
 }
 

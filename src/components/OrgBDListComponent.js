@@ -423,13 +423,18 @@ class OrgBDListComponent extends React.Component {
         baseList = baseResult.data.data;
         const ids = baseList.map(item => item.org).filter(item => item);
         if (ids.length > 0) {
-          return api.getOrg({ ids, page_size: ids.length });
+          const req1 = api.getOrg({ ids, page_size: ids.length });
+          const req2 = requestAllData(api.getOrgRemark, { org: ids }, 1000);
+          return Promise.all([req1, req2]);
         } else {
           return { data: { data: [] } };
         }
       })
       .then(result => {
-        let list = result.data.data
+        let list = result[0].data.data.map(m => {
+          const comments = result[1].data.data.filter(f => f.org === m.id);
+          return { ...m, comments };
+        })
         let orgList = {}
         list.forEach(item => {orgList[item.id] = item})
         this.setState(
@@ -1336,6 +1341,7 @@ class OrgBDListComponent extends React.Component {
     //   params.unionFields = 'manager,createuser';
     // }
     let allOrgs = await requestAllData(api.getOrgBdBase, params, 1000);
+    let allOrgRemarks = await requestAllData(api.getOrgRemark, { org: filters.org.map(m => m.key) }, 1000);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
       org: item.org,
@@ -1688,32 +1694,26 @@ class OrgBDListComponent extends React.Component {
           );
 
           function popoverContent1() {
-          // const popoverContent = comments.filter(f => !f.isPMComment)
-          //   .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
-          //   .map(comment => {
-          //     let content = comment.comments;
-          //     const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
-          //     if (oldStatusMatch) {
-          //       const oldStatus = oldStatusMatch[0];
-          //       content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
-          //     }
-          //     return (
-          //       <div key={comment.id} style={{ marginBottom: 8 }}>
-          //         <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
-          //         <div style={{ display: 'flex' }}>
-          //           {comment.createuser &&
-          //             <div style={{ marginRight: 10 }}>
-          //               <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
-          //                 <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
-          //               </a>
-          //             </div>
-          //           }
-          //           <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
-          //         </div>
-          //       </div>
-          //     );
-          //   });
-          return '';
+            const popoverContent = record.org.comments.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+              .map(comment => {
+                let content = comment.remark;
+                return (
+                  <div key={comment.id} style={{ marginBottom: 8 }}>
+                    <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                    <div style={{ display: 'flex' }}>
+                      {/* {comment.createuser &&
+                        <div style={{ marginRight: 10 }}>
+                          <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                            <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                          </a>
+                        </div>
+                      } */}
+                      <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                    </div>
+                  </div>
+                );
+              });
+            return popoverContent;
           }
 
           return (
