@@ -250,14 +250,15 @@ class OrgBDListComponent extends React.Component {
 
   getAllTrader() {
     api.queryUserGroup({ type: 'trader' })
-    .then(data => requestAllData(api.getUser, {
-      groups: data.data.data.map(m => m.id),
-      userstatus: 2,
-    }, 1000))
-    .then(data => {
-      this.allTrader = data.data.data; 
-      this.setState({ traderList: this.allTrader });
-    })
+      .then(data => requestAllData(api.getUser, {
+        groups: data.data.data.map(m => m.id),
+        userstatus: 2,
+      }, 100))
+      .then(data => {
+        this.allTrader = data.data.data;
+        this.setState({ traderList: this.allTrader });
+      })
+      .catch(handleError);
   }
 
   readSetting = () => {
