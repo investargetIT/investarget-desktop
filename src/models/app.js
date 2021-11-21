@@ -49,6 +49,7 @@ export default {
     trainingStatus: [],
     trainingType: [],
     palevel: [],
+    allTraders: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -136,7 +137,7 @@ export default {
       });
       yield put({ type: 'saveSource', payload: { sourceType: 'industryGroup', data: indGroups } });
       return indGroups;
-    },
+    },  
     *requestLibIndustry({}, { call, put }) {
       const { data } = yield call(api.getLibIndustry)
       yield put({ type: 'saveLibIndustry', payload: data.data })
@@ -154,7 +155,19 @@ export default {
       if (group.length > 0) return;
       const { data } = yield call(requestAllData, api.queryUserGroup, { page_size: 99 }, 99);
       yield put({ type: 'saveGroup', payload: data.data });
+      return data.data;
     },
+    *getAllTraders(_, { call, put, select }) {
+      const tryData = yield select(state => state.app['allTraders']);
+      if (tryData.length > 0) return tryData;
+      const traderGroupsReq = yield call(requestAllData, api.queryUserGroup, { type: 'trader' }, 99);
+      const allTradersReq = yield call(requestAllData, api.getUser, {
+        groups: traderGroupsReq.data.data.map(m => m.id),
+        userstatus: 2,
+      }, 99);
+      yield put({ type: 'saveSource', payload: { sourceType: 'allTraders', data: allTradersReq.data.data } });
+      return allTradersReq.data.data;
+    }, 
   },
   subscriptions: {
     setup({ history, dispatch }) {
