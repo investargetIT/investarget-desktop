@@ -196,7 +196,7 @@ class UserList extends React.Component {
     this.getUser()
 
     api.queryUserGroup({ type: 'trader' })
-    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2, page_size: 1000 }, 1000))
+    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 100))
     .then(data => this.setState({ traders: data.data.data }))
     .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 

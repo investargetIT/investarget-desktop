@@ -180,10 +180,10 @@ function remarkListWithApi(type) {
     getRemarkList = () => {
       const param = {
         [type]: this.props.typeId,
-        page_size: 1000,
+        page_size: 100,
       }
       const {initComNum,list,currentList,currentListNum}=this.state
-      requestAllData(getApi, param, 1000).then(result => {
+      requestAllData(getApi, param, 100).then(result => {
         const list = result.data.data
         sortByTime(list)
         this.setState({ list })

@@ -155,9 +155,8 @@ class AuditProjectModal extends React.Component {
     const projId = this.props.projId
     const param = {
       proj: projId,
-      page_size: 10000
     }
-    requestAllData(api.getProjAttachment, param, 10000).then(result => {
+    requestAllData(api.getProjAttachment, param, 100).then(result => {
       return result.data.data
     })
     .then(fileList => {

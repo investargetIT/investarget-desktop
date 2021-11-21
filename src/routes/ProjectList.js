@@ -284,8 +284,8 @@ class ProjectList extends React.Component {
     const params1 = { stimeM, etimeM, page_size, isSolved: 1 };
     const params2 = { stime, etime, page_size, isSolved: 1 };
     const res = await Promise.all([
-      requestAllData(api.getOrgBDProj, params1, 1000),
-      requestAllData(api.getOrgBDProj, params2, 1000),
+      requestAllData(api.getOrgBDProj, params1, 100),
+      requestAllData(api.getOrgBDProj, params2, 100),
     ]);
 
     const allSolvedProj = res.reduce((pre, cur) => pre.concat(cur.data.data.map(m => m.proj)), []);

@@ -316,7 +316,7 @@ class SelectOrganization extends React.Component {
           groups: investorGroups,
           starmobile: true,
           org: [orgID]
-        }, 1000);
+        }, 100);
       })
       .then(data => {
         orgInvestor.investors = data.data;

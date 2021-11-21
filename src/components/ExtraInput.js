@@ -826,7 +826,7 @@ class SelectTrader extends React.Component {
 
     if (!this.props.data) {
     api.queryUserGroup({ type: this.props.type || 'trader' })
-    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 1000))
+    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 99))
     .then(data => this.setState({ data: data.data.data }))
     .catch(error => {
       this.props.dispatch({
@@ -884,8 +884,8 @@ class SelectOrgUser extends React.Component {
     const { org, type, allStatus, onjob } = this.props
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
-      const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
-      return requestAllData(api.getUser, param, 1000)
+      const param = { groups, userstatus: allStatus ? undefined : 2, org, onjob }
+      return requestAllData(api.getUser, param, 99)
     }).then(data => {
       const traders = data.data.data
       const options = traders.map(item => {
@@ -925,8 +925,8 @@ class SelectOrgInvestor extends React.Component {
     if (!org) return;
     api.queryUserGroup({ type: type || 'trader'}).then(data => {
       const groups = data.data.data.map(item => item.id)
-      const param = { groups, userstatus: allStatus ? undefined : 2, org, page_size: 1000, onjob }
-      return requestAllData(api.getUser, param, 1000)
+      const param = { groups, userstatus: allStatus ? undefined : 2, org, onjob }
+      return requestAllData(api.getUser, param, 99)
     }).then(data => {
       const traders = data.data.data
       const options = traders.map(item => {
@@ -2013,7 +2013,7 @@ class SelectMultiOrgs extends React.Component {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
-    requestAllData(api.getOrg, { search: value, issub: false, proj: this.props.proj }, 1000)
+    requestAllData(api.getOrg, { search: value, issub: false, proj: this.props.proj }, 99)
       .then(body => {
         if (fetchId !== this.lastFetchId) { // for fetch callback order
           return;
@@ -2079,13 +2079,13 @@ class SelectMultiUsers extends React.Component {
 
   asyncFetchData = async value => {
     if (this.props.proj) {
-      const params = { proj: this.props.proj, page_size: 1000 };
+      const params = { proj: this.props.proj };
       if (!hasPerm('BD.manageOrgBD')) {
         params.manager = getCurrentUser();
         // params.createuser = getCurrentUser();
         // params.unionFields = 'manager,createuser';
       }
-      const getOrgBdListReq = await requestAllData(api.getOrgBdList, params, 1000);
+      const getOrgBdListReq = await requestAllData(api.getOrgBdList, params, 99);
       const { count: orgBdListCount } = getOrgBdListReq.data;
       if (orgBdListCount > 0) {
         const { data: orgBdListData } = getOrgBdListReq.data;

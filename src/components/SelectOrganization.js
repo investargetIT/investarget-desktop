@@ -165,11 +165,11 @@ class SelectOrganization extends React.Component {
       .then(data => {
         const investorGroups = data.data.data.map(item => item.id);
         return requestAllData(api.getUser, {
-          page_size: 1000,
+          page_size: 100,
           groups: investorGroups,
           starmobile: true,
           org: [orgID]
-        }, 1000);
+        }, 100);
       })
       .then(data => {
         orgInvestor.investors = data.data;

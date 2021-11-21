@@ -31,8 +31,8 @@ class TimelineView extends React.Component {
   }
 
   getAllTimeline = () => {
-    const param = { proj: this.props.projId, page_size: 10000 }
-    requestAllData(api.getTimelineBasic, param, 10000).then(result => {
+    const param = { proj: this.props.projId, page_size: 100 }
+    requestAllData(api.getTimelineBasic, param, 100).then(result => {
       const timelineList = result.data.data
       const list = timelineList.map(item => {
         return {
@@ -57,13 +57,13 @@ class TimelineView extends React.Component {
   getAllOrgBD = async () => {
     const params = {
       proj: this.props.projId,
-      page_size: 1000,
+      page_size: 100,
       response: this.orgBdRes.map(m => m.id)
     };
     if (!hasPerm('BD.manageOrgBD')) {
       params.manager = getCurrentUser();
     }
-    const res = await requestAllData(api.getOrgBdList, params, 1000);
+    const res = await requestAllData(api.getOrgBdList, params, 100);
     const { data: list } = res.data;
     this.setState({ list });
   }

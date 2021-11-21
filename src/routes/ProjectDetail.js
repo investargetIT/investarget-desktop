@@ -805,7 +805,7 @@ class DownloadFiles extends React.Component {
 
   componentDidMount() {
     const id = this.props.projectId
-    requestAllData(api.getProjAttachment, { proj: id, page_size: 10000 }, 10000).then(result => {
+    requestAllData(api.getProjAttachment, { proj: id, page_size: 100 }, 100).then(result => {
       const { data: attachments } = result.data
       this.setState({ attachments })
 

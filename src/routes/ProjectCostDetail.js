@@ -130,13 +130,12 @@ function ProjectCostDetail(props) {
     async function getAllOrgBD() {
       const params = {
         proj: projectDetails.id,
-        page_size: 1000,
         response: orgbdres.map(m => m.id)
       };
       if (!hasPerm('BD.manageOrgBD')) {
         params.manager = getCurrentUser();
       }
-      const res = await requestAllData(api.getOrgBdList, params, 1000);
+      const res = await requestAllData(api.getOrgBdList, params, 100);
       const { data: list } = res.data;
       setAllOrgBD(list);
     }

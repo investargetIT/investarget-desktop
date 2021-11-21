@@ -756,7 +756,7 @@ class OrgDetail extends React.Component {
           })
         })
         return Promise.all([
-          requestAllData(api.getUser, { org: data.id, title: orgStructure.map(m => m.title.id) }, 1000),
+          requestAllData(api.getUser, { org: data.id, title: orgStructure.map(m => m.title.id) }, 100),
           // requestAllData(api.getUnreachUser, { org: data.id }, 1000),
         ])
       } else {

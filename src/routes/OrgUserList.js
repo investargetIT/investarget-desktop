@@ -113,8 +113,8 @@ class OrgUserList extends React.Component {
       //获取投资人的交易师
       const orgUserRelation = await requestAllData(api.getUserRelation, {
         investoruser: orgUser.map(m => m.id),
-        page_size: 1000,
-      }, 1000);
+        page_size: 100,
+      }, 100);
       orgUser.forEach(element => {
         const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
         element.traders = relations.map(m => ({

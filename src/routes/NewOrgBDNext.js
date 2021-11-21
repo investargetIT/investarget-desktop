@@ -339,7 +339,7 @@ class NewOrgBDList extends React.Component {
     // 首先加载机构的所有符合要求的投资人
     const reqUser = await requestAllData(api.getUser, {
       starmobile: true, org: [org], onjob: true, groups: this.investorGroup
-    }, 1000);
+    }, 100);
     // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
       // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
@@ -350,8 +350,7 @@ class NewOrgBDList extends React.Component {
       //获取投资人的交易师
       const orgUserRelation = await requestAllData(api.getUserRelation, {
         investoruser: orgUser.map(m => m.id),
-        page_size: 1000,
-      }, 1000);
+      }, 100);
       // const orgUserRelation = this.getUserRelation(orgUser.map(m => m.id));
       orgUser.forEach(element => {
         const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
@@ -584,9 +583,8 @@ class NewOrgBDList extends React.Component {
   setDefaultTrader = activeInvestorID => {
     const params = {
       investoruser: activeInvestorID,
-      page_size: 1000,
     };
-    requestAllData(api.getUserRelation, params, 1000)
+    requestAllData(api.getUserRelation, params, 100)
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
@@ -619,8 +617,8 @@ class NewOrgBDList extends React.Component {
     const data = await requestAllData(api.getUser, { 
       groups: reqUserGroup.data.data.map(m => m.id), 
       userstatus: 2, 
-      page_size: 1000, 
-    }, 1000);
+      page_size: 100, 
+    }, 100);
     this.allTrader = data.data.data; 
     this.setState({ traderList: this.allTrader });
   }
@@ -683,7 +681,7 @@ class NewOrgBDList extends React.Component {
       return;
     }
     this.setState({ loading: true });
-    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 1000);
+    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
     this.setState({ loading: false });
     const searchResult = reqSearch.data.data.map(m => m.username);
     const newList = this.state.originalList.filter(f1 => 

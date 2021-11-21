@@ -165,9 +165,8 @@ function MySchedule(props) {
           user: getCurrentUser(),
           startTime: firstDayOfLastMonth.format('YYYY-MM-DD'),
           endTime: firstDayOfNextTwoMonths.format('YYYY-MM-DD'),
-          page_size: 1000
         };
-        const requestReport = await requestAllData(api.getWorkReport, params, 1000);
+        const requestReport = await requestAllData(api.getWorkReport, params, 99);
         const reportList = requestReport.data.data.map(m => {
           const scheduledtime = moment(m.startTime).startOf('week').add('days', 4).format('YYYY-MM-DD');
           const comments = '周报';

@@ -425,7 +425,7 @@ class OrgBDListComponent extends React.Component {
         const ids = baseList.map(item => item.org).filter(item => item);
         if (ids.length > 0) {
           const req1 = api.getOrg({ ids, page_size: ids.length });
-          const req2 = requestAllData(api.getOrgRemark, { org: ids }, 1000);
+          const req2 = requestAllData(api.getOrgRemark, { org: ids }, 100);
           return Promise.all([req1, req2]);
         } else {
           return { data: { data: [] } };
@@ -1086,9 +1086,9 @@ class OrgBDListComponent extends React.Component {
     if(!change.orgUser) return;
     const params = {
       investoruser: change.orgUser,
-      page_size: 1000,
+      page_size: 100,
     };
-    requestAllData(api.getUserRelation, params, 1000)
+    requestAllData(api.getUserRelation, params, 100)
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
@@ -1132,9 +1132,9 @@ class OrgBDListComponent extends React.Component {
 
     const params = {
       investoruser: change.bduser,
-      page_size: 1000,
+      page_size: 100,
     };
-    requestAllData(api.getUserRelation, params, 1000)
+    requestAllData(api.getUserRelation, params, 100)
       .then(result => {
         const newTraderList = [];
         result.data.data.forEach(element => {
@@ -1327,7 +1327,7 @@ class OrgBDListComponent extends React.Component {
     const { search, filters } = this.state;
     const params = {
         ...filters,
-        page_size: 1000,
+        page_size: 100,
         search,
         org: filters.org.map(m => m.key),
         proj: filters.proj || 'none',
@@ -1341,8 +1341,8 @@ class OrgBDListComponent extends React.Component {
     //   params.createuser = getCurrentUser();
     //   params.unionFields = 'manager,createuser';
     // }
-    let allOrgs = await requestAllData(api.getOrgBdBase, params, 1000);
-    let allOrgRemarks = await requestAllData(api.getOrgRemark, { org: filters.org.map(m => m.key) }, 1000);
+    let allOrgs = await requestAllData(api.getOrgBdBase, params, 100);
+    let allOrgRemarks = await requestAllData(api.getOrgRemark, { org: filters.org.map(m => m.key) }, 100);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
       org: item.org,

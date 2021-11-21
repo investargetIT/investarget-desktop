@@ -82,7 +82,7 @@ class ReportForm extends React.Component {
     const etime = this.endDate;
     const stimeM = this.startDate;
     const etimeM = this.endDate;
-    const page_size = 1000;
+    const page_size = 100;
 
     // const params = { createuser, stimeM, etimeM, stime, etime, page_size };
     // const resRemark = await api.getOrgRemark(params);
@@ -91,8 +91,8 @@ class ReportForm extends React.Component {
     const params1 = { createuser, stimeM, etimeM, page_size };
     const params2 = { createuser, stime, etime, page_size };
     const res = await Promise.all([
-      requestAllData(api.getOrgRemark, params1, 1000),
-      requestAllData(api.getOrgRemark, params2, 1000),
+      requestAllData(api.getOrgRemark, params1, 100),
+      requestAllData(api.getOrgRemark, params2, 100),
     ]);
     const allOrgRemarks = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     let remarks =  _.uniqBy(allOrgRemarks, 'id');
@@ -123,8 +123,8 @@ class ReportForm extends React.Component {
     const params1 = { manager, stimeM, etimeM, page_size };
     const params2 = { manager, stime, etime, page_size };
     const res = await Promise.all([
-      requestAllData(api.getOrgBdList, params1, 1000),
-      requestAllData(api.getOrgBdList, params2, 1000),
+      requestAllData(api.getOrgBdList, params1, 100),
+      requestAllData(api.getOrgBdList, params2, 100),
     ]);
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     const orgBds =  _.uniqBy(allOrgBds, 'id');

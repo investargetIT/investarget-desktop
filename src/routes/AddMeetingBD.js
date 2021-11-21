@@ -94,7 +94,7 @@ class AddMeetingBD extends React.Component{
 
 	componentDidMount() {
   api.queryUserGroup({ type: this.props.type || 'trader' })
-  .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 1000))
+  .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 100))
   .then(data => this.setState({ data: data.data.data }))
   .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 

@@ -280,9 +280,9 @@ class EditReport extends React.Component {
   getReportProj = async () => {
     const params = {
       report: this.reportId,
-      page_size: 1000,
+      page_size: 100,
     };
-    const res = await requestAllData(api.getWorkReportProjInfo, params, 1000);
+    const res = await requestAllData(api.getWorkReportProjInfo, params, 100);
     const { data: reportProj } = res.data;
     this.setState({
       allProj: reportProj,
@@ -299,9 +299,9 @@ class EditReport extends React.Component {
   getMarketMsg = async () => {
     const params = {
       report: this.reportId,
-      page_size: 1000,
+      page_size: 100,
     };
-    const res = await requestAllData(api.getWorkReportMarketMsg, params, 1000);
+    const res = await requestAllData(api.getWorkReportMarketMsg, params, 100);
     const { data: marketMsg } = res.data;
     this.setState({
       marketMsg,
@@ -313,14 +313,14 @@ class EditReport extends React.Component {
     const etime = this.endDate;
     const stimeM = this.startDate;
     const etimeM = this.endDate;
-    const page_size = 1000;
+    const page_size = 100;
 
 
     const params1 = { manager, stimeM, etimeM, page_size };
     const params2 = { manager, stime, etime, page_size };
     const res = await Promise.all([
-      requestAllData(api.getOrgBdList, params1, 1000),
-      requestAllData(api.getOrgBdList, params2, 1000),
+      requestAllData(api.getOrgBdList, params1, 100),
+      requestAllData(api.getOrgBdList, params2, 100),
     ]);
     const allOrgBds = res.reduce((pre, cur) => pre.concat(cur.data.data), []);
     const orgBds =  _.uniqBy(allOrgBds, 'id');
