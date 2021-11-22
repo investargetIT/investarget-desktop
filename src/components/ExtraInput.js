@@ -1553,7 +1553,7 @@ const CheckboxService = withOptionsAsync(CheckboxGroup, ['service'], function(st
 
 const CheckboxProjStatus = withOptionsAsync(CheckboxGroup, ['projstatus'], function(state) {
   var { projstatus } = state.app
-  if (!hasPerm('usersys.as_admin')) {
+  if (!hasPerm('proj.admin_manageproj')) {
     projstatus = projstatus.filter(item => item.id >= 4) // 非管理员只能查看终审发布之后的项目
   }
   const options = projstatus ? projstatus.map(item => ({value: item.id, label: item.name})) : []

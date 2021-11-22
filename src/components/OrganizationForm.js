@@ -56,7 +56,7 @@ class OrganizationForm extends React.Component {
   }
 
   componentDidMount() {
-    if (!hasPerm('org.admin_addorg') && !hasPerm('org.user_addorg')) {
+    if (!hasPerm('org.admin_manageorg')) {
       this.props.dispatch(routerRedux.replace('/403'))
       return
     }
@@ -239,7 +239,7 @@ class OrganizationForm extends React.Component {
           <SelectOrgLevel />
         </BasicFormItem>
 
-        { hasPerm('org.admin_addorg') ?
+        { hasPerm('org.admin_manageorg') ?
         <BasicFormItem label={i18n('organization.audit_status')} name="orgstatus" valueType="number" initialValue={1}>
           <RadioAudit />
         </BasicFormItem>

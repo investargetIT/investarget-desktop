@@ -875,7 +875,7 @@ class OrgBDListComponent extends React.Component {
       api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
         .then(result => {
           // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
-          if ((result.data || hasPerm('usersys.admin_changeuser')) && isModifyWechat) {
+          if ((result.data || hasPerm('usersys.admin_manageuser')) && isModifyWechat) {
             api.addUserRelation({
               relationtype: true,
               investoruser: this.state.currentBD.bduser,
@@ -1230,9 +1230,6 @@ class OrgBDListComponent extends React.Component {
     if (hasPerm('BD.manageOrgBD')) {
       return true;
     }
-    if (hasPerm('BD.user_addOrgBD')) {
-      return true;
-    }
     const currentUserID = getUserInfo() && getUserInfo().id;
     if (this.state.projTradersIds.includes(currentUserID)) {
       return true;
@@ -1241,10 +1238,7 @@ class OrgBDListComponent extends React.Component {
   }
 
   isAbleToAddBlacklist = () => {
-    if (hasPerm('BD.manageOrgBDBlack')) {
-      return true;
-    }
-    if (hasPerm('BD.addOrgBDBlack')) {
+    if (hasPerm('BD.manageOrgBD')) {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
@@ -1255,10 +1249,7 @@ class OrgBDListComponent extends React.Component {
   }
 
   isAbleToRemoveBlacklist = () => {
-    if (hasPerm('BD.manageOrgBDBlack')) {
-      return true;
-    }
-    if (hasPerm('BD.delOrgBDBlack')) {
+    if (hasPerm('BD.manageOrgBD')) {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;

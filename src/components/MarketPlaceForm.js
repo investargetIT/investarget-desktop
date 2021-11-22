@@ -108,7 +108,7 @@ class MarketPlaceForm extends React.Component {
 
         {/* 管理员上传项目权限 -> 可以设置 supportUser, 默认值是自己 */}
         {
-          hasPerm('proj.admin_addproj') ? (
+          hasPerm('proj.admin_manageproj') ? (
             <BasicFormItem label={i18n('project.uploader')} name="supportUser" required valueType="number" initialValue={this.currentUserId}>
               <SelectExistUser />
             </BasicFormItem>

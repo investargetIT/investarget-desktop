@@ -158,7 +158,7 @@ function MySchedule(props) {
     //   }
 
       // 周报相关逻辑
-      if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
+      if (hasPerm('usersys.as_trader')) {
         const firstDayOfLastMonth = selectedDate.clone().subtract(1, 'M').startOf('month');
         const firstDayOfNextTwoMonths = selectedDate.clone().add(2, 'M').startOf('month');
         const params = {

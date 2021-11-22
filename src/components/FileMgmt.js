@@ -521,7 +521,7 @@ class FileMgmt extends React.Component {
 
   render () {
     // window.echo('file annotation list', this.props.fileAnnotationList);
-    const isAdmin = hasPerm('dataroom.admin_changedataroom')
+    const isAdmin = hasPerm('dataroom.admin_managedataroom')
     
     const rowSelection = {
       onChange: this.handleSelectChanged, 
@@ -810,8 +810,8 @@ class FileMgmt extends React.Component {
     };
 
     const unableToOperate = getURLParamValue(this.props, 'isClose') === 'true';
-    const hasEnoughPerm = hasPerm('dataroom.admin_adddataroom')
-    const hasDownloadPerm = hasPerm('dataroom.downloadDataroom');
+    const hasEnoughPerm = hasPerm('dataroom.admin_managedataroom')
+    const hasDownloadPerm = true;
     const selectMoreThanOneRow = this.state.selectedRows.length > 0
     const selectMoreThanTwoRow = this.state.selectedRows.filter(f => f.parentId === this.state.parentId).length > 1
     const noFileInSelectedRows = this.state.selectedRows.filter(f => !f.isFolder).length === 0
@@ -850,7 +850,7 @@ class FileMgmt extends React.Component {
             style={buttonStyle}><img style={{marginRight: 4, marginBottom: 3}} src="/images/create_folder.png" />{i18n('dataroom.new_folder')}</Button>
           : null }
 
-          {selectMoreThanOneRow && (hasPerm('dataroom.admin_deletedataroom') || this.props.isProjTrader) ?
+          {selectMoreThanOneRow && (hasPerm('dataroom.admin_managedataroom') || this.props.isProjTrader) ?
             <Button onClick={this.handleDelete} size="large" style={buttonStyle}>{i18n('dataroom.delete')}</Button>
           : null}
 
