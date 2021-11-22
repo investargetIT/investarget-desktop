@@ -686,7 +686,10 @@ label.login-register-form__container__label {
   width: 100%;
   height: 22px;
 }
-
+/* Fix expand icon on Firefox */
+.ant-table-row-expand-icon {
+  transform-origin: unset;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
