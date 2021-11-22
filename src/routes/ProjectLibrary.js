@@ -225,7 +225,7 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
     const columns = [...baseColumns];
-    if (hasPerm('BD.manageProjectBD') || hasPerm('BD.user_addProjectBD')) {
+    if (hasPerm('BD.manageProjectBD')) {
       columns.push({
         title: i18n('common.operation'),
         render: (text, record) => <Link to={{ pathname: '/app/projects/bd/add', state: { com_name: record.com_name } }}>

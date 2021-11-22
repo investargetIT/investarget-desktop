@@ -309,7 +309,7 @@ class ProjectList extends React.Component {
     const params = {
       projstatus: ongoingStatus.map(m => m.id),
     }
-    if (!hasPerm('proj.admin_getproj')) {
+    if (!hasPerm('proj.admin_manageproj')) {
       params['user'] = getCurrentUser();
     }
     const reqProj = await requestAllData2(api.getProj, params, 100);
@@ -469,78 +469,9 @@ class ProjectList extends React.Component {
         },
       },
     ];
-    // if (hasPerm('usersys.as_admin')) {
-    //   columns.push({
-    //     title: i18n('project.is_hidden'),
-    //     key: 'isHidden',
-    //     render: (text, record) => {
-    //       return record.isHidden ? i18n('project.invisible') : i18n('project.visible')
-    //     }
-    //   })
-    // }
-
-    // columns.push({
-    //     title: i18n('common.operation'),
-    //     key: 'action',
-    //     render: (text, record) => {
-    //       return (
-    //         <span  style={{display:'flex',alignItems:'center'}}>
-    //         <div style={{display:'flex',flexWrap:"wrap",maxWidth:'250px'}}>
-    //           <Button style={buttonStyle} disabled={!hasPerm('proj.admin_changeproj')} onClick={this.openAuditProjectModal.bind(this, record.id, record.projstatus.id)}>{i18n('project.modify_status')}</Button>
-
-    //           <Link to={"/app/projects/recommend/" + record.id} target="_blank">
-    //             <Button style={buttonStyle} disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader'))}>{i18n('project.recommend')}</Button>
-    //           </Link>
-
-    //           {/* <Link to={"/app/timeline/add?projId=" + record.id}>
-    //             <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8) || !(hasPerm('timeline.admin_addline') || hasPerm('timeline.user_addline'))}>{i18n('project.create_timeline')}</Button>
-    //           </Link> */}
-
-    //           { record.action.canAddOrgBD ? 
-    //           <Link to={"/app/orgbd/add?projId=" + record.id}>
-    //             <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8)}>{i18n('project.create_org_bd')}</Button>
-    //           </Link>
-    //           : null }
-
-    //           { record.action.canAddMeetBD ? 
-    //           <Link to={"/app/meetingbd/add?projId=" + record.id}>
-    //             <Button style={buttonStyle}  disabled={!(record.projstatus.id >= 4 && record.projstatus.id < 8)}>{i18n('project.create_meeting_bd')}</Button>
-    //           </Link>
-    //           : null }
-
-    //           <Link to={'/app/dataroom/add?projectID=' + record.id}>
-    //             <Button style={buttonStyle} disabled={!record.action.canAddDataroom}>{i18n('project.create_dataroom')}</Button>
-    //           </Link>
-
-    //           { record.projstatus.id >= 4 && record.projstatus.id < 8 && (hasPerm('BD.manageOrgBD') || hasPerm('BD.user_getOrgBD')) ?
-    //           <Link to={'/app/org/bd?projId=' + record.id}>
-    //             <Button style={buttonStyle}>查看机构看板</Button>
-    //           </Link>
-    //           : null }
-
-    //           <Link to={'/app/projects/edit/' + record.id}>
-    //             <Button style={buttonStyle} disabled={!record.action.change}  >{i18n("common.edit")}</Button>
-    //           </Link>
-    //         </div>
-    //         <div>
-    //           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(null, record.id)}>
-    //             <Button size="small" style={buttonStyle} disabled={!record.action.delete}>
-    //               <Icon type="delete" />
-    //             </Button>
-    //           </Popconfirm>
-    //         </div>
-    //         </span>
-    //       )
-    //     }
-    // })
-
-    const action = (hasPerm('proj.admin_addproj') || hasPerm('proj.user_addproj')) ?
-                    { name: i18n('project.upload_project'), link: "/app/projects/add" } : null
 
     return (
       <LeftRightLayoutPure location={location}
-      // title={i18n('project.platform_projects')}
-      // action={action}
       >
 
         <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>

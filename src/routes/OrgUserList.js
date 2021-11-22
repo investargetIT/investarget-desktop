@@ -276,7 +276,7 @@ class OrgUserList extends React.Component {
       <LeftRightLayout
         location={this.props.location}
         title={i18n("user.org_investors")}
-        action={hasPerm("usersys.admin_adduser") ? action : null}>
+        action={hasPerm("usersys.admin_manageuser") ? action : null}>
 
         <OrgUserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
 

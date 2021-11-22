@@ -192,7 +192,7 @@ class ProjectDetail extends React.Component {
       favoritetype: 4,
       proj: this.state.id,
     }
-    if (hasPerm('usersys.as_admin')) {
+    if (isLogin().is_superuser) {
       param['user'] = isLogin() && isLogin().id
     }
     api.getFavoriteProj(param).then(result => {
@@ -413,7 +413,7 @@ class ProjectDetail extends React.Component {
                   <Button style={{ marginRight: 24, marginTop: 8 }} onClick={this.haveInterest}>{i18n('project.contact_transaction')}</Button>
                   : null} */}
 
-                {/* {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_addfavorite') || hasPerm('usersys.as_trader')) ?
+                {/* {project.projstatus && project.projstatus.id >= 4 && project.projstatus.id < 7 && (hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) ?
                   <Button style={{ marginRight: 24, marginTop: 8 }} onClick={this.recommendToInvestor}>{i18n('recommend_to_investor')}</Button>
                   : null} */}
 
@@ -444,7 +444,7 @@ class ProjectDetail extends React.Component {
               <SecretInfo project={project} />
             </Card>
 
-            {/* {hasPerm('proj.admin_getfavorite') ? <InterestedPeople projId={id} /> : null} */}
+            {/* {hasPerm('proj.admin_manageproj') ? <InterestedPeople projId={id} /> : null} */}
 
             <Card title={i18n('project.profile')} style={{ marginBottom: 20 }}>
               <ProjectIntro project={project} />

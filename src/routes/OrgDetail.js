@@ -44,13 +44,13 @@ const PositionWithUser = props => {
     if (user.isUnreachUser) {
       return <div>
         <p style={{ textAlign: 'center', marginBottom: 10 }}>{user.name}</p>
-        {hasPerm('usersys.admin_deleteuser') ?
+        {hasPerm('usersys.admin_manageuser') ?
           <Popconfirm title="你确定要这么做吗？" onConfirm={props.onRemoveUserPosition.bind(this, props.id, user.key)}>
             <Button type="danger">移除</Button>
           </Popconfirm>
           : null}
       </div>
-    } else if (user.isUnreachUser && !hasPerm('usersys.deleteuser')) {
+    } else if (user.isUnreachUser && !hasPerm('usersys.admin_manageuser')) {
       return null
     }
 
@@ -90,7 +90,7 @@ const PositionWithUser = props => {
             <img onMouseOver={props.onHover.bind(this, props.id, m.key)} style={{ width: 48, height: 48, marginRight: 10,marginBottom:10 }} src={m.photourl || '/images/default-avatar.png'} />
           </Popover>
         </Link>)}
-        { hasPerm('usersys.admin_adduser') || hasPerm('usersys.user_adduser') ?
+        { hasPerm('usersys.admin_manageuser') ?
           <Icon type='plus' onClick={props.onAddButtonClicked.bind(this, props.orgID, props.id)} style={{ width:48,height:48,fontSize:'36px',color: '#108ee9', cursor: 'pointer',display:'inline_block'}} />       
           :
           <Link to={`/app/organization/selectuser?orgID=${props.orgID}&titleID=${props.id}`}><Icon type='plus' style={{ width: 48, height: 48,fontSize:'36px',color: '#108ee9', cursor: 'pointer',display:'inline_block'}} /></Link>
@@ -614,7 +614,7 @@ class AttachmentList extends React.Component {
       {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
       {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
     ];
-    if (hasPerm('org.admin_manageorgattachment')) {
+    if (hasPerm('org.admin_manageorg')) {
       columns.push({
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
@@ -902,7 +902,7 @@ class OrgDetail extends React.Component {
   //   })
   //   const positionIndex = newData.map(m => m.id).indexOf(positionID)
   //   const index = newData[positionIndex].user.map(m => m.key).indexOf(userKey)
-  //   if (hasPerm('usersys.admin_changeuser')) {
+  //   if (hasPerm('usersys.admin_manageuser')) {
   //     newData[positionIndex].user[index].couldEdit = true;
   //     this.setState({ data: newData });
   //     return
@@ -1007,7 +1007,7 @@ class OrgDetail extends React.Component {
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowOrgDetailForm: true })} 
           />
-          {hasPerm('org.admin_manageorgattachment') ? <span>
+          {hasPerm('org.admin_manageorg') ? <span>
             <Upload
               action={baseUrl + '/service/qiniubigupload?bucket=file'}
               // accept={fileExtensions.join(',')}

@@ -140,7 +140,7 @@ function PersonalCenter(props) {
       sort: 'publishDate',
       desc: 1,
     }
-    if (!hasPerm('proj.admin_getproj')) {
+    if (!hasPerm('proj.admin_manageproj')) {
       params['user'] = userID;
     }
     const reqProj = await api.getProj(params);
