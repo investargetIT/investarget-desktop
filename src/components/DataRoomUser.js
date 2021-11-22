@@ -57,24 +57,17 @@ function generatePopoverContent(item, onDeleteUser, onSendEmail, onSaveTemplate,
 
       <div style={{ textAlign: 'center' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
 
-      {(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.admin_deletedataroom') || currentUserIsProjTrader) &&
+      {(hasPerm('dataroom.admin_managedataroom') || currentUserIsProjTrader) &&
         <div style={{ textAlign: 'center', marginTop: 10 }}>
-          {/* {onSaveTemplate && <Button disabled={userIdsWithDataroomTemp.includes(userId)} onClick={onSaveTemplate.bind(this, item)} style={{ marginRight: 10 }}>保存模版</Button>} */}
-          {(hasPerm('dataroom.admin_adddataroom') || currentUserIsProjTrader) &&
-            <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
-              <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
-            </Popconfirm>
-          }
-          {(hasPerm('dataroom.admin_adddataroom') || currentUserIsProjTrader) &&
-            <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={onSendNewFileEmail.bind(this, item)}>
-              <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
-            </Popconfirm>
-          }
-          {(hasPerm('dataroom.admin_deletedataroom') || currentUserIsProjTrader) &&
-            <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
-              <Button type="danger">移除</Button>
-            </Popconfirm>
-          }
+          <Popconfirm title="确定发送邮件通知该用户？" onConfirm={onSendEmail.bind(this, item)}>
+            <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+          </Popconfirm>
+          <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={onSendNewFileEmail.bind(this, item)}>
+            <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+          </Popconfirm>
+          <Popconfirm title={i18n('delete_confirm')} onConfirm={onDeleteUser.bind(this, item)}>
+            <Button type="danger">移除</Button>
+          </Popconfirm>
         </div>
       }
 
