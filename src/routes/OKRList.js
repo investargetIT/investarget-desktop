@@ -340,12 +340,6 @@ class OKRList extends React.Component {
       <LeftRightLayout 
         location={location} 
         title="OKR"
-        // right={<Search2 
-        //   style={{width: 200}} 
-        //   placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
-        //   defaultValue={search} 
-        //   onSearch={this.handleSearch} 
-        // />}
       >
         <div>{this.state.hint}</div>
         <div>

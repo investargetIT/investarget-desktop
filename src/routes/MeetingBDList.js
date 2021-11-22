@@ -305,7 +305,7 @@ class MeetingBDList extends React.Component{
   viewModalTitle = currentBD => (
     <div style={{ marginRight: 32 }}>
       {i18n('common.view')}
-      {hasPerm('BD.manageMeetBD') || (currentBD && getUserInfo().id === currentBD.manager.id) ?
+      {currentBD && getUserInfo().id === currentBD.manager.id ?
         <a href="javascript:void(0)" style={bdTitleStyle} onClick={this.showEditModal}>{i18n('common.edit')}</a>
         : null}
     </div>
@@ -339,12 +339,12 @@ class MeetingBDList extends React.Component{
         {title: i18n('meeting_bd.operation'), render: (text, record) =>{
 		return <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
 		<button style={buttonStyle} onClick={this.showViewModal.bind(this,record)}>{i18n('common.view')}</button>
-		{hasPerm('BD.manageMeetBD')?
+		
 		<Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
         	<Button size="small" style={{ ...buttonStyle, color: undefined }}>
             <Icon type="delete" />
           </Button>
-       	</Popconfirm>:null}
+       	</Popconfirm>
        	</div>
         }}
 		]
@@ -353,7 +353,7 @@ class MeetingBDList extends React.Component{
 		<LeftRightLayout 
         location={this.props.location} 
         title={i18n('menu.meeting_bd')}
-        action={hasPerm('BD.manageMeetBD')||hasPerm('BD.user_addMeetBD') ? {name:i18n('add_meetbd'),link:'app/meetingbd/add'} : undefined}
+        action={{name:i18n('add_meetbd'),link:'app/meetingbd/add'}}
         >
         <Modal
          width={600}

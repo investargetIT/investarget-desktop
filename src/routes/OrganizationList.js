@@ -92,7 +92,7 @@ class OrganizationList extends React.Component {
   getOrg = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
     // const orgstatus = [];
-    // if (!hasPerm('org.admin_changeorg')) {
+    // if (!hasPerm('org.admin_manageorg')) {
     //   orgstatus.push(2); // 审核通过 
     // }
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false }
@@ -259,7 +259,7 @@ class OrganizationList extends React.Component {
     );
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
-    const action = hasPerm('org.admin_addorg') || hasPerm('org.user_addorg') ?
+    const action = hasPerm('org.admin_manageorg') ?
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
 
     return (

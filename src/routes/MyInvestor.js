@@ -6,9 +6,9 @@ import MyPartner from '../components/MyPartner'
 function MyInvestor(props) {
 
   const action = {
-    link: hasPerm('usersys.admin_adduser') || hasPerm('usersys.user_adduser') ? `/app/user/add?redirect=${encodeURIComponent(props.location.pathname)}` : null,
+    link: hasPerm('usersys.admin_manageuser') ? `/app/user/add?redirect=${encodeURIComponent(props.location.pathname)}` : null,
     name: i18n('user.create_investor'),
-    style: !hasPerm('usersys.admin_adduser') && !hasPerm('usersys.user_adduser') ? { color: 'gray' } : null,
+    style: !hasPerm('usersys.admin_manageuser') ? { color: 'gray' } : null,
   }
 
   return (

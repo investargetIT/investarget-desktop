@@ -2,7 +2,7 @@ import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
 import { browserHistory, withRouter } from 'dva/router'
-import { getCurrentUser, hasPerm, i18n, requestAllData, getURLParamValue } from '../utils/util'
+import { getCurrentUser, hasPerm, i18n, requestAllData, getURLParamValue, isLogin } from '../utils/util'
 import { Button, Modal, Checkbox, Steps, Radio, Tag, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader, SelectOrgLevel } from '../components/ExtraInput';
@@ -25,7 +25,7 @@ class NewOrgBD extends React.Component {
     super(props)
 
     const userId = getCurrentUser()
-    const traderId = (!hasPerm('usersys.as_admin') && hasPerm('usersys.as_trader')) ? userId : null
+    const traderId = (!isLogin().is_superuser && hasPerm('usersys.as_trader')) ? userId : null
 
     this.tags = [];
 
