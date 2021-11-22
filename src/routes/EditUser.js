@@ -89,7 +89,7 @@ class EditUser extends React.Component {
         //   body.tags = body.tags.reduce((prev, curr) => prev.concat(JSON.parse(curr)), []);
         // }
 
-        // if (!hasPerm('usersys.admin_changeuser')) {
+        // if (!hasPerm('usersys.admin_manageuser')) {
         //   body = { ...values, groups: undefined}
         // }
         let promise = new Promise((resolve, reject) => {

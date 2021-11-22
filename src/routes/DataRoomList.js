@@ -105,12 +105,12 @@ class DataRoomList extends React.Component {
   getDataRoomList = () => {
     const { search, page, pageSize } = this.state
     const params = { search, page_index: page, page_size: pageSize }
-    if (!isLogin().is_superuser && hasPerm('dataroom.admin_getdataroom') && hasPerm('dataroom.onlydataroom')) {
+    if (!isLogin().is_superuser && hasPerm('dataroom.admin_managedataroom') && hasPerm('dataroom.onlydataroom')) {
       params.user = getCurrentUser();
     }
     this.setState({ loading: true })
 
-    // if (hasPerm('usersys.as_admin')) {
+    
       api.queryDataRoom(params).then(result => {
         const { count: total, data: list } = result.data
         this.setState({ loading: false, total, list, hint: total === 0 ? '暂无对您开放的DataRoom' : '' });
@@ -121,18 +121,7 @@ class DataRoomList extends React.Component {
           payload: error
         })
       })
-    // } else {
-    //   api.queryUserDataRoom(params).then(result => {
-    //     const { count: total, data: list } = result.data
-    //     this.setState({ loading: false, total, list: list.map(item=>item.dataroom) })
-    //   }).catch(error => {
-    //     this.setState({ loading: false })
-    //     this.props.dispatch({
-    //       type: 'app/findError',
-    //       payload: error
-    //     })
-    //   })
-    // }
+
 
     this.writeSetting()
   }
@@ -231,7 +220,7 @@ class DataRoomList extends React.Component {
             <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
             <div style={cardActionStyle}>
                 <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
-              { hasPerm('dataroom.admin_deletedataroom') ? 
+              { hasPerm('dataroom.admin_managedataroom') ? 
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
                 {/* <Icon type="delete" style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} /> */}
                 <DeleteOutlined style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} />
@@ -249,7 +238,7 @@ class DataRoomList extends React.Component {
               <Button
                 onClick={this.handleCloseDateRoom.bind(this, record)}
                 size="large"
-                disabled={!hasPerm('dataroom.admin_closedataroom')}
+                disabled={!hasPerm('dataroom.admin_managedataroom')}
                 style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#237ccc' }}>
                 {record.isClose ? i18n('common.open') : i18n('common.close')}
               </Button>
@@ -266,7 +255,7 @@ class DataRoomList extends React.Component {
         title={i18n('dataroom.dataroom_list')} 
         right={<Search2 
           style={{width: 200}} 
-          placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
+          placeholder={!isLogin().is_superuser && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
           defaultValue={search} 
           onSearch={this.handleSearch} 
         />}
@@ -292,7 +281,7 @@ class DataRoomList extends React.Component {
                     {
                       _.range(getRowCols(row)).map(col => {
                         // 没有管理员增加 dataroom 权限或者不是超级管理员但是有只看 dataroom 权限的用户没有 AddCard
-                        if (!hasPerm('dataroom.admin_adddataroom') || (!isLogin().is_superuser && hasPerm('dataroom.onlydataroom'))) {
+                        if (!hasPerm('dataroom.admin_managedataroom') || (!isLogin().is_superuser && hasPerm('dataroom.onlydataroom'))) {
                           let index = cols * row + col // -1 减去 AddCard
                           let record = list[index]
                           return record ? <Col span={24/cols} key={col}><DataroomCard record={record} /></Col> : null

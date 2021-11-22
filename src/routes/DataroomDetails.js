@@ -387,23 +387,17 @@ function DataroomDetails(props) {
 
         <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
 
-        {(hasPerm('dataroom.admin_adddataroom') || hasPerm('dataroom.admin_deletedataroom') || isProjTrader) &&
+        {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
           <div style={{ textAlign: 'center', marginTop: 10 }}>
-            {(hasPerm('dataroom.admin_adddataroom') || isProjTrader) &&
-              <Popconfirm title="确定发送邮件通知该用户？" onConfirm={() => handleSendEmail(item)}>
-                <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
-              </Popconfirm>
-            }
-            {(hasPerm('dataroom.admin_adddataroom') || isProjTrader) &&
-              <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
-                <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
-              </Popconfirm>
-            }
-            {(hasPerm('dataroom.admin_deletedataroom') || isProjTrader) &&
-              <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
-                <Button type="primary">移除</Button>
-              </Popconfirm>
-            }
+            <Popconfirm title="确定发送邮件通知该用户？" onConfirm={() => handleSendEmail(item)}>
+              <Button style={{ marginRight: 10 }}>{i18n('dataroom.send_email_notification')}</Button>
+            </Popconfirm>
+            <Popconfirm title="确定发送新增文件邮件给该用户吗？" onConfirm={() => handleSendNewFileEmail(item)}>
+              <Button disabled={!userWithNewDataroomFile.includes(userId)} style={{ marginRight: 10 }}>{i18n('dataroom.send_new_file_notification')}</Button>
+            </Popconfirm>
+            <Popconfirm title={i18n('delete_confirm')} onConfirm={() => handleDeleteUser(item)}>
+              <Button type="primary">移除</Button>
+            </Popconfirm>
           </div>
         }
 
