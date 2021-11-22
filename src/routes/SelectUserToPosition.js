@@ -139,7 +139,7 @@ class SelectUserToPosition extends React.Component {
   }
 
   // 选择投资人到相应职位用到了修改用户的权限，如果没有管理员修改用户的权限，那么只能修改自己的投资人
-  requestData = () => hasPerm('usersys.admin_changeuser') ? this.getUser() : this.getUserRelation()
+  requestData = () => hasPerm('usersys.admin_manageuser') ? this.getUser() : this.getUserRelation()
 
   handleActionButtonClicked() {
     api.editUser(

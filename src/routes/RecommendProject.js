@@ -63,7 +63,7 @@ class RecommendProject extends React.Component {
   }
 
   getUser = () => {
-    if (hasPerm('proj.admin_addfavorite')) {
+    if (hasPerm('proj.admin_manageuser')) {
       this.getAllInvestors()
     } else if (hasPerm('usersys.as_trader')) {
       this.getMyInvestors()
@@ -109,8 +109,8 @@ class RecommendProject extends React.Component {
       const params = {
         user: id,
         projs: [projId],
-        favoritetype: hasPerm('proj.admin_addfavorite') ? 2 : 3, // 有管理员推荐项目权限的全部当作后台推荐
-        trader: hasPerm('proj.admin_addfavorite') ? undefined : isLogin() && isLogin().id, // 后台推荐不需要交易师
+        favoritetype: hasPerm('proj.admin_manageuser') ? 2 : 3, // 有管理员推荐项目权限的全部当作后台推荐
+        trader: hasPerm('proj.admin_manageuser') ? undefined : isLogin() && isLogin().id, // 后台推荐不需要交易师
       }
       return api.favoriteProj(params)
     })

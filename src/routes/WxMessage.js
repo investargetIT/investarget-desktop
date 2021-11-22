@@ -98,7 +98,7 @@ class WxMessage extends React.Component {
       // }}
     ]
 
-    if (hasPerm('usersys.admin_manageWXChatData')) {
+    
       columns.push({title: '状态', key: 'status', render: (text, record) => {
         return record.isShow ? '显示' : '隐藏'
       }});
@@ -108,13 +108,13 @@ class WxMessage extends React.Component {
           <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
         )
       }});
-    }
+    
     return (
       <LeftRightLayout location={this.props.location} title="市场消息">
 
-        { hasPerm('usersys.admin_manageWXChatData') ?
+        
           <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-        : null }
+        
 
         <Table
           columns={columns}

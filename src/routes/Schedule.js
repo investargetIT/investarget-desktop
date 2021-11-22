@@ -295,7 +295,7 @@ class Schedule extends React.Component {
       }
 
       // 周报相关逻辑
-      if (hasPerm('usersys.as_trader') && hasPerm('usersys.user_adduser')) {
+      if (hasPerm('usersys.as_trader')) {
         const firstDayOfLastMonth = this.state.selectedDate.clone().subtract(1, 'M').startOf('month');
         const firstDayOfNextTwoMonths = this.state.selectedDate.clone().add(2, 'M').startOf('month');
         const params = {
