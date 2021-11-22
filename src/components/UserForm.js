@@ -73,11 +73,11 @@ class UserForm extends React.Component {
     let perm
     switch (props.type) {
       case 'edit':
-        perm = 'usersys.admin_changeuser'
+        perm = 'usersys.admin_manageuser'
         this.isEditUser = true
         break
       case 'add':
-        perm = 'usersys.admin_adduser'
+        perm = 'usersys.admin_manageuser'
         break
     }
     this.hasPerm = hasPerm(perm)

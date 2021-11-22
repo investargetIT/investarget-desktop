@@ -611,7 +611,7 @@ class DataRoom extends React.Component {
         name={this.state.title}
       >
       
-        {/* {hasPerm('dataroom.admin_adddataroom') ?
+        {/* {hasPerm('dataroom.admin_managedataroom') ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}

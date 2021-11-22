@@ -99,7 +99,6 @@ class DataRoomList extends React.Component {
     const params = { search, page_index: page, page_size: pageSize, isCompanyFile: 1 }
     this.setState({ loading: true })
 
-    // if (hasPerm('usersys.as_admin')) {
       api.queryDataRoom(params).then(result => {
         const { count: total, data: list } = result.data
         this.setState({ loading: false, total, list })
@@ -110,18 +109,6 @@ class DataRoomList extends React.Component {
           payload: error
         })
       })
-    // } else {
-    //   api.queryUserDataRoom(params).then(result => {
-    //     const { count: total, data: list } = result.data
-    //     this.setState({ loading: false, total, list: list.map(item=>item.dataroom) })
-    //   }).catch(error => {
-    //     this.setState({ loading: false })
-    //     this.props.dispatch({
-    //       type: 'app/findError',
-    //       payload: error
-    //     })
-    //   })
-    // }
   }
 
 
@@ -204,14 +191,6 @@ class DataRoomList extends React.Component {
               <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
             </div>
             <div style={cardTimeStyle}>{i18n('dataroom.created_time')}: {dataroomTime}</div>
-            {/* <div style={cardActionStyle}>
-                <Button onClick={this.handleCloseDateRoom.bind(this, record)} size="large" disabled={!hasPerm('dataroom.admin_closedataroom')} style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#656565' }}>{record.isClose ? i18n('common.open') : i18n('common.close')}</Button>
-              { hasPerm('dataroom.admin_deletedataroom') ? 
-              <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteDataRoom.bind(this, record)}>
-                <Icon type="delete" style={{ position: 'absolute', right: 0, lineHeight: '32px', cursor: 'pointer' }} />
-              </Popconfirm>
-              : null }
-            </div> */}
           </div>
 
           <Link to={dataroomUrl}>
@@ -223,7 +202,7 @@ class DataRoomList extends React.Component {
               <Button
                 onClick={this.handleCloseDateRoom.bind(this, record)}
                 size="large"
-                disabled={!hasPerm('dataroom.admin_closedataroom')}
+                disabled={!hasPerm('dataroom.admin_managedataroom')}
                 style={{ border: 'none', backgroundColor: '#ebf0f3', color: '#237ccc' }}>
                 {record.isClose ? i18n('common.open') : i18n('common.close')}
               </Button>
@@ -238,12 +217,6 @@ class DataRoomList extends React.Component {
       <LeftRightLayout 
         location={location} 
         title="公司文件"
-        // right={<Search2 
-        //   style={{width: 200}} 
-        //   placeholder={!hasPerm('usersys.as_admin') && hasPerm('usersys.as_investor') ? i18n('dataroom.project_name') : [i18n('dataroom.project_name'), i18n('dataroom.investor')].join(' / ')} 
-        //   defaultValue={search} 
-        //   onSearch={this.handleSearch} 
-        // />}
       >
         <div>
           <div className="ant-spin-nested-loading">
@@ -264,7 +237,7 @@ class DataRoomList extends React.Component {
                   <Row gutter={24} key={row} style={rowStyle} type="flex" align="stretch">
                     {
                       _.range(getRowCols(row)).map(col => {
-                        if (!hasPerm('dataroom.admin_adddataroom')) {
+                        if (!hasPerm('dataroom.admin_managedataroom')) {
                           let index = cols * row + col // -1 减去 AddCard
                           let record = list[index]
                           return record ? <Col span={24/cols} key={col}><DataroomCard record={record} /></Col> : null

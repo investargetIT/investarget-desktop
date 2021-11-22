@@ -1293,7 +1293,7 @@ class DataRoom extends React.Component {
       api.checkUserRelation(this.state.currentBD.bduser, this.state.currentBD.manager.id)
         .then(result => {
           // 如果存在关联或者有相关权限并且确定覆盖微信，则直接修改用户信息
-          if ((result.data || hasPerm('usersys.admin_changeuser')) && isModifyWechat) {
+          if ((result.data || hasPerm('usersys.admin_manageuser')) && isModifyWechat) {
             api.addUserRelation({
               relationtype: true,
               investoruser: this.state.currentBD.bduser,
@@ -1502,7 +1502,7 @@ class DataRoom extends React.Component {
         // style={disableSelect}
       >
       
-        {hasPerm('dataroom.admin_getdataroom') || this.state.isProjTrader ?
+        {hasPerm('dataroom.admin_managedataroom') || this.state.isProjTrader ?
           <div style={{ marginBottom: 20, marginTop: 6 }}>
             <DataRoomUser
               list={this.state.list}

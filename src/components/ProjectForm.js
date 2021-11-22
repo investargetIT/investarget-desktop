@@ -376,7 +376,7 @@ class ProjectConnectForm1 extends React.Component {
           }}
         </Form.Item>
         
-        {hasPerm('proj.admin_changeproj') ?
+        {hasPerm('proj.admin_manageproj') ?
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
@@ -393,7 +393,7 @@ class ProjectConnectForm1 extends React.Component {
           </BasicFormItem>
         }
 
-        {hasPerm('proj.admin_changeproj') ?
+        {hasPerm('proj.admin_manageproj') ?
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
@@ -410,7 +410,7 @@ class ProjectConnectForm1 extends React.Component {
           </BasicFormItem>
         }
 
-        {hasPerm('proj.admin_changeproj') ?
+        {hasPerm('proj.admin_manageproj') ?
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getCurrentUser, hasPerm, i18n } from '../utils/util'
+import { getCurrentUser, getUserInfo, hasPerm, i18n } from '../utils/util'
 import { 
   Button,
   Modal,
@@ -14,7 +14,7 @@ class SelectInvestorAndTrader extends React.Component {
     super(props)
 
     const userId = getCurrentUser()
-    const traderId = (!hasPerm('usersys.as_admin') && hasPerm('usersys.as_trader')) ? userId : null
+    const traderId = (!getUserInfo().is_superuser && hasPerm('usersys.as_trader')) ? userId : null
 
     this.state = {
       traderId,

@@ -204,7 +204,7 @@ class AddUser extends React.Component {
     const { data: hasRelation } = resRelation;
 
     let editable = '';
-    if (hasRelation || hasPerm('usersys.admin_changeuser')) {
+    if (hasRelation || hasPerm('usersys.admin_manageuser')) {
       editable = 'edit/';
     }
 

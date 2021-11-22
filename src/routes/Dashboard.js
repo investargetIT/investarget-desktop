@@ -68,7 +68,7 @@ function Dashboard(props) {
         sort: 'publishDate',
         desc: 1,
       }
-      if (!hasPerm('proj.admin_getproj')) {
+      if (!hasPerm('proj.admin_manageproj')) {
         params['user'] = userInfo.id;
       }
       const reqProj = await api.getProj(params);

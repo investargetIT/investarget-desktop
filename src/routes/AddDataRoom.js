@@ -19,10 +19,6 @@ class AddDataRoom extends React.Component {
   }
 
   componentDidMount() {
-    // if (!hasPerm('dataroom.admin_adddataroom') && !hasPerm('dataroom.user_adddataroom')) {
-    //   this.props.dispatch(routerRedux.replace('/403'))
-    //   return
-    // }
     const projectID = this.props.location.query.projectID
     if (projectID) {
       api.getProjLangDetail(projectID)
