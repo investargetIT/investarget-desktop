@@ -148,7 +148,7 @@ class InboxList extends React.Component {
       { title: ' ', key: 'isRead', width: 24, render: (text, record) => {
         return record.isRead ? null : <div style={iconStyle}></div>
       }},
-      { title: i18n('inbox.title'), key: 'title', dataIndex: 'messagetitle', className: 'pointer', onCellClick: this.handleItemClicked },
+      { title: i18n('inbox.title'), key: 'title', dataIndex: 'messagetitle', className: 'pointer' },
       { title: i18n('inbox.time'), key: 'time', dataIndex: 'created', width: 200 },
     ]
     const rowSelection = {
@@ -174,7 +174,24 @@ class InboxList extends React.Component {
             </div>
           ) : (
             <div>
-              <Table style={tableStyle} rowSelection={rowSelection} columns={columns} dataSource={data} rowKey={record=>record.id} loading={loading} pagination={false} />
+              <Table
+                style={tableStyle}
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={data}
+                rowKey={record=>record.id}
+                loading={loading}
+                pagination={false}
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: event => {this.handleItemClicked(record)}, // click row
+                    onDoubleClick: event => {}, // double click row
+                    onContextMenu: event => {}, // right button click row
+                    onMouseEnter: event => {}, // mouse enter row
+                    onMouseLeave: event => {}, // mouse leave row
+                  };
+                }}
+              />
 
               <div className="clearfix" style={{marginBottom: '24px'}}>
                 <div style={{ float: 'left' }}>
