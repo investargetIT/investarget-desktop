@@ -2595,7 +2595,7 @@ class OrgBDListComponent extends React.Component {
 
               {this.props.editable && this.isAbleToCreateBD() ?
                 <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
-                    <Button type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
+                    <Button className="remove-on-mobile" type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
                   </Link>
                 : null}
 

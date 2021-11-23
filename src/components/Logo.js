@@ -5,7 +5,7 @@ import { i18n, getCurrentUser } from '../utils/util'
 
 
 const logoStyle = {
-  height: 50,
+  height: 48,
   background: '#fff',
   borderRight: '1px solid #eee',
 }

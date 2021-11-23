@@ -690,9 +690,15 @@ label.login-register-form__container__label {
 .ant-table-row-expand-icon {
   transform-origin: unset;
 }
+.only-on-mobile {
+  display: none;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
+  }
+  .only-on-mobile {
+    display: block;
   }
   .modal-orgbd-edit.ant-modal-wrap {
     width: 100vw;
