@@ -15,6 +15,7 @@ import {
   i18n, 
   handleError,
   getUserInfo,
+  getURLParamValue,
 } from '../utils/util';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import qs from 'qs';
@@ -33,7 +34,8 @@ class InboxList extends React.Component {
   constructor(props) {
     super(props)
 
-    const { page, pageSize } = props.location.query;
+    const page = getURLParamValue(props, 'page');
+    const pageSize = getURLParamValue(props, 'pageSize');
 
     this.state = {
       showDetail: false,
@@ -55,7 +57,8 @@ class InboxList extends React.Component {
     const { search: nextSearch } = nextProps.location;
     const { search: currentSearch } = this.props.location;
     if (nextSearch !== currentSearch) {
-      const { page, pageSize } = nextProps.location.query;
+      const page = getURLParamValue(nextProps, 'page');
+      const pageSize = getURLParamValue(nextProps, 'pageSize');
       this.setState({
         selectedMsg: [],
         pageIndex: parseInt(page, 10) || 1,
@@ -79,16 +82,14 @@ class InboxList extends React.Component {
   // pageIndex, pageSize 变化时，重置 selectedMsg
 
   handlePageChange = (page) => {
-    const { pageSize } = this.props.location.query;
+    const pageSize = getURLParamValue(this.props, 'pageSize');
     const parameters = { page, pageSize };
-    this.props.router.push(`/app/inbox/list?${qs.stringify(parameters)}`);
-    // this.setState({ pageIndex: page, selectedMsg: [] }, this.getMessageList)
+    this.props.history.push(`/app/inbox/list?${qs.stringify(parameters)}`);
   }
 
   handlePageSizeChange = (current, pageSize) => {
     const parameters = { page: 1, pageSize };
-    this.props.router.push(`/app/inbox/list?${qs.stringify(parameters)}`);
-    // this.setState({ pageSize, pageIndex: 1, selectedMsg: [] }, this.getMessageList)
+    this.props.history.push(`/app/inbox/list?${qs.stringify(parameters)}`);
   }
 
   getMessageList = async () => {
