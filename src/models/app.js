@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { i18n, checkPerm, isLogin, requestAllData } from '../utils/util'
+import { i18n, isLogin, requestAllData } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
 
@@ -183,10 +183,6 @@ export default {
           payload: selectedKeys
         })
         // TODO 设置 selectedKeys 的同时设置 openKeys
-
-        if (pathname === '/app/user/add' && !checkPerm('usersys.admin_adduser') && !checkPerm('usersys.user_adduser')) {
-          history.replace('/app')
-        }
 
         if (pathname.includes('/app') && !isLogin()) {
           history.replace('/')
