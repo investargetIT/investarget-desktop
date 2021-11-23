@@ -81,14 +81,11 @@ class InboxList extends React.Component {
 
   // pageIndex, pageSize 变化时，重置 selectedMsg
 
-  handlePageChange = (page) => {
-    const pageSize = getURLParamValue(this.props, 'pageSize');
+  handlePageChange = (page, pageSize) => {
     const parameters = { page, pageSize };
-    this.props.history.push(`/app/inbox/list?${qs.stringify(parameters)}`);
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    const parameters = { page: 1, pageSize };
+    if (pageSize !== this.state.pageSize) {
+      parameters.page = 1;
+    }
     this.props.history.push(`/app/inbox/list?${qs.stringify(parameters)}`);
   }
 
@@ -185,14 +182,13 @@ class InboxList extends React.Component {
                 </div>
                 
                 <Pagination 
-                  style={{ float: 'right' }} 
-                  total={total} 
-                  current={pageIndex} 
-                  pageSize={pageSize} 
-                  onChange={this.handlePageChange} 
-                  showSizeChanger 
-                  onShowSizeChange={this.handlePageSizeChange} 
-                  showQuickJumper 
+                  style={{ float: 'right' }}
+                  total={total}
+                  current={pageIndex}
+                  pageSize={pageSize}
+                  onChange={this.handlePageChange}
+                  showSizeChanger
+                  showQuickJumper
                   pageSizeOptions={PAGE_SIZE_OPTIONS}
                 />
 
