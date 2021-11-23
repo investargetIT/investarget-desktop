@@ -123,7 +123,7 @@ export default {
     },
     *getIndustryGroup(_, { call, put, select }) {
       const tryData = yield select(state => state.app['industryGroup']);
-      if (tryData.length > 0) return;
+      if (tryData.length > 0) return tryData;
       const { data } = yield call(api.getSource, 'industryGroup');
       const allManagers = data.filter(f => f.manager).map(m => m.manager);
       const reqManagerList = yield call(requestAllData, api.getUser, { id: allManagers }, 10);

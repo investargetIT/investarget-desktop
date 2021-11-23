@@ -175,8 +175,17 @@ function PersonalCenter(props) {
   }, []);
 
   useEffect(() => {
+
+    const userInfo = getUserInfo();
+
+    let userID = 1;
+    if (userInfo) {
+      userID = userInfo.id;
+    }
     if (props.match.params.id) {
       userID = parseInt(props.match.params.id);
+    }
+
       setCurrentActiveTab('1');
       loadUserInfo();
       getPromotionHistory();
@@ -185,7 +194,7 @@ function PersonalCenter(props) {
       getTrainingRecordList();
       loadWorkingProjects();
       loadEmployees();
-    }
+
   }, [props.match]);
 
   function tabChange(key) {

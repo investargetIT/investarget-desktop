@@ -17,6 +17,7 @@ import {
   FolderOutlined,
   MessageOutlined,
   SettingOutlined,
+  SolutionOutlined,
 } from '@ant-design/icons';
 
 export const PAGE_SIZE = 5
@@ -71,6 +72,7 @@ export const KEY_TO_URI = {
   // "OKR": "/app/okr/list",
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
+  "HR": "/app/personal-center",
 }
 
 export const URI_TO_KEY = {
@@ -98,6 +100,7 @@ export const URI_TO_KEY = {
   "/app/personal-info": "profile",
   "/app/perm/list": "permission_management",
   "/app/log/list": "log",
+  "/app/personal-center": "HR",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ? 
@@ -189,6 +192,7 @@ export const KEY_TO_ICON = {
   'permission_management': <ApartmentOutlined />,
   'log': <FileSearchOutlined />,
   'onlineTest': <EditOutlined />,
+  "HR": <SolutionOutlined />,
 }
 
 export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];
