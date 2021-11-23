@@ -45,7 +45,7 @@ import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
 // import EmailDetail from './routes/EmailDetail'
 // import EditTimeline from './routes/EditTimeline'
 // import TimelineDetail from './routes/TimelineDetail'
-// import InboxList from './routes/InboxList'
+import InboxList from './routes/InboxList'
 // import AddDataRoom from './routes/AddDataRoom'
 // import AddTimeline from './routes/AddTimeline'
 // import AddMarketPlace from './routes/AddMarketPlace'
@@ -139,6 +139,7 @@ function RouterConfig({ history }) {
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
         <Route path="/app/demo" component={ReactDataSheetDemo} />
+        <Route path={URI_8} component={InboxList} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/403" component={AccessDenied} />
@@ -154,7 +155,6 @@ function RouterConfig({ history }) {
         <Route path="/app/timeline/add" component={AddTimeline} />
         <Route path="/app/timeline/edit/:id" component={EditTimeline} />
         <Route path="/app/timeline/:id" component={TimelineDetail} />
-        <Route path={URI_8} component={InboxList} />
         <Route path="/app/dataroom/add" component={AddDataRoom} />
         <Route path="/app/marketplace/add" component={AddMarketPlace} />
         <Route path="/app/marketplace/edit/:id" component={EditMarketPlace} />

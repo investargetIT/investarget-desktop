@@ -52,7 +52,7 @@ export const KEY_TO_URI = {
   "user_management": URI_6,
   "project_dataroom": URI_7,
   "company_dataroom": "/app/dataroom/company/list",
-  // "reminder": URI_8,
+  "reminder": URI_8,
   // "interest_projects": URI_2,
   "myinvestor": URI_12,
   // "mytrader": URI_13,
