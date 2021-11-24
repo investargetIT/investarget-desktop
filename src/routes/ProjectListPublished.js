@@ -150,7 +150,7 @@ class ProjectListPublished extends React.Component {
               <Button style={ buttonStyle} disabled={!record.action.change} >{i18n("common.edit")}</Button>
             </Link>
             &nbsp;
-            <Popconfirm title="Confirm to delete?" onConfirm={this.handleDelete.bind(null, record.id)}>
+            <Popconfirm title="Confirm to delete?" disabled={!record.action.delete} onConfirm={this.handleDelete.bind(null, record.id)}>
               <Button style={buttonStyle} disabled={!record.action.delete} size="small">
                 <Icon type="delete" />
               </Button>

@@ -207,7 +207,7 @@ class Remark extends React.Component {
             <Icon type="edit" />
           </Button>
           : null}
-          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete}>
+          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.props.onDelete} disabled={!hasPermission}>
             <Button size="small" style={{ textDecoration:'underline',border:'none',background:'none' }}
               disabled={!hasPermission}
             >

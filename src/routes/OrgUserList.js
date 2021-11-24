@@ -257,7 +257,7 @@ class OrgUserList extends React.Component {
                 </Link>
                
               </div>
-                <Popconfirm title="确定删除吗？" onConfirm={this.deleteUser.bind(null, record.id)}>
+                <Popconfirm title="确定删除吗？" disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button type="link" disabled={!record.action.delete} size="small">
                     <DeleteOutlined />
                   </Button>
