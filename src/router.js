@@ -53,7 +53,7 @@ import InboxList from './routes/InboxList'
 // import MarketPlaceDetail from './routes/MarketPlaceDetail'
 // import MyTrader from './routes/MyTrader'
 // import SelectUserToPosition from './routes/SelectUserToPosition'
-// import AccessDenied from './routes/AccessDenied'
+import AccessDenied from './routes/AccessDenied'
 // import SelectTraderToRelation from './routes/SelectTraderToRelation'
 // import Agreement from './routes/Agreement'
 // import ProjectLibraryItem from './routes/ProjectLibraryItem'
@@ -140,9 +140,9 @@ function RouterConfig({ history }) {
         <Route path="/app/orgbd/add" component={NewOrgBD} />
         <Route path="/app/demo" component={ReactDataSheetDemo} />
         <Route path={URI_8} component={InboxList} />
+        <Route path="/403" component={AccessDenied} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
-        <Route path="/403" component={AccessDenied} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
