@@ -12,7 +12,7 @@ function MyInvestor(props) {
   }
 
   return (
-    <LeftRightLayout location={props.location} title={i18n("user.myinvestor")} action={action}>
+    <LeftRightLayout location={props.location} title={i18n("user.myinvestor")} action={hasPerm('usersys.admin_manageuser') ? action : undefined}>
       <MyPartner type="investor" location={props.location} />
     </LeftRightLayout>
   )
