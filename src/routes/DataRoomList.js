@@ -104,7 +104,7 @@ class DataRoomList extends React.Component {
 
   getDataRoomList = () => {
     const { search, page, pageSize } = this.state
-    const params = { search, page_index: page, page_size: pageSize }
+    const params = { search, page_index: page, page_size: pageSize, isCompanyFile: 0 }
     if (!isLogin().is_superuser && hasPerm('dataroom.admin_managedataroom') && hasPerm('dataroom.onlydataroom')) {
       params.user = getCurrentUser();
     }
