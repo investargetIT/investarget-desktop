@@ -428,7 +428,11 @@ class OrgBDListComponent extends React.Component {
           const req2 = requestAllData(api.getOrgRemark, { org: ids }, 100);
           return Promise.all([req1, req2]);
         } else {
-          return { data: { data: [] } };
+          // 没有机构看板数据，模拟空数据返回
+          return [
+            { data: { data: [] } },
+            { data: { data: [] } },
+          ];
         }
       })
       .then(result => {
