@@ -10,6 +10,7 @@ import {
   EditOutlined,
   CheckOutlined,
   DeleteOutlined,
+  MinusCircleOutlined,
 } from '@ant-design/icons';
 
 class EditableCell extends React.Component {
@@ -273,7 +274,13 @@ class PermList extends React.Component {
           onChange={this.onChange}>
 
           <Table
-            defaultExpandAllRows={true}
+            expandable={{
+              expandedRowKeys: this.state.data.map(m => m.id),
+              expandIcon: ({ expanded, onExpand, record }) =>
+                record.children ? (
+                  <MinusCircleOutlined style={{ marginRight: 8, color: 'rgba(0, 0, 0, .85)' }} />
+                ) : null
+            }}
             columns={columns}
             dataSource={this.state.data}
             rowKey={record => record.id}
