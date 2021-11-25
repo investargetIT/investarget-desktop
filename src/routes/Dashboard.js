@@ -82,7 +82,10 @@ function Dashboard(props) {
       const projPercentage = [];
       for (let index = 0; index < projList.length; index++) {
         const element = projList[index];
-        const paramsForPercentage = { proj: element.id };
+        const paramsForPercentage = { proj: element.id, filter: 0 };
+        if (!hasPerm('BD.manageOrgBD')) {
+          paramsForPercentage.filter = 1;
+        }
         const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
         let { response_count: resCount } = projPercentageCount.data;
         resCount = resCount.map(m => {
