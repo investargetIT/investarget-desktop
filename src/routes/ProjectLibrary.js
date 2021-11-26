@@ -228,8 +228,9 @@ class ProjectLibrary extends React.Component {
     if (hasPerm('BD.manageProjectBD')) {
       columns.push({
         title: i18n('common.operation'),
+        align: 'center',
         render: (text, record) => <Link to={{ pathname: '/app/projects/bd/add', state: { com_name: record.com_name } }}>
-          <Button style={buttonStyle}>{i18n('project_library.new_bd')}</Button>
+          <Button type="link">{i18n('project_library.new_bd')}</Button>
         </Link>
       });
     }
