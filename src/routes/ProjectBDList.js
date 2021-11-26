@@ -448,11 +448,11 @@ class ProjectBDList extends React.Component {
             <div>
               {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
-                  <Button style={{}} className="buttonStyle" size="small" type="link"><EditOutlined /></Button>
+                  <Button size="small" type="link"><EditOutlined /></Button>
                 </Link>
                 :
                 getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
-                <Button style={buttonStyle} onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</Button>
+                <Button type="link" size="small" onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}><EditOutlined /></Button>
                 : null
               }
             </div>
@@ -469,7 +469,7 @@ class ProjectBDList extends React.Component {
 
             <div>
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
               <Button style={{}} onClick={this.handleOpenModal.bind(this, record.id)} type="link" size="small">行动计划</Button>
               : null }
             </div>
