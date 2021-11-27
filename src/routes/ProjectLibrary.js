@@ -10,6 +10,7 @@ import {
   getUserInfo, 
   hasPerm,
   requestAllData,
+  getURLParamValue,
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -188,8 +189,10 @@ class ProjectLibrary extends React.Component {
 
   // 目前在机构投资事件跳转到当前页面然后点击菜单栏的项目全库时会出发这个生命周期
   componentWillReceiveProps(nextProps) {
-    const { page: nextPage, search: nextSearch } = nextProps.location.query;
-    const { page: currentPage, search: currentSearch } = this.props.location.query;
+    const nextPage = getURLParamValue(nextProps, 'page');
+    const nextSearch = getURLParamValue(nextProps, 'search');
+    const currentPage = getURLParamValue(nextProps, 'page');
+    const currentSearch = getURLParamValue(nextProps, 'search');
     if (currentSearch !== nextSearch) {
       this.setState({ filters: ProjectLibraryFilter.defaultValue, page: 1, search: nextSearch }, this.getProject);
     } else if (nextPage !== currentPage) {
