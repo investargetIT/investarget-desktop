@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { i18n } from '../utils/util';
+import { hasPerm, i18n, getCurrentUser } from '../utils/util';
 import { Table, Popover } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
@@ -46,6 +46,9 @@ function OrgBdTable(props) {
         sort: 'createdtime',
         desc: 1,
       };
+      if (!hasPerm('BD.manageOrgBD')) {
+        params.manager = getCurrentUser();
+      }
       setLoading(true);
       const req = await api.getOrgBdList(params);
       setOrgBdList(req.data.data);
@@ -88,7 +91,7 @@ function OrgBdTable(props) {
       render: (text, record) => {
         let progress = null;
         if (text) {
-          progress = <div style={{ ...progressStyles, backgroundColor: getProgressBackground(text) }}>{props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+          progress = <div style={{ ...progressStyles, backgroundColor: getProgressBackground(text) }}>{props.orgbdres.length > 0 && props.orgbdres.filter(f => f.id === text)[0].name}</div>;
         }
         let material = null;
         if (record.material) {

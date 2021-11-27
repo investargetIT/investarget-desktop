@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -37,7 +37,7 @@ function Dashboard(props) {
   const userInfo = getUserInfo();
 
   const [projList, setProjList] = useState([]);
-  const [news, setNews] = useState();
+  const [news, setNews] = useState([]);
   const [files, setFiles] = useState([]);
   const [projNum, setProjNum] = useState(0);
   const [loadingOnGoingProjects, setLoadingOnGoingProjects] = useState(false);
@@ -127,15 +127,7 @@ function Dashboard(props) {
 
     async function fetchNewsData() {
       const reqNews = await api.getWxMsg({ isShow: true });
-      if (reqNews.data.count > 0) {
-        setNews(reqNews.data.data[0]);
-      }
-      // else {
-      //   setNews({
-      //     createtime: '2018-06-26T17:18:24.086778',
-      //     content: '兴旺投资创始合伙人黎媛菲：主要看消费、教育和科技。消费主要是包装食品、宠物、互联网餐饮、内衣、直播电商等新消费新零售赛道都很积极。科技主要是5G 半导体，大数据云计算、工业互联网。',
-      //   });
-      // }
+      setNews(reqNews.data.data);
     }
     fetchNewsData();
 
@@ -247,8 +239,17 @@ function Dashboard(props) {
           <Col span={8}>
 
             <Card title="市场消息" bordered={false} style={{ marginBottom: 20, fontSize: 14, lineHeight: '22px', minHeight: 210 }} extra={<Link to="/app/wxmsg">查看更多</Link>}>
-              <div style={{ color: '#262626' }}>{news ? trimTextIfExceedMaximumCount(news.content, 60) : i18n('no_news')}</div>
-              {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{news.createtime.slice(0, 10)}</div>}
+              <Carousel autoplay dots={false}>
+                {news.map(item => {
+                  return (
+                    <div key={item.id}>
+                      <div style={{ color: '#262626' }}>{trimTextIfExceedMaximumCount(item.content, 60)}</div>
+                      {news && <div style={{ marginTop: 10, color: '#989898' }}>发布时间：{item.createtime.slice(0, 10)}</div>}
+                    </div>
+                  );
+                })}
+                {news.length === 0 && <div style={{ color: '#262626' }}>{i18n('no_news')}</div>}
+              </Carousel>
             </Card>
 
             <Card title="公司培训文件" bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
