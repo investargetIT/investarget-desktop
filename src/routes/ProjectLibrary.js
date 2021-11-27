@@ -228,7 +228,7 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
     const columns = [...baseColumns];
-    if (hasPerm('BD.manageProjectBD')) {
+    if (hasPerm('usersys.as_trader')) {
       columns.push({
         title: i18n('common.operation'),
         align: 'center',
