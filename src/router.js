@@ -56,7 +56,7 @@ import InboxList from './routes/InboxList'
 import AccessDenied from './routes/AccessDenied'
 // import SelectTraderToRelation from './routes/SelectTraderToRelation'
 // import Agreement from './routes/Agreement'
-// import ProjectLibraryItem from './routes/ProjectLibraryItem'
+import ProjectLibraryItem from './routes/ProjectLibraryItem';
 import ProjectBDList from './routes/ProjectBDList';
 import AddProjectBD from './routes/AddProjectBD';
 import EditProjectBD from './routes/EditProjectBD';
@@ -99,6 +99,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/bd/add" component={AddProjectBD} />
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/add" component={AddProject} />
+        <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
         <Route path="/app/org/bd" component={OrgBDList} />
@@ -144,7 +145,6 @@ function RouterConfig({ history }) {
         {/* <Route path="/recommend-friends" component={RecommendFriends} />
         <Route path="/recommend-projects" component={RecommendProjects} />
         <Route path="/app/organization/selectuser" component={SelectUserToPosition} />
-        <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/list/recommend" component={ProjectListRecommend} />
         <Route path="/app/projects/list/favor" component={ProjectListFavor} />
         <Route path="/app/projects/list/interest" component={ProjectListInterest} />

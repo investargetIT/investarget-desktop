@@ -1,7 +1,11 @@
 import React from 'react'
 import { Input, Button, Popconfirm, Icon } from 'antd'
 import { time, i18n, hasPerm, getUserInfo } from '../utils/util'
-import { DeleteOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  MinusOutlined,
+} from '@ant-design/icons';
 
 
 const addIconStyle = {
@@ -102,7 +106,7 @@ class RemarkList extends React.Component {
       <div>
         <h3 style={remarkTitleStyle}>
           {i18n('remark.comments')}
-          {this.props.type !== 'library' && <Icon type={visible ? 'minus' : 'plus'} style={addIconStyle} onClick={this.toggleNewComment} />}
+          {this.props.type !== 'library' && <Button type="link" onClick={this.toggleNewComment}>{visible ? <MinusOutlined /> : <PlusOutlined />}</Button>}
         </h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
