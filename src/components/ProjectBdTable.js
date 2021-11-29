@@ -120,7 +120,16 @@ export default function() {
             return (
               <div key={comment.id} style={{ marginBottom: 8 }}>
                 <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
-                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                <div style={{ display: 'flex' }}>
+                  {comment.createuserobj &&
+                    <div style={{ marginRight: 10 }}>
+                      <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+                        <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+                      </a>
+                    </div>
+                  }
+                  <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                </div>
               </div>
             );
           });
