@@ -13,8 +13,8 @@ import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const RegExps = {
-  jpg: /https\:\/\/image\.investarget\.com\/\w+\.jpg/,
-  url: /https\:\/\/(\S+\.)+\w{2,12}/,
+  jpg: /^https\:\/\/image\.investarget\.com\/\w+\.jpg/,
+  url: /^https\:\/\/(\S+\.)+\w{2,12}/,
 }
 
 class WxMessage extends React.Component {
@@ -102,18 +102,25 @@ class WxMessage extends React.Component {
       columns.push({title: '状态', key: 'status', render: (text, record) => {
         return record.isShow ? '显示' : '隐藏'
       }});
+
+    if (hasPerm('usersys.admin_managemongo')) {
       columns.push(
-      {title: '操作', key: 'operation', render: (text, record) => {
-        return (
-          <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
-        )
-      }});
+        {
+          title: '操作', key: 'operation', render: (text, record) => {
+            return (
+              <Button onClick={this.toggleMessage.bind(this, record.id)}>{record.isShow ? '隐藏' : '显示'}</Button>
+            )
+          }
+        });
+    }
     
     return (
       <LeftRightLayout location={this.props.location} title="市场消息">
 
         
+        {hasPerm('usersys.admin_managemongo') &&
           <WxMessageFilter defaultValue={this.state.filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        }
         
 
         <Table
