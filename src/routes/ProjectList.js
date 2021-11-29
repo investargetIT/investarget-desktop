@@ -270,6 +270,11 @@ class ProjectList extends React.Component {
   }
 
   getFinishedProjectThisYear = async () => {
+    const reqOrgBDResponse = await api.getSource('orgbdres');
+    const { data: responseList } = reqOrgBDResponse;
+    const finishedResponse = responseList.filter(f => f.name.includes('完成交易'));
+    const finishedResponseID = finishedResponse.map(m => m.id);
+    
     const startOfThisYear = moment().startOf('year');
     const endOfThisYear = moment().endOf('year');
     const startDate = `${startOfThisYear.format('YYYY-MM-DD')}T00:00:00`;
@@ -281,8 +286,8 @@ class ProjectList extends React.Component {
     const etimeM = endDate;
     const page_size = 1000;
 
-    const params1 = { stimeM, etimeM, page_size, isSolved: 1 };
-    const params2 = { stime, etime, page_size, isSolved: 1 };
+    const params1 = { stimeM, etimeM, page_size, response: finishedResponseID };
+    const params2 = { stime, etime, page_size, response: finishedResponseID };
     const res = await Promise.all([
       requestAllData(api.getOrgBDProj, params1, 100),
       requestAllData(api.getOrgBDProj, params2, 100),
