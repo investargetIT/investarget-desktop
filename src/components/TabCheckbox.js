@@ -19,7 +19,7 @@ const tabStyle = {
   display: 'block',
   float: 'left',
   lineHeight: '14px',
-  color: '#4a535e',
+  // color: '#4a535e',
   cursor: 'pointer',
 }
 const activeTabStyle = {

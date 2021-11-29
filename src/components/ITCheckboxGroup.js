@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 
 const containerStyle = {
-  paddingLeft: 6,
+  // paddingLeft: 6,
   paddingRight: 60,
   position: 'relative',
 }
@@ -296,7 +296,7 @@ function Item(props) {
     padding: '0 6px',
     height: 20,
     lineHeight: '20px',
-    color: '#656565',
+    // color: '#656565',
     borderRadius: 4,
     listStyle: 'none',
     cursor: 'pointer',
