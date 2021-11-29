@@ -603,8 +603,18 @@ class BDComments extends React.Component {
                   </Popconfirm>
                   : null}
               </p>
-              <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
+              <div style={{ display: 'flex' }}>
+                {comment.createuserobj &&
+                  <div style={{ marginRight: 10 }}>
+                    <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+                      <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+                    </a>
+                  </div>
+                }
+                <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
+              </div>
             </div>
+
           )) : <p>暂无行动计划</p>}
         </div>
         : null }
