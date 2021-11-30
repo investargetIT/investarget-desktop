@@ -73,6 +73,7 @@ export const KEY_TO_URI = {
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
   "HR": "/app/personal-center",
+  "Resigned_usermanagement": "/app/user/list/resigned-trader",
 }
 
 export const URI_TO_KEY = {

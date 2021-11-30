@@ -85,6 +85,7 @@ import EditReport from './routes/EditReport';
 // import ProjectReport from './routes/ProjectReport';
 import PersonalCenter from './routes/PersonalCenter';
 import PersonalInfo from './routes/PersonalInfo';
+import UserListWithResignedTraders from './routes/UserListWithResignedTraders';
 
 function RouterConfig({ history }) {
   return (
@@ -118,6 +119,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
         <Route path={URI_12} component={MyInvestor} />
+        <Route path="/app/user/list/resigned-trader" component={UserListWithResignedTraders} />
         <Route path={URI_6} component={UserList} />
         <Route path="/app/user/edit/:id" component={EditUser} />
         <Route path="/app/user/add" component={AddUser} />
