@@ -13,7 +13,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { message, Progress, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
-import { SelectTrader } from '../components/ExtraInput';
+import { SelectIndustryGroup, SelectTrader } from '../components/ExtraInput';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import {
   DeleteOutlined,
@@ -30,17 +30,10 @@ class UserListWithResignedTraders extends React.Component {
   constructor(props) {
     super(props)
 
-    const setting = this.readSetting()
-    const filters = setting ? setting.filters : UserListFilter.defaultValue
-    const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
-
     this.state = {
-      filters,
-      search,
-      page,
+      page: 1,
       pageSize: getUserInfo().page || 10,
+      indGroup: undefined,
       total: 0,
       list: [],
       loading: false,
@@ -76,8 +69,10 @@ class UserListWithResignedTraders extends React.Component {
   }
 
   getUser = () => {
-    this.setState({ loading: true })
-    api.getInvestorWithResignedTrader().then(result => {
+    const { indGroup, page, pageSize } = this.state;
+    const params = { page_index: page, page_size: pageSize, indGroup };
+    this.setState({ loading: true });
+    api.getInvestorWithResignedTrader(params).then(result => {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false })
     }, error => {
@@ -201,6 +196,10 @@ class UserListWithResignedTraders extends React.Component {
     }
   }
 
+  handleIndGroupChange = value => {
+    this.setState({ indGroup: value || undefined }, this.getUser);
+  }
+
   render() {
     const { selectedUsers, filters, search, list, total, page, pageSize, loading, sort, desc} = this.state
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
@@ -223,85 +222,66 @@ class UserListWithResignedTraders extends React.Component {
             <Link to={'/app/user/' + record.id}>{record.username}</Link>
             </div>
         }
-        //sorter:true,
       },
       {
         title: i18n("organization.org"),
         dataIndex: ['org', 'orgfullname'],
         key: 'org',
-        sorter:true,
       },
       {
         title: i18n("user.position"),
         dataIndex: ['title', 'name'],
         key: 'title',
-        sorter: true,
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
         render: tags => tags ? <span className="span-tag">{tags.map(m => m.name).join('/')}</span> : null,
-        sorter:true,
       },
       {
         title: i18n("user.status"),
         dataIndex: ['userstatus', 'name'],
         key: 'userstatus',
-        sorter: true,
       },
       {
         title: '是否活跃',
         dataIndex: 'is_active',
         key: 'is_active',
-        sorter: true,
         render: text => text ? '活跃' : '静默',
       },
-      // {
-      //   title: i18n("common.operation"),
-      //   key: 'action',
-      //   render: (text, record) => (
-      //         <span className="span-operation">
+      {
+        title: i18n("common.operation"),
+        key: 'action',
+        render: (text, record) => (
+              <span className="span-operation">
 
-      //           <Link to={'/app/user/edit/' + record.id}>
-      //             <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
-      //           </Link>
+                <Link to={'/app/user/edit/' + record.id}>
+                  <Button style={buttonStyle} size="small"><EditOutlined /></Button>
+                </Link>
 
-      //           <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
-      //             <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
-      //               <DeleteOutlined />
-      //             </Button>
-      //           </Popconfirm>
-      //         </span>
-      //   ),
-      // }
+                <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteUser.bind(null, record.id)}>
+                  <Button style={buttonStyle} size="small">
+                    <DeleteOutlined />
+                  </Button>
+                </Popconfirm>
+              </span>
+        ),
+      }
     ]
 
     return (
       <LeftRightLayout
         location={this.props.location} title="离职交易师">
 
-        <div style={{ overflow: 'auto', marginBottom: 24 }}>
-
-          <Search
-            style={{ width: 240 }}
-            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')} 
-            onSearch={this.handleSearch}
-            onChange={search => this.setState({ search })}
-            value={search}
-          />
-          <div style={{ float: 'right' }}>
-            
-            <Select size="large" style={{marginLeft:8}} defaultValue="createdtime" onChange={this.handleTimeChange.bind(this)}>
-              <Option value="createdtime">{i18n('common.sort_by_created_time')}</Option>
-              <Option value="lastmodifytime">{i18n('common.sort_by_modify_time')}</Option>
-            </Select>
-            <Select size="large" style={{marginLeft:8}} defaultValue="desc" onChange={this.handleSortChange.bind(this)}>
-              <Option value="asc">{i18n('common.asc_order')}</Option>
-              <Option value="desc">{i18n('common.dec_order')}</Option>
-            </Select>
-          </div>
-        </div>
+        <SelectIndustryGroup
+          style={{ marginBottom: 20, width: 200 }}
+          size="middle"
+          placeholder="请选择行业组"
+          allowClear
+          onChange={this.handleIndGroupChange}
+        />
+        
 
         {/* <Modal
           title="请选择交易师"
