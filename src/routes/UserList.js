@@ -239,7 +239,7 @@ class UserList extends React.Component {
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.orgfullname',
+        dataIndex: ['org', 'orgfullname'],
         key: 'org',
         sorter:true,
       },
@@ -272,7 +272,7 @@ class UserList extends React.Component {
       },
       {
         title: i18n("user.trader"),
-        dataIndex: 'trader_relation.traderuser.username',
+        dataIndex: ['trader_relation', 'traderuser', 'username'],
         key: 'trader',
         //sorter:true,
       },
