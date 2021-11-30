@@ -76,11 +76,8 @@ class UserListWithResignedTraders extends React.Component {
   }
 
   getUser = () => {
-    const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc }
-    console.log(desc+" "+sort)
     this.setState({ loading: true })
-    api.getUser(params).then(result => {
+    api.getInvestorWithResignedTrader().then(result => {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false })
     }, error => {
@@ -89,15 +86,6 @@ class UserListWithResignedTraders extends React.Component {
         type: 'app/findError',
         payload: error
       })
-    })
-    this.writeSetting()
-
-    api.queryUserGroup({ type: 'investor' }).then(result=>{
-      if(result.data.data.map(item=>item.id).includes(filters.groups)){
-        this.setState({ifShowCheckBox:true})
-      }else{
-        this.setState({ifShowCheckBox:false})
-      }
     })
   }
   
@@ -239,42 +227,28 @@ class UserListWithResignedTraders extends React.Component {
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.orgfullname',
+        dataIndex: ['org', 'orgfullname'],
         key: 'org',
         sorter:true,
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'title',
+        dataIndex: ['title', 'name'],
         key: 'title',
         sorter: true,
-        render: value => this.loadLabelByValue('title', value),
       },
       {
         title: i18n("user.tags"),
         dataIndex: 'tags',
         key: 'tags',
-        render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null,
+        render: tags => tags ? <span className="span-tag">{tags.map(m => m.name).join('/')}</span> : null,
         sorter:true,
-      },
-      {
-        title: i18n("account.role"),
-        dataIndex: 'groups',
-        key: 'role',
-        render: groups => this.loadLabelByValue('group', groups),
       },
       {
         title: i18n("user.status"),
-        dataIndex: 'userstatus',
+        dataIndex: ['userstatus', 'name'],
         key: 'userstatus',
-        sorter:true,
-        render: value => this.loadLabelByValue('audit', value),
-      },
-      {
-        title: i18n("user.trader"),
-        dataIndex: 'trader_relation.traderuser.username',
-        key: 'trader',
-        //sorter:true,
+        sorter: true,
       },
       {
         title: '是否活跃',
@@ -283,33 +257,29 @@ class UserListWithResignedTraders extends React.Component {
         sorter: true,
         render: text => text ? '活跃' : '静默',
       },
-      {
-        title: i18n("common.operation"),
-        key: 'action',
-        render: (text, record) => (
-              <span className="span-operation">
+      // {
+      //   title: i18n("common.operation"),
+      //   key: 'action',
+      //   render: (text, record) => (
+      //         <span className="span-operation">
 
-                <Link to={'/app/user/edit/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
-                </Link>
+      //           <Link to={'/app/user/edit/' + record.id}>
+      //             <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
+      //           </Link>
 
-                <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
-                    <DeleteOutlined />
-                  </Button>
-                </Popconfirm>
-              </span>
-        ),
-      }
+      //           <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
+      //             <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
+      //               <DeleteOutlined />
+      //             </Button>
+      //           </Popconfirm>
+      //         </span>
+      //   ),
+      // }
     ]
 
     return (
       <LeftRightLayout
-        location={this.props.location}
-        title={i18n("menu.user_management")}
-        action={hasPerm("usersys.admin_manageuser") ? { name: i18n("user.create_user"), link: "/app/user/add" } : null}>
-
-        <UserListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
+        location={this.props.location} title="离职交易师">
 
         <div style={{ overflow: 'auto', marginBottom: 24 }}>
 

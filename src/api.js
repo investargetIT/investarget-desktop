@@ -1061,3 +1061,5 @@ export const deleteTrainingRecord = id => r(`/user/trainingrecords/${id}/`, 'DEL
 export const addEmployeeRelation = body => r('/user/personnelrelations/', 'POST', body);
 export const getEmployeeRelation = params => r(`/user/personnelrelations/?${qs.stringify(params)}`);
 export const deleteEmployeeRelation = id => r(`/user/personnelrelations/${id}/`, 'DELETE');
+
+export const getInvestorWithResignedTrader = params => r(`/user/indgroup/investor?${qs.stringify(params)}`);
