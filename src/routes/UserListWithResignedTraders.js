@@ -104,15 +104,10 @@ class UserListWithResignedTraders extends React.Component {
     this.modal.showModal(id, username)
   }
 
-  handleSelectChange = (selectedUsers,selectedRecords) => {
-    
-    let newUsers=selectedRecords.filter(item=>{
-      return !this.state.selectedRecords.includes(item)
-    })
-    newUsers = [...this.state.selectedRecords,...newUsers].filter(item=>{
-      return selectedUsers.includes(item.id)
-    })
-    this.setState({ selectedUsers, selectedRecords:newUsers })
+  handleSelectChange = (selectedUsers, selectedRecords) => {
+    window.echo('selected users', selectedUsers);
+    window.echo('selected record', selectedRecords);
+    this.setState({ selectedUsers, selectedRecords });
   }
 
   writeSetting = () => {
@@ -136,9 +131,9 @@ class UserListWithResignedTraders extends React.Component {
     );
   }
    
-  // showModifyTraderModal = () =>{ 
-  //   this.setState({visible:true})
-  // }
+  showModifyTraderModal = () =>{ 
+    this.setState({visible:true})
+  }
  
   // comfirmModify = () =>{
   //   let promises=this.state.selectedRecords.map(user=>{
@@ -205,7 +200,7 @@ class UserListWithResignedTraders extends React.Component {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const rowSelection = {
-      selectedUsers,
+      // selectedUsers,
       onChange: this.handleSelectChange,
     }
 
@@ -271,8 +266,7 @@ class UserListWithResignedTraders extends React.Component {
     ]
 
     return (
-      <LeftRightLayout
-        location={this.props.location} title="离职交易师">
+      <LeftRightLayout location={this.props.location} title="离职交易师">
 
         <SelectIndustryGroup
           style={{ marginBottom: 20, width: 200 }}
@@ -281,9 +275,46 @@ class UserListWithResignedTraders extends React.Component {
           allowClear
           onChange={this.handleIndGroupChange}
         />
-        
 
-        {/* <Modal
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={list}
+          loading={loading}
+          rowKey={record => record.id}
+          pagination={false}
+        />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0' }}>
+          <Button
+            disabled={selectedUsers.length == 0}
+            style={{ backgroundColor: 'orange', border: 'none' }}
+            type="primary"
+            size="large"
+            onClick={this.showModifyTraderModal}
+          >
+            {i18n('user.modify_trader')}
+          </Button>
+
+          <div style={{ display: 'flex' }}>
+            <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+            表示该用户的联系方式可用
+          </div>
+
+          <Pagination
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            onShowSizeChange={this.handlePageSizeChange}
+            showSizeChanger
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+
+        </div>
+
+        <Modal
           title="请选择交易师"
           visible={this.state.visible}
           onOk={this.comfirmModify}
@@ -301,37 +332,7 @@ class UserListWithResignedTraders extends React.Component {
 
           <Button style={{ marginLeft: 10 }} disabled={this.state.trader === null} type="primary" onClick={this.comfirmModify}>{i18n('common.confirm')}</Button>
 
-        </Modal> */}
-
-        <Table
-          onChange={this.handleTableChange}
-          rowSelection={this.state.ifShowCheckBox ? rowSelection :null}
-          columns={columns}
-          dataSource={list}
-          loading={loading}
-          rowKey={record => record.id}
-          pagination={false} />
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0' }}>
-        {/* <Button disabled={selectedUsers.length==0} style={{ backgroundColor: 'orange', border: 'none' }} type="primary" size="large" onClick={this.showModifyTraderModal}>{i18n('user.modify_trader')}</Button> */}
-        
-        <div style={{ display: 'flex' }}>
-          <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
-          表示该用户的联系方式可用
-        </div>
-
-        <Pagination
-          total={total}
-          current={page}
-          pageSize={pageSize}
-          onChange={this.handlePageChange}
-          onShowSizeChange={this.handlePageSizeChange}
-          showSizeChanger
-          showQuickJumper
-          pageSizeOptions={PAGE_SIZE_OPTIONS}
-        />
-
-        </div>
+        </Modal>
 
       </LeftRightLayout>
     )
