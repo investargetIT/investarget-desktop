@@ -252,10 +252,9 @@ class UploadImage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const key = nextProps.value
 
-    if (key == null) {
+    if (!key) {
       this.setState({ fileList: [] })     
-    } 
-    else {
+    } else {
       this.getDownloadUrl(key).then(url => {
         const file = { uid: -1, status: 'done', bucket: 'image', key, url }
         this.setState({ fileList: [file] })
