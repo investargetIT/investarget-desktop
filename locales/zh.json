@@ -15,7 +15,7 @@
     "recommon_projects": "推荐项目",
     "institution_management": "机构管理",
     "email_management": "邮件管理",
-    "user_management": "用户管理",
+    "user_management": "投资人管理",
     "myinvestor": "我的投资人",
     "mytrader": "我的交易师",
     "timeline_management": "时间轴管理",
@@ -40,7 +40,8 @@
     "onlineTest": "在线测试",
     "orgBD_report": "项目报表",
     "HR": "人事管理",
-    "Resigned_usermanagement": "离职交易师"
+    "Resigned_usermanager": "离职交易师投资人管理",
+    "Full_usermanager": "全库用户管理"
   },
   "account": {
     "login": "登录",

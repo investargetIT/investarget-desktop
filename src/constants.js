@@ -49,7 +49,7 @@ export const KEY_TO_URI = {
   "organization_bd": "/app", // todo?
   // "email_management": URI_4,
   // "timeline_management": URI_5,
-  "user_management": URI_6,
+  "Full_usermanager": URI_6,
   "project_dataroom": URI_7,
   "company_dataroom": "/app/dataroom/company/list",
   "reminder": URI_8,
@@ -73,7 +73,7 @@ export const KEY_TO_URI = {
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
   "HR": "/app/personal-center",
-  "Resigned_usermanagement": "/app/user/list/resigned-trader",
+  "Resigned_usermanager": "/app/user/list/resigned-trader",
 }
 
 export const URI_TO_KEY = {

@@ -39,7 +39,8 @@
     "onlineTest": "Online Test",
     "orgBD_report": "Project Report",
     "HR": "HR",
-    "Resigned_usermanagement": "Resigned User Management"
+    "Resigned_usermanager": "Resigned User Management",
+    "Full_usermanager": "Full Usermanager"
   },
   "account": {
     "login": "Login",
