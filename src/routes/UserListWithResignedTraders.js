@@ -7,10 +7,11 @@ import {
   hasPerm,
   getUserInfo,
   requestAllData,
+  handleError,
 } from '../utils/util';
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { message, Progress, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal } from 'antd'
+import { message, Progress, Checkbox, Radio, Select, Button, Input, Row, Col, Table, Pagination, Popconfirm, Dropdown, Menu, Modal, Form } from 'antd'
 import { UserListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
 import { SelectIndustryGroup, SelectTrader } from '../components/ExtraInput';
@@ -19,6 +20,7 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import { BasicFormItem } from '../components/Form';
 
 const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
@@ -44,8 +46,10 @@ class UserListWithResignedTraders extends React.Component {
       visible:false,
       sort:'createdtime',
       desc:1,
-      ifShowCheckBox:false
+      ifShowCheckBox:false,
+      loadingUpdateTrader: false,
     }
+    this.updateTraderFormRef = React.createRef();
   }
 
   handleFilt = (filters) => {
@@ -195,6 +199,52 @@ class UserListWithResignedTraders extends React.Component {
     this.setState({ indGroup: value || undefined }, this.getUser);
   }
 
+  handleUpdateTraderFormSubmit = () => {
+    this.updateTraderFormRef.current.validateFields()
+      .then(values => {
+        this.setState({ loadingUpdateTrader: true });
+        this.handleTraderData(values)
+          .then(() => this.getUser())
+          .finally(() => this.setState({ loadingUpdateTrader: false, visible: false }));
+      });
+  }
+
+  handleTraderData = async values => {
+    let relations = [];
+    const { major_trader, minor_traders } = values;
+    if (major_trader) {
+      relations.push({ relationType: true, trader: major_trader });
+    }
+    relations = relations.concat(minor_traders.map(m => ({ relationType: false, trader: m })));
+    
+    for (let index = 0; index < this.state.selectedUsers.length; index++) {
+      const element = this.state.selectedUsers[index];
+      try {
+        await this.updateTrader(element, relations);
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  
+  }
+
+  updateTrader = async (investorID, relations = []) => {
+    const resData = await requestAllData(api.getUserRelation, {
+      investoruser: investorID,
+    }, 9);
+    if (resData.data.count > 0) {
+      await api.deleteUserRelation(resData.data.data.map(m => m.id));
+    }
+    for (let index = 0; index < relations.length; index++) {
+      const element = relations[index];
+      await api.addUserRelation({
+        investoruser: investorID,
+        traderuser: element.trader,
+        relationType: element.relationType,
+      });
+    }
+  }
+
   render() {
     const { selectedUsers, filters, search, list, total, page, pageSize, loading, sort, desc} = this.state
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
@@ -317,21 +367,29 @@ class UserListWithResignedTraders extends React.Component {
         <Modal
           title="请选择交易师"
           visible={this.state.visible}
-          onOk={this.comfirmModify}
-          footer={null}
+          onOk={this.handleUpdateTraderFormSubmit}
           onCancel={() => this.setState({ visible: false })}
-          closable={false}
+          confirmLoading={this.state.loadingUpdateTrader}
         >
- 
-          <SelectTrader
-             style={{ width: 300 }}
-             mode="single"
-             data={this.state.traders}
-             value={this.state.trader}
-             onChange={trader => this.setState({ trader })} />
-
-          <Button style={{ marginLeft: 10 }} disabled={this.state.trader === null} type="primary" onClick={this.comfirmModify}>{i18n('common.confirm')}</Button>
-
+          <Form ref={this.updateTraderFormRef}>
+            <BasicFormItem label={i18n('user.major_trader')} name="major_trader">
+              <SelectTrader
+                mode="single"
+                allowClear={true}
+                // onChange={this.props.onMajorTraderChange}
+                // onSelect={this.props.onSelectMajorTrader}
+                // disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('minor_traders') : []}
+              />
+            </BasicFormItem>
+            <BasicFormItem label={i18n('user.minor_traders')} name="minor_traders" valueType="array">
+              <SelectTrader
+                mode="multiple"
+                // onSelect={this.props.onSelectMinorTrader}
+                // onDeselect={this.props.onDeselectMinorTrader}
+                // disabledOption={forwardedRef.current ? forwardedRef.current.getFieldValue('major_trader') : []}
+              />
+            </BasicFormItem>
+          </Form>
         </Modal>
 
       </LeftRightLayout>
