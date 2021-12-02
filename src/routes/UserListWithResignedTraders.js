@@ -184,13 +184,13 @@ class UserListWithResignedTraders extends React.Component {
     this.props.dispatch({ type: 'app/getSource', payload: 'industryGroup' });
     this.getUser()
 
-    api.queryUserGroup({ type: 'trader' })
-    .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 100))
-    .then(data => this.setState({ traders: data.data.data }))
-    .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
+    // api.queryUserGroup({ type: 'trader' })
+    // .then(data => requestAllData(api.getUser, { groups: data.data.data.map(m => m.id), userstatus: 2 }, 100))
+    // .then(data => this.setState({ traders: data.data.data }))
+    // .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 
-    this.props.dispatch({ type: 'app/getSource', payload: 'title' }); 
-    this.props.dispatch({ type: 'app/getGroup' }); 
+    // this.props.dispatch({ type: 'app/getSource', payload: 'title' }); 
+    // this.props.dispatch({ type: 'app/getGroup' }); 
   }
 
   loadLabelByValue(type, value) {
