@@ -316,7 +316,7 @@ class UserListWithResignedTraders extends React.Component {
     ]
 
     return (
-      <LeftRightLayout location={this.props.location} title="离职交易师">
+      <LeftRightLayout location={this.props.location} title={i18n('menu.Resigned_usermanager')}>
 
         <SelectIndustryGroup
           style={{ marginBottom: 20, width: 200 }}
