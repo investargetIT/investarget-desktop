@@ -884,7 +884,16 @@ function DataroomFileManage({
     if (noWatermark) {
       params.nowater = 1;
     } else {
-      const water = downloadUser ? downloadUser.username + ',' + (downloadUser.org ? downloadUser.org.orgname : '多维海拓') + ',' + downloadUser.email : null;
+      let orgname = downloadUser.org ? downloadUser.org.orgname : '多维海拓';
+      if (watermarkCompany) {
+        orgname = watermarkCompany;
+      }
+
+      let email = downloadUser.email;
+      if (watermarkEmail) {
+        email = watermarkEmail;
+      }
+      const water = downloadUser ? downloadUser.username + ',' + orgname + ',' + email : null;
       params.water = water;
     }
 
