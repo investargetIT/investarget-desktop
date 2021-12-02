@@ -8,6 +8,8 @@ const logoStyle = {
   height: 48,
   background: '#fff',
   borderRight: '1px solid #eee',
+  display: 'flex',
+  alignItems: 'center',
 }
 const logoImgStyle = {
   verticalAlign: 'top',
@@ -36,7 +38,7 @@ function Logo(props) {
           <img style={{...logoImgStyle, padding: 10}} src="/images/autospace.png" />
           : null }
         {source === 1 ?
-          <img style={logoImgStyle} src="/images/investarget_logo_transparent.png" />
+          <img style={logoImgStyle} src="/images/investarget_new_new_logo.png" />
           : null }
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>

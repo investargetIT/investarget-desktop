@@ -28,7 +28,7 @@ class LoginContainer extends React.Component {
     const source = parseInt(localStorage.getItem('source'), 10)
     let logo, bg;
     if (source === 1) {
-      logo = '/images/logo.png';
+      logo = '/images/investarget_new_new_logo.png';
       bg = 'url(/images/investarget_bg.png)';
     } else if (source === 2) {
       logo = '/images/autospace.png';
@@ -58,8 +58,8 @@ class LoginContainer extends React.Component {
       <div style={containerStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: 30 }}>
           <div>
-            <img src="/images/investarget_new_logo.png" style={{ width: 48, height: 48 }} />
-            <img src="/images/investarget_logo_transparent.png" style={{ marginLeft: 10, width: 180 }} />
+            {/* <img src="/images/investarget_new_logo.png" style={{ width: 48, height: 48 }} /> */}
+            <img src={logo} style={{ marginLeft: 10, height: 48 }} />
           </div>
           <div style={{ width: 120, height: 32, display: 'flex', alignItems: 'center', border: '1px #13356c solid', borderRadius: 4, overflow: 'hidden', fontSize: 14 }}>
             <div

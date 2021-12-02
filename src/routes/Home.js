@@ -9,7 +9,7 @@ import favicon from 'favicon.js'
 const RadioGroup = Radio.Group
 
 const options = [
-  { label: <img style={{ height: 24, verticalAlign: 'middle', background: '#10458F' }} src="/images/investarget.png" />, value: 1 },
+  { label: <img style={{ height: 36, verticalAlign: 'middle' }} src="/images/investarget_new_new_logo.png" />, value: 1 },
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/autospace.png" />, value: 2 },
   { label: <img style={{ height: 24, verticalAlign: 'middle' }} src="/images/aura_logo.png" />, value: 3 },
   { label: <img style={{ height: 40, verticalAlign: 'middle' }} src="/images/logo_delova_biotech.png" />, value: 4 },
