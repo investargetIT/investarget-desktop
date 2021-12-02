@@ -32,10 +32,16 @@ class UserListWithResignedTraders extends React.Component {
   constructor(props) {
     super(props)
 
+    let indGroup = undefined;
+    const currentUser = getUserInfo();
+    if (currentUser.indGroup) {
+      indGroup = currentUser.indGroup.id;
+    }
+
     this.state = {
       page: 1,
       pageSize: getUserInfo().page || 10,
-      indGroup: undefined,
+      indGroup,
       total: 0,
       list: [],
       loading: false,
@@ -175,6 +181,7 @@ class UserListWithResignedTraders extends React.Component {
   //   })
   // }
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'industryGroup' });
     this.getUser()
 
     api.queryUserGroup({ type: 'trader' })
@@ -318,13 +325,16 @@ class UserListWithResignedTraders extends React.Component {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('menu.Resigned_usermanager')}>
 
-        <SelectIndustryGroup
-          style={{ marginBottom: 20, width: 200 }}
-          size="middle"
-          placeholder="请选择行业组"
-          allowClear
-          onChange={this.handleIndGroupChange}
-        />
+        {this.props.industryGroup.length > 0 &&
+          <SelectIndustryGroup
+            style={{ marginBottom: 20, width: 200 }}
+            size="middle"
+            placeholder="请选择行业组"
+            allowClear
+            onChange={this.handleIndGroupChange}
+            value={this.state.indGroup}
+          />
+        }
 
         <Table
           rowSelection={rowSelection}
@@ -400,8 +410,8 @@ class UserListWithResignedTraders extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { title, tag, audit, group } = state.app;
-  return { title, tag, audit, group };
+  const { title, tag, audit, group, industryGroup } = state.app;
+  return { title, tag, audit, group, industryGroup };
 }
 
 export default connect(mapStateToProps)(UserListWithResignedTraders);
