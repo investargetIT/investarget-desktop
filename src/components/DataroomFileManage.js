@@ -186,6 +186,8 @@ function DataroomFileManage({
   const [watermarkEmail, setWatermarkEmail] = useState('');
   const [watermarkCompany, setWatermarkCompany] = useState('');
 
+  const [checkedFiles, setCheckedFiles] = useState([]); 
+
   function formatSearchData (data) {
     return data.map(item => {
       const parentId = -999;
@@ -858,8 +860,11 @@ function DataroomFileManage({
 
   function handleDownloadSelectFileBtnClicked() {
     setDisplayDownloadFileModal(false);
-    let allChildren = findAllChildren(currentDownloadFile.id);
-    const allFilesIDs = allChildren.map(m => m.id).concat(currentDownloadFile.id);
+    let allFilesIDs = checkedFiles;
+    if (allFilesIDs.length === 0) {
+      const allChildren = findAllChildren(currentDownloadFile.id);
+      allFilesIDs = allChildren.map(m => m.id).concat(currentDownloadFile.id);
+    }
     checkDataRoomStatus(noWatermark, true, allFilesIDs.join(','));
   }
 
@@ -971,7 +976,7 @@ function DataroomFileManage({
             />
             {dirData.length > 0 &&
               <DirectoryTree
-                // checkable
+                checkable
                 defaultExpandedKeys={[-999]}
                 onSelect={onSelect}
                 onExpand={onExpand}
@@ -979,6 +984,8 @@ function DataroomFileManage({
                 titleRender={titleRender}
                 icon={null}
                 expandAction="doubleClick"
+                checkedKeys={checkedFiles}
+                onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
               />
             }
           </Card>
