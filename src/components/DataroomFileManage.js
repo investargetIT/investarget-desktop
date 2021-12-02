@@ -183,6 +183,9 @@ function DataroomFileManage({
   const [userForDownloadFile, setUserForDownloadFile] = useState(null);
   const [downloadUrl, setDownloadUrl] = useState(null);
 
+  const [watermarkEmail, setWatermarkEmail] = useState('');
+  const [watermarkCompany, setWatermarkCompany] = useState('');
+
   function formatSearchData (data) {
     return data.map(item => {
       const parentId = -999;
@@ -634,6 +637,11 @@ function DataroomFileManage({
 
       function handleDownloadFileClick(file) {
         setCurrentDownloadFile(file);
+        if (!watermarkEmail) {
+          const downloadUser = isLogin();
+          setWatermarkEmail(downloadUser.email);
+          setWatermarkCompany(downloadUser.org ? downloadUser.org.orgname : '多维海拓');
+        }
         setDisplayDownloadFileModal(true);
       }
 
@@ -924,6 +932,21 @@ function DataroomFileManage({
     setTimeout(() => notification.close(notificationKey), 3000);
   }
 
+  function handleDownloadUserSelect(user) {
+    setUserForDownloadFile(user);
+
+    // Change watermark content
+    const filterDownloadUser = allUserWithFile.filter(f => f.id === user);
+    if (filterDownloadUser.length > 0) {
+      const downloadUser = filterDownloadUser[0];
+      setWatermarkEmail(downloadUser.email);
+      if (downloadUser.org) {
+        setWatermarkCompany(downloadUser.org.orgname);
+      }
+    }
+    
+  }
+
   return (
     <div>
       <Row gutter={20}>
@@ -1128,7 +1151,7 @@ function DataroomFileManage({
               value={userForDownloadFile}
               optionLabelProp="children"
               filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-              onSelect={value => setUserForDownloadFile(value)}
+              onSelect={value => handleDownloadUserSelect(value)}
             >
               {allUserWithFile.map(option => (
                 <Select.Option
@@ -1173,6 +1196,30 @@ function DataroomFileManage({
             </div>
           </div>
         }
+
+        {hasPerm('usersys.as_trader') && !noWatermark &&
+          <div>
+            <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ width: 140, textAlign: 'right' }}>设置水印邮箱：</div>
+              <Input
+                style={{ width: 280 }}
+                placeholder="请输入水印的邮箱"
+                value={watermarkEmail}
+                onChange={e => setWatermarkEmail(e.target.value)}
+              />
+            </div>
+            <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ width: 140, textAlign: 'right' }}>设置水印公司名称：</div>
+              <Input
+                style={{ width: 280 }}
+                placeholder="请输入水印的公司名称"
+                value={watermarkCompany}
+                onChange={e => setWatermarkCompany(e.target.value)}
+              />
+            </div>
+          </div>
+        }
+
       </Modal>
 
       {uploadDirProgress &&
