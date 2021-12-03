@@ -72,7 +72,17 @@ function Dashboard(props) {
         params['user'] = userInfo.id;
       }
       const reqProj = await api.getProj(params);
-      const { data: projList } = reqProj.data;
+      let { data: projList } = reqProj.data;
+      if (projList.length > 0) {
+        const reqDataroom = await api.queryDataRoom({
+          proj: projList.map(m => m.id).join(','),
+          page_size: projList.length,
+        });
+        projList = projList.map(m => {
+          const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
+          return { ...m, dataroom };
+        });
+      }
       setProjList(projList);
       
       setLoadingOnGoingProjects(false);
