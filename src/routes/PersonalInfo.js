@@ -241,7 +241,7 @@ function PersonalInfo(props) {
                   <Input disabled />
                 </Form.Item>
                 <Form.Item label="行业组" name="indGroup">
-                  <SelectIndustryGroup size="middle" placeholder="请选择行业组" />
+                  <SelectIndustryGroup size="middle" placeholder="请选择行业组" disabled />
                 </Form.Item>
                 <Form.Item label="部门主管" name="teamLeader">
                   <Input disabled />
@@ -253,7 +253,7 @@ function PersonalInfo(props) {
                   <SelectTrader placeholder="请选择直属上级" />
                 </Form.Item> */}
                 <Form.Item label="入职日期" name="entryTime">
-                  <DatePicker style={{ width: '100%' }} />
+                  <DatePicker style={{ width: '100%' }} disabled />
                 </Form.Item>
                 <Divider />
                 <Form.Item label="性别" name="gender">
