@@ -214,7 +214,7 @@ function PersonalCenter(props) {
     setCurrentEditKPIRecord(record);
     const { startDate, endDate, level, remark } = record;
     const duration = [moment(startDate), moment(endDate)];
-    KPIForm.setFieldsValue({ duration, level, remark });
+    KPIForm.setFieldsValue({ duration, level: level ? level.id : undefined, remark });
     setDisplayAssessmentHistoryModal(true);
   }
 
