@@ -345,7 +345,9 @@ function PersonalCenter(props) {
       dataIndex: ['title', 'name'],
       key: 'title',
     },
-    {
+  ];
+  if (hasPerm('usersys.admin_managepersonnelrelation')) {
+    promotionHistoryColumn.push({
       title: '操作',
       align: 'center',
       key: 'operation',
@@ -355,8 +357,8 @@ function PersonalCenter(props) {
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeletePromotionHistoryBtnClick(record)}>删除</Button>
         </div>
       ),
-    },
-  ];
+    });
+  }
 
   const KPIRecordColumns = [
     {
@@ -384,7 +386,9 @@ function PersonalCenter(props) {
       dataIndex: 'remark',
       key: 'remark',
     },
-    {
+  ];
+  if (hasPerm('usersys.admin_managepersonnelrelation')) {
+    KPIRecordColumns.push({
       title: '操作',
       align: 'center',
       key: 'operation',
@@ -394,8 +398,8 @@ function PersonalCenter(props) {
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteKPIRecordBtnClick(record)}>删除</Button>
         </div>
       ),
-    },
-  ];
+    })
+  }
 
   // const columns3 = [
   //   {
@@ -541,7 +545,9 @@ function PersonalCenter(props) {
       dataIndex: ['trainingStatus', 'status'],
       key: 'status',
     },
-    {
+  ];
+  if (hasPerm('usersys.admin_managepersonnelrelation')) {
+    trainingRecordColumns.push({
       title: '操作',
       align: 'center',
       key: 'operation',
@@ -551,8 +557,8 @@ function PersonalCenter(props) {
           <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
         </div>
       ),
-    },
-  ];
+    });
+  }
 
   const data6 = [
     {
@@ -855,25 +861,29 @@ function PersonalCenter(props) {
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>岗位及晋升记录</div>
                   <Table columns={promotionHistoryColumn} dataSource={promotionHistory} pagination={false} rowKey={record => record.id} />
-                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
-                      promotionHistoryForm.resetFields();
-                      setCurrentEditPromotionHistory(null);
-                      setDisplayPromotionHistoryModal(true);
-                    }}>新增记录</Button>
-                  </div>
+                  {hasPerm('usersys.admin_managepersonnelrelation') &&
+                    <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                      <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                        promotionHistoryForm.resetFields();
+                        setCurrentEditPromotionHistory(null);
+                        setDisplayPromotionHistoryModal(true);
+                      }}>新增记录</Button>
+                    </div>
+                  }
                 </div>
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>试用期内及年度考核记录</div>
                   <Table columns={KPIRecordColumns} dataSource={KPIRecordList} pagination={false} rowKey={record => record.id} />
-                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
-                      KPIForm.resetFields();
-                      setCurrentEditKPIRecord(null);
-                      setDisplayAssessmentHistoryModal(true);
-                    }}>新增记录</Button>
-                  </div>
+                  {hasPerm('usersys.admin_managepersonnelrelation') &&
+                    <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                      <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                        KPIForm.resetFields();
+                        setCurrentEditKPIRecord(null);
+                        setDisplayAssessmentHistoryModal(true);
+                      }}>新增记录</Button>
+                    </div>
+                  }
                 </div>
 
                 <div style={{ marginBottom: 40 }}>
@@ -908,13 +918,15 @@ function PersonalCenter(props) {
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职后培训记录</div>
                   <Table columns={trainingRecordColumns} dataSource={trainingRecordList} pagination={false} rowKey={record => record.id} />
-                  <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
-                    <Button type="link" icon={<PlusOutlined />} onClick={() => {
-                      trainingRecordForm.resetFields();
-                      setCurrentEditTrainingRecord(null);
-                      setDisplayTrainingRecordModal(true);
-                    }}>新增记录</Button>
-                  </div>
+                  {hasPerm('usersys.admin_managepersonnelrelation') &&
+                    <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
+                      <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                        trainingRecordForm.resetFields();
+                        setCurrentEditTrainingRecord(null);
+                        setDisplayTrainingRecordModal(true);
+                      }}>新增记录</Button>
+                    </div>
+                  }
                 </div>
 
               </TabPane>
