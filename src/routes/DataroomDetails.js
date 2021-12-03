@@ -821,8 +821,8 @@ function DataroomDetails(props) {
           dataSource={dataroomUsersOrgBdByOrg}
           rowKey={record => record.id}
           loading={loadingOrgBD}
-          onExpand={handleOrgBDExpand}
-          expandedRowKeys={expandedRows}
+          // onExpand={handleOrgBDExpand}
+          // expandedRowKeys={expandedRows}
           pagination={false}
           size="middle"
           showHeader={false}
