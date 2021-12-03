@@ -857,6 +857,7 @@ function PersonalCenter(props) {
                   <Table columns={promotionHistoryColumn} dataSource={promotionHistory} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      promotionHistoryForm.resetFields();
                       setCurrentEditPromotionHistory(null);
                       setDisplayPromotionHistoryModal(true);
                     }}>新增记录</Button>
@@ -868,7 +869,8 @@ function PersonalCenter(props) {
                   <Table columns={KPIRecordColumns} dataSource={KPIRecordList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
-                      setCurrentEditPromotionHistory(null);
+                      KPIForm.resetFields();
+                      setCurrentEditKPIRecord(null);
                       setDisplayAssessmentHistoryModal(true);
                     }}>新增记录</Button>
                   </div>
@@ -896,6 +898,7 @@ function PersonalCenter(props) {
                   <Table columns={mentorTrackColumns} dataSource={mentorTrackList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      mentorTrackForm.resetFields();
                       setCurrentEditMentorTrackRecord(null);
                       setDisplayMentorTrackModal(true);
                     }}>新增记录</Button>
@@ -907,6 +910,7 @@ function PersonalCenter(props) {
                   <Table columns={trainingRecordColumns} dataSource={trainingRecordList} pagination={false} rowKey={record => record.id} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />} onClick={() => {
+                      trainingRecordForm.resetFields();
                       setCurrentEditTrainingRecord(null);
                       setDisplayTrainingRecordModal(true);
                     }}>新增记录</Button>
