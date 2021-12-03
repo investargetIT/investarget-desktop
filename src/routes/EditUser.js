@@ -230,7 +230,7 @@ class EditUser extends React.Component {
         react.deleteUserRelation(index)
       },
       onCancel() {
-        react.form.setFieldsValue({ minor_traders: react.minorRelation.map(m => m.traderuser.id + "") })
+        react.editUserFormRef.current.setFieldsValue({ minor_traders: react.minorRelation.map(m => m.traderuser.id + "") })
       }
     })
   }
@@ -256,7 +256,7 @@ class EditUser extends React.Component {
           react.deleteUserMajorRelation(id)
         },
         onCancel() {
-          react.form.setFieldsValue({ major_trader: react.majorRelation.traderuser.id + "" })
+          react.editUserFormRef.current.setFieldsValue({ major_trader: react.majorRelation.traderuser.id + "" })
         }
       })
     }
