@@ -40,7 +40,8 @@
     "orgBD_report": "Project Report",
     "HR": "HR",
     "Resigned_usermanager": "Resigned User Management",
-    "Full_usermanager": "Full Usermanager"
+    "Full_usermanager": "Full Usermanager",
+    "user_profile": "User Profile"
   },
   "account": {
     "login": "Login",

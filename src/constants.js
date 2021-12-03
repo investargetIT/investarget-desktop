@@ -72,8 +72,9 @@ export const KEY_TO_URI = {
   // "OKR": "/app/okr/list",
   // "onlineTest": "/app/online-test",
   // "orgBD_report": "/app/project-report",
-  "HR": "/app/personal-center",
+  "HR": "/app/hr",
   "Resigned_usermanager": "/app/user/list/resigned-trader",
+  "user_profile": "/app/personal-center",
 }
 
 export const URI_TO_KEY = {
@@ -101,7 +102,8 @@ export const URI_TO_KEY = {
   "/app/personal-info": "profile",
   "/app/perm/list": "permission_management",
   "/app/log/list": "log",
-  "/app/personal-center": "HR",
+  "/app/hr": "HR",
+  "/app/personal-center": "user_profile",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ? 

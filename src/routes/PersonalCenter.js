@@ -926,7 +926,7 @@ function PersonalCenter(props) {
                   {projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
                 </div>
               </TabPane>
-              <TabPane tab="职员列表" key="3">
+              {/* <TabPane tab="职员列表" key="3">
                 {allEmployeesWithGroups.map(m => (
                   <div key={m.id}>
                     <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>{m.name}</div>
@@ -946,7 +946,7 @@ function PersonalCenter(props) {
                   </div>
                 ))}
                 {allEmployeesWithGroups.length === 0 && <Empty style={{ margin: '20px auto' }} />}
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           </Card>
         </div>

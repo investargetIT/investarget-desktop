@@ -24,7 +24,7 @@
     "reminder": "提醒消息",
     "user_center": "用户中心",
     "change_password": "修改密码",
-    "profile": "个人信息",
+    "profile": "基本设置",
     "log": "日志查询",
     "permission_management": "权限管理",
     "schedule_management": "日程管理",
@@ -41,7 +41,8 @@
     "orgBD_report": "项目报表",
     "HR": "人事管理",
     "Resigned_usermanager": "离职交易师用户管理",
-    "Full_usermanager": "全库用户管理"
+    "Full_usermanager": "全库用户管理",
+    "user_profile": "个人中心"
   },
   "account": {
     "login": "登录",

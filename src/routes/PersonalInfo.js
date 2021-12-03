@@ -220,7 +220,7 @@ function PersonalInfo(props) {
           <Link to="/app">首页</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>用户中心</Breadcrumb.Item>
-        <Breadcrumb.Item>个人设置</Breadcrumb.Item>
+        <Breadcrumb.Item>基本设置</Breadcrumb.Item>
       </Breadcrumb>
 
       <Card bodyStyle={{ padding: '20px 0' }}>
