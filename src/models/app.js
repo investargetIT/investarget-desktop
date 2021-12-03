@@ -126,15 +126,20 @@ export default {
       if (tryData.length > 0) return tryData;
       const { data } = yield call(api.getSource, 'industryGroup');
       const allManagers = data.filter(f => f.manager).map(m => m.manager);
-      const reqManagerList = yield call(requestAllData, api.getUser, { id: allManagers }, 10);
-      const indGroups = data.map(m => {
-        const filterManager = reqManagerList.data.data.filter(f => f.id === m.manager);
-        let manager = null;
-        if (filterManager.length > 0) {
-          manager  = filterManager[0];
-        }
-        return { ...m, manager };
-      });
+      
+      let indGroups = data;
+      if (allManagers.length > 0) {
+        const reqManagerList = yield call(requestAllData, api.getUser, { id: allManagers }, 10);
+        indGroups = data.map(m => {
+          const filterManager = reqManagerList.data.data.filter(f => f.id === m.manager);
+          let manager = null;
+          if (filterManager.length > 0) {
+            manager = filterManager[0];
+          }
+          return { ...m, manager };
+        });
+      }
+
       yield put({ type: 'saveSource', payload: { sourceType: 'industryGroup', data: indGroups } });
       return indGroups;
     },  
