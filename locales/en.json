@@ -190,6 +190,7 @@
   },
 
   "project": {
+    "industry_group": "Industry Group",
     "platform_projects": "Platform Projects",
     "upload_project": "Upload Project",
     "upload_marketplace": "Upload Market Place",

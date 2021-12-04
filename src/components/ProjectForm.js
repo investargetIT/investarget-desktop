@@ -115,6 +115,10 @@ class ProjectBaseForm1 extends React.Component {
           <TreeSelectTag />
         </BasicFormItem>
 
+        <BasicFormItem label={i18n('project.industry_group')} name="indGroup" valueType="number">
+          <SelectIndustryGroup />
+        </BasicFormItem>
+
         <FormItem noStyle shouldUpdate>
           {({ getFieldValue, setFieldsValue }) => {
             return (

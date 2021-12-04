@@ -197,6 +197,7 @@
     "attachments": "附件"
   },
   "project": {
+    "industry_group": "所属行业组",
     "platform_projects": "平台项目列表",
     "upload_project": "发布项目",
     "upload_marketplace": "发布 Market Place",

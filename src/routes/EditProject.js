@@ -99,6 +99,8 @@ function toFormDataNew(data) {
       formData.makeUserName = makeUser.map(m => m.user.usernameC).join('、');
     } else if (prop === 'lastProject' && data[prop]) {
       formData.lastProject = data.lastProject.id;
+    } else if (prop === 'indGroup' && data[prop]) {
+      formData.indGroup = data.indGroup.id;
     } else if (prop === 'PM' && data[prop]) {
       formData.PM = data[prop].id.toString();
       formData.PMName = data[prop].usernameC;
