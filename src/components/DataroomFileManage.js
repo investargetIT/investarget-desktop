@@ -696,7 +696,7 @@ function DataroomFileManage({
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <span style={{ marginRight: 4 }}>{fileIcon}</span>
-          <span>{item.title}</span>
+          <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
         <div>{addOperationIcon}{moreOperationIcon}</div>
       </div>

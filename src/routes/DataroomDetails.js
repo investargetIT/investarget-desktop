@@ -237,34 +237,44 @@ function DataroomDetails(props) {
       }).catch(handleError);
     }
 
-    function investorGetDataRoomFile() {
-      const stateData = data;
-      return api.queryDataRoomDir(dataroomID).then(result => {
-        setData(formatData(result.data))
-        const param = { dataroom: dataroomID };
-        return api.queryUserDataRoom(param).then(result => {
-          const data1 = result.data.data[0]
-          return api.queryUserDataRoomFile(data1.id).then(result => {
-            const files = result.data.files || [];
-            const data = [...stateData, ...files]
-            setAllDataroomFiles(formatData(data));
-            setData(formatData(data));
-          })
-        })
-      })
+    // function investorGetDataRoomFile() {
+    //   const stateData = data;
+    //   return api.queryDataRoomDir(dataroomID).then(result => {
+    //     setData(formatData(result.data))
+    //     const param = { dataroom: dataroomID };
+    //     return api.queryUserDataRoom(param).then(result => {
+    //       const data1 = result.data.data[0]
+    //       return api.queryUserDataRoomFile(data1.id).then(result => {
+    //         const files = result.data.files || [];
+    //         const data = [...stateData, ...files]
+    //         setAllDataroomFiles(formatData(data));
+    //         setData(formatData(data));
+    //       })
+    //     })
+    //   })
+    // }
+
+    async function getDataroomFiles() {
+      const reqDir = await api.queryDataRoomDir(dataroomID);
+      setData(formatData(reqDir.data));
+      const reqFile = await api.queryDataRoomFile({ dataroom: dataroomID, isFile: true });
+      const allFiles = [...reqDir.data, ...reqFile.data.data];
+      const formattedFiles = formatData(allFiles);
+      setAllDataroomFiles(formattedFiles);
+      setData(formattedFiles);
     }
 
-    function getDataRoomFile() {
-      let param = { dataroom: dataroomID };
-      api.queryDataRoomFile(param).then(result => {
-        var { count, data } = result.data
-        data = formatData(data)
-        setAllDataroomFiles(data);
-        setData(data);
-      }).catch(_ => {
-        investorGetDataRoomFile();
-      })
-    }
+    // function getDataRoomFile() {
+    //   let param = { dataroom: dataroomID };
+    //   api.queryDataRoomFile(param).then(result => {
+    //     var { count, data } = result.data
+    //     data = formatData(data)
+    //     setAllDataroomFiles(data);
+    //     setData(data);
+    //   }).catch(_ => {
+    //     investorGetDataRoomFile();
+    //   })
+    // }
 
     async function getDataRoomFileAnnotations() {
       const req = await requestAllData(api.getAnnotations, { dataroom: dataroomID }, 10);
@@ -287,7 +297,7 @@ function DataroomDetails(props) {
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
-    getDataRoomFile();
+    getDataroomFiles();
     getDataRoomFileAnnotations();
     getDataroomFileReadingRecord();
 
