@@ -343,7 +343,7 @@ function DataroomFileManage({
         Modal.warning({
           title: '该文件不支持在线预览',
         });
-      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename)) {
+      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
         setPreviewFileUrl(currentFile.fileurl);
       } else {
         const url = getPreviewFileUrl(currentFile);
