@@ -653,13 +653,13 @@ function DataroomFileManage({
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
 
-          {item.id !== -999 &&
+          {item.id !== -999 && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
             <div onClick={() => handleRenameFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
               <EditOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />重命名文件
             </div>
           }
 
-          {item.id !== -999 &&
+          {item.id !== -999 && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
             <div onClick={() => handleMoveFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
               <ExportOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />移动至
             </div>
@@ -998,7 +998,7 @@ function DataroomFileManage({
                 <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
               </div>
 
-              {!isCompanyDataroom && selectedFile.isFile &&
+              {!isCompanyDataroom && selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
                 <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
                   <div>可见用户：</div>
                   <Select
@@ -1022,7 +1022,7 @@ function DataroomFileManage({
               }
 
             {
-              !isCompanyDataroom && !selectedFile.isFile &&
+              !isCompanyDataroom && !selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
               <div>
                 <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
                   <div style={{ flex: 1, marginRight: 20 }}>文件名称</div>

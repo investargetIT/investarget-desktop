@@ -795,50 +795,52 @@ function DataroomDetails(props) {
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-      <Card style={{ marginBottom: 20 }}>
-        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
-          {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
-          {isAbleToAddUser &&
-            <div>
-              <div style={{ display: 'flex' }}>
-                <div style={{ marginRight: 10 }}>
-                  <SelectExistInvestor
-                    style={{ width: 200 }}
-                    value={newUser}
-                    placeholder="请选择联系人"
-                    onChange={value => setNewUser(value)}
-                    dataroom={dataroomID}
-                  />
+      {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+        <Card style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
+            {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
+            {isAbleToAddUser &&
+              <div>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ marginRight: 10 }}>
+                    <SelectExistInvestor
+                      style={{ width: 200 }}
+                      value={newUser}
+                      placeholder="请选择联系人"
+                      onChange={value => setNewUser(value)}
+                      dataroom={dataroomID}
+                    />
+                  </div>
+                  <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
                 </div>
-                <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
               </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
 
-        <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
-          <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>投资人</div>
-          <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
-          <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
-          <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
-          <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>
-          <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
-        </div>
+          <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+            <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>投资人</div>
+            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
+            <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
+            <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
+          </div>
 
-        <Table
-          columns={columns}
-          expandedRowRender={expandedRowRender}
-          dataSource={dataroomUsersOrgBdByOrg}
-          rowKey={record => record.id}
-          loading={loadingOrgBD}
-          // onExpand={handleOrgBDExpand}
-          // expandedRowKeys={expandedRows}
-          pagination={false}
-          size="middle"
-          showHeader={false}
-        />
+          <Table
+            columns={columns}
+            expandedRowRender={expandedRowRender}
+            dataSource={dataroomUsersOrgBdByOrg}
+            rowKey={record => record.id}
+            loading={loadingOrgBD}
+            // onExpand={handleOrgBDExpand}
+            // expandedRowKeys={expandedRows}
+            pagination={false}
+            size="middle"
+            showHeader={false}
+          />
 
-      </Card>
+        </Card>
+      }
 
       {data.length > 0 &&
         <DataroomFileManage
