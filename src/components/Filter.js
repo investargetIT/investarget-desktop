@@ -63,6 +63,7 @@ import {
   TabCheckboxIndustryGroup,
   SelectProjectForOrgBd,
   SelectProjectStatus,
+  SelectIndustryGroupWithAll,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -808,20 +809,20 @@ class ProjectListFilter extends React.Component {
 class NewProjectListFilter extends React.Component {
 
   static defaultValue = {
-    tags: [],
-    country: [],
-    industries: [],
-    netIncome_USD_F: 0,
-    netIncome_USD_T: 500000000,
-    grossProfit_F: -200000000,
-    grossProfit_T: 200000000,
-    projstatus: [],
-    service: [],
-    // indGroup: [],
+    // tags: [],
+    // country: [],
+    // industries: [],
+    // netIncome_USD_F: 0,
+    // netIncome_USD_T: 500000000,
+    // grossProfit_F: -200000000,
+    // grossProfit_T: 200000000,
+    projstatus: 0,
+    // service: [],
+    indGroup: 0,
     // takeUser: [],
     // makeUser: [],
-    usertype: null,
-    user: [],
+    // usertype: null,
+    // user: [],
   }
 
   constructor(props) {
@@ -830,7 +831,6 @@ class NewProjectListFilter extends React.Component {
   }
 
   handleChange = (key, value) => {
-    window.echo('handle change', key, value);
     if (Array.isArray(key)) {
       key.forEach((item, index) => {
         this.setState({ [item]: value[index] },this.handleSearch)
@@ -857,8 +857,10 @@ class NewProjectListFilter extends React.Component {
   render() {
     const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, usertype } = this.state
     return (
+      <div style={{ display: 'flex' }}>
         <SelectProjectStatus size="middle" style={{ width: 160 }} value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-
+        <SelectIndustryGroupWithAll size="middle" style={{ marginLeft: 10, width: 160 }} value={indGroup} onChange={this.handleChange.bind(this, 'indGroup')} placeholder="请选择项目行业组" />
+      </div>
     )
   }
 }

@@ -58,7 +58,7 @@ class ProjectList extends React.Component {
     // const { page } = props.location.query;
 
     const setting = this.readSetting()
-    const filters = setting ? setting.filters : ProjectListFilter.defaultValue
+    const filters = setting ? setting.filters : NewProjectListFilter.defaultValue
     const search = setting ? setting.search : null
     const page = setting && setting.page ? setting.page : 1
     const pageSize = setting && setting.pageSize ? setting.pageSize: props.userPageSize;
@@ -127,6 +127,9 @@ class ProjectList extends React.Component {
     }
     if (data.projstatus === 0) {
       data.projstatus = [];
+    }
+    if (data.indGroup === 0) {
+      data.indGroup = undefined;
     }
     return data
   }
@@ -254,11 +257,11 @@ class ProjectList extends React.Component {
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
     const data = { filters, search, page };
-    localStorage.setItem('ProjectList', JSON.stringify(data))
+    localStorage.setItem('ProjectList1', JSON.stringify(data))
   }
 
   readSetting = () => {
-    var data = localStorage.getItem('ProjectList')
+    var data = localStorage.getItem('ProjectList1')
     return data ? JSON.parse(data) : null
   }
 
@@ -511,9 +514,9 @@ class ProjectList extends React.Component {
         <Card title={i18n('project.platform_projects')}>
 
           <div className="another-btn" style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
+            <div style={{ display: 'flex' }}>
               <Search
-                style={{ width: 300, marginRight: 20 }}
+                style={{ width: 200, marginRight: 20 }}
                 placeholder="请输入项目名称"
                 onSearch={this.handleSearch}
                 onChange={search => this.setState({ search })}
