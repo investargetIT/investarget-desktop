@@ -67,9 +67,7 @@ function Dashboard(props) {
         projstatus: ongoingStatus.map(m => m.id),
         sort: 'publishDate',
         desc: 1,
-      }
-      if (!hasPerm('proj.admin_manageproj')) {
-        params['user'] = userInfo.id;
+        user: userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
       }
       const reqProj = await api.getProj(params);
       let { data: projList } = reqProj.data;
