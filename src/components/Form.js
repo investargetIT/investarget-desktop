@@ -421,6 +421,7 @@ class IndustryDynamicFormItem extends React.Component {
             const industriesKeys = getFieldValue('industriesKeys');
             return industriesKeys.map((k, index) => {
               return (<FormItem
+                required
                 key={k}
                 {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
                 label={index === 0 ? i18n('project.industry') : ''}>

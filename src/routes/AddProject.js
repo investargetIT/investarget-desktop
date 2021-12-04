@@ -49,7 +49,7 @@ class AddProject extends React.Component {
   }
 
   goBack = () => {
-    this.props.router.goBack()
+    this.props.history.goBack()
   }
 
   addProject = () => {

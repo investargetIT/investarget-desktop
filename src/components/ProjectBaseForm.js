@@ -91,9 +91,9 @@ class ProjectBaseForm extends React.Component {
           <SelectService mode="multiple" />
         </BasicFormItem>
 
-        {/* <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number">
+        <BasicFormItem label={i18n('project.industry_group')} name="indGroup" valueType="number">
           <SelectIndustryGroup />
-        </BasicFormItem> */}
+        </BasicFormItem>
 
         { hasPerm('proj.admin_manageproj') ? 
         <BasicFormItem label={i18n('project.uploader')} name="supportUser" initialValue={getCurrentUser()} valueType="number">
@@ -111,8 +111,8 @@ class ProjectBaseForm extends React.Component {
               style={{'display': 'inline'}}
               name="isAgreed"
               valuePropName="checked"
-              rules={[{type: 'boolean'}, {required: true}, {validator: (rule, value, callback) => {
-                if (value) { callback() } else { callback('Please check the agreement') }
+              rules={[{type: 'boolean'}, {required: true}, {validator: (_, value) => {
+                if (value) { return Promise.resolve() } else { return Promise.reject('请同意相关协议') }
               }}]}
               initialValue={true}
             >
