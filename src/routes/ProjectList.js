@@ -525,14 +525,16 @@ class ProjectList extends React.Component {
               />
               <NewProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
             </div>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => this.enterLoading(1)}
-              onClick={() => this.props.history.push('/app/projects/add')}
-            >
-              添加新项目
-            </Button>
+            {hasPerm('proj.admin_manageproj') && hasPerm('usersys.as_trader') &&
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => this.enterLoading(1)}
+                onClick={() => this.props.history.push('/app/projects/add')}
+              >
+                添加新项目
+              </Button>
+            }
           </div>
 
           <Table
