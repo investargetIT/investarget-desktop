@@ -705,13 +705,55 @@ function DataroomFileManage({
           <span style={{ marginRight: 4 }}>{renderFileIcon()}</span>
           <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
-        <div>{addOperationIcon}{moreOperationIcon}</div>
+        <div>{(isLogin().is_supersuer || !hasPerm('usersys.as_investor')) && addOperationIcon}{moreOperationIcon}</div>
       </div>
     );
   }
 
+  function getTableDataSource(data) {
+    if (!isLogin()) return [];
+    const { is_superuser, permissions } = isLogin();
+    if (!is_superuser && permissions.includes('usersys.as_investor')) {
+      // 对于投资人，隐藏空目录，除非是刚新建的目录
+      const result = data.filter(
+        f => ifContainFiles(f, data) || f.isFile || !f.id || f.justCreated || f.isCreatingFolder
+      ).sort(sortByFileTypeAndName);
+      return result;
+    }
+    return data.sort(sortByFileTypeAndName);
+  }
+
+  function ifContainFiles(file, data) {
+    let childFiles = data.filter(f => f.parentId == file.id)
+    if (childFiles.length == 0)
+      return false;
+    if (childFiles.some(item => ifContainFiles(item, data) || item.isFile))
+      return true;
+  }
+
+  function sortByFileTypeAndName(a, b) {
+    return 10 * sortByFileType(a, b) + sortByFileName(a, b)
+  }
+  
+  function sortByFileType(a, b) {
+    const va = a.isFolder ? 0 : 1
+    const vb = b.isFolder ? 0 : 1
+    return va - vb
+  }
+  
+  function sortByFileName(a, b) {
+    if (a.name < b.name) {
+      return -1;
+    } else if (a.name > b.name) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+  
   useEffect(() => {
-    const newTreeData = generateTreeData(data);
+    const newData = getTableDataSource(data);
+    const newTreeData = generateTreeData(newData);
     setDirData(newTreeData);
 
     const newDataForMoveFile = data.filter(f => f.isFolder);
