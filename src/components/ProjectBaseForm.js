@@ -73,8 +73,16 @@ class ProjectBaseForm extends React.Component {
           <TreeSelectTag />
         </BasicFormItem>
 
-        {this.props.forwardedRef.current && <IndustryDynamicFormItem industry={this.props.industry} formRef={this.props.forwardedRef} />}
-
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue, setFieldsValue }) => {
+            return (
+              <IndustryDynamicFormItem
+                industry={this.props.industry}
+                formRef={{ current: { getFieldValue, setFieldsValue } }} /> 
+            );
+          }}
+        </FormItem>
+        
         <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
           <CascaderCountry size="large" />
         </BasicFormItem>
