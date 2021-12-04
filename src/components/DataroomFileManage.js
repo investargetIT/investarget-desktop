@@ -665,7 +665,7 @@ function DataroomFileManage({
             </div>
           }
 
-          {item.id !== -999 &&
+          {item.id !== -999 && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
             <div onClick={() => handleDeleteFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
               <DeleteOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />删除
             </div>
