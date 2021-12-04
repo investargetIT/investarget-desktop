@@ -9,6 +9,7 @@ import {
   FolderOutlined,
   FolderAddOutlined,
   FileTextOutlined,
+  FolderViewOutlined,
   ExpandOutlined,
   EllipsisOutlined,
   CloudDownloadOutlined,
@@ -674,9 +675,15 @@ function DataroomFileManage({
       );
     }
 
-    let fileIcon = <FolderOutlined />;
-    if (item.isFile) {
-      fileIcon = <FileTextOutlined />;
+    function renderFileIcon() {
+      if (item.isFile) {
+        return <FileTextOutlined />;
+      }
+      const allChildren = findAllChildren(item.id);
+      if (allChildren.filter(f => f.isFile).length > 0) {
+        return <FolderViewOutlined />
+      }
+      return <FolderOutlined />
     }
 
     let addOperationIcon = null;
@@ -695,7 +702,7 @@ function DataroomFileManage({
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
-          <span style={{ marginRight: 4 }}>{fileIcon}</span>
+          <span style={{ marginRight: 4 }}>{renderFileIcon()}</span>
           <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
         <div>{addOperationIcon}{moreOperationIcon}</div>
