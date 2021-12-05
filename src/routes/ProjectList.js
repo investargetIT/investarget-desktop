@@ -393,13 +393,13 @@ class ProjectList extends React.Component {
         render: (text, record) => {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
-          return (
+          return hasPerm('usersys.as_trader') ? (
             <Tooltip title="项目成本中心">
               <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
                 <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
               </Link>
             </Tooltip>
-          );
+          ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
         }
       },
       {
@@ -470,12 +470,17 @@ class ProjectList extends React.Component {
         dataIndex: 'publishDate',
         sorter: true,
         render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
-      },
-      {
-        title: '项目进度',
-        key: 'progress',
-        render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" /></div>,
-      },
+      }
+    ];
+    if (hasPerm('usersys.as_trader')) {
+      columns.push(
+        {
+          title: '项目进度',
+          key: 'progress',
+          render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" /></div>,
+        });
+    }
+    columns.push(
       {
         title: i18n('common.operation'),
         key: 'action',
@@ -498,7 +503,7 @@ class ProjectList extends React.Component {
           )
         },
       },
-    ];
+    );
 
     return (
       <LeftRightLayoutPure location={location}
