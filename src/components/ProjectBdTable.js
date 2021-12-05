@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { i18n, time } from '../utils/util';
+import { i18n, time, getCurrentUser } from '../utils/util';
 import { Table, Popover } from 'antd';
 
 export default function() {
@@ -14,6 +14,7 @@ export default function() {
         page_size: 8,
         sort: 'createdtime',
         desc: 1,
+        manager: getCurrentUser(),
       }
       const req = await api.getProjBDList(params);
       setProjBdList(req.data.data);

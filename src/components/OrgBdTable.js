@@ -45,10 +45,11 @@ function OrgBdTable(props) {
         page_size: 8,
         sort: 'createdtime',
         desc: 1,
+        manager: getCurrentUser(),
       };
-      if (!hasPerm('BD.manageOrgBD')) {
-        params.manager = getCurrentUser();
-      }
+      // if (!hasPerm('BD.manageOrgBD')) {
+      //   params.manager = getCurrentUser();
+      // }
       setLoading(true);
       const req = await api.getOrgBdList(params);
       setOrgBdList(req.data.data);
