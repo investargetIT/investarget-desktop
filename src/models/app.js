@@ -50,6 +50,7 @@ export default {
     trainingType: [],
     palevel: [],
     allTraders: [],
+    projectProgress: [], // 项目进度
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -154,6 +155,10 @@ export default {
     *globalSearch({ payload: search }, { select, put }) {
       yield put({ type: 'saveSearch', payload: search })
       // yield put(routerRedux.push('/app/projects/library?search=' + search))
+    },
+    *saveProjectProgress({ payload: newData }, { select, put }) {
+      const oldData = yield select(state => state.app.projectProgress);
+      yield put({ type: 'saveSource', payload: { sourceType: 'projectProgress', data: oldData.concat(newData) } });
     },
     *getGroup({}, { call, put, select }) {
       const group = yield select(state => state.app.group);

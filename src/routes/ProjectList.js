@@ -10,6 +10,7 @@ import {
   requestAllData,
   getCurrentUser,
   requestAllData2,
+  subtracting,
 } from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip } from 'antd'
@@ -140,7 +141,7 @@ class ProjectList extends React.Component {
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false }, this.getAndSetProjectPercentage);
+      this.setState({ total, list, loading: false }, this.checkProjectProgressFromRedux);
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -151,12 +152,29 @@ class ProjectList extends React.Component {
     this.writeSetting()
   }
 
-  getAndSetProjectPercentage = async () => {
+  checkProjectProgressFromRedux = () => {
+    const projectInRedux = this.props.projectProgress.map(m => m.id);
+    const projectToCheck = this.state.list.map(m => m.id);
+    const toRequest = subtracting(projectToCheck, projectInRedux);
+    const toRequestProjects = toRequest.map(m => this.state.list.filter(f => f.id === m)[0]);
+    if (toRequestProjects.length === 0) return;
+    this.getAndSetProjectPercentage(toRequestProjects);
+  }
+
+  getProjectProgress = record => {
+    const filterProject = this.props.projectProgress.filter(f => f.id === record.id);
+    if (filterProject.length > 0) {
+      return filterProject[0].percentage;
+    }
+    return 0;
+  }
+
+  getAndSetProjectPercentage = async list => {
     const reqBdRes = await api.getSource('orgbdres');
     const { data: orgBDResList } = reqBdRes;
     const projPercentage = [];
-    for (let index = 0; index < this.state.list.length; index++) {
-      const element = this.state.list[index];
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
       if (element.projstatus) {
         if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
           projPercentage.push({ id: element.id, percentage: 100 });
@@ -182,15 +200,17 @@ class ProjectList extends React.Component {
       }
       projPercentage.push({ id: element.id, percentage });
     }
-    this.setState({
-      list: this.state.list.map(m => {
-        const percentageList = projPercentage.filter(f => f.id === m.id);
-        if (percentageList.length > 0) {
-          return { ...m, percentage: percentageList[0].percentage };
-        }
-        return { ...m, percentage: 0 };
-      })
-    });
+    window.echo('proj percentage', projPercentage);
+    this.props.dispatch({ type: 'app/saveProjectProgress', payload: projPercentage });
+    // this.setState({
+    //   list: this.state.list.map(m => {
+    //     const percentageList = projPercentage.filter(f => f.id === m.id);
+    //     if (percentageList.length > 0) {
+    //       return { ...m, percentage: percentageList[0].percentage };
+    //     }
+    //     return { ...m, percentage: 0 };
+    //   })
+    // });
   }
 
   handleDelete = (id) => {
@@ -454,7 +474,7 @@ class ProjectList extends React.Component {
       {
         title: '项目进度',
         key: 'progress',
-        render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={record.percentage} size="small" strokeColor="#339bd2" /></div>,
+        render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" /></div>,
       },
       {
         title: i18n('common.operation'),
@@ -586,9 +606,9 @@ class ProjectList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { country } = state.app
+  const { country, projectProgress } = state.app;
   const { page: userPageSize } = state.currentUser;
-  return { country, userPageSize };
+  return { country, userPageSize, projectProgress };
 }
 
 
