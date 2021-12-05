@@ -51,8 +51,12 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   const dataroomId = record.id
   const projId = record.id
   const projTitle = record.projtitle
+  const projPM = record.PM;
   const projTraders = record.projTraders || [];
   const projTradersUsers= projTraders.map(m => m.user);
+  if (projPM) {
+    projTradersUsers.push(projPM);
+  }
   const uniqProjTraders = _.uniqBy(projTradersUsers, 'id');
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
@@ -70,6 +74,9 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
   function getUserFunction() {
     let roles = projTraders.filter(f => f.user && f.user.id === currentUser);
     roles = roles.map(m => m.type === 0 ? '承揽' : '承做');
+    if (projPM && projPM.id === currentUser) {
+      roles.push('PM');
+    }
     if (roles.length > 0) {
       return roles.join('、');
     }

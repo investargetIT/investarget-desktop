@@ -15,6 +15,7 @@ import {
   hasPerm,
   getUserInfo,
   requestAllData,
+  requestAllData2,
   handleError,
 } from '../utils/util';
 import { SelectIndustryGroup, SelectKPIResult, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
@@ -136,14 +137,12 @@ function PersonalCenter(props) {
 
   async function loadWorkingProjects() {
     const params = {
-      max_size: 10,
       sort: 'publishDate',
       desc: 1,
+      user: userID,
+      projstatus: 4,
     }
-    if (!hasPerm('proj.admin_manageproj')) {
-      params['user'] = userID;
-    }
-    const reqProj = await api.getProj(params);
+    const reqProj = await requestAllData2(api.getProj, params, 10);
     const { data: projList } = reqProj.data;
     setProjList(projList);
 
