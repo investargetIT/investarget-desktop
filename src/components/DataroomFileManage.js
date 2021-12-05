@@ -1206,7 +1206,7 @@ function DataroomFileManage({
         onCancel={() => setDisplayDownloadFileModal(false)}
         footer={downloadFileModalFooter}
       >
-        {!isCompanyDataroom &&
+        {!isCompanyDataroom && hasPerm('usersys.as_trader') &&
           <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ width: 140, textAlign: 'right' }}>投资人：</div>
             <Select
