@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
-import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider } from 'antd';
+import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider, Select } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { getUserInfo, i18n, hasPerm, handleError, requestAllData } from '../utils/util';
@@ -11,6 +11,7 @@ import { SelectEducation, SelectGender, SelectTrader, SelectIndustryGroup } from
 import moment from 'moment';
 import { baseUrl } from '../utils/request';
 import { UploadFile } from '../components/Upload';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -169,7 +170,8 @@ function PersonalInfo(props) {
       entryTime: entryTimeStr,
       mentor: mentorObj,
       directSupervisor: directSupervisorObj,
-      indGroup: indGroupObj
+      indGroup: indGroupObj,
+      page,
     } = userInfo;
     const bornTime = bornTimeStr ? moment(bornTimeStr) : undefined;
     const entryTime = entryTimeStr ? moment(entryTimeStr) : undefined;
@@ -181,7 +183,7 @@ function PersonalInfo(props) {
     const directSupervisor = directSupervisorObj ? directSupervisorObj.id.toString() : undefined;
     const indGroup = indGroupObj ? indGroupObj.id : undefined;
     const teamLeader = getTeamLeaderFromIndGroup(indGroup);
-    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor, indGroup, teamLeader };
+    return { username, bornTime, school, education, specialty, specialtyhobby, remark, gender, entryTime, mentor, directSupervisor, indGroup, teamLeader, page: page ? page.toString() : undefined };
   }
 
   function getTeamLeaderFromIndGroup(indGroupID) {
@@ -254,6 +256,11 @@ function PersonalInfo(props) {
                 </Form.Item> */}
                 <Form.Item label="入职日期" name="entryTime">
                   <DatePicker style={{ width: '100%' }} disabled />
+                </Form.Item>
+                <Form.Item label="分页条数" name="page">
+                  <Select placeholder="请设置分页条数">
+                    {PAGE_SIZE_OPTIONS.map(m => <Option key={m} value={m}>{`${m} 条/页`}</Option>)}
+                  </Select>
                 </Form.Item>
                 <Divider />
                 <Form.Item label="性别" name="gender">
