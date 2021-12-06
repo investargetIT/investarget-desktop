@@ -2450,7 +2450,7 @@ class OrgBDListComponent extends React.Component {
 
     return (
       <div>
-        {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
+        {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         {this.props.editable &&
           <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
