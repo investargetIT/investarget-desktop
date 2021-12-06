@@ -89,7 +89,7 @@ class SiderMenu extends React.Component {
         payload: true
       });
       // 机构看板做过移动端优化了，所以不需要显示窗口过窄警告
-      if (window.location.pathname !== '/app/org/bd') {
+      if (!['/app/org/bd', '/app/org/bd/mobile'].includes(window.location.pathname)) {
         this.props.dispatch({
           type: 'app/showOrHideTooNarrowWarning',
           payload: true

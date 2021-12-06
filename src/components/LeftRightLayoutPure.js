@@ -78,7 +78,7 @@ class LeftRightLayoutPure extends React.Component {
         <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
 
           <Sider
-            className={window.location.pathname === '/app/org/bd' ? 'remove-on-mobile' : null}
+            className={['/app/org/bd', '/app/org/bd/mobile'].includes(window.location.pathname) ? 'remove-on-mobile' : null}
             trigger={null}
             collapsible
             collapsed={this.props.collapsed}

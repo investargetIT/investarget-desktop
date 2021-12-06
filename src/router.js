@@ -87,6 +87,7 @@ import PersonalCenter from './routes/PersonalCenter';
 import PersonalInfo from './routes/PersonalInfo';
 import UserListWithResignedTraders from './routes/UserListWithResignedTraders';
 import HumanResources from './routes/HumanResources';
+import OrgBDListForMobile from './routes/OrgBDListForMobile';
 
 function RouterConfig({ history }) {
   return (
@@ -104,6 +105,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
+        <Route path="/app/org/bd/mobile" component={OrgBDListForMobile} />
         <Route path="/app/org/bd" component={OrgBDList} />
         <Route path="/app/organization/list" component={OrganizationList} />
         <Route path="/app/org/export" component={OrgExportList} />
