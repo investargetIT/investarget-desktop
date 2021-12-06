@@ -237,9 +237,9 @@ export default {
         })
         // TODO 设置 selectedKeys 的同时设置 openKeys
 
-        if (pathname.includes('/app') && !isLogin()) {
-          history.replace('/')
-        }
+        // if (pathname.includes('/app') && !isLogin()) {
+        //   history.replace('/')
+        // }
       })
     }
   },

@@ -2425,7 +2425,7 @@ class OrgBDListComponent extends React.Component {
       accept: '.xls,application/vnd.ms-excel',
       data: { proj: this.projId },
       showUploadList: false,
-      headers: { token: getUserInfo().token },
+      headers: { token: getUserInfo() && getUserInfo().token },
       beforeUpload: () => {
         this.setState({ loadingImportOrgBD: true });
       },
