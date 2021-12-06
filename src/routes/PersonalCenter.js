@@ -172,6 +172,13 @@ function PersonalCenter(props) {
     return filter[0].manager.username;
   }
 
+  function getMentor(user) {
+    if (!user) return null;
+    if (!user.mentor) return null;
+    if (user.mentor.id === user.id) return null;
+    return user.mentor.username;
+  }
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'title' });
     props.dispatch({ type: 'app/getIndustryGroup' });
@@ -809,7 +816,7 @@ function PersonalCenter(props) {
               <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{userInfoDetails.title ? userInfoDetails.title.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{userInfoDetails.indGroup ? userInfoDetails.indGroup.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>{getManager(userInfoDetails) || '暂无'}</div>
-              {/* <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>{userInfoDetails.directSupervisor ? userInfoDetails.directSupervisor.username : '暂无'}</div> */}
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>Mentor：</span>{getMentor(userInfoDetails) || '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>{userInfoDetails.entryTime ? userInfoDetails.entryTime.slice(0, 10) : '暂无'}</div>
             </div>
             <div style={{ width: 240, margin: '0 auto', marginBottom: 100, padding: '20px 0', borderTop: '1px solid #E6E6E6' }}>
