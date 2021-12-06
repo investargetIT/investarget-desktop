@@ -271,7 +271,7 @@ function Dashboard(props) {
                       </div>
                     </Tooltip>
                     <div style={{ fontSize: 12, lineHeight: '18px', color: '#989898' }}>
-                      {formatBytes(m.size)} / {getFileTypeByName(m.filename)} / {m.createdtime.slice(0, 10)}
+                      {m.size && formatBytes(m.size) + ' / '}{getFileTypeByName(m.filename)} / {m.createdtime.slice(0, 10)}
                     </div>
                   </div>
                 </div>

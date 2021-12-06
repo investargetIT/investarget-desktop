@@ -523,8 +523,11 @@ function trimTextIfExceedMaximumCount(text, count) {
 
 function getFilenameWithoutExt(filename) {
   const splitFilename = filename.split('.');
-  splitFilename.splice(splitFilename.length - 1, 1);
-  return splitFilename.join('.');
+  if (splitFilename.length > 1) {
+    splitFilename.splice(splitFilename.length - 1, 1);
+    return splitFilename.join('.');
+  }
+  return filename;
 }
 
 function getFileTypeByName(filename) {
