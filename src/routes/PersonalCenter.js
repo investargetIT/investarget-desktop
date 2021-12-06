@@ -136,11 +136,12 @@ function PersonalCenter(props) {
   }
 
   async function loadWorkingProjects() {
+    const reqProjStatus = await api.getSource('projstatus');
     const params = {
       sort: 'publishDate',
       desc: 1,
       user: userID,
-      projstatus: 4,
+      projstatus: reqProjStatus.data.filter(f => f.id >= 4).map(m => m.id),
     }
     const reqProj = await requestAllData2(api.getProj, params, 10);
     const { data: projList } = reqProj.data;
