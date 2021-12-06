@@ -151,18 +151,30 @@ function PersonalCenter(props) {
     setProjList(reqAllProjDetails.map(m => m.data));
   }
 
-  async function loadEmployees() {
-    const allGroups = await props.dispatch({ type: 'app/getIndustryGroup' });
-    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.map(m => m.id) }, 10);
-    const emplyeesWithGroups = allGroups.map(m => {
-      const employees = allEmployees.data.data.filter(f => f.indGroup && (f.indGroup.id === m.id));
-      return { ...m, employees };
-    });
-    setAllEmployeesWithGroups(emplyeesWithGroups);
+  // async function loadEmployees() {
+  //   const allGroups = await props.dispatch({ type: 'app/getIndustryGroup' });
+  //   const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.map(m => m.id) }, 10);
+  //   const emplyeesWithGroups = allGroups.map(m => {
+  //     const employees = allEmployees.data.data.filter(f => f.indGroup && (f.indGroup.id === m.id));
+  //     return { ...m, employees };
+  //   });
+  //   setAllEmployeesWithGroups(emplyeesWithGroups);
+  // }
+
+  function getManager(user) {
+    if (!user) return null;
+    if (!user.indGroup) return null;
+    if (props.industryGroup.length === 0) return null;
+    const indGroupID = user.indGroup.id;
+    const filter = props.industryGroup.filter(f => f.id === indGroupID);
+    if (filter.length === 0) return null;
+    if (!filter[0].manager) return null;
+    return filter[0].manager.username;
   }
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'title' });
+    props.dispatch({ type: 'app/getIndustryGroup' });
     
     loadUserInfo();
     getPromotionHistory();
@@ -170,7 +182,7 @@ function PersonalCenter(props) {
     getMentorTrackList();
     getTrainingRecordList();
     loadWorkingProjects();
-    loadEmployees();
+    // loadEmployees();
   }, []);
 
   useEffect(() => {
@@ -192,7 +204,7 @@ function PersonalCenter(props) {
       getMentorTrackList();
       getTrainingRecordList();
       loadWorkingProjects();
-      loadEmployees();
+      // loadEmployees();
 
   }, [props.match]);
 
@@ -796,7 +808,7 @@ function PersonalCenter(props) {
               <div style={{ marginTop: 12, fontSize: 20, textAlign: 'center', lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 500 }}>{userInfoDetails.username} {userInfoDetails.gender ? <WomanOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} /> : <ManOutlined style={{ color: '#339bd2', marginLeft: 4, fontSize: 18 }} />}</div>
               <div style={{ marginTop: 20, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>职位：</span>{userInfoDetails.title ? userInfoDetails.title.name : '暂无'}</div>
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门：</span>{userInfoDetails.indGroup ? userInfoDetails.indGroup.name : '暂无'}</div>
-              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>{userInfoDetails.mentor ? userInfoDetails.mentor.username : '暂无'}</div>
+              <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>部门主管：</span>{getManager(userInfoDetails) || '暂无'}</div>
               {/* <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>直属上级：</span>{userInfoDetails.directSupervisor ? userInfoDetails.directSupervisor.username : '暂无'}</div> */}
               <div style={{ marginTop: 8, fontSize: 14, lineHeight: '22px', color: '#595959' }}><span style={{ color: '#262626' }}>入职日期：</span>{userInfoDetails.entryTime ? userInfoDetails.entryTime.slice(0, 10) : '暂无'}</div>
             </div>
