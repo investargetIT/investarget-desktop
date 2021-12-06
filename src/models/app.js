@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { i18n, isLogin, requestAllData } from '../utils/util'
+import { i18n, isLogin, requestAllData, subtracting } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
 
@@ -177,7 +177,50 @@ export default {
       }, 99);
       yield put({ type: 'saveSource', payload: { sourceType: 'allTraders', data: allTradersReq.data.data } });
       return allTradersReq.data.data;
-    }, 
+    },
+    *checkProjectProgressFromRedux({ payload: projList }, { select, put }) {
+      const projectProgress = yield select(state => state.app.projectProgress);
+      const projectInRedux = projectProgress.map(m => m.id);
+      const projectToCheck = projList.map(m => m.id);
+      const toRequest = subtracting(projectToCheck, projectInRedux);
+      const toRequestProjects = toRequest.map(m => projList.filter(f => f.id === m)[0]);
+      if (toRequestProjects.length > 0) {
+        yield put({ type: 'getAndSetProjectPercentage', payload: toRequestProjects })
+      }
+    },
+    *getAndSetProjectPercentage({ payload: list }, { call, put }) {
+      const reqBdRes = yield call(api.getSource, 'orgbdres');
+      const { data: orgBDResList } = reqBdRes;
+      const projPercentage = [];
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+        if (element.projstatus) {
+          if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
+            projPercentage.push({ id: element.id, percentage: 100 });
+            continue;
+          }
+        }
+        const paramsForPercentage = { proj: element.id };
+        const projPercentageCount = yield call(api.getOrgBDCountNew, paramsForPercentage);
+        let { response_count: resCount } = projPercentageCount.data;
+        resCount = resCount.map(m => {
+          const relatedRes = orgBDResList.filter(f => f.id === m.response);
+          let resIndex = 0;
+          if (relatedRes.length > 0) {
+            resIndex = relatedRes[0].sort;
+          }
+          return { ...m, resIndex };
+        });
+        const maxRes = Math.max(...resCount.map(m => m.resIndex));
+        let percentage = 0;
+        if (maxRes > 3) {
+          // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
+          percentage = Math.round((maxRes - 3) / 11 * 100);
+        }
+        projPercentage.push({ id: element.id, percentage });
+      }
+      yield put({ type: 'saveProjectProgress', payload: projPercentage });
+    },
   },
   subscriptions: {
     setup({ history, dispatch }) {
