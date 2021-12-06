@@ -51,7 +51,7 @@ function Dashboard(props) {
         const params = {
           indGroup: userInfo.indGroup.id,
         }
-        const req = await api.getProjBDList(params);
+        const req = await api.getProjCount(params);
         setProjNum(req.data.count);
       }
       fetchProjNum();

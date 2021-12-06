@@ -1063,3 +1063,6 @@ export const getEmployeeRelation = params => r(`/user/personnelrelations/?${qs.s
 export const deleteEmployeeRelation = id => r(`/user/personnelrelations/${id}/`, 'DELETE');
 
 export const getInvestorWithResignedTrader = params => r(`/user/indgroup/investor?${qs.stringify(params)}`);
+
+// 项目数量统计
+export const getProjCount = params => r(`/proj/count?${qs.stringify(params)}`);
