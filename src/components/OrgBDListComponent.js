@@ -1933,7 +1933,7 @@ class OrgBDListComponent extends React.Component {
                 </Button>
               </Tooltip>
             } */}
-                {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) &&
+                {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
                   <Tooltip title="删除">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
                       <DeleteOutlined />
@@ -2351,7 +2351,7 @@ class OrgBDListComponent extends React.Component {
                       </Button>
                     </Tooltip>
                   } */}
-                  {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) &&
+                  {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
                     <Tooltip title="删除">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
                         <DeleteOutlined />
