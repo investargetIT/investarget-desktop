@@ -552,7 +552,7 @@ class ProjectList extends React.Component {
               />
               <NewProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
             </div>
-            {hasPerm('proj.admin_manageproj') && hasPerm('usersys.as_trader') &&
+            {hasPerm('usersys.as_trader') &&
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
