@@ -308,17 +308,17 @@ class MyPartner extends React.Component {
       },
       {
         title: i18n("organization.org"),
-        dataIndex: 'investoruser.org.orgname',
+        dataIndex: ['investoruser', 'org', 'orgname'],
         key: 'org'
       },
       {
         title: i18n("user.position"),
-        dataIndex: 'investoruser.title.name',
+        dataIndex: ['investoruser', 'title', 'name'],
         key: 'title',
       },
       {
         title: i18n("user.tags"),
-        dataIndex: 'investoruser.tags',
+        dataIndex: ['investoruser', 'tags'],
         key: 'tags',
         render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags.map(m => m.id))}</span> : null,
       },
@@ -330,7 +330,7 @@ class MyPartner extends React.Component {
       },
       {
         title: i18n("user.status"),
-        dataIndex: 'investoruser.userstatus.id',
+        dataIndex: ['investoruser', 'userstatus', 'id'],
         key: 'userstatus',
         render: value => this.loadLabelByValue('audit', value),
       },
