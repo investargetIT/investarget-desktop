@@ -79,7 +79,7 @@ export default {
     findError(state, { payload: error }) {
       return { ...state, error }
     },
-    findError(state, { payload: errorForMobile }) {
+    findErrorForMobile(state, { payload: errorForMobile }) {
       return { ...state, errorForMobile }
     },
     dismissError(state) {
