@@ -1268,7 +1268,16 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([...this.state.projTradersIds, record.manager.id, record.createuser.id].includes(currentUserID)) {
+    if (!currentUserID) {
+      return false;
+    }
+    if (this.state.projTradersIds.includes(currentUserID)) {
+      return true;
+    }
+    if (record.manager && record.manager.id === currentUserID) {
+      return true;
+    }
+    if (record.createuser && record.createuser.id === currentUserID) {
       return true;
     }
     return false;
@@ -1279,7 +1288,19 @@ class OrgBDListComponent extends React.Component {
       return true;
     }
     const currentUserID = getUserInfo() && getUserInfo().id;
-    if ([this.state.pm, record.manager && record.manager.id, record.createuser && record.createuser.id].includes(currentUserID)) {
+    if (!currentUserID) {
+      return false;
+    }
+    if (this.state.projTradersIds.includes(currentUserID)) {
+      return true;
+    }
+    if (record.manager && record.manager.id === currentUserID) {
+      return true;
+    }
+    if (record.createuser && record.createuser.id === currentUserID) {
+      return true;
+    }
+    if (this.state.pm === currentUserID) {
       return true;
     }
     return false; 
@@ -1750,7 +1771,7 @@ class OrgBDListComponent extends React.Component {
           );
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {this.isAbleToAddPMRemark(record) ?
+              {this.isAbleToModifyStatus(record) ?
                 <Tooltip title="编辑">
                   <ExpandAltOutlined style={{ color: '#339bd2', marginRight: 8 }} onClick={this.handleOperationChange.bind(this, record, 'edit')} />
                 </Tooltip>
@@ -1786,10 +1807,7 @@ class OrgBDListComponent extends React.Component {
               />
             );
           }
-          if (this.isAbleToModifyStatus(record)) {
-            return text;
-          }
-          return null;
+          return text;
         },
       },
       {
@@ -1803,18 +1821,15 @@ class OrgBDListComponent extends React.Component {
               <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange.bind(this, record)} placeholder="机构进度/材料" />
             );
           }
-          if (this.isAbleToModifyStatus(record)) {
-            let progress = null;
-            if (text) {
-              progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
-            }
-            let material = null;
-            if (record.material) {
-              material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
-            }
-            return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
+          let progress = null;
+          if (text) {
+            progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
           }
-          return null;
+          let material = null;
+          if (record.material) {
+            material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
+          }
+          return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
         },
       },
       {
@@ -1826,10 +1841,7 @@ class OrgBDListComponent extends React.Component {
           if (record.new) {
             return null;
           }
-          if (this.isAbleToModifyStatus(record)) {
-            return text.slice(0, 10);
-          }
-          return null;
+          return text.slice(0, 10);
         },
       },
       {
@@ -1839,7 +1851,7 @@ class OrgBDListComponent extends React.Component {
           if (record.new) {
             return '暂无';
           }
-          if (this.isAbleToModifyStatus(record)) {
+          // if (this.isAbleToModifyStatus(record)) {
             let latestComment = '';
             if (record.BDComments && record.BDComments.length) {
               const commonComments = record.BDComments.filter(f => !f.isPMComment);
@@ -1880,8 +1892,8 @@ class OrgBDListComponent extends React.Component {
                 <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
               </Popover>
             );
-          }
-          return null;
+          // }
+          // return null;
         },
       },
     ];
@@ -1919,7 +1931,7 @@ class OrgBDListComponent extends React.Component {
                     </Button>
                   </Tooltip>
                 } */}
-                {this.isAbleToModifyStatus(record) &&
+                {this.isAbleToAddPMRemark(record) &&
                   <Tooltip title="添加机构反馈">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
                       <HighlightOutlined />
@@ -1953,10 +1965,10 @@ class OrgBDListComponent extends React.Component {
       { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '10%' },
       {
         title: i18n('org_bd.manager'), dataIndex: ['manager', 'username'], key: 'manager', width: '10%', render: (text, record) => {
-          if (this.isAbleToModifyStatus(record)) {
+          // if (this.isAbleToModifyStatus(record)) {
             return text;
-          }
-          return null;
+          // }
+          // return null;
         },
       },
       {
@@ -1981,10 +1993,10 @@ class OrgBDListComponent extends React.Component {
         width: '25%',
         dataIndex: 'BDComments',
         render: (text, record) => {
-          if (this.isAbleToModifyStatus(record)) {
+          // if (this.isAbleToModifyStatus(record)) {
             return text && text.length && text[text.length - 1].comments || null;
-          }
-          return null;
+          // }
+          // return null;
         },
       },
       {
@@ -1993,12 +2005,12 @@ class OrgBDListComponent extends React.Component {
         width: '30%',
         dataIndex: 'BDComments',
         render: (comments, record) => {
-          if (this.isAbleToModifyStatus(record)) {
+          // if (this.isAbleToModifyStatus(record)) {
             return comments ? comments.map(m => (
               `创建人：${m.createuser && m.createuser.username}，创建时间：${m.createdtime.slice(0, 16).replace('T', ' ')}，备注内容：${m.comments}`
             )).join('\r\n') : null;
-          }
-          return null;
+          // }
+          // return null;
         },
       },
     ];
@@ -2023,7 +2035,7 @@ class OrgBDListComponent extends React.Component {
           />
           : <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
               {!this.props.fromProjectCostCenter && (
-                this.isAbleToAddPMRemark(record) ?
+                this.isAbleToModifyStatus(record) ?
                   <Tooltip title="编辑">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
                       <ExpandAltOutlined />
@@ -2084,10 +2096,10 @@ class OrgBDListComponent extends React.Component {
                 />
               );
             }
-            if (this.isAbleToModifyStatus(record)) {
+            // if (this.isAbleToModifyStatus(record)) {
               return text;
-            }
-            return null;
+            // }
+            // return null;
           },
         },
         // {
@@ -2146,7 +2158,7 @@ class OrgBDListComponent extends React.Component {
                 <Cascader options={this.getProgressOptions()} onChange={this.handleProgressChange.bind(this, record)} placeholder="机构进度/材料" />
               );
             }
-            if (this.isAbleToModifyStatus(record)) {
+            // if (this.isAbleToModifyStatus(record)) {
               let progress = null;
               if (text) {
                 progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
@@ -2156,8 +2168,8 @@ class OrgBDListComponent extends React.Component {
                 material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
               }
               return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
-            }
-            return null;
+            // }
+            // return null;
           },
         },
       ];
@@ -2172,10 +2184,10 @@ class OrgBDListComponent extends React.Component {
               if (record.new) {
                 return null;
               }
-              if (this.isAbleToModifyStatus(record)) {
+              // if (this.isAbleToModifyStatus(record)) {
                 return text.slice(0, 10);
-              }
-              return null;
+              // }
+              // return null;
             },
           },
           {
@@ -2186,7 +2198,7 @@ class OrgBDListComponent extends React.Component {
               if (record.new) {
                 return '暂无';
               }
-              if (this.isAbleToModifyStatus(record)) {
+              // if (this.isAbleToModifyStatus(record)) {
                 let latestComment = '';
                 if (record.BDComments && record.BDComments.length) {
                   const commonComments = record.BDComments.filter(f => !f.isPMComment);
@@ -2227,8 +2239,8 @@ class OrgBDListComponent extends React.Component {
                     <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
                   </Popover>
                 );
-              }
-              return null;
+              // }
+              // return null;
             },
           },
           // {
@@ -2337,7 +2349,7 @@ class OrgBDListComponent extends React.Component {
                       </Button>
                     </Tooltip>
                   } */}
-                  {this.isAbleToModifyStatus(record) &&
+                  {this.isAbleToAddPMRemark(record) &&
                     <Tooltip title="添加机构反馈">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
                         <HighlightOutlined />
