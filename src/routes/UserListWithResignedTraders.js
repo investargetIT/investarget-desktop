@@ -271,7 +271,7 @@ class UserListWithResignedTraders extends React.Component {
             { record.mobiletrue ?
             <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
             : null }
-            <Link to={'/app/user/' + record.id}>{record.username}</Link>
+            <Link target="_blank" to={'/app/user/' + record.id}>{record.username}</Link>
             </div>
         }
       },
@@ -308,7 +308,7 @@ class UserListWithResignedTraders extends React.Component {
         render: (text, record) => (
               <span className="span-operation">
 
-                <Link to={'/app/user/edit/' + record.id}>
+                <Link target="_blank" to={'/app/user/edit/' + record.id}>
                   <Button style={buttonStyle} size="small"><EditOutlined /></Button>
                 </Link>
 
