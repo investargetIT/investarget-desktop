@@ -28,6 +28,7 @@ export default {
     showChat: false,
     projstatus: [],
     error: null,
+    errorForMobile: null,
     service: [],
     unreadMessageNum: 0,
     libIndustry: [],
@@ -78,9 +79,16 @@ export default {
     findError(state, { payload: error }) {
       return { ...state, error }
     },
+    findError(state, { payload: errorForMobile }) {
+      return { ...state, errorForMobile }
+    },
     dismissError(state) {
       const error = null
       return { ...state, error }
+    },
+    dismissErrorForMobile(state) {
+      const errorForMobile = null
+      return { ...state, errorForMobile }
     },
     setUnreadMessageNum(state, { payload: unreadMessageNum }) {
       return { ...state, unreadMessageNum }

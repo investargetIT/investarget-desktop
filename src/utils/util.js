@@ -410,7 +410,12 @@ export function handleError(error) {
     payload: error,
   })
 }
-
+export function handleErrorForMobile(error) {
+  window.app._store.dispatch({
+    type: 'app/findErrorForMobile',
+    payload: error,
+  })
+}
 export function getImageUrl(key) {
   return key ? 'https://image.investarget.com/' + key : null;
 }

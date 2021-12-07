@@ -7,10 +7,10 @@ import {
   hasPerm, 
   getUserInfo, 
 } from '../utils/util';
-import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import OrgBDListComponent from '../components/OrgBDListComponent';
 import { Button, Breadcrumb } from 'antd';
 import { Link } from 'dva/router';
+import LeftRightLayoutPureForMobile from '../components/LeftRightLayoutPureForMobile';
 
 export default class OrgBDListForMobile extends React.Component {
   
@@ -31,7 +31,7 @@ export default class OrgBDListForMobile extends React.Component {
   render() {
     let isAdd = false;
     return (
-      <LeftRightLayoutPure
+      <LeftRightLayoutPureForMobile
         location={this.props.location} 
         name={i18n('menu.organization_bd') + (isAdd ? " / 查看BD": "")} 
         title={i18n('menu.bd_management')}
@@ -71,7 +71,7 @@ export default class OrgBDListForMobile extends React.Component {
             onProjExistChange={isProj => this.setState({ isProj })}
           />
         }
-      </LeftRightLayoutPure>)
+      </LeftRightLayoutPureForMobile>)
   }
 
 }
