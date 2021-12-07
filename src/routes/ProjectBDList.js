@@ -366,7 +366,7 @@ class ProjectBDList extends React.Component {
           </div>
         )
       },
-      {title: i18n('project_bd.status'), dataIndex: 'bd_status.name', key:'bd_status', width: 80, sorter:true},
+      {title: i18n('project_bd.status'), dataIndex: ['bd_status', 'name'], key:'bd_status', width: 80, sorter:true},
       // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
       // {title: i18n('project_bd.import_methods'), render: (text, record) => {
       //   return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
@@ -391,7 +391,7 @@ class ProjectBDList extends React.Component {
           return allManagers.join('、');
         },
       },
-      {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key:'financeAmount', width: 170, sorter:true, render: (text, record) => {
+      {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key: 'financeAmount', width: 170, sorter:true, render: (text, record) => {
         const currency = record.financeCurrency ? record.financeCurrency.currency : '';
         if (text && record.financeCurrency && record.financeCurrency.id === 1) {
           return `${currency} ${formatMoney(text, 'CNY')}`;
@@ -399,7 +399,7 @@ class ProjectBDList extends React.Component {
           return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
         }
       }},
-      {title: i18n('project_bd.contractors'), dataIndex: 'contractors.username', key:'contractors', sorter:true},
+      {title: i18n('project_bd.contractors'), dataIndex: ['contractors', 'username'], key: 'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
