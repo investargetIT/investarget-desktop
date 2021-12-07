@@ -59,7 +59,7 @@ class HandleErrorForMobile extends React.Component {
             onOk() {
               HandleErrorForMobile.handleSessionExpiration = false
               react.props.dispatch({
-                type: 'currentUser/logout',
+                type: 'currentUser/logoutForMobile',
                 payload: { redirect: react.props.pathname }
               })
             },

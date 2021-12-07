@@ -9,7 +9,7 @@ import HandleError from './HandleError'
 import Draggable from 'react-draggable'
 import Logo from './Logo'
 import styles from './LeftRightLayout.css'
-import * as api from '../api';
+import * as api from '../apiForMobile';
 import { handleErrorForMobile } from '../utils/util';
 import HandleErrorForMobile from './HandleErrorForMobile';
 

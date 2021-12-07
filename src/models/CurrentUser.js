@@ -68,6 +68,16 @@ export default {
         yield put(routerRedux.replace('/login'))
       }
     },
+    *logoutForMobile({ payload }, { call, put }) {
+      localStorage.removeItem('user_info')
+      clearFilters()
+      yield put({ type: 'delete' })
+      if (payload && payload.redirect) {
+        yield put(routerRedux.replace('/mlogin?redirect=' + payload.redirect))
+      } else {
+        yield put(routerRedux.replace('/mlogin'))
+      }
+    },
     *register({ payload: additionalInfo }, { call, put, select }) {
       const { registerInfo } = yield select(state => state.currentUser);
       const user = { ...registerInfo, ...additionalInfo };
