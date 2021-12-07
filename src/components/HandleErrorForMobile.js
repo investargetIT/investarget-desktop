@@ -16,6 +16,7 @@ class HandleErrorForMobile extends React.Component {
   }
 
   determineError(error) {
+    window.echo('deter error', error);
     switch (error.name) {
       case 'Error':
         this.handleComError(error)

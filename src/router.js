@@ -88,6 +88,7 @@ import PersonalInfo from './routes/PersonalInfo';
 import UserListWithResignedTraders from './routes/UserListWithResignedTraders';
 import HumanResources from './routes/HumanResources';
 import OrgBDListForMobile from './routes/OrgBDListForMobile';
+import MLogin from './components/MLogin';
 
 function RouterConfig({ history }) {
   return (
@@ -95,6 +96,7 @@ function RouterConfig({ history }) {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/login" component={Login} />
+        <Route path="/mlogin" component={MLogin} />
         <Route path="/password" component={ResetPassword} />
         <Route path="/register1" component={Register1} />
         <Route path="/register" component={Register} />

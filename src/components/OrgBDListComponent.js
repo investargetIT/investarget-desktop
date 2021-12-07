@@ -2872,13 +2872,13 @@ class OrgBDListComponent extends React.Component {
         }
 
         <Modal
-          title="手机二维码"
+          title={window.location.protocol + '//' + window.location.host + '/app/org/bd/mobile?projId=' + this.projId}
           visible={this.state.displayQRCode}
           onCancel={() => this.setState({ displayQRCode: false })}
           onOk={() => this.setState({ displayQRCode: false })}
         >
           <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
-            <QRCode value={window.location.href} />
+            <QRCode value={window.location.protocol + '//' + window.location.host + '/app/org/bd/mobile?projId=' + this.projId} />
           </div>
           <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
         </Modal>
