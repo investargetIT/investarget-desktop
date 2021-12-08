@@ -137,7 +137,7 @@ class ProjectList extends React.Component {
 
   getProject = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize, sort, desc }
+    const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize, sort, desc, iscomproj: 0 }
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
