@@ -206,8 +206,16 @@ function DetaroomDetailsForCompanyFile(props) {
 
     function getProjectDetails() {
       api.getProjLangDetail(projID).then(res => {
+        let allProjTraders = [];
+        const { PM } = res.data;
+        if (PM) {
+          allProjTraders.push({ user: PM });
+        }
         const { projTraders } = res.data;
-        const isProjTrader = projTraders ? projTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id) : false;
+        if (projTraders) {
+          allProjTraders = allProjTraders.concat(projTraders);
+        }
+        const isProjTrader = allProjTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id);
         const isSuperUser = isLogin().is_superuser;
         setProjTitle(res.data.projtitle);
         if (isProjTrader || isSuperUser) {
