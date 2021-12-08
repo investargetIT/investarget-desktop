@@ -1139,11 +1139,79 @@ class OrgBDFilter extends React.Component {
   }
 }
 
+class OrgBDFilterForMobile extends React.Component {
+
+  static defaultValue = {
+    manager: [],
+    createuser: [],
+    org: [],
+    proj: null,
+    response: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || OrgBDFilterForMobile.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrgBDFilterForMobile.defaultValue })
+    this.props.onReset({ ...OrgBDFilterForMobile.defaultValue })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const nextValueStr = JSON.stringify(nextProps.value);
+    const thisValueStr = JSON.stringify(this.state);
+    if (nextValueStr != thisValueStr) {
+      this.setState({ ...nextProps.value });
+    }
+  }
+
+  render() {
+    const { response, source_type, location, manager, org, proj, createuser } = this.state;
+    const orgbdresOptions = this.props.orgbdres.map(m => ({ label: m.name, value: m.id }));
+
+    return (
+      <div>
+        <Row gutter={32}>
+          <Col span={24}>
+            <BasicContainer2 label={i18n('project_bd.bd_manager')}>
+              <SelectOrgUser placeholder="请输入负责人名称" style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
+            </BasicContainer2>
+          </Col>
+
+          {/* <Col span={12}>
+            <BasicContainer2 label="BD创建人">
+              <SelectOrgUser placeholder="请输入创建人名称" style={{ width: '100%' }} size="middle" type="trader" mode="multiple" value={createuser} onChange={this.handleChange.bind(this, 'createuser')} optionFilterProp="children" />
+            </BasicContainer2>
+          </Col> */}
+        </Row>
+
+        {/* <div style={{ marginTop: 6 }}>
+          <TabCheckboxOrgBDRes2 value={response} allLabel={this.props.allLabel || '全部'} options={this.props.progressOptions || []} onChange={this.handleChange.bind(this, 'response')} />
+        </div> */}
+
+        {/* <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} /> */}
+      </div>
+    )
+  }
+}
+
 function mapStateToPropsForOrgBDFilter(state) {
   const { orgbdres } = state.app;
   return { orgbdres };
 }
 OrgBDFilter = connect(mapStateToPropsForOrgBDFilter)(OrgBDFilter);
+OrgBDFilterForMobile = connect(mapStateToPropsForOrgBDFilter)(OrgBDFilterForMobile);
+
 
 class WxMessageFilter extends React.Component {
 
@@ -1307,6 +1375,7 @@ export {
   WxMessageFilter,
   WorkReportFilter,
   OrgBDFilter,
+  OrgBDFilterForMobile,
   MeetBDFilter,
   FamiliarFilter,
   ProjectReportFilter,

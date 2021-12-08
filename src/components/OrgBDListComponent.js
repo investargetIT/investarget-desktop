@@ -33,7 +33,7 @@ import {
   message,
 } from 'antd';
 import { Link } from 'dva/router';
-import { OrgBDFilter } from './Filter';
+import { OrgBDFilter, OrgBDFilterForMobile } from './Filter';
 import { Search } from './Search';
 import ModalModifyOrgBDStatus from './ModalModifyOrgBDStatus';
 import BDModal from './BDModal';
@@ -2502,6 +2502,18 @@ class OrgBDListComponent extends React.Component {
           </Card>
         }
 
+        <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
+          <OrgBDFilterForMobile
+            defaultValue={filters}
+            value={this.state.filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+            onChange={this.handleFilt}
+            progressOptions={this.state.progressOptions}
+            allLabel={this.state.allLabel}
+          />
+        </Card>
+
         <Card>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -2884,7 +2896,7 @@ class OrgBDListComponent extends React.Component {
         }
 
         <Modal
-          title={window.location.protocol + '//' + window.location.host + '/app/org/bd/mobile?projId=' + this.projId}
+          title="手机二维码"
           visible={this.state.displayQRCode}
           onCancel={() => this.setState({ displayQRCode: false })}
           onOk={() => this.setState({ displayQRCode: false })}
