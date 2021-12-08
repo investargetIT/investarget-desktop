@@ -356,10 +356,10 @@ class OrgBDListComponent extends React.Component {
       }
       try {
         const projResult = await api.getProjDetail(proj);
-        window.echo('proj res', projResult.data);
         this.setState({ projectDetails: projResult.data });
         const { projTraders, PM } = projResult.data;
         if (projTraders) {
+          projTraders.push({ user: PM });
           projMakeTakeTraderIds = projTraders.filter(f => f.user).map(m => m.user.id);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
