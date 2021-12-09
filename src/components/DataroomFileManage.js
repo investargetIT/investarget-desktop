@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty } from 'antd';
+import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
 import { formatBytes, time, isLogin, hasPerm, handleError } from '../utils/util';
@@ -127,6 +127,7 @@ class MyProgress extends React.Component {
 function DataroomFileManage({
   setData,
   setLoading,
+  loading,
   allDataroomFiles,
   parentId,
   dataroomID,
@@ -187,7 +188,7 @@ function DataroomFileManage({
   const [watermarkEmail, setWatermarkEmail] = useState('');
   const [watermarkCompany, setWatermarkCompany] = useState('');
 
-  const [checkedFiles, setCheckedFiles] = useState([]); 
+  const [checkedFiles, setCheckedFiles] = useState([]);
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -252,6 +253,7 @@ function DataroomFileManage({
     const { data } = req.data;
 
     if (data.length === 0) {
+      setLoading(false);
       Modal.warning({ title: '未找到相关内容' });
       return;
     }
@@ -1023,7 +1025,7 @@ function DataroomFileManage({
               onChange={searchContent => setSearchContent(searchContent)}
               value={searchContent}
             />
-            {dirData.length > 0 &&
+            {dirData.length > 0 && !loading &&
               <DirectoryTree
                 checkable
                 defaultExpandedKeys={[-999]}
@@ -1037,6 +1039,9 @@ function DataroomFileManage({
                 onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
               />
             }
+            {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
+              <Spin />
+            </div>}
           </Card>
         </Col>
         {selectedFile &&

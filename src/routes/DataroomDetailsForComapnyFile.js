@@ -244,13 +244,16 @@ function DetaroomDetailsForCompanyFile(props) {
     }
 
     function getDataRoomFile() {
+      setLoading(true);
       let param = { dataroom: dataroomID };
       api.queryDataRoomFile(param).then(result => {
+        setLoading(false);
         var { count, data } = result.data
         data = formatData(data)
         setAllDataroomFiles(data);
         setData(data);
       }).catch(_ => {
+        setLoading(false);
         investorGetDataRoomFile();
       })
     }
@@ -273,10 +276,10 @@ function DetaroomDetailsForCompanyFile(props) {
       setReadFileUserList(req.data.data);
     }
 
+    getDataRoomFile();
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
-    getDataRoomFile();
     getDataRoomFileAnnotations();
     getDataroomFileReadingRecord();
 
@@ -494,11 +497,12 @@ function DetaroomDetailsForCompanyFile(props) {
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-      {data.length > 0 &&
+      {/* {data.length > 0 && */}
         <DataroomFileManage
           isCompanyDataroom
           setData={setData}
           setLoading={setLoading}
+          loading={loading}
           allDataroomFiles={allDataroomFiles}
           parentId={parentId}
           dataroomID={dataroomID}
@@ -514,7 +518,7 @@ function DetaroomDetailsForCompanyFile(props) {
           newDataroomFile={newDataroomFile}
           allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
         />
-      }
+      {/* } */}
 
       {showDataRoomTempModal &&
         <Modal

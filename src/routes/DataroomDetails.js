@@ -263,9 +263,11 @@ function DataroomDetails(props) {
     // }
 
     async function getDataroomFiles() {
+      setLoading(true);
       const reqDir = await api.queryDataRoomDir(dataroomID);
       setData(formatData(reqDir.data));
       const reqFile = await api.queryDataRoomFile({ dataroom: dataroomID, isFile: true });
+      setLoading(false);
       const allFiles = [...reqDir.data, ...reqFile.data.data];
       const formattedFiles = formatData(allFiles);
       setAllDataroomFiles(formattedFiles);
@@ -302,10 +304,10 @@ function DataroomDetails(props) {
       setReadFileUserList(req.data.data);
     }
 
+    getDataroomFiles();
     getProjectDetails();
     getDataRoomTemp();
     getAllUserFile();
-    getDataroomFiles();
     getDataRoomFileAnnotations();
     getDataroomFileReadingRecord();
 
@@ -850,9 +852,10 @@ function DataroomDetails(props) {
         </Card>
       }
 
-      {data.length > 0 &&
+      {/* {data.length > 0 && */}
         <DataroomFileManage
           setData={setData}
+          loading={loading}
           setLoading={setLoading}
           allDataroomFiles={allDataroomFiles}
           parentId={parentId}
@@ -872,7 +875,7 @@ function DataroomDetails(props) {
           newDataroomFile={newDataroomFile}
           allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
         />
-      }
+      {/* } */}
 
       {showDataRoomTempModal &&
         <Modal
