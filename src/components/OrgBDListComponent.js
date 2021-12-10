@@ -1189,6 +1189,15 @@ class OrgBDListComponent extends React.Component {
       api.modifyOrgBD(record.id, body)
       .then(this.generateProgressChangeComment)
       .then(() => {
+        if (this.state.newComment) {
+          const bodyForComment = {
+            orgBD: record.id,
+            comments: this.state.newComment,
+          };
+          return api.addOrgBDComment(bodyForComment);
+        }
+      })
+      .then(() => {
         this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
         this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
       })
@@ -1560,7 +1569,7 @@ class OrgBDListComponent extends React.Component {
         react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
         break;
       case 'edit':
-        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true });
+        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true, newComment: '' });
         break;
     }
   }
@@ -2763,7 +2772,7 @@ class OrgBDListComponent extends React.Component {
             wrapClassName="modal-orgbd-edit"
             title="编辑机构看板"
             visible
-            onCancel={() => this.setState({ displayModalForEditing: false })}
+            onCancel={() => this.setState({ displayModalForEditing: false, newComment: '' })}
             onOk={this.handleEditOrgBD}
             confirmLoading={this.state.loadingEditingOrgBD}
           >
@@ -2808,6 +2817,16 @@ class OrgBDListComponent extends React.Component {
                 value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
               />
             </div>
+
+          <div style={{ marginBottom: 30 }}>
+            <div>机构反馈</div>
+            <Input.TextArea
+              rows={3}
+              value={this.state.newComment}
+              onChange={e => this.setState({ newComment: e.target.value })}
+            />
+          </div>
+
           </Modal>
         }
 
