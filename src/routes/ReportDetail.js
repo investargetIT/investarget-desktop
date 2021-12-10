@@ -256,8 +256,9 @@ class ReportDetail extends React.Component {
             {this.state.report && this.state.report.user.username}
           </div>
 
-          <div>
+          <div style={{ flex: 1, margin: '0 20px' }}>
             <Menu
+              style={{ textAlign: 'center' }}
               onClick={this.handleClick}
               selectedKeys={[this.state.current]}
               mode="horizontal"
