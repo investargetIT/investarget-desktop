@@ -3,7 +3,6 @@ import {
   Row, 
   Col, 
   Tabs,
-  Icon,
   Modal,
   Form,
   DatePicker,
@@ -38,6 +37,8 @@ import { connect } from 'dva';
 import { withRouter } from 'dva/router';
 import {
   PlusOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
 } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane
@@ -321,9 +322,9 @@ class UserDetail extends React.Component {
     await this.mergeOrgBd(deleteUserId, mergeUserId);
     await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并会议BD' });
-    await this.mergeMeetingBd(deleteUserId, mergeUserId);
-    await sleep(1000);
+    // this.setState({ mergeUserMessage: '正在合并会议BD' });
+    // await this.mergeMeetingBd(deleteUserId, mergeUserId);
+    // await sleep(1000);
 
     this.setState({ mergeUserMessage: '正在合并用户项目' });
     await this.mergeUserProject(deleteUserId, mergeUserId);
@@ -589,8 +590,16 @@ class UserDetail extends React.Component {
 
           {this.state.userIdWithSameName &&
             <Col span={2} style={{ marginTop: 100 }}>
-              <div style={{ marginBottom: 20 }} onClick={() => this.handleMergeUser(false)}><Icon type="double-right" style={{ fontSize: 18, cursor: 'pointer' }} /></div>
-              <div onClick={() => this.handleMergeUser(true)}><Icon type="double-left" style={{ fontSize: 18, cursor: 'pointer' }} /></div>
+              <div style={{ marginBottom: 20 }}>
+                <Button onClick={() => this.handleMergeUser(false)} type="link">
+                  <DoubleRightOutlined style={{ fontSize: 18 }} />
+                </Button>
+              </div>
+              <div>
+                <Button onClick={() => this.handleMergeUser(true)} type="link">
+                  <DoubleLeftOutlined style={{ fontSize: 18 }} />
+                </Button>
+              </div>
             </Col>
           }
 
