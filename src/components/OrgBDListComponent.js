@@ -744,8 +744,14 @@ class OrgBDListComponent extends React.Component {
     if (oldID !== newID) return;
     if (oldResponse === newResponse && oldMaterial === newMaterial) return;
     const orgBD = oldID;
-    const oldStatus = this.props.orgbdres.filter(f => f.id === oldResponse)[0].name;
-    const newStatus = this.props.orgbdres.filter(f => f.id === newResponse)[0].name;
+    let oldStatus = '';
+    if (oldResponse) {
+      oldStatus = this.props.orgbdres.filter(f => f.id === oldResponse)[0].name;
+    }
+    let newStatus = '';
+    if (newResponse) {
+      newStatus = this.props.orgbdres.filter(f => f.id === newResponse)[0].name;
+    }
     const comments = [`之前状态：${oldStatus || '无'}`, `之前材料：${oldMaterial || '无'}`, `现在状态：${newStatus || '无'}`, `现在材料：${newMaterial || '无'}`].join('，');
     const body = {
       orgBD,
