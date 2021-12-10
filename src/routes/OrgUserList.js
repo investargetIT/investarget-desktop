@@ -110,20 +110,22 @@ class OrgUserList extends React.Component {
       const reqUser = await api.getUser(params);
       const { count: total, data: orgUser } = reqUser.data;
 
-      //获取投资人的交易师
-      const orgUserRelation = await requestAllData(api.getUserRelation, {
-        investoruser: orgUser.map(m => m.id),
-        page_size: 100,
-      }, 100);
-      orgUser.forEach(element => {
-        const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
-        element.traders = relations.map(m => ({
-          label: m.traderuser.username,
-          value: m.traderuser.id,
-          onjob: m.traderuser.onjob,
-          familiar: m.familiar,
-        }))
-      });
+      if (total > 0) {
+        //获取投资人的交易师
+        const orgUserRelation = await requestAllData(api.getUserRelation, {
+          investoruser: orgUser.map(m => m.id),
+          page_size: 100,
+        }, 100);
+        orgUser.forEach(element => {
+          const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+          element.traders = relations.map(m => ({
+            label: m.traderuser.username,
+            value: m.traderuser.id,
+            onjob: m.traderuser.onjob,
+            familiar: m.familiar,
+          }))
+        });
+      }
       this.setState({ total, list: orgUser, loading: false });
       this.setState({ loading: false })
     } catch (error) {
@@ -208,7 +210,7 @@ class OrgUserList extends React.Component {
       // },
       {
         title: i18n("organization.org"),
-        dataIndex: 'org.orgname',
+        dataIndex: ['org', 'orgname'],
         key: 'org'
       },
       {
@@ -237,7 +239,7 @@ class OrgUserList extends React.Component {
       },
       {
         title: i18n("user.trader"),
-        dataIndex: 'trader_relation.traderuser.username',
+        dataIndex: ['trader_relation', 'traderuser', 'username'],
         key: 'trader',
         // width: 200,
         // render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
@@ -246,23 +248,23 @@ class OrgUserList extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-              <div>
+              <div style={{display:'flex',alignItems:'center'}}>
+             
                 <Link to={'/app/user/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.get} size="small"><EyeOutlined /></Button>
+                  <Button type="link" disabled={!record.action.get} size="small"><EyeOutlined /></Button>
                 </Link>
                 
                 <Link to={`/app/user/edit/${record.id}?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`}>
-                  <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
+                  <Button type="link" disabled={!record.action.change} size="small"><EditOutlined /></Button>
                 </Link>
                
-              </div>
+              
                 <Popconfirm title="确定删除吗？" disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button type="link" disabled={!record.action.delete} size="small">
                     <DeleteOutlined />
                   </Button>
                 </Popconfirm>
-              </span>
+              </div>
         )
       }
     ]
