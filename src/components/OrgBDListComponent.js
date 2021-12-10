@@ -1946,13 +1946,13 @@ class OrgBDListComponent extends React.Component {
                     </Button>
                   </Tooltip>
                 } */}
-                {this.isAbleToAddPMRemark(record) &&
+                {/* {this.isAbleToAddPMRemark(record) &&
                   <Tooltip title="添加机构反馈">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
                       <HighlightOutlined />
                     </Button>
                   </Tooltip>
-                }
+                } */}
                 {/* {this.isAbleToAddPMRemark(record) &&
               <Tooltip title="添加应对策略">
                 <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
@@ -2364,13 +2364,13 @@ class OrgBDListComponent extends React.Component {
                       </Button>
                     </Tooltip>
                   } */}
-                  {this.isAbleToAddPMRemark(record) &&
+                  {/* {this.isAbleToAddPMRemark(record) &&
                     <Tooltip title="添加机构反馈">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
                         <HighlightOutlined />
                       </Button>
                     </Tooltip>
-                  }
+                  } */}
                   {/* {this.isAbleToAddPMRemark(record) &&
                     <Tooltip title="添加应对策略">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
@@ -2681,7 +2681,7 @@ class OrgBDListComponent extends React.Component {
         />
         : null }
 
-        <Modal
+        {/* <Modal
           title={this.state.isPMComment ? '应对策略' : '机构反馈'}
           visible={this.state.commentVisible}
           footer={null}
@@ -2697,7 +2697,7 @@ class OrgBDListComponent extends React.Component {
             onDelete={this.handleDeleteComment}
             isPMComment={this.state.isPMComment}
           />
-        </Modal>
+        </Modal> */}
 
         {this.state.org ?
         <ModalAddUser
