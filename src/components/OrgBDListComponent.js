@@ -1786,11 +1786,24 @@ class OrgBDListComponent extends React.Component {
           );
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {this.isAbleToModifyStatus(record) ?
-                <Tooltip title="编辑">
-                  <ExpandAltOutlined style={{ color: '#339bd2', marginRight: 8 }} onClick={this.handleOperationChange.bind(this, record, 'edit')} />
-                </Tooltip>
-                : <div style={{ width: 14, height: 14, marginRight: 8 }} />}
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {this.isAbleToModifyStatus(record) &&
+                  <Tooltip title="编辑">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
+                      <ExpandAltOutlined />
+                    </Button>
+                  </Tooltip>}
+
+                {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                  <Tooltip title="删除">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')} style={{ padding: '4px 8px' }}>
+                      <DeleteOutlined />
+                    </Button>
+                  </Tooltip>
+                }
+              </div>
+
               <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor, marginRight: 8 }} />
               <div style={{ flex: 1, wordBreak: 'break-word' }}>
                 <div style={{ fontSize: 12, color: '#262626', fontWeight: 'bold' }}>{record.org.orgname}</div>
@@ -1912,67 +1925,67 @@ class OrgBDListComponent extends React.Component {
         },
       },
     ];
-    if (this.props.editable) {
-      columnsForMobile.push({
-        title: i18n('org_bd.operation'), width: '12%', render: (text, record) => {
-          if (record.new) {
-            return (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                <div style={{ marginRight: 4 }}>
-                  <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
-                  &nbsp;&nbsp;
-                  <Popconfirm title="确定取消？" onConfirm={this.discardNewBD.bind(this, record)}>
-                    <a style={buttonStyle} size="small">取消</a>
-                  </Popconfirm>
-                </div>
-              </div>
-            )
-          } else {
-            const latestComment = record.BDComments && record.BDComments[0]
-            const comments = latestComment ? latestComment.comments : ''
-            return (
-              <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
-                {/* {this.isAbleToAddPMRemark(record) &&
-              <Tooltip title="编辑">
-                <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
-                  <EditOutlined />
-                </Button>
-              </Tooltip>
-            } */}
-                {/* {this.isAbleToModifyStatus(record) &&
-                  <Tooltip title="修改状态">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
-                      <FormOutlined />
-                    </Button>
-                  </Tooltip>
-                } */}
-                {/* {this.isAbleToAddPMRemark(record) &&
-                  <Tooltip title="添加机构反馈">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
-                      <HighlightOutlined />
-                    </Button>
-                  </Tooltip>
-                } */}
-                {/* {this.isAbleToAddPMRemark(record) &&
-              <Tooltip title="添加应对策略">
-                <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
-                  <HighlightOutlined />
-                </Button>
-              </Tooltip>
-            } */}
-                {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
-                  <Tooltip title="删除">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
-                      <DeleteOutlined />
-                    </Button>
-                  </Tooltip>
-                }
-              </div>
-            );
-          }
-        }
-      })
-    }
+    // if (this.props.editable) {
+    //   columnsForMobile.push({
+    //     title: i18n('org_bd.operation'), width: '12%', render: (text, record) => {
+    //       if (record.new) {
+    //         return (
+    //           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+    //             <div style={{ marginRight: 4 }}>
+    //               <a style={buttonStyle} size="small" onClick={this.saveNewBD.bind(this, record)}>保存</a>
+    //               &nbsp;&nbsp;
+    //               <Popconfirm title="确定取消？" onConfirm={this.discardNewBD.bind(this, record)}>
+    //                 <a style={buttonStyle} size="small">取消</a>
+    //               </Popconfirm>
+    //             </div>
+    //           </div>
+    //         )
+    //       } else {
+    //         const latestComment = record.BDComments && record.BDComments[0]
+    //         const comments = latestComment ? latestComment.comments : ''
+    //         return (
+    //           <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
+    //             {/* {this.isAbleToAddPMRemark(record) &&
+    //           <Tooltip title="编辑">
+    //             <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
+    //               <EditOutlined />
+    //             </Button>
+    //           </Tooltip>
+    //         } */}
+    //             {/* {this.isAbleToModifyStatus(record) &&
+    //               <Tooltip title="修改状态">
+    //                 <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
+    //                   <FormOutlined />
+    //                 </Button>
+    //               </Tooltip>
+    //             } */}
+    //             {/* {this.isAbleToAddPMRemark(record) &&
+    //               <Tooltip title="添加机构反馈">
+    //                 <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
+    //                   <HighlightOutlined />
+    //                 </Button>
+    //               </Tooltip>
+    //             } */}
+    //             {/* {this.isAbleToAddPMRemark(record) &&
+    //           <Tooltip title="添加应对策略">
+    //             <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
+    //               <HighlightOutlined />
+    //             </Button>
+    //           </Tooltip>
+    //         } */}
+    //             {/* {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+    //               <Tooltip title="删除">
+    //                 <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
+    //                   <DeleteOutlined />
+    //                 </Button>
+    //               </Tooltip>
+    //             } */}
+    //           </div>
+    //         );
+    //       }
+    //     }
+    //   })
+    // }
 
 
     const columnsForExport = [
@@ -2049,14 +2062,21 @@ class OrgBDListComponent extends React.Component {
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
           : <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
-              {!this.props.fromProjectCostCenter && (
-                this.isAbleToModifyStatus(record) ?
+              {!this.props.fromProjectCostCenter && (<div style={{ display: 'flex', marginRight: 4 }}>
+                {this.isAbleToModifyStatus(record) &&
                   <Tooltip title="编辑">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
                       <ExpandAltOutlined />
                     </Button>
-                  </Tooltip>
-                  : <div style={{ width: 46, height: 32 }} />
+                  </Tooltip>}
+                  {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                    <Tooltip title="删除">
+                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')} style={{ padding: '4px 8px' }}>
+                        <DeleteOutlined />
+                      </Button>
+                    </Tooltip>
+                  }
+              </div>
               )}
               {/* {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />} */}
               { record.username ? 
@@ -2331,7 +2351,7 @@ class OrgBDListComponent extends React.Component {
       }
         
         if (this.props.editable) columns.push({
-            title: i18n('org_bd.operation'), width: '12%', render: (text, record) => 
+            title: '', width: '8%', render: (text, record) => 
             {
             if (record.new) {
               return (
@@ -2378,13 +2398,13 @@ class OrgBDListComponent extends React.Component {
                       </Button>
                     </Tooltip>
                   } */}
-                  {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                  {/* {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
                     <Tooltip title="删除">
                       <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
                         <DeleteOutlined />
                       </Button>
                     </Tooltip>
-                  }
+                  } */}
                 </div>
               );
               return (
@@ -2595,7 +2615,7 @@ class OrgBDListComponent extends React.Component {
             {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>} */}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 12, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>操作</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}></div>}
           </div>
 
           {this.state.filters.proj !== null &&
