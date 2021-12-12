@@ -73,6 +73,17 @@
       document.title = 'Unknown Datasource';
       window.location.href = '/';
     }
+    function catchError(code, msg) {
+      if (code === 3000) {
+        alert(msg);
+        const redirect = window.location.pathname + window.location.search;
+        window.location.href = '/login?redirect=' + encodeURIComponent(redirect);
+      } else if (msg) {
+        alert(msg);
+      } else {
+        alert('未知错误');
+      }
+    }
   </script>
 </body>
 </html>

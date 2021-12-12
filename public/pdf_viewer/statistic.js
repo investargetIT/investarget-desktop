@@ -61,10 +61,18 @@ const dataroomFileOperationRequest = async (documentId, operationType) => {
   console.log('req read file', response);
   const { code } = response;
   if (code !== 1000) {
-    if (response.errormsg) {
-      alert(response.errormsg);
+    if (parent && parent.catchError) {
+      parent.catchError(code, response.errormsg);
     } else {
-      alert('未知错误');
+      if (code === 3000) {
+        alert(response.errormsg);
+        const redirect = window.location.pathname + window.location.search;
+        window.location.href = '/login?redirect=' + encodeURIComponent(redirect);
+      } else if (response.errormsg) {
+        alert(response.errormsg);
+      } else {
+        alert('未知错误');
+      }
     }
   }
 }

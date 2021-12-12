@@ -51,12 +51,16 @@ export default {
       } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
         url = '/app/dataroom/project/list';
       }
-      yield put(routerRedux.replace(url))
       // 存储用户名和密码？
       if (remember) {
         localStorage.setItem('login_info', JSON.stringify({ username, password }))
       } else {
         localStorage.removeItem('login_info')
+      }
+      if (url.includes('pdf_viewer.html')) {
+        window.location.replace(url);
+      } else {
+        yield put(routerRedux.replace(url));
       }
     },
     *loginForMobile({ payload: { username, password, remember, redirect } }, { call, put }) {
@@ -75,12 +79,16 @@ export default {
       } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
         url = '/app/dataroom/project/list';
       }
-      yield put(routerRedux.replace(url))
       // 存储用户名和密码？
       if (remember) {
         localStorage.setItem('login_info', JSON.stringify({ username, password }))
       } else {
         localStorage.removeItem('login_info')
+      }
+      if (url.includes('pdf_viewer.html')) {
+        window.location.replace(url);
+      } else {
+        yield put(routerRedux.replace(url));
       }
     },
     *logout({ payload }, { call, put }) {
