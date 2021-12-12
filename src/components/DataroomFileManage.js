@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -21,6 +21,7 @@ import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
+import moment from 'moment';
 
 const { DirectoryTree } = Tree;
 
@@ -339,6 +340,7 @@ function DataroomFileManage({
     const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
     const currentFile = item[0];
+    checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
       if ((/\.avi$/i).test(currentFile.filename)) {
@@ -357,6 +359,26 @@ function DataroomFileManage({
       setSubFilesOfSelectedFolder(allSubFiles);
     }
   };
+
+  function checkTrainingFile(file) {
+    if (!file.isTraingFile) return;
+    if (!hasPerm('usersys.as_trader')) return;
+    const userInfo = getUserInfo();
+    if (!userInfo.onjob) return;
+    generateTrainingRecord(file);
+  }
+
+  function generateTrainingRecord(file) {
+    const trainingDate = `${moment().format('YYYY-MM-DD')}T00:00:00`;
+    const body = {
+      user: getCurrentUser(),
+      trainingDate,
+      trainingType: 1, // 线上培训
+      trainingStatus: 1, // 已完成
+      trainingFile: file.id,
+    };
+    api.addTrainingRecord(body);
+  }
 
   const onExpand = () => {
     console.log('Trigger Expand');
