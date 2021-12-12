@@ -351,7 +351,7 @@ class UserDetail extends React.Component {
         () => this.setState({ hideUserInfo: false }),
       );
     } else {
-      this.props.router.replace(`/app/user/${mergeUserId}`);
+      this.props.history.replace(`/app/user/${mergeUserId}`);
     }
   }
 
@@ -504,21 +504,21 @@ class UserDetail extends React.Component {
     }
   }
 
-  mergeMeetingBd = async (deleteUserId, mergeUserId) => {
-    const resCount = await api.getMeetingBdList({
-      bduser: deleteUserId,
-    });
-    const { count } = resCount.data;
-    if (count === 0) {
-      return;
-    }
-    const resData = await api.getMeetingBdList({
-      bduser: deleteUserId,
-      page_size: count,
-    });
-    const { data } = resData.data;
-    await Promise.all(data.map(m => api.modifyMeetingBD(m.id, { bduser: mergeUserId })));
-  }
+  // mergeMeetingBd = async (deleteUserId, mergeUserId) => {
+  //   const resCount = await api.getMeetingBdList({
+  //     bduser: deleteUserId,
+  //   });
+  //   const { count } = resCount.data;
+  //   if (count === 0) {
+  //     return;
+  //   }
+  //   const resData = await api.getMeetingBdList({
+  //     bduser: deleteUserId,
+  //     page_size: count,
+  //   });
+  //   const { data } = resData.data;
+  //   await Promise.all(data.map(m => api.modifyMeetingBD(m.id, { bduser: mergeUserId })));
+  // }
 
   mergeUserProject = async (deleteUserId, mergeUserId) => {
     const resCount = await api.getProj({
