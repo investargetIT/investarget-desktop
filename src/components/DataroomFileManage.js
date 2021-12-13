@@ -310,7 +310,7 @@ function DataroomFileManage({
       }
 
       const newObject = getObject(recursiveData, 'id', parentID);
-      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.treeKey || m.id, isLeaf: m.isFile }));
+      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.treeKey || m.id, isLeaf: m.isFile, ifContainFiles: m.isFile ? false : ifContainFiles(m, flatData1) }));
       if (newObject) {
         newObject.children = newChildren;
       } else {
@@ -380,9 +380,13 @@ function DataroomFileManage({
     api.addTrainingRecord(body);
   }
 
-  const onExpand = () => {
-    console.log('Trigger Expand');
-  };
+  // const onExpand = () => {
+  //   window.echo('Trigger Expand');
+  // };
+
+  // const onLoad = () => {
+  //   window.echo('on load');
+  // }
 
   function getPreviewFileUrl(file) {
     const { dataroom: dataroomId, id: fileId } = file;
@@ -703,8 +707,11 @@ function DataroomFileManage({
       if (item.isFile) {
         return <FileTextOutlined />;
       }
-      const allChildren = findAllChildren(item.id);
-      if (allChildren.filter(f => f.isFile).length > 0) {
+      // const allChildren = findAllChildren(item.id);
+      // if (allChildren.filter(f => f.isFile).length > 0) {
+      //   return <FolderViewOutlined />
+      // }
+      if (item.ifContainFiles) {
         return <FolderViewOutlined />
       }
       return <FolderOutlined />
@@ -1050,9 +1057,11 @@ function DataroomFileManage({
             {dirData.length > 0 && !loading &&
               <DirectoryTree
                 checkable
+                height={700}
                 defaultExpandedKeys={[-999]}
                 onSelect={onSelect}
-                onExpand={onExpand}
+                // onExpand={onExpand}
+                // onLoad={onLoad}
                 treeData={dirData}
                 titleRender={titleRender}
                 icon={null}
