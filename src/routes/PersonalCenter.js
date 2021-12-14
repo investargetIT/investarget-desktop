@@ -113,13 +113,13 @@ function PersonalCenter(props) {
       { user: userID },
       10,
     );
-    // window.echo('training', res.data.data);
-    // const traningFileID = res.data.data.filter(f => f.trainingFile).map(m => m.trainingFile);
-    // if (traningFileID.length > 0) {
-    //   const reqFile = await api.queryDataRoomFile({ dataroom: 214, file: traningFileID.join(',') });
-    //   window.echo('reg file', reqFile);
-    // }
-    setTrainingRecordList(res.data.data);
+    const trainingRecordList = res.data.data.map(m => {
+      if (m.trainingfileobj) {
+        return { ...m, trainingContent: m.trainingfileobj.filename };
+      }
+      return m;
+    })
+    setTrainingRecordList(trainingRecordList);
   }
 
   async function loadUserInfo() {
