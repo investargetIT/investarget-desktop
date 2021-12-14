@@ -141,8 +141,14 @@ function DataroomDetails(props) {
 
   function getAllUserFile() {
     api.queryUserDataRoom({ dataroom: dataroomID }).then(result => {
-      const list = result.data.data
-      
+      let list = result.data.data
+      list = list.map(m => {
+        const user = m.user;
+        if (!user.org) {
+          return { ...m, user: { ...user, org: { id: -1, orgname: '暂无机构' } } };
+        }
+        return m;
+      });
       if (list.length > 0) {
         getOrgBdOfUsers(list.map(m => m.user));
       }
