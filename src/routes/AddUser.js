@@ -40,15 +40,31 @@ class AddUser extends React.Component {
     this.addUserFormRef = React.createRef();
   }
 
-  getOrAddOrg = async values => {
-    if (isNaN(values.org) && values.org != undefined) {
-      const res = await api.getOrg({ search: values.org });
-      if (res.data.count > 0) return { data: res.data.data[0] };
-      const body = { orgnameC: values.org };
-      if (values.cardKey) {
-        body.orgstatus = 2;
-      }
-      return api.addOrg(body);
+  createOrg = async org => {
+    const body = {
+      orgnameC: org.label,
+      orgstatus: 2,
+    };
+    return api.addOrg(body);
+  }
+
+  getOrAddOrg = async body => {
+    // if (isNaN(values.org) && values.org != undefined) {
+    //   const res = await api.getOrg({ search: values.org });
+    //   if (res.data.count > 0) return { data: res.data.data[0] };
+    //   const body = { orgnameC: values.org };
+    //   if (values.cardKey) {
+    //     body.orgstatus = 2;
+    //   }
+    //   return api.addOrg(body);
+    // }
+
+    if (body.org && body.org.value < 0) {
+      return this.createOrg(body.org);
+    } else if (body.org) {
+      return { data: { id: body.org.value } };
+    } else {
+      return null;
     }
   }
 
