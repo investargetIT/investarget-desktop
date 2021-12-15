@@ -25,7 +25,7 @@ import {
   SelectTitle,
   SelectYear,
   CascaderCountry,
-  SelectExistOrganization,
+  SelectExistOrCreateNewOrganization,
   SelectUserGroup,
   RadioAudit,
   SelectTrader,
@@ -172,8 +172,8 @@ class UserForm extends React.Component {
           <SelectTitle showSearch />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n("user.institution")} name="org" required={!this.props.isTraderAddInvestor}>
-          <SelectExistOrganization allowCreate size="large" />
+        <BasicFormItem label={i18n("user.institution")} name="org" required={!this.props.isTraderAddInvestor} valueType="object">
+          <SelectExistOrCreateNewOrganization allowCreate size="large" />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>

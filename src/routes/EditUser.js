@@ -45,6 +45,14 @@ class EditUser extends React.Component {
     }
   }
 
+  createOrg = async org => {
+    const body = {
+      orgnameC: org.label,
+      orgstatus: 2,
+    };
+    return api.addOrg(body);
+  }
+
   handleSubmit = () => {
     
     this.editUserFormRef.current.validateFields()
@@ -93,12 +101,18 @@ class EditUser extends React.Component {
         //   body = { ...values, groups: undefined}
         // }
         let promise = new Promise((resolve, reject) => {
-          if (isNaN(body.org) && body.org != undefined) {
-            resolve(this.getOrAddOrg(body));
-          }
-          else {
+          if (body.org && body.org.value < 0) {
+            resolve(this.createOrg(body.org));
+          } else if (body.org) {
+            resolve({ data: { id: body.org.value } })
+          } else {
             resolve(null);
           }
+          // if (isNaN(body.org) && body.org != undefined) {
+          //   resolve(this.getOrAddOrg(body));
+          // } else {
+          //   resolve(null);
+          // }
         })
         promise.then(data => {
           if (data) {
@@ -123,7 +137,7 @@ class EditUser extends React.Component {
     let _data = {  ...data }
     _data['groups'] = data.groups && data.groups.map(item => item.id)
     _data['title'] = data.title && data.title.id
-    _data['org'] = data.org && data.org.orgfullname;
+    _data['org'] = data.org ? { label: data.org.orgfullname, value: data.org.id } : undefined;
     _data['orgarea'] = data.orgarea && data.orgarea.id
     _data['tags'] = data.tags ? data.tags.map(item => item.id) : []
     _data['userstatus'] = data.userstatus && data.userstatus.id
