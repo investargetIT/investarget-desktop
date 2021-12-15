@@ -355,7 +355,33 @@ const SelectExistOrganization = (props) => {
   );
 };
 
+export const SelectExistOrCreateNewOrganization = (props) => {
+  const [value, setValue] = React.useState([]);
 
+  function getOrg(params) {
+    return api.getOrg({ ...params, issub: false, orgstatus: 2 }).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, orgfullname: label, description } = item
+        return { value, label, description }
+      })
+      return { total, list }
+    });
+  }
+
+  return (
+    <Select2
+      labelInValue
+      value={value}
+      getData={getOrg}
+      onChange={(newValue) => {
+        setValue(newValue);
+      }}
+      noResult="未找到相关机构"
+      {...props}
+    />
+  );
+};
 
 export const SelectExistOrganizationWithID = (props) => {
   const [value, setValue] = React.useState([]);

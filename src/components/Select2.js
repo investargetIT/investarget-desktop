@@ -102,14 +102,15 @@ function DebounceSelect({
   }
 
   const handleAddBtnClick = () => {
-    props.onChange(search);
+    props.onChange({ value: -1, label: search });
+    setOptions([{ value: -1, label: search }]);
     selectRef.current.blur();
   }
 
   const dropdownRender = originalNode => {
     return (
       <div ref={dropdownContent} onScroll={handleScroll}>
-        {allowCreate && search && (
+        {allowCreate && search && props.labelInValue && (
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 12px', minHeight: 32 }}>
             <div style={{ fontWeight: 500, color: '#636e7b' }}>{search}</div>
             <div onClick={handleAddBtnClick}  style={{ color: '#339bd2', cursor: 'pointer' }}>添加</div>
