@@ -148,6 +148,7 @@ function PersonalCenter(props) {
       desc: 1,
       user: userID,
       projstatus: reqProjStatus.data.filter(f => f.id >= 4).map(m => m.id),
+      iscomproj: 0,
     }
     const reqProj = await requestAllData2(api.getProj, params, 10);
     const { data: projList } = reqProj.data;
