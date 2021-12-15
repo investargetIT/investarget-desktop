@@ -504,6 +504,7 @@ function DetaroomDetailsForCompanyFile(props) {
           setLoading={setLoading}
           loading={loading}
           allDataroomFiles={allDataroomFiles}
+          setAllDataroomFiles={setAllDataroomFiles}
           parentId={parentId}
           dataroomID={dataroomID}
           data={data}

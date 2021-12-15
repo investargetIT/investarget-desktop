@@ -864,6 +864,7 @@ function DataroomDetails(props) {
           loading={loading}
           setLoading={setLoading}
           allDataroomFiles={allDataroomFiles}
+          setAllDataroomFiles={setAllDataroomFiles}
           parentId={parentId}
           dataroomID={dataroomID}
           data={data}

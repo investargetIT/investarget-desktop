@@ -130,6 +130,7 @@ function DataroomFileManage({
   setLoading,
   loading,
   allDataroomFiles,
+  setAllDataroomFiles,
   parentId,
   dataroomID,
   data,
@@ -617,11 +618,16 @@ function DataroomFileManage({
     function morePopoverContent() {
 
       function handleDeleteFileClick(item){
+        const filesToDelete = checkedFiles;
+        if (!checkedFiles.includes(item.id)) {
+          filesToDelete.push(item.id);
+        }
+        
         Modal.confirm({
           title: '删除文件',
-          content: `确认删除文件“${item.filename}”吗？`,
+          content: `确认删除文件“${item.filename}”及其他选中的文件吗？`,
           onOk() {
-            handleDeleteFiles([item.id]);
+            handleDeleteFiles(filesToDelete);
           },
           onCancel() {
             console.log('Cancel');
@@ -640,6 +646,16 @@ function DataroomFileManage({
             newData.splice(index, 1);
           });
           setData(newData);
+
+          // 清空勾选的文件
+          setCheckedFiles([]);
+          
+          const newAllFiles = allDataroomFiles.slice();
+          idArr.map(d => {
+            const index = newAllFiles.map(m => m.id).indexOf(d);
+            newAllFiles.splice(index, 1);
+          });
+          setAllDataroomFiles(newAllFiles);
 
           if (!isCompanyDataroom) {
             const newFileUserList = fileUserList.filter(f => !idArr.includes(f.file));
