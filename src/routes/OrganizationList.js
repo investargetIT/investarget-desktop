@@ -229,15 +229,15 @@ class OrganizationList extends React.Component {
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
       }, sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.stock_code'), key: 'stockcode', dataIndex: 'stockcode', sorter: this.state.searchOption === 0 ? true : false, },
-      { title: i18n('common.operation'), key: 'action', render: (text, record) => (
-          <span className="span-operation" style={{display:'flex',justifyContent:'space-between'}}>
+      { title: i18n('common.operation'), key: 'action', align: 'center', render: (text, record) => (
+          <span className="span-operation orgbd-operation-icon-btn">
 
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button style={buttonStyle} disabled={!record.action.change} size="small" ><EditOutlined /></Button>
+              <Button type="link" disabled={!record.action.change}><EditOutlined /></Button>
             </Link>
 
             <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <Button style={buttonStyle} size="small" disabled={!record.action.delete} >
+              <Button type="link" disabled={!record.action.delete} >
                 <DeleteOutlined />
               </Button>
             </Popconfirm>
