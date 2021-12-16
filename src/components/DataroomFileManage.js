@@ -1137,7 +1137,7 @@ function DataroomFileManage({
                         <Select
                           mode="multiple"
                           showArrow
-                          tagRender={renderTagContentOfFile}
+                          tagRender={props => renderTagContentOfFile(props, m.id)}
                           style={{ width: '100%' }}
                           value={getVisibleUsersOfFile(m.id)}
                           optionLabelProp="children"
