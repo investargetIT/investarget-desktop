@@ -5,6 +5,7 @@ import {
   hasPerm,
   getCurrentUser,
   requestAllData,
+  handleError,
 } from '../utils/util';
 import ViewInvestorsInTimeline from './ViewInvestorsInTimeline';
 

@@ -305,7 +305,7 @@ class ProjectDetail extends React.Component {
       this.setState({ project }, () => this.getAndSetProjectPercentage(id))
     }).catch( handleError);
 
-    this.getFavorProject()
+    // this.getFavorProject()
 
     // 获取投资人的交易师
     if (hasPerm('usersys.as_investor')) {
@@ -330,6 +330,7 @@ class ProjectDetail extends React.Component {
   }
 
   getAndSetProjectPercentage = async projID => {
+    if (!hasPerm('usersys.as_trader')) return;
     const reqBdRes = await api.getSource('orgbdres');
     const { data: orgBDResList } = reqBdRes;
 
@@ -685,7 +686,7 @@ function ProjectHead({ project, allCountries, progress }) {
       <div style={{ marginBottom: 30, fontSize: 14, color: '#262626', display: 'flex', flexWrap: 'wrap' }}>
         <div style={{ minWidth: 250, margin: '8px 0' }}>{displayCountry()}</div>
         <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('project.transaction_size')}：<span style={{ color: '#339bd2' }}>{displayTranscationAmount()}</span></div>
-        <div style={{ display: 'flex', minWidth: 250, margin: '8px 0' }}>项目进度：<div style={{ width: 180 }}><Progress percent={progress} size="small" strokeColor="#339bd2" /></div></div>
+        {hasPerm('usersys.as_trader') && <div style={{ display: 'flex', minWidth: 250, margin: '8px 0' }}>项目进度：<div style={{ width: 180 }}><Progress percent={progress} size="small" strokeColor="#339bd2" /></div></div>}
         <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('project_bd.created_time')}：<span style={{ color: '#595959' }}>{project.createdtime && project.createdtime.substr(0, 10)}</span></div>
         <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('industry_type')}：<span style={{ color: '#595959' }}>{project.industries && project.industries[0] && project.industries[0].name}</span></div>
       </div>

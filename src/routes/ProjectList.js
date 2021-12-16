@@ -142,7 +142,11 @@ class ProjectList extends React.Component {
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
       this.setState({ total, list, loading: false },
-        () => this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: list })
+        () => {
+          if (hasPerm('usersys.as_trader')) {
+            this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: list })
+          }
+        }
       );
     }, error => {
       this.setState({ loading: false })
@@ -288,9 +292,11 @@ class ProjectList extends React.Component {
   }
 
   componentDidMount() {
-    this.getMyTodoTasks();
-    this.getOngoingProjects();
-    this.getFinishedProjectThisYear();
+    if (hasPerm('usersys.as_trader')) {
+      this.getMyTodoTasks();
+      this.getOngoingProjects();
+      this.getFinishedProjectThisYear();
+    }
     this.getProject()
   }
 
