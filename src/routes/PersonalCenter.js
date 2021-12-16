@@ -9,6 +9,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
   UploadOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 import {
@@ -378,9 +379,9 @@ function PersonalCenter(props) {
       align: 'center',
       key: 'operation',
       render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeletePromotionHistoryBtnClick(record)}>删除</Button>
+        <div className="orgbd-operation-icon-btn">
+          <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}><EditOutlined /></Button>
+          <Button type="link" onClick={() => handleDeletePromotionHistoryBtnClick(record)}><DeleteOutlined /></Button>
         </div>
       ),
     });
@@ -419,9 +420,9 @@ function PersonalCenter(props) {
       align: 'center',
       key: 'operation',
       render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteKPIRecordBtnClick(record)}>删除</Button>
+        <div className="orgbd-operation-icon-btn">
+          <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}><EditOutlined /></Button>
+          <Button type="link" onClick={() => handleDeleteKPIRecordBtnClick(record)}><DeleteOutlined /></Button>
         </div>
       ),
     })
@@ -540,9 +541,9 @@ function PersonalCenter(props) {
       align: 'center',
       key: 'operation',
       render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditMentorTrackRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteMentorTrackBtnClick(record)}>删除</Button>
+        <div className="orgbd-operation-icon-btn">
+          <Button type="link" onClick={() => handleEditMentorTrackRecordBtnClick(record)}><EditOutlined /></Button>
+          <Button type="link" onClick={() => handleDeleteMentorTrackBtnClick(record)}><DeleteOutlined /></Button>
         </div>
       ),
     },
@@ -578,9 +579,9 @@ function PersonalCenter(props) {
       align: 'center',
       key: 'operation',
       render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
+        <div className="orgbd-operation-icon-btn">
+          <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}><EditOutlined /></Button>
+          <Button type="link" onClick={() => handleDeleteTrainingRecordBtnClick(record)}><DeleteOutlined /></Button>
         </div>
       ),
     });
