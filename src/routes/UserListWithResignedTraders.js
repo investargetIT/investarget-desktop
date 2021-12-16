@@ -306,14 +306,14 @@ class UserListWithResignedTraders extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span className="span-operation">
+              <span className="span-operation orgbd-operation-icon-btn">
 
                 <Link target="_blank" to={'/app/user/edit/' + record.id}>
-                  <Button style={buttonStyle} size="small"><EditOutlined /></Button>
+                  <Button type="link"><EditOutlined /></Button>
                 </Link>
 
                 <Popconfirm title={i18n('delete_confirm')} onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button style={buttonStyle} size="small">
+                  <Button type="link">
                     <DeleteOutlined />
                   </Button>
                 </Popconfirm>

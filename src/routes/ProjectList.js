@@ -488,7 +488,7 @@ class ProjectList extends React.Component {
         key: 'action',
         render: (_, record) => {
           return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
                 <Link to={'/app/projects/edit/' + record.id}>
                   <Button disabled={!record.action.change} type="link">

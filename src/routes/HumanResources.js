@@ -296,76 +296,76 @@ function HumanResources(props) {
     }
   }
 
-  const promotionHistoryColumn = [
-    {
-      title: '起止时间',
-      key: 'duration',
-      render: (_, record) => {
-        const { startDate, endDate } = record;
-        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate ? endDate.slice(0, 10).replaceAll('-', '.') : '至今'}`;
-      },
-    },
-    {
-      title: '任职部门',
-      dataIndex: ['indGroup', 'name'],
-      key: 'indGroup',
-    },
-    {
-      title: '任职岗位',
-      dataIndex: ['title', 'name'],
-      key: 'title',
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeletePromotionHistoryBtnClick(record)}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const promotionHistoryColumn = [
+  //   {
+  //     title: '起止时间',
+  //     key: 'duration',
+  //     render: (_, record) => {
+  //       const { startDate, endDate } = record;
+  //       return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate ? endDate.slice(0, 10).replaceAll('-', '.') : '至今'}`;
+  //     },
+  //   },
+  //   {
+  //     title: '任职部门',
+  //     dataIndex: ['indGroup', 'name'],
+  //     key: 'indGroup',
+  //   },
+  //   {
+  //     title: '任职岗位',
+  //     dataIndex: ['title', 'name'],
+  //     key: 'title',
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: (_, record) => (
+  //       <div>
+  //         <Button type="link" onClick={() => handleEditPromotionHistoryBtnClick(record)}>编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeletePromotionHistoryBtnClick(record)}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
-  const KPIRecordColumns = [
-    {
-      title: '年度',
-      key: 'duration',
-      render: (_, record) => {
-        const { startDate, endDate } = record;
-        return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate.slice(0, 10).replaceAll('-', '.')}`;
-      },
-    },
-    {
-      title: '绩效考核结果',
-      dataIndex: ['level', 'name'],
-      key: 'level',
-      render: text => text || '暂无',
-    },
-    {
-      title: '附件',
-      dataIndex: 'performanceTableUrl',
-      key: 'attachment',
-      render: text => text ? <a target="_blank" href={text}>查看附件</a> : '暂无',
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      key: 'remark',
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteKPIRecordBtnClick(record)}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const KPIRecordColumns = [
+  //   {
+  //     title: '年度',
+  //     key: 'duration',
+  //     render: (_, record) => {
+  //       const { startDate, endDate } = record;
+  //       return `${startDate.slice(0, 10).replaceAll('-', '.')} - ${endDate.slice(0, 10).replaceAll('-', '.')}`;
+  //     },
+  //   },
+  //   {
+  //     title: '绩效考核结果',
+  //     dataIndex: ['level', 'name'],
+  //     key: 'level',
+  //     render: text => text || '暂无',
+  //   },
+  //   {
+  //     title: '附件',
+  //     dataIndex: 'performanceTableUrl',
+  //     key: 'attachment',
+  //     render: text => text ? <a target="_blank" href={text}>查看附件</a> : '暂无',
+  //   },
+  //   {
+  //     title: '备注',
+  //     dataIndex: 'remark',
+  //     key: 'remark',
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: (_, record) => (
+  //       <div>
+  //         <Button type="link" onClick={() => handleEditKPIRecordBtnClick(record)}>编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteKPIRecordBtnClick(record)}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   // const columns3 = [
   //   {
@@ -450,79 +450,79 @@ function HumanResources(props) {
   //   },
   // ];
 
-  const mentorTrackColumns = [
-    {
-      title: '日期',
-      dataIndex: 'communicateDate',
-      key: 'date',
-      render: text => text.slice(0, 10).replaceAll('-', '.'),
-    },
-    {
-      title: '沟通方式',
-      dataIndex: 'communicateType',
-      key: 'type',
-      render: text => text || '暂无',
-    },
-    {
-      title: '沟通人',
-      dataIndex: ['communicateUser', 'username'],
-      key: 'mentor',
-      render: text => text || '暂无',
-    },
-    {
-      title: '沟通主要内容',
-      dataIndex: 'communicateContent',
-      key: 'content',
-      render: text => text || '暂无',
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditMentorTrackRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteMentorTrackBtnClick(record)}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const mentorTrackColumns = [
+  //   {
+  //     title: '日期',
+  //     dataIndex: 'communicateDate',
+  //     key: 'date',
+  //     render: text => text.slice(0, 10).replaceAll('-', '.'),
+  //   },
+  //   {
+  //     title: '沟通方式',
+  //     dataIndex: 'communicateType',
+  //     key: 'type',
+  //     render: text => text || '暂无',
+  //   },
+  //   {
+  //     title: '沟通人',
+  //     dataIndex: ['communicateUser', 'username'],
+  //     key: 'mentor',
+  //     render: text => text || '暂无',
+  //   },
+  //   {
+  //     title: '沟通主要内容',
+  //     dataIndex: 'communicateContent',
+  //     key: 'content',
+  //     render: text => text || '暂无',
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: (_, record) => (
+  //       <div>
+  //         <Button type="link" onClick={() => handleEditMentorTrackRecordBtnClick(record)}>编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteMentorTrackBtnClick(record)}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
-  const trainingRecordColumns = [
-    {
-      title: '日期',
-      dataIndex: 'trainingDate',
-      key: 'date',
-      render: text => text.slice(0, 10).replaceAll('-', '.'),
-    },
-    {
-      title: '培训形式',
-      dataIndex: ['trainingType', 'type'],
-      key: 'type',
-    },
-    {
-      title: '培训内容',
-      dataIndex: 'trainingContent',
-      key: 'content',
-      render: text => text || '暂无',
-    },
-    {
-      title: '状态',
-      dataIndex: ['trainingStatus', 'status'],
-      key: 'status',
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'operation',
-      render: (_, record) => (
-        <div>
-          <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}>编辑</Button>
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
-        </div>
-      ),
-    },
-  ];
+  // const trainingRecordColumns = [
+  //   {
+  //     title: '日期',
+  //     dataIndex: 'trainingDate',
+  //     key: 'date',
+  //     render: text => text.slice(0, 10).replaceAll('-', '.'),
+  //   },
+  //   {
+  //     title: '培训形式',
+  //     dataIndex: ['trainingType', 'type'],
+  //     key: 'type',
+  //   },
+  //   {
+  //     title: '培训内容',
+  //     dataIndex: 'trainingContent',
+  //     key: 'content',
+  //     render: text => text || '暂无',
+  //   },
+  //   {
+  //     title: '状态',
+  //     dataIndex: ['trainingStatus', 'status'],
+  //     key: 'status',
+  //   },
+  //   {
+  //     title: '操作',
+  //     align: 'center',
+  //     key: 'operation',
+  //     render: (_, record) => (
+  //       <div>
+  //         <Button type="link" onClick={() => handleEditTrainingRecordBtnClick(record)}>编辑</Button>
+  //         <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteTrainingRecordBtnClick(record)}>删除</Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   const data6 = [
     {

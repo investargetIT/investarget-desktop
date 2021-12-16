@@ -117,18 +117,18 @@ class ReportList extends React.Component {
       {
         title: '操作', key: 'operation', render: (text, record) => {
           return (
-            <div>
-              <Link to={`/app/report/${record.id}`} target="_blank" style={{ marginRight: 10 }}>
-                <EyeOutlined style={{ fontSize: '16px' }} />
+            <div className="orgbd-operation-icon-btn">
+              <Link to={`/app/report/${record.id}`} target="_blank">
+                <Button type="link"><EyeOutlined /></Button>
               </Link>
-              {record.user.id === getCurrentUser() &&
-                <Link to={`/app/report/edit/${record.id}`} style={{ marginRight: 10 }}>
-                  <EditOutlined style={{ fontSize: '16px' }} />
+              {/* {record.user.id === getCurrentUser() && */}
+                <Link to={`/app/report/edit/${record.id}`}>
+                  <Button disabled={record.user.id !== getCurrentUser()} type="link"><EditOutlined /></Button>
                 </Link>
-              }
+              {/* } */}
               <Popconfirm title={i18n("delete_confirm")} onConfirm={this.deleteReportItem.bind(this, record)}>
                 <Button type="link">
-                  <DeleteOutlined style={{ fontSize: '16px' }} />
+                  <DeleteOutlined  />
                 </Button>
               </Popconfirm>
             </div>

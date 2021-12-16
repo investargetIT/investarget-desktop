@@ -287,14 +287,14 @@ class UserList extends React.Component {
         title: i18n("common.operation"),
         key: 'action',
         render: (text, record) => (
-              <span className="span-operation">
+              <span className="span-operation orgbd-operation-icon-btn">
 
                 <Link to={'/app/user/edit/' + record.id}>
-                  <Button style={buttonStyle} disabled={!record.action.change} size="small"><EditOutlined /></Button>
+                  <Button type="link" disabled={!record.action.change}><EditOutlined /></Button>
                 </Link>
 
                 <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button style={buttonStyle} size="small" disabled={!record.action.delete}>
+                  <Button type="link" disabled={!record.action.delete}>
                     <DeleteOutlined />
                   </Button>
                 </Popconfirm>
