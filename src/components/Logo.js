@@ -38,7 +38,7 @@ function Logo(props) {
           <img style={logoImgStyle} src="/images/autospace.png" />
           : null }
         {source === 1 ?
-          <img style={logoImgStyle} src="/images/investarget_new_new_logo.png" />
+          <img style={logoImgStyle} src="/images/logo_delova_biotech.png" />
           : null }
         {!source ?
           <div><Icon type="home" />{i18n('common.home')}</div>
