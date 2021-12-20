@@ -26,16 +26,16 @@ function Logo(props) {
     <div style={{...logoStyle, ...props.style}}>
       {/* <Link to={ currentUser ? "/app" : "/" }> */}
         {source === 5 ?
-          <img style={{...logoImgStyle, padding: 10}} src="/images/logo_hongyun.jpg" />
+          <img style={logoImgStyle} src="/images/logo_hongyun.jpg" />
           : null }
         {source === 4 ?
-          <img style={{...logoImgStyle, padding: 10}} src="/images/logo_delova_biotech.png" />
+          <img style={logoImgStyle} src="/images/logo_delova_biotech.png" />
           : null }
         {source === 3 ?
-          <img style={{...logoImgStyle, padding: 10}} src="/images/aura_logo.png" />
+          <img style={logoImgStyle} src="/images/aura_logo.png" />
           : null }
         {source === 2 ?
-          <img style={{...logoImgStyle, padding: 10}} src="/images/autospace.png" />
+          <img style={logoImgStyle} src="/images/autospace.png" />
           : null }
         {source === 1 ?
           <img style={logoImgStyle} src="/images/investarget_new_new_logo.png" />
