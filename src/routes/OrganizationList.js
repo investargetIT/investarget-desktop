@@ -259,7 +259,7 @@ class OrganizationList extends React.Component {
     );
 
     const { filters, search, total, list, loading, page, pageSize } = this.state
-    const action = hasPerm('org.admin_manageorg') ?
+    const action = hasPerm('usersys.as_trader') ?
                     { name: i18n('organization.new_org'), link: "/app/organization/add" } : null
 
     return (
