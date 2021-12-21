@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-// import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
-import LayoutForMobile  from '../components/LayoutForMobile';
 import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
@@ -10,7 +8,8 @@ import * as api from '../api';
 import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
-import DataroomFileManage from '../components/DataroomFileManage';
+import DataroomFileManageForMobile from '../components/DataroomFileManageForMobile';
+import LeftRightLayoutPureForMobile from '../components/LeftRightLayoutPureForMobile';
 
 const { Option } = Select;
 const { DirectoryTree } = Tree;
@@ -798,32 +797,13 @@ function DataroomDetails(props) {
   }
 
   return (
-    <LayoutForMobile location={props.location}>
+    <LeftRightLayoutPureForMobile location={props.location}>
     
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
-          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
-            {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
-            {isAbleToAddUser &&
-              <div>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ marginRight: 10 }}>
-                    <SelectExistInvestor
-                      style={{ width: 200 }}
-                      value={newUser}
-                      placeholder="请选择联系人"
-                      onChange={value => setNewUser(value)}
-                      dataroom={dataroomID}
-                    />
-                  </div>
-                  <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
-                </div>
-              </div>
-            }
-          </div>
 
           <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>投资人</div>
@@ -851,7 +831,7 @@ function DataroomDetails(props) {
       }
 
       {/* {data.length > 0 && */}
-        <DataroomFileManage
+        <DataroomFileManageForMobile
           setData={setData}
           loading={loading}
           setLoading={setLoading}
@@ -923,7 +903,7 @@ function DataroomDetails(props) {
         </Modal>
       }
 
-    </LayoutForMobile>
+    </LeftRightLayoutPureForMobile>
   );
 }
 function mapStateToProps(state) {

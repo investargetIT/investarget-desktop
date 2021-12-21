@@ -79,18 +79,6 @@ class LeftRightLayoutPureForMobile extends React.Component {
 
         <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
 
-          <Sider
-            className={['/app/org/bd', '/app/org/bd/mobile'].includes(window.location.pathname) ? 'remove-on-mobile' : null}
-            trigger={null}
-            collapsible
-            collapsed={this.props.collapsed}
-            // width={240}
-            // style={siderStyle}
-            // collapsedWidth={50}
-          >
-            <SiderMenu ref="sidemenu" collapsed={this.props.collapsed} theme="dark" />
-          </Sider>
-
           <Content style={{ padding: 20 }}>
             {this.props.children}
           </Content>
