@@ -35,6 +35,7 @@ import DataRoomList from './routes/DataRoomList';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
 import DataRoom from './routes/DataRoom';
 import DataroomDetails from './routes/DataroomDetails';
+import DataroomDetailsForMobile from './routes/DataroomDetailsForMobile';
 import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
@@ -143,6 +144,7 @@ function RouterConfig({ history }) {
         <Route path="/app/dataroom/company/list" component={CompanyDataRoomList} />
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/detail" component={DataroomDetails} />
+        <Route path="/m/dataroom/detail" component={DataroomDetailsForMobile} />
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
