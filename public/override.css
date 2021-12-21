@@ -709,4 +709,16 @@ label.login-register-form__container__label {
   .table-orgbd-desktop {
     display: none;
   }
+  .short-content {
+    width: 335px;
+    height: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .long-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 800px;
+  }
 }

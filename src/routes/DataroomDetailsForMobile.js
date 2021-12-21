@@ -365,6 +365,40 @@ function DataroomDetails(props) {
     return 'rgba(82, 196, 26, .15)';
   }
 
+  let startX, oldX=0;
+  function handleTouchStart(e) {
+    const { touches } = e;
+    if (touches && touches.length === 1) {
+      const touch = touches[0];
+      startX = touch.clientX;
+    }
+
+    const all = document.getElementsByClassName('long-content');
+    for (let i = 0; i < all.length; i++) {
+      const oldLeft = all[i].style.left;
+      if (oldLeft) {
+        oldX = parseInt(oldLeft);
+      }
+    }
+    e.preventDefault();
+  }
+
+  function handleTouchMove(e) {
+    const progressX = startX - e.touches[0].clientX;
+    const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
+    window.echo('move e', progressX);
+    const all = document.getElementsByClassName('long-content');
+    window.echo('all', all);
+    
+    for (let i = 0; i < all.length; i++) {
+      if ((oldX + translation) < 0) {
+        all[i].style.left = `${oldX + translation}px`;
+      } else {
+        all[i].style.left = 0;
+      }
+    }
+  }
+
   function handleSendEmail(item) {
     api.sendEmailToDataroomUser(item.id)
       .then(_ => {
@@ -801,6 +835,17 @@ function DataroomDetails(props) {
     
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
+
+<div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+  <div>一级目录不用动</div>
+  <div className="short-content">
+    <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
+  </div>
+  <div>一级目录不用动</div>
+  <div className="short-content">
+    <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
+  </div>
+</div>
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
