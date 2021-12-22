@@ -141,7 +141,16 @@ class ProjectList extends React.Component {
     this.setState({ loading: true })
     api.getProj(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false },
+      const newList = list.map(m => {
+        const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
+        let userWithPermission = [];
+        userWithPermission = userWithPermission.concat(m.PM || []);
+        userWithPermission = userWithPermission.concat(m.createuser || []);
+        userWithPermission = userWithPermission.concat(projTraders);
+        const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
+        return { ...m, hasEditPerm };
+      })
+      this.setState({ total, list: newList, loading: false },
         () => {
           if (hasPerm('usersys.as_trader')) {
             this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: list })
@@ -414,7 +423,7 @@ class ProjectList extends React.Component {
         title: i18n('project.name'),
         key: 'title',
         render: (_, record) => {
-          if (record.action.get) {
+          // if (record.action.get) {
             return (
               <Tooltip title="项目详情">
                 <span className="span-title">
@@ -422,12 +431,12 @@ class ProjectList extends React.Component {
                 </span>
               </Tooltip>
             )
-          } else {
-            this.props.dispatch({
-              type: 'app/findError',
-              payload: new ApiError(3000),
-            });
-          }
+          // } else {
+          //   this.props.dispatch({
+          //     type: 'app/findError',
+          //     payload: new ApiError(3000),
+          //   });
+          // }
         }
       },
       {
@@ -497,13 +506,13 @@ class ProjectList extends React.Component {
             <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
                 <Link to={'/app/projects/edit/' + record.id}>
-                  <Button disabled={!record.action.change} type="link">
+                  <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
                     <EditOutlined />
                   </Button>
                 </Link>
               </div>
               <div>
-                <Button type="link" disabled={!record.action.delete} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
+                <Button type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
                   <DeleteOutlined />
                 </Button>
               </div>

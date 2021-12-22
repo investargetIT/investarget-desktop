@@ -380,7 +380,7 @@ class ProjectConnectForm1 extends React.Component {
           }}
         </Form.Item>
         
-        {hasPerm('proj.admin_manageproj') ?
+        {/* {hasPerm('proj.admin_manageproj') ? */}
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
@@ -391,13 +391,13 @@ class ProjectConnectForm1 extends React.Component {
               );
             }}
           </Form.Item>
-          :
+          {/* :
           <BasicFormItem label={i18n('project.development')} name="takeUserName">
             <Input disabled />
           </BasicFormItem>
-        }
+        } */}
 
-        {hasPerm('proj.admin_manageproj') ?
+        {/* {hasPerm('proj.admin_manageproj') ? */}
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
@@ -408,13 +408,13 @@ class ProjectConnectForm1 extends React.Component {
               );
             }}
           </Form.Item>
-          :
+          {/* :
           <BasicFormItem label={i18n('project.team')} name="makeUserName">
             <Input disabled />
-          </BasicFormItem>
-        }
+          </BasicFormItem> */}
+        {/* } */}
 
-        {hasPerm('proj.admin_manageproj') ?
+        {/* {hasPerm('proj.admin_manageproj') ? */}
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
@@ -424,11 +424,11 @@ class ProjectConnectForm1 extends React.Component {
               );
             }}
           </Form.Item>
-          :
+          {/* :
           <BasicFormItem label="PM" name="PMName">
             <Input disabled />
           </BasicFormItem>
-        }
+        } */}
       </Form>
     )
   }
