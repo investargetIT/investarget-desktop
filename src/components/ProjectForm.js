@@ -384,7 +384,7 @@ class ProjectConnectForm1 extends React.Component {
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
-                <BasicFormItem label={i18n('project.take_user')} name="takeUser" valueType="array">
+                <BasicFormItem label={i18n('project.development')} name="takeUser" valueType="array">
                   {/* <SelectAllUser type="trader" /> */}
                   <SelectTrader mode="multiple" disabledOption={getFieldValue('makeUser')} />
                 </BasicFormItem>
@@ -401,7 +401,7 @@ class ProjectConnectForm1 extends React.Component {
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
-                <BasicFormItem label={i18n('project.make_user')} name="makeUser" valueType="array">
+                <BasicFormItem label={i18n('project.team')} name="makeUser" valueType="array">
                   {/* <SelectAllUser type="trader" /> */}
                   <SelectTrader mode="multiple" disabledOption={getFieldValue('takeUser')} />
                 </BasicFormItem>
