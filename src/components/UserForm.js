@@ -80,7 +80,7 @@ class UserForm extends React.Component {
         perm = 'usersys.admin_manageuser'
         break
     }
-    this.hasPerm = hasPerm(perm)
+    this.hasPerm = true;
   }
 
   componentDidMount() {

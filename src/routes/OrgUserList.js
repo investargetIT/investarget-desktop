@@ -6,6 +6,7 @@ import {
   i18n, 
   hasPerm,
   getUserInfo,
+  getCurrentUser,
   handleError,
   requestAllData,
   getURLParamValue,
@@ -110,23 +111,35 @@ class OrgUserList extends React.Component {
       const reqUser = await api.getUser(params);
       const { count: total, data: orgUser } = reqUser.data;
 
-      if (total > 0) {
-        //获取投资人的交易师
-        const orgUserRelation = await requestAllData(api.getUserRelation, {
-          investoruser: orgUser.map(m => m.id),
-          page_size: 100,
-        }, 100);
-        orgUser.forEach(element => {
-          const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
-          element.traders = relations.map(m => ({
-            label: m.traderuser.username,
-            value: m.traderuser.id,
-            onjob: m.traderuser.onjob,
-            familiar: m.familiar,
-          }))
-        });
-      }
-      this.setState({ total, list: orgUser, loading: false });
+      const newList = orgUser.map(m => {
+        const { trader_relation } = m;
+        let hasOperationPermission = false;
+        if (trader_relation) {
+          const allTraderIDs = trader_relation.map(m => m.traderuser && m.traderuser.id);
+          if (allTraderIDs.includes(getCurrentUser())) {
+            hasOperationPermission = true;
+          }
+        }
+        return { ...m, hasOperationPermission };
+      });
+
+      // if (total > 0) {
+      //   //获取投资人的交易师
+      //   const orgUserRelation = await requestAllData(api.getUserRelation, {
+      //     investoruser: orgUser.map(m => m.id),
+      //     page_size: 100,
+      //   }, 100);
+      //   orgUser.forEach(element => {
+      //     const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+      //     element.traders = relations.map(m => ({
+      //       label: m.traderuser.username,
+      //       value: m.traderuser.id,
+      //       onjob: m.traderuser.onjob,
+      //       familiar: m.familiar,
+      //     }))
+      //   });
+      // }
+      this.setState({ total, list: newList, loading: false });
       this.setState({ loading: false })
     } catch (error) {
       this.props.dispatch({
@@ -251,16 +264,16 @@ class OrgUserList extends React.Component {
               <div style={{display:'flex',alignItems:'center'}}>
              
                 <Link to={'/app/user/' + record.id}>
-                  <Button type="link" disabled={!record.action.get} size="small"><EyeOutlined /></Button>
+                  <Button type="link" size="small"><EyeOutlined /></Button>
                 </Link>
                 
                 <Link to={`/app/user/edit/${record.id}?redirect=${encodeURIComponent(this.props.location.pathname + this.props.location.search)}`}>
-                  <Button type="link" disabled={!record.action.change} size="small"><EditOutlined /></Button>
+                  <Button type="link" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission} size="small"><EditOutlined /></Button>
                 </Link>
                
               
-                <Popconfirm title="确定删除吗？" disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button type="link" disabled={!record.action.delete} size="small">
+                <Popconfirm title="确定删除吗？" disabled={false} onConfirm={this.deleteUser.bind(null, record.id)}>
+                  <Button type="link" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission} size="small">
                     <DeleteOutlined />
                   </Button>
                 </Popconfirm>

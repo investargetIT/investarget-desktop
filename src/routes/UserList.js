@@ -7,6 +7,7 @@ import {
   hasPerm,
   getUserInfo,
   requestAllData,
+  getCurrentUser,
 } from '../utils/util';
 import * as api from '../api'
 import LeftRightLayout from '../components/LeftRightLayout'
@@ -82,7 +83,18 @@ class UserList extends React.Component {
     this.setState({ loading: true })
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
+      const newList = list.map(m => {
+        const { trader_relation } = m;
+        let hasOperationPermission = false;
+        if (trader_relation) {
+          const allTraderIDs = trader_relation.map(m => m.traderuser && m.traderuser.id);
+          if (allTraderIDs.includes(getCurrentUser())) {
+            hasOperationPermission = true;
+          }
+        }
+        return { ...m, hasOperationPermission };
+      });
+      this.setState({ total, list: newList, loading: false })
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -290,11 +302,11 @@ class UserList extends React.Component {
               <span className="span-operation orgbd-operation-icon-btn">
 
                 <Link to={'/app/user/edit/' + record.id}>
-                  <Button type="link" disabled={!record.action.change}><EditOutlined /></Button>
+                  <Button type="link" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission}><EditOutlined /></Button>
                 </Link>
 
-                <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteUser.bind(null, record.id)}>
-                  <Button type="link" disabled={!record.action.delete}>
+                <Popconfirm title={i18n('delete_confirm')} disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission} onConfirm={this.deleteUser.bind(null, record.id)}>
+                  <Button type="link" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission}>
                     <DeleteOutlined />
                   </Button>
                 </Popconfirm>
