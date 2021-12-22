@@ -312,10 +312,12 @@ function DataroomDetails(props) {
 
     getDataroomFiles();
     getProjectDetails();
-    getDataRoomTemp();
-    getAllUserFile();
-    getDataRoomFileAnnotations();
-    getDataroomFileReadingRecord();
+    if (hasPerm('usersys.as_trader')) {
+      getDataRoomTemp();
+      getAllUserFile();
+      getDataRoomFileAnnotations();
+      getDataroomFileReadingRecord();
+    }
 
     if (isLogin() && !isLogin().is_superuser && hasPerm('usersys.as_investor')) {
       getNewDataRoomFile();
