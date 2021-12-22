@@ -4,6 +4,7 @@ import {
   i18n, 
   hasPerm,
   getUserInfo,
+  getCurrentUser,
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
@@ -100,7 +101,15 @@ class OrganizationList extends React.Component {
     console.log(params)
     api.getOrg(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
+      const newList = list.map(m => {
+        const { createuser } = m;
+        let hasOperationPermission = false;
+        if (createuser && getCurrentUser() === createuser.id) {
+          hasOperationPermission = true;
+        }
+        return { ...m, hasOperationPermission };
+      });
+      this.setState({ total, list: newList, loading: false })
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -233,11 +242,11 @@ class OrganizationList extends React.Component {
           <span className="span-operation orgbd-operation-icon-btn">
 
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button type="link" disabled={!record.action.change}><EditOutlined /></Button>
+              <Button type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission}><EditOutlined /></Button>
             </Link>
 
-            <Popconfirm title={i18n('delete_confirm')} disabled={!record.action.delete} onConfirm={this.deleteOrg.bind(null, record.id)}>
-              <Button type="link" disabled={!record.action.delete} >
+            <Popconfirm title={i18n('delete_confirm')} disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission} onConfirm={this.deleteOrg.bind(null, record.id)}>
+              <Button type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission} >
                 <DeleteOutlined />
               </Button>
             </Popconfirm>

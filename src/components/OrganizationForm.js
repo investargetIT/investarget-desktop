@@ -55,12 +55,12 @@ class OrganizationForm extends React.Component {
     super(props)
   }
 
-  componentDidMount() {
-    if (!hasPerm('org.admin_manageorg')) {
-      this.props.dispatch(routerRedux.replace('/403'))
-      return
-    }
-  }
+  // componentDidMount() {
+  //   if (!hasPerm('org.admin_manageorg')) {
+  //     this.props.dispatch(routerRedux.replace('/403'))
+  //     return
+  //   }
+  // }
 
   handleCurrencyTypeChange = (currencyType, getFieldValue, setFieldsValue) => {
     const currency = getCurrencyFromId(currencyType || 2)
@@ -239,11 +239,11 @@ class OrganizationForm extends React.Component {
           <SelectOrgLevel />
         </BasicFormItem>
 
-        { hasPerm('org.admin_manageorg') ?
+        {/* { hasPerm('org.admin_manageorg') ? */}
         <BasicFormItem label={i18n('organization.audit_status')} name="orgstatus" valueType="number" initialValue={1}>
           <RadioAudit />
         </BasicFormItem>
-        : null }
+        {/* : null } */}
 
       </Form>
     )
