@@ -555,7 +555,7 @@ class UserDetail extends React.Component {
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
-      <LeftRightLayout location={this.props.location} title={i18n('menu.user_management')} name={i18n('user.user_detail')}>
+      <LeftRightLayout location={this.props.location} title={i18n('menu.Full_usermanager')} name={i18n('user.user_detail')}>
         {!this.state.hideUserInfo && <UserRemarkList typeId={userId} />}
 
         <h3 style={detailStyle}>{i18n('user.detail')}:          
