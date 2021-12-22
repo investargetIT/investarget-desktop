@@ -68,6 +68,7 @@ function Dashboard(props) {
         sort: 'publishDate',
         desc: 1,
         user: userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
+        iscomproj: 0,
       }
       const reqProj = await api.getProj(params);
       let { data: projList } = reqProj.data;
