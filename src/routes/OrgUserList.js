@@ -272,7 +272,7 @@ class OrgUserList extends React.Component {
                 </Link>
                
               
-                <Popconfirm title="确定删除吗？" disabled={false} onConfirm={this.deleteUser.bind(null, record.id)}>
+                <Popconfirm title="确定删除吗？" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermissio} onConfirm={this.deleteUser.bind(null, record.id)}>
                   <Button type="link" disabled={!hasPerm('usersys.admin_manageuser') && !record.hasOperationPermission} size="small">
                     <DeleteOutlined />
                   </Button>
