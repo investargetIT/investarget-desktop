@@ -84,10 +84,10 @@ class UserList extends React.Component {
     api.getUser(params).then(result => {
       const { count: total, data: list } = result.data
       const newList = list.map(m => {
-        const { trader_relation } = m;
+        const { trader_relations } = m;
         let hasOperationPermission = false;
-        if (trader_relation) {
-          const allTraderIDs = trader_relation.map(m => m.traderuser && m.traderuser.id);
+        if (trader_relations) {
+          const allTraderIDs = trader_relations.map(m => m.traderuser && m.traderuser.id);
           if (allTraderIDs.includes(getCurrentUser())) {
             hasOperationPermission = true;
           }
