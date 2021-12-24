@@ -43,7 +43,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectExistOrganizationWithID, SelectNewBDStatus, SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
 import styles from './OrgBDListComponent.css';
-import ModalAddUser from './ModalAddUser';
+import ModalAddUserNew from './ModalAddUserNew';
 import debounce from 'lodash/debounce';
 import {
   DeleteOutlined,
@@ -2720,7 +2720,7 @@ class OrgBDListComponent extends React.Component {
         </Modal> */}
 
         {this.state.org ?
-        <ModalAddUser
+        <ModalAddUserNew
           onCancel={() => this.setState({ org: null })}
           org={this.state.org}
         />
@@ -2891,6 +2891,7 @@ class OrgBDListComponent extends React.Component {
 
               <Form.Item noStyle shouldUpdate>
                 {({ getFieldValue }) => {
+                  const org = getFieldValue('org');
                   return (
                     <Form.Item
                       name="orgUser"
@@ -2900,22 +2901,24 @@ class OrgBDListComponent extends React.Component {
                         { required: true }
                       ]}
                     >
-                      <SelectOrgInvestor
-                        allStatus
-                        onjob
-                        allowEmpty
-                        style={{ width: '100%' }}
-                        type="investor"
-                        mode="single"
-                        size="middle"
-                        optionFilterProp="children"
-                        org={getFieldValue('org')}
-                      />
+                      <div style={{ display: 'flex' }}>
+                        <SelectOrgInvestor
+                          allStatus
+                          onjob
+                          allowEmpty
+                          style={{ flex: 1 }}
+                          type="investor"
+                          mode="single"
+                          size="middle"
+                          optionFilterProp="children"
+                          org={getFieldValue('org')}
+                        />
+                        {org && <Button style={{ marginLeft: 8 }} onClick={() => this.setState({ org })}>添加联系人</Button>}
+                      </div>
                     </Form.Item>
                   )
                 }}
               </Form.Item>
-
 
               <Form.Item
                 name="trader"
