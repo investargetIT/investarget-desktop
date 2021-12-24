@@ -203,6 +203,8 @@ class OrgBDListComponent extends React.Component {
         loadingImportOrgBD: false,
         downloadUrl: null, // 模板下载链接
         loadingDownloadTemplate: false,
+
+        reloadOrgInvestor: 0,
     }
 
     this.allTrader = [];
@@ -1082,6 +1084,11 @@ class OrgBDListComponent extends React.Component {
     this.setState({ list })
   }
 
+  handleFinishAddUser = user => {
+    this.setState({ org: null, reloadOrgInvestor: this.state.reloadOrgInvestor + 1 });
+    this.orgBDFormRef.current.setFieldsValue({ orgUser: user.id });
+  }
+
   updateSelection(record, change) {
     let list = this.state.list.map(line => 
       line.id !== `${record.org.id}-${record.proj.id}` ?
@@ -1644,8 +1651,8 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleOrgBDFormValuesChange = (changedValues, allValues) => {
-    // window.echo('changed values', changedValues);
-    // window.echo('all values', allValues);
+    window.echo('changed values', changedValues);
+    window.echo('all values', allValues);
   }
 
   handleSubmitOrgBDForm = () => {
@@ -1666,8 +1673,8 @@ class OrgBDListComponent extends React.Component {
       'bduser': record.orgUser >= 0 ? record.orgUser : null,
       'manager': Number(record.trader),
       'proj': this.projId,
-      'response': record.progress.response,
-      'material': record.progress.material,
+      'response': record.progress ? record.progress.response : undefined,
+      'material': record.progress ? record.progress.material : undefined,
     };
     api.getUserSession()
       .then(() => api.addOrgBD(body))
@@ -2721,6 +2728,7 @@ class OrgBDListComponent extends React.Component {
 
         {this.state.org ?
         <ModalAddUserNew
+          onFinishAddUser={this.handleFinishAddUser}
           onCancel={() => this.setState({ org: null })}
           org={this.state.org}
         />
@@ -2893,6 +2901,7 @@ class OrgBDListComponent extends React.Component {
                 {({ getFieldValue }) => {
                   const org = getFieldValue('org');
                   return (
+                    // <div style={{ display: 'flex' }}>
                     <Form.Item
                       name="orgUser"
                       label="联系人"
@@ -2901,7 +2910,7 @@ class OrgBDListComponent extends React.Component {
                         { required: true }
                       ]}
                     >
-                      <div style={{ display: 'flex' }}>
+                      
                         <SelectOrgInvestor
                           allStatus
                           onjob
@@ -2912,10 +2921,16 @@ class OrgBDListComponent extends React.Component {
                           size="middle"
                           optionFilterProp="children"
                           org={getFieldValue('org')}
+                          reload={this.state.reloadOrgInvestor}
+                          notFoundContent={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>未找到联系人</div>
+                            {org && <Button type="link" onClick={() => this.setState({ org })}>添加联系人</Button>}
+                          </div>}
                         />
-                        {org && <Button style={{ marginLeft: 8 }} onClick={() => this.setState({ org })}>添加联系人</Button>}
-                      </div>
+                        
                     </Form.Item>
+                    // {org && <Button style={{ marginLeft: 8 }} onClick={() => this.setState({ org })}>添加联系人</Button>}
+                    // </div>
                   )
                 }}
               </Form.Item>

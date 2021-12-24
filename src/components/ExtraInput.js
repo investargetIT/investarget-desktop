@@ -967,7 +967,7 @@ class SelectOrgInvestor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.org !== nextProps.org) {
+    if (this.props.org !== nextProps.org || this.props.reload !== nextProps.reload) {
       this.getData(nextProps);
     }
   }

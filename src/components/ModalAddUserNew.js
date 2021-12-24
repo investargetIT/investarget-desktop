@@ -17,7 +17,8 @@ import {
   handleError,
   isLogin,
   i18n,
-  checkRealMobile, 
+  checkRealMobile,
+  checkMobile,
 } from '../utils/util'
 
 const FormItem = Form.Item;
@@ -81,14 +82,24 @@ const ModalAddUser = props => {
   const [isFetchingNumber, setIsFetchingNumber] = useState(false);
   const [isDisablePhoneInput, setIsDisablePhoneInput] = useState(false);
 
+  // function checkMobileInfo(_, value) {
+  //   if (value) {
+  //     if (checkRealMobile(value)) {
+  //       return Promise.resolve();
+  //     }
+  //     return Promise.reject('手机号码格式错误')
+  //   }
+  //   return Promise.resolve();
+  // }
+
   function checkMobileInfo(_, value) {
-    if (value) {
-      if (checkRealMobile(value)) {
-        return Promise.resolve();
-      }
-      return Promise.reject('手机号码格式错误')
+    if (value == '') {
+      return Promise.reject(new Error(i18n('mobile_not_empty')));
+    } else if (!checkMobile(value)) {
+      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
+    } else {
+      return Promise.resolve();
     }
-    return Promise.resolve();
   }
 
   function handleSubmitBtnClicked() {
@@ -96,7 +107,7 @@ const ModalAddUser = props => {
       .then(values => {
         setIsLoading(true);
         addUserAndRelation(values)
-          .then(props.onCancel)
+          .then(user => props.onFinishAddUser(user))
           .catch(handleError) // 可能会添加一个已经存在的投资人所以要捕获这个错误
           .finally(() => setIsLoading(false));
       });
@@ -115,6 +126,7 @@ const ModalAddUser = props => {
       traderuser: isLogin().id
     };
     await api.addUserRelation(body);
+    return user.data;
   }
 
   function handleUnknowPhoneButtonClicked() {
