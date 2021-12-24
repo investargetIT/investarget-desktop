@@ -205,6 +205,7 @@ class OrgBDListComponent extends React.Component {
         loadingDownloadTemplate: false,
 
         reloadOrgInvestor: 0,
+        newUser: '', // 新增投资人名称
     }
 
     this.allTrader = [];
@@ -2731,6 +2732,7 @@ class OrgBDListComponent extends React.Component {
           onFinishAddUser={this.handleFinishAddUser}
           onCancel={() => this.setState({ org: null })}
           org={this.state.org}
+          user={this.state.newUser}
         />
         :null}
 
@@ -2912,6 +2914,8 @@ class OrgBDListComponent extends React.Component {
                     >
                       
                         <SelectOrgInvestor
+                          handleAddBtnClick={search => this.setState({ org, newUser: search })}
+                          allowCreate={Boolean(org)}
                           allStatus
                           onjob
                           allowEmpty
@@ -2922,10 +2926,6 @@ class OrgBDListComponent extends React.Component {
                           optionFilterProp="children"
                           org={getFieldValue('org')}
                           reload={this.state.reloadOrgInvestor}
-                          notFoundContent={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>未找到联系人</div>
-                            {org && <Button type="link" onClick={() => this.setState({ org })}>添加联系人</Button>}
-                          </div>}
                         />
                         
                     </Form.Item>

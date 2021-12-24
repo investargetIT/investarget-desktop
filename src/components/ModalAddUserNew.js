@@ -148,7 +148,7 @@ const ModalAddUser = props => {
       confirmLoading={isLoading}
       onOk={handleSubmitBtnClicked}
     >
-      <Form form={addForm}>
+      <Form form={addForm} initialValues={{ usernameC: props.user }}>
 
         {/* <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />

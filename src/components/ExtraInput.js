@@ -935,7 +935,8 @@ class SelectOrgInvestor extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      options: []
+      options: [],
+      search: '',
     }
   }
 
@@ -1009,6 +1010,20 @@ class SelectOrgInvestor extends React.Component {
     </div>;
   }
 
+  dropdownRender = originalNode => {
+    return (
+      <div>
+        {this.props.allowCreate && this.state.search && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 12px', minHeight: 32 }}>
+            <div style={{ fontWeight: 500, color: '#636e7b' }}>{this.state.search}</div>
+            <div onClick={() => this.props.handleAddBtnClick(this.state.search)}  style={{ color: '#339bd2', cursor: 'pointer' }}>添加</div>
+          </div>
+        )}
+        {originalNode}
+      </div>
+    );
+  }
+
   render() {
     const {
       children,
@@ -1021,6 +1036,7 @@ class SelectOrgInvestor extends React.Component {
       allowEmpty,
       title,
       tag,
+      allCreate,
       ...extraProps,
     } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
@@ -1034,10 +1050,12 @@ class SelectOrgInvestor extends React.Component {
       <Select
         value={_value}
         showSearch
+        onSearch={ search => this.setState({ search }) }
         filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         onChange={this.handleChange}
         autoFocus
         size="large"
+        dropdownRender={this.dropdownRender}
         {...extraProps}
       >
         {_options && _options.map((item, index) => (
