@@ -1090,6 +1090,51 @@ class OrgBDListComponent extends React.Component {
     this.orgBDFormRef.current.setFieldsValue({ orgUser: user.id });
   }
 
+  sortTraderList = (investor, callback) => {
+    const params = {
+      investoruser: investor,
+      page_size: 100,
+    };
+    requestAllData(api.getUserRelation, params, 100)
+      .then(result => {
+        const newTraderList = [];
+        result.data.data.forEach(element => {
+          let familiar = -1;
+          if (this.props.famlv.length > 0) {
+            const filterFam = this.props.famlv.filter(f => f.id === element.familiar);
+            if (filterFam.length > 0) {
+              familiar = filterFam[0].score;
+            }
+          }
+          let trader;
+          const filterTrader = this.allTrader.filter(f => f.id === element.traderuser.id);
+          if (filterTrader.length > 0) {
+            trader = {...filterTrader[0]};
+            trader.familiar = familiar;
+            if (familiar > -1) {
+              trader.username += '(' + familiar + '分)';
+            }
+          }
+          if (trader) {
+            newTraderList.push(trader);
+          }
+        });
+        this.allTrader.forEach(element => {
+          if (!newTraderList.map(m => m.id).includes(element.id)) {
+            newTraderList.push({ ...element, familiar: -1 });
+          }
+        });
+
+        // 按照熟悉程度排序
+        newTraderList.sort(function(a, b) {
+          return b.familiar - a.familiar;
+        });
+
+        this.setState({ traderList: newTraderList });
+        callback(newTraderList[0]);
+      })
+  }
+
   updateSelection(record, change) {
     let list = this.state.list.map(line => 
       line.id !== `${record.org.id}-${record.proj.id}` ?
@@ -1653,7 +1698,15 @@ class OrgBDListComponent extends React.Component {
 
   handleOrgBDFormValuesChange = (changedValues, allValues) => {
     if (changedValues.org) {
-      this.orgBDFormRef.current.setFieldsValue({ orgUser: undefined });
+      this.setState({ traderList: this.allTrader });
+      this.orgBDFormRef.current.setFieldsValue({ orgUser: undefined, trader: undefined });
+    }
+    if (changedValues.orgUser) {
+      this.sortTraderList(changedValues.orgUser, bestTrader => {
+        if (bestTrader) {
+          this.orgBDFormRef.current.setFieldsValue({ trader: bestTrader.id + '' });
+        }
+      });
     }
   }
 
@@ -2866,7 +2919,7 @@ class OrgBDListComponent extends React.Component {
             wrapClassName="modal-orgbd-edit"
             title="创建机构看板"
             visible
-            onCancel={() => this.setState({ displayModalForCreating: false })}
+            onCancel={() => this.setState({ displayModalForCreating: false, traderList: this.allTrader })}
             onOk={this.handleSubmitOrgBDForm}
           >
             <Form
@@ -2915,6 +2968,7 @@ class OrgBDListComponent extends React.Component {
                     >
                       
                         <SelectOrgInvestor
+                          placeholder="请先选择机构"
                           handleAddBtnClick={search => this.setState({ org, newUser: search })}
                           allowCreate={Boolean(org)}
                           allStatus
