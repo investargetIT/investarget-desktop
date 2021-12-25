@@ -1652,8 +1652,9 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleOrgBDFormValuesChange = (changedValues, allValues) => {
-    window.echo('changed values', changedValues);
-    window.echo('all values', allValues);
+    if (changedValues.org) {
+      this.orgBDFormRef.current.setFieldsValue({ orgUser: undefined });
+    }
   }
 
   handleSubmitOrgBDForm = () => {
