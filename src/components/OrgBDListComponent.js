@@ -1085,9 +1085,15 @@ class OrgBDListComponent extends React.Component {
     this.setState({ list })
   }
 
+  // 在创建机构看板时成功地添加了一名新的联系人
   handleFinishAddUser = user => {
     this.setState({ org: null, reloadOrgInvestor: this.state.reloadOrgInvestor + 1 });
     this.orgBDFormRef.current.setFieldsValue({ orgUser: user.id });
+    this.sortTraderList(user.id, bestTrader => {
+      if (bestTrader) {
+        this.orgBDFormRef.current.setFieldsValue({ trader: bestTrader.id + '' });
+      }
+    });
   }
 
   sortTraderList = (investor, callback) => {
@@ -1818,7 +1824,7 @@ class OrgBDListComponent extends React.Component {
               <Popover content={popoverContent}>
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
               </Popover>
-              <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button>
+              {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
             </div>
           );
         },
@@ -2968,7 +2974,7 @@ class OrgBDListComponent extends React.Component {
                     >
                       
                         <SelectOrgInvestor
-                          placeholder="请先选择机构"
+                          placeholder="选择或添加联系人（请先选择机构）"
                           handleAddBtnClick={search => this.setState({ org, newUser: search })}
                           allowCreate={Boolean(org)}
                           allStatus
