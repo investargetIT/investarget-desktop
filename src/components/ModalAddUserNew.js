@@ -20,6 +20,7 @@ import {
   checkRealMobile,
   checkMobile,
 } from '../utils/util'
+import pinyin from 'tiny-pinyin';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -93,10 +94,8 @@ const ModalAddUser = props => {
   // }
 
   function checkMobileInfo(_, value) {
-    if (value == '') {
-      return Promise.reject(new Error(i18n('mobile_not_empty')));
-    } else if (!checkMobile(value)) {
-      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
+    if (value && !checkMobile(value)) {
+      return Promise.reject(i18n('mobile_incorrect_format'));
     } else {
       return Promise.resolve();
     }
@@ -140,6 +139,17 @@ const ModalAddUser = props => {
       .finally(() => setIsFetchingNumber(false));
   }
 
+  function setFormInitialValues() {
+    const initialValues = {};
+    if (props.user) {
+      initialValues.usernameC = props.user;
+      if (pinyin.isSupported) {
+        const nameToPinyin = pinyin.convertToPinyin(props.user, '', true);
+        initialValues.email = nameToPinyin.replaceAll(' ', '_') + '@investarget.com';
+      }
+    }
+    return initialValues;
+  }
   return (
     <Modal
       title="添加联系人"
@@ -148,7 +158,7 @@ const ModalAddUser = props => {
       confirmLoading={isLoading}
       onOk={handleSubmitBtnClicked}
     >
-      <Form form={addForm} initialValues={{ usernameC: props.user }}>
+      <Form form={addForm} initialValues={setFormInitialValues()}>
 
         {/* <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />
