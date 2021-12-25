@@ -1036,7 +1036,8 @@ class SelectOrgInvestor extends React.Component {
       allowEmpty,
       title,
       tag,
-      allCreate,
+      allowCreate,
+      handleAddBtnClick,
       ...extraProps,
     } = this.props;
     const _options = this.state.options.map(item => ({ label: item.label, value: String(item.value), user: item.user }))
@@ -1051,7 +1052,12 @@ class SelectOrgInvestor extends React.Component {
         value={_value}
         showSearch
         onSearch={ search => this.setState({ search }) }
-        filterOption={(input, option) => option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        filterOption={(input, option) => {
+          if (!option.props.children.props) {
+            return false;
+          }
+          return option.props.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }}
         onChange={this.handleChange}
         autoFocus
         size="large"
