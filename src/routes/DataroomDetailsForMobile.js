@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
-import { PlusOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
 import DataroomFileManageForMobile from '../components/DataroomFileManageForMobile';
@@ -904,10 +904,10 @@ function DataroomDetails(props) {
       </div>
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card bodyStyle={{ padding: 8, overflow: 'hidden' }}>
+        <Card style={{ marginBottom: 28 }} bodyStyle={{ padding: 8, overflow: 'hidden' }}>
           <div className="short-content">
             <div className='long-content'>
-              <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
+              <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
                 <div style={{ width: 150 }}>投资人</div>
                 <div style={{ width: 100 }}>职位</div>
                 <div style={{ width: 100 }}>负责人</div>
@@ -916,9 +916,13 @@ function DataroomDetails(props) {
               </div>
             </div>
           </div>
+          {loadingOrgBD && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+            <Spin />
+          </div>}
           {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
             
-            <div style={{ display: 'flex', alignItems: 'center', padding: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px' }} onClick={e => handleCollapseItem(e)}>
+              <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} />
               <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
@@ -932,7 +936,7 @@ function DataroomDetails(props) {
 
             {m.orgbd.map(m1 => <div key={m1.id} className="short-content">
               <div className="long-content">
-                <div style={{ padding: '0 16px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center' }}>
+                <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center' }}>
                   <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                   <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
                   <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
@@ -946,8 +950,8 @@ function DataroomDetails(props) {
         </Card>
       }
 
-      {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card style={{ marginBottom: 20 }}>
+      {/* {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+        <Card style={{ marginBottom: 20 }}> */}
 
           {/* <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>投资人</div>
@@ -958,7 +962,7 @@ function DataroomDetails(props) {
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
           </div> */}
 
-          <Table
+          {/* <Table
             columns={columns}
             expandedRowRender={expandedRowRender}
             dataSource={dataroomUsersOrgBdByOrg}
@@ -969,10 +973,10 @@ function DataroomDetails(props) {
             pagination={false}
             size="middle"
             showHeader={false}
-          />
+          /> */}
 
-        </Card>
-      }
+        {/* </Card>
+      } */}
 
       {/* {data.length > 0 && */}
         <DataroomFileManageForMobile
