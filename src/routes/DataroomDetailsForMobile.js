@@ -465,30 +465,30 @@ function DataroomDetails(props) {
     );
   }
 
-  const columns = [
-    {
-      title: i18n('org_bd.org'),
-      key: 'org',
-      sorter: false,
-      render: (_, record) => {
-        if (!record.org) return null;
-        return (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
-            {list.filter(f => f.user && f.user.org && f.user.org.id === record.id)
-              .map(item => (
-                <Popover
-                  key={item.user.id}
-                  content={generatePopoverContent(item)}
-                >
-                  <Tag style={{ cursor: 'default' }}>{item.user.username}</Tag>
-                </Popover>
-              ))}
-          </div>
-        );
-      },
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: i18n('org_bd.org'),
+  //     key: 'org',
+  //     sorter: false,
+  //     render: (_, record) => {
+  //       if (!record.org) return null;
+  //       return (
+  //         <div style={{ display: 'flex', alignItems: 'center' }}>
+  //           <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+  //           {list.filter(f => f.user && f.user.org && f.user.org.id === record.id)
+  //             .map(item => (
+  //               <Popover
+  //                 key={item.user.id}
+  //                 content={generatePopoverContent(item)}
+  //               >
+  //                 <Tag style={{ cursor: 'default' }}>{item.user.username}</Tag>
+  //               </Popover>
+  //             ))}
+  //         </div>
+  //       );
+  //     },
+  //   },
+  // ];
 
   function renderProgressAndMaterial(text, record) {
     let progress = null;
@@ -750,9 +750,9 @@ function DataroomDetails(props) {
     toggleUserDataroomFiles(user, removedFiles, false);
   }
 
-  function handleOrgBDExpand(_, record) {
+  function handleOrgBDExpand(record) {
     const currentId = record.id;
-    const newExpanded = expandedRows;
+    const newExpanded = [...expandedRows];
     const expandIndex = newExpanded.indexOf(currentId);
     if (expandIndex < 0) {
       newExpanded.push(currentId);
@@ -921,8 +921,8 @@ function DataroomDetails(props) {
           </div>}
           {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
             
-            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px' }} onClick={e => handleCollapseItem(e)}>
-              <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} />
+            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px' }} onClick={() => handleOrgBDExpand(m)}>
+              {expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
               <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
@@ -932,9 +932,9 @@ function DataroomDetails(props) {
               </div>
             </div>
             
-            {m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 
-            {m.orgbd.map(m1 => <div key={m1.id} className="short-content">
+            {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
               <div className="long-content">
                 <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center' }}>
                   <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
