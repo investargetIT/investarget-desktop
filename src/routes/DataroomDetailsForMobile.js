@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
@@ -904,7 +904,7 @@ function DataroomDetails(props) {
       </div>
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card bodyStyle={{ padding: 8 }}>
+        <Card bodyStyle={{ padding: 8, overflow: 'hidden' }}>
           <div className="short-content">
             <div className='long-content'>
               <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
@@ -917,8 +917,19 @@ function DataroomDetails(props) {
             </div>
           </div>
           {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
-            <div>{m.org.orgname}</div>
-            {m.orgbd.length === 0 && <div>暂无</div>}
+            
+            <div style={{ display: 'flex', alignItems: 'center', padding: 10 }}>
+              <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
+                  .map(item => (
+                    <Tag key={item.user.id} style={{ marginBottom: 4 }}>{item.user.username}</Tag>
+                  ))}
+              </div>
+            </div>
+            
+            {m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+
             {m.orgbd.map(m1 => <div key={m1.id} className="short-content">
               <div className="long-content">
                 <div style={{ padding: '0 16px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center' }}>
@@ -930,6 +941,7 @@ function DataroomDetails(props) {
                 </div>
               </div>
             </div>)}
+
           </div>)}
         </Card>
       }
@@ -937,14 +949,14 @@ function DataroomDetails(props) {
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
 
-          <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
+          {/* <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 41, alignItems: 'center' }}>
             <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>投资人</div>
             <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
             <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
             <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>
-            {/* <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div> */}
-          </div>
+            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
+          </div> */}
 
           <Table
             columns={columns}
