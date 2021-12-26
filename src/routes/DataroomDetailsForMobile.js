@@ -310,10 +310,10 @@ function DataroomDetails(props) {
       setReadFileUserList(req.data.data);
     }
 
+    getAllUserFile();
     getDataroomFiles();
     getProjectDetails();
     getDataRoomTemp();
-    getAllUserFile();
     getDataRoomFileAnnotations();
     getDataroomFileReadingRecord();
 
@@ -892,7 +892,7 @@ function DataroomDetails(props) {
     <LeftRightLayoutPureForMobile location={props.location}>
     
 
-      <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
+      <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
       {/* <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
         <div>一级目录不用动</div>
@@ -923,7 +923,7 @@ function DataroomDetails(props) {
           </div>}
           {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
             
-            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px' }} onClick={() => handleOrgBDExpand(m)}>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleOrgBDExpand(m)}>
               {expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
               <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -938,7 +938,7 @@ function DataroomDetails(props) {
 
             {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
               <div className="long-content">
-                <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center' }}>
+                <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                   <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                   <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
                   <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
