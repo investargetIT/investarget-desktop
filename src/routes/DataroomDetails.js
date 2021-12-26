@@ -554,44 +554,44 @@ function DataroomDetails(props) {
           );
         },
       },
-      {
-        title: '应对策略',
-        width: '10%',
-        key: 'pm_remark',
-        render: (_, record) => {
-          let latestPMComment = '';
-          if (record.BDComments && record.BDComments.length) {
-            const pmComments = record.BDComments.filter(f => f.isPMComment);
-            if (pmComments.length > 0) {
-              latestPMComment = pmComments[pmComments.length - 1].comments;
-            }
-          }
-          if (!latestPMComment) return '暂无';
+      // {
+      //   title: '应对策略',
+      //   width: '10%',
+      //   key: 'pm_remark',
+      //   render: (_, record) => {
+      //     let latestPMComment = '';
+      //     if (record.BDComments && record.BDComments.length) {
+      //       const pmComments = record.BDComments.filter(f => f.isPMComment);
+      //       if (pmComments.length > 0) {
+      //         latestPMComment = pmComments[pmComments.length - 1].comments;
+      //       }
+      //     }
+      //     if (!latestPMComment) return '暂无';
 
-          const comments = record.BDComments;
-          const popoverContent = comments.filter(f => f.isPMComment)
-            .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
-            .map(comment => {
-              let content = comment.comments;
-              const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
-              if (oldStatusMatch) {
-                const oldStatus = oldStatusMatch[0];
-                content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
-              }
-              return (
-                <div key={comment.id} style={{ marginBottom: 8 }}>
-                  <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
-                  <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
-                </div>
-              );
-            });
-          return (
-            <Popover placement="leftTop" title="应对策略" content={popoverContent}>
-              <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
-            </Popover>
-          );
-        },
-      },
+      //     const comments = record.BDComments;
+      //     const popoverContent = comments.filter(f => f.isPMComment)
+      //       .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+      //       .map(comment => {
+      //         let content = comment.comments;
+      //         const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+      //         if (oldStatusMatch) {
+      //           const oldStatus = oldStatusMatch[0];
+      //           content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+      //         }
+      //         return (
+      //           <div key={comment.id} style={{ marginBottom: 8 }}>
+      //             <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+      //             <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+      //           </div>
+      //         );
+      //       });
+      //     return (
+      //       <Popover placement="leftTop" title="应对策略" content={popoverContent}>
+      //         <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
+      //       </Popover>
+      //     );
+      //   },
+      // },
     ];
     return (
       <Table
@@ -841,7 +841,7 @@ function DataroomDetails(props) {
             <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
             <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
             <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>
+            {/* <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div> */}
           </div>
 
           <Table
