@@ -391,7 +391,9 @@ function DataroomDetails(props) {
     window.echo('all', all);
     
     for (let i = 0; i < all.length; i++) {
-      if ((oldX + translation) < 0) {
+      if ((oldX + translation) < -465) {
+        all[i].style.left = '-465px';
+      } else if ((oldX + translation) < 0) {
         all[i].style.left = `${oldX + translation}px`;
       } else {
         all[i].style.left = 0;
@@ -892,7 +894,7 @@ function DataroomDetails(props) {
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-      <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+      {/* <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
         <div>一级目录不用动</div>
         <div className="short-content">
           <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
@@ -901,10 +903,10 @@ function DataroomDetails(props) {
         <div className="short-content">
           <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
         </div>
-      </div>
+      </div> */}
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card style={{ marginBottom: 28 }} bodyStyle={{ padding: 8, overflow: 'hidden' }}>
+        <Card style={{ marginBottom: 28 }} bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
           <div className="short-content">
             <div className='long-content'>
               <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
