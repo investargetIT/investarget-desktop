@@ -830,22 +830,39 @@ function DataroomDetails(props) {
     return newNewData;
   }
 
+  // window.echo('data', dataroomUsersOrgBdByOrg);
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
 
       <div style={{ marginLeft: 20, marginBottom: 20, fontSize: 20, lineHeight: '28px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-<div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
-  <div>一级目录不用动</div>
-  <div className="short-content">
-    <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
-  </div>
-  <div>一级目录不用动</div>
-  <div className="short-content">
-    <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
-  </div>
-</div>
+      <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+        <div>一级目录不用动</div>
+        <div className="short-content">
+          <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
+        </div>
+        <div>一级目录不用动</div>
+        <div className="short-content">
+          <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
+        </div>
+      </div>
+
+      {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+        <Card bodyStyle={{ padding: 8 }}>
+          <div className="short-content">
+            <div className='long-content'>
+              <div style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
+                <div style={{ width: 100 }}>投资人</div>
+                <div style={{ width: 100 }}>职位</div>
+                <div style={{ width: 100 }}>负责人</div>
+                <div style={{ width: 100 }}>机构进度/材料</div>
+                <div style={{ width: 100 }}>机构反馈</div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      }
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
