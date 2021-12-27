@@ -2239,7 +2239,7 @@ class SelectOrAddDate extends React.Component {
     if (this.state.options === null) return null;
 
     if (this.state.options.length > 0) {
-      return <Select style={{ width: 120 }} onChange={ value => this.props.onChange(moment(value)) }>
+      return <Select style={{ width: 160 }} onChange={ value => this.props.onChange(moment(value)) }>
         {this.state.options.map(m => <Option key={m} value={m}>{m}</Option>)}
       </Select>;
     }

@@ -66,14 +66,16 @@ class UserInvestEventForm extends React.Component {
  
   investEventFormRef = React.createRef();
 
-  // getChildContext() {
-  //   return {
-  //     form: this.props.form
-  //   };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingAddEvent: false,
+    };
+  }
 
   handleSubmit = values => {
-    this.addEvent(values).catch(handleError);
+    this.setState({ loadingAddEvent: true });
+    this.addEvent(values).catch(handleError).finally(() => this.setState({ loadingAddEvent: false }));
   }
 
   addEvent = async values => {
@@ -109,28 +111,45 @@ class UserInvestEventForm extends React.Component {
   }
 
   handleTargetChange = () => this.investEventFormRef.current.setFieldsValue({ investDate: null });
-  
+ 
+  handleInvestFormValuesChange = (changedValue, allValues) => {
+  }
+
   render() {
 
     const investarget = this.investEventFormRef.current && this.investEventFormRef.current.getFieldValue('investTarget');
     return (
-      <Form ref={this.investEventFormRef} onFinish={this.handleSubmit}>
+      <Form ref={this.investEventFormRef} onFinish={this.handleSubmit} onValuesChange={this.handleInvestFormValuesChange}>
 
-        <BasicFormItem label="投资项目" name="investTarget" required valueType="number" onChange={this.handleTargetChange}>
+        <BasicFormItem label="投资项目" name="investTarget" required valueType="number">
           <SelectProjectLibrary />
         </BasicFormItem>
 
-        { investarget !== undefined ?
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const investarget = getFieldValue('investTarget');
+            if (investarget !== undefined) {
+              return (
+                <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
+                  <SelectOrAddDate com_id={investarget} />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </FormItem>
+
+        {/* { investarget !== undefined ?
         <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
           <SelectOrAddDate com_id={investarget} />
         </BasicFormItem>
-        : null }
+        : null } */}
 
         <FormItem style={{ marginLeft: 120 }}>
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(this.investEventFormRef.current && this.investEventFormRef.current.getFieldsError())}
+            loading={this.state.loadingAddEvent}
+            // disabled={hasErrors(this.investEventFormRef.current && this.investEventFormRef.current.getFieldsError())}
           >确定</Button>
         </FormItem>
 

@@ -193,7 +193,7 @@ class InvestEvent extends React.Component {
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
-            <Button size="small" style={buttonStyle}>
+            <Button size="small" type="link">
               <DeleteOutlined />
             </Button>
           </Popconfirm>
