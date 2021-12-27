@@ -133,9 +133,9 @@ class OrgBDListComponent extends React.Component {
     }
 
     const currentSession = getUserInfo();
-    if (currentSession && !currentSession.is_superuser && currentSession.permissions.includes('usersys.as_trader')) {
-      filters.manager = [currentSession.id];
-    }
+    // if (currentSession && !currentSession.is_superuser && currentSession.permissions.includes('usersys.as_trader')) {
+    //   filters.manager = [currentSession.id];
+    // }
     if (props.allManager) {
       filters.manager = [];
     }
