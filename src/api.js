@@ -1066,3 +1066,5 @@ export const getInvestorWithResignedTrader = params => r(`/user/indgroup/investo
 
 // 项目数量统计
 export const getProjCount = params => r(`/proj/count?${qs.stringify(params)}`);
+
+export const addGetStarInvestor = body => r('/user/getStarInvestor/', 'POST', body);

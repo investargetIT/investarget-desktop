@@ -284,7 +284,12 @@ class UserInfo extends React.Component {
     }
   }
 
-  getUsernameAndSetState = async () => {
+  checkStarInvestor = async investorID => {
+    await api.addGetStarInvestor({ investor: investorID });
+    this.getUsernameAndSetState(true);
+  }
+
+  getUsernameAndSetState = async (afterCheckStar=false) => {
     const userId = this.props.userId;
     const result = await api.getUserInfo(userId)
     const data = result.data
@@ -296,6 +301,9 @@ class UserInfo extends React.Component {
     const area = data.orgarea ? data.orgarea.name : '';
     const org = data.org ? data.org.orgname : ''
     const mobile = (data.mobile && data.mobileAreaCode) ? (`+${data.mobileAreaCode} ${data.mobile}`) : ''
+    if (mobile.includes('****') && !afterCheckStar) {
+      this.checkStarInvestor(data.id);
+    }
     const wechat = data.wechat
     const email = data.email
     const userstatus = data.userstatus.name
