@@ -186,6 +186,14 @@ class AddUser extends React.Component {
     }
   }
 
+  handleAreaOnFocus = () => {
+    const mobile = this.addUserFormRef.current.getFieldValue('mobile');
+    if (!mobile || mobile.length !== 11) return;
+    const area = this.addUserFormRef.current.getFieldValue('orgarea');
+    if (area) return;
+    this.getPhoneAddress(mobile);
+  }
+
   handleAddRelation = () => {
     this.setState({ confirmLoading: true })
     const body = {
@@ -258,6 +266,7 @@ class AddUser extends React.Component {
           onValuesChange={this.handleAddFormValuesChange}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           cnNameOnBlur={this.handleCnNameOnBlur.bind(this)}
+          areaOnFocus={this.handleAreaOnFocus}
           data={this.formData}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')} />
 

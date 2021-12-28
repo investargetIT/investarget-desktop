@@ -179,7 +179,7 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>
 
         <BasicFormItem label={i18n('user.area')} valueType="number" name="orgarea">
-          <SelectOrganizatonArea showSearch />
+          <SelectOrganizatonArea showSearch onFocus={this.props.areaOnFocus} />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.country")} name="country" valueType="number">

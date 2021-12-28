@@ -284,17 +284,26 @@ class EditUser extends React.Component {
       this.props.dispatch({ type: 'app/findError', payload: err })
     })
   }
+  
+  handleAreaOnFocus = () => {
+    const mobile = this.editUserFormRef.current.getFieldValue('mobile');
+    if (!mobile || mobile.length !== 11) return;
+    const area = this.editUserFormRef.current.getFieldValue('orgarea');
+    if (area) return;
+    this.getPhoneAddress(mobile);
+  }
 
   handleOnBlur(accountType, evt) {
     const account = evt.target.value;
     if (!account) return
-    const mobileAndEmail = [this.state.data.email.value, this.state.data.mobile.value];
-    if (mobileAndEmail.includes(account)) {
-      if (accountType === 'mobile' && account.length === 11) {
-        this.getPhoneAddress(account);
-      }
-      return;
-    }
+    // const mobileAndEmail = [this.state.data.email.value, this.state.data.mobile.value];
+    // if (mobileAndEmail.includes(account)) {
+    //   if (accountType === 'mobile' && account.length === 11) {
+    //     window.echo('check phone address');
+    //     this.getPhoneAddress(account);
+    //   }
+    //   return;
+    // }
     api.checkUserExist(account)
     .then(data => {
       const isExist = data.data.result
@@ -348,6 +357,7 @@ class EditUser extends React.Component {
           onDeselectMinorTrader={this.handleDeselectTrader}
           mobileOnBlur={this.handleOnBlur.bind(this, 'mobile')}
           emailOnBlur={this.handleOnBlur.bind(this, 'email')}
+          areaOnFocus={this.handleAreaOnFocus}
           showFamlvRadio={getURLParamValue(this.props, 'redirect') === '/app/investor/my'}
         />
 
