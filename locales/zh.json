@@ -182,7 +182,7 @@
     "org": "机构",
     "important":"重点BD",
     "creator": "创建人",
-    "support": "支持多机构名搜索,机构之间用逗号或空格隔开",
+    "support": "支持多机构名搜索，机构名之间用分号隔开",
     "new_user": "新增BD"
   },
   "meeting_bd":{

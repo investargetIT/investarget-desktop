@@ -241,7 +241,7 @@ class SelectOrganization extends React.Component {
           <Icon type="user" />表示该机构下有联系方式的投资人数量
         </div>
 
-        <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
+        <Popover content="支持多机构名搜索，机构名之间用分号隔开">
           <Search
             style={{ width: 250 }}
             placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}

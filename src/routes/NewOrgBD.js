@@ -162,7 +162,7 @@ class NewOrgBD extends React.Component {
 
                 <div style={{ marginBottom: 16, display: 'flex' }}>
                   <div>
-                    <Popover content="支持多机构名搜索，机构之间用逗号或空格隔开">
+                    <Popover content="支持多机构名搜索，机构名之间用分号隔开">
                       <Search
                         style={{ width: 250 }}
                         placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
