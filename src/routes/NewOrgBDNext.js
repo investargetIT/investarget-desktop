@@ -632,7 +632,7 @@ class NewOrgBDList extends React.Component {
       manager: this.state.manager,
       org: user.org.id,
       proj: this.projId,
-      isimportant: this.state.isimportant,
+      // isimportant: this.state.isimportant,
       bd_status: 1,
       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
     };
@@ -658,7 +658,7 @@ class NewOrgBDList extends React.Component {
       manager: this.state.manager,
       org: user.org.id,
       proj: this.projId,
-      isimportant: this.state.isimportant,
+      // isimportant: this.state.isimportant,
       bd_status: 1,
       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
     };
@@ -1009,7 +1009,7 @@ class NewOrgBDList extends React.Component {
             maskClosable={false}
           >
             <div style={{ marginLeft: '15px' }}>
-              <H3>1.选择交易师</H3>
+              <H3>选择交易师</H3>
               <SelectTrader
                 style={{ width: 300 }}
                 mode="single"
@@ -1037,12 +1037,12 @@ class NewOrgBDList extends React.Component {
                 }}
                 onChange={v => { this.setState({ expirationtime: v }) }}
               /> */}
-              <H3>2.优先级</H3>
+              {/* <H3>2.优先级</H3> */}
               {/* <Switch
                 defaultChecked={this.state.isimportant}
                 onChange={checked => this.setState({ isimportant: checked })}
               /> */}
-              <Select
+              {/* <Select
                 defaultValue={this.state.isimportant}
                 // style={{ width: '100%' }}
                 onChange={value => this.setState({ isimportant: value })}
@@ -1050,9 +1050,10 @@ class NewOrgBDList extends React.Component {
                 <Option value={0}>低</Option>
                 <Option value={1}>中</Option>
                 <Option value={2}>高</Option>
-              </Select>
-
-              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+              </Select> */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                <Button disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
+              </div>
             </div>
           </Modal>
         }
@@ -1067,7 +1068,7 @@ class NewOrgBDList extends React.Component {
             maskClosable={false}
           >
             <div style={{ marginLeft: '15px' }}>
-              <H3>1.选择交易师</H3>
+              <H3>选择交易师</H3>
               <SelectTrader
                 style={{ width: 300 }}
                 mode="single"
@@ -1095,7 +1096,7 @@ class NewOrgBDList extends React.Component {
                 }}
                 onChange={v => { this.setState({ expirationtime: v }) }}
               /> */}
-               <H3>2.优先级</H3>
+               {/* <H3>2.优先级</H3>
               <Select
                 defaultValue={this.state.isimportant}
                 onChange={value => this.setState({ isimportant: value })}
@@ -1103,9 +1104,11 @@ class NewOrgBDList extends React.Component {
                 <Option value={0}>低</Option>
                 <Option value={1}>中</Option>
                 <Option value={2}>高</Option>
-              </Select>
+              </Select> */}
 
-              <Button style={{ float: "right", marginRight: 30 }} disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
+<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+              <Button disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
+            </div>
             </div>
           </Modal>
         }
