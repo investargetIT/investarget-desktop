@@ -70,7 +70,7 @@ class ProjectBDForm extends React.Component {
     // 表单拿到bd数据时
     if (!this.initialDataLoaded && nextProps.data && ('bduser' in nextProps.data)) {
       this.initialDataLoaded = true
-      let bduserId = nextProps.data.bduser.value
+      let bduserId = nextProps.data.bduser
       if (bduserId) {
         this.getUserDetail(bduserId)
       } else {

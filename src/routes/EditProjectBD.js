@@ -177,6 +177,11 @@ class EditProjectBD extends React.Component {
   }
 
   setEditProjectBDFormValues = () => {
+    const data = this.getFormData();
+    this.editProjectBDFormRef.current.setFieldsValue(data);
+  }
+
+  getFormData = () => {
     const data = toFormData(this.state.bd)
     if (data) {
       const countryObj = data.country;
@@ -187,14 +192,14 @@ class EditProjectBD extends React.Component {
         }
       }
     }
-    this.editProjectBDFormRef.current.setFieldsValue(data);
+    return data; 
   }
 
   render() {
     return (
       <LeftRightLayout location={this.props.location} title={i18n('project_bd.edit_project_bd')}>
         <div>
-          <ProjectBDForm ref={this.editProjectBDFormRef} />
+          <ProjectBDForm ref={this.editProjectBDFormRef} data={this.getFormData()} />
           <div style={actionStyle}>
             <Button size="large" style={actionBtnStyle} onClick={this.goBack}>{i18n('common.cancel')}</Button>
             <Button type="primary" loading={this.state.loadingEditProjectBD} size="large" style={actionBtnStyle} onClick={this.handleFormSubmit}>{i18n('common.submit')}</Button>
