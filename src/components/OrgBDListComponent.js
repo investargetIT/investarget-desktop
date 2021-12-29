@@ -214,7 +214,12 @@ class OrgBDListComponent extends React.Component {
     this.allTrader = [];
     this.selectedOrgForBlacklist = [];
     this.searchOrg = debounce(this.searchOrg, 800);
-    this.orgBDFormRef = React.createRef(); 
+    this.orgBDFormRef = React.createRef();
+
+    this.showPopoverFromContent = null;
+    this.showPopoverFromName = null;
+
+    // this.popoverRef = React.createRef();
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -243,8 +248,37 @@ class OrgBDListComponent extends React.Component {
   }
 
   handlePopoverMouseLeave = (record) => {
-    window.echo('record')
-    this.setState({ visiblePopover: 0 });
+    // window.echo('record')
+    // this.setState({ visiblePopover: 0 });
+    this.showPopoverFromContent = null;
+    setTimeout(() => {
+      if (this.showPopoverFromName === record.id) return;
+      this.setState({ visiblePopover: null })
+    }, 100);
+  }
+
+  handlePopoverMouseEnter = record => {
+    // window.echo('mouse enter');
+    this.showPopoverFromContent = record.id;
+  }
+
+  // handlePopoverMouseLeave1 = () => {
+  //   window.echo('mouse leave');
+  // }
+
+  handleOrgNameMouseEnter = record => {
+    this.showPopoverFromName = record.id;
+    // window.echo('org name mouse enter', record);
+    this.setState({ visiblePopover: record.id });
+  }
+
+  handleOrgNameMouseLeave = record => {
+    this.showPopoverFromName = null;
+    // window.echo('org name mouse leave', record);
+    setTimeout(() => {
+      if (this.showPopoverFromContent === record.id) return;
+      this.setState({ visiblePopover: null })
+    }, 100);
   }
 
   getStatisticData = async () => {
@@ -1821,8 +1855,16 @@ class OrgBDListComponent extends React.Component {
                   </div>
                 );
               });
-            return popoverContent && popoverContent.length > 0 ? <div onMouseLeave={() => react.handlePopoverMouseLeave(record)}>{popoverContent}</div> : <div onMouseLeave={() => react.handlePopoverMouseLeave(record)}>暂无备注</div>;
-          }
+            return (
+              <div onMouseLeave={() => react.handlePopoverMouseLeave(record)} onMouseEnter={() => react.handlePopoverMouseEnter(record)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <div style={{ fontWeight: 'bold' }}>机构备注</div>
+                  <CloseOutlined style={{ cursor: 'pointer' }} onClick={() => react.setState({ visiblePopover: 0 })} />
+                </div>
+                {popoverContent && popoverContent.length > 0 ? popoverContent : '暂无备注'}
+              </div>
+            );
+           }
 
           function popoverTitleContent() {
             return (
@@ -1835,8 +1877,12 @@ class OrgBDListComponent extends React.Component {
 
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Popover title="机构备注" content={popoverContent1()}>
-                <div style={{ marginRight: 8 }} onMouseOver={() => this.setState({ visiblePopover: record.id })}>{record.org.orgname}</div>
+              <Popover title={null} content={popoverContent1()} visible={this.state.visiblePopover === record.id}>
+                <div
+                  style={{ marginRight: 8 }}
+                  onMouseEnter={() => this.handleOrgNameMouseEnter(record)}
+                  onMouseLeave={() => this.handleOrgNameMouseLeave(record)}
+                >{record.org.orgname}</div>
               </Popover>
               <Popover content={popoverContent}>
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
@@ -3050,6 +3096,7 @@ class OrgBDListComponent extends React.Component {
 
         <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
 
+        {/* <div id="popover" className="test" ref={this.popoverRef} onMouseLeave={() => react.handlePopoverMouseLeave(record)} onMouseEnter={() => react.handlePopoverMouseEnter(record)} /> */}
       </div>
     );
   }
