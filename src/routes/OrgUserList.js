@@ -209,7 +209,17 @@ class OrgUserList extends React.Component {
       {
         title: i18n("user.name"),
         dataIndex: 'username',
-        key: 'username'
+        key: 'username',
+        render: (text, record) => {
+          return (
+            <div style={{ display: 'flex' }}>
+              {record.mobiletrue ?
+                <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+                : null}
+              <div>{text}</div>
+            </div>
+          )
+        }
       },
       // {
       //   title: i18n('mobile'),
@@ -321,18 +331,26 @@ class OrgUserList extends React.Component {
           rowKey={record => record.id}
           pagination={false} />
 
-        <Pagination
-          className="ant-table-pagination"
-          total={total}
-          current={page}
-          pageSize={pageSize}
-          onChange={this.handlePageChange}
-          onShowSizeChange={this.handlePageSizeChange}
-          showSizeChanger
-          showQuickJumper
-          pageSizeOptions={PAGE_SIZE_OPTIONS}
-        />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0' }}>
 
+          <div style={{ display: 'flex' }}>
+            <i style={{ fontSize: 20, marginTop: 1, marginRight: 2 }} className="fa fa-mobile-phone"></i>
+            表示该用户的联系方式可用
+          </div>
+
+          <Pagination
+            className="ant-table-pagination"
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            onShowSizeChange={this.handlePageSizeChange}
+            showSizeChanger
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        </div>
+        
       </LeftRightLayout>
     )
 
