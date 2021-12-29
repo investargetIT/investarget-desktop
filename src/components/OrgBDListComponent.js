@@ -56,6 +56,7 @@ import {
   ExpandAltOutlined,
   CaretUpFilled,
   CaretDownFilled,
+  CloseOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
@@ -206,6 +207,8 @@ class OrgBDListComponent extends React.Component {
 
         reloadOrgInvestor: 0,
         newUser: '', // 新增投资人名称
+
+        visiblePopover: 0,
     }
 
     this.allTrader = [];
@@ -237,6 +240,11 @@ class OrgBDListComponent extends React.Component {
         this.props.onProjChange();
       }
     }
+  }
+
+  handlePopoverMouseLeave = (record) => {
+    window.echo('record')
+    this.setState({ visiblePopover: 0 });
   }
 
   getStatisticData = async () => {
@@ -1792,7 +1800,7 @@ class OrgBDListComponent extends React.Component {
               <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
             </div>
           );
-
+          const react = this;
           function popoverContent1() {
             const popoverContent = record.org.comments.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
               .map(comment => {
@@ -1813,13 +1821,22 @@ class OrgBDListComponent extends React.Component {
                   </div>
                 );
               });
-            return popoverContent && popoverContent.length > 0 ? popoverContent : '暂无备注';
+            return popoverContent && popoverContent.length > 0 ? <div onMouseLeave={() => react.handlePopoverMouseLeave(record)}>{popoverContent}</div> : <div onMouseLeave={() => react.handlePopoverMouseLeave(record)}>暂无备注</div>;
+          }
+
+          function popoverTitleContent() {
+            return (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>机构备注</div>
+                <CloseOutlined style={{ cursor: 'pointer' }} onClick={() => react.setState({ visiblePopover: 0 })} />
+              </div>
+            )
           }
 
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Popover title="机构备注" content={popoverContent1()}>
-                <div style={{ marginRight: 8 }}>{record.org.orgname}</div>
+                <div style={{ marginRight: 8 }} onMouseOver={() => this.setState({ visiblePopover: record.id })}>{record.org.orgname}</div>
               </Popover>
               <Popover content={popoverContent}>
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
