@@ -693,6 +693,10 @@ label.login-register-form__container__label {
 .only-on-mobile {
   display: none;
 }
+/* Fix switch style */
+.ant-switch-checked .ant-switch-handle {
+  left: calc(100% - 20px);
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
