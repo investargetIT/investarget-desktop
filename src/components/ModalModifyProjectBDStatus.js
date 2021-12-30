@@ -87,9 +87,6 @@ function toContactFormData(bd) {
       formData.mobile = bd.usermobile;
     }
   }
-  for (let prop in formData) {
-    formData[prop] = { value: formData[prop] };
-  }
   return formData;
 }
 
@@ -100,26 +97,23 @@ class ModalModifyProjectBDStatus extends React.Component {
     confirmLoading: false,
   }
 
+  contactFormRef = React.createRef();
+
   handleRef = (inst) => {
     if (inst) {
       this.addForm = inst.props.form
     }
   }
 
-  handleContactFormRef = (inst) => {
-    if (inst) {
-      this.contactForm = inst.props.form
-    }
-  }
 
   handleConfirmBtnClicked = () => {
     const { status } = this.state;
     if (this.isShowContactForm()) {
-      this.contactForm.validateFields((err, values) => {
-        if (!err) {
+      this.contactFormRef.current.validateFields()
+        .then((values) => {
           this.props.onUpdateContact({ ...values, bd_status: status });
-        }
-      });
+        })
+        .catch(error => console.log(error));
     } else if (this.isShowUserForm()) {
       this.addForm.validateFields((err, values) => {
         if (!err) {
@@ -168,7 +162,7 @@ class ModalModifyProjectBDStatus extends React.Component {
         }
         {this.isShowContactForm() &&
           <ContactForm
-            wrappedComponentRef={this.handleContactFormRef}
+            ref={this.contactFormRef}
             data={toContactFormData(this.props.bd)}
           />
         }

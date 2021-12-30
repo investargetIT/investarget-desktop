@@ -17,10 +17,18 @@ const formItemLayout = {
 };
 
 class ContactForm extends React.Component {
+  checkMobileInfo = (_, value) => {
+    if (value == '') {
+      return Promise.reject(new Error(i18n('mobile_not_empty')));
+    } else if (!checkMobile(value)) {
+      return Promise.reject(new Error(i18n('mobile_incorrect_format')));
+    } else {
+      return Promise.resolve();
+    }
+  }
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
-      <Form>
+      <Form ref={this.props.forwardedRef} initialValues={this.props.data}>
         <BasicFormItem label={i18n('project_bd.contact_name')} name="username" required>
           <Input />
         </BasicFormItem>
@@ -32,28 +40,16 @@ class ContactForm extends React.Component {
         <FormItem {...formItemLayout} label={i18n('project_bd.contact_mobile')} required>
           <Row gutter={8}>
             <Col span={6}>
-              <FormItem>
-                {
-                  getFieldDecorator('mobileAreaCode', {
-                    rules: [{ message: i18n('validation.not_empty'), required: true }], initialValue: '86',
-                  })(
-                    <Input prefix="+" />
-                  )
-                }
+              <FormItem name="mobileAreaCode" rules={[{ message: i18n('validation.not_empty'), required: true }]} initialValue="86">
+                <Input prefix="+" />
               </FormItem>
             </Col>
             <Col span={18}>
-              <FormItem>
-                {
-                  getFieldDecorator('mobile', {
-                    rules: [
-                      { message: i18n('validation.not_empty'), required: true },
-                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() }
-                    ]
-                  })(
-                    <Input onBlur={this.props.mobileOnBlur} />
-                  )
-                }
+              <FormItem name="mobile" rules={[
+                { message: i18n('validation.not_empty'), required: true },
+                { validator: this.checkMobileInfo }
+              ]}>
+                <Input onBlur={this.props.mobileOnBlur} />
               </FormItem>
             </Col>
           </Row>
@@ -67,4 +63,4 @@ class ContactForm extends React.Component {
   }
 }
 
-export default ContactForm;
+export default React.forwardRef((props, ref) => <ContactForm {...props} forwardedRef={ref} />);
