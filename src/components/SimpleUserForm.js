@@ -47,7 +47,7 @@ class SimpleUserForm extends React.Component {
 
   render() {
     return (
-      <Form ref={this.props.forwardedRef}>
+      <Form ref={this.props.forwardedRef} initialValues={this.props.data}>
 
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" initialValue={[1]} required>
           <SelectUserGroup type="investor" />

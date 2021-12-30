@@ -65,9 +65,6 @@ function toFormData (bd) {
       formData.mobile = bd.usermobile;
     }
   }
-  for (let prop in formData) {
-    formData[prop] = { value: formData[prop] };
-  }
   return formData;
 }
 
@@ -98,6 +95,7 @@ class ModalModifyProjectBDStatus extends React.Component {
   }
 
   contactFormRef = React.createRef();
+  userFormRef = React.createRef();
 
   handleRef = (inst) => {
     if (inst) {
@@ -115,12 +113,11 @@ class ModalModifyProjectBDStatus extends React.Component {
         })
         .catch(error => console.log(error));
     } else if (this.isShowUserForm()) {
-      this.addForm.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
+      this.userFormRef.current.validateFields()
+        .then((values) => {
           this.props.onOk({ ...values, status });
-        }
-      });
+        })
+        .catch(error => console.log(error));
     } else {
       this.setState({ confirmLoading: true });
       this.props.onOk({ status });
@@ -155,8 +152,8 @@ class ModalModifyProjectBDStatus extends React.Component {
         </FormItem>
 
         {this.isShowUserForm() &&
-          <UserForm
-            wrappedComponentRef={this.handleRef}
+          <SimpleUserForm
+            ref={this.userFormRef}
             data={toFormData(this.props.bd)}
           />
         }
