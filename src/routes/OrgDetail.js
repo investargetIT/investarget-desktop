@@ -35,7 +35,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import AddOrgDetail from '../components/AddOrgDetail';
 import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane;
 const buttonStyle={textDecoration:'underline',border:'none',background:'none'};
@@ -1010,7 +1010,7 @@ class OrgDetail extends React.Component {
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:
-          <Icon 
+          <PlusOutlined
             type="plus" 
             style={{ cursor: 'pointer', padding: '4px', color: '#108ee9'}} 
             onClick={() => this.setState({ isShowOrgDetailForm: true })} 

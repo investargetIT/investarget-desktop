@@ -49,101 +49,74 @@ function hasErrors(fieldsError) {
 
 class ContactForm extends React.Component {
   
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+  contactFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+  handleSubmit = () => {
+    this.contactFormRef.current.validateFields()
+      .then((values) => {
         const body = { ...values, org: this.props.org };
-        echo('body', body);
         api.addOrgContact(body)
           .then(result => {
-              echo('resul', result)
-              this.props.onNewDetailAdded();
-            })
-      }
+            this.props.onNewDetailAdded();
+          })
     });
+  }
+
+  checkMobileInfo = (_, value) => {
+    if (value) {
+      if (checkMobile(value)) {
+        return Promise.resolve();
+      }
+      return Promise.reject('格式错误')
+    }
+    return Promise.resolve();
   }
 
   render() {
 
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-
     return (
-        <Form onSubmit={this.handleSubmit}>
+        <Form onFinish={this.handleSubmit} ref={this.contactFormRef}>
         <BasicFormItem label="地址" name="address">
           <Input />
         </BasicFormItem>
 
-        <FormItem {...formItemLayout} label={i18n('organization.telephone')}>
+        <FormItem {...formItemLayout} label={i18n('organization.telephone')} style={{ marginBottom: 0 }}>
           <Row gutter={8}>
             <Col span={6}>
-              <FormItem>
-                {
-                  getFieldDecorator('countrycode', {
-                    rules: [{ message: '' }],
-                    initialValue: '86'
-                  })(
-                    <Input prefix="+" />
-                  )
-                }
+              <FormItem name="countrycode" rules={[{ message: '' }]} initialValue="86">
+                <Input prefix="+" />
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem>{getFieldDecorator('areacode')(<Input placeholder="区号" />)}</FormItem>
+              <FormItem name="areacode"><Input placeholder="区号" /></FormItem>
             </Col>
             <Col span={12}>
-              <FormItem required>
-                {
-                  getFieldDecorator('numbercode', {
-                    rules: [
-                      { message: 'Please input' },
-                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
-                  ]
-                  })(
-                    <Input />
-                  )
-                }
+              <FormItem required name="numbercode" rules={[
+                { message: 'Please input' },
+                { validator: this.checkMobileInfo }, 
+              ]}>
+                <Input />
               </FormItem>
             </Col>
           </Row>
         </FormItem>
 
-        <FormItem {...formItemLayout} label="传真">
+        <FormItem {...formItemLayout} label="传真" style={{ marginBottom: 0 }}>
           <Row gutter={8}>
             <Col span={6}>
-              <FormItem>
-                {
-                  getFieldDecorator('countrycode', {
-                    rules: [{ message: '' }],
-                    initialValue: '86'
-                  })(
-                    <Input prefix="+" disabled />
-                  )
-                }
+              <FormItem name="countrycode" rules={[{ message: '' }]} initialValue="86">
+                <Input prefix="+" disabled />
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem>{getFieldDecorator('areacode')(<Input placeholder="区号" disabled />)}</FormItem>
+              <FormItem name="areacode"><Input placeholder="区号" disabled /></FormItem>
             </Col>
             <Col span={12}>
-              <FormItem>
-                {
-                  getFieldDecorator('faxcode', {
-                    rules: [
-                      { message: 'Please input' },
-                      { validator: (rule, value, callback) => value ? checkMobile(value) ? callback() : callback('格式错误') : callback() },
-                  ]
-                  })(
-                    <Input />
-                  )
-                }
+              <FormItem name="faxcode" rules={[
+                { message: 'Please input' },
+                { validator: this.checkMobileInfo },
+              ]}>
+                <Input />
               </FormItem>
             </Col>
           </Row>
@@ -157,7 +130,6 @@ class ContactForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
           >
           确定 
           </Button>
@@ -167,12 +139,6 @@ class ContactForm extends React.Component {
     );
   }
 }
-
-ContactForm.childContextTypes = {
-  form: PropTypes.object
-};
-
-// ContactForm = Form.create()(ContactForm);
 
 class ManageFundForm extends React.Component {
   
@@ -493,10 +459,10 @@ class AddOrgDetail extends React.Component {
 
   allForms = {
     contact: <ContactForm {...this.props} />,
-    managefund: <ManageFundForm {...this.props} />,
-    investevent: <InvestEventForm {...this.props} />,
-    cooperation: <CooperationForm {...this.props} />,
-    buyout: <BuyoutForm {...this.props} />,
+    // managefund: <ManageFundForm {...this.props} />,
+    // investevent: <InvestEventForm {...this.props} />,
+    // cooperation: <CooperationForm {...this.props} />,
+    // buyout: <BuyoutForm {...this.props} />,
   }
 
   state = {
