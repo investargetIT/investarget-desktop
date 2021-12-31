@@ -17,6 +17,7 @@ import {
   i18n,
   checkMobile,
   requestAllData,
+  handleError,
 } from '../utils/util';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
@@ -59,6 +60,7 @@ class ContactForm extends React.Component {
           .then(result => {
             this.props.onNewDetailAdded();
           })
+          .catch(handleError)
     });
   }
 
@@ -142,37 +144,29 @@ class ContactForm extends React.Component {
 
 class ManageFundForm extends React.Component {
   
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+  fundFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.fundFormRef.current.validateFields()
+      .then((values) => {
         console.log('Received values of form: ', values);
         values.fundraisedate = values.fundraisedate.format('YYYY-MM-DDT00:00:00');
         const body = { ...values, org: this.props.org };
         api.addOrgManageFund(body)
           .then(result => {
-              echo('resul', result)
               this.props.onNewDetailAdded();
             })
-      }
+          .catch(handleError)
     });
   }
 
   render() {
 
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onFinish={this.handleSubmit} ref={this.fundFormRef}>
 
         <BasicFormItem label="基金" name="fund" >
-          <SelectExistOrganization allowCreate formName="userform" />
+          <SelectExistOrganization />
         </BasicFormItem>
 
         <BasicFormItem label="类型" name="type">
@@ -195,7 +189,6 @@ class ManageFundForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
           >
             确定
           </Button>
@@ -205,12 +198,6 @@ class ManageFundForm extends React.Component {
     );
   }
 }
-
-ManageFundForm.childContextTypes = {
-  form: PropTypes.object
-};
-
-// ManageFundForm = Form.create()(ManageFundForm);
 
 class InvestEventForm extends React.Component {
   
@@ -459,7 +446,7 @@ class AddOrgDetail extends React.Component {
 
   allForms = {
     contact: <ContactForm {...this.props} />,
-    // managefund: <ManageFundForm {...this.props} />,
+    managefund: <ManageFundForm {...this.props} />,
     // investevent: <InvestEventForm {...this.props} />,
     // cooperation: <CooperationForm {...this.props} />,
     // buyout: <BuyoutForm {...this.props} />,
