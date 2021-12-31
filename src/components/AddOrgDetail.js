@@ -244,7 +244,8 @@ class InvestEventForm extends React.Component {
     return api.addOrgInvestEvent(body)
       .then(result => {
         this.props.onNewDetailAdded();
-      });
+      })
+      .catch(handleError);
   }
 
   render() {
@@ -303,37 +304,29 @@ class InvestEventForm extends React.Component {
 }
 
 class CooperationForm extends React.Component {
-  
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+ 
+  cooperationFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.cooperationFormRef.current.validateFields()
+      .then((values) => {
         console.log('Received values of form: ', values);
         values.investDate = values.investDate.format('YYYY-MM-DDT00:00:00');
         const body = { ...values, org: this.props.org };
         api.addOrgCooperation(body)
           .then(result => {
-              this.props.onNewDetailAdded();
-            })
-      }
-    });
+            this.props.onNewDetailAdded();
+          })
+          .catch(handleError);
+      });
   }
 
   render() {
-
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onFinish={this.handleSubmit} ref={this.cooperationFormRef}>
 
         <BasicFormItem label="合作投资机构" name="cooperativeOrg" >
-          <SelectExistOrganization allowCreate formName="userform" />
+          <SelectExistOrganization />
         </BasicFormItem>
 
         <BasicFormItem label="投资时间" name="investDate" valueType="object">
@@ -348,7 +341,6 @@ class CooperationForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
           >
             确定
           </Button>
@@ -358,12 +350,6 @@ class CooperationForm extends React.Component {
     );
   }
 }
-
-CooperationForm.childContextTypes = {
-  form: PropTypes.object
-};
-
-// CooperationForm = Form.create()(CooperationForm);
 
 class BuyoutForm extends React.Component {
   
@@ -438,7 +424,7 @@ class AddOrgDetail extends React.Component {
     contact: <ContactForm {...this.props} />,
     managefund: <ManageFundForm {...this.props} />,
     investevent: <InvestEventForm {...this.props} />,
-    // cooperation: <CooperationForm {...this.props} />,
+    cooperation: <CooperationForm {...this.props} />,
     // buyout: <BuyoutForm {...this.props} />,
   }
 
