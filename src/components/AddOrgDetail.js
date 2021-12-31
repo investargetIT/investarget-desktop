@@ -201,20 +201,15 @@ class ManageFundForm extends React.Component {
 
 class InvestEventForm extends React.Component {
   
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+  investEventFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.investEventFormRef.current.validateFields()
+      .then((values) => {
         console.log('Received values of form: ', values);
         this.addEvent(values);
-      }
-    });
+      })
+      .catch(handleError);
   }
 
   addEvent = async values => {
@@ -252,16 +247,11 @@ class InvestEventForm extends React.Component {
       });
   }
 
-  handleTargetChange = () => this.props.form.setFieldsValue({ investDate: null });
-
   render() {
-
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-    const investarget = this.props.form.getFieldValue('investTarget');
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onFinish={this.handleSubmit} ref={this.investEventFormRef}>
 
-        <BasicFormItem label="投资项目" name="investTarget" required valueType="number" onChange={this.handleTargetChange}>
+        <BasicFormItem label="投资项目" name="investTarget" required valueType="number">
           <SelectProjectLibrary />
         </BasicFormItem>
 
@@ -277,11 +267,18 @@ class InvestEventForm extends React.Component {
           <Input />
         </BasicFormItem> */}
 
-        { investarget !== undefined ?
-        <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
-          <SelectOrAddDate com_id={investarget} />
-        </BasicFormItem>
-        : null }
+        <FormItem noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const investarget = getFieldValue('investTarget');
+            if (investarget !== undefined) {
+              return (
+                <BasicFormItem label="投资时间" name="investDate" valueType="object" required>
+                  <SelectOrAddDate com_id={investarget} />
+                </BasicFormItem>
+              );
+            }
+          }}
+        </FormItem>
 
         {/* <BasicFormItem label="投资性质" name="investType">
           <Input />
@@ -295,7 +292,6 @@ class InvestEventForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
           >
             确定
           </Button>
@@ -305,12 +301,6 @@ class InvestEventForm extends React.Component {
     );
   }
 }
-
-InvestEventForm.childContextTypes = {
-  form: PropTypes.object
-};
-
-// InvestEventForm = Form.create()(InvestEventForm);
 
 class CooperationForm extends React.Component {
   
@@ -447,7 +437,7 @@ class AddOrgDetail extends React.Component {
   allForms = {
     contact: <ContactForm {...this.props} />,
     managefund: <ManageFundForm {...this.props} />,
-    // investevent: <InvestEventForm {...this.props} />,
+    investevent: <InvestEventForm {...this.props} />,
     // cooperation: <CooperationForm {...this.props} />,
     // buyout: <BuyoutForm {...this.props} />,
   }
