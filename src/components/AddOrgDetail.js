@@ -23,8 +23,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import * as api from '../api';
 import { 
-  SelectExistOrganization,
-  SelectExistOrCreateNewOrganization,
   SelectExistOrganizationWithID,
   CascaderCountry,
   SelectLibIndustry,
@@ -167,8 +165,8 @@ class ManageFundForm extends React.Component {
     return (
       <Form onFinish={this.handleSubmit} ref={this.fundFormRef}>
 
-        <BasicFormItem label="基金" name="fund" >
-          <SelectExistOrganization />
+        <BasicFormItem label="基金" name="fund" valueType="number">
+          <SelectExistOrganizationWithID size="middle" />
         </BasicFormItem>
 
         <BasicFormItem label="类型" name="type">
@@ -255,7 +253,7 @@ class InvestEventForm extends React.Component {
       <Form onFinish={this.handleSubmit} ref={this.investEventFormRef}>
 
         <BasicFormItem label="投资项目" name="investTarget" required valueType="number">
-          <SelectProjectLibrary />
+          <SelectProjectLibrary size="middle" />
         </BasicFormItem>
 
         {/* <BasicFormItem label="行业分类" name="industrytype">
@@ -327,8 +325,8 @@ class CooperationForm extends React.Component {
     return (
       <Form onFinish={this.handleSubmit} ref={this.cooperationFormRef}>
 
-        <BasicFormItem label="合作投资机构" name="cooperativeOrg" >
-          <SelectExistOrganization />
+        <BasicFormItem label="合作投资机构" name="cooperativeOrg" valueType="number">
+          <SelectExistOrganizationWithID size="middle" />
         </BasicFormItem>
 
         <BasicFormItem label="投资时间" name="investDate" valueType="object">
