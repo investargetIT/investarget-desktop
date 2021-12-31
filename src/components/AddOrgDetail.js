@@ -24,6 +24,8 @@ import { connect } from 'dva';
 import * as api from '../api';
 import { 
   SelectExistOrganization,
+  SelectExistOrCreateNewOrganization,
+  SelectExistOrganizationWithID,
   CascaderCountry,
   SelectLibIndustry,
   SelectOrAddDate,
@@ -353,16 +355,11 @@ class CooperationForm extends React.Component {
 
 class BuyoutForm extends React.Component {
   
-  getChildContext() {
-    return {
-      form: this.props.form
-    };
-  }
+  buyoutFormRef = React.createRef();
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
+  handleSubmit = () => {
+    this.buyoutFormRef.current.validateFields()
+    .then((values) => {
         console.log('Received values of form: ', values);
         values.buyoutDate = values.buyoutDate.format('YYYY-MM-DDT00:00:00');
         const body = { ...values, org: this.props.org };
@@ -370,16 +367,14 @@ class BuyoutForm extends React.Component {
           .then(result => {
               this.props.onNewDetailAdded();
             })
-      }
+          .catch(handleError);
     });
   }
 
   render() {
 
-    const { getFieldDecorator, getFieldsError } = this.props.form;
-
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onFinish={this.handleSubmit} ref={this.buyoutFormRef}>
 
         <BasicFormItem label="企业名称" name="comshortname">
           <Input />
@@ -389,8 +384,8 @@ class BuyoutForm extends React.Component {
           <DatePicker format="YYYY-MM-DD" />
         </BasicFormItem>
 
-        <BasicFormItem label="退出基金" name="buyoutorg" >
-          <SelectExistOrganization allowCreate formName="userform" />
+        <BasicFormItem label="退出基金" name="buyoutorg" valueType="number">
+          <SelectExistOrganizationWithID size="middle" />
         </BasicFormItem>
 
         <BasicFormItem label="退出方式" name="buyoutType">
@@ -401,7 +396,6 @@ class BuyoutForm extends React.Component {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
           >
             确定
           </Button>
@@ -412,12 +406,6 @@ class BuyoutForm extends React.Component {
   }
 }
 
-BuyoutForm.childContextTypes = {
-  form: PropTypes.object
-};
-
-// BuyoutForm = Form.create()(BuyoutForm);
-
 class AddOrgDetail extends React.Component {
 
   allForms = {
@@ -425,7 +413,7 @@ class AddOrgDetail extends React.Component {
     managefund: <ManageFundForm {...this.props} />,
     investevent: <InvestEventForm {...this.props} />,
     cooperation: <CooperationForm {...this.props} />,
-    // buyout: <BuyoutForm {...this.props} />,
+    buyout: <BuyoutForm {...this.props} />,
   }
 
   state = {
