@@ -151,6 +151,9 @@ function DataroomDetails(props) {
       });
       if (list.length > 0) {
         getOrgBdOfUsers(list.map(m => m.user));
+      } else {
+        setDataroomUsersOrgBdByOrg([]);
+        setExpandedRows([]);
       }
 
       const users = list.map(item => item.user)
