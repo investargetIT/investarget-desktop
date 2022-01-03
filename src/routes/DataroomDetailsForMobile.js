@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin } from 'antd';
-import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
+import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time, updateURLParameter } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
 import * as api from '../api';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
@@ -76,7 +76,7 @@ function DataroomDetails(props) {
   const [parentId, setParentId] = useState(parseInt(parentID, 10) || -999);
   const [searchContent, setSearchContent] = useState('');
 
-  const [currentFolder, setCurrentFolder] = useState(-999);
+  const [fileID, setFileID] = useState(-999); // 当前目录或文件 ID
 
   async function getOrgBdOfUsers(users) {
     setLoadingOrgBD(true);
@@ -321,6 +321,12 @@ function DataroomDetails(props) {
 
     if (isLogin() && !isLogin().is_superuser && hasPerm('usersys.as_investor')) {
       getNewDataRoomFile();
+    }
+
+    window.onpopstate = () => {
+      const fileID = getURLParamValue(props, 'fileID');
+      window.echo('window on pop state', fileID);
+      setFileID(parseInt(fileID, 10) || -999);
     }
   }, []);
 
@@ -889,11 +895,19 @@ function DataroomDetails(props) {
     return newNewData;
   }
 
-  window.echo('data', dataroomUsersOrgBdByOrg);
+  function handleItemClick(item) {
+    window.echo('item', item);
+    if (!item.isFile) {
+      const newURLParams = updateURLParameter(props, 'fileID', item.id);
+      history.pushState(undefined, '', `?${newURLParams.toString()}`)
+      setFileID(item.id);
+    }
+  }
+
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
-      {currentFolder === -999 && <div>
+      {fileID === -999 && <div>
         <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
         {/* <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
@@ -1007,8 +1021,8 @@ function DataroomDetails(props) {
           isProjTrader={isProjTrader}
           newDataroomFile={newDataroomFile}
           allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
-          currentFolder={currentFolder}
-          setCurrentFolder={setCurrentFolder}
+          fileID={fileID}
+          onItemClick={handleItemClick}
         />
       {/* } */}
 
