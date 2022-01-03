@@ -149,6 +149,8 @@ function DataroomFileManage({
   isProjTrader,
   newDataroomFile,
   allUserWithFile,
+  currentFolder,
+  setCurrentFolder,
 }) {
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -1057,14 +1059,21 @@ function DataroomFileManage({
     
   }
 
+  function handleItemClick(item) {
+    window.echo('item', item);
+    if (!item.isFile) {
+      setCurrentFolder(item.id);
+    }
+  }
+
   function generateContent() {
-    const currentFolderContent = data.filter(f => f.parentId === -999);
+    const currentFolderContent = data.filter(f => f.parentId === currentFolder);
     return currentFolderContent.map(m => (
-      <div key={m.id} style={{ lineHeight: '48px', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+      <div key={m.id} style={{ lineHeight: '48px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleItemClick(m)}>
         {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : <FolderOutlined style={{ marginRight: 8 }} />}
         {m.filename}
       </div>
-    ))
+    ));
   }
 
   window.echo('all data', data.filter(f => f.parentId === -999));

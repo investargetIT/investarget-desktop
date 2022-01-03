@@ -76,6 +76,8 @@ function DataroomDetails(props) {
   const [parentId, setParentId] = useState(parseInt(parentID, 10) || -999);
   const [searchContent, setSearchContent] = useState('');
 
+  const [currentFolder, setCurrentFolder] = useState(-999);
+
   async function getOrgBdOfUsers(users) {
     setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
@@ -891,10 +893,10 @@ function DataroomDetails(props) {
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
+      {currentFolder === -999 && <div>
+        <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
 
-      <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{projTitle}</div>
-
-      {/* <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+        {/* <div onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
         <div>一级目录不用动</div>
         <div className="short-content">
           <div className="long-content">二级目录跟着拖动，可以是很长的内容，照样跟着拖动，二级目录跟着拖动，可以是很长的内容，照样跟着拖动</div>
@@ -905,52 +907,54 @@ function DataroomDetails(props) {
         </div>
       </div> */}
 
-      {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
-          <div className="short-content">
-            <div className='long-content'>
-              <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
-                <div style={{ width: 150 }}>投资人</div>
-                <div style={{ width: 100 }}>职位</div>
-                <div style={{ width: 100 }}>负责人</div>
-                <div style={{ width: 200 }}>机构进度/材料</div>
-                <div style={{ width: 200 }}>机构反馈</div>
-              </div>
-            </div>
-          </div>
-          {loadingOrgBD && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
-            <Spin />
-          </div>}
-          {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
-            
-            <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleOrgBDExpand(m)}>
-              {expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
-              <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
-                  .map(item => (
-                    <Tag key={item.user.id} style={{ marginBottom: 4 }}>{item.user.username}</Tag>
-                  ))}
-              </div>
-            </div>
-            
-            {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-
-            {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
-              <div className="long-content">
-                <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
-                  <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
-                  <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
-                  <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
-                  <div style={{ width: 200 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
-                  <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
+        {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
+          <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+            <div className="short-content">
+              <div className='long-content'>
+                <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
+                  <div style={{ width: 150 }}>投资人</div>
+                  <div style={{ width: 100 }}>职位</div>
+                  <div style={{ width: 100 }}>负责人</div>
+                  <div style={{ width: 200 }}>机构进度/材料</div>
+                  <div style={{ width: 200 }}>机构反馈</div>
                 </div>
               </div>
-            </div>)}
+            </div>
+            {loadingOrgBD && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+              <Spin />
+            </div>}
+            {dataroomUsersOrgBdByOrg.map(m => <div key={m.id}>
 
-          </div>)}
-        </Card>
-      }
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleOrgBDExpand(m)}>
+                {expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
+                <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
+                    .map(item => (
+                      <Tag key={item.user.id} style={{ marginBottom: 4 }}>{item.user.username}</Tag>
+                    ))}
+                </div>
+              </div>
+
+              {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+
+              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
+                <div className="long-content">
+                  <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+                    <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
+                    <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
+                    <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
+                    <div style={{ width: 200 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
+                    <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
+                  </div>
+                </div>
+              </div>)}
+
+            </div>)}
+          </Card>
+        }
+
+      </div>}
 
       {/* {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}> */}
@@ -1003,6 +1007,8 @@ function DataroomDetails(props) {
           isProjTrader={isProjTrader}
           newDataroomFile={newDataroomFile}
           allUserWithFile={list.filter(f => fileUserList.map(m => m.user).includes(f.user.id)).map(m => m.user)}
+          currentFolder={currentFolder}
+          setCurrentFolder={setCurrentFolder}
         />
       {/* } */}
 
