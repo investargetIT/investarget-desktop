@@ -126,7 +126,7 @@ function DataroomDetails(props) {
     }
     setLoadingOrgBD(false);
     setDataroomUsersOrgBdByOrg(dataroomUserOrgBd);
-    setExpandedRows(dataroomUserOrgBd.map(m => m.id));
+    // setExpandedRows(dataroomUserOrgBd.map(m => m.id));
   }
 
   async function checkUserNewFile(userIds) {
@@ -388,7 +388,7 @@ function DataroomDetails(props) {
         oldX = parseInt(oldLeft);
       }
     }
-    e.preventDefault();
+    // e.preventDefault();
   }
 
   function handleTouchMove(e) {

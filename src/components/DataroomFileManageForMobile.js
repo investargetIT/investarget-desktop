@@ -1071,17 +1071,41 @@ function DataroomFileManage({
   function generateContent() {
     const currentFolderContent = data.filter(f => f.parentId === fileID);
     return currentFolderContent.map(m => (
-      <div key={m.id} style={{ lineHeight: '48px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => onItemClick(m)}>
+      <div key={m.id} style={{ lineHeight: '22px', padding: '13px 0', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => onItemClick(m)}>
         {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : <FolderOutlined style={{ marginRight: 8 }} />}
         {m.filename}
       </div>
     ));
   }
 
-  window.echo('all data', data.filter(f => f.parentId === -999));
+  function generateNameAndSizeAndDate() {
+    let name, size, date = null;
+    let timezone = '+08:00';
+    if (fileID === -999) {
+      name = '全部文件';
+    } else {
+      const filterCur = data.filter(f => f.id === fileID);
+      if (filterCur.length > 0) {
+        const currentItem = filterCur[0];
+        name = currentItem.filename;
+        size = currentItem.size;
+        date = currentItem.date;
+        if (currentItem.timezone) {
+          timezone = currentItem.timezone;
+        }
+      }
+    }
+    return (
+      <div style={{ marginLeft: 8, marginBottom: 12 }}>
+        <div style={{ marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{name}</div>
+        {size && <div style={{ marginBottom: 8 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(size)}</span></div>}
+        {date && <div style={{ marginBottom: 8 }}>修改时间：<span style={{ color: '#595959' }}>{date && time(date + timezone)}</span></div>}
+      </div>
+    );
+  }
   return (
     <div>
-      <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>全部文件</div>
+      { generateNameAndSizeAndDate() } 
       <Card bodyStyle={{ padding: 8 }}>
         {/* {dirData.length > 0 && !loading &&
               <DirectoryTree
