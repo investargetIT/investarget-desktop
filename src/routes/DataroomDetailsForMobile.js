@@ -386,9 +386,9 @@ function DataroomDetails(props) {
   function handleTouchMove(e) {
     const progressX = startX - e.touches[0].clientX;
     const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
-    window.echo('move e', progressX);
+    // window.echo('move e', progressX);
     const all = document.getElementsByClassName('long-content');
-    window.echo('all', all);
+    // window.echo('all', all);
     
     for (let i = 0; i < all.length; i++) {
       if ((oldX + translation) < -465) {
@@ -906,7 +906,7 @@ function DataroomDetails(props) {
       </div> */}
 
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-        <Card style={{ marginBottom: 28 }} bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
+        <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={handleTouchMove} onTouchStart={handleTouchStart}>
           <div className="short-content">
             <div className='long-content'>
               <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>

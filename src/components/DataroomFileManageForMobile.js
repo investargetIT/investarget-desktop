@@ -1057,20 +1057,22 @@ function DataroomFileManage({
     
   }
 
+  function generateContent() {
+    const currentFolderContent = data.filter(f => f.parentId === -999);
+    return currentFolderContent.map(m => (
+      <div key={m.id} style={{ lineHeight: '48px', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+        {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : <FolderOutlined style={{ marginRight: 8 }} />}
+        {m.filename}
+      </div>
+    ))
+  }
+
+  window.echo('all data', data.filter(f => f.parentId === -999));
   return (
     <div>
-      <Row>
-        <Col span={24}>
-          <Card>
-            <Search
-              style={{ marginBottom: 30 }}
-              size="default"
-              placeholder="请输入文件名称或内容"
-              onSearch={handleDataroomSearch}
-              onChange={searchContent => setSearchContent(searchContent)}
-              value={searchContent}
-            />
-            {dirData.length > 0 && !loading &&
+      <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>全部文件</div>
+      <Card bodyStyle={{ padding: 8 }}>
+        {/* {dirData.length > 0 && !loading &&
               <DirectoryTree
                 checkable
                 height={700}
@@ -1085,14 +1087,13 @@ function DataroomFileManage({
                 checkedKeys={checkedFiles}
                 onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
               />
-            }
-            {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
-              <Spin />
-            </div>}
-          </Card>
-        </Col>
+            } */}
+        {data.length > 0 && !loading && generateContent()}
+        {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
+          <Spin />
+        </div>}
+      </Card>
 
-      </Row>
 <Row>
           {selectedFile &&
           <Col span={24}>
