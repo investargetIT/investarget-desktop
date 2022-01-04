@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin } from 'antd';
-import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time, updateURLParameter } from '../utils/util';
+import { getURLParamValue, handleErrorForMobile as handleError, hasPerm, isLogin, i18n, requestAllData, time, updateURLParameter } from '../utils/util';
 import { SelectExistInvestor } from '../components/ExtraInput';
-import * as api from '../api';
+import * as api from '../apiForMobile';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
@@ -801,7 +801,7 @@ function DataroomDetails(props) {
       setData(newData);
     }).catch(error => {
       props.dispatch({
-        type: 'app/findError',
+        type: 'app/findErrorForMobile',
         payload: error
       })
     })
@@ -887,7 +887,7 @@ function DataroomDetails(props) {
       newNewData.push(newItem);
     }).catch(error => {
       props.dispatch({
-        type: 'app/findError',
+        type: 'app/findErrorForMobile',
         payload: error
       })
     })

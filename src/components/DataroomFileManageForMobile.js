@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
-import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo } from '../utils/util';
+import * as api from '../apiForMobile';
+import { formatBytes, time, isLogin, hasPerm, handleErrorForMobile as handleError, getCurrentUser, getUserInfo } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -667,7 +667,7 @@ function DataroomFileManage({
           }
         }).catch(error => {
           dispatch({
-            type: 'app/findError',
+            type: 'app/findErrorForMobile',
             payload: error
           })
         })
@@ -855,7 +855,7 @@ function DataroomFileManage({
     }).catch(error => {
       setCreateFolderLoading(false);
       dispatch({
-        type: 'app/findError',
+        type: 'app/findErrorForMobile',
         payload: error
       })
     })
@@ -890,7 +890,7 @@ function DataroomFileManage({
     }).catch(error => {
       setRenameFolderLoading(false);
       dispatch({
-        type: 'app/findError',
+        type: 'app/findErrorForMobile',
         payload: error,
       });
     });
@@ -934,7 +934,7 @@ function DataroomFileManage({
       }).catch(error => {
         setMoveFileLoading(false);
         dispatch({
-          type: 'app/findError',
+          type: 'app/findErrorForMobile',
           payload: error,
         });
       });
