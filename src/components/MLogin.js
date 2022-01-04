@@ -166,7 +166,7 @@ class MLogin extends React.Component {
             >
               <Checkbox>{i18n('account.auto_login')}</Checkbox>
             </Form.Item>
-            <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
+            <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/mpassword">{i18n("account.forget_password")}</Link>
           </div>
 
           <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading} style={{ background: 'rgb(19, 53, 108)', borderColor: 'rgb(19, 53, 108)' }}>{i18n('account.login')}</Button>

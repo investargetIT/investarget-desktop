@@ -90,6 +90,7 @@ import UserListWithResignedTraders from './routes/UserListWithResignedTraders';
 import HumanResources from './routes/HumanResources';
 import OrgBDListForMobile from './routes/OrgBDListForMobile';
 import MLogin from './components/MLogin';
+import ResetPasswordForMobile from './routes/ResetPasswordForMobile';
 
 function RouterConfig({ history }) {
   return (
@@ -99,6 +100,7 @@ function RouterConfig({ history }) {
         <Route path="/login" component={Login} />
         <Route path="/mlogin" component={MLogin} />
         <Route path="/password" component={ResetPassword} />
+        <Route path="/mpassword" component={ResetPasswordForMobile} />
         <Route path="/register1" component={Register1} />
         <Route path="/register" component={Register} />
         <Route path="/app/projects/bd/edit/:id" component={EditProjectBD} />

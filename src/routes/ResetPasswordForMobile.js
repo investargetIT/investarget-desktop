@@ -4,14 +4,14 @@ import { connect } from 'dva'
 import { Link, withRouter } from 'dva/router'
 import { Form, Button, Input, message } from 'antd'
 import { i18n, handleError } from '../utils/util'
-import * as api from '../api'
+import * as api from '../apiForMobile';
 import { ApiError } from '../utils/request'
-import LoginContainer from '../components/LoginContainer'
+import LoginContainerForMobile from '../components/LoginContainerForMobile'
 import GlobalMobile from '../components/GlobalMobile'
 import HandleError from '../components/HandleError'
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 
-class ResetPassword extends React.Component {
+class ResetPasswordForMobile extends React.Component {
 
   getChildContext() {
     return {
@@ -112,7 +112,7 @@ class ResetPassword extends React.Component {
       })
     }).catch(error => {
       this.setState({ loading: false })
-      this.props.dispatch({ type: 'app/findError', payload: error })
+      this.props.dispatch({ type: 'app/findErrorForMobile', payload: error })
     })
   }
 
@@ -136,9 +136,9 @@ class ResetPassword extends React.Component {
     }
 
     return (
-      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
+      <LoginContainerForMobile changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form ref={this.formRef} onFinish={this.handleSubmit} className="it-login-form">
-          <div className="login-register-form">
+          <div className="login-register-form-mobile">
             <h1 className="login-register-form__title">{i18n('account.reset_password')}</h1>
             <p className="login-register-form__subtitle">{i18n('account.reset_info')}</p>
 
@@ -197,20 +197,20 @@ class ResetPassword extends React.Component {
               )}
             </Form.Item>
 
-            <Button block type="primary" size="large" htmlType="submit" loading={this.state.submitLoading}>{i18n("common.submit")}</Button>
+            <Button block type="primary" size="large" htmlType="submit" loading={this.state.submitLoading} style={{ background: 'rgb(19, 53, 108)', borderColor: 'rgb(19, 53, 108)' }}>{i18n("common.submit")}</Button>
 
-            <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/login" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
+            <div className="login-register-form__hint">{i18n('account.have_account_already')}<Link to="/mlogin" style={{ color: '#339bd2' }}>{i18n('account.directly_login')}</Link></div>
 
           </div>
         </Form>
 
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
-      </LoginContainer>
+      </LoginContainerForMobile>
     )
   }
 }
 
-ResetPassword.childContextTypes = {
+ResetPasswordForMobile.childContextTypes = {
   form: PropTypes.object
 }
 
@@ -225,4 +225,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(ResetPassword))
+export default connect(mapStateToProps)(withRouter(ResetPasswordForMobile))
