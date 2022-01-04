@@ -140,7 +140,7 @@ function DataroomFileManage({
   onSelectFileUser,
   onDeselectFileUser,
   readFileUserList,
-  onUploadFile,
+  // onUploadFile,
   onUploadFileWithDir,
   dispatch,
   isCompanyDataroom,
@@ -435,61 +435,61 @@ function DataroomFileManage({
   function titleRender(item) {
     
     function popoverContent() {
-      const props = {
-        name: 'file',
-        action: baseUrl + '/service/qiniubigupload?bucket=file',
-        showUploadList: false,
-        multiple: true,
-        beforeUpload: file => {
-          console.log(file)
-          const fileType = file.type
-          const files = data.filter(f => f.parentId === item.id);
-          const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
-          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
-          if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
-            window.echo('mime type or file name suffix not valid');
-            window.echo('mime type', fileType);
-            window.echo('file name', file.name);
-            Modal.error({
-              title: '不支持的文件类型',
-              content: `${file.name} 文件类型有误，请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件`,
-            })
-            return false
-          }
-          if (files.some(item => {
-            return item.name == file.name
-          })) {
-            // Modal.error({
-            //   title: '不支持的文件名字',
-            //   content: '已存在相同的文件名字',
-            // })
-            message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
-            return false
-          }
+      // const props = {
+      //   name: 'file',
+      //   action: baseUrl + '/service/qiniubigupload?bucket=file',
+      //   showUploadList: false,
+      //   multiple: true,
+      //   beforeUpload: file => {
+      //     console.log(file)
+      //     const fileType = file.type
+      //     const files = data.filter(f => f.parentId === item.id);
+      //     const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
+      //     const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+      //     if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
+      //       window.echo('mime type or file name suffix not valid');
+      //       window.echo('mime type', fileType);
+      //       window.echo('file name', file.name);
+      //       Modal.error({
+      //         title: '不支持的文件类型',
+      //         content: `${file.name} 文件类型有误，请上传 office、pdf 或者后缀名为 mp4、avi、mp3、m4a 的音视频文件`,
+      //       })
+      //       return false
+      //     }
+      //     if (files.some(item => {
+      //       return item.name == file.name
+      //     })) {
+      //       // Modal.error({
+      //       //   title: '不支持的文件名字',
+      //       //   content: '已存在相同的文件名字',
+      //       // })
+      //       message.warning(`同名文件，文件名 ${file.name} 已存在，无法上传`);
+      //       return false
+      //     }
 
-          return true
-        },
-        onChange(info) {
-          if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-          }
-          if (info.file.status === 'done') {
-            if (!info.file.name || !info.file.size) {
-              const file = info.fileList.filter(f => f.status === 'done' && f.uid === info.file.uid)[0];
-              info.file.name = file.name;
-              info.file.size = file.size;
-            }
-            message.success(`${info.file.name} file uploaded successfully`)
-            // react.setState({ loading: false })
-            onUploadFile(info.file, item.id);
-          } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-            // react.setState({ loading: false })
-          } else if (info.file.status === 'uploading') {
-            // react.setState({ loading: true })
-          }
-        },
-      };
+      //     return true
+      //   },
+      //   onChange(info) {
+      //     if (info.file.status !== 'uploading') {
+      //       console.log(info.file, info.fileList);
+      //     }
+      //     if (info.file.status === 'done') {
+      //       if (!info.file.name || !info.file.size) {
+      //         const file = info.fileList.filter(f => f.status === 'done' && f.uid === info.file.uid)[0];
+      //         info.file.name = file.name;
+      //         info.file.size = file.size;
+      //       }
+      //       message.success(`${info.file.name} file uploaded successfully`)
+      //       // react.setState({ loading: false })
+      //       onUploadFile(info.file, item.id);
+      //     } else if (info.file.status === 'error') {
+      //       message.error(`${info.file.name} file upload failed.`);
+      //       // react.setState({ loading: false })
+      //     } else if (info.file.status === 'uploading') {
+      //       // react.setState({ loading: true })
+      //     }
+      //   },
+      // };
 
       const uploadDirProps = {
         beforeUpload: file => {
@@ -525,10 +525,10 @@ function DataroomFileManage({
               info.file.name = file.name;
               info.file.size = file.size;
             }
-            message.success(`${info.file.name} file uploaded successfully`)
+            message.success(`${info.file.name} 文件上传成功`)
             // react.setState({ loading: false })
           } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
+            message.error(`${info.file.name} 文件上传失败`);
             // react.setState({ loading: false })
           } else if (info.file.status === 'uploading') {
             // react.setState({ loading: true })
@@ -597,9 +597,9 @@ function DataroomFileManage({
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
-            <Upload {...props}>
+            <UploadDir {...uploadDirProps} multiple>
               <FileTextOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />上传文件
-            </Upload>
+            </UploadDir>
           </div>
 
           <div style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
@@ -1341,7 +1341,7 @@ function DataroomFileManage({
 
       {uploadDirProgress &&
         <Modal
-          title="正在上传文件夹"
+          title="正在上传文件"
           visible
           footer={null}
           closable={false}

@@ -11,8 +11,10 @@ class UploadDir extends React.Component {
   }
 
   componentDidMount() {
-    this.inputElement.directory = true;
-    this.inputElement.webkitdirectory = true;
+    if (!this.props.multiple) { 
+      this.inputElement.directory = true;
+      this.inputElement.webkitdirectory = true;
+    }
   }
 
   handleClick(e) {
@@ -26,11 +28,28 @@ class UploadDir extends React.Component {
     this.inputElement.value = null;
   }
 
-  async onChangeFile(event) {
+  onChangeFile(event) {
     event.stopPropagation();
     event.preventDefault();
     const { files } = event.target;
     window.echo('change file', files); 
+    const allowedFiles = [];
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      let allowUpload = true;
+      if (this.props.beforeUpload) {
+        allowUpload = this.props.beforeUpload(file);
+      }
+      if (allowUpload) {
+        allowedFiles.push(file);
+      }
+    }
+    if (allowedFiles.length > 0) {
+      this.uploadFiles(allowedFiles);
+    }
+  } 
+
+  uploadFiles = async files => {
     const allFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
