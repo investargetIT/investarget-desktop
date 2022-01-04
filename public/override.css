@@ -343,6 +343,12 @@ button[disabled], html input[disabled] {
   border-radius: 8px;
   box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.1);
 }
+.login-register-form-mobile {
+  padding: 0 24px;
+  width: 100%;
+  z-index: 1;
+  color: #666;
+}
 .login-register-form__title {
   margin-bottom: 12px;
   font-size: 30px;

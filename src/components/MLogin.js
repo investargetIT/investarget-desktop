@@ -3,7 +3,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import { routerRedux, Link } from 'dva/router'
 import { i18n, handleError, getURLParamValue } from '../utils/util'
-import LoginContainer from '../components/LoginContainer'
+import LoginContainerForMobile from '../components/LoginContainerForMobile'
 import HandleError from '../components/HandleError'
 import FormError from '../utils/FormError'
 
@@ -114,8 +114,8 @@ class MLogin extends React.Component {
 
   render() {
     return (
-      <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
-        <Form className="it-login-form login-register-form" onFinish={this.handleSubmit}>
+      <LoginContainerForMobile changeLang={function(){this.forceUpdate()}.bind(this)}>
+        <Form className="it-login-form login-register-form-mobile" onFinish={this.handleSubmit} style={{ width: 'un' }}>
           <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
           <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
 
@@ -169,13 +169,13 @@ class MLogin extends React.Component {
             <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
           </div>
 
-          <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>移动端{i18n('account.login')}</Button>
+          <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading} style={{ background: 'rgb(19, 53, 108)', borderColor: 'rgb(19, 53, 108)' }}>{i18n('account.login')}</Button>
 
-          <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
+          {/* <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div> */}
 
         </Form>
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
-      </LoginContainer>
+      </LoginContainerForMobile>
     );
   }
 }
