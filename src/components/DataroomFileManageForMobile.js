@@ -943,7 +943,7 @@ function DataroomFileManage({
 
   const downloadFileModalFooter = (
     <div style={{ marginRight: 4 }}>
-      {!isLogin().is_superuser && hasPerm('usersys.as_investor') &&
+      {isLogin() && !isLogin().is_superuser && hasPerm('usersys.as_investor') &&
         <Button disabled={newDataroomFile.length === 0} onClick={handleDownloadNewFileBtnClicked}>下载新文件</Button>
       }
       <Button onClick={handleDownloadAllFilesBtnClicked}>下载全部文件</Button>

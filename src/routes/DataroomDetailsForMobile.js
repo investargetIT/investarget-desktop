@@ -243,7 +243,7 @@ function DataroomDetails(props) {
           allProjTraders = allProjTraders.concat(projTraders);
         }
         const isProjTrader = allProjTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id);
-        const isSuperUser = isLogin().is_superuser;
+        const isSuperUser = isLogin() && isLogin().is_superuser;
         setProjTitle(res.data.projtitle);
         if (isProjTrader || isSuperUser) {
           setIsProjTrader(isProjTrader);
