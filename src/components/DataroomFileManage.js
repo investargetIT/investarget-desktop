@@ -618,8 +618,8 @@ function DataroomFileManage({
     function morePopoverContent() {
 
       function handleDeleteFileClick(item){
-        const filesToDelete = checkedFiles;
-        if (!checkedFiles.includes(item.id)) {
+        const filesToDelete = checkedFiles.checked;
+        if (!filesToDelete.includes(item.id)) {
           filesToDelete.push(item.id);
         }
         
@@ -956,7 +956,7 @@ function DataroomFileManage({
 
   function handleDownloadSelectFileBtnClicked() {
     setDisplayDownloadFileModal(false);
-    let allFilesIDs = checkedFiles;
+    let allFilesIDs = checkedFiles.checked;
     if (allFilesIDs.length === 0) {
       const allChildren = findAllChildren(currentDownloadFile.id);
       allFilesIDs = allChildren.map(m => m.id).concat(currentDownloadFile.id);
@@ -1078,6 +1078,7 @@ function DataroomFileManage({
                 onSelect={onSelect}
                 // onExpand={onExpand}
                 // onLoad={onLoad}
+                checkStrictly
                 treeData={dirData}
                 titleRender={titleRender}
                 icon={null}
