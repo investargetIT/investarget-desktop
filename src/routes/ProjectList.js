@@ -11,6 +11,7 @@ import {
   getCurrentUser,
   requestAllData2,
   subtracting,
+  getUserInfo,
 } from '../utils/util';
 
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip, Popover } from 'antd'
@@ -391,6 +392,14 @@ class ProjectList extends React.Component {
     );
   }
 
+  currentUserHasIndGroup = () => {
+    const userInfo = getUserInfo();
+    if (!userInfo) return false;
+    if (!userInfo.indGroup) return false;
+    if (!userInfo.indGroup.id) return false;
+    return true;
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
@@ -569,7 +578,7 @@ class ProjectList extends React.Component {
 
         <Card title={i18n('project.platform_projects')}>
 
-          <div className="another-btn" style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex' }}>
               <Search
                 style={{ width: 200, marginRight: 20 }}
@@ -581,11 +590,11 @@ class ProjectList extends React.Component {
               />
               <NewProjectListFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
             </div>
-            {hasPerm('usersys.as_trader') &&
+            {(hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) &&
               <Button
                 type="primary"
+                disabled={!hasPerm('proj.admin_manageproj') && !this.currentUserHasIndGroup()}
                 icon={<PlusOutlined />}
-                onClick={() => this.enterLoading(1)}
                 onClick={() => this.props.history.push('/app/projects/add')}
               >
                 添加新项目

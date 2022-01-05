@@ -325,6 +325,14 @@ class ProjectBDList extends React.Component {
     return `+${usermobile}`;
   }
 
+  currentUserHasIndGroup = () => {
+    const userInfo = getUserInfo();
+    if (!userInfo) return false;
+    if (!userInfo.indGroup) return false;
+    if (!userInfo.indGroup.id) return false;
+    return true;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
@@ -480,7 +488,20 @@ class ProjectBDList extends React.Component {
     }
 
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('menu.project_bd')} action={{ name: i18n('project_bd.add_project_bd'), link: "/app/projects/bd/add" }}>
+      <LeftRightLayout
+        location={this.props.location}
+        title={i18n('menu.project_bd')}
+        action={
+          (hasPerm('BD.manageProjectBD') || hasPerm('usersys.as_trader')) ?
+            {
+              name: i18n('project_bd.add_project_bd'),
+              link: "/app/projects/bd/add",
+              disabled: !hasPerm('BD.manageProjectBD') && !this.currentUserHasIndGroup(),
+            }
+            :
+            undefined
+        }
+      >
         {/* {source!=0 ? <BDModal source={source}  element='proj'/> : null} */}
         <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">

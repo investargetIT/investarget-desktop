@@ -44,7 +44,7 @@ const actionStyle = {
   float: 'right',
   fontSize: 16,
   textDecoration: 'underline',
-  color: '#428bca',
+  // color: '#428bca',
 }
 
 
@@ -104,7 +104,7 @@ class LeftRightLayout extends React.Component {
                   : null}
                 
                 { this.props.action ? (
-                    <Link style={{ ...actionStyle, ...this.props.action.style }} to={this.props.action.link}>{this.props.action.name}</Link>
+                    <Link style={{ ...actionStyle, ...this.props.action.style }} to={this.props.action.link} disabled={this.props.action.disabled}>{this.props.action.name}</Link>
                 ) : null }
                 { this.props.right ? (
                   <div style={{float:'right'}}>{this.props.right}</div>
