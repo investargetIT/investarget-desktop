@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -206,19 +206,22 @@ function DataroomFileManage({
     })
   }
 
-  // function findAllParents(fileId) {
-  //   let allParents = [];
-  //   function findParents (id) {
-  //     const currentFile = allDataroomFiles.filter(f => f.id === id);
-  //     const parent = allDataroomFiles.filter(f => f.id === currentFile[0].parent);
-  //     allParents = allParents.concat(parent);
-  //     if (parent.length > 0) {
-  //       findParents(parent[0].id);
-  //     }
-  //     return allParents;
-  //   }
-  //   return findParents(fileId);
-  // }
+  function findAllParents(fileId) {
+    let allParents = [];
+    function findParents (id) {
+      const currentFile = allDataroomFiles.filter(f => f.id === id);
+      if (currentFile.length === 0) {
+        return allParents;
+      }
+      const parent = allDataroomFiles.filter(f => f.id === currentFile[0].parent);
+      allParents = allParents.concat(parent);
+      if (parent.length > 0) {
+        findParents(parent[0].id);
+      }
+      return allParents;
+    }
+    return findParents(fileId);
+  }
 
   function findAllChildren(folderId) {
     let allChildren = [];
@@ -331,7 +334,7 @@ function DataroomFileManage({
   function generateTreeData(allData) {
     const newCloneData = _.cloneDeep(allData);
     const recursiveData = switchStructure(newCloneData, -999);
-    const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false };
+    const rootDir = { title: '全部文件', key: -999, id: -999, isFolder: true, isFile: false, parent: null };
     rootDir['children'] = recursiveData;
     return [rootDir];
   }
@@ -1057,6 +1060,53 @@ function DataroomFileManage({
     
   }
 
+  function handleDirectoryTreeChecked(checkedKeys, e) {
+    // setCheckedFiles(checkedKeys);
+    // const { checked } = checkedKeys;
+    // let checkedFiles = [];
+    // for (let index = 0; index < checked.length; index++) {
+    //   const element = checked[index];
+    //   checkedFiles = checkedFiles.concat(element);
+    //   const allChildren = findAllChildren(element);
+    //   window.echo('all children', allChildren);
+    //   checkedFiles = checkedFiles.concat(allChildren.map(m => m.id));
+    // }
+    // const unique = _.uniq(checkedFiles);
+    // window.echo('all checked files', unique);
+    // setCheckedFiles(unique);
+
+    let increase = [], decrease = []; // 应该新增或减少的关联文件
+    const { checked, node } = e;
+    const { id: changedFile } = node;
+    // 勾选了一个文件或目录
+    if (checked) {
+      // 增加这个文件或目录 
+      increase = increase.concat(changedFile);
+      // 如果是个目录，增加这个目录的所有子文件
+      if (!node.isFile) {
+        const allChildren = findAllChildren(changedFile);
+        increase = increase.concat(allChildren.map(m => m.id));
+      }
+    } else {
+      decrease = decrease.concat(changedFile);
+      if (!node.isFile) {
+        const allChildren = findAllChildren(changedFile);
+        decrease = decrease.concat(allChildren.map(m => m.id));
+      }
+
+      // 剔除所有父目录
+      const allParents = findAllParents(changedFile);
+      decrease = decrease.concat(allParents.map(m => m.id));
+      decrease = decrease.concat(-999);
+    }
+
+    let newCheckedFiles = [...checkedFiles];
+    newCheckedFiles = newCheckedFiles.concat(increase);
+
+    newCheckedFiles = subtracting(newCheckedFiles, decrease);
+    setCheckedFiles(_.uniq(newCheckedFiles));
+  }
+
   return (
     <div>
       <Row gutter={20}>
@@ -1084,7 +1134,7 @@ function DataroomFileManage({
                 icon={null}
                 expandAction="doubleClick"
                 checkedKeys={checkedFiles}
-                onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
+                onCheck={handleDirectoryTreeChecked}
               />
             }
             {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
