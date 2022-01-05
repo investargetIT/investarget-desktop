@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import Header from './Header';
+import HeaderForMobile from './HeaderForMobile';
 import { Layout, Icon } from 'antd'
 import SiderMenu from './SiderMenu'
 import { Link } from 'dva/router'
@@ -75,7 +75,7 @@ class LeftRightLayoutPureForMobile extends React.Component {
     const sideBarAndContent = (
       <Layout style={{}}>
 
-        <Header location={this.props.location} style={headStyle} changeLang={this.reload.bind(this)} />
+        <HeaderForMobile location={this.props.location} style={headStyle} changeLang={this.reload.bind(this)} />
 
         <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
 
