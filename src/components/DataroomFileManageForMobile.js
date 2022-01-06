@@ -1126,6 +1126,12 @@ function DataroomFileManage({
         }
       }
     }
+
+    if (selectedFile) {
+      const visibleUser = getVisibleUsers();
+      window.echo('visible user', visibleUser);
+    }
+
     return (
       <div style={{ marginLeft: 8, marginBottom: 12 }}>
         <div style={{ marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{name}</div>
@@ -1164,10 +1170,10 @@ function DataroomFileManage({
           {selectedFile &&
           <Col span={24}>
             <Card title={selectedFile.filename}>
-              <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
+              {/* <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
                 {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
                 <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
-              </div>
+              </div> */}
 
               {!isCompanyDataroom && selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
                 <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>

@@ -137,7 +137,7 @@ class HandleError extends React.Component {
         Modal.error({ title: msg });
         break;
       case 20071:
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)

@@ -138,6 +138,9 @@ class HandleErrorForMobile extends React.Component {
         // Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
         Modal.error({ title: msg });
         break;
+      case 20071:
+        Modal.error({ title: msg, content: detail });
+        break;
       default:
         message.error(`Api Error, code: ${code}, message: ${msg}`, 2)
     }
