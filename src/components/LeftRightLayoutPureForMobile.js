@@ -79,7 +79,7 @@ class LeftRightLayoutPureForMobile extends React.Component {
 
         <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
 
-          <Content style={{ padding: 20 }}>
+          <Content style={{ padding: '20px 8px' }}>
             {this.props.children}
           </Content>
 

@@ -413,7 +413,7 @@ function DataroomDetails(props) {
     }
     // e.preventDefault();
   }
-
+  const windowWidth = window.innerWidth;
   function handleTouchMove(e) {
     const progressX = startX - e.touches[0].clientX;
     const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
@@ -422,8 +422,8 @@ function DataroomDetails(props) {
     // window.echo('all', all);
     
     for (let i = 0; i < all.length; i++) {
-      if ((oldX + translation) < -465) {
-        all[i].style.left = '-465px';
+      if ((oldX + translation) < -(windowWidth - 32)) {
+        all[i].style.left = `${-(windowWidth-32)}px`;
       } else if ((oldX + translation) < 0) {
         all[i].style.left = `${oldX + translation}px`;
       } else {
@@ -572,9 +572,9 @@ function DataroomDetails(props) {
               );
             });
           return (
-            <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+            // <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
               <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-            </Popover>
+            // </Popover>
           );
   }
 
@@ -1093,8 +1093,8 @@ function DataroomDetails(props) {
                 <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
                   <div style={{ width: 150 }}>投资人</div>
                   <div style={{ width: 100 }}>职位</div>
-                  <div style={{ width: 100 }}>负责人</div>
-                  <div style={{ width: 200 }}>机构进度/材料</div>
+                  <div style={{ width: 150 }}>负责人</div>
+                  <div style={{ width: 300 }}>机构进度/材料</div>
                   <div style={{ width: 200 }}>机构反馈</div>
                 </div>
               </div>
@@ -1122,8 +1122,8 @@ function DataroomDetails(props) {
                   <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                     <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                     <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
-                    <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
-                    <div style={{ width: 200 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
+                    <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
+                    <div style={{ width: 300 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
                     <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
                   </div>
                 </div>
