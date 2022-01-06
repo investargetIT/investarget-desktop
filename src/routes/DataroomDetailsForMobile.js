@@ -84,7 +84,7 @@ function DataroomDetails(props) {
   const [activeOrgBDForEditing, setActiveOrgBDForEditing] = useState(null);
   const [displayModalForEditing, setDisplayModalForEditing] = useState(false);
   const [newComment, setNewComment] = useState('');
-          // loadingEditingOrgBD: false,
+  const [loadingEditingOrgBD, setLoadingEditingOrgBD] = useState(false);
   const [traderList, setTraderList] = useState([]);
 
   async function getOrgBdOfUsers(users) {
@@ -1008,6 +1008,67 @@ function DataroomDetails(props) {
     return progressValue;
   }
 
+  function handleEditOrgBD() {
+    const record = activeOrgBDForEditing;
+    let body = {
+      'bduser': record.bduser >= 0 ? record.bduser: null,
+      'manager': Number(record.manager.id),
+      'org': record.org.id,
+      'proj': record.proj.id,
+      // 'isimportant': record.isimportant,
+      // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
+      // 'bd_status': 1,
+      'response': record.response,
+      'material': record.material || '',
+    }
+    setLoadingEditingOrgBD(true);
+    // api.getUserSession()
+      // .then(() => 
+      api.modifyOrgBD(record.id, body)
+      .then(generateProgressChangeComment)
+      .then(() => {
+        if (newComment) {
+          const bodyForComment = {
+            orgBD: record.id,
+            comments: newComment,
+          };
+          return api.addOrgBDComment(bodyForComment);
+        }
+      })
+      .then(() => {
+        // this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
+        getAllUserFile();
+        setTraderList(allTrader);
+        setDisplayModalForEditing(false);
+        setLoadingEditingOrgBD(false);
+      })
+      .catch(handleError)
+      .finally(() => setLoadingEditingOrgBD(false));
+  }
+
+  const generateProgressChangeComment = async () => {
+    const { id: oldID, response: oldResponse, material: oldMaterial } = originalOrgBDForEditing;
+    const { id: newID, response: newResponse, material: newMaterial } = activeOrgBDForEditing;
+    if (oldID !== newID) return;
+    if (oldResponse === newResponse && oldMaterial === newMaterial) return;
+    const orgBD = oldID;
+    let oldStatus = '';
+    if (oldResponse) {
+      oldStatus = props.orgbdres.filter(f => f.id === oldResponse)[0].name;
+    }
+    let newStatus = '';
+    if (newResponse) {
+      newStatus = props.orgbdres.filter(f => f.id === newResponse)[0].name;
+    }
+    const comments = [`之前状态：${oldStatus || '无'}`, `之前材料：${oldMaterial || '无'}`, `现在状态：${newStatus || '无'}`, `现在材料：${newMaterial || '无'}`].join('，');
+    const body = {
+      orgBD,
+      comments,
+      isPMComment: 0,
+    };
+    await api.addOrgBDComment(body);
+  }
+
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
@@ -1183,8 +1244,8 @@ function DataroomDetails(props) {
           title="编辑机构看板"
           visible
           onCancel={() => {setDisplayModalForEditing(false); setNewComment('');}}
-          // onOk={this.handleEditOrgBD}
-          // confirmLoading={this.state.loadingEditingOrgBD}
+          onOk={handleEditOrgBD}
+          confirmLoading={loadingEditingOrgBD}
         >
           <div style={{ marginBottom: 30 }}>
             <div>机构名称</div>
