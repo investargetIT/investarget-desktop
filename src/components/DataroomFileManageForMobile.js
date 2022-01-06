@@ -1185,92 +1185,21 @@ function DataroomFileManage({
         </div>}
       {/* </Card> */}
 
-<Row>
-          {selectedFile &&
-          <Col span={24}>
-            <Card title={selectedFile.filename}>
-              {/* <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
-                {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
-                <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
-              </div> */}
+      {selectedFile && selectedFile.isFile && previewFileUrl &&
+        // <div>
+        //   <div style={{ display: 'flex', justifyContent: 'space-between', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5' }}>
+        //     <div style={{ color: '#262626', fontWeight: 'bold' }}>预览文件</div>
+        //     <div style={{ color: '#595959', cursor: 'pointer' }} onClick={handleOpenFileInNewWindowClick}>
+        //       <Tooltip title="在新窗口中打开"><ExpandOutlined /></Tooltip>
+        //     </div>
+        //   </div>
+          <div
+            style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+            dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
+          />
+        // </div>
+      }
 
-              {!isCompanyDataroom && selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-                <div style={{ marginBottom: 20, display: 'flex', color: '#262626' }}>
-                  <div>可见用户：</div>
-                  <Select
-                    mode="multiple"
-                    showArrow
-                    tagRender={renderTagContent}
-                    style={{ flex: 1 }}
-                    value={getVisibleUsers()}
-                    optionLabelProp="children"
-                    filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-                    onSelect={userId => onSelectFileUser(selectedFile.id, Number(userId))}
-                    onDeselect={userId => onDeselectFileUser(selectedFile.id, Number(userId))}
-                  >
-                    {userOptions.map(option => (
-                      <Select.Option
-                        key={option.value}
-                        value={String(option.value)}>{option.label}</Select.Option>
-                    ))}
-                  </Select>
-                </div>
-              }
-
-            {/* {
-              !isCompanyDataroom && !selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
-              <div>
-                <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
-                  <div style={{ flex: 1, marginRight: 20 }}>文件名称</div>
-                  <div style={{ flex: 2 }}>可见用户</div>
-                </div>
-                <div style={{ padding: '16px 0' }}>
-                  {subFilesOfSelectedFolder.length > 0 ? subFilesOfSelectedFolder.map(m => (
-                    <div key={m.id} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
-                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}>{m.filename}</div>
-                      <div style={{ flex: 2 }}>
-                        <Select
-                          mode="multiple"
-                          showArrow
-                          tagRender={props => renderTagContentOfFile(props, m.id)}
-                          style={{ width: '100%' }}
-                          value={getVisibleUsersOfFile(m.id)}
-                          optionLabelProp="children"
-                          filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-                          onSelect={userId => onSelectFileUser(m.id, Number(userId))}
-                          onDeselect={userId => onDeselectFileUser(m.id, Number(userId))}
-                        >
-                          {userOptions.map(option => (
-                            <Select.Option
-                              key={option.value}
-                              value={String(option.value)}>{option.label}</Select.Option>
-                          ))}
-                        </Select>
-                      </div>
-                    </div>
-                  )) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-                </div>
-              </div>
-            } */}
-
-              {selectedFile.isFile && previewFileUrl &&
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', lineHeight: '22px', padding: '14px 20px', backgroundColor: '#f5f5f5' }}>
-                    <div style={{ color: '#262626', fontWeight: 'bold' }}>预览文件</div>
-                    <div style={{ color: '#595959', cursor: 'pointer' }} onClick={handleOpenFileInNewWindowClick}>
-                      <Tooltip title="在新窗口中打开"><ExpandOutlined /></Tooltip>
-                    </div>
-                  </div>
-                  <div
-                    style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-                    dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
-                  />
-                </div>
-              }
-            </Card>
-          </Col>
-        }
-</Row>
       <Modal
         title="新增文件夹"
         visible={displayNewFolderModal}
