@@ -422,8 +422,8 @@ function DataroomDetails(props) {
     // window.echo('all', all);
     
     for (let i = 0; i < all.length; i++) {
-      if ((oldX + translation) < -(windowWidth - 32)) {
-        all[i].style.left = `${-(windowWidth-32)}px`;
+      if ((oldX + translation) < -(900-(windowWidth - 32))) {
+        all[i].style.left = `${-(900-(windowWidth-32))}px`;
       } else if ((oldX + translation) < 0) {
         all[i].style.left = `${oldX + translation}px`;
       } else {
