@@ -1113,12 +1113,21 @@ function DataroomFileManage({
 
   function generateContent() {
     const currentFolderContent = data.filter(f => f.parentId === fileID);
-    return currentFolderContent.map(m => (
-      <div key={m.id} style={{ lineHeight: '22px', padding: '13px 0', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleItemClick(m)}>
-        {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : checkDirContainFile(m)}
-        {m.filename}
-      </div>
-    ));
+    if (currentFolderContent.length > 0) {
+      return (
+        <Card bodyStyle={{ padding: 8 }}>
+          {currentFolderContent.map(m => (
+            <div key={m.id} style={{ lineHeight: '22px', padding: '13px 0', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleItemClick(m)}>
+              {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : checkDirContainFile(m)}
+              {m.filename}
+            </div>
+          ))}
+        </Card>
+      )
+    } else {
+      // return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+      return null;
+    }
   }
 
   function renderUserTag(visibleUser) {
@@ -1191,7 +1200,7 @@ function DataroomFileManage({
                 onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
               />
             } */}
-        {data.length > 0 && !loading && <Card bodyStyle={{ padding: 8 }}>{generateContent()}</Card>}
+        {data.length > 0 && !loading && generateContent()}
         {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
           <Spin />
         </div>}
