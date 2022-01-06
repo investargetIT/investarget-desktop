@@ -897,11 +897,11 @@ function DataroomDetails(props) {
 
   function handleItemClick(item) {
     window.echo('item', item);
-    if (!item.isFile) {
+    // if (!item.isFile) {
       const newURLParams = updateURLParameter(props, 'fileID', item.id);
       history.pushState(undefined, '', `?${newURLParams.toString()}`)
       setFileID(item.id);
-    }
+    // }
   }
 
   return (
