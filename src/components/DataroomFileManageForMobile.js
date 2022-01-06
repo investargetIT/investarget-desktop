@@ -1068,11 +1068,42 @@ function DataroomFileManage({
   //   }
   // }
 
+  function handleItemClick(currentFile) {
+    checkTrainingFile(currentFile);
+    setSelectedFile(currentFile);
+    if (currentFile.isFile) {
+      if ((/\.avi$/i).test(currentFile.filename)) {
+        Modal.warning({
+          title: '该文件不支持在线预览',
+        });
+      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
+        setPreviewFileUrl(currentFile.fileurl);
+      } else {
+        const url = getPreviewFileUrl(currentFile);
+        window.echo('preview url', url);
+        setPreviewFileUrl(url);
+      }
+    }
+    // else {
+    //   const allChildren = findAllChildren(currentFile.id);
+    //   const allSubFiles = allChildren.filter(f => f.isFile);
+    //   setSubFilesOfSelectedFolder(allSubFiles);
+    // } 
+    onItemClick(currentFile);
+  }
+
+  function checkDirContainFile(m) {
+    if (ifContainFiles(m, data)) {
+      return <FolderViewOutlined style={{ marginRight: 8 }} />
+    }
+    return <FolderOutlined style={{ marginRight: 8 }} />;
+  }
+
   function generateContent() {
     const currentFolderContent = data.filter(f => f.parentId === fileID);
     return currentFolderContent.map(m => (
-      <div key={m.id} style={{ lineHeight: '22px', padding: '13px 0', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => onItemClick(m)}>
-        {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : <FolderOutlined style={{ marginRight: 8 }} />}
+      <div key={m.id} style={{ lineHeight: '22px', padding: '13px 0', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => handleItemClick(m)}>
+        {m.isFile ? <FileTextOutlined style={{ marginRight: 8 }} /> : checkDirContainFile(m)}
         {m.filename}
       </div>
     ));
