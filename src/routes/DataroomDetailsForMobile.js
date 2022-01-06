@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin } from 'antd';
+import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin, Cascader } from 'antd';
 import { getURLParamValue, handleErrorForMobile as handleError, hasPerm, isLogin, i18n, requestAllData, time, updateURLParameter } from '../utils/util';
 import { SelectExistInvestor, SelectOrgInvestor, SelectTrader } from '../components/ExtraInput';
 import * as api from '../apiForMobile';
@@ -969,6 +969,45 @@ function DataroomDetails(props) {
     //   });
   }
 
+  function getProgressOptions() {
+    return props.orgbdres.map(m => {
+      if (!m.material) {
+        return { label: m.name, value: m.id };
+      }
+      return {
+        label: m.name,
+        value: m.id,
+        children: [
+          {
+            label: '无材料',
+            value: 0,
+          },
+          {
+            label: m.material,
+            value: m.material,
+          },
+        ],
+      };
+    });
+  }
+
+  function handleProgressChangeForEditingOrgBD(record, value) {
+    const response = value[0];
+    let material = null;
+    if (value.length > 0 && value[1] !== 0) {
+      material = value[1];
+    }
+    updateActiveOrgBDForEditing(record, { response, material });
+  }
+
+  function generateProgressValueForEditing(bd) {
+    const progressValue = [bd.response];
+    if (bd.material) {
+      progressValue.push(bd.material);
+    }
+    return progressValue;
+  }
+
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
@@ -1179,24 +1218,24 @@ function DataroomDetails(props) {
             />
           </div>
 
-          {/* <div style={{ marginBottom: 30 }}>
+          <div style={{ marginBottom: 30 }}>
             <div>机构进度/材料</div>
             <Cascader
               style={{ width: '100%' }}
-              options={this.getProgressOptions()}
-              onChange={this.handleProgressChangeForEditingOrgBD.bind(this, this.state.activeOrgBDForEditing)}
-              value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
+              options={getProgressOptions()}
+              onChange={(value) => handleProgressChangeForEditingOrgBD(activeOrgBDForEditing, value)}
+              value={generateProgressValueForEditing(activeOrgBDForEditing)}
             />
-          </div> */}
+          </div>
 
-          {/* <div style={{ marginBottom: 30 }}>
+          <div style={{ marginBottom: 30 }}>
             <div>机构反馈</div>
             <Input.TextArea
               rows={3}
-              value={this.state.newComment}
-              onChange={e => this.setState({ newComment: e.target.value })}
+              value={newComment}
+              onChange={e => setNewComment(e.target.value)}
             />
-          </div> */}
+          </div>
 
         </Modal>
       }
