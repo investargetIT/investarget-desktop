@@ -1137,7 +1137,7 @@ function DataroomFileManage({
   return (
     <div>
       { generateNameAndSizeAndDate() } 
-      <Card bodyStyle={{ padding: 8 }}>
+      
         {/* {dirData.length > 0 && !loading &&
               <DirectoryTree
                 checkable
@@ -1154,11 +1154,11 @@ function DataroomFileManage({
                 onCheck={checkedKeys => setCheckedFiles(checkedKeys)}
               />
             } */}
-        {data.length > 0 && !loading && generateContent()}
+        {data.length > 0 && !loading && <Card bodyStyle={{ padding: 8 }}>{generateContent()}</Card>}
         {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
           <Spin />
         </div>}
-      </Card>
+      {/* </Card> */}
 
 <Row>
           {selectedFile &&
@@ -1192,7 +1192,7 @@ function DataroomFileManage({
                 </div>
               }
 
-            {
+            {/* {
               !isCompanyDataroom && !selectedFile.isFile && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
               <div>
                 <div style={{ display: 'flex', backgroundColor: '#f5f5f5', padding: '14px 0 14px 20px', lineHeight: '22px', fontSize: 14, fontWeight: 'bold' }}>
@@ -1226,7 +1226,7 @@ function DataroomFileManage({
                   )) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                 </div>
               </div>
-            }
+            } */}
 
               {selectedFile.isFile && previewFileUrl &&
                 <div>
