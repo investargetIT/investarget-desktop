@@ -1130,6 +1130,7 @@ function DataroomDetails(props) {
               </div>)}
 
             </div>)}
+            {!loadingOrgBD && dataroomUsersOrgBdByOrg.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           </Card>
         }
 
