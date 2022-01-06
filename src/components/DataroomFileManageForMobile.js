@@ -64,7 +64,7 @@ function tagRender(props, isReadFile) {
       onMouseDown={onPreventMouseDown}
       closable={closable}
       onClose={onClose}
-      style={{ marginRight: 3 }}
+      style={{ marginRight: 3, marginBottom: 3 }}
     >
       {label}
       {isReadFile &&
@@ -1109,6 +1109,23 @@ function DataroomFileManage({
     ));
   }
 
+  function renderUserTag(visibleUser) {
+    return visibleUser.map(m => {
+      let label = '未知用户';
+      const filterUser = userOptions.filter(f => f.value === parseInt(m));
+      if (filterUser.length > 0) {
+        label = filterUser[0].label
+      }
+
+      let isReadFile = false;
+      const filterReadUser = readFileUserList.filter(f => f.file === selectedFile.id && f.user === parseInt(m));
+      if (filterReadUser.length > 0) {
+        isReadFile = true;
+      }
+      return tagRender({ label, closable: false, onClose: undefined }, isReadFile);
+    });
+  }
+
   function generateNameAndSizeAndDate() {
     let name, size, date = null;
     let timezone = '+08:00';
@@ -1127,8 +1144,9 @@ function DataroomFileManage({
       }
     }
 
+    let visibleUser = [];
     if (selectedFile) {
-      const visibleUser = getVisibleUsers();
+      visibleUser = getVisibleUsers();
       window.echo('visible user', visibleUser);
     }
 
@@ -1137,6 +1155,7 @@ function DataroomFileManage({
         <div style={{ marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{name}</div>
         {size && <div style={{ marginBottom: 8 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(size)}</span></div>}
         {date && <div style={{ marginBottom: 8 }}>修改时间：<span style={{ color: '#595959' }}>{date && time(date + timezone)}</span></div>}
+        {!isCompanyDataroom && selectedFile && selectedFile.isFile && <div style={{ marginBottom: 8, display: 'flex' }}>可见用户：<div style={{ flex: 1 }}>{visibleUser.length > 0 ? renderUserTag(visibleUser) : '暂无'}</div></div>}
       </div>
     );
   }
