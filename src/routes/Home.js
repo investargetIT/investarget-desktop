@@ -62,6 +62,9 @@ class Home extends React.Component {
       case 'saastest.investarget.com':
         localStorage.setItem('source', 1);
         break;
+      case 'pro.investarget.com':
+        localStorage.setItem('source', 1);
+        break; 
       case '192.168.2.209:8000':
         localStorage.setItem('source', 1);
         break;
