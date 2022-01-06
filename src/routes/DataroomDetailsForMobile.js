@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree, Empty, Spin } from 'antd';
 import { getURLParamValue, handleErrorForMobile as handleError, hasPerm, isLogin, i18n, requestAllData, time, updateURLParameter } from '../utils/util';
-import { SelectExistInvestor } from '../components/ExtraInput';
+import { SelectExistInvestor, SelectOrgInvestor, SelectTrader } from '../components/ExtraInput';
 import * as api from '../apiForMobile';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import _ from 'lodash';
@@ -40,6 +40,7 @@ function DataroomDetails(props) {
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
   const isAbleToAddUser = hasPerm('usersys.as_trader');
+  let allTrader = [];
 
   const [allDataroomFiles, setAllDataroomFiles] = useState([]);
   const [projTitle, setProjTitle] = useState(projectTitle);
@@ -77,6 +78,14 @@ function DataroomDetails(props) {
   const [searchContent, setSearchContent] = useState('');
 
   const [fileID, setFileID] = useState(-999); // 当前目录或文件 ID
+
+          // 编辑机构看板
+  const [originalOrgBDForEditing, setOriginalOrgBDForEditing] = useState(null);
+  const [activeOrgBDForEditing, setActiveOrgBDForEditing] = useState(null);
+  const [displayModalForEditing, setDisplayModalForEditing] = useState(false);
+  const [newComment, setNewComment] = useState('');
+          // loadingEditingOrgBD: false,
+  const [traderList, setTraderList] = useState([]);
 
   async function getOrgBdOfUsers(users) {
     setLoadingOrgBD(true);
@@ -312,6 +321,20 @@ function DataroomDetails(props) {
       setReadFileUserList(req.data.data);
     }
 
+    function getAllTrader() {
+      api.queryUserGroup({ type: 'trader' })
+        .then(data => requestAllData(api.getUser, {
+          groups: data.data.data.map(m => m.id),
+          userstatus: 2,
+        }, 100))
+        .then(data => {
+          allTrader = data.data.data;
+          setTraderList(allTrader);
+        })
+        .catch(handleError);
+    }
+
+    getAllTrader();
     getAllUserFile();
     getDataroomFiles();
     getProjectDetails();
@@ -904,6 +927,48 @@ function DataroomDetails(props) {
     // }
   }
 
+  function handleOrgBDClick(orgBD) {
+    window.echo('org bd', orgBD);
+    setDisplayModalForEditing(true);
+    setOriginalOrgBDForEditing(orgBD);
+    setActiveOrgBDForEditing(orgBD);
+  }
+
+  function updateActiveOrgBDForEditing(record, change) {
+    const newRecord = { ...record, ...change };
+    setActiveOrgBDForEditing(newRecord);
+    if(!change.bduser) return;
+
+    // const params = {
+    //   investoruser: change.bduser,
+    //   page_size: 100,
+    // };
+    // requestAllData(api.getUserRelation, params, 100)
+    //   .then(result => {
+    //     const newTraderList = [];
+    //     result.data.data.forEach(element => {
+    //       const familiar = this.props.famlv.filter(f => f.id === element.familiar)[0].score;
+    //       const trader = { ...this.allTrader.filter(f => f.id === element.traderuser.id)[0]};
+    //       trader.username += '(' + familiar + '分)';
+    //       trader.familiar = familiar;
+    //       newTraderList.push(trader);
+    //     });
+    //     this.allTrader.forEach(element => {
+    //       if (!newTraderList.map(m => m.id).includes(element.id)) {
+    //         newTraderList.push({ ...element, familiar: -1 });
+    //       }
+    //     });
+
+    //     // 按照熟悉程度排序
+    //     newTraderList.sort(function(a, b) {
+    //       return b.familiar - a.familiar;
+    //     });
+
+    //     newRecord.manager = newTraderList[0];
+    //     this.setState({ traderList: newTraderList, activeOrgBDForEditing: newRecord });
+    //   });
+  }
+
   return (
     <LeftRightLayoutPureForMobile location={props.location}>
     
@@ -952,7 +1017,7 @@ function DataroomDetails(props) {
 
               {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 
-              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
+              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content" onClick={() => handleOrgBDClick(m1)}>
                 <div className="long-content">
                   <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                     <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
@@ -1026,7 +1091,7 @@ function DataroomDetails(props) {
         />
       {/* } */}
 
-      {showDataRoomTempModal &&
+      {/* {showDataRoomTempModal &&
         <Modal
           title="选择Dataroom模版"
           visible={true}
@@ -1070,6 +1135,69 @@ function DataroomDetails(props) {
             </div>
 
           </div>
+        </Modal>
+      } */}
+
+      {displayModalForEditing &&
+        <Modal
+          wrapClassName="modal-orgbd-edit"
+          title="编辑机构看板"
+          visible
+          onCancel={() => {setDisplayModalForEditing(false); setNewComment('');}}
+          // onOk={this.handleEditOrgBD}
+          // confirmLoading={this.state.loadingEditingOrgBD}
+        >
+          <div style={{ marginBottom: 30 }}>
+            <div>机构名称</div>
+            <Input style={{ width: '100%' }} disabled value={activeOrgBDForEditing.org.orgname} />
+          </div>
+
+          <div style={{ marginBottom: 30 }}>
+            <div>联系人</div>
+            <SelectOrgInvestor
+              allStatus
+              onjob
+              allowEmpty
+              style={{ width: '100%' }}
+              type="investor"
+              mode="single"
+              size="middle"
+              optionFilterProp="children"
+              org={activeOrgBDForEditing.org.id}
+              value={activeOrgBDForEditing.bduser}
+              onChange={v => { updateActiveOrgBDForEditing(activeOrgBDForEditing, { bduser: v }) }}
+            />
+          </div>
+
+          <div style={{ marginBottom: 30 }}>
+            <div>负责人</div>
+            <SelectTrader
+              data={traderList}
+              mode="single"
+              value={activeOrgBDForEditing.manager.id.toString()}
+              onChange={v => { updateActiveOrgBDForEditing(activeOrgBDForEditing, { manager: { id: v } }) }}
+            />
+          </div>
+
+          {/* <div style={{ marginBottom: 30 }}>
+            <div>机构进度/材料</div>
+            <Cascader
+              style={{ width: '100%' }}
+              options={this.getProgressOptions()}
+              onChange={this.handleProgressChangeForEditingOrgBD.bind(this, this.state.activeOrgBDForEditing)}
+              value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
+            />
+          </div> */}
+
+          {/* <div style={{ marginBottom: 30 }}>
+            <div>机构反馈</div>
+            <Input.TextArea
+              rows={3}
+              value={this.state.newComment}
+              onChange={e => this.setState({ newComment: e.target.value })}
+            />
+          </div> */}
+
         </Modal>
       }
 
