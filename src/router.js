@@ -91,6 +91,7 @@ import HumanResources from './routes/HumanResources';
 import OrgBDListForMobile from './routes/OrgBDListForMobile';
 import MLogin from './components/MLogin';
 import ResetPasswordForMobile from './routes/ResetPasswordForMobile';
+import DashboardForMobile from './routes/DashboardForMobile';
 
 function RouterConfig({ history }) {
   return (
@@ -184,6 +185,7 @@ function RouterConfig({ history }) {
         <Route path="/app/online-test" component={InternOnlineTest} />
         <Route path="/app/project-report" component={ProjectReport} /> */}
         <Route path="/app" component={Dashboard} />
+        <Route path="/m" component={DashboardForMobile} />
       </Switch>
     </Router>
   )

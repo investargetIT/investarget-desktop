@@ -955,7 +955,7 @@ function DataroomDetails(props) {
       }
 
       <Modal
-        title={window.location.href.replace('app', 'm')}
+        title="手机二维码"
         visible={displayQRCode}
         onCancel={() => setDisplayQRCode(false)}
         onOk={() => setDisplayQRCode(false)}
