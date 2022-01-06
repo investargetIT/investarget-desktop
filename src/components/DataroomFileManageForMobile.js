@@ -1092,6 +1092,18 @@ function DataroomFileManage({
     onItemClick(currentFile);
   }
 
+  useEffect(() => {
+    if (!fileID || fileID === -999) {
+      setSelectedFile(null);
+    }
+    const selectedFile = allDataroomFiles.filter(f => f.id === fileID);
+    if (selectedFile.length > 0) {
+      setSelectedFile(selectedFile[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  }, [fileID]);
+
   function checkDirContainFile(m) {
     if (ifContainFiles(m, data)) {
       return <FolderViewOutlined style={{ marginRight: 8 }} />

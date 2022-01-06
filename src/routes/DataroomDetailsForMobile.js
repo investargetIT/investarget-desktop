@@ -323,9 +323,9 @@ function DataroomDetails(props) {
       getNewDataRoomFile();
     }
 
-    window.onpopstate = () => {
-      const fileID = getURLParamValue(props, 'fileID');
-      window.echo('window on pop state', fileID);
+    window.onpopstate = (e) => {
+      // const fileID = getURLParamValue(props, 'fileID');
+      const fileID = e.state && e.state.fileID;
       setFileID(parseInt(fileID, 10) || -999);
     }
   }, []);
@@ -899,7 +899,7 @@ function DataroomDetails(props) {
     window.echo('item', item);
     // if (!item.isFile) {
       const newURLParams = updateURLParameter(props, 'fileID', item.id);
-      history.pushState(undefined, '', `?${newURLParams.toString()}`)
+      history.pushState({ fileID: item.id }, '', `?${newURLParams.toString()}`)
       setFileID(item.id);
     // }
   }
