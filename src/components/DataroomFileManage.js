@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -190,7 +190,7 @@ function DataroomFileManage({
   const [watermarkEmail, setWatermarkEmail] = useState('');
   const [watermarkCompany, setWatermarkCompany] = useState('');
 
-  const [checkedFiles, setCheckedFiles] = useState([]);
+  const [checkedFiles, setCheckedFiles] = useState({ checked: [], halfChecked: [] });
 
   function formatSearchData (data) {
     return data.map(item => {
@@ -621,7 +621,7 @@ function DataroomFileManage({
     function morePopoverContent() {
 
       function handleDeleteFileClick(item){
-        const filesToDelete = checkedFiles;
+        const filesToDelete = [...checkedFiles.checked];
         if (!filesToDelete.includes(item.id)) {
           filesToDelete.push(item.id);
         }
@@ -651,7 +651,7 @@ function DataroomFileManage({
           setData(newData);
 
           // 清空勾选的文件
-          setCheckedFiles([]);
+          setCheckedFiles({ checked: [], halfChecked: [] });
           
           const newAllFiles = allDataroomFiles.slice();
           idArr.map(d => {
@@ -959,7 +959,7 @@ function DataroomFileManage({
 
   function handleDownloadSelectFileBtnClicked() {
     setDisplayDownloadFileModal(false);
-    let allFilesIDs = checkedFiles;
+    let allFilesIDs = checkedFiles.checked;
     if (allFilesIDs.length === 0) {
       const allChildren = findAllChildren(currentDownloadFile.id);
       allFilesIDs = allChildren.map(m => m.id).concat(currentDownloadFile.id);
@@ -1076,6 +1076,8 @@ function DataroomFileManage({
     // setCheckedFiles(unique);
 
     let increase = [], decrease = []; // 应该新增或减少的关联文件
+    let increaseHalf = [], decreaseHalf = [];
+    let decreaseAllParents = [];
     const { checked, node } = e;
     const { id: changedFile } = node;
     // 勾选了一个文件或目录
@@ -1087,25 +1089,99 @@ function DataroomFileManage({
         const allChildren = findAllChildren(changedFile);
         increase = increase.concat(allChildren.map(m => m.id));
       }
+      
+      // Half checked 中增加所有父目录
+      const allParents = findAllParents(changedFile);
+      increaseHalf = increaseHalf.concat(allParents.map(m => m.id));
+      increaseHalf = increaseHalf.concat(-999);
     } else {
       decrease = decrease.concat(changedFile);
+      // 取消勾选一个目录或文件，同时取消半勾选状态
+      decreaseHalf = decreaseHalf.concat(changedFile);
       if (!node.isFile) {
         const allChildren = findAllChildren(changedFile);
         decrease = decrease.concat(allChildren.map(m => m.id));
+        decreaseHalf = decreaseHalf.concat(allChildren.map(m => m.id));
       }
 
       // 剔除所有父目录
       const allParents = findAllParents(changedFile);
+      decreaseAllParents = decreaseAllParents.concat(allParents.map(m => m.id));
+      decreaseAllParents = decreaseAllParents.concat(-999);
       decrease = decrease.concat(allParents.map(m => m.id));
       decrease = decrease.concat(-999);
     }
 
-    let newCheckedFiles = [...checkedFiles];
+    const { checked: checkedKeys1, halfChecked } = checkedFiles;
+    let newCheckedFiles = [...checkedKeys1];
     newCheckedFiles = newCheckedFiles.concat(increase);
-
     newCheckedFiles = subtracting(newCheckedFiles, decrease);
-    setCheckedFiles(_.uniq(newCheckedFiles));
+
+    // 取消勾选时，判断是否需要半勾选（如果有子文件选中的话）或取消半勾选父目录（如果没有子文件选中的话）
+    for (let index = 0; index < decreaseAllParents.length; index++) {
+      const element = decreaseAllParents[index];
+      const allChildren = findAllChildren(element);
+      const inter = intersection(_.uniq(newCheckedFiles), allChildren.map(m => m.id));
+      if (inter.length === 0) {
+        decreaseHalf = decreaseHalf.concat(element);
+      } else {
+        increaseHalf = increaseHalf.concat(element);
+      }
+    }
+
+    let newHalfCheckedFiles = [...halfChecked];
+    newHalfCheckedFiles = newHalfCheckedFiles.concat(increaseHalf);
+    newHalfCheckedFiles = subtracting(newHalfCheckedFiles, decreaseHalf);
+
+    setCheckedFiles({ checked: _.uniq(newCheckedFiles), halfChecked: _.uniq(newHalfCheckedFiles) });
   }
+
+  // function handleDirectoryTreeChecked(checkedKeys, e) {
+  //   // setCheckedFiles(checkedKeys);
+  //   // const { checked } = checkedKeys;
+  //   // let checkedFiles = [];
+  //   // for (let index = 0; index < checked.length; index++) {
+  //   //   const element = checked[index];
+  //   //   checkedFiles = checkedFiles.concat(element);
+  //   //   const allChildren = findAllChildren(element);
+  //   //   window.echo('all children', allChildren);
+  //   //   checkedFiles = checkedFiles.concat(allChildren.map(m => m.id));
+  //   // }
+  //   // const unique = _.uniq(checkedFiles);
+  //   // window.echo('all checked files', unique);
+  //   // setCheckedFiles(unique);
+
+  //   let increase = [], decrease = []; // 应该新增或减少的关联文件
+  //   const { checked, node } = e;
+  //   const { id: changedFile } = node;
+  //   // 勾选了一个文件或目录
+  //   if (checked) {
+  //     // 增加这个文件或目录 
+  //     increase = increase.concat(changedFile);
+  //     // 如果是个目录，增加这个目录的所有子文件
+  //     if (!node.isFile) {
+  //       const allChildren = findAllChildren(changedFile);
+  //       increase = increase.concat(allChildren.map(m => m.id));
+  //     }
+  //   } else {
+  //     decrease = decrease.concat(changedFile);
+  //     if (!node.isFile) {
+  //       const allChildren = findAllChildren(changedFile);
+  //       decrease = decrease.concat(allChildren.map(m => m.id));
+  //     }
+
+  //     // 剔除所有父目录
+  //     const allParents = findAllParents(changedFile);
+  //     decrease = decrease.concat(allParents.map(m => m.id));
+  //     decrease = decrease.concat(-999);
+  //   }
+
+  //   let newCheckedFiles = [...checkedFiles];
+  //   newCheckedFiles = newCheckedFiles.concat(increase);
+
+  //   newCheckedFiles = subtracting(newCheckedFiles, decrease);
+  //   setCheckedFiles(_.uniq(newCheckedFiles));
+  // }
 
   return (
     <div>
