@@ -1248,7 +1248,7 @@ function DataroomFileManage({
       </Modal>
 
       <Modal
-        title="修改文件夹名称"
+        title="修改文件名称"
         visible={displayRenameFolderModal}
         onCancel={() => setDisplayRenameFolderModal(false)}
         onOk={handleConfirmRenameFile}
@@ -1256,7 +1256,7 @@ function DataroomFileManage({
         confirmLoading={renameFolderLoading}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div>文件夹名称：</div>
+          <div>文件名称：</div>
           <Input
             style={{ flex: 1 }}
             placeholder="请输入文件夹名称"
