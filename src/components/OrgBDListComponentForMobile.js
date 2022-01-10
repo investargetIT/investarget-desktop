@@ -1679,6 +1679,62 @@ class OrgBDListComponentForMobile extends React.Component {
     }
   }
 
+
+  renderProgressAndMaterial = (text, record) => {
+    let progress = null;
+    if (text) {
+      progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+    }
+    let material = null;
+    if (record.material) {
+      material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
+    }
+    return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
+  }
+
+  renderLatestComment = (record) => {
+    let latestComment = '';
+          if (record.BDComments && record.BDComments.length) {
+            const commonComments = record.BDComments.filter(f => !f.isPMComment);
+            if (commonComments.length > 0) {
+              latestComment = commonComments[commonComments.length - 1].comments;
+            }
+          }
+          if (!latestComment) return '暂无';
+
+          const comments = record.BDComments;
+          const popoverContent = comments.filter(f => !f.isPMComment)
+            .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+            .map(comment => {
+              let content = comment.comments;
+              const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+              if (oldStatusMatch) {
+                const oldStatus = oldStatusMatch[0];
+                content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+              }
+              return (
+                <div key={comment.id} style={{ marginBottom: 8 }}>
+                  <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                  <div style={{ display: 'flex' }}>
+                    {comment.createuser &&
+                      <div style={{ marginRight: 10 }}>
+                        <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                          <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                        </a>
+                      </div>
+                    }
+                    <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                  </div>
+                </div>
+              );
+            });
+          return (
+            // <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+              <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+            // </Popover>
+          );
+  }
+
   getProgressOptions = () => {
     return this.props.orgbdres.map(m => {
       if (!m.material) {
@@ -2587,7 +2643,7 @@ class OrgBDListComponentForMobile extends React.Component {
         }
       },
     };
-
+    window.echo('mapd list', this.state.list);
     return (
       <div>
         {source!=0 ? <BDModal source={source} element='org'/> : null}   
@@ -2637,27 +2693,21 @@ class OrgBDListComponentForMobile extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => this.handleOrgBDExpand(m)}>
                   {this.state.expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
                   <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
-                  {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
-                      .map(item => (
-                        <Tag key={item.user.id} style={{ marginBottom: 4 }}>{item.user.username}</Tag>
-                      ))}
-                  </div> */}
                 </div>
 
-                {/* {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                {/* {expandedRows.includes(m.id) && m.items.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />} */}
 
-                {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content" onClick={() => handleOrgBDClick(m1)}>
+                {this.state.expandedRows.includes(m.id) && m.items.map(m1 => <div key={m1.id} className="short-content" onClick={this.handleOperationChange.bind(this, m1, 'edit')}>
                   <div className="long-content">
                     <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                       <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                       <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
                       <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
-                      <div style={{ width: 300 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
-                      <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
+                      <div style={{ width: 300 }}>{this.renderProgressAndMaterial(m1.response, m1)}</div>
+                      <div style={{ width: 200 }}>{this.renderLatestComment(m1)}</div>
                     </div>
                   </div>
-                </div>)} */}
+                </div>)}
 
               </div>)}
 
