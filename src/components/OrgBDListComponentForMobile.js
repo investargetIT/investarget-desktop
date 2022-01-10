@@ -1679,6 +1679,42 @@ class OrgBDListComponentForMobile extends React.Component {
     }
   }
 
+  startX=0;
+  oldX=0;
+  handleTouchStart = (e) => {
+    const { touches } = e;
+    if (touches && touches.length === 1) {
+      const touch = touches[0];
+      this.startX = touch.clientX;
+    }
+
+    const all = document.getElementsByClassName('long-content');
+    for (let i = 0; i < all.length; i++) {
+      const oldLeft = all[i].style.left;
+      if (oldLeft) {
+        this.oldX = parseInt(oldLeft);
+      }
+    }
+    // e.preventDefault();
+  }
+  windowWidth = window.innerWidth;
+  handleTouchMove = (e) => {
+    const progressX = this.startX - e.touches[0].clientX;
+    const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
+    // window.echo('move e', progressX);
+    const all = document.getElementsByClassName('long-content');
+    // window.echo('all', all);
+    
+    for (let i = 0; i < all.length; i++) {
+      if ((this.oldX + translation) < -(900-(this.windowWidth - 32))) {
+        all[i].style.left = `${-(900-(this.windowWidth-32))}px`;
+      } else if ((this.oldX + translation) < 0) {
+        all[i].style.left = `${this.oldX + translation}px`;
+      } else {
+        all[i].style.left = 0;
+      }
+    }
+  }
 
   renderProgressAndMaterial = (text, record) => {
     let progress = null;
@@ -2660,7 +2696,7 @@ class OrgBDListComponentForMobile extends React.Component {
           />
         </Card>
 
-        <Card>
+        <Card bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={this.handleTouchMove} onTouchStart={this.handleTouchStart}>
 
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
