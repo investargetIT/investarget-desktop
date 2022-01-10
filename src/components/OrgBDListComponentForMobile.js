@@ -31,6 +31,7 @@ import {
   Form,
   Upload,
   message,
+  Spin,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter, OrgBDFilterForMobile } from './Filter';
@@ -2723,6 +2724,10 @@ class OrgBDListComponentForMobile extends React.Component {
                   </div>
                 </div>
               </div>
+
+              {loading && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+                <Spin />
+              </div>}
 
               {list.map(m => <div key={m.id}>
 
