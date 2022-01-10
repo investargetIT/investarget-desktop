@@ -57,6 +57,8 @@ import {
   CaretUpFilled,
   CaretDownFilled,
   CloseOutlined,
+  CaretDownOutlined,
+  CaretRightOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
@@ -209,6 +211,8 @@ class OrgBDListComponentForMobile extends React.Component {
         newUser: '', // 新增投资人名称
 
         visiblePopover: 0,
+
+        expandedRows: [],
     }
 
     this.allTrader = [];
@@ -1808,6 +1812,18 @@ class OrgBDListComponentForMobile extends React.Component {
       .finally(() => this.setState({ loadingDownloadTemplate: false }));
   }
 
+  handleOrgBDExpand = (record) => {
+    const currentId = record.id;
+    const newExpanded = [...this.state.expandedRows];
+    const expandIndex = newExpanded.indexOf(currentId);
+    if (expandIndex < 0) {
+      newExpanded.push(currentId);
+    } else {
+      newExpanded.splice(expandIndex, 1);
+    }
+    this.setState({ expandedRows: newExpanded });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2119,60 +2135,6 @@ class OrgBDListComponentForMobile extends React.Component {
     // }
 
 
-    const columnsForExport = [
-      { title: i18n('org_bd.org'), key:'org', dataIndex: ['org', 'orgname'], className: 'orgname', width: '15%' },
-      { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '10%' },
-      {
-        title: i18n('org_bd.manager'), dataIndex: ['manager', 'username'], key: 'manager', width: '10%', render: (text, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return text;
-          // }
-          // return null;
-        },
-      },
-      {
-        title: i18n('org_bd.status'), 
-        key:'progress',
-        width: '10%',
-        render: (_, record) => {
-          const { response, material } = record;
-          let text = '';
-          if (response && this.props.orgbdres.length > 0) {
-            text = text + this.props.orgbdres.filter(f => f.id === response)[0].name;
-          }
-          if (material) {
-            text += `/${material}`
-          }
-          return text;
-        },
-      },
-      {
-        title: "机构反馈", 
-        key:'bd_latest_info',
-        width: '25%',
-        dataIndex: 'BDComments',
-        render: (text, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return text && text.length && text[text.length - 1].comments || null;
-          // }
-          // return null;
-        },
-      },
-      {
-        title: "全部备注", 
-        key:'bd_all_comments',
-        width: '30%',
-        dataIndex: 'BDComments',
-        render: (comments, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return comments ? comments.map(m => (
-              `创建人：${m.createuser && m.createuser.username}，创建时间：${m.createdtime.slice(0, 16).replace('T', ' ')}，备注内容：${m.comments}`
-            )).join('\r\n') : null;
-          // }
-          // return null;
-        },
-      },
-    ];
 
     const expandedRowRender = (record) => {
       const columns = [
@@ -2647,7 +2609,7 @@ class OrgBDListComponentForMobile extends React.Component {
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
               <div style={{ fontWeight: 'bold', lineHeight: '28px', textAlign: 'center' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
-              <Table
+              {/* <Table
                 scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
                 columns={columnsForMobile}
@@ -2656,7 +2618,49 @@ class OrgBDListComponentForMobile extends React.Component {
                 loading={loading}
                 pagination={false}
                 size={this.props.size || "middle"}
-              />
+              /> */}
+
+              <div className="short-content">
+                <div className='long-content'>
+                  <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
+                    <div style={{ width: 150 }}>投资人</div>
+                    <div style={{ width: 100 }}>职位</div>
+                    <div style={{ width: 150 }}>负责人</div>
+                    <div style={{ width: 300 }}>机构进度/材料</div>
+                    <div style={{ width: 200 }}>机构反馈</div>
+                  </div>
+                </div>
+              </div>
+
+              {list.map(m => <div key={m.id}>
+
+                <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => this.handleOrgBDExpand(m)}>
+                  {this.state.expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
+                  <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
+                  {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    {list.filter(f => f.user && f.user.org && f.user.org.id === m.id)
+                      .map(item => (
+                        <Tag key={item.user.id} style={{ marginBottom: 4 }}>{item.user.username}</Tag>
+                      ))}
+                  </div> */}
+                </div>
+
+                {/* {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+
+                {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content" onClick={() => handleOrgBDClick(m1)}>
+                  <div className="long-content">
+                    <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+                      <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
+                      <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
+                      <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
+                      <div style={{ width: 300 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
+                      <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
+                    </div>
+                  </div>
+                </div>)} */}
+
+              </div>)}
+
             </div>
           }
 
