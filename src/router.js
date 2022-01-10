@@ -148,6 +148,7 @@ function RouterConfig({ history }) {
         <Route path="/app/dataroom/project/list" component={DataRoomList} />
         <Route path="/app/dataroom/detail" component={DataroomDetails} />
         <Route path="/m/dataroom/detail" component={DataroomDetailsForMobile} />
+        <Route path="/m/org/bd" component={OrgBDListForMobile} />
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
