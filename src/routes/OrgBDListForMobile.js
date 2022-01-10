@@ -53,12 +53,12 @@ export default class OrgBDListForMobile extends React.Component {
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
+        {/* <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
           <Breadcrumb.Item>首页</Breadcrumb.Item>
           <Breadcrumb.Item>BD管理</Breadcrumb.Item>
           <Breadcrumb.Item>机构BD</Breadcrumb.Item>
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
 
         {this.state.displayContent &&
           <OrgBDListComponentForMobile

@@ -2685,7 +2685,9 @@ class OrgBDListComponentForMobile extends React.Component {
       <div>
         {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
-        <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
+        <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
+
+        {/* <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
           <OrgBDFilterForMobile
             defaultValue={filters}
             value={this.state.filters}
@@ -2695,13 +2697,12 @@ class OrgBDListComponentForMobile extends React.Component {
             progressOptions={this.state.progressOptions}
             allLabel={this.state.allLabel}
           />
-        </Card>
+        </Card> */}
 
         <Card bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={this.handleTouchMove} onTouchStart={this.handleTouchStart}>
 
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
-              <div style={{ fontWeight: 'bold', lineHeight: '28px', textAlign: 'center' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
               {/* <Table
                 scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
@@ -2780,7 +2781,6 @@ class OrgBDListComponentForMobile extends React.Component {
             : null}
 
         </Card>
-
 
         {this.state.org ?
         <ModalAddUserNew
