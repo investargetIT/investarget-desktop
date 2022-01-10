@@ -1917,6 +1917,18 @@ class OrgBDListComponentForMobile extends React.Component {
     this.setState({ expandedRows: newExpanded });
   }
 
+  generatePriorityColor = record => {
+    let displayPriorityColor = priorityColor[0]; // 默认优先级低
+    let priorityName = priority[0];
+    const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
+    allItemPriorities.sort((first, second) => second - first);
+    if (allItemPriorities.length > 0) {
+      displayPriorityColor = priorityColor[allItemPriorities[0]];
+      priorityName = priority[allItemPriorities[0]];
+    }
+    return displayPriorityColor;
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2735,6 +2747,7 @@ class OrgBDListComponentForMobile extends React.Component {
                 <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => this.handleOrgBDExpand(m)}>
                   {this.state.expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
                   <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
+                  <div style={{ ...priorityStyles, backgroundColor: this.generatePriorityColor(m), marginRight: 8 }} />
                 </div>
 
                 {/* {expandedRows.includes(m.id) && m.items.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />} */}
