@@ -7,7 +7,7 @@ import {
   hasPerm, 
   getUserInfo, 
 } from '../utils/util';
-import OrgBDListComponent from '../components/OrgBDListComponent';
+import OrgBDListComponentForMobile from '../components/OrgBDListComponentForMobile';
 import { Button, Breadcrumb } from 'antd';
 import { Link } from 'dva/router';
 import LeftRightLayoutPureForMobile from '../components/LeftRightLayoutPureForMobile';
@@ -61,7 +61,7 @@ export default class OrgBDListForMobile extends React.Component {
         </Breadcrumb>
 
         {this.state.displayContent &&
-          <OrgBDListComponent
+          <OrgBDListComponentForMobile
             editable
             location={this.props.location}
             pagination={true}
