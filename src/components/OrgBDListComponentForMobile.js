@@ -1276,14 +1276,29 @@ class OrgBDListComponentForMobile extends React.Component {
       });
   }
 
+  handleUpdatePriorityForMobile = async (record, isimportant) => {
+    return Promise.all(record.items.map(m => api.modifyOrgBD(m.id, { isimportant })));
+  }
+
   handleEditOrgBD = () => {
     const record = this.state.activeOrgBDForEditing;
+    const { isimportant: newImportant } = record;
+    const { isimportant: oldImportant } = this.state.originalOrgBDForEditing;
+    let firstStep = () => Promise.resolve();
+    if (newImportant !== oldImportant) {
+      const { id } = record.org;
+      const filterOrg = this.state.list.filter(f => f.org && f.org.id === id);
+      if (filterOrg.length > 0) {
+        firstStep = () => this.handleUpdatePriorityForMobile(filterOrg[0], newImportant);
+      }
+    }
+
     let body = {
       'bduser': record.bduser >= 0 ? record.bduser: null,
       'manager': Number(record.manager.id),
       'org': record.org.id,
       'proj': record.proj.id,
-      // 'isimportant': record.isimportant,
+      'isimportant': record.isimportant,
       // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       // 'bd_status': 1,
       'response': record.response,
@@ -1292,7 +1307,8 @@ class OrgBDListComponentForMobile extends React.Component {
     this.setState({ loadingEditingOrgBD: true });
     // api.getUserSession()
       // .then(() => 
-      api.modifyOrgBD(record.id, body)
+      firstStep()
+      .then(() => api.modifyOrgBD(record.id, body))
       .then(this.generateProgressChangeComment)
       .then(() => {
         if (this.state.newComment) {
@@ -2840,6 +2856,20 @@ class OrgBDListComponentForMobile extends React.Component {
             <div style={{ marginBottom: 30 }}>
               <div>机构名称</div>
               <Input style={{ width: '100%' }} disabled value={this.state.activeOrgBDForEditing.org.orgname} />
+            </div>
+
+            <div style={{ marginBottom: 30 }}>
+              <div>优先级</div>
+              <Select
+                value={this.state.activeOrgBDForEditing.isimportant}
+                style={{ width: '100%' }}
+                placeholder="请选择优先级"
+                onChange={v => this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { isimportant: v }) }
+              >
+                <Option value={0}>低</Option>
+                <Option value={1}>中</Option>
+                <Option value={2}>高</Option>
+              </Select>
             </div>
 
             <div style={{ marginBottom: 30 }}>
