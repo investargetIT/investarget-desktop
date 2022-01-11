@@ -1117,7 +1117,7 @@ function DataroomDetails(props) {
 
               {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 
-              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content" onClick={() => handleOrgBDClick(m1)}>
+              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
                 <div className="long-content">
                   <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                     <div style={{ width: 150 }}>{m1.username || '暂无'}</div>

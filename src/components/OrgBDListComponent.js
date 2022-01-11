@@ -3089,7 +3089,7 @@ class OrgBDListComponent extends React.Component {
           onOk={() => this.setState({ displayQRCode: false })}
         >
           <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
-            <QRCode value={window.location.protocol + '//' + window.location.host + '/app/org/bd/mobile?projId=' + this.projId} />
+            <QRCode value={window.location.protocol + '//' + window.location.host + '/m/org/bd?projId=' + this.projId} />
           </div>
           <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
         </Modal>

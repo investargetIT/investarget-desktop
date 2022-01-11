@@ -821,9 +821,10 @@ function DataroomDetails(props) {
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
           <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
-            {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
-
-            <Button onClick={() => setDisplayQRCode(true)}>手机二维码</Button>
+            <div>
+              {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32, marginRight: 10 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
+              <Button onClick={() => setDisplayQRCode(true)}>手机二维码</Button>
+            </div>
 
             {isAbleToAddUser &&
               <div>
