@@ -214,6 +214,7 @@ class OrgBDListComponentForMobile extends React.Component {
         visiblePopover: 0,
 
         expandedRows: [],
+        popoverComments: [],
     }
 
     this.allTrader = [];
@@ -1746,6 +1747,35 @@ class OrgBDListComponentForMobile extends React.Component {
     return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
   }
 
+  renderPopoverComments = comments => {
+    const popoverContent = comments.filter(f => !f.isPMComment)
+      .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+      .map(comment => {
+        let content = comment.comments;
+        const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+        if (oldStatusMatch) {
+          const oldStatus = oldStatusMatch[0];
+          content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+        }
+        return (
+          <div key={comment.id} style={{ marginBottom: 8 }}>
+            <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+            <div style={{ display: 'flex' }}>
+              {comment.createuser &&
+                <div style={{ marginRight: 10 }}>
+                  {/* <a target="_blank" href={`/app/user/${comment.createuser.id}`}> */}
+                    <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                  {/* </a> */}
+                </div>
+              }
+              <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+            </div>
+          </div>
+        );
+      });
+    return popoverContent;
+  }
+
   renderLatestComment = (record) => {
     let latestComment = '';
           if (record.BDComments && record.BDComments.length) {
@@ -1783,8 +1813,12 @@ class OrgBDListComponentForMobile extends React.Component {
               );
             });
           return (
-            // <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
-              <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+            // <Popover placement="leftTop" title="机构反馈" content={popoverContent} trigger="click">
+            <div style={{ color: "#428bca" }} onClick={(e) => {
+              window.echo('click');
+              e.stopPropagation();
+              this.setState({ popoverComments: comments });
+            }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
             // </Popover>
           );
   }
@@ -2926,6 +2960,15 @@ class OrgBDListComponentForMobile extends React.Component {
 
           </Modal>
         }
+
+        <Modal
+          title="机构反馈"
+          visible={this.state.popoverComments.length > 0}
+          onCancel={() => this.setState({ popoverComments: [] })}
+          onOk={() => this.setState({ popoverComments: [] })}
+        >
+          {this.renderPopoverComments(this.state.popoverComments)}
+        </Modal>
 
         {this.state.displayModalForCreating &&
           <Modal
