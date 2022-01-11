@@ -1666,7 +1666,8 @@ class OrgBDListComponentForMobile extends React.Component {
   }
 
   // Test
-  handleOperationChange(record, value) {
+  handleOperationChange(record, value, e) {
+    e.stopPropagation();
     const react = this;
     switch (value) {
       case 'delete':
@@ -2771,6 +2772,11 @@ class OrgBDListComponentForMobile extends React.Component {
                 {this.state.expandedRows.includes(m.id) && m.items.map(m1 => <div key={m1.id} className="short-content" onClick={this.handleOperationChange.bind(this, m1, 'edit')}>
                   <div className="long-content">
                     <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+                      {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                        <Button type="link" onClick={this.handleOperationChange.bind(this, m1, 'delete')} style={{ padding: '4px 8px' }}>
+                          <DeleteOutlined />
+                        </Button>
+                      }
                       <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                       <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
                       <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
