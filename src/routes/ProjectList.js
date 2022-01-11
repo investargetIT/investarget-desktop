@@ -83,7 +83,7 @@ class ProjectList extends React.Component {
       sendWechat: false,
       discloseFinance: false,
       unreadOrgBDNumber: 0,
-      onGogoingProjects: [],
+      onGogoingProjects: 0,
       solvedProjectsThisYear: [],
 
       sort: undefined,
@@ -358,8 +358,9 @@ class ProjectList extends React.Component {
     if (!hasPerm('proj.admin_manageproj')) {
       params['user'] = getCurrentUser();
     }
-    const reqProj = await requestAllData2(api.getProj, params, 100);
-    this.setState({ onGogoingProjects: reqProj.data.data })
+    // const reqProj = await requestAllData2(api.getProj, params, 100);
+    const reqProj = await api.getProj({ ...params, max_size: 0 });
+    this.setState({ onGogoingProjects: reqProj.data.count})
   }
   
   // componentWillReceiveProps(nextProps) {
@@ -567,7 +568,7 @@ class ProjectList extends React.Component {
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
             <div style={statLabelStyle}>进行中的项目总数</div>
-            <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.onGogoingProjects.length}</span>个</div>
+            <div style={statValueStyle}><span style={statValueNumStyle}>{this.state.onGogoingProjects}</span>个</div>
           </div>
           <div style={{ height: 64, width: 1, backgroundColor: '#e6e6e6' }}></div>
           <div style={statStyle}>
