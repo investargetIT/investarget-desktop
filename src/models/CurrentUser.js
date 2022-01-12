@@ -73,11 +73,9 @@ export default {
         type: 'save',
         userInfo
       })
-      let url = '/app';
+      let url = '/m';
       if (redirect) {
         url = decodeURIComponent(redirect);
-      } else if (!is_superuser && permissions.includes('usersys.as_investor')) {
-        url = '/app/dataroom/project/list';
       }
       // 存储用户名和密码？
       if (remember) {

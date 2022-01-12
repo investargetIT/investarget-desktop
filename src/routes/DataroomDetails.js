@@ -10,6 +10,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
 import DataroomFileManage from '../components/DataroomFileManage';
+import QRCode from 'qrcode.react';
 
 const { Option } = Select;
 const { DirectoryTree } = Tree;
@@ -75,6 +76,7 @@ function DataroomDetails(props) {
   const [loading, setLoading] = useState(false);
   const [parentId, setParentId] = useState(parseInt(parentID, 10) || -999);
   const [searchContent, setSearchContent] = useState('');
+  const [displayQRCode, setDisplayQRCode] = useState(false);
 
   async function getOrgBdOfUsers(users) {
     setLoadingOrgBD(true);
@@ -819,7 +821,11 @@ function DataroomDetails(props) {
       {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
         <Card style={{ marginBottom: 20 }}>
           <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>
-            {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
+            <div>
+              {hasPermissionForDataroomTemp && <Button style={{ width: 109, height: 32, marginRight: 10 }} onClick={() => setShowDataRoomTempModal(true)}>应用模版</Button>}
+              <Button onClick={() => setDisplayQRCode(true)}>手机二维码</Button>
+            </div>
+
             {isAbleToAddUser &&
               <div>
                 <div style={{ display: 'flex' }}>
@@ -948,6 +954,18 @@ function DataroomDetails(props) {
           </div>
         </Modal>
       }
+
+      <Modal
+        title="手机二维码"
+        visible={displayQRCode}
+        onCancel={() => setDisplayQRCode(false)}
+        onOk={() => setDisplayQRCode(false)}
+      >
+        <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
+          <QRCode value={window.location.href.replace('app', 'm')} />
+        </div>
+        <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
+      </Modal>
 
     </LeftRightLayoutPure>
   );

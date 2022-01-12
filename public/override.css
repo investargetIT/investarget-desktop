@@ -720,7 +720,7 @@ label.login-register-form__container__label {
     display: none;
   }
   .short-content {
-    width: 335px;
+    width: calc(100vw - 32px);
     height: 40px;
     position: relative;
     overflow: hidden;
@@ -729,6 +729,6 @@ label.login-register-form__container__label {
     position: absolute;
     left: 0;
     top: 0;
-    width: 800px;
+    width: 900px;
   }
 }

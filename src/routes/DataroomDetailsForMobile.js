@@ -87,6 +87,9 @@ function DataroomDetails(props) {
   const [loadingEditingOrgBD, setLoadingEditingOrgBD] = useState(false);
   const [traderList, setTraderList] = useState([]);
 
+  // popoverComments: [],
+  const [popoverComments, setPopoverComments] = useState([]);
+
   async function getOrgBdOfUsers(users) {
     setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
@@ -413,7 +416,7 @@ function DataroomDetails(props) {
     }
     // e.preventDefault();
   }
-
+  const windowWidth = window.innerWidth;
   function handleTouchMove(e) {
     const progressX = startX - e.touches[0].clientX;
     const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
@@ -422,8 +425,8 @@ function DataroomDetails(props) {
     // window.echo('all', all);
     
     for (let i = 0; i < all.length; i++) {
-      if ((oldX + translation) < -465) {
-        all[i].style.left = '-465px';
+      if ((oldX + translation) < -(900-(windowWidth - 32))) {
+        all[i].style.left = `${-(900-(windowWidth-32))}px`;
       } else if ((oldX + translation) < 0) {
         all[i].style.left = `${oldX + translation}px`;
       } else {
@@ -535,6 +538,35 @@ function DataroomDetails(props) {
     return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
   }
 
+  function renderPopoverComments(comments) {
+    const popoverContent = comments.filter(f => !f.isPMComment)
+    .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+    .map(comment => {
+      let content = comment.comments;
+      const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+      if (oldStatusMatch) {
+        const oldStatus = oldStatusMatch[0];
+        content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+      }
+      return (
+        <div key={comment.id} style={{ marginBottom: 8 }}>
+          <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+          <div style={{ display: 'flex' }}>
+            {comment.createuser &&
+              <div style={{ marginRight: 10 }}>
+                {/* <a target="_blank" href={`/app/user/${comment.createuser.id}`}> */}
+                  <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                {/* </a> */}
+              </div>
+            }
+            <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+          </div>
+        </div>
+      );
+    });
+    return popoverContent;
+  }
+
   function renderLatestComment(record) {
     let latestComment = '';
           if (record.BDComments && record.BDComments.length) {
@@ -572,9 +604,13 @@ function DataroomDetails(props) {
               );
             });
           return (
-            <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
-              <div style={{ color: "#428bca" }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
-            </Popover>
+            // <Popover placement="leftTop" title="机构反馈" content={popoverContent}>
+              <div style={{ color: "#428bca" }} onClick={(e) => {
+                window.echo('click');
+                e.stopPropagation();
+                setPopoverComments(comments);
+              }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+            // </Popover>
           );
   }
 
@@ -1093,8 +1129,8 @@ function DataroomDetails(props) {
                 <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
                   <div style={{ width: 150 }}>投资人</div>
                   <div style={{ width: 100 }}>职位</div>
-                  <div style={{ width: 100 }}>负责人</div>
-                  <div style={{ width: 200 }}>机构进度/材料</div>
+                  <div style={{ width: 150 }}>负责人</div>
+                  <div style={{ width: 300 }}>机构进度/材料</div>
                   <div style={{ width: 200 }}>机构反馈</div>
                 </div>
               </div>
@@ -1117,19 +1153,20 @@ function DataroomDetails(props) {
 
               {expandedRows.includes(m.id) && m.orgbd.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 
-              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content" onClick={() => handleOrgBDClick(m1)}>
+              {expandedRows.includes(m.id) && m.orgbd.map(m1 => <div key={m1.id} className="short-content">
                 <div className="long-content">
                   <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
                     <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
                     <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
-                    <div style={{ width: 100 }}>{m1.manager ? m1.manager.username : ''}</div>
-                    <div style={{ width: 200 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
+                    <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
+                    <div style={{ width: 300 }}>{renderProgressAndMaterial(m1.response, m1)}</div>
                     <div style={{ width: 200 }}>{renderLatestComment(m1)}</div>
                   </div>
                 </div>
               </div>)}
 
             </div>)}
+            {!loadingOrgBD && dataroomUsersOrgBdByOrg.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           </Card>
         }
 
@@ -1300,6 +1337,15 @@ function DataroomDetails(props) {
 
         </Modal>
       }
+
+      <Modal
+        title="机构反馈"
+        visible={popoverComments.length > 0}
+        onCancel={() => setPopoverComments([])}
+        onOk={() => setPopoverComments([])}
+      >
+        {renderPopoverComments(popoverComments)}
+      </Modal>
 
     </LeftRightLayoutPureForMobile>
   );

@@ -10,7 +10,7 @@ import {
   getCurrentUser,
   requestAllData,
 } from '../utils/util';
-import * as api from '../api';
+import * as api from '../apiForMobile';
 import { 
   Card,
   Table, 
@@ -31,6 +31,7 @@ import {
   Form,
   Upload,
   message,
+  Spin,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter, OrgBDFilterForMobile } from './Filter';
@@ -57,6 +58,8 @@ import {
   CaretUpFilled,
   CaretDownFilled,
   CloseOutlined,
+  CaretDownOutlined,
+  CaretRightOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
@@ -103,7 +106,7 @@ class DBSelectTrador extends React.Component {
   )}
 }
 
-class OrgBDListComponent extends React.Component {
+class OrgBDListComponentForMobile extends React.Component {
   
   constructor(props) {
     super(props);
@@ -209,6 +212,9 @@ class OrgBDListComponent extends React.Component {
         newUser: '', // 新增投资人名称
 
         visiblePopover: 0,
+
+        expandedRows: [],
+        popoverComments: [],
     }
 
     this.allTrader = [];
@@ -1271,14 +1277,29 @@ class OrgBDListComponent extends React.Component {
       });
   }
 
+  handleUpdatePriorityForMobile = async (record, isimportant) => {
+    return Promise.all(record.items.map(m => api.modifyOrgBD(m.id, { isimportant })));
+  }
+
   handleEditOrgBD = () => {
     const record = this.state.activeOrgBDForEditing;
+    const { isimportant: newImportant } = record;
+    const { isimportant: oldImportant } = this.state.originalOrgBDForEditing;
+    let firstStep = () => Promise.resolve();
+    if (newImportant !== oldImportant) {
+      const { id } = record.org;
+      const filterOrg = this.state.list.filter(f => f.org && f.org.id === id);
+      if (filterOrg.length > 0) {
+        firstStep = () => this.handleUpdatePriorityForMobile(filterOrg[0], newImportant);
+      }
+    }
+
     let body = {
       'bduser': record.bduser >= 0 ? record.bduser: null,
       'manager': Number(record.manager.id),
       'org': record.org.id,
       'proj': record.proj.id,
-      // 'isimportant': record.isimportant,
+      'isimportant': record.isimportant,
       // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
       // 'bd_status': 1,
       'response': record.response,
@@ -1287,7 +1308,8 @@ class OrgBDListComponent extends React.Component {
     this.setState({ loadingEditingOrgBD: true });
     // api.getUserSession()
       // .then(() => 
-      api.modifyOrgBD(record.id, body)
+      firstStep()
+      .then(() => api.modifyOrgBD(record.id, body))
       .then(this.generateProgressChangeComment)
       .then(() => {
         if (this.state.newComment) {
@@ -1645,7 +1667,8 @@ class OrgBDListComponent extends React.Component {
   }
 
   // Test
-  handleOperationChange(record, value) {
+  handleOperationChange(record, value, e) {
+    e.stopPropagation();
     const react = this;
     switch (value) {
       case 'delete':
@@ -1673,6 +1696,131 @@ class OrgBDListComponent extends React.Component {
         react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true, newComment: '' });
         break;
     }
+  }
+
+  startX=0;
+  oldX=0;
+  handleTouchStart = (e) => {
+    const { touches } = e;
+    if (touches && touches.length === 1) {
+      const touch = touches[0];
+      this.startX = touch.clientX;
+    }
+
+    const all = document.getElementsByClassName('long-content');
+    for (let i = 0; i < all.length; i++) {
+      const oldLeft = all[i].style.left;
+      if (oldLeft) {
+        this.oldX = parseInt(oldLeft);
+      }
+    }
+    // e.preventDefault();
+  }
+  windowWidth = window.innerWidth;
+  handleTouchMove = (e) => {
+    const progressX = this.startX - e.touches[0].clientX;
+    const translation = progressX > 0 ? parseInt(-Math.abs(progressX)) : parseInt(Math.abs(progressX));
+    // window.echo('move e', progressX);
+    const all = document.getElementsByClassName('long-content');
+    // window.echo('all', all);
+    
+    for (let i = 0; i < all.length; i++) {
+      if ((this.oldX + translation) < -(900-(this.windowWidth - 32))) {
+        all[i].style.left = `${-(900-(this.windowWidth-32))}px`;
+      } else if ((this.oldX + translation) < 0) {
+        all[i].style.left = `${this.oldX + translation}px`;
+      } else {
+        all[i].style.left = 0;
+      }
+    }
+  }
+
+  renderProgressAndMaterial = (text, record) => {
+    let progress = null;
+    if (text) {
+      progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+    }
+    let material = null;
+    if (record.material) {
+      material = <div style={{ ...progressStyles, backgroundColor: 'rgba(51, 155, 210, .15)' }}>{record.material}</div>;
+    }
+    return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
+  }
+
+  renderPopoverComments = comments => {
+    const popoverContent = comments.filter(f => !f.isPMComment)
+      .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+      .map(comment => {
+        let content = comment.comments;
+        const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+        if (oldStatusMatch) {
+          const oldStatus = oldStatusMatch[0];
+          content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+        }
+        return (
+          <div key={comment.id} style={{ marginBottom: 8 }}>
+            <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+            <div style={{ display: 'flex' }}>
+              {comment.createuser &&
+                <div style={{ marginRight: 10 }}>
+                  {/* <a target="_blank" href={`/app/user/${comment.createuser.id}`}> */}
+                    <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                  {/* </a> */}
+                </div>
+              }
+              <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+            </div>
+          </div>
+        );
+      });
+    return popoverContent;
+  }
+
+  renderLatestComment = (record) => {
+    let latestComment = '';
+          if (record.BDComments && record.BDComments.length) {
+            const commonComments = record.BDComments.filter(f => !f.isPMComment);
+            if (commonComments.length > 0) {
+              latestComment = commonComments[commonComments.length - 1].comments;
+            }
+          }
+          if (!latestComment) return '暂无';
+
+          const comments = record.BDComments;
+          const popoverContent = comments.filter(f => !f.isPMComment)
+            .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+            .map(comment => {
+              let content = comment.comments;
+              const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+              if (oldStatusMatch) {
+                const oldStatus = oldStatusMatch[0];
+                content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+              }
+              return (
+                <div key={comment.id} style={{ marginBottom: 8 }}>
+                  <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+                  <div style={{ display: 'flex' }}>
+                    {comment.createuser &&
+                      <div style={{ marginRight: 10 }}>
+                        <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                          <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                        </a>
+                      </div>
+                    }
+                    <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+                  </div>
+                </div>
+              );
+            });
+          return (
+            // <Popover placement="leftTop" title="机构反馈" content={popoverContent} trigger="click">
+            <div style={{ color: "#428bca" }} onClick={(e) => {
+              window.echo('click');
+              e.stopPropagation();
+              this.setState({ popoverComments: comments });
+            }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
+            // </Popover>
+          );
   }
 
   getProgressOptions = () => {
@@ -1806,6 +1954,30 @@ class OrgBDListComponent extends React.Component {
       })
       .catch(handleError)
       .finally(() => this.setState({ loadingDownloadTemplate: false }));
+  }
+
+  handleOrgBDExpand = (record) => {
+    const currentId = record.id;
+    const newExpanded = [...this.state.expandedRows];
+    const expandIndex = newExpanded.indexOf(currentId);
+    if (expandIndex < 0) {
+      newExpanded.push(currentId);
+    } else {
+      newExpanded.splice(expandIndex, 1);
+    }
+    this.setState({ expandedRows: newExpanded });
+  }
+
+  generatePriorityColor = record => {
+    let displayPriorityColor = priorityColor[0]; // 默认优先级低
+    let priorityName = priority[0];
+    const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
+    allItemPriorities.sort((first, second) => second - first);
+    if (allItemPriorities.length > 0) {
+      displayPriorityColor = priorityColor[allItemPriorities[0]];
+      priorityName = priority[allItemPriorities[0]];
+    }
+    return displayPriorityColor;
   }
 
   render() {
@@ -2119,60 +2291,6 @@ class OrgBDListComponent extends React.Component {
     // }
 
 
-    const columnsForExport = [
-      { title: i18n('org_bd.org'), key:'org', dataIndex: ['org', 'orgname'], className: 'orgname', width: '15%' },
-      { title: i18n('org_bd.contact'), dataIndex: 'username', key:'username', width: '10%' },
-      {
-        title: i18n('org_bd.manager'), dataIndex: ['manager', 'username'], key: 'manager', width: '10%', render: (text, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return text;
-          // }
-          // return null;
-        },
-      },
-      {
-        title: i18n('org_bd.status'), 
-        key:'progress',
-        width: '10%',
-        render: (_, record) => {
-          const { response, material } = record;
-          let text = '';
-          if (response && this.props.orgbdres.length > 0) {
-            text = text + this.props.orgbdres.filter(f => f.id === response)[0].name;
-          }
-          if (material) {
-            text += `/${material}`
-          }
-          return text;
-        },
-      },
-      {
-        title: "机构反馈", 
-        key:'bd_latest_info',
-        width: '25%',
-        dataIndex: 'BDComments',
-        render: (text, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return text && text.length && text[text.length - 1].comments || null;
-          // }
-          // return null;
-        },
-      },
-      {
-        title: "全部备注", 
-        key:'bd_all_comments',
-        width: '30%',
-        dataIndex: 'BDComments',
-        render: (comments, record) => {
-          // if (this.isAbleToModifyStatus(record)) {
-            return comments ? comments.map(m => (
-              `创建人：${m.createuser && m.createuser.username}，创建时间：${m.createdtime.slice(0, 16).replace('T', ' ')}，备注内容：${m.comments}`
-            )).join('\r\n') : null;
-          // }
-          // return null;
-        },
-      },
-    ];
 
     const expandedRowRender = (record) => {
       const columns = [
@@ -2625,50 +2743,14 @@ class OrgBDListComponent extends React.Component {
         }
       },
     };
-
+    window.echo('mapd list', this.state.list);
     return (
       <div>
         {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
-        {this.props.editable &&
-          <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
-            {this.state.projectDetails && this.state.projectDetails.lastProject &&
-              <div style={{ marginBottom: 20, textAlign: 'center' }}>
-                上一轮项目：
-                <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
-              </div>
-            }
-            {!this.state.showUnreadOnly &&
-              <div>
-                <OrgBDFilter
-                  defaultValue={filters}
-                  value={this.state.filters}
-                  onSearch={this.handleFilt}
-                  onReset={this.handleReset}
-                  onChange={this.handleFilt}
-                  progressOptions={this.state.progressOptions}
-                  allLabel={this.state.allLabel}
-                />
-                {/* {this.state.filters.proj !== null &&
-                  <div style={{ overflow: 'auto', marginBottom: 16 }}>
-                    {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
-                      <div style={{ float: 'left', lineHeight: '32px' }}>
-                        {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
-                          (m, index) => <span key={m.id}>
-                            <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
-                            <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
-                          </span>
-                        )}
-                      </div>
-                      : null}
-                  </div>
-                } */}
-              </div>
-            }
-          </Card>
-        }
+        <div style={{ marginLeft: 8, marginBottom: 12, fontSize: 16, lineHeight: '24px', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
 
-        <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
+        {/* <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
           <OrgBDFilterForMobile
             defaultValue={filters}
             value={this.state.filters}
@@ -2678,100 +2760,13 @@ class OrgBDListComponent extends React.Component {
             progressOptions={this.state.progressOptions}
             allLabel={this.state.allLabel}
           />
-        </Card>
+        </Card> */}
 
-        <Card>
-          {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
-            <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
-                <Search
-                  style={{ width: 300, marginRight: 20 }}
-                  placeholder="请输入投资人名称或电话"
-                  onSearch={search => this.setState({ search, page: 1 }, this.getOrgBdList)}
-                  onChange={search => this.setState({ search })}
-                  value={search}
-                  size="middle"
-                />
-                <div style={{ marginRight: 20, display: 'flex', flexWrap: 'wrap', alignItems: 'center', fontSize: 14, color: '#595959' }}>
-                  <div style={{ marginRight: 4 }}>机构优先级：</div>
-                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#ff617f', opacity: 0.5 }} />
-                  <div style={{ marginRight: 16 }}>高</div>
-                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#0084a9', opacity: 0.5 }} />
-                  <div style={{ marginRight: 16 }}>中</div>
-                  <div style={{ marginRight: 4, width: 8, height: 8, borderRadius: '50%', backgroundColor: '#7ed321', opacity: 0.5 }} />
-                  <div style={{ marginRight: 16 }}>低</div>
-                </div>
-                <Button style={{ marginRight: 20 }} onClick={this.handleDisplayQRCodeBtnClick}>手机二维码</Button>
-                <Upload {...importOrgBDProps}>
-                  <Button loading={this.state.loadingImportOrgBD} style={{ marginRight: 20 }}>导入机构看板</Button>
-                </Upload>
-                <Button loading={this.state.loadingDownloadTemplate} onClick={this.handleDownloadOrgBDTemplateBtnClick}>模板下载</Button>
-              </div>
-              {this.isAbleToCreateBD() &&
-                <div className="another-btn" style={{ marginBottom: 20 }}>
-                  {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
-                  <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
-                </div>
-              }
-            </div>
-          }
-
-          {this.state.filters.proj !== null ?
-            <Table
-              style={{ display: 'none' }}
-              className="new-org-db-style"
-              columns={columnsForExport}
-              dataSource={this.state.listForExport}
-              rowKey={record => record.id}
-              pagination={false}
-              size="middle"
-            />
-            : null}
-
-          <div className="remove-on-mobile orgbd-table-header" style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', height: 41, alignItems: 'center' }}>
-            {/* <div style={{ width: 40 }} /> */}
-            <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
-            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
-            <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
-            {!this.props.fromProjectCostCenter &&
-              <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8, display: 'flex', alignItems: 'center' }}>
-                <div style={{ marginRight: 4 }}>创建时间</div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <CaretUpFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 0 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('asc')}/>
-                  <CaretDownFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 1 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('desc')} />
-                </div>
-              </div>
-            }
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
-            {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>} */}
-            {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}></div>}
-          </div>
-
-          {this.state.filters.proj !== null &&
-            <div className="table-orgbd-desktop">
-              <Table
-                onChange={this.handleTableChange}
-                columns={columns}
-                expandedRowRender={expandedRowRender}
-                // expandRowByClick
-                dataSource={list}
-                rowKey={record => record.id}
-                loading={loading}
-                onExpand={this.onExpand.bind(this)}
-                expandedRowKeys={expanded}
-                pagination={false}
-                size={this.props.size || "middle"}
-                showHeader={false}
-              />
-            </div>
-          }
+        <Card bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={this.handleTouchMove} onTouchStart={this.handleTouchStart}>
 
           {this.state.filters.proj !== null &&
             <div className="table-orgbd-mobile">
-              <div style={{ fontWeight: 'bold', lineHeight: '28px', textAlign: 'center' }}>{this.state.projectDetails ? this.state.projectDetails.projtitleC : ''}</div>
-              <Table
+              {/* <Table
                 scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
                 columns={columnsForMobile}
@@ -2780,7 +2775,53 @@ class OrgBDListComponent extends React.Component {
                 loading={loading}
                 pagination={false}
                 size={this.props.size || "middle"}
-              />
+              /> */}
+
+              <div className="short-content">
+                <div className='long-content'>
+                  <div style={{ padding: '0 28px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', display: 'flex', height: 40, alignItems: 'center' }}>
+                    <div style={{ width: 150 }}>投资人</div>
+                    <div style={{ width: 100 }}>职位</div>
+                    <div style={{ width: 150 }}>负责人</div>
+                    <div style={{ width: 300 }}>机构进度/材料</div>
+                    <div style={{ width: 200 }}>机构反馈</div>
+                  </div>
+                </div>
+              </div>
+
+              {loading && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+                <Spin />
+              </div>}
+
+              {list.map(m => <div key={m.id}>
+
+                <div style={{ display: 'flex', alignItems: 'center', padding: '10px 4px', borderBottom: '1px solid rgb(230, 230, 230)' }} onClick={() => this.handleOrgBDExpand(m)}>
+                  {this.state.expandedRows.includes(m.id) ? <CaretDownOutlined style={{ fontSize: 12, marginRight: 12 }} /> : <CaretRightOutlined style={{ fontSize: 12, marginRight: 12 }} />}
+                  <div style={{ marginRight: 8 }}>{m.org.orgname}</div>
+                  <div style={{ ...priorityStyles, backgroundColor: this.generatePriorityColor(m), marginRight: 8 }} />
+                </div>
+
+                {/* {expandedRows.includes(m.id) && m.items.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />} */}
+
+                {this.state.expandedRows.includes(m.id) && m.items.map(m1 => <div key={m1.id} className="short-content" onClick={this.handleOperationChange.bind(this, m1, 'edit')}>
+                  <div className="long-content">
+                    <div style={{ padding: '0 28px', backgroundColor: 'rgb(250, 250, 250)', color: 'rgba(89, 89, 89)', display: 'flex', height: 40, alignItems: 'center', borderBottom: '1px solid rgb(230, 230, 230)' }}>
+                      {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                        <Button type="link" onClick={this.handleOperationChange.bind(this, m1, 'delete')} style={{ padding: '4px 8px' }}>
+                          <DeleteOutlined />
+                        </Button>
+                      }
+                      <div style={{ width: 150 }}>{m1.username || '暂无'}</div>
+                      <div style={{ width: 100 }}>{m1.usertitle ? m1.usertitle.name : '暂无'}</div>
+                      <div style={{ width: 150 }}>{m1.manager ? m1.manager.username : ''}</div>
+                      <div style={{ width: 300 }}>{this.renderProgressAndMaterial(m1.response, m1)}</div>
+                      <div style={{ width: 200 }}>{this.renderLatestComment(m1)}</div>
+                    </div>
+                  </div>
+                </div>)}
+
+              </div>)}
+
             </div>
           }
 
@@ -2808,47 +2849,7 @@ class OrgBDListComponent extends React.Component {
             </div>
             : null}
 
-          {!this.props.fromProjectCostCenter && this.state.filters.proj !== null && !this.state.showUnreadOnly ?
-            <Button
-              className="remove-on-mobile"
-              // disabled={this.state.selectedIds.length == 0}
-              style={{ backgroundColor: 'orange', border: 'none' }}
-              type="primary"
-              // size="large"
-              loading={this.state.exportLoading}
-              onClick={this.handleExportBtnClicked}>
-              {i18n('project_library.export_excel')}
-            </Button>
-            : null}
         </Card>
-
-        { this.state.visible ? 
-        <ModalModifyOrgBDStatus 
-          visible={this.state.visible} 
-          onCancel={() => this.setState({ visible: false })} 
-          onOk={this.handleConfirmBtnClicked}
-          bd={this.state.currentBD}
-          orgbdres={this.props.orgbdres}
-        />
-        : null }
-
-        {/* <Modal
-          title={this.state.isPMComment ? '应对策略' : '机构反馈'}
-          visible={this.state.commentVisible}
-          footer={null}
-          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
-          maskClosable={false}
-        >
-          <BDComments
-            bd={this.state.currentBD}
-            comments={this.state.comments}
-            newComment={this.state.newComment}
-            onChange={e => this.setState({ newComment: e.target.value })}
-            onAdd={this.handleAddComment}
-            onDelete={this.handleDeleteComment}
-            isPMComment={this.state.isPMComment}
-          />
-        </Modal> */}
 
         {this.state.org ?
         <ModalAddUserNew
@@ -2859,43 +2860,6 @@ class OrgBDListComponent extends React.Component {
         />
         :null}
 
-
-        <Modal
-          title="机构看板黑名单"
-          visible={this.state.showBlacklistModal}
-          footer={null}
-          onCancel={() => this.setState({ showBlacklistModal: false })}
-          maskClosable={false}
-        >
-          <Transfer
-            showSearch={this.isAbleToAddBlacklist()}
-            filterOption={() => true}
-            rowKey={record => record.id}
-            titles={['机构列表', '该项目黑名单']}
-            notFoundContent="没有找到"
-            searchPlaceholder="机构名称"
-            dataSource={this.state.orgBlackListDataSource.map(m => ({ ...m,
-              disabled: (m.reason && !this.isAbleToRemoveBlacklist()) || (!m.reason && !this.isAbleToAddBlacklist()) ? true : false }))}
-            targetKeys={this.state.orgBlackList.map(m => m.id)}
-            onChange={this.handleOrgBlackListChange}
-            render={this.renderBlacklistItem}
-            onSearch={this.handleOrgBlackListSearchChange}
-          />
-        </Modal>
-
-        <Modal
-          title="请填写将该机构加入黑名单的理由"
-          visible={this.state.showReasonForBlacklist}
-          onOk={this.handleConfirmAddBlacklist}
-          onCancel={this.handleCancelAddBlacklist}
-        >
-          <Input
-            type="textarea"
-            rows={4}
-            value={this.state.reasonForBlacklist}
-            onChange={e => this.setState({ reasonForBlacklist: e.target.value })}
-          />
-        </Modal>
 
         <Modal
           className="another-btn"
@@ -2932,6 +2896,20 @@ class OrgBDListComponent extends React.Component {
             <div style={{ marginBottom: 30 }}>
               <div>机构名称</div>
               <Input style={{ width: '100%' }} disabled value={this.state.activeOrgBDForEditing.org.orgname} />
+            </div>
+
+            <div style={{ marginBottom: 30 }}>
+              <div>优先级</div>
+              <Select
+                value={this.state.activeOrgBDForEditing.isimportant}
+                style={{ width: '100%' }}
+                placeholder="请选择优先级"
+                onChange={v => this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { isimportant: v }) }
+              >
+                <Option value={0}>低</Option>
+                <Option value={1}>中</Option>
+                <Option value={2}>高</Option>
+              </Select>
             </div>
 
             <div style={{ marginBottom: 30 }}>
@@ -2982,6 +2960,15 @@ class OrgBDListComponent extends React.Component {
 
           </Modal>
         }
+
+        <Modal
+          title="机构反馈"
+          visible={this.state.popoverComments.length > 0}
+          onCancel={() => this.setState({ popoverComments: [] })}
+          onOk={() => this.setState({ popoverComments: [] })}
+        >
+          {this.renderPopoverComments(this.state.popoverComments)}
+        </Modal>
 
         {this.state.displayModalForCreating &&
           <Modal
@@ -3082,21 +3069,7 @@ class OrgBDListComponent extends React.Component {
           </Modal>
         }
 
-        <Modal
-          title="手机二维码"
-          visible={this.state.displayQRCode}
-          onCancel={() => this.setState({ displayQRCode: false })}
-          onOk={() => this.setState({ displayQRCode: false })}
-        >
-          <div style={{ width: 128, margin: '20px auto', marginBottom: 10 }}>
-            <QRCode value={window.location.protocol + '//' + window.location.host + '/m/org/bd?projId=' + this.projId} />
-          </div>
-          <p style={{ marginBottom: 10, textAlign: 'center' }}>请使用手机扫描二维码</p>
-        </Modal>
 
-        <iframe style={{display: 'none' }} src={this.state.downloadUrl}></iframe>
-
-        {/* <div id="popover" className="test" ref={this.popoverRef} onMouseLeave={() => react.handlePopoverMouseLeave(record)} onMouseEnter={() => react.handlePopoverMouseEnter(record)} /> */}
       </div>
     );
   }
@@ -3107,7 +3080,7 @@ function mapStateToProps(state) {
   return { orgbdres, famlv };
 }
 
-export default connect(mapStateToProps)(OrgBDListComponent);
+export default connect(mapStateToProps)(OrgBDListComponentForMobile);
 
 export class Trader extends React.Component {
   state = {

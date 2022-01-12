@@ -7,7 +7,7 @@ import {
   hasPerm, 
   getUserInfo, 
 } from '../utils/util';
-import OrgBDListComponent from '../components/OrgBDListComponent';
+import OrgBDListComponentForMobile from '../components/OrgBDListComponentForMobile';
 import { Button, Breadcrumb } from 'antd';
 import { Link } from 'dva/router';
 import LeftRightLayoutPureForMobile from '../components/LeftRightLayoutPureForMobile';
@@ -53,15 +53,15 @@ export default class OrgBDListForMobile extends React.Component {
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
+        {/* <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
           <Breadcrumb.Item>首页</Breadcrumb.Item>
           <Breadcrumb.Item>BD管理</Breadcrumb.Item>
           <Breadcrumb.Item>机构BD</Breadcrumb.Item>
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
 
         {this.state.displayContent &&
-          <OrgBDListComponent
+          <OrgBDListComponentForMobile
             editable
             location={this.props.location}
             pagination={true}
