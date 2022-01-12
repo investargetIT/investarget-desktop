@@ -42,7 +42,7 @@ export default class OrgBDListForMobile extends React.Component {
         right={this.state.isProj ? <Button onClick={() => this.setState({ showBlacklist: true })}>添加黑名单</Button> : null}
       >
 
-        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="remove-on-mobile">
+        {/* <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="remove-on-mobile">
           <Breadcrumb.Item>
             <Link to="/app">首页</Link>
           </Breadcrumb.Item>
@@ -51,7 +51,7 @@ export default class OrgBDListForMobile extends React.Component {
             <Link to="/app/orgbd/project/list">机构BD</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>机构看板</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
 
         {/* <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }} className="only-on-mobile">
           <Breadcrumb.Item>首页</Breadcrumb.Item>

@@ -2765,7 +2765,7 @@ class OrgBDListComponentForMobile extends React.Component {
         <Card bodyStyle={{ padding: 8, overflow: 'hidden' }} onTouchMove={this.handleTouchMove} onTouchStart={this.handleTouchStart}>
 
           {this.state.filters.proj !== null &&
-            <div className="table-orgbd-mobile">
+            <div>
               {/* <Table
                 scroll={{ x: 800 }}
                 onChange={this.handleTableChange}
@@ -2828,11 +2828,11 @@ class OrgBDListComponentForMobile extends React.Component {
           {this.props.pagination && this.state.filters.proj !== null ?
             <div style={{ margin: '16px 0' }} className="clearfix">
 
-              {this.props.editable && this.isAbleToCreateBD() ?
+              {/* {this.props.editable && this.isAbleToCreateBD() ?
                 <Link to={"/app/orgbd/add?projId=" + this.state.filters.proj}>
                     <Button className="remove-on-mobile" type="primary" icon={<PlusOutlined />}>批量新增机构</Button>
                   </Link>
-                : null}
+                : null} */}
 
               <Pagination
                 style={{ float: 'right' }}
