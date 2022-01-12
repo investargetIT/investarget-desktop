@@ -205,6 +205,7 @@ export default {
         if (element.projstatus) {
           if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
             projPercentage.push({ id: element.id, percentage: 100 });
+            yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage: 100 } });
             continue;
           }
         }
@@ -226,8 +227,9 @@ export default {
           percentage = Math.round((maxRes - 3) / 11 * 100);
         }
         projPercentage.push({ id: element.id, percentage });
+        yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage } }); 
       }
-      yield put({ type: 'saveProjectProgress', payload: projPercentage });
+      // yield put({ type: 'saveProjectProgress', payload: projPercentage });
     },
   },
   subscriptions: {
