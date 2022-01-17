@@ -26,6 +26,7 @@ const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
+import Select2WithTooltip from './Select2WithTooltip'
 import _ from 'lodash'
 import * as api from '../api'
 import { i18n, hasPerm, getCurrentUser, getCurrencyFormatter, getCurrencyParser, requestAllData, getURLParamValue } from '../utils/util'
@@ -585,15 +586,16 @@ const SelectMyInvestor = (props) => {
       var { count: total, data: list } = result.data
       list = list.map(item => item.investoruser).map(item => {
         const { id: value, username: label, org, mobile, email } = item;
-        const description = [org ? org.orgname : '暂无机构', mobile, email].join('\n');
-        return { value, label, description };
+        // const description = [org ? org.orgname : '暂无机构', mobile, email].join('\n');
+        const tooltipContent = org ? org.orgname : '暂无机构';
+        return { value, label, tooltipContent };
       })
       return { total, list }
     })
   }
 
   return (
-    <Select2
+    <Select2WithTooltip
       style={props.style || {}}
       size={props.size}
       // getData={this.getInvestor}
@@ -680,8 +682,9 @@ class SelectAllUser extends React.Component {
     return api.getUser(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
-        const { id: value, username: label } = item
-        return { value, label }
+        const { id: value, username: label, org } = item
+        const tooltipContent = org ? org.orgname : '暂无机构';
+        return { value, label, tooltipContent }
       })
       return { total, list }
     })
@@ -696,7 +699,7 @@ class SelectAllUser extends React.Component {
   render() {
     if (this.props.type && this.state.groups.length === 0) return null;
     return (
-      <Select2
+      <Select2WithTooltip
         size={this.props.size}
         style={this.props.style || {}}
         getData={this.getUser}
