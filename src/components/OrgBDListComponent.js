@@ -220,6 +220,7 @@ class OrgBDListComponent extends React.Component {
     this.showPopoverFromName = null;
 
     // this.popoverRef = React.createRef();
+    this.dataroomID = null;
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -231,6 +232,17 @@ class OrgBDListComponent extends React.Component {
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.getRelatedDataroom(this.state.filters.proj);
+  }
+
+  getRelatedDataroom = async (proj) => {
+    if (!proj) return;
+    const reqDataroom = await api.queryDataRoom({ proj });
+    if (reqDataroom.data.count > 0) {
+      this.dataroomID = reqDataroom.data.data[0].id;
+    } else {
+      console.warning('Related Dataroom Not Found!');
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -1271,6 +1283,19 @@ class OrgBDListComponent extends React.Component {
       });
   }
 
+  // 进入一期资料库，自动添加该用户到 dataroom
+  addUserToDataroom = async (response, user) => {
+    if (response !== 7 || !user || !this.dataroomID) {
+      return;
+    };
+    const param = { dataroom: this.dataroomID, user };
+    try {
+      await api.addUserDataRoom(param);
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   handleEditOrgBD = () => {
     const record = this.state.activeOrgBDForEditing;
     let body = {
@@ -1298,6 +1323,7 @@ class OrgBDListComponent extends React.Component {
           return api.addOrgBDComment(bodyForComment);
         }
       })
+      .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
         this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
@@ -1781,6 +1807,7 @@ class OrgBDListComponent extends React.Component {
     };
     api.getUserSession()
       .then(() => api.addOrgBD(body))
+      .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.setState({ displayModalForCreating: false });
         this.getOrgBdList();
@@ -2648,6 +2675,7 @@ class OrgBDListComponent extends React.Component {
                   onChange={this.handleFilt}
                   progressOptions={this.state.progressOptions}
                   allLabel={this.state.allLabel}
+                  onProjChange={value => this.getRelatedDataroom(value)}
                 />
                 {/* {this.state.filters.proj !== null &&
                   <div style={{ overflow: 'auto', marginBottom: 16 }}>

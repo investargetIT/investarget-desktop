@@ -1075,6 +1075,9 @@ class OrgBDFilter extends React.Component {
 
   handleChange = (key, value) => {
     this.setState({ [key]: value }, () => this.props.onChange({...this.state}));
+    if (key === 'proj' && this.props.onProjChange) {
+      this.props.onProjChange(value);
+    }
   }
 
   handleSearch = () => {

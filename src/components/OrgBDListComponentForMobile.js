@@ -226,6 +226,7 @@ class OrgBDListComponentForMobile extends React.Component {
     this.showPopoverFromName = null;
 
     // this.popoverRef = React.createRef();
+    this.dataroomID = null;
   }
 
   disabledDate = current => current && current < moment().startOf('day');
@@ -237,6 +238,17 @@ class OrgBDListComponentForMobile extends React.Component {
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
     this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.getRelatedDataroom(this.state.filters.proj);
+  }
+
+  getRelatedDataroom = async (proj) => {
+    if (!proj) return;
+    const reqDataroom = await api.queryDataRoom({ proj });
+    if (reqDataroom.data.count > 0) {
+      this.dataroomID = reqDataroom.data.data[0].id;
+    } else {
+      console.warning('Related Dataroom Not Found!');
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -1281,6 +1293,19 @@ class OrgBDListComponentForMobile extends React.Component {
     return Promise.all(record.items.map(m => api.modifyOrgBD(m.id, { isimportant })));
   }
 
+  // 进入一期资料库，自动添加该用户到 dataroom
+  addUserToDataroom = async (response, user) => {
+    if (response !== 7 || !user || !this.dataroomID) {
+      return;
+    };
+    const param = { dataroom: this.dataroomID, user };
+    try {
+      await api.addUserDataRoom(param);
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   handleEditOrgBD = () => {
     const record = this.state.activeOrgBDForEditing;
     const { isimportant: newImportant } = record;
@@ -1320,6 +1345,7 @@ class OrgBDListComponentForMobile extends React.Component {
           return api.addOrgBDComment(bodyForComment);
         }
       })
+      .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
         this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
@@ -1888,9 +1914,9 @@ class OrgBDListComponentForMobile extends React.Component {
     return newDataSource;
   }
 
-  handleAddNewOrgBDBtnClick = () => {
-    this.setState({ displayModalForCreating: true });
-  }
+  // handleAddNewOrgBDBtnClick = () => {
+  //   this.setState({ displayModalForCreating: true });
+  // }
 
   handleOrgBDFormValuesChange = (changedValues, allValues) => {
     if (changedValues.org) {
@@ -1906,35 +1932,35 @@ class OrgBDListComponentForMobile extends React.Component {
     }
   }
 
-  handleSubmitOrgBDForm = () => {
-    this.orgBDFormRef.current
-      .validateFields()
-      .then(values => {
-        this.addNewBD(values);
-      })
-      .catch(info => {
-        console.log('Validate Failed:', info);
-      });
-  }
+  // handleSubmitOrgBDForm = () => {
+  //   this.orgBDFormRef.current
+  //     .validateFields()
+  //     .then(values => {
+  //       this.addNewBD(values);
+  //     })
+  //     .catch(info => {
+  //       console.log('Validate Failed:', info);
+  //     });
+  // }
 
-  addNewBD = record => {
-    const body = {
-      'org': record.org,
-      'isimportant': record.isimportant,
-      'bduser': record.orgUser >= 0 ? record.orgUser : null,
-      'manager': Number(record.trader),
-      'proj': this.projId,
-      'response': record.progress ? record.progress.response : undefined,
-      'material': record.progress ? record.progress.material : undefined,
-    };
-    api.getUserSession()
-      .then(() => api.addOrgBD(body))
-      .then(() => {
-        this.setState({ displayModalForCreating: false });
-        this.getOrgBdList();
-      })
-      .catch(handleError);
-  }
+  // addNewBD = record => {
+  //   const body = {
+  //     'org': record.org,
+  //     'isimportant': record.isimportant,
+  //     'bduser': record.orgUser >= 0 ? record.orgUser : null,
+  //     'manager': Number(record.trader),
+  //     'proj': this.projId,
+  //     'response': record.progress ? record.progress.response : undefined,
+  //     'material': record.progress ? record.progress.material : undefined,
+  //   };
+  //   api.getUserSession()
+  //     .then(() => api.addOrgBD(body))
+  //     .then(() => {
+  //       this.setState({ displayModalForCreating: false });
+  //       this.getOrgBdList();
+  //     })
+  //     .catch(handleError);
+  // }
 
   handleSortByTime = direction => {
     const desc = direction === 'desc' ? 1 : 0;
@@ -2970,7 +2996,7 @@ class OrgBDListComponentForMobile extends React.Component {
           {this.renderPopoverComments(this.state.popoverComments)}
         </Modal>
 
-        {this.state.displayModalForCreating &&
+        {/* {this.state.displayModalForCreating &&
           <Modal
             wrapClassName="modal-orgbd-edit"
             title="创建机构看板"
@@ -3067,7 +3093,7 @@ class OrgBDListComponentForMobile extends React.Component {
 
             </Form>
           </Modal>
-        }
+        } */}
 
 
       </div>
