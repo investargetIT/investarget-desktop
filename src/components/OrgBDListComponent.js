@@ -1500,7 +1500,7 @@ class OrgBDListComponent extends React.Component {
     //   params.unionFields = 'manager,createuser';
     // }
     let allOrgs = await requestAllData(api.getOrgBdBase, params, 100);
-    let allOrgRemarks = await requestAllData(api.getOrgRemark, { org: filters.org.map(m => m.key) }, 100);
+    // let allOrgRemarks = await requestAllData(api.getOrgRemark, { org: filters.org.map(m => m.key) }, 100);
     allOrgs = allOrgs.data.data.map(item => ({
       id: `${item.org}-${item.proj}`,
       org: item.org,
