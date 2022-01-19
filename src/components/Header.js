@@ -1,10 +1,10 @@
 import React from 'react';
 import { Menu, Icon, Modal, Badge, Input, Popover, Alert } from 'antd';
-import { Link } from 'dva/router';
+import { Link, routerRedux } from 'dva/router';
 import { connect } from 'dva'
 import { SOURCE } from '../api'
 import qs from 'qs'
-import { i18n, changeLang } from '../utils/util'
+import { i18n, changeLang, hasPerm, isLogin } from '../utils/util'
 import styles from './Header.css'
 import classNames from 'classnames'
 import SiteSearch from './SiteSearch'
@@ -77,9 +77,27 @@ class UserProfile extends React.Component {
           <span>{username}</span>
           <span style={caretStyle}></span>
         </div>
-        <ul className="dropdown-menu" style={{...dropMenuStyle, display: this.state.visible ? 'block' : 'none'}}>
+        <ul className="dropdown-menu" style={{ ...dropMenuStyle, display: this.state.visible ? 'block' : 'none' }}>
+          {hasPerm('usersys.as_trader') &&
+            <li onClick={this.handleMenuClick.bind(this, 'email')}>
+              <i className="glyphicon glyphicon-envelope" style={{ fontSize: 11, marginRight: 5 }}></i>
+              企业邮箱
+            </li>
+          }
+          {(isLogin().is_superuser || (hasPerm('usersys.as_trader') && !hasPerm('dataroom.onlydataroom'))) &&
+            <li onClick={this.handleMenuClick.bind(this, 'personal_center')}>
+              <i className="glyphicon glyphicon-user" style={{ fontSize: 11, marginRight: 5 }}></i>
+              个人中心
+            </li>
+          }
+          {(isLogin().is_superuser || (hasPerm('usersys.as_trader') && !hasPerm('dataroom.onlydataroom'))) &&
+            <li onClick={this.handleMenuClick.bind(this, 'basic_settings')}>
+              <i className="glyphicon glyphicon-wrench" style={{ fontSize: 11, marginRight: 5 }}></i>
+              基本设置
+            </li>
+          }
           <li onClick={this.handleMenuClick.bind(this, 'logout')}>
-            <i className="glyphicon glyphicon-log-out" style={{fontSize:11,marginRight:5}}></i>
+            <i className="glyphicon glyphicon-log-out" style={{ fontSize: 11, marginRight: 5 }}></i>
             {i18n('account.logout')}
           </li>
         </ul>
@@ -122,6 +140,15 @@ function Header(props) {
           payload: true
         })
         break
+      case 'email':
+        window.open('http://mail.investarget.com');
+        break;
+      case 'personal_center':
+        dispatch(routerRedux.push('/app/personal-center'));
+        break;
+      case 'basic_settings':
+        dispatch(routerRedux.push('/app/personal-info'));
+        break;
     }
 
   }
