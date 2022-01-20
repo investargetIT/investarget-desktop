@@ -16,7 +16,8 @@ import {
   Row, 
   Col, 
   Button, 
-  Switch, 
+  Switch,
+  Modal,
 } from 'antd';
 import {
   BasicFormItem,
@@ -35,6 +36,7 @@ import {
 } from '../components/ExtraInput'
 import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
+import pinyin from 'tiny-pinyin';
 
 const FormItem = Form.Item
 
@@ -68,6 +70,8 @@ class UserForm extends React.Component {
       investorGroup: [], // 投资人所在的用户组
       isFetchingNumber: false, // 是否在获取随机号码
       isDsiablePhoneInput: false, // 获取随机号码后手机号码文本框禁止编辑
+      isUnknowPhoneFetched: false,
+      isUnknowEmailFetched: false,
     }
     this.isEditUser = false
     let perm
@@ -93,10 +97,26 @@ class UserForm extends React.Component {
     api.getRandomPhoneNumber()
       .then(result => {
         this.props.forwardedRef.current.setFieldsValue({ mobile: result.data.toString(), mobileAreaCode: '86' });
-        this.setState({ isDsiablePhoneInput: true });
+        this.setState({ isDsiablePhoneInput: true, isUnknowPhoneFetched: true });
       })
       .catch(handleError)
       .finally(() => this.setState({ isFetchingNumber: false }));
+  }
+
+  handleUnknowEmailButtonClicked = () => {
+    const username = this.props.forwardedRef.current.getFieldValue('usernameC');
+    if (username) {
+      if (pinyin.isSupported) {
+        const nameToPinyin = pinyin.convertToPinyin(username, '', true);
+        this.props.forwardedRef.current.setFieldsValue({ email: nameToPinyin.replaceAll(' ', '_') + '@investarget.com' });
+        this.setState({ isUnknowEmailFetched: true });
+        if (this.props.emailOnBlur) {
+          this.props.emailOnBlur({ target: { value: nameToPinyin.replaceAll(' ', '_') + '@investarget.com' }} );
+        }
+      }
+    } else {
+      Modal.warning({ title: '请先输入姓名' });
+    }
   }
 
   checkMobileInfo = (_, value) => {
@@ -122,11 +142,11 @@ class UserForm extends React.Component {
 
          {/* { this.hasPerm || !this.isEditUser ? */}
         <BasicFormItem label={i18n('user.group')} name="groups" valueType="array" required>
-          <SelectUserGroup type={(this.props.isTraderAddInvestor || !this.hasPerm) ? 'investor' : null} />
+          <SelectUserGroup size="middle" type={(this.props.isTraderAddInvestor || !this.hasPerm) ? 'investor' : null} />
         </BasicFormItem>
         {/* : null }  */}
 
-        <FormItem {...formItemLayout} label={i18n("user.mobile")} required>
+        <FormItem {...formItemLayout} label={i18n("user.mobile")} required style={{ marginBottom: 0 }}>
           <Row gutter={8}>
             <Col span={6}>
               <FormItem
@@ -151,18 +171,30 @@ class UserForm extends React.Component {
               </FormItem>
             </Col>
             <Col span={4}>
-              <Button style={{ width: '100%' }} loading={this.state.isFetchingNumber} onClick={this.handleUnknowPhoneButtonClicked}>号码未知</Button>
+              <Button style={{ width: '100%' }} loading={this.state.isFetchingNumber} disabled={this.state.isUnknowEmailFetched} onClick={this.handleUnknowPhoneButtonClicked}>号码未知</Button>
             </Col>
           </Row>
         </FormItem>
 
-        <BasicFormItem label={i18n("user.email")} name="email" required valueType="email">
-          <Input onBlur={this.props.emailOnBlur} />
-        </BasicFormItem>
-
         <BasicFormItem label={i18n('user.cn_name')} name="usernameC" required={window.LANG=='cn'? true:false} >
           <Input onBlur={this.props.cnNameOnBlur} />
         </BasicFormItem>
+
+        <FormItem {...formItemLayout} label={i18n("user.email")} required style={{ marginBottom: 0 }}>
+          <Row gutter={8}>
+            <Col span={20}>
+              <FormItem name="email" rules={[
+                { type: 'email', message: i18n('validation.not_valid') },
+                { required: true, message: i18n('validation.not_empty') },
+              ]}>
+                <Input onBlur={this.props.emailOnBlur} />
+              </FormItem>
+            </Col>
+            <Col span={4}>
+              <Button style={{ width: '100%' }} onClick={this.handleUnknowEmailButtonClicked} disabled={this.state.isUnknowPhoneFetched}>邮箱未知</Button>
+            </Col>
+          </Row>
+        </FormItem>
 
         <BasicFormItem label={i18n('user.en_name')} name="usernameE" required={window.LANG=='en'? true:false} ><Input /></BasicFormItem>
 
@@ -173,7 +205,7 @@ class UserForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.institution")} name="org" required={!this.props.isTraderAddInvestor} valueType="object">
-          <SelectExistOrCreateNewOrganization allowCreate size="large" />
+          <SelectExistOrCreateNewOrganization allowCreate size="middle" />
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.department")} name="department"><Input /></BasicFormItem>

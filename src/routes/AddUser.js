@@ -118,6 +118,7 @@ class AddUser extends React.Component {
           .then(data => {
             this.setState({ loadingAddUser: false });
             if (!data && this.isTraderAddInvestor) return
+            if (isUserExist && !this.isTraderAddInvestor) return
             this.props.dispatch(
               routerRedux.replace(this.redirectUrl || '/app/user/list')
             )

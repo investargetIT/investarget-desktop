@@ -83,7 +83,7 @@ class SelectNumber extends React.Component {
       <Select value={_value} 
       filterOption={(input, option) => option.props.children.indexOf(input) >= 0} 
       onChange={this.handleChange} 
-      size="large" {...extraProps}>
+      {...extraProps}>
         {_options && _options.map((item, index) =>
           <Option key={index} value={item.value}>{item.label}</Option>
         )}
@@ -1165,6 +1165,7 @@ class SelectUserGroup extends React.Component {
     const options = roles.map(m => ({ label: m.name, value: m.id }));
     return (
       <SelectNumber
+      size={this.props.size}
       options={options}
       value={value && value[0]} onChange={this.handleChange} />
     )
@@ -1839,7 +1840,7 @@ class TreeSelectTag extends React.Component {
   }
 
   render() {
-    let { options, value, onChange } = this.props;
+    let { options, value, onChange, size } = this.props;
     if (this.state.searchContent) {
       options = options.map(m => ({ ...m, disableCheckbox: true }));
     }
@@ -1849,7 +1850,7 @@ class TreeSelectTag extends React.Component {
       onChange,
       treeCheckable: true,
       allowClear: true,
-      size: 'large',
+      size,
       treeNodeFilterProp: 'title',
       onSearch: this.handleSearchChange,
     };
