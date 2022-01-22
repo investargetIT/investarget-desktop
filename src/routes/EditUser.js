@@ -31,6 +31,8 @@ class EditUser extends React.Component {
     this.majorRelation = []
     this.minorRelation = []
     this.editUserFormRef = React.createRef();
+
+    this.checkingExist = false;
   }
 
   getOrAddOrg = async values => {
@@ -294,6 +296,11 @@ class EditUser extends React.Component {
   }
 
   handleOnBlur(accountType, evt) {
+    if (this.checkingExist) return;
+    this.checkingExist = true;
+    setTimeout(() => {
+      this.checkingExist = false;
+    }, 3000);
     const account = evt.target.value;
     if (!account) return
     const mobileAndEmail = [this.state.data.email, this.state.data.mobile];

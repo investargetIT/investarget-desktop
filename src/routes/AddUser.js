@@ -38,6 +38,8 @@ class AddUser extends React.Component {
     this.existingUser = null;
     this.formData = { org: { value: this.orgID } };
     this.addUserFormRef = React.createRef();
+
+    this.checkingExist = false;
   }
 
   createOrg = async org => {
@@ -138,6 +140,11 @@ class AddUser extends React.Component {
   }
 
   async handleOnBlur(accountType, evt) {
+    if (this.checkingExist) return;
+    this.checkingExist = true;
+    setTimeout(() => {
+      this.checkingExist = false;
+    }, 3000);
     const account = evt.target.value;
     if (!account) return;
     const data = await api.checkUserExist(account);
