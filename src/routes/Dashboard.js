@@ -141,12 +141,13 @@ function Dashboard(props) {
     fetchNewsData();
 
     async function fetchCompanyFile() {
-      const reqComDataroom = await api.queryDataRoom({ isCompanyFile: 1 });
-      const { count, data: companyDataroom } = reqComDataroom.data;
-      if (count == 0) return;
-      const dataroomId = companyDataroom[0].id;
+      // const reqComDataroom = await api.queryDataRoom({ isCompanyFile: 1 });
+      // const { count, data: companyDataroom } = reqComDataroom.data;
+      // if (count == 0) return;
+      // const dataroomId = companyDataroom[0].id;
+      // Hard-coded dataroom ID because there are other company datarooms for different industry groups which is not what we need
       const params = {
-        dataroom: dataroomId,
+        dataroom: 214,
         isFile: true,
         page_size: 4, // not working
         sort: 'createdtime',
