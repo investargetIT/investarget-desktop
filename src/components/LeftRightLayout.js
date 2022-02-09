@@ -74,7 +74,7 @@ class LeftRightLayout extends React.Component {
 
         <Header location={this.props.location} style={headStyle} changeLang={this.reload.bind(this)} />
 
-        <Layout style={{ marginTop: 50, minHeight: '100vh' }}>
+        <Layout style={{ marginTop: 50, minHeight: 'calc(100vh - 50px)' }}>
 
           <Sider
             trigger={null}

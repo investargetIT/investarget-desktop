@@ -703,6 +703,86 @@ label.login-register-form__container__label {
 .ant-switch-checked .ant-switch-handle {
   left: calc(100% - 20px);
 }
+
+.wrapper {
+  width: 100%;
+  height: calc(100vh - 20px - 62px - 30px - 20px - 50px);
+  overflow: auto;
+  position: relative;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+.wrapper table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: separate;
+}
+/* .wrapper th, .wrapper td {
+  border: 1px solid #ccc;
+} */
+.wrapper thead, .wrapper tr>th {
+  position: sticky;
+  background: #fff;
+}
+
+.wrapper thead {
+  top: 0;
+  z-index: 2;
+}
+.wrapper tr>th {
+  left: 0;
+  z-index: 1;
+  width: 200px;
+  font-weight: normal;
+}
+.wrapper tr>td {
+  width: 200px;
+}
+.wrapper thead tr>th:first-child {
+  z-index: 3;
+}
+.wrapper tbody::before
+{
+  content: '';
+  display: block;
+  height: 15px;
+
+}
+
+.wrapper table th {
+  /* Apply both top and bottom borders to the <th> */
+  /* border-top: 1px solid #ccc; */
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.wrapper table td {
+  /* For cells, apply the border to one of each side only (right but not left, bottom but not top) */
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.wrapper table th:first-child,
+.wrapper table td:first-child {
+  /* Apply a left border on the first <td> or <th> in a row */
+  border-left: 1px solid #ccc;
+}
+.wrapper table tbody tr:first-child td, .wrapper table tbody tr:first-child th, .wrapper table thead tr:first-child th {
+  border-top: 1px solid #ccc; 
+}
+.wrapper th.fixed-column {
+  width: 300px;
+}
+.wrapper td, .wrapper th {
+  padding: 4px 8px;
+}
+.wrapper .collapse-icon {
+  color: #666;
+}
+.wrapper .collapse-icon:hover {
+  color: #339bd2;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
