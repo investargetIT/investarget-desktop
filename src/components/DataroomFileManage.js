@@ -1259,7 +1259,7 @@ function DataroomFileManage({
                 <div style={{ padding: '16px 0' }}>
                   {subFilesOfSelectedFolder.length > 0 ? subFilesOfSelectedFolder.map(m => (
                     <div key={m.id} style={{ display: 'flex', padding: '10px 0 10px 20px', lineHeight: '22px', fontSize: 14 }}>
-                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}><Tooltip title={m.date && time(m.date + m.timezone)}>{m.filename}</Tooltip></div>
+                      <div style={{ flex: 1, color: '#595959', marginRight: 20 }}><Tooltip title={`修改时间：${m.date && time(m.date + m.timezone)}`}>{m.filename}</Tooltip></div>
                       <div style={{ flex: 2 }}>
                         <Select
                           mode="multiple"
