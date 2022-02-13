@@ -739,6 +739,13 @@ label.login-register-form__container__label {
 .wrapper tr>td {
   width: 200px;
 }
+.wrapper tr>td div {
+  height: 24px;
+  overflow: hidden;
+}
+.wrapper th.material-col, td.material-col {
+  width: 400px;
+}
 .wrapper thead tr>th:first-child {
   z-index: 3;
 }
@@ -755,6 +762,7 @@ label.login-register-form__container__label {
   /* border-top: 1px solid #ccc; */
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
+  text-align: left;
 }
 
 .wrapper table td {

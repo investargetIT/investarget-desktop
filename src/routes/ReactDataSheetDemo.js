@@ -45,63 +45,63 @@ class BasicSheet extends React.Component {
     this.setState({ collapsePanel: newCollapsePanel });
   }
 
+  getBackground = status => {
+    switch (status) {
+      case 'On going':
+        return 'antiquewhite';
+      case 'BD中':
+        return 'darkseagreen';
+    }
+  }
   render() {
 
     const teams = [
       {
         id: 1,
-        name: 'ongoing',
+        name: 'On going',
         data: [
-          { "name": "Milwaukee Brewers", scores: this.makeRandomScores() },
-          { "name": "Los Angles Dodgers", scores: this.makeRandomScores() },
-          { "name": "New York Mets", scores: this.makeRandomScores() },
-          { "name": "St. Louis Cardinals", scores: this.makeRandomScores() },
-          { "name": "Houston Astros", scores: this.makeRandomScores() },
-          { "name": "Toronto Blue Jays", scores: this.makeRandomScores() },
-          { "name": "Boston Red Sox", scores: this.makeRandomScores() },
-          { "name": "Chicago Cubs", scores: this.makeRandomScores() },
-          { "name": "Philadelphia Phillies", scores: this.makeRandomScores() },
-          { "name": "Chicago White Sox", scores: this.makeRandomScores() },
-          { "name": "San Diego Padres", scores: this.makeRandomScores() },
-          { "name": "Cleveland Indians", scores: this.makeRandomScores() },
-          { "name": "San Francisco Giants", scores: this.makeRandomScores() },
-          { "name": "Cincinatti Reds", scores: this.makeRandomScores() },
-          { "name": "Minnesota Twins", scores: this.makeRandomScores() },
-          { "name": "Tampa Bay Rays", scores: this.makeRandomScores() },
-          { "name": "Miami Marlins", scores: this.makeRandomScores() },
-          { "name": "Oakland Athletics", scores: this.makeRandomScores() },
-          { "name": "Detroit Tigers", scores: this.makeRandomScores() },
-          { "name": "Pittsburgh Pirates", scores: this.makeRandomScores() },
-          { "name": "Seattle Mariners", scores: this.makeRandomScores() },
-          { "name": "Atlanta Braves", scores: this.makeRandomScores() }
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决, 机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'On going', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
         ]
       },
       {
         id: 2,
         name: 'BD中',
         data: [
-          { "name": "Milwaukee Brewers", scores: this.makeRandomScores() },
-          { "name": "Los Angles Dodgers", scores: this.makeRandomScores() },
-          { "name": "New York Mets", scores: this.makeRandomScores() },
-          { "name": "St. Louis Cardinals", scores: this.makeRandomScores() },
-          { "name": "Houston Astros", scores: this.makeRandomScores() },
-          { "name": "Toronto Blue Jays", scores: this.makeRandomScores() },
-          { "name": "Boston Red Sox", scores: this.makeRandomScores() },
-          { "name": "Chicago Cubs", scores: this.makeRandomScores() },
-          { "name": "Philadelphia Phillies", scores: this.makeRandomScores() },
-          { "name": "Chicago White Sox", scores: this.makeRandomScores() },
-          { "name": "San Diego Padres", scores: this.makeRandomScores() },
-          { "name": "Cleveland Indians", scores: this.makeRandomScores() },
-          { "name": "San Francisco Giants", scores: this.makeRandomScores() },
-          { "name": "Cincinatti Reds", scores: this.makeRandomScores() },
-          { "name": "Minnesota Twins", scores: this.makeRandomScores() },
-          { "name": "Tampa Bay Rays", scores: this.makeRandomScores() },
-          { "name": "Miami Marlins", scores: this.makeRandomScores() },
-          { "name": "Oakland Athletics", scores: this.makeRandomScores() },
-          { "name": "Detroit Tigers", scores: this.makeRandomScores() },
-          { "name": "Pittsburgh Pirates", scores: this.makeRandomScores() },
-          { "name": "Seattle Mariners", scores: this.makeRandomScores() },
-          { "name": "Atlanta Braves", scores: this.makeRandomScores() }
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
+          { "name": "Chapter家具", status: 'BD中', progress: '机构推进', manager: '尹乐鸣', makeUser: ['尹乐鸣', '雪珂'], ir: ['王菲'], latestComment: '机构尽调中，下周一最终投决', materials: ['BP', 'FM', 'Teaser', 'Roadshow材料', '投资人名单'], projectRemark: '', companyLink: 'https://www.qimingpian.cn/detailcom?src=magic&ticket=86cea831cc4a5a6ca92009f8b530f5ac&id=475b754413b4977cea1a03b257466f86', additionalComment: '', date: '2022/01/05', scores: this.makeRandomScores() },
         ]
       }
     ];
@@ -193,13 +193,18 @@ class BasicSheet extends React.Component {
         <table>
             <thead>
               <tr>
-                <th className="fixed-column"></th>
-                <th>column 1</th>
-                <th>column 2</th>
-                <th>column 1</th>
-                <th>column 2</th>
-                <th>column 1</th>
-                <th>column 2</th>
+                <th className="fixed-column">任务描述</th>
+                <th>项目类型</th>
+                <th>项目进度</th>
+                <th>项目负责人</th>
+                <th>项目承做</th>
+                <th>项目配合IR</th>
+                <th>项目最新进展</th>
+                <th className="material-col">材料完成度</th>
+                <th>项目评价/备注</th>
+                <th>企名片链接</th>
+                <th>补充材料</th>
+                <th>更新日期</th>
               </tr>
             </thead>
             
@@ -212,22 +217,30 @@ class BasicSheet extends React.Component {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {this.state.collapsePanel.includes(m.id) ?  <CaretRightOutlined className="collapse-icon" style={{ fontSize: 12, cursor: 'pointer' }} onClick={() => this.handleTogglePanel(m)} /> :
                           <CaretDownOutlined className="collapse-icon" style={{ fontSize: 12, cursor: 'pointer' }} onClick={() => this.handleTogglePanel(m)} />}
-                          <div style={{ padding: '0 8px', borderRadius: 11, marginLeft: 8, backgroundColor: 'lightskyblue' }}>On going</div>
+                          <div style={{ padding: '0 8px', borderRadius: 11, marginLeft: 8, backgroundColor: this.getBackground(m.name) }}>{m.name}</div>
                         </div>
                         <div style={{ color: '#666', fontSize: 12 }}>{m.data.length} records</div>
                       </div>
                     </th>
-                    <td colSpan="6"></td>
+                    <td colSpan="11"></td>
                   </tr>
                   {this.state.collapsePanel.includes(m.id) ? null : m.data.map((n,i) => (
-                    <tr key={n.name}>
-                    <th>{i+1}{n.name}</th>
-                    <td>{n.name}</td>
-                    <td>{n.name}</td>
-                    <td>{n.scores}</td>
-                    <td>{n.scores}</td>
-                    <td>{n.scores}</td>
-                    <td>{n.scores}</td>
+                    <tr key={i}>
+                    <th><div style={{ paddingLeft: 40, display: 'flex', alignItems: 'center' }}>
+                      <div style={{ width: 50, color: '#999' }}>{i+1}</div>
+                      <div>{n.name}</div>
+                    </div></th>
+                    <td><span style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: this.getBackground(n.status) }}>{n.status}</span></td>
+                    <td><span style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: 'lightpink' }}>{n.progress}</span></td>
+                    <td><span style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: 'lightskyblue' }}>{n.manager}</span></td>
+                    <td>{n.makeUser.map((o, i) => <span key={o} style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: 'lightskyblue', marginLeft: i > 0 ? 4 : 0 }}>{o}</span>)}</td>
+                    <td>{n.ir.map((o, i) => <span key={o} style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: 'lightskyblue', marginLeft: i > 0 ? 4 : 0 }}>{o}</span>)}</td>
+                    <td><div>{n.latestComment}</div></td>
+                    <td className="material-col">{n.materials.map((o, i) => <span key={o} style={{ padding: '2px 8px', borderRadius: 10, backgroundColor: 'lightskyblue', marginLeft: i > 0 ? 4 : 0 }}>{o}</span>)}</td> 
+                    <td>{n.projectRemark}</td>
+                    <td><div><a href={n.companyLink} target="_blank">{n.companyLink}</a></div></td>
+                    <td>{n.additionalComment}</td>
+                    <td>{n.date}</td>
                   </tr> 
                   ))}
                 </tbody>
