@@ -239,7 +239,7 @@ class ProjectBDList extends React.Component {
       const { bd_status, contractors } = this.state.currentBD;
       api.addProjBDCom({
         projectBD: this.state.currentBD.id,
-        comments: `之前状态：${bd_status.name}，签约负责人: ${ contractors ? contractors.username : '无' }`,
+        comments: `之前状态：${bd_status.name}，发起人: ${ contractors ? contractors.username : '无' }`,
       });
       // body.contractors = null;
     }

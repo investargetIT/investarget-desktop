@@ -151,7 +151,7 @@ class EditProjectBD extends React.Component {
       const { bd_status, contractors } = this.state.bd;
       await api.addProjBDCom({
         projectBD: this.state.bd.id,
-        comments: `之前状态：${bd_status.name}，签约负责人: ${contractors ? contractors.username : '无'}`,
+        comments: `之前状态：${bd_status.name}，发起人: ${contractors ? contractors.username : '无'}`,
       });
     }
   }
