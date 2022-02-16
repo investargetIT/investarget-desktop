@@ -18,6 +18,7 @@ import {
 import { OrganizationListFilter } from '../components/Filter'
 import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import { SelectOrgLevelNumber } from '../components/ExtraInput';
 
 const Option = Select.Option
 const RadioGroup = Radio.Group;
@@ -212,6 +213,12 @@ class OrganizationList extends React.Component {
     this.setState({ selectedIds })
   }
 
+  handleOrgLvChange = value => {
+    const lv = value === 0 ? undefined : value;
+    const newFilters = { ...this.state.filters, lv };
+    this.setState({ filters: newFilters }, this.handleOrgSearch);
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -318,6 +325,7 @@ class OrganizationList extends React.Component {
               />
             </div>
 
+            
             {this.state.searchOption === 0 &&
               <div style={{ float: 'right' }}>
                 {i18n('common.sort_by_created_time')}
@@ -327,6 +335,17 @@ class OrganizationList extends React.Component {
                 </Select>
               </div>
             }
+
+            <div style={{ float: 'right' }}>
+              机构状态
+              <SelectOrgLevelNumber
+                style={{ marginLeft: 8, marginRight: 16, width: 120 }}
+                defaultValue="0"
+                size="large"
+                onChange={this.handleOrgLvChange}
+                value={this.state.filters.lv ? this.state.filters.lv.toString() : '0'}
+              />
+            </div>
 
           </div>
 
