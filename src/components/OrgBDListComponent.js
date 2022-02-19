@@ -1696,7 +1696,7 @@ class OrgBDListComponent extends React.Component {
         react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
         break;
       case 'edit':
-        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true, newComment: '' });
+        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true, newComment: '', currentBD: record, comments: record.BDComments || []  });
         break;
     }
   }
@@ -2953,7 +2953,7 @@ class OrgBDListComponent extends React.Component {
             wrapClassName="modal-orgbd-edit"
             title="编辑机构看板"
             visible
-            onCancel={() => this.setState({ displayModalForEditing: false, newComment: '' })}
+            onCancel={() => this.setState({ displayModalForEditing: false, newComment: '', currentBD: null, comments: [] })}
             onOk={this.handleEditOrgBD}
             confirmLoading={this.state.loadingEditingOrgBD}
           >
@@ -3007,6 +3007,16 @@ class OrgBDListComponent extends React.Component {
               onChange={e => this.setState({ newComment: e.target.value })}
             />
           </div>
+
+          <NewBDComments
+            bd={this.state.currentBD}
+            comments={this.state.comments}
+            newComment={this.state.newComment}
+            onChange={e => this.setState({ newComment: e.target.value })}
+            onAdd={this.handleAddComment}
+            onDelete={this.handleDeleteComment}
+            isPMComment={this.state.isPMComment}
+          />
 
           </Modal>
         }
@@ -3220,6 +3230,52 @@ export function BDComments(props) {
             </div>
           );
         }) : <p>{i18n('remark.no_comments')}</p>}
+      </div>
+    </div>
+  )
+}
+
+export function NewBDComments(props) {
+  const { comments, newComment, onChange, onDelete, onAdd, bd, isPMComment } = props
+  window.echo('comments', comments);
+  return (
+    <div>
+      <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+        历史备注 
+      </div>
+      <div>
+        {comments.length ? comments.filter(f => f.isPMComment == Boolean(isPMComment))
+          .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+          .map(comment => {
+          let content = comment.comments;
+          const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+          if (oldStatusMatch) {
+            const oldStatus = oldStatusMatch[0];
+            content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+          }
+          return (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p>
+                <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+                {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                    <Button type="link"><DeleteOutlined /></Button>
+                  </Popconfirm>
+                  : null}
+              </p>
+              <div style={{ display: 'flex' }}>
+                {comment.createuser &&
+                  <div style={{ marginRight: 10 }}>
+                    <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                      <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                    </a>
+                  </div>
+                }
+                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              </div>
+            </div>
+          );
+        }) : <p>暂无</p>}
       </div>
     </div>
   )

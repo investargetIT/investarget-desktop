@@ -164,7 +164,8 @@ function time(dateFromServer) {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: false,
+    // hour12: false,
+    hourCycle: 'h23',
   }
   const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
   return new Intl.DateTimeFormat(locale, options).format(date)
