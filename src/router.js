@@ -37,6 +37,7 @@ import DataRoom from './routes/DataRoom';
 import DataroomDetails from './routes/DataroomDetails';
 import DataroomDetailsForMobile from './routes/DataroomDetailsForMobile';
 import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
+import Feishu from './routes/Feishu';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -153,6 +154,7 @@ function RouterConfig({ history }) {
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
         <Route path="/app/demo" component={ReactDataSheetDemo} />
+        <Route path="/app/feishu" component={Feishu} />
         <Route path="/app/hr" component={HumanResources} />
         <Route path={URI_8} component={InboxList} />
         <Route path="/403" component={AccessDenied} />
