@@ -58,6 +58,10 @@ class ProjectBaseForm extends React.Component {
           <RadioTrueOrFalse />
         </BasicFormItem>
 
+        <BasicFormItem label="对应项目BD" name="projectBD" valueType="number">
+          <SelectProjectBD />
+        </BasicFormItem>
+
         <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
           <Input />
         </BasicFormItem>
@@ -112,10 +116,6 @@ class ProjectBaseForm extends React.Component {
 
         <BasicFormItem label="上一轮项目" name="lastProject" valueType="number">
           <SelectExistProject />
-        </BasicFormItem>
-
-        <BasicFormItem label="对应项目BD" name="proj_bd" valueType="number">
-          <SelectProjectBD />
         </BasicFormItem>
 
         <div style={{textAlign: 'center'}}>

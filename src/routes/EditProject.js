@@ -171,6 +171,7 @@ class EditProject extends React.Component {
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
       data.currency = result.data.currency && result.data.currency.id
+      data.sponsor = result.data.sponsor && result.data.sponsor.id
       data.industries = result.data.industries
       data.projstatus = result.data.projstatus && result.data.projstatus.id
       data.supportUserName = result.data.supportUser && (window.LANG === 'en' ? result.data.supportUser.usernameE : result.data.supportUser.usernameC);
@@ -329,8 +330,36 @@ class EditProject extends React.Component {
     this.getProject()
   }
 
-  setFormValue = () => {
+  // checkProjectBD = () => {
+  //   const { projectBD, sponsor, takeUser }
+  //   this.setFormValue();
+  // }
+
+  setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
+    const { projectBD, sponsor, takeUser } = newFormData;
+    window.echo('project bd', projectBD, sponsor, takeUser);
+    // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
+    if (projectBD) {
+      if (!sponsor || takeUser.length === 0) {
+        const reqProjBD = await api.getProjBD(projectBD);
+        window.echo('reqProjBD', reqProjBD);
+        if (takeUser.length === 0) {
+          const { main, normal } = reqProjBD.data.manager;
+          let allManagers = [];
+          if (main) {
+            allManagers.push(main.id.toString());
+          }
+          if (normal) {
+            allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+          }
+          newFormData.takeUser = allManagers;
+        }
+        if (!sponsor && reqProjBD.data.contractors) {
+          newFormData.sponsor = reqProjBD.data.contractors.id;
+        }
+      }
+    }
     this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
     this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);
     this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
