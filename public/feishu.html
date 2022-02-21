@@ -17,41 +17,41 @@
     <div id="feishu"></div>
     <!-- <script src="feishu/feishu.js"></script> -->
     <script>
-      window.webComponent.config({
-  openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
-  signature: 'b3184a9c9d55d4776d79573bd256d396abcde663', // 签名
-  appId: 'cli_a298cb5f4c78d00b',     // 应用 appId
-  timestamp: '1645382647069', // 时间戳（毫秒）
-  nonceStr: 'Y7a8KkqX041bsSwT',  // 随机字符串
-  url: 'http://localhost:8000/feishu.html',       // 第3步参与加密计算的url
-  jsApiList: ['DocsComponent'], // 指定要使用的组件列表，请根据对应组件的开发文档填写。如云文档组件，填写['DocsComponent']
-  lang: 'zh',      // 指定组件的国际化语言：en-英文、zh-中文、ja-日文
-}).then(res=>{
-  // 可以在这里进行组件动态渲染
-  console.log('res', res);
+        window.webComponent.config({
+          openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
+          signature: '572fb99e9fde1cb6108e275376cd393feca52ca9', // 签名
+          appId: 'cli_a298cb5f4c78d00b',     // 应用 appId
+          timestamp: '1645410817940', // 时间戳（毫秒）
+          nonceStr: 'Y7a8KkqX041bsSwT',  // 随机字符串
+          url: 'http://localhost:8000/feishu.html',       // 第3步参与加密计算的url
+          jsApiList: ['DocsComponent'], // 指定要使用的组件列表，请根据对应组件的开发文档填写。如云文档组件，填写['DocsComponent']
+          lang: 'zh',      // 指定组件的国际化语言：en-英文、zh-中文、ja-日文
+        }).then(res => {
+          // 可以在这里进行组件动态渲染
+          console.log('res', res);
 
-  window.addOpenDocDynamical = function () {
-  // 动态渲染，返回组件实例。
-  myComponent = window.webComponent.render(
-    'DocsComponent',
-    { //组件参数
-      src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
-      minHeight: '500px',
-      width: '100%',
-    },
-    document.querySelector('#feishu'), // 将组件挂在到哪个元素上
-  )
-}
-window.removeOpenDocDynamical = function () {
-  // 销毁组件
-  myComponent.unmount()
-}
+          // window.addOpenDocDynamical = function () {
+            // 动态渲染，返回组件实例。
+            myComponent = window.webComponent.render(
+              'DocsComponent',
+              { //组件参数
+                src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
+                minHeight: '500px',
+                width: '100%',
+              },
+              document.querySelector('#feishu'), // 将组件挂在到哪个元素上
+            )
+          // }
+          window.removeOpenDocDynamical = function () {
+            // 销毁组件
+            myComponent.unmount()
+          }
 
-})
+        })
 
-window.webComponent.onAuthError(function (error ) {
-  console.error('auth error callback', error)
-})
+        window.webComponent.onAuthError(function (error) {
+          console.error('auth error callback', error)
+        })
     </script>
   </body>
 </html>
