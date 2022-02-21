@@ -9,21 +9,30 @@
 
     
     <script src="https://lf1-cdn-tos.bytescm.com/goofy/locl/lark/external_js_sdk/h5-js-sdk-1.0.11.js"></script>
+    <script src="lib/sha1.min.js"></script>
 
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>Feishu</h1>
+    <!-- <h1>Feishu</h1> -->
     <div id="feishu"></div>
     <!-- <script src="feishu/feishu.js"></script> -->
     <script>
+       const timestamp = Date.now().toString();
+       const str = `jsapi_ticket=dcc35918a73123687652e69f9df8aa04bad8b5cf&noncestr=Y7a8KkqX041bsSwT&timestamp=${timestamp}&url=http://localhost:8000/feishu.html1`;
+       console.log('sha', sha1(''), Date.now());
         window.webComponent.config({
           openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
-          signature: '572fb99e9fde1cb6108e275376cd393feca52ca9', // 签名
+          signature: sha1(str), // 签名
           appId: 'cli_a298cb5f4c78d00b',     // 应用 appId
-          timestamp: '1645410817940', // 时间戳（毫秒）
+          timestamp: timestamp, // 时间戳（毫秒）
           nonceStr: 'Y7a8KkqX041bsSwT',  // 随机字符串
-          url: 'http://localhost:8000/feishu.html',       // 第3步参与加密计算的url
+          url: 'http://localhost:8000/feishu.html1',       // 第3步参与加密计算的url
           jsApiList: ['DocsComponent'], // 指定要使用的组件列表，请根据对应组件的开发文档填写。如云文档组件，填写['DocsComponent']
           lang: 'zh',      // 指定组件的国际化语言：en-英文、zh-中文、ja-日文
         }).then(res => {
@@ -36,7 +45,7 @@
               'DocsComponent',
               { //组件参数
                 src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
-                minHeight: '500px',
+                minHeight: '100vh',
                 width: '100%',
               },
               document.querySelector('#feishu'), // 将组件挂在到哪个元素上
