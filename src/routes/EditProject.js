@@ -341,10 +341,10 @@ class EditProject extends React.Component {
     window.echo('project bd', projectBD, sponsor, takeUser);
     // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
     if (projectBD) {
-      if (!sponsor || takeUser.length === 0) {
+      if (!sponsor || !takeUser || (takeUser && takeUser.length === 0)) {
         const reqProjBD = await api.getProjBD(projectBD);
         window.echo('reqProjBD', reqProjBD);
-        if (takeUser.length === 0) {
+        if (!takeUser || (takeUser && takeUser.length === 0)) {
           const { main, normal } = reqProjBD.data.manager;
           let allManagers = [];
           if (main) {
