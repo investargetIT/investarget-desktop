@@ -751,7 +751,46 @@ class SelectPartner extends React.Component {
   }
 }
 
+/**
+ * SelectAllProjectBD
+ */
+ class SelectProjectBD extends React.Component {
 
+  getProjectBD = params => {
+    return api.getProjBDList(params).then(result => {
+      let { count: total, data: list } = result.data;
+      const unique = [];
+      list = list.map(item => {
+        const { id: value, com_name: label } = item;
+        if (!unique.map(m => m.value).includes(value)) {
+          unique.push({ value, label });
+        }
+      })
+      return { total, list: unique } 
+    })
+  }
+
+  getProjnameById = (id) => {
+    return api.getProjBD(id).then(result => {
+      return result.data.com_name;
+    })
+  }
+
+  render() {
+    return (
+      <Select2
+        style={this.props.style || {}}
+        getData={this.getProjectBD}
+        getNameById={this.getProjnameById}
+        value={this.props.value}
+        onChange={this.props.onChange}
+        placeholder={this.props.placeholder}
+        size="middle"
+        allowClear
+      />
+    )
+  }
+}
 
 const SelectExistProject = (props) => {
 
@@ -2335,6 +2374,7 @@ export {
   SelectPartner,
   SelectLibIndustry,
   SelectProjectLibrary,
+  SelectProjectBD,
   SelectScheduleType,
   SelectOrAddDate,
   SelectSeason,

@@ -25,6 +25,7 @@ import {
   SelectExistUser,
   SelectIndustryGroup,
   SelectExistProject,
+  SelectProjectBD,
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -55,6 +56,10 @@ class ProjectBaseForm extends React.Component {
       <Form ref={this.props.forwardedRef}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean" initialValue={false}>
           <RadioTrueOrFalse />
+        </BasicFormItem>
+
+        <BasicFormItem label="对应项目BD" name="projectBD" valueType="number">
+          <SelectProjectBD />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
