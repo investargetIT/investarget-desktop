@@ -366,6 +366,32 @@ class EditProject extends React.Component {
     this.editProjectDetailsFormRef.current.setFieldsValue(newFormData);
   }
 
+  handeBaseFormValuesChange = async (changedValue) => {
+    if ('projectBD' in changedValue) {
+      if (changedValue.projectBD) {
+        const reqProjBD = await api.getProjBD(changedValue.projectBD);
+        
+        const { main, normal } = reqProjBD.data.manager;
+        let allManagers = [];
+        if (main) {
+          allManagers.push(main.id.toString());
+        }
+        if (normal) {
+          allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+        }
+        const newTakeUser = allManagers;
+        let newSponsor = null;
+        if (reqProjBD.data.contractors) {
+          newSponsor = reqProjBD.data.contractors.id;
+        }
+        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: newTakeUser, sponsor: newSponsor });
+      } else {
+        this.editProjectBaseFormRef.current.setFieldsValue({ projectBD: null });
+        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: [], sponsor: null});
+      }
+    }
+  }
+
   render() {
     if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
       return <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')} />;
@@ -389,7 +415,7 @@ class EditProject extends React.Component {
           <Tabs defaultActiveKey="1">
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <ProjectBaseForm ref={this.editProjectBaseFormRef} />
+                <ProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>
                 <FormAction form="baseForm" loadingEdit={this.state.loadingEdit} />
               </div>
             </TabPane>

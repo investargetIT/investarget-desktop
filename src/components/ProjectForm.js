@@ -95,7 +95,7 @@ class ProjectBaseForm1 extends React.Component {
 
   render() {
     return (
-      <Form ref={this.props.forwardedRef}>
+      <Form ref={this.props.forwardedRef} onValuesChange={this.props.onValuesChange}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean">
           <RadioTrueOrFalse />
         </BasicFormItem>
