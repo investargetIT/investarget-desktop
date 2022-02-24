@@ -14,17 +14,18 @@
     <style>
       body {
         margin: 0;
+        padding: 0;
       }
     </style>
   </head>
 
   <body>
-    <!-- <h1>Feishu</h1> -->
+    <div style="font-size: 24px;line-height: 28px;">飞书云文档组件</div>
     <div id="feishu"></div>
     <!-- <script src="feishu/feishu.js"></script> -->
     <script>
        const timestamp = Date.now().toString();
-       const str = `jsapi_ticket=dcc35918a73123687652e69f9df8aa04bad8b5cf&noncestr=Y7a8KkqX041bsSwT&timestamp=${timestamp}&url=http://localhost:8000/feishu.html1`;
+       const str = `jsapi_ticket=958ba17ee8c0589e66fe0d9b4889e6ffd5cb0035&noncestr=Y7a8KkqX041bsSwT&timestamp=${timestamp}&url=http://localhost:8000/feishu.html1`;
        console.log('sha', sha1(''), Date.now());
         window.webComponent.config({
           openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
@@ -45,7 +46,7 @@
               'DocsComponent',
               { //组件参数
                 src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
-                minHeight: '100vh',
+                minHeight: window.innerHeight - 48,
                 width: '100%',
               },
               document.querySelector('#feishu'), // 将组件挂在到哪个元素上
