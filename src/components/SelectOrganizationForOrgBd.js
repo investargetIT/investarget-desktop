@@ -128,9 +128,8 @@ class SelectOrganization extends React.Component {
 
   searchAllOrg = async () => {
     let list = [];
-    const { search: text, lv } = this.props.query;
+    const { search: text } = this.props.query;
     const param2 = {
-      lv,
       text,
       page_size: 100,
       issub: false,
@@ -225,9 +224,8 @@ class SelectOrganization extends React.Component {
 
   searchOrg = () => {
     const { page, pageSize } = this.state;
-    const { search: text, lv } = this.props.query;
+    const { search: text } = this.props.query;
     const params = {
-      lv,
       text,
       page_size: pageSize,
       page_index: page,
@@ -382,21 +380,11 @@ class SelectOrganization extends React.Component {
       { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname', 
         render: (text, record) => <div>
           <Popover placement="topLeft" content={this.popoverContent(record)}>
-
-            { [1, 2].includes(record.orglevel.id) ? 
-            <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
-            : null }
-
             <a href={"/app/organization/" + record.id} target="_blank">
               <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>
                 {text}
               </span>
             </a>
-
-            { [1, 2].includes(record.orglevel.id) ? 
-            <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
-            : null }
-
           </Popover>
         </div>
       },

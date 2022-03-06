@@ -1327,19 +1327,6 @@ SelectNewBDStatus = connect(state => {
   return { orgbdres };
 })(SelectNewBDStatus);
 
-const SelectOrgLevel = withOptionsAsync(RadioGroup2, ['orglv'], function(state) {
-  const { orglv } = state.app
-  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : []
-  return { options }
-})
-
-const SelectOrgLevelNumber = withOptionsAsync(SelectNumber, ['orglv'], function(state) {
-  const { orglv } = state.app;
-  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : [];
-  options.unshift({ value: 0, label: '全部' });
-  return { options };
-})
-
 /**
  * SelectBDSource
  */
@@ -2378,8 +2365,6 @@ export {
   SelectScheduleType,
   SelectOrAddDate,
   SelectSeason,
-  SelectOrgLevel,
-  SelectOrgLevelNumber,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
