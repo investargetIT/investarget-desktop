@@ -1,15 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { 
   i18n, 
   exchange, 
-  hasPerm, 
   getCurrencyFromId, 
   checkMobile,
 } from '../utils/util';
-import { routerRedux } from 'dva/router'
-import { Form, Input, InputNumber, Button, Row, Col } from 'antd'
+import { Form, Input, InputNumber, Row, Col } from 'antd'
 const FormItem = Form.Item
 
 import {
@@ -20,12 +17,10 @@ import {
   RadioCurrencyType,
   RadioAudit,
   TreeSelectTag,
-  SelectOrgLevel,
 } from '../components/ExtraInput'
 
 import {
   BasicFormItem,
-  CurrencyFormItem,
 } from '../components/Form'
 
 
@@ -43,7 +38,7 @@ const formItemLayout = {
 /**
  *  OrganizationForm 的字段 :
  *  'orgnameC', 'orgnameE', 'orgtype', 'industry', 'orgtransactionphase', 'stockcode', 'investoverseasproject', 'currency',
- *  'transactionAmountF', 'transactionAmountT', 'fundSize', 'companyEmail', 'webSite', 'mobileAreaCode', 'mobile', 'weChat',
+ *  'companyEmail', 'webSite', 'mobileAreaCode', 'mobile', 'weChat',
  *  'address', 'description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionCycle', 'decisionMakingProcess',
  *  'orgstatus'
  */
@@ -61,24 +56,6 @@ class OrganizationForm extends React.Component {
   //     return
   //   }
   // }
-
-  handleCurrencyTypeChange = (currencyType, getFieldValue, setFieldsValue) => {
-    const currency = getCurrencyFromId(currencyType || 2)
-    exchange(currency).then((rate) => {
-      const fields = ['transactionAmountF', 'transactionAmountT', 'fundSize']
-      const values = {}
-      fields.forEach(field => {
-        let value = getFieldValue(field)
-        values[field + '_USD'] = value == undefined ? value : Math.round(value * rate)
-      })
-      setFieldsValue({...values, currencyType})
-    }, error => {
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
-      })
-    })
-  }
 
   checkMobileInfo = (_, value) => {
     if (value && !checkMobile(value)) {
@@ -127,54 +104,9 @@ class OrganizationForm extends React.Component {
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number">
-                <RadioCurrencyType onChange={value => this.handleCurrencyTypeChange(value, getFieldValue, setFieldsValue)} />
-              </BasicFormItem>
-            );
-          }}
-        </FormItem>
-
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <CurrencyFormItem
-                label={i18n('organization.transaction_amount_from')}
-                name="transactionAmountF"
-                currencyType={getFieldValue('currency')}
-                setFieldsValue={setFieldsValue}
-              />
-            );
-          }}
-        </FormItem>
-
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <CurrencyFormItem
-                label={i18n('organization.transaction_amount_to')}
-                name="transactionAmountT"
-                currencyType={getFieldValue('currency')}
-                setFieldsValue={setFieldsValue}
-              />
-            );
-          }}
-        </FormItem>
-
-        <FormItem noStyle shouldUpdate>
-          {({ getFieldValue, setFieldsValue }) => {
-            return (
-              <CurrencyFormItem
-                label={i18n('organization.fund_size')}
-                name="fundSize"
-                currencyType={getFieldValue('currency')}
-                setFieldsValue={setFieldsValue}
-              />
-            );
-          }}
-        </FormItem>
+        <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number">
+          <RadioCurrencyType />
+        </BasicFormItem>
 
         <BasicFormItem label={i18n('organization.company_email')} name="companyEmail" valueType="email">
           <Input type="email" />
@@ -233,10 +165,6 @@ class OrganizationForm extends React.Component {
 
         <BasicFormItem label={i18n('organization.decision_process')} name="decisionMakingProcess">
           <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-        </BasicFormItem>
-
-        <BasicFormItem label="机构状态" name="orglevel" valueType="number">
-          <SelectOrgLevel />
         </BasicFormItem>
 
         {/* { hasPerm('org.admin_manageorg') ? */}

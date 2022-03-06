@@ -1,12 +1,10 @@
 import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
-import { browserHistory, withRouter } from 'dva/router'
+import { withRouter } from 'dva/router'
 import { getCurrentUser, hasPerm, i18n, requestAllData, getURLParamValue, isLogin } from '../utils/util'
 import { Button, Modal, Checkbox, Steps, Radio, Tag, Popover } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import { SelectTrader, SelectOrgLevel } from '../components/ExtraInput';
-import { OrgLevelFilter } from '../components/Filter';
 import SelectOrganizationForOrgBd from '../components/SelectOrganizationForOrgBd'
 import { Search } from '../components/Search';
 
@@ -40,7 +38,6 @@ class NewOrgBD extends React.Component {
       removeOrgWithNoInvestor: false,
       removeInvestorWithNoTrader: false,
       current: 0,
-      lv: null,
       search: '',
     }
   }
@@ -172,11 +169,6 @@ class NewOrgBD extends React.Component {
                       />
                     </Popover>
                   </div>
-                  <div style={{ marginLeft: 20 }}>机构状态：</div>
-                  <div style={{ flex: 1 }}>
-                    {/* <OrgLevelFilter value={this.state.lv} onChange={value => this.setState({ lv: value })} /> */}
-                    <SelectOrgLevel value={this.state.lv} onChange={value => this.setState({ lv: value })} />
-                  </div>
                 </div>
 
                 <div>
@@ -192,7 +184,7 @@ class NewOrgBD extends React.Component {
             {this.state.current === 1 &&
               <div style={{ padding: '16px' }}>
                 <SelectOrganizationForOrgBd
-                  query={{ lv: this.state.lv, search: this.state.search, searchOrgName: this.state.searchOrgName }}
+                  query={{ search: this.state.search, searchOrgName: this.state.searchOrgName }}
                   traderId={this.props.bd ? undefined : traderId}
                   value={selectedOrgs}
                   details={selectedOrgDetails}

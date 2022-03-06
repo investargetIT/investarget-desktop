@@ -155,11 +155,6 @@ class EditUser extends React.Component {
       _data['famlv'] = famlv;
     }
 
-    const textFields = ['targetdemand', 'mergedynamic', 'ishasfundorplan']
-    textFields.forEach(item => {
-      if (_data[item] == null) { _data[item] = '' }
-    })
-
     // for (let prop in _data) {
     //   _data[prop] = { value: _data[prop] }
     // }

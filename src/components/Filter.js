@@ -9,10 +9,8 @@ import {
   Row, 
   Col, 
   Button, 
-  Checkbox, 
   Select, 
   Radio, 
-  Icon,
   DatePicker,
   Input,
 } from 'antd'
@@ -21,7 +19,6 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 const RadioGroup = Radio.Group
-const CheckboxGroup = Checkbox.Group
 const { RangePicker } = DatePicker;
 
 import TabCheckbox from './TabCheckbox'
@@ -29,21 +26,15 @@ import {
   RadioGroup2,
   RadioTrueOrFalse,
   RadioAudit,
-  RadioRole,
-  RadioNewBDStatus,
   RadioBDStatus,
   RadioBDSource,
   RadioProjTraderType,
   CheckboxTransactionPhase,
   CheckboxCurrencyType,
-  CheckboxTag,
   CheckboxOrganizationType,
   CheckboxProjStatus,
-  CheckboxArea,
-  CheckboxAreaString,
   CheckboxYear,
   SelectOrganizatonArea,
-  SelectTimelineStatus,
   SelectOrgUser,
   SliderMoney,
   TabCheckboxIndustry,
@@ -55,9 +46,7 @@ import {
   TabCheckboxService,
   TabCheckboxProjStatus,
   SelectMultiOrgs,
-  SelectExistProject,
   RadioFamLv,
-  SelectOrgLevel,
   TabCheckboxOrgBDRes2,
   TabCheckboxAbroad,
   TabCheckboxIndustryGroup,
@@ -148,14 +137,6 @@ function OrganizationAreaFilter(props) {
   return (
     <BasicContainer label={i18n('filter.area')}>
       <SelectOrganizatonArea style={{width: '400px'}} mode="multiple" allowClear optionFilterProp="children" tokenSeparators={[',']} value={props.value} onChange={props.onChange} />
-    </BasicContainer>
-  )
-}
-
-export function OrgLevelFilter(props) {
-  return (
-    <BasicContainer label="机构状态">
-      <SelectOrgLevel value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }
@@ -599,7 +580,6 @@ class OrganizationListFilter extends React.Component {
     area: [],
     // orgstatus: hasPerm('org.admin_manageorg') ? [] : [2],
     orgstatus: [],
-    lv: null,
   }
 
   constructor(props) {
@@ -621,7 +601,7 @@ class OrganizationListFilter extends React.Component {
   }
 
   render() {
-    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus, lv} = this.state
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus } = this.state
     return (
       <div>
         <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
@@ -643,7 +623,6 @@ class OrganizationListFilter extends React.Component {
         {/* { hasPerm('org.admin_manageorg') ? */}
         <UserAuditFilter value={orgstatus} onChange={this.handleChange.bind(this, 'orgstatus')} />
         {/* : null } */}
-        <OrgLevelFilter value={lv} onChange={this.handleChange.bind(this, 'lv')} /> 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
@@ -668,7 +647,6 @@ class OrgFilterForOrgBd extends React.Component {
     tags: [],
     orgtypes: [],
     area: [],
-    lv: null,
   }
 
   constructor(props) {
@@ -690,7 +668,7 @@ class OrgFilterForOrgBd extends React.Component {
   }
 
   render() {
-    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, lv} = this.state
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area } = this.state
     return (
       <div>
         <OverseaFilter value={investoverseasproject} onChange={this.handleChange.bind(this, 'investoverseasproject')} />
@@ -709,7 +687,6 @@ class OrgFilterForOrgBd extends React.Component {
         <TabCheckboxOrgType value={orgtypes} onChange={this.handleChange.bind(this, 'orgtypes')} />
         {/* <OrganizationAreaFilter value={area.map(item=>item.toString())} onChange={this.handleChange.bind(this, 'area')} /> */}
         <TabCheckboxOrgArea value={area} onChange={this.handleChange.bind(this, 'area')} />
-        <OrgLevelFilter value={lv} onChange={this.handleChange.bind(this, 'lv')} /> 
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )

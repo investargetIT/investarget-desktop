@@ -37,7 +37,6 @@ export default {
     sortedTrader: [],
     group: [],
     orgbdres: [],
-    orglv: [],
     famlv: [],
     exportStatus: [
       {id: 1, name: '已失败'}, 
