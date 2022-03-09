@@ -1,3 +1,4 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import React, { useEffect } from 'react'
 import {
@@ -6,7 +7,6 @@ import {
   Cascader,
   Input,
   Icon,
-  Button,
   Checkbox,
   Slider,
   Radio,
@@ -15,7 +15,7 @@ import {
   Popover,
   Row,
   Col,
-  TreeSelect,
+  Tag,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -37,6 +37,7 @@ import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 
+const { CheckableTag } = Tag;
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
   function handleChange(e) {
@@ -1860,53 +1861,92 @@ class TreeSelectTag extends React.Component {
     super(props);
 
     this.state = {
-      searchContent: '',
+      inputVisible: false,
+      inputValue: '',
+      loading: false,
     };
   }
+
+  showInput = () => {
+    this.setState({ inputVisible: true }, () => this.input.focus());
+  };
+
+  handleInputChange = (e) => {
+    this.setState({ inputValue: e.target.value });
+  };
+
+  handleInputConfirm = () => {
+    const { inputValue } = this.state;
+    if (inputValue === '') {
+      this.setState({ inputVisible: false });
+      return;
+    }
+
+    this.props.dispatch({ type: 'app/createTag', payload: inputValue });
+    this.setState({
+      inputVisible: false,
+      inputValue: '',
+    });
+  };
+
+  saveInputRef = (input) => {
+    this.input = input;
+  };
+
+  handleChange = (valueItem, checked) => {
+    const { value, onChange } = this.props;
+    const newValue = checked ? [...value, valueItem] : value.filter((item) => item !== valueItem);
+    onChange(newValue);
+  };
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
   }
-  
-  handleSearchChange = (searchContent) => {
-    this.setState({ searchContent });
-  }
 
   render() {
-    let { options, value, onChange, size } = this.props;
-    if (this.state.searchContent) {
-      options = options.map(m => ({ ...m, disableCheckbox: true }));
-    }
-    const tProps = {
-      treeData: options,
-      value: value && value.map(m => m.toString()),
-      onChange,
-      treeCheckable: true,
-      allowClear: true,
-      size,
-      treeNodeFilterProp: 'title',
-      onSearch: this.handleSearchChange,
-    };
-    return <TreeSelect {...tProps} />;
+    const { options, value = [] } = this.props;
+    const { inputVisible, inputValue, loading } = this.state;
+    
+    return (
+      <div style={{ border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 }}>
+        {options.map((option) => (
+          <CheckableTag
+            key={option.value}
+            checked={value.indexOf(option.value) > -1}
+            onChange={(checked) => this.handleChange(option.value, checked)}
+          >
+            {option.label}
+          </CheckableTag>
+        ))}
+        {inputVisible && (
+          <Input
+            ref={this.saveInputRef}
+            type="text"
+            size="small"
+            style={{ width: 78, marginRight: 8, verticalAlign: 'top' }}
+            value={inputValue}
+            onChange={this.handleInputChange}
+            onBlur={this.handleInputConfirm}
+            onPressEnter={this.handleInputConfirm}
+          />
+        )}
+        {!inputVisible && (
+          <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={this.showInput}>
+            <PlusOutlined /> New Tag
+          </Tag>
+        )}
+      </div>
+    );
   }
 }
 
+
 function mapStateToPropsTreeSelectTag(state) {
   const {tag} = state.app
-  let options = [];
-  tag.forEach(element => {
-    if (!options.includes(element.scopeName)) {
-      options.push(element.scopeName);
-    }
-  });
-  options = options.map(m => ({ title: m, value: encodeURIComponent(m) }));
-  options.forEach(element => {
-    element.children = tag.filter(f => f.scopeName === element.title).map(m => ({ title: m.name, value: m.id.toString() }));
-  });
-  // options = options.map(m => {
-  //   const value = JSON.stringify(m.children.map(m => m.value));
-  //   return { ...m, value };
-  // });
+  const options = tag.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
   return { options };
 }
 

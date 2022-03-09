@@ -104,6 +104,9 @@ export default {
     saveGroup(state, { payload: group }) {
       return { ...state, group };
     },
+    appendTag(state, { payload: newTag }) {
+      return { ...state, tag: [...state.tag, newTag] };
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {
@@ -128,6 +131,11 @@ export default {
         let sourceType = sourceTypeList[i]
         yield put({ type: 'getSource', payload: sourceType })
       }
+    },
+    *createTag({ payload: name }, { call, put }) {
+      const { data } = yield call(api.createTag, { nameC: name });
+      const { id, nameC } = data;
+      yield put({ type: 'appendTag', payload: { id, name: nameC } });
     },
     *getIndustryGroup(_, { call, put, select }) {
       const tryData = yield select(state => state.app['industryGroup']);
