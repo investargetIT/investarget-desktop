@@ -334,6 +334,14 @@ export function getSource(sourceType) {
 }
 
 /**
+ * tag
+ */
+
+export function createTag(params) {
+  return r('/source/tag', 'POST', params);
+}
+
+/**
  * timeline
  */
 export function addTimeline(params) {
