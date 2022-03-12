@@ -136,6 +136,8 @@ export default {
       const { data } = yield call(api.createTag, { nameC: name });
       const { id, nameC } = data;
       yield put({ type: 'appendTag', payload: { id, name: nameC } });
+      // 新增标签成功后，重新请求最新的标签列表
+      yield put({ type: 'requestSource', payload: 'tag' });
     },
     *getIndustryGroup(_, { call, put, select }) {
       const tryData = yield select(state => state.app['industryGroup']);

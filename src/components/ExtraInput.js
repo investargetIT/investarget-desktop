@@ -1827,35 +1827,15 @@ class TabCheckboxIndustry extends React.Component {
 TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
 // TODO: 重命名组件
-class TabCheckboxTag extends React.Component {
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
-  }
-  render() {
-    const { options, value, onChange } = this.props
-    return <CheckboxGroup options={options} value={value} onChange={onChange} />
-  }
-}
-function mapStateToPropsTag(state) {
-  const {tag} = state.app
-  const options = tag.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-  return { options }  
-}
-TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
-
-// TODO: 重命名组件
 class TreeSelectTag extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      allowCreateTag: false,
       inputVisible: false,
       inputValue: '',
-      loading: false,
     };
   }
 
@@ -1876,7 +1856,6 @@ class TreeSelectTag extends React.Component {
 
     this.props.dispatch({ type: 'app/createTag', payload: inputValue });
     this.setState({
-      allowCreateTag: false,
       inputVisible: false,
       inputValue: '',
     });
@@ -1902,36 +1881,44 @@ class TreeSelectTag extends React.Component {
   }
 
   render() {
-    const { options, value = [] } = this.props;
+    const { options, value = [], editable = false } = this.props;
     const { allowCreateTag, inputVisible, inputValue } = this.state;
+    const containerStyle = editable
+      ? { border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 }
+      : { minHeight: 32 };
     
     return (
-      <div style={{ border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 }}>
+      <div style={containerStyle}>
         {options.map((option) => (
           <CheckableTag
             key={option.value}
             checked={value.indexOf(option.value) > -1}
             onChange={(checked) => this.handleChange(option.value, checked)}
+            style={{ marginBottom: 4 }}
           >
             {option.label}
           </CheckableTag>
         ))}
-        {allowCreateTag && inputVisible && (
-          <Input
-            ref={this.saveInputRef}
-            type="text"
-            size="small"
-            style={{ width: 78, marginRight: 8, verticalAlign: 'top' }}
-            value={inputValue}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputConfirm}
-            onPressEnter={this.handleInputConfirm}
-          />
-        )}
-        {allowCreateTag && !inputVisible && (
-          <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={this.showInput}>
-            <PlusOutlined /> New Tag
-          </Tag>
+        {editable && allowCreateTag && (
+          <div style={{ marginTop: options.length > 0 ? 18 : 0 }}>
+            {inputVisible && (
+              <Input
+                ref={this.saveInputRef}
+                type="text"
+                size="small"
+                style={{ width: 78, marginRight: 8, verticalAlign: 'top' }}
+                value={inputValue}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputConfirm}
+                onPressEnter={this.handleInputConfirm}
+              />
+            )}
+            {!inputVisible && (
+              <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={this.showInput}>
+                <PlusOutlined /> New Tag
+              </Tag>
+            )}
+          </div>
         )}
       </div>
     );
@@ -2418,7 +2405,6 @@ export {
   TabCheckboxCountry,
   TabCheckboxAbroad,
   TabCheckboxIndustry,
-  TabCheckboxTag, 
   TabCheckboxOrgType, 
   TabCheckboxOrgArea,
   TabCheckboxIndustryGroup,
