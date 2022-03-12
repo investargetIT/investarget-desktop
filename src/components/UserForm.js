@@ -214,7 +214,7 @@ class UserForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
-          <TreeSelectTag />
+          <TreeSelectTag editable />
         </BasicFormItem>
 
         {

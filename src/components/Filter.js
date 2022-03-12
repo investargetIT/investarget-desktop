@@ -40,7 +40,6 @@ import {
   TabCheckboxIndustry,
   TabCheckboxCountry,
   CheckboxService, 
-  TabCheckboxTag, 
   TabCheckboxOrgType, 
   TabCheckboxOrgArea, 
   TabCheckboxService,
@@ -53,6 +52,7 @@ import {
   SelectProjectForOrgBd,
   SelectProjectStatus,
   SelectIndustryGroupWithAll,
+  TreeSelectTag,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -160,7 +160,7 @@ function IndustryFilter(props) {
 function TagFilter(props) {
   return (
     <BasicContainer label={i18n('filter.tag')}>
-      <TabCheckboxTag value={props.value} onChange={props.onChange} />
+      <TreeSelectTag value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }

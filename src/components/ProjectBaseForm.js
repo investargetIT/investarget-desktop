@@ -75,7 +75,7 @@ class ProjectBaseForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
-          <TreeSelectTag />
+          <TreeSelectTag editable />
         </BasicFormItem>
 
         <FormItem noStyle shouldUpdate>

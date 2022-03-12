@@ -73,7 +73,7 @@ class MarketPlaceForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.tags')} name="tags" valueType="array" required>
-          <TreeSelectTag />
+          <TreeSelectTag editable />
         </BasicFormItem>
 
         <IndustryDynamicFormItem industry={this.props.industry} />

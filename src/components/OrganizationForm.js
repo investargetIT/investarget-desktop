@@ -89,7 +89,7 @@ class OrganizationForm extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label="标签" name="tags" valueType="array">
-          <TreeSelectTag />
+          <TreeSelectTag editable />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('organization.transaction_phase')} name="orgtransactionphase" valueType="array">
