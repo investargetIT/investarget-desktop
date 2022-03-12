@@ -15,7 +15,8 @@ function toData(formData) {
     formData['useremail'] = formData.email
     formData['usermobile'] = (formData.mobileAreaCode && formData.mobile) ? `+${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
   }
-  if (!['中国', 'China'].includes(formData.country.label)) {
+  // 如果国家不是中国，则设置地区为null
+  if (formData.country.value !== 42) {
     formData['location'] = null;
   }
   formData.country = formData.country.value;
