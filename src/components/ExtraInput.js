@@ -1849,12 +1849,16 @@ class TreeSelectTag extends React.Component {
 
   handleInputConfirm = () => {
     const { inputValue } = this.state;
-    if (inputValue === '') {
-      this.setState({ inputVisible: false });
+    const trimedInputValue = inputValue == null ? '' : inputValue.trim();
+    if (trimedInputValue === '') {
+      this.setState({
+        inputVisible: false,
+        inputValue: '',
+      });
       return;
     }
 
-    this.props.dispatch({ type: 'app/createTag', payload: inputValue });
+    this.props.dispatch({ type: 'app/createTag', payload: trimedInputValue });
     this.setState({
       inputVisible: false,
       inputValue: '',
