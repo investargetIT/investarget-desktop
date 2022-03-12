@@ -15,7 +15,6 @@ import {
 } from './Form'
 import * as api from '../api';
 import {
-  TreeSelectTag,
   SelectRole,
   SelectTransactionType,
   CascaderCountry,

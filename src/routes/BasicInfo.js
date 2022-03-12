@@ -130,7 +130,7 @@ class BasicInfo extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
-          <TreeSelectTag />
+          <TreeSelectTag editable />
         </BasicFormItem>
         <UploadAvatar name="card" photoKey={this.props.currentUser.cardKey} avatarUrl={this.state.cardUrl} onUploaded={this.handleCardUploaded.bind(this)} />
         <Submit />
