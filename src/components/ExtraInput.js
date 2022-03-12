@@ -1826,35 +1826,27 @@ class TabCheckboxIndustry extends React.Component {
 
 TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
+// TODO: 重命名组件
 class TabCheckboxTag extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
   }
   render() {
     const { options, value, onChange } = this.props
-    if (options.filter(item => item.children != null).length > 0) {
-      return <TabCheckbox options={options} value={value} onChange={onChange} />
-    } else {
-      return <CheckboxGroup options={options} value={value} onChange={onChange} />
-    }
+    return <CheckboxGroup options={options} value={value} onChange={onChange} />
   }
 }
 function mapStateToPropsTag(state) {
   const {tag} = state.app
-  let options = [];
-  tag.forEach(element => {
-    if (!options.includes(element.scopeName)) {
-      options.push(element.scopeName);
-    }
-  });
-  options = options.map(m => ({ label: m, value: encodeURIComponent(m) }));
-  options.forEach(element => {
-    element.children = tag.filter(f => f.scopeName === element.label).map(m => ({ label: m.name, value: m.id }));
-  });
+  const options = tag.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
   return { options }  
 }
 TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
 
+// TODO: 重命名组件
 class TreeSelectTag extends React.Component {
 
   constructor(props) {
@@ -1884,6 +1876,7 @@ class TreeSelectTag extends React.Component {
 
     this.props.dispatch({ type: 'app/createTag', payload: inputValue });
     this.setState({
+      allowCreateTag: false,
       inputVisible: false,
       inputValue: '',
     });
@@ -1901,11 +1894,16 @@ class TreeSelectTag extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
+    if (hasPerm('usersys.as_trader')) {
+      this.setState({
+        allowCreateTag: true,
+      });
+    }
   }
 
   render() {
     const { options, value = [] } = this.props;
-    const { inputVisible, inputValue, loading } = this.state;
+    const { allowCreateTag, inputVisible, inputValue } = this.state;
     
     return (
       <div style={{ border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 }}>
@@ -1918,7 +1916,7 @@ class TreeSelectTag extends React.Component {
             {option.label}
           </CheckableTag>
         ))}
-        {inputVisible && (
+        {allowCreateTag && inputVisible && (
           <Input
             ref={this.saveInputRef}
             type="text"
@@ -1930,7 +1928,7 @@ class TreeSelectTag extends React.Component {
             onPressEnter={this.handleInputConfirm}
           />
         )}
-        {!inputVisible && (
+        {allowCreateTag && !inputVisible && (
           <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={this.showInput}>
             <PlusOutlined /> New Tag
           </Tag>

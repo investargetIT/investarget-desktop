@@ -107,8 +107,22 @@ class HandleError extends React.Component {
         Modal.error({ title: msg });
         break;
       case 2026:
-        // Modal.error({ title: '该投资人名下已存在相同投资事件' });
-        Modal.error({ title: msg });
+        // TODO: 相同标签使用其他的错误code
+        if (msg === '编辑标签失败，已存在相同标签') {
+          Modal.error({
+            title: msg,
+            onCancel: () => {
+              // 重新请求标签列表
+              react.props.dispatch({ type: 'app/requestSource', payload: 'tag' });
+            },
+            onOk: () => {
+              react.props.dispatch({ type: 'app/requestSource', payload: 'tag' });
+            },
+          });
+        } else {
+          // Modal.error({ title: '该投资人名下已存在相同投资事件' });
+          Modal.error({ title: msg });
+        }
         break;
       case 8006:
         // Modal.error({ title: '视频会议时间冲突', content: msg });
