@@ -52,7 +52,7 @@ import {
   SelectProjectForOrgBd,
   SelectProjectStatus,
   SelectIndustryGroupWithAll,
-  TreeSelectTag,
+  CheckboxTag,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -160,7 +160,7 @@ function IndustryFilter(props) {
 function TagFilter(props) {
   return (
     <BasicContainer label={i18n('filter.tag')}>
-      <TreeSelectTag value={props.value} onChange={props.onChange} />
+      <CheckboxTag value={props.value} onChange={props.onChange} />
     </BasicContainer>
   )
 }

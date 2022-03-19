@@ -1885,11 +1885,9 @@ class TreeSelectTag extends React.Component {
   }
 
   render() {
-    const { options, value = [], editable = false } = this.props;
+    const { options, value = [] } = this.props;
     const { allowCreateTag, inputVisible, inputValue } = this.state;
-    const containerStyle = editable
-      ? { border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 }
-      : { minHeight: 32 };
+    const containerStyle = { border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 };
     
     return (
       <div style={containerStyle}>
@@ -1898,19 +1896,19 @@ class TreeSelectTag extends React.Component {
             key={option.value}
             checked={value.indexOf(option.value) > -1}
             onChange={(checked) => this.handleChange(option.value, checked)}
-            style={{ marginBottom: 4 }}
+            style={{ marginBottom: 4, fontSize: 14 }}
           >
             {option.label}
           </CheckableTag>
         ))}
-        {editable && allowCreateTag && (
+        {allowCreateTag && (
           <div style={{ marginTop: options.length > 0 ? 18 : 0 }}>
             {inputVisible && (
               <Input
                 ref={this.saveInputRef}
                 type="text"
                 size="small"
-                style={{ width: 78, marginRight: 8, verticalAlign: 'top' }}
+                style={{ width: 90, marginRight: 8, verticalAlign: 'top' }}
                 value={inputValue}
                 onChange={this.handleInputChange}
                 onBlur={this.handleInputConfirm}
@@ -1918,7 +1916,10 @@ class TreeSelectTag extends React.Component {
               />
             )}
             {!inputVisible && (
-              <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={this.showInput}>
+              <Tag
+                style={{ background: '#fff', borderStyle: 'dashed', fontSize: 14, lineHeight: '22px' }}
+                onClick={this.showInput}
+              >
                 <PlusOutlined /> New Tag
               </Tag>
             )}
