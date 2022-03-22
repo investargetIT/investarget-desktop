@@ -1870,7 +1870,7 @@ class TreeSelectTag extends React.Component {
   };
 
   handleChange = (valueItem, checked) => {
-    const { value, onChange } = this.props;
+    const { value = [], onChange } = this.props;
     const newValue = checked ? [...value, valueItem] : value.filter((item) => item !== valueItem);
     onChange(newValue);
   };
@@ -2351,6 +2351,52 @@ class SelectOrAddDate extends React.Component {
   }
 }
 
+class SearchOrganization extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleSearchOptionChange = (searchOption) => {
+    this.props.onChange({
+      searchOption,
+      keyword: this.props.keyword,
+    });
+  };
+
+  handleKeywordChange = (e) => {
+    this.props.onChange({
+      searchOption: this.props.searchOption,
+      keyword: e.target.value,
+    });
+  };
+
+  render() {
+    const { searchOption, keyword } = this.props;
+    const selectBefore = (
+      <Select
+        defaultValue="0"
+        style={{ width: 200 }}
+        value={searchOption}
+        onChange={this.handleSearchOptionChange} 
+      >
+        <Option value="0">搜索机构名称/股票代码</Option>
+        <Option value="1">搜索备注以及附件内文字</Option>
+      </Select>
+    );
+
+    return (
+      <Input
+        style={{ width: 450 }}
+        placeholder="搜索内容"
+        size="large"
+        addonBefore={selectBefore}
+        value={keyword}
+        onChange={this.handleKeywordChange}
+      />
+    );
+  }
+}
+
 export {
   SelectNumber,
   RadioGroup2,
@@ -2432,4 +2478,5 @@ export {
   TreeSelectTag,
   SelectScheduleTypeWithoutMeeting,
   RadioProjTraderType,
+  SearchOrganization,
 }

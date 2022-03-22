@@ -219,7 +219,10 @@ class UserList extends React.Component {
   loadLabelByValue(type, value) {
     if (this.props[type].length === 0) return;
     if (Array.isArray(value) && this.props.tag.length > 0) {
-      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+      return value.map(m => {
+        const item = this.props[type].filter(f => f.id === m)[0];
+        return item == null ? '' : item.name;
+      }).join(' / ');
     } else if (typeof value === 'number') {
       return this.props[type].filter(f => f.id === value)[0].name;
     }
