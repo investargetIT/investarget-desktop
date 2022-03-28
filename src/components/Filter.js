@@ -444,9 +444,10 @@ class UserListFilter extends React.Component {
     return (
       <div>
         <GroupFilter value={groups} onChange={this.handleChange.bind(this, 'groups')} />
-        <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} />
+        {/* 隐藏用户列表下的轮次和货币筛选项 */}
+        {/* <TransactionPhaseFilter value={orgtransactionphases} onChange={this.handleChange.bind(this, 'orgtransactionphases')} /> */}
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
-        <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} />
+        {/* <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} /> */}
         <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
         <OrganizationAreaFilter value={areas.map(item => item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />

@@ -211,7 +211,8 @@ class SelectOrganization extends React.Component {
         </div>
       },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
+      // 隐藏机构货币类型
+      // { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>

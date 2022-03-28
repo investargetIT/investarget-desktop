@@ -961,7 +961,8 @@ class OrgDetail extends React.Component {
       <Field title="全称" value={this.state.orgfullname} />
       <Field title="简称" value={this.state.orgname} />
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
-      <Field title={i18n('organization.currency')} value={this.state.currency} />
+      {/* 隐藏机构货币单位 */}
+      {/* <Field title={i18n('organization.currency')} value={this.state.currency} /> */}
       <Field title={i18n('organization.industry')} value={this.state.industry} />
       <Field title={i18n('user.tags')} value={this.state.tags} />
       <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />

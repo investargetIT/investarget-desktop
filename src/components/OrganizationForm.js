@@ -104,7 +104,8 @@ class OrganizationForm extends React.Component {
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <BasicFormItem label={i18n('organization.currency')} name="currency" valueType="number">
+        {/* 隐藏机构货币类型 */}
+        <BasicFormItem hidden label={i18n('organization.currency')} name="currency" valueType="number">
           <RadioCurrencyType />
         </BasicFormItem>
 
