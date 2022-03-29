@@ -420,7 +420,7 @@ function DataroomDetails(props) {
 
         <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? time(item.lastgettime + item.timezone) : '暂无'}</div>
         <div style={{ color: '#989898' }}>最近下载时间：{item.lastdowntime ? time(item.lastdowntime + item.timezone) : '暂无'}</div>
-        <div style={{ color: '#989898' }}>最近下载文件大小：{item.lastdownsize ? item.lastdownsize + 'M' : '暂无'}</div>
+        <div style={{ color: '#989898' }}>最近下载文件大小：{item.lastdownsize ? item.lastdownsize.toFixed(2) + 'M' : '暂无'}</div>
 
         {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
           <div style={{ textAlign: 'center', marginTop: 10 }}>
