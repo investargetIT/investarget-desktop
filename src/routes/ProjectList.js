@@ -426,6 +426,7 @@ class ProjectList extends React.Component {
               <div> 
                 <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
                 <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
+                <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
               </div>
             );
           }

@@ -16,9 +16,7 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 import { OrganizationListFilter } from '../components/Filter'
-import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import { SelectOrgLevelNumber } from '../components/ExtraInput';
 
 const Option = Select.Option
 const RadioGroup = Radio.Group;
@@ -213,12 +211,6 @@ class OrganizationList extends React.Component {
     this.setState({ selectedIds })
   }
 
-  handleOrgLvChange = value => {
-    const lv = value === 0 ? undefined : value;
-    const newFilters = { ...this.state.filters, lv };
-    this.setState({ filters: newFilters }, this.handleOrgSearch);
-  }
-
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -226,19 +218,14 @@ class OrganizationList extends React.Component {
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
           <div style={{ color: "#428BCA" }}>
-            { record.orglevel && [1, 2].includes(record.orglevel.id) ?
-            <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
-            : null}
             {record.orgfullname}
-            { record.orglevel && [1, 2].includes(record.orglevel.id) ? 
-            <span style={{ color: 'gray' }}><UserOutlined />({record.user_count})</span>
-            : null }
           </div>
         </Link>,
       //sorter:true, 
       },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: ['industry', 'industry'], sorter: this.state.searchOption === 0 ? true : false, },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'], sorter: this.state.searchOption === 0 ? true : false, },
+      // 隐藏机构货币类型
+      // { title: i18n('organization.currency'), key: 'currency', dataIndex: ['currency', 'currency'], sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.decision_cycle'), key: 'decisionCycle', dataIndex: 'decisionCycle', sorter: this.state.searchOption === 0 ? true : false, },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
@@ -335,17 +322,6 @@ class OrganizationList extends React.Component {
                 </Select>
               </div>
             }
-
-            <div style={{ float: 'right' }}>
-              机构状态
-              <SelectOrgLevelNumber
-                style={{ marginLeft: 8, marginRight: 16, width: 120 }}
-                defaultValue="0"
-                size="large"
-                onChange={this.handleOrgLvChange}
-                value={this.state.filters.lv ? this.state.filters.lv.toString() : '0'}
-              />
-            </div>
 
           </div>
 

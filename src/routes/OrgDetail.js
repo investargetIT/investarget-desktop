@@ -5,7 +5,6 @@ import {
   formatMoney, 
   i18n, 
   hasPerm, 
-  isLogin,
   getUserInfo,
   time,
   requestAllData,
@@ -13,7 +12,6 @@ import {
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
-  Tooltip, 
   Modal, 
   Row, 
   Col, 
@@ -38,7 +36,6 @@ import { Modal as GModal } from '../components/GlobalComponents';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 const TabPane = Tabs.TabPane;
-const buttonStyle={textDecoration:'underline',border:'none',background:'none'};
 const PositionWithUser = props => {
 
   function popoverChildren(user) {
@@ -100,8 +97,6 @@ const PositionWithUser = props => {
     </div>
   )
 }
-
-const detailStyle = { marginBottom: '24px' }
 
 const rowStyle = {
   borderBottom: '1px dashed #eee',
@@ -669,12 +664,6 @@ class OrgDetail extends React.Component {
       stockcode: null,
       investoverseasproject: null,
       currency: null,
-      transactionAmountF: 'N/A',
-      transactionAmountF_USD: 'N/A',
-      transactionAmountT: 'N/A',
-      transactionAmountT_USD: 'N/A',
-      fundSize: 'N/A',
-      fundSize_USD: 'N/A',
       companyEmail: null,
       webSite: null,
       mobileAreaCode: null,
@@ -742,12 +731,6 @@ class OrgDetail extends React.Component {
       }
       data.mobile = mobile;
       let currency = currencyMap[data.currency.id]
-      data.transactionAmountF = data.transactionAmountF ? formatMoney(data.transactionAmountF, currency) : 'N/A'
-      data.transactionAmountF_USD = data.transactionAmountF_USD ? formatMoney(data.transactionAmountF_USD, 'USD') : 'N/A'
-      data.transactionAmountT = data.transactionAmountT ? formatMoney(data.transactionAmountT, currency) : 'N/A'
-      data.transactionAmountT_USD = data.transactionAmountT_USD ? formatMoney(data.transactionAmountT_USD, 'USD') : 'N/A'
-      data.fundSize = data.fundSize ? formatMoney(data.fundSize, currency) : 'N/A'
-      data.fundSize_USD = data.fundSize_USD ? formatMoney(data.fundSize_USD, 'USD') : 'N/A'
       data.reloading = false;
       this.setState(data)
 
@@ -978,12 +961,10 @@ class OrgDetail extends React.Component {
       <Field title="全称" value={this.state.orgfullname} />
       <Field title="简称" value={this.state.orgname} />
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
-      <Field title={i18n('organization.currency')} value={this.state.currency} />
+      {/* 隐藏机构货币单位 */}
+      {/* <Field title={i18n('organization.currency')} value={this.state.currency} /> */}
       <Field title={i18n('organization.industry')} value={this.state.industry} />
       <Field title={i18n('user.tags')} value={this.state.tags} />
-      <Field title={i18n('organization.transaction_amount_from')} value={this.state.transactionAmountF + ' / ' + this.state.transactionAmountF_USD} />
-      <Field title={i18n('organization.transaction_amount_to')} value={this.state.transactionAmountT + ' / ' + this.state.transactionAmountT_USD} />
-      <Field title={i18n('organization.fund_size')} value={this.state.fundSize + ' / ' + this.state.fundSize_USD} />
       <Field title={i18n('organization.decision_cycle')} value={this.state.decisionCycle} />
       <Field title={i18n('organization.company_email')} value={this.state.companyEmail} />
       <Field title={i18n('organization.company_website')} value={this.state.webSite} />

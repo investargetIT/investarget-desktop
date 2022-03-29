@@ -1,3 +1,4 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
 import React, { useEffect } from 'react'
 import {
@@ -6,7 +7,6 @@ import {
   Cascader,
   Input,
   Icon,
-  Button,
   Checkbox,
   Slider,
   Radio,
@@ -15,7 +15,7 @@ import {
   Popover,
   Row,
   Col,
-  TreeSelect,
+  Tag,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -37,6 +37,7 @@ import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 
+const { CheckableTag } = Tag;
 
 function RadioGroup2 ({children, onChange, ...extraProps}) {
   function handleChange(e) {
@@ -1327,19 +1328,6 @@ SelectNewBDStatus = connect(state => {
   return { orgbdres };
 })(SelectNewBDStatus);
 
-const SelectOrgLevel = withOptionsAsync(RadioGroup2, ['orglv'], function(state) {
-  const { orglv } = state.app
-  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : []
-  return { options }
-})
-
-const SelectOrgLevelNumber = withOptionsAsync(SelectNumber, ['orglv'], function(state) {
-  const { orglv } = state.app;
-  const options = orglv ? orglv.map(item => ({value: item.id, label: item.name})) : [];
-  options.unshift({ value: 0, label: '全部' });
-  return { options };
-})
-
 /**
  * SelectBDSource
  */
@@ -1838,88 +1826,117 @@ class TabCheckboxIndustry extends React.Component {
 
 TabCheckboxIndustry = connect(mapStateToPropsIndustry)(TabCheckboxIndustry)
 
-class TabCheckboxTag extends React.Component {
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
-  }
-  render() {
-    const { options, value, onChange } = this.props
-    if (options.filter(item => item.children != null).length > 0) {
-      return <TabCheckbox options={options} value={value} onChange={onChange} />
-    } else {
-      return <CheckboxGroup options={options} value={value} onChange={onChange} />
-    }
-  }
-}
-function mapStateToPropsTag(state) {
-  const {tag} = state.app
-  let options = [];
-  tag.forEach(element => {
-    if (!options.includes(element.scopeName)) {
-      options.push(element.scopeName);
-    }
-  });
-  options = options.map(m => ({ label: m, value: encodeURIComponent(m) }));
-  options.forEach(element => {
-    element.children = tag.filter(f => f.scopeName === element.label).map(m => ({ label: m.name, value: m.id }));
-  });
-  return { options }  
-}
-TabCheckboxTag = connect(mapStateToPropsTag)(TabCheckboxTag);
-
+// TODO: 重命名组件
 class TreeSelectTag extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      searchContent: '',
+      allowCreateTag: false,
+      inputVisible: false,
+      inputValue: '',
     };
   }
+
+  showInput = () => {
+    this.setState({ inputVisible: true }, () => this.input.focus());
+  };
+
+  handleInputChange = (e) => {
+    this.setState({ inputValue: e.target.value });
+  };
+
+  handleInputConfirm = () => {
+    const { inputValue } = this.state;
+    const trimedInputValue = inputValue == null ? '' : inputValue.trim();
+    if (trimedInputValue === '') {
+      this.setState({
+        inputVisible: false,
+        inputValue: '',
+      });
+      return;
+    }
+
+    this.props.dispatch({ type: 'app/createTag', payload: trimedInputValue });
+    this.setState({
+      inputVisible: false,
+      inputValue: '',
+    });
+  };
+
+  saveInputRef = (input) => {
+    this.input = input;
+  };
+
+  handleChange = (valueItem, checked) => {
+    const { value = [], onChange } = this.props;
+    const newValue = checked ? [...value, valueItem] : value.filter((item) => item !== valueItem);
+    onChange(newValue);
+  };
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSourceList', payload: ['tag'] });
-  }
-  
-  handleSearchChange = (searchContent) => {
-    this.setState({ searchContent });
+    if (hasPerm('usersys.as_trader')) {
+      this.setState({
+        allowCreateTag: true,
+      });
+    }
   }
 
   render() {
-    let { options, value, onChange, size } = this.props;
-    if (this.state.searchContent) {
-      options = options.map(m => ({ ...m, disableCheckbox: true }));
-    }
-    const tProps = {
-      treeData: options,
-      value: value && value.map(m => m.toString()),
-      onChange,
-      treeCheckable: true,
-      allowClear: true,
-      size,
-      treeNodeFilterProp: 'title',
-      onSearch: this.handleSearchChange,
-    };
-    return <TreeSelect {...tProps} />;
+    const { options, value = [] } = this.props;
+    const { allowCreateTag, inputVisible, inputValue } = this.state;
+    const containerStyle = { border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 };
+    
+    return (
+      <div style={containerStyle}>
+        {options.map((option) => (
+          <CheckableTag
+            key={option.value}
+            checked={value.indexOf(option.value) > -1}
+            onChange={(checked) => this.handleChange(option.value, checked)}
+            style={{ marginBottom: 4, fontSize: 14 }}
+          >
+            {option.label}
+          </CheckableTag>
+        ))}
+        {allowCreateTag && (
+          <div style={{ marginTop: options.length > 0 ? 18 : 0 }}>
+            {inputVisible && (
+              <Input
+                ref={this.saveInputRef}
+                type="text"
+                size="small"
+                style={{ width: 90, marginRight: 8, verticalAlign: 'top' }}
+                value={inputValue}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputConfirm}
+                onPressEnter={this.handleInputConfirm}
+              />
+            )}
+            {!inputVisible && (
+              <Tag
+                style={{ background: '#fff', borderStyle: 'dashed', fontSize: 14, lineHeight: '22px' }}
+                onClick={this.showInput}
+              >
+                <PlusOutlined /> New Tag
+              </Tag>
+            )}
+          </div>
+        )}
+      </div>
+    );
   }
 }
 
+
 function mapStateToPropsTreeSelectTag(state) {
   const {tag} = state.app
-  let options = [];
-  tag.forEach(element => {
-    if (!options.includes(element.scopeName)) {
-      options.push(element.scopeName);
-    }
-  });
-  options = options.map(m => ({ title: m, value: encodeURIComponent(m) }));
-  options.forEach(element => {
-    element.children = tag.filter(f => f.scopeName === element.title).map(m => ({ title: m.name, value: m.id.toString() }));
-  });
-  // options = options.map(m => {
-  //   const value = JSON.stringify(m.children.map(m => m.value));
-  //   return { ...m, value };
-  // });
+  const options = tag.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
   return { options };
 }
 
@@ -2334,6 +2351,52 @@ class SelectOrAddDate extends React.Component {
   }
 }
 
+class SearchOrganization extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleSearchOptionChange = (searchOption) => {
+    this.props.onChange({
+      searchOption,
+      keyword: this.props.keyword,
+    });
+  };
+
+  handleKeywordChange = (e) => {
+    this.props.onChange({
+      searchOption: this.props.searchOption,
+      keyword: e.target.value,
+    });
+  };
+
+  render() {
+    const { searchOption, keyword } = this.props;
+    const selectBefore = (
+      <Select
+        defaultValue="0"
+        style={{ width: 200 }}
+        value={searchOption}
+        onChange={this.handleSearchOptionChange} 
+      >
+        <Option value="0">搜索机构名称/股票代码</Option>
+        <Option value="1">搜索备注以及附件内文字</Option>
+      </Select>
+    );
+
+    return (
+      <Input
+        style={{ width: 450 }}
+        placeholder="搜索内容"
+        size="large"
+        addonBefore={selectBefore}
+        value={keyword}
+        onChange={this.handleKeywordChange}
+      />
+    );
+  }
+}
+
 export {
   SelectNumber,
   RadioGroup2,
@@ -2378,8 +2441,6 @@ export {
   SelectScheduleType,
   SelectOrAddDate,
   SelectSeason,
-  SelectOrgLevel,
-  SelectOrgLevelNumber,
   CascaderCountry,
   CascaderIndustry,
   InputCurrency,
@@ -2395,7 +2456,6 @@ export {
   TabCheckboxCountry,
   TabCheckboxAbroad,
   TabCheckboxIndustry,
-  TabCheckboxTag, 
   TabCheckboxOrgType, 
   TabCheckboxOrgArea,
   TabCheckboxIndustryGroup,
@@ -2418,4 +2478,5 @@ export {
   TreeSelectTag,
   SelectScheduleTypeWithoutMeeting,
   RadioProjTraderType,
+  SearchOrganization,
 }

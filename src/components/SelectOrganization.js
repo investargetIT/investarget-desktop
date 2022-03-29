@@ -202,26 +202,17 @@ class SelectOrganization extends React.Component {
       { title: i18n('organization.orgname'), key: 'orgname', dataIndex: 'orgname', 
         render: (text, record) => <div>
           <Popover placement="topLeft" content={this.popoverContent(record)}>
-
-            { [1, 2].includes(record.orglevel.id) ? 
-            <img style={{ width: 10, marginTop: -10 }} src="/images/certificate.svg" />
-            : null }
-
             <a href={"/app/organization/" + record.id} target="_blank">
               <span style={{ color: '#428BCA' }} onMouseEnter={this.handleOrgNameHover.bind(this, record)}>
                 {text}
               </span>
             </a>
-
-            { [1, 2].includes(record.orglevel.id) ? 
-            <span style={{ color: 'gray' }}><Icon type="user" />({record.user_count})</span>
-            : null }
-
           </Popover>
         </div>
       },
       { title: i18n('organization.industry'), key: 'industry', dataIndex: 'industry.industry' },
-      { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
+      // 隐藏机构货币类型
+      // { title: i18n('organization.currency'), key: 'currency', dataIndex: 'currency.currency' },
       { title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (text, record) => {
         let phases = record.orgtransactionphase || []
         return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
