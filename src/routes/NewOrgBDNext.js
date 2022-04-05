@@ -272,6 +272,7 @@ class NewOrgBDList extends React.Component {
       onjob: true,
       groups: this.investorGroup,
       title: this.highScoreTitles.join(','),
+      tags: this.tags.join(','),
     }, 100);
     if (reqUser.data.count === 0) {
       reqUser = await requestAllData(api.getUser, {
@@ -698,13 +699,30 @@ class NewOrgBDList extends React.Component {
     }
 
     const dataSourceForExportCreateOrgBD = list.map(m => m.items)
-      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+    .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+    // 机构的第一个联系人行才显示机构简介
+    let uniqueOrgId = null;
+    dataSourceForExportCreateOrgBD.forEach((item) => {
+      if (item.org.id !== uniqueOrgId) {
+        uniqueOrgId = item.org.id;
+        item.showOrgDescription = true;
+      }
+    });
 
     const columnsForExportCreateOrgBD = [
       {
         title: '机构',
         key: 'org',
         dataIndex: ['org', 'orgname'],
+      },
+      {
+        title: '机构简介',
+        key: 'orgDescription',
+        render: (text, record) => {
+          if (record.showOrgDescription) {
+            return record.org && record.org.description;
+          }
+        },
       },
       {
         title: i18n('user.name'),
