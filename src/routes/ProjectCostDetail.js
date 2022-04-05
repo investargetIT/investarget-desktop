@@ -114,14 +114,14 @@ function ProjectCostDetail(props) {
       const maxRes = Math.max(...resCount.map(m => m.resIndex));
       let percentage = 0, step = 0;
       if (maxRes > 3) {
-        // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
-        percentage = Math.round((maxRes - 3) / 11 * 100);
+        // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
+        percentage = Math.round((maxRes - 3) / 9 * 100);
         step = maxRes - 4;
       }
       if (res.data.projstatus) {
         if (res.data.projstatus.nameC.includes('已完成')) {
           percentage = 100;
-          step = 11;
+          step = 9;
         }
       }
       setProjectDetails({ ...projectDetails, ...res.data, percentage, step });

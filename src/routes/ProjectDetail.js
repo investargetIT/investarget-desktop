@@ -348,8 +348,8 @@ class ProjectDetail extends React.Component {
     const maxRes = Math.max(...resCount.map(m => m.resIndex));
     let percentage = 0;
     if (maxRes > 3) {
-      // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
-      percentage = Math.round((maxRes - 3) / 11 * 100);
+      // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
+      percentage = Math.round((maxRes - 3) / 9 * 100);
     }
     if (this.state.project.projstatus) {
       if (this.state.project.projstatus.name.includes('已完成') || this.state.project.projstatus.name.includes('Completed')) {
