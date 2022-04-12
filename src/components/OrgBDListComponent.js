@@ -198,8 +198,8 @@ class OrgBDListComponent extends React.Component {
 
         // 创建时间排序，置空的话必须设置为 undefined，设置为 null 的话，参数会传空，服务端会报错
         sortByTime: null,
-        sort: undefined,
-        desc: undefined,
+        sort: 'response',
+        desc: 0,
 
         loadingImportOrgBD: false,
         downloadUrl: null, // 模板下载链接
