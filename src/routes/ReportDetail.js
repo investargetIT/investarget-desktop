@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { requestAllData } from '../utils/util';
 import { connect } from 'dva'
-import { Form, Input, DatePicker, Menu } from 'antd'
+import { Form, Input, DatePicker, Menu, Divider } from 'antd'
 const { RangePicker } = DatePicker;
 import {
   BasicFormItem,
@@ -17,6 +17,7 @@ import {
 import LeftRightLayout from '../components/LeftRightLayout';
 import moment from 'moment';
 import _ from 'lodash';
+import ReportProjectBDDetails from '../components/ReportProjectBDDetails';
 
 let uuid = 0;
 let ppid = 0;
@@ -334,6 +335,15 @@ class ReportDetail extends React.Component {
               dangerouslySetInnerHTML={{ __html: m.marketMsg.replace(/\n/g, '<br/>') || '' }}
             />
           ))}
+
+          <Divider dashed />
+
+          {this.state.report && (
+            <ReportProjectBDDetails
+              stimeM={this.state.report.startTime}
+              etimeM={this.state.report.endTime}
+            />
+          )}
         </div>
 
         <div id="alipay" style={{ marginBottom: 40 }}>
