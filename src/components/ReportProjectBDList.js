@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Table, Modal, Popover, Popconfirm } from 'antd';
+import { Button, Table, Modal, Popover, Popconfirm, Select, Descriptions } from 'antd';
 import React from 'react'
 import { 
   handleError, 
@@ -7,6 +7,7 @@ import {
   hasPerm,
   getUserInfo,
   requestAllData,
+  getCurrentUser,
 } from '../utils/util';
 import * as api from '../api'
 import { isLogin, subtracting } from '../utils/util'
@@ -15,18 +16,33 @@ import BDComments from './BDComments';
 import ModalEditProjBD from './ModalEditProjBD';
 import ModalModifyProjectBDStatus from './ModalModifyProjectBDStatus';
 
+const formatManager = (manager) => {
+  const { main, normal } = manager;
+  let allManagers = [];
+  if (main) {
+    allManagers.push(main.username);
+  }
+  if (normal) {
+    allManagers = allManagers.concat(normal.map(m => m.manager.username));
+  }
+  return allManagers.join('、');
+}
+
 class ReportProjectBDList extends React.Component {
 
   constructor(props) {
     super(props)
 
     this.state = {
+      userBdList: [],
+      userBdId: null,
       list: [],
       loading: false,
 
       visible: false,
       sort: 'isimportant',
       desc: 1,
+      manager: getCurrentUser(),
       status: null, 
       isShowModifyStatusModal: false,
       currentBD:null,
@@ -34,12 +50,35 @@ class ReportProjectBDList extends React.Component {
     }
   }
 
-  getProjectBDList = () => {
-    const { stimeM, etimeM } = this.props;
-    const { sort, desc } = this.state
+  getAll = () => {
+    this.getUserProjectBDList();
+    this.getProjectBDList();
+  };
+
+  getUserProjectBDList = () => {
+    const { sort, desc, manager } = this.state
     const param = {
       sort,
       desc,
+      manager,
+    }
+
+    return requestAllData(api.getProjBDList, param, 100).then(result => {
+      this.setState({
+        userBdList: result.data.data,
+      });
+    }).catch(error => {
+      handleError(error)
+    })
+  }
+
+  getProjectBDList = () => {
+    const { stimeM, etimeM } = this.props;
+    const { sort, desc, manager } = this.state
+    const param = {
+      sort,
+      desc,
+      manager,
       stimeM,
       etimeM,
     }
@@ -92,7 +131,7 @@ class ReportProjectBDList extends React.Component {
       key,
     }
     api.addProjBDCom(param).then(data => {
-      this.getProjectBDList()
+      this.getAll()
     }).catch(error => {
       handleError(error)
     })
@@ -100,13 +139,13 @@ class ReportProjectBDList extends React.Component {
 
   handleEditComment = (id, data) => {
     api.editProjBDCom(id, data)
-      .then(this.getProjectBDList)
+      .then(this.getAll)
       .catch(handleError);
   }
 
   handleDeleteComment = (id) => {
     api.deleteProjBDCom(id).then(data => {
-      this.getProjectBDList()
+      this.getAll()
     }).catch(error => {
       handleError(error)
     })
@@ -127,7 +166,6 @@ class ReportProjectBDList extends React.Component {
   }
   
   handleConfirm =(state)=>{
-    const react = this;
     if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && !this.state.currentBD.bduser){
       this.checkExistence(state.mobile, state.email).then(ifExist => {
           if (ifExist) {
@@ -155,7 +193,7 @@ class ReportProjectBDList extends React.Component {
         projectBD: this.state.currentBD.id,
         comments: `联系人姓名：${username}，电话：${mobile}，邮箱：${email || '暂无'}`,
       });
-      this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList);
+      this.setState({ isShowModifyStatusModal: false }, this.getAll);
     } catch (error) {
       handleError(error);
     }
@@ -179,7 +217,7 @@ class ReportProjectBDList extends React.Component {
       .then(result => 
         {
           if (status !== 3 || this.state.currentBD.bd_status.id === 3){
-            this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+            this.setState({ isShowModifyStatusModal: false }, this.getAll)
           }
         }
         );
@@ -193,10 +231,10 @@ class ReportProjectBDList extends React.Component {
         traderuser: this.state.currentBD.manager.id
       })
         .then(result => {
-          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+          this.setState({ isShowModifyStatusModal: false }, this.getAll)
         })
         .catch(error => {
-          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+          this.setState({ isShowModifyStatusModal: false }, this.getAll)
         });
               
     } else {
@@ -211,7 +249,7 @@ class ReportProjectBDList extends React.Component {
             if (this.state.currentBD.username === null) {
               api.editProjBD(this.state.currentBD.id, { bduser: result.data.id })
                 .then(data => {
-                  this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
+                  this.setState({ isShowModifyStatusModal: false }, this.getAll)
                 })
             }
             api.addUserRelation({
@@ -231,12 +269,12 @@ class ReportProjectBDList extends React.Component {
         sort: sorter.columnKey || 'isimportant', 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getProjectBDList
+      this.getAll
     );
   }
 
   componentDidMount() {
-    this.getProjectBDList()
+    this.getAll();
     this.props.dispatch({ type: 'app/getGroup' });
     this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
   }
@@ -254,7 +292,7 @@ class ReportProjectBDList extends React.Component {
         editModalVisible: false,
         currentBD: null,
       });
-      this.getProjectBDList();
+      this.getAll();
     }).catch((error) => {
       handleError(error);
     });
@@ -324,7 +362,7 @@ class ReportProjectBDList extends React.Component {
 
   handleDelete = (id) => {
     api.deleteProjBD(id).then(data => {
-      this.getProjectBDList()
+      this.getAll()
     }).catch(error => {
       handleError(error)
     })
@@ -355,8 +393,14 @@ class ReportProjectBDList extends React.Component {
     return true;
   }
 
+  handleUserBdChange = (value) => {
+    this.setState({
+      userBdId: value,
+    });
+  }
+
   render() {
-    const { list, loading } = this.state
+    const { userBdList, userBdId, list, loading } = this.state
     const columns = [
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
         render: (text, record) => (
@@ -394,15 +438,7 @@ class ReportProjectBDList extends React.Component {
         key: 'manager',
         sorter: true,
         render: (text, record) => {
-          const { main, normal } = record.manager;
-          let allManagers = [];
-          if (main) {
-            allManagers.push(main.username);
-          }
-          if (normal) {
-            allManagers = allManagers.concat(normal.map(m => m.manager.username));
-          }
-          return allManagers.join('、');
+          return formatManager(record.manager);
         },
       },
     ];
@@ -461,6 +497,13 @@ class ReportProjectBDList extends React.Component {
       );
     }
 
+    const userBdOptions = userBdList.map(({ id, com_name }) => ({
+      value: id,
+      label: com_name,
+    }));
+
+    const userBd = userBdList.find(({ id }) => id === userBdId);
+
     return (
       <div>
         <Table
@@ -471,6 +514,24 @@ class ReportProjectBDList extends React.Component {
           loading={loading}
           pagination={false}
         />
+        <div style={{ marginTop: 24 }}>
+          <Select
+            style={{ width: 250 }}
+            placeholder="选择项目BD"
+            value={userBdId}
+            onChange={this.handleUserBdChange}
+            options={userBdOptions}
+          />
+          {userBd && (
+            <Table
+              showHeader={false}
+              columns={columns}
+              dataSource={[userBd]}
+              rowKey={record=>record.id}
+              pagination={false}
+            />
+          )}
+        </div>
 
         <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false} destroyOnClose={true}>
           <BDComments
