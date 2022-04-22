@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Table, Modal, Popover, Popconfirm, Select, Descriptions } from 'antd';
+import { Button, Table, Modal, Popover, Popconfirm, Select } from 'antd';
 import React from 'react'
 import { 
   handleError, 
@@ -36,6 +36,7 @@ class ReportProjectBDList extends React.Component {
     this.state = {
       userBdList: [],
       userBdId: null,
+      addBdLoading: false,
       list: [],
       loading: false,
 
@@ -49,11 +50,6 @@ class ReportProjectBDList extends React.Component {
       editModalVisible: false,
     }
   }
-
-  getAll = () => {
-    this.getUserProjectBDList();
-    this.getProjectBDList();
-  };
 
   getUserProjectBDList = () => {
     const { sort, desc, manager } = this.state
@@ -123,15 +119,16 @@ class ReportProjectBDList extends React.Component {
     this.setState({ visible: false, currentBD: null })
   }
 
-  handleAddComment = ({ comments, bucket, key }) => {
+  handleAddComment = ({ comments, bucket, key, filename }) => {
     const param = {
       projectBD: this.state.currentBD.id,
       comments,
       bucket,
       key,
+      filename,
     }
     api.addProjBDCom(param).then(data => {
-      this.getAll()
+      this.getProjectBDList()
     }).catch(error => {
       handleError(error)
     })
@@ -139,13 +136,13 @@ class ReportProjectBDList extends React.Component {
 
   handleEditComment = (id, data) => {
     api.editProjBDCom(id, data)
-      .then(this.getAll)
+      .then(this.getProjectBDList)
       .catch(handleError);
   }
 
   handleDeleteComment = (id) => {
     api.deleteProjBDCom(id).then(data => {
-      this.getAll()
+      this.getProjectBDList()
     }).catch(error => {
       handleError(error)
     })
@@ -193,7 +190,7 @@ class ReportProjectBDList extends React.Component {
         projectBD: this.state.currentBD.id,
         comments: `联系人姓名：${username}，电话：${mobile}，邮箱：${email || '暂无'}`,
       });
-      this.setState({ isShowModifyStatusModal: false }, this.getAll);
+      this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList);
     } catch (error) {
       handleError(error);
     }
@@ -217,7 +214,7 @@ class ReportProjectBDList extends React.Component {
       .then(result => 
         {
           if (status !== 3 || this.state.currentBD.bd_status.id === 3){
-            this.setState({ isShowModifyStatusModal: false }, this.getAll)
+            this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
           }
         }
         );
@@ -231,10 +228,10 @@ class ReportProjectBDList extends React.Component {
         traderuser: this.state.currentBD.manager.id
       })
         .then(result => {
-          this.setState({ isShowModifyStatusModal: false }, this.getAll)
+          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
         })
         .catch(error => {
-          this.setState({ isShowModifyStatusModal: false }, this.getAll)
+          this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
         });
               
     } else {
@@ -249,7 +246,7 @@ class ReportProjectBDList extends React.Component {
             if (this.state.currentBD.username === null) {
               api.editProjBD(this.state.currentBD.id, { bduser: result.data.id })
                 .then(data => {
-                  this.setState({ isShowModifyStatusModal: false }, this.getAll)
+                  this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
                 })
             }
             api.addUserRelation({
@@ -269,14 +266,15 @@ class ReportProjectBDList extends React.Component {
         sort: sorter.columnKey || 'isimportant', 
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       }, 
-      this.getAll
+      this.getProjectBDList
     );
   }
 
   componentDidMount() {
-    this.getAll();
+    this.getUserProjectBDList();
+    this.getProjectBDList();
     this.props.dispatch({ type: 'app/getGroup' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['bdStatus', 'country'] });
   }
 
   handleEdit = (record) => {
@@ -292,7 +290,7 @@ class ReportProjectBDList extends React.Component {
         editModalVisible: false,
         currentBD: null,
       });
-      this.getAll();
+      this.getProjectBDList();
     }).catch((error) => {
       handleError(error);
     });
@@ -362,7 +360,8 @@ class ReportProjectBDList extends React.Component {
 
   handleDelete = (id) => {
     api.deleteProjBD(id).then(data => {
-      this.getAll()
+      this.getProjectBDList()
+      this.getUserProjectBDList()
     }).catch(error => {
       handleError(error)
     })
@@ -399,8 +398,28 @@ class ReportProjectBDList extends React.Component {
     });
   }
 
+  handleAddBdToReport = () => {
+    const { userBdId } = this.state;
+    if (userBdId == null) return;
+    this.setState({
+      addBdLoading: true,
+    });
+    api.editProjBD(userBdId, {}).then(() => {
+      this.setState({
+        userBdId: null,
+        addBdLoading: false,
+      });
+      this.getProjectBDList();
+    }).catch((error) => {
+      handleError(error);
+      this.setState({
+        addBdLoading: false,
+      });
+    }); 
+  }
+
   render() {
-    const { userBdList, userBdId, list, loading } = this.state
+    const { userBdList, userBdId, addBdLoading, list, loading } = this.state
     const columns = [
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
         render: (text, record) => (
@@ -497,12 +516,12 @@ class ReportProjectBDList extends React.Component {
       );
     }
 
-    const userBdOptions = userBdList.map(({ id, com_name }) => ({
+    const bdIdsInReport = list.map(({ id }) => id);
+    const bdListNotInReport = userBdList.filter(({ id }) => !bdIdsInReport.includes(id));
+    const userBdOptions = bdListNotInReport.map(({ id, com_name }) => ({
       value: id,
       label: com_name,
     }));
-
-    const userBd = userBdList.find(({ id }) => id === userBdId);
 
     return (
       <div>
@@ -518,19 +537,23 @@ class ReportProjectBDList extends React.Component {
           <Select
             style={{ width: 250 }}
             placeholder="选择项目BD"
+            disabled={addBdLoading}
             value={userBdId}
             onChange={this.handleUserBdChange}
             options={userBdOptions}
           />
-          {userBd && (
-            <Table
-              showHeader={false}
-              columns={columns}
-              dataSource={[userBd]}
-              rowKey={record=>record.id}
-              pagination={false}
-            />
-          )}
+          <Popconfirm
+            title="确定添加进周报吗？"
+            onConfirm={this.handleAddBdToReport}
+          >
+            <Button
+              style={{ marginLeft: 8 }}
+              loading={addBdLoading}
+              disabled={userBdId == null}
+            >
+              添加进周报
+            </Button>
+          </Popconfirm>
         </div>
 
         <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false} destroyOnClose={true}>

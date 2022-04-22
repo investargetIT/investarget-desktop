@@ -17,14 +17,17 @@ function BDComments(props) {
     // TODO: 提取上传文件的组件
     let bucket = null;
     let key = null;
+    let filename = null;
     if (fileList && fileList[0]) {
       bucket = 'file';
       key = fileList[0].key;
+      filename = fileList[0].name;
     }
     const data =  {
       comments,
       bucket,
       key,
+      filename,
     }
     if (comment) {
       onEdit(comment.id, data);
@@ -50,7 +53,7 @@ function BDComments(props) {
         {
           uid: '-1',
           status: 'done',
-          name: comment.key,
+          name: comment.filename || comment.key,
           bucket: comment.bucket,
           key: comment.key,
           url: result.data,
@@ -169,7 +172,7 @@ function BDComments(props) {
               <div>
                 <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
                 {comment.url && (
-                  <a href={comment.url} target="_blank">{comment.key}</a>
+                  <a href={comment.url} target="_blank">{comment.filename || comment.key}</a>
                 )}
               </div>
             </div>

@@ -144,7 +144,7 @@ class ReportProjectBDDetails extends React.Component {
                             <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
                             <span>{comment.comments}</span>
                             {comment.url && (
-                              <a href={comment.url} target="_blank" style={{ marginLeft: 16 }}>{comment.key}</a>
+                              <a href={comment.url} target="_blank" style={{ marginLeft: 16 }}>{comment.filename || comment.key}</a>
                             )}
                           </div>
                         ))
