@@ -182,7 +182,7 @@ class ReportProjectBDList extends React.Component {
 
   handleUpdateContact = async (formData) => {
     const usermobile = (formData.mobileAreaCode && formData.mobile) ? `+${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
-    const body = { ...formData, usermobile };
+    const body = { ...formData, usermobile, lastmodifytime: this.props.stimeM };
     try {
       await api.editProjBD(this.state.currentBD.id, body);
       const { username, usermobile: mobile, email } = body;
@@ -199,7 +199,8 @@ class ReportProjectBDList extends React.Component {
   handleConfirmAudit = state => {
     const { status, usernameC, mobile, email } = state;
     const body = {
-      bd_status: status
+      bd_status: status,
+      lastmodifytime: this.props.stimeM,
     }
     // 状态改为暂不BD后，详细需求见bugClose #344
     if (status === 4 && this.state.currentBD.bd_status.id !== 4) {
@@ -244,7 +245,10 @@ class ReportProjectBDList extends React.Component {
         api.addUser(userBody)
           .then(result =>{
             if (this.state.currentBD.username === null) {
-              api.editProjBD(this.state.currentBD.id, { bduser: result.data.id })
+              api.editProjBD(this.state.currentBD.id, {
+                bduser: result.data.id,
+                lastmodifytime: this.props.stimeM,
+              })
                 .then(data => {
                   this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
                 })
@@ -339,6 +343,7 @@ class ReportProjectBDList extends React.Component {
     }
     
     const { id } = this.state.currentBD;
+    param.lastmodifytime = this.props.stimeM;
     await api.editProjBD(id, param);
 
     // 状态改为暂不BD后，详细需求见bugClose #344
@@ -404,7 +409,7 @@ class ReportProjectBDList extends React.Component {
     this.setState({
       addBdLoading: true,
     });
-    api.editProjBD(userBdId, {}).then(() => {
+    api.editProjBD(userBdId, { lastmodifytime: this.props.stimeM }).then(() => {
       this.setState({
         userBdId: null,
         addBdLoading: false,

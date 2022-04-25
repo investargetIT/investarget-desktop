@@ -84,7 +84,7 @@ function ModalEditProjBD({ country, bd, visible, onOk, onCancel }) {
       .validateFields()
       .then((values) => {
         const { mobileAreaCode, ...valuesToKeep } = values;
-        const usermobile = (!values.bduser && mobileAreaCode)
+        const usermobile = (!values.bduser && mobileAreaCode && values.usermobile)
           ? `${mobileAreaCode}-${values.usermobile}`
           : values.usermobile;
         const newValues = {
