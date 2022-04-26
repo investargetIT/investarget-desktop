@@ -143,13 +143,14 @@ class ProjectBDList extends React.Component {
     this.setState({ visible: false, currentBD: null })
   }
 
-  handleAddComment = ({ comments, bucket, key }) => {
+  handleAddComment = ({ comments, bucket, key, filename }) => {
     const { currentBD } = this.state;
     const param = {
       projectBD: currentBD.id,
       comments,
       bucket,
       key,
+      filename,
     }
     api.addProjBDCom(param).then(data => {
       this.getProjectBDList()
