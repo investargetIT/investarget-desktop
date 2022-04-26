@@ -144,28 +144,36 @@ class ProjectBDList extends React.Component {
   }
 
   handleAddComment = ({ comments, bucket, key }) => {
+    const { currentBD } = this.state;
     const param = {
-      projectBD: this.state.currentBD.id,
+      projectBD: currentBD.id,
       comments,
       bucket,
       key,
     }
     api.addProjBDCom(param).then(data => {
       this.getProjectBDList()
+      api.editProjBD(currentBD.id, {});
     }).catch(error => {
       handleError(error)
     })
   }
 
   handleEditComment = (id, data) => {
+    const { currentBD } = this.state;
     api.editProjBDCom(id, data)
-      .then(this.getProjectBDList)
+      .then(() => {
+        this.getProjectBDList()
+        api.editProjBD(currentBD.id, {});
+      })
       .catch(handleError);
   }
 
   handleDeleteComment = (id) => {
+    const { currentBD } = this.state;
     api.deleteProjBDCom(id).then(data => {
       this.getProjectBDList()
+      api.editProjBD(currentBD.id, {});
     }).catch(error => {
       handleError(error)
     })

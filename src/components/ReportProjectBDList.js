@@ -120,8 +120,10 @@ class ReportProjectBDList extends React.Component {
   }
 
   handleAddComment = ({ comments, bucket, key, filename }) => {
+    const { currentBD } = this.state;
+    const { stimeM } = this.props;
     const param = {
-      projectBD: this.state.currentBD.id,
+      projectBD: currentBD.id,
       comments,
       bucket,
       key,
@@ -129,20 +131,29 @@ class ReportProjectBDList extends React.Component {
     }
     api.addProjBDCom(param).then(data => {
       this.getProjectBDList()
+      api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
     }).catch(error => {
       handleError(error)
     })
   }
 
   handleEditComment = (id, data) => {
+    const { currentBD } = this.state;
+    const { stimeM } = this.props;
     api.editProjBDCom(id, data)
-      .then(this.getProjectBDList)
+      .then(() => {
+        this.getProjectBDList()
+        api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
+      })
       .catch(handleError);
   }
 
   handleDeleteComment = (id) => {
+    const { currentBD } = this.state;
+    const { stimeM } = this.props;
     api.deleteProjBDCom(id).then(data => {
       this.getProjectBDList()
+      api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
     }).catch(error => {
       handleError(error)
     })
