@@ -1,8 +1,6 @@
 import React from 'react'
-import PropTypes, { func } from 'prop-types'
 import { hasPerm, getCurrencyFromId, exchange, getUserInfo } from '../utils/util'
-import { Form, Input, Radio, Checkbox, Row, Col, DatePicker, Switch } from 'antd'
-const RadioGroup = Radio.Group
+import { Form, Input, Row, Col, Switch } from 'antd'
 const FormItem = Form.Item
 const TextArea = Input.TextArea
 
@@ -11,7 +9,6 @@ import {
   SelectBDStatus,
   SelectBDSource,
   SelectTitle,
-  SelectArea,
   SelectPartner, 
   SelectAllUser, 
   SelectOrganizatonArea, 
@@ -26,25 +23,9 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva';
-import moment from 'moment';
+import { formItemLayout } from '../constants';
+import LayoutItem from './LayoutItem';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-}
-function range(start, end) {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-}
 class ProjectBDForm extends React.Component {
 
   constructor(props) {
@@ -116,12 +97,6 @@ class ProjectBDForm extends React.Component {
     this.handleChangeBduser(this.state._bduser)
   }
 
-  // handleCountryChange = country => {
-  //   this.props.form.setFieldsValue({
-  //     mobileAreaCode: country.areaCode,
-  //   });
-  // }
-
   // 处理货币相关表单联动
   handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
     const currency = getCurrencyFromId(currencyId)
@@ -191,19 +166,6 @@ class ProjectBDForm extends React.Component {
             );
           }}
         </FormItem>
-
-        {/* <BasicFormItem label={i18n('project_bd.expirationtime')} name="expirationtime" valueType="object" initialValue={moment().startOf('hour')}>
-          <DatePicker
-            disabledDate={current => current && current < moment().startOf('day')}
-            disabledTime={() => ({ disabledMinutes: () => range(1, 30).concat(range(31, 60)) })}
-            showTime={{
-              hideDisabledOptions: true,
-              format: 'HH:mm',
-            }}
-            showToday={false}
-            format="YYYY-MM-DD HH:mm" 
-          />
-        </BasicFormItem> */}
 
         <BasicFormItem label={i18n('project_bd.industry_group')} name="indGroup" valueType="number" required>
           <SelectIndustryGroup />
@@ -326,7 +288,7 @@ class ProjectBDForm extends React.Component {
                       name="mobile"
                       rules={[{ validator: this.checkMobileInfo }]}
                     >
-                      <Input onBlur={this.props.mobileOnBlur} />
+                      <Input />
                     </FormItem>
                   </Col>
                 </Row>
@@ -368,16 +330,3 @@ function mapStateToProps(state) {
 }
 const ConnectedProjectBDForm = connect(mapStateToProps)(ProjectBDForm);
 export default React.forwardRef((props, ref) => <ConnectedProjectBDForm {...props} forwardedRef={ref} />);
-
-function LayoutItem({ label, children, style }) {
-  return (
-    <Row style={{marginBottom:24,...style}}>
-      <Col sm={6} xs={24}>
-        {label ? (
-          <span style={{float:'right',color:'rgba(0, 0, 0, 0.85)'}}>{label}<span style={{margin: '0 8px 0 2px'}}>:</span></span>
-        ) : null}
-      </Col>
-      <Col sm={14} xs={24}>{children}</Col>
-    </Row>
-  )
-}

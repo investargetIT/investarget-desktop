@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
-import { getUserInfo as getCurrentUserInfo } from './utils/util'
+import { getUserInfo as getCurrentUserInfo, getBeijingTime } from './utils/util'
 import _ from 'lodash'
 import { 
   ApiError, 
@@ -770,6 +770,9 @@ export const addProjBD = (data) => {
 }
 
 export const editProjBD = (id, data) => {
+  if (data.lastmodifytime == null) {
+    data.lastmodifytime = getBeijingTime(new Date());
+  }
   return r('/bd/projbd/' + id + '/', 'PUT', data)
 }
 

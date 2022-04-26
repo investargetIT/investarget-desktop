@@ -1,4 +1,5 @@
 import { Popconfirm, Button, Modal } from 'antd'
+import dayjs from 'dayjs';
 import * as api from '../api'
 window.api = api
 
@@ -593,3 +594,8 @@ export function updateURLParameter(props, param, paramVal) {
   var rows_txt = temp + "" + param + "=" + paramVal;
   return newAdditionalURL + rows_txt;
 }
+
+export function getBeijingTime(date) {
+  return dayjs(date).tz('Asia/Shanghai').format('YYYY-MM-DDTHH:mm:ss');
+}
+

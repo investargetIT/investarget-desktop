@@ -18,6 +18,12 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 if (['saas.investarget.net', 'saas.investarget.com'].includes(document.domain)) {
   localStorage.setItem('source', 1);
 }

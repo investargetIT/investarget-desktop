@@ -741,6 +741,7 @@ class SelectPartner extends React.Component {
   render() {
     return (
       <Select2
+        size={this.props.size}
         style={this.props.style || {}}
         getData={this.getPartner}
         getNameById={this.getUsernameById}
