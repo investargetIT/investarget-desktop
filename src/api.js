@@ -302,6 +302,33 @@ export function qiniuUpload(bucket, file) {
   })
 }
 
+// 大文件分片上传
+export function qiniuChunkUpload(formData) {
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const user = getCurrentUserInfo()
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  const options = {
+    headers,
+    method: 'POST',
+    body: formData,
+  };
+  return request('/service/uploaddata/', options);
+}
+
 /**
  * 在使用环信发送图片或语音等消息时需要先把这些文件上传给环信
  * WebSDK好像有直接发送图片的接口，先放这儿吧
