@@ -1,5 +1,6 @@
 import React from 'react';
 import * as api from '../api';
+import { uploadFileByChunks } from '../utils/util';
 
 class UploadDir extends React.Component {
 
@@ -76,7 +77,10 @@ class UploadDir extends React.Component {
           },
         });
         try {
-          const result = await api.qiniuUpload('file', file);
+          const result = await (file.size > 4194304
+            ? uploadFileByChunks(file)
+            : api.qiniuUpload('file', file)
+          );
           const { data } = result;
           const currentFileResult = {
             file: {

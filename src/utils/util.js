@@ -1,5 +1,5 @@
-import { Popconfirm, Button, Modal } from 'antd'
 import dayjs from 'dayjs';
+import SparkMD5 from 'spark-md5';
 import * as api from '../api'
 window.api = api
 
@@ -599,3 +599,80 @@ export function getBeijingTime(date) {
   return dayjs(date).tz('Asia/Shanghai').format('YYYY-MM-DDTHH:mm:ss');
 }
 
+export async function md5File(file) {
+  const chunkSize = 4194304; // 4MB
+  const chunks = Math.ceil(file.size / chunkSize);
+  let currentChunk = 0;
+  const spark = new SparkMD5.ArrayBuffer();
+  const fileReader = new FileReader();
+
+  const loadNext = () => {
+    const start = currentChunk * chunkSize;
+    const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+    fileReader.readAsArrayBuffer(file.slice(start, end));
+  };
+
+  return new Promise((resolve, reject) => {
+    fileReader.onload = (e) => {
+      console.log('read chunk nr', currentChunk + 1, 'of', chunks);
+      spark.append(e.target.result);
+      currentChunk++;
+
+      if (currentChunk < chunks) {
+        loadNext();
+      } else {
+        console.log('finished loading');
+        const md5 = spark.end();
+        console.info('computed hash', md5);
+        resolve(md5);
+      }
+    };
+
+    fileReader.onerror = (error) => {
+      console.warn('oops, something went wrong.');
+      reject(error);
+    };
+
+    loadNext();
+  });
+}
+
+export async function uploadFileByChunks(file) {
+  let md5;
+  try {
+    md5 = await md5File(file);
+  } catch (error) {
+    throw new Error('计算文件MD5失败');
+  }
+
+  const chunkSize = 4194304; // 4MB
+  const chunks = Math.ceil(file.size / chunkSize);
+  let temp_key;
+  let res;
+
+  for (let currentChunk = 0; currentChunk < chunks; currentChunk++) {
+    const start = currentChunk * chunkSize;
+    const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+    const fileChunk = file.slice(start, end);
+
+    const formData = new FormData();
+    formData.append('file', fileChunk, file.name);
+    formData.append('filename', file.name);
+    formData.append('totalSize', String(file.size));
+    formData.append('currentSize', String(chunkSize));
+    formData.append('currentChunk', String(currentChunk + 1));
+    formData.append('totalChunk', String(chunks));
+    formData.append('md5', md5);
+    formData.append('bucket', 'file');
+    if (temp_key) {
+      formData.append('temp_key', temp_key);
+    }
+    try {
+      res = await api.qiniuChunkUpload(formData);
+      temp_key = res.data.temp_key;
+    } catch (error) {
+      throw new Error('上传文件分块失败');
+    }
+  }
+  return res;
+}
