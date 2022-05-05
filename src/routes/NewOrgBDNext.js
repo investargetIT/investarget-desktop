@@ -96,6 +96,9 @@ class NewOrgBDList extends React.Component {
         manager: null,
         originalList: [],
         list: [],
+        // 导出excel的完整数据列表
+        exportList: [],
+        isExporting: false,
         loading: false,
         visible: false,
         currentBD: null,
@@ -511,7 +514,27 @@ class NewOrgBDList extends React.Component {
     });
   }
 
-  downloadExportFile = () => {
+  downloadExportFile = async () => {
+    this.setState({
+      // 重置导出数据列表
+      exportList: [],
+      isExporting: true,
+    });
+    try {
+      const exportList = await this.loadExportList();
+      this.setState({
+        exportList,
+        isExporting: false,
+      });
+    } catch (error) {
+      this.setState({
+        exportList: [],
+        isExporting: false,
+      });
+      handleError(error);
+      return;
+    }
+
     var link = document.createElement('a');
     link.download = '创建机构看板.xls';
 
@@ -527,6 +550,79 @@ class NewOrgBDList extends React.Component {
 
     link.href = tableToExcel(table, '创建机构看板');
     link.click();
+  }
+
+  loadExportList = async () => {
+    const params = {
+      page_index: 1,
+      page_size: this.state.pageSize,
+      search: this.search,
+      text: this.text,
+      tags: this.tags,
+    }
+
+    const userGroupResult = await api.queryUserGroup({ type: 'investor' });
+    const investorGroup = userGroupResult.data.data.map(item => item.id);
+    const highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
+    const orgResult = await requestAllData(api.searchOrg, params, 100);
+    const orgList = orgResult.data.data.map(item => ({
+      id: `${item.id}-${this.projId}`,
+      org: item, 
+      proj: {id: this.projId, name: this.projDetail.projtitleC},
+      loaded: false,
+      items: []
+    }));
+
+    for (let i = 0; i < orgList.length; i++) {
+      const orgItem = orgList[i];
+      const org = orgItem.org.id;
+      let reqUser = await requestAllData(api.getUser, {
+        starmobile: true,
+        org: [org],
+        onjob: true,
+        groups: investorGroup,
+        title: highScoreTitles.join(','),
+        tags: this.tags.join(','),
+      }, 100);
+      if (reqUser.data.count === 0) {
+        reqUser = await requestAllData(api.getUser, {
+          starmobile: true,
+          org: [org],
+          onjob: true,
+          groups: investorGroup,
+          tags: this.tags.join(','),
+        }, 100);
+      }
+      const orgUser = reqUser.data.data;
+      //获取投资人的交易师
+      orgUser.forEach(element => {
+        const relations = element.trader_relations == null ? [] : element.trader_relations;
+        element.traders = relations.map(m => ({
+          label: m.traderuser.username,
+          value: m.traderuser.id,
+          onjob: m.traderuser.onjob,
+          familiar: m.familiar
+        }))
+      });
+      // 过滤掉重复的投资人
+      orgItem.items = orgUser.filter((f, pos, arr) => arr.map(m => m.id).indexOf(f.id) === pos);
+    }
+
+    const effectiveOrgList = orgList.filter((element) => element.items.length > 0);
+
+    const orgUserList = effectiveOrgList
+      .map(m => m.items)
+      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+    // 机构的第一个联系人行才显示机构简介
+    let uniqueOrgId = null;
+    orgUserList.forEach((item) => {
+      if (item.org.id !== uniqueOrgId) {
+        uniqueOrgId = item.org.id;
+        item.showOrgDescription = true;
+      }
+    });
+
+    return orgUserList;
   }
 
   removeInvestorOnList = (investor) => {
@@ -579,7 +675,7 @@ class NewOrgBDList extends React.Component {
   }
 
   render() {
-    const { filters, search, page, total, list, loading, source, managers, expanded } = this.state
+    const { filters, search, page, total, list, loading, source, managers, expanded, exportList, isExporting } = this.state
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => {
           let org = record.org
@@ -698,17 +794,6 @@ class NewOrgBDList extends React.Component {
       );
     }
 
-    const dataSourceForExportCreateOrgBD = list.map(m => m.items)
-    .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-    // 机构的第一个联系人行才显示机构简介
-    let uniqueOrgId = null;
-    dataSourceForExportCreateOrgBD.forEach((item) => {
-      if (item.org.id !== uniqueOrgId) {
-        uniqueOrgId = item.org.id;
-        item.showOrgDescription = true;
-      }
-    });
-
     const columnsForExportCreateOrgBD = [
       {
         title: '机构',
@@ -803,6 +888,7 @@ class NewOrgBDList extends React.Component {
           <Button
             style={{ backgroundColor: 'orange', border: 'none' }}
             type="primary"
+            loading={isExporting}
             onClick={this.downloadExportFile}
           >
             {i18n('project_library.export_excel')}
@@ -848,7 +934,7 @@ class NewOrgBDList extends React.Component {
           className="export-create-orgbd"
           style={{ display: 'none' }}
           columns={columnsForExportCreateOrgBD}
-          dataSource={dataSourceForExportCreateOrgBD}
+          dataSource={exportList}
           rowKey={record => record.key}
           pagination={false}
           size={"middle"}
@@ -858,6 +944,7 @@ class NewOrgBDList extends React.Component {
           <Button
             style={{ backgroundColor: 'orange', border: 'none' }}
             type="primary"
+            loading={isExporting}
             onClick={this.downloadExportFile}
           >
             {i18n('project_library.export_excel')}
