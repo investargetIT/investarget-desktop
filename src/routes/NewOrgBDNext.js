@@ -7,7 +7,6 @@ import {
   timeWithoutHour, 
   handleError, 
   hasPerm, 
-  intersection, 
   requestAllData,
   getURLParamValue,
   getUserInfo,
@@ -71,8 +70,6 @@ class NewOrgBDList extends React.Component {
     super(props);
 
     const projId = getURLParamValue(props, 'projId');
-    const search = getURLParamValue(props, 'search');
-    const text = getURLParamValue(props, 'text');
     const tags = getURLParamValue(props, 'tags');
 
     this.orgList = {}
@@ -80,8 +77,6 @@ class NewOrgBDList extends React.Component {
     this.projId = parseInt(projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
     this.tags = (tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
-    this.search = search;
-    this.text = text;
     this.projDetail = {}
 
     // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
@@ -91,14 +86,15 @@ class NewOrgBDList extends React.Component {
         filters: OrgBDFilter.defaultValue,
         search: '',
         page: 1,
-        pageSize: getUserInfo().page || 10,
+        // pageSize: getUserInfo().page || 10,
+        pageSize: 2,
         total: 0,
         manager: null,
         originalList: [],
         list: [],
+        allLoaded: false,
         // 导出excel的完整数据列表
         exportList: [],
-        isExporting: false,
         loading: false,
         visible: false,
         currentBD: null,
@@ -219,41 +215,34 @@ class NewOrgBDList extends React.Component {
     }
   }
 
-  getOrgBdList = () => {
+  getOrgBdList = async () => {
     this.setState({ loading: true, expanded: [] });
+    this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
+    const userResult = await api.queryUserGroup({ type: 'investor' })
+    this.investorGroup = userResult.data.data.map(item => item.id);
     const params = {
-      page_index: this.state.page,
-      page_size: this.state.pageSize,
-      search: this.search,
-      text: this.text,
+      page_index: 1,
       tags: this.tags,
     }
-
-    api.queryUserGroup({ type: 'investor' })
-    .then(result => {
-      this.investorGroup = result.data.data.map(item => item.id);
-      return api.searchOrg(params);
-    })
-    .then(result => {
-      this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
-      let list = result.data.data
-      list.forEach(item => {this.orgList[item.id] = item})
-      list = list.map(item => ({
-        id: `${item.id}-${this.projId}`,
-        org: item, 
-        proj: {id: this.projId, name: this.projDetail.projtitleC},
-        loaded: false,
-        items: []
-      }));
-      this.setState({
+    const orgResult = await requestAllData(api.searchOrg, params, 100);
+    let list = orgResult.data.data
+    list.forEach(item => {this.orgList[item.id] = item})
+    list = list.map(item => ({
+      id: `${item.id}-${this.projId}`,
+      org: item, 
+      proj: {id: this.projId, name: this.projDetail.projtitleC},
+      loaded: false,
+      items: []
+    }));
+    this.setState(
+      {
         list,
-        total: result.data.count,
+        total: orgResult.data.count,
         loading: false,
         expanded: list.map(item => item.id),
       }, 
       () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
     );
-    })
   }
 
   loadOrgBDListDetail = async list => {
@@ -335,6 +324,7 @@ class NewOrgBDList extends React.Component {
       list: newList,
       originalList: [...newList],
       expanded: newList.map(item => item.id),
+      allLoaded: newList.every(({ loaded }) => loaded),
     });
 
     return dataForSingleOrg;
@@ -490,6 +480,7 @@ class NewOrgBDList extends React.Component {
     if (!this.state.search) {
       const list = this.state.originalList;
       this.setState({
+        page: 1,
         list,
         expanded: list.map(item => item.id),
       });
@@ -509,32 +500,40 @@ class NewOrgBDList extends React.Component {
       })
     );
     this.setState({
+      page: 1,
       list: newList,
       expanded: newList.map(item => item.id),
     });
   }
 
-  downloadExportFile = async () => {
-    this.setState({
-      // 重置导出数据列表
-      exportList: [],
-      isExporting: true,
-    });
+  handleDownload = async () => {
     try {
-      const exportList = await this.loadExportList();
+      const orgUserList = this.state.originalList
+        .map(m => m.items)
+        .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+      // 机构的第一个联系人行才显示机构简介
+      let uniqueOrgId = null;
+      orgUserList.forEach((item) => {
+        if (item.org.id !== uniqueOrgId) {
+          uniqueOrgId = item.org.id;
+          item.showOrgDescription = true;
+        }
+      });
       this.setState({
-        exportList,
-        isExporting: false,
+        exportList: orgUserList,
+      }, () => {
+        this.downloadExcel();
       });
     } catch (error) {
       this.setState({
         exportList: [],
-        isExporting: false,
       });
       handleError(error);
       return;
     }
+  }
 
+  downloadExcel = () => {
     var link = document.createElement('a');
     link.download = '创建机构看板.xls';
 
@@ -550,80 +549,7 @@ class NewOrgBDList extends React.Component {
 
     link.href = tableToExcel(table, '创建机构看板');
     link.click();
-  }
-
-  loadExportList = async () => {
-    const params = {
-      page_index: 1,
-      page_size: this.state.pageSize,
-      search: this.search,
-      text: this.text,
-      tags: this.tags,
-    }
-
-    const userGroupResult = await api.queryUserGroup({ type: 'investor' });
-    const investorGroup = userGroupResult.data.data.map(item => item.id);
-    const highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
-    const orgResult = await requestAllData(api.searchOrg, params, 100);
-    const orgList = orgResult.data.data.map(item => ({
-      id: `${item.id}-${this.projId}`,
-      org: item, 
-      proj: {id: this.projId, name: this.projDetail.projtitleC},
-      loaded: false,
-      items: []
-    }));
-
-    for (let i = 0; i < orgList.length; i++) {
-      const orgItem = orgList[i];
-      const org = orgItem.org.id;
-      let reqUser = await requestAllData(api.getUser, {
-        starmobile: true,
-        org: [org],
-        onjob: true,
-        groups: investorGroup,
-        title: highScoreTitles.join(','),
-        tags: this.tags.join(','),
-      }, 100);
-      if (reqUser.data.count === 0) {
-        reqUser = await requestAllData(api.getUser, {
-          starmobile: true,
-          org: [org],
-          onjob: true,
-          groups: investorGroup,
-          tags: this.tags.join(','),
-        }, 100);
-      }
-      const orgUser = reqUser.data.data;
-      //获取投资人的交易师
-      orgUser.forEach(element => {
-        const relations = element.trader_relations == null ? [] : element.trader_relations;
-        element.traders = relations.map(m => ({
-          label: m.traderuser.username,
-          value: m.traderuser.id,
-          onjob: m.traderuser.onjob,
-          familiar: m.familiar
-        }))
-      });
-      // 过滤掉重复的投资人
-      orgItem.items = orgUser.filter((f, pos, arr) => arr.map(m => m.id).indexOf(f.id) === pos);
-    }
-
-    const effectiveOrgList = orgList.filter((element) => element.items.length > 0);
-
-    const orgUserList = effectiveOrgList
-      .map(m => m.items)
-      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-    // 机构的第一个联系人行才显示机构简介
-    let uniqueOrgId = null;
-    orgUserList.forEach((item) => {
-      if (item.org.id !== uniqueOrgId) {
-        uniqueOrgId = item.org.id;
-        item.showOrgDescription = true;
-      }
-    });
-
-    return orgUserList;
-  }
+  };
 
   removeInvestorOnList = (investor) => {
     const { list, originalList } = this.state;
@@ -667,15 +593,17 @@ class NewOrgBDList extends React.Component {
   }
 
   handlePageChange = (page) => {
-    this.setState({ page }, this.getOrgBdList)
+    this.setState({ page })
   }
 
   handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getOrgBdList)
+    this.setState({ pageSize, page: 1 })
   }
 
   render() {
-    const { filters, search, page, total, list, loading, source, managers, expanded, exportList, isExporting } = this.state
+    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded, exportList, allLoaded } = this.state
+    const pagedList = list.slice((page - 1) * pageSize, page * pageSize);
+
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => {
           let org = record.org
@@ -888,16 +816,16 @@ class NewOrgBDList extends React.Component {
           <Button
             style={{ backgroundColor: 'orange', border: 'none' }}
             type="primary"
-            loading={isExporting}
-            onClick={this.downloadExportFile}
+            disabled={!allLoaded}
+            onClick={this.handleDownload}
           >
             {i18n('project_library.export_excel')}
           </Button>
           <Pagination
             style={paginationStyle}
-            total={this.state.total}
-            current={this.state.page}
-            pageSize={this.state.pageSize}
+            total={list.length}
+            current={page}
+            pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
@@ -914,6 +842,7 @@ class NewOrgBDList extends React.Component {
             placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
             value={search}
             onChange={search => this.setState({ search })}
+            disabled={!allLoaded}
             onSearch={this.handleSearch} />
         </div>
 
@@ -921,7 +850,7 @@ class NewOrgBDList extends React.Component {
           onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
-          dataSource={list}
+          dataSource={pagedList}
           rowKey={record=>record.id}
           loading={loading}
           onExpand={this.onExpand.bind(this)}
@@ -944,16 +873,16 @@ class NewOrgBDList extends React.Component {
           <Button
             style={{ backgroundColor: 'orange', border: 'none' }}
             type="primary"
-            loading={isExporting}
-            onClick={this.downloadExportFile}
+            disabled={!allLoaded}
+            onClick={this.handleDownload}
           >
             {i18n('project_library.export_excel')}
           </Button>
           <Pagination
             style={paginationStyle}
-            total={this.state.total}
-            current={this.state.page}
-            pageSize={this.state.pageSize}
+            total={list.length}
+            current={page}
+            pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
             onShowSizeChange={this.handlePageSizeChange}
