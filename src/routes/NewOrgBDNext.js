@@ -488,24 +488,35 @@ class NewOrgBDList extends React.Component {
       });
       return;
     }
-    this.setState({ loading: true });
-    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
-    this.setState({ loading: false });
-    const searchResult = reqSearch.data.data.map(m => m.username);
-    let newList = this.state.originalList.filter(f1 => 
-      f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
-    );
-    newList = newList.map(m => 
-      ({
-        ...m,
-        items: m.items.filter(f => searchResult.includes(f.username)) 
-      })
-    );
-    this.setState({
-      page: 1,
-      list: newList,
-      expanded: newList.map(item => item.id),
-    });
+
+    try {
+      this.setState({ loading: true });
+      const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
+      this.setState({ loading: false });
+      const searchResult = reqSearch.data.data.map(m => m.username);
+      let newList = this.state.originalList.filter(f1 => 
+        f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
+      );
+      newList = newList.map(m => 
+        ({
+          ...m,
+          items: m.items.filter(f => searchResult.includes(f.username)) 
+        })
+      );
+      this.setState({
+        page: 1,
+        list: newList,
+        expanded: newList.map(item => item.id),
+      });
+    } catch (error) {
+      handleError(error);
+      this.setState({
+        loading: false,
+        page: 1,
+        list: [],
+        expanded: [],
+      });
+    }
   }
 
   handleDownload = async () => {
