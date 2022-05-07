@@ -218,33 +218,43 @@ class NewOrgBDList extends React.Component {
   }
 
   getOrgBdList = async () => {
-    this.setState({ loading: true, expanded: [] });
-    this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
-    const userResult = await api.queryUserGroup({ type: 'investor' })
-    this.investorGroup = userResult.data.data.map(item => item.id);
-    const params = {
-      page_index: 1,
-      tags: this.tags,
-    }
-    const orgResult = await requestAllData(api.searchOrg, params, 100);
-    let list = orgResult.data.data
-    list.forEach(item => {this.orgList[item.id] = item})
-    list = list.map(item => ({
-      id: `${item.id}-${this.projId}`,
-      org: item, 
-      proj: {id: this.projId, name: this.projDetail.projtitleC},
-      loaded: false,
-      items: []
-    }));
-    this.setState(
-      {
-        list,
-        total: orgResult.data.count,
+    try {
+      this.setState({ loading: true, expanded: [] });
+      this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
+      const userResult = await api.queryUserGroup({ type: 'investor' })
+      this.investorGroup = userResult.data.data.map(item => item.id);
+      const params = {
+        page_index: 1,
+        tags: this.tags,
+      }
+      const orgResult = await requestAllData(api.searchOrg, params, 100);
+      let list = orgResult.data.data
+      list.forEach(item => {this.orgList[item.id] = item})
+      list = list.map(item => ({
+        id: `${item.id}-${this.projId}`,
+        org: item, 
+        proj: {id: this.projId, name: this.projDetail.projtitleC},
+        loaded: false,
+        items: []
+      }));
+      this.setState(
+        {
+          list,
+          total: orgResult.data.count,
+          loading: false,
+          expanded: list.map(item => item.id),
+        }, 
+        () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
+      );
+    } catch (error) {
+      handleError(error);
+      this.setState({
         loading: false,
-        expanded: list.map(item => item.id),
-      }, 
-      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
-    );
+        list: [],
+        total: 0,
+        expanded: [],
+      });
+    }
   }
 
   loadOrgBDListDetail = async list => {
@@ -330,16 +340,6 @@ class NewOrgBDList extends React.Component {
     });
 
     return dataForSingleOrg;
-  }
-
-  handleTableChange = (pagination, filters, sorter) => {
-    this.setState(
-      { 
-        sort: sorter.columnKey, 
-        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
-      }, 
-      this.getOrgBdList
-    );
   }
 
   content(record) {
@@ -867,7 +867,6 @@ class NewOrgBDList extends React.Component {
         </div>
 
         <Table
-          onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
           dataSource={pagedList}
