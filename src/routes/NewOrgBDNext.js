@@ -22,6 +22,7 @@ import {
   Col,
   Popconfirm,
   Pagination,
+  Typography,
 } from 'antd';
 import { OrgBDFilter } from '../components/Filter';
 import { Search } from '../components/Search';
@@ -34,6 +35,8 @@ import { SelectTrader } from '../components/ExtraInput';
 import { connect } from 'dva';
 import './NewOrgBDNext.css';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+
+const { Text } = Typography;
 
 const paginationStyle = { textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
@@ -812,14 +815,17 @@ class NewOrgBDList extends React.Component {
       {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          <Button
-            style={{ backgroundColor: 'orange', border: 'none' }}
-            type="primary"
-            disabled={!allLoaded}
-            onClick={this.handleDownload}
-          >
-            {i18n('project_library.export_excel')}
-          </Button>
+          <div>
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
+            >
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
+          </div>
           <Pagination
             style={paginationStyle}
             total={list.length}
@@ -835,14 +841,18 @@ class NewOrgBDList extends React.Component {
 
         <div style={{ marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <H3 size="1.2em" style={{ marginTop: 'unset', marginBottom: 'unset' }}>○ 选择机构列表</H3>
-          <Search
-            size="middle"
-            style={{ width: 300 }}
-            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
-            value={search}
-            onChange={search => this.setState({ search })}
-            disabled={!allLoaded}
-            onSearch={this.handleSearch} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {!allLoaded && <Text type="warning" style={{ marginRight: 8 }}>数据还在加载中，请稍后点击</Text>}
+            <Search
+              size="middle"
+              style={{ width: 300 }}
+              placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
+              value={search}
+              onChange={search => this.setState({ search })}
+              disabled={!allLoaded}
+              onSearch={this.handleSearch}
+            />
+          </div>
         </div>
 
         <Table
@@ -869,14 +879,17 @@ class NewOrgBDList extends React.Component {
         />
 
         <div style={{ marginTop: 24, marginBottom: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          <Button
-            style={{ backgroundColor: 'orange', border: 'none' }}
-            type="primary"
-            disabled={!allLoaded}
-            onClick={this.handleDownload}
-          >
-            {i18n('project_library.export_excel')}
-          </Button>
+          <div>
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
+            >
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
+          </div>
           <Pagination
             style={paginationStyle}
             total={list.length}
