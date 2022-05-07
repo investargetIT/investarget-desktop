@@ -22,6 +22,7 @@ import {
   Col,
   Popconfirm,
   Pagination,
+  Typography,
 } from 'antd';
 import { OrgBDFilter } from '../components/Filter';
 import { Search } from '../components/Search';
@@ -34,6 +35,8 @@ import { SelectTrader } from '../components/ExtraInput';
 import { connect } from 'dva';
 import './NewOrgBDNext.css';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+
+const { Text } = Typography;
 
 const paginationStyle = { textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
@@ -215,33 +218,43 @@ class NewOrgBDList extends React.Component {
   }
 
   getOrgBdList = async () => {
-    this.setState({ loading: true, expanded: [] });
-    this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
-    const userResult = await api.queryUserGroup({ type: 'investor' })
-    this.investorGroup = userResult.data.data.map(item => item.id);
-    const params = {
-      page_index: 1,
-      tags: this.tags,
-    }
-    const orgResult = await requestAllData(api.searchOrg, params, 100);
-    let list = orgResult.data.data
-    list.forEach(item => {this.orgList[item.id] = item})
-    list = list.map(item => ({
-      id: `${item.id}-${this.projId}`,
-      org: item, 
-      proj: {id: this.projId, name: this.projDetail.projtitleC},
-      loaded: false,
-      items: []
-    }));
-    this.setState(
-      {
-        list,
-        total: orgResult.data.count,
+    try {
+      this.setState({ loading: true, expanded: [] });
+      this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
+      const userResult = await api.queryUserGroup({ type: 'investor' })
+      this.investorGroup = userResult.data.data.map(item => item.id);
+      const params = {
+        page_index: 1,
+        tags: this.tags,
+      }
+      const orgResult = await requestAllData(api.searchOrg, params, 100);
+      let list = orgResult.data.data
+      list.forEach(item => {this.orgList[item.id] = item})
+      list = list.map(item => ({
+        id: `${item.id}-${this.projId}`,
+        org: item, 
+        proj: {id: this.projId, name: this.projDetail.projtitleC},
+        loaded: false,
+        items: []
+      }));
+      this.setState(
+        {
+          list,
+          total: orgResult.data.count,
+          loading: false,
+          expanded: list.map(item => item.id),
+        }, 
+        () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
+      );
+    } catch (error) {
+      handleError(error);
+      this.setState({
         loading: false,
-        expanded: list.map(item => item.id),
-      }, 
-      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
-    );
+        list: [],
+        total: 0,
+        expanded: [],
+      });
+    }
   }
 
   loadOrgBDListDetail = async list => {
@@ -327,16 +340,6 @@ class NewOrgBDList extends React.Component {
     });
 
     return dataForSingleOrg;
-  }
-
-  handleTableChange = (pagination, filters, sorter) => {
-    this.setState(
-      { 
-        sort: sorter.columnKey, 
-        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
-      }, 
-      this.getOrgBdList
-    );
   }
 
   content(record) {
@@ -485,24 +488,35 @@ class NewOrgBDList extends React.Component {
       });
       return;
     }
-    this.setState({ loading: true });
-    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
-    this.setState({ loading: false });
-    const searchResult = reqSearch.data.data.map(m => m.username);
-    let newList = this.state.originalList.filter(f1 => 
-      f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
-    );
-    newList = newList.map(m => 
-      ({
-        ...m,
-        items: m.items.filter(f => searchResult.includes(f.username)) 
-      })
-    );
-    this.setState({
-      page: 1,
-      list: newList,
-      expanded: newList.map(item => item.id),
-    });
+
+    try {
+      this.setState({ loading: true });
+      const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
+      this.setState({ loading: false });
+      const searchResult = reqSearch.data.data.map(m => m.username);
+      let newList = this.state.originalList.filter(f1 => 
+        f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
+      );
+      newList = newList.map(m => 
+        ({
+          ...m,
+          items: m.items.filter(f => searchResult.includes(f.username)) 
+        })
+      );
+      this.setState({
+        page: 1,
+        list: newList,
+        expanded: newList.map(item => item.id),
+      });
+    } catch (error) {
+      handleError(error);
+      this.setState({
+        loading: false,
+        page: 1,
+        list: [],
+        expanded: [],
+      });
+    }
   }
 
   handleDownload = async () => {
@@ -812,14 +826,17 @@ class NewOrgBDList extends React.Component {
       {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          <Button
-            style={{ backgroundColor: 'orange', border: 'none' }}
-            type="primary"
-            disabled={!allLoaded}
-            onClick={this.handleDownload}
-          >
-            {i18n('project_library.export_excel')}
-          </Button>
+          <div>
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
+            >
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
+          </div>
           <Pagination
             style={paginationStyle}
             total={list.length}
@@ -835,18 +852,21 @@ class NewOrgBDList extends React.Component {
 
         <div style={{ marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <H3 size="1.2em" style={{ marginTop: 'unset', marginBottom: 'unset' }}>○ 选择机构列表</H3>
-          <Search
-            size="middle"
-            style={{ width: 300 }}
-            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
-            value={search}
-            onChange={search => this.setState({ search })}
-            disabled={!allLoaded}
-            onSearch={this.handleSearch} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {!allLoaded && <Text type="warning" style={{ marginRight: 8 }}>数据还在加载中，请稍后点击</Text>}
+            <Search
+              size="middle"
+              style={{ width: 300 }}
+              placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
+              value={search}
+              onChange={search => this.setState({ search })}
+              disabled={!allLoaded}
+              onSearch={this.handleSearch}
+            />
+          </div>
         </div>
 
         <Table
-          onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
           dataSource={pagedList}
@@ -869,14 +889,17 @@ class NewOrgBDList extends React.Component {
         />
 
         <div style={{ marginTop: 24, marginBottom: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          <Button
-            style={{ backgroundColor: 'orange', border: 'none' }}
-            type="primary"
-            disabled={!allLoaded}
-            onClick={this.handleDownload}
-          >
-            {i18n('project_library.export_excel')}
-          </Button>
+          <div>
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
+            >
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
+          </div>
           <Pagination
             style={paginationStyle}
             total={list.length}
