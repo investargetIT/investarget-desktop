@@ -288,18 +288,14 @@ export function qiniuUpload(bucket, file) {
     headers["token"] = user.token
   }
 
-  var formData = new FormData()
+  const formData = new FormData()
   formData.append('file', file)
-
-  return fetch(baseUrl + '/service/qiniubigupload?bucket=' + bucket, {
+  const options = {
     headers,
     method: 'POST',
     body: formData,
-  }).then(response => {
-    return response.json()
-  }).then(data => {
-    return { data: data.result }
-  })
+  };
+  return request('/service/qiniubigupload?bucket=' + bucket, options);
 }
 
 // 大文件分片上传
