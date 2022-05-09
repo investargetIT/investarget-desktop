@@ -802,6 +802,7 @@ const SelectExistProject = (props) => {
     params['max_size'] = params['page_size']
     params['bdm'] = props.bdm;
     params['projstatus'] = props.projstatus;
+    params['user'] = props.user;
     delete params['page_index']
     delete params['page_size']
     return api.getProj(params).then(result => {
