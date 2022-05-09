@@ -637,7 +637,7 @@ export async function md5File(file) {
   });
 }
 
-export async function uploadFileByChunks(file) {
+export async function uploadFileByChunks(file, onProgress) {
   let md5;
   try {
     md5 = await md5File(file);
@@ -669,6 +669,9 @@ export async function uploadFileByChunks(file) {
     }
     try {
       res = await api.qiniuChunkUpload(formData);
+      onProgress({
+        percentage: Math.floor((currentChunk + 1) / chunks * 100),
+      });
       temp_key = res.data.temp_key;
     } catch (error) {
       throw new Error('上传文件分块失败');

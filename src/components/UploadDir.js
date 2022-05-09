@@ -50,12 +50,17 @@ class UploadDir extends React.Component {
     }
   } 
 
+  handleProgress = ({ percentage }) => {
+    this.props.updateUploadProgress(percentage);
+  };
+
   uploadFiles = async files => {
     const allFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
     }
+    let uploadFailed = false;
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
@@ -78,7 +83,7 @@ class UploadDir extends React.Component {
         });
         try {
           const result = await (file.size > 4194304
-            ? uploadFileByChunks(file)
+            ? uploadFileByChunks(file, this.handleProgress)
             : api.qiniuUpload('file', file)
           );
           const { data } = result;
@@ -97,6 +102,7 @@ class UploadDir extends React.Component {
           allFileResult.push(currentFileResult)
           await this.props.onChange(currentFileResult);
         } catch (error) {
+          uploadFailed = true;
           console.error(error);
           await this.props.onChange({
             file: {
@@ -112,7 +118,7 @@ class UploadDir extends React.Component {
         }
       }
       // 更新上传进度
-      if (this.props.updateUploadProgress) {
+      if (!uploadFailed && this.props.updateUploadProgress) {
         if (index === files.length - 1) {
           this.props.updateUploadProgress(100);
         } else {
