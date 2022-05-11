@@ -1,5 +1,6 @@
 import React from 'react';
 import * as api from '../api';
+import { SIZE_4M } from '../constants';
 import { uploadFileByChunks } from '../utils/util';
 
 class UploadDir extends React.Component {
@@ -50,7 +51,9 @@ class UploadDir extends React.Component {
     }
   } 
 
-  handleProgress = ({ percentage }) => {
+  handleProgress = (total, index, partPercentage) => {
+    const percentEachFile = Math.floor(100 / total);
+    const percentage = Math.floor(percentEachFile * (index + partPercentage / 100));
     this.props.updateUploadProgress(percentage);
   };
 
@@ -82,8 +85,10 @@ class UploadDir extends React.Component {
           },
         });
         try {
-          const result = await (file.size > 4194304
-            ? uploadFileByChunks(file, this.handleProgress)
+          const result = await (file.size > SIZE_4M
+            ? uploadFileByChunks(file, (partPercentage) => {
+              this.handleProgress(files.length, index, partPercentage);
+            })
             : api.qiniuUpload('file', file)
           );
           const { data } = result;
