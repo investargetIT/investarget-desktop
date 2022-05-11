@@ -5,6 +5,7 @@ window.api = api
 
 import { baseUrl } from './request'
 import i18next from 'i18next'
+import { SIZE_4M } from '../constants';
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -600,7 +601,7 @@ export function getBeijingTime(date) {
 }
 
 export async function md5File(file) {
-  const chunkSize = 4194304; // 4MB
+  const chunkSize = SIZE_4M;
   const chunks = Math.ceil(file.size / chunkSize);
   let currentChunk = 0;
   const spark = new SparkMD5.ArrayBuffer();
@@ -614,22 +615,18 @@ export async function md5File(file) {
 
   return new Promise((resolve, reject) => {
     fileReader.onload = (e) => {
-      console.log('read chunk nr', currentChunk + 1, 'of', chunks);
       spark.append(e.target.result);
       currentChunk++;
 
       if (currentChunk < chunks) {
         loadNext();
       } else {
-        console.log('finished loading');
         const md5 = spark.end();
-        console.info('computed hash', md5);
         resolve(md5);
       }
     };
 
     fileReader.onerror = (error) => {
-      console.warn('oops, something went wrong.');
       reject(error);
     };
 
@@ -645,7 +642,7 @@ export async function uploadFileByChunks(file, onProgress) {
     throw new Error('计算文件MD5失败');
   }
 
-  const chunkSize = 4194304; // 4MB
+  const chunkSize = SIZE_4M;
   const chunks = Math.ceil(file.size / chunkSize);
   let temp_key;
   let res;
@@ -669,9 +666,8 @@ export async function uploadFileByChunks(file, onProgress) {
     }
     try {
       res = await api.qiniuChunkUpload(formData);
-      onProgress({
-        percentage: Math.floor((currentChunk + 1) / chunks * 100),
-      });
+      const percentage = Math.floor((currentChunk + 1) / chunks * 100);
+      onProgress(percentage);
       temp_key = res.data.temp_key;
     } catch (error) {
       throw new Error('上传文件分块失败');

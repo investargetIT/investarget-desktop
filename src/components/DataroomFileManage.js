@@ -532,7 +532,6 @@ function DataroomFileManage({
             // react.setState({ loading: false })
           } else if (info.file.status === 'error') {
             message.error(`${info.file.name} 文件上传失败`);
-            setUploadDirProgress(null);
             // react.setState({ loading: false })
           } else if (info.file.status === 'uploading') {
             // react.setState({ loading: true })
