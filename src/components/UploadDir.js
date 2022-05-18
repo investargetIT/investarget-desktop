@@ -1,5 +1,7 @@
 import React from 'react';
 import * as api from '../api';
+import { SIZE_4M } from '../constants';
+import { uploadFileByChunks } from '../utils/util';
 
 class UploadDir extends React.Component {
 
@@ -49,12 +51,19 @@ class UploadDir extends React.Component {
     }
   } 
 
+  handleProgress = (total, index, partPercentage) => {
+    const percentEachFile = Math.floor(100 / total);
+    const percentage = Math.floor(percentEachFile * (index + partPercentage / 100));
+    this.props.updateUploadProgress(percentage);
+  };
+
   uploadFiles = async files => {
     const allFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
     }
+    let uploadFailed = false;
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
@@ -76,7 +85,12 @@ class UploadDir extends React.Component {
           },
         });
         try {
-          const result = await api.qiniuUpload('file', file);
+          const result = await (file.size > SIZE_4M
+            ? uploadFileByChunks(file, (partPercentage) => {
+              this.handleProgress(files.length, index, partPercentage);
+            })
+            : api.qiniuUpload('file', file)
+          );
           const { data } = result;
           const currentFileResult = {
             file: {
@@ -93,6 +107,7 @@ class UploadDir extends React.Component {
           allFileResult.push(currentFileResult)
           await this.props.onChange(currentFileResult);
         } catch (error) {
+          uploadFailed = true;
           console.error(error);
           await this.props.onChange({
             file: {
@@ -108,7 +123,7 @@ class UploadDir extends React.Component {
         }
       }
       // 更新上传进度
-      if (this.props.updateUploadProgress) {
+      if (!uploadFailed && this.props.updateUploadProgress) {
         if (index === files.length - 1) {
           this.props.updateUploadProgress(100);
         } else {

@@ -288,18 +288,41 @@ export function qiniuUpload(bucket, file) {
     headers["token"] = user.token
   }
 
-  var formData = new FormData()
+  const formData = new FormData()
   formData.append('file', file)
-
-  return fetch(baseUrl + '/service/qiniubigupload?bucket=' + bucket, {
+  const options = {
     headers,
     method: 'POST',
     body: formData,
-  }).then(response => {
-    return response.json()
-  }).then(data => {
-    return { data: data.result }
-  })
+  };
+  return request('/service/qiniubigupload?bucket=' + bucket, options);
+}
+
+// 大文件分片上传
+export function qiniuChunkUpload(formData) {
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const user = getCurrentUserInfo()
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  const options = {
+    headers,
+    method: 'POST',
+    body: formData,
+  };
+  return request('/service/uploaddata/', options);
 }
 
 /**
