@@ -112,7 +112,7 @@ class FileMgmt extends React.Component {
       this.setState({ parentId: file.id })
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
-        window.open(file.fileurl);
+        window.open(file.fileurl, '_blank', 'noopener');
       } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(file.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
@@ -125,7 +125,7 @@ class FileMgmt extends React.Component {
         const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
           '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) + 
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
-        window.open(url)
+        window.open(url, '_blank', 'noopener')
       }
     }
   }

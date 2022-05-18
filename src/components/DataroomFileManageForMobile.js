@@ -897,7 +897,7 @@ function DataroomFileManage({
   }
 
   function handleOpenFileInNewWindowClick() {
-    window.open(previewFileUrl);
+    window.open(previewFileUrl, '_blank', 'noopener');
   }
 
   function onSelectFolderForMoveFiles(keys) {

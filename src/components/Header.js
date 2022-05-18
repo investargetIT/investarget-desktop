@@ -141,7 +141,7 @@ function Header(props) {
         })
         break
       case 'email':
-        window.open('http://mail.investarget.com');
+        window.open('http://mail.investarget.com', '_blank', 'noopener');
         break;
       case 'personal_center':
         dispatch(routerRedux.push('/app/personal-center'));
