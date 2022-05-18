@@ -58,7 +58,7 @@ class NewOrgBD extends React.Component {
     const search = searchOption === '0' ? keyword : '';
     const text = searchOption === '1' ? keyword : '';
     const tagsEncoded = encodeURIComponent(tags.join(','));
-    window.open(`/app/org/newbd?projId=${projId}&text=${text}&search=${search}&tags=${tagsEncoded}`);
+    window.open(`/app/org/newbd?projId=${projId}&text=${text}&search=${search}&tags=${tagsEncoded}`, '_blank', 'noopener');
   }
 
   render() {
