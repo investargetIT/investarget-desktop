@@ -283,7 +283,7 @@ class ProjectDetail extends React.Component {
       });
       return;
     }
-    window.open("/app/projects/recommend/" + this.state.id);
+    window.open("/app/projects/recommend/" + this.state.id, '_blank', 'noopener');
   }
 
 

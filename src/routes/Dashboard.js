@@ -169,7 +169,7 @@ function Dashboard(props) {
       const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
         '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
         '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
-      window.open(url)
+      window.open(url, '_blank', 'noopener')
     } else if ((/\.(doc|docx|xls|xlsx|ppt|pptx)$/i).test(file.filename)) {
       api.downloadUrl(file.bucket, file.realfilekey)
         .then(result => {
@@ -177,7 +177,7 @@ function Dashboard(props) {
           setTimeout(() => setDownloadUrl(null), 1000);
         })
     } else {
-      window.open(file.fileurl);
+      window.open(file.fileurl, '_blank', 'noopener');
     }
   }
 
