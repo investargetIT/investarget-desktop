@@ -634,7 +634,7 @@ export async function md5File(file) {
   });
 }
 
-export async function uploadFileByChunks(file, onProgress) {
+export async function uploadFileByChunks(file, { data, onProgress } = {}) {
   let md5;
   try {
     md5 = await md5File(file);
@@ -654,24 +654,66 @@ export async function uploadFileByChunks(file, onProgress) {
 
     const formData = new FormData();
     formData.append('file', fileChunk, file.name);
-    formData.append('filename', file.name);
+    formData.append('filename', shortenFilename(file.name));
     formData.append('totalSize', String(file.size));
     formData.append('currentSize', String(chunkSize));
     formData.append('currentChunk', String(currentChunk + 1));
     formData.append('totalChunk', String(chunks));
     formData.append('md5', md5);
-    formData.append('bucket', 'file');
     if (temp_key) {
       formData.append('temp_key', temp_key);
     }
-    try {
-      res = await api.qiniuChunkUpload(formData);
-      const percentage = Math.floor((currentChunk + 1) / chunks * 100);
-      onProgress(percentage);
-      temp_key = res.data.temp_key;
-    } catch (error) {
-      throw new Error('上传文件分块失败');
+
+    if (!data) {
+      data = {};
     }
+    if (data && !data.bucket) {
+      data.bucket = 'file';
+    }
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      formData.append(key, value);
+    });
+
+    res = await api.qiniuChunkUpload(formData);
+    const percent = Math.floor((currentChunk + 1) / chunks * 100);
+    if (onProgress) {
+      onProgress({ percent });
+    }
+    temp_key = res.data.temp_key;
   }
   return res;
+}
+
+function shortenFilename(filename) {
+  return filename;
+  const maxLen = 40;
+  if (filename.length <= maxLen) return filename;
+  const re = /(.*)(\.[^.]+)$/;
+  const result = re.exec(filename);
+  if (result == null) {
+    return filename.slice(0, maxLen);
+  }
+  const [_, basename, suffix] = result;
+  return basename.slice(0, maxLen - suffix.length) + suffix;
+}
+
+// 忽略 filename, withCredentials, action, headers 参数
+export function customRequest({
+  onProgress,
+  onError,
+  onSuccess,
+  data,
+  filename,
+  file,
+  withCredentials,
+  action,
+  headers,
+}) {
+  uploadFileByChunks(file, { data, onProgress }).then((res) => {
+    onSuccess({ result: res.data });
+  }).catch((err) => {
+    handleError(err);
+    onError(err);
+  });
 }

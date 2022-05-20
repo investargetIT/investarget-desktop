@@ -1,8 +1,7 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 import { Form, Upload, Input, Button, Divider, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
-import { i18n, time, hasPerm, getUserInfo } from '../utils/util';
-import { baseUrl } from '../utils/request';
+import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
 
 function BDComments(props) {
@@ -126,7 +125,8 @@ function BDComments(props) {
         >
           <Upload 
             name="file"
-            action={baseUrl + "/service/qiniubigupload?bucket=file"}
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
             maxCount={1}
           >
             <Button icon={<UploadOutlined />} type="link">上传附件</Button>

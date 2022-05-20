@@ -1,9 +1,8 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, customRequest } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 
 const confirm = Modal.confirm
@@ -487,7 +486,8 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file',
+      customRequest,
+      data: { bucket: 'file' },
       showUploadList: false,
       multiple: true,
       beforeUpload: file => {

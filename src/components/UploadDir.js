@@ -1,6 +1,4 @@
 import React from 'react';
-import * as api from '../api';
-import { SIZE_4M } from '../constants';
 import { uploadFileByChunks } from '../utils/util';
 
 class UploadDir extends React.Component {
@@ -33,7 +31,13 @@ class UploadDir extends React.Component {
   onChangeFile(event) {
     event.stopPropagation();
     event.preventDefault();
-    const { files } = event.target;
+    const files = Array.prototype.slice.call(event.target.files);
+    console.log(event.target.files, files);
+    // 去除.DS_Store隐藏文件
+    const removeIndex = files.findIndex(({ name }) => name === '.DS_Store');
+    if (removeIndex > -1) {
+      files.splice(removeIndex, 1);
+    }
     window.echo('change file', files); 
     const allowedFiles = [];
     for (let index = 0; index < files.length; index++) {
@@ -63,7 +67,6 @@ class UploadDir extends React.Component {
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
     }
-    let uploadFailed = false;
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
@@ -85,12 +88,11 @@ class UploadDir extends React.Component {
           },
         });
         try {
-          const result = await (file.size > SIZE_4M
-            ? uploadFileByChunks(file, (partPercentage) => {
-              this.handleProgress(files.length, index, partPercentage);
-            })
-            : api.qiniuUpload('file', file)
-          );
+          const result = await uploadFileByChunks(file, {
+            onProgress: ({ percent }) => {
+              this.handleProgress(files.length, index, percent);
+            },
+          });
           const { data } = result;
           const currentFileResult = {
             file: {
@@ -107,7 +109,6 @@ class UploadDir extends React.Component {
           allFileResult.push(currentFileResult)
           await this.props.onChange(currentFileResult);
         } catch (error) {
-          uploadFailed = true;
           console.error(error);
           await this.props.onChange({
             file: {
@@ -123,7 +124,7 @@ class UploadDir extends React.Component {
         }
       }
       // 更新上传进度
-      if (!uploadFailed && this.props.updateUploadProgress) {
+      if (this.props.updateUploadProgress) {
         if (index === files.length - 1) {
           this.props.updateUploadProgress(100);
         } else {
