@@ -2,7 +2,6 @@ import { Divider } from 'antd';
 import { connect } from 'dva';
 import React from 'react'
 import { 
-  getCurrentUser,
   handleError, 
   requestAllData,
   time,
@@ -20,13 +19,12 @@ class ReportProjectBDDetails extends React.Component {
       loading: false,
       sort: 'isimportant',
       desc: 1,
-      manager: getCurrentUser(),
     }
   }
 
   getProjectBDList = () => {
-    const { stimeM, etimeM } = this.props;
-    const { sort, desc, manager } = this.state
+    const { manager, stimeM, etimeM } = this.props;
+    const { sort, desc } = this.state
     const param = {
       sort,
       desc,

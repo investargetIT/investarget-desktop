@@ -340,6 +340,7 @@ class ReportDetail extends React.Component {
 
           {this.state.report && (
             <ReportProjectBDDetails
+              manager={this.state.report.user.id}
               stimeM={this.state.report.startTime}
               etimeM={this.state.report.endTime}
             />
