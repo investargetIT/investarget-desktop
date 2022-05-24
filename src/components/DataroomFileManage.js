@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -17,7 +17,6 @@ import {
   ExportOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
@@ -440,7 +439,8 @@ function DataroomFileManage({
     function popoverContent() {
       // const props = {
       //   name: 'file',
-      //   action: baseUrl + '/service/qiniubigupload?bucket=file',
+      //   customRequest,
+      //   data: { bucket: 'file' },
       //   showUploadList: false,
       //   multiple: true,
       //   beforeUpload: file => {
@@ -537,7 +537,7 @@ function DataroomFileManage({
             // react.setState({ loading: true })
           }
         },
-        async onFinishUploadAllFiles(allFiles) {
+        async onFinishUploadAllFiles(allFiles, errorFiles) {
           let newData = data;
           for (let index = 0; index < allFiles.length; index++) {
             const info = allFiles[index];
@@ -545,6 +545,21 @@ function DataroomFileManage({
             newData = newNewData;
           }
           setData(newData);
+
+          if (errorFiles.length > 0) {
+            Modal.error({
+              title: `其中${errorFiles.length}个文件上传失败`,
+              content: (
+                <ul>
+                  {errorFiles.map((info) => (
+                    <li key={info.file.name}>
+                      {info.file.name} 上传失败的原因是：{info.file.error.message}
+                    </li>
+                  ))}
+                </ul>
+              ),
+            });
+          }
         },
         updateUploadProgress(percent) {
           setUploadDirProgress(percent);

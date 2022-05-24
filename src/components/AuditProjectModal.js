@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
-import { i18n, requestAllData } from '../utils/util'
+import { i18n, requestAllData, customRequest } from '../utils/util'
 import { Modal, Select, Checkbox, Row, Col, Upload, Spin } from 'antd';
-import { baseUrl } from '../utils/request';
 import { Modal as GModal } from './GlobalComponents';
 import _ from 'lodash';
 
@@ -81,7 +80,7 @@ function DirectoryCell(props) {
       <Col span={16}>
         <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
           <Upload {...props.upload}><span style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</span></Upload>
-          <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span>
+          {/* <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span> */}
         </div>
       </Col>
     </Row>
@@ -293,7 +292,8 @@ class AuditProjectModal extends React.Component {
     const { visible, currentStatus, status, sendEmail, confirmLoading, onStatusChange, onSendEmailChange, onOk, onCancel, sendWechat, discloseFinance } = this.props
 
     const uploadProps = {
-      action: baseUrl + "/service/qiniubigupload?bucket=file",
+      customRequest,
+      data: { bucket: 'file' },
       accept: fileExtensions.join(','),
       onChange: this.handleFileChange,
       onRemove: this.handleFileRemoveConfirm,

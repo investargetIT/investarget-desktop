@@ -28,9 +28,9 @@ import {
   hasPerm,
   getCurrentUser,
   requestAllData,
+  customRequest,
 } from '../utils/util';
 import PropTypes from 'prop-types';
-import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
 import * as api from '../api';
 import { connect } from 'dva';
@@ -237,7 +237,7 @@ class UserDetail extends React.Component {
     this.setState({ isUploading: true });
     if (file.status === 'done') {
       this.handleFileUploadDone(file)
-    } 
+    }
   }
 
   handleFileUploadDone = file => {
@@ -618,7 +618,8 @@ class UserDetail extends React.Component {
           />
           
           <Upload
-            action={baseUrl + '/service/qiniubigupload?bucket=file'}
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
             // accept={fileExtensions.join(',')}
             onChange={this.handleFileChange}
             // onRemove={this.handleFileRemoveConfirm}
@@ -627,7 +628,7 @@ class UserDetail extends React.Component {
             <Button loading={isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传附件</Button>
           </Upload>
 
-          <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
+          {/* <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button> */}
           {hasPerm('usersys.admin_manageuser') && hasPerm('usersys.as_trader') && <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
         </h3>
 

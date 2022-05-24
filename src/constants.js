@@ -229,3 +229,5 @@ export const tailFormItemLayout = {
     },
   },
 }
+
+export const SIZE_4M = 4194304;

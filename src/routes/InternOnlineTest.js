@@ -2,9 +2,8 @@ import React from 'react';
 import { Upload, Button, Modal } from 'antd';
 import { withRouter } from 'dva/router';
 import LeftRightLayout from '../components/LeftRightLayout';
-import { baseUrl } from '../utils/request';
 import * as api from '../api';
-import { getCurrentUser } from '../utils/util';
+import { customRequest, getCurrentUser } from '../utils/util';
 
 class InternOnlineTest extends React.Component {
 
@@ -124,7 +123,8 @@ class InternOnlineTest extends React.Component {
 
         <div>
           <Upload
-            action={`${baseUrl}/service/qiniubigupload?bucket=file`}
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
             // accept={fileExtensions.join(',')}
             onChange={this.handleFileChange}
             // onRemove={this.handleFileRemoveConfirm}

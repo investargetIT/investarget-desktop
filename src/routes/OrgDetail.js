@@ -9,6 +9,7 @@ import {
   time,
   requestAllData,
   getCurrentUser,
+  customRequest,
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
@@ -31,7 +32,6 @@ import { OrganizationRemarkList } from '../components/RemarkList'
 import { BasicFormItem } from '../components/Form'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import AddOrgDetail from '../components/AddOrgDetail';
-import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -930,7 +930,7 @@ class OrgDetail extends React.Component {
     this.setState({ isUploading: true });
     if (file.status === 'done') {
       this.handleFileUploadDone(file)
-    } 
+    }
   }
 
   handleFileUploadDone = file => {
@@ -998,7 +998,8 @@ class OrgDetail extends React.Component {
           />
           {(hasPerm('org.admin_manageorg') || hasPerm('usersys.as_trader')) ? <span>
             <Upload
-              action={baseUrl + '/service/qiniubigupload?bucket=file'}
+              customRequest={customRequest}
+              data={{ bucket: 'file' }}
               // accept={fileExtensions.join(',')}
               onChange={this.handleFileChange}
               // onRemove={this.handleFileRemoveConfirm}
@@ -1007,7 +1008,7 @@ class OrgDetail extends React.Component {
               <Button loading={this.state.isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传附件</Button>
             </Upload>
 
-            <Button loading={this.state.isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
+            {/* <Button loading={this.state.isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button> */}
           </span> : null }
         </h3>
 

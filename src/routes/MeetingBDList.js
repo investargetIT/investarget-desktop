@@ -6,7 +6,8 @@ import {
   time, 
   handleError, 
   hasPerm, 
-  getUserInfo, 
+  getUserInfo,
+  customRequest, 
 } from '../utils/util';
 import * as api from '../api';
 import { 
@@ -32,7 +33,6 @@ import { Search } from '../components/Search';
 import { getUser } from '../api';
 import { isLogin } from '../utils/util'
 import {BasicFormItem} from '../components/Form'
-import { baseUrl } from '../utils/request';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import QRCode from 'qrcode.react';
 import { mobileUploadUrl } from '../utils/request';
@@ -90,7 +90,8 @@ class EditForm extends React.Component{
   render(){
   let uploadProps = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file&topdf=false',
+      customRequest,
+      data: { bucket: 'file', topdf: false },
       defaultFileList:this.props.file?[this.props.file]:[],
       beforeUpload: (file, fileList) => {
         const fileType = file.type

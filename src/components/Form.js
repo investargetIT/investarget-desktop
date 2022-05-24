@@ -1,13 +1,12 @@
 import React from 'react'
 import { Icon, Upload, Cascader, Checkbox, Form, Input, InputNumber, Select, Row, Col, Button, Radio } from 'antd'
-import { i18n, exchange, handleError, getCurrencyFromId } from '../utils/util'
+import { i18n, exchange, handleError, getCurrencyFromId, customRequest } from '../utils/util'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
 import { InputCurrency, CascaderIndustry } from './ExtraInput'
 import styles from './ProjectForm.css'
 import { UploadImage } from './Upload'
 import GlobalMobile from './GlobalMobile'
-import { baseUrl } from '../utils/request';
 import {
   PlusOutlined,
   PlusCircleOutlined,
@@ -259,7 +258,8 @@ const UploadAvatar = (props, context) => {
       <div className="dropbox">
         <Upload
           name="avatar"
-          action={props.photoKey ? (baseUrl + "/service/qiniucoverupload?bucket=image&key=" + props.photoKey) : (baseUrl + "/service/qiniubigupload?bucket=image")}
+          customRequest={customRequest}
+          data={{ bucket: 'image' }}
           onChange={handleChange}
           style={uploadStyle}>
           {props.avatarUrl ? <img src={props.avatarUrl} style={{ width: 150, maxHeight: 150 }} alt="" /> :

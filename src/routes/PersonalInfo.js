@@ -4,14 +4,14 @@ import { connect } from 'dva';
 import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider, Select } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined } from '@ant-design/icons';
-import { getUserInfo, i18n, hasPerm, handleError, requestAllData } from '../utils/util';
+import { getUserInfo, i18n, hasPerm, handleError, requestAllData, customRequest } from '../utils/util';
 import * as api from '../api';
 import { routerRedux } from 'dva/router';
 import { SelectEducation, SelectGender, SelectTrader, SelectIndustryGroup } from '../components/ExtraInput';
 import moment from 'moment';
-import { baseUrl } from '../utils/request';
 import { UploadFile } from '../components/Upload';
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import RetryImg from '../components/RetryImg';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -30,7 +30,8 @@ function PersonalInfo(props) {
 
   const uploadProps = {
     name: 'file',
-    action: userInfo.photoKey ? baseUrl + "/service/qiniucoverupload?bucket=image&key=" + userInfo.photoKey : baseUrl + "/service/qiniubigupload?bucket=image",
+    customRequest,
+    data: { bucket: 'image' },
     showUploadList: { showRemoveIcon: false },
     onChange(info) {
       if (info.file.status !== 'uploading') {
@@ -234,7 +235,6 @@ function PersonalInfo(props) {
                 style={{ width: 320, marginRight: 80 }}
                 form={form}
                 layout="vertical"
-                initialValues={{}}
                 onValuesChange={handleValuesChange}
                 onFinish={handlePersonalInfoFormOnFinish}
                 initialValues={getInitialValuesFromCurrentUser()}
@@ -291,7 +291,7 @@ function PersonalInfo(props) {
               <Upload {...uploadProps}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div>头像</div>
-                  {props.currentUser.photourl && <img src={props.currentUser.photourl} alt="avatar" style={{ marginTop: 8, marginBottom: 20, width: 152, height: 152, borderRadius: '50%' }} />}
+                  {props.currentUser.photourl && <RetryImg src={props.currentUser.photourl} alt="avatar" style={{ marginTop: 8, marginBottom: 20, width: 152, height: 152, borderRadius: '50%' }} />}
                   <div style={{ textAlign: 'center' }}><Button icon={<CloudUploadOutlined />}>上传图片</Button></div>
                 </div>
               </Upload>

@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
-import { getUserInfo as getCurrentUserInfo, getBeijingTime } from './utils/util'
+import { getUserInfo as getCurrentUserInfo, getBeijingTime, uploadFileByChunks } from './utils/util'
 import _ from 'lodash'
 import { 
   ApiError, 
@@ -270,7 +270,13 @@ export function downloadUrl(bucket, key) {
 }
 
 export function qiniuUpload(bucket, file) {
+  return uploadFileByChunks(file, {
+    data: { bucket },
+  });
+}
 
+// 大文件分片上传
+export function qiniuChunkUpload(formData) {
   const source = parseInt(localStorage.getItem('source'), 10)
   if (!source) {
     throw new ApiError(1299, 'data source missing')
@@ -288,18 +294,12 @@ export function qiniuUpload(bucket, file) {
     headers["token"] = user.token
   }
 
-  var formData = new FormData()
-  formData.append('file', file)
-
-  return fetch(baseUrl + '/service/qiniubigupload?bucket=' + bucket, {
+  const options = {
     headers,
     method: 'POST',
     body: formData,
-  }).then(response => {
-    return response.json()
-  }).then(data => {
-    return { data: data.result }
-  })
+  };
+  return request('/service/uploaddata/', options);
 }
 
 /**
