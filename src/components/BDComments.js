@@ -155,7 +155,7 @@ function BDComments(props) {
               : null }
               
               &nbsp;
-            {hasPerm('BD.manageProjectBD') ?
+            {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
                 <Popconfirm title={i18n('message.confirm_delete')} onConfirm={() => onDelete(comment.id)}>
                   <Button type="link"><DeleteOutlined /></Button>
                 </Popconfirm>
