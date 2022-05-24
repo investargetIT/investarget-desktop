@@ -654,7 +654,7 @@ export async function uploadFileByChunks(file, { data, onProgress } = {}) {
 
     const formData = new FormData();
     formData.append('file', fileChunk, file.name);
-    formData.append('filename', shortenFilename(file.name));
+    formData.append('filename', shortenFilename(file.name, 80));
     formData.append('totalSize', String(file.size));
     formData.append('currentSize', String(chunkSize));
     formData.append('currentChunk', String(currentChunk + 1));
@@ -685,9 +685,7 @@ export async function uploadFileByChunks(file, { data, onProgress } = {}) {
   return res;
 }
 
-function shortenFilename(filename) {
-  return filename;
-  const maxLen = 40;
+function shortenFilename(filename, maxLen = 80) {
   if (filename.length <= maxLen) return filename;
   const re = /(.*)(\.[^.]+)$/;
   const result = re.exec(filename);

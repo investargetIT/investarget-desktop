@@ -63,6 +63,7 @@ class UploadDir extends React.Component {
 
   uploadFiles = async files => {
     const allFileResult = [];
+    const errorFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
@@ -110,7 +111,7 @@ class UploadDir extends React.Component {
           await this.props.onChange(currentFileResult);
         } catch (error) {
           console.error(error);
-          await this.props.onChange({
+          const errorFile = {
             file: {
               lastModified,
               lastModifiedDate,
@@ -119,8 +120,11 @@ class UploadDir extends React.Component {
               type,
               webkitRelativePath,
               status: 'error',
+              error,
             },
-          });
+          }
+          errorFileResult.push(errorFile)
+          await this.props.onChange(errorFile);
         }
       }
       // 更新上传进度
@@ -133,7 +137,7 @@ class UploadDir extends React.Component {
       }
     }
 
-    this.props.onFinishUploadAllFiles(allFileResult);
+    this.props.onFinishUploadAllFiles(allFileResult, errorFileResult);
   }
 
   render() {

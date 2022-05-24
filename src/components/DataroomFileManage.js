@@ -537,7 +537,7 @@ function DataroomFileManage({
             // react.setState({ loading: true })
           }
         },
-        async onFinishUploadAllFiles(allFiles) {
+        async onFinishUploadAllFiles(allFiles, errorFiles) {
           let newData = data;
           for (let index = 0; index < allFiles.length; index++) {
             const info = allFiles[index];
@@ -545,6 +545,21 @@ function DataroomFileManage({
             newData = newNewData;
           }
           setData(newData);
+
+          if (errorFiles.length > 0) {
+            Modal.error({
+              title: `其中${errorFiles.length}个文件上传失败`,
+              content: (
+                <ul>
+                  {errorFiles.map((info) => (
+                    <li key={info.file.name}>
+                      {info.file.name} 上传失败的原因是：{info.file.error.message}
+                    </li>
+                  ))}
+                </ul>
+              ),
+            });
+          }
         },
         updateUploadProgress(percent) {
           setUploadDirProgress(percent);
