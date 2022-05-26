@@ -49,6 +49,9 @@ const audioFileTypes = [
   'audio/m4a',
   'audio/x-m4a',
   'audio/mp3',
+  'audio/wav',
+  'audio/aac',
+  'audio/flac',
 ];
 const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes).concat(audioFileTypes);
 
@@ -350,7 +353,7 @@ function DataroomFileManage({
         Modal.warning({
           title: '该文件不支持在线预览',
         });
-      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
+      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a|wav|aac|flac)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
         setPreviewFileUrl(currentFile.fileurl);
       } else {
         const url = getPreviewFileUrl(currentFile);
@@ -499,7 +502,7 @@ function DataroomFileManage({
           console.log(file)
           const fileType = file.type
           const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
-          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a|wav|aac|flac)$/i.test(file.name)) ? true : false;
           if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
             window.echo('mime type or file name suffix not valid');
             window.echo('mime type', fileType);
