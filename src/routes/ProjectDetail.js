@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
@@ -804,6 +804,13 @@ class DownloadFiles extends React.Component {
     }
   }
 
+  handleClickLink = async (file) => {
+    const result = await checkUploadStatus(file.key);
+    if (result) {
+      downloadFile(file.url, file.filename);
+    }
+  }
+
   componentDidMount() {
     const id = this.props.projectId
     requestAllData(api.getProjAttachment, { proj: id, page_size: 100 }, 100).then(result => {
@@ -896,13 +903,14 @@ class DownloadFiles extends React.Component {
                 <div title={file.filename} style={{ wordWrap: 'word-break:break-all', flex: 1, marginRight: 20 }}>
                   {file.filename}
                 </div>
-                <a
+                <Button
+                  type="link"
+                  icon={<CloudDownloadOutlined />}
                   disabled={!file.url}
-                  download={file.filename}
-                  href={file.url}
+                  onClick={() => this.handleClickLink(file)}
                 >
-                  <Button type="link" icon={<CloudDownloadOutlined />}>下载</Button>
-                </a>
+                  下载
+                </Button>
               </div>
             )
           })

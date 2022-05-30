@@ -8,6 +8,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { isLogin } from '../utils/util'
+import FileLink from '../components/FileLink';
 
 class ReportProjectBDDetails extends React.Component {
 
@@ -145,7 +146,12 @@ class ReportProjectBDDetails extends React.Component {
                             <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
                             <span>{comment.comments}</span>
                             {comment.url && (
-                              <a href={comment.url} target="_blank" style={{ marginLeft: 16 }}>{comment.filename || comment.key}</a>
+                              <FileLink
+                                style={{ marginLeft: 16 }}
+                                filekey={comment.key}
+                                url={comment.url}
+                                filename={comment.filename || comment.key}
+                              />
                             )}
                           </div>
                         ))

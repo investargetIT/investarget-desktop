@@ -6,6 +6,7 @@ window.api = api
 import { baseUrl } from './request'
 import i18next from 'i18next'
 import { SIZE_4M } from '../constants';
+import { message } from 'antd';
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -714,4 +715,32 @@ export function customRequest({
     handleError(err);
     onError(err);
   });
+}
+
+export async function checkUploadStatus(key) {
+  const { data } = await api.getUploadStatus(key);
+  if (data == null || data.length === 0) {
+    // 之前上传的文件没有记录
+    return true;
+  }
+  
+  const { status, success1 } = data[0];
+  if (status === 1 || status === 2) {
+    message.error('文件正在生成中，请稍后再试');
+    return false;
+  }
+
+  if (status === 3 && !success1) {
+    message.error('文件上传失败');
+    return false;
+  }
+
+  return true;
+}
+
+export function downloadFile(url, filename) {
+  const aElem = document.createElement('a');
+  aElem.download = filename;
+  aElem.href = url;
+  aElem.click();
 }

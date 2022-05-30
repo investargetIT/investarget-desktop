@@ -22,6 +22,7 @@ import {
 } from '../utils/util';
 import { SelectIndustryGroup, SelectKPIResult, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
 import moment from 'moment';
+import FileLink from '../components/FileLink';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -406,7 +407,13 @@ function PersonalCenter(props) {
       title: '附件',
       dataIndex: 'performanceTableUrl',
       key: 'attachment',
-      render: text => text ? <a target="_blank" href={text}>查看附件</a> : '暂无',
+      render: (text, record) => text ? (
+        <FileLink
+          filekey={record.performanceTableKey}
+          url={text}
+          filename="查看附件"
+        />
+      ): '暂无',
     },
     {
       title: '备注',
@@ -916,7 +923,7 @@ function PersonalCenter(props) {
 
                 <div style={{ marginBottom: 40 }}>
                   <div style={{ marginBottom: 20, fontSize: 16, lineHeight: '24px', fontWeight: 'bold', color: 'rgba(0, 0, 0, .85)' }}>入职前工作经历</div>
-                  {userInfoDetails.resumeurl ? <div><a href={userInfoDetails.resumeurl} target="_blank">查看简历</a></div> : <div>暂无</div>}
+                  {userInfoDetails.resumeurl ? <div><FileLink filekey={userInfoDetails.resumeKey} url={userInfoDetails.resumeurl} filename="查看简历" /></div> : <div>暂无</div>}
                   {/* <Table columns={columns3} dataSource={data3} pagination={false} />
                   <div style={{ textAlign: 'center', lineHeight: '50px', borderBottom: '1px solid  #f0f0f0' }}>
                     <Button type="link" icon={<PlusOutlined />}>新增记录</Button>
