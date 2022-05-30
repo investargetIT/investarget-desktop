@@ -1311,10 +1311,16 @@ function DataroomFileManage({
                       <Tooltip title="在新窗口中打开"><ExpandOutlined /></Tooltip>
                     </div>
                   </div>
-                  <div
-                    style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-                    dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
-                  />
+                  {selectedFile.filename.endsWith('.aac') ? (
+                    <div style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <audio controls="controls" src={previewFileUrl} />
+                    </div>
+                  ) : (
+                    <div
+                      style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+                      dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
+                    />
+                  )}
                 </div>
               }
             </Card>
