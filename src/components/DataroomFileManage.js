@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -341,7 +341,7 @@ function DataroomFileManage({
     return [rootDir];
   }
 
-  const onSelect = (keys, info) => {
+  const onSelect = async (keys, info) => {
     if (keys.length < 1) return;
     const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
@@ -349,6 +349,12 @@ function DataroomFileManage({
     checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+      const result = await checkUploadStatus(currentFile.key);
+      if (!result) {
+        setPreviewFileUrl(null);
+        return;
+      }
+
       if ((/\.avi$/i).test(currentFile.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',

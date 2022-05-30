@@ -3,6 +3,7 @@ import { Form, Upload, Input, Button, Divider, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
+import FileLink from './FileLink';
 
 function BDComments(props) {
   const { BDComments, onAdd, onEdit, onDelete } = props;
@@ -172,7 +173,11 @@ function BDComments(props) {
               <div>
                 <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
                 {comment.url && (
-                  <a href={comment.url} target="_blank">{comment.filename || comment.key}</a>
+                  <FileLink
+                    filekey={comment.key}
+                    url={comment.url}
+                    filename={comment.filename || comment.key}
+                  />
                 )}
               </div>
             </div>

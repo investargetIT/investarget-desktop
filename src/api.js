@@ -302,6 +302,11 @@ export function qiniuChunkUpload(formData) {
   return request('/service/uploaddata/', options);
 }
 
+// 查询文件上传进度
+export function getUploadStatus(key) {
+  return r('/service/uploadres/?key=' + key);
+}
+
 /**
  * 在使用环信发送图片或语音等消息时需要先把这些文件上传给环信
  * WebSDK好像有直接发送图片的接口，先放这儿吧

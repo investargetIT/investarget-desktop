@@ -1,17 +1,25 @@
 import { useRef, useState } from "react";
 
 function RetryImg(props) {
-  const { times = 3, interval = 1000, ...propsToKeep } = props;
+  const { times = 3, interval = 1000, onLoad, onError, ...propsToKeep } = props;
   const imgElem = useRef(null);
   const [remainingTimes, setRemainingTimes] = useState(times);
   const timer = useRef(null);
 
   const handleLoad = () => {
+    if (onLoad) {
+      onLoad();
+    }
+
     clearTimeout(timer.current);
     setRemainingTimes(times);
   };
 
-  const handleError = () => {
+  const handleError = (err) => {
+    if (onError) {
+      onError(err);
+    }
+
     if (remainingTimes === 0) return;
 
     timer.current = setTimeout(() => {
