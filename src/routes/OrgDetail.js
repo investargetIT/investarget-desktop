@@ -34,6 +34,7 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 import AddOrgDetail from '../components/AddOrgDetail';
 import { Modal as GModal } from '../components/GlobalComponents';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import FileLink from '../components/FileLink';
 
 const TabPane = Tabs.TabPane;
 const PositionWithUser = props => {
@@ -607,7 +608,7 @@ class AttachmentList extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
+      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <FileLink filekey={record.key} url={record.url} filename={text} /> },
       {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
       {
         title: i18n('common.operation'), key: 'action', render: (text, record) => (

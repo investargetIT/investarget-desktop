@@ -19,6 +19,7 @@ import {
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { DeleteOutlined } from '@ant-design/icons';
+import FileLink from './FileLink';
 
 const TabPane = Tabs.TabPane;
 
@@ -87,10 +88,28 @@ class AttachmentList extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
-      {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
       {
-        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+        title: '文件名称',
+        dataIndex: 'filename',
+        sorter: true,
+        render: (text, record) => (
+          <FileLink
+            filekey={record.key}
+            url={record.url}
+            filename={text}
+          />
+        ),
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createdtime',
+        render: (text, record) => time(text + record.timezone) || 'N/A',
+        sorter: true,
+      },
+      {
+        title: i18n('common.operation'),
+        key: 'action',
+        render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
             <Button size="small" style={buttonStyle}>
               <DeleteOutlined />
