@@ -264,6 +264,40 @@ export function getExchangeRate(param) {
   return r('/service/currencyrate?' + qs.stringify(param))
 }
 
+export function addAudioTranslate(formData) {
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const user = getCurrentUserInfo()
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  const options = {
+    headers,
+    method: 'POST',
+    body: formData,
+  };
+  return request('/service/audioTranslate/', options);
+}
+
+export function getAudioTranslate(id) {
+  return r(`/service/audioTranslate/${id}/`, 'GET');
+}
+
+export function updateAudioTranslate(id, data) {
+  return r(`/service/audioTranslate/${id}/`, 'PUT', data);
+}
+
 export function downloadUrl(bucket, key) {
   const params = { bucket, key }
   return r('/service/downloadUrl', 'POST', params)

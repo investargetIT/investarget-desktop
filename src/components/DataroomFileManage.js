@@ -20,6 +20,7 @@ import {
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 import moment from 'moment';
 
 const { DirectoryTree } = Tree;
@@ -77,6 +78,8 @@ function tagRender(props, isReadFile) {
     </Tag>
   );
 }
+
+
 
 class MyProgress extends React.Component {
   state = {
@@ -156,6 +159,7 @@ function DataroomFileManage({
   const [selectedFile, setSelectedFile] = useState(null);
   const [subFilesOfSelectedFolder, setSubFilesOfSelectedFolder] = useState([]);
   const [previewFileUrl, setPreviewFileUrl] = useState(null);
+  const [translate, setTranslate] = useState(null);
   const [dirData, setDirData] = useState([]);
 
   const [uploadDirProgress, setUploadDirProgress] = useState(null);
@@ -349,6 +353,7 @@ function DataroomFileManage({
     checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+      console.log("currentFile", currentFile);
       const result = await checkUploadStatus(currentFile.key);
       if (!result) {
         setPreviewFileUrl(null);
@@ -364,6 +369,13 @@ function DataroomFileManage({
       } else {
         const url = getPreviewFileUrl(currentFile);
         setPreviewFileUrl(url);
+      }
+
+      if ((/\.(wav|flac|opus|m4a|mp3)$/i).test(currentFile.filename) && currentFile.transid) {
+        const { data: translateData } = await api.getAudioTranslate(currentFile.transid);
+        setTranslate(translateData);
+      } else {
+        setTranslate(null);
       }
     } else {
       const allChildren = findAllChildren(currentFile.id);
@@ -1244,7 +1256,54 @@ function DataroomFileManage({
         </Col>
         {selectedFile &&
           <Col span={16}>
-            <Card title={selectedFile.filename}>
+            <Card title={(
+              <div>
+                {selectedFile.filename}
+                {translate && translate.taskStatus === '9' && (
+                  <Link
+                    style={{ marginLeft: 16, color: 'red' }}
+                    to={`/app/speech-to-text/${translate.id}?speechKey=${selectedFile.key}`}
+                  >
+                    语音转文字
+                  </Link>
+                )}
+                {translate && translate.taskStatus !== '9' && (
+                  <span style={{ marginLeft: 16 }}>语音转文字中...</span>
+                )}
+                {!translate && previewFileUrl && (/\.(wav|flac|opus|m4a|mp3)$/i).test(selectedFile.filename) && (
+                  <Checkbox
+                    style={{ marginLeft: 16 }}
+                    checked={false}
+                    onChange={() => {
+                      Modal.confirm({
+                        title: '语音转文字',
+                        content: '目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语',
+                        onOk: async () => {
+                          const { fileurl, filename } = selectedFile;
+                          const res = await fetch(fileurl);
+                          const blob = await res.blob();
+                          const formData = new FormData();
+                          formData.append('file', blob, filename);
+                          const { data: translateData } = await api.addAudioTranslate(formData);
+                          setTranslate(translateData);
+                          const body = {
+                            id: selectedFile.id,
+                            transid: translateData.id,
+                          };
+                          await api.editDataRoomFile(body);
+                          const newData = data.slice();
+                          const index = newData.map(m => m.id).indexOf(selectedFile.id);
+                          newData[index].transid = translateData.id;
+                          setData(newData);
+                        },
+                      });
+                    }}
+                  >
+                    语音转文字
+                  </Checkbox>
+                )}
+              </div>
+            )}>
               <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
                 {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
                 <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>

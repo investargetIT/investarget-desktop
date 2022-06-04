@@ -143,7 +143,20 @@ class ProjectBDList extends React.Component {
     this.setState({ visible: false, currentBD: null })
   }
 
-  handleAddComment = ({ comments, bucket, key, filename }) => {
+  handleAddComment = async ({ comments, bucket, key, filename }, speechFile) => {
+    let transid = null;
+    let onebest = null;
+    if (speechFile && speechFile instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append('file', speechFile);
+        const { data } = await api.addAudioTranslate(formData);
+        transid = data.id;
+        onebest = data.onebest;
+      } catch (error) {
+        throw error;
+      }
+    }
     const { currentBD } = this.state;
     const param = {
       projectBD: currentBD.id,
@@ -151,16 +164,19 @@ class ProjectBDList extends React.Component {
       bucket,
       key,
       filename,
+      transid,
+      onebest,
     }
-    api.addProjBDCom(param).then(data => {
-      this.getProjectBDList()
-      api.editProjBD(currentBD.id, {});
-    }).catch(error => {
+    try {
+      await api.addProjBDCom(param)
+    } catch (error) {
       handleError(error)
-    })
+    }
+    this.getProjectBDList()
+    api.editProjBD(currentBD.id, {});
   }
 
-  handleEditComment = (id, data) => {
+  handleEditComment = (id, data, speechFile) => {
     const { currentBD } = this.state;
     api.editProjBDCom(id, data)
       .then(() => {

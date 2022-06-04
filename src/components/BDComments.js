@@ -1,14 +1,16 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
-import { Form, Upload, Input, Button, Divider, Popconfirm } from 'antd';
+import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox } from 'antd';
 import { useEffect, useState } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
+import { Link } from 'dva/router';
 
 function BDComments(props) {
   const { BDComments, onAdd, onEdit, onDelete } = props;
 
   const [form] = Form.useForm();
+  const [speechFile, setSpeechFile] = useState(null);
   const [bdComments, setBdComments] = useState([]);
   const [comment, setComment] = useState(null);
 
@@ -30,16 +32,18 @@ function BDComments(props) {
       filename,
     }
     if (comment) {
-      onEdit(comment.id, data);
+      onEdit(comment.id, data, speechFile);
     } else {
-      onAdd(data);
+      onAdd(data, speechFile);
     }
     setComment(null);
+    setSpeechFile(null);
     form.resetFields();
   }
 
   const reset = () => {
     setComment(null);
+    setSpeechFile(null);
     form.resetFields();
   };
 
@@ -101,6 +105,17 @@ function BDComments(props) {
     updateComments(BDComments);
   }, [BDComments]);
 
+  const handleUploadChange = (e) => {
+    if (e.file.status === 'done') {
+      const file = e.file.originFileObj;
+      if (/\.(wav|flac|opus|m4a|mp3)$/.test(file.name)) {
+        setSpeechFile(file);
+      } else {
+        setSpeechFile(null);
+      }
+    }
+  };
+
   return (
     <div>
       <Form
@@ -129,10 +144,21 @@ function BDComments(props) {
             customRequest={customRequest}
             data={{ bucket: 'file' }}
             maxCount={1}
+            onChange={handleUploadChange}
           >
             <Button icon={<UploadOutlined />} type="link">上传附件</Button>
           </Upload>
         </Form.Item>
+        {!comment && speechFile && (
+          <Form.Item
+            label="语音转文字"
+            name="speechToText"
+            valuePropName="checked"
+            extra="目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语"
+          >
+            <Checkbox />
+          </Form.Item>
+        )}
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
             确定
@@ -147,44 +173,71 @@ function BDComments(props) {
 
       <div style={{ display: comment ? 'none' : '' }}>
         {bdComments && bdComments.length ? bdComments.map(comment => (
-          <div key={comment.id} style={{ marginBottom: 8 }}>
-            <p>
-              <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
-
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
-              <Button type="link" onClick={() => handleEdit(comment)}><EditOutlined /></Button>
-              : null }
-              
-              &nbsp;
-            {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={() => onDelete(comment.id)}>
-                  <Button type="link"><DeleteOutlined /></Button>
-                </Popconfirm>
-                : null}
-            </p>
-            <div style={{ display: 'flex' }}>
-              {comment.createuserobj &&
-                <div style={{ marginRight: 10 }}>
-                  <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
-                    <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
-                  </a>
-                </div>
-              }
-              <div>
-                <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
-                {comment.url && (
-                  <FileLink
-                    filekey={comment.key}
-                    url={comment.url}
-                    filename={comment.filename || comment.key}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
+          <BDCommnet comment={comment} />
         )) : <p>暂无行动计划</p>}
       </div>
     </div>
+  );
+}
+
+function BDCommnet({ comment }) {
+  const [translateSuccess, setTranslateSuccess] = useState(false);
+  useEffect(() => {
+    if (comment.transid) {
+      api.getAudioTranslate(comment.transid).then((res) => {
+        if (res.data && res.data.taskStatus === "9") {
+          setTranslateSuccess(true);
+        }
+      });
+    }
+  }, []);
+
+  return (
+    <div key={comment.id} style={{ marginBottom: 8 }}>
+    <p>
+      <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
+
+      { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
+      <Button type="link" onClick={() => handleEdit(comment)}><EditOutlined /></Button>
+      : null }
+      
+      &nbsp;
+    {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
+        <Popconfirm title={i18n('message.confirm_delete')} onConfirm={() => onDelete(comment.id)}>
+          <Button type="link"><DeleteOutlined /></Button>
+        </Popconfirm>
+        : null}
+    </p>
+    <div style={{ display: 'flex' }}>
+      {comment.createuserobj &&
+        <div style={{ marginRight: 10 }}>
+          <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+            <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+          </a>
+        </div>
+      }
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
+        {comment.url && (
+          <FileLink
+            filekey={comment.key}
+            url={comment.url}
+            filename={comment.filename || comment.key}
+          />
+        )}
+        {comment.transid && translateSuccess && (
+          <div style={{ marginTop: 4 }}>
+            <Link
+              style={{ color: 'red' }}
+              to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
+            >
+              语音转文字
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
   );
 }
 

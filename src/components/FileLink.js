@@ -20,7 +20,7 @@ function FileLink({ bucket = 'file', filekey, url, filename, style, refetchUrl =
       onClick={handleClick}
       style={{ padding: 0, ...style }}
     >
-      {filename}
+      <span style={{ whiteSpace: 'normal', wordBreak: 'break-all', textAlign: 'left' }}>{filename}</span>
     </Button>
   );
 }
