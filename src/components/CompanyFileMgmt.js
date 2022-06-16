@@ -112,7 +112,7 @@ class FileMgmt extends React.Component {
         const originalEmail = isLogin().email || 'Investarget'
         const watermark = originalEmail.replace('@', '[at]');
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+        const url = '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
           '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
         window.open(url, '_blank', 'noopener')
