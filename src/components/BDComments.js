@@ -173,14 +173,18 @@ function BDComments(props) {
 
       <div style={{ display: comment ? 'none' : '' }}>
         {bdComments && bdComments.length ? bdComments.map(comment => (
-          <BDCommnet comment={comment} />
+          <BDCommnet
+            comment={comment}
+            onEdit={() => handleEdit(comment)}
+            onDelete={() => onDelete(comment.id)}
+          />
         )) : <p>暂无行动计划</p>}
       </div>
     </div>
   );
 }
 
-function BDCommnet({ comment }) {
+function BDCommnet({ comment, onEdit, onDelete }) {
   const [translateSuccess, setTranslateSuccess] = useState(false);
   useEffect(() => {
     if (comment.transid) {
@@ -198,12 +202,12 @@ function BDCommnet({ comment }) {
       <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
 
       { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
-      <Button type="link" onClick={() => handleEdit(comment)}><EditOutlined /></Button>
+      <Button type="link" onClick={onEdit}><EditOutlined /></Button>
       : null }
       
       &nbsp;
     {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-        <Popconfirm title={i18n('message.confirm_delete')} onConfirm={() => onDelete(comment.id)}>
+        <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
           <Button type="link"><DeleteOutlined /></Button>
         </Popconfirm>
         : null}
