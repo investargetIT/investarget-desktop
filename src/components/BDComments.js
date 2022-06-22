@@ -15,7 +15,7 @@ function BDComments(props) {
   const [comment, setComment] = useState(null);
 
   const handleFinish = (values) => {
-    const { comments, fileList } = values;
+    const { comments, fileList, speechToText } = values;
     // TODO: 提取上传文件的组件
     let bucket = null;
     let key = null;
@@ -32,9 +32,9 @@ function BDComments(props) {
       filename,
     }
     if (comment) {
-      onEdit(comment.id, data, speechFile);
+      onEdit(comment.id, data, speechToText ? speechFile : null);
     } else {
-      onAdd(data, speechFile);
+      onAdd(data, speechToText ? speechFile : null);
     }
     setComment(null);
     setSpeechFile(null);
@@ -149,7 +149,7 @@ function BDComments(props) {
             <Button icon={<UploadOutlined />} type="link">上传附件</Button>
           </Upload>
         </Form.Item>
-        {!comment && speechFile && (
+        {speechFile && (
           <Form.Item
             label="语音转文字"
             name="speechToText"

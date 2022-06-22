@@ -119,7 +119,20 @@ class ReportProjectBDList extends React.Component {
     this.setState({ visible: false, currentBD: null })
   }
 
-  handleAddComment = ({ comments, bucket, key, filename }) => {
+  handleAddComment = async ({ comments, bucket, key, filename }, speechFile) => {
+    let transid = null;
+    if (speechFile && speechFile instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append('file', speechFile);
+        const { data } = await api.addAudioTranslate(formData);
+        transid = data.id;
+      } catch (error) {
+        handleError(error)
+        return
+      }
+    }
+
     const { currentBD } = this.state;
     const { stimeM } = this.props;
     const param = {
@@ -128,24 +141,46 @@ class ReportProjectBDList extends React.Component {
       bucket,
       key,
       filename,
+      transid,
     }
-    api.addProjBDCom(param).then(data => {
-      this.getProjectBDList()
-      api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
-    }).catch(error => {
-      handleError(error)
-    })
+    let data = null;
+    try {
+      data = await api.addProjBDCom(param)
+    } catch (error) {
+      handleError(error);
+      return;
+    }
+
+    this.getProjectBDList()
+    api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
   }
 
-  handleEditComment = (id, data) => {
+  handleEditComment = async (id, data, speechFile) => {
+    let transid = null;
+    if (speechFile && speechFile instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append('file', speechFile);
+        const { data } = await api.addAudioTranslate(formData);
+        transid = data.id;
+      } catch (error) {
+        handleError(error)
+        return
+      }
+    }
+
+    const params = { ...data, transid };
+    try {
+      await api.editProjBDCom(id, params)
+    } catch (error) {
+      handleError(error)
+      return
+    }
+    
+    this.getProjectBDList()
     const { currentBD } = this.state;
     const { stimeM } = this.props;
-    api.editProjBDCom(id, data)
-      .then(() => {
-        this.getProjectBDList()
-        api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
-      })
-      .catch(handleError);
+    api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
   }
 
   handleDeleteComment = (id) => {

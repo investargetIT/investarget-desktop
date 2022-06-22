@@ -145,18 +145,18 @@ class ProjectBDList extends React.Component {
 
   handleAddComment = async ({ comments, bucket, key, filename }, speechFile) => {
     let transid = null;
-    let onebest = null;
     if (speechFile && speechFile instanceof File) {
       try {
         const formData = new FormData();
         formData.append('file', speechFile);
         const { data } = await api.addAudioTranslate(formData);
         transid = data.id;
-        onebest = data.onebest;
       } catch (error) {
-        throw error;
+        handleError(error)
+        return
       }
     }
+
     const { currentBD } = this.state;
     const param = {
       projectBD: currentBD.id,
@@ -165,25 +165,42 @@ class ProjectBDList extends React.Component {
       key,
       filename,
       transid,
-      onebest,
     }
     try {
       await api.addProjBDCom(param)
     } catch (error) {
       handleError(error)
+      return
     }
     this.getProjectBDList()
     api.editProjBD(currentBD.id, {});
   }
 
-  handleEditComment = (id, data, speechFile) => {
+  handleEditComment = async (id, data, speechFile) => {
+    let transid = null;
+    if (speechFile && speechFile instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append('file', speechFile);
+        const { data } = await api.addAudioTranslate(formData);
+        transid = data.id;
+      } catch (error) {
+        handleError(error)
+        return
+      }
+    }
+
+    const params = { ...data, transid };
+    try {
+      await api.editProjBDCom(id, params);
+    } catch (error) {
+      handleError(error);
+      return;
+    }
+
+    this.getProjectBDList()
     const { currentBD } = this.state;
-    api.editProjBDCom(id, data)
-      .then(() => {
-        this.getProjectBDList()
-        api.editProjBD(currentBD.id, {});
-      })
-      .catch(handleError);
+    api.editProjBD(currentBD.id, {});
   }
 
   handleDeleteComment = (id) => {
