@@ -63,7 +63,6 @@ class ReportForm extends React.Component {
     const [ start, end ] = this.props.time;
     this.startDate = `${start.format('YYYY-MM-DD')}T00:00:00`;
     this.endDate = `${end.format('YYYY-MM-DD')}T23:59:59`;
-    this.manager = getCurrentUser();
 
     this.state = {
       orgRemarks: [],
@@ -675,10 +674,7 @@ class ReportForm extends React.Component {
 
                   <div style={{ width: 200 }}>
                     <BasicFormItem name={`newproj_${m}`} valueType="number" layout>
-                      <SelectExistProject
-                        placeholder="选择项目"
-                        user={this.manager}
-                      />
+                      <SelectExistProject placeholder="选择项目" />
                     </BasicFormItem>
                   </div>
 
