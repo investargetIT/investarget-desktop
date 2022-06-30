@@ -610,6 +610,41 @@ const SelectMyInvestor = (props) => {
   );
 };
 
+const SelectShareInvestor = (props) => {
+
+  const getInvestor = (params) => {
+    params = {
+      ...params,
+      sort: 'createdtime',
+      desc: 1,
+    };
+    return api.getInvestors(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, username: label, org, mobile, email } = item;
+        // const description = [org ? org.orgname : '暂无机构', mobile, email].join('\n');
+        const tooltipContent = org ? org.orgname : '暂无机构';
+        return { value, label, tooltipContent };
+      })
+      return { total, list }
+    })
+  }
+
+  return (
+    <Select2WithTooltip
+      style={props.style || {}}
+      size={props.size}
+      // getData={this.getInvestor}
+      getData={getInvestor}
+      // getNameById={this.getUsernameById}
+      value={props.value}
+      onChange={props.onChange}
+      placeholder={props.placeholder}
+      noResult="未找到相关投资人"
+    />
+  );
+};
+
 /**
  * SelectExistInvestor
  */
@@ -2419,6 +2454,7 @@ export {
   SelectProjectForOrgBd,
   SelectExistInvestor,
   SelectMyInvestor,
+  SelectShareInvestor,
   SelectTrader,
   SelectAllUser,
   SelectGender,

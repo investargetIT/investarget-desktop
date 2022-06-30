@@ -819,6 +819,10 @@ export const deleteProjBD = (id) => {
   return r('/bd/projbd/' + id + '/', 'DELETE')
 }
 
+export const getProjBDCom = (param) => {
+  return r('/bd/projbd/comment/?' + qs.stringify(param));
+}
+
 export const addProjBDCom = (data) => {
   return r('/bd/projbd/comment/', 'POST', data)
 }

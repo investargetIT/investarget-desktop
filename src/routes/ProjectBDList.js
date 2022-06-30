@@ -11,6 +11,7 @@ import {
   getUserInfo,
   formatMoney,
   getURLParamValue,
+  requestAllData,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -172,7 +173,7 @@ class ProjectBDList extends React.Component {
       handleError(error)
       return
     }
-    this.getProjectBDList()
+    this.updateCurrentBD()
     api.editProjBD(currentBD.id, {});
   }
 
@@ -198,7 +199,7 @@ class ProjectBDList extends React.Component {
       return;
     }
 
-    this.getProjectBDList()
+    this.updateCurrentBD()
     const { currentBD } = this.state;
     api.editProjBD(currentBD.id, {});
   }
@@ -206,11 +207,31 @@ class ProjectBDList extends React.Component {
   handleDeleteComment = (id) => {
     const { currentBD } = this.state;
     api.deleteProjBDCom(id).then(data => {
-      this.getProjectBDList()
+      this.updateCurrentBD()
       api.editProjBD(currentBD.id, {});
     }).catch(error => {
       handleError(error)
     })
+  }
+
+  updateCurrentBD = () => {
+    const { list, currentBD: bd } = this.state;
+    requestAllData(api.getProjBDCom, { projectBD: bd.id }, 10).then((result) => {
+      const BDComments = result.data.data;
+      const currentBD = {
+        ...bd,
+        BDComments,
+      }
+      const index = list.findIndex((item) => item.id === bd.id);
+      this.setState({
+        currentBD,
+        list: [
+          ...list.slice(0, index),
+          currentBD,
+          ...list.slice(index + 1),
+        ],
+      })
+    });
   }
 
   checkExistence = (mobile, email) => {
