@@ -85,11 +85,12 @@ class NewOrgBDList extends React.Component {
     // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
     this.activeUserKey = getURLParamValue(props, 'activeUserKey');
 
+    const currentUser = getUserInfo();
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: '',
         page: 1,
-        pageSize: getUserInfo().page || 10,
+        pageSize: (currentUser && currentUser.page) || 10,
         total: 0,
         manager: null,
         originalList: [],

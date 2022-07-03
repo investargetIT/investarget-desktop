@@ -20,10 +20,11 @@ class LogList extends React.Component {
   constructor(props) {
     super(props)
 
+    const currentUser = getUserInfo();
     this.state = {
       search: null,
       page: 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,

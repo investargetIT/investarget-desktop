@@ -34,11 +34,12 @@ class ProjectBDList extends React.Component {
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
 
+    const currentUser = getUserInfo();
     this.state = {
       filters,
       search,
       page,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,
@@ -388,6 +389,8 @@ class ProjectBDList extends React.Component {
   }
 
   render() {
+    const currentUser = getUserInfo();
+    const currentUserId = currentUser && currentUser.id;
     const { filters, search, page, pageSize, total, list, loading, source } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
     const imgStyle={width:'15px',height:'20px'}
@@ -497,7 +500,7 @@ class ProjectBDList extends React.Component {
       return normalManagerIds.concat(mainManagerId);
     }).reduce((prev, curr) => prev.concat(curr), []);
 
-    if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
+    if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(currentUserId) || allContractor.includes(currentUserId) || allManager.includes(currentUserId)) {
       columns.push(
         {title: i18n('project_bd.operation'), width: 160, render: (text, record) => {
           
@@ -508,18 +511,18 @@ class ProjectBDList extends React.Component {
 
           return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div>
-              {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
+              {hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
                   <Button size="small" type="link"><EditOutlined /></Button>
                 </Link>
                 :
-                getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+                currentUserId === record.manager.main.id || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
                 <Button type="link" size="small" onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}><EditOutlined /></Button>
                 : null
               }
             </div>
 
-            { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
+            { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ? 
             <div style={{ marginLeft: 7 }}>
             <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
               <Button size="small" type="link">
@@ -531,7 +534,7 @@ class ProjectBDList extends React.Component {
 
             <div>
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+              { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser || currentUserId === record.manager.main.id || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
               <Button style={{}} onClick={() => this.handleOpenModal(record)} type="link" size="small">行动计划</Button>
               : null }
             </div>

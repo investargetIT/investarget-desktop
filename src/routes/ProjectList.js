@@ -601,7 +601,7 @@ class ProjectList extends React.Component {
 
 function mapStateToProps(state) {
   const { country, projectProgress } = state.app;
-  const { page: userPageSize } = state.currentUser;
+  const userPageSize = state.currentUser ? state.currentUser.page : 10;
   return { country, userPageSize, projectProgress };
 }
 

@@ -34,13 +34,14 @@ class UserListWithResignedTraders extends React.Component {
 
     let indGroup = undefined;
     const currentUser = getUserInfo();
-    if (currentUser.indGroup) {
+
+    if (currentUser && currentUser.indGroup) {
       indGroup = currentUser.indGroup.id;
     }
 
     this.state = {
       page: 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       indGroup,
       total: 0,
       list: [],

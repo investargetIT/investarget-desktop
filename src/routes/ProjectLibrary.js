@@ -59,11 +59,12 @@ class ProjectLibrary extends React.Component {
       page = setting ? setting.page : 1;
     }
 
+    const currentUser = getUserInfo();
     this.state = {
       filters,
       search,
       page: page || 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,

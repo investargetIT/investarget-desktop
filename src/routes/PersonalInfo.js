@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { connect } from 'dva';
-import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider, Select } from 'antd';
+import { Breadcrumb, Card, Tabs, Form, Input, Button, DatePicker, Upload, message, Divider, Select, Modal } from 'antd';
 import { Link } from 'dva/router';
 import { CloudUploadOutlined } from '@ant-design/icons';
 import { getUserInfo, i18n, hasPerm, handleError, requestAllData, customRequest } from '../utils/util';
@@ -21,6 +21,19 @@ const { RangePicker } = DatePicker;
 function PersonalInfo(props) {
 
   const userInfo = getUserInfo();
+  if (userInfo == null) {
+    Modal.error({
+      title: '请重新登录',
+      onOk() {
+        props.dispatch({
+          type: 'currentUser/logout',
+          payload: { redirect: props.location.pathname },
+        });
+      },
+    });
+    return null;
+  }
+  
   const [form] = Form.useForm();
 
   const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState(false);

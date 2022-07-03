@@ -35,7 +35,7 @@ const { TabPane } = Tabs;
 function Dashboard(props) {
 
   const userInfo = getUserInfo();
-
+  
   const [projList, setProjList] = useState([]);
   const [news, setNews] = useState([]);
   const [files, setFiles] = useState([]);
@@ -46,7 +46,7 @@ function Dashboard(props) {
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
 
-    if (userInfo.indGroup) {
+    if (userInfo && userInfo.indGroup) {
       async function fetchProjNum() {
         const params = {
           indGroup: userInfo.indGroup.id,
@@ -67,7 +67,7 @@ function Dashboard(props) {
         projstatus: ongoingStatus.map(m => m.id),
         sort: 'publishDate',
         desc: 1,
-        user: userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
+        user: userInfo && userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
         iscomproj: 0,
       }
       const reqProj = await api.getProj(params);
@@ -211,10 +211,10 @@ function Dashboard(props) {
       </Breadcrumb>
 
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 30 }}>
-        <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo.photourl} />
+        <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo && userInfo.photourl} />
         <div style={{ marginLeft: 20 }}>
-          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo.username} 祝您开心每一天！</div>
-          {userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 {projNum}</div>}
+          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo && userInfo.username} 祝您开心每一天！</div>
+          {userInfo && userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 {projNum}</div>}
         </div>
       </div>
 

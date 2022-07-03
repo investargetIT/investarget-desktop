@@ -21,10 +21,11 @@ class OrgExportList extends React.Component {
   
   constructor (props) {
     super(props);
+    const currentUser = getUserInfo();
     this.state = {
       list: [],
       page: 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       loading: false,
       downloadUrl: null,

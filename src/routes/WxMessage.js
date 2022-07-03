@@ -21,12 +21,13 @@ class WxMessage extends React.Component {
 
   constructor(props) {
     super(props)
+    const currentUser = getUserInfo();
     this.state = {
       total: 0,
       list: [],
       filters: null,
       page: 1,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       loading: false,
     }
   }

@@ -37,11 +37,12 @@ class OrganizationList extends React.Component {
     const pageSize = setting ? setting.pageSize: 10
     const searchOption = setting ? (setting.searchOption || 0) : 0
 
+    const currentUser = getUserInfo();
     this.state = {
       filters,
       search,
       page,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,
