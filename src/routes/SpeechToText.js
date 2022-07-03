@@ -6,15 +6,18 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { Input, Divider, Button, Affix, Typography, Form, Modal, message } from "antd";
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { connect } from "dva";
 import { useEffect, useRef, useState } from "react";
 import { useDebounce } from 'react-use';
 import qs from 'qs';
 import * as api from '../api';
 import LeftRightLayout from "../components/LeftRightLayout";
+import { downloadFile } from "../utils/util";
 
 function SpeechToText(props) {
   const [speechUrl, setSpeechUrl] = useState(null);
+  const [filename, setFilename] = useState(null);
   const [paragraphs, setParagraphs] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState(keyword);
@@ -30,6 +33,8 @@ function SpeechToText(props) {
   const [speakerModalVisible, setSpeakerModalVisible] = useState(false);
   const [text, setText] = useState(null);
   const [textModalVisible, setTextModalVisible] = useState(false);
+  const audioElem = useRef();
+  const audioTimeupdateHandler = useRef();
 
   const handleChange = (keyword) => {
     setKeyword(keyword);
@@ -87,6 +92,66 @@ function SpeechToText(props) {
     api.updateAudioTranslate(transId, { onebest });
   };
 
+  const handleClickTime = (bg, ed) => {
+    if (audioElem.current == null) return;
+
+    const startTime = bg / 1000;
+    const endTime = ed / 1000;
+    if (audioTimeupdateHandler.current) {
+      audioElem.current.removeEventListener('timeupdate', audioTimeupdateHandler.current);
+    }
+    audioTimeupdateHandler.current = () => {
+      if (audioElem.current.currentTime >= endTime) {
+        audioElem.current.pause();
+        audioElem.current.removeEventListener('timeupdate', audioTimeupdateHandler.current);
+        audioTimeupdateHandler.current = null;
+      }
+    };
+    audioElem.current.addEventListener('timeupdate', audioTimeupdateHandler.current);
+    audioElem.current.currentTime = startTime;
+    audioElem.current.play();
+  };
+
+  const handleDownload = () => {
+    // Documents contain sections, you can have multiple sections per document, go here to learn more about sections
+    // This simple example will only contain one section
+    const doc = new Document({
+      styles: {
+        // TODO: 优化样式
+        paragraphStyles: [
+          {
+            id: 'paragraph',
+            paragraph: {
+              spacing: {
+                before: 240,
+                after: 240,
+              },
+            },
+          },
+        ],
+      },
+      sections: [{
+        properties: {},
+        children: paragraphs.map((item) => (
+          new Paragraph({
+            children: [
+              new TextRun(item.text),
+            ],
+            style: 'paragraph',
+          })
+        )),
+      }],
+    });
+
+    // Used to export the file into a .docx file
+    Packer.toBlob(doc).then((blob) => {
+      const fileName = `${filename}文字记录.docx`;
+      const url = URL.createObjectURL(blob);
+      downloadFile(url, fileName);
+      URL.revokeObjectURL(url);
+    });
+  };
+
   useEffect(() => {
     const { textParagraphs, total } = searchInParagraphs(paragraphs, debouncedKeyword);
     setTextParagraphs(textParagraphs);
@@ -116,11 +181,12 @@ function SpeechToText(props) {
 
       const res = await api.getAudioTranslate(id);
       // TODO: check taskStatus
-      const { onebest } = res.data;
+      const { onebest, file_name } = res.data;
       if (onebest) {
         try {
           const paragraphs = JSON.parse(onebest);
           setParagraphs(paragraphs.map(formatParagraph));
+          setFilename(file_name);
         } catch (error) {
           throw error;
           // TODO: error handle
@@ -169,9 +235,19 @@ function SpeechToText(props) {
       <div>
         <Affix offsetTop={50}>
           <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
-            <Typography.Title level={3} style={{ margin: 0 }}>
-              文字记录
-            </Typography.Title>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Typography.Title level={3} style={{ margin: 0 }}>
+                文字记录
+              </Typography.Title>
+              <Button
+                style={{ marginLeft: 8 }}
+                size="small"
+                disabled={paragraphs.length === 0}
+                onClick={handleDownload}
+              >
+                下载Word
+              </Button>
+            </div>
             <Finder
               input={inputElem}
               keyword={keyword}
@@ -184,8 +260,8 @@ function SpeechToText(props) {
           </div>
         </Affix>
         <div style={{ padding: 16 }}>
-          {textParagraphs.map(({ id, speaker, text, startTime, textSpans }) => (
-            <Paragraph
+          {textParagraphs.map(({ id, speaker, text, startTime, bg, ed, textSpans }) => (
+            <TextParagraph
               key={id}
               speaker={speaker}
               text={text}
@@ -202,13 +278,16 @@ function SpeechToText(props) {
                 setText(text);
                 setTextModalVisible(true);
               }}
+              onClickTime={() => {
+                handleClickTime(bg, ed);
+              }}
             />
           ))}
         </div>
         {speechUrl && (
           <Affix offsetBottom={0}>
             <div style={{ display: 'flex', justifyContent: 'center', padding: 16, background: '#fff' }}>
-              <audio src={speechUrl} controls style={{ width: 500 }} />
+              <audio ref={audioElem} src={speechUrl} controls style={{ width: 500 }} />
             </div>
           </Affix>
         )}
@@ -231,7 +310,7 @@ function SpeechToText(props) {
   );
 }
 
-function Paragraph({ speaker, onEditSpeaker, onEditText, startTime, textSpans, current }) {
+function TextParagraph({ speaker, onEditSpeaker, onEditText, onClickTime, startTime, textSpans, current }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ marginBottom: 8 }}>
@@ -243,7 +322,13 @@ function Paragraph({ speaker, onEditSpeaker, onEditText, startTime, textSpans, c
           icon={<EditOutlined />}
           onClick={onEditSpeaker}
         />
-        <Typography.Text style={{ marginLeft: 8 }}>{startTime}</Typography.Text>
+        <Button
+          style={{ marginLeft: 8 }}
+          type="text"
+          onClick={onClickTime}
+        >
+          <Typography.Text>{startTime}</Typography.Text>
+        </Button>
       </div>
       <Typography.Paragraph>
         <Button
