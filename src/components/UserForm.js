@@ -1,15 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { 
   i18n, 
-  hasPerm, 
   intersection, 
   checkMobile,
   handleError,
   requestAllData,
 } from '../utils/util';
 import * as api from '../api'
-import { Link } from 'dva/router'
 import { 
   Form, 
   Input, 
@@ -24,7 +21,6 @@ import {
 } from '../components/Form'
 import {
   SelectTitle,
-  SelectYear,
   CascaderCountry,
   SelectExistOrCreateNewOrganization,
   SelectUserGroup,
@@ -34,7 +30,6 @@ import {
   RadioFamLv,
   TreeSelectTag,
 } from '../components/ExtraInput'
-import { Role, Mobile } from './Form'
 import { UploadImage } from './Upload'
 import pinyin from 'tiny-pinyin';
 
@@ -221,10 +216,6 @@ class UserForm extends React.Component {
         <BasicFormItem label={i18n("user.tags")} name="tags" valueType="array">
           <TreeSelectTag />
         </BasicFormItem>
-
-        <BasicFormItem label={i18n('user.target_demand')} name="targetdemand"><Input.TextArea rows={4} /></BasicFormItem>
-        <BasicFormItem label={i18n('user.merges')} name="mergedynamic"><Input.TextArea rows={4} /></BasicFormItem>
-        <BasicFormItem label={i18n('user.industry_fund')} name="ishasfundorplan"><Input.TextArea rows={4} /></BasicFormItem>
 
         {
           this.hasPerm && !this.props.isTraderAddInvestor ? (

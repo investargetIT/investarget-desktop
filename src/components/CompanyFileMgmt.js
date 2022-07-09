@@ -1,9 +1,8 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, customRequest } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 
 const confirm = Modal.confirm
@@ -113,10 +112,10 @@ class FileMgmt extends React.Component {
         const originalEmail = isLogin().email || 'Investarget'
         const watermark = originalEmail.replace('@', '[at]');
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+        const url = '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
           '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
-        window.open(url)
+        window.open(url, '_blank', 'noopener')
       } else if ((/\.(doc|docx|xls|xlsx|ppt|pptx)$/i).test(file.filename)) {
         api.downloadUrl(file.bucket, file.realfilekey)
           .then(result => {
@@ -124,7 +123,7 @@ class FileMgmt extends React.Component {
             setTimeout(() => this.setState({ downloadUrl: null }), 1000);
           })
       } else {
-        window.open(file.fileurl);
+        window.open(file.fileurl, '_blank', 'noopener');
       }
     }
   }
@@ -487,7 +486,8 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file',
+      customRequest,
+      data: { bucket: 'file' },
       showUploadList: false,
       multiple: true,
       beforeUpload: file => {

@@ -1894,6 +1894,8 @@ function webViewerInitialized() {
   var queryString = document.location.search.substring(1);
   var params = (0, _ui_utils.parseQueryString)(queryString);
   file = 'file' in params ? params.file : appConfig.defaultUrl;
+  // 从base64解码
+  file = decodeURIComponent(atob(file));
   validateFileURL(file);
   var waitForBeforeOpening = [];
   var fileInput = document.createElement('input');
@@ -2396,7 +2398,8 @@ function webViewerKeyDown(evt) {
   if (cmd === 1 || cmd === 8) {
     switch (evt.keyCode) {
       case 83:
-        PDFViewerApplication.download();
+        // 禁用快捷键下载文件
+        // PDFViewerApplication.download();
         handled = true;
         break;
     }

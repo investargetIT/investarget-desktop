@@ -199,3 +199,35 @@ export const KEY_TO_ICON = {
 }
 
 export const PAGE_SIZE_OPTIONS = ['10', '50', '100'];
+
+export const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+}
+export const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14, offset: 6 },
+  }
+}
+
+export const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 14,
+      offset: 6,
+    },
+  },
+}
+
+export const SIZE_4M = 4194304;

@@ -8,7 +8,7 @@ function DebounceSelect({
   allowCreate = false,
   noResult = '未找到相关信息',
   debounceTimeout = 800,
-  ...props,
+  ...props
 }) {
   const [fetching, setFetching] = React.useState(false);
   const [fetchingMore, setFetchingMore] = React.useState(false);

@@ -16,10 +16,10 @@ import {
   getUserInfo,
   requestAllData,
   handleError,
+  customRequest,
 } from '../utils/util';
 import { SelectIndustryGroup, SelectKPIResult, SelectTitle, SelectTrader, SelectTraingStatus, SelectTraingType } from '../components/ExtraInput';
 import moment from 'moment';
-import { baseUrl } from '../utils/request';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -717,7 +717,8 @@ function HumanResources(props) {
 
   const KPIAttachmentUploadProps = {
     name: 'file',
-    action: baseUrl + "/service/qiniubigupload?bucket=file",
+    customRequest,
+    data: { bucket: 'file' },
   };
 
   const normFile = (e) => {

@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Upload, Button, Modal, message } from 'antd';
-import { i18n, getImageUrl } from '../utils/util'
+import { i18n, getImageUrl, customRequest } from '../utils/util'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
-import { baseUrl } from '../utils/request';
 import {
   PlusOutlined,
   UploadOutlined,
@@ -136,7 +135,8 @@ class UploadFile extends React.Component {
     return (
       <Upload
         name="file"
-        action={baseUrl + "/service/qiniubigupload?bucket=file"}
+        customRequest={customRequest}
+        data={{ bucket: 'file' }}
         accept={fileExtensions.join(',')}
         beforeUpload={this.beforeUpload}
         fileList={this.state.fileList}
@@ -288,7 +288,8 @@ class UploadImage extends React.Component {
           style={{ cursor: this.props.disabled ? 'not-allowed' : 'pointer' }}
           disabled={this.props.disabled || false}
           name="file"
-          action={baseUrl+ "/service/qiniubigupload?bucket=image"}
+          customRequest={customRequest}
+          data={{ bucket: 'image' }}
           accept={imageExtensions.join(',')}
           beforeUpload={this.beforeUpload}
           fileList={fileList}

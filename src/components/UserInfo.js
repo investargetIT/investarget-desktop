@@ -19,6 +19,7 @@ import {
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { DeleteOutlined } from '@ant-design/icons';
+import FileLink from './FileLink';
 
 const TabPane = Tabs.TabPane;
 
@@ -87,10 +88,28 @@ class AttachmentList extends React.Component {
     const { page, pageSize, total } = this.state;
 
     const columns = [
-      {title: '文件名称', dataIndex: 'filename', sorter: true, render: (text, record) => <a target="_blank" href={record.url}>{text}</a> },
-      {title: '创建时间', dataIndex: 'createdtime', render: (text, record) => time(text + record.timezone) || 'N/A', sorter: true},
       {
-        title: i18n('common.operation'), key: 'action', render: (text, record) => (
+        title: '文件名称',
+        dataIndex: 'filename',
+        sorter: true,
+        render: (text, record) => (
+          <FileLink
+            filekey={record.key}
+            url={record.url}
+            filename={text}
+          />
+        ),
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createdtime',
+        render: (text, record) => time(text + record.timezone) || 'N/A',
+        sorter: true,
+      },
+      {
+        title: i18n('common.operation'),
+        key: 'action',
+        render: (text, record) => (
           <Popconfirm title={i18n('delete_confirm')} onConfirm={this.delete.bind(this, record.id)}>
             <Button size="small" style={buttonStyle}>
               <DeleteOutlined />
@@ -122,15 +141,6 @@ class AttachmentList extends React.Component {
     </div>;
   }
 }
-const fileExtensions = [
-  '.pdf',
-  '.doc',
-  '.xls',
-  '.ppt',
-  '.docx',
-  '.xlsx',
-  '.pptx',
-];
 
 class InvestEvent extends React.Component {
 
@@ -263,9 +273,6 @@ class UserInfo extends React.Component {
       email: '',
       userstatus: '',
       cardUrl: '',
-      ishasfundorplan: '',
-      mergedynamic: '',
-      targetdemand: '',
       orgid:'',
       attachment: [],
       historyOrg: null,
@@ -309,18 +316,18 @@ class UserInfo extends React.Component {
     const userstatus = data.userstatus.name
     const cardBucket = data.cardBucket
     const cardKey = data.cardKey
-    const ishasfundorplan = data.ishasfundorplan
-    const mergedynamic = data.mergedynamic
-    const targetdemand = data.targetdemand
     const orgid = data.org ? data.org.id : ''
     this.setState({
-      username, title, tags, country, area, org, mobile, wechat, email, userstatus, ishasfundorplan, mergedynamic, targetdemand, orgid
+      username, title, tags, country, area, org, mobile, wechat, email, userstatus, orgid
     })
     if (this.props.onGetUsername) {
       this.props.onGetUsername(username);
     }
     if (this.props.onGetMobile) {
       this.props.onGetMobile(mobile);
+    }
+    if (this.props.onGetWeChat) {
+      this.props.onGetWeChat(wechat);
     }
     if (cardBucket && cardKey) {
       api.downloadUrl(cardBucket, cardKey).then(result => {
@@ -356,7 +363,7 @@ class UserInfo extends React.Component {
 
 
   render() {
-    const { targetdemand, mergedynamic, ishasfundorplan, username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
+    const { username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
@@ -376,9 +383,6 @@ class UserInfo extends React.Component {
             <Field title={i18n('project.favorite_projects')} value={''} />
             <Field title={i18n('project.recommended_projects')} value={''} />
             <Field title={i18n('project.interested_projects')} value={''} />
-            <Field title={i18n('user.target_demand')} value={targetdemand} />
-            <Field title={i18n('user.merges')} value={mergedynamic} />
-            <Field title={i18n('user.industry_fund')} value={ishasfundorplan} />
           </div>
         </TabPane>
         <TabPane tab="投资事件" key="2">

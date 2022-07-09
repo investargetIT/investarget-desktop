@@ -1,9 +1,8 @@
 import React from 'react'
 import { Upload, message, Tree, Modal, Input, Button, Table, Select, Tag, Checkbox, Icon, Tooltip, Progress } from 'antd'
-import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting, getURLParamValue, updateURLParameter } from '../utils/util'
+import { getRandomInt, formatBytes, isLogin, hasPerm, time, i18n, subtracting, getURLParamValue, updateURLParameter, customRequest } from '../utils/util'
 import qs from 'qs'
 import styles from './FileMgmt.css'
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 
@@ -112,7 +111,7 @@ class FileMgmt extends React.Component {
       this.setState({ parentId: file.id })
     } else {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(file.filename)) {
-        window.open(file.fileurl);
+        window.open(file.fileurl, '_blank', 'noopener');
       } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(file.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
@@ -122,10 +121,10 @@ class FileMgmt extends React.Component {
         const originalEmail = isLogin().email || 'Investarget'
         const watermark = originalEmail.replace('@', '[at]');
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-        const url = '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+        const url = '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
           '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) + 
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG)
-        window.open(url)
+        window.open(url, '_blank', 'noopener')
       }
     }
   }
@@ -701,7 +700,8 @@ class FileMgmt extends React.Component {
 
     const props = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file',
+      customRequest,
+      data: { bucket: 'file' },
       showUploadList: false,
       multiple: true,
       beforeUpload: file => {

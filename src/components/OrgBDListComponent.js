@@ -186,8 +186,6 @@ class OrgBDListComponent extends React.Component {
         loadingUpdatingOrgPriority: false,
 
         // 编辑机构看板
-        originalOrgBDForEditing: null,
-        activeOrgBDForEditing: null,
         displayModalForEditing: false,
         loadingEditingOrgBD: false,
 
@@ -198,8 +196,8 @@ class OrgBDListComponent extends React.Component {
 
         // 创建时间排序，置空的话必须设置为 undefined，设置为 null 的话，参数会传空，服务端会报错
         sortByTime: null,
-        sort: undefined,
-        desc: undefined,
+        sort: 'response',
+        desc: 1,
 
         loadingImportOrgBD: false,
         downloadUrl: null, // 模板下载链接
@@ -795,9 +793,9 @@ class OrgBDListComponent extends React.Component {
     return api.addTimeline(params);
   }
 
-  generateProgressChangeComment = async () => {
-    const { id: oldID, response: oldResponse, material: oldMaterial } = this.state.originalOrgBDForEditing;
-    const { id: newID, response: newResponse, material: newMaterial } = this.state.activeOrgBDForEditing;
+  generateProgressChangeComment = async (bd) => {
+    const { id: oldID, response: oldResponse, material: oldMaterial } = this.state.currentBD;
+    const { id: newID, response: newResponse, material: newMaterial } = bd;
     if (oldID !== newID) return;
     if (oldResponse === newResponse && oldMaterial === newMaterial) return;
     const orgBD = oldID;
@@ -1247,14 +1245,11 @@ class OrgBDListComponent extends React.Component {
       })
   }
 
-  updateActiveOrgBDForEditing(record, change) {
-    const newRecord = { ...record, ...change };
-    this.setState({ activeOrgBDForEditing: newRecord });
-
-    if(!change.bduser) return;
+  handleBDUserChange = (bduser, onTraderListChange) => {
+    if(!bduser) return;
 
     const params = {
-      investoruser: change.bduser,
+      investoruser: bduser,
       page_size: 100,
     };
     requestAllData(api.getUserRelation, params, 100)
@@ -1277,9 +1272,8 @@ class OrgBDListComponent extends React.Component {
         newTraderList.sort(function(a, b) {
           return b.familiar - a.familiar;
         });
-
-        newRecord.manager = newTraderList[0];
-        this.setState({ traderList: newTraderList, activeOrgBDForEditing: newRecord });
+        onTraderListChange(newTraderList);
+        this.setState({ traderList: newTraderList });
       });
   }
 
@@ -1296,8 +1290,15 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
-  handleEditOrgBD = () => {
-    const record = this.state.activeOrgBDForEditing;
+  handleCancelEditOrgBD = () => {
+    this.setState({
+      displayModalForEditing: false,
+      currentBD: null,
+      comments: [],
+    });
+  };
+
+  handleEditOrgBD = (record, newComment) => {
     let body = {
       'bduser': record.bduser >= 0 ? record.bduser: null,
       'manager': Number(record.manager.id),
@@ -1313,12 +1314,12 @@ class OrgBDListComponent extends React.Component {
     // api.getUserSession()
       // .then(() => 
       api.modifyOrgBD(record.id, body)
-      .then(this.generateProgressChangeComment)
+      .then(() => this.generateProgressChangeComment(record))
       .then(() => {
-        if (this.state.newComment) {
+        if (newComment) {
           const bodyForComment = {
             orgBD: record.id,
-            comments: this.state.newComment,
+            comments: newComment,
           };
           return api.addOrgBDComment(bodyForComment);
         }
@@ -1661,15 +1662,6 @@ class OrgBDListComponent extends React.Component {
     this.updateSelection(record, { response, material });
   }
 
-  handleProgressChangeForEditingOrgBD(record, value) {
-    const response = value[0];
-    let material = null;
-    if (value.length > 0 && value[1] !== 0) {
-      material = value[1];
-    }
-    this.updateActiveOrgBDForEditing(record, { response, material });
-  }
-
   // Test
   handleOperationChange(record, value) {
     const react = this;
@@ -1696,7 +1688,7 @@ class OrgBDListComponent extends React.Component {
         react.setState({ isPMComment: 1 }, () => react.handleOpenModal(record));
         break;
       case 'edit':
-        react.setState({ activeOrgBDForEditing: record, originalOrgBDForEditing: record, displayModalForEditing: true, newComment: '' });
+        react.setState({ displayModalForEditing: true, currentBD: record, comments: record.BDComments || []  });
         break;
     }
   }
@@ -1747,14 +1739,6 @@ class OrgBDListComponent extends React.Component {
     } finally {
       this.setState({ loadingUpdatingOrgPriority: false });
     }
-  }
-
-  generateProgressValueForEditing = bd => {
-    const progressValue = [bd.response];
-    if (bd.material) {
-      progressValue.push(bd.material);
-    }
-    return progressValue;
   }
 
   handleDisplayQRCodeBtnClick = () => {
@@ -2949,66 +2933,19 @@ class OrgBDListComponent extends React.Component {
         </Modal>
 
         {this.state.displayModalForEditing &&
-          <Modal
-            wrapClassName="modal-orgbd-edit"
-            title="编辑机构看板"
-            visible
-            onCancel={() => this.setState({ displayModalForEditing: false, newComment: '' })}
-            onOk={this.handleEditOrgBD}
-            confirmLoading={this.state.loadingEditingOrgBD}
-          >
-            <div style={{ marginBottom: 30 }}>
-              <div>机构名称</div>
-              <Input style={{ width: '100%' }} disabled value={this.state.activeOrgBDForEditing.org.orgname} />
-            </div>
-
-            <div style={{ marginBottom: 30 }}>
-              <div>联系人</div>
-              <SelectOrgInvestor
-                allStatus
-                onjob
-                allowEmpty
-                style={{ width: '100%' }}
-                type="investor"
-                mode="single"
-                size="middle"
-                optionFilterProp="children"
-                org={this.state.activeOrgBDForEditing.org.id}
-                value={this.state.activeOrgBDForEditing.bduser}
-                onChange={v => { this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { bduser: v }) }}
-              />
-            </div>
-
-            <div style={{ marginBottom: 30 }}>
-              <div>负责人</div>
-              <SelectTrader
-                data={this.state.traderList}
-                mode="single"
-                value={this.state.activeOrgBDForEditing.manager.id.toString()}
-                onChange={v => { this.updateActiveOrgBDForEditing(this.state.activeOrgBDForEditing, { manager: { id: v } }) }}
-              />
-            </div>
-
-            <div style={{ marginBottom: 30 }}>
-              <div>机构进度/材料</div>
-              <Cascader
-                style={{ width: '100%' }}
-                options={this.getProgressOptions()}
-                onChange={this.handleProgressChangeForEditingOrgBD.bind(this, this.state.activeOrgBDForEditing)}
-                value={this.generateProgressValueForEditing(this.state.activeOrgBDForEditing)}
-              />
-            </div>
-
-          <div style={{ marginBottom: 30 }}>
-            <div>机构反馈</div>
-            <Input.TextArea
-              rows={3}
-              value={this.state.newComment}
-              onChange={e => this.setState({ newComment: e.target.value })}
-            />
-          </div>
-
-          </Modal>
+          <EditOrgBDModalForm
+            traderList={this.state.traderList}
+            progressOptions={this.getProgressOptions()}
+            loadingEditingOrgBD={this.state.loadingEditingOrgBD}
+            onBDUserChange={this.handleBDUserChange}
+            bd={this.state.currentBD}
+            onCancelEditOrgBD={this.handleCancelEditOrgBD}
+            onConfirmEditOrgBD={this.handleEditOrgBD}
+            currentBD={this.state.currentBD}
+            comments={this.state.comments}
+            isPMComment={this.state.isPMComment}
+            onDeleteComment={this.handleDeleteComment}
+          />
         }
 
         {this.state.displayModalForCreating &&
@@ -3225,3 +3162,181 @@ export function BDComments(props) {
   )
 }
 
+export function NewBDComments(props) {
+  const { comments, onDelete, bd, isPMComment } = props
+  window.echo('comments', comments);
+  return (
+    <div>
+      <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+        历史备注 
+      </div>
+      <div>
+        {comments.length ? comments.filter(f => f.isPMComment == Boolean(isPMComment))
+          .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+          .map(comment => {
+          let content = comment.comments;
+          const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
+          if (oldStatusMatch) {
+            const oldStatus = oldStatusMatch[0];
+            content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
+          }
+          return (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p>
+                <span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+                {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
+                  <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                    <Button type="link"><DeleteOutlined /></Button>
+                  </Popconfirm>
+                  : null}
+              </p>
+              <div style={{ display: 'flex' }}>
+                {comment.createuser &&
+                  <div style={{ marginRight: 10 }}>
+                    <a target="_blank" href={`/app/user/${comment.createuser.id}`}>
+                      <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuser.photourl} />
+                    </a>
+                  </div>
+                }
+                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              </div>
+            </div>
+          );
+        }) : <p>暂无</p>}
+      </div>
+    </div>
+  )
+}
+
+function EditOrgBDModalForm({
+  traderList,
+  progressOptions,
+  loadingEditingOrgBD,
+  bd,
+  onBDUserChange,
+  onCancelEditOrgBD,
+  onConfirmEditOrgBD,
+  currentBD,
+  comments,
+  isPMComment,
+  onDeleteComment,
+}) {
+  const [form] = Form.useForm();
+
+  const initialValues = {
+    orgname: bd.org.orgname,
+    bduser: bd.bduser,
+    managerId: bd.manager.id.toString(),
+    progress: bd.material ? [bd.response, bd.material] : [bd.response],
+  };
+
+  const handleOk = () => {
+    form.validateFields().then((values) => {
+      const { orgname, bduser, managerId, progress, newComment } = values;
+      const response = progress[0];
+      let material = null;
+      if (progress.length > 0 && progress[1] !== 0) {
+        material = progress[1];
+      }
+      // 特殊处理，如果新的material为undefined，则将新的material还原为旧的
+      if (material === undefined) {
+        material = bd.material;
+      }
+      const newBd = {
+        ...bd,
+        org: {
+          ...bd.org,
+          orgname,
+        },
+        bduser,
+        manager: {
+          ...bd.manager,
+          id: managerId,
+        },
+        response,
+        material,
+      };
+      onConfirmEditOrgBD(newBd, newComment);
+    });
+  };
+
+  const handleBDUserChange = (bduser) => {
+    onBDUserChange(bduser, (newTraderList) => {
+      const manager = newTraderList[0];
+      form.setFieldsValue({ managerId: manager.id.toString() });
+    });
+  };
+
+  return (
+    <Modal
+      wrapClassName="modal-orgbd-edit"
+      title="编辑机构看板"
+      visible
+      onCancel={onCancelEditOrgBD}
+      onOk={handleOk}
+      confirmLoading={loadingEditingOrgBD}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={initialValues}
+      >
+        <Form.Item
+          name="orgname"
+          label="机构名称"
+        >
+          <Input disabled />
+        </Form.Item>
+        <Form.Item
+          name="bduser"
+          label="联系人"
+        >
+          <SelectOrgInvestor
+            allStatus
+            onjob
+            allowEmpty
+            style={{ width: '100%' }}
+            type="investor"
+            mode="single"
+            size="middle"
+            optionFilterProp="children"
+            org={bd.org.id}
+            onChange={handleBDUserChange}
+          />
+        </Form.Item>
+        <Form.Item
+          name="managerId"
+          label="负责人"
+        >
+          <SelectTrader
+            data={traderList}
+            mode="single"
+          />
+        </Form.Item>
+        <Form.Item
+          name="progress"
+          label="机构进度/材料"
+        >
+          <Cascader
+            style={{ width: '100%' }}
+            options={progressOptions}
+          />
+        </Form.Item>
+        <Form.Item
+          name="newComment"
+          label="机构反馈"
+        >
+          <Input.TextArea
+            rows={3}
+          />
+        </Form.Item>
+      </Form>
+      <NewBDComments
+        bd={currentBD}
+        comments={comments}
+        isPMComment={isPMComment}
+        onDelete={onDeleteComment}
+      />
+    </Modal>
+  );
+}

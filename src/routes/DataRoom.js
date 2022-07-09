@@ -1133,7 +1133,7 @@ class DataRoom extends React.Component {
     const { fileurl, filename } = item;
     if (fileurl) {
       if ((/\.(gif|jpg|jpeg|bmp|png|webp)$/i).test(filename)) {
-        window.open(fileurl);
+        window.open(fileurl, '_blank', 'noopener');
       } else if ((/\.(mp4|avi|mp3|m4a)$/i).test(filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
@@ -1141,9 +1141,9 @@ class DataRoom extends React.Component {
       } else {
         const watermark = isLogin().email || 'Investarget';
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-        const url = '/pdf_viewer.html?file=' + encodeURIComponent(fileurl) +
+        const url = '/pdf_viewer.html?file=' + btoa(encodeURIComponent(fileurl)) +
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
-        window.open(url);
+        window.open(url, '_blank', 'noopener');
       }
     }
   }

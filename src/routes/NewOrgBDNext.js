@@ -1,55 +1,44 @@
+import { DeleteOutlined } from '@ant-design/icons';
 import React from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import moment from 'moment';
 import { 
   i18n, 
   timeWithoutHour, 
-  time, 
   handleError, 
   hasPerm, 
-  getUserInfo,
-  intersection, 
   requestAllData,
   getURLParamValue,
+  getUserInfo,
 } from '../utils/util';
 import * as api from '../api';
 import { 
-  message,
   Table,
   Button, 
-  Popconfirm, 
-  Pagination, 
   Modal, 
-  Input, 
   Popover,
-  Checkbox,
-  DatePicker,
   Row,
   Tag,
   Col,
-  Switch,
-  Select,
+  Popconfirm,
+  Pagination,
+  Typography,
 } from 'antd';
-import { Link } from 'dva/router';
 import { OrgBDFilter } from '../components/Filter';
 import { Search } from '../components/Search';
-import ModalAddUser from '../components/ModalAddUser';
 import BDModal from '../components/BDModal';
-import { getUser } from '../api';
 import { 
-  isLogin, 
   checkRealMobile,
   getCurrentUser,
 } from '../utils/util';
-import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectTrader } from '../components/ExtraInput';
-import { SwitchButton } from '../components/SelectOrgInvestorToBD';
-import OrgBDListComponent from '../components/OrgBDListComponent';
 import { connect } from 'dva';
 import './NewOrgBDNext.css';
+import { PAGE_SIZE_OPTIONS } from '../constants';
 
-const Option = Select.Option;
-var cloneObject = (obj) => JSON.parse(JSON.stringify(obj))
+const { Text } = Typography;
+
+const paginationStyle = { textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
 class H3 extends React.Component {
   render() { return <p style={{fontSize: this.props.size || '13px', fontWeight: 'bolder', marginTop: '5px', marginBottom: '10px', ...this.props.style}}>{this.props.children}</p> }
@@ -83,36 +72,32 @@ class NewOrgBDList extends React.Component {
   constructor(props) {
     super(props);
 
-    const ids = getURLParamValue(props, 'ids');
     const projId = getURLParamValue(props, 'projId');
-    const trader = getURLParamValue(props, 'trader');
-    const tag = getURLParamValue(props, 'tag');
-    const investor = getURLParamValue(props, 'investor');
     const tags = getURLParamValue(props, 'tags');
 
     this.orgList = {}
     this.userList = {}
-    this.ids = (ids || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(projId, 10);
     this.projId = !isNaN(this.projId) ? this.projId : null;
-    this.filterInvestorWithoutTrader = trader === 'true' ? true : false;
-    this.filterInvestorWithoutRelatedTags = tag === 'true' ? true : false;
-    this.filterOrgWithoutInvestor = investor === 'true' ? true : false;
     this.tags = (tags || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item));
     this.projDetail = {}
 
     // 有以下这个参数说明用户是通过导出Excel表中的链接打开的页面，需要直接弹出为对应投资人创建BD的模态框
     this.activeUserKey = getURLParamValue(props, 'activeUserKey');
 
+    const currentUser = getUserInfo();
     this.state = {
         filters: OrgBDFilter.defaultValue,
         search: '',
         page: 1,
-        pageSize: ids ? this.ids.length + 1 : (getUserInfo().page || 10),
+        pageSize: (currentUser && currentUser.page) || 10,
         total: 0,
         manager: null,
         originalList: [],
         list: [],
+        allLoaded: false,
+        // 导出excel的完整数据列表
+        exportList: [],
         loading: false,
         visible: false,
         currentBD: null,
@@ -130,8 +115,6 @@ class NewOrgBDList extends React.Component {
         ifimportantMap: {},
         isimportant: 0,
         traderList: [],
-        org: null, // 为哪个机构添加投资人
-        historyBDRefresh: 0,
         projTradersIds: [], // 项目承揽承做的 ID 数组
         activeUser: null, // 点击创建BD时对应的投资人
 
@@ -141,15 +124,20 @@ class NewOrgBDList extends React.Component {
     }
 
     this.allTrader = [];
-    // this.reqUser = {};
-    // this.orgUserRelation = {};
-    // this.reqBD = {};
     this.investorGroup = [];
+    // score >= 7 的职位列表
+    this.highScoreTitles = [];
   }
 
   disabledDate = current => current && current < moment().startOf('day');
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getGroup' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+
     this.getAllTrader().then(this.setDefaultTraderForExcelIfNecessary);
     api.getProjDetail(this.projId)
       .then(result => {
@@ -169,12 +157,6 @@ class NewOrgBDList extends React.Component {
         this.getOrgBdList()
       })
     this.checkCreateBDFromExcel();
-
-    this.props.dispatch({ type: 'app/getGroup' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'famlv' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'title' });
   }
 
   checkIfExistBDFromExcel = async projTraders => {
@@ -236,124 +218,84 @@ class NewOrgBDList extends React.Component {
     }
   }
 
-  getOrgBdList = () => {
-    this.setState({ loading: true, expanded: [] });
-    const { page, pageSize } = this.state;
-    const params = {
-        page_size: 100,
-        ids: this.ids
-    }
-
-    api.queryUserGroup({ type: 'investor' })
-    .then(result => {
-      this.investorGroup = result.data.data.map(item => item.id);
-      return requestAllData(api.getOrg, params, 100);
-    })
-    .then(result => {
-      let list = result.data.data
+  getOrgBdList = async () => {
+    try {
+      this.setState({ loading: true, expanded: [] });
+      this.highScoreTitles = this.props.title.filter(({ score }) => score >= 7).map(({ id }) => id);
+      const userResult = await api.queryUserGroup({ type: 'investor' })
+      this.investorGroup = userResult.data.data.map(item => item.id);
+      const params = {
+        page_index: 1,
+        tags: this.tags,
+      }
+      const orgResult = await requestAllData(api.searchOrg, params, 100);
+      let list = orgResult.data.data
       list.forEach(item => {this.orgList[item.id] = item})
+      list = list.map(item => ({
+        id: `${item.id}-${this.projId}`,
+        org: item, 
+        proj: {id: this.projId, name: this.projDetail.projtitleC},
+        loaded: false,
+        items: []
+      }));
+      this.setState(
+        {
+          list,
+          total: orgResult.data.count,
+          loading: false,
+          expanded: list.map(item => item.id),
+        }, 
+        () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
+      );
+    } catch (error) {
+      handleError(error);
       this.setState({
-        list: list.map(item => ({
-          id: `${item.id}-${this.projId}`,
-          org: item, 
-          proj: {id: this.projId, name: this.projDetail.projtitleC},
-          loaded: false,
-          items: []
-        })),
-        total: result.data.count,
         loading: false,
-        expanded: list.map(item => `${item.id}-${this.projId}`),
-      }, 
-      () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
-    );
-    })
+        list: [],
+        total: 0,
+        expanded: [],
+      });
+    }
   }
 
   loadOrgBDListDetail = async list => {
-    // const reqUser = await api.getUser({
-    //   starmobile: true,
-    //   org: list, 
-    //   onjob: true, 
-    //   page_size: 10000
-    // });
-    // console.log('reqUser', reqUser);
-    // this.reqUser = reqUser;
-
-    // const orgUser = reqUser.data.data;
-    // const orgUserRelation = await api.getUserRelation({
-    //   investoruser: orgUser.map(m => m.id),
-    //   page_size: 100000,
-    // });
-    // console.log('orgUserRelation', orgUserRelation);
-    // this.orgUserRelation = orgUserRelation;
-
-    // const reqBD = await api.getOrgBdList({ org: list, proj: this.projId || "none" });
-    // console.log('reqBD', reqBD);
-    // this.reqBD = reqBD;
-
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
       await this.loadDataForSingleOrg(element, true);
     }
   }
 
-  // getUser = org => {
-  //   const users = this.reqUser.data.data.filter(f => f.org && f.org.id === org);
-  //   const result = { data: {
-  //     count: users.length,
-  //     data: users
-  //   }};
-  //   // echo('getUserResult', org, result);
-  //   return result;
-  // }
-
-  // getUserRelation = investorUserArr => {
-  //   const userRelation = this.orgUserRelation.data.data.filter(f => investorUserArr.includes(f.investoruser.id));
-  //   const result = {
-  //     data: {
-  //       count: userRelation.length,
-  //       data: userRelation
-  //     }
-  //   }
-  //   // echo('getUserRelation', investorUserArr, result);
-  //   return result;
-  // }
-
-  // getOrgBD = org => {
-  //   const bdList = this.reqBD.data.data.filter(f => f.org.id === org);
-  //   const result = {
-  //     data: {
-  //       count: bdList.length,
-  //       data: bdList
-  //     }
-  //   }
-  //   // echo('getOrgBD', org, result);
-  //   return result;
-  // }
-
   loadDataForSingleOrg = async (orgDetail, initialLoad) => {
 
     const { id: org, orgname, orgfullname } = orgDetail;
-    let dataForSingleOrg;
+    let dataForSingleOrg = [];
 
     // 首先加载机构的所有符合要求的投资人
-    const reqUser = await requestAllData(api.getUser, {
-      starmobile: true, org: [org], onjob: true, groups: this.investorGroup
+    let reqUser = await requestAllData(api.getUser, {
+      starmobile: true,
+      org: [org],
+      onjob: true,
+      groups: this.investorGroup,
+      title: this.highScoreTitles.join(','),
+      tags: this.tags.join(','),
     }, 100);
-    // const reqUser = this.getUser(org);
     if (reqUser.data.count === 0) {
-      // 如果这个机构不存在符合要求的投资人，可以创建一条暂无投资人的BD
-      dataForSingleOrg = [{ key: `null-null-${org}`, org: { id: org, orgname, orgfullname } }];
+      reqUser = await requestAllData(api.getUser, {
+        starmobile: true,
+        org: [org],
+        onjob: true,
+        groups: this.investorGroup,
+        tags: this.tags.join(','),
+      }, 100);
+    }
+    if (reqUser.data.count === 0) {
+      dataForSingleOrg = [];
     } else {
       const orgUser = reqUser.data.data;
 
       //获取投资人的交易师
-      const orgUserRelation = await requestAllData(api.getUserRelation, {
-        investoruser: orgUser.map(m => m.id),
-      }, 100);
-      // const orgUserRelation = this.getUserRelation(orgUser.map(m => m.id));
       orgUser.forEach(element => {
-        const relations = orgUserRelation.data.data.filter(f => f.investoruser.id === element.id);
+        const relations = element.trader_relations == null ? [] : element.trader_relations;
         element.traders = relations.map(m => ({
           label: m.traderuser.username,
           value: m.traderuser.id,
@@ -361,26 +303,24 @@ class NewOrgBDList extends React.Component {
           familiar: m.familiar
         }))
       });
+      dataForSingleOrg = [...orgUser];
 
-      const params = { org, proj: this.projId || "none" };
-      if (!hasPerm('BD.manageOrgBD') && !this.state.projTradersIds.includes(getCurrentUser())) {
-        params.manager = getCurrentUser();
-        // params.createuser = getCurrentUser();
-        // params.unionFields = 'manager,createuser';
-      }
-      const reqBD = await api.getOrgBdList(params);
-      // const reqBD = this.getOrgBD(org);
-      // 已经BD过的投资人
-      const regBDUser = reqBD.data.data.map(m => ({
-        ...orgUser.find(f => f.id === m.bduser),
-        bd: m,
-        key: `${m.id}-${m.bduser}`
-      }));
-      // 未BD过的投资人
-      const unBDUser = orgUser.filter(f => !reqBD.data.data.map(m => m.bduser).includes(f.id))
-        .map(m => ({ ...m, bd: null, key: `null-${m.id}` }));
+      // const params = { org, proj: this.projId || "none" };
+      // if (!hasPerm('BD.manageOrgBD') && !this.state.projTradersIds.includes(getCurrentUser())) {
+      //   params.manager = getCurrentUser();
+      // }
+      // const reqBD = await api.getOrgBdList(params);
+      // // 已经BD过的投资人
+      // const regBDUser = reqBD.data.data.map(m => ({
+      //   ...orgUser.find(f => f.id === m.bduser),
+      //   bd: m,
+      //   key: `${m.id}-${m.bduser}`
+      // }));
+      // // 未BD过的投资人
+      // const unBDUser = orgUser.filter(f => !reqBD.data.data.map(m => m.bduser).includes(f.id))
+      //   .map(m => ({ ...m, bd: null, key: `null-${m.id}` }));
 
-      dataForSingleOrg = regBDUser.concat(unBDUser);
+      // dataForSingleOrg = regBDUser.concat(unBDUser);
 
       // 过滤掉重复的投资人
       dataForSingleOrg = dataForSingleOrg.filter((f, pos, arr) => arr.map(m => m.id).indexOf(f.id) === pos);
@@ -392,47 +332,15 @@ class NewOrgBDList extends React.Component {
         item
     );
 
-    if (this.filterOrgWithoutInvestor) {
-      newList = newList.filter(f => !(f.items.length === 1 && f.items[0].key.startsWith('null-null')));
-    }
-
-    if (this.filterInvestorWithoutTrader) {
-      newList = newList.map(item => {
-        const newItems = item.items.filter(f => !(f.traders && f.traders.length === 0));
-        return {...item, items: newItems};
-      });
-    }
-    if (this.filterInvestorWithoutRelatedTags && this.tags.length > 0) {
-      newList = newList.map(item => {
-        const newItems = item.items.filter(f => !(f.tags && intersection(f.tags, this.tags).length === 0));
-        return { ...item, items: newItems };
-      });
-    }
     newList = newList.filter(f => !(f.loaded && f.items.length === 0));
-    this.setState({ list: newList, originalList: newList });
-
-    // // 通过创建BD的链接进来的并且是首次加载
-    // if (initialLoad && this.activeUserKey) {
-    //   const filterData = dataForSingleOrg.filter(f => f.key === this.activeUserKey);
-    //   if (filterData.length > 0) {
-    //     // 延迟加载否则可能出现交易师列表没加载完报错的问题
-    //     setTimeout(() => {
-    //       this.handleCreateBD(filterData[0]);
-    //     }, 3000);
-    //   }
-    // }
+    this.setState({
+      list: newList,
+      originalList: [...newList],
+      expanded: newList.map(item => item.id),
+      allLoaded: newList.every(({ loaded }) => loaded),
+    });
 
     return dataForSingleOrg;
-  }
-
-  handleTableChange = (pagination, filters, sorter) => {
-    this.setState(
-      { 
-        sort: sorter.columnKey, 
-        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
-      }, 
-      this.getOrgBdList
-    );
   }
 
   content(record) {
@@ -446,29 +354,10 @@ class NewOrgBDList extends React.Component {
           <Row style={{textAlign:'center',margin:'10px 0'}}>
             {photourl ? <img src={photourl} style={{width:'50px',height:'50px', borderRadius:'50px'}}/>:'暂无头像'}
           </Row>
-          {/* <SimpleLine title={"项目名称"} value={user.proj && user.proj.projtitle || "暂无"} /> */}
           <SimpleLine title={"BD状态"} value={orgbdres || '暂无'} />
           <SimpleLine title={"到期日期"} value={user.expirationtime ? timeWithoutHour(user.expirationtime + user.timezone) : "未设定"} />
           <SimpleLine title={"负责人"} value={user.manager.username || "暂无"} />
           <SimpleLine title={"创建人"} value={user.createuser.username || "暂无"} />
-          {/* <Row style={{ lineHeight: '24px', borderBottom: '1px dashed #ccc' }}>
-            <Col span={12}>{i18n('user.trader')}:</Col>
-            <Col span={12} style={{wordBreak: 'break-all'}}>
-            <Trader investor={user.bduser} />
-            </Col>
-          </Row> */}
-          {/* <SimpleLine title={i18n('user.tags')} value={tags||'暂无'} /> */}
-
-          {/* { wechat ? 
-          <SimpleLine title={i18n('user.wechat')} value={wechat} />
-          : null } */}
-
-          {/* <Row style={{ lineHeight: '24px' }}>
-            <Col span={12}>{i18n('remark.remark')}:</Col>
-            <Col span={12} style={{wordWrap: 'break-word'}}>
-            {comments.length>0 ? comments.map(item => <p key={item.id} >{item.comments}</p>) :'暂无'}
-            </Col>
-          </Row> */}
            </div>
   }
 
@@ -480,96 +369,12 @@ class NewOrgBDList extends React.Component {
 
     if (expandIndex < 0) {
       newExpanded.push(currentId)
-      this.loadDataForSingleOrg(record.org);
     } else {
       newExpanded.splice(expandIndex, 1)
     }
 
     this.setState({ expanded: newExpanded })
   }
-
-  handleMore(record) {
-    // let key = Math.random()
-    // let list = this.state.list.map(item => 
-    //   item.id === `${record.org.id}-${record.proj.id}` ?
-    //     {...item, items: item.items.concat({key, new: true, isimportant: false, orgUser: null, trader: null, org: record.org, proj: record.proj, expirationtime: null})} :
-    //     item
-    // )
-    // this.setState({ list })
-  }
-
-  handleLoadTrader = investorUserRelation => {
-    this.investorTrader.push(investorUserRelation);
-    const listWithInvestor = this.state.list.filter(f => f.id !== null);
-    if (this.investorTrader.length === listWithInvestor.length) {
-      this.props.dispatch({
-        type: 'app/setSortedTrader',
-        payload: this.investorTrader, 
-      }); 
-    }
-  }
-
-  loadLabelByValue(type, value) {
-    if (Array.isArray(value) && this.props.tag.length > 0) {
-      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
-    } else if (typeof value === 'number') {
-      return this.props[type].filter(f => f.id === value)[0].name;
-    }
-  }
-
-  // handleSwitchChange = (record, ifimportant) => {
-  //   let id=record.id
-  //   this.setState({ifimportantMap:{...this.state.ifimportantMap,[id]:ifimportant}})
-  //   const userList = this.props.value
-  //   const index = _.findIndex(userList, function(item) {
-  //     return item.investor+"_"+item.org == id
-  //   })
-  //   if (index > -1) {
-  //     userList[index].isimportant=ifimportant
-  //     this.props.onChange(userList)
-  //   }
-  // }
-
-  handleDeleteUser(userKey) {
-    this.setState({ selectedKeys: this.state.selectedKeys.filter(key => key !== userKey) })
-  }
-
-  // createOrgBD = () => {
-  //   this.setState({ selectVisible: false });
-  //   Promise.all(this.state.selectedKeys.map(userKey => {
-  //     let user = this.userList[userKey]
-  //     let body = {
-  //       bduser: userKey,
-  //       manager: this.state.manager,
-  //       org: user.org.id,
-  //       proj: this.projId,
-  //       isimportant:this.state.ifimportantMap[userKey] || false,
-  //       bd_status: 1,
-  //       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
-  //     };
-  //     return api.addOrgBD(body);
-  //   }))
-  //     .then(result => {
-  //       Modal.confirm({
-  //           title: i18n('timeline.message.create_success_title'),
-  //           content: i18n('create_orgbd_success'),
-  //           okText:"继续创建BD",
-  //           cancelText:"返回BD列表",
-  //           onOk: () => { this.props.history.push({ pathname: '/app/orgbd/add' }) },
-  //           onCancel: () => { this.props.history.push({ pathname: '/app/org/bd' }) }
-  //         })
-  //     })
-  //     .catch(error => {
-  //       Modal.error({
-  //         content: error.message
-  //       });
-  //     });
-  // }
- 
-  // handleSelectUser = () => {
-  //   this.setState({ selectVisible: true });
-  // }
-
   handleCreateBD = user => {
     this.setState({ selectVisible: true, activeUser: user });
     if (user.id) {
@@ -643,7 +448,7 @@ class NewOrgBDList extends React.Component {
           title: '机构看板创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
-        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0 });
         this.loadDataForSingleOrg(user.org);
       })
       .catch(handleError);
@@ -658,7 +463,6 @@ class NewOrgBDList extends React.Component {
       manager: this.state.manager,
       org: user.org.id,
       proj: this.projId,
-      // isimportant: this.state.isimportant,
       bd_status: 1,
       expirationtime: this.state.expirationtime ? this.state.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null
     };
@@ -669,7 +473,7 @@ class NewOrgBDList extends React.Component {
           title: '机构看板创建成功',
           content: `已经成功地为 ${user.org.orgfullname || user.org.orgname} ${user.username ? ` 的 ${user.username}` : ''} 创建了机构看板任务，该任务的交易师为 ${manager.username.split('(')[0]}`,
         });
-        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0, historyBDRefresh: this.state.historyBDRefresh + 1 });
+        this.setState({ manager: null, expirationtime: moment().add(1, 'weeks'), isimportant: 0 });
         this.loadDataForSingleOrg(user.org);
       })
       .catch(handleError);
@@ -677,25 +481,73 @@ class NewOrgBDList extends React.Component {
 
   handleSearch = async () => {
     if (!this.state.search) {
-      this.setState({ list: this.state.originalList });
+      const list = this.state.originalList;
+      this.setState({
+        page: 1,
+        list,
+        expanded: list.map(item => item.id),
+      });
       return;
     }
-    this.setState({ loading: true });
-    const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
-    this.setState({ loading: false });
-    const searchResult = reqSearch.data.data.map(m => m.username);
-    const newList = this.state.originalList.filter(f1 => 
-      f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
-    );
-    this.setState({ list: newList.map(m => 
-      ({
-        ...m,
-        items: m.items.filter(f => searchResult.includes(f.username)) 
-      })
-    )});
+
+    try {
+      this.setState({ loading: true });
+      const reqSearch = await requestAllData(api.getUser, { org: this.ids, search: this.state.search }, 100);
+      this.setState({ loading: false });
+      const searchResult = reqSearch.data.data.map(m => m.username);
+      let newList = this.state.originalList.filter(f1 => 
+        f1.items.filter(f2 => searchResult.includes(f2.username)).length > 0
+      );
+      newList = newList.map(m => 
+        ({
+          ...m,
+          items: m.items.filter(f => searchResult.includes(f.username)) 
+        })
+      );
+      this.setState({
+        page: 1,
+        list: newList,
+        expanded: newList.map(item => item.id),
+      });
+    } catch (error) {
+      handleError(error);
+      this.setState({
+        loading: false,
+        page: 1,
+        list: [],
+        expanded: [],
+      });
+    }
   }
 
-  downloadExportFile = () => {
+  handleDownload = async () => {
+    try {
+      const orgUserList = this.state.originalList
+        .map(m => m.items)
+        .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+      // 机构的第一个联系人行才显示机构简介
+      let uniqueOrgId = null;
+      orgUserList.forEach((item) => {
+        if (item.org.id !== uniqueOrgId) {
+          uniqueOrgId = item.org.id;
+          item.showOrgDescription = true;
+        }
+      });
+      this.setState({
+        exportList: orgUserList,
+      }, () => {
+        this.downloadExcel();
+      });
+    } catch (error) {
+      this.setState({
+        exportList: [],
+      });
+      handleError(error);
+      return;
+    }
+  }
+
+  downloadExcel = () => {
     var link = document.createElement('a');
     link.download = '创建机构看板.xls';
 
@@ -711,13 +563,61 @@ class NewOrgBDList extends React.Component {
 
     link.href = tableToExcel(table, '创建机构看板');
     link.click();
+  };
+
+  removeInvestorOnList = (investor) => {
+    const { list, originalList } = this.state;
+    const orgIndex = list.findIndex((item) => item.id.startsWith(investor.org.id.toString()));
+    const orgInvestors = list[orgIndex].items;
+    const orgInvestorIndex = orgInvestors.findIndex((item) => item.id === investor.id);
+    let newList = [
+      ...list.slice(0, orgIndex),
+      {
+        ...list[orgIndex],
+        items: [
+          ...orgInvestors.slice(0, orgInvestorIndex),
+          ...orgInvestors.slice(orgInvestorIndex + 1),
+        ],
+      },
+      ...list.slice(orgIndex + 1),
+    ];
+    newList = newList.filter(f => !(f.loaded && f.items.length === 0));
+
+    const orgOriginalIndex = originalList.findIndex((item) => item.id.startsWith(investor.org.id.toString()));
+    const orgOriginalInvestors = originalList[orgOriginalIndex].items;
+    const orgOriginalInvestorIndex = orgOriginalInvestors.findIndex((item) => item.id === investor.id);
+    let newOriginalList = [
+      ...originalList.slice(0, orgOriginalIndex),
+      {
+        ...originalList[orgOriginalIndex],
+        items: [
+          ...orgOriginalInvestors.slice(0, orgOriginalInvestorIndex),
+          ...orgOriginalInvestors.slice(orgOriginalInvestorIndex + 1),
+        ],
+      },
+      ...originalList.slice(orgOriginalIndex + 1),
+    ];
+    newOriginalList = newOriginalList.filter(f => !(f.loaded && f.items.length === 0));
+
+    this.setState({
+      list: newList,
+      originalList: newOriginalList,
+      expanded: newList.map(item => item.id),
+    });
+  }
+
+  handlePageChange = (page) => {
+    this.setState({ page })
+  }
+
+  handlePageSizeChange = (current, pageSize) => {
+    this.setState({ pageSize, page: 1 })
   }
 
   render() {
-    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
-    const imgStyle={width:'15px',height:'20px'}
-    const importantImg={height:'10px',width:'10px',marginTop:'-15px',marginLeft:'-5px'}
+    const { filters, search, page, pageSize, total, list, loading, source, managers, expanded, exportList, allLoaded } = this.state
+    const pagedList = list.slice((page - 1) * pageSize, page * pageSize);
+
     const columns = [
         {title: i18n('org_bd.org'), render: (text, record) => {
           let org = record.org
@@ -726,14 +626,29 @@ class NewOrgBDList extends React.Component {
           return <div>
                   {record.org.orgname}
                   {(selectedUsers.length ? <Tag color="green" style={{marginLeft: 15}}>{`已选 ${selectedUsers.length} 人`}</Tag> : null)}
-                  <a style={{ marginLeft: 10 }} onClick={() => this.setState({ org: record.org })}>添加投资人</a>
                 </div>
         }, key:'org', sorter:false},
-        // {title: i18n('org_bd.project_name'), dataIndex: 'proj.projtitle', key:'proj', sorter:true, render: (text, record) => record.proj.name || '暂无'},
       ]
 
     const expandedRowRender = (record) => {
       const columns = [
+        {
+          title: '',
+          key: 'delete',
+          render: (_, record) => (
+            <Popconfirm
+              title="是否删除该投资人？"
+              onConfirm={() => this.removeInvestorOnList(record)}
+              okText="删除"
+              okButtonProps={{
+                danger: true,
+              }}
+              cancelText="取消"
+            >
+              <Button shape="circle" size="small" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          ),
+        },
         {
           title: i18n('user.name'),
           key: 'username',
@@ -763,8 +678,6 @@ class NewOrgBDList extends React.Component {
             );
           },
         },
-        // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-        // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
         {
           title: i18n('mobile'), 
           key: 'mobile', 
@@ -792,7 +705,7 @@ class NewOrgBDList extends React.Component {
             if (record.tags) {
               tags = record.tags.map(m => {
                 const tagObj = this.props.tag.filter(f => f.id === m)[0];
-                return tagObj.name;
+                return tagObj == null ? '' : tagObj.name;
               }).join('、');
             }
             return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
@@ -801,57 +714,42 @@ class NewOrgBDList extends React.Component {
         { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' }
 
       ]
-      if(this.props.source!="meetingbd"){
-        columns.push({title:i18n('org_bd.important') + '/操作', render:(text,record)=>{
-          if (!record.bd) return <Button onClick={this.handleCreateBD.bind(this, record)}>创建BD</Button>
-          else return <div>{record.bd.isimportant ? "是" : "否"}</div>
-        }})
-      }
-
-      let allKeys = record.items.map(user=>user.id)
-      const rowSelection = {
-        selectedRowKeys: this.state.selectedKeys,
-        onChange: (selectedRowKeys, selectedRows) => {
-          let selected = this.state.selectedKeys
-          selected = selected.filter(key => !allKeys.includes(key))
-          selected = selected.concat(selectedRowKeys.filter(key => !selected.includes(key)))
-          this.setState({ selectedKeys: selected })
-        },
-        getCheckboxProps: record => ({
-          disabled: Boolean(record.bd),
-          name: record.name,
-        }),
-      };
+      // if(this.props.source!="meetingbd"){
+      //   columns.push({title:i18n('org_bd.important') + '/操作', render:(text,record)=>{
+      //     if (!record.bd) return <Button onClick={this.handleCreateBD.bind(this, record)}>创建BD</Button>
+      //     else return <div>{record.bd.isimportant ? "是" : "否"}</div>
+      //   }})
+      // }
 
       return (
         <div>
           <Table
-            // showHeader={false}
             columns={columns}
             dataSource={record.items}
             rowKey={record=>record.key}
             pagination={false}
             loading={!record.loaded}
             size={"small"}
-            // rowSelection={rowSelection}
           />
-          {/* <Button 
-            style={{float: 'right', margin: '15px 15px 0 0'}} 
-            onClick={this.handleMore.bind(this, record)}
-          >{"展示更多"}</Button> */}
         </div>
 
       );
     }
 
-    const dataSourceForExportCreateOrgBD = list.map(m => m.items)
-      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
-
     const columnsForExportCreateOrgBD = [
       {
         title: '机构',
         key: 'org',
-        dataIndex: 'org.orgname',
+        dataIndex: ['org', 'orgname'],
+      },
+      {
+        title: '机构简介',
+        key: 'orgDescription',
+        render: (text, record) => {
+          if (record.showOrgDescription) {
+            return record.org && record.org.description;
+          }
+        },
       },
       {
         title: i18n('user.name'),
@@ -871,8 +769,6 @@ class NewOrgBDList extends React.Component {
           );
         },
       },
-      // { title: i18n('organization.org'), key: 'orgname', dataIndex: 'org.orgname' },
-      // { title: i18n('user.position'), key: 'title', dataIndex: 'title', render: text => this.loadLabelByValue('title', text) || '暂无' },
       {
         title: i18n('mobile'),
         key: 'mobile',
@@ -900,24 +796,25 @@ class NewOrgBDList extends React.Component {
           if (record.tags) {
             tags = record.tags.map(m => {
               const tagObj = this.props.tag.filter(f => f.id === m)[0];
-              return tagObj.name;
+              return tagObj == null ? '' : tagObj.name;
             }).join('、');
           }
           return tags ? <div style={{ width: 200 }}>{tags}</div> : '暂无';
         },
       },
       { title: i18n('user.trader'), key: 'transaction', render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无' },
-      {
-        title: i18n('org_bd.important') + '/操作',
-        key: 'operation',
-        render: (_, record) => {
-          if (!record.bd) {
-            const urlWithActiveUserKey = replaceUrlParam(window.location.href, 'activeUserKey', record.key);
-            return <a target="_blank" href={urlWithActiveUserKey}>创建BD</a>;
-          }
-          return <div>{record.bd.isimportant ? "是" : "否"}</div>;
-        },
-      },
+      // 暂时隐藏创建BD按钮
+      // {
+      //   title: i18n('org_bd.important') + '/操作',
+      //   key: 'operation',
+      //   render: (_, record) => {
+      //     if (!record.bd) {
+      //       const urlWithActiveUserKey = replaceUrlParam(window.location.href, 'activeUserKey', record.key);
+      //       return <a target="_blank" href={urlWithActiveUserKey}>创建BD</a>;
+      //     }
+      //     return <div>{record.bd.isimportant ? "是" : "否"}</div>;
+      //   },
+      // },
     ];
 
     return (
@@ -927,33 +824,53 @@ class NewOrgBDList extends React.Component {
         title={i18n('menu.bd_management')}
         action={{ name: '返回机构看板', link: '/app/org/bd' }}
       >
-      {source!=0 ? <BDModal source={sourłe} element='org'/> : null}   
+      {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
-        {this.projId ?
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
           <div>
-            <H3 size="1.2em">○ 该项目的历史BD</H3>
-            <OrgBDListComponent allManager refresh={this.state.historyBDRefresh} location={this.props.location} pageSize={10} pagination />
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
+            >
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
           </div>
-        : null }
+          <Pagination
+            style={paginationStyle}
+            total={list.length}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        </div>
 
         <div style={{ marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <H3 size="1.2em" style={{ marginTop: 'unset', marginBottom: 'unset' }}>○ 选择机构列表</H3>
-          <Search
-            size="middle"
-            style={{ width: 300 }}
-            placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
-            value={search}
-            onChange={search => this.setState({ search })}
-            onSearch={this.handleSearch} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {!allLoaded && <Text type="warning" style={{ marginRight: 8 }}>数据还在加载中，请稍后点击</Text>}
+            <Search
+              size="middle"
+              style={{ width: 300 }}
+              placeholder={[i18n('email.username'),i18n('organization.org'), i18n('mobile'), i18n('email.email')].join(' / ')}
+              value={search}
+              onChange={search => this.setState({ search })}
+              disabled={!allLoaded}
+              onSearch={this.handleSearch}
+            />
+          </div>
         </div>
 
         <Table
-          // className="new-org-db-style"
-          onChange={this.handleTableChange}
           columns={columns}
           expandedRowRender={expandedRowRender}
-          // expandRowByClick
-          dataSource={list}
+          dataSource={pagedList}
           rowKey={record=>record.id}
           loading={loading}
           onExpand={this.onExpand.bind(this)}
@@ -966,38 +883,36 @@ class NewOrgBDList extends React.Component {
           className="export-create-orgbd"
           style={{ display: 'none' }}
           columns={columnsForExportCreateOrgBD}
-          dataSource={dataSourceForExportCreateOrgBD}
+          dataSource={exportList}
           rowKey={record => record.key}
           pagination={false}
           size={"middle"}
         />
 
-        <Button
-          // disabled={this.state.selectedIds.length == 0}
-          style={{ marginTop: 10, backgroundColor: 'orange', border: 'none' }}
-          type="primary"
-          // loading={this.state.exportLoading}
-          onClick={this.downloadExportFile}
-        >
-          {i18n('project_library.export_excel')}
-        </Button>
-
-        {/* <div style={{ marginTop: 10, marginBottom: 10 }}>
-          {this.state.selectedKeys.map(user => 
-            <Tag 
-              key={this.userList[user].id} 
-              closable 
-              style={{ marginBottom: 8 }} 
-              onClose={this.handleDeleteUser.bind(this, user)}
+        <div style={{ marginTop: 24, marginBottom: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          <div>
+            <Button
+              style={{ backgroundColor: 'orange', border: 'none' }}
+              type="primary"
+              disabled={!allLoaded}
+              onClick={this.handleDownload}
             >
-              {`${this.userList[user].org.orgfullname || "无机构"} - ${this.userList[user].username}`}
-            </Tag>
-          )}
-        </div> */}
-
-        {/* <div style={{textAlign: 'right', padding: '0 16px', marginTop: 10 }}>
-          <Button disabled={this.state.selectedKeys.length === 0} type="primary" onClick={this.handleSelectUser.bind(this)}>{i18n('common.create')}</Button>
-        </div> */}
+              {i18n('project_library.export_excel')}
+            </Button>
+            {!allLoaded && <Text type="warning" style={{ marginLeft: 8 }}>数据还在加载中，请稍后点击</Text>}
+          </div>
+          <Pagination
+            style={paginationStyle}
+            total={list.length}
+            current={page}
+            pageSize={pageSize}
+            onChange={this.handlePageChange}
+            showSizeChanger
+            onShowSizeChange={this.handlePageSizeChange}
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        </div>
 
         {this.state.selectVisible &&
           <Modal
@@ -1016,41 +931,6 @@ class NewOrgBDList extends React.Component {
                 data={this.state.traderList}
                 value={this.state.manager}
                 onChange={manager => this.setState({ manager })} />
-
-              {/* <H3>2.选择过期时间</H3>
-              <DatePicker
-                style={{ marginBottom: '15px' }}
-                placeholder="过期时间"
-                disabledDate={this.disabledDate}
-                // defaultValue={moment()}
-                showToday={false}
-                shape="circle"
-                value={this.state.expirationtime}
-                renderExtraFooter={() => {
-                  return <div>
-                    <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment() }) }}>Now</Button>
-                      &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
-                      &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'months') }) }}>Month</Button>
-                  </div>
-                }}
-                onChange={v => { this.setState({ expirationtime: v }) }}
-              /> */}
-              {/* <H3>2.优先级</H3> */}
-              {/* <Switch
-                defaultChecked={this.state.isimportant}
-                onChange={checked => this.setState({ isimportant: checked })}
-              /> */}
-              {/* <Select
-                defaultValue={this.state.isimportant}
-                // style={{ width: '100%' }}
-                onChange={value => this.setState({ isimportant: value })}
-              >
-                <Option value={0}>低</Option>
-                <Option value={1}>中</Option>
-                <Option value={2}>高</Option>
-              </Select> */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
                 <Button disabled={this.state.manager === null} type="primary" onClick={this.createOrgBD.bind(this)}>{i18n('common.confirm')}</Button>
               </div>
@@ -1075,54 +955,12 @@ class NewOrgBDList extends React.Component {
                 data={this.state.traderList}
                 value={this.state.manager}
                 onChange={manager => this.setState({ manager })} />
-
-              {/* <H3>2.选择过期时间</H3>
-              <DatePicker
-                style={{ marginBottom: '15px' }}
-                placeholder="过期时间"
-                disabledDate={this.disabledDate}
-                // defaultValue={moment()}
-                showToday={false}
-                shape="circle"
-                value={this.state.expirationtime}
-                renderExtraFooter={() => {
-                  return <div>
-                    <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment() }) }}>Now</Button>
-                      &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
-                      &nbsp;&nbsp;
-                      <Button type="dashed" size="small" onClick={() => { this.setState({ expirationtime: moment().add(1, 'months') }) }}>Month</Button>
-                  </div>
-                }}
-                onChange={v => { this.setState({ expirationtime: v }) }}
-              /> */}
-               {/* <H3>2.优先级</H3>
-              <Select
-                defaultValue={this.state.isimportant}
-                onChange={value => this.setState({ isimportant: value })}
-              >
-                <Option value={0}>低</Option>
-                <Option value={1}>中</Option>
-                <Option value={2}>高</Option>
-              </Select> */}
-
 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
               <Button disabled={this.state.manager === null} type="primary" onClick={this.createOrgBDFromExcel.bind(this)}>{i18n('common.confirm')}</Button>
             </div>
             </div>
           </Modal>
         }
-
-        {this.state.org ?
-        <ModalAddUser
-          onCancel={() => {
-            this.loadDataForSingleOrg(this.state.org);
-            this.setState({ org: null });
-          }}
-          org={this.state.org}
-        />
-        :null}
-
       </LeftRightLayout>
     );
   }
@@ -1138,29 +976,7 @@ export class Trader extends React.Component {
   state = {
     list: this.props.traders || [], 
   }
-  componentDidMount() {
-    // if (this.props.investor === null) return;
-    // const param = { investoruser: this.props.investor}
-    // // api.queryUserGroup({ type: 'investor' }).then(data => {
-    // // this.investorGroupIds = data.data.data.map(item => item.id);
-    // // })
-    // api.getUserRelation(param).then(result => {
-    //   const data = result.data.data.sort((a, b) => Number(b.relationtype) - Number(a.relationtype))
-    //   const list = []
-    //   data.forEach(item => {
-    //     const trader = item.traderuser
-    //     if (trader) {
-    //       list.push({ label: trader.username, value: trader.id, onjob: trader.onjob, familiar: item.familiar });
-    //     }
-    //     this.setState({ list });
-    //   })
-    // }, error => {
-    //   this.props.dispatch({
-    //     type: 'app/findError',
-    //     payload: error
-    //   })
-    // })
-  }
+
   render () {
     return <span>
       { this.state.list.length > 0 ? 

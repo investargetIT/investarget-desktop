@@ -2,12 +2,11 @@ import React from 'react'
 import * as api from '../api'
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
-import { getCurrentUser, hasPerm, i18n, requestAllData } from '../utils/util'
+import { customRequest, getCurrentUser, hasPerm, i18n, requestAllData } from '../utils/util'
 import { Button, Modal, DatePicker, Input, Row, Col, Switch, Icon, Upload, message } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { SelectTrader } from '../components/ExtraInput';
 import SelectInvestorAndTrader from '../components/SelectInvestorAndTrader'
-import { baseUrl } from '../utils/request';
 
 const { TextArea } = Input;
 const officeFileTypes = [
@@ -186,7 +185,8 @@ class AddMeetingBD extends React.Component{
 function UploadFile(props){
   const uploadProps = {
       name: 'file',
-      action: baseUrl + '/service/qiniubigupload?bucket=file&topdf=false',
+      customRequest,
+      data: { bucket: 'file', topdf: false },
       beforeUpload: (file, fileList) => {
         const fileType = file.type
         if (!officeFileTypes.includes(fileType)) {

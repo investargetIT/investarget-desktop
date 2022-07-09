@@ -15,7 +15,6 @@ import {
 } from './Form'
 import * as api from '../api';
 import {
-  TreeSelectTag,
   SelectRole,
   SelectTransactionType,
   CascaderCountry,
@@ -29,6 +28,7 @@ import {
   SelectOrgInvestor,
 } from './ExtraInput'
 import _ from 'lodash';
+import ReportProjectBDList from './ReportProjectBDList'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
 
@@ -548,21 +548,27 @@ class ReportForm extends React.Component {
       <Form.Item noStyle shouldUpdate>
         {({ getFieldValue }) => {
           const summaryKeys = getFieldValue('market_keys');
-          return summaryKeys.map((m, i) => (
-            <div key={m} id={`summary-form-items-${m}`}>
-              {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
-              <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, marginLeft: 40 }}>
-                  <BasicFormItem name={`summary_${m}`} layout>
-                    <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
-                  </BasicFormItem>
+          return (
+            <div>
+              {summaryKeys.map((m, i) => (
+                <div key={m} id={`summary-form-items-${m}`}>
+                  {i !== 0 && <hr style={{ borderTop: '2px dashed #ccc' }} />}
+                  <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center' }}>
+                    <div style={{ flex: 1, marginLeft: 40 }}>
+                      <BasicFormItem name={`summary_${m}`} layout>
+                        <Input.TextArea autosize={{ minRows: 6 }} placeholder="市场信息和项目信息汇报" />
+                      </BasicFormItem>
+                    </div>
+                    <div style={{ width: 100, textAlign: 'center' }}>
+                      <img onClick={() => this.removeFormItem('market_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ width: 100, textAlign: 'center' }}>
-                  <img onClick={() => this.removeFormItem('market_keys', m)} style={{ width: 16, cursor: 'pointer' }} src="/images/delete.png" />
-                </div>
-              </div>
+              ))}
+
+              <ReportProjectBDList stimeM={this.startDate} etimeM={this.endDate} />
             </div>
-          ));
+          );
         }}
       </Form.Item>
     );

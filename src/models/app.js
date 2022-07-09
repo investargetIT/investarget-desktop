@@ -37,7 +37,6 @@ export default {
     sortedTrader: [],
     group: [],
     orgbdres: [],
-    orglv: [],
     famlv: [],
     exportStatus: [
       {id: 1, name: '已失败'}, 
@@ -105,6 +104,9 @@ export default {
     saveGroup(state, { payload: group }) {
       return { ...state, group };
     },
+    appendTag(state, { payload: newTag }) {
+      return { ...state, tag: [...state.tag, newTag] };
+    },
   },
   effects: {
     *registerStepForward({}, { call, put, select }) {
@@ -129,6 +131,13 @@ export default {
         let sourceType = sourceTypeList[i]
         yield put({ type: 'getSource', payload: sourceType })
       }
+    },
+    *createTag({ payload: name }, { call, put }) {
+      const { data } = yield call(api.createTag, { nameC: name });
+      const { id, nameC } = data;
+      yield put({ type: 'appendTag', payload: { id, name: nameC } });
+      // 新增标签成功后，重新请求最新的标签列表
+      yield put({ type: 'requestSource', payload: 'tag' });
     },
     *getIndustryGroup(_, { call, put, select }) {
       const tryData = yield select(state => state.app['industryGroup']);
@@ -223,8 +232,8 @@ export default {
         const maxRes = Math.max(...resCount.map(m => m.resIndex));
         let percentage = 0;
         if (maxRes > 3) {
-          // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
-          percentage = Math.round((maxRes - 3) / 11 * 100);
+          // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
+          percentage = Math.round((maxRes - 3) / 9 * 100);
         }
         projPercentage.push({ id: element.id, percentage });
         yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage } }); 

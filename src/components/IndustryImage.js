@@ -1,6 +1,5 @@
 import React from 'react'
-import * as api from '../api'
-import { i18n } from '../utils/util'
+import { i18n, uploadFileByChunks } from '../utils/util'
 
 const style = {
   display: 'inline-block',
@@ -55,7 +54,7 @@ class IndustryImage extends React.Component {
   }
 
   uploadFile(file) {
-    api.qiniuUpload('image', file).then(result => {
+    uploadFileByChunks(file, { data: { bucket: 'image' } }).then(result => {
       const { key } = result.data
       this.props.onChange(key)
     })

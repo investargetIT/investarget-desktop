@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../apiForMobile';
-import { formatBytes, time, isLogin, hasPerm, handleErrorForMobile as handleError, getCurrentUser, getUserInfo } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleErrorForMobile as handleError, getCurrentUser, getUserInfo, customRequest } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -17,7 +17,6 @@ import {
   ExportOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
@@ -396,7 +395,7 @@ function DataroomFileManage({
     const originalEmail = isLogin().email || 'Investarget';
     const watermark = originalEmail.replace('@', '[at]');
     const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-    const url = window.location.origin + '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+    const url = window.location.origin + '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
       '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
       '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
     return url;
@@ -439,7 +438,8 @@ function DataroomFileManage({
     function popoverContent() {
       const props = {
         name: 'file',
-        action: baseUrl + '/service/qiniubigupload?bucket=file',
+        customRequest,
+        data: { bucket: 'file' },
         showUploadList: false,
         multiple: true,
         beforeUpload: file => {
@@ -897,7 +897,7 @@ function DataroomFileManage({
   }
 
   function handleOpenFileInNewWindowClick() {
-    window.open(previewFileUrl);
+    window.open(previewFileUrl, '_blank', 'noopener');
   }
 
   function onSelectFolderForMoveFiles(keys) {

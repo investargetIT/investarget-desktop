@@ -28,9 +28,9 @@ import {
   hasPerm,
   getCurrentUser,
   requestAllData,
+  customRequest,
 } from '../utils/util';
 import PropTypes from 'prop-types';
-import { baseUrl } from '../utils/request';
 import { Modal as GModal } from '../components/GlobalComponents';
 import * as api from '../api';
 import { connect } from 'dva';
@@ -184,6 +184,8 @@ class UserDetail extends React.Component {
       mergeUserMessage: '',
       mainUserMobile: '',
       minorUserMobile: '',
+      mainUserWeChat: '',
+      minorUserWeChat: '',
     }
   }
 
@@ -201,6 +203,8 @@ class UserDetail extends React.Component {
           hideUserInfo: true,
           mainUserMobile: '',
           minorUserMobile: '',
+          mainUserWeChat: '',
+          minorUserWeChat: '',
         },
         () => {
           this.setState({ hideUserInfo: false });
@@ -233,7 +237,7 @@ class UserDetail extends React.Component {
     this.setState({ isUploading: true });
     if (file.status === 'done') {
       this.handleFileUploadDone(file)
-    } 
+    }
   }
 
   handleFileUploadDone = file => {
@@ -261,6 +265,14 @@ class UserDetail extends React.Component {
     this.setState({ mainUserMobile: mobile });
   }
 
+  handleMainUserGetWeChat = (wechat) => {
+    this.setState({ mainUserWeChat: wechat });
+  }
+
+  handleMinorUserGetWeChat = (wechat) => {
+    this.setState({ minorUserWeChat: wechat });
+  }
+
   handleMinorUserGetMobile = (mobile) => {
     this.setState({ minorUserMobile: mobile });
   }
@@ -282,12 +294,16 @@ class UserDetail extends React.Component {
     this.mergeUserId = this.state.userId;
     this.deleteUserMobile = this.state.minorUserMobile;
     this.mergeUserMobile = this.state.mainUserMobile;
+    this.deleteUserWeChat = this.state.minorUserWeChat;
+    this.mergeUserWeChat = this.state.mainUserWeChat;
     if (!isMinorToMajor) {
       msg = '左边用户的相关信息将合并入右边的用户中';
       this.deleteUserId = this.state.userId;
       this.mergeUserId = this.state.userIdWithSameName;
       this.deleteUserMobile = this.state.mainUserMobile;
       this.mergeUserMobile = this.state.minorUserMobile;
+      this.deleteUserWeChat = this.state.mainUserWeChat;
+      this.mergeUserWeChat = this.state.minorUserWeChat;
     }
     // this.confirmModal = Modal.confirm({
     //   title: '是否确定合并用户？',
@@ -351,6 +367,10 @@ class UserDetail extends React.Component {
 
     this.setState({ mergeUserMessage: '正在合并承揽承做' });
     await this.mergeProjectTrader(deleteUserId, mergeUserId);
+    await sleep(1000);
+
+    this.setState({ mergeUserMessage: '正在合并用户微信' });
+    await this.mergeWeChat(deleteUserId, mergeUserId);
     await sleep(1000);
 
     await api.addUserRemark({
@@ -571,6 +591,20 @@ class UserDetail extends React.Component {
     await Promise.all(data.map(m => api.editProjectTrader(m.id, { user: mergeUserId })));
   }
 
+  mergeWeChat = async (deleteUserId, mergeUserId) => {
+    if (!this.mergeUserWeChat && !this.deleteUserWeChat) return;
+    if (this.mergeUserWeChat && !this.deleteUserWeChat) return;
+    if (!this.mergeUserWeChat && this.deleteUserWeChat) {
+      await api.editUser([mergeUserId], { wechat: this.deleteUserWeChat });
+    }
+    if (this.mergeUserWeChat && this.deleteUserWeChat) {
+      await api.addUserRemark({
+        user: mergeUserId,
+        remark: `被合并的用户微信为${this.deleteUserWeChat}`,
+      });
+    }
+  }
+
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
@@ -584,7 +618,8 @@ class UserDetail extends React.Component {
           />
           
           <Upload
-            action={baseUrl + '/service/qiniubigupload?bucket=file'}
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
             // accept={fileExtensions.join(',')}
             onChange={this.handleFileChange}
             // onRemove={this.handleFileRemoveConfirm}
@@ -593,7 +628,7 @@ class UserDetail extends React.Component {
             <Button loading={isUploading} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传附件</Button>
           </Upload>
 
-          <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button>
+          {/* <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button> */}
           {hasPerm('usersys.admin_manageuser') && hasPerm('usersys.as_trader') && <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
         </h3>
 
@@ -601,7 +636,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             {!this.state.hideUserInfo &&
               <div>
-                <UserInfo userId={userId} onGetUsername={this.handleGetUsername} onGetMobile={this.handleMainUserGetMobile} />
+                <UserInfo userId={userId} onGetUsername={this.handleGetUsername} onGetMobile={this.handleMainUserGetMobile} onGetWeChat={this.handleMainUserGetWeChat} />
                 {this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={userId} style={{ float: 'none' }} /></div>}
               </div>
             }
@@ -625,7 +660,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
-            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} /> }
+            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} /> }
             { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }
           </Col>
         </Row>

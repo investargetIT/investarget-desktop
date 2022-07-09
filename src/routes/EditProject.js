@@ -99,8 +99,6 @@ function toFormDataNew(data) {
       formData.makeUserName = makeUser.map(m => m.user.usernameC).join('、');
     } else if (prop === 'lastProject' && data[prop]) {
       formData.lastProject = data.lastProject.id;
-    } else if (prop === 'indGroup' && data[prop]) {
-      formData.indGroup = data.indGroup.id;
     } else if (prop === 'PM' && data[prop]) {
       formData.PM = data[prop].id.toString();
       formData.PMName = data[prop].usernameC;
@@ -171,6 +169,7 @@ class EditProject extends React.Component {
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
       data.currency = result.data.currency && result.data.currency.id
+      data.sponsor = result.data.sponsor && result.data.sponsor.id
       data.industries = result.data.industries
       data.projstatus = result.data.projstatus && result.data.projstatus.id
       data.supportUserName = result.data.supportUser && (window.LANG === 'en' ? result.data.supportUser.usernameE : result.data.supportUser.usernameC);
@@ -329,12 +328,66 @@ class EditProject extends React.Component {
     this.getProject()
   }
 
-  setFormValue = () => {
+  // checkProjectBD = () => {
+  //   const { projectBD, sponsor, takeUser }
+  //   this.setFormValue();
+  // }
+
+  setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
+    const { projectBD, sponsor, takeUser } = newFormData;
+    window.echo('project bd', projectBD, sponsor, takeUser);
+    // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
+    if (projectBD) {
+      if (!sponsor || !takeUser || (takeUser && takeUser.length === 0)) {
+        const reqProjBD = await api.getProjBD(projectBD);
+        window.echo('reqProjBD', reqProjBD);
+        if (!takeUser || (takeUser && takeUser.length === 0)) {
+          const { main, normal } = reqProjBD.data.manager;
+          let allManagers = [];
+          if (main) {
+            allManagers.push(main.id.toString());
+          }
+          if (normal) {
+            allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+          }
+          newFormData.takeUser = allManagers;
+        }
+        if (!sponsor && reqProjBD.data.contractors) {
+          newFormData.sponsor = reqProjBD.data.contractors.id;
+        }
+      }
+    }
     this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
     this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);
     this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
     this.editProjectDetailsFormRef.current.setFieldsValue(newFormData);
+  }
+
+  handeBaseFormValuesChange = async (changedValue) => {
+    if ('projectBD' in changedValue) {
+      if (changedValue.projectBD) {
+        const reqProjBD = await api.getProjBD(changedValue.projectBD);
+        
+        const { main, normal } = reqProjBD.data.manager;
+        let allManagers = [];
+        if (main) {
+          allManagers.push(main.id.toString());
+        }
+        if (normal) {
+          allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+        }
+        const newTakeUser = allManagers;
+        let newSponsor = null;
+        if (reqProjBD.data.contractors) {
+          newSponsor = reqProjBD.data.contractors.id;
+        }
+        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: newTakeUser, sponsor: newSponsor });
+      } else {
+        this.editProjectBaseFormRef.current.setFieldsValue({ projectBD: null });
+        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: [], sponsor: null});
+      }
+    }
   }
 
   render() {
@@ -360,7 +413,7 @@ class EditProject extends React.Component {
           <Tabs defaultActiveKey="1">
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <ProjectBaseForm ref={this.editProjectBaseFormRef} />
+                <ProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>
                 <FormAction form="baseForm" loadingEdit={this.state.loadingEdit} />
               </div>
             </TabPane>

@@ -1,9 +1,12 @@
-import { Popconfirm, Button, Modal } from 'antd'
+import dayjs from 'dayjs';
+import SparkMD5 from 'spark-md5';
 import * as api from '../api'
 window.api = api
 
 import { baseUrl } from './request'
 import i18next from 'i18next'
+import { SIZE_4M } from '../constants';
+import { message } from 'antd';
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -164,7 +167,8 @@ function time(dateFromServer) {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: false,
+    // hour12: false,
+    hourCycle: 'h23',
   }
   const locale = window.LANG === 'en' ? 'en-US' : 'zh-CN'
   return new Intl.DateTimeFormat(locale, options).format(date)
@@ -591,4 +595,152 @@ export function updateURLParameter(props, param, paramVal) {
 
   var rows_txt = temp + "" + param + "=" + paramVal;
   return newAdditionalURL + rows_txt;
+}
+
+export function getBeijingTime(date) {
+  return dayjs(date).tz('Asia/Shanghai').format('YYYY-MM-DDTHH:mm:ss');
+}
+
+export async function md5File(file) {
+  const chunkSize = SIZE_4M;
+  const chunks = Math.ceil(file.size / chunkSize);
+  let currentChunk = 0;
+  const spark = new SparkMD5.ArrayBuffer();
+  const fileReader = new FileReader();
+
+  const loadNext = () => {
+    const start = currentChunk * chunkSize;
+    const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+    fileReader.readAsArrayBuffer(file.slice(start, end));
+  };
+
+  return new Promise((resolve, reject) => {
+    fileReader.onload = (e) => {
+      spark.append(e.target.result);
+      currentChunk++;
+
+      if (currentChunk < chunks) {
+        loadNext();
+      } else {
+        const md5 = spark.end();
+        resolve(md5);
+      }
+    };
+
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+
+    loadNext();
+  });
+}
+
+export async function uploadFileByChunks(file, { data, onProgress } = {}) {
+  let md5;
+  try {
+    md5 = await md5File(file);
+  } catch (error) {
+    throw new Error('计算文件MD5失败');
+  }
+
+  const chunkSize = SIZE_4M;
+  const chunks = Math.ceil(file.size / chunkSize);
+  let temp_key;
+  let res;
+
+  for (let currentChunk = 0; currentChunk < chunks; currentChunk++) {
+    const start = currentChunk * chunkSize;
+    const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+    const fileChunk = file.slice(start, end);
+
+    const formData = new FormData();
+    formData.append('file', fileChunk, file.name);
+    formData.append('filename', shortenFilename(file.name, 80));
+    formData.append('totalSize', String(file.size));
+    formData.append('currentSize', String(chunkSize));
+    formData.append('currentChunk', String(currentChunk + 1));
+    formData.append('totalChunk', String(chunks));
+    formData.append('md5', md5);
+    if (temp_key) {
+      formData.append('temp_key', temp_key);
+    }
+
+    if (!data) {
+      data = {};
+    }
+    if (data && !data.bucket) {
+      data.bucket = 'file';
+    }
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      formData.append(key, value);
+    });
+
+    res = await api.qiniuChunkUpload(formData);
+    const percent = Math.floor((currentChunk + 1) / chunks * 100);
+    if (onProgress) {
+      onProgress({ percent });
+    }
+    temp_key = res.data.temp_key;
+  }
+  return res;
+}
+
+function shortenFilename(filename, maxLen = 80) {
+  if (filename.length <= maxLen) return filename;
+  const re = /(.*)(\.[^.]+)$/;
+  const result = re.exec(filename);
+  if (result == null) {
+    return filename.slice(0, maxLen);
+  }
+  const [_, basename, suffix] = result;
+  return basename.slice(0, maxLen - suffix.length) + suffix;
+}
+
+// 忽略 filename, withCredentials, action, headers 参数
+export function customRequest({
+  onProgress,
+  onError,
+  onSuccess,
+  data,
+  filename,
+  file,
+  withCredentials,
+  action,
+  headers,
+}) {
+  uploadFileByChunks(file, { data, onProgress }).then((res) => {
+    onSuccess({ result: res.data });
+  }).catch((err) => {
+    handleError(err);
+    onError(err);
+  });
+}
+
+export async function checkUploadStatus(key) {
+  const { data } = await api.getUploadStatus(key);
+  if (data == null || data.length === 0) {
+    // 之前上传的文件没有记录
+    return true;
+  }
+  
+  const { status, success1 } = data[0];
+  if (status === 1 || status === 2) {
+    message.error('文件正在生成中，请稍后再试');
+    return false;
+  }
+
+  if (status === 3 && !success1) {
+    message.error('文件上传失败');
+    return false;
+  }
+
+  return true;
+}
+
+export function downloadFile(url, filename) {
+  const aElem = document.createElement('a');
+  aElem.download = filename;
+  aElem.href = url;
+  aElem.click();
 }

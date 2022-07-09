@@ -1,7 +1,7 @@
 import request from './utils/request'
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
-import { getUserInfo as getCurrentUserInfo } from './utils/util'
+import { getUserInfo as getCurrentUserInfo, getBeijingTime, uploadFileByChunks } from './utils/util'
 import _ from 'lodash'
 import { 
   ApiError, 
@@ -264,13 +264,7 @@ export function getExchangeRate(param) {
   return r('/service/currencyrate?' + qs.stringify(param))
 }
 
-export function downloadUrl(bucket, key) {
-  const params = { bucket, key }
-  return r('/service/downloadUrl', 'POST', params)
-}
-
-export function qiniuUpload(bucket, file) {
-
+export function addAudioTranslate(formData) {
   const source = parseInt(localStorage.getItem('source'), 10)
   if (!source) {
     throw new ApiError(1299, 'data source missing')
@@ -288,18 +282,63 @@ export function qiniuUpload(bucket, file) {
     headers["token"] = user.token
   }
 
-  var formData = new FormData()
-  formData.append('file', file)
-
-  return fetch(baseUrl + '/service/qiniubigupload?bucket=' + bucket, {
+  const options = {
     headers,
     method: 'POST',
     body: formData,
-  }).then(response => {
-    return response.json()
-  }).then(data => {
-    return { data: data.result }
-  })
+  };
+  return request('/service/audioTranslate/', options);
+}
+
+export function getAudioTranslate(id) {
+  return r(`/service/audioTranslate/${id}/`, 'GET');
+}
+
+export function updateAudioTranslate(id, data) {
+  return r(`/service/audioTranslate/${id}/`, 'PUT', data);
+}
+
+export function downloadUrl(bucket, key) {
+  const params = { bucket, key }
+  return r('/service/downloadUrl', 'POST', params)
+}
+
+export function qiniuUpload(bucket, file) {
+  return uploadFileByChunks(file, {
+    data: { bucket },
+  });
+}
+
+// 大文件分片上传
+export function qiniuChunkUpload(formData) {
+  const source = parseInt(localStorage.getItem('source'), 10)
+  if (!source) {
+    throw new ApiError(1299, 'data source missing')
+  }
+
+  const user = getCurrentUserInfo()
+
+  let headers = {
+    "Accept": "application/json",
+    "clienttype": "3",
+    "source": source,
+    "x-requested-with": "XMLHttpRequest",
+  }
+  if (user) {
+    headers["token"] = user.token
+  }
+
+  const options = {
+    headers,
+    method: 'POST',
+    body: formData,
+  };
+  return request('/service/uploaddata/', options);
+}
+
+// 查询文件上传进度
+export function getUploadStatus(key) {
+  return r('/service/uploadres/?key=' + key);
 }
 
 /**
@@ -331,6 +370,14 @@ export function sendSmsCode(body) {
 
 export function getSource(sourceType) {
   return r(`/source/${sourceType}`)
+}
+
+/**
+ * tag
+ */
+
+export function createTag(params) {
+  return r('/source/tag', 'POST', params);
 }
 
 /**
@@ -762,11 +809,18 @@ export const addProjBD = (data) => {
 }
 
 export const editProjBD = (id, data) => {
+  if (data.lastmodifytime == null) {
+    data.lastmodifytime = getBeijingTime(new Date());
+  }
   return r('/bd/projbd/' + id + '/', 'PUT', data)
 }
 
 export const deleteProjBD = (id) => {
   return r('/bd/projbd/' + id + '/', 'DELETE')
+}
+
+export const getProjBDCom = (param) => {
+  return r('/bd/projbd/comment/?' + qs.stringify(param));
 }
 
 export const addProjBDCom = (data) => {

@@ -34,6 +34,7 @@ import {
   SelectTrader,
   SelectIndustryGroup,
   SelectExistProject,
+  SelectProjectBD,
 } from '../components/ExtraInput'
 
 class SelectProjectStatus extends React.Component {
@@ -94,9 +95,13 @@ class ProjectBaseForm1 extends React.Component {
 
   render() {
     return (
-      <Form ref={this.props.forwardedRef}>
+      <Form ref={this.props.forwardedRef} onValuesChange={this.props.onValuesChange}>
         <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean">
           <RadioTrueOrFalse />
+        </BasicFormItem>
+
+        <BasicFormItem label="对应项目BD" name="projectBD" valueType="number">
+          <SelectProjectBD />
         </BasicFormItem>
 
         <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
@@ -379,14 +384,21 @@ class ProjectConnectForm1 extends React.Component {
             }
           }}
         </Form.Item>
+
+        <BasicFormItem label="项目发起人" name="sponsor" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
         
         {/* {hasPerm('proj.admin_manageproj') ? */}
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
-                <BasicFormItem label={i18n('project.development')} name="takeUser" valueType="array">
+                <BasicFormItem label="开发团队" name="takeUser" valueType="array">
                   {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader mode="multiple" disabledOption={getFieldValue('makeUser')} />
+                  <SelectTrader
+                    mode="multiple"
+                    // disabledOption={getFieldValue('makeUser')}
+                  />
                 </BasicFormItem>
               );
             }}
@@ -401,9 +413,12 @@ class ProjectConnectForm1 extends React.Component {
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
-                <BasicFormItem label={i18n('project.team')} name="makeUser" valueType="array">
+                <BasicFormItem label="执行团队" name="makeUser" valueType="array">
                   {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader mode="multiple" disabledOption={getFieldValue('takeUser')} />
+                  <SelectTrader
+                    mode="multiple"
+                    // disabledOption={getFieldValue('takeUser')}
+                  />
                 </BasicFormItem>
               );
             }}
@@ -418,7 +433,7 @@ class ProjectConnectForm1 extends React.Component {
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) => {
               return (
-                <BasicFormItem label="PM" name="PM">
+                <BasicFormItem label="项目经理" name="PM">
                   <SelectTrader />
                 </BasicFormItem>
               );

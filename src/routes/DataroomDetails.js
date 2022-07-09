@@ -4,7 +4,7 @@ import { Link } from 'dva/router';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';;
 import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Popconfirm, Row, Col, Tree } from 'antd';
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
-import { SelectMyInvestor, SelectExistInvestor, SelectAllUser } from '../components/ExtraInput';
+import { SelectShareInvestor } from '../components/ExtraInput';
 import * as api from '../api';
 import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
@@ -418,7 +418,9 @@ function DataroomDetails(props) {
           </div>
         }
 
-        <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? item.lastgettime.slice(0, 16).replace('T', ' ') : '暂无'}</div>
+        <div style={{ color: '#989898' }}>最近登录：{item.lastgettime ? time(item.lastgettime + item.timezone) : '暂无'}</div>
+        <div style={{ color: '#989898' }}>最近下载时间：{item.lastdowntime ? time(item.lastdowntime + item.timezone) : '暂无'}</div>
+        <div style={{ color: '#989898' }}>最近下载文件大小：{item.lastdownsize ? item.lastdownsize.toFixed(2) + 'M' : '暂无'}</div>
 
         {(hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
           <div style={{ textAlign: 'center', marginTop: 10 }}>
@@ -830,26 +832,14 @@ function DataroomDetails(props) {
               <div>
                 <div style={{ display: 'flex' }}>
                   <div style={{ marginRight: 10 }}>
-                    {hasPerm('usersys.admin_manageuser') ?
-                      <SelectAllUser
-                        size="middle"
-                        type="investor"
-                        style={{ width: 200 }}
-                        value={newUser}
-                        placeholder="请选择联系人"
-                        onChange={value => setNewUser(value)}
-                        dataroom={dataroomID}
-                      />
-                      :
-                      <SelectMyInvestor
-                        size="middle"
-                        style={{ width: 200 }}
-                        value={newUser}
-                        placeholder="请选择联系人"
-                        onChange={value => setNewUser(value)}
-                        dataroom={dataroomID}
-                      />
-                    }
+                    <SelectShareInvestor
+                      size="middle"
+                      style={{ width: 200 }}
+                      value={newUser}
+                      placeholder="请选择联系人"
+                      onChange={value => setNewUser(value)}
+                      dataroom={dataroomID}
+                    />
                   </div>
                   <div><Button type="primary" onClick={handleAddUser} disabled={!newUser || !hasPermissionForDataroomTemp}><PlusOutlined />{i18n('dataroom.add_user')}</Button></div>
                 </div>

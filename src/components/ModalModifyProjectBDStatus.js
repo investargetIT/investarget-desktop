@@ -109,7 +109,8 @@ class ModalModifyProjectBDStatus extends React.Component {
     if (this.isShowContactForm()) {
       this.contactFormRef.current.validateFields()
         .then((values) => {
-          this.props.onUpdateContact({ ...values, bd_status: status });
+          const { email, ...valuesToKeep } = values;
+          this.props.onUpdateContact({ ...valuesToKeep, useremail: email, bd_status: status });
         })
         .catch(error => console.log(error));
     } else if (this.isShowUserForm()) {

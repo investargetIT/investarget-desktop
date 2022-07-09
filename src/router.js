@@ -93,6 +93,7 @@ import OrgBDListForMobile from './routes/OrgBDListForMobile';
 import MLogin from './components/MLogin';
 import ResetPasswordForMobile from './routes/ResetPasswordForMobile';
 import DashboardForMobile from './routes/DashboardForMobile';
+import SpeechToText from './routes/SpeechToText';
 
 function RouterConfig({ history }) {
   return (
@@ -156,6 +157,7 @@ function RouterConfig({ history }) {
         <Route path="/app/demo" component={ReactDataSheetDemo} />
         <Route path="/app/feishu" component={Feishu} />
         <Route path="/app/hr" component={HumanResources} />
+        <Route path="/app/speech-to-text/:id" component={SpeechToText} />
         <Route path={URI_8} component={InboxList} />
         <Route path="/403" component={AccessDenied} />
         {/* <Route path="/recommend-friends" component={RecommendFriends} />

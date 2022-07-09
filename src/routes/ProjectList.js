@@ -168,15 +168,6 @@ class ProjectList extends React.Component {
     this.writeSetting()
   }
 
-  // checkProjectProgressFromRedux = () => {
-  //   const projectInRedux = this.props.projectProgress.map(m => m.id);
-  //   const projectToCheck = this.state.list.map(m => m.id);
-  //   const toRequest = subtracting(projectToCheck, projectInRedux);
-  //   const toRequestProjects = toRequest.map(m => this.state.list.filter(f => f.id === m)[0]);
-  //   if (toRequestProjects.length === 0) return;
-  //   this.getAndSetProjectPercentage(toRequestProjects);
-  // }
-
   getProjectProgress = record => {
     const filterProject = this.props.projectProgress.filter(f => f.id === record.id);
     if (filterProject.length > 0) {
@@ -184,50 +175,6 @@ class ProjectList extends React.Component {
     }
     return 0;
   }
-
-  // getAndSetProjectPercentage = async list => {
-  //   const reqBdRes = await api.getSource('orgbdres');
-  //   const { data: orgBDResList } = reqBdRes;
-  //   const projPercentage = [];
-  //   for (let index = 0; index < list.length; index++) {
-  //     const element = list[index];
-  //     if (element.projstatus) {
-  //       if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
-  //         projPercentage.push({ id: element.id, percentage: 100 });
-  //         continue;
-  //       }
-  //     }
-  //     const paramsForPercentage = { proj: element.id };
-  //     const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
-  //     let { response_count: resCount } = projPercentageCount.data;
-  //     resCount = resCount.map(m => {
-  //       const relatedRes = orgBDResList.filter(f => f.id === m.response);
-  //       let resIndex = 0;
-  //       if (relatedRes.length > 0) {
-  //         resIndex = relatedRes[0].sort;
-  //       }
-  //       return { ...m, resIndex };
-  //     });
-  //     const maxRes = Math.max(...resCount.map(m => m.resIndex));
-  //     let percentage = 0;
-  //     if (maxRes > 3) {
-  //       // 计算方法是从正在看前期资料开始到交易完成一共11步，取百分比
-  //       percentage = Math.round((maxRes - 3) / 11 * 100);
-  //     }
-  //     projPercentage.push({ id: element.id, percentage });
-  //   }
-  //   window.echo('proj percentage', projPercentage);
-  //   this.props.dispatch({ type: 'app/saveProjectProgress', payload: projPercentage });
-  //   // this.setState({
-  //   //   list: this.state.list.map(m => {
-  //   //     const percentageList = projPercentage.filter(f => f.id === m.id);
-  //   //     if (percentageList.length > 0) {
-  //   //       return { ...m, percentage: percentageList[0].percentage };
-  //   //     }
-  //   //     return { ...m, percentage: 0 };
-  //   //   })
-  //   // });
-  // }
 
   handleDelete = (id) => {
     this.setState({ loading: true })
@@ -426,6 +373,7 @@ class ProjectList extends React.Component {
               <div> 
                 <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
                 <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
+                <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
               </div>
             );
           }
@@ -653,7 +601,7 @@ class ProjectList extends React.Component {
 
 function mapStateToProps(state) {
   const { country, projectProgress } = state.app;
-  const { page: userPageSize } = state.currentUser;
+  const userPageSize = state.currentUser ? state.currentUser.page : 10;
   return { country, userPageSize, projectProgress };
 }
 

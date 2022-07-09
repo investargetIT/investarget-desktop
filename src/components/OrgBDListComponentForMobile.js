@@ -1773,7 +1773,7 @@ class OrgBDListComponentForMobile extends React.Component {
     return <div style={{ display: 'flex', flexWrap: 'wrap' }}>{progress}{material}</div>;
   }
 
-  renderPopoverComments = comments => {
+  renderPopoverComments = (comments, onDelete) => {
     const popoverContent = comments.filter(f => !f.isPMComment)
       .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
       .map(comment => {
@@ -1785,7 +1785,13 @@ class OrgBDListComponentForMobile extends React.Component {
         }
         return (
           <div key={comment.id} style={{ marginBottom: 8 }}>
-            <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+            <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span>
+            {hasPerm('BD.manageOrgBD') || getUserInfo().id === bd.manager.id ?
+              <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete.bind(this, comment.id)}>
+                <Button type="link"><DeleteOutlined /></Button>
+              </Popconfirm>
+              : null}
+              </p>
             <div style={{ display: 'flex' }}>
               {comment.createuser &&
                 <div style={{ marginRight: 10 }}>
@@ -1843,7 +1849,7 @@ class OrgBDListComponentForMobile extends React.Component {
             <div style={{ color: "#428bca" }} onClick={(e) => {
               window.echo('click');
               e.stopPropagation();
-              this.setState({ popoverComments: comments });
+              this.setState({ comments, currentBD: record });
             }}>{latestComment.length >= 12 ? (latestComment.substr(0, 10) + "...") : latestComment}</div>
             // </Popover>
           );
@@ -2004,6 +2010,10 @@ class OrgBDListComponentForMobile extends React.Component {
       priorityName = priority[allItemPriorities[0]];
     }
     return displayPriorityColor;
+  }
+
+  handleCommentDelete = commentID => {
+    window.echo('delete', commentID);
   }
 
   render() {
@@ -2989,11 +2999,11 @@ class OrgBDListComponentForMobile extends React.Component {
 
         <Modal
           title="机构反馈"
-          visible={this.state.popoverComments.length > 0}
-          onCancel={() => this.setState({ popoverComments: [] })}
-          onOk={() => this.setState({ popoverComments: [] })}
+          visible={this.state.comments.length > 0}
+          onCancel={() => this.setState({ comments: [], currentBD: null })}
+          onOk={() => this.setState({ comments: [] })}
         >
-          {this.renderPopoverComments(this.state.popoverComments)}
+          {this.renderPopoverComments(this.state.comments, this.handleDeleteComment)}
         </Modal>
 
         {/* {this.state.displayModalForCreating &&

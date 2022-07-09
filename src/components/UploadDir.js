@@ -1,5 +1,5 @@
 import React from 'react';
-import * as api from '../api';
+import { uploadFileByChunks } from '../utils/util';
 
 class UploadDir extends React.Component {
 
@@ -31,7 +31,13 @@ class UploadDir extends React.Component {
   onChangeFile(event) {
     event.stopPropagation();
     event.preventDefault();
-    const { files } = event.target;
+    const files = Array.prototype.slice.call(event.target.files);
+    console.log(event.target.files, files);
+    // 去除.DS_Store隐藏文件
+    const removeIndex = files.findIndex(({ name }) => name === '.DS_Store');
+    if (removeIndex > -1) {
+      files.splice(removeIndex, 1);
+    }
     window.echo('change file', files); 
     const allowedFiles = [];
     for (let index = 0; index < files.length; index++) {
@@ -49,8 +55,15 @@ class UploadDir extends React.Component {
     }
   } 
 
+  handleProgress = (total, index, partPercentage) => {
+    const percentEachFile = Math.floor(100 / total);
+    const percentage = Math.floor(percentEachFile * (index + partPercentage / 100));
+    this.props.updateUploadProgress(percentage);
+  };
+
   uploadFiles = async files => {
     const allFileResult = [];
+    const errorFileResult = [];
     const percentEachFile = Math.floor(100 / files.length);
     if (this.props.updateUploadProgress) {
       this.props.updateUploadProgress(1);
@@ -76,7 +89,11 @@ class UploadDir extends React.Component {
           },
         });
         try {
-          const result = await api.qiniuUpload('file', file);
+          const result = await uploadFileByChunks(file, {
+            onProgress: ({ percent }) => {
+              this.handleProgress(files.length, index, percent);
+            },
+          });
           const { data } = result;
           const currentFileResult = {
             file: {
@@ -94,7 +111,7 @@ class UploadDir extends React.Component {
           await this.props.onChange(currentFileResult);
         } catch (error) {
           console.error(error);
-          await this.props.onChange({
+          const errorFile = {
             file: {
               lastModified,
               lastModifiedDate,
@@ -103,8 +120,11 @@ class UploadDir extends React.Component {
               type,
               webkitRelativePath,
               status: 'error',
+              error,
             },
-          });
+          }
+          errorFileResult.push(errorFile)
+          await this.props.onChange(errorFile);
         }
       }
       // 更新上传进度
@@ -117,7 +137,7 @@ class UploadDir extends React.Component {
       }
     }
 
-    this.props.onFinishUploadAllFiles(allFileResult);
+    this.props.onFinishUploadAllFiles(allFileResult, errorFileResult);
   }
 
   render() {

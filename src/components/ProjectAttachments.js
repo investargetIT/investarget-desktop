@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import _ from 'lodash'
 import * as api from '../api'
-import { i18n, requestAllData } from '../utils/util'
+import { customRequest, i18n, requestAllData } from '../utils/util'
 import {
   Input,
   Button,
@@ -16,7 +16,7 @@ import {
   Spin, 
 } from 'antd'
 import QRCode from 'qrcode.react';
-import { baseUrl, mobileUploadUrl } from '../utils/request';
+import { mobileUploadUrl } from '../utils/request';
 // import { MobileUploader } from './GlobalComponents';
 import { Modal as GModal } from './GlobalComponents';
 
@@ -84,7 +84,7 @@ function DirectoryCell(props) {
       <Col span={8}>
       <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
       <Upload {...props.upload}><span style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>点击上传</span></Upload>
-      <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span>
+      {/* <span onClick={props.onMobileUploadClicked} style={{ marginLeft: 10, padding: '4px 20px', color: 'white', backgroundColor: '#f4b348', borderRadius: 4, cursor: 'pointer' }}>手机上传</span> */}
       </div>
       </Col>
     </Row>
@@ -347,7 +347,8 @@ class ProjectAttachments extends React.Component {
     let doneFileList = fileList.filter(file => file.status == 'done')
 
     const uploadProps = {
-      action: baseUrl + "/service/qiniubigupload?bucket=file",
+      customRequest,
+      data: { bucket: 'file' },
       accept: fileExtensions.join(','),
       onChange: this.handleFileChange,
       onRemove: this.handleFileRemoveConfirm,

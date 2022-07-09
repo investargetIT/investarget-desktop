@@ -37,11 +37,12 @@ class UserList extends React.Component {
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: 10
 
+    const currentUser = getUserInfo();
     this.state = {
       filters,
       search,
       page,
-      pageSize: getUserInfo().page || 10,
+      pageSize: (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,
@@ -219,7 +220,10 @@ class UserList extends React.Component {
   loadLabelByValue(type, value) {
     if (this.props[type].length === 0) return;
     if (Array.isArray(value) && this.props.tag.length > 0) {
-      return value.map(m => this.props[type].filter(f => f.id === m)[0].name).join(' / ');
+      return value.map(m => {
+        const item = this.props[type].filter(f => f.id === m)[0];
+        return item == null ? '' : item.name;
+      }).join(' / ');
     } else if (typeof value === 'number') {
       return this.props[type].filter(f => f.id === value)[0].name;
     }

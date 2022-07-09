@@ -9,6 +9,7 @@ import styles from './Header.css'
 import classNames from 'classnames'
 import SiteSearch from './SiteSearch'
 import Logo from './Logo'
+import RetryImg from './RetryImg';
 
 const confirm = Modal.confirm
 
@@ -73,7 +74,7 @@ class UserProfile extends React.Component {
     return (
       <div className={styles['nav-item']} style={{position: 'relative'}} onClick={this.handleClick}>
         <div style={{paddingLeft:10,paddingRight:10,userSelect:'none'}}>
-          <img src={photourl} style={imgStyle} />
+          <RetryImg src={photourl} style={imgStyle} />
           <span>{username}</span>
           <span style={caretStyle}></span>
         </div>
@@ -141,7 +142,7 @@ function Header(props) {
         })
         break
       case 'email':
-        window.open('http://mail.investarget.com');
+        window.open('http://mail.investarget.com', '_blank', 'noopener');
         break;
       case 'personal_center':
         dispatch(routerRedux.push('/app/personal-center'));

@@ -1,93 +1,86 @@
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Table, Modal, Popover, Popconfirm, Select } from 'antd';
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover } from 'antd';
-import LeftRightLayout from '../components/LeftRightLayout'
-import { ProjectBDFilter } from '../components/Filter'
-import { Search } from '../components/Search';
 import { 
   handleError, 
-  timeWithoutHour, 
   i18n, 
   hasPerm,
   getUserInfo,
-  formatMoney,
-  getURLParamValue,
   requestAllData,
+  getCurrentUser,
 } from '../utils/util';
 import * as api from '../api'
-import { Link } from 'dva/router'
-import BDModal from '../components/BDModal';
-import { isLogin } from '../utils/util'
-import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
-import { PAGE_SIZE_OPTIONS } from '../constants';
+import { isLogin, subtracting } from '../utils/util'
 import { connect } from 'dva';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import BDComments from '../components/BDComments';
+import BDComments from './BDComments';
+import ModalEditProjBD from './ModalEditProjBD';
+import ModalModifyProjectBDStatus from './ModalModifyProjectBDStatus';
 
-class ProjectBDList extends React.Component {
+const formatManager = (manager) => {
+  const { main, normal } = manager;
+  let allManagers = [];
+  if (main) {
+    allManagers.push(main.username);
+  }
+  if (normal) {
+    allManagers = allManagers.concat(normal.map(m => m.manager.username));
+  }
+  return allManagers.join('、');
+}
+
+class ReportProjectBDList extends React.Component {
 
   constructor(props) {
     super(props)
 
-    const setting = this.readSetting()
-    const filters = ProjectBDFilter.defaultValue;
-    const search = setting ? setting.search : null
-    const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
-
-    const currentUser = getUserInfo();
     this.state = {
-      filters,
-      search,
-      page,
-      pageSize: (currentUser && currentUser.page) || 10,
-      total: 0,
+      userBdList: [],
+      userBdId: null,
+      addBdLoading: false,
       list: [],
       loading: false,
 
       visible: false,
       sort: 'isimportant',
       desc: 1,
-      source: getURLParamValue(this.props, 'status') || 0, 
+      manager: getCurrentUser(),
       status: null, 
       isShowModifyStatusModal: false,
-      currentBD:null
+      currentBD:null,
+      editModalVisible: false,
     }
   }
 
-  handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProjectBDList)
-  }
+  getUserProjectBDList = () => {
+    const { sort, desc, manager } = this.state
+    const param = {
+      sort,
+      desc,
+      manager,
+    }
 
-  handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getProjectBDList)
-  }
-
-  handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getProjectBDList)
-  }
-
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getProjectBDList)
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getProjectBDList)
+    return requestAllData(api.getProjBDList, param, 100).then(result => {
+      this.setState({
+        userBdList: result.data.data,
+      });
+    }).catch(error => {
+      handleError(error)
+    })
   }
 
   getProjectBDList = () => {
-    const { filters, search, page, pageSize, sort, desc } = this.state
+    const { stimeM, etimeM } = this.props;
+    const { sort, desc, manager } = this.state
     const param = {
-      page_index: page,
-      page_size: pageSize,
-      search,
       sort,
       desc,
-      ...filters,
-
+      manager,
+      stimeM,
+      etimeM,
     }
-    this.writeSetting();
+
     this.setState({ loading: true })
-    return api.getProjBDList(param).then(result => {
+    return requestAllData(api.getProjBDList, param, 100).then(result => {
       let { count: total, data: list } = result.data
       let promises = list.map(item=>{
         if(item.bduser){
@@ -116,25 +109,6 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state;
-    const data = { filters, search, page, pageSize };
-    localStorage.setItem('ProjectBDList', JSON.stringify(data));
-  }
-
-  readSetting = () => {
-    const data = localStorage.getItem('ProjectBDList');
-    return data ? JSON.parse(data) : null;
-  }
-
-  handleDelete = (id) => {
-    api.deleteProjBD(id).then(data => {
-      this.getProjectBDList()
-    }).catch(error => {
-      handleError(error)
-    })
-  }
-
   // comments
 
   handleOpenModal = (bd) => {
@@ -160,6 +134,7 @@ class ProjectBDList extends React.Component {
     }
 
     const { currentBD } = this.state;
+    const { stimeM } = this.props;
     const param = {
       projectBD: currentBD.id,
       comments,
@@ -168,14 +143,16 @@ class ProjectBDList extends React.Component {
       filename,
       transid,
     }
+    let data = null;
     try {
-      await api.addProjBDCom(param)
+      data = await api.addProjBDCom(param)
     } catch (error) {
-      handleError(error)
-      return
+      handleError(error);
+      return;
     }
-    this.updateCurrentBD()
-    api.editProjBD(currentBD.id, {});
+
+    this.getProjectBDList()
+    api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
   }
 
   handleEditComment = async (id, data, speechFile) => {
@@ -194,45 +171,27 @@ class ProjectBDList extends React.Component {
 
     const params = { ...data, transid };
     try {
-      await api.editProjBDCom(id, params);
+      await api.editProjBDCom(id, params)
     } catch (error) {
-      handleError(error);
-      return;
+      handleError(error)
+      return
     }
-
-    this.updateCurrentBD()
+    
+    this.getProjectBDList()
     const { currentBD } = this.state;
-    api.editProjBD(currentBD.id, {});
+    const { stimeM } = this.props;
+    api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
   }
 
   handleDeleteComment = (id) => {
     const { currentBD } = this.state;
+    const { stimeM } = this.props;
     api.deleteProjBDCom(id).then(data => {
-      this.updateCurrentBD()
-      api.editProjBD(currentBD.id, {});
+      this.getProjectBDList()
+      api.editProjBD(currentBD.id, { lastmodifytime: stimeM });
     }).catch(error => {
       handleError(error)
     })
-  }
-
-  updateCurrentBD = () => {
-    const { list, currentBD: bd } = this.state;
-    requestAllData(api.getProjBDCom, { projectBD: bd.id }, 10).then((result) => {
-      const BDComments = result.data.data;
-      const currentBD = {
-        ...bd,
-        BDComments,
-      }
-      const index = list.findIndex((item) => item.id === bd.id);
-      this.setState({
-        currentBD,
-        list: [
-          ...list.slice(0, index),
-          currentBD,
-          ...list.slice(index + 1),
-        ],
-      })
-    });
   }
 
   checkExistence = (mobile, email) => {
@@ -250,7 +209,6 @@ class ProjectBDList extends React.Component {
   }
   
   handleConfirm =(state)=>{
-    const react = this;
     if ( state.status === 3 && this.state.currentBD.bd_status.id !==3 && !this.state.currentBD.bduser){
       this.checkExistence(state.mobile, state.email).then(ifExist => {
           if (ifExist) {
@@ -270,7 +228,7 @@ class ProjectBDList extends React.Component {
 
   handleUpdateContact = async (formData) => {
     const usermobile = (formData.mobileAreaCode && formData.mobile) ? `+${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
-    const body = { ...formData, usermobile };
+    const body = { ...formData, usermobile, lastmodifytime: this.props.stimeM };
     try {
       await api.editProjBD(this.state.currentBD.id, body);
       const { username, usermobile: mobile, email } = body;
@@ -287,7 +245,8 @@ class ProjectBDList extends React.Component {
   handleConfirmAudit = state => {
     const { status, usernameC, mobile, email } = state;
     const body = {
-      bd_status: status
+      bd_status: status,
+      lastmodifytime: this.props.stimeM,
     }
     // 状态改为暂不BD后，详细需求见bugClose #344
     if (status === 4 && this.state.currentBD.bd_status.id !== 4) {
@@ -332,7 +291,10 @@ class ProjectBDList extends React.Component {
         api.addUser(userBody)
           .then(result =>{
             if (this.state.currentBD.username === null) {
-              api.editProjBD(this.state.currentBD.id, { bduser: result.data.id })
+              api.editProjBD(this.state.currentBD.id, {
+                bduser: result.data.id,
+                lastmodifytime: this.props.stimeM,
+              })
                 .then(data => {
                   this.setState({ isShowModifyStatusModal: false }, this.getProjectBDList)
                 })
@@ -359,8 +321,101 @@ class ProjectBDList extends React.Component {
   }
 
   componentDidMount() {
-    this.getProjectBDList()
+    this.getUserProjectBDList();
+    this.getProjectBDList();
     this.props.dispatch({ type: 'app/getGroup' });
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['bdStatus', 'country'] });
+  }
+
+  handleEdit = (record) => {
+    this.setState({
+      editModalVisible: true,
+      currentBD: record,
+    });
+  };
+
+  handleEditOk = (values) => {
+    this.editProjectBD(values).then(() => {
+      this.setState({
+        editModalVisible: false,
+        currentBD: null,
+      });
+      this.getProjectBDList();
+    }).catch((error) => {
+      handleError(error);
+    });
+  };
+
+  editProjectBD = async (param) => {
+    if (param.manager) {
+      const { manager: newManager } = param;
+      const { manager: oldManager, id: projectBdId } = this.state.currentBD;
+      let { main: oldMainManager, normal: oldNormalManager } = oldManager;
+      let newNormalManager = [];
+      if (newManager.includes(oldMainManager.id.toString())) {
+        param.manager = oldMainManager.id;
+        newNormalManager = newManager.filter(f => f !== oldMainManager.id.toString());
+      } else {
+        param.manager = newManager[0];
+        newNormalManager = newManager.slice(1);
+      }
+
+      if (oldNormalManager === null) {
+        oldNormalManager = [];
+      }
+
+      const oldNormalManagerIds = oldNormalManager.map(m => m.manager.id);
+      const newNormalManagerIds = newNormalManager.map(m => parseInt(m));
+
+      const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
+      await Promise.all(normalManagerToDel.map(m => {
+        const relateManagerId = oldNormalManager.filter(f => f.manager.id === m)[0].id;
+        return api.deleteProjectBdRelatedManager(relateManagerId);
+      }));
+      const normalManagerToAdd = subtracting(newNormalManagerIds, oldNormalManagerIds);
+      await Promise.all(normalManagerToAdd.map(m => {
+        const body = {
+          manager: m,
+          projectBD: projectBdId,
+        };
+        return api.addProjectBdRelatedManager(body);
+      }));
+    }
+
+    const { bd_status: status } = param;
+    // 状态改为暂不BD后，详细需求见bugClose #344
+    if (status === 4 && this.state.currentBD.bd_status.id !== 4) {
+      // param.contractors = null;
+    }
+    
+    const { id } = this.state.currentBD;
+    param.lastmodifytime = this.props.stimeM;
+    await api.editProjBD(id, param);
+
+    // 状态改为暂不BD后，详细需求见bugClose #344
+    if (status === 4 && this.state.currentBD.bd_status.id !== 4) {
+      const { bd_status, contractors } = this.state.currentBD;
+      await api.addProjBDCom({
+        projectBD: this.state.currentBD.id,
+        comments: `之前状态：${bd_status.name}，发起人: ${contractors ? contractors.username : '无'}`,
+      });
+    }
+  }
+
+  handleEditCancel = () => {
+    this.setState({
+      editModalVisible: false,
+      currentBD: null,
+    });
+  };
+
+  handleDelete = (id) => {
+    api.deleteProjBD(id).then(data => {
+      this.getProjectBDList()
+      this.getUserProjectBDList()
+    }).catch(error => {
+      handleError(error)
+    })
   }
 
   handleStatusChange =(status)=>{
@@ -388,19 +443,35 @@ class ProjectBDList extends React.Component {
     return true;
   }
 
+  handleUserBdChange = (value) => {
+    this.setState({
+      userBdId: value,
+    });
+  }
+
+  handleAddBdToReport = () => {
+    const { userBdId } = this.state;
+    if (userBdId == null) return;
+    this.setState({
+      addBdLoading: true,
+    });
+    api.editProjBD(userBdId, { lastmodifytime: this.props.stimeM }).then(() => {
+      this.setState({
+        userBdId: null,
+        addBdLoading: false,
+      });
+      this.getProjectBDList();
+    }).catch((error) => {
+      handleError(error);
+      this.setState({
+        addBdLoading: false,
+      });
+    }); 
+  }
+
   render() {
-    const currentUser = getUserInfo();
-    const currentUserId = currentUser && currentUser.id;
-    const { filters, search, page, pageSize, total, list, loading, source } = this.state
-    const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
-    const imgStyle={width:'15px',height:'20px'}
+    const { userBdList, userBdId, addBdLoading, list, loading } = this.state
     const columns = [
-      // {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
-      //   return (<div>{record&&record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>
-      //           {record.username}
-      //           </Link> : record.username}</div>
-      //           )
-      // }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
         render: (text, record) => (
           <div style={{ position: 'relative' }}>
@@ -432,60 +503,14 @@ class ProjectBDList extends React.Component {
         )
       },
       {title: i18n('project_bd.status'), dataIndex: ['bd_status', 'name'], key:'bd_status', width: 80, sorter:true},
-      // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
-      // {title: i18n('project_bd.import_methods'), render: (text, record) => {
-      //   return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
-      // }, key:'source_type', sorter:true},
-      // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
-      // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
-      // {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', width: 120, sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
-      // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {
         title: i18n('project_bd.manager'),
         key: 'manager',
         sorter: true,
         render: (text, record) => {
-          const { main, normal } = record.manager;
-          let allManagers = [];
-          if (main) {
-            allManagers.push(main.username);
-          }
-          if (normal) {
-            allManagers = allManagers.concat(normal.map(m => m.manager.username));
-          }
-          return allManagers.join('、');
+          return formatManager(record.manager);
         },
       },
-      {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key: 'financeAmount', width: 170, sorter:true, render: (text, record) => {
-        const currency = record.financeCurrency ? record.financeCurrency.currency : '';
-        if (text && record.financeCurrency && record.financeCurrency.id === 1) {
-          return `${currency} ${formatMoney(text, 'CNY')}`;
-        } else {
-          return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
-        }
-      }},
-      {title: i18n('project_bd.contractors'), dataIndex: ['contractors', 'username'], key: 'contractors', sorter:true},
-      {title: i18n('project_bd.created_time'), render: (text, record) => {
-        return timeWithoutHour(record.createdtime + record.timezone)
-      }, key:'createdtime', sorter:true},
-      // {
-      //   title: '行动计划',
-      //   dataIndex: 'BDComments',
-      //   render: (text, record) => {
-      //     const comments = record.BDComments;
-      //     return comments && comments.length > 0 && <Popover placement="left" title="全部备注" content={
-      //       <ul style={{ listStyle: 'outside', marginLeft: 20 }}>
-      //         {comments.map(m => <li key={m.id}>
-      //           {m.createdtime.substring(0, 16).replace('T', ' ')}
-      //           <br/>
-      //           <p dangerouslySetInnerHTML={{ __html: m.comments.replace(/\n/g, '<br>') }} />
-      //           </li>)}
-      //       </ul>
-      //     }>
-      //       <div style={{ color: "#428bca" }} dangerouslySetInnerHTML={{ __html: comments[0].comments.replace(/\n/g, '<br>') }} />
-      //     </Popover>;
-      //   },
-      // },
     ];
 
     const allCreateUser = list.map(m => m.createuser);
@@ -500,7 +525,7 @@ class ProjectBDList extends React.Component {
       return normalManagerIds.concat(mainManagerId);
     }).reduce((prev, curr) => prev.concat(curr), []);
 
-    if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(currentUserId) || allContractor.includes(currentUserId) || allManager.includes(currentUserId)) {
+    if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
       columns.push(
         {title: i18n('project_bd.operation'), width: 160, render: (text, record) => {
           
@@ -511,20 +536,18 @@ class ProjectBDList extends React.Component {
 
           return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div>
-              {hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ?
-                <Link to={'/app/projects/bd/edit/' + record.id}>
-                  <Button size="small" type="link"><EditOutlined /></Button>
-                </Link>
+              {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
+                <Button size="small" type="link" onClick={() => this.handleEdit(record)}><EditOutlined /></Button>
                 :
-                currentUserId === record.manager.main.id || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
-                <Button type="link" size="small" onClick={this.handleModifyBDStatusBtnClicked.bind(this, record)}><EditOutlined /></Button>
+                getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+                <Button type="link" size="small" onClick={() => this.handleModifyBDStatusBtnClicked(record)}><EditOutlined /></Button>
                 : null
               }
             </div>
 
-            { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ? 
+            { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ? 
             <div style={{ marginLeft: 7 }}>
-            <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record.id)}>
+            <Popconfirm title={i18n('message.confirm_delete')} onConfirm={() => this.handleDelete(record.id)}>
               <Button size="small" type="link">
                 <DeleteOutlined />
               </Button>
@@ -534,7 +557,7 @@ class ProjectBDList extends React.Component {
 
             <div>
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser || currentUserId === record.manager.main.id || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
               <Button style={{}} onClick={() => this.handleOpenModal(record)} type="link" size="small">行动计划</Button>
               : null }
             </div>
@@ -544,32 +567,15 @@ class ProjectBDList extends React.Component {
       );
     }
 
+    const bdIdsInReport = list.map(({ id }) => id);
+    const bdListNotInReport = userBdList.filter(({ id }) => !bdIdsInReport.includes(id));
+    const userBdOptions = bdListNotInReport.map(({ id, com_name }) => ({
+      value: id,
+      label: com_name,
+    }));
+
     return (
-      <LeftRightLayout
-        location={this.props.location}
-        title={i18n('menu.project_bd')}
-        action={
-          (hasPerm('BD.manageProjectBD') || hasPerm('usersys.as_trader')) ?
-            {
-              name: i18n('project_bd.add_project_bd'),
-              link: "/app/projects/bd/add",
-              disabled: !hasPerm('BD.manageProjectBD') && !this.currentUserHasIndGroup(),
-            }
-            :
-            undefined
-        }
-      >
-        {/* {source!=0 ? <BDModal source={source}  element='proj'/> : null} */}
-        <ProjectBDFilter defaultValue={filters} onSearch={this.handleFilt} onReset={this.handleReset} />
-        <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
-          <Search
-            style={{ width: 200 }}
-            placeholder={i18n('project_bd.project_name')}
-            onSearch={this.handleSearch}
-            onChange={search => this.setState({ search })}
-            value={search}
-          />
-        </div>
+      <div>
         <Table
           onChange={this.handleTableChange}
           columns={columns}
@@ -578,18 +584,27 @@ class ProjectBDList extends React.Component {
           loading={loading}
           pagination={false}
         />
-        <div style={{ margin: '16px 0' }} className="clearfix">
-          <Pagination
-            style={{ float: 'right' }}
-            total={total}
-            current={page}
-            pageSize={pageSize}
-            onChange={this.handlePageChange}
-            showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
-            showQuickJumper
-            pageSizeOptions={PAGE_SIZE_OPTIONS}
+        <div style={{ marginTop: 24 }}>
+          <Select
+            style={{ width: 250 }}
+            placeholder="选择项目BD"
+            disabled={addBdLoading}
+            value={userBdId}
+            onChange={this.handleUserBdChange}
+            options={userBdOptions}
           />
+          <Popconfirm
+            title="确定添加进周报吗？"
+            onConfirm={this.handleAddBdToReport}
+          >
+            <Button
+              style={{ marginLeft: 8 }}
+              loading={addBdLoading}
+              disabled={userBdId == null}
+            >
+              添加进周报
+            </Button>
+          </Popconfirm>
         </div>
 
         <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false} destroyOnClose={true}>
@@ -610,9 +625,17 @@ class ProjectBDList extends React.Component {
         />
         :null}
 
-      </LeftRightLayout>
+        {this.state.editModalVisible && (
+          <ModalEditProjBD
+            bd={this.state.currentBD}
+            visible={this.state.editModalVisible}
+            onCancel={this.handleEditCancel}
+            onOk={this.handleEditOk}
+          />
+        )}
+      </div>
     )
   }
 }
 
-export default connect()(ProjectBDList);
+export default connect()(ReportProjectBDList);

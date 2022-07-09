@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -17,10 +17,10 @@ import {
   ExportOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { baseUrl } from '../utils/request';
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 import moment from 'moment';
 
 const { DirectoryTree } = Tree;
@@ -50,6 +50,9 @@ const audioFileTypes = [
   'audio/m4a',
   'audio/x-m4a',
   'audio/mp3',
+  'audio/wav',
+  'audio/aac',
+  'audio/flac',
 ];
 const validFileTypes = officeFileTypes.concat(imageFileTypes).concat(videoFileTypes).concat(audioFileTypes);
 
@@ -75,6 +78,8 @@ function tagRender(props, isReadFile) {
     </Tag>
   );
 }
+
+
 
 class MyProgress extends React.Component {
   state = {
@@ -154,6 +159,7 @@ function DataroomFileManage({
   const [selectedFile, setSelectedFile] = useState(null);
   const [subFilesOfSelectedFolder, setSubFilesOfSelectedFolder] = useState([]);
   const [previewFileUrl, setPreviewFileUrl] = useState(null);
+  const [translate, setTranslate] = useState(null);
   const [dirData, setDirData] = useState([]);
 
   const [uploadDirProgress, setUploadDirProgress] = useState(null);
@@ -339,7 +345,7 @@ function DataroomFileManage({
     return [rootDir];
   }
 
-  const onSelect = (keys, info) => {
+  const onSelect = async (keys, info) => {
     if (keys.length < 1) return;
     const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
@@ -347,15 +353,29 @@ function DataroomFileManage({
     checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+      console.log("currentFile", currentFile);
+      const result = await checkUploadStatus(currentFile.key);
+      if (!result) {
+        setPreviewFileUrl(null);
+        return;
+      }
+
       if ((/\.avi$/i).test(currentFile.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
         });
-      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
+      } else if ((/\.(gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a|wav|aac|flac)$/i).test(currentFile.filename) || (/\.(html)$/i.test(currentFile.key))) {
         setPreviewFileUrl(currentFile.fileurl);
       } else {
         const url = getPreviewFileUrl(currentFile);
         setPreviewFileUrl(url);
+      }
+
+      if ((/\.(wav|flac|opus|m4a|mp3)$/i).test(currentFile.filename) && currentFile.transid) {
+        const { data: translateData } = await api.getAudioTranslate(currentFile.transid);
+        setTranslate(translateData);
+      } else {
+        setTranslate(null);
       }
     } else {
       const allChildren = findAllChildren(currentFile.id);
@@ -397,7 +417,7 @@ function DataroomFileManage({
     const originalEmail = isLogin().email || 'Investarget';
     const watermark = originalEmail.replace('@', '[at]');
     const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-    const url = window.location.origin + '/pdf_viewer.html?file=' + encodeURIComponent(file.fileurl) +
+    const url = window.location.origin + '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
       '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
       '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
     return url;
@@ -440,7 +460,8 @@ function DataroomFileManage({
     function popoverContent() {
       // const props = {
       //   name: 'file',
-      //   action: baseUrl + '/service/qiniubigupload?bucket=file',
+      //   customRequest,
+      //   data: { bucket: 'file' },
       //   showUploadList: false,
       //   multiple: true,
       //   beforeUpload: file => {
@@ -499,7 +520,7 @@ function DataroomFileManage({
           console.log(file)
           const fileType = file.type
           const mimeTypeExistButNotValid = fileType && !validFileTypes.includes(fileType) ? true : false;
-          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a)$/i.test(file.name)) ? true : false;
+          const mimeTypeNotExistSuffixNotValid = !fileType && !(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|bmp|png|webp|mp4|avi|mp3|m4a|wav|aac|flac)$/i.test(file.name)) ? true : false;
           if (mimeTypeExistButNotValid || mimeTypeNotExistSuffixNotValid) {
             window.echo('mime type or file name suffix not valid');
             window.echo('mime type', fileType);
@@ -537,7 +558,7 @@ function DataroomFileManage({
             // react.setState({ loading: true })
           }
         },
-        async onFinishUploadAllFiles(allFiles) {
+        async onFinishUploadAllFiles(allFiles, errorFiles) {
           let newData = data;
           for (let index = 0; index < allFiles.length; index++) {
             const info = allFiles[index];
@@ -545,6 +566,21 @@ function DataroomFileManage({
             newData = newNewData;
           }
           setData(newData);
+
+          if (errorFiles.length > 0) {
+            Modal.error({
+              title: `其中${errorFiles.length}个文件上传失败`,
+              content: (
+                <ul>
+                  {errorFiles.map((info) => (
+                    <li key={info.file.name}>
+                      {info.file.name} 上传失败的原因是：{info.file.error.message}
+                    </li>
+                  ))}
+                </ul>
+              ),
+            });
+          }
         },
         updateUploadProgress(percent) {
           setUploadDirProgress(percent);
@@ -898,7 +934,7 @@ function DataroomFileManage({
   }
 
   function handleOpenFileInNewWindowClick() {
-    window.open(previewFileUrl);
+    window.open(previewFileUrl, '_blank', 'noopener')
   }
 
   function onSelectFolderForMoveFiles(keys) {
@@ -1220,7 +1256,54 @@ function DataroomFileManage({
         </Col>
         {selectedFile &&
           <Col span={16}>
-            <Card title={selectedFile.filename}>
+            <Card title={(
+              <div>
+                {selectedFile.filename}
+                {translate && translate.taskStatus === '9' && (
+                  <Link
+                    style={{ marginLeft: 16, color: 'red' }}
+                    to={`/app/speech-to-text/${translate.id}?speechKey=${selectedFile.key}`}
+                  >
+                    语音转文字
+                  </Link>
+                )}
+                {translate && translate.taskStatus !== '9' && (
+                  <span style={{ marginLeft: 16 }}>语音转文字中...</span>
+                )}
+                {!translate && previewFileUrl && (/\.(wav|flac|opus|m4a|mp3)$/i).test(selectedFile.filename) && (
+                  <Checkbox
+                    style={{ marginLeft: 16 }}
+                    checked={false}
+                    onChange={() => {
+                      Modal.confirm({
+                        title: '语音转文字',
+                        content: '目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语',
+                        onOk: async () => {
+                          const { fileurl, filename } = selectedFile;
+                          const res = await fetch(fileurl);
+                          const blob = await res.blob();
+                          const formData = new FormData();
+                          formData.append('file', blob, filename);
+                          const { data: translateData } = await api.addAudioTranslate(formData);
+                          setTranslate(translateData);
+                          const body = {
+                            id: selectedFile.id,
+                            transid: translateData.id,
+                          };
+                          await api.editDataRoomFile(body);
+                          const newData = data.slice();
+                          const index = newData.map(m => m.id).indexOf(selectedFile.id);
+                          newData[index].transid = translateData.id;
+                          setData(newData);
+                        },
+                      });
+                    }}
+                  >
+                    语音转文字
+                  </Checkbox>
+                )}
+              </div>
+            )}>
               <div style={{ marginBottom: 20, color: '#262626', display: 'flex' }}>
                 {selectedFile.size && <div style={{ flex: 2 }}>文件大小：<span style={{ color: '#595959' }}>{formatBytes(selectedFile.size)}</span></div>}
                 <div style={{ flex: 3 }}>修改时间：<span style={{ color: '#595959' }}>{selectedFile.date && time(selectedFile.date + selectedFile.timezone)}</span></div>
@@ -1293,10 +1376,16 @@ function DataroomFileManage({
                       <Tooltip title="在新窗口中打开"><ExpandOutlined /></Tooltip>
                     </div>
                   </div>
-                  <div
-                    style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
-                    dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
-                  />
+                  {selectedFile.filename.endsWith('.aac') ? (
+                    <div style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <audio controls="controls" src={previewFileUrl} />
+                    </div>
+                  ) : (
+                    <div
+                      style={{ borderBottom: '1px solid #e6e6e6', borderTop: '1px solid #e6e6e6' }}
+                      dangerouslySetInnerHTML={{ __html: `<iframe style="border: none;" src="${previewFileUrl}" width="100%" height="800"></iframe>` }}
+                    />
+                  )}
                 </div>
               }
             </Card>

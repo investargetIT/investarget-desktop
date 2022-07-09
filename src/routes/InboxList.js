@@ -37,13 +37,14 @@ class InboxList extends React.Component {
     const page = getURLParamValue(props, 'page');
     const pageSize = getURLParamValue(props, 'pageSize');
 
+    const currentUser = getUserInfo();
     this.state = {
       showDetail: false,
       data: [],
       total: 0,
       loading: false,
       pageIndex: parseInt(page, 10) || 1,
-      pageSize: parseInt(pageSize, 10) || getUserInfo().page || 10,
+      pageSize: parseInt(pageSize, 10) || (currentUser && currentUser.page) || 10,
       selectedMsg: [],
       currentMsg: null,
     }
