@@ -33,10 +33,10 @@
 
        const code = '2NOfarW9xbIa2FHYkP4IyVgljyMQk569O200442w0y9C';
        // call endpoint to get app_access_token
-       const app_access_token = 't-88b976dd63a35870279b231d1920f1a3629acff2';
+       const app_access_token = 'u-3uthXly2l1sWjoVTpTGw82ll74ikk5IHgO001g400K8S';
 
        // call endpoint to get jsapi_ticket
-       const jsapi_ticket = '11c1f496efb5d255ead851acf2884717f4daac79';
+       const jsapi_ticket = '82068f9f12a32982b464085782c954afc699a417';
 
        const timestamp = Date.now().toString();
        const noncestr = 'Y7a8KkqX041bsSwT';
@@ -44,7 +44,7 @@
        const str = `jsapi_ticket=${jsapi_ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${url}`;
        console.log('sha', sha1(''), Date.now());
         window.webComponent.config({
-          openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
+          openId: 'ou_afde3ae745600f6dbc3a3b2d5dfb11c0',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
           signature: sha1(str), // 签名
           appId: app_id,     // 应用 appId
           timestamp: timestamp, // 时间戳（毫秒）
@@ -61,7 +61,7 @@
             myComponent = window.webComponent.render(
               'DocsComponent',
               { //组件参数
-                src: 'https://guochangyu.feishu.cn/docs/doccnrCCzAskD8m6DDB9sO17IUg',
+                src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
                 minHeight: window.innerHeight - 48,
                 width: '100%',
               },
