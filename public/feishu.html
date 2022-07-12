@@ -26,12 +26,17 @@
     <script>
        const app_id = 'cli_a298cb5f4c78d00b';
        const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+       const redirect_url = 'http://localhost:8000/feishu.html';
 
+       const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
+       console.log('auth url', auth_url);
+
+       const code = '2NOfarW9xbIa2FHYkP4IyVgljyMQk569O200442w0y9C';
        // call endpoint to get app_access_token
-       const app_access_token = 't-711e8a6ad233c11f5f415405e6c1a3ec7c5d5941';
+       const app_access_token = 't-88b976dd63a35870279b231d1920f1a3629acff2';
 
        // call endpoint to get jsapi_ticket
-       const jsapi_ticket = 'c960c82245f7a4c96e598f5c17b7129ada3c8f00';
+       const jsapi_ticket = '11c1f496efb5d255ead851acf2884717f4daac79';
 
        const timestamp = Date.now().toString();
        const noncestr = 'Y7a8KkqX041bsSwT';
