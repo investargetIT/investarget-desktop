@@ -200,7 +200,7 @@ function Dashboard(props) {
         const myComponent = window.webComponent.render(
           'DocsComponent',
           { //组件参数
-            src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
+            src: 'https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb?table=tblVnfd1m54je6Ms&view=vewjSEz5Xr',
             // minHeight: window.innerHeight - 48,
             minHeight: 590,
             width: '100%',
