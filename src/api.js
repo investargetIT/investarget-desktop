@@ -1122,3 +1122,7 @@ export const getInvestorWithResignedTrader = params => r(`/user/indgroup/investo
 export const getProjCount = params => r(`/proj/count?${qs.stringify(params)}`);
 
 export const addGetStarInvestor = body => r('/user/getStarInvestor/', 'POST', body);
+
+// 飞书相关接口
+export const getAppAccessToken = body => r('/service/feishu/accesstoken/', 'POST', body);
+export const getTicket = body => r('/service/feishu/jsticket/', 'POST', body);

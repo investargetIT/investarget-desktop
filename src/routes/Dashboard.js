@@ -163,7 +163,8 @@ function Dashboard(props) {
       const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
 
       // call endpoint to get app_access_token
-      const app_access_token = 't-b2c0ec6d8c4104d6872c8945384b901961a00317';
+      const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
+      const { data: { app_access_token } } = reqAppAccessToken;
 
       const redirect_url = 'http://localhost:8000/feishu.html';
       const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
@@ -173,7 +174,8 @@ function Dashboard(props) {
       const user_access_token = 'u-00HD.UVHp729eBA3652azz4g5zr1k5Kzr200ghAawdhg';
 
       // call endpoint to get jsapi_ticket
-      const jsapi_ticket = '60d3f964337cb8a330b6acaf703771eb2d766758';
+      const reqTicket = await api.getTicket({ Authorization: app_access_token });
+      const { data: { data: { ticket: jsapi_ticket } } } = reqTicket;
 
       const timestamp = Date.now().toString();
       const noncestr = 'Y7a8KkqX041bsSwT';
