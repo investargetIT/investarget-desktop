@@ -158,12 +158,12 @@ function Dashboard(props) {
     }
     fetchCompanyFile();
 
-    function renderFeishu() {
-      const app_id = 'cli_a244e8cb7e64100e';
-      const app_secret = 'Cz8osyGyWqPj9V9Xc6LWJhEUb0bfWVs1';
+    async function renderFeishu() {
+      const app_id = 'cli_a298cb5f4c78d00b';
+      const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
 
       // call endpoint to get app_access_token
-      const app_access_token = 't-6f497a3ccea22588a3fd261d412ca5216c434528';
+      const app_access_token = 't-b2c0ec6d8c4104d6872c8945384b901961a00317';
 
       const redirect_url = 'http://localhost:8000/feishu.html';
       const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
@@ -173,7 +173,7 @@ function Dashboard(props) {
       const user_access_token = 'u-00HD.UVHp729eBA3652azz4g5zr1k5Kzr200ghAawdhg';
 
       // call endpoint to get jsapi_ticket
-      const jsapi_ticket = '986bdfa8bd3c8f87f15dbbf955069220644822cf';
+      const jsapi_ticket = '60d3f964337cb8a330b6acaf703771eb2d766758';
 
       const timestamp = Date.now().toString();
       const noncestr = 'Y7a8KkqX041bsSwT';
@@ -181,7 +181,7 @@ function Dashboard(props) {
       const str = `jsapi_ticket=${jsapi_ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${url}`;
       console.log('sha', sha1(''), Date.now());
       window.webComponent.config({
-        openId: 'ou_afde3ae745600f6dbc3a3b2d5dfb11c0',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
+        openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
         signature: sha1(str), // 签名
         appId: app_id,     // 应用 appId
         timestamp: timestamp, // 时间戳（毫秒）
@@ -195,11 +195,12 @@ function Dashboard(props) {
 
         // window.addOpenDocDynamical = function () {
         // 动态渲染，返回组件实例。
-        myComponent = window.webComponent.render(
+        const myComponent = window.webComponent.render(
           'DocsComponent',
           { //组件参数
             src: 'https://t3ionjsf4i.feishu.cn/sheets/shtcnMXy001FqtNxclxQNf7gnYb',
-            minHeight: window.innerHeight - 48,
+            // minHeight: window.innerHeight - 48,
+            minHeight: 590,
             width: '100%',
           },
           document.querySelector('#feishu'), // 将组件挂在到哪个元素上
