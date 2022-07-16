@@ -6,7 +6,6 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { Input, Divider, Button, Affix, Typography, Form, Modal, message } from "antd";
-import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { connect } from "dva";
 import { debounce } from 'lodash';
 import { Component, createRef, useState } from "react";
@@ -221,46 +220,16 @@ class SpeechToText extends Component {
   }
 
   handleDownload = () => {
-    const doc = new Document({
-      styles: {
-        // TODO: 优化样式
-        paragraphStyles: [
-          {
-            id: 'paragraph',
-            paragraph: {
-              spacing: {
-                before: 240,
-                after: 240,
-              },
-            },
-          },
-        ],
-      },
-      sections: [{
-        properties: {},
-        children: this.state.paragraphs.map((item) => ([
-          new Paragraph({
-            children: [
-              new TextRun(`说话人 ${item.speaker} ${item.startTime}`),
-            ],
-            style: 'paragraph',
-          }),
-          new Paragraph({
-            children: [
-              new TextRun(item.text),
-            ],
-            style: 'paragraph',
-          }),
-        ])).flat(),
-      }],
+    const { paragraphs, filename } = this.state;
+    const lines = [];
+    paragraphs.forEach(({ speaker, startTime, text }) => {
+      lines.push(`说话人 ${speaker} ${startTime}\n`);
+      lines.push(`${text}\n`);
     });
-
-    Packer.toBlob(doc).then((blob) => {
-      const fileName = `${this.state.filename}文字记录.docx`;
-      const url = URL.createObjectURL(blob);
-      downloadFile(url, fileName);
-      URL.revokeObjectURL(url);
-    });
+    const blob = new Blob(lines, { type: 'text/plain', endings: 'native' });
+    const url = URL.createObjectURL(blob);
+    downloadFile(url, `${filename}文字记录.txt`);
+    URL.revokeObjectURL(url);
   }
 
   handleClickTime = (bg, ed) => {
@@ -366,6 +335,7 @@ class SpeechToText extends Component {
   render() {
     const {
       speechUrl,
+      filename,
       paragraphs,
       keyword,
       replaceKeyword,
@@ -384,7 +354,7 @@ class SpeechToText extends Component {
             <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div level={3} style={{ margin: 0 }}>
-                  文字记录
+                  {filename}文字记录
                 </div>
                 <Button
                   style={{ marginLeft: 8 }}
@@ -392,7 +362,7 @@ class SpeechToText extends Component {
                   disabled={paragraphs.length === 0}
                   onClick={this.handleDownload}
                 >
-                  下载Word
+                  下载txt
                 </Button>
               </div>
               <Finder

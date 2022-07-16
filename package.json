@@ -21,7 +21,6 @@
     "babel-runtime": "^6.9.2",
     "classnames": "^2.2.5",
     "dayjs": "^1.11.1",
-    "docx": "^7.3.0",
     "dva": "^2.4.1",
     "dva-loading": "^3.0.22",
     "es6-promise": "^4.1.1",
