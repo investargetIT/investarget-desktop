@@ -733,9 +733,11 @@ function DataroomFileManage({
 
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
+          {(item.dataroom !== 214 || (item.id != 59875 && item.parent != 59875)) &&
           <div onClick={() => handleDownloadFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
+          }  
 
           {item.id !== -999 && (hasPerm('dataroom.admin_managedataroom') || isProjTrader) &&
             <div onClick={() => handleRenameFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
