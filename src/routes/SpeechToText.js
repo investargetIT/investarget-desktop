@@ -8,7 +8,7 @@ import {
 import { Input, Divider, Button, Affix, Typography, Form, Modal, message } from "antd";
 import { connect } from "dva";
 import { debounce } from 'lodash';
-import { Component, createRef, useState } from "react";
+import { Component, createRef, useState, useRef, useEffect } from "react";
 import qs from 'qs';
 import * as api from '../api';
 import LeftRightLayout from "../components/LeftRightLayout";
@@ -677,8 +677,24 @@ function TextModalForm({ multiParagraphs, onCancel, onEdit }) {
 
 function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
   const [paragraphs, setParagraphs] = useState([...multiParagraphs]);
-  window.echo('paragraphs', paragraphs);
+  const textareaRef = useRef(null);
   const speaker = paragraphs[0] && paragraphs[0].speaker;
+
+  useEffect(() => {
+    const font = getCanvasFont(textareaRef.current);
+    const containerWidth = getElementContentWidth(textareaRef.current);
+    const newParagraphs = [...paragraphs];
+    newParagraphs.forEach(element => {
+      const textWidth = getTextWidth(element.text, font);
+      const lineNumber = Math.ceil(textWidth / containerWidth);
+      element.lineNumber = lineNumber;
+    });
+    setParagraphs(newParagraphs);
+  }, []);
+
+  useEffect(() => {
+
+  }, [paragraphs])
 
   const handleChange = (index, text) => {
     const newParagraphs = [
@@ -708,14 +724,44 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
   }
 
   function combineAllTime() {
-    return paragraphs.reduce((prev, curr, index) => {
-      let time = prev;
-      if (index > 0) {
-        time += '\n';
+    let result = '';
+    for (let index = 0; index < paragraphs.length; index++) {
+      const element = paragraphs[index];
+      result += element.startTime;
+      if (element.lineNumber) {
+        for (let i = 0; i < element.lineNumber; i++) {
+          result += '\n';
+        }
+      } else {
+        result += '\n';
       }
-      time += curr.startTime;
-      return time;
-    }, '');
+    }
+    return result;
+  }
+
+  function getTextWidth(text, font) {
+    // re-use canvas object for better performance
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  }
+
+  function getCssStyle(element, prop) {
+    return window.getComputedStyle(element, null).getPropertyValue(prop);
+  }
+
+  function getCanvasFont(el = document.body) {
+    const fontWeight = getCssStyle(el, 'font-weight') || 'normal';
+    const fontSize = getCssStyle(el, 'font-size') || '16px';
+    const fontFamily = getCssStyle(el, 'font-family') || 'Times New Roman';
+
+    return `${fontWeight} ${fontSize} ${fontFamily}`;
+  }
+
+  function getElementContentWidth(element) {
+    return element.offsetWidth - element.style.paddingLeft - element.style.paddingRight;
   }
 
   return (
@@ -731,9 +777,17 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
       <div style={{ marginBottom: 24 }}>
         说话人 {speaker}
       </div>
-      <div>
-        <Input.TextArea value={combineAllTime()} />
-        <Input.TextArea value={combineAllText()} />
+      <div style={{ display: 'flex' }}>
+        <Input.TextArea
+          style={{ width: 100, marginRight: 8 }}
+          value={combineAllTime()}
+          autoSize
+          disabled
+          bordered={false}
+        />
+        <div ref={textareaRef} style={{ flex: 1 }}>
+          <Input.TextArea defaultValue={combineAllText()} autoSize />
+        </div>
         {/* {paragraphs.map((paragraph, index) => (
           <div key={paragraph.id} style={{ display: 'flex' }}>
             <div style={{ flex: 'none', marginRight: 24 }}>
