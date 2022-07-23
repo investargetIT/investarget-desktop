@@ -418,7 +418,7 @@ class SpeechToText extends Component {
             />
           )}
           {textModalVisible && (
-            <TextModalForm
+            <TextModalForm1
               multiParagraphs={multiParagraphs}
               onCancel={this.handleCancelEditText}
               onEdit={this.handleConfirmEditText}
@@ -670,6 +670,89 @@ function TextModalForm({ multiParagraphs, onCancel, onEdit }) {
             </Typography.Paragraph>
           </div>
         ))}
+      </div>
+    </Modal>
+  );
+}
+
+function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
+  const [paragraphs, setParagraphs] = useState([...multiParagraphs]);
+  window.echo('paragraphs', paragraphs);
+  const speaker = paragraphs[0] && paragraphs[0].speaker;
+
+  const handleChange = (index, text) => {
+    const newParagraphs = [
+      ...paragraphs.slice(0, index),
+      {
+        ...paragraphs[index],
+        text,
+      },
+      ...paragraphs.slice(index + 1),
+    ];
+    setParagraphs(newParagraphs);
+  };
+
+  const handleOk = () => {
+    onEdit(paragraphs);
+  };
+
+  function combineAllText() {
+    return paragraphs.reduce((prev, curr, index) => {
+      let text = prev;
+      if (index > 0) {
+        text += '\n';
+      }
+      text += curr.text;
+      return text;
+    }, '');
+  }
+
+  function combineAllTime() {
+    return paragraphs.reduce((prev, curr, index) => {
+      let time = prev;
+      if (index > 0) {
+        time += '\n';
+      }
+      time += curr.startTime;
+      return time;
+    }, '');
+  }
+
+  return (
+    <Modal
+      visible
+      width={800}
+      title="修改文字"
+      okText="修改"
+      cancelText="取消"
+      onCancel={onCancel}
+      onOk={handleOk}
+    >
+      <div style={{ marginBottom: 24 }}>
+        说话人 {speaker}
+      </div>
+      <div>
+        <Input.TextArea value={combineAllTime()} />
+        <Input.TextArea value={combineAllText()} />
+        {/* {paragraphs.map((paragraph, index) => (
+          <div key={paragraph.id} style={{ display: 'flex' }}>
+            <div style={{ flex: 'none', marginRight: 24 }}>
+              {paragraph.startTime}
+            </div>
+            <Typography.Paragraph
+              key={paragraph.id}
+              style={{ flex: 1, marginBottom: 22 }}
+              editable={{
+                onChange: (value) => {
+                  handleChange(index, value);
+                },
+                tooltip: '点击编辑',
+              }}
+            >
+              {paragraph.text}
+            </Typography.Paragraph>
+          </div>
+        ))} */}
       </div>
     </Modal>
   );
