@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Input, Divider, Button, Affix, Typography, Form, Modal, message } from "antd";
 import { connect } from "dva";
-import { debounce } from 'lodash';
+import { debounce, cloneDeep } from 'lodash';
 import { Component, createRef, useState, useRef, useEffect } from "react";
 import qs from 'qs';
 import * as api from '../api';
@@ -177,18 +177,25 @@ class SpeechToText extends Component {
   }
 
   handleConfirmEditText = (multiParagraphs) => {
-    const multiParagraphIds = multiParagraphs.map((item) => item.id);
-    const newParagraphs = this.state.paragraphs.map((paragraph) => {
-      const index = multiParagraphIds.indexOf(paragraph.id);
-      if (index > -1) {
-        return {
-          ...paragraph,
-          text: multiParagraphs[index].text,
-        };
-      } else {
-        return paragraph;
-      }
-    });
+    if (this.state.multiParagraphs.length === 0) return;
+    const index = this.state.paragraphs.findIndex((item) => item.id === this.state.multiParagraphs[0].id);
+    const leadingNewParagraphs = this.state.paragraphs.slice(0, index);
+    const newParagraphsTail = this.state.paragraphs.slice(index + this.state.multiParagraphs.length);
+    const filterModifiedParagraphs = multiParagraphs.filter(f => f.text);
+    const newParagraphs = [...leadingNewParagraphs, ...filterModifiedParagraphs, ...newParagraphsTail];
+
+    // const multiParagraphIds = multiParagraphs.map((item) => item.id);
+    // const newParagraphs = this.state.paragraphs.map((paragraph) => {
+    //   const index = multiParagraphIds.indexOf(paragraph.id);
+    //   if (index > -1) {
+    //     return {
+    //       ...paragraph,
+    //       text: multiParagraphs[index].text,
+    //     };
+    //   } else {
+    //     return paragraph;
+    //   }
+    // });
     this.setState({
       multiParagraphs: [],
       textModalVisible: false,
@@ -676,18 +683,19 @@ function TextModalForm({ multiParagraphs, onCancel, onEdit }) {
 }
 
 function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
-  const [paragraphs, setParagraphs] = useState([...multiParagraphs]);
+  const [paragraphs, setParagraphs] = useState(cloneDeep(multiParagraphs));
   const textareaRef = useRef(null);
   const speaker = paragraphs[0] && paragraphs[0].speaker;
 
   let calculateTimeForContent = (text) => {
     const textSplitByLine = text.split('\n');
-    const newParagraphs = multiParagraphs.slice(0, textSplitByLine.length);
+    const newParagraphs = cloneDeep(multiParagraphs).slice(0, textSplitByLine.length);
     for (let index = 0; index < textSplitByLine.length; index++) {
       const element = textSplitByLine[index];
       const newParagraph = {
         ...newParagraphs[index < newParagraphs.length ? index : newParagraphs.length - 1],
         text: element,
+        id: index < newParagraphs.length ? newParagraphs[index].id : uuid++,
       };
       newParagraphs[index] = newParagraph;
     }
