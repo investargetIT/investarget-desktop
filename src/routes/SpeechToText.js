@@ -680,6 +680,22 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
   const textareaRef = useRef(null);
   const speaker = paragraphs[0] && paragraphs[0].speaker;
 
+  let calculateTimeForContent = (text) => {
+    const textSplitByLine = text.split('\n');
+    const newParagraphs = multiParagraphs.slice(0, textSplitByLine.length);
+    for (let index = 0; index < textSplitByLine.length; index++) {
+      const element = textSplitByLine[index];
+      const newParagraph = {
+        ...newParagraphs[index < newParagraphs.length ? index : newParagraphs.length - 1],
+        text: element,
+      };
+      newParagraphs[index] = newParagraph;
+    }
+    setStartTimeLineNumber(newParagraphs);
+  }
+
+  calculateTimeForContent = debounce(calculateTimeForContent, 800);
+
   useEffect(() => {
     setStartTimeLineNumber(paragraphs);
   }, []);
@@ -769,19 +785,7 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
     calculateTimeForContent(newValue);
   }
 
-  function calculateTimeForContent(text) {
-    const textSplitByLine = text.split('\n');
-    const newParagraphs = multiParagraphs.slice(0, textSplitByLine.length);
-    for (let index = 0; index < textSplitByLine.length; index++) {
-      const element = textSplitByLine[index];
-      const newParagraph = {
-        ...newParagraphs[index < newParagraphs.length ? index : newParagraphs.length - 1],
-        text: element,
-      };
-      newParagraphs[index] = newParagraph;
-    }
-    setStartTimeLineNumber(newParagraphs);
-  }
+  
 
   return (
     <Modal
