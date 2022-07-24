@@ -681,6 +681,10 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
   const speaker = paragraphs[0] && paragraphs[0].speaker;
 
   useEffect(() => {
+    setStartTimeLineNumber(paragraphs);
+  }, []);
+
+  function setStartTimeLineNumber(paragraphs) {
     const font = getCanvasFont(textareaRef.current);
     const containerWidth = getElementContentWidth(textareaRef.current);
     const newParagraphs = [...paragraphs];
@@ -689,24 +693,20 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
       const lineNumber = Math.ceil(textWidth / containerWidth);
       element.lineNumber = lineNumber;
     });
-    setParagraphs(newParagraphs);
-  }, []);
+    setParagraphs(newParagraphs); 
+  }
 
-  useEffect(() => {
-
-  }, [paragraphs])
-
-  const handleChange = (index, text) => {
-    const newParagraphs = [
-      ...paragraphs.slice(0, index),
-      {
-        ...paragraphs[index],
-        text,
-      },
-      ...paragraphs.slice(index + 1),
-    ];
-    setParagraphs(newParagraphs);
-  };
+  // const handleChange = (index, text) => {
+  //   const newParagraphs = [
+  //     ...paragraphs.slice(0, index),
+  //     {
+  //       ...paragraphs[index],
+  //       text,
+  //     },
+  //     ...paragraphs.slice(index + 1),
+  //   ];
+  //   setParagraphs(newParagraphs);
+  // };
 
   const handleOk = () => {
     onEdit(paragraphs);
@@ -764,6 +764,25 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
     return element.offsetWidth - element.style.paddingLeft - element.style.paddingRight;
   }
 
+  function handleChange(e) {
+    const newValue = e.target.value;
+    calculateTimeForContent(newValue);
+  }
+
+  function calculateTimeForContent(text) {
+    const textSplitByLine = text.split('\n');
+    const newParagraphs = multiParagraphs.slice(0, textSplitByLine.length);
+    for (let index = 0; index < textSplitByLine.length; index++) {
+      const element = textSplitByLine[index];
+      const newParagraph = {
+        ...newParagraphs[index < newParagraphs.length ? index : newParagraphs.length - 1],
+        text: element,
+      };
+      newParagraphs[index] = newParagraph;
+    }
+    setStartTimeLineNumber(newParagraphs);
+  }
+
   return (
     <Modal
       visible
@@ -786,7 +805,11 @@ function TextModalForm1({ multiParagraphs, onCancel, onEdit }) {
           bordered={false}
         />
         <div ref={textareaRef} style={{ flex: 1 }}>
-          <Input.TextArea defaultValue={combineAllText()} autoSize />
+          <Input.TextArea
+            defaultValue={combineAllText()}
+            autoSize
+            onChange={handleChange}
+          />
         </div>
         {/* {paragraphs.map((paragraph, index) => (
           <div key={paragraph.id} style={{ display: 'flex' }}>
