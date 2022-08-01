@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel, Button } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -270,6 +270,13 @@ function Dashboard(props) {
     }
   }
 
+  function handleFeishuLoginBtnClicked() {
+    const app_id = 'cli_a298cb5f4c78d00b';
+    const redirect_url = 'http://localhost:8000/app';
+    const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
+    window.location.href = auth_url;
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -311,7 +318,8 @@ function Dashboard(props) {
                   <ProjectBdTable />
                 </TabPane>
               </Tabs> */}
-              <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe>
+              {/* <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe> */}
+              <Button type="primary" onClick={handleFeishuLoginBtnClicked}>登录飞书</Button>
             </div>
           </Col>
 
