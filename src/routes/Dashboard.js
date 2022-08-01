@@ -31,6 +31,11 @@ import {
 import MySchedule from '../components/MySchedule';
 
 const { TabPane } = Tabs;
+const iframeStyle = {
+  border: 'none',
+  width: '100%',
+  height: '800px',
+}
 
 function Dashboard(props) {
 
@@ -200,7 +205,7 @@ function Dashboard(props) {
         const myComponent = window.webComponent.render(
           'DocsComponent',
           { //组件参数
-            src: 'https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb?table=tblVnfd1m54je6Ms&view=vewjSEz5Xr',
+            src: 'https://t3ionjsf4i.feishu.cn/docs/doccnEQbSn23dEupsE0KapGd6Sh',
             // minHeight: window.innerHeight - 48,
             minHeight: 590,
             width: '100%',
@@ -219,7 +224,7 @@ function Dashboard(props) {
         console.error('auth error callback', error)
       });
     }
-    renderFeishu();
+    // renderFeishu();
 
   }, []);
 
@@ -297,7 +302,7 @@ function Dashboard(props) {
         <Row gutter={20}>
 
           <Col span={16}>
-            <div id="feishu" className="card-container">
+            <div className="card-container">
               {/* <Tabs type="card" size="large">
                 <TabPane tab="当前任务" key="1">
                   <OrgBdTable />
@@ -306,6 +311,7 @@ function Dashboard(props) {
                   <ProjectBdTable />
                 </TabPane>
               </Tabs> */}
+              <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe>
             </div>
           </Col>
 
