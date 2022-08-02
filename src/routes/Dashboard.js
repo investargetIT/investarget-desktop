@@ -11,6 +11,7 @@ import {
   hasPerm,
   handleError,
   isLogin,
+  getURLParamValue,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -39,6 +40,7 @@ const iframeStyle = {
 
 function Dashboard(props) {
 
+  const feishuCode = getURLParamValue(props, 'code');
   const userInfo = getUserInfo();
   
   const [projList, setProjList] = useState([]);
@@ -226,6 +228,24 @@ function Dashboard(props) {
     }
     // renderFeishu();
 
+    async function feishuLogin(feishuCode) {
+      const app_id = 'cli_a298cb5f4c78d00b';
+      const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+
+      // call endpoint to get app_access_token
+      const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
+      const { data: { app_access_token } } = reqAppAccessToken;
+
+      const reqFeishuUserIdentity = await api.getUserIdentity({
+        Authorization: app_access_token,
+        code: feishuCode,
+      });
+      window.echo('reqFeishuUserIdentity', reqFeishuUserIdentity);
+    }
+
+    if (feishuCode) {
+      feishuLogin(feishuCode);
+    }
   }, []);
 
   function handleCompanyFileClick(file) {

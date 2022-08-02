@@ -1126,3 +1126,4 @@ export const addGetStarInvestor = body => r('/user/getStarInvestor/', 'POST', bo
 // 飞书相关接口
 export const getAppAccessToken = body => r('/service/feishu/accesstoken/', 'POST', body);
 export const getTicket = body => r('/service/feishu/jsticket/', 'POST', body);
+export const getUserIdentity = body => r('/service/feishu/useridentity/', 'POST', body);
