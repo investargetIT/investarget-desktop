@@ -339,8 +339,8 @@ function Dashboard(props) {
                   <ProjectBdTable />
                 </TabPane>
               </Tabs> */}
-              {/* <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe> */}
-              <Button type="primary" onClick={handleFeishuLoginBtnClicked}>登录飞书</Button>
+              <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe>
+              {/* <Button type="primary" onClick={handleFeishuLoginBtnClicked}>登录飞书</Button> */}
             </div>
           </Col>
 

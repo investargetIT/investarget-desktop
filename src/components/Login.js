@@ -87,6 +87,24 @@ class Login extends React.Component {
     if (!localStorage.getItem('source') && getURLParamValue(props, 'source')) {
       localStorage.setItem('source', Number(getURLParamValue(props, 'source')));
     }
+
+    this.feishuCode = getURLParamValue(props, 'code');
+  }
+
+  async feishuLogin(feishuCode) {
+    const app_id = 'cli_a298cb5f4c78d00b';
+    const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+
+    // call endpoint to get app_access_token
+    const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
+    const { data: { app_access_token } } = reqAppAccessToken;
+    window.echo('app_access_token', app_access_token);
+    window.echo('feishuCode', feishuCode);
+    const reqFeishuUserIdentity = await api.getUserIdentity({
+      Authorization: app_access_token,
+      code: feishuCode,
+    });
+    window.echo('reqFeishuUserIdentity', reqFeishuUserIdentity);
   }
 
   handleSubmit = values => {
@@ -110,6 +128,17 @@ class Login extends React.Component {
     if (this.props.currentUser || !localStorage.getItem('source')) {
       this.props.dispatch(routerRedux.replace('/'))
     }
+    
+    if (this.feishuCode) {
+      this.feishuLogin(this.feishuCode);
+    }
+  }
+
+  handleFeishuLoginBtnClicked() {
+    const app_id = 'cli_a298cb5f4c78d00b';
+    const redirect_url = 'http://localhost:8000/login';
+    const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
+    window.location.href = auth_url;
   }
 
   render() {
@@ -170,7 +199,11 @@ class Login extends React.Component {
           </div>
 
           <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>{i18n('account.login')}</Button>
-
+          <div style={{ textAlign: 'center' }}>or</div>
+          <div>
+            <Button block type="primary" size="large" onClick={this.handleFeishuLoginBtnClicked}>使用飞书登录</Button>
+          </div>
+          
           <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
 
         </Form>
