@@ -235,7 +235,8 @@ function Dashboard(props) {
       // call endpoint to get app_access_token
       const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
       const { data: { app_access_token } } = reqAppAccessToken;
-
+      window.echo('app_access_token', app_access_token);
+      window.echo('feishuCode', feishuCode);
       const reqFeishuUserIdentity = await api.getUserIdentity({
         Authorization: app_access_token,
         code: feishuCode,
