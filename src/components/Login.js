@@ -128,7 +128,7 @@ class Login extends React.Component {
     if (this.props.currentUser || !localStorage.getItem('source')) {
       this.props.dispatch(routerRedux.replace('/'))
     }
-    
+
     if (this.feishuCode) {
       this.feishuLogin(this.feishuCode);
     }
@@ -201,7 +201,7 @@ class Login extends React.Component {
           <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>{i18n('account.login')}</Button>
           <div style={{ textAlign: 'center' }}>or</div>
           <div>
-            <Button block type="primary" size="large" onClick={this.handleFeishuLoginBtnClicked}>使用飞书登录</Button>
+            <Button block size="large" onClick={this.handleFeishuLoginBtnClicked}><img src="/images/feishu-logo.svg" style={{ height: 30 }} /></Button>
           </div>
           
           <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
