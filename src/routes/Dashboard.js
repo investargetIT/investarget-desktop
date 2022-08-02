@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel, Button } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -39,8 +39,6 @@ const iframeStyle = {
 }
 
 function Dashboard(props) {
-
-  const feishuCode = getURLParamValue(props, 'code');
   const userInfo = getUserInfo();
   
   const [projList, setProjList] = useState([]);
@@ -227,26 +225,6 @@ function Dashboard(props) {
       });
     }
     // renderFeishu();
-
-    async function feishuLogin(feishuCode) {
-      const app_id = 'cli_a298cb5f4c78d00b';
-      const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
-
-      // call endpoint to get app_access_token
-      const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
-      const { data: { app_access_token } } = reqAppAccessToken;
-      window.echo('app_access_token', app_access_token);
-      window.echo('feishuCode', feishuCode);
-      const reqFeishuUserIdentity = await api.getUserIdentity({
-        Authorization: app_access_token,
-        code: feishuCode,
-      });
-      window.echo('reqFeishuUserIdentity', reqFeishuUserIdentity);
-    }
-
-    if (feishuCode) {
-      feishuLogin(feishuCode);
-    }
   }, []);
 
   function handleCompanyFileClick(file) {
@@ -291,13 +269,6 @@ function Dashboard(props) {
     }
   }
 
-  function handleFeishuLoginBtnClicked() {
-    const app_id = 'cli_a298cb5f4c78d00b';
-    const redirect_url = 'http://localhost:8000/app';
-    const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
-    window.location.href = auth_url;
-  }
-
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -340,7 +311,6 @@ function Dashboard(props) {
                 </TabPane>
               </Tabs> */}
               <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe>
-              {/* <Button type="primary" onClick={handleFeishuLoginBtnClicked}>登录飞书</Button> */}
             </div>
           </Col>
 
