@@ -63,6 +63,20 @@ export default {
         yield put(routerRedux.replace(url));
       }
     },
+    *loginWithFeishu({ payload: { data } }, { put }) {
+      const { token, user_info, menulist, permissions, is_superuser } = data;
+      const userInfo = { ...user_info, token, menulist, permissions, is_superuser };
+      localStorage.setItem('user_info', JSON.stringify(userInfo));
+      yield put({
+        type: 'save',
+        userInfo,
+      });
+      let url = '/app';
+      if (!is_superuser && permissions.includes('usersys.as_investor')) {
+        url = '/app/dataroom/project/list';
+      }
+      yield put(routerRedux.replace(url));
+    },
     *loginForMobile({ payload: { username, password, remember, redirect } }, { call, put }) {
       clearFilters()
       const { data } = yield call(apiForMobile.login, { username, password })

@@ -98,13 +98,24 @@ class Login extends React.Component {
     // call endpoint to get app_access_token
     const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
     const { data: { app_access_token } } = reqAppAccessToken;
-    window.echo('app_access_token', app_access_token);
-    window.echo('feishuCode', feishuCode);
     const reqFeishuUserIdentity = await api.getUserIdentity({
       Authorization: app_access_token,
       code: feishuCode,
     });
-    window.echo('reqFeishuUserIdentity', reqFeishuUserIdentity);
+    const { feishu, investarget } = reqFeishuUserIdentity.data;
+    if (feishu.code === 0 && investarget) {
+      // TODO: redirect feature
+      this.props.dispatch({
+        type: 'currentUser/loginWithFeishu',
+        payload: {
+          data: investarget,
+        },
+      })
+    } else {
+      this.setState({
+        errorMsg: '登录失败',
+      })
+    }
   }
 
   handleSubmit = values => {
@@ -130,7 +141,11 @@ class Login extends React.Component {
     }
 
     if (this.feishuCode) {
-      this.feishuLogin(this.feishuCode);
+      try {
+        this.feishuLogin(this.feishuCode);
+      } catch(e) {
+        this.setState({ errorMsg: e.message });
+      }
     }
   }
 
