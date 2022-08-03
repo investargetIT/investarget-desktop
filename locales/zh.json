@@ -46,6 +46,7 @@
   },
   "account": {
     "login": "登录",
+    "login_with_feishu": "使用飞书登录",
     "directly_login": "立即登录",
     "directly_register": "立即注册",
     "register_hint": "您的手机号即为登录账号，请输入正确的手机号",

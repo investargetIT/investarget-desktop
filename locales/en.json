@@ -45,6 +45,7 @@
   },
   "account": {
     "login": "Login",
+    "login_with_feishu": "Login with Feishu",
     "directly_login": "Login",
     "directly_register": "Register Here",
     "register_hint": "Please input your phone number to register",
