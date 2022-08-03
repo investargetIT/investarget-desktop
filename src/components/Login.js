@@ -141,11 +141,9 @@ class Login extends React.Component {
     }
 
     if (this.feishuCode) {
-      try {
-        this.feishuLogin(this.feishuCode);
-      } catch(e) {
+      this.feishuLogin(this.feishuCode).catch(e => {
         this.setState({ errorMsg: e.message });
-      }
+      })
     }
   }
 
