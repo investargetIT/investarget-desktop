@@ -92,8 +92,13 @@ class Login extends React.Component {
   }
 
   async feishuLogin(feishuCode) {
-    const app_id = 'cli_a298cb5f4c78d00b';
-    const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+    // Test 应用的 app_id 和 app_secret
+    // const app_id = 'cli_a298cb5f4c78d00b';
+    // const app_secret = 'M6TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+   
+    // 多维资本应用的 app_id 和 app_secret
+    const app_id = 'cli_a24cf239bf239013';
+    const app_secret = 'Cz8osyGyWqPj9V9Xc6LWJhEUb0bfWVs1';
 
     // call endpoint to get app_access_token
     const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
@@ -149,7 +154,8 @@ class Login extends React.Component {
   }
 
   handleFeishuLoginBtnClicked() {
-    const app_id = 'cli_a298cb5f4c78d00b';
+    // const app_id = 'cli_a298cb5f4c78d00b'; // Test 应用的 app_id
+    const app_id = 'cli_a24cf239bf239013'; // 多维资本应用的 app_id
     const redirect_url = 'http://localhost:8000/login';
     const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
     window.location.href = auth_url;

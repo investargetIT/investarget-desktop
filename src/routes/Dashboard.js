@@ -310,7 +310,7 @@ function Dashboard(props) {
                   <ProjectBdTable />
                 </TabPane>
               </Tabs> */}
-              <iframe src="https://t3ionjsf4i.feishu.cn/base/bascn8fxAldPxDTNf9gQLNE4iJb" style={iframeStyle}></iframe>
+              <iframe src="https://investarget.feishu.cn/base/bascnnEqEJKzsOaNNJLUyQmachc" style={iframeStyle}></iframe>
             </div>
           </Col>
 
