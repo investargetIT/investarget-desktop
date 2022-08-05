@@ -31,6 +31,7 @@ import {
   Form,
   Upload,
   message,
+  Tabs,
 } from 'antd';
 import { Link } from 'dva/router';
 import { OrgBDFilter, OrgBDFilterForMobile } from './Filter';
@@ -62,6 +63,7 @@ import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 const priority = ['低', '中', '高'];
 const priorityColor = ['#7ed321', '#0084a9', '#ff617f'];
 const priorityStyles = {
@@ -2637,47 +2639,39 @@ class OrgBDListComponent extends React.Component {
       },
     };
 
+    const tab0 = (
+      <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 19 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
+        {this.state.projectDetails && this.state.projectDetails.lastProject &&
+          <div style={{ marginBottom: 19, textAlign: 'center' }}>
+            上一轮项目：
+            <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
+          </div>
+        }
+        {!this.state.showUnreadOnly &&
+          <OrgBDFilter
+            defaultValue={filters}
+            value={this.state.filters}
+            onSearch={this.handleFilt}
+            onReset={this.handleReset}
+            onChange={this.handleFilt}
+            progressOptions={this.state.progressOptions}
+            allLabel={this.state.allLabel}
+            onProjChange={value => this.getRelatedDataroom(value)}
+          />
+        }
+      </Card>
+    );
+
     return (
       <div>
         {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         {this.props.editable &&
-          <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 20 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
-            {this.state.projectDetails && this.state.projectDetails.lastProject &&
-              <div style={{ marginBottom: 20, textAlign: 'center' }}>
-                上一轮项目：
-                <Link to={`/app/org/bd?projId=${this.state.projectDetails.lastProject.id}`}>{this.state.projectDetails.lastProject.projtitleC}</Link>
-              </div>
-            }
-            {!this.state.showUnreadOnly &&
-              <div>
-                <OrgBDFilter
-                  defaultValue={filters}
-                  value={this.state.filters}
-                  onSearch={this.handleFilt}
-                  onReset={this.handleReset}
-                  onChange={this.handleFilt}
-                  progressOptions={this.state.progressOptions}
-                  allLabel={this.state.allLabel}
-                  onProjChange={value => this.getRelatedDataroom(value)}
-                />
-                {/* {this.state.filters.proj !== null &&
-                  <div style={{ overflow: 'auto', marginBottom: 16 }}>
-                    {this.props.orgbdres.length > 0 && this.state.statistic.length > 0 ?
-                      <div style={{ float: 'left', lineHeight: '32px' }}>
-                        {[{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).map(
-                          (m, index) => <span key={m.id}>
-                            <span style={{ color: m.id === null ? 'red' : undefined }}>{`${m.name}(${this.state.statistic.filter(f => f.status === m.id)[0] ? this.state.statistic.filter(f => f.status === m.id)[0].count : 0})`}</span>
-                            <span>{`${index === [{ id: null, name: '暂无状态' }].concat(this.props.orgbdres).length - 1 ? '' : '、'}`}</span>
-                          </span>
-                        )}
-                      </div>
-                      : null}
-                  </div>
-                } */}
-              </div>
-            }
-          </Card>
+          <Tabs type="card" size="large">
+            <TabPane tab="机构看板" key="0">{tab0}</TabPane>
+            <TabPane tab="飞书项目推进" key="1">
+            </TabPane>
+          </Tabs>
         }
 
         <Card className="only-on-mobile" style={{ marginBottom: 20 }} bodyStyle={{ paddingBottom: 4 }}>
