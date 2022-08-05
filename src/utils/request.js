@@ -6,8 +6,9 @@ let devUrl = "http://apitest.investarget.com";
 // devUrl = 'http://192.168.1.201:8000';
 // devUrl = prodUrl;
 const baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
-const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://mtest.investarget.com' : 'https://m.investarget.com'; 
-export { baseUrl, mobileUploadUrl, prodUrl }
+const mobileUploadUrl = process.env.NODE_ENV === 'development' ? 'http://mtest.investarget.com' : 'https://m.investarget.com';
+const feishuRedirectUri = process.env.NODE_ENV === 'development' ? 'http://pro.investarget.com/login' : 'https://saas.investarget.com/login';
+export { baseUrl, mobileUploadUrl, prodUrl, feishuRedirectUri };
 
 export class ApiError extends Error {
   constructor(code, message, detail) {

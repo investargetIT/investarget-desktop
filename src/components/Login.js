@@ -5,7 +5,7 @@ import { routerRedux, Link } from 'dva/router'
 import { i18n, handleError, getURLParamValue } from '../utils/util'
 import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
-import FormError from '../utils/FormError'
+import { feishuRedirectUri } from '../utils/request';
 
 const formStyle = {
   width: 480,
@@ -156,7 +156,8 @@ class Login extends React.Component {
   handleFeishuLoginBtnClicked() {
     // const app_id = 'cli_a298cb5f4c78d00b'; // Test 应用的 app_id
     const app_id = 'cli_a24cf239bf239013'; // 多维资本应用的 app_id
-    const redirect_url = 'http://localhost:8000/login';
+    const redirect_url = feishuRedirectUri;
+    // const redirect_url = 'http://localhost:8000/login';
     const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
     window.location.href = auth_url;
   }
