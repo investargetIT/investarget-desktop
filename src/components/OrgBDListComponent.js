@@ -209,6 +209,8 @@ class OrgBDListComponent extends React.Component {
         newUser: '', // 新增投资人名称
 
         visiblePopover: 0,
+
+        activeTabKey: '0',
     }
 
     this.allTrader = [];
@@ -1821,6 +1823,10 @@ class OrgBDListComponent extends React.Component {
       .finally(() => this.setState({ loadingDownloadTemplate: false }));
   }
 
+  handleTabChange = key => {
+    this.setState({ activeTabKey: key });
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2667,7 +2673,7 @@ class OrgBDListComponent extends React.Component {
         {source!=0 ? <BDModal source={source} element='org'/> : null}   
 
         {this.props.editable &&
-          <Tabs type="card" size="large">
+          <Tabs type="card" size="large" activeKey={this.state.activeTabKey} onChange={this.handleTabChange}>
             <TabPane tab="机构看板" key="0">{tab0}</TabPane>
             <TabPane tab="飞书项目推进" key="1">
               {this.state.projectDetails && this.state.projectDetails.feishuurl && (
@@ -2689,7 +2695,7 @@ class OrgBDListComponent extends React.Component {
           />
         </Card>
 
-        <Card>
+        <Card style={{ display: this.state.activeTabKey === '0'? 'block': 'none' }}>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
             <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
