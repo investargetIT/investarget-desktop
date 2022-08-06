@@ -302,15 +302,16 @@ function Dashboard(props) {
 
           <Col span={16}>
             <div className="card-container">
-              {/* <Tabs type="card" size="large">
+              <Tabs type="card" size="large">
                 <TabPane tab="当前任务" key="1">
-                  <OrgBdTable />
+                  {userInfo && userInfo.indGroup && userInfo.indGroup.ongongingurl ? (
+                    <iframe src={userInfo.indGroup.ongongingurl} style={iframeStyle} />
+                  ) : '暂无'}
                 </TabPane>
                 <TabPane tab="项目BD" key="2">
                   <ProjectBdTable />
                 </TabPane>
-              </Tabs> */}
-              <iframe src="https://investarget.feishu.cn/base/bascnnEqEJKzsOaNNJLUyQmachc" style={iframeStyle}></iframe>
+              </Tabs>
             </div>
           </Col>
 
