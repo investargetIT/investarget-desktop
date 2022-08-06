@@ -2686,7 +2686,7 @@ class OrgBDListComponent extends React.Component {
             <TabPane tab={<span>飞书项目推进<Button style={{ marginLeft: 10 }} disabled={!this.state.projectDetails || !this.state.projectDetails.feishuurl} type="text" size="small" onClick={this.goFullScreen} icon={<FullscreenOutlined />}></Button></span>} key="1">
               {this.state.projectDetails && this.state.projectDetails.feishuurl ? (
                 <Fullscreen enabled={this.state.isFullScreen} onChange={isFullScreen => this.setState({ isFullScreen })}>
-                  <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: 800 }} />
+                  <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: this.state.isFullScreen ? '100%': 800 }} />
                 </Fullscreen>
               ) : '暂无'}
             </TabPane>
