@@ -2676,9 +2676,9 @@ class OrgBDListComponent extends React.Component {
           <Tabs type="card" size="large" activeKey={this.state.activeTabKey} onChange={this.handleTabChange}>
             <TabPane tab="机构看板" key="0">{tab0}</TabPane>
             <TabPane tab="飞书项目推进" key="1">
-              {this.state.projectDetails && this.state.projectDetails.feishuurl && (
-                <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: 800 }}></iframe>
-              )}
+              {this.state.projectDetails && this.state.projectDetails.feishuurl ? (
+                <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: 800 }} />
+              ) : '暂无'}
             </TabPane>
           </Tabs>
         }
