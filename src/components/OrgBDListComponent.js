@@ -58,9 +58,11 @@ import {
   CaretUpFilled,
   CaretDownFilled,
   CloseOutlined,
+  FullscreenOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
+import Fullscreen from 'react-full-screen';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -211,6 +213,8 @@ class OrgBDListComponent extends React.Component {
         visiblePopover: 0,
 
         activeTabKey: '0',
+
+        isFullScreen: false,
     }
 
     this.allTrader = [];
@@ -226,6 +230,10 @@ class OrgBDListComponent extends React.Component {
   }
 
   disabledDate = current => current && current < moment().startOf('day');
+
+  goFullScreen = () => {
+    this.setState({ isFullScreen: true });
+  }
 
   componentDidMount() {
     this.getOrgBdList();
@@ -2675,9 +2683,11 @@ class OrgBDListComponent extends React.Component {
         {this.props.editable &&
           <Tabs type="card" size="large" activeKey={this.state.activeTabKey} onChange={this.handleTabChange}>
             <TabPane tab="机构看板" key="0">{tab0}</TabPane>
-            <TabPane tab="飞书项目推进" key="1">
+            <TabPane tab={<span>飞书项目推进<Button style={{ marginLeft: 10 }} disabled={!this.state.projectDetails || !this.state.projectDetails.feishuurl} type="text" size="small" onClick={this.goFullScreen} icon={<FullscreenOutlined />}></Button></span>} key="1">
               {this.state.projectDetails && this.state.projectDetails.feishuurl ? (
-                <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: 800 }} />
+                <Fullscreen enabled={this.state.isFullScreen} onChange={isFullScreen => this.setState({ isFullScreen })}>
+                  <iframe src={this.state.projectDetails.feishuurl} style={{ border: 'none', width: '100%', height: 800 }} />
+                </Fullscreen>
               ) : '暂无'}
             </TabPane>
           </Tabs>

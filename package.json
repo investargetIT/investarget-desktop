@@ -36,6 +36,7 @@
     "react-datasheet": "^1.4.9",
     "react-dom": "^16.14.0",
     "react-draggable": "^3.0.2",
+    "react-full-screen": "0.2.5",
     "react-intl": "^2.2.3",
     "react-use": "^17.4.0",
     "recharts": "^1.8.5",

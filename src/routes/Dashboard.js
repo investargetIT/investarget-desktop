@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel } from 'antd';
+import { Breadcrumb, Card, Row, Col, Tooltip, Empty, Tabs, Carousel, Button } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import {
   getUserInfo,
@@ -28,8 +28,10 @@ import {
   FileExcelFilled,
   AudioFilled,
   VideoCameraFilled,
+  FullscreenOutlined,
 } from '@ant-design/icons';
 import MySchedule from '../components/MySchedule';
+import Fullscreen from 'react-full-screen';
 
 const { TabPane } = Tabs;
 const iframeStyle = {
@@ -47,6 +49,7 @@ function Dashboard(props) {
   const [projNum, setProjNum] = useState(0);
   const [loadingOnGoingProjects, setLoadingOnGoingProjects] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -303,9 +306,11 @@ function Dashboard(props) {
           <Col span={16}>
             <div className="card-container">
               <Tabs type="card" size="large">
-                <TabPane tab="当前任务" key="1">
+                <TabPane tab={<span>当前任务<Button style={{ marginLeft: 10 }} disabled={!userInfo || !userInfo.indGroup || !userInfo.indGroup.ongongingurl} type="text" size="small" onClick={() => setIsFullScreen(true)} icon={<FullscreenOutlined />}></Button></span>} key="1">
                   {userInfo && userInfo.indGroup && userInfo.indGroup.ongongingurl ? (
-                    <iframe src={userInfo.indGroup.ongongingurl} style={iframeStyle} />
+                    <Fullscreen enabled={isFullScreen} onChange={isFullScreen => setIsFullScreen(isFullScreen)}>
+                      <iframe src={userInfo.indGroup.ongongingurl} style={iframeStyle} />
+                    </Fullscreen>
                   ) : '暂无'}
                 </TabPane>
                 <TabPane tab="项目BD" key="2">
