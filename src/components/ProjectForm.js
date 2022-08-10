@@ -162,6 +162,10 @@ class ProjectBaseForm1 extends React.Component {
           <SelectProjectStatus />
         </BasicFormItem>
 
+        <BasicFormItem label="飞书 URL" name="feishuurl" whitespace>
+          <Input />
+        </BasicFormItem>
+
         <div className="edit-proj-status">
           <Form.Item name="financeIsPublic" valuePropName="checked" wrapperCol={{ offset: 6, span: 14 }}>
             <Checkbox>是否公开财务信息？</Checkbox>
