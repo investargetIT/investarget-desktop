@@ -1,7 +1,7 @@
 import { changeLang } from '../utils/util'
 import headerStyles from './LoginContainerHeader.css';
 
-const containerStyle = {background:'#f3f5f7', whiteSpace: 'pre', display: 'inline-block', minWidth: '100%'}
+const containerStyle = {background:'#f3f5f7', display: 'inline-block', minWidth: '100%'}
 const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
 const logoStyle = {height: 70, padding: '10px 0'}
 const bodyStyle = {width: 1200, margin: '0 auto', position: 'relative', 
@@ -56,7 +56,7 @@ class LoginContainer extends React.Component {
     };
     return (
       <div style={containerStyle}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: 30 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: 30, alignItems: 'center' }}>
           <div>
             {/* <img src="/images/investarget_new_logo.png" style={{ width: 48, height: 48 }} /> */}
             <img src={logo} style={{ marginLeft: 10, height: 48 }} />

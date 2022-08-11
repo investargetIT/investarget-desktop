@@ -108,7 +108,9 @@
     "please_select_title": "请选择职位",
     "please_choose_tags": "请选择标签（可复选）",
     "select_org": "请输入机构名称，或选择已有机构",
-    "invalid_email": "邮箱格式错误"
+    "invalid_email": "邮箱格式错误",
+    "bind_feishu_account": "Hi, {{ username }}, 登录您的 Investarget 账号，系统将自动绑定您的飞书账号",
+    "login_and_bind": "登录并绑定"
   },
 
   "project_library": {

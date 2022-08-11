@@ -6,16 +6,8 @@ import { i18n, handleError, getURLParamValue } from '../utils/util'
 import LoginContainer from '../components/LoginContainer'
 import HandleError from '../components/HandleError'
 import { feishuRedirectUri } from '../utils/request';
+import { SwapOutlined } from '@ant-design/icons';
 
-const formStyle = {
-  width: 480,
-  padding: '30px 60px',
-  background: 'white',
-  zIndex: 1,
-  color: '#666', 
-  borderRadius: 8,
-  boxShadow: '0 0 12px 0 rgba(0, 0, 0, 0.1)',
-};
 const formTitleStyle = {
   marginBottom: 12,
   fontSize: 30,
@@ -31,39 +23,6 @@ const formSubtitleStyle = {
   marginBottom: 40,
   textAlign: 'center',
 };
-const formInputStyle = {
-  fontSize: 16,
-  fontWeight: 200,
-  color: '#989898',
-  height: 40,
-  border: '1px solid #d9d9d9',
-  borderRadius: 4,
-  fontSize: 16,
-  color: '#555',
-};
-const inputIconStyle = {
-  width: 18,
-  height: 18,
-  lineHeight: '18x',
-  textAlign: 'center',
-  position: 'absolute',
-  top: 15,
-  right: 16,
-  display: 'none',
-};
-const submitStyle = {
-  width: '100%',
-  height: 40,
-  fontSize: 20,
-  backgroundColor: '#13356c',
-  border: 'none',
-  color: '#fff',
-  fontWeight: 200,
-  fontSize: 16,
-  background: '#13356C',
-  borderRadius: 4,
-  fontWeight: 'normal',
-};
 
 
 class Login extends React.Component {
@@ -72,6 +31,7 @@ class Login extends React.Component {
     super(props)
     this.state = {
       errorMsg: null,
+      isBindingFeishu: true,
     };
 
     let loginInfo = localStorage.getItem('login_info')
@@ -108,19 +68,20 @@ class Login extends React.Component {
       code: feishuCode,
     });
     const { feishu, investarget } = reqFeishuUserIdentity.data;
-    if (feishu.code === 0 && investarget) {
-      // TODO: redirect feature
-      this.props.dispatch({
-        type: 'currentUser/loginWithFeishu',
-        payload: {
-          data: investarget,
-        },
-      })
-    } else {
-      this.setState({
-        errorMsg: '登录失败',
-      })
-    }
+    window.echo('data', data);
+    // if (feishu.code === 0 && investarget) {
+    //   // TODO: redirect feature
+    //   this.props.dispatch({
+    //     type: 'currentUser/loginWithFeishu',
+    //     payload: {
+    //       data: investarget,
+    //     },
+    //   })
+    // } else {
+    //   this.setState({
+    //     errorMsg: '登录失败',
+    //   })
+    // }
   }
 
   handleSubmit = values => {
@@ -166,9 +127,19 @@ class Login extends React.Component {
     return (
       <LoginContainer changeLang={function(){this.forceUpdate()}.bind(this)}>
         <Form className="it-login-form login-register-form" onFinish={this.handleSubmit}>
-          <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
-          <p style={formSubtitleStyle}>{i18n('account.login_message')}</p>
+          
+          {!this.state.isBindingFeishu ? (
+            <h1 style={formTitleStyle}>{i18n('account.directly_login')}</h1>
+          ) : (
+            <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img style={{ width: 48 }} src="/images/investarget_new_logo.png" />
+              <SwapOutlined style={{ color: '#989898', fontSize: 24, margin: '0 16px' }}/>
+              <img style={{ width: 64 }} src="/images/feishu.svg" />
+            </div>
+          )}
 
+          <p style={formSubtitleStyle}>{this.state.isBindingFeishu ? i18n('account.bind_feishu_account', { username: 'Test' }) : i18n('account.login_message')}</p>
+          
           {this.state.errorMsg &&
             <Alert
               style={{ marginBottom: 20 }}
@@ -208,25 +179,30 @@ class Login extends React.Component {
             )}
           </Form.Item>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Form.Item
-              name="remember"
-              valuePropName="checked"
-              initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
-            >
-              <Checkbox>{i18n('account.auto_login')}</Checkbox>
-            </Form.Item>
-            <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
-          </div>
+          {!this.state.isBindingFeishu && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Form.Item
+                name="remember"
+                valuePropName="checked"
+                initialValue={this.username ? true : false} // 如果是记住账号密码，初始值设为 true
+              >
+                <Checkbox>{i18n('account.auto_login')}</Checkbox>
+              </Form.Item>
+              <Link style={{ marginBottom: 20, fontSize: 14, color: '#339bd2' }} to="/password">{i18n("account.forget_password")}</Link>
+            </div>
+          )}
 
-          <Button block type="primary" size="large" htmlType="submit" loading={this.props.loading}>{i18n('account.login')}</Button>
-          <div style={{ textAlign: 'center' }}>or</div>
-          <div>
-            <Button block size="large" onClick={this.handleFeishuLoginBtnClicked} icon={<img src="/images/feishu.svg" style={{ height: 30 }} />}>{i18n('account.login_with_feishu')}</Button>
-          </div>
-          
-          <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
+          <Button block style={this.state.isBindingFeishu ? { marginBottom: 16 } : undefined} type="primary" size="large" htmlType="submit" loading={this.props.loading}>{this.state.isBindingFeishu ? i18n('account.login_and_bind') : i18n('account.login')}</Button>
 
+          {!this.state.isBindingFeishu && (
+            <div>
+              <div style={{ textAlign: 'center' }}>or</div>
+              <div>
+                <Button block size="large" onClick={this.handleFeishuLoginBtnClicked} icon={<img src="/images/feishu.svg" style={{ height: 30 }} />}>{i18n('account.login_with_feishu')}</Button>
+              </div>
+              <div className="login-register-form__hint">{i18n('account.dont_have_account_yet')}<Link to="/register1" style={{ color: '#339bd2' }}>{i18n('account.directly_register')}</Link></div>
+            </div>
+          )}
         </Form>
         <HandleError pathname={encodeURIComponent(this.props.location.pathname + this.props.location.search)} />
       </LoginContainer>

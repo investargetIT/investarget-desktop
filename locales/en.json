@@ -107,7 +107,9 @@
     "please_select_title": "Please select your title",
     "please_choose_tags": "Please pick some tags",
     "select_org": "Please type or select your company",
-    "invlid_email": "Invalid Email"
+    "invlid_email": "Invalid Email",
+    "bind_feishu_account": "Hi, {{ username }}, login with your Investarget account, the system will automatically bind your Feishu account",
+    "login_and_bind": "Login and Bind"
   },
 
   "project_library": {
