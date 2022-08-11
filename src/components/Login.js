@@ -31,7 +31,9 @@ class Login extends React.Component {
     super(props)
     this.state = {
       errorMsg: null,
-      isBindingFeishu: true,
+      isBindingFeishu: false,
+      feishuUsername: '',
+      feishu_union_id: undefined,
     };
 
     let loginInfo = localStorage.getItem('login_info')
@@ -68,20 +70,25 @@ class Login extends React.Component {
       code: feishuCode,
     });
     const { feishu, investarget } = reqFeishuUserIdentity.data;
-    window.echo('data', data);
-    // if (feishu.code === 0 && investarget) {
-    //   // TODO: redirect feature
-    //   this.props.dispatch({
-    //     type: 'currentUser/loginWithFeishu',
-    //     payload: {
-    //       data: investarget,
-    //     },
-    //   })
-    // } else {
-    //   this.setState({
-    //     errorMsg: '登录失败',
-    //   })
-    // }
+    if (feishu.code === 0 && investarget) {
+      // 飞书授权成功并且已经绑定了多维海拓账号
+      // TODO: redirect feature
+      this.props.dispatch({
+        type: 'currentUser/loginWithFeishu',
+        payload: {
+          data: investarget,
+        },
+      })
+    } else if (feishu.code === 0 && !investarget) {
+      // 飞书授权成功但是未绑定多维海拓账号
+      const { name, union_id } = feishu.data;
+      this.setState({ isBindingFeishu: true, feishuUsername: name, feishu_union_id: union_id });
+    } else {
+      // 飞书授权失败
+      this.setState({
+        errorMsg: '登录失败',
+      })
+    }
   }
 
   handleSubmit = values => {
@@ -138,7 +145,7 @@ class Login extends React.Component {
             </div>
           )}
 
-          <p style={formSubtitleStyle}>{this.state.isBindingFeishu ? i18n('account.bind_feishu_account', { username: 'Test' }) : i18n('account.login_message')}</p>
+          <p style={formSubtitleStyle}>{this.state.isBindingFeishu ? i18n('account.bind_feishu_account', { username: this.state.feishuUsername }) : i18n('account.login_message')}</p>
           
           {this.state.errorMsg &&
             <Alert
