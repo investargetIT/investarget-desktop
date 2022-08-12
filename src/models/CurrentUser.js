@@ -35,9 +35,9 @@ export default {
     },
   },
   effects: {
-    *login({ payload: { username, password, remember, redirect } }, { call, put }) {
+    *login({ payload: { username, password, remember, redirect, union_id } }, { call, put }) {
       clearFilters()
-      const { data } = yield call(api.login, { username, password })
+      const { data } = yield call(api.login, { username, password, union_id })
       const { token, user_info, menulist, permissions, is_superuser } = data
       const userInfo = { ...user_info, token, menulist, permissions, is_superuser }
       localStorage.setItem('user_info', JSON.stringify(userInfo))

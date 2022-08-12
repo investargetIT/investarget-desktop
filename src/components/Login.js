@@ -56,7 +56,7 @@ class Login extends React.Component {
   async feishuLogin(feishuCode) {
     // Test 应用的 app_id 和 app_secret
     // const app_id = 'cli_a298cb5f4c78d00b';
-    // const app_secret = 'M6TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
+    // const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
    
     // 多维资本应用的 app_id 和 app_secret
     const app_id = 'cli_a24cf239bf239013';
@@ -100,6 +100,7 @@ class Login extends React.Component {
       payload: {
         ...values,
         redirect: redirectUrl && decodeURIComponent(redirectUrl),
+        union_id: this.state.feishu_union_id,
       },
     }).catch(error => {
       if (error.code === 2002 || error.code === 2001) {

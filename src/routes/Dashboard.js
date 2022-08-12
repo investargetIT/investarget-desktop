@@ -304,12 +304,12 @@ function Dashboard(props) {
         <Row gutter={20}>
 
           <Col span={16}>
-            <div className="card-container">
+            <div className="card-container min-height">
               <Tabs type="card" size="large">
                 <TabPane tab={<span>当前任务<Button style={{ marginLeft: 10 }} disabled={!userInfo || !userInfo.indGroup || !userInfo.indGroup.ongongingurl} type="text" size="small" onClick={() => setIsFullScreen(true)} icon={<FullscreenOutlined />}></Button></span>} key="1">
                   {userInfo && userInfo.indGroup && userInfo.indGroup.ongongingurl ? (
                     <Fullscreen enabled={isFullScreen} onChange={isFullScreen => setIsFullScreen(isFullScreen)}>
-                      <iframe src={userInfo.indGroup.ongongingurl} style={{ ...iframeStyle, height: isFullScreen ? '100%': 800 }} />
+                      <iframe src={userInfo.indGroup.ongongingurl} style={{ ...iframeStyle, height: isFullScreen ? '100%': 552 }} />
                     </Fullscreen>
                   ) : '暂无'}
                 </TabPane>

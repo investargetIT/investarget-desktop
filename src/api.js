@@ -483,6 +483,7 @@ export function login(values) {
   const param = {
     account: values.username,
     password: values.password,
+    union_id: values.union_id,
     // datasource: 1
   }
   return r('/user/login/', 'POST', param)
