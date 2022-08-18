@@ -127,11 +127,11 @@ class ProjectList extends React.Component {
       delete data['grossProfit_F']
       delete data['grossProfit_T']
     }
-    if (data.projstatus === 0) {
-      data.projstatus = [];
-    }
-    if (data.indGroup === 0) {
-      data.indGroup = undefined;
+    const otherGroupIdx = data.indGroup.indexOf(0);
+    if (otherGroupIdx > -1) {
+      const newIndGroup = [...data.indGroup];
+      newIndGroup[otherGroupIdx] = 'none';
+      data.indGroup = newIndGroup;
     }
     return data
   }
@@ -240,11 +240,11 @@ class ProjectList extends React.Component {
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
     const data = { filters, search, page };
-    localStorage.setItem('ProjectList1', JSON.stringify(data))
+    localStorage.setItem('ProjectList2', JSON.stringify(data))
   }
 
   readSetting = () => {
-    var data = localStorage.getItem('ProjectList1')
+    var data = localStorage.getItem('ProjectList2')
     return data ? JSON.parse(data) : null
   }
 
@@ -528,7 +528,7 @@ class ProjectList extends React.Component {
         <Card title={i18n('project.platform_projects')}>
 
           <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', marginRight: 20, flex: 1 }}>
               <Search
                 style={{ width: 200, marginRight: 20 }}
                 placeholder="请输入项目名称"

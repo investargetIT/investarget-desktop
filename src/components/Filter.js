@@ -794,9 +794,9 @@ class NewProjectListFilter extends React.Component {
     // netIncome_USD_T: 500000000,
     // grossProfit_F: -200000000,
     // grossProfit_T: 200000000,
-    projstatus: 0,
+    projstatus: [],
     // service: [],
-    indGroup: 0,
+    indGroup: [],
     // takeUser: [],
     // makeUser: [],
     // usertype: null,
@@ -833,11 +833,27 @@ class NewProjectListFilter extends React.Component {
   }
 
   render() {
-    const { service, tags, country, industries, netIncome_USD_F, netIncome_USD_T, grossProfit_F, grossProfit_T, projstatus, indGroup, takeUser, makeUser, user, usertype } = this.state
+    const { projstatus, indGroup } = this.state;
     return (
-      <div style={{ display: 'flex' }}>
-        <SelectProjectStatus size="middle" style={{ width: 160 }} value={projstatus} onChange={this.handleChange.bind(this, 'projstatus')} />
-        <SelectIndustryGroupWithAll size="middle" style={{ marginLeft: 10, width: 160 }} value={indGroup} onChange={this.handleChange.bind(this, 'indGroup')} placeholder="请选择项目行业组" />
+      <div style={{ display: 'flex', flex: 1 }}>
+        <SelectProjectStatus
+          placeholder="请选择项目状态"
+          mode="multiple"
+          size="middle"
+          style={{ flex: 1, maxWidth: 300 }}
+          value={projstatus}
+          onChange={this.handleChange.bind(this, 'projstatus')}
+          allowClear
+        />
+        <SelectIndustryGroupWithAll
+          placeholder="请选择项目行业组"
+          mode="multiple"
+          size="middle"
+          style={{ marginLeft: 20, flex: 1, maxWidth: 300 }}
+          value={indGroup}
+          onChange={this.handleChange.bind(this, 'indGroup')}
+          allowClear
+        />
       </div>
     )
   }
