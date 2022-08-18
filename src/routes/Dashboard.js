@@ -49,10 +49,12 @@ function Dashboard(props) {
   const [projNum, setProjNum] = useState(0);
   const [loadingOnGoingProjects, setLoadingOnGoingProjects] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(null);
+  const [activeTabKey, setActiveTabKey] = useState('0');
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
+    props.dispatch({ type: 'app/getSource', payload: 'industryGroup' });
 
     if (userInfo && userInfo.indGroup) {
       async function fetchProjNum() {
@@ -272,6 +274,17 @@ function Dashboard(props) {
     }
   }
 
+  function getOngoingProjectsFeishuUrl(indGroups) {
+    if (props.industryGroup.length > 0) {
+      const result = indGroups.map(m => {
+        const group = props.industryGroup.find(f => f.id === m);
+        return group;
+      });
+      return result.filter(f => f.ongongingurl);
+    }
+    return [];
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -305,15 +318,15 @@ function Dashboard(props) {
 
           <Col span={16}>
             <div className="card-container min-height">
-              <Tabs type="card" size="large">
-                <TabPane tab={<span>当前任务<Button style={{ marginLeft: 10 }} disabled={!userInfo || !userInfo.indGroup || !userInfo.indGroup.ongongingurl} type="text" size="small" onClick={() => setIsFullScreen(true)} icon={<FullscreenOutlined />}></Button></span>} key="1">
-                  {userInfo && userInfo.indGroup && userInfo.indGroup.ongongingurl ? (
-                    <Fullscreen enabled={isFullScreen} onChange={isFullScreen => setIsFullScreen(isFullScreen)}>
-                      <iframe src={userInfo.indGroup.ongongingurl} style={{ ...iframeStyle, height: isFullScreen ? '100%': 552 }} />
+              <Tabs type="card" size="large" activeKey={activeTabKey} onChange={key => setActiveTabKey(key)}>
+                {userInfo && userInfo.indGroups && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
+                  <TabPane tab={<span>{m.name}任务<Button style={{ marginLeft: 10 }} disabled={parseInt(activeTabKey) !== m.id} type="text" size="small" onClick={() => setIsFullScreen(m.id)} icon={<FullscreenOutlined />}></Button></span>} key={m.id}>
+                    <Fullscreen enabled={isFullScreen === m.id} onChange={isFullScreen => {window.echo('if', isFullScreen); setIsFullScreen(isFullScreen ? m.id : null)}}>
+                      <iframe key={m.id} src={m.ongongingurl} style={{ ...iframeStyle, height: isFullScreen === m.id ? '100%' : 552 }} />
                     </Fullscreen>
-                  ) : '暂无'}
-                </TabPane>
-                <TabPane tab="项目BD" key="2">
+                  </TabPane>
+                ))}
+                <TabPane tab="项目BD" key="0">
                   <ProjectBdTable />
                 </TabPane>
               </Tabs>
@@ -369,8 +382,8 @@ function Dashboard(props) {
 }
 
 function mapStateToProps(state) {
-  const { country } = state.app
-  return { country };
+  const { country, industryGroup } = state.app;
+  return { country, industryGroup };
 }
 
 export default connect(mapStateToProps)(Dashboard);
