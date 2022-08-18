@@ -1209,7 +1209,6 @@ const SelectTransactionStatus = withOptionsAsync(SelectNumber, ['transactionStat
 const SelectProjectStatus = withOptionsAsync(SelectNumber, ['projstatus'], function(state) {
   const { projstatus } = state.app
   const options = projstatus ? projstatus.map(item => ({ value: item.id, label: item.name })) : []
-  options.unshift({ value: 0, label: '全部' });
   return { options }
 })
 
@@ -1293,7 +1292,7 @@ const SelectIndustryGroup = withOptionsAsync(SelectNumber, ['industryGroup'], fu
  const SelectIndustryGroupWithAll = withOptionsAsync(SelectNumber, ['industryGroup'], function(state) {
   const { industryGroup } = state.app;
   const options = industryGroup ? industryGroup.map(item => ({value: item.id, label: item.name})) : [];
-  options.unshift({ value: 0, label: '全部' });
+  options.push({ value: 0, label: '其他' });
   return { options };
 })
 
