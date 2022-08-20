@@ -94,28 +94,34 @@ class MyPartner extends React.Component {
     const params = Object.assign({}, param, this.state.filters);
 
     if (this.props.type === 'investor') {
-      api.getInvestors(params)
+      // api.getInvestors(params)
+      //   .then(result => {
+      //     this.setState({
+      //       list: result.data.data.map(m => ({
+      //         id: m.id,
+      //         familiar: m.familiar,
+      //         investoruser: m,
+      //         traderuser: { id: isLogin().id }
+      //       })),
+      //       loading: false,
+      //       total: result.data.count,
+      //     })
+      //   })
+      //   .catch(handleError);
+
+        api.getUserRelation({ ...params })
         .then(result => {
           this.setState({
-            list: result.data.data.map(m => ({
-              id: m.id,
-              familiar: m.familiar,
-              investoruser: m,
-              traderuser: { id: isLogin().id }
-            })),
+            list: result.data.data,
             loading: false,
             total: result.data.count,
-          })
-        })
-        .catch(handleError);
-
-        api.getUserRelation({ ...params, page_index: 1 })
-        .then(result => {
+          });
           if (!result.data.familiar_count) return;
           this.setState({
             statistics: result.data.familiar_count,
           })
-        });
+        })
+        .catch(handleError);
     } else {
       api.getUserRelation(params)
         .then(result => {
