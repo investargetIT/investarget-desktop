@@ -112,7 +112,7 @@ class MyPartner extends React.Component {
         api.getUserRelation({ ...params })
         .then(result => {
           this.setState({
-            list: result.data.data,
+            list: result.data.data.map(m => ({ ...m, id: m.investoruser.id })),
             loading: false,
             total: result.data.count,
           });
