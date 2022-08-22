@@ -319,7 +319,7 @@ function Dashboard(props) {
           <Col span={16}>
             <div className="card-container min-height">
               <Tabs type="card" size="large" activeKey={activeTabKey} onChange={key => setActiveTabKey(key)}>
-                {userInfo && userInfo.indGroups && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
+                {userInfo && userInfo.indGroups && userInfo.thirdUnionID && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
                   <TabPane tab={<span>{m.name}任务<Button style={{ marginLeft: 10 }} disabled={parseInt(activeTabKey) !== m.id} type="text" size="small" onClick={() => setIsFullScreen(m.id)} icon={<FullscreenOutlined />}></Button></span>} key={m.id}>
                     <Fullscreen enabled={isFullScreen === m.id} onChange={isFullScreen => {window.echo('if', isFullScreen); setIsFullScreen(isFullScreen ? m.id : null)}}>
                       <iframe key={m.id} src={m.ongongingurl} style={{ ...iframeStyle, height: isFullScreen === m.id ? '100%' : 552 }} />
