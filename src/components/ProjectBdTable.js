@@ -75,17 +75,7 @@ export default function() {
     {
       title: i18n('project_bd.manager'),
       key: 'manager',
-      render: (_, record) => {
-        const { main, normal } = record.manager;
-        let allManagers = [];
-        if (main) {
-          allManagers.push(main.username);
-        }
-        if (normal) {
-          allManagers = allManagers.concat(normal.map(m => m.manager.username));
-        }
-        return <span style={{ color: '#595959' }}>{allManagers.join('、')}</span>;
-      },
+      render: (_, record) => <span style={{ color: '#595959' }}>{record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、')}</span>,
     },
     {
       title: i18n('project_bd.created_time'),

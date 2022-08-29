@@ -22,7 +22,7 @@ function toFormData(data) {
     if (prop === 'manager') {
       let allManagers = [];
       if (value) {
-        allManagers = value.map(item => item.manager.id.toString());
+        allManagers = value.filter(f => f.type === 3).map(item => item.manager.id.toString());
       }
       formData.manager = allManagers;
     }
