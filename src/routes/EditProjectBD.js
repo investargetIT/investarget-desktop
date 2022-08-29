@@ -20,13 +20,9 @@ function toFormData(data) {
       formData[prop] = value && value.id
     }
     if (prop === 'manager') {
-      const { main, normal } = value;
       let allManagers = [];
-      if (main) {
-        allManagers.push(main.id.toString());
-      }
-      if (normal) {
-        allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+      if (value) {
+        allManagers = value.map(item => item.manager.id.toString());
       }
       formData.manager = allManagers;
     }
@@ -105,27 +101,18 @@ class EditProjectBD extends React.Component {
 
     if (param.manager) {
       const { manager: newManager } = param;
-      const { manager: oldManager, id: projectBdId } = this.state.bd;
-      let { main: oldMainManager, normal: oldNormalManager } = oldManager;
-      let newNormalManager = [];
-      if (newManager.includes(oldMainManager.id.toString())) {
-        param.manager = oldMainManager.id;
-        newNormalManager = newManager.filter(f => f !== oldMainManager.id.toString());
-      } else {
-        param.manager = newManager[0];
-        newNormalManager = newManager.slice(1);
+      let { manager: oldManager, id: projectBdId } = this.state.bd;
+
+      if (oldManager === null) {
+        oldManager = [];
       }
 
-      if (oldNormalManager === null) {
-        oldNormalManager = [];
-      }
-
-      const oldNormalManagerIds = oldNormalManager.map(m => m.manager.id);
-      const newNormalManagerIds = newNormalManager.map(m => parseInt(m));
+      const oldNormalManagerIds = oldManager.map(m => m.manager.id);
+      const newNormalManagerIds = newManager.map(m => parseInt(m));
 
       const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
       await Promise.all(normalManagerToDel.map(m => {
-        const relateManagerId = oldNormalManager.filter(f => f.manager.id === m)[0].id;
+        const relateManagerId = oldManager.filter(f => f.manager.id === m)[0].id;
         return api.deleteProjectBdRelatedManager(relateManagerId);
       }));
       const normalManagerToAdd = subtracting(newNormalManagerIds, oldNormalManagerIds);
@@ -133,6 +120,7 @@ class EditProjectBD extends React.Component {
         const body = {
           manager: m,
           projectBD: projectBdId,
+          type: 3,
         };
         return api.addProjectBdRelatedManager(body);
       }));
@@ -145,7 +133,7 @@ class EditProjectBD extends React.Component {
     }
     
     const { id } = this.state;
-    await api.editProjBD(id, param);
+    await api.editProjBD(id, { ...param, manager: undefined });
 
     // 状态改为暂不BD后，详细需求见bugClose #344
     if (status === 4 && this.state.bd.bd_status.id !== 4) {
