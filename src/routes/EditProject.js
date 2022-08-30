@@ -336,20 +336,14 @@ class EditProject extends React.Component {
   setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
     const { projectBD, sponsor, takeUser } = newFormData;
-    window.echo('project bd', projectBD, sponsor, takeUser);
     // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
     if (projectBD) {
       if (!sponsor || !takeUser || (takeUser && takeUser.length === 0)) {
         const reqProjBD = await api.getProjBD(projectBD);
-        window.echo('reqProjBD', reqProjBD);
         if (!takeUser || (takeUser && takeUser.length === 0)) {
-          const { main, normal } = reqProjBD.data.manager;
           let allManagers = [];
-          if (main) {
-            allManagers.push(main.id.toString());
-          }
-          if (normal) {
-            allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+          if (reqProjBD.data.manager) {
+            allManagers = reqProjBD.data.manager.filter(f => f.type === 3).map(m => m.manager.id.toString());
           }
           newFormData.takeUser = allManagers;
         }
@@ -368,14 +362,10 @@ class EditProject extends React.Component {
     if ('projectBD' in changedValue) {
       if (changedValue.projectBD) {
         const reqProjBD = await api.getProjBD(changedValue.projectBD);
-        
-        const { main, normal } = reqProjBD.data.manager;
+
         let allManagers = [];
-        if (main) {
-          allManagers.push(main.id.toString());
-        }
-        if (normal) {
-          allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
+        if (reqProjBD.data.manager) {
+          allManagers = reqProjBD.data.manager.filter(f => f.type === 3).map(m => m.manager.id.toString());
         }
         const newTakeUser = allManagers;
         let newSponsor = null;
