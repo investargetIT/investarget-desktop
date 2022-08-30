@@ -14,15 +14,11 @@ const checkMobileInfo = (_, value) => {
 }
 
 const getAllManagers = (manager) => {
-    const { main, normal } = manager;
-    let allManagers = [];
-    if (main) {
-      allManagers.push(main.id.toString());
-    }
-    if (normal) {
-      allManagers = allManagers.concat(normal.map(m => m.manager.id.toString()));
-    }
-    return allManagers;
+  let allManagers = [];
+  if (manager) {
+    allManagers = manager.filter(f => f.type === 3).map(item => item.manager.id.toString());
+  }
+  return allManagers;
 }
 
 const getDefaultAreaCode = (bd, country) => {

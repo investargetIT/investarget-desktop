@@ -16,18 +16,6 @@ import BDComments from './BDComments';
 import ModalEditProjBD from './ModalEditProjBD';
 import ModalModifyProjectBDStatus from './ModalModifyProjectBDStatus';
 
-const formatManager = (manager) => {
-  const { main, normal } = manager;
-  let allManagers = [];
-  if (main) {
-    allManagers.push(main.username);
-  }
-  if (normal) {
-    allManagers = allManagers.concat(normal.map(m => m.manager.username));
-  }
-  return allManagers.join('、');
-}
-
 class ReportProjectBDList extends React.Component {
 
   constructor(props) {
@@ -349,23 +337,14 @@ class ReportProjectBDList extends React.Component {
   editProjectBD = async (param) => {
     if (param.manager) {
       const { manager: newManager } = param;
-      const { manager: oldManager, id: projectBdId } = this.state.currentBD;
-      let { main: oldMainManager, normal: oldNormalManager } = oldManager;
-      let newNormalManager = [];
-      if (newManager.includes(oldMainManager.id.toString())) {
-        param.manager = oldMainManager.id;
-        newNormalManager = newManager.filter(f => f !== oldMainManager.id.toString());
-      } else {
-        param.manager = newManager[0];
-        newNormalManager = newManager.slice(1);
+      let { manager: oldManager, id: projectBdId } = this.state.currentBD;
+
+      if (oldManager === null) {
+        oldManager = [];
       }
 
-      if (oldNormalManager === null) {
-        oldNormalManager = [];
-      }
-
-      const oldNormalManagerIds = oldNormalManager.map(m => m.manager.id);
-      const newNormalManagerIds = newNormalManager.map(m => parseInt(m));
+      const oldNormalManagerIds = oldManager.map(m => m.manager.id);
+      const newNormalManagerIds = newManager.map(m => parseInt(m));
 
       const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
       await Promise.all(normalManagerToDel.map(m => {
@@ -506,32 +485,22 @@ class ReportProjectBDList extends React.Component {
       {
         title: i18n('project_bd.manager'),
         key: 'manager',
-        sorter: true,
-        render: (text, record) => {
-          return formatManager(record.manager);
-        },
+        render: (_, record) => record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、'),
       },
     ];
 
     const allCreateUser = list.map(m => m.createuser);
     const allContractor = list.filter(f => f.contractors).map(m => m.contractors.id);
-    const allManager = list.filter(f => f.manager).map(m => {
-      const { main, normal } = m.manager;
-      const { id: mainManagerId } = main;
-      let normalManagerIds = [];
-      if (normal) {
-        normalManagerIds = normal.map(m => m.manager.id);
-      }
-      return normalManagerIds.concat(mainManagerId);
-    }).reduce((prev, curr) => prev.concat(curr), []);
+    const allManager = list.filter(f => f.manager).map(m => m.manager.filter(f => f.type === 3).map(m => m.manager.id))
+    .reduce((prev, curr) => prev.concat(curr), []);
 
     if (hasPerm('BD.manageProjectBD') || allCreateUser.includes(getUserInfo().id) || allContractor.includes(getUserInfo().id) || allManager.includes(getUserInfo().id)) {
       columns.push(
         {title: i18n('project_bd.operation'), width: 160, render: (text, record) => {
           
           let normalManagerIds = [];
-          if (record.manager.normal) {
-            normalManagerIds = record.manager.normal.map(m => m.manager.id);
+          if (record.manager) {
+            normalManagerIds = record.manager.filter(f => f.type === 3).map(m => m.manager.id);
           }
 
           return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -539,7 +508,7 @@ class ReportProjectBDList extends React.Component {
               {hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser ?
                 <Button size="small" type="link" onClick={() => this.handleEdit(record)}><EditOutlined /></Button>
                 :
-                getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+                normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
                 <Button type="link" size="small" onClick={() => this.handleModifyBDStatusBtnClicked(record)}><EditOutlined /></Button>
                 : null
               }
@@ -557,7 +526,7 @@ class ReportProjectBDList extends React.Component {
 
             <div>
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser || getUserInfo().id === record.manager.main.id || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
+              { hasPerm('BD.manageProjectBD') || getUserInfo().id === record.createuser || normalManagerIds.includes(getUserInfo().id) || (record.contractors && getUserInfo().id === record.contractors.id) ?
               <Button style={{}} onClick={() => this.handleOpenModal(record)} type="link" size="small">行动计划</Button>
               : null }
             </div>

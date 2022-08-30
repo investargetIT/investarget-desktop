@@ -68,15 +68,7 @@ class ReportProjectBDDetails extends React.Component {
   }
 
   getManagerText = (manager) => {
-    const { main, normal } = manager;
-    let allManagers = [];
-    if (main) {
-      allManagers.push(main.username);
-    }
-    if (normal) {
-      allManagers = allManagers.concat(normal.map(m => m.manager.username));
-    }
-    return allManagers.join('、');
+    return manager && manager.filter(f => f.type === 3).map(m => m.manager.username).join('、');
   }
 
   updateComments = (BDComments) => {
