@@ -117,9 +117,9 @@ class ProjectLibraryItem extends React.Component {
   }
  
   componentDidMount() {
-    // const com_id = this.props.params.id
-    const id = this.props.match.params.id
-    const search = isNaN(this.props.match.params.id) ? { com_name: id } : { com_id: id };
+    let id = this.props.match.params.id;
+    id = decodeURIComponent(id);
+    const search = isNaN(id) ? { com_name: id } : { com_id: id };
     api.getLibProjSimple(search).then(result => {
       const proj = result.data.data[0]
       if (proj === undefined) {
