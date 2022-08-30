@@ -356,6 +356,7 @@ class ReportProjectBDList extends React.Component {
         const body = {
           manager: m,
           projectBD: projectBdId,
+          type: 3,
         };
         return api.addProjectBdRelatedManager(body);
       }));
