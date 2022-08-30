@@ -174,6 +174,7 @@ function BDComments(props) {
       <div style={{ display: comment ? 'none' : '' }}>
         {bdComments && bdComments.length ? bdComments.map(comment => (
           <BDCommnet
+            key={comment.id}
             comment={comment}
             onEdit={() => handleEdit(comment)}
             onDelete={() => onDelete(comment.id)}

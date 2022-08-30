@@ -54,7 +54,7 @@ function Dashboard(props) {
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
-    props.dispatch({ type: 'app/getSource', payload: 'industryGroup' });
+    props.dispatch({ type: 'app/getIndustryGroup' });
 
     if (userInfo && userInfo.indGroup) {
       async function fetchProjNum() {

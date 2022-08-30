@@ -182,7 +182,7 @@ class UserListWithResignedTraders extends React.Component {
   //   })
   // }
   componentDidMount() {
-    this.props.dispatch({ type: 'app/getSource', payload: 'industryGroup' });
+    this.props.dispatch({ type: 'app/getIndustryGroup' });
     this.getUser()
 
     // api.queryUserGroup({ type: 'trader' })
