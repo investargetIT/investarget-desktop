@@ -103,13 +103,8 @@ class ProjectList extends React.Component {
     this.setState({ search, page: 1 }, this.getProject)
   }
 
-  handlePageChange = (page) => {
-    // this.props.router.push(`/app/projects/list?page=${page}`);
-    this.setState({ page }, this.getProject)
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getProject)
+  handlePageChange = (page, pageSize) => {
+    this.setState({ page, pageSize }, this.getProject)
   }
 
   // 特殊处理
@@ -569,7 +564,6 @@ class ProjectList extends React.Component {
               pageSize={pageSize}
               onChange={this.handlePageChange}
               showSizeChanger
-              onShowSizeChange={this.handlePageSizeChange}
               showQuickJumper
               pageSizeOptions={PAGE_SIZE_OPTIONS}
             />

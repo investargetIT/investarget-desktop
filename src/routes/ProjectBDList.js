@@ -66,12 +66,8 @@ class ProjectBDList extends React.Component {
     this.setState({ search, page: 1 }, this.getProjectBDList)
   }
 
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getProjectBDList)
-  }
-
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getProjectBDList)
+  handlePageChange = (page, pageSize) => {
+    this.setState({ page, pageSize }, this.getProjectBDList)
   }
 
   getProjectBDList = () => {
@@ -569,7 +565,6 @@ class ProjectBDList extends React.Component {
             pageSize={pageSize}
             onChange={this.handlePageChange}
             showSizeChanger
-            onShowSizeChange={this.handlePageSizeChange}
             showQuickJumper
             pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
