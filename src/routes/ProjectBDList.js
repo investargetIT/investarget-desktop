@@ -442,14 +442,14 @@ class ProjectBDList extends React.Component {
         sorter: true,
         render: (_, record) => record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、'),
       },
-      {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key: 'financeAmount', width: 170, sorter:true, render: (text, record) => {
-        const currency = record.financeCurrency ? record.financeCurrency.currency : '';
-        if (text && record.financeCurrency && record.financeCurrency.id === 1) {
-          return `${currency} ${formatMoney(text, 'CNY')}`;
-        } else {
-          return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
-        }
-      }},
+      // {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key: 'financeAmount', width: 170, sorter:true, render: (text, record) => {
+      //   const currency = record.financeCurrency ? record.financeCurrency.currency : '';
+      //   if (text && record.financeCurrency && record.financeCurrency.id === 1) {
+      //     return `${currency} ${formatMoney(text, 'CNY')}`;
+      //   } else {
+      //     return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
+      //   }
+      // }},
       {title: i18n('project_bd.contractors'), dataIndex: ['contractors', 'username'], key: 'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
