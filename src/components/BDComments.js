@@ -1,10 +1,13 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
-import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox } from 'antd';
+import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select } from 'antd';
 import { useEffect, useState } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
 import { Link } from 'dva/router';
+import { fixedDirs } from './ProjectAttachments';
+
+const { Option } = Select;
 
 function BDComments(props) {
   const { BDComments, onAdd, onEdit, onDelete } = props;
@@ -133,22 +136,43 @@ function BDComments(props) {
         >
           <Input.TextArea rows={3} />
         </Form.Item>
-        <Form.Item
-          label="上传附件"
-          name="fileList"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <Upload 
-            name="file"
-            customRequest={customRequest}
-            data={{ bucket: 'file' }}
-            maxCount={1}
-            onChange={handleUploadChange}
+
+        <Form.Item label="附件">
+
+          <Form.Item
+            name="fileType"
+            style={{ display: 'inline-block', marginBottom: 0 }}
           >
-            <Button icon={<UploadOutlined />} type="link">上传附件</Button>
-          </Upload>
+            <Select
+              showSearch
+              allowClear
+              placeholder="请选择附件目录"
+              optionFilterProp="children"
+              filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+            >
+              {fixedDirs.map(dir => <Option key={dir} value={dir}>{dir}</Option>)}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="fileList"
+            style={{ display: 'inline-block', marginBottom: 0 }}
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
+            <Upload
+              name="file"
+              customRequest={customRequest}
+              data={{ bucket: 'file' }}
+              maxCount={1}
+              onChange={handleUploadChange}
+            >
+              <Button icon={<UploadOutlined />} type="link">上传附件</Button>
+            </Upload>
+          </Form.Item>
+
         </Form.Item>
+
         {speechFile && (
           <Form.Item
             label="语音转文字"
