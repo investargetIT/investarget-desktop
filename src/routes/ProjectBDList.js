@@ -543,7 +543,7 @@ class ProjectBDList extends React.Component {
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
           <Search
             style={{ width: 200 }}
-            placeholder={i18n('project_bd.project_name')}
+            placeholder="全文检索"
             onSearch={this.handleSearch}
             onChange={search => this.setState({ search })}
             value={search}

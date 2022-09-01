@@ -1000,16 +1000,16 @@ class ProjectBDFilter extends React.Component {
         <BasicContainer label={i18n('project_bd.bd_status')}>
           <RadioBDStatus value={bd_status} onChange={this.handleChange.bind(this, 'bd_status')} />
         </BasicContainer>
-        <BasicContainer label={i18n('project_bd.import_methods')}>
+        {/* <BasicContainer label={i18n('project_bd.import_methods')}>
           <RadioBDSource value={source_type} onChange={this.handleChange.bind(this, 'source_type')} />
-        </BasicContainer>
+        </BasicContainer> */}
         <TabCheckboxIndustryGroup value={indGroup} onChange={this.handleChange.bind(this, 'indGroup')} />
         {/* <CountryFilter source="projBD" value={country} onChange={this.handleChange.bind(this, 'country')} /> */}
         {/* <TabCheckboxOrgArea value={location} onChange={this.handleChange.bind(this, 'location')} /> */}
         
-        <BasicContainer label={i18n('project_bd.bd_manager')}>
+        {/* <BasicContainer label={i18n('project_bd.bd_manager')}>
           <SelectOrgUser style={{width:'100%'}} type="trader" mode="multiple" value={manager} onChange={this.handleChange.bind(this, 'manager')} optionFilterProp="children" />
-        </BasicContainer>
+        </BasicContainer> */}
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
