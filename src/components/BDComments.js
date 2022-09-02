@@ -186,12 +186,12 @@ function BDComments(props) {
 }
 
 export function EditBDComment(props) {
-  const { BDComments, onAdd, onEdit, onDelete } = props;
+  const { BDComments, onAdd, onEdit, onDelete, comment } = props;
 
   const [form] = Form.useForm();
   const [speechFile, setSpeechFile] = useState(null);
   const [bdComments, setBdComments] = useState([]);
-  const [comment, setComment] = useState(null);
+  // const [comment, setComment] = useState(null);
 
   const handleFinish = (values) => {
     const { comments, fileList, speechToText } = values;
@@ -215,19 +215,19 @@ export function EditBDComment(props) {
     } else {
       onAdd(data, speechToText ? speechFile : null);
     }
-    setComment(null);
+    // setComment(null);
     setSpeechFile(null);
     form.resetFields();
   }
 
   const reset = () => {
-    setComment(null);
+    // setComment(null);
     setSpeechFile(null);
     form.resetFields();
   };
 
   const handleEdit = async (comment) => {
-    setComment(comment);
+    // setComment(comment);
     const { comments, bucket, key } = comment;
     let fileList = null;
     if (bucket && key) {
@@ -248,6 +248,12 @@ export function EditBDComment(props) {
       fileList,
     });
   }
+
+  useEffect(() => {
+    if (comment) {
+      handleEdit(comment);
+    }
+  }, [comment]);
 
   const normFile = (e) => {
     const fileList = Array.isArray(e) ? e : (e && e.fileList);
@@ -411,7 +417,7 @@ export function BDCommentsWithoutForm(props) {
           <BDCommnet
             key={comment.id}
             comment={comment}
-            onEdit={() => handleEdit(comment)}
+            onEdit={() => onEdit(comment)}
             onDelete={() => onDelete(comment.id)}
           />
         )) : <p>暂无行动计划</p>}

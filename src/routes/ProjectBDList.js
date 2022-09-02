@@ -54,6 +54,7 @@ class ProjectBDList extends React.Component {
       currentBD:null,
 
       displayAddBDCommentModal: false,
+      editBDComment: null, // 编辑的行动计划
     }
   }
 
@@ -182,6 +183,10 @@ class ProjectBDList extends React.Component {
     }
     this.updateCurrentBD()
     api.editProjBD(currentBD.id, {});
+  }
+
+  handleEditCommentIconClick = (comment) => {
+    this.setState({ editBDComment: comment, displayAddBDCommentModal: true });
   }
 
   handleEditComment = async (id, data, speechFile) => {
@@ -586,14 +591,14 @@ class ProjectBDList extends React.Component {
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>行动计划</div>
                 <Tooltip title="添加行动计划">
-                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true })}/>
+                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })}/>
                 </Tooltip>
               </div>
               <div style={{ padding: 16, overflowY: 'auto' }}>
                 <BDCommentsWithoutForm
                   BDComments={this.state.currentBD && this.state.currentBD.BDComments}
-                  onAdd={this.handleAddComment}
-                  onEdit={this.handleEditComment}
+                  // onAdd={this.handleAddComment}
+                  onEdit={this.handleEditCommentIconClick}
                   onDelete={this.handleDeleteComment} />
               </div>
             </div>
@@ -629,10 +634,11 @@ class ProjectBDList extends React.Component {
           destroyOnClose={true}
         >
           <EditBDComment
+            comment={this.state.editBDComment}
             BDComments={this.state.currentBD && this.state.currentBD.BDComments}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}
-            onDelete={this.handleDeleteComment} />
+          />
         </Modal>
 
         {this.state.isShowModifyStatusModal?
