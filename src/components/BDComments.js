@@ -185,7 +185,7 @@ function BDComments(props) {
   );
 }
 
-export function AddBDComment(props) {
+export function EditBDComment(props) {
   const { BDComments, onAdd, onEdit, onDelete } = props;
 
   const [form] = Form.useForm();

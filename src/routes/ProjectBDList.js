@@ -21,7 +21,7 @@ import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import BDComments, { BDCommentsWithoutForm, AddBDComment } from '../components/BDComments';
+import BDComments, { BDCommentsWithoutForm, EditBDComment } from '../components/BDComments';
 import styles from './ProjectBDList.css';
 
 class ProjectBDList extends React.Component {
@@ -628,7 +628,7 @@ class ProjectBDList extends React.Component {
           maskClosable={false}
           destroyOnClose={true}
         >
-          <AddBDComment
+          <EditBDComment
             BDComments={this.state.currentBD && this.state.currentBD.BDComments}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}
