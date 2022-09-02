@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -21,7 +21,8 @@ import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import BDComments from '../components/BDComments';
+import BDComments, { BDCommentsWithoutForm } from '../components/BDComments';
+import styles from './ProjectBDList.css';
 
 class ProjectBDList extends React.Component {
 
@@ -549,14 +550,40 @@ class ProjectBDList extends React.Component {
             value={search}
           />
         </div>
-        <Table
-          onChange={this.handleTableChange}
-          columns={columns}
-          dataSource={list}
-          rowKey={record=>record.id}
-          loading={loading}
-          pagination={false}
-        />
+        <Row>
+          <Col span={18}>
+            <Table
+              onRow={record => {
+                return {
+                  onClick: () => {
+                    this.setState({ currentBD: record }); 
+                  },
+                };
+              }}
+              rowClassName={(record, index) => {
+                return this.state.currentBD && record.id === this.state.currentBD.id ? styles['current-row'] : '';
+              }}
+              onChange={this.handleTableChange}
+              columns={columns}
+              dataSource={list}
+              rowKey={record => record.id}
+              loading={loading}
+              pagination={false}
+            />
+          </Col>
+          <Col span={6}>
+            <div style={{ height: '100%', background: '#fafafa'}}>
+              <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0' }}>行动计划</div>
+              <div style={{ padding: 16, height: 685 - 54, overflowY: 'scroll' }}>
+                <BDCommentsWithoutForm
+                  BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+                  onAdd={this.handleAddComment}
+                  onEdit={this.handleEditComment}
+                  onDelete={this.handleDeleteComment} />
+              </div>
+            </div>
+          </Col>
+        </Row>
         <div style={{ margin: '16px 0' }} className="clearfix">
           <Pagination
             style={{ float: 'right' }}

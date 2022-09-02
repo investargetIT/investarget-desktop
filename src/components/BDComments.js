@@ -185,6 +185,74 @@ function BDComments(props) {
   );
 }
 
+export function BDCommentsWithoutForm(props) {
+  const { BDComments, onAdd, onEdit, onDelete } = props;
+
+  const [form] = Form.useForm();
+  const [bdComments, setBdComments] = useState([]);
+  const [comment, setComment] = useState(null);
+
+  const handleEdit = async (comment) => {
+    setComment(comment);
+    const { comments, bucket, key } = comment;
+    let fileList = null;
+    if (bucket && key) {
+      const result = await api.downloadUrl(comment.bucket, comment.key);
+      fileList = [
+        {
+          uid: '-1',
+          status: 'done',
+          name: comment.filename || comment.key,
+          bucket: comment.bucket,
+          key: comment.key,
+          url: result.data,
+        },
+      ];
+    }
+    form.setFieldsValue({
+      comments,
+      fileList,
+    });
+  }
+
+  const updateComments = (BDComments) => {
+    if (BDComments) {
+      Promise.all(BDComments.map((comment) => {
+        if (!comment.url && comment.key && comment.bucket) {
+          return api.downloadUrl(comment.bucket, comment.key)
+            .then((res) => ({ ...comment, url: res.data }))
+            .catch(() => comment);
+        } else {
+          return Promise.resolve(comment);
+        }
+      })).then((bdComments) => {
+        setBdComments(bdComments);
+      });
+    } else {
+      setBdComments([]);
+    }
+  };
+
+  useEffect(() => {
+    updateComments(BDComments);
+  }, [BDComments]);
+
+  return (
+    <div>
+      <div style={{ display: comment ? 'none' : '' }}>
+        {bdComments && bdComments.length ? bdComments.map(comment => (
+          <BDCommnet
+            key={comment.id}
+            comment={comment}
+            onEdit={() => handleEdit(comment)}
+            onDelete={() => onDelete(comment.id)}
+          />
+        )) : <p>暂无行动计划</p>}
+      </div>
+    </div>
+  );
+}
+
 function BDCommnet({ comment, onEdit, onDelete }) {
   const [translateSuccess, setTranslateSuccess] = useState(false);
   useEffect(() => {
