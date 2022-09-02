@@ -545,9 +545,9 @@ class ProjectBDList extends React.Component {
 
             <div>
               {/* 备注按钮 */}
-              { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
+              {/* { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
               <Button style={{}} onClick={() => this.handleOpenModal(record)} type="link" size="small">行动计划</Button>
-              : null }
+              : null } */}
             </div>
 
           </span>)
