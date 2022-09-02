@@ -400,6 +400,22 @@ class ProjectBDList extends React.Component {
     return true;
   }
 
+  hasPermForComment = (currentUserId) => {
+    if (hasPerm('BD.manageProjectBD')) return true;    
+    if (!this.state.currentBD) return false;
+
+    const record = this.state.currentBD;
+    if (currentUserId === record.createuser) return true;
+    if (record.contractors && currentUserId === record.contractors.id) return true;
+
+    let normalManagerIds = [];
+    if (record.manager) {
+      normalManagerIds = record.manager.filter(f => f.type === 3).map(m => m.manager.id);
+    }
+    if (normalManagerIds.includes(currentUserId)) return true;
+    return false;
+  }
+
   render() {
     const currentUser = getUserInfo();
     const currentUserId = currentUser && currentUser.id;
@@ -587,19 +603,20 @@ class ProjectBDList extends React.Component {
             />
           </Col>
           <Col span={6}>
-            <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column',  position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
+            <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>行动计划</div>
                 <Tooltip title="添加行动计划">
-                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })}/>
+                  <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
                 </Tooltip>
               </div>
               <div style={{ padding: 16, overflowY: 'auto' }}>
-                <BDCommentsWithoutForm
-                  BDComments={this.state.currentBD && this.state.currentBD.BDComments}
-                  // onAdd={this.handleAddComment}
-                  onEdit={this.handleEditCommentIconClick}
-                  onDelete={this.handleDeleteComment} />
+                {this.hasPermForComment(currentUserId) ? (
+                  <BDCommentsWithoutForm
+                    BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+d                    onEdit={this.handleEditCommentIconClick}
+                    onDelete={this.handleDeleteComment} />
+                ) : '没有权限'}
               </div>
             </div>
           </Col>
