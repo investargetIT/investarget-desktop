@@ -614,7 +614,7 @@ class ProjectBDList extends React.Component {
                 {this.hasPermForComment(currentUserId) ? (
                   <BDCommentsWithoutForm
                     BDComments={this.state.currentBD && this.state.currentBD.BDComments}
-d                    onEdit={this.handleEditCommentIconClick}
+                    onEdit={this.handleEditCommentIconClick}
                     onDelete={this.handleDeleteComment} />
                 ) : '没有权限'}
               </div>
@@ -643,7 +643,7 @@ d                    onEdit={this.handleEditCommentIconClick}
         </Modal>
 
         <Modal
-          title="添加行动计划"
+          title="编辑行动计划"
           visible={this.state.displayAddBDCommentModal}
           footer={null}
           onCancel={() => this.setState({ displayAddBDCommentModal: false })}
