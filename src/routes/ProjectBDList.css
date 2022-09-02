@@ -1,3 +1,9 @@
 .current-row {
     background: #fafafa;
 }
+.create-comment-icon {
+    color: #339bd2;
+}
+.create-comment-icon:hover {
+    color: #59b4de;
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -20,7 +20,7 @@ import { isLogin } from '../utils/util'
 import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import BDComments, { BDCommentsWithoutForm } from '../components/BDComments';
 import styles from './ProjectBDList.css';
 
@@ -580,7 +580,12 @@ class ProjectBDList extends React.Component {
           </Col>
           <Col span={6}>
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column',  position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
-              <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0' }}>行动计划</div>
+              <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>行动计划</div>
+                <Tooltip title="添加行动计划">
+                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} />
+                </Tooltip>
+              </div>
               <div style={{ padding: 16, overflowY: 'auto' }}>
                 <BDCommentsWithoutForm
                   BDComments={this.state.currentBD && this.state.currentBD.BDComments}
