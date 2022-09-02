@@ -442,7 +442,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
+                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
               </Popover>
               :
               <Popover title="项目方联系方式" content={
@@ -591,7 +591,7 @@ class ProjectBDList extends React.Component {
                   },
                 };
               }}
-              rowClassName={(record, index) => {
+              rowClassName={record => {
                 return this.state.currentBD && record.id === this.state.currentBD.id ? styles['current-row'] : '';
               }}
               onChange={this.handleTableChange}
