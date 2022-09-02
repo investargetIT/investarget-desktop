@@ -21,7 +21,7 @@ import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import BDComments, { BDCommentsWithoutForm } from '../components/BDComments';
+import BDComments, { BDCommentsWithoutForm, AddBDComment } from '../components/BDComments';
 import styles from './ProjectBDList.css';
 
 class ProjectBDList extends React.Component {
@@ -51,7 +51,9 @@ class ProjectBDList extends React.Component {
       source: getURLParamValue(this.props, 'status') || 0, 
       status: null, 
       isShowModifyStatusModal: false,
-      currentBD:null
+      currentBD:null,
+
+      displayAddBDCommentModal: false,
     }
   }
 
@@ -235,6 +237,7 @@ class ProjectBDList extends React.Component {
           currentBD,
           ...list.slice(index + 1),
         ],
+        displayAddBDCommentModal: false,
       })
     });
   }
@@ -583,7 +586,7 @@ class ProjectBDList extends React.Component {
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>行动计划</div>
                 <Tooltip title="添加行动计划">
-                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} />
+                <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true })}/>
                 </Tooltip>
               </div>
               <div style={{ padding: 16, overflowY: 'auto' }}>
@@ -611,6 +614,21 @@ class ProjectBDList extends React.Component {
 
         <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false} destroyOnClose={true}>
           <BDComments
+            BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+            onAdd={this.handleAddComment}
+            onEdit={this.handleEditComment}
+            onDelete={this.handleDeleteComment} />
+        </Modal>
+
+        <Modal
+          title="添加行动计划"
+          visible={this.state.displayAddBDCommentModal}
+          footer={null}
+          onCancel={() => this.setState({ displayAddBDCommentModal: false })}
+          maskClosable={false}
+          destroyOnClose={true}
+        >
+          <AddBDComment
             BDComments={this.state.currentBD && this.state.currentBD.BDComments}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}

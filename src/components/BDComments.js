@@ -185,6 +185,173 @@ function BDComments(props) {
   );
 }
 
+export function AddBDComment(props) {
+  const { BDComments, onAdd, onEdit, onDelete } = props;
+
+  const [form] = Form.useForm();
+  const [speechFile, setSpeechFile] = useState(null);
+  const [bdComments, setBdComments] = useState([]);
+  const [comment, setComment] = useState(null);
+
+  const handleFinish = (values) => {
+    const { comments, fileList, speechToText } = values;
+    // TODO: 提取上传文件的组件
+    let bucket = null;
+    let key = null;
+    let filename = null;
+    if (fileList && fileList[0]) {
+      bucket = 'file';
+      key = fileList[0].key;
+      filename = fileList[0].name;
+    }
+    const data =  {
+      comments,
+      bucket,
+      key,
+      filename,
+    }
+    if (comment) {
+      onEdit(comment.id, data, speechToText ? speechFile : null);
+    } else {
+      onAdd(data, speechToText ? speechFile : null);
+    }
+    setComment(null);
+    setSpeechFile(null);
+    form.resetFields();
+  }
+
+  const reset = () => {
+    setComment(null);
+    setSpeechFile(null);
+    form.resetFields();
+  };
+
+  const handleEdit = async (comment) => {
+    setComment(comment);
+    const { comments, bucket, key } = comment;
+    let fileList = null;
+    if (bucket && key) {
+      const result = await api.downloadUrl(comment.bucket, comment.key);
+      fileList = [
+        {
+          uid: '-1',
+          status: 'done',
+          name: comment.filename || comment.key,
+          bucket: comment.bucket,
+          key: comment.key,
+          url: result.data,
+        },
+      ];
+    }
+    form.setFieldsValue({
+      comments,
+      fileList,
+    });
+  }
+
+  const normFile = (e) => {
+    const fileList = Array.isArray(e) ? e : (e && e.fileList);
+    const file = fileList[0];
+    return file ? [
+      {
+        ...file,
+        bucket: file.response ? file.response.result.bucket : file.bucket,
+        key: file.response ? file.response.result.realfilekey : file.key,
+        url: file.response ? file.response.result.url : file.url,
+      },
+    ] : [];
+  };
+
+  const updateComments = (BDComments) => {
+    if (BDComments) {
+      Promise.all(BDComments.map((comment) => {
+        if (!comment.url && comment.key && comment.bucket) {
+          return api.downloadUrl(comment.bucket, comment.key)
+            .then((res) => ({ ...comment, url: res.data }))
+            .catch(() => comment);
+        } else {
+          return Promise.resolve(comment);
+        }
+      })).then((bdComments) => {
+        setBdComments(bdComments);
+      });
+    } else {
+      setBdComments([]);
+    }
+  };
+
+  useEffect(() => {
+    updateComments(BDComments);
+  }, [BDComments]);
+
+  const handleUploadChange = (e) => {
+    if (e.file.status === 'done') {
+      const file = e.file.originFileObj;
+      if (/\.(wav|flac|opus|m4a|mp3)$/.test(file.name)) {
+        setSpeechFile(file);
+      } else {
+        setSpeechFile(null);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <Form
+        style={{ width: 400 }}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        form={form}
+        onFinish={handleFinish}
+        preserve={false}
+      >
+        <Form.Item
+          label="备注"
+          name="comments"
+          rules={[{ required: true, message: '请填写备注' }]}
+        >
+          <Input.TextArea rows={3} />
+        </Form.Item>
+        <Form.Item
+          label="上传附件"
+          name="fileList"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+        >
+          <Upload 
+            name="file"
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
+            maxCount={1}
+            onChange={handleUploadChange}
+          >
+            <Button icon={<UploadOutlined />} type="link">上传附件</Button>
+          </Upload>
+        </Form.Item>
+        {speechFile && (
+          <Form.Item
+            label="语音转文字"
+            name="speechToText"
+            valuePropName="checked"
+            extra="目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语"
+          >
+            <Checkbox />
+          </Form.Item>
+        )}
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            确定
+          </Button>
+          <Button htmlType="button" onClick={reset} style={{marginLeft: 8}}>
+            取消
+          </Button>
+        </Form.Item>
+      </Form>
+
+    </div>
+  );
+}
+
 export function BDCommentsWithoutForm(props) {
   const { BDComments, onAdd, onEdit, onDelete } = props;
 
