@@ -99,13 +99,20 @@ class ProjectBDList extends React.Component {
           list[index].hasRelation=item.data           
         })
         this.setState({ loading: false, total, list })
+
+        // Set default currentBD
+        let currentBD = null;
+        if (list.length > 0) {
+          currentBD = list[0];
+        }
         // 更新 currentBD
         if (this.state.currentBD) {
           const index = list.findIndex((item) => item.id === this.state.currentBD.id);
-          this.setState({
-            currentBD: list[index],
-          });
+          if (index !== -1) {
+            currentBD = list[index];
+          }
         }
+        this.setState({ currentBD });
       })
     }).catch(error => {
       handleError(error)
