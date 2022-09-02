@@ -572,9 +572,9 @@ class ProjectBDList extends React.Component {
             />
           </Col>
           <Col span={6}>
-            <div style={{ height: '100%', background: '#fafafa'}}>
+            <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column',  position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0' }}>行动计划</div>
-              <div style={{ padding: 16, height: 685 - 54, overflowY: 'scroll' }}>
+              <div style={{ padding: 16, overflowY: 'auto' }}>
                 <BDCommentsWithoutForm
                   BDComments={this.state.currentBD && this.state.currentBD.BDComments}
                   onAdd={this.handleAddComment}
