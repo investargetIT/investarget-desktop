@@ -435,6 +435,7 @@ class ProjectDetail extends React.Component {
           >
             <TabPane tab="详情" key="details" />
             <TabPane tab="项目进程" key="progress" />
+            <TabPane tab="文件下载" key="downloads" />
           </Tabs>
 
         </Card>
@@ -459,9 +460,9 @@ class ProjectDetail extends React.Component {
               <Detail project={project} />
             </Card>
 
-            <Card title={i18n('project.file_download')} style={{ marginBottom: 20 }}>
+            {/* <Card title={i18n('project.file_download')} style={{ marginBottom: 20 }}>
               <DownloadFiles projectId={id} />
-            </Card>
+            </Card> */}
           </div>
         }
 
@@ -470,6 +471,12 @@ class ProjectDetail extends React.Component {
             <div style={{ width: '50%' }}><TimelineViewNew projID={id} /></div>
           </Card>
         }
+
+        {this.state.activeTabKey === 'downloads' && (
+          <Card title={i18n('project.file_download')}>
+            <DownloadFiles projectId={id} />
+          </Card>
+        )}
 
         <Modal
           visible={this.state.visible}
