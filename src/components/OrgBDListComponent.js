@@ -251,7 +251,7 @@ class OrgBDListComponent extends React.Component {
     if (reqDataroom.data.count > 0) {
       this.dataroomID = reqDataroom.data.data[0].id;
     } else {
-      console.warning('Related Dataroom Not Found!');
+      console.warn('Related Dataroom Not Found!');
     }
   }
 
