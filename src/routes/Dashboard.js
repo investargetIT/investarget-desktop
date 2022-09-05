@@ -32,6 +32,7 @@ import {
 } from '@ant-design/icons';
 import MySchedule from '../components/MySchedule';
 import Fullscreen from 'react-full-screen';
+import { PieChart, Pie, Cell } from 'recharts';
 
 const { TabPane } = Tabs;
 const iframeStyle = {
@@ -39,6 +40,7 @@ const iframeStyle = {
   width: '100%',
   height: '800px',
 }
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 function Dashboard(props) {
   const userInfo = getUserInfo();
@@ -51,6 +53,16 @@ function Dashboard(props) {
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(null);
   const [activeTabKey, setActiveTabKey] = useState('0');
+  const [pieChartData, setPieChartData] = useState([
+    {
+      name: "项目BD备注数",
+      value: 94,
+    },
+    {
+      name: "个人机构信息贡献数",
+      value: 44,
+    },
+  ]);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -285,6 +297,64 @@ function Dashboard(props) {
     return [];
   }
 
+  function generateUserDescription() {
+    if (!userInfo) return '';
+    const arr = [];
+    if (userInfo.indGroup) {
+      arr.push('项目组 ' + userInfo.indGroup.name);
+    }
+    if (userInfo.entryTime) {
+      arr.push('入职时间 ' + userInfo.entryTime.slice(0, 10));
+    }
+    if (userInfo.indGroup) {
+      arr.push('进行中的项目数' + projNum);
+    }
+    return arr.join(' | ');
+  }
+
+  function displayPieChartLabel({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    index
+  }) {
+    const RADIAN = Math.PI / 180;
+    const radius = 25 + innerRadius + (outerRadius - innerRadius);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill={COLORS[index]}
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+      >
+        {pieChartData[index].name} ({value})
+      </text>
+    );
+  }
+
+  function generateTrainingDocsTitle() {
+    const titleArr = [
+      { name: '协议\n模板', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=28370' },
+      { name: '系统\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=26203' },
+      { name: '员工\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=26203' },
+    ];
+    const elements = titleArr.map((m, i) => (
+      <div key={i} style={{ marginRight: 10, border: '1px solid #339bd2', borderRadius: 4, fontSize: 10, width: 30, height: 40, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Link to={m.link}>{m.name}</Link>
+      </div>
+    ));
+    return (
+      <div style={{ display: 'flex' }}>{elements}</div>
+    );
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -297,7 +367,7 @@ function Dashboard(props) {
         <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo && userInfo.photourl} />
         <div style={{ marginLeft: 20 }}>
           <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo && userInfo.username} 祝您开心每一天！</div>
-          {userInfo && userInfo.indGroup && <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{userInfo.indGroup.name} |  项目数 {projNum}</div>}
+          <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{generateUserDescription()}</div>
         </div>
       </div>
 
@@ -329,6 +399,24 @@ function Dashboard(props) {
                 <TabPane tab="项目BD" key="0">
                   <ProjectBdTable />
                 </TabPane>
+                <TabPane tab="饼图" key="-1">
+                <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <PieChart width={500} height={350}>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={120}
+                      label={displayPieChartLabel}
+                      dataKey="value"
+                    >
+                      {pieChartData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                  </div>
+                </TabPane>
               </Tabs>
             </div>
           </Col>
@@ -349,7 +437,7 @@ function Dashboard(props) {
               </Carousel>
             </Card>
 
-            <Card title="公司培训文件" bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
+            <Card title={generateTrainingDocsTitle()} bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
               {files.map(m => (
                 <div key={m.id} onClick={() => handleCompanyFileClick(m)} style={{ cursor: 'pointer', height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
                   {getFileIconByType(getFileTypeByName(m.filename))}

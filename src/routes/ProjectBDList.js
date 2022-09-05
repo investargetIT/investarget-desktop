@@ -442,7 +442,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <a target="_blank" href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
+                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
               </Popover>
               :
               <Popover title="项目方联系方式" content={
@@ -591,7 +591,7 @@ class ProjectBDList extends React.Component {
                   },
                 };
               }}
-              rowClassName={(record, index) => {
+              rowClassName={record => {
                 return this.state.currentBD && record.id === this.state.currentBD.id ? styles['current-row'] : '';
               }}
               onChange={this.handleTableChange}
@@ -606,9 +606,11 @@ class ProjectBDList extends React.Component {
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>行动计划</div>
-                <Tooltip title="添加行动计划">
-                  <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
-                </Tooltip>
+                {this.hasPermForComment(currentUserId) && (
+                  <Tooltip title="添加行动计划">
+                    <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
+                  </Tooltip>
+                )}
               </div>
               <div style={{ padding: 16, overflowY: 'auto' }}>
                 {this.hasPermForComment(currentUserId) ? (

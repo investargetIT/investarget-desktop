@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus, getURLParamValue } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -20,7 +20,7 @@ import {
 import UploadDir from './UploadDir';
 import _ from 'lodash';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
+import { Link, withRouter } from 'dva/router';
 import moment from 'moment';
 
 const { DirectoryTree } = Tree;
@@ -154,7 +154,13 @@ function DataroomFileManage({
   isProjTrader,
   newDataroomFile,
   allUserWithFile,
+  location,
 }) {
+  const keyFromURL = getURLParamValue({ location }, 'key');
+  const defaultSelectedKeys = keyFromURL ? [parseInt(keyFromURL)] : [];
+
+  const [defaultExpandedKeys, setDefaultExpandedKeys] = useState([-999]);
+
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [subFilesOfSelectedFolder, setSubFilesOfSelectedFolder] = useState([]);
@@ -840,6 +846,7 @@ function DataroomFileManage({
   }
   
   useEffect(() => {
+    if (data.length === 0) return;
     const newData = getTableDataSource(data);
     const newTreeData = generateTreeData(newData);
     setDirData(newTreeData);
@@ -847,6 +854,13 @@ function DataroomFileManage({
     const newDataForMoveFile = data.filter(f => f.isFolder);
     const newTreeDataForMoveFile = generateTreeData(newDataForMoveFile);
     setTreeDataForMoveFile(newTreeDataForMoveFile);
+    if (defaultSelectedKeys.length > 0) {
+      onSelect(defaultSelectedKeys);
+      let defaultKeyParents = findAllParents(defaultSelectedKeys[0]);
+      defaultKeyParents = defaultKeyParents.map(m => m.id);
+      defaultKeyParents = defaultKeyParents.concat(-999);
+      setDefaultExpandedKeys(defaultKeyParents);
+    }
   }, [data]);
 
   function handleCreateNewFolderClick(folder) {
@@ -1238,7 +1252,7 @@ function DataroomFileManage({
               <DirectoryTree
                 checkable
                 height={700}
-                defaultExpandedKeys={[-999]}
+                defaultExpandedKeys={defaultExpandedKeys}
                 onSelect={onSelect}
                 // onExpand={onExpand}
                 // onLoad={onLoad}
@@ -1249,6 +1263,7 @@ function DataroomFileManage({
                 expandAction="doubleClick"
                 checkedKeys={checkedFiles}
                 onCheck={handleDirectoryTreeChecked}
+                defaultSelectedKeys={defaultSelectedKeys}
               />
             }
             {loading && <div style={{ margin: 20, padding: 30, textAlign: 'center' }}>
@@ -1575,4 +1590,4 @@ function DataroomFileManage({
   );
 }
 
-export default connect()(DataroomFileManage);
+export default connect()(withRouter(DataroomFileManage));

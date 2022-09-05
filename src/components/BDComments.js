@@ -1,5 +1,5 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
-import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select } from 'antd';
+import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
@@ -464,50 +464,52 @@ function BDCommnet({ comment, onEdit, onDelete }) {
 
   return (
     <div key={comment.id} style={{ marginBottom: 8 }}>
-    <p>
-      <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
+      <p>
+        <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
 
-      { hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ? 
-      <Button type="link" onClick={onEdit}><EditOutlined /></Button>
-      : null }
-      
-      &nbsp;
-    {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-        <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
-          <Button type="link"><DeleteOutlined /></Button>
-        </Popconfirm>
-        : null}
-    </p>
-    <div style={{ display: 'flex' }}>
-      {comment.createuserobj &&
-        <div style={{ marginRight: 10 }}>
-          <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
-            <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
-          </a>
-        </div>
-      }
-      <div style={{ flex: 1, overflow: 'hidden' }}>
-        <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
-        {comment.url && (
-          <FileLink
-            filekey={comment.key}
-            url={comment.url}
-            filename={comment.filename || comment.key}
-          />
-        )}
-        {comment.transid && translateSuccess && (
-          <div style={{ marginTop: 4 }}>
-            <Link
-              style={{ color: 'red' }}
-              to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
-            >
-              语音转文字
-            </Link>
+        {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
+          <Button type="link" onClick={onEdit}><EditOutlined /></Button>
+          : null}
+
+        &nbsp;
+        {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
+          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
+            <Button type="link"><DeleteOutlined /></Button>
+          </Popconfirm>
+          : null}
+      </p>
+      <div style={{ display: 'flex' }}>
+        {comment.createuserobj &&
+          <div style={{ marginRight: 10 }}>
+            <Tooltip title={comment.createuserobj.username}>
+              <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+                <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+              </a>
+            </Tooltip>
           </div>
-        )}
+        }
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
+          {comment.url && (
+            <FileLink
+              filekey={comment.key}
+              url={comment.url}
+              filename={comment.filename || comment.key}
+            />
+          )}
+          {comment.transid && translateSuccess && (
+            <div style={{ marginTop: 4 }}>
+              <Link
+                style={{ color: 'red' }}
+                to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
+              >
+                语音转文字
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  </div>
   );
 }
 
