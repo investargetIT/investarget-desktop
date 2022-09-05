@@ -92,7 +92,7 @@ function ProjectCostDetail(props) {
   const [orgBdOrgName, setOrgBdOrgName] = useState('');
 
   useEffect(() => {
-    props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
+    // props.dispatch({ type: 'app/getSourceList', payload: ['transactionStatus'] });
     // props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     
     async function getAndSetProjectWithProgress() {
@@ -430,9 +430,9 @@ function ProjectCostDetail(props) {
   );
 }
 
-function mapStateToProps(state) {
-  const { transactionStatus, orgbdres } = state.app;
-  return { transactionStatus, orgbdres };
-}
+// function mapStateToProps(state) {
+//   const { transactionStatus, orgbdres } = state.app;
+//   return { transactionStatus, orgbdres };
+// }
 
-export default connect(mapStateToProps)(ProjectCostDetail);
+export default connect()(ProjectCostDetail);
