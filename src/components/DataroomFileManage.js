@@ -159,6 +159,8 @@ function DataroomFileManage({
   const keyFromURL = getURLParamValue({ location }, 'key');
   const defaultSelectedKeys = keyFromURL ? [parseInt(keyFromURL)] : [];
 
+  const [defaultExpandedKeys, setDefaultExpandedKeys] = useState([-999]);
+
   const [searchContent, setSearchContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [subFilesOfSelectedFolder, setSubFilesOfSelectedFolder] = useState([]);
@@ -844,6 +846,7 @@ function DataroomFileManage({
   }
   
   useEffect(() => {
+    if (data.length === 0) return;
     const newData = getTableDataSource(data);
     const newTreeData = generateTreeData(newData);
     setDirData(newTreeData);
@@ -851,7 +854,13 @@ function DataroomFileManage({
     const newDataForMoveFile = data.filter(f => f.isFolder);
     const newTreeDataForMoveFile = generateTreeData(newDataForMoveFile);
     setTreeDataForMoveFile(newTreeDataForMoveFile);
-    onSelect(defaultSelectedKeys);
+    if (defaultSelectedKeys.length > 0) {
+      onSelect(defaultSelectedKeys);
+      let defaultKeyParents = findAllParents(defaultSelectedKeys[0]);
+      defaultKeyParents = defaultKeyParents.map(m => m.id);
+      defaultKeyParents = defaultKeyParents.concat(-999);
+      setDefaultExpandedKeys(defaultKeyParents);
+    }
   }, [data]);
 
   function handleCreateNewFolderClick(folder) {
@@ -1243,7 +1252,7 @@ function DataroomFileManage({
               <DirectoryTree
                 checkable
                 height={700}
-                defaultExpandedKeys={[-999]}
+                defaultExpandedKeys={defaultExpandedKeys}
                 onSelect={onSelect}
                 // onExpand={onExpand}
                 // onLoad={onLoad}
