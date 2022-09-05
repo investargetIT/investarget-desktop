@@ -339,6 +339,22 @@ function Dashboard(props) {
     );
   }
 
+  function generateTrainingDocsTitle() {
+    const titleArr = [
+      { name: '协议\n模板', link: '' },
+      { name: '系统\n手册', link: '' },
+      { name: '员工\n手册', link: '' },
+    ];
+    const elements = titleArr.map((m, i) => (
+      <div key={i} style={{ marginRight: 10, border: '1px solid #339bd2', borderRadius: 4, fontSize: 10, width: 30, height: 40, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Link to={m.link}>{m.name}</Link>
+      </div>
+    ));
+    return (
+      <div style={{ display: 'flex' }}>{elements}</div>
+    );
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -392,6 +408,7 @@ function Dashboard(props) {
                       cy="50%"
                       outerRadius={120}
                       label={displayPieChartLabel}
+                      dataKey="value"
                     >
                       {pieChartData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index]} />
@@ -420,7 +437,7 @@ function Dashboard(props) {
               </Carousel>
             </Card>
 
-            <Card title="公司培训文件" bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
+            <Card title={generateTrainingDocsTitle()} bordered={false} extra={<Link to="/app/dataroom/company/list">全部文件</Link>} bodyStyle={{ padding: 0, paddingBottom: 20 }} style={{ minHeight: 400 }}>
               {files.map(m => (
                 <div key={m.id} onClick={() => handleCompanyFileClick(m)} style={{ cursor: 'pointer', height: 80, padding: '0 20px', display: 'flex', alignItems: 'center', borderBottom: '1px solid #e6e6e6' }}>
                   {getFileIconByType(getFileTypeByName(m.filename))}
