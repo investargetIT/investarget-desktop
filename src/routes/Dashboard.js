@@ -32,6 +32,7 @@ import {
 } from '@ant-design/icons';
 import MySchedule from '../components/MySchedule';
 import Fullscreen from 'react-full-screen';
+import { PieChart, Pie, Cell } from 'recharts';
 
 const { TabPane } = Tabs;
 const iframeStyle = {
@@ -39,6 +40,7 @@ const iframeStyle = {
   width: '100%',
   height: '800px',
 }
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 function Dashboard(props) {
   const userInfo = getUserInfo();
@@ -51,6 +53,16 @@ function Dashboard(props) {
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(null);
   const [activeTabKey, setActiveTabKey] = useState('0');
+  const [pieChartData, setPieChartData] = useState([
+    {
+      name: "项目BD备注数",
+      value: 94,
+    },
+    {
+      name: "个人机构信息贡献数",
+      value: 44,
+    },
+  ]);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
@@ -300,6 +312,33 @@ function Dashboard(props) {
     return arr.join(' | ');
   }
 
+  function displayPieChartLabel({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    index
+  }) {
+    const RADIAN = Math.PI / 180;
+    const radius = 25 + innerRadius + (outerRadius - innerRadius);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill={COLORS[index]}
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+      >
+        {pieChartData[index].name} ({value})
+      </text>
+    );
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -343,6 +382,23 @@ function Dashboard(props) {
                 ))}
                 <TabPane tab="项目BD" key="0">
                   <ProjectBdTable />
+                </TabPane>
+                <TabPane tab="饼图" key="-1">
+                <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <PieChart width={500} height={350}>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={120}
+                      label={displayPieChartLabel}
+                    >
+                      {pieChartData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                  </div>
                 </TabPane>
               </Tabs>
             </div>
