@@ -307,16 +307,19 @@ function Dashboard(props) {
   function generateUserDescription() {
     if (!userInfo) return '';
     const arr = [];
-    if (userInfo.indGroup) {
-      arr.push('项目组 ' + userInfo.indGroup.name);
+    // if (userInfo.indGroup) {
+    //   arr.push('项目组 ' + userInfo.indGroup.name);
+    // }
+    if (userInfo.title) {
+      arr.push('职位: ' + userInfo.title.name);
     }
     if (userInfo.entryTime) {
-      arr.push('入职时间 ' + userInfo.entryTime.slice(0, 10));
+      arr.push('入职时间: ' + userInfo.entryTime.slice(0, 10));
     }
-    if (userInfo.indGroup) {
-      arr.push('进行中的项目数' + projNum);
-    }
-    return arr.join(' | ');
+    // if (userInfo.indGroup) {
+    //   arr.push('进行中的项目数' + projNum);
+    // }
+    return arr.join('&nbsp;&nbsp;');
   }
 
   function displayPieChartLabel({
@@ -374,7 +377,7 @@ function Dashboard(props) {
         <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo && userInfo.photourl} />
         <div style={{ marginLeft: 20 }}>
           <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo && userInfo.username} 祝您开心每一天！</div>
-          <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }}>{generateUserDescription()}</div>
+          <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }} dangerouslySetInnerHTML={{ __html: generateUserDescription() }} />
         </div>
       </div>
 
