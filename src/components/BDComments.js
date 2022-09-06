@@ -1,5 +1,5 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
-import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip } from 'antd';
+import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
 import * as api from '../api'
@@ -356,6 +356,7 @@ export function EditBDComment(props) {
               placeholder="请选择附件目录"
               optionFilterProp="children"
               filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+              style={{ width: 150 }}
             >
               {fixedDirs.map(dir => <Option key={dir} value={dir}>{dir}</Option>)}
             </Select>
@@ -410,28 +411,28 @@ export function BDCommentsWithoutForm(props) {
   const [bdComments, setBdComments] = useState([]);
   const [comment, setComment] = useState(null);
 
-  const handleEdit = async (comment) => {
-    setComment(comment);
-    const { comments, bucket, key } = comment;
-    let fileList = null;
-    if (bucket && key) {
-      const result = await api.downloadUrl(comment.bucket, comment.key);
-      fileList = [
-        {
-          uid: '-1',
-          status: 'done',
-          name: comment.filename || comment.key,
-          bucket: comment.bucket,
-          key: comment.key,
-          url: result.data,
-        },
-      ];
-    }
-    form.setFieldsValue({
-      comments,
-      fileList,
-    });
-  }
+  // const handleEdit = async (comment) => {
+  //   setComment(comment);
+  //   const { comments, bucket, key } = comment;
+  //   let fileList = null;
+  //   if (bucket && key) {
+  //     const result = await api.downloadUrl(comment.bucket, comment.key);
+  //     fileList = [
+  //       {
+  //         uid: '-1',
+  //         status: 'done',
+  //         name: comment.filename || comment.key,
+  //         bucket: comment.bucket,
+  //         key: comment.key,
+  //         url: result.data,
+  //       },
+  //     ];
+  //   }
+  //   form.setFieldsValue({
+  //     comments,
+  //     fileList,
+  //   });
+  // }
 
   const updateComments = (BDComments) => {
     if (BDComments) {
@@ -512,11 +513,14 @@ function BDCommnet({ comment, onEdit, onDelete }) {
         <div style={{ flex: 1, overflow: 'hidden' }}>
           <p dangerouslySetInnerHTML={{ __html: comment.comments.replace(/\n/g, '<br>') }}></p>
           {comment.url && (
-            <FileLink
-              filekey={comment.key}
-              url={comment.url}
-              filename={comment.filename || comment.key}
-            />
+            <div>
+              <FileLink
+                filekey={comment.key}
+                url={comment.url}
+                filename={comment.filename || comment.key}
+              />
+              {comment.filetype && <Tag>{comment.filetype}</Tag>}
+            </div>
           )}
           {comment.transid && translateSuccess && (
             <div style={{ marginTop: 4 }}>
