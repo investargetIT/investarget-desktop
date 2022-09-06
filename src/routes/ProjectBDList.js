@@ -587,7 +587,7 @@ class ProjectBDList extends React.Component {
             <Table
               onRow={record => {
                 return {
-                  onClick: () => {
+                  onMouseEnter: () => {
                     this.setState({ currentBD: record }); 
                   },
                 };
