@@ -152,7 +152,7 @@ class ProjectBDList extends React.Component {
     this.setState({ visible: false, currentBD: null })
   }
 
-  handleAddComment = async ({ comments, bucket, key, filename }, speechFile) => {
+  handleAddComment = async ({ comments, bucket, key, filename, filetype }, speechFile) => {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
@@ -174,6 +174,7 @@ class ProjectBDList extends React.Component {
       key,
       filename,
       transid,
+      filetype,
     }
     try {
       await api.addProjBDCom(param)

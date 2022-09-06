@@ -218,7 +218,7 @@ export function EditBDComment(props) {
   // const [comment, setComment] = useState(null);
 
   const handleFinish = (values) => {
-    const { comments, fileList, speechToText } = values;
+    const { comments, fileList, speechToText, filetype } = values;
     // TODO: 提取上传文件的组件
     let bucket = null;
     let key = null;
@@ -233,6 +233,7 @@ export function EditBDComment(props) {
       bucket,
       key,
       filename,
+      filetype,
     }
     if (comment) {
       onEdit(comment.id, data, speechToText ? speechFile : null);
@@ -345,7 +346,7 @@ export function EditBDComment(props) {
         <Form.Item label="附件">
 
           <Form.Item
-            name="fileType"
+            name="filetype"
             style={{ display: 'inline-block', marginBottom: 0 }}
           >
             <Select
