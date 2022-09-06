@@ -253,7 +253,7 @@ export function EditBDComment(props) {
 
   const handleEdit = async (comment) => {
     // setComment(comment);
-    const { comments, bucket, key } = comment;
+    const { comments, bucket, key, filetype } = comment;
     let fileList = null;
     if (bucket && key) {
       const result = await api.downloadUrl(comment.bucket, comment.key);
@@ -270,6 +270,7 @@ export function EditBDComment(props) {
     }
     form.setFieldsValue({
       comments,
+      filetype,
       fileList,
     });
   }
