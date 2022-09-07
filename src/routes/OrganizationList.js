@@ -8,7 +8,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
@@ -326,16 +326,38 @@ class OrganizationList extends React.Component {
 
           </div>
 
-          <Table
-            onChange={this.handleTableChange}
-            style={tableStyle}
-            columns={columns}
-            dataSource={list}
-            rowKey={record => record.id}
-            loading={loading}
-            pagination={false}
-            rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
-          />
+          <Row>
+            <Col span={12}>
+              <Table
+                onChange={this.handleTableChange}
+                style={tableStyle}
+                columns={columns}
+                dataSource={list}
+                rowKey={record => record.id}
+                loading={loading}
+                pagination={false}
+                rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
+              /></Col>
+            <Col span={6}>
+              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
+                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>备注</div>
+                </div>
+                <div style={{ padding: 16, overflowY: 'auto' }}>
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
+                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>投资人</div>
+                </div>
+                <div style={{ padding: 16, overflowY: 'auto' }}>
+                </div>
+              </div>
+            </Col>
+          </Row>
+         
 
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 13, marginBottom: 24 }}>

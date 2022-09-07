@@ -521,7 +521,7 @@ class ProjectBDList extends React.Component {
             normalManagerIds = record.manager.filter(f => f.type === 3).map(m => m.manager.id);
           }
 
-          return (<span style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          return (<span style={{ display:'flex', alignItems: 'center' }}>
             <div>
               {hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
