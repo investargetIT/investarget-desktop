@@ -293,32 +293,38 @@ function Dashboard(props) {
     }
   }
 
-  function getOngoingProjectsFeishuUrl(indGroups) {
+  function getUserIndGroupDetails(indGroups) {
     if (props.industryGroup.length > 0) {
       const result = indGroups.map(m => {
         const group = props.industryGroup.find(f => f.id === m);
         return group;
       });
-      return result.filter(f => f.ongongingurl);
+      return result;
     }
     return [];
+  }
+
+  function getOngoingProjectsFeishuUrl(indGroups) {
+    const indGroupsDetails = getUserIndGroupDetails(indGroups);
+    return indGroupsDetails.filter(f => f.ongongingurl);
   }
 
   function generateUserDescription() {
     if (!userInfo) return '';
     const arr = [];
-    // if (userInfo.indGroup) {
-    //   arr.push('项目组 ' + userInfo.indGroup.name);
-    // }
-    if (userInfo.title) {
-      arr.push('职位: ' + userInfo.title.name);
+    if (userInfo.indGroup) {
+      const indGroups = getUserIndGroupDetails(userInfo.indGroups);
+      arr.push('项目组 ' + indGroups.map(m => m.name).join('、'));
     }
+    // if (userInfo.title) {
+    //   arr.push('职位: ' + userInfo.title.name);
+    // }
     if (userInfo.entryTime) {
       arr.push('入职时间: ' + userInfo.entryTime.slice(0, 10));
     }
-    // if (userInfo.indGroup) {
-    //   arr.push('进行中的项目数' + projNum);
-    // }
+    if (userInfo.indGroup) {
+      arr.push('进行中的项目数' + projNum);
+    }
     return arr.join('&nbsp;&nbsp;');
   }
 
@@ -399,34 +405,34 @@ function Dashboard(props) {
           <Col span={16}>
             <div className="card-container min-height">
               <Tabs type="card" size="large" activeKey={activeTabKey} onChange={key => setActiveTabKey(key)}>
-                {userInfo && userInfo.indGroups && userInfo.thirdUnionID && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
-                  <TabPane tab={<span>{m.name}任务<Button style={{ marginLeft: 10 }} disabled={parseInt(activeTabKey) !== m.id} type="text" size="small" onClick={() => setIsFullScreen(m.id)} icon={<FullscreenOutlined />}></Button></span>} key={m.id}>
-                    <Fullscreen enabled={isFullScreen === m.id} onChange={isFullScreen => {window.echo('if', isFullScreen); setIsFullScreen(isFullScreen ? m.id : null)}}>
-                      <iframe key={m.id} src={m.ongongingurl} style={{ ...iframeStyle, height: isFullScreen === m.id ? '100%' : 552 }} />
-                    </Fullscreen>
-                  </TabPane>
-                ))}
                 <TabPane tab="项目BD" key="0">
                   <ProjectBdTable />
                 </TabPane>
                 <TabPane tab="业务数据" key="-1">
-                <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <PieChart width={600} height={400}>
-                    <Pie
-                      data={pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={120}
-                      label={displayPieChartLabel}
-                      dataKey="value"
-                    >
-                      {pieChartData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                      ))}
-                    </Pie>
-                  </PieChart>
+                  <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <PieChart width={600} height={400}>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={120}
+                        label={displayPieChartLabel}
+                        dataKey="value"
+                      >
+                        {pieChartData.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                        ))}
+                      </Pie>
+                    </PieChart>
                   </div>
                 </TabPane>
+                {userInfo && userInfo.indGroups && userInfo.thirdUnionID && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
+                  <TabPane tab={<span>{m.name}任务<Button style={{ marginLeft: 10 }} disabled={parseInt(activeTabKey) !== m.id} type="text" size="small" onClick={() => setIsFullScreen(m.id)} icon={<FullscreenOutlined />}></Button></span>} key={m.id}>
+                    <Fullscreen enabled={isFullScreen === m.id} onChange={isFullScreen => { window.echo('if', isFullScreen); setIsFullScreen(isFullScreen ? m.id : null) }}>
+                      <iframe key={m.id} src={m.ongongingurl} style={{ ...iframeStyle, height: isFullScreen === m.id ? '100%' : 552 }} />
+                    </Fullscreen>
+                  </TabPane>
+                ))}
               </Tabs>
             </div>
           </Col>
