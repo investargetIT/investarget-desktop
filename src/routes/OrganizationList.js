@@ -85,7 +85,7 @@ function BDCommnet({ comment, onEdit, onDelete }) {
 
   return (
     <div key={comment.id} style={{ marginBottom: 8 }}>
-      <p>
+      <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
 
         {/* {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
@@ -195,13 +195,13 @@ class OrganizationList extends React.Component {
     }
   }
 
-  handlePageChange = (page) => {
-    this.setState({ page }, this.handleFilterOrg)
+  handlePageChange = (page, pageSize) => {
+    this.setState({ page, pageSize }, this.handleFilterOrg)
   }
 
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.handleFilterOrg)
-  }
+  // handlePageSizeChange = (current, pageSize) => {
+  //   this.setState({ pageSize, page: 1 }, this.handleFilterOrg)
+  // }
 
   getOrg = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
@@ -508,7 +508,7 @@ class OrganizationList extends React.Component {
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ lineHeight: '27px' }}>投资人</div>
                 </div>
-                <div style={{ padding: 16, overflowY: 'auto' }}>
+                <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0' }}>
                 </div>
               </div>
             </Col>
@@ -537,7 +537,7 @@ class OrganizationList extends React.Component {
               pageSize={pageSize}
               onChange={this.handlePageChange}
               showSizeChanger
-              onShowSizeChange={this.handlePageSizeChange}
+              // onShowSizeChange={this.handlePageSizeChange}
               showQuickJumper
               pageSizeOptions={PAGE_SIZE_OPTIONS}
             />
