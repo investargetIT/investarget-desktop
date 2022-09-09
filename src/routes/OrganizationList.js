@@ -21,7 +21,6 @@ import { PAGE_SIZE_OPTIONS } from '../constants';
 const Option = Select.Option
 const RadioGroup = Radio.Group;
 
-const tableStyle = { marginBottom: '24px' }
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
 
@@ -326,11 +325,10 @@ class OrganizationList extends React.Component {
 
           </div>
 
-          <Row>
+          <Row style={{ marginBottom: 24 }}>
             <Col span={12}>
               <Table
                 onChange={this.handleTableChange}
-                style={tableStyle}
                 columns={columns}
                 dataSource={list}
                 rowKey={record => record.id}
@@ -341,7 +339,7 @@ class OrganizationList extends React.Component {
             <Col span={6}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>备注</div>
+                  <div style={{ lineHeight: '27px' }}>备注</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto' }}>
                 </div>
@@ -350,7 +348,7 @@ class OrganizationList extends React.Component {
             <Col span={6}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>投资人</div>
+                  <div style={{ lineHeight: '27px' }}>投资人</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto' }}>
                 </div>
