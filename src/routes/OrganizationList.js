@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'dva/router'
 import { 
   i18n, 
   hasPerm,
   getUserInfo,
   getCurrentUser,
+  requestAllData,
+  time,
+  handleError,
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
@@ -17,12 +20,122 @@ import {
 } from '@ant-design/icons';
 import { OrganizationListFilter } from '../components/Filter'
 import { PAGE_SIZE_OPTIONS } from '../constants';
+import styles from './ProjectBDList.css';
 
 const Option = Select.Option
 const RadioGroup = Radio.Group;
 
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
+function OrgRemarks(props) {
+  const { BDComments, onAdd, onEdit, onDelete } = props;
+
+  const [bdComments, setBdComments] = useState([]);
+  const [comment, setComment] = useState(null);
+
+  const updateComments = (BDComments) => {
+    if (BDComments) {
+      Promise.all(BDComments.map((comment) => {
+        if (!comment.url && comment.key && comment.bucket) {
+          return api.downloadUrl(comment.bucket, comment.key)
+            .then((res) => ({ ...comment, url: res.data }))
+            .catch(() => comment);
+        } else {
+          return Promise.resolve(comment);
+        }
+      })).then((bdComments) => {
+        setBdComments(bdComments);
+      });
+    } else {
+      setBdComments([]);
+    }
+  };
+
+  useEffect(() => {
+    updateComments(BDComments);
+  }, [BDComments]);
+
+  return (
+    <div>
+      <div style={{ display: comment ? 'none' : '' }}>
+        {bdComments && bdComments.length ? bdComments.map(comment => (
+          <BDCommnet
+            key={comment.id}
+            comment={comment}
+            onEdit={() => onEdit(comment)}
+            onDelete={() => onDelete(comment.id)}
+          />
+        )) : <p>暂无备注</p>}
+      </div>
+    </div>
+  );
+}
+
+function BDCommnet({ comment, onEdit, onDelete }) {
+  // const [translateSuccess, setTranslateSuccess] = useState(false);
+  // useEffect(() => {
+  //   if (comment.transid) {
+  //     api.getAudioTranslate(comment.transid).then((res) => {
+  //       if (res.data && res.data.taskStatus === "9") {
+  //         setTranslateSuccess(true);
+  //       }
+  //     });
+  //   }
+  // }, []);
+
+  return (
+    <div key={comment.id} style={{ marginBottom: 8 }}>
+      <p>
+        <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
+
+        {/* {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
+          <Button type="link" onClick={onEdit}><EditOutlined /></Button>
+          : null} */}
+
+        &nbsp;
+        {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
+          <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
+            <Button type="link"><DeleteOutlined /></Button>
+          </Popconfirm>
+          : null}
+      </p>
+      <div style={{ display: 'flex' }}>
+        {comment.createuserobj &&
+          <div style={{ marginRight: 10 }}>
+            <Tooltip title={comment.createuserobj.username}>
+              <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+                <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+              </a>
+            </Tooltip>
+          </div>
+        }
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <p dangerouslySetInnerHTML={{ __html: comment.remark.replace(/\n/g, '<br>') }}></p>
+          {/* {comment.url && (
+            <div>
+              <FileLink
+                filekey={comment.key}
+                url={comment.url}
+                filename={comment.filename || comment.key}
+              />
+              {comment.filetype && <Tag>{comment.filetype}</Tag>}
+            </div>
+          )} */}
+          {/* {comment.transid && translateSuccess && (
+            <div style={{ marginTop: 4 }}>
+              <Link
+                style={{ color: 'red' }}
+                to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
+              >
+                语音转文字
+              </Link>
+            </div>
+          )} */}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 class OrganizationList extends React.Component {
 
@@ -50,6 +163,7 @@ class OrganizationList extends React.Component {
       selectedIds: [],
       downloadUrl: null,
       searchOption,
+      currentOrg: null,
     }
   }
 
@@ -108,7 +222,10 @@ class OrganizationList extends React.Component {
         }
         return { ...m, hasOperationPermission };
       });
-      this.setState({ total, list: newList, loading: false })
+      this.setState(
+        { total, list: newList, loading: false },
+        () => this.getOrgRemarks(newList.map(m => m.id)),
+      );
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -117,6 +234,15 @@ class OrganizationList extends React.Component {
       })
     })
     this.writeSetting()
+  }
+
+  getOrgRemarks = async orgArr => {
+    const req = await requestAllData(api.getOrgRemark, { org: orgArr }, 100);
+    const newOrgListWithRemarks = this.state.list.map(m => {
+      const remarks = req.data.data.filter(f => f.org === m.id);
+      return { ...m, remarks };
+    });
+    this.setState({ list: newOrgListWithRemarks });
   }
 
   searchOrg = () => {
@@ -209,6 +335,23 @@ class OrganizationList extends React.Component {
       return;
     }
     this.setState({ selectedIds })
+  }
+
+  handleDeleteComment = (id) => {
+    const { currentOrg } = this.state;
+    api.deleteOrgRemark(id)
+      .then(() => {
+        const newList = this.state.list.map(m => {
+          if (m.id === currentOrg.id) {
+            const remarks = m.remarks.filter(f => f.id !== id);
+            return { ...m, remarks };
+          }
+          return m;
+        });
+        const newCurrentOrg = { ...currentOrg, remarks: currentOrg.remarks.filter(f => f.id !== id) };
+        this.setState({ list: newList, currentOrg: newCurrentOrg });
+      })
+      .catch(handleError);
   }
 
   render() {
@@ -328,6 +471,16 @@ class OrganizationList extends React.Component {
           <Row style={{ marginBottom: 24 }}>
             <Col span={12}>
               <Table
+                onRow={record => {
+                  return {
+                    onMouseEnter: () => {
+                      this.setState({ currentOrg: record });
+                    },
+                  };
+                }}
+                rowClassName={record => {
+                  return this.state.currentOrg && record.id === this.state.currentOrg.id ? styles['current-row'] : '';
+                }}
                 onChange={this.handleTableChange}
                 columns={columns}
                 dataSource={list}
@@ -342,6 +495,11 @@ class OrganizationList extends React.Component {
                   <div style={{ lineHeight: '27px' }}>备注</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto' }}>
+                  <OrgRemarks
+                    BDComments={this.state.currentOrg && this.state.currentOrg.remarks}
+                    // onEdit={this.handleEditCommentIconClick}
+                    onDelete={this.handleDeleteComment}
+                  />
                 </div>
               </div>
             </Col>
