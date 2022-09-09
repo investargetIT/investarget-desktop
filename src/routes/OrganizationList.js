@@ -11,7 +11,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip, Avatar, List } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
@@ -242,7 +242,16 @@ class OrganizationList extends React.Component {
       const remarks = req.data.data.filter(f => f.org === m.id);
       return { ...m, remarks };
     });
-    this.setState({ list: newOrgListWithRemarks });
+    this.setState({ list: newOrgListWithRemarks }, () => this.getOrgInvestors(orgArr));
+  }
+
+  getOrgInvestors = async orgArr => {
+    const req = await requestAllData(api.getUser, { org: orgArr }, 100);
+    const newOrgListWithInvestors = this.state.list.map(m => {
+      const investors = req.data.data.filter(f => f.org.id === m.id);
+      return { ...m, investors };
+    });
+    this.setState({ list: newOrgListWithInvestors });
   }
 
   searchOrg = () => {
@@ -509,6 +518,19 @@ class OrganizationList extends React.Component {
                   <div style={{ lineHeight: '27px' }}>投资人</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0' }}>
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
+                    renderItem={item => (
+                      <List.Item>
+                        <List.Item.Meta
+                          avatar={<Avatar src={item.photourl} />}
+                          title={<Link to={`/app/user/${item.id}`}>{item.username}</Link>}
+                          description={item.mobile}
+                        />
+                      </List.Item>
+                    )}
+                  />
                 </div>
               </div>
             </Col>
