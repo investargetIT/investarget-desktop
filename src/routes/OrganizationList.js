@@ -501,7 +501,7 @@ class OrganizationList extends React.Component {
             <Col span={6}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ lineHeight: '27px' }}>备注</div>
+                  <div style={{ lineHeight: '27px', fontWeight: 'bold' }}>备注</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto' }}>
                   {/* <OrgRemarks
@@ -533,7 +533,7 @@ class OrganizationList extends React.Component {
             <Col span={6}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ lineHeight: '27px' }}>投资人</div>
+                  <div style={{ lineHeight: '27px', fontWeight: 'bold' }}>投资人</div>
                 </div>
                 <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0' }}>
                   <List

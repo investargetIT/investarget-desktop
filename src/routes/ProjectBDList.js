@@ -606,7 +606,7 @@ class ProjectBDList extends React.Component {
           <Col span={6}>
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>行动计划</div>
+                <div style={{ fontWeight: 'bold' }}>行动计划</div>
                 {this.hasPermForComment(currentUserId) && (
                   <Tooltip title="添加行动计划">
                     <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />

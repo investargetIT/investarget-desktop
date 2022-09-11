@@ -490,13 +490,13 @@ function BDCommnet({ comment, onEdit, onDelete }) {
         <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
 
         {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-          <Button type="link" onClick={onEdit}><EditOutlined /></Button>
+          <Button type="link" onClick={onEdit} size="small"><EditOutlined /></Button>
           : null}
 
         &nbsp;
         {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
-            <Button type="link"><DeleteOutlined /></Button>
+            <Button type="link" size="small"><DeleteOutlined /></Button>
           </Popconfirm>
           : null}
       </p>
@@ -518,6 +518,7 @@ function BDCommnet({ comment, onEdit, onDelete }) {
                 filekey={comment.key}
                 url={comment.url}
                 filename={comment.filename || comment.key}
+                style={{ height: 'unset' }}
               />
               {comment.filetype && <Tag>{comment.filetype}</Tag>}
             </div>
