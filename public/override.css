@@ -795,6 +795,9 @@ label.login-register-form__container__label {
 .wrapper .collapse-icon:hover {
   color: #339bd2;
 }
+.upload-list-modal > .ant-upload-list {
+  width: 250px;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;

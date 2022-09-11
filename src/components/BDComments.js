@@ -374,6 +374,7 @@ export function EditBDComment(props) {
               data={{ bucket: 'file' }}
               maxCount={1}
               onChange={handleUploadChange}
+              className="upload-list-modal"
             >
               <Button icon={<UploadOutlined />} type="link">上传附件</Button>
             </Upload>
