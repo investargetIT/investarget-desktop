@@ -69,13 +69,13 @@ class UserList extends React.Component {
     this.setState({ search, page: 1 }, this.getUser)
   }
 
-  handlePageChange = (page) => {
-    this.setState({ page }, this.getUser)
+  handlePageChange = (page, pageSize) => {
+    this.setState({ page, pageSize }, this.getUser)
   }
 
-  handlePageSizeChange = (current, pageSize) => {
-    this.setState({ pageSize, page: 1 }, this.getUser)
-  }
+  // handlePageSizeChange = (current, pageSize) => {
+  //   this.setState({ pageSize, page: 1 }, this.getUser)
+  // }
 
   getUser = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
@@ -391,7 +391,7 @@ class UserList extends React.Component {
           current={page}
           pageSize={pageSize}
           onChange={this.handlePageChange}
-          onShowSizeChange={this.handlePageSizeChange}
+          // onShowSizeChange={this.handlePageSizeChange}
           showSizeChanger
           showQuickJumper
           pageSizeOptions={PAGE_SIZE_OPTIONS}

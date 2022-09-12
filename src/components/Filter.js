@@ -449,7 +449,7 @@ class UserListFilter extends React.Component {
         <TagFilter value={tags} onChange={this.handleChange.bind(this, 'tags')} />
         {/* <CurrencyFilter value={currency} onChange={this.handleChange.bind(this, 'currency')} /> */}
         <UserAuditFilter value={userstatus} onChange={this.handleChange.bind(this, 'userstatus')} />
-        <OrganizationAreaFilter value={areas.map(item => item.toString())} onChange={this.handleChange.bind(this, 'areas')} />
+        {/* <OrganizationAreaFilter value={areas.map(item => item.toString())} onChange={this.handleChange.bind(this, 'areas')} /> */}
         <FilterOperation onSearch={this.handleSearch} onReset={this.handleReset} />
       </div>
     )
