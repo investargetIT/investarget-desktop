@@ -443,7 +443,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)}>{text}</a>
+                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</a>
               </Popover>
               :
               <Popover title="项目方联系方式" content={
@@ -454,7 +454,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <div style={{ color: "#428bca" }}>{text}</div>
+                <div style={{ color: "#428bca" }} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</div>
               </Popover>
             }
           </div>
@@ -585,13 +585,13 @@ class ProjectBDList extends React.Component {
         <Row>
           <Col span={18}>
             <Table
-              onRow={record => {
-                return {
-                  onMouseEnter: () => {
-                    this.setState({ currentBD: record }); 
-                  },
-                };
-              }}
+              // onRow={record => {
+              //   return {
+              //     onMouseEnter: () => {
+              //       this.setState({ currentBD: record }); 
+              //     },
+              //   };
+              // }}
               rowClassName={record => {
                 return this.state.currentBD && record.id === this.state.currentBD.id ? styles['current-row'] : '';
               }}

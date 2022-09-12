@@ -369,7 +369,7 @@ class OrganizationList extends React.Component {
     const columns = [
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
-          <div style={{ color: "#428BCA" }}>
+          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.setState({ currentOrg: record })}>
             {record.orgfullname}
           </div>
         </Link>,
@@ -480,13 +480,13 @@ class OrganizationList extends React.Component {
           <Row style={{ marginBottom: 24 }}>
             <Col span={12}>
               <Table
-                onRow={record => {
-                  return {
-                    onMouseEnter: () => {
-                      this.setState({ currentOrg: record });
-                    },
-                  };
-                }}
+                // onRow={record => {
+                //   return {
+                //     onMouseEnter: () => {
+                //       this.setState({ currentOrg: record });
+                //     },
+                //   };
+                // }}
                 rowClassName={record => {
                   return this.state.currentOrg && record.id === this.state.currentOrg.id ? styles['current-row'] : '';
                 }}
