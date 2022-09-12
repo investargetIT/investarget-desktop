@@ -267,7 +267,11 @@ class OrganizationList extends React.Component {
     this.setState({ loading: true })
     api.searchOrg(params).then(result => {
       const { count: total, data: list } = result.data
-      this.setState({ total, list, loading: false })
+      // this.setState({ total, list, loading: false })
+      this.setState(
+        { total, list, loading: false, currentOrg: list.length > 0 ? list[0] : null },
+        () => this.getOrgRemarks(list.map(m => m.id)),
+      );
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
