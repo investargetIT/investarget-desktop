@@ -906,7 +906,7 @@ class DownloadFiles extends React.Component {
           return files.map(file => {
             return (
               <div key={file.key} style={liStyle}>
-                <div style={titleStyle}>{dir}</div>
+                <div style={titleStyle}><Tag>{dir}</Tag></div>
                 <div title={file.filename} style={{ wordWrap: 'word-break:break-all', flex: 1, marginRight: 20 }}>
                   {file.filename}
                 </div>
