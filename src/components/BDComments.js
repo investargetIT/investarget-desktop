@@ -527,6 +527,7 @@ function BDCommnet({ comment, onEdit, onDelete }) {
           {comment.transid && translateSuccess && (
             <div style={{ marginTop: 4 }}>
               <Link
+                target="_blank"
                 style={{ color: 'red' }}
                 to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
               >
