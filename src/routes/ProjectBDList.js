@@ -603,7 +603,7 @@ class ProjectBDList extends React.Component {
               pagination={false}
             />
           </Col>
-          <Col span={6}>
+          <Col span={6} style={{ minHeight: 500 }}>
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontWeight: 500 }}>行动计划</div>
