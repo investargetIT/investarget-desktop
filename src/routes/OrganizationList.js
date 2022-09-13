@@ -541,7 +541,7 @@ class OrganizationList extends React.Component {
                           // actions={item.actions}
                           author={item.createuserobj && item.createuserobj.username}
                           avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
-                          content={item.remark}
+                          content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
                           datetime={time(item.createdtime)}
                         />
                       </li>
