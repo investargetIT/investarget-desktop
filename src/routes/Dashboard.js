@@ -462,7 +462,7 @@ function Dashboard(props) {
                     <div style={{ width: 250 }}>
                       <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}>{moment().startOf('year').format('YYYY-MM-DD')} 至今</div>
                       {pieChartData.map((m, i) => (
-                        <div key={m.id} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                        <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
                           <div style={pieChartLabelContainerStyle}>
                             <div style={{ ...pieChartLabelColorStyle, background: COLORS[i] }} />
                             <div style={pieChartLabelTextStyle}>{m.name}</div>
