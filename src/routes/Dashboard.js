@@ -33,6 +33,7 @@ import {
 import MySchedule from '../components/MySchedule';
 import Fullscreen from 'react-full-screen';
 import { PieChart, Pie, Cell } from 'recharts';
+import moment from 'moment';
 
 const { TabPane } = Tabs;
 const iframeStyle = {
@@ -40,6 +41,25 @@ const iframeStyle = {
   width: '100%',
   height: '800px',
 }
+const pieChartLabelContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+const pieChartLabelColorStyle = {
+  marginRight: 10,
+  width: 10,
+  height: 10,
+  opacity: 0.7,
+  background: '#339bd2',
+  borderRadius: '50%',
+};
+const pieChartLabelTextStyle = {
+  marginRight: 8,
+  color: '#595959',
+};
+const pieChartPercentageStyle = {
+  color: '#989889'
+};
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 const PieChartDataName = ['项目BD次数', '机构信息分享次数', '所属行业组行研报告'];
 
@@ -236,10 +256,24 @@ function Dashboard(props) {
     // renderFeishu();
 
     async function fetchAndRenderPieChartData() {
+      const date = new Date();
+      const startMoment = moment().startOf('year');
+      // const endMoment = moment(date).startOf('week').add('days', 6);
+      const endMoment = moment().endOf('year');
+      
+      const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
+      const endTime = `${endMoment.format('YYYY-MM-DD')}T23:59:59`;
+
+      const stime = startTime;
+      const etime = endTime;
+      const stimeM = startTime;
+      const etimeM = endTime;
+
+      const params = { stime, etime, stimeM, etimeM, createuser: userInfo.id };
       const req = await Promise.all([
-        api.getProjBDCom({ createuser: userInfo.id }),
-        api.getOrgRemark({ createuser: userInfo.id }),
-        api.queryDataRoomFile({ dataroom: 214, createuser: userInfo.id }),
+        api.getProjBDCom(params),
+        api.getOrgRemark(params),
+        api.queryDataRoomFile({ ...params, dataroom: 214 }),
       ]);
       setPieChartData(req.map((m, i) => {
         return {
@@ -410,13 +444,13 @@ function Dashboard(props) {
                 </TabPane>
                 <TabPane tab="业务数据" key="-1">
                   <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <PieChart width={600} height={400}>
+                    <PieChart width={400} height={400}>
                       <Pie
                         data={pieChartData}
                         cx="50%"
                         cy="50%"
                         outerRadius={120}
-                        label={displayPieChartLabel}
+                        // label={displayPieChartLabel}
                         dataKey="value"
                       >
                         {pieChartData.map((_, index) => (
@@ -424,6 +458,21 @@ function Dashboard(props) {
                         ))}
                       </Pie>
                     </PieChart>
+
+                    <div style={{ width: 250 }}>
+                      <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}>{moment().startOf('year').format('YYYY-MM-DD')} 至今</div>
+                      {pieChartData.map((m, i) => (
+                        <div key={m.id} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                          <div style={pieChartLabelContainerStyle}>
+                            <div style={{ ...pieChartLabelColorStyle, background: COLORS[i] }} />
+                            <div style={pieChartLabelTextStyle}>{m.name}</div>
+                            {/* <div style={pieChartPercentageStyle}>{m.percentage}</div> */}
+                          </div>
+                          <div style={pieChartLabelTextStyle}>{m.value}</div>
+                        </div>
+                      ))}
+                    </div>
+
                   </div>
                 </TabPane>
                 {userInfo && userInfo.indGroups && userInfo.thirdUnionID && getOngoingProjectsFeishuUrl(userInfo.indGroups).map(m => (
