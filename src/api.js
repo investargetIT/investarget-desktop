@@ -556,6 +556,11 @@ export const addUserFriend = friend => r('/user/friend/', 'POST', { friend })
 // user remark
 
 export function getUserRemark(param) {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/user/remark/?' + qs.stringify(param))
 }
 

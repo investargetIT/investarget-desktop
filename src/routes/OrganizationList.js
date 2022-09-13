@@ -247,11 +247,21 @@ class OrganizationList extends React.Component {
 
   getOrgInvestors = async orgArr => {
     const req = await requestAllData(api.getUser, { org: orgArr }, 100);
+    let allInvestors = [];
     const newOrgListWithInvestors = this.state.list.map(m => {
-      const investors = req.data.data.filter(f => f.org.id === m.id);
+      allInvestors = req.data.data;
+      const investors = allInvestors.filter(f => f.org.id === m.id);
       return { ...m, investors };
     });
-    this.setState({ list: newOrgListWithInvestors, currentOrg: newOrgListWithInvestors.length > 0 ? newOrgListWithInvestors[0] : null });
+    this.setState(
+      { list: newOrgListWithInvestors, currentOrg: newOrgListWithInvestors.length > 0 ? newOrgListWithInvestors[0] : null },
+      () => this.getOrgInvestorRemarks(allInvestors.map(m => m.id)),
+    );
+  }
+
+  getOrgInvestorRemarks = async investorArr => {
+    const req = await requestAllData(api.getUserRemark, { user: investorArr }, 100);
+    window.echo('investor remarks', req);
   }
 
   searchOrg = () => {
