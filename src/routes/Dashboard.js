@@ -357,9 +357,9 @@ function Dashboard(props) {
 
   function generateTrainingDocsTitle() {
     const titleArr = [
-      { name: '协议\n模板', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=28370' },
-      { name: '系统\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=26203' },
-      { name: '员工\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=26203' },
+      { name: '协议\n模板', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=76069' },
+      { name: '系统\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=60656' },
+      { name: '员工\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=59751' },
     ];
     const elements = titleArr.map((m, i) => (
       <div key={i} style={{ marginRight: 10, border: '1px solid #339bd2', borderRadius: 4, fontSize: 10, width: 30, height: 40, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
