@@ -261,7 +261,14 @@ class OrganizationList extends React.Component {
 
   getOrgInvestorRemarks = async investorArr => {
     const req = await requestAllData(api.getUserRemark, { user: investorArr }, 100);
-    window.echo('investor remarks', req);
+    const newOrgListWithInvestorRemarks = this.state.list.map(m => {
+      const newInvestorsWithRemarks = m.investors.map(investor => {
+        const remarks = req.data.data.filter(f => f.user === investor.id);
+        return { ...investor, remarks };
+      });
+      return { ...m, investors: newInvestorsWithRemarks };
+    });
+    this.setState({ list: newOrgListWithInvestorRemarks, currentOrg: newOrgListWithInvestorRemarks.length > 0 ? newOrgListWithInvestorRemarks[0] : null });
   }
 
   searchOrg = () => {
@@ -492,7 +499,7 @@ class OrganizationList extends React.Component {
           </div>
 
           <Row style={{ marginBottom: 24 }}>
-            <Col span={12}>
+            <Col span={10}>
               <Table
                 // onRow={record => {
                 //   return {
@@ -544,7 +551,7 @@ class OrganizationList extends React.Component {
                 </div>
               </div>
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
@@ -557,8 +564,16 @@ class OrganizationList extends React.Component {
                       <List.Item>
                         <List.Item.Meta
                           avatar={<Avatar src={item.photourl} />}
-                          title={<Link to={`/app/user/${item.id}`}>{item.username}</Link>}
-                          description={item.mobile}
+                          title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
+                          description={item.remarks && item.remarks.map(remark => (
+                            <Comment
+                              key={remark.id}
+                              author={remark.createuser && remark.createuser.username}
+                              avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
+                              content={remark.remark}
+                              datetime={time(remark.createdtime)}
+                            />
+                          ))}
                         />
                       </List.Item>
                     )}
