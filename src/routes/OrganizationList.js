@@ -11,7 +11,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip, Avatar, List, Comment } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip, Avatar, List, Comment, Affix } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
@@ -164,6 +164,7 @@ class OrganizationList extends React.Component {
       downloadUrl: null,
       searchOption,
       currentOrg: null,
+      affixed: false,
     }
   }
 
@@ -518,69 +519,70 @@ class OrganizationList extends React.Component {
                 loading={loading}
                 pagination={false}
                 rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
-              /></Col>
+              />
+            </Col>
+
             <Col span={6}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
-                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
-                </div>
-                <div style={{ padding: 16, overflowY: 'auto' }}>
-                  {/* <OrgRemarks
-                    BDComments={this.state.currentOrg && this.state.currentOrg.remarks}
-                    // onEdit={this.handleEditCommentIconClick}
-                    onDelete={this.handleDeleteComment}
-                  /> */}
-
-                  <List
-                    className="comment-list"
-                    itemLayout="horizontal"
-                    dataSource={this.state.currentOrg ? this.state.currentOrg.remarks: []}
-                    renderItem={item => (
-                      <li>
-                        <Comment
-                          // actions={item.actions}
-                          author={item.createuserobj && item.createuserobj.username}
-                          avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
-                          content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
-                          datetime={time(item.createdtime)}
-                        />
-                      </li>
-                    )}
-                  />
-
-                </div>
+                <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
+                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
+                  </div>
+                  <div style={{ padding: 16, overflowY: 'auto', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }} >
+                    <List
+                      className="comment-list"
+                      itemLayout="horizontal"
+                      dataSource={this.state.currentOrg ? this.state.currentOrg.remarks : []}
+                      renderItem={item => (
+                        <li>
+                          <Comment
+                            // actions={item.actions}
+                            author={item.createuserobj && item.createuserobj.username}
+                            avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
+                            content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
+                            datetime={time(item.createdtime)}
+                          />
+                        </li>
+                      )}
+                    />
+                  </div>
+                </Affix>
               </div>
             </Col>
+
             <Col span={8}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
-                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
-                </div>
-                <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0' }}>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
-                    renderItem={item => (
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.photourl} />}
-                          title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
-                          description={item.remarks && item.remarks.map(remark => (
-                            <Comment
-                              key={remark.id}
-                              author={remark.createuser && remark.createuser.username}
-                              avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
-                              content={remark.remark}
-                              datetime={time(remark.createdtime)}
-                            />
-                          ))}
-                        />
-                      </List.Item>
-                    )}
-                  />
-                </div>
+                <Affix offsetTop={50}>
+                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
+                  </div>
+                  <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }}>
+                    <List
+                      itemLayout="horizontal"
+                      dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
+                      renderItem={item => (
+                        <List.Item>
+                          <List.Item.Meta
+                            avatar={<Avatar src={item.photourl} />}
+                            title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
+                            description={item.remarks && item.remarks.map(remark => (
+                              <Comment
+                                key={remark.id}
+                                author={remark.createuser && remark.createuser.username}
+                                avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
+                                content={remark.remark}
+                                datetime={time(remark.createdtime)}
+                              />
+                            ))}
+                          />
+                        </List.Item>
+                      )}
+                    />
+                  </div>
+                </Affix>
               </div>
             </Col>
+
           </Row>
          
 
