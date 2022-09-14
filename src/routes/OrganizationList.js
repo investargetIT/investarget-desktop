@@ -165,6 +165,7 @@ class OrganizationList extends React.Component {
       searchOption,
       currentOrg: null,
       affixed: false,
+      footerAffixed: true,
     }
   }
 
@@ -385,6 +386,13 @@ class OrganizationList extends React.Component {
   //     .catch(handleError);
   // }
 
+  calculateContentHeight = () => {
+    if (!this.state.affixed) return 'unset';
+    if (this.state.footerAffixed) return 'calc(100vh - 110px)';
+    if (!this.state.footerAffixed) return 'calc(100vh - 110px - 24px - 40px - 24px - 30px )';
+    return undefined;
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -502,6 +510,7 @@ class OrganizationList extends React.Component {
           <Row style={{ marginBottom: 24 }}>
             <Col span={10}>
               <Table
+                className="table-affix-footer"
                 // onRow={record => {
                 //   return {
                 //     onMouseEnter: () => {
@@ -519,6 +528,9 @@ class OrganizationList extends React.Component {
                 loading={loading}
                 pagination={false}
                 rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
+                footer={() => (
+                  <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
+                )}
               />
             </Col>
 
@@ -528,7 +540,7 @@ class OrganizationList extends React.Component {
                   <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
                   </div>
-                  <div style={{ padding: 16, overflowY: 'auto', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }} >
+                  <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }} >
                     <List
                       className="comment-list"
                       itemLayout="horizontal"
@@ -556,7 +568,7 @@ class OrganizationList extends React.Component {
                   <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
                   </div>
-                  <div style={{ padding: 16, overflowY: 'auto', minHeight: 'calc(100% - 60px)', borderLeft: '1px solid #f0f0f0', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }}>
+                  <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
                     <List
                       itemLayout="horizontal"
                       dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}

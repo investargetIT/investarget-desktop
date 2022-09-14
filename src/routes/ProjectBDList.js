@@ -57,6 +57,7 @@ class ProjectBDList extends React.Component {
       editBDComment: null, // 编辑的行动计划
 
       affixed: false,
+      footerAffixed: true,
     }
   }
 
@@ -419,6 +420,13 @@ class ProjectBDList extends React.Component {
     return false;
   }
 
+  calculateContentHeight = () => {
+    if (!this.state.affixed) return 'unset';
+    if (this.state.footerAffixed) return 'calc(100vh - 110px)';
+    if (!this.state.footerAffixed) return 'calc(100vh - 110px - 16px - 32px - 16px - 30px )';
+    return undefined;
+  }
+
   render() {
     const currentUser = getUserInfo();
     const currentUserId = currentUser && currentUser.id;
@@ -587,6 +595,7 @@ class ProjectBDList extends React.Component {
         <Row>
           <Col span={18}>
             <Table
+              className="table-affix-footer"
               // onRow={record => {
               //   return {
               //     onMouseEnter: () => {
@@ -603,6 +612,9 @@ class ProjectBDList extends React.Component {
               rowKey={record => record.id}
               loading={loading}
               pagination={false}
+              footer={() => (
+                <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
+              )}
             />
           </Col>
           <Col span={6} style={{ minHeight: 500 }}>
@@ -616,7 +628,7 @@ class ProjectBDList extends React.Component {
                     </Tooltip>
                   )}
                 </div>
-                <div style={{ padding: 16, overflowY: 'auto', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }}>
+                <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
                   {this.hasPermForComment(currentUserId) ? (
                     <BDCommentsWithoutForm
                       BDComments={this.state.currentBD && this.state.currentBD.BDComments}
