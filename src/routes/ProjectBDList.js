@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -55,6 +55,8 @@ class ProjectBDList extends React.Component {
 
       displayAddBDCommentModal: false,
       editBDComment: null, // 编辑的行动计划
+
+      affixed: false,
     }
   }
 
@@ -605,22 +607,24 @@ class ProjectBDList extends React.Component {
           </Col>
           <Col span={6} style={{ minHeight: 500 }}>
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
-              <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontWeight: 500 }}>行动计划</div>
-                {this.hasPermForComment(currentUserId) && (
-                  <Tooltip title="添加行动计划">
-                    <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
-                  </Tooltip>
-                )}
-              </div>
-              <div style={{ padding: 16, overflowY: 'auto' }}>
-                {this.hasPermForComment(currentUserId) ? (
-                  <BDCommentsWithoutForm
-                    BDComments={this.state.currentBD && this.state.currentBD.BDComments}
-                    onEdit={this.handleEditCommentIconClick}
-                    onDelete={this.handleDeleteComment} />
-                ) : '没有权限'}
-              </div>
+              <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
+                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontWeight: 500 }}>行动计划</div>
+                  {this.hasPermForComment(currentUserId) && (
+                    <Tooltip title="添加行动计划">
+                      <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
+                    </Tooltip>
+                  )}
+                </div>
+                <div style={{ padding: 16, overflowY: 'auto', height: this.state.affixed ? 'calc(100vh - 110px)' : 'unset' }}>
+                  {this.hasPermForComment(currentUserId) ? (
+                    <BDCommentsWithoutForm
+                      BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+                      onEdit={this.handleEditCommentIconClick}
+                      onDelete={this.handleDeleteComment} />
+                  ) : '没有权限'}
+                </div>
+              </Affix>
             </div>
           </Col>
         </Row>
