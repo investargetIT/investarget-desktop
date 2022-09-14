@@ -421,9 +421,10 @@ class ProjectBDList extends React.Component {
   }
 
   calculateContentHeight = () => {
-    if (!this.state.affixed) return 'unset';
-    if (this.state.footerAffixed) return 'calc(100vh - 110px)';
-    if (!this.state.footerAffixed) return 'calc(100vh - 110px - 16px - 32px - 16px - 30px )';
+    if (!this.state.affixed && !this.state.footerAffixed) return 500 - 60;
+    if (!this.state.affixed && this.state.footerAffixed) return 'unset';
+    if (this.state.affixed && this.state.footerAffixed) return 'calc(100vh - 110px)';
+    if (this.state.affixed && !this.state.footerAffixed) return 'calc(100vh - 110px - 16px - 32px - 16px - 30px )';
     return undefined;
   }
 
@@ -595,7 +596,7 @@ class ProjectBDList extends React.Component {
         <Row>
           <Col span={18}>
             <Table
-              className="table-affix-footer"
+              // className="table-affix-footer"
               // onRow={record => {
               //   return {
               //     onMouseEnter: () => {
@@ -612,34 +613,41 @@ class ProjectBDList extends React.Component {
               rowKey={record => record.id}
               loading={loading}
               pagination={false}
-              footer={() => (
-                <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
-              )}
+              // footer={() => (
+              //   <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
+              // )}
             />
           </Col>
           <Col span={6} style={{ minHeight: 500 }}>
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
-                <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 500 }}>行动计划</div>
-                  {this.hasPermForComment(currentUserId) && (
-                    <Tooltip title="添加行动计划">
-                      <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
-                    </Tooltip>
-                  )}
-                </div>
-                <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
-                  {this.hasPermForComment(currentUserId) ? (
-                    <BDCommentsWithoutForm
-                      BDComments={this.state.currentBD && this.state.currentBD.BDComments}
-                      onEdit={this.handleEditCommentIconClick}
-                      onDelete={this.handleDeleteComment} />
-                  ) : '没有权限'}
+                <div>
+                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontWeight: 500 }}>行动计划</div>
+                    {this.hasPermForComment(currentUserId) && (
+                      <Tooltip title="添加行动计划">
+                        <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
+                      </Tooltip>
+                    )}
+                  </div>
+                  <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
+                    {this.hasPermForComment(currentUserId) ? (
+                      <BDCommentsWithoutForm
+                        BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+                        onEdit={this.handleEditCommentIconClick}
+                        onDelete={this.handleDeleteComment} />
+                    ) : '没有权限'}
+                  </div>
                 </div>
               </Affix>
             </div>
           </Col>
         </Row>
+
+        <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })}>
+          <div />
+        </Affix>
+
         <div style={{ margin: '16px 0' }} className="clearfix">
           <Pagination
             style={{ float: 'right' }}

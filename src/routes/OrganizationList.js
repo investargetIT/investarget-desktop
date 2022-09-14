@@ -387,9 +387,10 @@ class OrganizationList extends React.Component {
   // }
 
   calculateContentHeight = () => {
-    if (!this.state.affixed) return 'unset';
-    if (this.state.footerAffixed) return 'calc(100vh - 110px)';
-    if (!this.state.footerAffixed) return 'calc(100vh - 110px - 24px - 40px - 24px - 30px )';
+    if (!this.state.affixed && !this.state.footerAffixed) return 500 - 60;
+    if (!this.state.affixed && this.state.footerAffixed) return 'unset';
+    if (this.state.affixed && this.state.footerAffixed) return 'calc(100vh - 110px)';
+    if (this.state.affixed && !this.state.footerAffixed) return 'calc(100vh - 110px - 24px - 40px - 24px - 30px )';
     return undefined;
   }
 
@@ -507,10 +508,10 @@ class OrganizationList extends React.Component {
 
           </div>
 
-          <Row style={{ marginBottom: 24 }}>
+          <Row>
             <Col span={10}>
               <Table
-                className="table-affix-footer"
+                // className="table-affix-footer"
                 // onRow={record => {
                 //   return {
                 //     onMouseEnter: () => {
@@ -528,35 +529,37 @@ class OrganizationList extends React.Component {
                 loading={loading}
                 pagination={false}
                 rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
-                footer={() => (
-                  <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
-                )}
+                // footer={() => (
+                //   <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
+                // )}
               />
             </Col>
 
-            <Col span={6}>
-              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
+            <Col span={6} style={{ minHeight: 500 }}>
+              <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0', justifyContent: 'space-between' }}>
                 <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
-                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
-                  </div>
-                  <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }} >
-                    <List
-                      className="comment-list"
-                      itemLayout="horizontal"
-                      dataSource={this.state.currentOrg ? this.state.currentOrg.remarks : []}
-                      renderItem={item => (
-                        <li>
-                          <Comment
-                            // actions={item.actions}
-                            author={item.createuserobj && item.createuserobj.username}
-                            avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
-                            content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
-                            datetime={time(item.createdtime)}
-                          />
-                        </li>
-                      )}
-                    />
+                  <div>
+                    <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
+                    </div>
+                    <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }} >
+                      <List
+                        className="comment-list"
+                        itemLayout="horizontal"
+                        dataSource={this.state.currentOrg ? this.state.currentOrg.remarks : []}
+                        renderItem={item => (
+                          <li>
+                            <Comment
+                              // actions={item.actions}
+                              author={item.createuserobj && item.createuserobj.username}
+                              avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
+                              content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
+                              datetime={time(item.createdtime)}
+                            />
+                          </li>
+                        )}
+                      />
+                    </div>
                   </div>
                 </Affix>
               </div>
@@ -565,31 +568,33 @@ class OrganizationList extends React.Component {
             <Col span={8}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <Affix offsetTop={50}>
-                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
-                  </div>
-                  <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
-                    <List
-                      itemLayout="horizontal"
-                      dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
-                      renderItem={item => (
-                        <List.Item>
-                          <List.Item.Meta
-                            avatar={<Avatar src={item.photourl} />}
-                            title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
-                            description={item.remarks && item.remarks.map(remark => (
-                              <Comment
-                                key={remark.id}
-                                author={remark.createuser && remark.createuser.username}
-                                avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
-                                content={remark.remark}
-                                datetime={time(remark.createdtime)}
-                              />
-                            ))}
-                          />
-                        </List.Item>
-                      )}
-                    />
+                  <div>
+                    <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
+                    </div>
+                    <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
+                      <List
+                        itemLayout="horizontal"
+                        dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
+                        renderItem={item => (
+                          <List.Item>
+                            <List.Item.Meta
+                              avatar={<Avatar src={item.photourl} />}
+                              title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
+                              description={item.remarks && item.remarks.map(remark => (
+                                <Comment
+                                  key={remark.id}
+                                  author={remark.createuser && remark.createuser.username}
+                                  avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
+                                  content={remark.remark}
+                                  datetime={time(remark.createdtime)}
+                                />
+                              ))}
+                            />
+                          </List.Item>
+                        )}
+                      />
+                    </div>
                   </div>
                 </Affix>
               </div>
@@ -597,8 +602,11 @@ class OrganizationList extends React.Component {
 
           </Row>
          
+          <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })}>
+            <div />
+          </Affix>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          <div style={{ marginTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 13, marginBottom: 24 }}>
               <Button
                 disabled={this.state.selectedIds.length == 0}
@@ -611,7 +619,7 @@ class OrganizationList extends React.Component {
               </Button>
               <img style={{ marginLeft: 10, width: 10 }} src="/images/certificate.svg" />表示Top机构，
               <UserOutlined />表示该机构下有联系方式的投资人数量
-          </div>
+            </div>
 
             <Pagination
               style={paginationStyle}
