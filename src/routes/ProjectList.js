@@ -244,6 +244,8 @@ class ProjectList extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+
     if (hasPerm('usersys.as_trader')) {
       this.getMyTodoTasks();
       this.getOngoingProjects();
@@ -410,7 +412,8 @@ class ProjectList extends React.Component {
         title: i18n('project.country'),
         key: 'country',
         render: (text, record) => {
-          const country = record.country
+          if (this.props.country.length === 0) return null;
+          const country  = this.props.country.filter(f => f.id === record.country)[0];
           const countryName = country ? country.country : ''
           let imgUrl = country && country.key && country.url
           if (country && !imgUrl) {
