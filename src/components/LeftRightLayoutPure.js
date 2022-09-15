@@ -67,7 +67,7 @@ class LeftRightLayoutPure extends React.Component {
       </Content>
     )
 
-    const headStyle = {position:'fixed',zIndex:10,top:0,left:0,width:'100%',height:50}
+    const headStyle = {position:'fixed',zIndex:11,top:0,left:0,width:'100%',height:50}
     const siderStyle = {position:'fixed',top:50,left:0,bottom:0,zIndex: 9, backgroundColor: '#1d2a3a', transition: 'none'}
 
     const sideBarAndContent = (
