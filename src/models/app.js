@@ -122,9 +122,12 @@ export default {
       const { data } = yield call(api.getSource, sourceType)
       yield put({ type: 'saveSource', payload: { sourceType, data } })
     },
-    *getSource({ payload: sourceType }, { put, select }) {
-      const data = yield select(state => state.app[sourceType])
-      data.length > 0 || (yield put({ type: 'requestSource', payload: sourceType }))
+    *getSource({ payload: sourceType }, { call, put, select }) {
+      let dataFromRedux = yield select(state => state.app[sourceType]);
+      if (dataFromRedux.length > 0) return dataFromRedux;
+      const { data } = yield call(api.getSource, sourceType)
+      yield put({ type: 'saveSource', payload: { sourceType, data } });
+      return data;
     },
     *getSourceList({ payload: sourceTypeList }, { put }) {
       for (var i=0,len=sourceTypeList.length; i<len; i++) {

@@ -135,31 +135,38 @@ class ProjectList extends React.Component {
     const { filters, search, page, pageSize, sort, desc } = this.state
     const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize, sort, desc, iscomproj: 0 }
     this.setState({ loading: true })
-    api.getProj(params).then(result => {
-      const { count: total, data: list } = result.data
-      const newList = list.map(m => {
-        const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
-        let userWithPermission = [];
-        userWithPermission = userWithPermission.concat(m.PM || []);
-        userWithPermission = userWithPermission.concat(m.createuser || []);
-        userWithPermission = userWithPermission.concat(projTraders);
-        const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
-        return { ...m, hasEditPerm };
+    let newList = [];
+    api.getProj(params)
+      .then(result => {
+        const { count: total, data: list } = result.data
+        newList = list.map(m => {
+          const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
+          let userWithPermission = [];
+          userWithPermission = userWithPermission.concat(m.PM || []);
+          userWithPermission = userWithPermission.concat(m.createuser || []);
+          userWithPermission = userWithPermission.concat(projTraders);
+          const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
+          return { ...m, hasEditPerm };
+        })
+        this.setState({ total, list: newList, loading: false });
+        return this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
       })
-      this.setState({ total, list: newList, loading: false },
-        () => {
-          if (hasPerm('usersys.as_trader')) {
-            this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: list })
-          }
+      .then(allProjstatus => {
+        newList = newList.map(m => {
+          const projstatus = allProjstatus.find(f => f.id === m.projstatus);
+          return { ...m, projstatus };
+        });
+        if (hasPerm('usersys.as_trader')) {
+          this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: newList })
         }
-      );
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
       })
-    })
+      .catch(error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
     this.writeSetting()
   }
 
