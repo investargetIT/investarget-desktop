@@ -408,28 +408,28 @@ class ProjectList extends React.Component {
           // }
         }
       },
-      {
-        title: i18n('project.country'),
-        key: 'country',
-        render: (text, record) => {
-          if (this.props.country.length === 0) return null;
-          const country  = this.props.country.filter(f => f.id === record.country)[0];
-          const countryName = country ? country.country : ''
-          let imgUrl = country && country.key && country.url
-          if (country && !imgUrl) {
-            const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
-            if (parentCountry && parentCountry.url) {
-              imgUrl = parentCountry.url
-            }
-          }
-          return (
-            <span style={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
-              { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
-              <span>{countryName}</span>
-            </span>
-          )
-        }
-      },
+      // {
+      //   title: i18n('project.country'),
+      //   key: 'country',
+      //   render: (text, record) => {
+      //     if (this.props.country.length === 0) return null;
+      //     const country  = this.props.country.filter(f => f.id === record.country)[0];
+      //     const countryName = country ? country.country : ''
+      //     let imgUrl = country && country.key && country.url
+      //     if (country && !imgUrl) {
+      //       const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
+      //       if (parentCountry && parentCountry.url) {
+      //         imgUrl = parentCountry.url
+      //       }
+      //     }
+      //     return (
+      //       <span style={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
+      //         { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
+      //         <span>{countryName}</span>
+      //       </span>
+      //     )
+      //   }
+      // },
       {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',
