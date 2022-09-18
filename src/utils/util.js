@@ -523,6 +523,18 @@ export const requestAllData2 = async (request, params, max_size) => {
   return secondRes;
 }
 
+export const requestDownloadUrl = BDComments => {
+  return Promise.all(BDComments.map((comment) => {
+    if (!comment.url && comment.key && comment.bucket) {
+      return api.downloadUrl(comment.bucket, comment.key)
+        .then((res) => ({ ...comment, url: res.data }))
+        .catch(() => comment);
+    } else {
+      return Promise.resolve(comment);
+    }
+  }));
+}
+
 function trimTextIfExceedMaximumCount(text, count) {
   if (text.length < count) {
     return text;

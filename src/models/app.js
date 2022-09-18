@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { i18n, isLogin, requestAllData, subtracting } from '../utils/util'
+import { i18n, isLogin, requestAllData, requestDownloadUrl, subtracting } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
 
@@ -253,8 +253,10 @@ export default {
     *getProjBDCommentsByID({ payload: projBDID }, { call, put, select }) {
       const allProjBDComments = yield select(state => state.app.allProjBDComments);
       if (allProjBDComments[projBDID]) return allProjBDComments[projBDID];
-      const req = yield call(requestAllData, api.getProjBDCom, { projectBD: projBDID }, 20);
-      yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: req.data.data } });
+      const req = yield call(requestAllData, api.getProjBDCom, { projectBD: projBDID }, 100);
+      const { data: BDComments } = req.data;
+      const commentsWithUrl = yield call(requestDownloadUrl, BDComments);
+      yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: commentsWithUrl } });
       return req.data.data;
     },
   },

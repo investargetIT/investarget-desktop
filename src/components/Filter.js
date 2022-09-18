@@ -994,7 +994,6 @@ class ProjectBDFilter extends React.Component {
 
   render() {
     const { bd_status, source_type, location, manager, country, indGroup } = this.state
-    window.echo('ind group', indGroup);
     return (
       <div>
         <BasicContainer label={i18n('project_bd.bd_status')}>
