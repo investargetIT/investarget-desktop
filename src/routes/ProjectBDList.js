@@ -55,6 +55,7 @@ class ProjectBDList extends React.Component {
 
       displayAddBDCommentModal: false,
       editBDComment: null, // 编辑的行动计划
+      currentBDComments: [],
     }
   }
 
@@ -428,6 +429,12 @@ class ProjectBDList extends React.Component {
     return false;
   }
 
+  handleMouseEnterProjectName = async projBD => {
+    this.setState({ currentBD: projBD });
+    const req = await requestAllData(api.getProjBDCom, { projectBD: projBD.id }, 20);
+    this.setState({ currentBDComments: req.data.data });
+  }
+
   render() {
     const currentUser = getUserInfo();
     const currentUserId = currentUser && currentUser.id;
@@ -454,7 +461,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</a>
+                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)} onMouseEnter={() => this.handleMouseEnterProjectName(record)}>{text}</a>
               </Popover>
               :
               <Popover title="项目方联系方式" content={
@@ -465,7 +472,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <div style={{ color: "#428bca" }} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</div>
+                <div style={{ color: "#428bca" }} onMouseEnter={() => this.handleMouseEnterProjectName(record)}>{text}</div>
               </Popover>
             }
           </div>
@@ -627,7 +634,7 @@ class ProjectBDList extends React.Component {
               <div style={{ padding: 16, overflowY: 'auto' }}>
                 {this.hasPermForComment(currentUserId) ? (
                   <BDCommentsWithoutForm
-                    BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+                    BDComments={this.state.currentBDComments}
                     onEdit={this.handleEditCommentIconClick}
                     onDelete={this.handleDeleteComment} />
                 ) : '没有权限'}
