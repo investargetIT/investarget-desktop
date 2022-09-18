@@ -55,7 +55,6 @@ class ProjectBDList extends React.Component {
 
       displayAddBDCommentModal: false,
       editBDComment: null, // 编辑的行动计划
-      currentBDComments: [],
     }
   }
 
@@ -119,6 +118,7 @@ class ProjectBDList extends React.Component {
           }
         }
         this.setState({ currentBD });
+        this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: currentBD.id }); 
       })
       return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
     })
@@ -431,8 +431,7 @@ class ProjectBDList extends React.Component {
 
   handleMouseEnterProjectName = async projBD => {
     this.setState({ currentBD: projBD });
-    const comments = await this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: projBD.id });
-    this.setState({ currentBDComments: comments });
+    this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: projBD.id });
   }
 
   render() {
@@ -634,7 +633,7 @@ class ProjectBDList extends React.Component {
               <div style={{ padding: 16, overflowY: 'auto' }}>
                 {this.hasPermForComment(currentUserId) ? (
                   <BDCommentsWithoutForm
-                    BDComments={this.state.currentBDComments}
+                    BDComments={this.state.currentBD && this.props.allProjBDComments[this.state.currentBD.id]}
                     onEdit={this.handleEditCommentIconClick}
                     onDelete={this.handleDeleteComment} />
                 ) : '没有权限'}
@@ -694,4 +693,9 @@ class ProjectBDList extends React.Component {
   }
 }
 
-export default connect()(ProjectBDList);
+function mapStateToProps(state) {
+  const { allProjBDComments } = state.app;
+  return { allProjBDComments };
+}
+
+export default connect(mapStateToProps)(ProjectBDList);
