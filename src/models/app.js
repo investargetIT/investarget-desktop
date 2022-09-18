@@ -51,6 +51,7 @@ export default {
     palevel: [],
     allTraders: [],
     projectProgress: [], // 项目进度
+    allProjBDComments: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -180,6 +181,12 @@ export default {
       const oldData = yield select(state => state.app.projectProgress);
       yield put({ type: 'saveSource', payload: { sourceType: 'projectProgress', data: oldData.concat(newData) } });
     },
+    *saveProjectBDComments({ payload: { projBDID, projBDCom } }, { select, put }) {
+      const oldData = yield select(state => state.app.allProjBDComments);
+      const newData = oldData.slice();
+      newData[projBDID] = projBDCom;
+      yield put({ type: 'saveSource', payload: { sourceType: 'allProjBDComments', data: newData } });
+    },
     *getGroup({}, { call, put, select }) {
       const group = yield select(state => state.app.group);
       if (group.length > 0) return;
@@ -242,6 +249,13 @@ export default {
         yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage } }); 
       }
       // yield put({ type: 'saveProjectProgress', payload: projPercentage });
+    },
+    *getProjBDCommentsByID({ payload: projBDID }, { call, put, select }) {
+      const allProjBDComments = yield select(state => state.app.allProjBDComments);
+      if (allProjBDComments[projBDID]) return allProjBDComments[projBDID];
+      const req = yield call(requestAllData, api.getProjBDCom, { projectBD: projBDID }, 20);
+      yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: req.data.data } });
+      return req.data.data;
     },
   },
   subscriptions: {

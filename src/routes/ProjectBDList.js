@@ -431,8 +431,8 @@ class ProjectBDList extends React.Component {
 
   handleMouseEnterProjectName = async projBD => {
     this.setState({ currentBD: projBD });
-    const req = await requestAllData(api.getProjBDCom, { projectBD: projBD.id }, 20);
-    this.setState({ currentBDComments: req.data.data });
+    const comments = await this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: projBD.id });
+    this.setState({ currentBDComments: comments });
   }
 
   render() {
