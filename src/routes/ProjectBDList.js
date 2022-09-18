@@ -87,8 +87,10 @@ class ProjectBDList extends React.Component {
     }
     this.writeSetting();
     this.setState({ loading: true })
+    let list = [];
     return api.getProjBDList(param).then(result => {
-      let { count: total, data: list } = result.data
+      const { count: total, data: bdList } = result.data
+      list = bdList;
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
@@ -117,7 +119,16 @@ class ProjectBDList extends React.Component {
         }
         this.setState({ currentBD });
       })
-    }).catch(error => {
+      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    })
+    .then(allBdStatus => {
+      list = list.map(m => {
+        const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+        return { ...m, bd_status: bdStatus };
+      });
+      this.setState({ list });
+    })
+    .catch(error => {
       handleError(error)
       this.setState({ loading: false })
     })

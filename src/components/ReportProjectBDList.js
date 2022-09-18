@@ -46,10 +46,18 @@ class ReportProjectBDList extends React.Component {
       desc,
       manager,
     }
-
-    return requestAllData(api.getProjBDList, param, 100).then(result => {
+    let userBdList = [];
+    return requestAllData(api.getProjBDList, param, 100)
+    .then(allUserProjBDList => {
+      userBdList = allUserProjBDList.data.data;
+      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    })
+    .then(allBDStatus => {
       this.setState({
-        userBdList: result.data.data,
+        userBdList: userBdList.map(m => {
+          const bdStatus = allBDStatus.find(f => f.id === m.bd_status);
+          return { ...m, bd_status: bdStatus };
+        }),
       });
     }).catch(error => {
       handleError(error)
@@ -68,8 +76,10 @@ class ReportProjectBDList extends React.Component {
     }
 
     this.setState({ loading: true })
+    let list = [];
     return requestAllData(api.getProjBDList, param, 100).then(result => {
-      let { count: total, data: list } = result.data
+      const { count: total, data: bdList } = result.data
+      list = bdList;
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
@@ -91,7 +101,16 @@ class ReportProjectBDList extends React.Component {
           });
         }
       })
-    }).catch(error => {
+      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    })
+    .then(allBdStatus => {
+      list = list.map(m => {
+        const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+        return { ...m, bd_status: bdStatus };
+      });
+      this.setState({ list });
+    })
+    .catch(error => {
       handleError(error)
       this.setState({ loading: false })
     })
