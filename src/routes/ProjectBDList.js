@@ -118,7 +118,10 @@ class ProjectBDList extends React.Component {
           }
         }
         this.setState({ currentBD });
-        this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: currentBD.id }); 
+        this.props.dispatch({
+          type: 'app/getProjBDCommentsByID',
+          payload: { projBDID: currentBD.id, forceUpdate: false },
+        });
       })
       return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
     })
@@ -239,24 +242,11 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  updateCurrentBD = () => {
-    const { list, currentBD: bd } = this.state;
-    requestAllData(api.getProjBDCom, { projectBD: bd.id }, 10).then((result) => {
-      const BDComments = result.data.data;
-      const currentBD = {
-        ...bd,
-        BDComments,
-      }
-      const index = list.findIndex((item) => item.id === bd.id);
-      this.setState({
-        currentBD,
-        list: [
-          ...list.slice(0, index),
-          currentBD,
-          ...list.slice(index + 1),
-        ],
-        displayAddBDCommentModal: false,
-      })
+  updateCurrentBD = (projBDID) => {
+    this.setState({ displayAddBDCommentModal: false });
+    this.props.dispatch({
+      type: 'app/getProjBDCommentsByID',
+      payload: { projBDID: this.state.currentBD.id, forceUpdate: true },
     });
   }
 
@@ -431,7 +421,10 @@ class ProjectBDList extends React.Component {
 
   handleMouseEnterProjectName = async projBD => {
     this.setState({ currentBD: projBD });
-    this.props.dispatch({ type: 'app/getProjBDCommentsByID', payload: projBD.id });
+    this.props.dispatch({
+      type: 'app/getProjBDCommentsByID',
+      payload: { projBDID: projBD.id, forceUpdate: false },
+    });
   }
 
   render() {

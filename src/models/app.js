@@ -250,9 +250,9 @@ export default {
       }
       // yield put({ type: 'saveProjectProgress', payload: projPercentage });
     },
-    *getProjBDCommentsByID({ payload: projBDID }, { call, put, select }) {
+    *getProjBDCommentsByID({ payload: { projBDID, forceUpdate } }, { call, put, select }) {
       const allProjBDComments = yield select(state => state.app.allProjBDComments);
-      if (allProjBDComments[projBDID]) return allProjBDComments[projBDID];
+      if (allProjBDComments[projBDID] && !forceUpdate) return allProjBDComments[projBDID];
       const req = yield call(requestAllData, api.getProjBDCom, { projectBD: projBDID }, 100);
       const { data: BDComments } = req.data;
       const commentsWithUrl = yield call(requestDownloadUrl, BDComments);
