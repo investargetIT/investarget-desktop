@@ -826,6 +826,11 @@ export const deleteProjBD = (id) => {
 }
 
 export const getProjBDCom = (param) => {
+  _.forIn(param, function(value, key) {
+    if (Array.isArray(value)) {
+      param[key] = value.join(',')
+    }
+  })
   return r('/bd/projbd/comment/?' + qs.stringify(param));
 }
 
