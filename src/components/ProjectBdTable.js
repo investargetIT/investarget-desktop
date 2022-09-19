@@ -26,6 +26,8 @@ function ProjectBdTable(props) {
         return { ...m, bd_status: bdStatus };
       });
       setProjBdList(projBDList);
+      
+      if (projBDList.length === 0) return;
       const reqBDComments = await requestAllData(api.getProjBDCom, { projectBD: projBDList.map(m => m.id) }, 100);
       projBDList = projBDList.map(m => {
         const BDComments = reqBDComments.data.data.filter(f => f.projectBD === m.id);

@@ -36,7 +36,8 @@ class ReportProjectBDDetails extends React.Component {
 
     this.setState({ loading: true })
     let bdList = [];
-    return requestAllData(api.getProjBDList, param, 100).then(result => {
+    return requestAllData(api.getProjBDList, param, 100)
+    .then(result => {
       let { count: total, data: list } = result.data
       let promises = list.map(item=>{
         if(item.bduser){
@@ -50,18 +51,8 @@ class ReportProjectBDDetails extends React.Component {
         result.forEach((item,index)=>{
           list[index].hasRelation=item.data           
         })
-
-        let promises2 = list.map((item) => {
-          if (item.BDComments) {
-            return this.updateComments(item.BDComments).then((BDComments) => ({ ...item, BDComments }));
-          } else {
-            return Promise.resolve(item);
-          }
-        });
-        Promise.all(promises2).then((newList) => {
-          bdList = newList;
-          this.setState({ loading: false, total, list: newList });
-        })
+        bdList = list;
+        this.setState({ loading: false, total, list: bdList });
       })
       return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
     })
@@ -71,6 +62,28 @@ class ReportProjectBDDetails extends React.Component {
         return { ...m, bd_status: bdStatus };
       });
       this.setState({ list: bdList });
+      if (bdList.length > 0) {
+        return requestAllData(api.getProjBDCom, { projectBD: bdList.map(m => m.id) }, 100);
+      }
+    })
+    .then(reqBDComments => {
+      if (reqBDComments) {
+        bdList = bdList.map(m => {
+          const BDComments = reqBDComments.data.data.filter(f => f.projectBD === m.id);
+          return { ...m, BDComments };
+        });
+        let promises2 = bdList.map((item) => {
+          if (item.BDComments) {
+            return this.updateComments(item.BDComments).then((BDComments) => ({ ...item, BDComments }));
+          } else {
+            return Promise.resolve(item);
+          }
+        });
+        Promise.all(promises2).then((newList) => {
+          bdList = newList;
+          this.setState({ list: newList });
+        })
+      }
     })
     .catch(error => {
       handleError(error)
