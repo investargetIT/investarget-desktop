@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { i18n, isLogin, requestAllData, subtracting } from '../utils/util'
+import { i18n, isLogin, requestAllData, requestDownloadUrl, subtracting } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
 
@@ -51,6 +51,7 @@ export default {
     palevel: [],
     allTraders: [],
     projectProgress: [], // 项目进度
+    allProjBDComments: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -122,9 +123,12 @@ export default {
       const { data } = yield call(api.getSource, sourceType)
       yield put({ type: 'saveSource', payload: { sourceType, data } })
     },
-    *getSource({ payload: sourceType }, { put, select }) {
-      const data = yield select(state => state.app[sourceType])
-      data.length > 0 || (yield put({ type: 'requestSource', payload: sourceType }))
+    *getSource({ payload: sourceType }, { call, put, select }) {
+      let dataFromRedux = yield select(state => state.app[sourceType]);
+      if (dataFromRedux.length > 0) return dataFromRedux;
+      const { data } = yield call(api.getSource, sourceType)
+      yield put({ type: 'saveSource', payload: { sourceType, data } });
+      return data;
     },
     *getSourceList({ payload: sourceTypeList }, { put }) {
       for (var i=0,len=sourceTypeList.length; i<len; i++) {
@@ -176,6 +180,12 @@ export default {
     *saveProjectProgress({ payload: newData }, { select, put }) {
       const oldData = yield select(state => state.app.projectProgress);
       yield put({ type: 'saveSource', payload: { sourceType: 'projectProgress', data: oldData.concat(newData) } });
+    },
+    *saveProjectBDComments({ payload: { projBDID, projBDCom } }, { select, put }) {
+      const oldData = yield select(state => state.app.allProjBDComments);
+      const newData = oldData.slice();
+      newData[projBDID] = projBDCom;
+      yield put({ type: 'saveSource', payload: { sourceType: 'allProjBDComments', data: newData } });
     },
     *getGroup({}, { call, put, select }) {
       const group = yield select(state => state.app.group);
@@ -239,6 +249,15 @@ export default {
         yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage } }); 
       }
       // yield put({ type: 'saveProjectProgress', payload: projPercentage });
+    },
+    *getProjBDCommentsByID({ payload: { projBDID, forceUpdate } }, { call, put, select }) {
+      const allProjBDComments = yield select(state => state.app.allProjBDComments);
+      if (allProjBDComments[projBDID] && !forceUpdate) return allProjBDComments[projBDID];
+      const req = yield call(requestAllData, api.getProjBDCom, { projectBD: projBDID }, 100);
+      const { data: BDComments } = req.data;
+      const commentsWithUrl = yield call(requestDownloadUrl, BDComments);
+      yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: commentsWithUrl } });
+      return req.data.data;
     },
   },
   subscriptions: {

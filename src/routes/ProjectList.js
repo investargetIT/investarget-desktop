@@ -26,6 +26,10 @@ import {
   DeleteOutlined,
   PlusOutlined,
   EditOutlined,
+  FolderOutlined,
+  LockOutlined,
+  DollarOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 import _ from 'lodash';
@@ -135,31 +139,57 @@ class ProjectList extends React.Component {
     const { filters, search, page, pageSize, sort, desc } = this.state
     const params = { ...this.handleFinancialFilter(filters), search, skip_count: (page-1)*pageSize, max_size: pageSize, sort, desc, iscomproj: 0 }
     this.setState({ loading: true })
-    api.getProj(params).then(result => {
-      const { count: total, data: list } = result.data
-      const newList = list.map(m => {
-        const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
-        let userWithPermission = [];
-        userWithPermission = userWithPermission.concat(m.PM || []);
-        userWithPermission = userWithPermission.concat(m.createuser || []);
-        userWithPermission = userWithPermission.concat(projTraders);
-        const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
-        return { ...m, hasEditPerm };
+    let newList = [];
+    api.getProj(params)
+      .then(result => {
+        const { count: total, data: list } = result.data
+        newList = list.map(m => {
+          const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
+          let userWithPermission = [];
+          userWithPermission = userWithPermission.concat(m.PM || []);
+          userWithPermission = userWithPermission.concat(m.createuser || []);
+          userWithPermission = userWithPermission.concat(projTraders);
+          const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
+          return { ...m, hasEditPerm };
+        })
+        this.setState({ total, list: newList, loading: false });
+        return this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
       })
-      this.setState({ total, list: newList, loading: false },
-        () => {
-          if (hasPerm('usersys.as_trader')) {
-            this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: list })
-          }
+      .then(allProjstatus => {
+        newList = newList.map(m => {
+          const projstatus = allProjstatus.find(f => f.id === m.projstatus);
+          return { ...m, projstatus };
+        });
+
+        if (hasPerm('usersys.as_trader')) {
+          this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: newList })
         }
-      );
-    }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
-        type: 'app/findError',
-        payload: error
+
+        this.setState({ list: newList });
+
+        if (newList.length > 0) {
+          return api.queryDataRoom({
+            proj: newList.map(m => m.id).join(','),
+            page_size: newList.length,
+          }); 
+        }
       })
-    })
+      .then(reqDataroom => {
+        if (reqDataroom) {
+          newList = newList.map(m => {
+            const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
+            return { ...m, dataroom };
+          });
+          this.setState({ list: newList });
+        }
+      })
+      .catch(error => {
+        this.setState({ loading: false })
+        this.props.dispatch({
+          type: 'app/findError',
+          payload: error
+        })
+      })
     this.writeSetting()
   }
 
@@ -244,6 +274,8 @@ class ProjectList extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+
     if (hasPerm('usersys.as_trader')) {
       this.getMyTodoTasks();
       this.getOngoingProjects();
@@ -363,24 +395,38 @@ class ProjectList extends React.Component {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
           
-          function popoverContent() {
-            return (
-              <div> 
-                <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
-                <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
-                <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
-              </div>
-            );
-          }
+          // function popoverContent() {
+          //   return (
+          //     <div> 
+          //       <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
+          //       <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
+          //       <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
+          //     </div>
+          //   );
+          // }
 
           return hasPerm('usersys.as_trader') ? (
             // <Tooltip title="项目成本中心">
               // <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
-              <Popover title={null} content={popoverContent()}>
-                <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
-              </Popover>
+              // <Popover title={null} content={popoverContent()}>
+              //   <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
+              // </Popover>
               // </Link>
             // </Tooltip>
+            <div>
+              {record.dataroom ? (
+                <Tooltip title="DataRoom">
+                  <Link to={`/app/dataroom/detail?id=${record.dataroom && record.dataroom.id}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.projtitle)}`}>
+                    <Button type="link" icon={<FolderOutlined />} />
+                  </Link>
+                </Tooltip>
+              ) : (
+                <Button type="link" icon={<FolderOutlined />} disabled />
+              )}
+              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LockOutlined />} /></Link></Tooltip>
+              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
+              <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
+            </div>
           ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
         }
       },
@@ -406,27 +452,28 @@ class ProjectList extends React.Component {
           // }
         }
       },
-      {
-        title: i18n('project.country'),
-        key: 'country',
-        render: (text, record) => {
-          const country = record.country
-          const countryName = country ? country.country : ''
-          let imgUrl = country && country.key && country.url
-          if (country && !imgUrl) {
-            const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
-            if (parentCountry && parentCountry.url) {
-              imgUrl = parentCountry.url
-            }
-          }
-          return (
-            <span style={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
-              { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
-              <span>{countryName}</span>
-            </span>
-          )
-        }
-      },
+      // {
+      //   title: i18n('project.country'),
+      //   key: 'country',
+      //   render: (text, record) => {
+      //     if (this.props.country.length === 0) return null;
+      //     const country  = this.props.country.filter(f => f.id === record.country)[0];
+      //     const countryName = country ? country.country : ''
+      //     let imgUrl = country && country.key && country.url
+      //     if (country && !imgUrl) {
+      //       const parentCountry = this.props.country.filter(f => f.id === country.parent)[0]
+      //       if (parentCountry && parentCountry.url) {
+      //         imgUrl = parentCountry.url
+      //       }
+      //     }
+      //     return (
+      //       <span style={{display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
+      //         { imgUrl ? <img src={imgUrl} style={{width: '20px', height: '14px', marginRight: '4px'}} /> : null }
+      //         <span>{countryName}</span>
+      //       </span>
+      //     )
+      //   }
+      // },
       {
         title: i18n('project.transaction_size'),
         key: 'transactionAmount',

@@ -35,6 +35,7 @@ class ReportProjectBDDetails extends React.Component {
     }
 
     this.setState({ loading: true })
+    let bdList = [];
     return requestAllData(api.getProjBDList, param, 100).then(result => {
       let { count: total, data: list } = result.data
       let promises = list.map(item=>{
@@ -58,10 +59,20 @@ class ReportProjectBDDetails extends React.Component {
           }
         });
         Promise.all(promises2).then((newList) => {
+          bdList = newList;
           this.setState({ loading: false, total, list: newList });
         })
       })
-    }).catch(error => {
+      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    })
+    .then(allBdStatus => {
+      bdList = bdList.map(m => {
+        const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+        return { ...m, bd_status: bdStatus };
+      });
+      this.setState({ list: bdList });
+    })
+    .catch(error => {
       handleError(error)
       this.setState({ loading: false })
     })

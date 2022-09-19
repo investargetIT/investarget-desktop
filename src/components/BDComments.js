@@ -435,26 +435,28 @@ export function BDCommentsWithoutForm(props) {
   //   });
   // }
 
-  const updateComments = (BDComments) => {
-    if (BDComments) {
-      Promise.all(BDComments.map((comment) => {
-        if (!comment.url && comment.key && comment.bucket) {
-          return api.downloadUrl(comment.bucket, comment.key)
-            .then((res) => ({ ...comment, url: res.data }))
-            .catch(() => comment);
-        } else {
-          return Promise.resolve(comment);
-        }
-      })).then((bdComments) => {
-        setBdComments(bdComments);
-      });
-    } else {
-      setBdComments([]);
-    }
-  };
+  // const updateComments = (BDComments) => {
+  //   if (BDComments) {
+  //     Promise.all(BDComments.map((comment) => {
+  //       if (!comment.url && comment.key && comment.bucket) {
+  //         return api.downloadUrl(comment.bucket, comment.key)
+  //           .then((res) => ({ ...comment, url: res.data }))
+  //           .catch(() => comment);
+  //       } else {
+  //         return Promise.resolve(comment);
+  //       }
+  //     })).then((bdComments) => {
+  //       setBdComments(bdComments);
+  //     });
+  //   } else {
+  //     setBdComments([]);
+  //   }
+  // };
 
   useEffect(() => {
-    updateComments(BDComments);
+    if (BDComments) {
+      setBdComments(BDComments);
+    }
   }, [BDComments]);
 
   return (

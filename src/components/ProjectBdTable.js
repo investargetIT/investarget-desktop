@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { i18n, time, getCurrentUser } from '../utils/util';
 import { Table, Popover } from 'antd';
+import { connect } from 'dva';
 
-export default function() {
-
+function ProjectBdTable(props) {
   const [projBdList, setProjBdList] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +19,11 @@ export default function() {
       const req = await api.getProjBDList(params);
       setProjBdList(req.data.data);
       setLoading(false);
+      const allBdStatus = await props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+      setProjBdList(req.data.data.map(m => {
+        const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+        return { ...m, bd_status: bdStatus };
+      }));
     }
     fetchData();
   }, []);
@@ -145,3 +150,5 @@ export default function() {
     </div>
   );
 }
+
+export default connect()(ProjectBdTable);

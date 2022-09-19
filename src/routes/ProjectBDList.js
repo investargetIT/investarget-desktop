@@ -90,8 +90,10 @@ class ProjectBDList extends React.Component {
     }
     this.writeSetting();
     this.setState({ loading: true })
+    let list = [];
     return api.getProjBDList(param).then(result => {
-      let { count: total, data: list } = result.data
+      const { count: total, data: bdList } = result.data
+      list = bdList;
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
@@ -119,8 +121,21 @@ class ProjectBDList extends React.Component {
           }
         }
         this.setState({ currentBD });
+        this.props.dispatch({
+          type: 'app/getProjBDCommentsByID',
+          payload: { projBDID: currentBD.id, forceUpdate: false },
+        });
       })
-    }).catch(error => {
+      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+    })
+    .then(allBdStatus => {
+      list = list.map(m => {
+        const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+        return { ...m, bd_status: bdStatus };
+      });
+      this.setState({ list });
+    })
+    .catch(error => {
       handleError(error)
       this.setState({ loading: false })
     })
@@ -230,24 +245,11 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  updateCurrentBD = () => {
-    const { list, currentBD: bd } = this.state;
-    requestAllData(api.getProjBDCom, { projectBD: bd.id }, 10).then((result) => {
-      const BDComments = result.data.data;
-      const currentBD = {
-        ...bd,
-        BDComments,
-      }
-      const index = list.findIndex((item) => item.id === bd.id);
-      this.setState({
-        currentBD,
-        list: [
-          ...list.slice(0, index),
-          currentBD,
-          ...list.slice(index + 1),
-        ],
-        displayAddBDCommentModal: false,
-      })
+  updateCurrentBD = (projBDID) => {
+    this.setState({ displayAddBDCommentModal: false });
+    this.props.dispatch({
+      type: 'app/getProjBDCommentsByID',
+      payload: { projBDID: this.state.currentBD.id, forceUpdate: true },
     });
   }
 
@@ -420,6 +422,14 @@ class ProjectBDList extends React.Component {
     return false;
   }
 
+  handleMouseEnterProjectName = async projBD => {
+    this.setState({ currentBD: projBD });
+    this.props.dispatch({
+      type: 'app/getProjBDCommentsByID',
+      payload: { projBDID: projBD.id, forceUpdate: false },
+    });
+  }
+
   calculateContentHeight = () => {
     if (!this.state.affixed && !this.state.footerAffixed) return 500 - 60;
     if (!this.state.affixed && this.state.footerAffixed) return 'unset';
@@ -454,7 +464,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</a>
+                <a target="_blank" onClick={e => e.stopPropagation()} href={"/app/projects/library/" + encodeURIComponent(text)} onMouseEnter={() => this.handleMouseEnterProjectName(record)}>{text}</a>
               </Popover>
               :
               <Popover title="项目方联系方式" content={
@@ -465,7 +475,7 @@ class ProjectBDList extends React.Component {
                   <div>{`邮箱：${record.useremail || '暂无'}`}</div>
                 </div>
               }>
-                <div style={{ color: "#428bca" }} onMouseEnter={() => this.setState({ currentBD: record })}>{text}</div>
+                <div style={{ color: "#428bca" }} onMouseEnter={() => this.handleMouseEnterProjectName(record)}>{text}</div>
               </Popover>
             }
           </div>
@@ -633,7 +643,7 @@ class ProjectBDList extends React.Component {
                   <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
                     {this.hasPermForComment(currentUserId) ? (
                       <BDCommentsWithoutForm
-                        BDComments={this.state.currentBD && this.state.currentBD.BDComments}
+                        BDComments={this.state.currentBD && this.props.allProjBDComments[this.state.currentBD.id]}
                         onEdit={this.handleEditCommentIconClick}
                         onDelete={this.handleDeleteComment} />
                     ) : '没有权限'}
@@ -700,4 +710,9 @@ class ProjectBDList extends React.Component {
   }
 }
 
-export default connect()(ProjectBDList);
+function mapStateToProps(state) {
+  const { allProjBDComments } = state.app;
+  return { allProjBDComments };
+}
+
+export default connect(mapStateToProps)(ProjectBDList);
