@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { i18n, time, getCurrentUser } from '../utils/util';
+import { i18n, time, getCurrentUser, requestAllData } from '../utils/util';
 import { Table, Popover } from 'antd';
 import { connect } from 'dva';
 
@@ -17,13 +17,23 @@ function ProjectBdTable(props) {
         manager: getCurrentUser(),
       }
       const req = await api.getProjBDList(params);
-      setProjBdList(req.data.data);
+      let { data: projBDList } = req.data;
+      setProjBdList(projBDList);
       setLoading(false);
       const allBdStatus = await props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
-      setProjBdList(req.data.data.map(m => {
+      projBDList = projBDList.map(m => {
         const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
         return { ...m, bd_status: bdStatus };
-      }));
+      });
+      setProjBdList(projBDList);
+      
+      if (projBDList.length === 0) return;
+      const reqBDComments = await requestAllData(api.getProjBDCom, { projectBD: projBDList.map(m => m.id) }, 100);
+      projBDList = projBDList.map(m => {
+        const BDComments = reqBDComments.data.data.filter(f => f.projectBD === m.id);
+        return { ...m, BDComments };
+      });
+      setProjBdList(projBDList);
     }
     fetchData();
   }, []);
@@ -100,7 +110,7 @@ function ProjectBdTable(props) {
         if (record.BDComments && record.BDComments.length) {
           const comments = record.BDComments;
           if (comments.length > 0) {
-            latestComment = comments[comments.length - 1].comments;
+            latestComment = comments[0].comments;
           }
         }
         if (!latestComment) return '暂无';
