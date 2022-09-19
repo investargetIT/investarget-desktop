@@ -338,8 +338,16 @@ class LibProjRemarkList extends React.Component {
     })
     if (!hasPerm('usersys.as_investor') || getUserInfo().is_superuser) {
       api.getProjBDList({ search: com_name })
+        .then(result => {
+          if (result.data.data.length > 0) {
+            return requestAllData(api.getProjBDCom, { projectBD: result.data.data.map(m => m.id) }, 100);
+          }
+          return Promise.resolve({
+            data: { data: [] },
+          });
+        })
         .then((result) => {
-          const list = result.data.data.map(m => m.BDComments)
+          const list = result.data.data
             .reduce((prev, curr) => prev.concat(curr), [])
             .filter(f => f !== null)
             .map(m => ({ ...m, remark: m.comments }))
