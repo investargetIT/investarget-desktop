@@ -48,20 +48,32 @@ class ReportProjectBDList extends React.Component {
     }
     let userBdList = [];
     return requestAllData(api.getProjBDList, param, 100)
-    .then(allUserProjBDList => {
-      userBdList = allUserProjBDList.data.data;
-      return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
-    })
-    .then(allBDStatus => {
-      this.setState({
-        userBdList: userBdList.map(m => {
+      .then(allUserProjBDList => {
+        userBdList = allUserProjBDList.data.data;
+        return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+      })
+      .then(allBDStatus => {
+        userBdList = userBdList.map(m => {
           const bdStatus = allBDStatus.find(f => f.id === m.bd_status);
           return { ...m, bd_status: bdStatus };
-        }),
+        });
+        this.setState({ userBdList });
+        if (userBdList.length > 0) {
+          return requestAllData(api.getProjBDCom, { projectBD: userBdList.map(m => m.id) }, 100);
+        }
+      })
+      .then(reqBDComments => {
+        if (reqBDComments) {
+          userBdList = userBdList.map(m => {
+            const BDComments = reqBDComments.data.data.filter(f => f.projectBD === m.id);
+            return { ...m, BDComments };
+          });
+          this.setState({ userBdList });
+        }
+      })
+      .catch(error => {
+        handleError(error)
       });
-    }).catch(error => {
-      handleError(error)
-    })
   }
 
   getProjectBDList = () => {
@@ -77,9 +89,23 @@ class ReportProjectBDList extends React.Component {
 
     this.setState({ loading: true })
     let list = [];
-    return requestAllData(api.getProjBDList, param, 100).then(result => {
-      const { count: total, data: bdList } = result.data
+    let total = 0;
+    return requestAllData(api.getProjBDList, param, 100)
+    .then(result => {
+      const { count, data: bdList } = result.data
       list = bdList;
+      total = count;
+      if (list.length > 0) {
+        return requestAllData(api.getProjBDCom, { projectBD: list.map(m => m.id) }, 100);
+      }
+    })
+    .then(reqBDComments => {
+      if (reqBDComments) {
+        list = list.map(m => {
+          const BDComments = reqBDComments.data.data.filter(f => f.projectBD === m.id);
+          return { ...m, BDComments };
+        });
+      }
       let promises = list.map(item=>{
         if(item.bduser){
           return api.checkUserRelation(isLogin().id, item.bduser)
