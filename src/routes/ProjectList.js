@@ -27,7 +27,7 @@ import {
   PlusOutlined,
   EditOutlined,
   FolderOutlined,
-  LockOutlined,
+  LineChartOutlined,
   DollarOutlined,
   DatabaseOutlined,
 } from '@ant-design/icons';
@@ -423,7 +423,7 @@ class ProjectList extends React.Component {
               ) : (
                 <Button type="link" icon={<FolderOutlined />} disabled />
               )}
-              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LockOutlined />} /></Link></Tooltip>
+              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
               <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
               <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
             </div>
