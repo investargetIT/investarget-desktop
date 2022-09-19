@@ -165,7 +165,7 @@ class OrganizationList extends React.Component {
       searchOption,
       currentOrg: null,
       affixed: false,
-      footerAffixed: true,
+      footerAffixed: false,
     }
   }
 
