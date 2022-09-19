@@ -26,6 +26,10 @@ import {
   DeleteOutlined,
   PlusOutlined,
   EditOutlined,
+  FolderOutlined,
+  LockOutlined,
+  DollarOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 import _ from 'lodash';
@@ -156,8 +160,27 @@ class ProjectList extends React.Component {
           const projstatus = allProjstatus.find(f => f.id === m.projstatus);
           return { ...m, projstatus };
         });
+
         if (hasPerm('usersys.as_trader')) {
           this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: newList })
+        }
+
+        this.setState({ list: newList });
+
+        if (newList.length > 0) {
+          return api.queryDataRoom({
+            proj: newList.map(m => m.id).join(','),
+            page_size: newList.length,
+          }); 
+        }
+      })
+      .then(reqDataroom => {
+        if (reqDataroom) {
+          newList = newList.map(m => {
+            const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
+            return { ...m, dataroom };
+          });
+          this.setState({ list: newList });
         }
       })
       .catch(error => {
@@ -372,24 +395,38 @@ class ProjectList extends React.Component {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
           
-          function popoverContent() {
-            return (
-              <div> 
-                <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
-                <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
-                <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
-              </div>
-            );
-          }
+          // function popoverContent() {
+          //   return (
+          //     <div> 
+          //       <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
+          //       <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
+          //       <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
+          //     </div>
+          //   );
+          // }
 
           return hasPerm('usersys.as_trader') ? (
             // <Tooltip title="项目成本中心">
               // <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
-              <Popover title={null} content={popoverContent()}>
-                <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
-              </Popover>
+              // <Popover title={null} content={popoverContent()}>
+              //   <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
+              // </Popover>
               // </Link>
             // </Tooltip>
+            <div>
+              {record.dataroom ? (
+                <Tooltip title="DataRoom">
+                  <Link to={`/app/dataroom/detail?id=${record.dataroom && record.dataroom.id}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.projtitle)}`}>
+                    <Button type="link" icon={<FolderOutlined />} />
+                  </Link>
+                </Tooltip>
+              ) : (
+                <Button type="link" icon={<FolderOutlined />} disabled />
+              )}
+              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LockOutlined />} /></Link></Tooltip>
+              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
+              <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
+            </div>
           ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
         }
       },
