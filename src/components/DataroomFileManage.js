@@ -799,7 +799,7 @@ function DataroomFileManage({
           <span style={{ marginRight: 4 }}>{renderFileIcon()}</span>
           <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
-        <div>{(isLogin().is_superuser || !hasPerm('usersys.as_investor')) && addOperationIcon}{(isLogin().is_superuser || !hasPerm('dataroom.onlydataroom')) && moreOperationIcon}</div>
+        <div>{(isLogin().is_superuser || !hasPerm('usersys.as_investor')) && addOperationIcon}{moreOperationIcon}</div>
       </div>
     );
   }
