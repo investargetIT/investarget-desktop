@@ -330,9 +330,8 @@ export function EditBDComment(props) {
   return (
     <div>
       <Form
-        style={{ width: 400 }}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
         form={form}
         onFinish={handleFinish}
         preserve={false}
@@ -342,56 +341,57 @@ export function EditBDComment(props) {
           name="comments"
           rules={[{ required: true, message: '请填写备注' }]}
         >
-          <Input.TextArea rows={3} />
+          <Input.TextArea rows={5} style={{ width: '80%' }} />
         </Form.Item>
-        <Form.Item label="附件">
 
-          <Form.Item
-            name="filetype"
-            style={{ display: 'inline-block', marginBottom: 0 }}
+        <Form.Item
+          label="附件"
+          name="filetype"
+          style={{ marginBottom: 0 }}
+        >
+          <Select
+            showSearch
+            allowClear
+            placeholder="请选择附件目录"
+            optionFilterProp="children"
+            filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+            style={{ width: 150 }}
           >
-            <Select
-              showSearch
-              allowClear
-              placeholder="请选择附件目录"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
-              style={{ width: 150 }}
-            >
-              {fixedDirs.map(dir => <Option key={dir} value={dir}>{dir}</Option>)}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="fileList"
-            style={{ display: 'inline-block', marginBottom: 0 }}
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload
-              name="file"
-              customRequest={customRequest}
-              data={{ bucket: 'file' }}
-              maxCount={1}
-              onChange={handleUploadChange}
-              className="upload-list-modal"
-            >
-              <Button icon={<UploadOutlined />} type="link">上传附件</Button>
-            </Upload>
-          </Form.Item>
-
+            {fixedDirs.map(dir => <Option key={dir} value={dir}>{dir}</Option>)}
+          </Select>
         </Form.Item>
+
+        <Form.Item
+          wrapperCol={{ offset: 4, span: 20 }}
+          name="fileList"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+        >
+          <Upload
+            name="file"
+            customRequest={customRequest}
+            data={{ bucket: 'file' }}
+            maxCount={1}
+            onChange={handleUploadChange}
+            className="upload-list-modal"
+          >
+            <Button icon={<UploadOutlined />} type="link">上传附件</Button>
+          </Upload>
+        </Form.Item>
+
         {speechFile && (
           <Form.Item
-            label="语音转文字"
+            wrapperCol={{ offset: 4, span: 20 }}
             name="speechToText"
             valuePropName="checked"
-            extra="目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语"
+            extra={
+            <div style={{ width: '80%' }}>目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语</div>}
           >
-            <Checkbox />
+            <Checkbox>语音转文字</Checkbox>
           </Form.Item>
         )}
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+
+        <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
           <Button type="primary" htmlType="submit">
             确定
           </Button>
