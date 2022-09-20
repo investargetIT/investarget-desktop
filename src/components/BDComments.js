@@ -341,7 +341,7 @@ export function EditBDComment(props) {
           name="comments"
           rules={[{ required: true, message: '请填写备注' }]}
         >
-          <Input.TextArea rows={5} style={{ width: '80%' }} />
+          <Input.TextArea autoSize={{ minRows: 12 }} style={{ width: '80%' }} />
         </Form.Item>
 
         <Form.Item

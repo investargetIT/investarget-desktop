@@ -7,3 +7,9 @@
 .create-comment-icon:hover {
     color: #59b4de;
 }
+.icon-modal-operation {
+    color: gray;
+}
+.icon-modal-operation:hover {
+    color: black;
+}

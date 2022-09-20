@@ -20,7 +20,7 @@ import { isLogin } from '../utils/util'
 import ModalModifyProjectBDStatus from '../components/ModalModifyProjectBDStatus';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { connect } from 'dva';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, ArrowsAltOutlined, CloseOutlined, ShrinkOutlined } from '@ant-design/icons';
 import BDComments, { BDCommentsWithoutForm, EditBDComment } from '../components/BDComments';
 import styles from './ProjectBDList.css';
 
@@ -58,6 +58,7 @@ class ProjectBDList extends React.Component {
 
       affixed: false,
       footerAffixed: true,
+      modalExpanded: false,
     }
   }
 
@@ -680,12 +681,20 @@ class ProjectBDList extends React.Component {
         </Modal>
 
         <Modal
-          title="编辑行动计划"
+          title={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>编辑行动计划</div>
+            <div>
+              <Button type="link" icon={this.state.modalExpanded ? <ShrinkOutlined className={styles['icon-modal-operation']} /> : <ArrowsAltOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ modalExpanded: !this.state.modalExpanded })} />
+              <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ displayAddBDCommentModal: false })} />
+            </div>
+          </div>}
           visible={this.state.displayAddBDCommentModal}
           footer={null}
-          onCancel={() => this.setState({ displayAddBDCommentModal: false })}
+          closable={false}
           maskClosable={false}
           destroyOnClose={true}
+          style={{ maxWidth: this.state.modalExpanded ? '90vw' : undefined }}
+          width={this.state.modalExpanded ? '90vw' : undefined}
         >
           <EditBDComment
             comment={this.state.editBDComment}
