@@ -57,7 +57,7 @@ class ProjectBDList extends React.Component {
       editBDComment: null, // 编辑的行动计划
 
       affixed: false,
-      footerAffixed: true,
+      footerAffixed: false,
     }
   }
 
