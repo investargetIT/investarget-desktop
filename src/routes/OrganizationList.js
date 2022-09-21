@@ -146,7 +146,7 @@ class OrganizationList extends React.Component {
     const filters = setting ? setting.filters : OrganizationListFilter.defaultValue
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
-    const pageSize = setting ? setting.pageSize: 10
+    const pageSize = setting ? setting.pageSize: null;
     const searchOption = setting ? (setting.searchOption || 0) : 0
 
     const currentUser = getUserInfo();
@@ -154,7 +154,7 @@ class OrganizationList extends React.Component {
       filters,
       search,
       page,
-      pageSize: (currentUser && currentUser.page) || 10,
+      pageSize: pageSize || (currentUser && currentUser.page) || 10,
       total: 0,
       list: [],
       loading: false,
