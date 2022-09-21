@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { 
   i18n, 
@@ -59,6 +59,8 @@ import {
   CaretDownFilled,
   CloseOutlined,
   FullscreenOutlined,
+  ShrinkOutlined,
+  ArrowsAltOutlined,
 } from '@ant-design/icons';
 import QRCode from 'qrcode.react';
 import { baseUrl } from '../utils/request';
@@ -3237,6 +3239,7 @@ function EditOrgBDModalForm({
   onDeleteComment,
 }) {
   const [form] = Form.useForm();
+  const [modalExpanded, setModalExpanded] = useState(false);
 
   const initialValues = {
     orgname: bd.org.orgname,
@@ -3285,11 +3288,19 @@ function EditOrgBDModalForm({
   return (
     <Modal
       wrapClassName="modal-orgbd-edit"
-      title="编辑机构看板"
+      title={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>编辑机构看板</div>
+        <div>
+          <Button type="link" icon={modalExpanded ? <ShrinkOutlined className={styles['icon-modal-operation']} /> : <ArrowsAltOutlined className={styles['icon-modal-operation']} />} onClick={() => setModalExpanded(!modalExpanded)} />
+          <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={onCancelEditOrgBD} />
+        </div>
+      </div>}
       visible
-      onCancel={onCancelEditOrgBD}
+      closable={false}
       onOk={handleOk}
       confirmLoading={loadingEditingOrgBD}
+      style={{ maxWidth: modalExpanded ? '90vw' : undefined }}
+      width={modalExpanded ? '90vw' : undefined}
     >
       <Form
         form={form}
@@ -3342,7 +3353,7 @@ function EditOrgBDModalForm({
           label="机构反馈"
         >
           <Input.TextArea
-            rows={3}
+            autoSize={{ minRows: 12 }}
           />
         </Form.Item>
       </Form>

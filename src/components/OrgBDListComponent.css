@@ -16,3 +16,9 @@
 .bd-status-6 {
   background: #999;
 }
+.icon-modal-operation {
+  color: gray;
+}
+.icon-modal-operation:hover {
+  color: black;
+}
