@@ -73,7 +73,7 @@ const mimeTypes = [
 ]
 
 
-export const fixedDirs = ['Teaser', 'Memo', 'BP', 'Presentation', 'Brochure', 'Datapackage', 'FAQ', 'Cap Table', '会议纪要']
+export const fixedDirs = ['Teaser', 'Memo', 'BP', 'Presentation', 'Brochure', 'Datapackage', 'FAQ', 'Cap Table', 'PB']
 
 function DirectoryCell(props) {
   return (
@@ -342,7 +342,7 @@ class ProjectAttachments extends React.Component {
 
   render() {
     const { fileList, dirs } = this.state
-
+    window.echo('dirs', dirs);
     let panes = dirs.map(item => ({ title: item, key: item, closable: !fixedDirs.includes(item) }))
     let doneFileList = fileList.filter(file => file.status == 'done')
 
