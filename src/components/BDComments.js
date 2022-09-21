@@ -330,8 +330,8 @@ export function EditBDComment(props) {
   return (
     <div>
       <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
+        labelCol={{ span: 3 }}
+        wrapperCol={{ span: 21 }}
         form={form}
         onFinish={handleFinish}
         preserve={false}
@@ -341,7 +341,7 @@ export function EditBDComment(props) {
           name="comments"
           rules={[{ required: true, message: '请填写备注' }]}
         >
-          <Input.TextArea autoSize={{ minRows: 12 }} style={{ width: '80%' }} />
+          <Input.TextArea autoSize={{ minRows: 12 }} />
         </Form.Item>
 
         <Form.Item
@@ -362,7 +362,7 @@ export function EditBDComment(props) {
         </Form.Item>
 
         <Form.Item
-          wrapperCol={{ offset: 4, span: 20 }}
+          wrapperCol={{ offset: 3, span: 21 }}
           name="fileList"
           valuePropName="fileList"
           getValueFromEvent={normFile}
@@ -381,7 +381,7 @@ export function EditBDComment(props) {
 
         {speechFile && (
           <Form.Item
-            wrapperCol={{ offset: 4, span: 20 }}
+            wrapperCol={{ offset: 3, span: 21 }}
             name="speechToText"
             valuePropName="checked"
             extra={
@@ -391,7 +391,7 @@ export function EditBDComment(props) {
           </Form.Item>
         )}
 
-        <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
+        <Form.Item wrapperCol={{ offset: 3, span: 21 }}>
           <Button type="primary" htmlType="submit">
             确定
           </Button>
