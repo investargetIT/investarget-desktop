@@ -225,7 +225,7 @@ class OrganizationList extends React.Component {
         return { ...m, hasOperationPermission };
       });
       this.setState(
-        { total, list: newList, loading: false, currentOrg: list.length > 0 ? 0 : null },
+        { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
         () => this.getOrgRemarks(newList.map(m => m.id)),
       );
       this.writeSetting();
