@@ -398,7 +398,7 @@ class ProjectList extends React.Component {
           // function popoverContent() {
           //   return (
           //     <div> 
-          //       <div><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>前往项目成本中心</Link></div>
+          //       <div><Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}>前往项目成本中心</Link></div>
           //       <div><Link to={`/app/org/bd?projId=${record.id}`}>查看机构看板详情</Link></div>
           //       <div><Link to={`/app/orgbd/add?projId=${record.id}`}>名单生成</Link></div>
           //     </div>
@@ -407,7 +407,7 @@ class ProjectList extends React.Component {
 
           return hasPerm('usersys.as_trader') ? (
             // <Tooltip title="项目成本中心">
-              // <Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}>
+              // <Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}>
               // <Popover title={null} content={popoverContent()}>
               //   <img src={imgUrl} style={{ width: '80px', height: '50px' }} />
               // </Popover>
@@ -416,7 +416,7 @@ class ProjectList extends React.Component {
             <div>
               {record.dataroom ? (
                 <Tooltip title="DataRoom">
-                  <Link to={`/app/dataroom/detail?id=${record.dataroom && record.dataroom.id}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.projtitle)}`}>
+                  <Link to={`/app/dataroom/detail?id=${record.dataroom && record.dataroom.id}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
                     <Button type="link" icon={<FolderOutlined />} />
                   </Link>
                 </Tooltip>
@@ -424,7 +424,7 @@ class ProjectList extends React.Component {
                 <Button type="link" icon={<FolderOutlined />} disabled />
               )}
               <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
-              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
+              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
               <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
             </div>
           ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
@@ -439,7 +439,7 @@ class ProjectList extends React.Component {
               // <Tooltip title="项目详情">
               <Popover title={null} content={<div><Link to={`/app/projects/${record.id}`}>项目详情</Link></div>}>
                 <span className="span-title">
-                  <Link to={`/app/projects/${record.id}`}>{record.projtitle}</Link>
+                  <Link to={`/app/projects/${record.id}`}>{record.realname}</Link>
                 </span>
               {/* // </Tooltip> */}
               </Popover>
