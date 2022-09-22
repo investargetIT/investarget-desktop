@@ -54,6 +54,7 @@ export default {
     allProjBDComments: [],
     projectBDListParameters: { scrollPosition: 0, currentBD: null }, // 记住滑动位置及当前BD
     orgListParameters: { scrollPosition: 0, currentOrg: null },
+    projectIDToDataroom: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -260,6 +261,27 @@ export default {
       const commentsWithUrl = yield call(requestDownloadUrl, BDComments);
       yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: commentsWithUrl } });
       return req.data.data;
+    },
+    *getDataroomByProjectID({ payload: projectIDArr }, { call, put, select }) {
+      const allProjectIDToDataroom = yield select(state => state.app.projectIDToDataroom);
+      const needsRefreshArr = [];
+      projectIDArr.forEach(element => {
+        if (allProjectIDToDataroom[element] === undefined) {
+          needsRefreshArr.push(element);
+        }
+      });
+      if (needsRefreshArr.length === 0) return;
+      const req = yield call(api.queryDataRoom, {
+        proj: needsRefreshArr.join(','),
+        page_size: needsRefreshArr.length,
+      });
+      const { data: dataroom } = req.data;
+      const newResult = allProjectIDToDataroom.slice();
+      needsRefreshArr.forEach(element => {
+        const projDataroomIndex = dataroom.map(m => m.proj.id).indexOf(element);
+        newResult[element] = projDataroomIndex > -1 ? dataroom[projDataroomIndex] : null;
+      });
+      yield put({ type: 'saveSource', payload: { sourceType: 'projectIDToDataroom', data: newResult } });
     },
   },
   subscriptions: {

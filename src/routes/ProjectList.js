@@ -143,6 +143,7 @@ class ProjectList extends React.Component {
     api.getProj(params)
       .then(result => {
         const { count: total, data: list } = result.data
+        this.props.dispatch({ type: 'app/getDataroomByProjectID', payload: list.map(m => m.id) });
         newList = list.map(m => {
           const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
           let userWithPermission = [];
@@ -166,22 +167,6 @@ class ProjectList extends React.Component {
         }
 
         this.setState({ list: newList });
-
-        if (newList.length > 0) {
-          return api.queryDataRoom({
-            proj: newList.map(m => m.id).join(','),
-            page_size: newList.length,
-          }); 
-        }
-      })
-      .then(reqDataroom => {
-        if (reqDataroom) {
-          newList = newList.map(m => {
-            const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
-            return { ...m, dataroom };
-          });
-          this.setState({ list: newList });
-        }
       })
       .catch(error => {
         this.setState({ loading: false })
@@ -404,7 +389,7 @@ class ProjectList extends React.Component {
           //     </div>
           //   );
           // }
-
+          const dataroom = this.props.projectIDToDataroom[record.id];
           return hasPerm('usersys.as_trader') ? (
             // <Tooltip title="项目成本中心">
               // <Link to={`/app/projects/cost/${record.id}?name=${record.realname}&projId=${record.id}`}>
@@ -414,9 +399,9 @@ class ProjectList extends React.Component {
               // </Link>
             // </Tooltip>
             <div>
-              {record.dataroom ? (
+              {dataroom ? (
                 <Tooltip title="DataRoom">
-                  <Link to={`/app/dataroom/detail?id=${record.dataroom && record.dataroom.id}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
+                  <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
                     <Button type="link" icon={<FolderOutlined />} />
                   </Link>
                 </Tooltip>
@@ -641,9 +626,9 @@ class ProjectList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { country, projectProgress } = state.app;
+  const { country, projectProgress, projectIDToDataroom } = state.app;
   const userPageSize = state.currentUser ? state.currentUser.page : 10;
-  return { country, userPageSize, projectProgress };
+  return { country, userPageSize, projectProgress, projectIDToDataroom };
 }
 
 
