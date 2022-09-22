@@ -264,7 +264,7 @@ class ProjectList extends React.Component {
 
   writeSetting = () => {
     const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page };
+    const data = { filters, search, page, pageSize };
     localStorage.setItem('ProjectList2', JSON.stringify(data))
   }
 
