@@ -191,9 +191,9 @@ class OrganizationList extends React.Component {
 
   handleFilterOrg = () => {
     if (this.state.searchOption === 0) {
-      this.getOrg();
+      return this.getOrg();
     } else if (this.state.searchOption === 1) {
-      this.searchOrg();
+      return this.searchOrg();
     }
   }
 
@@ -214,7 +214,7 @@ class OrganizationList extends React.Component {
     const params = { ...filters, search, page_index: page, page_size: pageSize, sort, desc, issub: false }
     this.setState({ loading: true })
     console.log(params)
-    api.getOrg(params).then(result => {
+    return api.getOrg(params).then(result => {
       const { count: total, data: list } = result.data
       const newList = list.map(m => {
         const { createuser } = m;
@@ -225,9 +225,10 @@ class OrganizationList extends React.Component {
         return { ...m, hasOperationPermission };
       });
       this.setState(
-        { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0] : null },
+        { total, list: newList, loading: false, currentOrg: list.length > 0 ? 0 : null },
         () => this.getOrgRemarks(newList.map(m => m.id)),
       );
+      this.writeSetting();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -235,7 +236,6 @@ class OrganizationList extends React.Component {
         payload: error
       })
     })
-    this.writeSetting()
   }
 
   getOrgRemarks = async orgArr => {
@@ -244,7 +244,7 @@ class OrganizationList extends React.Component {
       const remarks = req.data.data.filter(f => f.org === m.id);
       return { ...m, remarks };
     });
-    this.setState({ list: newOrgListWithRemarks, currentOrg: newOrgListWithRemarks.length > 0 ? newOrgListWithRemarks[0] : null }, () => this.getOrgInvestors(orgArr));
+    this.setState({ list: newOrgListWithRemarks }, () => this.getOrgInvestors(orgArr));
   }
 
   getOrgInvestors = async orgArr => {
@@ -256,7 +256,7 @@ class OrganizationList extends React.Component {
       return { ...m, investors };
     });
     this.setState(
-      { list: newOrgListWithInvestors, currentOrg: newOrgListWithInvestors.length > 0 ? newOrgListWithInvestors[0] : null },
+      { list: newOrgListWithInvestors },
       () => this.getOrgInvestorRemarks(allInvestors.map(m => m.id)),
     );
   }
@@ -270,7 +270,7 @@ class OrganizationList extends React.Component {
       });
       return { ...m, investors: newInvestorsWithRemarks };
     });
-    this.setState({ list: newOrgListWithInvestorRemarks, currentOrg: newOrgListWithInvestorRemarks.length > 0 ? newOrgListWithInvestorRemarks[0] : null });
+    this.setState({ list: newOrgListWithInvestorRemarks });
   }
 
   searchOrg = () => {
@@ -284,13 +284,14 @@ class OrganizationList extends React.Component {
     const { filters, search: text, page, pageSize, sort, desc } = this.state;
     const params = { ...filters, text, page_index: page, page_size: pageSize, sort, desc, issub: false };
     this.setState({ loading: true })
-    api.searchOrg(params).then(result => {
+    return api.searchOrg(params).then(result => {
       const { count: total, data: list } = result.data
       // this.setState({ total, list, loading: false })
       this.setState(
-        { total, list, loading: false, currentOrg: list.length > 0 ? list[0] : null },
+        { total, list, loading: false, currentOrg: list.length > 0 ? 0 : null },
         () => this.getOrgRemarks(list.map(m => m.id)),
       );
+      this.writeSetting();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -298,7 +299,6 @@ class OrganizationList extends React.Component {
         payload: error
       })
     })
-    this.writeSetting()
   }
 
   // 按创建时间排序
@@ -342,7 +342,16 @@ class OrganizationList extends React.Component {
   }
 
   componentDidMount() {
-    this.handleFilterOrg();
+    this.handleFilterOrg()
+      .then(() => {
+        const { scrollPosition, currentOrg } = this.props;
+        window.scrollTo(0, scrollPosition );
+        if (currentOrg) {
+          this.setState({ currentOrg });
+        }
+        // Reset position
+        this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'orgListParameters', data: { scrollPosition: 0, currentOrg: null } } });
+      });
   }
 
   handleExportBtnClicked = () => {
@@ -369,23 +378,6 @@ class OrganizationList extends React.Component {
     this.setState({ selectedIds })
   }
 
-  // handleDeleteComment = (id) => {
-  //   const { currentOrg } = this.state;
-  //   api.deleteOrgRemark(id)
-  //     .then(() => {
-  //       const newList = this.state.list.map(m => {
-  //         if (m.id === currentOrg.id) {
-  //           const remarks = m.remarks.filter(f => f.id !== id);
-  //           return { ...m, remarks };
-  //         }
-  //         return m;
-  //       });
-  //       const newCurrentOrg = { ...currentOrg, remarks: currentOrg.remarks.filter(f => f.id !== id) };
-  //       this.setState({ list: newList, currentOrg: newCurrentOrg });
-  //     })
-  //     .catch(handleError);
-  // }
-
   calculateContentHeight = () => {
     if (!this.state.affixed && !this.state.footerAffixed) return 500 - 60;
     if (!this.state.affixed && this.state.footerAffixed) return 'unset';
@@ -394,13 +386,33 @@ class OrganizationList extends React.Component {
     return undefined;
   }
 
+  handleEditBtnClicked = () => {
+    const { pageYOffset: scrollPosition } = window;
+    const { currentOrg } = this.state;
+    this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'orgListParameters', data: { scrollPosition, currentOrg } } });
+  }
+
+  getCurrentOrgFromID = () => {
+    return this.state.list.find(f => f.id === this.state.currentOrg);
+  }
+
+  getCurrentOrgRemarks = () => {
+    const currentOrgObj = this.getCurrentOrgFromID(this.state.currentOrg);
+    return currentOrgObj ? currentOrgObj.remarks : [];
+  }
+
+  getCurrentOrgInvestors = () => {
+    const currentOrgObj = this.getCurrentOrgFromID(this.state.currentOrg);
+    return currentOrgObj ? currentOrgObj.investors : [];
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
-          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.setState({ currentOrg: record })}>
+          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.setState({ currentOrg: record.id })}>
             {record.orgfullname}
           </div>
         </Link>,
@@ -419,7 +431,7 @@ class OrganizationList extends React.Component {
           <span className="span-operation orgbd-operation-icon-btn">
 
             <Link to={'/app/organization/edit/' + record.id}>
-              <Button type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission}><EditOutlined /></Button>
+              <Button onClick={this.handleEditBtnClicked} type="link" disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission}><EditOutlined /></Button>
             </Link>
 
             <Popconfirm title={i18n('delete_confirm')} disabled={!hasPerm('org.admin_manageorg') && !record.hasOperationPermission} onConfirm={this.deleteOrg.bind(null, record.id)}>
@@ -511,16 +523,8 @@ class OrganizationList extends React.Component {
           <Row>
             <Col span={10}>
               <Table
-                // className="table-affix-footer"
-                // onRow={record => {
-                //   return {
-                //     onMouseEnter: () => {
-                //       this.setState({ currentOrg: record });
-                //     },
-                //   };
-                // }}
                 rowClassName={record => {
-                  return this.state.currentOrg && record.id === this.state.currentOrg.id ? styles['current-row'] : '';
+                  return record.id === this.state.currentOrg ? styles['current-row'] : '';
                 }}
                 onChange={this.handleTableChange}
                 columns={columns}
@@ -546,7 +550,7 @@ class OrganizationList extends React.Component {
                       <List
                         className="comment-list"
                         itemLayout="horizontal"
-                        dataSource={this.state.currentOrg ? this.state.currentOrg.remarks : []}
+                        dataSource={this.getCurrentOrgRemarks()}
                         renderItem={item => (
                           <li>
                             <Comment
@@ -575,7 +579,7 @@ class OrganizationList extends React.Component {
                     <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
                       <List
                         itemLayout="horizontal"
-                        dataSource={this.state.currentOrg ? this.state.currentOrg.investors : []}
+                        dataSource={this.getCurrentOrgInvestors()}
                         renderItem={item => (
                           <List.Item>
                             <List.Item.Meta
@@ -645,4 +649,9 @@ class OrganizationList extends React.Component {
 
 }
 
-export default connect()(OrganizationList)
+function mapStateToProps(state) {
+  const { orgListParameters: { scrollPosition, currentOrg } } = state.app;
+  return { scrollPosition, currentOrg };
+}
+
+export default connect(mapStateToProps)(OrganizationList);

@@ -52,6 +52,8 @@ export default {
     allTraders: [],
     projectProgress: [], // 项目进度
     allProjBDComments: [],
+    projectBDListParameters: { scrollPosition: 0, currentBD: null }, // 记住滑动位置及当前BD
+    orgListParameters: { scrollPosition: 0, currentOrg: null },
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {

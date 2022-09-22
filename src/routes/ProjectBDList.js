@@ -379,6 +379,15 @@ class ProjectBDList extends React.Component {
 
   componentDidMount() {
     this.getProjectBDList()
+      .then(() => {
+        const { scrollPosition, currentBD } = this.props;
+        window.scrollTo(0, scrollPosition );
+        if (currentBD) {
+          this.setState({ currentBD });
+        }
+        // Reset position
+        this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'projectBDListParameters', data: { scrollPosition: 0, currentBD: null } } });
+      });
     this.props.dispatch({ type: 'app/getGroup' });
   }
 
@@ -437,6 +446,12 @@ class ProjectBDList extends React.Component {
     if (this.state.affixed && this.state.footerAffixed) return 'calc(100vh - 110px)';
     if (this.state.affixed && !this.state.footerAffixed) return 'calc(100vh - 110px - 16px - 32px - 16px - 30px )';
     return undefined;
+  }
+
+  handleEditBtnClicked = () => {
+    const { pageYOffset: scrollPosition } = window;
+    const { currentBD } = this.state;
+    this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'projectBDListParameters', data: { scrollPosition, currentBD } } });
   }
 
   render() {
@@ -547,7 +562,7 @@ class ProjectBDList extends React.Component {
             <div>
               {hasPerm('BD.manageProjectBD') || currentUserId === record.createuser ?
                 <Link to={'/app/projects/bd/edit/' + record.id}>
-                  <Button size="small" type="link"><EditOutlined /></Button>
+                  <Button size="small" type="link" onClick={this.handleEditBtnClicked}><EditOutlined /></Button>
                 </Link>
                 :
                 normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
@@ -720,8 +735,8 @@ class ProjectBDList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { allProjBDComments } = state.app;
-  return { allProjBDComments };
+  const { allProjBDComments, projectBDListParameters: { scrollPosition, currentBD } } = state.app;
+  return { allProjBDComments, scrollPosition, currentBD };
 }
 
 export default connect(mapStateToProps)(ProjectBDList);
