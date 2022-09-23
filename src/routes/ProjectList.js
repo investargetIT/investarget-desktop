@@ -150,7 +150,7 @@ class ProjectList extends React.Component {
           userWithPermission = userWithPermission.concat(m.PM || []);
           userWithPermission = userWithPermission.concat(m.createuser || []);
           userWithPermission = userWithPermission.concat(projTraders);
-          const hasEditPerm = userWithPermission.map(m => m.id).includes(getCurrentUser());
+          const hasEditPerm = userWithPermission.includes(getCurrentUser());
           return { ...m, hasEditPerm };
         })
         this.setState({ total, list: newList, loading: false });
