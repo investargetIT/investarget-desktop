@@ -685,7 +685,7 @@ function ProjectHead({ project, allCountries, progress }) {
   return (
     <div>
       <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
-        <div style={{ marginRight: 10, color: '#282828', fontWeight: 'bold', fontSize: 20 }}>{project.realname}</div>
+        <div style={{ marginRight: 10, color: '#282828', fontWeight: 'bold', fontSize: 20 }}>{project.projtitle}</div>
         <div style={{ border: '1px solid #339bd2', borderRadius: 4, width: 72, height: 24, fontSize: 14, color: '#339bd2', background: '#f0f6fb', display: 'flex', justifyContent: 'center', alignItems: 'center' }} color="blue">
           {project.projstatus && project.projstatus.name}
         </div>

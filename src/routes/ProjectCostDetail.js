@@ -71,7 +71,7 @@ function ProjectCostDetail(props) {
   const [orgbdres, setOrgbdres] = useState([]);
   const [projectDetails, setProjectDetails] = useState({
     id: props.match.params.id,
-    realname: projName,
+    projtitleC: projName,
     percentage: 0,
     step: 0, // 项目进程时间轴所在的步骤
   });
@@ -293,7 +293,7 @@ function ProjectCostDetail(props) {
 
 
       <div style={{ marginTop: 20, marginBottom: 30, marginLeft: 20, fontSize: 20, lineHeight: '28px', fontWeight: 'bold' }}>
-        {projectDetails.realname}&nbsp;&nbsp;
+        {projectDetails.projtitleC}&nbsp;&nbsp;
         <Link to={`/app/projects/${projectDetails.id}`} style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
