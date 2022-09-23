@@ -227,7 +227,7 @@ export default {
         if (element.projstatus) {
           if (element.projstatus.name.includes('已完成') || element.projstatus.name.includes('Completed')) {
             projPercentage.push({ id: element.id, percentage: 100 });
-            yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage: 100 } });
+            yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage: 100, status: '完成交易' } });
             continue;
           }
         }
@@ -237,19 +237,24 @@ export default {
         resCount = resCount.map(m => {
           const relatedRes = orgBDResList.filter(f => f.id === m.response);
           let resIndex = 0;
+          let status = '暂无';
           if (relatedRes.length > 0) {
             resIndex = relatedRes[0].sort;
+            status = relatedRes[0].name;
           }
-          return { ...m, resIndex };
+          return { ...m, resIndex, status };
         });
         const maxRes = Math.max(...resCount.map(m => m.resIndex));
+        const maxResObj = resCount.find(f => f.resIndex === maxRes);
         let percentage = 0;
+        let status = '暂无';
         if (maxRes > 3) {
           // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
           percentage = Math.round((maxRes - 3) / 9 * 100);
+          status = maxResObj.status;
         }
-        projPercentage.push({ id: element.id, percentage });
-        yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage } }); 
+        projPercentage.push({ id: element.id, percentage, status });
+        yield put({ type: 'saveProjectProgress', payload: { id: element.id, percentage, status } }); 
       }
       // yield put({ type: 'saveProjectProgress', payload: projPercentage });
     },

@@ -186,6 +186,14 @@ class ProjectList extends React.Component {
     return 0;
   }
 
+  getProjectProgressStatus = record => {
+    const filterProject = this.props.projectProgress.filter(f => f.id === record.id);
+    if (filterProject.length > 0) {
+      return filterProject[0].status;
+    }
+    return '暂无';
+  }
+
   handleDelete = (id) => {
     this.setState({ loading: true })
     api.deleteProj(id).then(result => {
@@ -493,7 +501,10 @@ class ProjectList extends React.Component {
         {
           title: '项目进度',
           key: 'progress',
-          render: (_, record) => <div style={{ minWidth: 150 }}><Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" /></div>,
+          render: (_, record) => <div style={{ minWidth: 150 }}>
+            <Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" />
+            <div style={{ fontSize: 12, color: 'gray' }}>{this.getProjectProgressStatus(record)}</div>
+          </div>,
         });
     }
     columns.push(
