@@ -11,7 +11,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { connect } from 'dva'
-import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip, Avatar, List, Comment, Affix } from 'antd'
+import { Button, Popconfirm, Modal, Table, Pagination, Select, Radio, Input, Row, Col, Tooltip, Avatar, List, Comment, Affix, Tag } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import {
   UserOutlined,
@@ -584,7 +584,12 @@ class OrganizationList extends React.Component {
                           <List.Item>
                             <List.Item.Meta
                               avatar={<Avatar src={item.photourl} />}
-                              title={<Link to={`/app/user/${item.id}`}>{item.username}&nbsp;{item.mobile}</Link>}
+                              title={
+                                <Link to={`/app/user/${item.id}`}>
+                                  {item.username}&nbsp;{item.mobile}&nbsp;
+                                  {item.tags && item.tags.map(m => <Tag key={m}>{m}</Tag>)}
+                                </Link>
+                              }
                               description={item.remarks && item.remarks.map(remark => (
                                 <Comment
                                   key={remark.id}
