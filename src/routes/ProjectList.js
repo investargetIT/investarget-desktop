@@ -503,7 +503,7 @@ class ProjectList extends React.Component {
           key: 'progress',
           render: (_, record) => <div style={{ minWidth: 150 }}>
             <Progress percent={this.getProjectProgress(record)} size="small" strokeColor="#339bd2" />
-            <div style={{ fontSize: 12, color: 'gray' }}>{this.getProjectProgressStatus(record)}</div>
+            <div style={{ fontSize: 12, color: 'red' }}>{this.getProjectProgressStatus(record)}</div>
           </div>,
         });
     }
