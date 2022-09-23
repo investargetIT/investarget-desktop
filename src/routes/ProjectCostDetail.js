@@ -71,7 +71,7 @@ function ProjectCostDetail(props) {
   const [orgbdres, setOrgbdres] = useState([]);
   const [projectDetails, setProjectDetails] = useState({
     id: props.match.params.id,
-    projtitleC: projName,
+    projtitle: projName,
     percentage: 0,
     step: 0, // 项目进程时间轴所在的步骤
   });
@@ -96,35 +96,10 @@ function ProjectCostDetail(props) {
     // props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
     
     async function getAndSetProjectWithProgress() {
-      const res = await api.getProjDetail(projectDetails.id);
-      const reqBdRes = await api.getSource('orgbdres');
-      const { data: orgBDResList } = reqBdRes;
-      setOrgbdres(orgBDResList);
-      const paramsForPercentage = { proj: projectDetails.id };
-      const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
-      let { response_count: resCount } = projPercentageCount.data;
-      resCount = resCount.map(m => {
-        const relatedRes = orgBDResList.filter(f => f.id === m.response);
-        let resIndex = 0;
-        if (relatedRes.length > 0) {
-          resIndex = relatedRes[0].sort;
-        }
-        return { ...m, resIndex };
-      });
-      const maxRes = Math.max(...resCount.map(m => m.resIndex));
-      let percentage = 0, step = 0;
-      if (maxRes > 3) {
-        // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
-        percentage = Math.round((maxRes - 3) / 9 * 100);
-        step = maxRes - 4;
-      }
-      if (res.data.projstatus) {
-        if (res.data.projstatus.nameC.includes('已完成')) {
-          percentage = 100;
-          step = 9;
-        }
-      }
-      setProjectDetails({ ...projectDetails, ...res.data, percentage, step });
+      const res = await api.getProjLangDetail(projectDetails.id);
+      const { data: project } = res;
+      setProjectDetails({ ...projectDetails, ...project });
+      props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: [project] });
     }
 
     async function getAllOrgBD() {
@@ -245,12 +220,10 @@ function ProjectCostDetail(props) {
     return uniqueOrgs;
   }
 
-  function handleShowInvestorsIconClick(step) {
-    if (showInvestorStep === step) {
-      setShowInvestorStep();
-      return;
-    }
-    setShowInvestorStep(step);
+  function findProjectProgress() {
+    const currentProjectProgress = props.projectProgress.find( f => f.id === projectDetails.id);
+    if (!currentProjectProgress) return 0;
+    return currentProjectProgress.percentage;
   }
 
   const findRelatedStatusName = tranStatusName => {
@@ -293,7 +266,7 @@ function ProjectCostDetail(props) {
 
 
       <div style={{ marginTop: 20, marginBottom: 30, marginLeft: 20, fontSize: 20, lineHeight: '28px', fontWeight: 'bold' }}>
-        {projectDetails.projtitleC}&nbsp;&nbsp;
+        {projectDetails.projtitle}&nbsp;&nbsp;
         <Link to={`/app/projects/${projectDetails.id}`} style={{ fontSize: 14, lineHeight: '22px', fontWeight: 'normal' }}>查看项目详情</Link>
       </div>
 
@@ -314,8 +287,8 @@ function ProjectCostDetail(props) {
               <Card style={{ flex: 1 }} title="项目进度">
                 <div style={statStyle}>
                   <div style={statLabelStyle}>{projectDetails.projstatus && projectDetails.projstatus.nameC}</div>
-                  <div style={statValueStyle}><span style={statValueNumStyle}>{projectDetails.percentage}%</span></div>
-                  <Progress style={{ marginTop: 10, marginBottom: 4 }} size="small" strokeColor="#339bd2" percent={projectDetails.percentage} showInfo={false} />
+                  <div style={statValueStyle}><span style={statValueNumStyle}>{findProjectProgress()}%</span></div>
+                  <Progress style={{ marginTop: 10, marginBottom: 4 }} size="small" strokeColor="#339bd2" percent={findProjectProgress()} showInfo={false} />
                 </div>
               </Card>
             </Col>
@@ -430,9 +403,9 @@ function ProjectCostDetail(props) {
   );
 }
 
-// function mapStateToProps(state) {
-//   const { transactionStatus, orgbdres } = state.app;
-//   return { transactionStatus, orgbdres };
-// }
+function mapStateToProps(state) {
+  const { projectProgress } = state.app;
+  return { projectProgress };
+}
 
-export default connect()(ProjectCostDetail);
+export default connect(mapStateToProps)(ProjectCostDetail);

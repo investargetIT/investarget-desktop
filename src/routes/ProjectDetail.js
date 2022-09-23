@@ -182,7 +182,6 @@ class ProjectDetail extends React.Component {
       imageHeight: 0,
       activeKey: 1,
       activeTabKey: 'details',
-      progress: 0,
       loadingPdf: false,  // PDF 下载 loading 状态
     }
   }
@@ -302,7 +301,8 @@ class ProjectDetail extends React.Component {
 
     api.getProjLangDetail(id).then(result => {
       const project = result.data
-      this.setState({ project }, () => this.getAndSetProjectPercentage(id))
+      this.setState({ project });
+      this.props.dispatch({ type: 'app/checkProjectProgressFromRedux', payload: [project] });
     }).catch( handleError);
 
     // this.getFavorProject()
@@ -329,35 +329,6 @@ class ProjectDetail extends React.Component {
     }
   }
 
-  getAndSetProjectPercentage = async projID => {
-    if (!hasPerm('usersys.as_trader')) return;
-    const reqBdRes = await api.getSource('orgbdres');
-    const { data: orgBDResList } = reqBdRes;
-
-    const paramsForPercentage = { proj: projID };
-    const projPercentageCount = await api.getOrgBDCountNew(paramsForPercentage);
-    let { response_count: resCount } = projPercentageCount.data;
-    resCount = resCount.map(m => {
-      const relatedRes = orgBDResList.filter(f => f.id === m.response);
-      let resIndex = 0;
-      if (relatedRes.length > 0) {
-        resIndex = relatedRes[0].sort;
-      }
-      return { ...m, resIndex };
-    });
-    const maxRes = Math.max(...resCount.map(m => m.resIndex));
-    let percentage = 0;
-    if (maxRes > 3) {
-      // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
-      percentage = Math.round((maxRes - 3) / 9 * 100);
-    }
-    if (this.state.project.projstatus) {
-      if (this.state.project.projstatus.name.includes('已完成') || this.state.project.projstatus.name.includes('Completed')) {
-        percentage = 100;
-      }
-    }
-    this.setState({ progress: percentage });
-  }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
@@ -382,6 +353,12 @@ class ProjectDetail extends React.Component {
     }
   }
 
+  findProjectProgress = () => {
+    const currentProjectProgress = this.props.projectProgress.find( f=> f.id === this.state.id);
+    if (!currentProjectProgress) return 0;
+    return currentProjectProgress.percentage;
+  }
+
   render() {
     const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
     return (
@@ -403,7 +380,7 @@ class ProjectDetail extends React.Component {
             <ProjectImage project={project} />
 
             <div style={{ marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={this.setHeader}>
-              <ProjectHead project={project} allCountries={this.props.country} progress={this.state.progress} />
+              <ProjectHead project={project} allCountries={this.props.country} progress={this.findProjectProgress()} />
 
               <div className="another-btn">
                 {/* {isFavorite ?
@@ -501,9 +478,9 @@ class ProjectDetail extends React.Component {
 }
 
 function mapStateToProps(state) {
-  var { projstatus, country } = state.app
+  var { projstatus, country, projectProgress } = state.app;
   projstatus = projstatus.filter(item => item.id >= 2)
-  return { projstatus, country }
+  return { projstatus, country, projectProgress };
 }
 
 export default connect(mapStateToProps)(ProjectDetail)

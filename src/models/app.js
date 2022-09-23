@@ -221,6 +221,7 @@ export default {
     *getAndSetProjectPercentage({ payload: list }, { call, put }) {
       const reqBdRes = yield call(api.getSource, 'orgbdres');
       const { data: orgBDResList } = reqBdRes;
+      const allSteps = orgBDResList.filter(f => f.sort > 3).sort((a, b) => a.sort - b.sort);
       const projPercentage = [];
       for (let index = 0; index < list.length; index++) {
         const element = list[index];
@@ -249,8 +250,8 @@ export default {
         let percentage = 0;
         let status = '暂无';
         if (maxRes > 3) {
-          // 计算方法是从正在看前期资料开始到交易完成一共9步，取百分比
-          percentage = Math.round((maxRes - 3) / 9 * 100);
+          const maxResIndex = allSteps.map(m => m.sort).indexOf(maxRes);
+          percentage = Math.round((maxResIndex + 1) / allSteps.length * 100);
           status = maxResObj.status;
         }
         projPercentage.push({ id: element.id, percentage, status });
