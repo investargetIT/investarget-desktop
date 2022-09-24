@@ -451,10 +451,10 @@ class OrganizationList extends React.Component {
                             <List.Item.Meta
                               avatar={<Avatar src={item.photourl} />}
                               title={
-                                <div style={{ color: 'rgba(0, 0, 0, .45)', lineHeight: '2.4rem', fontWeight: 'normal' }}>
-                                  <Link to={`/app/user/${item.id}`}>{item.username}</Link>
-                                  <span style={{ marginLeft: 8 }}>{item.mobile}</span>
-                                  <span style={{ marginLeft: 8 }}>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</span>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 8px', color: 'rgba(0, 0, 0, .45)', lineHeight: 2, fontWeight: 'normal' }}>
+                                  <div><Link to={`/app/user/${item.id}`}>{item.username}</Link></div>
+                                  <div>{item.mobile}</div>
+                                  <div>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</div>
                                 </div>
                               }
                               description={item.remarks && item.remarks.map(remark => (
