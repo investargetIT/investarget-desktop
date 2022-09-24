@@ -114,9 +114,10 @@ class OrganizationList extends React.Component {
         }
         return { ...m, hasOperationPermission };
       });
+      this.props.dispatch({ type: 'app/getOrgRemarks', payload: list.map(m => m.id) });
       this.setState(
         { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
-        () => this.getOrgRemarks(newList.map(m => m.id)),
+        () => this.getOrgInvestors(newList.map(m => m.id)),
       );
       this.writeSetting();
     }, error => {
@@ -126,15 +127,6 @@ class OrganizationList extends React.Component {
         payload: error
       })
     })
-  }
-
-  getOrgRemarks = async orgArr => {
-    const req = await requestAllData(api.getOrgRemark, { org: orgArr }, 100);
-    const newOrgListWithRemarks = this.state.list.map(m => {
-      const remarks = req.data.data.filter(f => f.org === m.id);
-      return { ...m, remarks };
-    });
-    this.setState({ list: newOrgListWithRemarks }, () => this.getOrgInvestors(orgArr));
   }
 
   getOrgInvestors = async orgArr => {
@@ -179,7 +171,7 @@ class OrganizationList extends React.Component {
       // this.setState({ total, list, loading: false })
       this.setState(
         { total, list, loading: false, currentOrg: list.length > 0 ? 0 : null },
-        () => this.getOrgRemarks(list.map(m => m.id)),
+        () => this.getOrgInvestors(list.map(m => m.id)),
       );
       this.writeSetting();
     }, error => {
@@ -287,8 +279,12 @@ class OrganizationList extends React.Component {
     return this.state.list.find(f => f.id === this.state.currentOrg);
   }
 
+  getCurrentOrgRemarksFromRedux = () => {
+    return this.props.orgRemarks.find(f => f.id === this.state.currentOrg);
+  }
+
   getCurrentOrgRemarks = () => {
-    const currentOrgObj = this.getCurrentOrgFromID(this.state.currentOrg);
+    const currentOrgObj = this.getCurrentOrgRemarksFromRedux();
     return currentOrgObj ? currentOrgObj.remarks : [];
   }
 
@@ -522,8 +518,8 @@ class OrganizationList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { orgListParameters: { scrollPosition, currentOrg }, tag } = state.app;
-  return { scrollPosition, currentOrg, tag };
+  const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks } = state.app;
+  return { scrollPosition, currentOrg, tag, orgRemarks };
 }
 
 export default connect(mapStateToProps)(OrganizationList);
