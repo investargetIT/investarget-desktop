@@ -27,116 +27,6 @@ const RadioGroup = Radio.Group;
 
 const paginationStyle = { marginBottom: '24px', textAlign: 'right', marginTop: window.innerWidth < 1200 ? 10 : undefined };
 
-// function OrgRemarks(props) {
-//   const { BDComments, onAdd, onEdit, onDelete } = props;
-
-//   const [bdComments, setBdComments] = useState([]);
-//   const [comment, setComment] = useState(null);
-
-//   const updateComments = (BDComments) => {
-//     if (BDComments) {
-//       Promise.all(BDComments.map((comment) => {
-//         if (!comment.url && comment.key && comment.bucket) {
-//           return api.downloadUrl(comment.bucket, comment.key)
-//             .then((res) => ({ ...comment, url: res.data }))
-//             .catch(() => comment);
-//         } else {
-//           return Promise.resolve(comment);
-//         }
-//       })).then((bdComments) => {
-//         setBdComments(bdComments);
-//       });
-//     } else {
-//       setBdComments([]);
-//     }
-//   };
-
-//   useEffect(() => {
-//     updateComments(BDComments);
-//   }, [BDComments]);
-
-//   return (
-//     <div>
-//       <div style={{ display: comment ? 'none' : '' }}>
-//         {bdComments && bdComments.length ? bdComments.map(comment => (
-//           <BDCommnet
-//             key={comment.id}
-//             comment={comment}
-//             onEdit={() => onEdit(comment)}
-//             onDelete={() => onDelete(comment.id)}
-//           />
-//         )) : <p>暂无备注</p>}
-//       </div>
-//     </div>
-//   );
-// }
-
-// function BDCommnet({ comment, onEdit, onDelete }) {
-//   // const [translateSuccess, setTranslateSuccess] = useState(false);
-//   // useEffect(() => {
-//   //   if (comment.transid) {
-//   //     api.getAudioTranslate(comment.transid).then((res) => {
-//   //       if (res.data && res.data.taskStatus === "9") {
-//   //         setTranslateSuccess(true);
-//   //       }
-//   //     });
-//   //   }
-//   // }, []);
-
-//   return (
-//     <div key={comment.id} style={{ marginBottom: 8 }}>
-//       <p style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//         <span style={{ marginRight: 8 }}>{time(comment.createdtime)}</span>
-
-//         {/* {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-//           <Button type="link" onClick={onEdit}><EditOutlined /></Button>
-//           : null} */}
-
-//         &nbsp;
-//         {hasPerm('BD.manageProjectBD') || getUserInfo().id === comment.createuser ?
-//           <Popconfirm title={i18n('message.confirm_delete')} onConfirm={onDelete}>
-//             <Button type="link"><DeleteOutlined /></Button>
-//           </Popconfirm>
-//           : null}
-//       </p>
-//       <div style={{ display: 'flex' }}>
-//         {comment.createuserobj &&
-//           <div style={{ marginRight: 10 }}>
-//             <Tooltip title={comment.createuserobj.username}>
-//               <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
-//                 <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
-//               </a>
-//             </Tooltip>
-//           </div>
-//         }
-//         <div style={{ flex: 1, overflow: 'hidden' }}>
-//           <p dangerouslySetInnerHTML={{ __html: comment.remark.replace(/\n/g, '<br>') }}></p>
-//           {/* {comment.url && (
-//             <div>
-//               <FileLink
-//                 filekey={comment.key}
-//                 url={comment.url}
-//                 filename={comment.filename || comment.key}
-//               />
-//               {comment.filetype && <Tag>{comment.filetype}</Tag>}
-//             </div>
-//           )} */}
-//           {/* {comment.transid && translateSuccess && (
-//             <div style={{ marginTop: 4 }}>
-//               <Link
-//                 style={{ color: 'red' }}
-//                 to={`/app/speech-to-text/${comment.transid}?speechKey=${comment.key}`}
-//               >
-//                 语音转文字
-//               </Link>
-//             </div>
-//           )} */}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 class OrganizationList extends React.Component {
 
   constructor(props) {
@@ -472,37 +362,8 @@ class OrganizationList extends React.Component {
 
         <div>
 
-          {/* <OrganizationListFilter
-            hideTag={this.state.searchOption === 1}
-            defaultValue={filters}
-            onSearch={this.handleFilt}
-            onReset={this.handleReset}
-          /> */}
-
           <div style={{ overflow: 'auto' }}>
-
-            {/* <div style={{ float: 'left', marginBottom: '24px', width: '200px' }}>
-              <Search
-                style={{ width: 250 }}
-                placeholder={[i18n('organization.orgname'), i18n('organization.stock_code')].join(' / ')}
-                onSearch={() => this.setState({ page: 1 }, this.getOrg)}
-                onChange={search => this.setState({ search })}
-                value={search}
-              />
-            </div> */}
-
             <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
-              {/* <RadioGroup onChange={e => this.setState({ searchOption: e.target.value })} defaultValue={0} value={this.state.searchOption}>
-                <Radio value={0}>搜索机构名称/股票代码</Radio>
-                <Radio value={1}>搜索备注以及附件内文字</Radio>
-              </RadioGroup>
-              <Search
-                style={{ width: 250, marginLeft: 10 }}
-                placeholder="搜索内容"
-                onChange={search => this.setState({ search })}
-                value={search}
-                onSearch={this.handleOrgSearch}
-              /> */}
               <Input.Search
                 style={{ width: 450, marginLeft: 10 }}
                 placeholder="搜索内容"
@@ -513,7 +374,6 @@ class OrganizationList extends React.Component {
                 onSearch={this.handleOrgSearch}
               />
             </div>
-
             
             {this.state.searchOption === 0 &&
               <div style={{ float: 'right' }}>
@@ -524,7 +384,6 @@ class OrganizationList extends React.Component {
                 </Select>
               </div>
             }
-
           </div>
 
           <Row>
