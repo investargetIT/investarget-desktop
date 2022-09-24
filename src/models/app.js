@@ -290,22 +290,31 @@ export default {
       });
       yield put({ type: 'saveSource', payload: { sourceType: 'projectIDToDataroom', data: newResult } });
     },
-    *getOrgRemarks({ payload: orgIDArr }, { call, put, select }) {
+    *getOrgRemarks({ payload: { orgIDArr, forceUpdate }}, { call, put, select }) {
       const allOrgRemarks = yield select(state => state.app.orgRemarks);
-      const needsRefreshArr = [];
-      orgIDArr.forEach(element => {
-        const orgInfo = allOrgRemarks.find(f => f.id === element);
-        if (!orgInfo) {
-          needsRefreshArr.push(element);
-        }
-      });
+      let needsRefreshArr = [];
+      if (forceUpdate) {
+        needsRefreshArr = orgIDArr;
+      } else {
+        orgIDArr.forEach(element => {
+          const orgInfo = allOrgRemarks.find(f => f.id === element);
+          if (!orgInfo) {
+            needsRefreshArr.push(element);
+          }
+        });
+      }
       if (needsRefreshArr.length === 0) return;
       const req = yield call(requestAllData, api.getOrgRemark, { org: needsRefreshArr }, 100);
       const { data: orgRemarks } = req.data;
       let newOrgRemarks = allOrgRemarks.slice();
       needsRefreshArr.forEach(element => {
         const remarks = orgRemarks.filter(f => f.org === element);
-        newOrgRemarks = newOrgRemarks.concat({ id: element, remarks });
+        const orgIndex = newOrgRemarks.map(m => m.id).indexOf(element);
+        if (orgIndex === -1) {
+          newOrgRemarks = newOrgRemarks.concat({ id: element, remarks });
+        } else {
+          newOrgRemarks[orgIndex] = { id: element, remarks };
+        }
       });
       yield put({ type: 'saveSource', payload: { sourceType: 'orgRemarks', data: newOrgRemarks } });
     },

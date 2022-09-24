@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'dva';
 import { Icon, Input, Button, Modal, Popconfirm } from 'antd'
 import { handleError, time, i18n, hasPerm, getUserInfo, requestAllData } from '../utils/util';
 import * as api from '../api'
@@ -204,6 +204,15 @@ function remarkListWithApi(type) {
       const params = { [type]: this.props.typeId, remark }
       addApi(params).then(result => {
         this.getRemarkList()
+        if (type === 'org') {
+          this.props.dispatch({
+            type: 'app/getOrgRemarks',
+            payload: {
+              orgIDArr: [parseInt(this.props.typeId, 10)],
+              forceUpdate: true
+            }
+          });
+        }
       }, error => {
         handleError(error)
       })
@@ -221,6 +230,15 @@ function remarkListWithApi(type) {
     deleteRemark = (id) => {
       deleteApi(id).then(result => {
         this.getRemarkList()
+        if (type === 'org') {
+          this.props.dispatch({
+            type: 'app/getOrgRemarks',
+            payload: {
+              orgIDArr: [parseInt(this.props.typeId, 10)],
+              forceUpdate: true
+            }
+          });
+        }
       }, error => {
         handleError(error)
       })
@@ -290,7 +308,7 @@ function remarkListWithApi(type) {
 
   }
 
-  return CommonRemarkList
+  return connect()(CommonRemarkList);
 }
 
 

@@ -114,7 +114,13 @@ class OrganizationList extends React.Component {
         }
         return { ...m, hasOperationPermission };
       });
-      this.props.dispatch({ type: 'app/getOrgRemarks', payload: list.map(m => m.id) });
+      this.props.dispatch({
+        type: 'app/getOrgRemarks',
+        payload: {
+          orgIDArr: list.map(m => m.id),
+          forceUpdate: false
+        }
+      });
       this.setState(
         { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
         () => this.getOrgInvestors(newList.map(m => m.id)),
@@ -285,7 +291,7 @@ class OrganizationList extends React.Component {
 
   getCurrentOrgRemarks = () => {
     const currentOrgObj = this.getCurrentOrgRemarksFromRedux();
-    return currentOrgObj ? currentOrgObj.remarks : [];
+    return currentOrgObj ? currentOrgObj.remarks.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime)) : [];
   }
 
   getCurrentOrgInvestors = () => {
