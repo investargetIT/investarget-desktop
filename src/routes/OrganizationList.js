@@ -342,6 +342,7 @@ class OrganizationList extends React.Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
     this.handleFilterOrg()
       .then(() => {
         const { scrollPosition, currentOrg } = this.props;
@@ -404,6 +405,12 @@ class OrganizationList extends React.Component {
   getCurrentOrgInvestors = () => {
     const currentOrgObj = this.getCurrentOrgFromID(this.state.currentOrg);
     return currentOrgObj ? currentOrgObj.investors : [];
+  }
+
+  getTagNameByID = tagID => {
+    const tag = this.props.tag.find(f => f.id === tagID);
+    if (!tag) return tagID;
+    return tag.name;
   }
 
   render() {
@@ -588,7 +595,7 @@ class OrganizationList extends React.Component {
                                 <div style={{ color: 'rgba(0, 0, 0, .45)', lineHeight: '2.4rem', fontWeight: 'normal' }}>
                                   <Link to={`/app/user/${item.id}`}>{item.username}</Link>
                                   <span style={{ marginLeft: 8 }}>{item.mobile}</span>
-                                  <span style={{ marginLeft: 8 }}>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{m}</Tag>)}</span>
+                                  <span style={{ marginLeft: 8 }}>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</span>
                                 </div>
                               }
                               description={item.remarks && item.remarks.map(remark => (
@@ -656,8 +663,8 @@ class OrganizationList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { orgListParameters: { scrollPosition, currentOrg } } = state.app;
-  return { scrollPosition, currentOrg };
+  const { orgListParameters: { scrollPosition, currentOrg }, tag } = state.app;
+  return { scrollPosition, currentOrg, tag };
 }
 
 export default connect(mapStateToProps)(OrganizationList);
