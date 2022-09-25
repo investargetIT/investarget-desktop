@@ -1,8 +1,6 @@
 import React from 'react'
-import { Icon, Input } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router';
-import classNames from 'classnames'
 import _ from 'lodash'
 import debounce from 'lodash/debounce';
 import * as api from '../api'
@@ -77,7 +75,6 @@ class SiteSearch extends React.Component {
       loading: false,
     }
 
-    // this.handleScroll = _.throttle(this.handleScroll, 300)
     this.searchData = debounce(this.searchData, 800);
   }
 
@@ -101,20 +98,6 @@ class SiteSearch extends React.Component {
     }
   }
 
-  // handleScroll = (e) => {
-  //   if (this.isLoading) {
-  //     e.preventDefault();
-  //     return;
-  //   }
-  //   const el = this.refs.results
-  //   const distance = el.scrollHeight - el.clientHeight - el.scrollTop
-  //   const { results, total } = this.state
-  //   if (distance < 24 && results.length < total && !this.isLoading) {
-  //     this.isLoading = true
-  //     this.loadMoreData()
-  //   }
-  // }
-
   handleClickItem = item => {
     this.onSearch(item);
     this.hideResults()
@@ -128,18 +111,6 @@ class SiteSearch extends React.Component {
       this.props.dispatch(routerRedux.push(`/app/projects/library?search=${item.com_name}`));
     }
   }
-
-  // reloadData = (search) => {
-  //   this.setState({ page: 1, reloading: true })
-  //   const param = { page_index: 1, page_size: 10, com_name: search }
-  //   api.getLibProjSimple(param).then(result => {
-  //     const { count, data } = result.data
-  //     this.setState({ total: count, results: data, reloading: false })
-  //   }).catch(error => {
-  //     handleError(error)
-  //     this.setState({ reloading: false })
-  //   })
-  // }
 
   searchData = async content => {
     try {
@@ -158,24 +129,6 @@ class SiteSearch extends React.Component {
       this.setState({ reloading: false });
     }
   }
-
-  // loadMoreData = () => {
-  //   const nextPage = this.state.page + 1
-  //   this.setState({ loading: true, page: nextPage })
-  //   const param = { page_index: nextPage, page_size: 10, com_name: this.props.search }
-  //   api.getLibProjSimple(param).then(result => {
-  //     const { count, data } = result.data
-  //     this.setState({ results: [...this.state.results, ...data], loading: false }, () => {
-  //       // this.isLoading = false
-  //     })
-  //     this.isLoading = false
-  //   }).catch(error => {
-  //     handleError(error)
-  //     this.setState({ loading: false }, () => {
-  //       this.isLoading = false
-  //     })
-  //   })
-  // }
 
   componentWillReceiveProps(nextProps) {
     console.log(nextProps.search)
@@ -226,7 +179,6 @@ class SiteSearch extends React.Component {
       if (results.length > 0) {
         content = (
           <ul style={listStyle} ref="results" 
-          // onScroll={this.handleScroll}
           >
             {results.map(item =>
               <li
@@ -258,7 +210,6 @@ class SiteSearch extends React.Component {
           value={this.props.search}
           onChange={this.handleChangeSearch}
           onKeyUp={this.handleKeyUp}
-          onBlur={this.handleBlur}
         />
         <SearchOutlined style={searchIconStyle} />
         <div style={{ ...resultStyle, display: visible ? 'block' : 'none' }}>
