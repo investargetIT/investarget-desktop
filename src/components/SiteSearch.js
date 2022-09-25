@@ -104,10 +104,18 @@ class SiteSearch extends React.Component {
   }
 
   onSearch = (item) => {
-    if (item.isFromProjectList) {
-      window.open(`/app/projects/${item.id}`);
-    } else {
-      window.open(`/app/user/${item.id}`);
+    switch (item.type) {
+      case 'project':
+        window.open(`/app/projects/${item.id}`);
+        break;
+      case 'user':
+        window.open(`/app/user/${item.id}`);
+        break;
+      case 'projBD':
+        window.open(`/app/projects/bd`);
+        break;
+      default:
+        break;
     }
   }
 
@@ -119,12 +127,14 @@ class SiteSearch extends React.Component {
       this.setState({ reloading: true });
       const res = await Promise.all([
         requestAllData(api.getUser, { search: content }, 50),
+        requestAllData(api.getProjBDList, { search: content }, 50),
         requestAllData(api.getProj, { search: content }, 50),
       ]);
-      const res1 = res[0].data.data.map(m => ({ ...m, com_name: m.username, type: 'user', label: '用户' }));
-      const res2 = res[1].data.data.map(m => ({ ...m, com_name: m.projtitle, isFromProjectList: true, type: 'project', label: '项目' }));
-      const allResult = res1.concat(res2);
-      const total = res[0].data.count + res[1].data.count;
+      const res0 = res[0].data.data.map(m => ({ ...m, com_name: m.username, type: 'user', label: '用户' }));
+      const res1 = res[1].data.data.map(m => ({ ...m, type: 'projBD', label: '项目BD' }));
+      const res2 = res[2].data.data.map(m => ({ ...m, com_name: m.projtitle, type: 'project', label: '项目' }));
+      const allResult = [...res0, ...res1, ...res2];
+      const total = res[0].data.count + res[1].data.count + res[2].data.coount;
       this.setState({ total, results: allResult, reloading: false });
     } catch (error) {
       handleError(error);
