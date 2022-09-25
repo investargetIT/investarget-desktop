@@ -31,7 +31,13 @@ class ProjectBDList extends React.Component {
 
     const setting = this.readSetting()
     const filters = setting? setting.filters : ProjectBDFilter.defaultValue;
-    const search = setting ? setting.search : null
+    let search = null;
+    const searchFromURL = getURLParamValue(props, 'search');
+    if (searchFromURL) {
+      search = searchFromURL;
+    } else if (setting) {
+      search = setting.search;
+    }
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: null
 

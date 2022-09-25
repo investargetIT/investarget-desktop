@@ -112,7 +112,7 @@ class SiteSearch extends React.Component {
         window.open(`/app/user/${item.id}`);
         break;
       case 'projBD':
-        window.open(`/app/projects/bd`);
+        window.open(`/app/projects/bd?search=${item.com_name}`);
         break;
       default:
         break;
