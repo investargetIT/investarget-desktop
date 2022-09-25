@@ -7,6 +7,7 @@ import * as api from '../api'
 import { i18n, handleError, isParent, requestAllData } from '../utils/util';
 import styles from './SiteSearch.css'
 import { SearchOutlined } from '@ant-design/icons';
+import { Tag } from 'antd';
 
 
 const searchStyle = {
@@ -100,27 +101,28 @@ class SiteSearch extends React.Component {
 
   handleClickItem = item => {
     this.onSearch(item);
-    this.hideResults()
   }
 
   onSearch = (item) => {
-    this.props.dispatch({ type: 'app/globalSearch', payload: item.com_name });
     if (item.isFromProjectList) {
-      this.props.dispatch(routerRedux.push(`/app/projects/${item.id}`));
+      window.open(`/app/projects/${item.id}`);
     } else {
-      this.props.dispatch(routerRedux.push(`/app/projects/library?search=${item.com_name}`));
+      window.open(`/app/user/${item.id}`);
     }
   }
 
-  searchData = async content => {
+  searchData = async () => {
+    let { search: content } = this.props;
+    content = content.trim();
+    if (!content) return;
     try {
       this.setState({ reloading: true });
       const res = await Promise.all([
-        requestAllData(api.getLibProjSimple, { com_name: content }, 50),
+        requestAllData(api.getUser, { search: content }, 50),
         requestAllData(api.getProj, { search: content }, 50),
       ]);
-      const res1 = res[0].data.data;
-      const res2 = res[1].data.data.map(m => ({ ...m, com_name: m.projtitle, isFromProjectList: true }));
+      const res1 = res[0].data.data.map(m => ({ ...m, com_name: m.username, type: 'user', label: '用户' }));
+      const res2 = res[1].data.data.map(m => ({ ...m, com_name: m.projtitle, isFromProjectList: true, type: 'project', label: '项目' }));
       const allResult = res1.concat(res2);
       const total = res[0].data.count + res[1].data.count;
       this.setState({ total, results: allResult, reloading: false });
@@ -131,11 +133,8 @@ class SiteSearch extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.search)
-    const { search } = nextProps
-    if (search) {
-      // this.reloadData(search)
-      this.searchData(search);
+    if (nextProps.search !== this.props.search) {
+      this.searchData();
     }
   }
 
@@ -187,7 +186,10 @@ class SiteSearch extends React.Component {
                 className={styles['result-item']}
                 onClick={this.handleClickItem.bind(this, item)}
               >
-                {item.com_name}
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div>{item.com_name}</div>
+                  <div><Tag>{item.label}</Tag></div>
+                </div>
               </li>
             )}
             {loading ? <li style={loadingItemStyle}>{i18n('common.is_loading')}</li> : null}
