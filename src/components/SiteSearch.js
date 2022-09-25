@@ -47,14 +47,14 @@ const resultStyle = {
 const listStyle = {
   padding: '10px',
   maxHeight: 212,
-  overflow: 'scroll',
+  overflowY: 'scroll',
 }
 const itemStyle = {
   padding: '0 10px',
   lineHeight: '24px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
+  // whiteSpace: 'nowrap',
   cursor: 'pointer',
 }
 const loadingItemStyle = {
@@ -186,9 +186,9 @@ class SiteSearch extends React.Component {
                 className={styles['result-item']}
                 onClick={this.handleClickItem.bind(this, item)}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>{item.com_name}</div>
-                  <div><Tag>{item.label}</Tag></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ lineHeight: '1.3' }}>{item.com_name}</div>
+                  <div><Tag style={{ marginRight: 0, marginLeft: 8 }}>{item.label}</Tag></div>
                 </div>
               </li>
             )}
