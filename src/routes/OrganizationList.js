@@ -114,17 +114,19 @@ class OrganizationList extends React.Component {
         }
         return { ...m, hasOperationPermission };
       });
-      this.props.dispatch({
-        type: 'app/getOrgRemarks',
-        payload: {
-          orgIDArr: list.map(m => m.id),
-          forceUpdate: false
-        }
-      });
       this.setState(
         { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
         () => this.getOrgInvestors(newList.map(m => m.id)),
       );
+      if (list.length > 0) {
+        this.props.dispatch({
+          type: 'app/getOrgRemarks',
+          payload: {
+            orgIDArr: [list[0].id],
+            forceUpdate: false
+          }
+        });
+      }
       this.writeSetting();
     }, error => {
       this.setState({ loading: false })
@@ -305,13 +307,24 @@ class OrganizationList extends React.Component {
     return tag.name;
   }
 
+  handleMouseEnterOrgName = record => {
+    this.setState({ currentOrg: record.id });
+    this.props.dispatch({
+      type: 'app/getOrgRemarks',
+      payload: {
+        orgIDArr: [record.id],
+        forceUpdate: false
+      }
+    });
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
       { title: '全称', key: 'orgname',  
         render: (text, record) => <Link to={'/app/organization/' + record.id}>
-          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.setState({ currentOrg: record.id })}>
+          <div style={{ color: "#428BCA" }} onMouseEnter={() => this.handleMouseEnterOrgName(record)}>
             {record.orgfullname}
           </div>
         </Link>,
