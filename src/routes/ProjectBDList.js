@@ -35,6 +35,8 @@ class ProjectBDList extends React.Component {
     const searchFromURL = getURLParamValue(props, 'search');
     if (searchFromURL) {
       search = searchFromURL;
+      // Reset url
+      history.replaceState(undefined, '', '/app/projects/bd');
     } else if (setting) {
       search = setting.search;
     }
