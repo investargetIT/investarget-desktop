@@ -335,9 +335,18 @@ export default {
       if (needsRefreshArr.length === 0) return;
       const req = yield call(requestAllData, api.getUser, { org: needsRefreshArr }, 100);
       const { data: orgInvestors } = req.data;
+      let investorRemarks = [];
+      if (orgInvestors.length > 0) {
+        const req0 = yield call(requestAllData, api.getUserRemark, { user: orgInvestors.map(m => m.id) }, 100);
+        investorRemarks = req0.data.data;
+      }
       let newOrgInvestorsAndRemarks = allOrgInvestorsAndRemarks.slice();
       needsRefreshArr.forEach(element => {
         const investors = orgInvestors.filter(f => f.org.id === element);
+        investors.forEach(element1 => {
+          const remarks = investorRemarks.filter(f => f.user === element1.id);
+          element1.remarks = remarks.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime));
+        });
         const orgIndex = newOrgInvestorsAndRemarks.map(m => m.id).indexOf(element);
         if (orgIndex === -1) {
           newOrgInvestorsAndRemarks = newOrgInvestorsAndRemarks.concat({ id: element, investors });
