@@ -56,6 +56,7 @@ export default {
     orgListParameters: { scrollPosition: 0, currentOrg: null },
     projectIDToDataroom: [],
     orgRemarks: [],
+    orgInvestorsAndRemarks: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
@@ -317,6 +318,34 @@ export default {
         }
       });
       yield put({ type: 'saveSource', payload: { sourceType: 'orgRemarks', data: newOrgRemarks } });
+    },
+    *getOrgInvestorsAndRemarks({ payload: { orgIDArr, forceUpdate }}, { call, put, select }) {
+      const allOrgInvestorsAndRemarks = yield select(state => state.app.orgInvestorsAndRemarks);
+      let needsRefreshArr = [];
+      if (forceUpdate) {
+        needsRefreshArr = orgIDArr;
+      } else {
+        orgIDArr.forEach(element => {
+          const orgInfo = allOrgInvestorsAndRemarks.find(f => f.id === element);
+          if (!orgInfo) {
+            needsRefreshArr.push(element);
+          }
+        });
+      }
+      if (needsRefreshArr.length === 0) return;
+      const req = yield call(requestAllData, api.getUser, { org: needsRefreshArr }, 100);
+      const { data: orgInvestors } = req.data;
+      let newOrgInvestorsAndRemarks = allOrgInvestorsAndRemarks.slice();
+      needsRefreshArr.forEach(element => {
+        const investors = orgInvestors.filter(f => f.org.id === element);
+        const orgIndex = newOrgInvestorsAndRemarks.map(m => m.id).indexOf(element);
+        if (orgIndex === -1) {
+          newOrgInvestorsAndRemarks = newOrgInvestorsAndRemarks.concat({ id: element, investors });
+        } else {
+          newOrgInvestorsAndRemarks[orgIndex] = { id: element, investors };
+        }
+      });
+      yield put({ type: 'saveSource', payload: { sourceType: 'orgInvestorsAndRemarks', data: newOrgInvestorsAndRemarks } });
     },
   },
   subscriptions: {

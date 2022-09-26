@@ -116,11 +116,17 @@ class OrganizationList extends React.Component {
       });
       this.setState(
         { total, list: newList, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
-        () => this.getOrgInvestors(newList.map(m => m.id)),
       );
       if (list.length > 0) {
         this.props.dispatch({
           type: 'app/getOrgRemarks',
+          payload: {
+            orgIDArr: [list[0].id],
+            forceUpdate: false
+          }
+        });
+        this.props.dispatch({
+          type: 'app/getOrgInvestorsAndRemarks',
           payload: {
             orgIDArr: [list[0].id],
             forceUpdate: false
@@ -176,11 +182,25 @@ class OrganizationList extends React.Component {
     this.setState({ loading: true })
     return api.searchOrg(params).then(result => {
       const { count: total, data: list } = result.data
-      // this.setState({ total, list, loading: false })
       this.setState(
-        { total, list, loading: false, currentOrg: list.length > 0 ? 0 : null },
-        () => this.getOrgInvestors(list.map(m => m.id)),
+        { total, list, loading: false, currentOrg: list.length > 0 ? list[0].id : null },
       );
+      if (list.length > 0) {
+        this.props.dispatch({
+          type: 'app/getOrgRemarks',
+          payload: {
+            orgIDArr: [list[0].id],
+            forceUpdate: false
+          }
+        });
+        this.props.dispatch({
+          type: 'app/getOrgInvestorsAndRemarks',
+          payload: {
+            orgIDArr: [list[0].id],
+            forceUpdate: false
+          }
+        });
+      }
       this.writeSetting();
     }, error => {
       this.setState({ loading: false })
@@ -283,10 +303,6 @@ class OrganizationList extends React.Component {
     this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'orgListParameters', data: { scrollPosition, currentOrg } } });
   }
 
-  getCurrentOrgFromID = () => {
-    return this.state.list.find(f => f.id === this.state.currentOrg);
-  }
-
   getCurrentOrgRemarksFromRedux = () => {
     return this.props.orgRemarks.find(f => f.id === this.state.currentOrg);
   }
@@ -297,7 +313,7 @@ class OrganizationList extends React.Component {
   }
 
   getCurrentOrgInvestors = () => {
-    const currentOrgObj = this.getCurrentOrgFromID(this.state.currentOrg);
+    const currentOrgObj = this.props.orgInvestorsAndRemarks.find(f => f.id === this.state.currentOrg);
     return currentOrgObj ? currentOrgObj.investors : [];
   }
 
@@ -311,6 +327,13 @@ class OrganizationList extends React.Component {
     this.setState({ currentOrg: record.id });
     this.props.dispatch({
       type: 'app/getOrgRemarks',
+      payload: {
+        orgIDArr: [record.id],
+        forceUpdate: false
+      }
+    });
+    this.props.dispatch({
+      type: 'app/getOrgInvestorsAndRemarks',
       payload: {
         orgIDArr: [record.id],
         forceUpdate: false
@@ -537,8 +560,8 @@ class OrganizationList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks } = state.app;
-  return { scrollPosition, currentOrg, tag, orgRemarks };
+  const { orgListParameters: { scrollPosition, currentOrg }, tag, orgRemarks, orgInvestorsAndRemarks } = state.app;
+  return { scrollPosition, currentOrg, tag, orgRemarks, orgInvestorsAndRemarks };
 }
 
 export default connect(mapStateToProps)(OrganizationList);
