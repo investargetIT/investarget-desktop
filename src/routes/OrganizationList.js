@@ -57,6 +57,7 @@ class OrganizationList extends React.Component {
       affixed: false,
       footerAffixed: false,
     }
+    this.footerContainerRef = React.createRef();
   }
 
   handleFilt = (filters) => {
@@ -293,7 +294,12 @@ class OrganizationList extends React.Component {
     if (!this.state.affixed && !this.state.footerAffixed) return 500 - 60;
     if (!this.state.affixed && this.state.footerAffixed) return 'unset';
     if (this.state.affixed && this.state.footerAffixed) return 'calc(100vh - 110px)';
-    if (this.state.affixed && !this.state.footerAffixed) return 'calc(100vh - 110px - 24px - 40px - 24px - 30px )';
+    if (this.state.affixed && !this.state.footerAffixed) {
+      let footerHeight = this.footerContainerRef.current.clientHeight;
+      footerHeight += 24;
+      footerHeight += 30;
+      return `calc(100vh - 110px - ${footerHeight}px)`;
+    }
     return undefined;
   }
 
@@ -520,7 +526,7 @@ class OrganizationList extends React.Component {
             <div />
           </Affix>
 
-          <div style={{ marginTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          <div ref={this.footerContainerRef} style={{ marginTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 13, marginBottom: 24 }}>
               <Button
                 disabled={this.state.selectedIds.length == 0}
