@@ -1471,12 +1471,22 @@ class OrgBDListComponent extends React.Component {
     this.setState({ exportLoading: true });
     this.loadAllOrgBD()
       .then(data => {
+        const dataForExport = data.map(m => {
+          let { BDComments: newComments } = m;
+          if (newComments) {
+            newComments = newComments.filter(f => {
+              return !/^之前状态(.*)，现在状态(.*)/.test(f.comments);
+            });
+          }
+          return { ...m, BDComments: newComments };
+        });
         this.setState({ 
           exportLoading: false,
-          listForExport: data,
-          expandedForExport: data.map(m => m.id),
+          listForExport: dataForExport,
+          expandedForExport: dataForExport.map(m => m.id),
         }, this.downloadExportFile);
       })
+      .catch(handleError);
   }
 
   downloadExportFile = () => {
