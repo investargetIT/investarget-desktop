@@ -16,6 +16,7 @@ import {
   SelectIndustryGroup,
   SelectCurrencyType,
   SelectTrader,
+  SelectAreaWithShortcut,
 } from './ExtraInput'
 import { 
   i18n, 
@@ -195,7 +196,8 @@ class ProjectBDForm extends React.Component {
             if (['中国', 'China'].includes(country && (country.label || country.country))) {
               return (
                 <BasicFormItem label={i18n('project_bd.area')} name="location" required valueType="number">
-                  <SelectOrganizatonArea showSearch />
+                  {/* <SelectOrganizatonArea showSearch /> */}
+                  <SelectAreaWithShortcut />
                 </BasicFormItem>
               );
             }

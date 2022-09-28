@@ -261,6 +261,18 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
   return { options }
 })
 
+// 提供热门地区的快捷选择方式
+export const SelectAreaWithShortcut = connect(state => {
+  const { orgarea } = state.app
+  const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
+  return { options };
+})(props => {
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'orgarea' });
+  }, []);
+  return <h1>Area</h1>;
+});
+
 /**
  * SelectOrganization
  */
