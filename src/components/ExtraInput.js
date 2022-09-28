@@ -267,10 +267,40 @@ export const SelectAreaWithShortcut = connect(state => {
   const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
   return { options };
 })(props => {
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'orgarea' });
   }, []);
-  return <h1>Area</h1>;
+
+  function handleChange(value) {
+    const newValue = Array.isArray(value) ? value.map(item => Number(item)) : Number(value);
+    if (props.onChange) {
+      props.onChange(newValue)
+    }
+  }
+
+  const { children, options, value, onChange, ...extraProps } = props;
+  const _options = options.map(item => ({ label: item.label, value: String(item.value) }));
+  let _value
+  if (value == undefined) {
+    _value = value
+  } else {
+    _value = Array.isArray(value) ? value.map(item => String(item)) : String(value)
+  }
+
+  return (
+    <Select
+      value={_value}
+      filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+      onChange={handleChange}
+      // {...extraProps}
+    >
+      {_options && _options.map((item, index) =>
+        <Option key={index} value={item.value}>{item.label}</Option>
+      )}
+    </Select>
+  )
+  
 });
 
 /**
