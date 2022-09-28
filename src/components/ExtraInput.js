@@ -262,10 +262,12 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 })
 
 // 提供热门地区的快捷选择方式
+const HOT_AREA = ['上海', '北京', '深圳', '杭州', '广州', '成都', '西安', '武汉', '沈阳', '南京', '海南'];
 export const SelectAreaWithShortcut = connect(state => {
   const { orgarea } = state.app
   const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
-  return { options };
+  const hotAreaOptions = options.filter(f => HOT_AREA.includes(f.label));
+  return { options, hotAreaOptions };
 })(props => {
 
   useEffect(() => {
@@ -289,16 +291,32 @@ export const SelectAreaWithShortcut = connect(state => {
   }
 
   return (
-    <Select
-      value={_value}
-      filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
-      onChange={handleChange}
-      // {...extraProps}
-    >
-      {_options && _options.map((item, index) =>
-        <Option key={index} value={item.value}>{item.label}</Option>
-      )}
-    </Select>
+    <div>
+      <Select
+        value={_value}
+        filterOption={(input, option) => option.props.children.indexOf(input) >= 0}
+        onChange={handleChange}
+        showSearch
+      >
+        {_options && _options.map((item, index) =>
+          <Option key={index} value={item.value}>{item.label}</Option>
+        )}
+      </Select>
+      <div style={{ marginTop: 4, textAlign: 'right' }}>
+        <span style={{ fontSize: 12 }}>热门地区：</span>
+        {props.hotAreaOptions.map(item => ({ label: item.label, value: String(item.value) }))
+          .map(m => (
+            <CheckableTag
+              style={{ marginRight: 0 }}
+              key={m.value}
+              checked={_value === m.value}
+              onChange={() => handleChange(m.value)}
+            >
+              {m.label}
+            </CheckableTag>
+          ))}
+      </div>
+    </div>
   )
   
 });

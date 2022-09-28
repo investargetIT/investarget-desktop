@@ -183,7 +183,7 @@ class ProjectBDForm extends React.Component {
           valueType="object" 
           getValueFromEvent={(id, detail) => detail}
         >
-          <CascaderCountry size="large" isDetail />
+          <CascaderCountry isDetail />
         </BasicFormItem>
 
         <FormItem noStyle shouldUpdate>
