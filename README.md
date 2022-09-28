@@ -1,3 +1,7 @@
+# Docker
+* `docker build . -t investarget-desktop-frontend`
+* `docker run -p 8000:8000 -v $(pwd):/usr/src/app -v /usr/src/app/node_modules investarget-desktop-frontend`
+
 # Migration to Antd V4
 * Table Column `dataIndex` 不再支持`.`，需要使用 Array
 * 不再支持 `<Icon type="value" >`
