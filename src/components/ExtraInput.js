@@ -262,11 +262,12 @@ const SelectOrganizatonArea = withOptionsAsync(SelectNumber, ['orgarea'], functi
 })
 
 // 提供热门地区的快捷选择方式
-const HOT_AREA = ['上海', '北京', '深圳', '杭州', '广州', '成都', '西安', '武汉', '沈阳', '南京', '海南'];
+const HOT_AREA = ['上海', '无锡', '常州', '苏州', '宁波', '嘉兴', '北京', '深圳', '杭州', '广州', '成都', '西安', '武汉', '沈阳', '南京', '海口'];
 export const SelectAreaWithShortcut = connect(state => {
   const { orgarea } = state.app
   const options = orgarea ? orgarea.map(item => ({value: item.id, label: item.name})) : []
-  const hotAreaOptions = options.filter(f => HOT_AREA.includes(f.label));
+  const hotAreaOptions = HOT_AREA.map(m => options.find(f => f.label.includes(m)))
+    .filter(f => f !== undefined);
   return { options, hotAreaOptions };
 })(props => {
 
@@ -302,19 +303,21 @@ export const SelectAreaWithShortcut = connect(state => {
           <Option key={index} value={item.value}>{item.label}</Option>
         )}
       </Select>
-      <div style={{ marginTop: 4, textAlign: 'right' }}>
-        <span style={{ fontSize: 12 }}>热门地区：</span>
-        {props.hotAreaOptions.map(item => ({ label: item.label, value: String(item.value) }))
-          .map(m => (
-            <CheckableTag
-              style={{ marginRight: 0 }}
-              key={m.value}
-              checked={_value === m.value}
-              onChange={() => handleChange(m.value)}
-            >
-              {m.label}
-            </CheckableTag>
-          ))}
+      <div style={{ marginTop: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ fontSize: 12, lineHeight: '20px', width: 60, flex: 'none', paddingTop: 1 }}>热门地区：</div>
+        <div>
+          {props.hotAreaOptions.map(item => ({ label: item.label, value: String(item.value) }))
+            .map(m => (
+              <CheckableTag
+                style={{ marginRight: 0 }}
+                key={m.value}
+                checked={_value === m.value}
+                onChange={() => handleChange(m.value)}
+              >
+                {m.label}
+              </CheckableTag>
+            ))}
+        </div>
       </div>
     </div>
   )
