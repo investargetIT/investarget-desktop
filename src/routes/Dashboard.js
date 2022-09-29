@@ -405,6 +405,22 @@ function Dashboard(props) {
     );
   }
 
+  function generateShortcutOperation() {
+    const titleArr = [
+      { name: '新增\n项目\nBD', link: '/app/projects/bd/add' },
+      { name: '机构列表', link: '/app/organization/list' },
+      { name: '日程管理', link: '/app/schedule' },
+    ];
+    const elements = titleArr.map((m, i) => (
+      <div key={i} style={{ lineHeight: 1.2, border: '1px solid #339bd2', borderRadius: 4, fontSize: 11, width: 50, height: 50, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Link to={m.link}>{m.name}</Link>
+      </div>
+    ));
+    return (
+      <div style={{ display: 'flex', gap: 10 }}>{elements}</div>
+    );
+  }
+
   return (
     <LeftRightLayoutPure location={props.location}>
 
@@ -413,12 +429,15 @@ function Dashboard(props) {
         <Breadcrumb.Item>工作台</Breadcrumb.Item>
       </Breadcrumb>
 
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 30 }}>
-        <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo && userInfo.photourl} />
-        <div style={{ marginLeft: 20 }}>
-          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo && userInfo.username} 祝您开心每一天！</div>
-          <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }} dangerouslySetInnerHTML={{ __html: generateUserDescription() }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, marginBottom: 30 }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img style={{ display: 'block', height: 80, width: 80, borderRadius: '50%' }} src={userInfo && userInfo.photourl} />
+          <div style={{ marginLeft: 20 }}>
+            <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 'bold' }}>{userInfo && userInfo.username} 祝您开心每一天！</div>
+            <div style={{ fontSize: 16, lineHeight: '24px', marginTop: 8, color: '#595959' }} dangerouslySetInnerHTML={{ __html: generateUserDescription() }} />
+          </div>
         </div>
+        {generateShortcutOperation()}
       </div>
 
       <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
