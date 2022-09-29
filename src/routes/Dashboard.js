@@ -408,6 +408,7 @@ function Dashboard(props) {
   function generateShortcutOperation() {
     const titleArr = [
       { name: '新增\n项目\nBD', link: '/app/projects/bd/add' },
+      { name: '新增\n平台\n项目', link: '/app/projects/add' },
       { name: '机构列表', link: '/app/organization/list' },
       { name: '日程管理', link: '/app/schedule' },
     ];
