@@ -1,0 +1,11 @@
+version: "3.6"
+services:
+  web:
+    image: investarget-desktop-frontend
+    build: .
+    container_name: investarget-desktop-web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
