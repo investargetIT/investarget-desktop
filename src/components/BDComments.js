@@ -1,7 +1,7 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
+import { i18n, time, hasPerm, getUserInfo, customRequest, handleError } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
 import { Link } from 'dva/router';
@@ -210,7 +210,7 @@ function BDComments(props) {
 }
 
 export function EditBDComment(props) {
-  const { onAdd, onEdit, comment } = props;
+  const { onAdd, onEdit, onAutoSave, comment } = props;
 
   const [form] = Form.useForm();
   const [speechFile, setSpeechFile] = useState(null);
@@ -222,10 +222,15 @@ export function EditBDComment(props) {
     }
   }, []);
 
-  let count = 0;
   function autoSave() {
-    count += 1;
-    window.echo('auto save', count);
+    getFormData()
+      .then(formData => {
+        const { data, speechFile } = formData;
+        onAutoSave(comment, data, speechFile);
+      })
+      .catch(errorInfo => {
+        console.warn('auto save failed', errorInfo);
+      });
   }
 
   function getFormData() {

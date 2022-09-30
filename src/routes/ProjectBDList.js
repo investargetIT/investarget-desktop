@@ -244,6 +244,10 @@ class ProjectBDList extends React.Component {
     api.editProjBD(currentBD.id, {});
   }
 
+  handleAutoSaveComment = async (comment, data, speechFile) => {
+    window.echo('handle auto save comment', comment, data, speechFile);
+  }
+
   handleDeleteComment = (id) => {
     const { currentBD } = this.state;
     api.deleteProjBDCom(id).then(data => {
@@ -723,6 +727,7 @@ class ProjectBDList extends React.Component {
             comment={this.state.editBDComment}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}
+            onAutoSave={this.handleAutoSaveComment}
           />
         </Modal>
 
