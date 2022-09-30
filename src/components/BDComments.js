@@ -228,36 +228,43 @@ export function EditBDComment(props) {
     window.echo('auto save', count);
   }
 
-  const handleFinish = (values) => {
-    const { comments, fileList, speechToText, filetype } = values;
-    // TODO: 提取上传文件的组件
-    let bucket = null;
-    let key = null;
-    let filename = null;
-    if (fileList && fileList[0]) {
-      bucket = 'file';
-      key = fileList[0].key;
-      filename = fileList[0].name;
-    }
-    const data =  {
-      comments,
-      bucket,
-      key,
-      filename,
-      filetype,
-    }
-    if (comment) {
-      onEdit(comment.id, data, speechToText ? speechFile : null);
-    } else {
-      onAdd(data, speechToText ? speechFile : null);
-    }
-    // setComment(null);
-    setSpeechFile(null);
-    form.resetFields();
+  function getFormData() {
+    return form.validateFields()
+      .then(values => {
+        const { comments, fileList, speechToText, filetype } = values;
+        let bucket = null;
+        let key = null;
+        let filename = null;
+        if (fileList && fileList[0]) {
+          bucket = 'file';
+          key = fileList[0].key;
+          filename = fileList[0].name;
+        }
+        const data =  {
+          comments,
+          bucket,
+          key,
+          filename,
+          filetype,
+        };
+        const speechFile = speechToText ? speechFile : null;
+        return { data, speechFile };
+      });
+  }
+
+  const handleFinish = () => {
+    getFormData()
+      .then(formData => {
+        const { data, speechFile } = formData;
+        if (comment) {
+          onEdit(comment.id, data, speechFile);
+        } else {
+          onAdd(data, speechFile);
+        }
+      });
   }
 
   const reset = () => {
-    // setComment(null);
     setSpeechFile(null);
     form.resetFields();
   };
