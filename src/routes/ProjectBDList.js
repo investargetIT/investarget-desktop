@@ -245,7 +245,7 @@ class ProjectBDList extends React.Component {
   }
 
   handleAutoSaveComment = async (comment, data, speechFile) => {
-    window.echo('handle auto save comment', comment, data, speechFile);
+    // window.echo('handle auto save comment', comment, data, speechFile);
   }
 
   handleDeleteComment = (id) => {
