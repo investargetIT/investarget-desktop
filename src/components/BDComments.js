@@ -210,12 +210,23 @@ function BDComments(props) {
 }
 
 export function EditBDComment(props) {
-  const { BDComments, onAdd, onEdit, onDelete, comment } = props;
+  const { onAdd, onEdit, comment } = props;
 
   const [form] = Form.useForm();
   const [speechFile, setSpeechFile] = useState(null);
-  const [bdComments, setBdComments] = useState([]);
-  // const [comment, setComment] = useState(null);
+
+  useEffect(() => {
+    const timeInterval = setInterval(autoSave, 5 * 1000);
+    return () => {
+      clearInterval(timeInterval);
+    }
+  }, []);
+
+  let count = 0;
+  function autoSave() {
+    count += 1;
+    window.echo('auto save', count);
+  }
 
   const handleFinish = (values) => {
     const { comments, fileList, speechToText, filetype } = values;
@@ -252,7 +263,6 @@ export function EditBDComment(props) {
   };
 
   const handleEdit = async (comment) => {
-    // setComment(comment);
     const { comments, bucket, key, filetype } = comment;
     let fileList = null;
     if (bucket && key) {
@@ -293,28 +303,6 @@ export function EditBDComment(props) {
       },
     ] : [];
   };
-
-  const updateComments = (BDComments) => {
-    if (BDComments) {
-      Promise.all(BDComments.map((comment) => {
-        if (!comment.url && comment.key && comment.bucket) {
-          return api.downloadUrl(comment.bucket, comment.key)
-            .then((res) => ({ ...comment, url: res.data }))
-            .catch(() => comment);
-        } else {
-          return Promise.resolve(comment);
-        }
-      })).then((bdComments) => {
-        setBdComments(bdComments);
-      });
-    } else {
-      setBdComments([]);
-    }
-  };
-
-  useEffect(() => {
-    updateComments(BDComments);
-  }, [BDComments]);
 
   const handleUploadChange = (e) => {
     if (e.file.status === 'done') {

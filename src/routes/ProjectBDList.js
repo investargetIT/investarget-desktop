@@ -721,7 +721,6 @@ class ProjectBDList extends React.Component {
         >
           <EditBDComment
             comment={this.state.editBDComment}
-            BDComments={this.state.currentBD && this.state.currentBD.BDComments}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}
           />
