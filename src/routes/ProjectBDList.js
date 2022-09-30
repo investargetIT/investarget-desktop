@@ -143,6 +143,14 @@ class ProjectBDList extends React.Component {
         return { ...m, bd_status: bdStatus };
       });
       this.setState({ list });
+      return this.props.dispatch({ type: 'app/getSource', payload: 'title' });
+    })
+    .then(allTitles => {
+      list = list.map(m => {
+        const userTitle = allTitles.find(f => f.id === m.usertitle);
+        return { ...m, usertitle: userTitle };
+      });
+      this.setState({ list });
     })
     .catch(error => {
       handleError(error)

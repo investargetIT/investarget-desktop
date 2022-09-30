@@ -25,6 +25,11 @@ function ProjectBdTable(props) {
         const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
         return { ...m, bd_status: bdStatus };
       });
+      const allTitles = await props.dispatch({ type: 'app/getSource', payload: 'title' });
+      projBDList = projBDList.map(m => {
+        const userTitle = allTitles.find(f => f.id === m.usertitle);
+        return { ...m, usertitle: userTitle };
+      });
       setProjBdList(projBDList);
       
       if (projBDList.length === 0) return;
