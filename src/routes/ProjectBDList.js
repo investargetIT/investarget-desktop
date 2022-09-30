@@ -664,8 +664,11 @@ class ProjectBDList extends React.Component {
             <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
               <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
                 <div>
-                  <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontWeight: 500 }}>行动计划</div>
+                  <div style={{ height: 55, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ height: '100%' }}>
+                      <div style={{ fontWeight: 500 }}>行动计划</div>
+                      <div style={{ fontSize: 10, color: 'gray' }}>{this.state.currentBD && this.state.currentBD.com_name}</div>
+                    </div>
                     {this.hasPermForComment(currentUserId) && (
                       <Tooltip title="添加行动计划">
                         <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
