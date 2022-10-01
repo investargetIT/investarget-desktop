@@ -252,6 +252,31 @@ class ProjectBDList extends React.Component {
     api.editProjBD(currentBD.id, {});
   }
 
+  handleAutoSaveComment = async (comment, data, speechFile) => {
+    let transid = null;
+    if (speechFile && speechFile instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append('file', speechFile);
+        const { data } = await api.addAudioTranslate(formData);
+        transid = data.id;
+      } catch (error) {
+        handleError(error);
+        return;
+      }
+    }
+
+    const body = { ...data, transid, projectBD: this.state.currentBD.id };
+    if (comment) {
+      api.editProjBDCom(comment.id, body);
+    } else {
+      // 添加行动计划时，自动保存只会发生在第一次
+      const req = await api.addProjBDCom(body);
+      const { data: { id } } = req;
+      this.setState({ editBDComment: { id } });
+    }
+  }
+
   handleDeleteComment = (id) => {
     const { currentBD } = this.state;
     api.deleteProjBDCom(id).then(data => {
@@ -732,9 +757,9 @@ class ProjectBDList extends React.Component {
         >
           <EditBDComment
             comment={this.state.editBDComment}
-            BDComments={this.state.currentBD && this.state.currentBD.BDComments}
             onAdd={this.handleAddComment}
             onEdit={this.handleEditComment}
+            onAutoSave={this.handleAutoSaveComment}
           />
         </Modal>
 

@@ -1,7 +1,7 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { i18n, time, hasPerm, getUserInfo, customRequest } from '../utils/util';
+import { useEffect, useState, useRef } from 'react';
+import { i18n, time, hasPerm, getUserInfo, customRequest, handleError } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
 import { Link } from 'dva/router';
@@ -209,50 +209,90 @@ function BDComments(props) {
   );
 }
 
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
 export function EditBDComment(props) {
-  const { BDComments, onAdd, onEdit, onDelete, comment } = props;
+  const { onAdd, onEdit, onAutoSave, comment } = props;
 
   const [form] = Form.useForm();
   const [speechFile, setSpeechFile] = useState(null);
-  const [bdComments, setBdComments] = useState([]);
-  // const [comment, setComment] = useState(null);
 
-  const handleFinish = (values) => {
-    const { comments, fileList, speechToText, filetype } = values;
-    // TODO: 提取上传文件的组件
-    let bucket = null;
-    let key = null;
-    let filename = null;
-    if (fileList && fileList[0]) {
-      bucket = 'file';
-      key = fileList[0].key;
-      filename = fileList[0].name;
-    }
-    const data =  {
-      comments,
-      bucket,
-      key,
-      filename,
-      filetype,
-    }
-    if (comment) {
-      onEdit(comment.id, data, speechToText ? speechFile : null);
-    } else {
-      onAdd(data, speechToText ? speechFile : null);
-    }
-    // setComment(null);
-    setSpeechFile(null);
-    form.resetFields();
+  useInterval(() => {
+    // Your custom logic here
+    autoSave();
+  }, 5 *1000);
+
+  const autoSave = () => {
+    getFormData()
+      .then(formData => {
+        const { data, speechFile } = formData;
+        onAutoSave(comment, data, speechFile);
+      })
+      .catch(errorInfo => {
+        console.warn('auto save failed', errorInfo);
+      });
+  }
+
+  function getFormData() {
+    return form.validateFields()
+      .then(values => {
+        const { comments, fileList, speechToText, filetype } = values;
+        let bucket = null;
+        let key = null;
+        let filename = null;
+        if (fileList && fileList[0]) {
+          bucket = 'file';
+          key = fileList[0].key;
+          filename = fileList[0].name;
+        }
+        const data =  {
+          comments,
+          bucket,
+          key,
+          filename,
+          filetype,
+        };
+        const speechFile = speechToText ? speechFile : null;
+        return { data, speechFile };
+      });
+  }
+
+  const handleFinish = () => {
+    getFormData()
+      .then(formData => {
+        const { data, speechFile } = formData;
+        if (comment) {
+          onEdit(comment.id, data, speechFile);
+        } else {
+          onAdd(data, speechFile);
+        }
+      });
   }
 
   const reset = () => {
-    // setComment(null);
     setSpeechFile(null);
     form.resetFields();
   };
 
   const handleEdit = async (comment) => {
-    // setComment(comment);
     const { comments, bucket, key, filetype } = comment;
     let fileList = null;
     if (bucket && key) {
@@ -276,7 +316,7 @@ export function EditBDComment(props) {
   }
 
   useEffect(() => {
-    if (comment) {
+    if (comment && comment.comments) {
       handleEdit(comment);
     }
   }, [comment]);
@@ -293,28 +333,6 @@ export function EditBDComment(props) {
       },
     ] : [];
   };
-
-  const updateComments = (BDComments) => {
-    if (BDComments) {
-      Promise.all(BDComments.map((comment) => {
-        if (!comment.url && comment.key && comment.bucket) {
-          return api.downloadUrl(comment.bucket, comment.key)
-            .then((res) => ({ ...comment, url: res.data }))
-            .catch(() => comment);
-        } else {
-          return Promise.resolve(comment);
-        }
-      })).then((bdComments) => {
-        setBdComments(bdComments);
-      });
-    } else {
-      setBdComments([]);
-    }
-  };
-
-  useEffect(() => {
-    updateComments(BDComments);
-  }, [BDComments]);
 
   const handleUploadChange = (e) => {
     if (e.file.status === 'done') {
