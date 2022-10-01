@@ -2985,14 +2985,14 @@ class OrgBDListComponentForMobile extends React.Component {
               />
             </div>
 
-          <div style={{ marginBottom: 30 }}>
-            <div>机构反馈</div>
-            <Input.TextArea
-              rows={3}
-              value={this.state.newComment}
-              onChange={e => this.setState({ newComment: e.target.value })}
-            />
-          </div>
+            <div style={{ marginBottom: 30 }}>
+              <div>机构反馈</div>
+              <Input.TextArea
+                rows={3}
+                value={this.state.newComment}
+                onChange={e => this.setState({ newComment: e.target.value })}
+              />
+            </div>
 
           </Modal>
         }

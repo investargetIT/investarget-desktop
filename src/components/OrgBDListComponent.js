@@ -1813,8 +1813,19 @@ class OrgBDListComponent extends React.Component {
       'response': record.progress ? record.progress.response : undefined,
       'material': record.progress ? record.progress.material : undefined,
     };
+    const { feedback } = record;
     api.getUserSession()
       .then(() => api.addOrgBD(body))
+      .then(reqNewOrgBD => {
+        if (feedback) {
+          const { data: newOrgBD } = reqNewOrgBD;
+          const bodyForComment = {
+            orgBD: newOrgBD.id,
+            comments: feedback,
+          };
+          return api.addOrgBDComment(bodyForComment);
+        }
+      })
       .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.setState({ displayModalForCreating: false });
@@ -3068,6 +3079,15 @@ class OrgBDListComponent extends React.Component {
                 label="机构进度/材料"
               >
                 <SelectNewBDStatus />
+              </Form.Item>
+
+              <Form.Item
+                name="feedback"
+                label="机构反馈"
+              >
+                <Input.TextArea
+                  autoSize={{ minRows: 12 }}
+                />
               </Form.Item>
 
             </Form>
