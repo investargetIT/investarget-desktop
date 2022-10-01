@@ -1,6 +1,6 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip, Tag } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { i18n, time, hasPerm, getUserInfo, customRequest, handleError } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
@@ -209,20 +209,38 @@ function BDComments(props) {
   );
 }
 
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
 export function EditBDComment(props) {
   const { onAdd, onEdit, onAutoSave, comment } = props;
 
   const [form] = Form.useForm();
   const [speechFile, setSpeechFile] = useState(null);
 
-  useEffect(() => {
-    const timeInterval = setInterval(autoSave, 5 * 1000);
-    return () => {
-      clearInterval(timeInterval);
-    }
-  }, []);
+  useInterval(() => {
+    // Your custom logic here
+    autoSave();
+  }, 5 *1000);
 
-  function autoSave() {
+  const autoSave = () => {
     getFormData()
       .then(formData => {
         const { data, speechFile } = formData;
@@ -298,7 +316,7 @@ export function EditBDComment(props) {
   }
 
   useEffect(() => {
-    if (comment) {
+    if (comment && comment.comments) {
       handleEdit(comment);
     }
   }, [comment]);
