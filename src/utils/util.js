@@ -7,6 +7,7 @@ import { baseUrl } from './request'
 import i18next from 'i18next'
 import { SIZE_4M } from '../constants';
 import { message } from 'antd';
+import { useEffect, useRef } from 'react';
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -755,4 +756,24 @@ export function downloadFile(url, filename) {
   aElem.download = filename;
   aElem.href = url;
   aElem.click();
+}
+
+export function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
 }

@@ -1,7 +1,7 @@
 import { EditOutlined, DeleteOutlined , UploadOutlined } from '@ant-design/icons';
 import { Form, Upload, Input, Button, Divider, Popconfirm, Checkbox, Select, Tooltip, Tag } from 'antd';
-import { useEffect, useState, useRef } from 'react';
-import { i18n, time, hasPerm, getUserInfo, customRequest, handleError } from '../utils/util';
+import { useEffect, useState } from 'react';
+import { i18n, time, hasPerm, getUserInfo, customRequest, handleError, useInterval } from '../utils/util';
 import * as api from '../api'
 import FileLink from './FileLink';
 import { Link } from 'dva/router';
@@ -207,26 +207,6 @@ function BDComments(props) {
       </div>
     </div>
   );
-}
-
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
 }
 
 export function EditBDComment(props) {

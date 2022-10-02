@@ -39,7 +39,7 @@ import { Search } from './Search';
 import ModalModifyOrgBDStatus from './ModalModifyOrgBDStatus';
 import BDModal from './BDModal';
 import { getUser } from '../api';
-import { isLogin, getURLParamValue } from '../utils/util'
+import { isLogin, getURLParamValue, useInterval } from '../utils/util'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { SelectExistOrganizationWithID, SelectNewBDStatus, SelectOrgInvestor, SelectTrader } from './ExtraInput';
 import { connect } from 'dva';
@@ -3270,6 +3270,15 @@ function EditOrgBDModalForm({
 }) {
   const [form] = Form.useForm();
   const [modalExpanded, setModalExpanded] = useState(false);
+
+  useInterval(() => {
+    autoSave();
+  }, 5 * 1000);
+
+  function autoSave() {
+    const comment = form.getFieldValue('newComment');
+    window.echo('auto save', comment);
+  }
 
   const initialValues = {
     orgname: bd.org.orgname,
