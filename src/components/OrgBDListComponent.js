@@ -217,6 +217,8 @@ class OrgBDListComponent extends React.Component {
         activeTabKey: '0',
 
         isFullScreen: false,
+
+        editComment: null, 
     }
 
     this.allTrader = [];
@@ -1858,6 +1860,10 @@ class OrgBDListComponent extends React.Component {
     this.setState({ activeTabKey: key });
   }
 
+  handleAutoSaveComment = (comment, content) => {
+
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2983,6 +2989,8 @@ class OrgBDListComponent extends React.Component {
             comments={this.state.comments}
             isPMComment={this.state.isPMComment}
             onDeleteComment={this.handleDeleteComment}
+            editComment={this.state.editComment}
+            onAutoSave={this.handleAutoSaveComment}
           />
         }
 
@@ -3267,6 +3275,8 @@ function EditOrgBDModalForm({
   comments,
   isPMComment,
   onDeleteComment,
+  editComment, // 正在编辑的机构反馈，由自动保存而来
+  onAutoSave,
 }) {
   const [form] = Form.useForm();
   const [modalExpanded, setModalExpanded] = useState(false);
@@ -3276,8 +3286,9 @@ function EditOrgBDModalForm({
   }, 5 * 1000);
 
   function autoSave() {
-    const comment = form.getFieldValue('newComment');
-    window.echo('auto save', comment);
+    const content = form.getFieldValue('newComment');
+    onAutoSave(editComment, content);
+    window.echo('auto save', editComment, content);
   }
 
   const initialValues = {
