@@ -302,6 +302,7 @@ export function EditBDComment(props) {
   }, [comment]);
 
   const normFile = (e) => {
+    // TODO
     const fileList = Array.isArray(e) ? e : (e && e.fileList);
     const file = fileList[0];
     return file ? [
@@ -369,9 +370,9 @@ export function EditBDComment(props) {
             name="file"
             customRequest={customRequest}
             data={{ bucket: 'file' }}
-            maxCount={1}
             onChange={handleUploadChange}
             className="upload-list-modal"
+            multiple
           >
             <Button icon={<UploadOutlined />} type="link">上传附件</Button>
           </Upload>
