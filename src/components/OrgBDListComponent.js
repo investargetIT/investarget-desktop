@@ -1306,10 +1306,14 @@ class OrgBDListComponent extends React.Component {
   }
 
   handleCancelEditOrgBD = () => {
+    if (this.state.editComment) {
+      api.deleteOrgBDComment(this.state.editComment);
+    }
     this.setState({
       displayModalForEditing: false,
       currentBD: null,
       comments: [],
+      editComment: null,
     });
   };
 
@@ -1346,7 +1350,7 @@ class OrgBDListComponent extends React.Component {
       .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
-        this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false });
+        this.setState({ traderList: this.allTrader, displayModalForEditing: false, loadingEditingOrgBD: false, editComment: null });
       })
       .catch(handleError)
       .finally(() => this.setState({ loadingEditingOrgBD: false }));
@@ -3358,6 +3362,7 @@ function EditOrgBDModalForm({
       visible
       closable={false}
       onOk={handleOk}
+      onCancel={onCancelEditOrgBD}
       confirmLoading={loadingEditingOrgBD}
       style={{ maxWidth: modalExpanded ? '90vw' : undefined }}
       width={modalExpanded ? '90vw' : undefined}
