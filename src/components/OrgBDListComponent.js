@@ -667,7 +667,6 @@ class OrgBDListComponent extends React.Component {
       page_size: 100,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
-    window.echo('承揽承做id数组', this.state.projTradersIds);
     // // 管理员承揽承做才可以筛选负责人
     // if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
     //   param1.manager = manager;
@@ -1314,7 +1313,7 @@ class OrgBDListComponent extends React.Component {
     });
   };
 
-  handleEditOrgBD = (record, newComment) => {
+  handleEditOrgBD = (record, editComment, newComment) => {
     let body = {
       'bduser': record.bduser >= 0 ? record.bduser: null,
       'manager': Number(record.manager.id),
@@ -1337,7 +1336,11 @@ class OrgBDListComponent extends React.Component {
             orgBD: record.id,
             comments: newComment,
           };
-          return api.addOrgBDComment(bodyForComment);
+          if (editComment) {
+            return api.editOrgBDComment(editComment, bodyForComment);
+          } else {
+            return api.addOrgBDComment(bodyForComment);
+          }
         }
       })
       .then(() => this.addUserToDataroom(body.response, body.bduser))
@@ -1860,8 +1863,18 @@ class OrgBDListComponent extends React.Component {
     this.setState({ activeTabKey: key });
   }
 
-  handleAutoSaveComment = (comment, content) => {
-
+  handleAutoSaveComment = async (bd, comment, content) => {
+    if (!content) return;
+    const bodyForComment = {
+      orgBD: bd.id,
+      comments: content,
+    };
+    if (comment) {
+      api.editOrgBDComment(comment, bodyForComment);
+    } else {
+      const reqAdd = await api.addOrgBDComment(bodyForComment);
+      this.setState({ editComment: reqAdd.data.id });
+    }
   }
 
   render() {
@@ -3172,7 +3185,6 @@ export function SimpleLine(props) {
 
 export function BDComments(props) {
   const { comments, newComment, onChange, onDelete, onAdd, bd, isPMComment } = props
-  window.echo('comments', comments);
   return (
     <div>
       <div style={{marginBottom:'16px',display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -3219,7 +3231,6 @@ export function BDComments(props) {
 
 export function NewBDComments(props) {
   const { comments, onDelete, bd, isPMComment } = props
-  window.echo('comments', comments);
   return (
     <div>
       <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -3287,8 +3298,7 @@ function EditOrgBDModalForm({
 
   function autoSave() {
     const content = form.getFieldValue('newComment');
-    onAutoSave(editComment, content);
-    window.echo('auto save', editComment, content);
+    onAutoSave(bd, editComment, content);
   }
 
   const initialValues = {
@@ -3324,7 +3334,7 @@ function EditOrgBDModalForm({
         response,
         material,
       };
-      onConfirmEditOrgBD(newBd, newComment);
+      onConfirmEditOrgBD(newBd, editComment, newComment);
     });
   };
 
