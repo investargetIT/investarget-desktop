@@ -2755,8 +2755,8 @@ class OrgBDListComponent extends React.Component {
 
         <Card style={{ display: this.state.activeTabKey === '0'? 'block': 'none' }}>
           {this.props.editable && this.state.filters.proj !== null && !this.state.showUnreadOnly &&
-            <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
+            <div className="orgbd-operation remove-on-mobile" style={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20, lineHeight: '42px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Search
                   style={{ width: 300, marginRight: 20 }}
                   placeholder="请输入投资人名称或电话"
@@ -2781,7 +2781,7 @@ class OrgBDListComponent extends React.Component {
                 <Button loading={this.state.loadingDownloadTemplate} onClick={this.handleDownloadOrgBDTemplateBtnClick}>模板下载</Button>
               </div>
               {this.isAbleToCreateBD() &&
-                <div className="another-btn" style={{ marginBottom: 20 }}>
+                <div className="another-btn">
                   {this.state.projectDetails && <Button style={{ marginRight: 20 }} onClick={() => this.setState({ showBlacklistModal: true })}>添加黑名单</Button>}
                   <Button type="primary" icon={<PlusOutlined />} onClick={this.handleAddNewOrgBDBtnClick}>创建机构看板</Button>
                 </div>
