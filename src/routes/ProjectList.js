@@ -371,7 +371,7 @@ class ProjectList extends React.Component {
 
   getTagNameByID = tagID => {
     const tag = this.props.tag.find(f => f.id === tagID);
-    if (!tag) return tagID;
+    if (!tag) return null;
     return tag.name;
   }
 
@@ -418,13 +418,17 @@ class ProjectList extends React.Component {
         key: 'title',
         render: (_, record) => {
           return (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 8px', color: 'rgba(0, 0, 0, .45)', lineHeight: 2, fontWeight: 'normal' }}>
+            <div>
               <Tooltip title="项目详情">
                 <span className="span-title">
                   <Link to={`/app/projects/${record.id}`}>{record.realname}</Link>
                 </span>
               </Tooltip>
-              <div>{record.tags && record.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</div>
+              <div>
+                {record.tags && record.tags.map(m => this.getTagNameByID(m))
+                  .filter(f => f != null)
+                  .map((m, i) => <Tag key={i} style={{ color: 'rgba(0, 0, 0, .45)', marginBottom: 4 }}>{m}</Tag>)}
+              </div>
             </div>
           );
         }
