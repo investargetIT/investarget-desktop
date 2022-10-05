@@ -14,7 +14,7 @@ import {
   getUserInfo,
 } from '../utils/util';
 
-import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip, Popover } from 'antd'
+import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip, Popover, Tag } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { ProjectListFilter } from '../components/Filter'
 import { NewProjectListFilter } from '../components/Filter';
@@ -268,6 +268,7 @@ class ProjectList extends React.Component {
 
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
 
     if (hasPerm('usersys.as_trader')) {
       this.getMyTodoTasks();
@@ -368,6 +369,12 @@ class ProjectList extends React.Component {
     return true;
   }
 
+  getTagNameByID = tagID => {
+    const tag = this.props.tag.find(f => f.id === tagID);
+    if (!tag) return null;
+    return tag.name;
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
@@ -410,22 +417,20 @@ class ProjectList extends React.Component {
         title: i18n('project.name'),
         key: 'title',
         render: (_, record) => {
-          // if (record.action.get) {
-            return (
-              // <Tooltip title="项目详情">
-              <Popover title={null} content={<div><Link to={`/app/projects/${record.id}`}>项目详情</Link></div>}>
+          return (
+            <div>
+              <Tooltip title="项目详情">
                 <span className="span-title">
                   <Link to={`/app/projects/${record.id}`}>{record.realname}</Link>
                 </span>
-              {/* // </Tooltip> */}
-              </Popover>
-            )
-          // } else {
-          //   this.props.dispatch({
-          //     type: 'app/findError',
-          //     payload: new ApiError(3000),
-          //   });
-          // }
+              </Tooltip>
+              <div>
+                {record.tags && record.tags.map(m => this.getTagNameByID(m))
+                  .filter(f => f != null)
+                  .map((m, i) => <Tag key={i} style={{ color: 'rgba(0, 0, 0, .45)', marginBottom: 4 }}>{m}</Tag>)}
+              </div>
+            </div>
+          );
         }
       },
       // {
@@ -620,9 +625,9 @@ class ProjectList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { country, projectProgress, projectIDToDataroom } = state.app;
+  const { country, projectProgress, projectIDToDataroom, tag } = state.app;
   const userPageSize = state.currentUser ? state.currentUser.page : 10;
-  return { country, userPageSize, projectProgress, projectIDToDataroom };
+  return { country, userPageSize, projectProgress, projectIDToDataroom, tag };
 }
 
 
