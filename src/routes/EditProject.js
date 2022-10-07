@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
-import { i18n } from '../utils/util'
+import { i18n, requestAllData } from '../utils/util'
 
 import { Form, Button, Tabs, message } from 'antd'
 const TabPane = Tabs.TabPane
@@ -224,6 +224,9 @@ class EditProject extends React.Component {
               if (baseFormParams.sendWechat) {
                 api.sendProjPdfToWechatGroup(id);
               }
+              if (baseFormParams.projectBD) {
+                this.convertCommentFilesToAttachments(id, baseFormValues.projectBD);
+              }
               if (ifBack) {
                 this.goBack()
               }
@@ -301,6 +304,25 @@ class EditProject extends React.Component {
     //     message.error('基本信息内容有误，请检查', 2);
     //   }
     // })
+  }
+
+  convertCommentFilesToAttachments = async (projectID, projectBD) => {
+    const reqAllBDCommentsWithFile = await requestAllData(api.getProjBDCom, { projectBD, bucket: ['file', 'image'] }, 100);
+    for (let index = 0; index < reqAllBDCommentsWithFile.data.data.length; index++) {
+      const element = reqAllBDCommentsWithFile.data.data[index];
+      const { filetype, bucket, filename, key } = element;
+      if (element.filetype) {
+        const body = {
+          proj: projectID,
+          filetype, 
+          bucket,
+          filename,
+          key,
+          realfilekey: key,
+        };
+        api.addProjAttachment(body);
+      }
+    }
   }
 
   handleBaseFormRef = (inst) => {
