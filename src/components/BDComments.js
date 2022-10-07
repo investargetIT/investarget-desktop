@@ -277,7 +277,7 @@ export function EditBDComment(props) {
           } else {
             for (let index = 0; index < fileList.length; index++) {
               const file = fileList[index];
-              const { bucket, key, filename, speechToText } = file;
+              const { bucket, key, name: filename, speechToText } = file;
               const data = { comments, bucket, key, filename, filetype };
               const speechFile = speechToText ? file.originFileObj : null;
               if (index == 0) {
@@ -293,7 +293,7 @@ export function EditBDComment(props) {
           } else {
             for (let index = 0; index < fileList.length; index++) {
               const file = fileList[index];
-              const { bucket, key, filename, speechToText } = file;
+              const { bucket, key, name: filename, speechToText } = file;
               const data = { comments, bucket, key, filename, filetype };
               const speechFile = speechToText ? file.originFileObj : null;
               onAdd(data, speechFile);
