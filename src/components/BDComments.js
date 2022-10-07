@@ -223,8 +223,8 @@ export function EditBDComment(props) {
   const autoSave = () => {
     getFormData()
       .then(formData => {
-        const { data, speechFile } = formData;
-        onAutoSave(comment, data, speechFile);
+        const { comments } = formData;
+        onAutoSave(comment, { comments });
       })
       .catch(errorInfo => {
         console.warn('auto save failed', errorInfo);
@@ -234,35 +234,71 @@ export function EditBDComment(props) {
   function getFormData() {
     return form.validateFields()
       .then(values => {
-        const { comments, fileList, speechToText, filetype } = values;
-        let bucket = null;
-        let key = null;
-        let filename = null;
-        if (fileList && fileList[0]) {
-          bucket = 'file';
-          key = fileList[0].key;
-          filename = fileList[0].name;
-        }
-        const data =  {
-          comments,
-          bucket,
-          key,
-          filename,
-          filetype,
-        };
-        const speechFile = speechToText ? speechFile : null;
-        return { data, speechFile };
+        // const { comments, fileList, speechToText, filetype } = values;
+        // let bucket = null;
+        // let key = null;
+        // let filename = null;
+        // if (fileList && fileList[0]) {
+        //   bucket = 'file';
+        //   key = fileList[0].key;
+        //   filename = fileList[0].name;
+        // }
+        // const data =  {
+        //   comments,
+        //   bucket,
+        //   key,
+        //   filename,
+        //   filetype,
+        // };
+        // const speechFile = speechToText ? speechFile : null;
+        // return { data, speechFile };
+        return values;
       });
   }
 
   const handleFinish = () => {
     getFormData()
       .then(formData => {
-        const { data, speechFile } = formData;
+        let { comments, fileList, speechToText, filetype } = formData;
+        // 所有音频文件全部语音转文字
+        if (speechToText) {
+          fileList = fileList.map(m => {
+            let speechToText = false;
+            if (/\.(wav|flac|opus|m4a|mp3)$/.test(m.name)) {
+              speechToText = true;
+            }
+            return { ...m, speechToText };
+          });
+        }
+
         if (comment) {
-          onEdit(comment.id, data, speechFile);
+          if (!fileList || fileList.length == 0) {
+            onEdit(comment.id, { comments, bucket: null, key: null, filename: null });
+          } else {
+            for (let index = 0; index < fileList.length; index++) {
+              const file = fileList[index];
+              const { bucket, key, filename, speechToText } = file;
+              const data = { comments, bucket, key, filename, filetype };
+              const speechFile = speechToText ? file.originFileObj : null;
+              if (index == 0) {
+                onEdit(comment.id, data, speechFile);
+              } else {
+                onAdd(data, speechFile);
+              }
+            }
+          }
         } else {
-          onAdd(data, speechFile);
+          if (!fileList || fileList.length == 0) {
+            onAdd({ comments });
+          } else {
+            for (let index = 0; index < fileList.length; index++) {
+              const file = fileList[index];
+              const { bucket, key, filename, speechToText } = file;
+              const data = { comments, bucket, key, filename, filetype };
+              const speechFile = speechToText ? file.originFileObj : null;
+              onAdd(data, speechFile);
+            }
+          }
         }
       });
   }
@@ -304,7 +340,13 @@ export function EditBDComment(props) {
   const normFile = (e) => {
     // TODO
     const fileList = Array.isArray(e) ? e : (e && e.fileList);
-    const file = fileList[0];
+    // const file = fileList[0];
+    return fileList.map(file => ({
+      ...file,
+      bucket: file.response ? file.response.result.bucket : file.bucket,
+      key: file.response ? file.response.result.realfilekey : file.key,
+      url: file.response ? file.response.result.url : file.url,
+    }));
     return file ? [
       {
         ...file,
