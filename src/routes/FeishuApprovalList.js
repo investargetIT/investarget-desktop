@@ -36,7 +36,13 @@ function FeishuApprovalList(props) {
     const { task_id } = record.task;
     const currentUser = getUserInfo();
     const { thirdUnionID: user_id } = currentUser;
-    const body = { approval_code, instance_code, user_id, user_id_type: 'union_id', task_id };
+    const body = { user_id, user_id_type: 'union_id', task_id };
+    if (type == 'specified_rollback') {
+      body.task_def_key_list = ['START'];
+    } else {
+      body.approval_code = approval_code;
+      body.instance_code = instance_code;
+    }
     await api.editFeishuApproval(type, body);
     getApprovalList();
   }
