@@ -94,6 +94,7 @@ import MLogin from './components/MLogin';
 import ResetPasswordForMobile from './routes/ResetPasswordForMobile';
 import DashboardForMobile from './routes/DashboardForMobile';
 import SpeechToText from './routes/SpeechToText';
+import FeishuApprovalList from './routes/FeishuApprovalList';
 
 function RouterConfig({ history }) {
   return (
@@ -155,6 +156,7 @@ function RouterConfig({ history }) {
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
         <Route path="/app/demo" component={ReactDataSheetDemo} />
+        <Route path="/app/feishu/approval" component={FeishuApprovalList} />
         <Route path="/app/feishu" component={Feishu} />
         <Route path="/app/hr" component={HumanResources} />
         <Route path="/app/speech-to-text/:id" component={SpeechToText} />
