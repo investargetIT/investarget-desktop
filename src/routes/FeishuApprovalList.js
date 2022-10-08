@@ -82,10 +82,10 @@ function FeishuApprovalList(props) {
             <Popconfirm title="确认同意？" onConfirm={() => handleOperationBtnClicked('approve', record)}>
               <Button type="link" size="small">同意</Button>
             </Popconfirm>
-            <Popconfirm title="确认同意？" onConfirm={() => handleOperationBtnClicked('reject', record)}>
+            <Popconfirm title="确认拒绝？" onConfirm={() => handleOperationBtnClicked('reject', record)}>
               <Button type="link" size="small">拒绝</Button>
             </Popconfirm>
-            <Popconfirm title="确认同意？" onConfirm={() => handleOperationBtnClicked('specified_rollback', record)}>
+            <Popconfirm title="确认退回？" onConfirm={() => handleOperationBtnClicked('specified_rollback', record)}>
               <Button type="link" size="small">退回</Button>
             </Popconfirm>
           </div>
