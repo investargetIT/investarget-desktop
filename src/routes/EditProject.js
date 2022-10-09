@@ -309,10 +309,15 @@ class EditProject extends React.Component {
 
   convertCommentFilesToAttachments = async (projectID, projectBD) => {
     const reqAllBDCommentsWithFile = await requestAllData(api.getProjBDCom, { projectBD, bucket: ['file', 'image'] }, 100);
+    
+    const projId = Number(this.props.match.params.id);
+    const reqExistAttachments = await requestAllData(api.getProjAttachment, { proj: projId }, 100);
+    const existAttachmentKeys = reqExistAttachments.data.data.map(m => m.key);
+
     for (let index = 0; index < reqAllBDCommentsWithFile.data.data.length; index++) {
       const element = reqAllBDCommentsWithFile.data.data[index];
       const { filetype, bucket, filename, key } = element;
-      if (element.filetype) {
+      if (element.filetype && !existAttachmentKeys.includes(key)) {
         const body = {
           proj: projectID,
           filetype, 
