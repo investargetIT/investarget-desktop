@@ -218,7 +218,9 @@ class OrgBDListComponent extends React.Component {
 
         isFullScreen: false,
 
-        editComment: null, 
+        editComment: null,
+
+        newOrgBDModalExpand: false,
     }
 
     this.allTrader = [];
@@ -1836,7 +1838,7 @@ class OrgBDListComponent extends React.Component {
       })
       .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
-        this.setState({ displayModalForCreating: false });
+        this.setState({ displayModalForCreating: false, newOrgBDModalExpand: false });
         this.getOrgBdList();
       })
       .catch(handleError);
@@ -3013,10 +3015,19 @@ class OrgBDListComponent extends React.Component {
         {this.state.displayModalForCreating &&
           <Modal
             wrapClassName="modal-orgbd-edit"
-            title="创建机构看板"
+            title={<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>创建机构看板</div>
+              <div>
+                <Button type="link" icon={this.state.newOrgBDModalExpand ? <ShrinkOutlined className={styles['icon-modal-operation']} /> : <ArrowsAltOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ newOrgBDModalExpand: !this.state.newOrgBDModalExpand })} />
+                <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ displayModalForCreating: false, newOrgBDModalExpand: false, traderList: this.allTrader })} />
+              </div>
+            </div>}
             visible
-            onCancel={() => this.setState({ displayModalForCreating: false, traderList: this.allTrader })}
+            onCancel={() => this.setState({ displayModalForCreating: false, newOrgBDModalExpand: false, traderList: this.allTrader })}
             onOk={this.handleSubmitOrgBDForm}
+            closable={false}
+            style={{ maxWidth: this.state.newOrgBDModalExpand ? '90vw' : undefined }}
+            width={this.state.newOrgBDModalExpand ? '90vw' : undefined}
           >
             <Form
               style={{ width: '90%' }}
