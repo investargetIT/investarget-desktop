@@ -1305,10 +1305,9 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
-  handleCancelEditOrgBD = () => {
-    if (this.state.editComment) {
-      api.deleteOrgBDComment(this.state.editComment);
-    }
+  handleCancelEditOrgBD = record => {
+    // Reload org bd for auto-saved comments
+    this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
     this.setState({
       displayModalForEditing: false,
       currentBD: null,
@@ -3356,13 +3355,13 @@ function EditOrgBDModalForm({
         <div>编辑机构看板</div>
         <div>
           <Button type="link" icon={modalExpanded ? <ShrinkOutlined className={styles['icon-modal-operation']} /> : <ArrowsAltOutlined className={styles['icon-modal-operation']} />} onClick={() => setModalExpanded(!modalExpanded)} />
-          <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={onCancelEditOrgBD} />
+          <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={() => onCancelEditOrgBD(bd)} />
         </div>
       </div>}
       visible
       closable={false}
       onOk={handleOk}
-      onCancel={onCancelEditOrgBD}
+      onCancel={() => onCancelEditOrgBD(bd)}
       confirmLoading={loadingEditingOrgBD}
       style={{ maxWidth: modalExpanded ? '90vw' : undefined }}
       width={modalExpanded ? '90vw' : undefined}
