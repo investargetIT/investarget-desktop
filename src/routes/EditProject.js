@@ -198,7 +198,6 @@ class EditProject extends React.Component {
   }
 
   editProject = async (formStr, ifBack) => {
-    this.setState({ loadingEdit: true });
     const react = this;
     const id = Number(this.props.match.params.id);
     try {
@@ -219,6 +218,7 @@ class EditProject extends React.Component {
               ...connectFormParams,
               ...detailFormParams,
             };
+            this.setState({ loadingEdit: true });
             api.editProj(id, params).then(result => {
               this.setState({ loadingEdit: false });
               this.getProject()
