@@ -497,6 +497,7 @@ class ProjectBDList extends React.Component {
 
   handleCancelEditCommentBtnClicked = () => {
     this.setState({ displayAddBDCommentModal: false });
+    this.updateCurrentBD();
   }
 
   render() {
