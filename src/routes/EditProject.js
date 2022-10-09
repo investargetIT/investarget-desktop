@@ -147,6 +147,7 @@ class EditProject extends React.Component {
     this.state = {
       project: {},
       loadingEdit: false,
+      refreshAttachmentTab: true,
     }
 
     this.editProjectBaseFormRef = React.createRef();
@@ -320,9 +321,10 @@ class EditProject extends React.Component {
           key,
           realfilekey: key,
         };
-        api.addProjAttachment(body);
+        await api.addProjAttachment(body);
       }
     }
+    this.setState({ refreshAttachmentTab: false }, () => this.setState({ refreshAttachmentTab: true }));
   }
 
   handleBaseFormRef = (inst) => {
@@ -456,7 +458,7 @@ class EditProject extends React.Component {
             </TabPane>
 
             <TabPane tab={i18n('project.attachments')} key="5">
-              <ProjectAttachments projId={id} />
+              {this.state.refreshAttachmentTab && <ProjectAttachments projId={id} />}
             </TabPane>
           </Tabs>
 
