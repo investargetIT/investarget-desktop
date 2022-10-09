@@ -495,6 +495,10 @@ class ProjectBDList extends React.Component {
     this.props.dispatch({ type: 'app/saveSource', payload: { sourceType: 'projectBDListParameters', data: { scrollPosition, currentBD } } });
   }
 
+  handleCancelEditCommentBtnClicked = () => {
+    this.setState({ displayAddBDCommentModal: false });
+  }
+
   render() {
     const currentUser = getUserInfo();
     const currentUserId = currentUser && currentUser.id;
@@ -502,12 +506,6 @@ class ProjectBDList extends React.Component {
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',padding:4}
     const imgStyle={width:'15px',height:'20px'}
     const columns = [
-      // {title: i18n('project_bd.contact'), key:'username', sorter:true, render:(text, record) =>{
-      //   return (<div>{record&&record.hasRelation ? <Link to={'app/user/edit/'+record.bduser}>
-      //           {record.username}
-      //           </Link> : record.username}</div>
-      //           )
-      // }},
       {title: i18n('project_bd.project_name'), dataIndex: 'com_name', key:'com_name', sorter:true, 
         render: (text, record) => (
           <div style={{ position: 'relative' }}>
@@ -539,50 +537,16 @@ class ProjectBDList extends React.Component {
         )
       },
       {title: i18n('project_bd.status'), dataIndex: ['bd_status', 'name'], key:'bd_status', width: 80, sorter:true},
-      // {title: i18n('project_bd.area'), dataIndex: 'location.name', key:'location', sorter:true},
-      // {title: i18n('project_bd.import_methods'), render: (text, record) => {
-      //   return record.source_type == 0 ? i18n('filter.project_library') : i18n('filter.other')
-      // }, key:'source_type', sorter:true},
-      // {title: i18n('project_bd.source'), dataIndex: 'source', key:'source', sorter:true, render: text => text || '-'},      
-      // {title: i18n('project_bd.contact_title'), dataIndex: 'usertitle.name', key:'usertitle', sorter:true},
-      // {title: i18n('phone'), dataIndex: 'usermobile', key:'usermobile', width: 120, sorter:true, render: text => text ? (text.indexOf('-') > -1 ? '+' + text : text) : ''},
-      // {title: i18n('email.email'), dataIndex: 'useremail', key:'useremail', sorter: true},
       {
         title: i18n('project_bd.manager'),
         key: 'manager',
         sorter: true,
         render: (_, record) => record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、'),
       },
-      // {title: i18n('project_bd.finance_amount'), dataIndex: 'financeAmount', key: 'financeAmount', width: 170, sorter:true, render: (text, record) => {
-      //   const currency = record.financeCurrency ? record.financeCurrency.currency : '';
-      //   if (text && record.financeCurrency && record.financeCurrency.id === 1) {
-      //     return `${currency} ${formatMoney(text, 'CNY')}`;
-      //   } else {
-      //     return `${currency} ${record.financeAmount ? formatMoney(text) : ''}`;
-      //   }
-      // }},
       {title: i18n('project_bd.contractors'), dataIndex: ['contractors', 'username'], key: 'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
         return timeWithoutHour(record.createdtime + record.timezone)
       }, key:'createdtime', sorter:true},
-      // {
-      //   title: '行动计划',
-      //   dataIndex: 'BDComments',
-      //   render: (text, record) => {
-      //     const comments = record.BDComments;
-      //     return comments && comments.length > 0 && <Popover placement="left" title="全部备注" content={
-      //       <ul style={{ listStyle: 'outside', marginLeft: 20 }}>
-      //         {comments.map(m => <li key={m.id}>
-      //           {m.createdtime.substring(0, 16).replace('T', ' ')}
-      //           <br/>
-      //           <p dangerouslySetInnerHTML={{ __html: m.comments.replace(/\n/g, '<br>') }} />
-      //           </li>)}
-      //       </ul>
-      //     }>
-      //       <div style={{ color: "#428bca" }} dangerouslySetInnerHTML={{ __html: comments[0].comments.replace(/\n/g, '<br>') }} />
-      //     </Popover>;
-      //   },
-      // },
     ];
 
     const allCreateUser = list.map(m => m.createuser);
@@ -622,13 +586,6 @@ class ProjectBDList extends React.Component {
             </div>
             : null }
 
-            <div>
-              {/* 备注按钮 */}
-              {/* { hasPerm('BD.manageProjectBD') || currentUserId === record.createuser || normalManagerIds.includes(currentUserId) || (record.contractors && currentUserId === record.contractors.id) ?
-              <Button style={{}} onClick={() => this.handleOpenModal(record)} type="link" size="small">行动计划</Button>
-              : null } */}
-            </div>
-
           </span>)
         }}
       );
@@ -663,14 +620,6 @@ class ProjectBDList extends React.Component {
         <Row>
           <Col span={18}>
             <Table
-              // className="table-affix-footer"
-              // onRow={record => {
-              //   return {
-              //     onMouseEnter: () => {
-              //       this.setState({ currentBD: record }); 
-              //     },
-              //   };
-              // }}
               rowClassName={record => {
                 return this.state.currentBD && record.id === this.state.currentBD.id ? styles['current-row'] : '';
               }}
@@ -680,9 +629,6 @@ class ProjectBDList extends React.Component {
               rowKey={record => record.id}
               loading={loading}
               pagination={false}
-              // footer={() => (
-              //   <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
-              // )}
             />
           </Col>
           <Col span={6} style={{ minHeight: 500 }}>
@@ -744,7 +690,7 @@ class ProjectBDList extends React.Component {
             <div>编辑行动计划</div>
             <div>
               <Button type="link" icon={this.state.modalExpanded ? <ShrinkOutlined className={styles['icon-modal-operation']} /> : <ArrowsAltOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ modalExpanded: !this.state.modalExpanded })} />
-              <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={() => this.setState({ displayAddBDCommentModal: false })} />
+              <Button type="link" icon={<CloseOutlined className={styles['icon-modal-operation']} />} onClick={this.handleCancelEditCommentBtnClicked} />
             </div>
           </div>}
           visible={this.state.displayAddBDCommentModal}
