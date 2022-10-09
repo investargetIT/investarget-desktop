@@ -990,7 +990,7 @@ class SelectProjectForOrgBd extends React.Component {
       var { count: total, data: list } = result.data
       list = list.filter(f => f.proj)
       list = list.map(item => {
-        const { id: value, projtitle: label } = item.proj
+        const { id: value, realname: label } = item.proj
         return { value, label }
       })
       return { total, list }
@@ -999,7 +999,7 @@ class SelectProjectForOrgBd extends React.Component {
 
   getProjectNameById = (id) => {
     return api.getProjLangDetail(id).then(result => {
-      return result.data.projtitle
+      return result.data.realname
     })
   }
 

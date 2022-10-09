@@ -196,7 +196,7 @@ class OrgBDProjList extends React.Component {
     const DataroomCard = ({ record }) => {
 
       const projId = record.id;
-      const projTitle = record.projtitle
+      const projTitle = record.realname;
       let dataroomUrl = `/app/org/bd?projId=${projId}`; 
       if (record.unReadOrgBDNum > 0) {
         dataroomUrl += '&showUnreadOnly=true';
