@@ -398,16 +398,16 @@ class ProjectAttachments extends React.Component {
           <p style={{ marginBottom: '8px', fontSize: 16, color: '#282828', fontWeight: 'bold' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
           <div style={{ marginLeft: '8px', marginTop: 20 }}>
           {
-            doneFileList.map(file =>
+            doneFileList.map((file, idx) =>
               <div 
-                key={file.key} 
-                style={{ ...fileitemStyle, backgroundColor: this.state.highlight === file.key ? 'blanchedalmond': 'inherit'}} 
-                onMouseEnter={() => this.setState({highlight: file.key})}
+                key={idx} 
+                style={{ ...fileitemStyle, backgroundColor: this.state.highlight === idx ? 'blanchedalmond': 'inherit'}} 
+                onMouseEnter={() => this.setState({highlight: idx})}
                 onMouseLeave={() => this.setState({highlight: null})}
               >
                 <span style={filetypeStyle}>{file.filetype}</span>
                 <span style={filenameStyle}>{file.filename}</span>
-                { this.state.highlight === file.key ? 
+                { this.state.highlight === idx ? 
                 <span style={{ cursor: 'pointer' }} onClick={this.handleConfirmRemoveFile.bind(this, file)}>x</span>
                 : null }
               </div>

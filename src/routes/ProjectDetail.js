@@ -880,9 +880,9 @@ class DownloadFiles extends React.Component {
           const files = this.state.attachments.filter(item => item.filetype == dir)
           const isLast = index == dirs.length - 1
 
-          return files.map(file => {
+          return files.map((file, idx) => {
             return (
-              <div key={file.key} style={liStyle}>
+              <div key={idx} style={liStyle}>
                 <div style={titleStyle}><Tag>{dir}</Tag></div>
                 <div title={file.filename} style={{ wordWrap: 'word-break:break-all', flex: 1, marginRight: 20 }}>
                   {file.filename}
