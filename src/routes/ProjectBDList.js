@@ -188,6 +188,7 @@ class ProjectBDList extends React.Component {
   }
 
   handleAddComment = async ({ comments, bucket, key, filename, filetype }, speechFile) => {
+    this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
@@ -218,7 +219,7 @@ class ProjectBDList extends React.Component {
       return
     }
     this.updateCurrentBD()
-    api.editProjBD(currentBD.id, {});
+    // api.editProjBD(currentBD.id, {});
   }
 
   handleEditCommentIconClick = (comment) => {
@@ -226,6 +227,7 @@ class ProjectBDList extends React.Component {
   }
 
   handleEditComment = async (id, data, speechFile) => {
+    this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
@@ -248,8 +250,8 @@ class ProjectBDList extends React.Component {
     }
 
     this.updateCurrentBD()
-    const { currentBD } = this.state;
-    api.editProjBD(currentBD.id, {});
+    // const { currentBD } = this.state;
+    // api.editProjBD(currentBD.id, {});
   }
 
   handleAutoSaveComment = async (comment, data, speechFile) => {
