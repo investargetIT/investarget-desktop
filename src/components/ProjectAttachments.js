@@ -398,7 +398,7 @@ class ProjectAttachments extends React.Component {
           <p style={{ marginBottom: '8px', fontSize: 16, color: '#282828', fontWeight: 'bold' }}>{i18n('project.has_attachments')} (<span>{ doneFileList.length }</span>)</p>
           <div style={{ marginLeft: '8px', marginTop: 20 }}>
           {
-            doneFileList.map((file, idx) =>
+            doneFileList.sort((a, b) => a.filetype.localeCompare(b.filetype)).map((file, idx) =>
               <div 
                 key={idx} 
                 style={{ ...fileitemStyle, backgroundColor: this.state.highlight === idx ? 'blanchedalmond': 'inherit'}} 

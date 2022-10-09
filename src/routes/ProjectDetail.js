@@ -876,7 +876,7 @@ class DownloadFiles extends React.Component {
         {dirs.length?<div style={headerStyle}>{i18n('project.material_download')}</div>:
         <div style={headerStyle}>{i18n('project.no_materials')}</div>}
 
-        {dirs.map((dir, index) => {
+        {dirs.sort().map((dir, index) => {
           const files = this.state.attachments.filter(item => item.filetype == dir)
           const isLast = index == dirs.length - 1
 
