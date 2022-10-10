@@ -139,7 +139,7 @@ class OrgBDProjList extends React.Component {
   getDataWithPermission = async () => {
     const { search, page, pageSize } = this.state;
     const params = {
-      search,
+      realname: search,
       page_size: pageSize,
       page_index: page,
     };
