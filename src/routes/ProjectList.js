@@ -179,6 +179,9 @@ class ProjectList extends React.Component {
   }
 
   getProjectProgress = record => {
+    if (record.projstatus && ['已过期', 'Expired'].includes(record.projstatus.name)) {
+      return 0;
+    }
     const filterProject = this.props.projectProgress.filter(f => f.id === record.id);
     if (filterProject.length > 0) {
       return filterProject[0].percentage;
@@ -187,6 +190,9 @@ class ProjectList extends React.Component {
   }
 
   getProjectProgressStatus = record => {
+    if (record.projstatus && ['已过期', 'Expired'].includes(record.projstatus.name)) {
+      return '暂无';
+    }
     const filterProject = this.props.projectProgress.filter(f => f.id === record.id);
     if (filterProject.length > 0) {
       return filterProject[0].status;
@@ -375,6 +381,10 @@ class ProjectList extends React.Component {
     return tag.name;
   }
 
+  checkExpiredProject = record => {
+    return record.projstatus && ['已过期', 'Expired'].includes(record.projstatus.name) ? 'expired-project' : undefined;
+  }
+
   render() {
     const { location } = this.props
     const { total, list, loading, page, pageSize, filters, search, visible, currentStatus, status, sendEmail, confirmLoading, sendWechat, discloseFinance } = this.state
@@ -400,15 +410,15 @@ class ProjectList extends React.Component {
               {dataroom ? (
                 <Tooltip title="DataRoom">
                   <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.projtitle)}`}>
-                    <Button type="link" icon={<FolderOutlined />} />
+                    <Button className={this.checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
                   </Link>
                 </Tooltip>
               ) : (
                 <Button type="link" icon={<FolderOutlined />} disabled />
               )}
-              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
-              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button type="link" icon={<DollarOutlined />} /></Link></Tooltip>
-              <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
+              <Tooltip title="机构看板"><Link to={`/app/org/bd?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<LineChartOutlined />} /></Link></Tooltip>
+              <Tooltip title="成本中心"><Link to={`/app/projects/cost/${record.id}?name=${record.projtitle}&projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DollarOutlined />} /></Link></Tooltip>
+              <Tooltip title="名单生成"><Link to={`/app/orgbd/add?projId=${record.id}`}><Button className={this.checkExpiredProject(record)} type="link" icon={<DatabaseOutlined />} /></Link></Tooltip>
             </div>
           ) : <img src={imgUrl} style={{ width: '80px', height: '50px' }} />;
         }
@@ -421,7 +431,7 @@ class ProjectList extends React.Component {
             <div>
               <Tooltip title="项目详情">
                 <span className="span-title">
-                  <Link to={`/app/projects/${record.id}`}>{record.realname}</Link>
+                  <Link className={this.checkExpiredProject(record)} to={`/app/projects/${record.id}`}>{record.realname}</Link>
                 </span>
               </Tooltip>
               <div>
@@ -504,13 +514,13 @@ class ProjectList extends React.Component {
             <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
                 <Link to={'/app/projects/edit/' + record.id}>
-                  <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
+                  <Button className={this.checkExpiredProject(record)} disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
                     <EditOutlined />
                   </Button>
                 </Link>
               </div>
               <div>
-                <Button type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
+                <Button className={this.checkExpiredProject(record)} type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
                   <DeleteOutlined />
                 </Button>
               </div>

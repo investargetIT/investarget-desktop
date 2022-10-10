@@ -798,9 +798,9 @@ label.login-register-form__container__label {
 .upload-list-modal > .ant-upload-list {
   width: 250px;
 }
-/* .table-affix-footer .ant-table-footer {
-  padding: 0;
-} */
+a.expired-project, button.expired-project, button.expired-project:hover {
+  color: rgba(0, 0, 0, .45);
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
