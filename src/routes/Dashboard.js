@@ -192,73 +192,8 @@ function Dashboard(props) {
     }
     fetchCompanyFile();
 
-    // async function renderFeishu() {
-    //   const app_id = 'cli_a298cb5f4c78d00b';
-    //   const app_secret = 'M7TVsEt2i06Yx3pNQTHj4e7EAzTudqE1';
-
-    //   // call endpoint to get app_access_token
-    //   const reqAppAccessToken = await api.getAppAccessToken({ app_id, app_secret });
-    //   const { data: { app_access_token } } = reqAppAccessToken;
-
-    //   const redirect_url = 'http://localhost:8000/feishu.html';
-    //   const auth_url = `https://open.feishu.cn/open-apis/authen/v1/index?app_id=${app_id}&redirect_uri=${encodeURIComponent(redirect_url)}&state=RANDOMSTATE`;
-    //   console.log('auth url', auth_url);
-    //   const code = '17h9IPP0t3G828xtmqhWtg4g73P1k5CHUO004kQaw8kh';
-
-    //   const user_access_token = 'u-00HD.UVHp729eBA3652azz4g5zr1k5Kzr200ghAawdhg';
-
-    //   // call endpoint to get jsapi_ticket
-    //   const reqTicket = await api.getTicket({ Authorization: app_access_token });
-    //   const { data: { data: { ticket: jsapi_ticket } } } = reqTicket;
-
-    //   const timestamp = Date.now().toString();
-    //   const noncestr = 'Y7a8KkqX041bsSwT';
-    //   const url = 'http://localhost:8000/feishu.html1';
-    //   const str = `jsapi_ticket=${jsapi_ticket}&noncestr=${noncestr}&timestamp=${timestamp}&url=${url}`;
-    //   console.log('sha', sha1(''), Date.now());
-    //   window.webComponent.config({
-    //     openId: '',    // 当前登录用户的open id，要确保与生成 signature 使用的 user_access_token 相对应，使用 app_access_token 时此项不填。注意：仅云文档组件可使用app_access_token
-    //     signature: sha1(str), // 签名
-    //     appId: app_id,     // 应用 appId
-    //     timestamp: timestamp, // 时间戳（毫秒）
-    //     nonceStr: noncestr,  // 随机字符串
-    //     url,       // 第3步参与加密计算的url
-    //     jsApiList: ['DocsComponent'], // 指定要使用的组件列表，请根据对应组件的开发文档填写。如云文档组件，填写['DocsComponent']
-    //     lang: 'zh',      // 指定组件的国际化语言：en-英文、zh-中文、ja-日文
-    //   }).then(res => {
-    //     // 可以在这里进行组件动态渲染
-    //     console.log('res', res);
-
-    //     // window.addOpenDocDynamical = function () {
-    //     // 动态渲染，返回组件实例。
-    //     const myComponent = window.webComponent.render(
-    //       'DocsComponent',
-    //       { //组件参数
-    //         src: 'https://t3ionjsf4i.feishu.cn/docs/doccnEQbSn23dEupsE0KapGd6Sh',
-    //         // minHeight: window.innerHeight - 48,
-    //         minHeight: 590,
-    //         width: '100%',
-    //       },
-    //       document.querySelector('#feishu'), // 将组件挂在到哪个元素上
-    //     )
-    //     // }
-    //     window.removeOpenDocDynamical = function () {
-    //       // 销毁组件
-    //       myComponent.unmount()
-    //     }
-
-    //   });
-
-    //   window.webComponent.onAuthError(function (error) {
-    //     console.error('auth error callback', error)
-    //   });
-    // }
-    // renderFeishu();
-
     async function fetchAndRenderPieChartData() {
-      const date = new Date();
       const startMoment = moment().startOf('year');
-      // const endMoment = moment(date).startOf('week').add('days', 6);
       const endMoment = moment().endOf('year');
       
       const startTime = startMoment.format('YYYY-MM-DDTHH:mm:ss');
@@ -273,7 +208,7 @@ function Dashboard(props) {
       const req = await Promise.all([
         api.getProjBDCom(params),
         api.getOrgRemark(params),
-        api.queryDataRoomFile({ ...params, dataroom: 214 }),
+        getCompanyFileStatics(params),
       ]);
       setPieChartData(req.map((m, i) => {
         return {
@@ -282,6 +217,18 @@ function Dashboard(props) {
         };
       }));
     }
+    async function getCompanyFileStatics(params) {
+      const allGroups = await props.dispatch({ type: 'app/getIndustryGroup' });
+      const indGroupDetails = getUserIndustryGroupDetails(userInfo.indGroups, allGroups);
+      const userIndDataroomID = indGroupDetails.map(m => m.dataroom_id).filter(f => f != null);
+      if (userIndDataroomID.length === 0) return { data: { count: 0 } };
+      const req = await Promise.all(userIndDataroomID.map(m => api.queryDataRoomFile({ ...params, dataroom: m })));
+      const count = req.reduce((prev, curr) => {
+        return prev + curr.data.count;
+      }, 0);
+      return { data: { count } };
+    }
+
     fetchAndRenderPieChartData();
   }, []);
 
@@ -338,6 +285,17 @@ function Dashboard(props) {
     return [];
   }
 
+  function getUserIndustryGroupDetails(indGroups, allGroups) {
+    if (indGroups && allGroups) {
+      const result = indGroups.map(m => {
+        const group = allGroups.find(f => f.id === m);
+        return group;
+      });
+      return result;
+    }
+    return [];
+  }
+
   function getOngoingProjectsFeishuUrl(indGroups) {
     const indGroupsDetails = getUserIndGroupDetails(indGroups);
     return indGroupsDetails.filter(f => f.ongongingurl);
@@ -362,32 +320,32 @@ function Dashboard(props) {
     return arr.join('&nbsp;&nbsp;');
   }
 
-  function displayPieChartLabel({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    value,
-    index
-  }) {
-    const RADIAN = Math.PI / 180;
-    const radius = 25 + innerRadius + (outerRadius - innerRadius);
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  // function displayPieChartLabel({
+  //   cx,
+  //   cy,
+  //   midAngle,
+  //   innerRadius,
+  //   outerRadius,
+  //   value,
+  //   index
+  // }) {
+  //   const RADIAN = Math.PI / 180;
+  //   const radius = 25 + innerRadius + (outerRadius - innerRadius);
+  //   const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  //   const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill={COLORS[index]}
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-      >
-        {pieChartData[index].name} ({value})
-      </text>
-    );
-  }
+  //   return (
+  //     <text
+  //       x={x}
+  //       y={y}
+  //       fill={COLORS[index]}
+  //       textAnchor={x > cx ? "start" : "end"}
+  //       dominantBaseline="central"
+  //     >
+  //       {pieChartData[index].name} ({value})
+  //     </text>
+  //   );
+  // }
 
   function generateTrainingDocsTitle() {
     const titleArr = [
