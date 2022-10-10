@@ -14,10 +14,10 @@ function FeishuApprovalList(props) {
   }, []);
 
   async function getApprovalList() {
-    setLoading(true);
     const currentUser = getUserInfo();
     const { thirdUnionID: user_id } = currentUser;
     if (!user_id) return;
+    setLoading(true);
     const req = await requestAllData(api.getFeishuApprovalTaskList, { user_id, user_id_type: 'union_id' }, 10);
     let { task_list } = req.data.data;
     task_list = task_list.filter(f => f.task.status === 'pending');
