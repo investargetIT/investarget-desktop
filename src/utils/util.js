@@ -777,3 +777,26 @@ export function useInterval(callback, delay) {
     }
   }, [delay]);
 }
+
+export async function convertCommentFilesToAttachments(projectID, projectBD) {
+  const reqAllBDCommentsWithFile = await requestAllData(api.getProjBDCom, { projectBD, bucket: ['file', 'image'] }, 100);
+  
+  const reqExistAttachments = await requestAllData(api.getProjAttachment, { proj: projectID }, 100);
+  const existAttachmentKeys = reqExistAttachments.data.data.map(m => m.key);
+
+  for (let index = 0; index < reqAllBDCommentsWithFile.data.data.length; index++) {
+    const element = reqAllBDCommentsWithFile.data.data[index];
+    const { filetype, bucket, filename, key } = element;
+    if (element.filetype && !existAttachmentKeys.includes(key)) {
+      const body = {
+        proj: projectID,
+        filetype, 
+        bucket,
+        filename,
+        key,
+        realfilekey: key,
+      };
+      await api.addProjAttachment(body);
+    }
+  }
+}

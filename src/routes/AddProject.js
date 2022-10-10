@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { i18n } from '../utils/util'
+import { i18n, convertCommentFilesToAttachments } from '../utils/util'
 
 
 import { Form, Button, message } from 'antd'
@@ -58,6 +58,11 @@ class AddProject extends React.Component {
         let param = toData(values)
         api.createProj(param).then(result => {
           this.goBack();
+          const { projectBD } = param;
+          if (projectBD) {
+            const { id: projectID } = result.data;
+            convertCommentFilesToAttachments(projectID, projectBD);
+          }
         }, error => {
           this.props.dispatch({
             type: 'app/findError',
