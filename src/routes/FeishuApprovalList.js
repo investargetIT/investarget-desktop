@@ -20,7 +20,7 @@ function FeishuApprovalList(props) {
     setLoading(true);
     const req = await requestAllData(api.getFeishuApprovalTaskList, { user_id, user_id_type: 'union_id' }, 10);
     let { task_list } = req.data.data;
-    task_list = task_list.filter(f => f.task.status === 'pending');
+    // task_list = task_list.filter(f => f.task.status === 'pending');
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
       const current = { ...task_list[currIdx], details: curr.data.data };
