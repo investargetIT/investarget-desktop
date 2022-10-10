@@ -73,7 +73,7 @@ class ProjectList extends React.Component {
       filters,
       search,
       page,
-      pageSize,
+      pageSize: props.userPageSize || 10,
       total: 0,
       list: [],
       loading: false,
