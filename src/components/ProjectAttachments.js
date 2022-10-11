@@ -13,7 +13,7 @@ import {
   Modal,
   Row,
   Col,
-  Spin, 
+  Spin,
 } from 'antd'
 import QRCode from 'qrcode.react';
 import { mobileUploadUrl } from '../utils/request';
@@ -49,28 +49,28 @@ const filenameStyle = {
 }
 
 
-const fileExtensions = [
-  '.pdf',
-  '.doc',
-  '.xls',
-  '.ppt',
-  '.docx',
-  '.xlsx',
-  '.pptx',
-]
-const mimeTypes = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.ms-excel',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
-  'application/vnd.openxmlformats-officedocument.presentationml.template',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
-]
+// const fileExtensions = [
+//   '.pdf',
+//   '.doc',
+//   '.xls',
+//   '.ppt',
+//   '.docx',
+//   '.xlsx',
+//   '.pptx',
+// ]
+// const mimeTypes = [
+//   'application/pdf',
+//   'application/msword',
+//   'application/vnd.ms-excel',
+//   'application/vnd.ms-powerpoint',
+//   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+//   'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+//   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+//   'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+//   'application/vnd.openxmlformats-officedocument.presentationml.template',
+//   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//   'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+// ]
 
 
 export const fixedDirs = ['Teaser', 'Memo', 'BP', 'Presentation', 'Brochure', 'Datapackage', 'FAQ', 'Cap Table', 'PB']
@@ -107,6 +107,8 @@ class ProjectAttachments extends React.Component {
       highlight: null,
       addNewDir: false,
     }
+
+    this.confirmModal = null;
   }
 
 
@@ -265,12 +267,30 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  beforeUpload = (key, file) => {
+  beforeUpload = (key, file, list) => {
 
-    if (mimeTypes.indexOf(file.type) == -1) {
-      message.error(i18n('project.message.unsupported_formart'), 2)
-      return false
+    const audioFiles = list.filter(f => /\.(wav|flac|opus|m4a|mp3)$/.test(f.name));
+    if (!this.confirmModal && audioFiles.length > 0) {
+      const react = this;
+      this.confirmModal = Modal.confirm({
+        title: '发现语音文件，是否语音转文字？',
+        content: audioFiles.map((m, i) => <li key={i}>{m.name}</li>),
+        okText: '是',
+        cancelText: '否',
+        onOk() {
+          react.confirmModal = null;
+        },
+        onCancel() {
+          react.confirmModal = null;
+        },
+      });
     }
+    return false;
+
+    // if (mimeTypes.indexOf(file.type) == -1) {
+    //   message.error(i18n('project.message.unsupported_formart'), 2)
+    //   return false
+    // }
 
     const { fileList } = this.state
 
@@ -350,7 +370,7 @@ class ProjectAttachments extends React.Component {
       customRequest,
       multiple: true,
       data: { bucket: 'file' },
-      accept: fileExtensions.join(','),
+      // accept: fileExtensions.join(','),
       onChange: this.handleFileChange,
       onRemove: this.handleFileRemoveConfirm,
       showUploadList: false

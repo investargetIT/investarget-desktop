@@ -338,7 +338,6 @@ export function EditBDComment(props) {
   }, [comment]);
 
   const normFile = (e) => {
-    // TODO
     const fileList = Array.isArray(e) ? e : (e && e.fileList);
     // const file = fileList[0];
     return fileList.map(file => ({
@@ -347,14 +346,14 @@ export function EditBDComment(props) {
       key: file.response ? file.response.result.realfilekey : file.key,
       url: file.response ? file.response.result.url : file.url,
     }));
-    return file ? [
-      {
-        ...file,
-        bucket: file.response ? file.response.result.bucket : file.bucket,
-        key: file.response ? file.response.result.realfilekey : file.key,
-        url: file.response ? file.response.result.url : file.url,
-      },
-    ] : [];
+    // return file ? [
+    //   {
+    //     ...file,
+    //     bucket: file.response ? file.response.result.bucket : file.bucket,
+    //     key: file.response ? file.response.result.realfilekey : file.key,
+    //     url: file.response ? file.response.result.url : file.url,
+    //   },
+    // ] : [];
   };
 
   const handleUploadChange = (e) => {
