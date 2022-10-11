@@ -108,7 +108,7 @@ class ProjectAttachments extends React.Component {
       addNewDir: false,
     }
 
-    this.confirmModal = null;
+    this.audioToTextFileUid = [];
   }
 
 
@@ -160,6 +160,9 @@ class ProjectAttachments extends React.Component {
     file.url = file.response.result.url
     file.realfilekey = file.response.result.realfilekey;
     file.filename = file.name; 
+    if (this.audioToTextFileUid.includes(file.uid)) {
+      file.audioToText = true;
+    }
     const index  = _.findIndex(this.state.fileList, function(item) {
       return item.filetype == file.filetype && item.filename == file.filename
     })
@@ -214,7 +217,7 @@ class ProjectAttachments extends React.Component {
   }
 
   addAttachment = file => {
-    const projId = this.props.projId
+    // TODO
     const data = {
       proj: this.props.projId,
       filetype: this.state.activeDir, 
@@ -268,55 +271,25 @@ class ProjectAttachments extends React.Component {
   }
 
   beforeUpload = (key, file, list) => {
-
-    const audioFiles = list.filter(f => /\.(wav|flac|opus|m4a|mp3)$/.test(f.name));
-    if (!this.confirmModal && audioFiles.length > 0) {
-      const react = this;
-      this.confirmModal = Modal.confirm({
-        title: '发现语音文件，是否语音转文字？',
-        content: audioFiles.map((m, i) => <li key={i}>{m.name}</li>),
-        okText: '是',
-        cancelText: '否',
-        onOk() {
-          react.confirmModal = null;
-        },
-        onCancel() {
-          react.confirmModal = null;
-        },
-      });
-    }
-    return false;
-
-    // if (mimeTypes.indexOf(file.type) == -1) {
-    //   message.error(i18n('project.message.unsupported_formart'), 2)
-    //   return false
-    // }
-
-    const { fileList } = this.state
-
-    // 同一个目录下不允许重复上传相同的文件
-    const dir = key // current dir
-    for (let i = 0, len = fileList.length; i < len; i++) {
-      let _file = fileList[i]
-      if (dir === _file.filetype && file.name === _file.filename) {
-        message.error(i18n('project.message.upload_same_file'), 2)
-        return false
-      }
-    }
-
-    // //NDA文件和Teaser文件只能上传一个
-    // if (dir == 'NDA' && fileList.filter(item => item.filetype == 'NDA').length > 0) {
-    //   message.error(i18n('project.message.only_one_NDA'), 2)
-    //   return false
-    // }
-    // if (dir == 'Teaser' && fileList.filter(item => item.filetype == 'Teaser').length > 0) {
-    //   message.error(i18n('project.message.only_one_teaser'), 2)
-    //   return false
-    // }
-
     this.setState({ spinning: true, activeDir: key });
-
-    return true
+    if (/\.(wav|flac|opus|m4a|mp3)$/.test(file.name)) {
+      return new Promise((resolve) => {
+        const react = this;
+        Modal.confirm({
+          title: '发现语音文件，是否语音转文字？',
+          content: file.name,
+          okText: '是',
+          cancelText: '否',
+          onOk() {
+            react.audioToTextFileUid = react.audioToTextFileUid.concat(file.uid);
+            resolve();
+          },
+          onCancel() {
+            resolve();
+          },
+        });
+      })
+    }
   }
 
   componentDidMount() {
