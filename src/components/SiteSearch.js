@@ -77,6 +77,7 @@ class SiteSearch extends React.Component {
     }
 
     this.searchData = debounce(this.searchData, 800);
+    this.searchCount = 0;
   }
 
   isLoading = false
@@ -119,7 +120,7 @@ class SiteSearch extends React.Component {
     }
   }
 
-  searchData = async () => {
+  searchData = async (count) => {
     let { search: content } = this.props;
     content = content.trim();
     if (!content) return;
@@ -130,6 +131,7 @@ class SiteSearch extends React.Component {
         requestAllData(api.getProjBDList, { search: content }, 50),
         requestAllData(api.getProj, { search: content }, 50),
       ]);
+      if (count < this.searchCount) return;
       const res0 = res[0].data.data.map(m => ({ ...m, com_name: m.username, type: 'user', label: '用户' }));
       const res1 = res[1].data.data.map(m => ({ ...m, type: 'projBD', label: '项目BD' }));
       const res2 = res[2].data.data.map(m => ({ ...m, com_name: m.projtitle, type: 'project', label: '项目' }));
@@ -144,7 +146,8 @@ class SiteSearch extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.search !== this.props.search) {
-      this.searchData();
+      this.searchCount++;
+      this.searchData(this.searchCount);
     }
   }
 
