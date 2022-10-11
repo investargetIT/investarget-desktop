@@ -204,10 +204,10 @@ function Dashboard(props) {
       const stimeM = startTime;
       const etimeM = endTime;
 
-      const params = { stime, etime, stimeM, etimeM, createuser: userInfo.id };
+      const params = { stime, etime, stimeM, etimeM, createuser: userInfo.id, page_size: 1 };
       const req = await Promise.all([
         api.getProjBDCom(params),
-        api.getOrgRemark(params),
+        getOrgStatics(params),
         getCompanyFileStatics(params),
       ]);
       setPieChartData(req.map((m, i) => {
@@ -223,6 +223,17 @@ function Dashboard(props) {
       const userIndDataroomID = indGroupDetails.map(m => m.dataroom_id).filter(f => f != null);
       if (userIndDataroomID.length === 0) return { data: { count: 0 } };
       const req = await Promise.all(userIndDataroomID.map(m => api.queryDataRoomFile({ ...params, dataroom: m })));
+      const count = req.reduce((prev, curr) => {
+        return prev + curr.data.count;
+      }, 0);
+      return { data: { count } };
+    }
+
+    async function getOrgStatics(params) {
+      const req = await Promise.all([
+        api.getOrgRemark(params),
+        api.getOrgAttachment(params),
+      ]);
       const count = req.reduce((prev, curr) => {
         return prev + curr.data.count;
       }, 0);
