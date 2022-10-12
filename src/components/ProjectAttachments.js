@@ -216,8 +216,24 @@ class ProjectAttachments extends React.Component {
     })
   }
 
-  addAttachment = file => {
-    // TODO
+  addAttachment = async file => {
+
+    let transid = null;
+    if (file.audioToText) {
+      const { originFileObj: speechFile } = file;
+      if (speechFile && speechFile instanceof File) {
+        try {
+          const formData = new FormData();
+          formData.append('file', speechFile);
+          const { data } = await api.addAudioTranslate(formData);
+          transid = data.id;
+        } catch (error) {
+          handleError(error)
+          return
+        }
+      }
+    }
+
     const data = {
       proj: this.props.projId,
       filetype: this.state.activeDir, 
@@ -225,6 +241,7 @@ class ProjectAttachments extends React.Component {
       filename: file.filename,
       key: file.key,
       realfilekey: file.realfilekey,
+      transid,
     }
     return api.addProjAttachment(data).then(result => {
       this.getAttachment()
