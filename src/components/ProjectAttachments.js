@@ -19,6 +19,7 @@ import QRCode from 'qrcode.react';
 import { mobileUploadUrl } from '../utils/request';
 // import { MobileUploader } from './GlobalComponents';
 import { Modal as GModal } from './GlobalComponents';
+import { Link } from 'dva/router';
 
 const TabPane = Tabs.TabPane
 const Dragger = Upload.Dragger
@@ -44,7 +45,6 @@ const filetypeStyle = {
   ...ellipsisStyle,
 }
 const filenameStyle = {
-  flexGrow: 1,
   ...ellipsisStyle,
 }
 
@@ -361,6 +361,15 @@ class ProjectAttachments extends React.Component {
     GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
   }
 
+  checkAudisTransFinish = file => {
+    const { transid } = file;
+    if (!transid) return false;
+    const audioTrans = this.state.audioTrans.find(f => f.id === parseInt(transid));
+    if (!audioTrans) return false;
+    if (audioTrans.taskStatus !== '9') return false;
+    return true;
+  }
+
   render() {
     const { fileList, dirs } = this.state
 
@@ -428,7 +437,18 @@ class ProjectAttachments extends React.Component {
                 onMouseLeave={() => this.setState({highlight: null})}
               >
                 <span style={filetypeStyle}>{file.filetype}</span>
-                <span style={filenameStyle}>{file.filename}</span>
+                <div style={{ flex: 1 }}>
+                  <span style={filenameStyle}>{file.filename}</span>
+                  {this.checkAudisTransFinish(file) && (
+                    <Link
+                      target="_blank"
+                      style={{ color: 'red', marginLeft: 20 }}
+                      to={`/app/speech-to-text/${file.transid}?speechKey=${file.key}`}
+                    >
+                      语音转文字
+                    </Link>
+                  )}
+                </div>
                 { this.state.highlight === idx ? 
                 <span style={{ cursor: 'pointer' }} onClick={this.handleConfirmRemoveFile.bind(this, file)}>x</span>
                 : null }
