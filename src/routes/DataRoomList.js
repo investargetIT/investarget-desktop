@@ -307,6 +307,7 @@ class DataRoomList extends React.Component {
             current={page}
             pageSize={pageSize}
             onChange={this.handlePageChange}
+            showSizeChanger={false}
           />
           }
         </div>
