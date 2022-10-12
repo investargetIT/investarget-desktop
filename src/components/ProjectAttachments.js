@@ -106,6 +106,7 @@ class ProjectAttachments extends React.Component {
       spinning: false,
       highlight: null,
       addNewDir: false,
+      audioTrans: [],
     }
 
     this.audioToTextFileUid = [];
@@ -191,6 +192,8 @@ class ProjectAttachments extends React.Component {
       proj: projId,
     }
     requestAllData(api.getProjAttachment, param, 100).then(result => {
+      const allTransID = result.data.data.map(m => m.transid).filter(f => f !== null);
+      this.getAudioTranslateStatus(allTransID);
       return result.data.data
     })
     .then(fileList => {
@@ -214,6 +217,14 @@ class ProjectAttachments extends React.Component {
     .catch(error => {
       this.handleError(error)
     })
+  }
+
+  getAudioTranslateStatus = async transIDArr => {
+    const reqAll = await Promise.all(
+      transIDArr.map(m => api.getAudioTranslate(m))
+    );
+    const audioTrans = reqAll.map(m => m.data);
+    this.setState({ audioTrans });
   }
 
   addAttachment = async file => {
