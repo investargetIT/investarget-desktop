@@ -525,7 +525,7 @@ class TimelineList extends React.Component {
       { 
         title: i18n('timeline.project_name'), 
         key: 'proj', 
-        render: (text, record) => record.proj && <Link to={'/app/projects/' + record.proj.id}>{ record.proj.projtitle }</Link>, 
+        render: (text, record) => record.proj && <Link to={'/app/projects/' + record.proj.id}>{ record.proj.realname }</Link>, 
         sorter: true,
       },
       { 

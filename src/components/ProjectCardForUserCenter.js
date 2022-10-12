@@ -50,7 +50,7 @@ const cardIconBgStyle = {
 export default function ProjectCardForUserCenter({ record, country: allCountries, currentUser }) {
   const dataroomId = record.id
   const projId = record.id
-  const projTitle = record.projtitle
+  const projTitle = record.realname
   const projPM = record.PM;
   const projTraders = record.projTraders || [];
   const projTradersUsers= projTraders.map(m => m.user);

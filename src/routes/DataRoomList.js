@@ -202,7 +202,7 @@ class DataRoomList extends React.Component {
 
       const dataroomId = record.id
       const projId = record.proj.id
-      const projTitle = record.proj.projtitle
+      const projTitle = record.proj.realname
       const createUserID = record.createuser
       // const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&investorID=${investorId}&traderID=${traderId}&projectOwnerID=${supportorId}&projectTitle=${encodeURIComponent(projTitle)}&isClose=${record.isClose}&createUserID=${createUserID}`
       const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`

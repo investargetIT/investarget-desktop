@@ -49,7 +49,7 @@ const cardIconBgStyle = {
 export default function ProjectCard({ record, country: allCountries }) {
   const dataroomId = record.dataroom && record.dataroom.id
   const projId = record.id
-  const projTitle = record.projtitle
+  const projTitle = record.realname
   const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 

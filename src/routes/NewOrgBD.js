@@ -34,7 +34,7 @@ class NewOrgBD extends React.Component {
     if (isNaN(this.state.projId)) return;
 
     api.getProjLangDetail(this.state.projId).then(result => {
-      const projTitle = result.data.projtitle
+      const projTitle = result.data.realname
       this.setState({ projTitle })
     }, error => {
       this.props.dispatch({

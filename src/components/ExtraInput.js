@@ -905,7 +905,7 @@ const SelectExistProject = (props) => {
     return api.getProj(params).then(result => {
       var { count: total, data: list } = result.data
       list = list.map(item => {
-        const { id: value, projtitle: label } = item
+        const { id: value, realname: label } = item
         return { value, label }
       })
       return { total, list }
@@ -914,7 +914,7 @@ const SelectExistProject = (props) => {
 
   const getProjectNameById = (id) => {
     return api.getProjLangDetail(id).then(result => {
-      return result.data.projtitle
+      return result.data.realname
     })
   }
 
