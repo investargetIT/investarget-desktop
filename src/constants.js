@@ -76,7 +76,7 @@ export const KEY_TO_URI = {
   "HR": "/app/hr",
   "Resigned_usermanager": "/app/user/list/resigned-trader",
   "user_profile": "/app/personal-center",
-  // "feishu_work": "/app/feishu/approval"
+  "feishu_work": "/app/feishu/approval",
 }
 
 export const URI_TO_KEY = {

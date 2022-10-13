@@ -83,6 +83,7 @@ function FeishuApprovalList(props) {
       width: 200,
       align: 'center',
       render: record => {
+        if (record.details.status !== 'PENDING') return null;
         return (
           <div>
             <Popconfirm title="确认同意？" onConfirm={() => handleOperationBtnClicked('approve', record)}>
@@ -101,7 +102,7 @@ function FeishuApprovalList(props) {
   ];
 
   return (
-    <LeftRightLayout location={props.location} title="飞书审批任务列表">
+    <LeftRightLayout location={props.location} title="行政审批">
       <Table
         columns={columns}
         dataSource={list}
