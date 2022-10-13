@@ -26,6 +26,7 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data };
       return prev.concat(current);
     }, []);
+    window.echo('all tasks', allTasks);
     setList(allTasks);
     setLoading(false);
   }
@@ -106,7 +107,7 @@ function FeishuApprovalList(props) {
       <Table
         columns={columns}
         dataSource={list}
-        rowKey={record => record.details.uuid}
+        rowKey={record => record.task.task_id}
         loading={loading}
         pagination={false}
       />
