@@ -7,6 +7,7 @@ import { withRouter } from 'dva/router'
 import * as api from '../api'
 import moment from 'moment';
 import ProjectBDForm from '../components/ProjectBDForm'
+import lodash from 'lodash';
 
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
@@ -22,7 +23,9 @@ function toFormData(data) {
     if (prop === 'manager') {
       let allManagers = [];
       if (value) {
-        allManagers = value.filter(f => f.type === 3).map(item => item.manager.id.toString());
+        let allManager = value.map(m => m.manager);
+        allManager = lodash.uniqBy(allManager, 'id');
+        allManagers = allManager.map(item => item.id.toString());
       }
       formData.manager = allManagers;
     }
@@ -110,9 +113,12 @@ class EditProjectBD extends React.Component {
       const oldNormalManagerIds = oldManager.map(m => m.manager.id);
       const newNormalManagerIds = newManager.map(m => parseInt(m));
 
+      // 可能会出现重复 id 的执行团队需要删除
       const normalManagerToDel = subtracting(oldNormalManagerIds, newNormalManagerIds);
       await Promise.all(normalManagerToDel.map(m => {
-        const relateManagerId = oldManager.filter(f => f.manager.id === m)[0].id;
+        const index = oldManager.map(m => m.manager.id).indexOf(m);
+        const relateManagerId = oldManager[index].id;
+        oldManager.splice(index, 1);
         return api.deleteProjectBdRelatedManager(relateManagerId);
       }));
       const normalManagerToAdd = subtracting(newNormalManagerIds, oldNormalManagerIds);

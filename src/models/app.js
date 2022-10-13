@@ -338,7 +338,10 @@ export default {
       let investorRemarks = [];
       if (orgInvestors.length > 0) {
         const req0 = yield call(requestAllData, api.getUserRemark, { user: orgInvestors.map(m => m.id) }, 100);
-        investorRemarks = req0.data.data;
+        investorRemarks = req0.data.data
+        investorRemarks = investorRemarks.filter(f => {
+          return !/之前状态(.*)，现在状态(.*)/.test(f.remark);
+        });
       }
       let newOrgInvestorsAndRemarks = allOrgInvestorsAndRemarks.slice();
       needsRefreshArr.forEach(element => {

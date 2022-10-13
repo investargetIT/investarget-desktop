@@ -17,6 +17,7 @@ import {
 } from '../components/ProjectForm'
 import ProjectAttachments from '../components/ProjectAttachments'
 import ProjectYearFinance from '../components/ProjectYearFinance'
+import lodash from 'lodash';
 
 
 const actionStyle = {textAlign: 'center'}
@@ -92,7 +93,8 @@ function toFormDataNew(data) {
     } else if (prop === 'projTraders' && data[prop]) {
       const { projTraders } = data;
       const takeUser = projTraders.filter(f => f.type === 0);
-      const makeUser = projTraders.filter(f => f.type === 1);
+      let makeUser = projTraders.filter(f => f.type !== 0);
+      makeUser = lodash.uniqBy(makeUser, 'id');
       formData.takeUser = takeUser.map(m => m.user.id.toString());
       formData.makeUser = makeUser.map(m => m.user.id.toString());
       formData.takeUserName = takeUser.map(m => m.user.usernameC).join('、');
@@ -333,11 +335,6 @@ class EditProject extends React.Component {
   componentDidMount() {
     this.getProject()
   }
-
-  // checkProjectBD = () => {
-  //   const { projectBD, sponsor, takeUser }
-  //   this.setFormValue();
-  // }
 
   setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
