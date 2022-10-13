@@ -58,19 +58,24 @@ function FeishuApprovalList(props) {
           start: '开始时间',
           end: '结束时间',
           interval: '时长',
-          unit: '单位',
           reason: '理由',
         };
         for (const key in keyToLabel) {
           if (Object.hasOwnProperty.call(keyToLabel, key)) {
             const label = keyToLabel[key];
-            const value = formValue[key];
+            let value = formValue[key];
+            if (key === 'start' || key === 'end') {
+              value = value.slice(0, 19).replace('T', ' ');
+            } else if (key === 'interval') {
+              value = value + ' ' + formValue['unit'];
+            }
             result.push(label + '：' + value);
           }
         }
         break;
     
       default:
+        result.push('未知类型，请联系系统管理员');
         break;
     }
     return result.join('，');
