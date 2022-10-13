@@ -23,10 +23,21 @@ function FeishuApprovalList(props) {
     // task_list = task_list.filter(f => f.task.status === 'pending');
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
+      let { form } = curr.data.data;
+      form = JSON.parse(form);
+      form = JSON.stringify(form);
+      window.echo('form', form);
       const current = { ...task_list[currIdx], details: curr.data.data };
       return prev.concat(current);
     }, []);
     window.echo('all tasks', allTasks);
+    const allTaskUser = allTasks.map(m => m.details.open_id);
+    const reqUserDetails = await Promise.all(allTaskUser.map(m => api.getFeishuUser({
+      user_id: m,
+      user_id_type: 'open_id',
+      department_id_type: 'open_department_id',
+    })));
+    window.echo('req user details', reqUserDetails);
     setList(allTasks);
     setLoading(false);
   }
