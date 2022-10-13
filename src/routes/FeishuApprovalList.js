@@ -29,6 +29,7 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data, summary };
       return prev.concat(current);
     }, []);
+    window.echo('all tasks', allTasks);
     setList(allTasks);
     setLoading(false);
 
@@ -73,9 +74,25 @@ function FeishuApprovalList(props) {
           }
         }
         break;
+      
+        case '0AEF151F-E4DD-4911-8F4E-CD97F655F0A9':
+          result.push('请假');
+          break;
     
+        case '2B9684C1-A57B-4063-8CE2-BCA12D0217BC':
+          result.push('FA合同申请');
+          break;
+
+        case '931E322C-3050-49E7-B7FD-E6821F8A9607':
+          result.push('活动经费申请');
+          break;
+        
+        case '0C219E32-27DC-40BE-AFF9-C42FE403A06A':
+          result.push('出差申请');
+          break;
+
       default:
-        result.push('未知类型，请联系系统管理员');
+        result.push('获取失败，请联系系统管理员');
         break;
     }
     return result.join('，');
@@ -100,7 +117,7 @@ function FeishuApprovalList(props) {
 
   const columns = [
     {
-      title: '名称',
+      title: '类型',
       dataIndex: ['details', 'approval_name'],
       key: 'name',
     },
@@ -109,7 +126,7 @@ function FeishuApprovalList(props) {
       dataIndex: ['initiator', 'name'],
     },
     {
-      title: '详情',
+      title: '概要',
       dataIndex: ['summary'],
       key: 'summary',
     },
