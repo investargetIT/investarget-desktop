@@ -23,6 +23,7 @@ import { connect } from 'dva';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ArrowsAltOutlined, CloseOutlined, ShrinkOutlined } from '@ant-design/icons';
 import BDComments, { BDCommentsWithoutForm, EditBDComment } from '../components/BDComments';
 import styles from './ProjectBDList.css';
+import lodash from 'lodash';
 
 class ProjectBDList extends React.Component {
 
@@ -544,7 +545,12 @@ class ProjectBDList extends React.Component {
         title: i18n('project_bd.manager'),
         key: 'manager',
         sorter: true,
-        render: (_, record) => record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、'),
+        render: (_, record) => {
+          if (!record.manager) return null;
+          let allManager = record.manager.map(m => m.manager);
+          allManager = lodash.uniqBy(allManager, 'id');
+          return allManager.map(m => m.username).join('、');
+        }
       },
       {title: i18n('project_bd.contractors'), dataIndex: ['contractors', 'username'], key: 'contractors', sorter:true},
       {title: i18n('project_bd.created_time'), render: (text, record) => {
