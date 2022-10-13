@@ -27,7 +27,6 @@ function FeishuApprovalList(props) {
       let { form } = curr.data.data;
       form = JSON.parse(form);
       form = JSON.stringify(form);
-      window.echo('form', form);
       const current = { ...task_list[currIdx], details: curr.data.data };
       return prev.concat(current);
     }, []);
@@ -70,6 +69,10 @@ function FeishuApprovalList(props) {
       title: '名称',
       dataIndex: ['details', 'approval_name'],
       key: 'name',
+    },
+    {
+      title: '发起人',
+      dataIndex: ['initiator', 'name'],
     },
     {
       title: '详情',
