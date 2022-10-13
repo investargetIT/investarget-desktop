@@ -24,10 +24,9 @@ function FeishuApprovalList(props) {
 
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
-      let { form } = curr.data.data;
-      form = JSON.parse(form);
-      form = JSON.stringify(form);
-      const current = { ...task_list[currIdx], details: curr.data.data };
+      const { approval_code, form } = curr.data.data;
+      const summary = getSummaryFromJSON(approval_code, form);
+      const current = { ...task_list[currIdx], details: curr.data.data, summary };
       return prev.concat(current);
     }, []);
     setList(allTasks);
@@ -45,6 +44,36 @@ function FeishuApprovalList(props) {
       return prev.concat(current);
     }, []);
     setList(allTasksWithInitiator);
+  }
+
+  function getSummaryFromJSON(approvalCode, formStr) {
+    const formData = JSON.parse(formStr);
+    const result = [];
+    switch (approvalCode) {
+      // 外出
+      case 'E7093406-FA36-4CFD-9A06-FC36EEB68063':
+        const formValue = formData[0].value;
+        const keyToLabel = {
+          name: '类型',
+          start: '开始时间',
+          end: '结束时间',
+          interval: '时长',
+          unit: '单位',
+          reason: '理由',
+        };
+        for (const key in keyToLabel) {
+          if (Object.hasOwnProperty.call(keyToLabel, key)) {
+            const label = keyToLabel[key];
+            const value = formValue[key];
+            result.push(label + '：' + value);
+          }
+        }
+        break;
+    
+      default:
+        break;
+    }
+    return result.join('，');
   }
 
   async function handleOperationBtnClicked(type, record) {
@@ -71,28 +100,13 @@ function FeishuApprovalList(props) {
       key: 'name',
     },
     {
-      title: '发起人',
+      title: '申请人',
       dataIndex: ['initiator', 'name'],
     },
     {
       title: '详情',
-      dataIndex: ['details', 'form'],
-      key: 'details',
-      render: text => {
-        if (!text) return null;
-        const obj = JSON.parse(text);
-        if (obj.length > 0) {
-          let newStr = '';
-          for (const key in obj[0].value) {
-            if (Object.hasOwnProperty.call(obj[0].value, key)) {
-              const value = obj[0]['value'][key];
-              if (typeof value == 'object' || !value) continue;
-              newStr += `${key}: ${value}\n`;
-            }
-          }
-          return <div dangerouslySetInnerHTML={{ __html: newStr.replace(/\n/g, '<br>') }}></div>;
-        }
-      },
+      dataIndex: ['summary'],
+      key: 'summary',
     },
     {
       title: '状态',
