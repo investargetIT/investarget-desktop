@@ -21,6 +21,7 @@ function FeishuApprovalList(props) {
     const req = await requestAllData(api.getFeishuApprovalTaskList, { user_id, user_id_type: 'union_id' }, 10);
     let { task_list } = req.data.data;
     // task_list = task_list.filter(f => f.task.status === 'pending');
+
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
       let { form } = curr.data.data;
@@ -30,16 +31,21 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data };
       return prev.concat(current);
     }, []);
-    window.echo('all tasks', allTasks);
+    setList(allTasks);
+    setLoading(false);
+
     const allTaskUser = allTasks.map(m => m.details.open_id);
     const reqUserDetails = await Promise.all(allTaskUser.map(m => api.getFeishuUser({
       user_id: m,
       user_id_type: 'open_id',
       department_id_type: 'open_department_id',
     })));
-    window.echo('req user details', reqUserDetails);
-    setList(allTasks);
-    setLoading(false);
+    const allTasksWithInitiator = reqUserDetails.reduce((prev, curr, currIdx) => {
+      const { user: initiator } = curr.data.data;
+      const current = { ...allTasks[currIdx], initiator };
+      return prev.concat(current);
+    }, []);
+    setList(allTasksWithInitiator);
   }
 
   async function handleOperationBtnClicked(type, record) {
@@ -70,6 +76,7 @@ function FeishuApprovalList(props) {
       dataIndex: ['details', 'form'],
       key: 'details',
       render: text => {
+        if (!text) return null;
         const obj = JSON.parse(text);
         if (obj.length > 0) {
           let newStr = '';
@@ -95,7 +102,7 @@ function FeishuApprovalList(props) {
       width: 200,
       align: 'center',
       render: record => {
-        if (record.details.status !== 'PENDING') return null;
+        if (!record.details || record.details.status !== 'PENDING') return null;
         return (
           <div>
             <Popconfirm title="确认同意？" onConfirm={() => handleOperationBtnClicked('approve', record)}>

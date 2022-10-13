@@ -1138,7 +1138,7 @@ export const addGetStarInvestor = body => r('/user/getStarInvestor/', 'POST', bo
 export const getAppAccessToken = body => r('/service/feishu/accesstoken/', 'POST', body);
 export const getTicket = body => r('/service/feishu/jsticket/', 'POST', body);
 export const getUserIdentity = body => r('/service/feishu/useridentity/', 'POST', body);
-export const getFeishuUser = params => r2(`/service/feishu/users/?${qs.stringify(params)}`);
+export const getFeishuUser = body => r('/service/feishu/users/', 'POST', body);
 
 export const getFeishuApprovalTaskList = body => r('/service/feishu/approval/', 'POST', body);
 export const getFeishuApprovalDetails = body => r('/service/feishu/approval/instance/', 'POST', body);
