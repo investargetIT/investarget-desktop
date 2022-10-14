@@ -144,7 +144,32 @@ function FeishuApprovalList(props) {
         break;
 
       case '0C219E32-27DC-40BE-AFF9-C42FE403A06A':
-        window.echo('出差申请', formData);
+        formValue = formData[0].value;
+        keyToLabel = {
+          reason: '项目',
+          destination: '目的地',
+          start: '开始时间',
+          end: '结束时间',
+          transport: '交通工具',
+        };
+        for (const key in keyToLabel) {
+          if (Object.hasOwnProperty.call(keyToLabel, key)) {
+            if (key === 'reason') {
+              result.push('项目：' + formValue[key]);
+            } else {
+              let formValue1 = formValue.schedule;
+              if (formValue1.length > 0) {
+                formValue1 = formValue1[0];
+                const label = keyToLabel[key];
+                let value = formValue1[key];
+                if (key === 'start' || key === 'end') {
+                  value = value.slice(0, 19).replace('T', ' ');
+                }
+                result.push(label + '：' + value);
+              }
+            }
+          }
+        }
         break;
 
       default:
