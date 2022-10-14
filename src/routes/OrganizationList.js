@@ -347,6 +347,13 @@ class OrganizationList extends React.Component {
     });
   }
 
+  getCurrentOrgName = () => {
+    const org = this.state.list.find(f => f.id === this.state.currentOrg);
+    if (org) {
+      return org.orgfullname;
+    }
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -453,8 +460,12 @@ class OrganizationList extends React.Component {
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0', justifyContent: 'space-between' }}>
                 <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
                   <div>
-                    <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
+                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ height: '100%' }}>
+                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
+                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
+                      </div>
+                      <div />
                     </div>
                     <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }} >
                       <List
@@ -483,8 +494,12 @@ class OrganizationList extends React.Component {
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <Affix offsetTop={50}>
                   <div>
-                    <div style={{ padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
+                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ height: '100%' }}>
+                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
+                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
+                      </div>
+                      <div />
                     </div>
                     <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
                       <List
