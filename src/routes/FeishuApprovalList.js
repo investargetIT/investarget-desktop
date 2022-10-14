@@ -124,11 +124,27 @@ function FeishuApprovalList(props) {
         break;
 
       case '931E322C-3050-49E7-B7FD-E6821F8A9607':
-        result.push('活动经费申请');
+        formValue = formData;
+        keyToLabel = [{
+          widgetID: 'widget15995479976120001',
+          name: '活动名称',
+        }, {
+          widgetID: 'widget15995480772980001',
+          name: '参与人数',
+        }, {
+          widgetID: 'widget15995480273410001',
+          name: '预算总金额',
+        }];
+        keyToLabel.forEach(element => {
+          const widget = formValue.find(f => f.id === element.widgetID || f.name === element.name);
+          if (widget) {
+            result.push(element.name + '：' + widget.value);
+          }
+        });
         break;
 
       case '0C219E32-27DC-40BE-AFF9-C42FE403A06A':
-        result.push('出差申请');
+        window.echo('出差申请', formData);
         break;
 
       default:
