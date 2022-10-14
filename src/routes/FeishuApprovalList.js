@@ -76,7 +76,6 @@ function FeishuApprovalList(props) {
         break;
       
       case '0AEF151F-E4DD-4911-8F4E-CD97F655F0A9':
-        window.echo('form data', formData);
         formValue = formData[0].value;
         keyToLabel = {
           name: '假期类型',
@@ -100,7 +99,28 @@ function FeishuApprovalList(props) {
         break;
     
       case '2B9684C1-A57B-4063-8CE2-BCA12D0217BC':
-        result.push('FA合同申请');
+        formValue = formData;
+        keyToLabel = [{
+          widgetID: 'widget16510690557470001',
+          name: '合同名称',
+        }, {
+          widgetID: 'widget16510691337390001',
+          name: '附件',
+        }];
+        keyToLabel.forEach(element => {
+          const widget = formValue.find(f => f.id === element.widgetID || f.name === element.name);
+          if (widget) {
+            if (element.name === '合同名称') {
+              result.push(element.name + '：' + widget.value);
+            } else if (element.name === '附件') {
+              const { ext, value } = widget;
+              result.push('合同附件：' + ext);
+              if (value.length > 0) {
+                result.push('下载地址：' + value[0]);
+              }
+            }
+          }
+        });
         break;
 
       case '931E322C-3050-49E7-B7FD-E6821F8A9607':
