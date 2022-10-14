@@ -62,7 +62,7 @@ function OrgBdTable(props) {
     {
       title: '项目',
       key: 'project',
-      dataIndex: ['proj', 'projtitle'],
+      dataIndex: ['proj', 'realname'],
       render: (text, record) => <Link to={`/app/org/bd?projId=${record.proj.id}`}>{text}</Link>,
     },
     {

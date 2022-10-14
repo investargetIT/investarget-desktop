@@ -247,7 +247,7 @@ function DataroomDetails(props) {
         }
         const isProjTrader = allProjTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id);
         const isSuperUser = isLogin() && isLogin().is_superuser;
-        setProjTitle(res.data.projtitle);
+        setProjTitle(res.data.realname);
         if (isProjTrader || isSuperUser) {
           setIsProjTrader(isProjTrader);
           setHasPermissionForDataroomTemp(true);

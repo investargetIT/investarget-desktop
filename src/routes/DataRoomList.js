@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
-import { i18n, hasPerm, getCurrentUser, isLogin } from '../utils/util'
+import { i18n, hasPerm, getCurrentUser, isLogin, requestAllData } from '../utils/util'
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Card, Row, Col, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 
@@ -16,6 +16,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
+import _ from 'lodash';
 
 const rowStyle = {
   marginBottom: '24px',
@@ -91,7 +92,7 @@ class DataRoomList extends React.Component {
   }
 
   handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getDataRoomList)
+    this.setState({ search, page: 1 }, this.searchDataroomList);
   }
 
   handlePageChange = (page) => {
@@ -108,22 +109,40 @@ class DataRoomList extends React.Component {
     if (!isLogin().is_superuser && hasPerm('dataroom.admin_managedataroom') && hasPerm('dataroom.onlydataroom')) {
       params.user = getCurrentUser();
     }
+
     this.setState({ loading: true })
-
-    
-      api.queryDataRoom(params).then(result => {
-        const { count: total, data: list } = result.data
-        this.setState({ loading: false, total, list, hint: total === 0 ? '暂无对您开放的DataRoom' : '' });
-      }).catch(error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
-          type: 'app/findError',
-          payload: error
-        })
+    api.queryDataRoom(params).then(result => {
+      const { count: total, data: list } = result.data
+      this.setState({ loading: false, total, list, hint: total === 0 ? '暂无对您开放的DataRoom' : '' });
+    }).catch(error => {
+      this.setState({ loading: false })
+      this.props.dispatch({
+        type: 'app/findError',
+        payload: error
       })
-
+    })
 
     this.writeSetting()
+  }
+
+  searchDataroomList = async () => {
+    const { search } = this.state;
+    if (!search.trim()) {
+      this.getDataRoomList();
+      return;
+    }
+    this.setState({ loading: true, total: 0 });
+    const req = await Promise.all([
+      requestAllData(api.queryDataRoom, { realname: search }, 10),
+      requestAllData(api.queryDataRoom, { username: search }, 10),
+    ]);
+    
+    let list = req.reduce((prev, curr) => {
+      return prev.concat(curr.data.data);
+    }, []);
+    
+    list = _.uniqBy(list, 'id');
+    this.setState({ loading: false, list });
   }
 
 
@@ -153,13 +172,13 @@ class DataRoomList extends React.Component {
   }
 
   writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
-    const data = { filters, search, page, pageSize }
-    localStorage.setItem('DataRooomList', JSON.stringify(data))
+    const { filters, page, pageSize } = this.state;
+    const data = { filters, page, pageSize };
+    localStorage.setItem('DataRooomList1', JSON.stringify(data))
   }
 
   readSetting = () => {
-    var data = localStorage.getItem('DataRooomList')
+    var data = localStorage.getItem('DataRooomList1')
     return data ? JSON.parse(data) : null
   }
 
@@ -202,7 +221,7 @@ class DataRoomList extends React.Component {
 
       const dataroomId = record.id
       const projId = record.proj.id
-      const projTitle = record.proj.projtitle
+      const projTitle = record.proj.realname
       const createUserID = record.createuser
       // const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&projectID=${projId}&investorID=${investorId}&traderID=${traderId}&projectOwnerID=${supportorId}&projectTitle=${encodeURIComponent(projTitle)}&isClose=${record.isClose}&createUserID=${createUserID}`
       const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
