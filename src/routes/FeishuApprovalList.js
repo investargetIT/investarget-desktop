@@ -4,6 +4,11 @@ import * as api from '../api';
 import { getUserInfo, requestAllData } from '../utils/util';
 import { Table, Button, Popconfirm } from 'antd';
 
+const UNIT_TO_CN = {
+  hour: '小时',
+  day: '天',
+}
+
 function FeishuApprovalList(props) {
 
   const [loading, setLoading] = useState(false);
@@ -68,7 +73,11 @@ function FeishuApprovalList(props) {
             if (key === 'start' || key === 'end') {
               value = value.slice(0, 19).replace('T', ' ');
             } else if (key === 'interval') {
-              value = value + ' ' + formValue['unit'];
+              let unit = formValue['unit'];
+              if (UNIT_TO_CN[unit.toLowerCase()]) {
+                unit = UNIT_TO_CN[unit.toLowerCase()];
+              }
+              value = value + '' + unit;
             }
             result.push(label + '：' + value);
           }
@@ -91,7 +100,11 @@ function FeishuApprovalList(props) {
             if (key === 'start' || key === 'end') {
               value = value.slice(0, 19).replace('T', ' ');
             } else if (key === 'interval') {
-              value = value + ' ' + formValue['unit'];
+              let unit = formValue['unit'];
+              if (UNIT_TO_CN[unit.toLowerCase()]) {
+                unit = UNIT_TO_CN[unit.toLowerCase()];
+              }
+              value = value + '' + unit;
             }
             result.push(label + '：' + value);
           }
@@ -114,10 +127,11 @@ function FeishuApprovalList(props) {
               result.push(element.name + '：' + widget.value);
             } else if (element.name === '附件') {
               const { ext, value } = widget;
-              result.push('合同附件：' + ext);
+              let atta = ext;
               if (value.length > 0) {
-                result.push('下载地址：' + value[0]);
+                atta = `<a target="_blank" href="${value[0]}">${atta}</a>`;
               }
+              result.push('合同附件：' + atta);
             }
           }
         });
@@ -210,6 +224,7 @@ function FeishuApprovalList(props) {
       title: '概要',
       dataIndex: ['summary'],
       key: 'summary',
+      render: text => <div dangerouslySetInnerHTML={{ __html: text }}/>
     },
     {
       title: '状态',
