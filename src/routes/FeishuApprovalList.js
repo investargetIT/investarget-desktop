@@ -29,7 +29,6 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data, summary };
       return prev.concat(current);
     }, []);
-    window.echo('all tasks', allTasks);
     setList(allTasks);
     setLoading(false);
 
@@ -49,13 +48,14 @@ function FeishuApprovalList(props) {
 
   function getSummaryFromJSON(approvalCode, formStr) {
     const formData = JSON.parse(formStr);
+    let formValue, keyToLabel;
     const result = [];
     switch (approvalCode) {
       // 外出
       case 'E7093406-FA36-4CFD-9A06-FC36EEB68063':
-        const formValue = formData[0].value;
-        const keyToLabel = {
-          name: '类型',
+        formValue = formData[0].value;
+        keyToLabel = {
+          name: '外出类型',
           start: '开始时间',
           end: '结束时间',
           interval: '时长',
@@ -75,21 +75,41 @@ function FeishuApprovalList(props) {
         }
         break;
       
-        case '0AEF151F-E4DD-4911-8F4E-CD97F655F0A9':
-          result.push('请假');
-          break;
+      case '0AEF151F-E4DD-4911-8F4E-CD97F655F0A9':
+        window.echo('form data', formData);
+        formValue = formData[0].value;
+        keyToLabel = {
+          name: '假期类型',
+          start: '开始时间',
+          end: '结束时间',
+          interval: '时长',
+          reason: '理由',
+        };
+        for (const key in keyToLabel) {
+          if (Object.hasOwnProperty.call(keyToLabel, key)) {
+            const label = keyToLabel[key];
+            let value = formValue[key];
+            if (key === 'start' || key === 'end') {
+              value = value.slice(0, 19).replace('T', ' ');
+            } else if (key === 'interval') {
+              value = value + ' ' + formValue['unit'];
+            }
+            result.push(label + '：' + value);
+          }
+        }
+        break;
     
-        case '2B9684C1-A57B-4063-8CE2-BCA12D0217BC':
-          result.push('FA合同申请');
-          break;
+      case '2B9684C1-A57B-4063-8CE2-BCA12D0217BC':
+        result.push('FA合同申请');
+        break;
 
-        case '931E322C-3050-49E7-B7FD-E6821F8A9607':
-          result.push('活动经费申请');
-          break;
-        
-        case '0C219E32-27DC-40BE-AFF9-C42FE403A06A':
-          result.push('出差申请');
-          break;
+      case '931E322C-3050-49E7-B7FD-E6821F8A9607':
+        result.push('活动经费申请');
+        break;
+
+      case '0C219E32-27DC-40BE-AFF9-C42FE403A06A':
+        result.push('出差申请');
+        break;
 
       default:
         result.push('获取失败，请联系系统管理员');
