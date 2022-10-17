@@ -1940,14 +1940,14 @@ class OrgBDListComponent extends React.Component {
             );
            }
 
-          function popoverTitleContent() {
-            return (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>机构备注</div>
-                <CloseOutlined style={{ cursor: 'pointer' }} onClick={() => react.setState({ visiblePopover: 0 })} />
-              </div>
-            )
-          }
+          // function popoverTitleContent() {
+          //   return (
+          //     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          //       <div>机构备注</div>
+          //       <CloseOutlined style={{ cursor: 'pointer' }} onClick={() => react.setState({ visiblePopover: 0 })} />
+          //     </div>
+          //   )
+          // }
 
           return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -1962,6 +1962,11 @@ class OrgBDListComponent extends React.Component {
                 <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
               </Popover>
               {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
+              {this.props.editable && this.isAbleToCreateBD() &&
+                <Button type="link" onClick={this.handleAddNew.bind(this, record)}>
+                  <PlusCircleOutlined style={{ fontSize: 22 }} />
+                </Button>
+              }
             </div>
           );
         },
@@ -2483,81 +2488,11 @@ class OrgBDListComponent extends React.Component {
               // return null;
             },
           },
-          // {
-          //   title: '应对策略',
-          //   width: '10%',
-          //   key: 'pm_remark',
-          //   render: (_, record) => {
-          //     if (record.new) {
-          //       return '暂无';
-          //     }
-          //     if (this.isAbleToModifyStatus(record)) {
-          //       let latestPMComment = '';
-          //       if (record.BDComments && record.BDComments.length) {
-          //         const pmComments = record.BDComments.filter(f => f.isPMComment);
-          //         if (pmComments.length > 0) {
-          //           latestPMComment = pmComments[pmComments.length - 1].comments;
-          //         }
-          //       }
-          //       if (!latestPMComment) return '暂无';
-                
-          //       const comments = record.BDComments;
-          //       const popoverContent = comments.filter(f => f.isPMComment)
-          //         .sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
-          //         .map(comment => {
-          //         let content = comment.comments;
-          //         const oldStatusMatch = comment.comments.match(/之前状态(.*)$/);
-          //         if (oldStatusMatch) {
-          //           const oldStatus = oldStatusMatch[0];
-          //           content = comment.comments.replace(oldStatus, `<span style="color:red">${oldStatus}</span>`);
-          //         }
-          //         return (
-          //           <div key={comment.id} style={{ marginBottom: 8 }}>
-          //             <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
-          //             <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
-          //           </div>
-          //         );
-          //       });
-          //       return (
-          //         <Popover placement="leftTop" title="应对策略" content={popoverContent}>
-          //           <div style={{ color: "#428bca" }}>{latestPMComment.length >= 12 ? (latestPMComment.substr(0, 10) + "...") : latestPMComment}</div>
-          //         </Popover>
-          //       );
-          //     }
-          //     return null;
-          //   },
-          // },
-          // {
-          //   title: '优先级',
-          //   width: '8%',
-          //   key: 'priority',
-          //   dataIndex: 'isimportant',
-          //   render: (text, record) => {
-          //     if (record.new) {
-          //       return (
-          //         <Select
-          //           defaultValue={1}
-          //           style={{ width: '100%' }}
-          //           onChange={v => { this.updateSelection(record, { isimportant: v }) }}
-          //         >
-          //           <Option value={0}>低</Option>
-          //           <Option value={1}>中</Option>
-          //           <Option value={2}>高</Option>
-          //         </Select>
-          //       );
-          //     }
-          //     if (this.isAbleToModifyStatus(record)) {
-          //       return typeof text === 'number' ? priority[text] : '未知';
-          //     }
-          //     return null;
-          //   },
-          // },
         )
       }
         
         if (this.props.editable) columns.push({
-            title: '', width: '8%', render: (text, record) => 
-            {
+            title: '', width: '8%', render: (text, record) => {
             if (record.new) {
               return (
                 <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
@@ -2569,84 +2504,9 @@ class OrgBDListComponent extends React.Component {
                   </Popconfirm>
                   </div>
                 </div>
-              )
-            } else {
-              const latestComment = record.BDComments && record.BDComments[0]
-              const comments = latestComment ? latestComment.comments : ''
-              return (
-                <div className="orgbd-operation-icon-btn" style={{ display: 'flex' }}>
-                  {/* {this.isAbleToAddPMRemark(record) &&
-                    <Tooltip title="编辑">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')}>
-                        <EditOutlined />
-                      </Button>
-                    </Tooltip>
-                  } */}
-                  {/* {this.isAbleToModifyStatus(record) &&
-                    <Tooltip title="修改状态">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'update_status')}>
-                        <FormOutlined />
-                      </Button>
-                    </Tooltip>
-                  } */}
-                  {/* {this.isAbleToAddPMRemark(record) &&
-                    <Tooltip title="添加机构反馈">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_remark')}>
-                        <HighlightOutlined />
-                      </Button>
-                    </Tooltip>
-                  } */}
-                  {/* {this.isAbleToAddPMRemark(record) &&
-                    <Tooltip title="添加应对策略">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'add_pm_remark')}>
-                        <HighlightOutlined />
-                      </Button>
-                    </Tooltip>
-                  } */}
-                  {/* {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
-                    <Tooltip title="删除">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')}>
-                        <DeleteOutlined />
-                      </Button>
-                    </Tooltip>
-                  } */}
-                </div>
               );
-              return (
-                <Select placeholder="操作" style={{ width: '100%' }} onChange={this.handleOperationChange.bind(this, record)}>
-                  {this.isAbleToModifyStatus(record) && <Option value="update_status">修改状态</Option>}
-                  {this.isAbleToModifyStatus(record) && <Option value="add_remark">添加机构反馈</Option>}
-                  {this.isAbleToAddPMRemark(record) && <Option value="add_pm_remark">添加应对策略</Option>}
-                  {(hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id) && <Option value="delete">删除</Option>}
-                </Select>
-              );
-              return <span>
-
-                { /* 修改状态和备注按钮 */ }
-                { this.isAbleToModifyStatus(record) ? 
-                <span>
-                  <button style={{ ...buttonStyle, marginRight: 4 }} size="small" onClick={this.handleModifyStatusBtnClicked.bind(this, record)}>{i18n('project.modify_status')}</button>
-                  <Button type="link" style={{ ...buttonStyle, marginRight: 4 }} onClick={this.handleOpenModal.bind(this, record)}>{i18n('remark.comment')}</Button>
-                </span>
-                : null }
-
-                { /* 查看时间轴按钮 */ }
-                {/* { record.timeline ? 
-                <Link to={`/app/timeline/list?proj=${record.proj.id}&investor=${record.bduser}&trader=${record.manager.id}`} style={{ ...buttonStyle, marginRight: 4 }}>查看时间轴</Link>
-                : null } */}
-
-                { /* 删除按钮 */ }
-                { hasPerm('BD.manageOrgBD') || getUserInfo().id === record.createuser.id || getUserInfo().id === record.manager.id ?
-                <Popconfirm title={i18n('message.confirm_delete')} onConfirm={this.handleDelete.bind(this, record)}>
-                  <Button style={{ ...buttonStyle, color: undefined }}>
-                    <DeleteOutlined />
-                  </Button>
-                </Popconfirm>
-                : null }
-
-              </span>
-              }
             }
+          }
         })
       
       return (
@@ -2661,11 +2521,11 @@ class OrgBDListComponent extends React.Component {
             loading={!record.loaded}
             // rowClassName={this.handleRowClassName}
           />
-          {this.props.editable && this.isAbleToCreateBD() &&
+          {/* {this.props.editable && this.isAbleToCreateBD() &&
             <Button style={{ marginLeft: 24, marginTop: 10 }} type="link" onClick={this.handleAddNew.bind(this, record)} size="large">
               <PlusCircleOutlined style={{ fontSize: 22 }} />
             </Button>
-          }
+          } */}
         </div>
 
       );
