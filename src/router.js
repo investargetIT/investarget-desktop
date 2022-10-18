@@ -30,6 +30,7 @@ import Schedule from './routes/ScheduleNew';
 import OrgUserList from './routes/OrgUserList.js'
 import ReportList from './routes/ReportList';
 import AddProject from './routes/AddProject';
+import AddGovernmentProject from './routes/AddGovernmentProject';
 import EditProject from './routes/EditProject';
 import DataRoomList from './routes/DataRoomList';
 import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, URI_11, URI_12, URI_13, URI_14 } from './constants'
@@ -111,6 +112,7 @@ function RouterConfig({ history }) {
         <Route path="/app/projects/bd/add" component={AddProjectBD} />
         <Route path="/app/projects/bd" component={ProjectBDList} />
         <Route path="/app/projects/add" component={AddProject} />
+        <Route path="/app/government-projects/add" component={AddGovernmentProject} />
         <Route path="/app/projects/library/:id" component={ProjectLibraryItem} />
         <Route path="/app/projects/library" component={ProjectLibrary} />
         <Route path="/app/org/newbd" component={NewOrgBDNext} />
