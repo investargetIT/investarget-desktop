@@ -16,7 +16,7 @@ function ProjectBdTable(props) {
         desc: 1,
         manager: getCurrentUser(),
       }
-      const req = await api.getProjBDList(params);
+      const req = await requestAllData(api.getProjBDList, params, 10);
       let { data: projBDList } = req.data;
       setProjBdList(projBDList);
       setLoading(false);
@@ -154,7 +154,7 @@ function ProjectBdTable(props) {
   ];
 
   return (
-    <div>
+    <div style={{ height: 600 - 32, overflowY: 'scroll' }}>
       <Table
         columns={columns}
         dataSource={projBdList}

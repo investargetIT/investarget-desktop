@@ -552,7 +552,7 @@ label.login-register-form__container__label {
   margin: 0;
 }
 .card-container.min-height > .ant-tabs-card .ant-tabs-content {
-  min-height: 590px;
+  min-height: 600px;
 }
 .card-container > .ant-tabs-card .ant-tabs-content {
   margin-top: -16px;
@@ -580,7 +580,7 @@ label.login-register-form__container__label {
   background: #f5f5f5;
 }
 [data-theme='compact'] .card-container.min-height > .ant-tabs-card .ant-tabs-content {
-  min-height: 590px;
+  min-height: 600px;
 }
 [data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-content {
   margin-top: -8px;
