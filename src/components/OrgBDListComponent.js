@@ -2255,7 +2255,7 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), width: '8%', dataIndex: 'username', key:'username',
+        {title: i18n('org_bd.contact'), width: '20%', dataIndex: 'username', key:'username',
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
@@ -2291,7 +2291,7 @@ class OrgBDListComponent extends React.Component {
               {/* {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />} */}
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
-                <div style={{color:'#428BCA'}}>
+                <div style={{ color:'#428BCA', wordBreak: 'break-all' }}>
                   {/* { record.hasRelation ? 
                   <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
                   : record.username } */}
@@ -2342,7 +2342,7 @@ class OrgBDListComponent extends React.Component {
               );
             }
             // if (this.isAbleToModifyStatus(record)) {
-              return text;
+              return <div style={{ wordBreak: 'break-all' }}>{text}</div>;
             // }
             // return null;
           },
@@ -2393,7 +2393,7 @@ class OrgBDListComponent extends React.Component {
         // },
         {
           title: '机构进度/材料',
-          width: '16%',
+          width: '20%',
           dataIndex: 'response',
           key: 'response',
           sorter: false,
@@ -2422,7 +2422,7 @@ class OrgBDListComponent extends React.Component {
         columns.push(
           {
             title: '创建时间',
-            width: '11%',
+            width: '10%',
             key: 'creation_time',
             dataIndex: 'createdtime',
             render: (text, record) => {
@@ -2437,7 +2437,7 @@ class OrgBDListComponent extends React.Component {
           },
           {
             title: "机构反馈",
-            width: '15%',
+            width: '20%',
             key: 'bd_latest_info',
             render: (text, record) => {
               if (record.new) {
@@ -2490,9 +2490,22 @@ class OrgBDListComponent extends React.Component {
           },
         )
       }
+
+      // columns.push({
+      //   title: '',
+      //   render: (_, record) => {
+      //     return this.isAbleToModifyStatus(record) && (
+      //       <Tooltip title="编辑">
+      //         <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
+      //           <ExpandAltOutlined />
+      //         </Button>
+      //       </Tooltip>
+      //     );
+      //   }
+      // });
         
         if (this.props.editable) columns.push({
-            title: '', width: '8%', render: (text, record) => {
+            title: '操作', width: '10%', render: (text, record) => {
             if (record.new) {
               return (
                 <div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between'}}>
@@ -2662,25 +2675,28 @@ class OrgBDListComponent extends React.Component {
             />
             : null}
 
-          <div className="remove-on-mobile orgbd-table-header" style={{ padding: '0 16px', backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', height: 41, alignItems: 'center' }}>
-            {/* <div style={{ width: 40 }} /> */}
-            <div style={{ marginLeft: 40, flex: 10, padding: '14px 0', paddingRight: 8 }}>联系人</div>
-            <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>职位</div>
-            <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>负责人</div>
-            <div style={{ flex: 16, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构进度/材料</div>
+          <div className="remove-on-mobile" style={{ backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', height: 39 }}>
+            <div className="orgbd-table-header" style={{ marginLeft: 33, alignItems: 'center' }}>
+            <div style={{ flex: 2 }}><div style={{ padding: 8, paddingLeft: 24 }}>联系人</div></div>
+            <div style={{ flex: 1 }}><div style={{ padding: 8 }}>职位</div></div>
+            <div style={{ flex: 1 }}><div style={{ padding: 8 }}>负责人</div></div>
+            <div style={{ flex: 2 }}><div style={{ padding: 8 }}>机构进度/材料</div></div>
             {!this.props.fromProjectCostCenter &&
-              <div style={{ flex: 11, padding: '14px 0', paddingLeft: 8, paddingRight: 8, display: 'flex', alignItems: 'center' }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
                 <div style={{ marginRight: 4 }}>创建时间</div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <CaretUpFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 0 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('asc')}/>
                   <CaretDownFilled style={{ fontSize: 12, color: this.state.sort === 'createdtime' && this.state.desc === 1 ? '#339bd2' : 'black' }} onClick={() => this.handleSortByTime('desc')} />
                 </div>
+                </div>
               </div>
             }
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 15, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>机构反馈</div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 2 }}><div style={{ padding: 8 }}>机构反馈</div></div>}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>} */}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}></div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 1 }}><div style={{ padding: 8 }}>操作</div></div>}
+            </div>
           </div>
 
           {this.state.filters.proj !== null &&
