@@ -2272,7 +2272,7 @@ class OrgBDListComponent extends React.Component {
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
           : <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
-              {!this.props.fromProjectCostCenter && (<div style={{ display: 'flex', marginRight: 4 }}>
+              {/* {!this.props.fromProjectCostCenter && (<div style={{ display: 'flex', marginRight: 4 }}>
                 {this.isAbleToModifyStatus(record) &&
                   <Tooltip title="编辑">
                     <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
@@ -2287,18 +2287,18 @@ class OrgBDListComponent extends React.Component {
                     </Tooltip>
                   }
               </div>
-              )}
+              )} */}
               {/* {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />} */}
               { record.username ? 
               <Popover placement="topRight" content={this.content(record)}>
-                <div style={{ color:'#428BCA', wordBreak: 'break-all' }}>
+                <div style={{ color:'#428BCA', wordBreak: 'break-all', paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>
                   {/* { record.hasRelation ? 
                   <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
                   : record.username } */}
                   <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
                 </div>                                  
               </Popover>
-              : '暂无' }
+              : <div style={{ paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>暂无</div> }
             </div>
           },sorter:false},
           {
@@ -2517,6 +2517,23 @@ class OrgBDListComponent extends React.Component {
                   </Popconfirm>
                   </div>
                 </div>
+              );
+            } else {
+              return !this.props.fromProjectCostCenter && (<div style={{ display: 'flex', marginRight: 4 }}>
+                {this.isAbleToModifyStatus(record) &&
+                  <Tooltip title="编辑">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
+                      <ExpandAltOutlined />
+                    </Button>
+                  </Tooltip>}
+                {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
+                  <Tooltip title="删除">
+                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')} style={{ padding: '4px 8px' }}>
+                      <DeleteOutlined />
+                    </Button>
+                  </Tooltip>
+                }
+              </div>
               );
             }
           }
