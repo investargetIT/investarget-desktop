@@ -96,6 +96,9 @@ class TransactionInfo extends React.Component {
     requestAllData(api.getUserRelation, params, 100)
     .then(result => {
       let { count, data:list} = result.data
+      if (this.props.onGetUserRelations) {
+        this.props.onGetUserRelations(list);
+      }
       let index=list.findIndex((item)=>{return item.relationtype==true})
       if(index!=-1){
         let tmp=list[index]
