@@ -408,7 +408,11 @@ function DataroomDetails(props) {
       <div>
         {hasPerm('usersys.as_trader') ?
           <div style={{ color: '#989898' }}>
-            <div><Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link></div>
+            <div>
+              <Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link>
+              &nbsp;
+              <Link to={`/app/user/edit/${item.user.id}`} target="_blank">编辑</Link>
+            </div>
             <div>机构名称：{item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}</div>
           </div>
           :
