@@ -229,8 +229,12 @@ class UserDetail extends React.Component {
       });
   }
 
-  handleMobileUploadBtnClicked() {
-    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  // handleMobileUploadBtnClicked() {
+  //   GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  // }
+
+  handleEditUserBtnClicked() {
+    this.props.history.push(`/app/user/edit/${this.state.userId}`);
   }
 
   handleFileChange = ({ file }) => {
@@ -630,6 +634,7 @@ class UserDetail extends React.Component {
 
           {/* <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button> */}
           {hasPerm('usersys.admin_manageuser') && hasPerm('usersys.as_trader') && <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
+          <Button onClick={this.handleEditUserBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>编辑用户信息</Button>
         </h3>
 
         <Row gutter={48}>
