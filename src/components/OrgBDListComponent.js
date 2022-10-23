@@ -2692,7 +2692,7 @@ class OrgBDListComponent extends React.Component {
             />
             : null}
 
-          <div className="remove-on-mobile" style={{ backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold', height: 39 }}>
+          <div className="remove-on-mobile" style={{ backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>
             <div className="orgbd-table-header" style={{ marginLeft: 33, alignItems: 'center' }}>
             <div style={{ flex: 2 }}><div style={{ padding: 8, paddingLeft: 24 }}>联系人</div></div>
             <div style={{ flex: 1 }}><div style={{ padding: 8 }}>职位</div></div>
