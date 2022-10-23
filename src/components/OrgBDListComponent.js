@@ -561,18 +561,8 @@ class OrgBDListComponent extends React.Component {
       manager,
       createuser,
       search: this.state.search,
-      // page_size: 100,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
-    // // 管理员承揽承做才可以筛选负责人
-    // if (hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) {
-    //   param1.manager = manager;
-    //   param1.createuser = createuser;
-    // } else {
-    //   param1.manager = [getCurrentUser()];
-    //   param1.createuser = [getCurrentUser()];
-    //   param1.unionFields = 'manager,createuser';
-    // }
     let orgBDDetails = [];
     const req1 = await api.getOrgBdList(param1);
     const { data: data1, count: count1 } = req1.data;
@@ -583,7 +573,7 @@ class OrgBDListComponent extends React.Component {
       orgBDDetails = req2.data.data;
     }
     
-    const newList = this.state.list.map((item) => {
+    let newList = this.state.list.map((item) => {
       const items = orgBDDetails.filter(f => f.org.id === item.org.id)
         .sort((a, b) => {
           const aImportant = a.isimportant;
@@ -592,7 +582,11 @@ class OrgBDListComponent extends React.Component {
         });
       return { ...item, items, loaded: true };
     });
-
+    newList = newList.map(m => {
+      const newItems = m.items.map(n => ({ ...n, items: m.items, org: m.org }));
+      return { ...m, items: newItems };
+    });
+    // window.echo('new list', newList);
     this.setState(
       { list: newList },
       () => api.readOrgBD({ bds: orgBDDetails.map(m => m.id) }),
@@ -603,58 +597,6 @@ class OrgBDListComponent extends React.Component {
       this.setState({ comments });
     }
   }
-
-  // getOrgBdRefactorDetail = async (org, proj) => {
-  //   const { manager, response } = this.state.filters;
-  //   const param = {
-  //     org,
-  //     proj: proj || "none",
-  //     manager,
-  //     response,
-  //     search: this.state.search,
-  //     isRead: this.state.showUnreadOnly ? false : undefined,
-  //     page_size: 100,
-  //   };
-
-  //   let list = [];
-  //   const reqProj1 = await api.getOrgBdList({
-  //     param,
-  //   });
-  //   const { count: count1, data: list1 } = reqProj1.data;
-  //   if (count1 > 100) {
-  //     const reqProj2 = await api.getOrgBdList({
-  //       ...param,
-  //       page_size: count1,
-  //     });
-  //     list = list.concat(reqProj2.data.data);
-  //   } else {
-  //     list = list.concat(list1);
-  //   }
-
-  //   const reqProj3 = await api.getOrgBdList({
-  //     ...param,
-  //     createuser: [getCurrentUser()],
-  //   });
-  //   const { count: count3, data: list3 } = reqProj3.data;
-  //   if (count3 > 100) {
-  //     const reqProj4 = await api.getOrgBdList({
-  //       ...param, 
-  //       createuser: [getCurrentUser()],
-  //       page_size: count3,
-  //     });
-  //     list = list.concat(reqProj4.data.data);
-  //   } else {
-  //     list = list.concat(list3);
-  //   }
-
-  //   list = list.filter(f => f.id);
-  //   const projId = list.map(m => m.id);
-  //   const uniqueOrgId = projId.filter((v, i, a) => a.indexOf(v) === i);
-
-  //   const uniqueOrg = uniqueOrgId.map(m => list.filter(f => f.id === m)[0]);
-  //   window.echo('unique org bd', uniqueOrg);
-  //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
-  // }
 
   getOrgBdListDetail = (org, proj) => {
     const { manager, response, createuser } = this.state.filters;
@@ -1882,6 +1824,76 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
+  generateOrgInfo = record => {
+    if (!record.org) return null;
+    let displayPriorityColor = priorityColor[0]; // 默认优先级低
+    let priorityName = priority[0];
+    const allItemPriorities = record.items.map(m => m.isimportant); // 取所有投资人中的最高优先级作为机构优先级
+    allItemPriorities.sort((first, second) => second - first);
+    if (allItemPriorities.length > 0) {
+      displayPriorityColor = priorityColor[allItemPriorities[0]];
+      priorityName = priority[allItemPriorities[0]];
+    }
+    const popoverContent = (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div>优先级{priorityName}</div>
+        <Button type="link" onClick={this.handleUpdatePriorityBtnClick.bind(this, allItemPriorities.length > 0 ? allItemPriorities[0] : 0, record)} icon={<EditOutlined />}>修改</Button>
+      </div>
+    );
+    const react = this;
+    function popoverContent1() {
+      const popoverContent = record.org.comments.sort((a, b) => new Date(b.createdtime) - new Date(a.createdtime))
+        .map(comment => {
+          let content = comment.remark;
+          return (
+            <div key={comment.id} style={{ marginBottom: 8 }}>
+              <p><span style={{ marginRight: 8 }}>{time(comment.createdtime + comment.timezone)}</span></p>
+              <div style={{ display: 'flex' }}>
+                {comment.createuserobj &&
+                  <div style={{ marginRight: 10 }}>
+                    <a target="_blank" href={`/app/user/${comment.createuserobj.id}`}>
+                      <img style={{ width: 30, height: 30, borderRadius: '50%' }} src={comment.createuserobj.photourl} />
+                    </a>
+                  </div>
+                }
+                <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}></p>
+              </div>
+            </div>
+          );
+        });
+      return (
+        <div onMouseLeave={() => react.handlePopoverMouseLeave(record)} onMouseEnter={() => react.handlePopoverMouseEnter(record)}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div style={{ fontWeight: 'bold' }}>机构备注</div>
+            <CloseOutlined style={{ cursor: 'pointer' }} onClick={() => react.setState({ visiblePopover: 0 })} />
+          </div>
+          {popoverContent && popoverContent.length > 0 ? popoverContent : '暂无备注'}
+        </div>
+      );
+      }
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Popover title={null} content={popoverContent1()} visible={this.state.visiblePopover === record.id}>
+          <div
+            style={{ marginRight: 8 }}
+            onMouseEnter={() => this.handleOrgNameMouseEnter(record)}
+            onMouseLeave={() => this.handleOrgNameMouseLeave(record)}
+          >{record.org.orgname}</div>
+        </Popover>
+        <Popover content={popoverContent}>
+          <div style={{ ...priorityStyles, backgroundColor: displayPriorityColor }} />
+        </Popover>
+        {/* <Button type="link" onClick={this.handleAddInvestorBtnClicked.bind(this, record.org)}>添加投资人</Button> */}
+        {this.props.editable && this.isAbleToCreateBD() &&
+          <Button type="link" onClick={this.handleAddNew.bind(this, record)}>
+            <PlusCircleOutlined style={{ fontSize: 22 }} />
+          </Button>
+        }
+      </div>
+    );
+  }
+
   render() {
     const { filters, search, page, pageSize, total, list, loading, source, managers, expanded } = this.state
     const buttonStyle={textDecoration:'underline',color:'#428BCA',border:'none',background:'none',whiteSpace: 'nowrap'}
@@ -2255,7 +2267,8 @@ class OrgBDListComponent extends React.Component {
 
     const expandedRowRender = (record) => {
       const columns = [
-        {title: i18n('org_bd.contact'), width: '20%', dataIndex: 'username', key:'username',
+        
+        {title: i18n('org_bd.contact'), width: '30%', dataIndex: 'username', key:'username',
         render:(text,record)=>{
           return record.new ? 
           <SelectOrgInvestor 
@@ -2271,35 +2284,20 @@ class OrgBDListComponent extends React.Component {
             value={record.orgUser} 
             onChange={v=>{this.updateSelection(record, {orgUser: v})}}
           />
-          : <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
-              {/* {!this.props.fromProjectCostCenter && (<div style={{ display: 'flex', marginRight: 4 }}>
-                {this.isAbleToModifyStatus(record) &&
-                  <Tooltip title="编辑">
-                    <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
-                      <ExpandAltOutlined />
-                    </Button>
-                  </Tooltip>}
-                  {(hasPerm('BD.manageOrgBD') || this.state.projTradersIds.includes(getCurrentUser())) &&
-                    <Tooltip title="删除">
-                      <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'delete')} style={{ padding: '4px 8px' }}>
-                        <DeleteOutlined />
-                      </Button>
-                    </Tooltip>
-                  }
+            : (
+              <div style={{ display: 'flex' }}>
+                {this.generateOrgInfo(record)}
+                <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
+                  {record.username ?
+                    <Popover placement="topRight" content={this.content(record)}>
+                      <div style={{ color: '#428BCA', wordBreak: 'break-all', paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>
+                        <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
+                      </div>
+                    </Popover>
+                    : <div style={{ paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>暂无</div>}
+                </div>
               </div>
-              )} */}
-              {/* {record.isimportant > 1 && <img style={importantImg} src="/images/important.png" />} */}
-              { record.username ? 
-              <Popover placement="topRight" content={this.content(record)}>
-                <div style={{ color:'#428BCA', wordBreak: 'break-all', paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>
-                  {/* { record.hasRelation ? 
-                  <Link to={'app/user/edit/'+record.bduser}>{record.username}</Link> 
-                  : record.username } */}
-                  <a target="_blank" href={'/app/user/' + record.bduser}>{record.username}</a>
-                </div>                                  
-              </Popover>
-              : <div style={{ paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>暂无</div> }
-            </div>
+            )
           },sorter:false},
           {
             title: '职位',
@@ -2307,22 +2305,6 @@ class OrgBDListComponent extends React.Component {
             width: '10%',
             render: (undefined, record) => record.new || !record.usertitle ? '' : record.usertitle.name,
           },
-        // {
-        //   title: i18n('org_bd.creator'),
-        //   width: '7%',
-        //   dataIndex: 'createuser.username',
-        //   key: 'createuser',
-        //   sorter: false,
-        //   render: (text, record) => {
-        //     if (record.new) {
-        //       return isLogin().username;
-        //     }
-        //     if (this.isAbleToModifyStatus(record)) {
-        //       return text;
-        //     }
-        //     return null;
-        //   }, 
-        // },
         {
           title: i18n('org_bd.manager'),
           width: '10%',
@@ -2347,53 +2329,9 @@ class OrgBDListComponent extends React.Component {
             // return null;
           },
         },
-        // {
-        //   title: '任务时间',
-        //   width: '16%',
-        //   key: 'createdtime',
-        //   sorter: false,
-        //   render: (text, record) => {
-        //     if (record.new) {
-        //       return <div>
-        //         {timeWithoutHour(new Date()) + " - "}
-        //         <DatePicker
-        //           placeholder="过期时间"
-        //           disabledDate={this.disabledDate}
-        //           // defaultValue={moment()}
-        //           showToday={false}
-        //           shape="circle"
-        //           value={record.expirationtime}
-        //           renderExtraFooter={() => {
-        //             return <div>
-        //               <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment() }) }}>Now</Button>
-        //             &nbsp;&nbsp;
-        //             <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'weeks') }) }}>Week</Button>
-        //             &nbsp;&nbsp;
-        //             <Button type="dashed" size="small" onClick={() => { this.updateSelection(record, { expirationtime: moment().add(1, 'months') }) }}>Month</Button>
-        //             </div>
-        //           }}
-        //           onChange={v => { this.updateSelection(record, { expirationtime: v }) }}
-        //         />
-        //       </div>
-        //     } 
-        //     if (this.isAbleToModifyStatus(record)) {
-        //       if (record.response !== null) {
-        //         return '正常';
-        //       }
-        //       if (record.expirationtime === null) {
-        //         return '无过期时间';
-        //       }
-        //       const ms = moment(record.expirationtime).diff(moment());
-        //       const d = moment.duration(ms);
-        //       const remainDays = Math.ceil(d.asDays());
-        //       return remainDays >= 0 ? `剩余${remainDays}天` : <span style={{ color: 'red' }}>{`过期${Math.abs(remainDays)}天`}</span>;
-        //     }
-        //     return null;
-        //   },
-        // },
         {
           title: '机构进度/材料',
-          width: '20%',
+          width: '15%',
           dataIndex: 'response',
           key: 'response',
           sorter: false,
@@ -2437,7 +2375,7 @@ class OrgBDListComponent extends React.Component {
           },
           {
             title: "机构反馈",
-            width: '20%',
+            width: '15%',
             key: 'bd_latest_info',
             render: (text, record) => {
               if (record.new) {
@@ -2490,19 +2428,6 @@ class OrgBDListComponent extends React.Component {
           },
         )
       }
-
-      // columns.push({
-      //   title: '',
-      //   render: (_, record) => {
-      //     return this.isAbleToModifyStatus(record) && (
-      //       <Tooltip title="编辑">
-      //         <Button type="link" onClick={this.handleOperationChange.bind(this, record, 'edit')} style={{ padding: '4px 8px' }}>
-      //           <ExpandAltOutlined />
-      //         </Button>
-      //       </Tooltip>
-      //     );
-      //   }
-      // });
         
         if (this.props.editable) columns.push({
             title: '操作', width: '10%', render: (text, record) => {
@@ -2720,7 +2645,7 @@ class OrgBDListComponent extends React.Component {
             <div className="table-orgbd-desktop">
               <Table
                 onChange={this.handleTableChange}
-                columns={columns}
+                columns={[]}
                 expandedRowRender={expandedRowRender}
                 // expandRowByClick
                 dataSource={list}
