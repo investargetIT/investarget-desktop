@@ -101,20 +101,43 @@ class ProjectBDList extends React.Component {
 
   getProjBDListWithSearch = async () => {
     const { filters, sort, desc, search } = this.state;
-    const params = [{
-      contractors_str: search,
-      sort,
-      desc,
-      ...filters,
-    }, {
-      manager_str: search,
-      sort,
-      desc,
-      ...filters,
-    }];
+    const params = [
+      {
+        contractors_str: search,
+        ...filters,
+      },
+      {
+        manager_str: search,
+        ...filters,
+      },
+      {
+        search,
+        ...filters,
+      },
+    ];
     const req = await Promise.all(params.map(m => requestAllData(api.getProjBDList, m, 10)));
     let allList = req.reduce((prev, curr) => prev.concat(curr.data.data), []);
     allList = lodash.uniqBy(allList, 'id');
+    if (sort) {
+      if (sort === 'createdtime') {
+        allList = allList.sort((a, b) => desc ? (new Date(b.createdtime) - new Date(a.createdtime)) : (new Date(a.createdtime) - new Date(b.createdtime)));
+      } else if (sort === 'com_name') {
+        allList = allList.sort((a, b) => desc ? b.com_name.localeCompare(a.com_name) : a.com_name.localeCompare(b.com_name));
+      } else if (sort === 'manager') {
+        allList = allList.sort((a, b) => {
+          const aManagerStr = a.manager ? a.manager.map(m => m.manager.username).join('') : '';
+          const bManagerStr = b.manager ? b.manager.map(m => m.manager.username).join('') : '';
+          return desc ? bManagerStr.localeCompare(aManagerStr) : aManagerStr.localeCompare(bManagerStr);
+        });
+      } else if (sort === 'contractors') {
+        allList = allList.sort((a, b) => {
+          const aContractorsStr = a.contractors ? a.contractors.username : '';
+          const bContractorsStr = b.contractors ? b.contractors.username : '';
+          return desc ? bContractorsStr.localeCompare(aContractorsStr) : aContractorsStr.localeCompare(bContractorsStr);
+        });
+      }
+    }
+    allList = allList.sort((a, b) => a.isimportant === b.isimportant ? 0: a.isimportant ? -1 : 1)
     return { data: { data: allList, count: allList.length } };
   }
 
@@ -647,7 +670,7 @@ class ProjectBDList extends React.Component {
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
           <Search
             style={{ width: 200 }}
-            placeholder="开发团队/发起人"
+            placeholder="开发团队/发起人/全文检索"
             onSearch={this.handleSearch}
             onChange={search => this.setState({ search })}
             value={search}
