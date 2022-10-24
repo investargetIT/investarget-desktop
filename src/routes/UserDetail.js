@@ -186,6 +186,8 @@ class UserDetail extends React.Component {
       minorUserMobile: '',
       mainUserWeChat: '',
       minorUserWeChat: '',
+
+      userRelation: [],
     }
   }
 
@@ -229,8 +231,12 @@ class UserDetail extends React.Component {
       });
   }
 
-  handleMobileUploadBtnClicked() {
-    GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  // handleMobileUploadBtnClicked() {
+  //   GModal.MobileUploader.upload && GModal.MobileUploader.upload(this.onMobileUploadComplete.bind(this));
+  // }
+
+  handleEditUserBtnClicked() {
+    this.props.history.push(`/app/user/edit/${this.state.userId}`);
   }
 
   handleFileChange = ({ file }) => {
@@ -605,6 +611,15 @@ class UserDetail extends React.Component {
     }
   }
 
+  handleGetUserRelation = list => {
+    this.setState({ userRelation: list });
+  }
+
+  isTrader = () => {
+    const traderList = this.state.userRelation.map(m => m.traderuser && m.traderuser.id);
+    return traderList.includes(getCurrentUser());
+  }
+
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
@@ -630,6 +645,7 @@ class UserDetail extends React.Component {
 
           {/* <Button loading={isUploading} onClick={this.handleMobileUploadBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>手机上传附件</Button> */}
           {hasPerm('usersys.admin_manageuser') && hasPerm('usersys.as_trader') && <Button style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }} onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>}
+          {(hasPerm('usersys.admin_manageuser') || this.isTrader()) && <Button onClick={this.handleEditUserBtnClicked.bind(this)} style={{ padding: '4px 20px', color: 'white', backgroundColor: '#237ccc', borderRadius: 4, cursor: 'pointer' }}>编辑用户信息</Button>}
         </h3>
 
         <Row gutter={48}>
@@ -658,7 +674,7 @@ class UserDetail extends React.Component {
           }
 
           <Col span={11}>
-            { !this.state.userIdWithSameName && <TransactionInfo userId={userId} /> }
+            { !this.state.userIdWithSameName && <TransactionInfo userId={userId} onGetUserRelations={this.handleGetUserRelation} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
             { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} /> }
             { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }

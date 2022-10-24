@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Card, Modal, Select, Input, Table, Popover, Tag, Po
 import { getURLParamValue, handleError, hasPerm, isLogin, i18n, requestAllData, time } from '../utils/util';
 import { SelectShareInvestor } from '../components/ExtraInput';
 import * as api from '../api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 import { Search } from '../components/Search';
 import DataroomFileManage from '../components/DataroomFileManage';
@@ -408,7 +408,11 @@ function DataroomDetails(props) {
       <div>
         {hasPerm('usersys.as_trader') ?
           <div style={{ color: '#989898' }}>
-            <div><Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link></div>
+            <div>
+              <Link to={`/app/user/${item.user.id}`} target="_blank">{item.user.username}</Link>
+              &nbsp;
+              <Link to={`/app/user/edit/${item.user.id}?redirect=${encodeURIComponent(props.location.pathname + props.location.search)}`} target="_blank"><EditOutlined  /></Link>
+            </div>
             <div>机构名称：{item.user.org ? <Link to={`/app/organization/${item.user.org.id}`} target="_blank">{item.user.org.orgname}</Link> : '暂无机构'}</div>
           </div>
           :

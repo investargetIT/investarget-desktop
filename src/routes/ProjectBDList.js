@@ -87,21 +87,69 @@ class ProjectBDList extends React.Component {
     this.setState({ page, pageSize }, this.getProjectBDList)
   }
 
-  getProjectBDList = () => {
-    const { filters, search, page, pageSize, sort, desc } = this.state
+  getProjectBDListWithOutSearch = () => {
+    const { filters, page, pageSize, sort, desc } = this.state;
     const param = {
       page_index: page,
       page_size: pageSize,
-      search,
       sort,
       desc,
       ...filters,
+    };
+    return api.getProjBDList(param);
+  }
 
+  getProjBDListWithSearch = async () => {
+    const { filters, sort, desc, search } = this.state;
+    const params = [
+      {
+        contractors_str: search,
+        ...filters,
+      },
+      {
+        manager_str: search,
+        ...filters,
+      },
+      {
+        search,
+        ...filters,
+      },
+    ];
+    const req = await Promise.all(params.map(m => requestAllData(api.getProjBDList, m, 10)));
+    let allList = req.reduce((prev, curr) => prev.concat(curr.data.data), []);
+    allList = lodash.uniqBy(allList, 'id');
+    if (sort) {
+      if (sort === 'createdtime') {
+        allList = allList.sort((a, b) => desc ? (new Date(b.createdtime) - new Date(a.createdtime)) : (new Date(a.createdtime) - new Date(b.createdtime)));
+      } else if (sort === 'com_name') {
+        allList = allList.sort((a, b) => desc ? b.com_name.localeCompare(a.com_name) : a.com_name.localeCompare(b.com_name));
+      } else if (sort === 'manager') {
+        allList = allList.sort((a, b) => {
+          const aManagerStr = a.manager ? a.manager.map(m => m.manager.username).join('') : '';
+          const bManagerStr = b.manager ? b.manager.map(m => m.manager.username).join('') : '';
+          return desc ? bManagerStr.localeCompare(aManagerStr) : aManagerStr.localeCompare(bManagerStr);
+        });
+      } else if (sort === 'contractors') {
+        allList = allList.sort((a, b) => {
+          const aContractorsStr = a.contractors ? a.contractors.username : '';
+          const bContractorsStr = b.contractors ? b.contractors.username : '';
+          return desc ? bContractorsStr.localeCompare(aContractorsStr) : aContractorsStr.localeCompare(bContractorsStr);
+        });
+      }
     }
-    this.writeSetting();
-    this.setState({ loading: true })
+    allList = allList.sort((a, b) => a.isimportant === b.isimportant ? 0: a.isimportant ? -1 : 1)
+    return { data: { data: allList, count: allList.length } };
+  }
+
+  getProjectBDList = () => {
+    this.setState({ loading: true });
+    let request = this.getProjectBDListWithOutSearch;
+    if (this.state.search) {
+      request = this.getProjBDListWithSearch;
+    }
     let list = [];
-    return api.getProjBDList(param).then(result => {
+    return request().then(result => {
+      this.writeSetting();
       const { count: total, data: bdList } = result.data
       list = bdList;
       let promises = list.map(item=>{
@@ -131,10 +179,12 @@ class ProjectBDList extends React.Component {
           }
         }
         this.setState({ currentBD });
-        this.props.dispatch({
-          type: 'app/getProjBDCommentsByID',
-          payload: { projBDID: currentBD.id, forceUpdate: false },
-        });
+        if (currentBD) {
+          this.props.dispatch({
+            type: 'app/getProjBDCommentsByID',
+            payload: { projBDID: currentBD.id, forceUpdate: false },
+          });
+        }
       })
       return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
     })
@@ -620,7 +670,7 @@ class ProjectBDList extends React.Component {
         <div style={{ marginBottom: 16, textAlign: 'right' }} className="clearfix">
           <Search
             style={{ width: 200 }}
-            placeholder="全文检索"
+            placeholder="开发团队/发起人/全文检索"
             onSearch={this.handleSearch}
             onChange={search => this.setState({ search })}
             value={search}
@@ -649,7 +699,7 @@ class ProjectBDList extends React.Component {
                       <div style={{ fontWeight: 500 }}>行动计划</div>
                       <div style={{ fontSize: 10, color: 'gray' }}>{this.state.currentBD && this.state.currentBD.com_name}</div>
                     </div>
-                    {this.hasPermForComment(currentUserId) && (
+                    {this.hasPermForComment(currentUserId) && this.state.currentBD && (
                       <Tooltip title="添加行动计划">
                         <PlusOutlined className={styles['create-comment-icon']} style={{ cursor: 'pointer', fontSize: 16 }} onClick={() => this.setState({ displayAddBDCommentModal: true, editBDComment: null })} />
                       </Tooltip>
@@ -658,7 +708,7 @@ class ProjectBDList extends React.Component {
                   <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
                     {this.hasPermForComment(currentUserId) ? (
                       <BDCommentsWithoutForm
-                        BDComments={this.state.currentBD && this.props.allProjBDComments[this.state.currentBD.id]}
+                        BDComments={this.state.currentBD ? this.props.allProjBDComments[this.state.currentBD.id] : []}
                         onEdit={this.handleEditCommentIconClick}
                         onDelete={this.handleDeleteComment} />
                     ) : '没有权限'}
@@ -674,6 +724,9 @@ class ProjectBDList extends React.Component {
         </Affix>
 
         <div style={{ margin: '16px 0' }} className="clearfix">
+          {this.state.search ? (
+            <ul style={{ float: 'right', width: 200, height: 32, margin: 0, padding: 0 }} />
+          ) : (
           <Pagination
             style={{ float: 'right' }}
             total={total}
@@ -684,6 +737,7 @@ class ProjectBDList extends React.Component {
             showQuickJumper
             pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
+          )}
         </div>
 
         <Modal title="行动计划" visible={this.state.visible} footer={null} onCancel={this.handleCloseModal} maskClosable={false} destroyOnClose={true}>
