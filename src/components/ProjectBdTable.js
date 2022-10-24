@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { i18n, time, getCurrentUser, requestAllData } from '../utils/util';
 import { Table, Popover } from 'antd';
 import { connect } from 'dva';
+import lodash from 'lodash';
 
 function ProjectBdTable(props) {
   const [projBdList, setProjBdList] = useState([]);
@@ -95,7 +96,12 @@ function ProjectBdTable(props) {
     {
       title: i18n('project_bd.manager'),
       key: 'manager',
-      render: (_, record) => <span style={{ color: '#595959' }}>{record.manager && record.manager.filter(f => f.type === 3).map(m => m.manager.username).join('、')}</span>,
+      render: (_, record) => {
+        if (!record.manager) return null;
+        let allManager = record.manager.map(m => m.manager);
+        allManager = lodash.uniqBy(allManager, 'id');
+        return <span style={{ color: '#595959' }}>{allManager.map(m => m.username).join('、')}</span>;
+      },
     },
     {
       title: i18n('project_bd.created_time'),
