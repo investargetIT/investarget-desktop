@@ -513,6 +513,7 @@ class OrganizationList extends React.Component {
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 8px', color: 'rgba(0, 0, 0, .45)', lineHeight: 2, fontWeight: 'normal' }}>
                                   <div><Link to={`/app/user/${item.id}`}>{item.username}</Link></div>
                                   <div>{item.mobile}</div>
+                                  <Link target="_blank" to={`/app/user/edit/${item.id}`}><EditOutlined /></Link>
                                   <div>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</div>
                                 </div>
                               }
