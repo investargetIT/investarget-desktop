@@ -5,7 +5,7 @@ import * as api from '../api'
 import { i18n } from '../utils/util'
 import { Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
-import ProjectBaseForm from '../components/ProjectBaseForm'
+import GovernmentProjectBaseForm from '../components/GovernmentProjectBaseForm';
 
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 8px'}
@@ -30,15 +30,16 @@ function toData(formData) {
 
 function AddGovernmentProject(props) {
 
-  const addProjectFormRef = useRef(null);
+  const addGovernmentProjectFormRef = useRef(null);
 
   function goBack() {
     props.history.goBack()
   }
 
   function addProject() {
-    addProjectFormRef.current.validateFields()
+    addGovernmentProjectFormRef.current.validateFields()
       .then(values => {
+        window.echo('values', values);
         // TODO
       })
       .catch(error => {
@@ -51,9 +52,9 @@ function AddGovernmentProject(props) {
   
 
   return (
-    <LeftRightLayout location={props.location} title="发布政府项目1">
+    <LeftRightLayout location={props.location} title="发布政府项目">
       <div>
-        <ProjectBaseForm ref={addProjectFormRef} />
+        <GovernmentProjectBaseForm ref={addGovernmentProjectFormRef} />
         <div style={actionStyle}>
           <Button size="large" style={actionBtnStyle} onClick={goBack}>{i18n('common.cancel')}</Button>
           <Button type="primary" size="large" style={actionBtnStyle} onClick={addProject}>{i18n('common.submit')}</Button>
