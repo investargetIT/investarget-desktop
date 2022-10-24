@@ -801,6 +801,15 @@ label.login-register-form__container__label {
 a.expired-project, button.expired-project, button.expired-project:hover {
   color: rgba(0, 0, 0, .45);
 }
+.orgbd-parent-table {
+  display: none;
+}
+.ant-table.ant-table-middle .ant-table-tbody .orgbd-child-table.ant-table-wrapper:only-child .ant-table {
+  margin-left: -8px;
+}
+.orgbd-child-table .ant-table-content .ant-table-tbody tr:not(:first-child) .orgbd-org-info {
+  visibility: hidden;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;

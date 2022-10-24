@@ -660,6 +660,10 @@ class OrgBDListComponent extends React.Component {
             {...item, items: list, loaded: true} :
             item
         )
+        newList = newList.map(m => {
+          const newItems = m.items.map(n => ({ ...n, items: m.items, org: m.org }));
+          return { ...m, items: newItems };
+        });
         this.setState({
           list: newList,
         }, () => api.readOrgBD({ bds: list.map(m => m.id )}));
@@ -1873,7 +1877,7 @@ class OrgBDListComponent extends React.Component {
       }
 
     return (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="orgbd-org-info" style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
         <Popover title={null} content={popoverContent1()} visible={this.state.visiblePopover === record.id}>
           <div
             style={{ marginRight: 8 }}
@@ -2287,7 +2291,7 @@ class OrgBDListComponent extends React.Component {
             : (
               <div style={{ display: 'flex' }}>
                 {this.generateOrgInfo(record)}
-                <div style={{ display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
+                <div style={{ width: 100, display: 'flex', alignItems: 'center', paddingLeft: this.props.fromProjectCostCenter ? 15 : 0 }}>
                   {record.username ?
                     <Popover placement="topRight" content={this.content(record)}>
                       <div style={{ color: '#428BCA', wordBreak: 'break-all', paddingLeft: !this.props.fromProjectCostCenter ? 16 : 0 }}>
@@ -2344,7 +2348,7 @@ class OrgBDListComponent extends React.Component {
             // if (this.isAbleToModifyStatus(record)) {
               let progress = null;
               if (text) {
-                progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
+                progress = <div style={{ ...progressStyles, backgroundColor: this.getProgressBackground(text) }}>{this.props.orgbdres.length > 0 && this.props.orgbdres.filter(f => f.id === text)[0].name}</div>;
               }
               let material = null;
               if (record.material) {
@@ -2474,6 +2478,7 @@ class OrgBDListComponent extends React.Component {
             rowKey={record=>record.id}
             pagination={false}
             loading={!record.loaded}
+            className="orgbd-child-table"
             // rowClassName={this.handleRowClassName}
           />
           {/* {this.props.editable && this.isAbleToCreateBD() &&
@@ -2618,13 +2623,13 @@ class OrgBDListComponent extends React.Component {
             : null}
 
           <div className="remove-on-mobile" style={{ backgroundColor: '#F5F5F5', color: 'rgba(0, 0, 0, .85)', fontWeight: 'bold' }}>
-            <div className="orgbd-table-header" style={{ marginLeft: 33, alignItems: 'center' }}>
-            <div style={{ flex: 2 }}><div style={{ padding: 8, paddingLeft: 24 }}>联系人</div></div>
-            <div style={{ flex: 1 }}><div style={{ padding: 8 }}>职位</div></div>
-            <div style={{ flex: 1 }}><div style={{ padding: 8 }}>负责人</div></div>
-            <div style={{ flex: 2 }}><div style={{ padding: 8 }}>机构进度/材料</div></div>
+            <div className="orgbd-table-header" style={{ alignItems: 'center' }}>
+            <div style={{ flex: 6, display: 'flex' }}><div style={{ padding: 8, flex: 1 }}>机构</div><div style={{ padding: 8, width: 100 }}>联系人</div></div>
+            <div style={{ flex: 2 }}><div style={{ padding: 8 }}>职位</div></div>
+            <div style={{ flex: 2 }}><div style={{ padding: 8 }}>负责人</div></div>
+            <div style={{ flex: 3 }}><div style={{ padding: 8 }}>机构进度/材料</div></div>
             {!this.props.fromProjectCostCenter &&
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 2 }}>
                 <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
                 <div style={{ marginRight: 4 }}>创建时间</div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -2634,10 +2639,10 @@ class OrgBDListComponent extends React.Component {
                 </div>
               </div>
             }
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 2 }}><div style={{ padding: 8 }}>机构反馈</div></div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 3 }}><div style={{ padding: 8 }}>机构反馈</div></div>}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 10, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>应对策略</div>} */}
             {/* {!this.props.fromProjectCostCenter && <div style={{ flex: 8, padding: '14px 0', paddingLeft: 8, paddingRight: 8 }}>优先级</div>} */}
-            {!this.props.fromProjectCostCenter && <div style={{ flex: 1 }}><div style={{ padding: 8 }}>操作</div></div>}
+            {!this.props.fromProjectCostCenter && <div style={{ flex: 2 }}><div style={{ padding: 8 }}>操作</div></div>}
             </div>
           </div>
 
@@ -2656,6 +2661,7 @@ class OrgBDListComponent extends React.Component {
                 pagination={false}
                 size={this.props.size || "middle"}
                 showHeader={false}
+                rowClassName={() => 'orgbd-parent-table'}
               />
             </div>
           }
