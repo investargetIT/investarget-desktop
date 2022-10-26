@@ -1629,7 +1629,7 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
   render() {
 
-    if (this.props.data.length === 0) return null;
+    // if (this.props.data.length === 0) return null;
 
     const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = this.props;
     const countryID = country && isDetail ? country.value : country; 
@@ -1656,35 +1656,20 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
 function mapStateToPropsChina (state) {
   const { country } = state.app
-  window.echo('country', country);
-  var list = country.filter(item => item.parent == null)
-  list = list.map(item => {
-    var children = country.filter(i => i.parent == item.id)
-    return { ...item, children }
-  })
-  var options = list.map(item => {
-    var ret = {
-      label: item.country,
-      value: item.id,
+  const china = country.find(f => ['中国', 'China'].includes(f.country));
+  if (!china) {
+    return { options: [] };
+  }
+  function findAllChildren(node) {
+    const allChildren = country.filter(f => f.parent === node.id);
+    if (allChildren.length === 0) {
+      return { ...node, children: [] };
     }
-    if (item.children.length > 0) {
-      ret['children'] = item.children.map(i => {
-        return {
-          label: i.country,
-          value: i.id,
-          areaCode: i.areaCode, 
-        }
-      })
-    }
-    return ret
-  })
-
-  var map = {}
-  country.forEach(item => {
-    map[item.id] = item.parent
-  })
-  window.echo('options', options);
-  return { options, map, data: country };
+    node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id }));
+    return node;
+  }
+  const chinaWithChilden = findAllChildren(china);
+  return { options: chinaWithChilden.children };
 }
 
 CascaderChina = connect(mapStateToPropsChina)(CascaderChina);
