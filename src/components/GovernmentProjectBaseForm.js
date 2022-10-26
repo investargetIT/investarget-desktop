@@ -18,7 +18,6 @@ import {
   TreeSelectTag,
   SelectRole,
   SelectTransactionType,
-  CascaderCountry,
   CascaderIndustry,
   RadioTrueOrFalse,
   SelectService, 
@@ -26,6 +25,7 @@ import {
   SelectIndustryGroup,
   SelectMultipleExistProject,
   SelectProjectBD,
+  CascaderChina,
 } from '../components/ExtraInput'
 
 const paraStyle = {lineHeight: 2, marginBottom: '8px'}
@@ -71,7 +71,7 @@ function GovernmentProjectBaseForm(props) {
       </FormItem>
 
       <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
-        <CascaderCountry size="large" />
+        <CascaderChina />
       </BasicFormItem>
 
       <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">

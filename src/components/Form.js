@@ -436,7 +436,6 @@ class IndustryDynamicFormItem extends React.Component {
                         ]}
                       >
                         <CascaderIndustry
-                          size="large"
                           disabled={this.state.disabled}
                           onChange={this.handleIndustryChange.bind(this, k)}
                         />

@@ -1600,7 +1600,94 @@ function mapStateToPropsCountry (state) {
 CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
 
+/**
+ * CascaderCountry
+ */
 
+ class CascaderChina extends React.Component {
+
+  componentDidMount() {
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
+  }
+
+  handleChange = (value, detail) => {
+    const countryId = value[value.length - 1];
+    const countryDetail = detail[detail.length - 1];
+    if (this.props.onChange) {
+      this.props.onChange(countryId, countryDetail)
+    }
+  }
+
+  findParent = idArr => {
+    const detail = this.props.data.filter(f => f.id === idArr[0])[0];
+    if (detail.parent === null) {
+      return idArr;
+    }
+    idArr.unshift(detail.parent);
+    return this.findParent(idArr);
+  }
+
+  render() {
+
+    if (this.props.data.length === 0) return null;
+
+    const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = this.props;
+    const countryID = country && isDetail ? country.value : country; 
+    const value = countryID ? this.findParent([countryID]) : [undefined];
+
+    if (isShowProvince) {
+      const chinaArea = this.props.data.filter(item => item.parent === 42)
+                          .map(item => ({ label: item.country, value: item.id }));
+      const asiaIndex = options.map(m => m.value).indexOf(4);
+      if (asiaIndex > -1) {
+        const chinaIndex = options[asiaIndex].children.map(m => m.value).indexOf(42);
+        if (chinaIndex > -1) {
+          options[asiaIndex].children[chinaIndex].children = chinaArea;
+        }
+      }
+    }
+
+    return (
+      <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
+    )
+  }
+
+}
+
+function mapStateToPropsChina (state) {
+  const { country } = state.app
+  window.echo('country', country);
+  var list = country.filter(item => item.parent == null)
+  list = list.map(item => {
+    var children = country.filter(i => i.parent == item.id)
+    return { ...item, children }
+  })
+  var options = list.map(item => {
+    var ret = {
+      label: item.country,
+      value: item.id,
+    }
+    if (item.children.length > 0) {
+      ret['children'] = item.children.map(i => {
+        return {
+          label: i.country,
+          value: i.id,
+          areaCode: i.areaCode, 
+        }
+      })
+    }
+    return ret
+  })
+
+  var map = {}
+  country.forEach(item => {
+    map[item.id] = item.parent
+  })
+  window.echo('options', options);
+  return { options, map, data: country };
+}
+
+CascaderChina = connect(mapStateToPropsChina)(CascaderChina);
 
 /**
  * CascaderIndustry
@@ -2584,6 +2671,7 @@ export {
   SelectSeason,
   CascaderCountry,
   CascaderIndustry,
+  CascaderChina,
   InputCurrency,
   InputPhoneNumber,
   CheckboxTag,
