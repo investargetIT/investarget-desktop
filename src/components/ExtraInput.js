@@ -26,6 +26,7 @@ const CheckboxGroup = Checkbox.Group
 const RadioGroup = Radio.Group
 import TabCheckbox from './TabCheckbox'
 import Select2 from './Select2'
+import Select2Multiple from './Select2Multiple';
 import Select2WithTooltip from './Select2WithTooltip'
 import _ from 'lodash'
 import * as api from '../api'
@@ -927,6 +928,46 @@ const SelectExistProject = (props) => {
       size={props.size}
       style={props.style || {}}
       getNameById={getProjectNameById}
+    />
+  );
+};
+
+const SelectMultipleExistProject = (props) => {
+
+  const getProject = (params) => {
+    params = { ...params }
+    params['skip_count'] = (params['page_index'] - 1) * params['page_size']
+    params['max_size'] = params['page_size']
+    params['bdm'] = props.bdm;
+    params['projstatus'] = props.projstatus;
+    delete params['page_index']
+    delete params['page_size']
+    return api.getProj(params).then(result => {
+      var { count: total, data: list } = result.data
+      list = list.map(item => {
+        const { id: value, realname: label } = item
+        return { value, label }
+      })
+      return { total, list }
+    })
+  }
+
+  const getProjectNameById = (id) => {
+    return api.getProj({ ids: [...id] }).then(result => {
+      return result.data.data.map(m => ({ value: m.id, label: m.realname }));
+    })
+  }
+
+  return (
+    <Select2Multiple
+      value={props.value}
+      placeholder={props.placeholder}
+      getData={getProject}
+      onChange={props.onChange}
+      size={props.size}
+      style={props.style || {}}
+      getNameById={getProjectNameById}
+      mode="multiple"
     />
   );
 };
@@ -2513,6 +2554,7 @@ export {
   SelectExistOrganization,
   SelectExistUser,
   SelectExistProject,
+  SelectMultipleExistProject,
   SelectProjectForOrgBd,
   SelectExistInvestor,
   SelectMyInvestor,

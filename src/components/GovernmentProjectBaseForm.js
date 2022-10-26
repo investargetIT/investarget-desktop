@@ -24,7 +24,7 @@ import {
   SelectService, 
   SelectExistUser,
   SelectIndustryGroup,
-  SelectExistProject,
+  SelectMultipleExistProject,
   SelectProjectBD,
 } from '../components/ExtraInput'
 
@@ -44,8 +44,8 @@ function GovernmentProjectBaseForm(props) {
         <RadioTrueOrFalse />
       </BasicFormItem>
 
-      <BasicFormItem label="对应项目BD" name="projectBD" valueType="number">
-        <SelectProjectBD />
+      <BasicFormItem label="对应平台项目" name="projectBD" valueType="array">
+        <SelectMultipleExistProject />
       </BasicFormItem>
 
       <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
