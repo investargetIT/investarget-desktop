@@ -382,7 +382,10 @@ function MySchedule(props) {
   }
 
   function onSelect(date) {
-    if (calendarMode == 'month' && date.diff(moment(), 'days') >= 0 && !selectDateCausedByMonthChange) {
+    if (calendarMode == 'month'
+      // && date.diff(moment(), 'days') >= 0
+      && !selectDateCausedByMonthChange
+    ) {
       setVisibleAdd(true);
       setSelectedDate(date.startOf('hour'));
     } else {
@@ -616,13 +619,13 @@ function MySchedule(props) {
    * 如果是视频会议日程且当前用户是主持人，调用删除会议接口，服务端应该会把相关日程、参会人员等一起删除
    */
   const deleteEventAsync = async () => {
-    if (event.type === 4 && event.createuser.id === getCurrentUser()) {
-      const meetingID = event.meeting.id;
-      await api.deleteWebexMeeting(meetingID);
-    } else {
+    // if (event.type === 4 && event.createuser.id === getCurrentUser()) {
+    //   const meetingID = event.meeting.id;
+    //   await api.deleteWebexMeeting(meetingID);
+    // } else {
       const scheduleID = event.id;
       await api.deleteSchedule(scheduleID);
-    }
+    // }
   }
 
   const deleteEvent = () => {
