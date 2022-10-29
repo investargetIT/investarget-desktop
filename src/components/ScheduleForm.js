@@ -236,7 +236,7 @@ class ScheduleForm extends React.Component {
             if (scheduleType === 4) return null;
             return (
               <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
-                <SelectExistInvestor size="normal" />
+                <SelectExistInvestor size="normal" allowClear />
               </BasicFormItem>
             );
           }}

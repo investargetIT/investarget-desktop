@@ -78,6 +78,8 @@ function MySchedule(props) {
       // 自动设置发送邮件提醒的目标邮箱为选中的投资人邮箱
       if (targetEmail) {
         data.targetEmail = targetEmail;
+      } else {
+        data.targetEmail = '';
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱
@@ -349,8 +351,12 @@ function MySchedule(props) {
     if (changedValues.proj) {
       handleProjChange(changedValues.proj);
     }
-    if (changedValues.user) {
-      handleUserChange(changedValues.user);
+    if ('user' in changedValues) {
+      if (changedValues.user) {
+        handleUserChange(changedValues.user);
+      } else {
+        setTargetEmail('');
+      }
     }
   }
 
@@ -473,10 +479,10 @@ function MySchedule(props) {
       await api.sendScheduleReminderEmail(sendEmailBody);
     }
     if (param.type === 4) {
-      const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
+      // const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
       const attendee = formatAttendee(param);
-      const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
-      await api.addWebexUser(userBody);
+      // const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
+      // await api.addWebexUser(userBody);
 
       // 为在库里的参会人创建日程
       const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
