@@ -230,6 +230,20 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
+        {this.props.isAdd &&
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              const scheduleType = getFieldValue('type');
+              if (scheduleType === 4) return null;
+              return (
+                <BasicFormItem label="交易师" name="trader-attendee" valueType="array" initialValue={[]}>
+                  <SelectMultiUsers type="trader" />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
+        }
+
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');

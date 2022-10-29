@@ -454,8 +454,13 @@ function MySchedule(props) {
 
   const addEventAsync = async (param) => {
     const body = { ...param, title: param.comments };
+    const attendee = formatAttendee(param);
+    const existAttendees = attendee.filter(f => f.user !== undefined);
+    const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user }));
+    
     await api.getUserSession();
-    const meetingResult = await api.addSchedule([body]);
+    await api.addSchedule(attendeeBody);
+
     const { sendEmail } = body;
     if (sendEmail) {
       const {
@@ -478,22 +483,14 @@ function MySchedule(props) {
       };
       await api.sendScheduleReminderEmail(sendEmailBody);
     }
-    if (param.type === 4) {
-      // const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
-      const attendee = formatAttendee(param);
-      // const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
-      // await api.addWebexUser(userBody);
-
-      // 为在库里的参会人创建日程
-      const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
-      const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
-      await api.getUserSession();
-      await api.addSchedule(attendeeBody);
-    }
   }
 
   const formatAttendee = param => {
-    const existAttendees = param['investor-attendee'].concat(param['trader-attendee']).map(m => {
+    let investorAttendee = [];
+    if (param['investor-attendee']) {
+      investorAttendee = param['investor-attendee'];
+    }
+    const existAttendees = investorAttendee.concat(param['trader-attendee']).map(m => {
       const user = parseInt(m.key, 10);
       const nameAndEmail = m.label.split('\n');
       const name = nameAndEmail[0];
