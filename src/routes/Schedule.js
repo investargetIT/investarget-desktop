@@ -428,14 +428,18 @@ class Schedule extends React.Component {
       await api.sendScheduleReminderEmail(sendEmailBody);
     }
     if (param.type === 4) {
-      const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
+      // const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
       const attendee = this.formatAttendee(param);
-      const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
-      await api.addWebexUser(userBody);
+      // const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
+      // await api.addWebexUser(userBody);
 
       // 为在库里的参会人创建日程
       const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
-      const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
+      const attendeeBody = existAttendees.map(m => ({
+        ...body,
+        manager: m.user,
+        // meeting,
+      }));
       await api.getUserSession();
       await api.addSchedule(attendeeBody);
     }

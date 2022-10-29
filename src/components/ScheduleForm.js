@@ -130,7 +130,7 @@ class ScheduleForm extends React.Component {
   render() {
     const { forwardedRef, onValuesChange } = this.props;
     return (
-      <Form ref={forwardedRef} onValuesChange={onValuesChange}>
+      <Form ref={forwardedRef} onValuesChange={onValuesChange} className="form-item-select-without-white-space">
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
@@ -242,7 +242,7 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
-        <Form.Item noStyle shouldUpdate>
+        {/* <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');
             if (scheduleType !== 4) return null;
@@ -274,7 +274,7 @@ class ScheduleForm extends React.Component {
               </FormItem>
             );
           }}
-        </Form.Item>
+        </Form.Item> */}
 
         {this.props.isAdd &&
           <Form.Item noStyle shouldUpdate>
