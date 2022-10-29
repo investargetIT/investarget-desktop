@@ -12,6 +12,7 @@ import {
   handleError,
   isLogin,
   getURLParamValue,
+  requestAllData2,
 } from '../utils/util';
 import ProjectCard from '../components/ProjectCard';
 import * as api from '../api';
@@ -97,14 +98,13 @@ function Dashboard(props) {
       const ongoingStatus = statusList.filter(f => ['终审发布', '交易中', 'Published', 'Contacting'].includes(f.name));
 
       const params = {
-        max_size: 4,
         projstatus: ongoingStatus.map(m => m.id),
         sort: 'publishDate',
         desc: 1,
         user: userInfo && userInfo.id, // dashboard 应该显示当前用户参与的项目，无论他是否有平台项目管理权限
         iscomproj: 0,
       }
-      const reqProj = await api.getProj(params);
+      const reqProj = await requestAllData2(api.getProj, params, 10);
       let { data: projList } = reqProj.data;
       if (projList.length > 0) {
         const reqDataroom = await api.queryDataRoom({
@@ -410,12 +410,12 @@ function Dashboard(props) {
         {generateShortcutOperation()}
       </div>
 
-      <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 0 -18px' }}>
-          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m} style={{ margin: '18px 0 0 18px' }}>
+      <Card title="进行中的项目" extra={<Link to="/app/projects/list">全部项目</Link>} bodyStyle={{ padding: 0 }}>
+        <div style={{ padding: 18, display: 'flex', overflowX: 'scroll', gap: 18  }}>
+          {loadingOnGoingProjects && [1, 2, 3, 4].map(m => <div key={m}>
             <Card loading style={{ width: 250 }} />
           </div>)}
-          {!loadingOnGoingProjects && projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
+          {!loadingOnGoingProjects && projList.map(m => <div key={m.id}>
             <ProjectCard record={m} country={props.country} />
           </div>)}
           {!loadingOnGoingProjects && projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
