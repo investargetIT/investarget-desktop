@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, requestAllData, convertCommentFilesToAttachments } from '../utils/util'
+import { i18n, requestAllData, convertCommentFilesToAttachments, getURLParamValue } from '../utils/util'
 
 import { Form, Button, Tabs, message } from 'antd'
 const TabPane = Tabs.TabPane
@@ -146,10 +146,13 @@ function toData(formData) {
 class EditProject extends React.Component {
   constructor(props) {
     super(props)
+    
+    const activeKey = getURLParamValue(props, 'activeKey');
     this.state = {
       project: {},
       loadingEdit: false,
       refreshAttachmentTab: true,
+      activeKey: activeKey || '1',
     }
 
     this.editProjectBaseFormRef = React.createRef();
@@ -403,7 +406,7 @@ class EditProject extends React.Component {
       <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')}>
         <div>
 
-          <Tabs defaultActiveKey="1">
+          <Tabs onChange={activeKey => this.setState({ activeKey })} activeKey={this.state.activeKey}>
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
                 <ProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>

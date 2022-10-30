@@ -810,6 +810,9 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .orgbd-child-table .ant-table-content .ant-table-tbody tr:not(:first-child) .orgbd-org-info {
   visibility: hidden;
 }
+.form-item-select-without-white-space .ant-select-multiple .ant-select-selection-item-content {
+  white-space: unset;
+}
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;
