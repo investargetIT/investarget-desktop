@@ -1605,13 +1605,13 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
  * CascaderCountry
  */
 
- class CascaderChina extends React.Component {
+ function CascaderChina(props) {
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSourceList', payload: ['country'] })
-  }
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
+  }, []);
 
-  handleChange = (value, detail) => {
+  function handleChange(value, detail) {
     window.echo('value', value);
     window.echo('detail', detail);
     // const countryId = value[value.length - 1];
@@ -1619,6 +1619,9 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
     // if (this.props.onChange) {
     //   this.props.onChange(countryId, countryDetail)
     // }
+    if (value.length > 1 && value[1] == 'add_area') {
+
+    }
   }
 
   // findParent = idArr => {
@@ -1630,9 +1633,8 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
   //   return this.findParent(idArr);
   // }
 
-  render() {
 
-    const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = this.props;
+    const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = props;
     // const countryID = country && isDetail ? country.value : country; 
     // const value = countryID ? this.findParent([countryID]) : [undefined];
 
@@ -1649,14 +1651,20 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
     // }
 
     return (
-      <Cascader
-        options={options}
-        // value={value}
-        onChange={this.handleChange}
-        {...extraProps}
-      />
-    )
-  }
+      <div>
+        <Cascader
+          options={options}
+          // value={value}
+          onChange={handleChange}
+          {...extraProps}
+        />
+        {/* <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal> */}
+      </div>
+    );
 
 }
 
@@ -1666,15 +1674,28 @@ function mapStateToPropsChina (state) {
   if (!china) {
     return { options: [] };
   }
-  function findAllChildren(node) {
+  function findAllChildren(node, level) {
+    
     const allChildren = country.filter(f => f.parent === node.id);
     if (allChildren.length === 0) {
-      return { ...node, children: [] };
+      let children = [];
+
+      if ([1, 2].includes(level)) {
+        children.unshift({ label: '添加地区', value: 'add_area' });
+      }
+
+      return { ...node, children };
     }
-    node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id }));
-    return node;
+    node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id, level: level + 1 }, level + 1));
+    
+    if ([1, 2].includes(level)) {
+      node.children.unshift({ label: '添加地区', value: 'add_area' });
+    }
+
+    return { ...node, level };
   }
-  const chinaWithChilden = findAllChildren(china);
+  const chinaWithChilden = findAllChildren(china, 0);
+  window.echo('chinaWithChildren', chinaWithChilden);
   return { options: chinaWithChilden.children };
 }
 
