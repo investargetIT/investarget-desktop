@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, Progress } from 'antd';
 import { Link } from 'dva/router';
-import { i18n, hasPerm, isShowCNY, formatMoney } from '../utils/util';
+import { i18n, hasPerm, isShowCNY, formatMoney, trimTextIfExceedMaximumCount } from '../utils/util';
 import {
   FolderFilled,
   LockFilled,
@@ -26,7 +26,9 @@ const cardTitleStyle = {
   fontSize: '15px',
   marginBottom: '8px',
   height: '20px',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  display: 'flex',
+  justifyContent: 'space-between',
 }
 const cardTimeStyle = {
   marginBottom: '8px',
@@ -100,7 +102,8 @@ export default function ProjectCard({ record, country: allCountries }) {
 
       <div style={{ padding: '16px' }}>
         <div style={cardTitleStyle}>
-          <Link to={`/app/projects/${projId}`} target="_blank"><span style={{ fontSize: 16, color: '#282828' }}>{projTitle}</span></Link>
+          <Link to={`/app/projects/${projId}`} target="_blank" style={{ flex: 1 }}><span style={{ fontSize: 16, color: '#282828', wordBreak: 'break-all' }}>{trimTextIfExceedMaximumCount(projTitle, 10)}</span></Link>
+          <Link to={`/app/projects/edit/${projId}?activeKey=5`} target="_blank">项目附件</Link>
         </div>
         <div style={cardTimeStyle}>地区：{projectArea(record)}</div>
         <div style={cardTimeStyle}>拟交易规模：{transactionAmount(record)}</div>

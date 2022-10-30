@@ -82,8 +82,9 @@ const BasicFormItem = props => {
   return (
     <FormItem
       name={props.name}
+      label={props.label}
+      style={props.style}
       {...(props.layout || formItemLayout)}
-      {...props.layout} label={props.label}
       {...options}
     >
       {props.children}

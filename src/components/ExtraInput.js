@@ -634,6 +634,7 @@ const SelectExistInvestor = (props) => {
       onChange={props.onChange}
       placeholder={props.placeholder}
       noResult="未找到相关投资人"
+      allowClear={props.allowClear}
     />
   );
 };

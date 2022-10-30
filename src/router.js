@@ -37,7 +37,7 @@ import { URI_1, URI_2, URI_3, URI_4, URI_5, URI_6, URI_7, URI_8, URI_9, URI_10, 
 import DataRoom from './routes/DataRoom';
 import DataroomDetails from './routes/DataroomDetails';
 import DataroomDetailsForMobile from './routes/DataroomDetailsForMobile';
-import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
+// import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
 import Feishu from './routes/Feishu';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
@@ -157,7 +157,7 @@ function RouterConfig({ history }) {
         <Route path="/app/wxmsg" component={WxMessage} />
         <Route path="/app/orgbd/project/list" component={OrgBDProjList} />
         <Route path="/app/orgbd/add" component={NewOrgBD} />
-        <Route path="/app/demo" component={ReactDataSheetDemo} />
+        {/* <Route path="/app/demo" component={ReactDataSheetDemo} /> */}
         <Route path="/app/feishu/approval" component={FeishuApprovalList} />
         <Route path="/app/feishu" component={Feishu} />
         <Route path="/app/hr" component={HumanResources} />

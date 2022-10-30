@@ -78,6 +78,8 @@ function MySchedule(props) {
       // 自动设置发送邮件提醒的目标邮箱为选中的投资人邮箱
       if (targetEmail) {
         data.targetEmail = targetEmail;
+      } else {
+        data.targetEmail = '';
       }
 
       // 剔除原来选中的项目的联系人姓名和邮箱
@@ -349,8 +351,12 @@ function MySchedule(props) {
     if (changedValues.proj) {
       handleProjChange(changedValues.proj);
     }
-    if (changedValues.user) {
-      handleUserChange(changedValues.user);
+    if ('user' in changedValues) {
+      if (changedValues.user) {
+        handleUserChange(changedValues.user);
+      } else {
+        setTargetEmail('');
+      }
     }
   }
 
@@ -376,7 +382,10 @@ function MySchedule(props) {
   }
 
   function onSelect(date) {
-    if (calendarMode == 'month' && date.diff(moment(), 'days') >= 0 && !selectDateCausedByMonthChange) {
+    if (calendarMode == 'month'
+      // && date.diff(moment(), 'days') >= 0
+      && !selectDateCausedByMonthChange
+    ) {
       setVisibleAdd(true);
       setSelectedDate(date.startOf('hour'));
     } else {
@@ -448,8 +457,13 @@ function MySchedule(props) {
 
   const addEventAsync = async (param) => {
     const body = { ...param, title: param.comments };
+    const attendee = formatAttendee(param);
+    const existAttendees = attendee.filter(f => f.user !== undefined);
+    const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user }));
+    
     await api.getUserSession();
-    const meetingResult = await api.addSchedule([body]);
+    await api.addSchedule(attendeeBody);
+
     const { sendEmail } = body;
     if (sendEmail) {
       const {
@@ -472,22 +486,14 @@ function MySchedule(props) {
       };
       await api.sendScheduleReminderEmail(sendEmailBody);
     }
-    if (param.type === 4) {
-      const { id: meeting, meetingKey } = meetingResult.data[0].meeting;
-      const attendee = formatAttendee(param);
-      const userBody = attendee.map(m => ({ ...m, meeting, meetingKey }));
-      await api.addWebexUser(userBody);
-
-      // 为在库里的参会人创建日程
-      const existAttendees = attendee.filter(f => f.user !== undefined && f.user !== getCurrentUser());
-      const attendeeBody = existAttendees.map(m => ({ ...body, manager: m.user, meeting }));
-      await api.getUserSession();
-      await api.addSchedule(attendeeBody);
-    }
   }
 
   const formatAttendee = param => {
-    const existAttendees = param['investor-attendee'].concat(param['trader-attendee']).map(m => {
+    let investorAttendee = [];
+    if (param['investor-attendee']) {
+      investorAttendee = param['investor-attendee'];
+    }
+    const existAttendees = investorAttendee.concat(param['trader-attendee']).map(m => {
       const user = parseInt(m.key, 10);
       const nameAndEmail = m.label.split('\n');
       const name = nameAndEmail[0];
@@ -613,13 +619,13 @@ function MySchedule(props) {
    * 如果是视频会议日程且当前用户是主持人，调用删除会议接口，服务端应该会把相关日程、参会人员等一起删除
    */
   const deleteEventAsync = async () => {
-    if (event.type === 4 && event.createuser.id === getCurrentUser()) {
-      const meetingID = event.meeting.id;
-      await api.deleteWebexMeeting(meetingID);
-    } else {
+    // if (event.type === 4 && event.createuser.id === getCurrentUser()) {
+    //   const meetingID = event.meeting.id;
+    //   await api.deleteWebexMeeting(meetingID);
+    // } else {
       const scheduleID = event.id;
       await api.deleteSchedule(scheduleID);
-    }
+    // }
   }
 
   const deleteEvent = () => {

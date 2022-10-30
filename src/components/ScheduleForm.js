@@ -130,7 +130,7 @@ class ScheduleForm extends React.Component {
   render() {
     const { forwardedRef, onValuesChange } = this.props;
     return (
-      <Form ref={forwardedRef} onValuesChange={onValuesChange}>
+      <Form ref={forwardedRef} onValuesChange={onValuesChange} className="form-item-select-without-white-space">
 
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
@@ -230,19 +230,70 @@ class ScheduleForm extends React.Component {
           }}
         </Form.Item>
 
+        {this.props.isAdd &&
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) => {
+              const scheduleType = getFieldValue('type');
+              if (scheduleType === 4) return null;
+              return (
+                <BasicFormItem label="交易师" name="trader-attendee" valueType="array" initialValue={[]}>
+                  <SelectMultiUsers type="trader" />
+                </BasicFormItem>
+              );
+            }}
+          </Form.Item>
+        }
+
         <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');
             if (scheduleType === 4) return null;
             return (
               <BasicFormItem label={i18n('schedule.investor')} name="user" valueType="number">
-                <SelectExistInvestor size="normal" />
+                <SelectExistInvestor size="normal" allowClear />
               </BasicFormItem>
             );
           }}
         </Form.Item>
 
         <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const scheduleType = getFieldValue('type');
+            if (scheduleType === 4) return null;
+            return (
+              <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean" valuePropName="checked">
+                <Checkbox>发送提醒邮件给投资人</Checkbox>
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
+
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const sendEmail = getFieldValue('sendEmail');
+            const user = getFieldValue('user')
+            if (!sendEmail || user) return null;
+            return (
+              <BasicFormItem label="姓名" name="username" required>
+                <Input />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
+
+        <Form.Item noStyle shouldUpdate>
+          {({ getFieldValue }) => {
+            const sendEmail = getFieldValue('sendEmail');
+            if (!sendEmail) return null;
+            return (
+              <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
+                <Input />
+              </BasicFormItem>
+            );
+          }}
+        </Form.Item>
+
+        {/* <Form.Item noStyle shouldUpdate>
           {({ getFieldValue }) => {
             const scheduleType = getFieldValue('type');
             if (scheduleType !== 4) return null;
@@ -274,7 +325,7 @@ class ScheduleForm extends React.Component {
               </FormItem>
             );
           }}
-        </Form.Item>
+        </Form.Item> */}
 
         {this.props.isAdd &&
           <Form.Item noStyle shouldUpdate>
@@ -374,43 +425,6 @@ class ScheduleForm extends React.Component {
             }}
           </Form.Item>
         }
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            const scheduleType = getFieldValue('type');
-            if (scheduleType === 4) return null;
-            return (
-              <BasicFormItem layout={tailFormItemLayout} name="sendEmail" valueType="boolean" valuePropName="checked">
-                <Checkbox>发送提醒邮件</Checkbox>
-              </BasicFormItem>
-            );
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            const sendEmail = getFieldValue('sendEmail');
-            const user = getFieldValue('user')
-            if (!sendEmail || user) return null;
-            return (
-              <BasicFormItem label="姓名" name="username" required>
-                <Input />
-              </BasicFormItem>
-            );
-          }}
-        </Form.Item>
-
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            const sendEmail = getFieldValue('sendEmail');
-            if (!sendEmail) return null;
-            return (
-              <BasicFormItem label="目标邮箱" name="targetEmail" valueType="email" required>
-                <Input />
-              </BasicFormItem>
-            );
-          }}
-        </Form.Item>
 
       </Form>
     )
