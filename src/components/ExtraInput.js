@@ -1612,44 +1612,49 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
   }
 
   handleChange = (value, detail) => {
-    const countryId = value[value.length - 1];
-    const countryDetail = detail[detail.length - 1];
-    if (this.props.onChange) {
-      this.props.onChange(countryId, countryDetail)
-    }
+    window.echo('value', value);
+    window.echo('detail', detail);
+    // const countryId = value[value.length - 1];
+    // const countryDetail = detail[detail.length - 1];
+    // if (this.props.onChange) {
+    //   this.props.onChange(countryId, countryDetail)
+    // }
   }
 
-  findParent = idArr => {
-    const detail = this.props.data.filter(f => f.id === idArr[0])[0];
-    if (detail.parent === null) {
-      return idArr;
-    }
-    idArr.unshift(detail.parent);
-    return this.findParent(idArr);
-  }
+  // findParent = idArr => {
+  //   const detail = this.props.data.filter(f => f.id === idArr[0])[0];
+  //   if (detail.parent === null) {
+  //     return idArr;
+  //   }
+  //   idArr.unshift(detail.parent);
+  //   return this.findParent(idArr);
+  // }
 
   render() {
 
-    // if (this.props.data.length === 0) return null;
-
     const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = this.props;
-    const countryID = country && isDetail ? country.value : country; 
-    const value = countryID ? this.findParent([countryID]) : [undefined];
+    // const countryID = country && isDetail ? country.value : country; 
+    // const value = countryID ? this.findParent([countryID]) : [undefined];
 
-    if (isShowProvince) {
-      const chinaArea = this.props.data.filter(item => item.parent === 42)
-                          .map(item => ({ label: item.country, value: item.id }));
-      const asiaIndex = options.map(m => m.value).indexOf(4);
-      if (asiaIndex > -1) {
-        const chinaIndex = options[asiaIndex].children.map(m => m.value).indexOf(42);
-        if (chinaIndex > -1) {
-          options[asiaIndex].children[chinaIndex].children = chinaArea;
-        }
-      }
-    }
+    // if (isShowProvince) {
+    //   const chinaArea = this.props.data.filter(item => item.parent === 42)
+    //                       .map(item => ({ label: item.country, value: item.id }));
+    //   const asiaIndex = options.map(m => m.value).indexOf(4);
+    //   if (asiaIndex > -1) {
+    //     const chinaIndex = options[asiaIndex].children.map(m => m.value).indexOf(42);
+    //     if (chinaIndex > -1) {
+    //       options[asiaIndex].children[chinaIndex].children = chinaArea;
+    //     }
+    //   }
+    // }
 
     return (
-      <Cascader options={options} value={value} onChange={this.handleChange} {...extraProps} />
+      <Cascader
+        options={options}
+        // value={value}
+        onChange={this.handleChange}
+        {...extraProps}
+      />
     )
   }
 
