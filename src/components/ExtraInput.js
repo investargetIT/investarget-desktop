@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   InputNumber,
   Select,
@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   Tag,
+  Modal,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -1607,62 +1608,55 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
  function CascaderChina(props) {
 
+  const [cascaderValue, setCascaderValue] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [parentArea, setParentArea] = useState(null);
+
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
   }, []);
 
   function handleChange(value, detail) {
-    window.echo('value', value);
-    window.echo('detail', detail);
-    // const countryId = value[value.length - 1];
-    // const countryDetail = detail[detail.length - 1];
-    // if (this.props.onChange) {
-    //   this.props.onChange(countryId, countryDetail)
-    // }
-    if (value.length > 1 && value[1] == 'add_area') {
-
+    if (value[value.length - 1] == 'add_area') {
+      setParentArea(detail[detail.length - 2]);
+    } else {
+      setCascaderValue(value);
     }
   }
 
-  // findParent = idArr => {
-  //   const detail = this.props.data.filter(f => f.id === idArr[0])[0];
-  //   if (detail.parent === null) {
-  //     return idArr;
-  //   }
-  //   idArr.unshift(detail.parent);
-  //   return this.findParent(idArr);
-  // }
+    function handleOk() {
+      if (!inputValue) return;
+      window.echo('handle ok', inputValue, parentArea);
+      // TODO
+      handleCancel();
+    }
 
-
-    const {options, map, children, dispatch, value:country, isShowProvince, onChange, isDetail, ...extraProps} = props;
-    // const countryID = country && isDetail ? country.value : country; 
-    // const value = countryID ? this.findParent([countryID]) : [undefined];
-
-    // if (isShowProvince) {
-    //   const chinaArea = this.props.data.filter(item => item.parent === 42)
-    //                       .map(item => ({ label: item.country, value: item.id }));
-    //   const asiaIndex = options.map(m => m.value).indexOf(4);
-    //   if (asiaIndex > -1) {
-    //     const chinaIndex = options[asiaIndex].children.map(m => m.value).indexOf(42);
-    //     if (chinaIndex > -1) {
-    //       options[asiaIndex].children[chinaIndex].children = chinaArea;
-    //     }
-    //   }
-    // }
+    function handleCancel() {
+      setParentArea(null);
+      setInputValue('');
+    }
 
     return (
       <div>
         <Cascader
-          options={options}
-          // value={value}
+          options={props.options}
+          value={cascaderValue}
           onChange={handleChange}
-          {...extraProps}
         />
-        {/* <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal> */}
+        {parentArea && (
+          <Modal
+            title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea.country}</span></span>}
+            visible
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+            <Input
+              onChange={e => setInputValue(e.target.value)}
+              value={inputValue}
+              placeholder="地区名称"
+            />
+          </Modal>
+        )}
       </div>
     );
 
