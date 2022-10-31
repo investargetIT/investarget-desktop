@@ -38,6 +38,7 @@ import { BasicContainer, BasicContainer2 } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
+import pinyin from 'tiny-pinyin';
 
 const { CheckableTag } = Tag;
 
@@ -1606,11 +1607,11 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
  * CascaderCountry
  */
 
- function CascaderChina(props) {
+function CascaderChina(props) {
 
   const [cascaderValue, setCascaderValue] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [parentArea, setParentArea] = useState(null);
+  const [parentArea, setParentArea] = useState([]);
 
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
@@ -1618,48 +1619,55 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
   function handleChange(value, detail) {
     if (value[value.length - 1] == 'add_area') {
-      setParentArea(detail[detail.length - 2]);
+      setParentArea(detail.slice(0, detail.length - 1));
     } else {
       setCascaderValue(value);
     }
   }
 
-    function handleOk() {
-      if (!inputValue) return;
-      window.echo('handle ok', inputValue, parentArea);
-      // TODO
-      handleCancel();
+  async function handleOk() {
+    if (!inputValue) return;
+    const { id: parent, level } = parentArea[parentArea.length - 1];
+    let countryE = '';
+    if (pinyin.isSupported) {
+      countryE = pinyin.convertToPinyin(inputValue, '', true);
     }
+    const request = await api.addCountry({ parent, countryC: inputValue, countryE, level: level + 3 });
+    const { id } = request.data;
+    const newValue = parentArea.map(m => m.id);
+    setCascaderValue(newValue.concat(id));
+    props.dispatch({ type: 'app/getSourceForceUpdate', payload: 'country' });
+    handleCancel();
+  }
 
-    function handleCancel() {
-      setParentArea(null);
-      setInputValue('');
-    }
+  function handleCancel() {
+    setParentArea([]);
+    setInputValue('');
+  }
 
-    return (
-      <div>
-        <Cascader
-          options={props.options}
-          value={cascaderValue}
-          onChange={handleChange}
-        />
-        {parentArea && (
-          <Modal
-            title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea.country}</span></span>}
-            visible
-            onOk={handleOk}
-            onCancel={handleCancel}
-          >
-            <Input
-              onChange={e => setInputValue(e.target.value)}
-              value={inputValue}
-              placeholder="地区名称"
-            />
-          </Modal>
-        )}
-      </div>
-    );
-
+  return (
+    <div>
+      <Cascader
+        options={props.options}
+        value={cascaderValue}
+        onChange={handleChange}
+      />
+      {parentArea.length > 0 && (
+        <Modal
+          title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea.country}</span></span>}
+          visible
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input
+            onChange={e => setInputValue(e.target.value)}
+            value={inputValue}
+            placeholder="地区名称"
+          />
+        </Modal>
+      )}
+    </div>
+  );
 }
 
 function mapStateToPropsChina (state) {
@@ -1689,7 +1697,6 @@ function mapStateToPropsChina (state) {
     return { ...node, level };
   }
   const chinaWithChilden = findAllChildren(china, 0);
-  window.echo('chinaWithChildren', chinaWithChilden);
   return { options: chinaWithChilden.children };
 }
 
