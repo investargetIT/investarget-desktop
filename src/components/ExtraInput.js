@@ -1660,7 +1660,7 @@ function CascaderChina(props) {
       />
       {parentArea.length > 0 && (
         <Modal
-          title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea.country}</span></span>}
+          title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea[parentArea.length - 1].country}</span></span>}
           visible
           onOk={handleOk}
           onCancel={handleCancel}
