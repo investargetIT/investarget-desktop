@@ -70,7 +70,7 @@ function GovernmentProjectBaseForm(props) {
         }}
       </FormItem>
 
-      <BasicFormItem label={i18n('project.country')} name="country" required valueType="number">
+      <BasicFormItem label={i18n('project.country')} name="country" required valueType="array">
         <CascaderChina />
       </BasicFormItem>
 

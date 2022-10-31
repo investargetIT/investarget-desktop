@@ -1622,6 +1622,9 @@ function CascaderChina(props) {
       setParentArea(detail.slice(0, detail.length - 1));
     } else {
       setCascaderValue(value);
+      if (props.onChange) {
+        props.onChange(value);
+      }
     }
   }
 
@@ -1636,6 +1639,9 @@ function CascaderChina(props) {
     const { id } = request.data;
     const newValue = parentArea.map(m => m.id);
     setCascaderValue(newValue.concat(id));
+    if (props.onChange) {
+      props.onChange(newValue);
+    }
     props.dispatch({ type: 'app/getSourceForceUpdate', payload: 'country' });
     handleCancel();
   }

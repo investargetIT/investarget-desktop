@@ -13,7 +13,7 @@ const actionBtnStyle = {margin: '0 8px'}
 function toData(formData) {
   var data = {}
   for (let prop in formData) {
-    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed') {
+    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed' && prop !== 'country') {
       data[prop] = formData[prop]
     }
   }
@@ -24,6 +24,7 @@ function toData(formData) {
       key: formData['industries-image-' + key],
     }
   })
+  data.country = formData.country[formData.country.length - 1]
   return data
 }
 
@@ -40,6 +41,8 @@ function AddGovernmentProject(props) {
     addGovernmentProjectFormRef.current.validateFields()
       .then(values => {
         window.echo('values', values);
+        const body = toData(values);
+        window.echo('body', body);
         // TODO
       })
       .catch(error => {
