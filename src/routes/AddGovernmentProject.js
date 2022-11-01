@@ -24,7 +24,7 @@ function toData(formData) {
       key: formData['industries-image-' + key],
     }
   })
-  data.country = formData.country[formData.country.length - 1]
+  data.location = formData.location[formData.location.length - 1]
   return data
 }
 
@@ -40,10 +40,11 @@ function AddGovernmentProject(props) {
   function addProject() {
     addGovernmentProjectFormRef.current.validateFields()
       .then(values => {
-        window.echo('values', values);
         const body = toData(values);
-        window.echo('body', body);
-        // TODO
+        return api.addGovernmentProject(body);
+      })
+      .then(() => {
+        goBack();
       })
       .catch(error => {
         props.dispatch({

@@ -1145,3 +1145,5 @@ export const getFeishuApprovalDetails = body => r('/service/feishu/approval/inst
 export const editFeishuApproval = (type, body) => r(`/service/feishu/approval/task/?type=${type}`, 'POST', body);
 
 export const addCountry = body => r('/source/country', 'POST', body);
+
+export const addGovernmentProject = body => r('/proj/govproj/', 'POST', body);

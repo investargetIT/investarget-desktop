@@ -44,11 +44,11 @@ function GovernmentProjectBaseForm(props) {
         <RadioTrueOrFalse />
       </BasicFormItem>
 
-      <BasicFormItem label="对应平台项目" name="projectBD" valueType="array">
+      <BasicFormItem label="对应平台项目" name="historyCases" valueType="array">
         <SelectMultipleExistProject />
       </BasicFormItem>
 
-      <BasicFormItem label={i18n('project.project_chinese_name')} name="projtitleC" required whitespace>
+      <BasicFormItem label={i18n('project.project_chinese_name')} name="name" required whitespace>
         <Input />
       </BasicFormItem>
 
@@ -70,7 +70,7 @@ function GovernmentProjectBaseForm(props) {
         }}
       </FormItem>
 
-      <BasicFormItem label={i18n('project.country')} name="country" required valueType="array">
+      <BasicFormItem label={i18n('project.country')} name="location" required valueType="array">
         <CascaderChina />
       </BasicFormItem>
 
