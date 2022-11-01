@@ -360,8 +360,8 @@ function Dashboard(props) {
 
   function generateTrainingDocsTitle() {
     const titleArr = [
-      { name: '协议\n模板', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=76069' },
-      { name: '系统\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=60656' },
+      { name: '协议\n模板', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=78560' },
+      { name: '系统\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=76081' },
       { name: '员工\n手册', link: '/app/dataroom/company/detail?id=214&isClose=false&projectID=499&projectTitle=多维海拓&key=59751' },
     ];
     const elements = titleArr.map((m, i) => (
