@@ -13,11 +13,11 @@ const actionBtnStyle = {margin: '0 8px'}
 function toData(formData) {
   var data = {}
   for (let prop in formData) {
-    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed' && prop !== 'country') {
+    if (!/industries-.*/.test(prop) && !/industries-image-.*/.test(prop) && prop !== 'industriesKeys' && prop !== 'isAgreed' && prop !== 'location') {
       data[prop] = formData[prop]
     }
   }
-  data['industries'] = formData['industriesKeys'].map(key => {
+  data['industrys'] = formData['industriesKeys'].map(key => {
     return {
       industry: formData['industries-' + key],
       bucket: 'image',
