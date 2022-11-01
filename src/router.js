@@ -10,6 +10,7 @@ import ProjectLibrary from './routes/ProjectLibrary';
 import OrganizationList from "./routes/OrganizationList.js";
 import OrgExportList from './routes/OrgExportList';
 import ProjectList from './routes/ProjectList';
+import GovernmentProjectList from './routes/GovernmentProjectList';
 import ProjectCostDetail from './routes/ProjectCostDetail';
 import PermList from './routes/PermList';
 import LogList from './routes/LogList';
@@ -122,6 +123,7 @@ function RouterConfig({ history }) {
         <Route path="/app/org/export" component={OrgExportList} />
         <Route path="/app/projects/edit/:id" component={EditProject} />
         <Route path="/app/projects/list" component={ProjectList} />
+        <Route path="/app/government-projects/list" component={GovernmentProjectList} />
         <Route path="/app/projects/cost/:id" component={ProjectCostDetail} />
         <Route path={URI_14} component={PermList} />
         <Route path={URI_11} component={LogList} />
