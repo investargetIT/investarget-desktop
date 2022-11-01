@@ -29,7 +29,6 @@ class GovernmentProjectList extends React.Component {
     const filters = setting ? setting.filters : NewProjectListFilter.defaultValue
     const search = setting ? setting.search : null
     const page = setting && setting.page ? setting.page : 1
-    const pageSize = setting && setting.pageSize ? setting.pageSize: props.userPageSize;
 
     this.state = {
       filters,
@@ -39,10 +38,6 @@ class GovernmentProjectList extends React.Component {
       total: 0,
       list: [],
       loading: false,
-
-      id: null,
-      status: null,
-
       sort: undefined,
       desc: undefined,
     }
