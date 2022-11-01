@@ -1253,6 +1253,22 @@ class OrgBDListComponent extends React.Component {
     }
   }
 
+  // 不跟进，自动将该用户从 dataroom 里删除
+  removeUserFromDataroom = async (response, user) => {
+    if (response !== 6 || !user || !this.dataroomID) {
+      return;
+    }
+    const request = await api.queryUserDataRoom({
+      user,
+      dataroom: this.dataroomID,
+    });
+    const { count, data } = request.data;
+    if (count > 0) {
+      const dataroomUserID = data[0].id;
+      await api.deleteUserDataRoom(dataroomUserID);
+    }
+  }
+
   handleCancelEditOrgBD = record => {
     // Reload org bd for auto-saved comments
     this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
@@ -1270,16 +1286,11 @@ class OrgBDListComponent extends React.Component {
       'manager': Number(record.manager.id),
       'org': record.org.id,
       'proj': record.proj.id,
-      // 'isimportant': record.isimportant,
-      // 'expirationtime':record.expirationtime ? record.expirationtime.format('YYYY-MM-DDTHH:mm:ss') : null,
-      // 'bd_status': 1,
       'response': record.response,
       'material': record.material || '',
     }
-    this.setState({ loadingEditingOrgBD: true });
-    // api.getUserSession()
-      // .then(() => 
-      api.modifyOrgBD(record.id, body)
+    this.setState({ loadingEditingOrgBD: true }); 
+    api.modifyOrgBD(record.id, body)
       .then(() => this.generateProgressChangeComment(record))
       .then(() => {
         if (newComment) {
@@ -1294,6 +1305,7 @@ class OrgBDListComponent extends React.Component {
           }
         }
       })
+      .then(() => this.removeUserFromDataroom(body.response, body.bduser))
       .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.getOrgBdListDetail(record.org.id, record.proj && record.proj.id);
@@ -1782,6 +1794,7 @@ class OrgBDListComponent extends React.Component {
           return api.addOrgBDComment(bodyForComment);
         }
       })
+      .then(() => this.removeUserFromDataroom(body.response, body.bduser))
       .then(() => this.addUserToDataroom(body.response, body.bduser))
       .then(() => {
         this.setState({ displayModalForCreating: false, newOrgBDModalExpand: false });
