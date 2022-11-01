@@ -21,7 +21,7 @@ import {
 } from '@ant-design/icons';
 import _ from 'lodash';
 
-class ProjectList extends React.Component {
+class GovernmentProjectList extends React.Component {
   constructor(props) {
     super(props)
 
@@ -49,27 +49,27 @@ class ProjectList extends React.Component {
   }
 
   handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getProject)
+    this.setState({ filters, page: 1 }, this.getGovernmentProject)
   }
 
   handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getProject)
+    this.setState({ filters, page: 1, search: null }, this.getGovernmentProject)
   }
 
   handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getProject)
+    this.setState({ search, page: 1 }, this.getGovernmentProject)
   }
 
   handlePageChange = (page, pageSize) => {
-    this.setState({ page, pageSize }, this.getProject)
+    this.setState({ page, pageSize }, this.getGovernmentProject)
   }
 
-  getProject = () => {
+  getGovernmentProject = () => {
     const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { search, skip_count: (page - 1)*pageSize, max_size: pageSize, sort, desc }
+    const params = { search, skip_count: (page - 1) * pageSize, max_size: pageSize, sort, desc }
     this.setState({ loading: true })
     let newList = [];
-    api.getProj(params)
+    api.getGovernmentProject(params)
       .then(result => {
         const { count: total, data: list } = result.data;
         newList = list.slice();
@@ -96,8 +96,8 @@ class ProjectList extends React.Component {
 
   handleDelete = (id) => {
     this.setState({ loading: true })
-    api.deleteProj(id).then(result => {
-      this.getProject()
+    api.deleteGovernmentProject(id).then(() => {
+      this.getGovernmentProject();
     }, error => {
       this.setState({ loading: false })
       this.props.dispatch({
@@ -121,7 +121,7 @@ class ProjectList extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: 'app/getSource', payload: 'country' });
     this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
-    this.getProject();
+    this.getGovernmentProject();
   }
 
   handleDeleteBtnClick(projId) {
@@ -130,7 +130,6 @@ class ProjectList extends React.Component {
       title: '删除项目',
       content: '确认删除该项目吗？',
       onOk() {
-        window.echo('confirm del');
         react.handleDelete(projId);
       },
     });
@@ -142,7 +141,7 @@ class ProjectList extends React.Component {
         sort: sorter.column ? sorter.column.key : undefined,
         desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
       },
-      this.getProject,
+      this.getGovernmentProject,
     );
   }
 
@@ -192,9 +191,9 @@ class ProjectList extends React.Component {
       },
       {
         title: '发布时间',
-        key: 'publishDate',
-        dataIndex: 'publishDate',
-        sorter: true,
+        key: 'createdtime',
+        dataIndex: 'createdtime',
+        // sorter: true,
         render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
       }
     ];
@@ -206,7 +205,7 @@ class ProjectList extends React.Component {
           return (
             <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
-                <Link to={'/app/projects/edit/' + record.id}>
+                <Link to={'/app/government-projects/edit/' + record.id}>
                   <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
                     <EditOutlined />
                   </Button>
@@ -239,14 +238,14 @@ class ProjectList extends React.Component {
 
           <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', marginRight: 20, flex: 1 }}>
-              <Search
+              {/* <Search
                 style={{ width: 200, marginRight: 20 }}
                 placeholder="请输入项目名称"
                 onSearch={this.handleSearch}
                 onChange={search => this.setState({ search })}
                 value={search}
                 size="middle"
-              />
+              /> */}
             </div>
             {(hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) &&
               <Button
@@ -296,4 +295,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps)(withRouter(ProjectList));
+export default connect(mapStateToProps)(withRouter(GovernmentProjectList));
