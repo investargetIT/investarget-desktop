@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'dva'
 import { Link, withRouter } from 'dva/router';
 import { 
@@ -21,55 +21,60 @@ import {
 } from '@ant-design/icons';
 import _ from 'lodash';
 
-class GovernmentProjectList extends React.Component {
-  constructor(props) {
-    super(props)
+function GovernmentProjectList(props) {
 
-    const setting = this.readSetting()
-    const filters = setting ? setting.filters : NewProjectListFilter.defaultValue
-    const search = setting ? setting.search : null
-    const page = setting && setting.page ? setting.page : 1
+  const setting = readSetting();
+  const defaultFilters = setting ? setting.filters : NewProjectListFilter.defaultValue;
+  const defaultSearch = setting ? setting.search : null;
+  const defaultPage = setting && setting.page ? setting.page : 1;
 
-    this.state = {
-      filters,
-      search,
-      page,
-      pageSize: props.userPageSize || 10,
-      total: 0,
-      list: [],
-      loading: false,
-      sort: undefined,
-      desc: undefined,
-    }
+  const [filters, setFilters] = useState(defaultFilters);
+  const [search, setSearch] = useState(defaultSearch);
+  const [page, setPage] = useState(defaultPage);
+  const [pageSize, setPageSize] = useState(props.userPageSize || 10);
+  const [total, setTotal] = useState(0);
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [sort, setSort] = useState(undefined);
+  const [desc, setDesc] = useState(undefined);
+
+  useEffect(() => {
+    getGovernmentProject();
+  }, [filters, search, page, pageSize, sort, desc]);
+
+  function handleFilt(filters) {
+    setFilters(filters);
+    setPage(1);
   }
 
-  handleFilt = (filters) => {
-    this.setState({ filters, page: 1 }, this.getGovernmentProject)
+  function handleReset(filters) {
+    setFilters(filters);
+    setPage(1);
+    setSearch(null);
   }
 
-  handleReset = (filters) => {
-    this.setState({ filters, page: 1, search: null }, this.getGovernmentProject)
+  function handleSearch(search) {
+    setSearch(search);
+    setPage(1);
   }
 
-  handleSearch = (search) => {
-    this.setState({ search, page: 1 }, this.getGovernmentProject)
+  function handlePageChange(page, pageSize) {
+    setPage(page);
+    setPageSize(pageSize);
   }
 
-  handlePageChange = (page, pageSize) => {
-    this.setState({ page, pageSize }, this.getGovernmentProject)
-  }
-
-  getGovernmentProject = () => {
-    const { filters, search, page, pageSize, sort, desc } = this.state
-    const params = { search, skip_count: (page - 1) * pageSize, max_size: pageSize, sort, desc }
-    this.setState({ loading: true })
+  function getGovernmentProject() {
+    const params = { search, skip_count: (page - 1) * pageSize, max_size: pageSize, sort, desc };
+    setLoading(true);
     let newList = [];
     api.getGovernmentProject(params)
       .then(result => {
         const { count: total, data: list } = result.data;
         newList = list.slice();
-        this.setState({ total, list: newList, loading: false });
-        return this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
+        setTotal(total);
+        setList(newList);
+        setLoading(false);
+        return props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
       })
       .then(allProjstatus => {
         newList = newList.map(m => {
@@ -77,70 +82,63 @@ class GovernmentProjectList extends React.Component {
           return { ...m, projstatus };
         });
 
-        this.setState({ list: newList });
+        setList(newList);
       })
       .catch(error => {
-        this.setState({ loading: false })
-        this.props.dispatch({
+        setLoading(false);
+        props.dispatch({
           type: 'app/findError',
           payload: error
         })
       })
-    this.writeSetting()
+    writeSetting()
   }
 
-  handleDelete = (id) => {
-    this.setState({ loading: true })
+  function handleDelete(id) {
+    setLoading(true);
     api.deleteGovernmentProject(id).then(() => {
-      this.getGovernmentProject();
+      getGovernmentProject();
     }, error => {
-      this.setState({ loading: false })
-      this.props.dispatch({
+      setLoading(false);
+      props.dispatch({
         type: 'app/findError',
         payload: error
       })
     })
   }
 
-  writeSetting = () => {
-    const { filters, search, page, pageSize } = this.state
+  function writeSetting() {
     const data = { filters, search, page, pageSize };
-    localStorage.setItem('ProjectList2', JSON.stringify(data))
+    localStorage.setItem('Project;List2', JSON.stringify(data))
   }
 
-  readSetting = () => {
+  function readSetting() {
     var data = localStorage.getItem('ProjectList2')
     return data ? JSON.parse(data) : null
   }
 
-  componentDidMount() {
-    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
-    this.props.dispatch({ type: 'app/getSource', payload: 'tag' });
-    this.getGovernmentProject();
-  }
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'country' });
+    props.dispatch({ type: 'app/getSource', payload: 'tag' });
+    getGovernmentProject();
+  }, []);
 
-  handleDeleteBtnClick(projId) {
-    const react = this;
+  function handleDeleteBtnClick(projId) {
     Modal.confirm({
       title: '删除项目',
       content: '确认删除该项目吗？',
       onOk() {
-        react.handleDelete(projId);
+        handleDelete(projId);
       },
     });
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    this.setState(
-      {
-        sort: sorter.column ? sorter.column.key : undefined,
-        desc: sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined,
-      },
-      this.getGovernmentProject,
-    );
+  function handleTableChange(pagination, filters, sorter) {
+    setSort(sorter.column ? sorter.column.key : undefined);
+    setDesc(sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined);
   }
 
-  currentUserHasIndGroup = () => {
+  function currentUserHasIndGroup() {
     const userInfo = getUserInfo();
     if (!userInfo) return false;
     if (!userInfo.indGroup) return false;
@@ -148,139 +146,136 @@ class GovernmentProjectList extends React.Component {
     return true;
   }
 
-  getTagNameByID = tagID => {
-    const tag = this.props.tag.find(f => f.id === tagID);
+  function getTagNameByID(tagID) {
+    const tag = props.tag.find(f => f.id === tagID);
     if (!tag) return null;
     return tag.name;
   }
 
-  render() {
-    const { location } = this.props
-    const { total, list, loading, page, pageSize, filters, search } = this.state
-    const columns = [
-      {
-        title: i18n('project.name'),
-        key: 'title',
-        render: (_, record) => {
-          return (
-            <Tooltip title="项目详情">
-              <span className="span-title">
-                <Link to={`/app/projects/${record.id}`}>{record.realname}</Link>
-              </span>
-            </Tooltip>
-          );
-        }
-      },
-      {
-        title: '标签',
-        key: 'tags',
-        render: (_, record) => {
-          return (
-            <div>
-              {record.tags && record.tags.map(m => this.getTagNameByID(m))
-                .filter(f => f != null)
-                .map((m, i) => <Tag key={i} style={{ color: 'rgba(0, 0, 0, .45)', marginBottom: 4 }}>{m}</Tag>)}
-            </div>
-          );
-        }
-      },
-      {
-        title: '发布时间',
-        key: 'createdtime',
-        dataIndex: 'createdtime',
-        // sorter: true,
-        render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
+  const { location } = props;
+  const columns = [
+    {
+      title: i18n('project.name'),
+      key: 'title',
+      render: (_, record) => {
+        return (
+          <Tooltip title="项目详情">
+            <span className="span-title">
+              <Link to={`/app/government-projects/${record.id}`}>{record.realname}</Link>
+            </span>
+          </Tooltip>
+        );
       }
-    ];
-    columns.push(
-      {
-        title: i18n('common.operation'),
-        key: 'action',
-        render: (_, record) => {
-          return (
-            <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
-                <Link to={'/app/government-projects/edit/' + record.id}>
-                  <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
-                    <EditOutlined />
-                  </Button>
-                </Link>
-              </div>
-              <div>
-                <Button type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={this.handleDeleteBtnClick.bind(this, record.id)}>
-                  <DeleteOutlined />
+    },
+    {
+      title: '标签',
+      key: 'tags',
+      render: (_, record) => {
+        return (
+          <div>
+            {record.tags && record.tags.map(m => getTagNameByID(m))
+              .filter(f => f != null)
+              .map((m, i) => <Tag key={i} style={{ color: 'rgba(0, 0, 0, .45)', marginBottom: 4 }}>{m}</Tag>)}
+          </div>
+        );
+      }
+    },
+    {
+      title: '发布时间',
+      key: 'createdtime',
+      dataIndex: 'createdtime',
+      // sorter: true,
+      render: text => text && <div style={{ minWidth: 100 }}>{text.slice(0, 10)}</div>,
+    }
+  ];
+  columns.push(
+    {
+      title: i18n('common.operation'),
+      key: 'action',
+      render: (_, record) => {
+        return (
+          <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
+              <Link to={'/app/government-projects/edit/' + record.id}>
+                <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
+                  <EditOutlined />
                 </Button>
-              </div>
+              </Link>
             </div>
-          )
-        },
+            <div>
+              <Button type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={() => handleDeleteBtnClick(record.id)}>
+                <DeleteOutlined />
+              </Button>
+            </div>
+          </div>
+        )
       },
-    );
+    },
+  );
 
-    return (
-      <LeftRightLayoutPure location={location}
-      >
+  return (
+    <LeftRightLayoutPure location={location}
+    >
 
-        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
-          <Breadcrumb.Item>
-            <Link to="/app">首页</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>项目管理</Breadcrumb.Item>
-          <Breadcrumb.Item>政府项目</Breadcrumb.Item>
-        </Breadcrumb>
+      <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+        <Breadcrumb.Item>
+          <Link to="/app">首页</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+        <Breadcrumb.Item>政府项目</Breadcrumb.Item>
+      </Breadcrumb>
 
-        <Card title="政府项目列表">
+      <Card title="政府项目列表">
 
-          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', marginRight: 20, flex: 1 }}>
-              {/* <Search
+        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', marginRight: 20, flex: 1 }}>
+            {/* <Search
                 style={{ width: 200, marginRight: 20 }}
                 placeholder="请输入项目名称"
-                onSearch={this.handleSearch}
-                onChange={search => this.setState({ search })}
+                onSearch={handleSearch}
+                onChange={search => setSearch(search)}
                 value={search}
                 size="middle"
               /> */}
-            </div>
-            {(hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) &&
-              <Button
-                type="primary"
-                // disabled={!hasPerm('proj.admin_manageproj') && !this.currentUserHasIndGroup()}
-                icon={<PlusOutlined />}
-                onClick={() => this.props.history.push('/app/government-projects/add')}
-              >
-                添加新项目
-              </Button>
-            }
           </div>
+          {(hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) &&
+            <Button
+              type="primary"
+              // disabled={!hasPerm('proj.admin_manageproj') && !currentUserHasIndGroup()}
+              icon={<PlusOutlined />}
+              onClick={() => props.history.push('/app/government-projects/add')}
+            >
+              添加新项目
+            </Button>
+          }
+        </div>
 
-          <Table
-            columns={columns}
-            dataSource={list}
-            rowKey={record => record.id}
-            loading={loading}
-            pagination={false}
-            onChange={this.handleTableChange}
+        <Table
+          columns={columns}
+          dataSource={list}
+          rowKey={record => record.id}
+          loading={loading}
+          pagination={false}
+          onChange={handleTableChange}
+        />
+
+        <div style={{ margin: '16px 0' }} className="clearfix">
+          <Pagination
+            size="large"
+            style={{ float: 'right' }}
+            total={total}
+            current={page}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger
+            showQuickJumper
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
           />
+        </div>
+      </Card>
 
-          <div style={{ margin: '16px 0' }} className="clearfix">
-            <Pagination
-              size="large"
-              style={{ float: 'right' }}
-              total={total}
-              current={page}
-              pageSize={pageSize}
-              onChange={this.handlePageChange}
-              showSizeChanger
-              showQuickJumper
-              pageSizeOptions={PAGE_SIZE_OPTIONS}
-            />
-          </div>
-        </Card>
-
-      </LeftRightLayoutPure>
-    )
-  }
+    </LeftRightLayoutPure>
+  );
 }
 
 function mapStateToProps(state) {
