@@ -846,6 +846,7 @@ function DataroomFileManage({
   }
   
   useEffect(() => {
+    if (data.length == 0) return;
     const newData = getTableDataSource(data);
     const newTreeData = generateTreeData(newData);
     setDirData(newTreeData);
