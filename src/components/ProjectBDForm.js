@@ -100,7 +100,11 @@ class ProjectBDForm extends React.Component {
 
   // 处理货币相关表单联动
   handleCurrencyTypeChange = (currencyId, getFieldValue, setFieldsValue) => {
-    const currency = getCurrencyFromId(currencyId)
+    let currency = getCurrencyFromId(currencyId)
+    // 如果是虚拟货币的话，和美元同价
+    if (currency === 'USDT') {
+      currency = 'USD';
+    }
     exchange(currency).then((rate) => {
       const fields = ['financeAmount'];
       const values = {};
