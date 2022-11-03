@@ -268,6 +268,7 @@ export function getCurrencyFromId(id) {
     7: 'KRW', // 韩元
     8: 'HKD', // 港币
     12: 'CNY', // 人民币及美元
+    13: 'USDT', // 虚拟货币
   }
   return map[id]
 }
@@ -281,6 +282,7 @@ function getCurrencySign(currency) {
     'JPY': '\uffe5',
     'KRW': '\u20a9',
     'HKD': '$',
+    'USDT': 'USDT',
   }
   return map[currency]
 }
@@ -310,6 +312,10 @@ export function getCurrencyParser(id) {
 var exchangeCache = {}
 
 function exchange(source) {
+  // 如果是虚拟货币的话，和美元同价
+  if (source == 'USDT') {
+    sourse = 'USD';
+  }
   if (exchangeCache[source] != null) {
     let rate = exchangeCache[source]
     return new Promise(function(resolve, reject) {

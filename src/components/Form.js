@@ -282,7 +282,11 @@ UploadAvatar.contextTypes = {
 let CurrencyFormItem = ({ label, name, required, validator, currencyType, setFieldsValue }) => {
 
   function onChange(value) {
-    const currency = getCurrencyFromId(currencyType || 2)
+    let currency = getCurrencyFromId(currencyType || 2)
+    // 如果是虚拟货币的话，和美元同价
+    if (currency === 'USDT') {
+      currency = 'USD';
+    }
     exchange(currency).then((rate) => {
       setFieldsValue({
         [name + '_USD']: value == undefined ? value : Math.round(value * rate),
