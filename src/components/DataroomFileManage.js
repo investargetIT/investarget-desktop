@@ -157,6 +157,9 @@ function DataroomFileManage({
   location,
 }) {
   const keyFromURL = getURLParamValue({ location }, 'key');
+  if (keyFromURL) {
+    history.replaceState(undefined, '', location.pathname + location.search.replace(/&key=\d+/, ''));
+  }
   const defaultSelectedKeys = keyFromURL ? [parseInt(keyFromURL)] : [];
 
   const [defaultExpandedKeys, setDefaultExpandedKeys] = useState([-999]);
@@ -846,7 +849,7 @@ function DataroomFileManage({
   }
   
   useEffect(() => {
-    if (data.length == 0) return;
+    if (data.length == 0 && defaultSelectedKeys.length > 0) return;
     const newData = getTableDataSource(data);
     const newTreeData = generateTreeData(newData);
     setDirData(newTreeData);
