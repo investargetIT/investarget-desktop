@@ -1149,3 +1149,4 @@ export const addCountry = body => r('/source/country', 'POST', body);
 export const addGovernmentProject = body => r('/proj/govproj/', 'POST', body);
 export const getGovernmentProject = params => r(`/proj/govproj/?${qs.stringify(params)}`);
 export const deleteGovernmentProject = id => r(`/proj/govproj/${id}/`, 'DELETE');
+export const getGovernmentProjectDetails = id => r(`/proj/govproj/${id}`);

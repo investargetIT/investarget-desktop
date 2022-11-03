@@ -18,6 +18,7 @@ import {
 import ProjectAttachments from '../components/ProjectAttachments'
 import ProjectYearFinance from '../components/ProjectYearFinance'
 import lodash from 'lodash';
+import GovernmentProjectBaseForm from '../components/GovernmentProjectBaseForm';
 
 
 const actionStyle = {textAlign: 'center'}
@@ -30,19 +31,6 @@ const formStyle = {
   border: '1px dashed #eee',
   borderRadius: '4px',
 }
-
-
-// function onValuesChange(props, values) {
-//   console.log('onValuesChange', values)
-// }
-// function mapPropsToFields(props) {
-//   return props.data
-// }
-// const BaseForm = Form.create({onValuesChange, mapPropsToFields})(ProjectBaseForm)
-// const FinanceForm = Form.create({onValuesChange, mapPropsToFields})(ProjectFinanceForm)
-// const ConnectForm = Form.create({onValuesChange, mapPropsToFields})(ProjectConnectForm)
-// const DetailForm = Form.create({onValuesChange, mapPropsToFields})(ProjectDetailForm)
-
 
 function toFormData(data) {
   var formData = {}
@@ -166,32 +154,27 @@ class EditGovernmentProject extends React.Component {
 
   getProject = () => {
     const id = Number(this.props.match.params.id)
-    api.getProjDetail(id).then(result => {
+    api.getGovernmentProjectDetails(id).then(result => {
+      window.echo('result', result);
       let data = Object.assign({}, result.data);
-      delete data.makeUser
-      delete data.takeUser 
-      echo(result.data)
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
       data.currency = result.data.currency && result.data.currency.id
       data.sponsor = result.data.sponsor && result.data.sponsor.id
-      data.industries = result.data.industries
+      data.industry = result.data.industry || undefined;
       data.projstatus = result.data.projstatus && result.data.projstatus.id
-      data.supportUserName = result.data.supportUser && (window.LANG === 'en' ? result.data.supportUser.usernameE : result.data.supportUser.usernameC);
-      data.tags = result.data.tags ? result.data.tags.map(item => item.id) : []
+      data.tags = result.data.tags || undefined;
       data.transactionType = result.data.transactionType ? result.data.transactionType.map(item => item.id) : []
-      // data.takeUser = result.data.takeUser === undefined ? undefined : (result.data.takeUser === null ? null : result.data.takeUser.id);
-      // data.takeUserName = result.data.takeUser && (window.LANG === 'en' ? result.data.takeUser.usernameE : result.data.takeUser.usernameC);
-      // data.makeUser = result.data.makeUser === undefined ? undefined : (result.data.makeUser === null ? null : result.data.makeUser.id);
-      // data.makeUserName = result.data.makeUser && (window.LANG === 'en' ? result.data.makeUser.usernameE : result.data.makeUser.usernameC);
       data.service = result.data.service ? result.data.service.map(m => m.id) : []
       // `value` prop on `textarea` should not be null.
-      let textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
+      const textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
       textFields.forEach(field => {
-        if (data[field] == null) { data[field] = '' }
-      })
+        if (data[field] == null) {
+          data[field] = ''
+        }
+      });
       this.setState({
-        project: data
+        project: data,
       }, this.setFormValue);
     }, error => {
       this.props.dispatch({
@@ -261,51 +244,15 @@ class EditGovernmentProject extends React.Component {
     }
   }
 
-  handleBaseFormRef = (inst) => {
-    if (inst) {
-      this.baseForm = inst.props.form
-    }
-  }
-  handleFinanceFormRef = (inst) => {
-    if (inst) {
-      this.financeForm = inst.props.form
-    }
-  }
-  handleConnectFormRef = (inst) => {
-    if (inst) {
-      this.connectForm = inst.props.form
-    }
-  }
-  handleDetailFormRef = (inst) => {
-    if (inst) {
-      this.detailForm = inst.props.form
-    }
-  }
-
   componentDidMount() {
-    // this.getProject()
+    this.getProject()
   }
 
   setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
-    const { projectBD, sponsor, takeUser } = newFormData;
-    // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
-    if (projectBD) {
-      if (!sponsor || !takeUser || (takeUser && takeUser.length === 0)) {
-        const reqProjBD = await api.getProjBD(projectBD);
-        if (!takeUser || (takeUser && takeUser.length === 0)) {
-          let allManagers = [];
-          if (reqProjBD.data.manager) {
-            allManagers = reqProjBD.data.manager.filter(f => f.type === 3).map(m => m.manager.id.toString());
-          }
-          newFormData.takeUser = allManagers;
-        }
-        if (!sponsor && reqProjBD.data.contractors) {
-          newFormData.sponsor = reqProjBD.data.contractors.id;
-        }
-      }
-    }
+    window.echo('new form data', newFormData);
     this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
+    return;
     this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);
     this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
     this.editProjectDetailsFormRef.current.setFieldsValue(newFormData);
@@ -356,7 +303,7 @@ class EditGovernmentProject extends React.Component {
           <Tabs onChange={activeKey => this.setState({ activeKey })} activeKey={this.state.activeKey}>
             <TabPane tab={i18n('project.basics')} key="1" forceRender>
               <div style={formStyle}>
-                <ProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>
+                <GovernmentProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>
                 <FormAction form="baseForm" loadingEdit={this.state.loadingEdit} />
               </div>
             </TabPane>
