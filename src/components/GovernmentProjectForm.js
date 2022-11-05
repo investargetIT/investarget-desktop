@@ -250,7 +250,7 @@ function GovernmentProjectDetailForm1(props) {
   return (
     <Form ref={props.forwardedRef}>
       {props.goverInfoType.map(m => (
-        <BasicFormItem key={m.name} label={m.label} name={m.name} initialValue="">
+        <BasicFormItem key={m.id} label={m.label} name={m.id} initialValue="">
           <Input.TextArea rows={8} />
         </BasicFormItem>
       ))}

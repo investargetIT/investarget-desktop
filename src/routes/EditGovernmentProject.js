@@ -132,13 +132,15 @@ function toData(formData) {
 
 
 function EditGovernmentProject(props) {
-    
+  
+  const govproj = Number(props.match.params.id);
   const activeKeyFromUrl = getURLParamValue(props, 'activeKey');
   
   const [project, setProject] = useState({});
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [refreshAttachmentTab, setRefreshAttachmentTab] = useState(true);
   const [activeKey, setActiveKey] = useState(activeKeyFromUrl || '1');
+  const [projInfo, setProjInfo] = useState([]);
 
   const editProjectBaseFormRef = useRef(null);
   const editProjectConnectFormRef = useRef(null);
@@ -189,60 +191,75 @@ function EditGovernmentProject(props) {
   async function editProject(formStr, ifBack) {
     const id = Number(props.match.params.id);
     try {
-      const baseFormValues = await editProjectBaseFormRef.current.validateFields();
-      const baseFormParams = toData(baseFormValues);
+    //   const baseFormValues = await editProjectBaseFormRef.current.validateFields();
+    //   const baseFormParams = toData(baseFormValues);
       try {
-        const financeFormValues = await editProjectFinanceFormRef.current.validateFields();
-        const financeFormParams = toData(financeFormValues);
+        // const connectFormValues = await editProjectConnectFormRef.current.validateFields();
+        // const connectFormParams = toData(connectFormValues);
         try {
-          const connectFormValues = await editProjectConnectFormRef.current.validateFields();
-          const connectFormParams = toData(connectFormValues);
-          try {
-            const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
-            const detailFormParams = toData(detailsFormValues);
-            const params = {
-              ...baseFormParams,
-              ...financeFormParams,
-              ...connectFormParams,
-              ...detailFormParams,
-            };
-            setLoadingEdit(true);
-            api.editProj(id, params).then(result => {
-              setLoadingEdit(false);
-              getProject();
-              if (ifBack) {
-                goBack();
-              }
-              else {
-                message.success(i18n('project.message.project_updated'), 2)
-              }
-            }, error => {
-              setLoadingEdit(false);
-              props.dispatch({
-                type: 'app/findError',
-                payload: error
-              })
+          const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
+          const res = await saveGovernmentProjInfo(detailsFormValues);
+          window.echo('res', res);
+          return;
+          const detailFormParams = toData(detailsFormValues);
+          const params = {
+            // ...baseFormParams,
+            // ...connectFormParams,
+            ...detailFormParams,
+          };
+          setLoadingEdit(true);
+          api.editProj(id, params).then(result => {
+            setLoadingEdit(false);
+            getProject();
+            if (ifBack) {
+              goBack();
+            }
+            else {
+              message.success(i18n('project.message.project_updated'), 2)
+            }
+          }, error => {
+            setLoadingEdit(false);
+            props.dispatch({
+              type: 'app/findError',
+              payload: error
             })
-          } catch (error) {
-            message.error('项目详情内容有误，请检查', 2);
-          }
+          })
         } catch (error) {
-          message.error('联系方式内容有误，请检查', 2);
+          message.error('项目详情内容有误，请检查', 2);
         }
       } catch (error) {
-        message.error('财务信息内容有误，请检查', 2);
+        message.error('联系方式内容有误，请检查', 2);
       }
     } catch (error) {
       message.error('基本信息内容有误，请检查', 2);
     }
   }
 
-
+  async function saveGovernmentProjInfo(formData) {
+    const arr = [];
+    for (const key in formData) {
+      if (Object.hasOwnProperty.call(formData, key)) {
+        const value = formData[key];
+        const filterProjInfo = projInfo.filter(f => f.type === parseInt(key));
+        if (filterProjInfo.length > 0) {
+          arr.push({ id: filterProjInfo[0].id, info: value, type: parseInt(key) });
+        } else {
+          arr.push({ info: value, type: parseInt(key) });
+        }
+      }
+    }
+    return await Promise.all(arr.map(m => {
+      if (m.id) {
+        return api.editGovernmentProjectInfo(m.id, { info: m.info });
+      }
+      return api.addGovernmentProjectInfo({ ...m, govproj });
+    }));
+  }
 
   async function getGovernmentProjectInfo() {
     const id = Number(props.match.params.id)
     const req = await api.getGovernmentProjectInfo({ govproj: id });
-    window.echo('req govern proj info', req);
+    setProjInfo(req.data.data);
   }
 
   async function setFormValue() {
