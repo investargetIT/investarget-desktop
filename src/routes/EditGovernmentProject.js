@@ -155,6 +155,14 @@ function EditGovernmentProject(props) {
     setFormValue();
   }, [project]);
 
+  useEffect(() => {
+    const formValue = {};
+    projInfo.forEach(element => {
+      formValue[element.type] = element.info;
+    });
+    editProjectDetailsFormRef.current.setFieldsValue(formValue);
+  }, [projInfo]);
+
   function goBack() {
     props.history.goBack();
   }
@@ -199,7 +207,6 @@ function EditGovernmentProject(props) {
         try {
           const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
           const res = await saveGovernmentProjInfo(detailsFormValues);
-          window.echo('res', res);
           return;
           const detailFormParams = toData(detailsFormValues);
           const params = {
