@@ -69,15 +69,16 @@ function toFormDataNew(data) {
   var formData = {}
 
   for (let prop in data) {
-    if (prop == 'industries') {
+    if (prop == 'industry') {
       // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
-      let value = data['industries'];
-      let keys = _.range(1, 1 + value.length);
-      formData['industriesKeys'] = keys;
-      keys.forEach((key, index) => {
-        formData['industries-' + key] = value[index].industry.id;
-        formData['industries-image-' + key] = value[index].key;
-      })
+      let value = data['industry'];
+      // let keys = _.range(1, 1 + value.length);
+      // formData['industriesKeys'] = keys;
+      // keys.forEach((key, index) => {
+      //   formData['industries-' + key] = value[index].industry.id;
+      //   formData['industries-image-' + key] = value[index].key;
+      // })
+      window.echo('value', value);
     } else if (prop === 'projTraders' && data[prop]) {
       const { projTraders } = data;
       const takeUser = projTraders.filter(f => f.type === 0);

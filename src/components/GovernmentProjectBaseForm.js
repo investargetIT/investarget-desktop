@@ -44,7 +44,7 @@ function GovernmentProjectBaseForm(props) {
         <RadioTrueOrFalse />
       </BasicFormItem>
 
-      <BasicFormItem label="对应平台项目" name="historyCases" valueType="array">
+      <BasicFormItem label="对应平台项目" name="historycases" valueType="array">
         <SelectMultipleExistProject />
       </BasicFormItem>
 
@@ -114,6 +114,5 @@ function mapStateToPropsIndustry(state) {
   return { industry }
 }
 
-// export default connect(mapStateToPropsIndustry)(ProjectBaseForm)
 const ConnectedGovernmentProjectForm = connect(mapStateToPropsIndustry)(GovernmentProjectBaseForm);
 export default React.forwardRef((props, ref) => <ConnectedGovernmentProjectForm {...props} forwardedRef={ref} />);
