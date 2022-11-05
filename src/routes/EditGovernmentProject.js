@@ -78,7 +78,6 @@ function toFormDataNew(data) {
       //   formData['industries-' + key] = value[index].industry.id;
       //   formData['industries-image-' + key] = value[index].key;
       // })
-      window.echo('value', value);
     } else if (prop === 'projTraders' && data[prop]) {
       const { projTraders } = data;
       const takeUser = projTraders.filter(f => f.type === 0);
@@ -156,7 +155,6 @@ class EditGovernmentProject extends React.Component {
   getProject = () => {
     const id = Number(this.props.match.params.id)
     api.getGovernmentProjectDetails(id).then(result => {
-      window.echo('result', result);
       let data = Object.assign({}, result.data);
       data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
@@ -253,12 +251,11 @@ class EditGovernmentProject extends React.Component {
   getGovernmentProjectInfo = async () => {
     const id = Number(this.props.match.params.id)
     const req = await api.getGovernmentProjectInfo({ govproj: id });
-    window.echo('req', req);
+    window.echo('req govern proj info', req);
   }
 
   setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
-    window.echo('new form data', newFormData);
     this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
     return;
     this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);

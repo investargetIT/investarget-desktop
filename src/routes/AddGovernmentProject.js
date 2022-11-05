@@ -49,7 +49,7 @@ function AddGovernmentProject(props) {
       })
       .then(res => {
         const { id: govproj } = res.data;
-        return Promise.all(props.goverInfoType.map(m => api.addGovernmentProjectInfo({ govproj, type: m.id })));
+        return Promise.all(props.goverInfoType.map(m => api.addGovernmentProjectInfo({ govproj, type: m.id, info: '' })));
       })
       .then(() => {
         goBack();
