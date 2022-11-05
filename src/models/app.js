@@ -2,6 +2,7 @@ import * as api from '../api'
 import { i18n, isLogin, requestAllData, requestDownloadUrl, subtracting } from '../utils/util'
 import { URI_TO_KEY } from '../constants'
 import { routerRedux } from 'dva/router'
+import pinyin from 'tiny-pinyin';
 
 export default {
   namespace: 'app',
@@ -132,7 +133,13 @@ export default {
     *getSource({ payload: sourceType }, { call, put, select }) {
       let dataFromRedux = yield select(state => state.app[sourceType]);
       if (dataFromRedux.length > 0) return dataFromRedux;
-      const { data } = yield call(api.getSource, sourceType)
+      let { data } = yield call(api.getSource, sourceType)
+      if (sourceType == 'goverInfoType' && pinyin.isSupported) {
+        data = data.map(m => {
+          const name = pinyin.convertToPinyin(m.name, '', true);
+          return { ...m, name, label: m.name };
+        });
+      }
       yield put({ type: 'saveSource', payload: { sourceType, data } });
       return data;
     },

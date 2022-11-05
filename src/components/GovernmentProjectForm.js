@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../utils/util'
@@ -242,73 +242,30 @@ const ProjectConnectForm = React.forwardRef((props, ref) => <ProjectConnectForm1
 
 
 function GovernmentProjectDetailForm1(props) {
+  
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
+  }, []);
+  
   return (
     <Form ref={props.forwardedRef}>
-      <BasicFormItem label="公司简介" name="p_introducteC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Company Introduction" name="p_introducteE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="目标市场" name="targetMarketC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Target Market" name="targetMarketE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="核心产品" name="productTechnologyC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Core Product" name="productTechnologyE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="商业模式" name="businessModelC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Business Model" name="businessModelE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="品牌渠道" name="brandChannelC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Brand Channel" name="brandChannelE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="管理团队" name="managementTeamC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Management Team" name="managementTeamE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="商业伙伴" name="BusinesspartnersC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Business Partner" name="BusinesspartnersE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="资金用途" name="useOfProceedC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Use of Proceeds" name="useOfProceedE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="融资历史" name="financingHistoryC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Financing History" name="financingHistoryE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="经营数据" name="operationalDataC" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
-      <BasicFormItem label="Operational Data" name="operationalDataE" initialValue={''}>
-        <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />
-      </BasicFormItem>
+      {props.goverInfoType.map(m => (
+        <BasicFormItem key={m.name} label={m.label} name={m.name} initialValue="">
+          <Input.TextArea rows={8} />
+        </BasicFormItem>
+      ))}
     </Form>
   );
 
 }
-const GovernmentProjectDetailForm = React.forwardRef((props, ref) => <GovernmentProjectDetailForm1 {...props} forwardedRef={ref} />);
+
+function mapStateToProps(state) {
+  const { goverInfoType } = state.app;
+  return { goverInfoType };
+}
+
+const ConnectedGovernmentProjectDetailForm = connect(mapStateToProps)(GovernmentProjectDetailForm1);
+const GovernmentProjectDetailForm = React.forwardRef((props, ref) => <ConnectedGovernmentProjectDetailForm {...props} forwardedRef={ref} />);
 
 export {
   GovernmentProjectDetailForm,
