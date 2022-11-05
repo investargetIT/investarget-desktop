@@ -13,8 +13,8 @@ import {
   ProjectBaseForm,
   ProjectFinanceForm,
   ProjectConnectForm,
-  ProjectDetailForm,
-} from '../components/ProjectForm'
+  GovernmentProjectDetailForm,
+} from '../components/GovernmentProjectForm';
 import ProjectAttachments from '../components/ProjectAttachments'
 import ProjectYearFinance from '../components/ProjectYearFinance'
 import lodash from 'lodash';
@@ -247,6 +247,13 @@ class EditGovernmentProject extends React.Component {
 
   componentDidMount() {
     this.getProject()
+    this.getGovernmentProjectInfo();
+  }
+
+  getGovernmentProjectInfo = async () => {
+    const id = Number(this.props.match.params.id)
+    const req = await api.getGovernmentProjectInfo({ govproj: id });
+    window.echo('req', req);
   }
 
   setFormValue = async () => {
@@ -318,7 +325,7 @@ class EditGovernmentProject extends React.Component {
 
             <TabPane tab={i18n('project.details')} key="4" forceRender>
               <div style={formStyle}>
-                <ProjectDetailForm ref={this.editProjectDetailsFormRef} />
+                <GovernmentProjectDetailForm ref={this.editProjectDetailsFormRef} />
                 <FormAction form="detailForm" />
               </div>
             </TabPane>

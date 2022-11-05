@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'dva'
 import { withRouter } from 'dva/router'
 import * as api from '../api'
@@ -33,6 +33,10 @@ function AddGovernmentProject(props) {
 
   const addGovernmentProjectFormRef = useRef(null);
 
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
+  }, []);
+
   function goBack() {
     props.history.goBack()
   }
@@ -43,14 +47,18 @@ function AddGovernmentProject(props) {
         const body = toData(values);
         return api.addGovernmentProject(body);
       })
+      .then(res => {
+        const { id: govproj } = res.data;
+        return Promise.all(props.goverInfoType.map(m => api.addGovernmentProjectInfo({ govproj, type: m.id })));
+      })
       .then(() => {
         goBack();
       })
       .catch(error => {
         props.dispatch({
           type: 'app/findError',
-          payload: error
-        })
+          payload: error,
+        });
       });
   }
   
@@ -69,4 +77,9 @@ function AddGovernmentProject(props) {
 
 }
 
-export default connect()(withRouter(AddGovernmentProject))
+function mapStateToProps(state) {
+  const { goverInfoType } = state.app;
+  return { goverInfoType }
+}
+
+export default connect(mapStateToProps)(withRouter(AddGovernmentProject))

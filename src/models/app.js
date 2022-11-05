@@ -57,6 +57,7 @@ export default {
     projectIDToDataroom: [],
     orgRemarks: [],
     orgInvestorsAndRemarks: [],
+    goverInfoType: [],
   },
   reducers: {
     menuOpen(state, { payload: openKeys }) {
