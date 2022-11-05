@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
@@ -131,29 +131,34 @@ function toData(formData) {
 }
 
 
-class EditGovernmentProject extends React.Component {
-  constructor(props) {
-    super(props)
+function EditGovernmentProject(props) {
     
-    const activeKey = getURLParamValue(props, 'activeKey');
-    this.state = {
-      project: {},
-      loadingEdit: false,
-      refreshAttachmentTab: true,
-      activeKey: activeKey || '1',
-    }
+  const activeKeyFromUrl = getURLParamValue(props, 'activeKey');
+  
+  const [project, setProject] = useState({});
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  const [refreshAttachmentTab, setRefreshAttachmentTab] = useState(true);
+  const [activeKey, setActiveKey] = useState(activeKeyFromUrl || '1');
 
-    this.editProjectBaseFormRef = React.createRef();
-    this.editProjectConnectFormRef = React.createRef();
-    this.editProjectDetailsFormRef = React.createRef();
+  const editProjectBaseFormRef = useRef(null);
+  const editProjectConnectFormRef = useRef(null);
+  const editProjectDetailsFormRef = useRef(null);
+
+  useEffect(() => {
+    getProject();
+    getGovernmentProjectInfo();
+  }, []);
+
+  useEffect(() => {
+    setFormValue();
+  }, [project]);
+
+  function goBack() {
+    props.history.goBack();
   }
 
-  goBack = () => {
-    this.props.history.goBack()
-  }
-
-  getProject = () => {
-    const id = Number(this.props.match.params.id)
+  function getProject() {
+    const id = Number(props.match.params.id)
     api.getGovernmentProjectDetails(id).then(result => {
       let data = Object.assign({}, result.data);
       data.character = result.data.character && result.data.character.id
@@ -172,31 +177,28 @@ class EditGovernmentProject extends React.Component {
           data[field] = ''
         }
       });
-      this.setState({
-        project: data,
-      }, this.setFormValue);
+      setProject(data);
     }, error => {
-      this.props.dispatch({
+      props.dispatch({
         type: 'app/findError',
         payload: error
       })
     })
   }
 
-  editProject = async (formStr, ifBack) => {
-    const react = this;
-    const id = Number(this.props.match.params.id);
+  async function editProject(formStr, ifBack) {
+    const id = Number(props.match.params.id);
     try {
-      const baseFormValues = await react.editProjectBaseFormRef.current.validateFields();
+      const baseFormValues = await editProjectBaseFormRef.current.validateFields();
       const baseFormParams = toData(baseFormValues);
       try {
-        const financeFormValues = await react.editProjectFinanceFormRef.current.validateFields();
+        const financeFormValues = await editProjectFinanceFormRef.current.validateFields();
         const financeFormParams = toData(financeFormValues);
         try {
-          const connectFormValues = await react.editProjectConnectFormRef.current.validateFields();
+          const connectFormValues = await editProjectConnectFormRef.current.validateFields();
           const connectFormParams = toData(connectFormValues);
           try {
-            const detailsFormValues = await react.editProjectDetailsFormRef.current.validateFields();
+            const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
             const detailFormParams = toData(detailsFormValues);
             const params = {
               ...baseFormParams,
@@ -204,27 +206,19 @@ class EditGovernmentProject extends React.Component {
               ...connectFormParams,
               ...detailFormParams,
             };
-            this.setState({ loadingEdit: true });
+            setLoadingEdit(true);
             api.editProj(id, params).then(result => {
-              this.setState({ loadingEdit: false });
-              this.getProject()
-              if (baseFormParams.sendWechat) {
-                api.sendProjPdfToWechatGroup(id);
-              }
-              if (baseFormParams.projectBD) {
-                convertCommentFilesToAttachments(id, baseFormValues.projectBD).then(() => {
-                  this.setState({ refreshAttachmentTab: false }, () => this.setState({ refreshAttachmentTab: true }));
-                });
-              }
+              setLoadingEdit(false);
+              getProject();
               if (ifBack) {
-                this.goBack()
+                goBack();
               }
               else {
                 message.success(i18n('project.message.project_updated'), 2)
               }
             }, error => {
-              this.setState({ loadingEdit: false });
-              this.props.dispatch({
+              setLoadingEdit(false);
+              props.dispatch({
                 type: 'app/findError',
                 payload: error
               })
@@ -243,27 +237,24 @@ class EditGovernmentProject extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.getProject()
-    this.getGovernmentProjectInfo();
-  }
 
-  getGovernmentProjectInfo = async () => {
-    const id = Number(this.props.match.params.id)
+
+  async function getGovernmentProjectInfo() {
+    const id = Number(props.match.params.id)
     const req = await api.getGovernmentProjectInfo({ govproj: id });
     window.echo('req govern proj info', req);
   }
 
-  setFormValue = async () => {
-    const newFormData = toFormDataNew(this.state.project);
-    this.editProjectBaseFormRef.current.setFieldsValue(newFormData);
+  async function setFormValue() {
+    const newFormData = toFormDataNew(project);
+    editProjectBaseFormRef.current.setFieldsValue(newFormData);
     return;
-    this.editProjectFinanceFormRef.current.setFieldsValue(newFormData);
-    this.editProjectConnectFormRef.current.setFieldsValue(newFormData);
-    this.editProjectDetailsFormRef.current.setFieldsValue(newFormData);
+    editProjectFinanceFormRef.current.setFieldsValue(newFormData);
+    editProjectConnectFormRef.current.setFieldsValue(newFormData);
+    editProjectDetailsFormRef.current.setFieldsValue(newFormData);
   }
 
-  handeBaseFormValuesChange = async (changedValue) => {
+  async function handeBaseFormValuesChange(changedValue) {
     if ('projectBD' in changedValue) {
       if (changedValue.projectBD) {
         const reqProjBD = await api.getProjBD(changedValue.projectBD);
@@ -277,62 +268,57 @@ class EditGovernmentProject extends React.Component {
         if (reqProjBD.data.contractors) {
           newSponsor = reqProjBD.data.contractors.id;
         }
-        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: newTakeUser, sponsor: newSponsor });
+        editProjectConnectFormRef.current.setFieldsValue({ takeUser: newTakeUser, sponsor: newSponsor });
       } else {
-        this.editProjectBaseFormRef.current.setFieldsValue({ projectBD: null });
-        this.editProjectConnectFormRef.current.setFieldsValue({ takeUser: [], sponsor: null});
+        editProjectBaseFormRef.current.setFieldsValue({ projectBD: null });
+        editProjectConnectFormRef.current.setFieldsValue({ takeUser: [], sponsor: null});
       }
     }
   }
 
-  render() {
-    if (Object.keys(this.state.project).length === 0 && this.state.project.constructor === Object) {
-      return <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')} />;
-    }
-    const id = Number(this.props.match.params.id)
-    const data = toFormData(this.state.project)
-    
-    const FormAction = ({ form, loadingEdit }) => {
-      return (
-        <div style={actionStyle}>
-          <Button type="primary" size="large" loading={loadingEdit} style={actionBtnStyle} onClick={this.editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
-          <Button size="large" loading={loadingEdit} style={actionBtnStyle} onClick={this.editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
-        </div>
-      )
-    }
+  const id = Number(props.match.params.id)
+  const data = toFormData(project)
 
+  const FormAction = ({ form, loadingEdit }) => {
     return (
-      <LeftRightLayout location={this.props.location} title={i18n('project.edit_project')}>
-        <div>
-
-          <Tabs onChange={activeKey => this.setState({ activeKey })} activeKey={this.state.activeKey}>
-            <TabPane tab={i18n('project.basics')} key="1" forceRender>
-              <div style={formStyle}>
-                <GovernmentProjectBaseForm ref={this.editProjectBaseFormRef} onValuesChange={this.handeBaseFormValuesChange}/>
-                <FormAction form="baseForm" loadingEdit={this.state.loadingEdit} />
-              </div>
-            </TabPane>
-
-            <TabPane tab={i18n('project.contact')} key="3" forceRender>
-              <div style={formStyle}>
-                <ProjectConnectForm ref={this.editProjectConnectFormRef} />
-                <FormAction form="connectForm" />
-              </div>
-            </TabPane>
-
-            <TabPane tab={i18n('project.details')} key="4" forceRender>
-              <div style={formStyle}>
-                <GovernmentProjectDetailForm ref={this.editProjectDetailsFormRef} />
-                <FormAction form="detailForm" />
-              </div>
-            </TabPane>
-
-          </Tabs>
-
-        </div>
-      </LeftRightLayout>
+      <div style={actionStyle}>
+        <Button type="primary" size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
+        <Button size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
+      </div>
     )
   }
+
+  return (
+    <LeftRightLayout location={props.location} title={i18n('project.edit_project')}>
+      <div>
+
+        <Tabs onChange={activeKey => setActiveKey(activeKey)} activeKey={activeKey}>
+          <TabPane tab={i18n('project.basics')} key="1" forceRender>
+            <div style={formStyle}>
+              <GovernmentProjectBaseForm ref={editProjectBaseFormRef} onValuesChange={handeBaseFormValuesChange} />
+              <FormAction form="baseForm" loadingEdit={loadingEdit} />
+            </div>
+          </TabPane>
+
+          <TabPane tab={i18n('project.contact')} key="3" forceRender>
+            <div style={formStyle}>
+              <ProjectConnectForm ref={editProjectConnectFormRef} />
+              <FormAction form="connectForm" />
+            </div>
+          </TabPane>
+
+          <TabPane tab={i18n('project.details')} key="4" forceRender>
+            <div style={formStyle}>
+              <GovernmentProjectDetailForm ref={editProjectDetailsFormRef} />
+              <FormAction form="detailForm" />
+            </div>
+          </TabPane>
+
+        </Tabs>
+
+      </div>
+    </LeftRightLayout>
+  );
 }
 
-export default connect()(EditGovernmentProject)
+export default connect()(EditGovernmentProject);

@@ -242,7 +242,6 @@ const ProjectConnectForm = React.forwardRef((props, ref) => <ProjectConnectForm1
 
 
 function GovernmentProjectDetailForm1(props) {
-  window.echo('governmentProject');
   return (
     <Form ref={props.forwardedRef}>
       <BasicFormItem label="公司简介" name="p_introducteC" initialValue={''}>
