@@ -273,7 +273,7 @@ function GovernmentProjectDetailForm1(props) {
           <BasicFormItem
             label="附件"
             name={[m.id, 'fileList']}
-            valuePropName={`fileList-${m.id}`}
+            valuePropName="fileList"
             getValueFromEvent={normFile}
             valueType="array"
             initialValue={[]}

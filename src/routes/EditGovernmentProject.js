@@ -138,7 +138,6 @@ function EditGovernmentProject(props) {
   
   const [project, setProject] = useState({});
   const [loadingEdit, setLoadingEdit] = useState(false);
-  const [refreshAttachmentTab, setRefreshAttachmentTab] = useState(true);
   const [activeKey, setActiveKey] = useState(activeKeyFromUrl || '1');
   const [projInfo, setProjInfo] = useState([]);
 
@@ -160,7 +159,13 @@ function EditGovernmentProject(props) {
     projInfo.forEach(element => {
       formValue[element.type] = {};
       formValue[element.type]['info'] = element.info;
-      formValue[element.type]['fileList'] = [];
+      formValue[element.type]['fileList'] = element.attachments ? element.attachments.map(m => (
+        {
+          id: m.id,
+          name: m.filename,
+          url: m.url,
+        }
+      )) : [];
     });
     editProjectDetailsFormRef.current.setFieldsValue(formValue);
   }, [projInfo]);
