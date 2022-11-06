@@ -267,12 +267,12 @@ function GovernmentProjectDetailForm1(props) {
     <Form ref={props.forwardedRef}>
       {props.goverInfoType.map(m => (
         <div key={m.id}>
-          <BasicFormItem label={m.label} name={m.id} initialValue="">
+          <BasicFormItem label={m.label} name={[m.id, 'info']} initialValue="">
             <Input.TextArea rows={8} />
           </BasicFormItem>
           <BasicFormItem
             label="附件"
-            name={`fileList-${m.id}`}
+            name={[m.id, 'fileList']}
             valuePropName={`fileList-${m.id}`}
             getValueFromEvent={normFile}
             valueType="array"

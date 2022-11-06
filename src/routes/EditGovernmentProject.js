@@ -158,7 +158,9 @@ function EditGovernmentProject(props) {
   useEffect(() => {
     const formValue = {};
     projInfo.forEach(element => {
-      formValue[element.type] = element.info;
+      formValue[element.type] = {};
+      formValue[element.type]['info'] = element.info;
+      formValue[element.type]['fileList'] = [];
     });
     editProjectDetailsFormRef.current.setFieldsValue(formValue);
   }, [projInfo]);
@@ -247,20 +249,29 @@ function EditGovernmentProject(props) {
     for (const key in formData) {
       if (Object.hasOwnProperty.call(formData, key)) {
         const value = formData[key];
+        const { info, fileList } = value;
         const filterProjInfo = projInfo.filter(f => f.type === parseInt(key));
         if (filterProjInfo.length > 0) {
-          arr.push({ id: filterProjInfo[0].id, info: value, type: parseInt(key) });
+          arr.push({ id: filterProjInfo[0].id, info, fileList });
         } else {
-          arr.push({ info: value, type: parseInt(key) });
+          arr.push({ type: parseInt(key), info, fileList });
         }
       }
     }
     return await Promise.all(arr.map(m => {
       if (m.id) {
-        return api.editGovernmentProjectInfo(m.id, { info: m.info });
+        return editGovernmentProjectInfoAndAtta(m.id, m.info, m.fileList);
       }
       return api.addGovernmentProjectInfo({ ...m, govproj });
     }));
+  }
+
+  async function editGovernmentProjectInfoAndAtta(id, info, fileList) {
+    await api.editGovernmentProjectInfo(id, { info });
+    await Promise.all(fileList.map(m => {
+      const { filename, bucket, key, realfilekey } = m;
+      return api.addGovernmentProjectInfoAttachment({ govprojinfo: id, filename, bucket, key, realfilekey });
+    }))
   }
 
   async function getGovernmentProjectInfo() {
