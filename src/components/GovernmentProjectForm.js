@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId } from '../utils/util'
+import { i18n, exchange, hasPerm, getCurrentUser, getCurrencyFromId, customRequest } from '../utils/util'
 import * as api from '../api'
 import styles from './ProjectForm.css'
-
-import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox } from 'antd'
+import { Collapse, Form, Row, Col, Button, Icon, Input, Switch, Radio, Select, Cascader, InputNumber, Checkbox, Upload } from 'antd'
 const FormItem = Form.Item
 const Panel = Collapse.Panel
 const RadioGroup = Radio.Group
 const InputGroup = Input.Group
-
 import {
   BasicFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
 } from '../components/Form'
- 
+import {
+  InboxOutlined,
+} from '@ant-design/icons';
 import {
   TreeSelectTag,
   SelectRole,
@@ -247,12 +247,50 @@ function GovernmentProjectDetailForm1(props) {
     props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
   }, []);
   
+  function normFile(e) {
+    const fileList = Array.isArray(e) ? e : (e && e.fileList);
+    return fileList.map(file => ({
+      ...file,
+      bucket: file.response ? file.response.result.bucket : file.bucket,
+      key: file.response ? file.response.result.key : file.key,
+      realfilekey: file.response ? file.response.result.realfilekey : file.key,
+      url: file.response ? file.response.result.url : file.url,
+      filename: file.name,
+    }));
+  }
+
+  function handleUploadChange(e) {
+    // window.echo('handle upload change', e);
+  }
+
   return (
     <Form ref={props.forwardedRef}>
       {props.goverInfoType.map(m => (
-        <BasicFormItem key={m.id} label={m.label} name={m.id} initialValue="">
-          <Input.TextArea rows={8} />
-        </BasicFormItem>
+        <div key={m.id}>
+          <BasicFormItem label={m.label} name={m.id} initialValue="">
+            <Input.TextArea rows={8} />
+          </BasicFormItem>
+          <BasicFormItem
+            label="附件"
+            name={`fileList-${m.id}`}
+            valuePropName={`fileList-${m.id}`}
+            getValueFromEvent={normFile}
+            valueType="array"
+            initialValue={[]}
+          >
+            <Upload.Dragger
+              multiple
+              customRequest={customRequest}
+              data={{ bucket: 'file' }}
+              onChange={handleUploadChange}
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽文件到此区域上传</p>
+            </Upload.Dragger>
+          </BasicFormItem>
+        </div>
       ))}
     </Form>
   );

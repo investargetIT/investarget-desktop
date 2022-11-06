@@ -91,12 +91,6 @@ const BasicFormItem = props => {
     </FormItem>
   )
 }
-// BasicFormItem.contextTypes = {
-//   form: PropTypes.object
-// }
-// BasicFormItem.propTypes = {
-//   children: PropTypes.element.isRequired,
-// }
 
 
 
