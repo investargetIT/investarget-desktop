@@ -158,8 +158,9 @@ function EditGovernmentProject(props) {
     projInfo.forEach(element => {
       formValue[element.type] = {};
       formValue[element.type]['info'] = element.info;
-      formValue[element.type]['fileList'] = element.attachments ? element.attachments.map(m => (
+      formValue[element.type]['fileList'] = element.attachments ? element.attachments.map((m, i) => (
         {
+          uid: i,
           id: m.id,
           name: m.filename,
           url: m.url,
@@ -262,8 +263,6 @@ function EditGovernmentProject(props) {
         }
       }
     }
-    window.echo('arr', arr);
-    return;
     return await Promise.all(arr.map(m => {
       if (m.id) {
         return editGovernmentProjectInfoAndAtta(m.id, m.info, m.fileList);
@@ -274,10 +273,19 @@ function EditGovernmentProject(props) {
 
   async function editGovernmentProjectInfoAndAtta(id, info, fileList) {
     await api.editGovernmentProjectInfo(id, { info });
-    await Promise.all(fileList.map(m => {
+    // 附件的逻辑是没有 id 的是新上传的附件需要新增，原来有 id 的现在却没了说明被用户删除了需要删除
+    const originalAtta = projInfo.find(f => f.id == id);
+    if (originalAtta.attachments) {
+      const newFileListIds = fileList.filter(f => f.id).map(m => m.id);
+      const originalAttaIds = originalAtta.attachments.map(m => m.id);
+      const toDelete = originalAttaIds.filter(f => newFileListIds.indexOf(f) == -1);
+      await Promise.all(toDelete.map(m => api.deleteGovernmentProjectInfoAttachment(m)));
+    }
+    const toAdd = fileList.filter(f => !f.id);
+    await Promise.all(toAdd.map(m => {
       const { filename, bucket, key, realfilekey } = m;
       return api.addGovernmentProjectInfoAttachment({ govprojinfo: id, filename, bucket, key, realfilekey });
-    }))
+    }));
   }
 
   async function addGovernmentProjectInfoAndAtta(type, info, fileList) {

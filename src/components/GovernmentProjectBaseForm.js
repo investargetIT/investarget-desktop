@@ -78,14 +78,6 @@ function GovernmentProjectBaseForm(props) {
         <SelectRole />
       </BasicFormItem>
 
-      <BasicFormItem label={i18n('project.transaction_type')} name="transactionType" required valueType="array">
-        <SelectTransactionType mode="multiple" />
-      </BasicFormItem>
-
-      <BasicFormItem label={i18n('project.service_type')} name="service" required valueType="array">
-        <SelectService mode="multiple" />
-      </BasicFormItem>
-
       <div style={{ textAlign: 'center' }}>
         <div style={paraStyle}>
           <FormItem

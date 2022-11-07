@@ -1154,3 +1154,4 @@ export const getGovernmentProjectInfo = params => r(`/proj/govproj/info/?${qs.st
 export const addGovernmentProjectInfo = body => r('/proj/govproj/info/', 'POST', body);
 export const editGovernmentProjectInfo = (id, body) => r(`/proj/govproj/info/${id}/`, 'PUT', body);
 export const addGovernmentProjectInfoAttachment = body => r('/proj/govproj/info/atta/', 'POST', body);
+export const deleteGovernmentProjectInfoAttachment = id => r(`/proj/govproj/info/atta/${id}/`, 'DELETE');
