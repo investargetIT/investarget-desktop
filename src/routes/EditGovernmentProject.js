@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
@@ -282,7 +281,21 @@ function EditGovernmentProject(props) {
   async function getGovernmentProjectInfo() {
     const id = Number(props.match.params.id)
     const req = await api.getGovernmentProjectInfo({ govproj: id });
-    setProjInfo(req.data.data);
+    const { data: projInfo } = req.data;
+    setProjInfo(projInfo);
+
+    const newProjInfo = projInfo.slice();
+    for (let index = 0; index < newProjInfo.length; index++) {
+      const element = newProjInfo[index];
+      if (element.attachments) {
+        for (let index = 0; index < element.attachments.length; index++) {
+          const atta = element.attachments[index];
+          const reqDownload = await api.downloadUrl(atta.bucket, atta.realfilekey);
+          atta.url = reqDownload.data;
+        }
+      }
+    }
+    setProjInfo(newProjInfo);
   }
 
   async function setFormValue() {
