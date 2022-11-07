@@ -262,11 +262,13 @@ function EditGovernmentProject(props) {
         }
       }
     }
+    window.echo('arr', arr);
+    return;
     return await Promise.all(arr.map(m => {
       if (m.id) {
         return editGovernmentProjectInfoAndAtta(m.id, m.info, m.fileList);
       }
-      return api.addGovernmentProjectInfo({ ...m, govproj });
+      return addGovernmentProjectInfoAndAtta(m.type, me.info, m.fileList);
     }));
   }
 
@@ -275,6 +277,15 @@ function EditGovernmentProject(props) {
     await Promise.all(fileList.map(m => {
       const { filename, bucket, key, realfilekey } = m;
       return api.addGovernmentProjectInfoAttachment({ govprojinfo: id, filename, bucket, key, realfilekey });
+    }))
+  }
+
+  async function addGovernmentProjectInfoAndAtta(type, info, fileList) {
+    const reqInfo = await api.addGovernmentProjectInfo({ govproj, type, info });
+    const { id: govprojinfo } = reqInfo.data;
+    await Promise.all(fileList.map(m => {
+      const { filename, bucket, key, realfilekey } = m;
+      return api.addGovernmentProjectInfoAttachment({ govprojinfo, filename, bucket, key, realfilekey });
     }))
   }
 
