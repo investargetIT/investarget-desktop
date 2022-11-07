@@ -17,6 +17,7 @@ import {
   UserOutlined,
   DeleteOutlined,
   EditOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { OrganizationListFilter } from '../components/Filter'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -354,6 +355,13 @@ class OrganizationList extends React.Component {
     }
   }
 
+  getCurrentOrgId = () => {
+    const org = this.state.list.find(f => f.id === this.state.currentOrg);
+    if (org) {
+      return org.id;
+    }
+  }
+
   render() {
     const buttonStyle={textDecoration:'underline',border:'none',background:'none'}
     const imgStyle={width:'15px',height:'20px'}
@@ -465,9 +473,11 @@ class OrganizationList extends React.Component {
                         <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
                         <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
                       </div>
-                      <div />
+                      <Link to={`/app/organization/${this.getCurrentOrgId()}?action=addRemark`} target="_blank">
+                        <Tooltip title="添加备注"><PlusOutlined /></Tooltip>
+                      </Link>
                     </div>
-                    <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }} >
+                    <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
                       <List
                         className="comment-list"
                         itemLayout="horizontal"
@@ -499,7 +509,9 @@ class OrganizationList extends React.Component {
                         <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
                         <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
                       </div>
-                      <div />
+                      <Link to={`/app/user/add?org=${this.getCurrentOrgId()}&redirect=/app/organization/list`} target="_blank">
+                        <Tooltip title="添加投资人"><PlusOutlined /></Tooltip>
+                      </Link>
                     </div>
                     <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
                       <List
