@@ -12,6 +12,7 @@ import {
   HeartFilled,
   CloudDownloadOutlined,
 } from '@ant-design/icons';
+import lodash from 'lodash';
 
 const TabPane = Tabs.TabPane
 
@@ -19,14 +20,34 @@ const TabPane = Tabs.TabPane
 const blockStyle = {
   color: '#595959',
 }
-
+const headerStyle = {
+  padding: '14px 24px',
+  backgroundColor: '#f4f4f4',
+  fontSize: 14,
+  fontWeight: 'bold',
+  lineHeight: '22px',
+  color: '#262626',
+  borderBottom: '1px solid #e6e6e6',
+}
+const liStyle={
+  display:'flex',
+  justifyContent:'space-between',
+  minHeight:30,
+  fontSize: 14,
+  lineHeight: '22px',
+  padding: '14px 24px',
+  borderBottom: '1px solid #e6e6e6',
+  color: '#595959', 
+  alignItems: 'center',
+}
 
 function GovernmentProjectDetail(props) {
 
   const [id, setId] = useState(Number(props.match.params.id));
   const [project, setProject] = useState({});
   const [imageHeight, setImageHeight] = useState(0);
-  const [activeTabKey, setActiveTabKey] = useState('details');
+  const [activeTabKey, setActiveTabKey] = useState('historycases');
+  const [projInfo, setProjInfo] = useState([]);
 
   const header = useRef(null);
 
@@ -38,6 +59,7 @@ function GovernmentProjectDetail(props) {
 
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
+    props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
     props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
     props.dispatch({ type: 'app/getSource', payload: 'country' });
     
@@ -47,10 +69,46 @@ function GovernmentProjectDetail(props) {
       })
       .catch(handleError);
 
+    async function getGovernmentProjectInfo() {
+      const goverInfoType = await props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
+      const req = await api.getGovernmentProjectInfo({ govproj: id });
+      let { data: projInfo } = req.data;
+      projInfo = projInfo.sort((a, b) => a.type - b.type);
+      projInfo = projInfo.map(m => {
+        const infoType = goverInfoType.find(f => f.id == m.type);
+        let name = m.type.toString();
+        if (infoType) {
+          name = infoType.label
+        }
+        return { ...m, name };
+      });
+      setProjInfo(projInfo);
+
+      const newProjInfo = lodash.cloneDeep(projInfo);
+      for (let index = 0; index < newProjInfo.length; index++) {
+        const element = newProjInfo[index];
+        if (element.attachments) {
+          for (let index = 0; index < element.attachments.length; index++) {
+            const atta = element.attachments[index];
+            const reqDownload = await api.downloadUrl(atta.bucket, atta.realfilekey);
+            atta.url = reqDownload.data;
+          }
+        }
+      }
+      setProjInfo(newProjInfo);
+    }
+    getGovernmentProjectInfo();
+
     return () => {
       window.removeEventListener("resize", updateDimensions);
     }
   }, []);
+
+  useEffect(() => {
+    if (projInfo.length > 0) {
+      setActiveTabKey(projInfo[0].type.toString());
+    }
+  }, [projInfo]);
 
   function handleTabChange(key) {
     setActiveTabKey(key);
@@ -82,16 +140,41 @@ function GovernmentProjectDetail(props) {
         <Tabs
           style={{ marginTop: 20 }}
           className="project-details-tab"
-          defaultActiveKey="details"
           activeKey={activeTabKey}
           tabBarGutter={50}
           onChange={handleTabChange}
         >
-          <TabPane tab="详情" key="details" />
-          <TabPane tab="文件下载" key="downloads" />
+          {projInfo.map(m => <TabPane key={m.type} tab={m.name} />)}
+          <TabPane tab="FA相关案例" key="historycases" />
         </Tabs>
-
       </Card>
+
+      {projInfo.map(m => (
+        <Card key={m.type} title={m.name} style={{ marginTop: 20 }} bodyStyle={{ padding: 0 }}>
+          <div style={{ padding: 24 }} dangerouslySetInnerHTML={{ __html: m.info.replace(/\n/g, '<br>') }} />
+          
+          {m.attachments && m.attachments.length > 0 ? <div style={headerStyle}>{i18n('project.material_download')}</div> :
+            <div style={headerStyle}>{i18n('project.no_materials')}</div>}
+
+          {m.attachments && m.attachments.map((file, idx) => {
+            return (
+              <div key={idx} style={liStyle}>
+                <div title={file.filename} style={{ wordWrap: 'word-break:break-all', flex: 1, marginRight: 20 }}>
+                  {file.filename}
+                </div>
+                <a href={file.url} target="_blank">
+                  <Button
+                    type="link"
+                    icon={<CloudDownloadOutlined />}
+                  >
+                    下载
+                  </Button>
+                </a>
+              </div>
+            );
+          })}
+        </Card>
+      ))}
 
     </LeftRightLayoutPure>
   );
