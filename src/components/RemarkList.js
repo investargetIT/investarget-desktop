@@ -276,6 +276,7 @@ function remarkListWithApi(type) {
         onEdit={this.editRemark}
         onDelete={this.deleteRemark}
         type={type}
+        visibleTextarea={this.props.visibleTextarea}
       />
       <div style={divStyle}>
               {list.length <= initComNum ? null :

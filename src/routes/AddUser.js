@@ -31,6 +31,10 @@ class AddUser extends React.Component {
     }
  
     this.redirectUrl = getURLParamValue(this.props, 'redirect');
+    
+    // Org and orgName from URL are used to add a user to the specific org
+    this.org = getURLParamValue(this.props, 'org');
+    this.orgName = getURLParamValue(this.props, 'orgName');
 
     this.isTraderAddInvestor = this.redirectUrl === URI_12
     this.isAdminAddInvestor = this.redirectUrl ? this.redirectUrl.startsWith('/app/orguser/list') : false;
@@ -40,6 +44,12 @@ class AddUser extends React.Component {
     this.addUserFormRef = React.createRef();
 
     this.checkingExist = false;
+  }
+
+  componentDidMount() {
+    if (this.org && this.orgName) {
+      this.addUserFormRef.current.setFieldsValue({ org: { value: this.org, label: this.orgName } });
+    }
   }
 
   createOrg = async org => {
