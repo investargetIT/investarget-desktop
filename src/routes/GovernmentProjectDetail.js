@@ -149,9 +149,9 @@ function GovernmentProjectDetail(props) {
         </Tabs>
       </Card>
 
-      {projInfo.map(m => (
+      {activeTabKey != 'historycases' && projInfo.map(m => (
         <Card key={m.type} title={m.name} style={{ marginTop: 20 }} bodyStyle={{ padding: 0 }}>
-          <div style={{ padding: 24 }} dangerouslySetInnerHTML={{ __html: m.info.replace(/\n/g, '<br>') }} />
+          <div style={{ padding: 24 }} dangerouslySetInnerHTML={{ __html: m.info ? m.info.replace(/\n/g, '<br>') : '暂无内容' }} />
           
           {m.attachments && m.attachments.length > 0 ? <div style={headerStyle}>{i18n('project.material_download')}</div> :
             <div style={headerStyle}>{i18n('project.no_materials')}</div>}
@@ -175,6 +175,10 @@ function GovernmentProjectDetail(props) {
           })}
         </Card>
       ))}
+
+      {activeTabKey == 'historycases' && (
+        <Card>History Cases</Card>
+      )}
 
     </LeftRightLayoutPure>
   );
