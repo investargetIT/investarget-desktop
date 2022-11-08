@@ -17,6 +17,7 @@ import LogList from './routes/LogList';
 import ModifyPwd from './routes/ModifyPwd';
 import BasicInfo from './routes/BasicInfo';
 import ProjectDetail from './routes/ProjectDetail';
+import GovernmentProjectDetail from './routes/GovernmentProjectDetail';
 import RecommendProject from './routes/RecommendProject';
 import MyInvestor from './routes/MyInvestor';
 import UserList from "./routes/UserList.js";
@@ -136,6 +137,7 @@ function RouterConfig({ history }) {
         <Route path={URI_10} component={PersonalInfo} />
         <Route path="/app/projects/recommend/:id" component={RecommendProject} />
         <Route path="/app/projects/:id" component={ProjectDetail} />
+        <Route path="/app/government-projects/:id" component={GovernmentProjectDetail} />
         <Route path={URI_12} component={MyInvestor} />
         <Route path="/app/user/list/resigned-trader" component={UserListWithResignedTraders} />
         <Route path={URI_6} component={UserList} />
