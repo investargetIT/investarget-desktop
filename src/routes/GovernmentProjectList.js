@@ -197,13 +197,13 @@ function GovernmentProjectList(props) {
           <div className="orgbd-operation-icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexWrap: "wrap", maxWidth: '250px' }}>
               <Link to={'/app/government-projects/edit/' + record.id}>
-                <Button disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} type="link">
+                <Button type="link">
                   <EditOutlined />
                 </Button>
               </Link>
             </div>
             <div>
-              <Button type="link" disabled={!record.hasEditPerm && !hasPerm('proj.admin_manageproj')} onClick={() => handleDeleteBtnClick(record.id)}>
+              <Button type="link" onClick={() => handleDeleteBtnClick(record.id)}>
                 <DeleteOutlined />
               </Button>
             </div>
