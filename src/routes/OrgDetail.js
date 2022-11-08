@@ -10,6 +10,7 @@ import {
   requestAllData,
   getCurrentUser,
   customRequest,
+  getURLParamValue,
 } from '../utils/util';
 import { Link, routerRedux } from 'dva/router'
 import { 
@@ -691,6 +692,11 @@ class OrgDetail extends React.Component {
     }
 
     this.id = props.match.params.id;
+    const action = getURLParamValue(props, 'action');
+    this.visibleTextarea = false;
+    if (action == 'addRemark') {
+      this.visibleTextarea = true;
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -988,7 +994,7 @@ class OrgDetail extends React.Component {
         { this.state.reloading ? null : 
         <div>
         
-        <OrganizationRemarkList typeId={this.id} /> 
+        <OrganizationRemarkList typeId={this.id} visibleTextarea={this.visibleTextarea} /> 
 
         <h3 style={h3Style}>
           {i18n('project_library.information_detail')}:

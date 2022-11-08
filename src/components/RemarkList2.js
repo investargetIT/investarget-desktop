@@ -73,13 +73,24 @@ class RemarkList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: false,
+      visible: props.visibleTextarea || false,
       comments: ''
+    }
+    this.textareaEleRef = React.createRef();
+  }
+
+  componentDidMount() {
+    if (this.state.visible) {
+      this.textareaEleRef.current.focus();
     }
   }
 
   toggleNewComment = () => {
-    this.setState({ visible: !this.state.visible })
+    this.setState({ visible: !this.state.visible }, () => {
+      if (this.state.visible) {
+        this.textareaEleRef.current.focus();
+      }
+    });
   }
   
   
@@ -110,7 +121,7 @@ class RemarkList extends React.Component {
         </h3>
 
         <div style={{display: this.state.visible ? 'block' : 'none'}}>
-          <Input.TextArea style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
+          <Input.TextArea ref={this.textareaEleRef} style={textareaStyle} placeholder={i18n('common.write_comment')} autosize={{maxRows: 6 }} value={this.state.comments} onChange={this.handleChange} />
           <center>
           <button style={buttonStyle} onClick={this.handleSave} disabled={this.state.comments == ''}>{i18n('common.submit')} </button>
           </center>
