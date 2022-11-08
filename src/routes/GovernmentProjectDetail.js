@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva'
 import * as api from '../api'
 import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile } from '../utils/util'
@@ -21,104 +21,80 @@ const blockStyle = {
 }
 
 
-class GovernmentProjectDetail extends React.Component {
+function GovernmentProjectDetail(props) {
 
-  constructor(props) {
-    super(props)
+  const [id, setId] = useState(Number(props.match.params.id));
+  const [project, setProject] = useState({});
+  const [imageHeight, setImageHeight] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState('details');
 
-    this.state = {
-      id: Number(props.match.params.id),
-      project: {},
-      isFavorite: false,
-      favorId: null,
-      userListWithInterest: [],
-      dataroomId: null,
-      isClose: null,
-      visible: false,
-      loading: false,
-      imageHeight: 0,
-      activeKey: 1,
-      activeTabKey: 'details',
-    }
+  const header = useRef(null);
+
+  function updateDimensions() {
+    setTimeout(() => {
+      setImageHeight(header.current.clientHeight);
+    }, 100);
   }
 
-
-  updateDimensions = () => setTimeout(() => this.setState({ imageHeight: this.header.clientHeight }), 100);
-
-  componentDidMount() {
-    window.addEventListener("resize", this.updateDimensions);
-    this.props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
-    this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+  useEffect(() => {
+    window.addEventListener("resize", updateDimensions);
+    props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
+    props.dispatch({ type: 'app/getSource', payload: 'country' });
     
-    const { id } = this.state
     api.getGovernmentProjectDetails(id)
       .then(result => {
-        const project = result.data;
-        window.echo('project', project);
-        this.setState({ project });
+        setProject(result.data);
       })
       .catch(handleError);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    }
+  }, []);
+
+  function handleTabChange(key) {
+    setActiveTabKey(key);
   }
 
+  return (
+    <LeftRightLayoutPure location={props.location}>
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
-  }
+      <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
+        <Breadcrumb.Item>
+          <Link to="/app">首页</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>政府项目管理</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/app/government-projects/list">政府项目</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>项目详情</Breadcrumb.Item>
+      </Breadcrumb>
 
-  handleTabChange = key => {
-    this.setState({ activeTabKey: key });
-  }
+      <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: '0 20px', paddingTop: 20 }}>
+        <div style={{ display: 'flex' }}>
+          <ProjectImage project={project} />
 
-  setHeader = node => this.header = this.header || node;
-
-  findProjectProgress = () => {
-    const currentProjectProgress = this.props.projectProgress.find( f=> f.id === this.state.id);
-    if (!currentProjectProgress) return 0;
-    return currentProjectProgress.percentage;
-  }
-
-  render() {
-    const { id, project, isFavorite, trader, traderOptions, dataroomId, isClose } = this.state
-    return (
-      <LeftRightLayoutPure location={this.props.location}>
-
-        <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
-          <Breadcrumb.Item>
-            <Link to="/app">首页</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>政府项目管理</Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to="/app/government-projects/list">政府项目</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>项目详情</Breadcrumb.Item>
-        </Breadcrumb>
-
-        <Card style={{ marginBottom: 20 }} bodyStyle={{ padding: '0 20px', paddingTop: 20 }}>
-          <div style={{ display: 'flex' }}>
-            <ProjectImage project={project} />
-
-            <div style={{ marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={this.setHeader}>
-              <ProjectHead project={project} allCountries={this.props.country} progress={this.findProjectProgress()} />
-            </div>
+          <div style={{ marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={header}>
+            <ProjectHead project={project} allCountries={props.country} />
           </div>
+        </div>
 
-          <Tabs
-            style={{ marginTop: 20 }}
-            className="project-details-tab"
-            defaultActiveKey="details"
-            activeKey={this.state.activeTabKey}
-            tabBarGutter={50}
-            onChange={this.handleTabChange}
-          >
-            <TabPane tab="详情" key="details" />
-            <TabPane tab="文件下载" key="downloads" />
-          </Tabs>
+        <Tabs
+          style={{ marginTop: 20 }}
+          className="project-details-tab"
+          defaultActiveKey="details"
+          activeKey={activeTabKey}
+          tabBarGutter={50}
+          onChange={handleTabChange}
+        >
+          <TabPane tab="详情" key="details" />
+          <TabPane tab="文件下载" key="downloads" />
+        </Tabs>
 
-        </Card>
+      </Card>
 
-      </LeftRightLayoutPure>
-    )
-  }
+    </LeftRightLayoutPure>
+  );
 }
 
 function mapStateToProps(state) {
