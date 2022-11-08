@@ -509,7 +509,7 @@ class OrganizationList extends React.Component {
                         <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
                         <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
                       </div>
-                      <Link to={`/app/user/add?org=${this.getCurrentOrgId()}&redirect=/app/organization/list`} target="_blank">
+                      <Link to={`/app/user/add?org=${this.getCurrentOrgId()}&orgName=${this.getCurrentOrgName()}&redirect=/app/organization/list`} target="_blank">
                         <Tooltip title="添加投资人"><PlusOutlined /></Tooltip>
                       </Link>
                     </div>
