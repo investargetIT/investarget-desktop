@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile, getCurrentUser } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
-import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
+import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card, Empty } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { SelectNumber } from '../components/ExtraInput'
 import TimelineViewNew from '../components/TimelineViewNew';
@@ -13,6 +13,7 @@ import {
   CloudDownloadOutlined,
 } from '@ant-design/icons';
 import lodash from 'lodash';
+import ProjectCardForUserCenter from '../components/ProjectCardForUserCenter';
 
 const TabPane = Tabs.TabPane
 
@@ -48,6 +49,7 @@ function GovernmentProjectDetail(props) {
   const [imageHeight, setImageHeight] = useState(0);
   const [activeTabKey, setActiveTabKey] = useState('historycases');
   const [projInfo, setProjInfo] = useState([]);
+  const [historyCases, setHistoryCases] = useState([]);
 
   const header = useRef(null);
 
@@ -65,9 +67,18 @@ function GovernmentProjectDetail(props) {
     
     api.getGovernmentProjectDetails(id)
       .then(result => {
+        const { historycases } = result.data;
+        if (historycases && historycases.length > 0) {
+          getHistoryCases(historycases.map(m => m.proj));
+        }
         setProject(result.data);
       })
       .catch(handleError);
+    
+    async function getHistoryCases(projIDs) {
+      const req = await Promise.all(projIDs.map(m => api.getProjLangDetail(m)));
+      setHistoryCases(req.map(m => m.data));
+    }
 
     async function getGovernmentProjectInfo() {
       const goverInfoType = await props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
@@ -177,7 +188,14 @@ function GovernmentProjectDetail(props) {
       ))}
 
       {activeTabKey == 'historycases' && (
-        <Card>History Cases</Card>
+        <Card>
+          <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 20px -18px' }}>
+            {historyCases.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
+              <ProjectCardForUserCenter record={m} currentUser={getCurrentUser()} />
+            </div>)}
+            {historyCases.length === 0 && <Empty style={{ margin: '20px auto' }} />}
+          </div>
+        </Card>
       )}
 
     </LeftRightLayoutPure>
