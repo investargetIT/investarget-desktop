@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, requestAllData, convertCommentFilesToAttachments, getURLParamValue, handleError } from '../utils/util'
+import { i18n, requestAllData, convertCommentFilesToAttachments, getURLParamValue, handleError, findAllParentArea } from '../utils/util'
 
 import { Form, Button, Tabs, message } from 'antd'
 const TabPane = Tabs.TabPane
@@ -97,6 +97,8 @@ function toFormDataNew(data) {
       } else {
         formData.historycases = [];
       }
+    } else if (prop == 'location' && data[prop]) {
+      formData.location = data[prop].map(m => m.id);
     } else {
       formData[prop] = data[prop];
     }
@@ -202,6 +204,16 @@ function EditGovernmentProject(props) {
           projstatus = allStatus.find(f => f.id == project.status);
         }
         project = { ...project, projstatus };
+        
+        return props.dispatch({ type: 'app/getSource', payload: 'country' });
+      })
+      .then(allCountries => {
+        let location = [];
+        if (project.location) {
+          location = allCountries.find(f => f.id == project.location);
+          location = findAllParentArea(location, allCountries);
+        }
+        project = { ...project, location };
         setProject(project);
       })
       .catch(handleError);

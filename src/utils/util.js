@@ -806,3 +806,14 @@ export async function convertCommentFilesToAttachments(projectID, projectBD) {
     }
   }
 }
+
+export function findAllParentArea(node, allArea) {
+  if (!node.parent) {
+    return [node];
+  }
+  const parent = allArea.find(f => f.id == node.parent);
+  if (['中国', 'China'].includes(parent.country)) {
+    return [node];
+  }
+  return findAllParentArea(parent, allArea).concat(node);
+}

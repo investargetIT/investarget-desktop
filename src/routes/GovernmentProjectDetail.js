@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile, getCurrentUser } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile, getCurrentUser, findAllParentArea } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card, Empty, Image } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
@@ -89,6 +89,15 @@ function GovernmentProjectDetail(props) {
           projstatus = allStatus.find(f => f.id == project.status);
         }
         project = { ...project, projstatus };
+        return props.dispatch({ type: 'app/getSource', payload: 'country' });
+      })
+      .then(allCountries => {
+        let location = [];
+        if (project.location) {
+          location = allCountries.find(f => f.id == project.location);
+          location = findAllParentArea(location, allCountries);
+        }
+        project = { ...project, location };
         setProject(project);
       })
       .catch(handleError);
@@ -248,19 +257,19 @@ function ProjectImage({ project }) {
 function ProjectHead({ project, allCountries }) {
 
   function displayCountry() {
-    if (!project.country) return null;
-    const country = project.country
-    const countryName = country ? country.country : ''
+    if (!project.location || project.location.length == 0) return null;
+    const countryName = project.location.map(m => m.country).join('-');
+    const country = project.location[0];
     let imgUrl = country && country.key && country.url
     if (country && !imgUrl) {
-      const parentCountry = allCountries.filter(f => f.id === country.parent.id)[0]
+      const parentCountry = allCountries.find(f => f.id === country.parent);
       if (parentCountry && parentCountry.url) {
         imgUrl = parentCountry.url
       }
     }
     return (
       <div style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-        <div style={{ minWidth: 68 }}>{i18n('project.country')}：</div>
+        <div>{i18n('project.country')}：</div>
         {imgUrl ? <img src={imgUrl} style={{ width: '20px', height: '14px', marginRight: '4px' }} /> : null}
         <div style={{ color: '#595959' }}>{countryName}</div>
       </div>
@@ -269,14 +278,14 @@ function ProjectHead({ project, allCountries }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
         <div style={{ marginRight: 10, color: '#282828', fontWeight: 'bold', fontSize: 20 }}>{project.realname}</div>
         <div style={{ border: '1px solid #339bd2', borderRadius: 4, width: 72, height: 24, fontSize: 14, color: '#339bd2', background: '#f0f6fb', display: 'flex', justifyContent: 'center', alignItems: 'center' }} color="blue">
           {project.projstatus && project.projstatus.name}
         </div>
       </div>
       <div style={{ marginBottom: 30, fontSize: 14, color: '#262626', display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ minWidth: 250, margin: '8px 0' }}>{displayCountry()}</div>
+        {displayCountry() && <div style={{ minWidth: 250, margin: '8px 0' }}>{displayCountry()}</div>}
         <div style={{ minWidth: 250, margin: '8px 0' }}>{i18n('project_bd.created_time')}：<span style={{ color: '#595959' }}>{project.createdtime && project.createdtime.substr(0, 10)}</span></div>
       </div>
     </div>

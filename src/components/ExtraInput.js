@@ -1608,7 +1608,6 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
  */
 
 function CascaderChina(props) {
-
   const [cascaderValue, setCascaderValue] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [parentArea, setParentArea] = useState([]);
@@ -1616,6 +1615,10 @@ function CascaderChina(props) {
   useEffect(() => {
     props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
   }, []);
+
+  useEffect(() => {
+    setCascaderValue(props.value);
+  }, [props.value])
 
   function handleChange(value, detail) {
     if (value[value.length - 1] == 'add_area') {
