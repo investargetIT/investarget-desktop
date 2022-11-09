@@ -4,7 +4,7 @@ import { i18n, getCurrentUser, hasPerm } from '../utils/util'
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import styles from './ProjectForm.css'
-
+import { SelectProjectStatus } from './GovernmentProjectForm';
 import { Form, Input, Radio, Checkbox } from 'antd'
 const RadioGroup = Radio.Group
 const FormItem = Form.Item
@@ -76,6 +76,10 @@ function GovernmentProjectBaseForm(props) {
 
       <BasicFormItem label={i18n('project.engagement_in_transaction')} name="character" required valueType="number">
         <SelectRole />
+      </BasicFormItem>
+
+      <BasicFormItem label="项目状态" name="status" valueType="number">
+        <SelectProjectStatus />
       </BasicFormItem>
 
       <div style={{ textAlign: 'center' }}>

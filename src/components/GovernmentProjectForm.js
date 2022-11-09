@@ -58,10 +58,10 @@ class SelectProjectStatus extends React.Component {
     }
 
     return (
-      <Select value={String(value)} onChange={this.handleChange} {...extraProps}>
+      <Select value={value && String(value)} onChange={this.handleChange} defaultValue="2" {...extraProps}>
         {
           _options.map(item =>
-            <Option key={item.value} value={String(item.value)}>{item.label}</Option>
+            <Select.Option key={item.value} value={String(item.value)}>{item.label}</Select.Option>
           )
         }
       </Select>
@@ -75,6 +75,7 @@ SelectProjectStatus = connect(function(state) {
   return { options }
 })(SelectProjectStatus)
 
+export { SelectProjectStatus };
 
 
 class ProjectConnectForm1 extends React.Component {
