@@ -62,23 +62,34 @@ function GovernmentProjectDetail(props) {
   useEffect(() => {
     window.addEventListener("resize", updateDimensions);
     props.dispatch({ type: 'app/getSource', payload: 'goverInfoType' });
-    props.dispatch({ type: 'app/getSource', payload: 'projstatus' })
+    props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
     props.dispatch({ type: 'app/getSource', payload: 'country' });
-    
+  
+    let project = {};
     api.getGovernmentProjectDetails(id)
       .then(result => {
-        const { historycases } = result.data;
+        project = result.data;
+        const { historycases } = project;
         if (historycases && historycases.length > 0) {
           getHistoryCases(historycases.map(m => m.proj));
         }
-        props.dispatch({ type: 'app/getSource', payload: 'industry' })
-          .then(allIndustries => {
-            let industries = [];
-            if (result.data.industrys) {
-              industries = result.data.industrys.map(m => allIndustries.find(f => f.id == m));
-            }
-            setProject({ ...result.data, industries });
-          })
+        return props.dispatch({ type: 'app/getSource', payload: 'industry' })
+      })
+      .then(allIndustries => {
+        let industries = [];
+        if (project.industrys) {
+          industries = project.industrys.map(m => allIndustries.find(f => f.id == m));
+        }
+        project = { ...project, industries };
+        return props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
+      })
+      .then(allStatus => {
+        let projstatus = null;
+        if (project.status) {
+          projstatus = allStatus.find(f => f.id == project.status);
+        }
+        project = { ...project, projstatus };
+        setProject(project);
       })
       .catch(handleError);
     
@@ -150,7 +161,7 @@ function GovernmentProjectDetail(props) {
         <div style={{ display: 'flex' }}>
           <ProjectImage project={project} />
 
-          <div style={{ marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={header}>
+          <div style={{ flex: 1, marginLeft: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} ref={header}>
             <ProjectHead project={project} allCountries={props.country} />
           </div>
         </div>
@@ -234,7 +245,7 @@ function ProjectImage({ project }) {
   )
 }
 
-function ProjectHead({ project, allCountries, progress }) {
+function ProjectHead({ project, allCountries }) {
 
   function displayCountry() {
     if (!project.country) return null;
@@ -258,7 +269,7 @@ function ProjectHead({ project, allCountries, progress }) {
 
   return (
     <div>
-      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center' }}>
+      <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ marginRight: 10, color: '#282828', fontWeight: 'bold', fontSize: 20 }}>{project.realname}</div>
         <div style={{ border: '1px solid #339bd2', borderRadius: 4, width: 72, height: 24, fontSize: 14, color: '#339bd2', background: '#f0f6fb', display: 'flex', justifyContent: 'center', alignItems: 'center' }} color="blue">
           {project.projstatus && project.projstatus.name}

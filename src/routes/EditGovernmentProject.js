@@ -91,8 +91,12 @@ function toFormDataNew(data) {
     } else if (prop === 'PM' && data[prop]) {
       formData.PM = data[prop].id.toString();
       formData.PMName = data[prop].usernameC;
-    } else if (prop == 'historycases' && data[prop]) {
-      formData.historycases = data.historycases.map(m => m.proj);
+    } else if (prop == 'historycases') {
+      if (data[prop]) {
+        formData.historycases = data.historycases.map(m => m.proj);
+      } else {
+        formData.historycases = [];
+      }
     } else {
       formData[prop] = data[prop];
     }
