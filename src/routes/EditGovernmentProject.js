@@ -124,15 +124,14 @@ function toData(formData) {
     }
   }
 
-  if ('industriesKeys' in formData) {
-    data['industries'] = formData['industriesKeys'].map(key => {
-      return {
-        industry: formData['industries-' + key],
-        bucket: 'image',
-        key: formData['industries-image-' + key],
-      }
-    })
-  }
+  data['industrys'] = formData['industriesKeys'].map(key => {
+    return {
+      industry: formData['industries-' + key],
+      bucket: 'image',
+      key: formData['industries-image-' + key],
+    }
+  })
+  data.location = formData.location[formData.location.length - 1]
 
   return data
 }
@@ -222,23 +221,20 @@ function EditGovernmentProject(props) {
   async function editProject(formStr, ifBack) {
     const id = Number(props.match.params.id);
     try {
-    //   const baseFormValues = await editProjectBaseFormRef.current.validateFields();
-    //   const baseFormParams = toData(baseFormValues);
+      const baseFormValues = await editProjectBaseFormRef.current.validateFields();
+      const baseFormParams = toData(baseFormValues);
       try {
         // const connectFormValues = await editProjectConnectFormRef.current.validateFields();
         // const connectFormParams = toData(connectFormValues);
         try {
           const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
-          const res = await saveGovernmentProjInfo(detailsFormValues);
-          return;
-          const detailFormParams = toData(detailsFormValues);
-          const params = {
-            // ...baseFormParams,
+          await saveGovernmentProjInfo(detailsFormValues);
+          const body = {
+            ...baseFormParams,
             // ...connectFormParams,
-            ...detailFormParams,
           };
           setLoadingEdit(true);
-          api.editProj(id, params).then(result => {
+          api.editGovernmentProject(id, body).then(() => {
             setLoadingEdit(false);
             getProject();
             if (ifBack) {
