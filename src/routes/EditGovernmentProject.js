@@ -68,9 +68,9 @@ function toFormDataNew(data) {
   var formData = {}
 
   for (let prop in data) {
-    if (prop == 'industry') {
+    if (prop == 'industrys') {
       // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
-      let value = data['industry'];
+      let value = data['industrys'];
       // let keys = _.range(1, 1 + value.length);
       // formData['industriesKeys'] = keys;
       // keys.forEach((key, index) => {
@@ -184,22 +184,12 @@ function EditGovernmentProject(props) {
     const id = Number(props.match.params.id)
     api.getGovernmentProjectDetails(id).then(result => {
       let data = Object.assign({}, result.data);
-      data.character = result.data.character && result.data.character.id
       data.country = result.data.country && result.data.country.id
       data.currency = result.data.currency && result.data.currency.id
       data.sponsor = result.data.sponsor && result.data.sponsor.id
       data.industry = result.data.industry || undefined;
       data.projstatus = result.data.projstatus && result.data.projstatus.id
       data.tags = result.data.tags || undefined;
-      data.transactionType = result.data.transactionType ? result.data.transactionType.map(item => item.id) : []
-      data.service = result.data.service ? result.data.service.map(m => m.id) : []
-      // `value` prop on `textarea` should not be null.
-      const textFields = ['p_introducteC', 'p_introducteE', 'targetMarketC', 'targetMarketE', 'productTechnologyC', 'productTechnologyE', 'businessModelC', 'businessModelE', 'brandChannelC', 'brandChannelE', 'managementTeamC', 'managementTeamE', 'BusinesspartnersC', 'BusinesspartnersE', 'useOfProceedC', 'useOfProceedE', 'financingHistoryC', 'financingHistoryE', 'operationalDataC', 'operationalDataE']
-      textFields.forEach(field => {
-        if (data[field] == null) {
-          data[field] = ''
-        }
-      });
       setProject(data);
     }, error => {
       props.dispatch({
