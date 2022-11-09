@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva'
 import { Link } from 'dva/router'
 import * as api from '../api'
-import { i18n, requestAllData, convertCommentFilesToAttachments, getURLParamValue } from '../utils/util'
+import { i18n, requestAllData, convertCommentFilesToAttachments, getURLParamValue, handleError } from '../utils/util'
 
 import { Form, Button, Tabs, message } from 'antd'
 const TabPane = Tabs.TabPane
@@ -68,15 +68,15 @@ function toFormDataNew(data) {
   var formData = {}
 
   for (let prop in data) {
-    if (prop == 'industrys') {
+    if (prop == 'industries') {
       // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
-      let value = data['industrys'];
-      // let keys = _.range(1, 1 + value.length);
-      // formData['industriesKeys'] = keys;
-      // keys.forEach((key, index) => {
-      //   formData['industries-' + key] = value[index].industry.id;
-      //   formData['industries-image-' + key] = value[index].key;
-      // })
+      const value = data['industries'];
+      const keys = _.range(1, 1 + value.length);
+      formData['industriesKeys'] = keys;
+      keys.forEach((key, index) => {
+        formData['industries-' + key] = value[index].id;
+        formData['industries-image-' + key] = value[index].key;
+      })
     } else if (prop === 'projTraders' && data[prop]) {
       const { projTraders } = data;
       const takeUser = projTraders.filter(f => f.type === 0);
@@ -182,21 +182,29 @@ function EditGovernmentProject(props) {
 
   function getProject() {
     const id = Number(props.match.params.id)
-    api.getGovernmentProjectDetails(id).then(result => {
-      let data = Object.assign({}, result.data);
-      data.country = result.data.country && result.data.country.id
-      data.currency = result.data.currency && result.data.currency.id
-      data.sponsor = result.data.sponsor && result.data.sponsor.id
-      data.industry = result.data.industry || undefined;
-      data.projstatus = result.data.projstatus && result.data.projstatus.id
-      data.tags = result.data.tags || undefined;
-      setProject(data);
-    }, error => {
-      props.dispatch({
-        type: 'app/findError',
-        payload: error
+    let project = {};
+    api.getGovernmentProjectDetails(id)
+      .then(result => {
+        project = result.data;
+        return props.dispatch({ type: 'app/getSource', payload: 'industry' })
       })
-    })
+      .then(allIndustries => {
+        let industries = [];
+        if (project.industrys) {
+          industries = project.industrys.map(m => allIndustries.find(f => f.id == m));
+        }
+        project = { ...project, industries };
+        return props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
+      })
+      .then(allStatus => {
+        let projstatus = null;
+        if (project.status) {
+          projstatus = allStatus.find(f => f.id == project.status);
+        }
+        project = { ...project, projstatus };
+        setProject(project);
+      })
+      .catch(handleError);
   }
 
   async function editProject(formStr, ifBack) {
