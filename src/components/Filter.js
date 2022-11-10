@@ -53,6 +53,7 @@ import {
   SelectProjectStatus,
   SelectIndustryGroupWithAll,
   CheckboxTag,
+  CascaderChina,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -859,6 +860,38 @@ class NewProjectListFilter extends React.Component {
   }
 }
 
+class GovernmentProjectListFilter extends React.Component {
+
+  static defaultValue = {
+    location: undefined,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || GovernmentProjectListFilter.defaultValue;
+  }
+
+  handleChange = (key, value) => {
+    if (key == 'location' && value && value.length > 0) {
+      this.setState({ location: value[value.length - 1] }, this.handleSearch);
+    } else {
+      this.setState({ [key]: value }, this.handleSearch);
+    }
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state });
+  }
+
+  render() {
+    return (
+      <div style={{ display: 'flex', flex: 1 }}>
+        <CascaderChina onChange={this.handleChange.bind(this, 'location')} />
+      </div>
+    )
+  }
+}
+
 
 class ProjectLibraryFilter extends React.Component {
 
@@ -1364,6 +1397,7 @@ export {
   OrgFilterForOrgBd,
   ProjectListFilter,
   NewProjectListFilter,
+  GovernmentProjectListFilter,
   TimelineFilter,
   OrgBdTableListFilter,
   ProjectLibraryFilter,

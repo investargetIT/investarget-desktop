@@ -11,7 +11,7 @@ import {
 } from '../utils/util';
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip, Popover, Tag } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
-import { NewProjectListFilter } from '../components/Filter';
+import { GovernmentProjectListFilter } from '../components/Filter';
 import { Search } from '../components/Search';
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import {
@@ -65,7 +65,7 @@ function GovernmentProjectList(props) {
   }
 
   function getGovernmentProject() {
-    const params = { name: search, page, page_size: pageSize, sort, desc };
+    const params = { ...filters, name: search, page, page_size: pageSize, sort, desc };
     setLoading(true);
     let newList = [];
     api.getGovernmentProject(params)
@@ -254,7 +254,7 @@ function GovernmentProjectList(props) {
               value={search}
               size="middle"
             />
-            {/* <NewProjectListFilter defaultValue={filters} onSearch={handleFilt} onReset={handleReset} /> */}
+            <GovernmentProjectListFilter defaultValue={filters} onSearch={handleFilt} onReset={handleReset} />
           </div>
           <Button
             type="primary"
