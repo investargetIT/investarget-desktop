@@ -39,7 +39,7 @@ function GovernmentProjectBaseForm(props) {
   }, []);
 
   return (
-    <Form ref={props.forwardedRef}>
+    <Form ref={props.forwardedRef} onValuesChange={props.onValuesChange}>
       <BasicFormItem label={i18n('project.is_hidden')} name="isHidden" valueType="boolean" initialValue={false}>
         <RadioTrueOrFalse />
       </BasicFormItem>

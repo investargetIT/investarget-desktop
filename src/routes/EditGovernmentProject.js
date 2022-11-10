@@ -326,25 +326,6 @@ function EditGovernmentProject(props) {
   }
 
   async function handeBaseFormValuesChange(changedValue) {
-    if ('projectBD' in changedValue) {
-      if (changedValue.projectBD) {
-        const reqProjBD = await api.getProjBD(changedValue.projectBD);
-
-        let allManagers = [];
-        if (reqProjBD.data.manager) {
-          allManagers = reqProjBD.data.manager.filter(f => f.type === 3).map(m => m.manager.id.toString());
-        }
-        const newTakeUser = allManagers;
-        let newSponsor = null;
-        if (reqProjBD.data.contractors) {
-          newSponsor = reqProjBD.data.contractors.id;
-        }
-        editProjectConnectFormRef.current.setFieldsValue({ takeUser: newTakeUser, sponsor: newSponsor });
-      } else {
-        editProjectBaseFormRef.current.setFieldsValue({ projectBD: null });
-        editProjectConnectFormRef.current.setFieldsValue({ takeUser: [], sponsor: null});
-      }
-    }
   }
 
   const FormAction = ({ form, loadingEdit }) => {
