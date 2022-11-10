@@ -42,7 +42,8 @@
     "Resigned_usermanager": "Resigned User Management",
     "Full_usermanager": "Full Usermanager",
     "user_profile": "User Profile",
-    "feishu_work": "Approval"
+    "feishu_work": "Approval",
+    "government_projects": "Government Projects"
   },
   "account": {
     "login": "Login",

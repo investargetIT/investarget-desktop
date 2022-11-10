@@ -77,6 +77,7 @@ export const KEY_TO_URI = {
   "Resigned_usermanager": "/app/user/list/resigned-trader",
   "user_profile": "/app/personal-center",
   "feishu_work": "/app/feishu/approval",
+  "government_projects": "/app/government-projects/list",
 }
 
 export const URI_TO_KEY = {
@@ -106,6 +107,8 @@ export const URI_TO_KEY = {
   "/app/log/list": "log",
   "/app/hr": "HR",
   "/app/personal-center": "user_profile",
+  "/app/feishu/approval": "feishu_work",
+  "/app/government-projects/list": "government_projects",
 }
 
 export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ? 
@@ -133,6 +136,9 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   96: '机构看板黑名单',
   100: '工作报表管理',
   104: '在线测试管理',
+  131: '政府项目管理',
+  121: '语音转换管理',
+  110: '人事关系管理',
 } 
 : 
 {
@@ -159,6 +165,9 @@ export const CONTENT_TYPE_ID_TO_PERM_GROUP = baseUrl === prodUrl ?
   96: '机构看板黑名单',
   100: '工作报表管理',
   104: '在线测试管理',
+  131: '政府项目管理',
+  121: '语音转换管理',
+  110: '人事关系管理',
 }
 
 export const KEY_TO_ICON = {
