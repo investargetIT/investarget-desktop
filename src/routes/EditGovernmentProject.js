@@ -97,11 +97,16 @@ function toFormDataNew(data) {
       } else {
         formData.historycases = [];
       }
-    } else if (prop == 'traders') {
-      if (data[prop]) {
-        formData.traders = data.traders;
-      } else {
-        formData.traders = [];
+    } else if (prop == 'traders' && data[prop]) {
+      for (let index = 0; index < 7; index++) {
+        if ([4, 5].includes(index)) {
+          formData['trader-' + index] = data[prop].filter(f => f.type == index).map(m => m.trader.id.toString());
+        } else {
+          const govTrader = data[prop].find(f => f.type == index);
+          if (govTrader) {
+            formData['trader-' + index] = govTrader.trader.id;
+          }
+        }
       }
     } else if (prop == 'location' && data[prop]) {
       formData.location = data[prop].map(m => m.id);
