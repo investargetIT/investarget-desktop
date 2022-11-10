@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import {
   InputNumber,
   Select,
@@ -1654,10 +1654,40 @@ function CascaderChina(props) {
     setInputValue('');
   }
 
+  function generateOptions() {
+    const china = props.country.find(f => ['中国', 'China'].includes(f.country));
+    if (!china) {
+      return [];
+    }
+    function findAllChildren(node, level) {
+      const allChildren = props.country.filter(f => f.parent === node.id);
+      if (allChildren.length === 0) {
+        let children = [];
+
+        if ([1, 2].includes(level)) {
+          children.unshift({ label: '添加地区', value: 'add_area' });
+        }
+
+        return { ...node, children };
+      }
+      node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id, level: level + 1 }, level + 1));
+
+      if ([1, 2].includes(level)) {
+        node.children.unshift({ label: '添加地区', value: 'add_area' });
+      }
+
+      return { ...node, level };
+    }
+    const chinaWithChilden = findAllChildren(china, 0);
+    return chinaWithChilden.children;
+  }
+
+  const memoizedOptions = useMemo(() => generateOptions(), [props.country]);
+
   return (
     <div>
       <Cascader
-        options={props.options}
+        options={memoizedOptions}
         value={cascaderValue}
         onChange={handleChange}
         placeholder="请选择地区"
@@ -1682,33 +1712,8 @@ function CascaderChina(props) {
 }
 
 function mapStateToPropsChina (state) {
-  const { country } = state.app
-  const china = country.find(f => ['中国', 'China'].includes(f.country));
-  if (!china) {
-    return { options: [] };
-  }
-  function findAllChildren(node, level) {
-    
-    const allChildren = country.filter(f => f.parent === node.id);
-    if (allChildren.length === 0) {
-      let children = [];
-
-      if ([1, 2].includes(level)) {
-        children.unshift({ label: '添加地区', value: 'add_area' });
-      }
-
-      return { ...node, children };
-    }
-    node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id, level: level + 1 }, level + 1));
-    
-    if ([1, 2].includes(level)) {
-      node.children.unshift({ label: '添加地区', value: 'add_area' });
-    }
-
-    return { ...node, level };
-  }
-  const chinaWithChilden = findAllChildren(china, 0);
-  return { options: chinaWithChilden.children };
+  const { country } = state.app;
+  return { country };
 }
 
 CascaderChina = connect(mapStateToPropsChina)(CascaderChina);
