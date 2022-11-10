@@ -886,7 +886,7 @@ class GovernmentProjectListFilter extends React.Component {
   render() {
     return (
       <div style={{ display: 'flex', flex: 1 }}>
-        <CascaderChina onChange={this.handleChange.bind(this, 'location')} />
+        <CascaderChina onChange={this.handleChange.bind(this, 'location')} style={{ width: 250 }} />
       </div>
     )
   }

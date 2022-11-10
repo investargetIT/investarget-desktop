@@ -1661,6 +1661,7 @@ function CascaderChina(props) {
         value={cascaderValue}
         onChange={handleChange}
         placeholder="请选择地区"
+        style={props.style}
       />
       {parentArea.length > 0 && (
         <Modal
