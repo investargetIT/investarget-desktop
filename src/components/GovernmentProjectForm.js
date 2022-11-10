@@ -80,18 +80,9 @@ export { SelectProjectStatus };
 
 class ProjectConnectForm1 extends React.Component {
 
-  static childContextTypes = {
-    form: PropTypes.object
-  }
-
-  getChildContext() {
-    return { form: this.props.form }
-  }
-
   constructor(props) {
     super(props)
 
-    // const { getFieldDecorator } = this.props.form
     this.currentUserId = getCurrentUser()
   }
 
@@ -109,11 +100,6 @@ class ProjectConnectForm1 extends React.Component {
     if (!supportUser) return false;
     return this.currentUserId === supportUser.id;
   }
-
-  // projectTeamValidator = (_, value, callback) => {
-  //   if (value.length === 1) return callback('请至少选择两位项目团队成员');
-  //   return callback();
-  // }
 
   render() {
     return (
@@ -164,77 +150,34 @@ class ProjectConnectForm1 extends React.Component {
           }}
         </Form.Item>
 
-        <Form.Item noStyle shouldUpdate>
-          {({ getFieldValue }) => {
-            if (this.isCurrentUserSupportUser(getFieldValue) || hasPerm('proj.get_secretinfo')) {
-              return (
-                <BasicFormItem label={i18n('project.uploader')} name="supportUserName" initialValue={this.currentUserId}>
-                  <Input disabled />
-                </BasicFormItem>
-              );
-            }
-          }}
-        </Form.Item>
+        <BasicFormItem label="联络人" name="trader-0" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
 
-        <BasicFormItem label="项目发起人" name="sponsor" valueType="number">
+        <BasicFormItem label="对接人" name="trader-1" valueType="number">
           <SelectAllUser type="trader" />
         </BasicFormItem>
         
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="开发团队" name="takeUser" valueType="array">
-                  {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader
-                    mode="multiple"
-                    // disabledOption={getFieldValue('makeUser')}
-                  />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label={i18n('project.development')} name="takeUserName">
-            <Input disabled />
-          </BasicFormItem>
-        } */}
+        <BasicFormItem label="上传人" name="trader-2" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
+        
+        <BasicFormItem label="发起人" name="trader-3" valueType="number">
+          <SelectAllUser type="trader" />
+        </BasicFormItem>
+        
+        <BasicFormItem label="开发团队" name="trader-4" valueType="array">
+          <SelectTrader mode="multiple" />
+        </BasicFormItem>
+      
+        <BasicFormItem label="执行团队" name="trader-5" valueType="array">
+          <SelectTrader mode="multiple" />
+        </BasicFormItem>
 
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="执行团队" name="makeUser" valueType="array">
-                  {/* <SelectAllUser type="trader" /> */}
-                  <SelectTrader
-                    mode="multiple"
-                    // disabledOption={getFieldValue('takeUser')}
-                  />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label={i18n('project.team')} name="makeUserName">
-            <Input disabled />
-          </BasicFormItem> */}
-        {/* } */}
-
-        {/* {hasPerm('proj.admin_manageproj') ? */}
-          <Form.Item noStyle shouldUpdate>
-            {({ getFieldValue }) => {
-              return (
-                <BasicFormItem label="项目经理" name="PM">
-                  <SelectTrader />
-                </BasicFormItem>
-              );
-            }}
-          </Form.Item>
-          {/* :
-          <BasicFormItem label="PM" name="PMName">
-            <Input disabled />
-          </BasicFormItem>
-        } */}
+        <BasicFormItem label="项目经理" name="trader-6">
+          <SelectTrader />
+        </BasicFormItem>
+ 
       </Form>
     )
   }

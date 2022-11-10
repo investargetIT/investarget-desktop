@@ -97,6 +97,12 @@ function toFormDataNew(data) {
       } else {
         formData.historycases = [];
       }
+    } else if (prop == 'traders') {
+      if (data[prop]) {
+        formData.traders = data.traders;
+      } else {
+        formData.traders = [];
+      }
     } else if (prop == 'location' && data[prop]) {
       formData.location = data[prop].map(m => m.id);
     } else {
@@ -122,18 +128,21 @@ function toData(formData) {
       const value = formData.takeUser;
       data.takeUser = value.map(m => parseInt(m, 10));
     }
+    if (prop === 'industriesKeys' && formData[prop]) {
+      data['industrys'] = formData['industriesKeys'].map(key => {
+        return {
+          industry: formData['industries-' + key],
+          bucket: 'image',
+          key: formData['industries-image-' + key],
+        }
+      })
+    }
+    if (prop === 'location' && formData[prop].length > 0) {
+      data.location = formData.location[formData.location.length - 1]
+    }
   }
 
-  data['industrys'] = formData['industriesKeys'].map(key => {
-    return {
-      industry: formData['industries-' + key],
-      bucket: 'image',
-      key: formData['industries-image-' + key],
-    }
-  })
-  data.location = formData.location[formData.location.length - 1]
-
-  return data
+  return data;
 }
 
 
@@ -218,20 +227,21 @@ function EditGovernmentProject(props) {
       .catch(handleError);
   }
 
-  async function editProject(formStr, ifBack) {
+  async function editProject(ifBack) {
     const id = Number(props.match.params.id);
     try {
       const baseFormValues = await editProjectBaseFormRef.current.validateFields();
       const baseFormParams = toData(baseFormValues);
       try {
-        // const connectFormValues = await editProjectConnectFormRef.current.validateFields();
-        // const connectFormParams = toData(connectFormValues);
+        const connectFormValues = await editProjectConnectFormRef.current.validateFields();
+        const connectFormParams = toData(connectFormValues);
+        await editGovernmentProjTrader(connectFormParams);
         try {
           const detailsFormValues = await editProjectDetailsFormRef.current.validateFields();
           await saveGovernmentProjInfo(detailsFormValues);
           const body = {
             ...baseFormParams,
-            // ...connectFormParams,
+            ...connectFormParams,
           };
           setLoadingEdit(true);
           api.editGovernmentProject(id, body).then(() => {
@@ -259,6 +269,28 @@ function EditGovernmentProject(props) {
     } catch (error) {
       message.error('基本信息内容有误，请检查', 2);
     }
+  }
+
+  async function editGovernmentProjTrader(formData) {
+    const { traders } = project;
+    if (traders && traders.length > 0) {
+      await Promise.all(traders.map(m => api.deleteGovernmentProjectTrader(m.id)));
+    }
+    let arr = [];
+    for (const key in formData) {
+      if (Object.hasOwnProperty.call(formData, key)) {
+        const element = formData[key];
+        if (key.startsWith('trader') && element) {
+          const type = parseInt(key.split('-')[1]);
+          if (typeof element == 'object') {
+            arr = arr.concat(element.map(m => ({ type, trader: parseInt(m) })));
+          } else {
+            arr = arr.concat({ type, trader: parseInt(element) });
+          }
+        }        
+      }
+    }
+    return await Promise.all(arr.map(m => api.addGovernmentProjectTrader({ ...m, govproj })));
   }
 
   async function saveGovernmentProjInfo(formData) {
@@ -332,10 +364,7 @@ function EditGovernmentProject(props) {
   async function setFormValue() {
     const newFormData = toFormDataNew(project);
     editProjectBaseFormRef.current.setFieldsValue(newFormData);
-    return;
-    editProjectFinanceFormRef.current.setFieldsValue(newFormData);
     editProjectConnectFormRef.current.setFieldsValue(newFormData);
-    editProjectDetailsFormRef.current.setFieldsValue(newFormData);
   }
 
   async function handeBaseFormValuesChange(changedValue) {
@@ -366,8 +395,8 @@ function EditGovernmentProject(props) {
   const FormAction = ({ form, loadingEdit }) => {
     return (
       <div style={actionStyle}>
-        <Button type="primary" size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, form, false)}>{i18n('common.save')}</Button>
-        <Button size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, form, true)}>{i18n('common.save_back')}</Button>
+        <Button type="primary" size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, false)}>{i18n('common.save')}</Button>
+        <Button size="large" loading={loadingEdit} style={actionBtnStyle} onClick={editProject.bind(this, true)}>{i18n('common.save_back')}</Button>
       </div>
     )
   }

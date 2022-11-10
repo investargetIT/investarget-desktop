@@ -1156,3 +1156,5 @@ export const addGovernmentProjectInfo = body => r('/proj/govproj/info/', 'POST',
 export const editGovernmentProjectInfo = (id, body) => r(`/proj/govproj/info/${id}/`, 'PUT', body);
 export const addGovernmentProjectInfoAttachment = body => r('/proj/govproj/info/atta/', 'POST', body);
 export const deleteGovernmentProjectInfoAttachment = id => r(`/proj/govproj/info/atta/${id}/`, 'DELETE');
+export const addGovernmentProjectTrader = body => r('/proj/govproj/trader/', 'POST', body);
+export const deleteGovernmentProjectTrader = id => r(`/proj/govproj/trader/${id}/`, 'DELETE');
