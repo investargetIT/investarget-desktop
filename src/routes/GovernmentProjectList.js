@@ -7,8 +7,8 @@ import {
   formatMoney, 
   isShowCNY,
   getUserInfo,
+  findAllParentArea,
 } from '../utils/util';
-
 import { Input, Icon, Table, Button, Pagination, Popconfirm, Modal, Card, Breadcrumb, Progress, Tooltip, Popover, Tag } from 'antd'
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { NewProjectListFilter } from '../components/Filter';
@@ -82,7 +82,19 @@ function GovernmentProjectList(props) {
           const projstatus = allProjstatus.find(f => f.id === m.projstatus);
           return { ...m, projstatus };
         });
-
+        setList(newList);
+        return props.dispatch({ type: 'app/getSource', payload: 'country' });
+      })
+      .then(allCountries => {
+        newList = newList.map(project => {
+          let location = [];
+          if (project.location) {
+            location = allCountries.find(f => f.id == project.location);
+            location = findAllParentArea(location, allCountries);
+          }
+          project = { ...project, location: location.map(m => m.country).join('-') };
+          return project;
+        })
         setList(newList);
       })
       .catch(error => {
@@ -121,7 +133,6 @@ function GovernmentProjectList(props) {
   useEffect(() => {
     props.dispatch({ type: 'app/getSource', payload: 'country' });
     props.dispatch({ type: 'app/getSource', payload: 'tag' });
-    getGovernmentProject();
   }, []);
 
   function handleDeleteBtnClick(projId) {
@@ -167,6 +178,11 @@ function GovernmentProjectList(props) {
           </Tooltip>
         );
       }
+    },
+    {
+      title: '地区',
+      key: 'location',
+      dataIndex: 'location',
     },
     {
       title: '标签',
