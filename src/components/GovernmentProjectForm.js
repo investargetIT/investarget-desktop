@@ -150,20 +150,20 @@ class ProjectConnectForm1 extends React.Component {
           }}
         </Form.Item>
 
-        <BasicFormItem label="联络人" name="trader-0" valueType="number">
-          <SelectAllUser type="trader" />
+        <BasicFormItem label="联络人" name="trader-0">
+          <SelectTrader allowClear />
         </BasicFormItem>
 
-        <BasicFormItem label="对接人" name="trader-1" valueType="number">
-          <SelectAllUser type="trader" />
+        <BasicFormItem label="对接人" name="trader-1">
+          <SelectTrader allowClear />
         </BasicFormItem>
         
-        <BasicFormItem label="上传人" name="trader-2" valueType="number">
-          <SelectAllUser type="trader" />
+        <BasicFormItem label="上传人" name="trader-2">
+          <SelectTrader allowClear />
         </BasicFormItem>
         
-        <BasicFormItem label="发起人" name="trader-3" valueType="number">
-          <SelectAllUser type="trader" />
+        <BasicFormItem label="发起人" name="trader-3">
+          <SelectTrader allowClear />
         </BasicFormItem>
         
         <BasicFormItem label="开发团队" name="trader-4" valueType="array">
@@ -175,7 +175,7 @@ class ProjectConnectForm1 extends React.Component {
         </BasicFormItem>
 
         <BasicFormItem label="项目经理" name="trader-6">
-          <SelectTrader />
+          <SelectTrader allowClear />
         </BasicFormItem>
  
       </Form>

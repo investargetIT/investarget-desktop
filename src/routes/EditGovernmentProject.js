@@ -31,39 +31,6 @@ const formStyle = {
   borderRadius: '4px',
 }
 
-function toFormData(data) {
-  var formData = {}
-
-  for (let prop in data) {
-    if (prop == 'industries') {
-      // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
-      let value = data['industries']
-      let keys = _.range(1, 1 + value.length)
-      formData['industriesKeys'] = { 'value': keys }
-      keys.forEach((key, index) => {
-        formData['industries-' + key] = { 'value': value[index].industry.id }
-        formData['industries-image-' + key] = { 'value': value[index].key }
-      })
-    // } else if (prop == 'indGroup' && data[prop]) {
-    //   formData[prop] = { 'value': data[prop].id }
-    } else if (prop === 'projTraders' && data[prop]) {
-      const { projTraders } = data;
-      const takeUser = projTraders.filter(f => f.type === 0);
-      const makeUser = projTraders.filter(f => f.type === 1);
-      formData.takeUser = { value: takeUser.map(m => m.user.id.toString()) };
-      formData.makeUser = { value: makeUser.map(m => m.user.id.toString()) };
-      formData.takeUserName = { value: takeUser.map(m => m.user.usernameC).join('、') };
-      formData.makeUserName = { value: makeUser.map(m => m.user.usernameC).join('、') };
-    } else if (prop === 'lastProject' && data[prop]) {
-      formData.lastProject = { value: data.lastProject.id };
-    } else {
-      formData[prop] = { 'value': data[prop] }
-    }
-  }
-
-  return formData
-}
-
 function toFormDataNew(data) {
   var formData = {}
 
@@ -77,20 +44,6 @@ function toFormDataNew(data) {
         formData['industries-' + key] = value[index].id;
         formData['industries-image-' + key] = value[index].key;
       })
-    } else if (prop === 'projTraders' && data[prop]) {
-      const { projTraders } = data;
-      const takeUser = projTraders.filter(f => f.type === 0);
-      let makeUser = projTraders.filter(f => f.type !== 0);
-      makeUser = lodash.uniqBy(makeUser, 'id');
-      formData.takeUser = takeUser.map(m => m.user.id.toString());
-      formData.makeUser = makeUser.map(m => m.user.id.toString());
-      formData.takeUserName = takeUser.map(m => m.user.usernameC).join('、');
-      formData.makeUserName = makeUser.map(m => m.user.usernameC).join('、');
-    } else if (prop === 'lastProject' && data[prop]) {
-      formData.lastProject = data.lastProject.id;
-    } else if (prop === 'PM' && data[prop]) {
-      formData.PM = data[prop].id.toString();
-      formData.PMName = data[prop].usernameC;
     } else if (prop == 'historycases') {
       if (data[prop]) {
         formData.historycases = data.historycases.map(m => m.proj);
@@ -104,7 +57,7 @@ function toFormDataNew(data) {
         } else {
           const govTrader = data[prop].find(f => f.type == index);
           if (govTrader) {
-            formData['trader-' + index] = govTrader.trader.id;
+            formData['trader-' + index] = govTrader.trader.id.toString();
           }
         }
       }
@@ -393,9 +346,6 @@ function EditGovernmentProject(props) {
       }
     }
   }
-
-  const id = Number(props.match.params.id)
-  const data = toFormData(project)
 
   const FormAction = ({ form, loadingEdit }) => {
     return (
