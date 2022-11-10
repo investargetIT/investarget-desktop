@@ -40,7 +40,7 @@ function GovernmentProjectList(props) {
 
   useEffect(() => {
     getGovernmentProject();
-  }, [filters, search, page, pageSize, sort, desc]);
+  }, [filters, page, pageSize, sort, desc]);
 
   function handleFilt(filters) {
     setFilters(filters);
@@ -56,6 +56,7 @@ function GovernmentProjectList(props) {
   function handleSearch(search) {
     setSearch(search);
     setPage(1);
+    getGovernmentProject();
   }
 
   function handlePageChange(page, pageSize) {
@@ -64,7 +65,7 @@ function GovernmentProjectList(props) {
   }
 
   function getGovernmentProject() {
-    const params = { search, skip_count: (page - 1) * pageSize, max_size: pageSize, sort, desc };
+    const params = { name: search, page, page_size: pageSize, sort, desc };
     setLoading(true);
     let newList = [];
     api.getGovernmentProject(params)
@@ -229,25 +230,23 @@ function GovernmentProjectList(props) {
 
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', marginRight: 20, flex: 1 }}>
-            {/* <Search
-                style={{ width: 200, marginRight: 20 }}
-                placeholder="请输入项目名称"
-                onSearch={handleSearch}
-                onChange={search => setSearch(search)}
-                value={search}
-                size="middle"
-              /> */}
+            <Search
+              style={{ width: 200, marginRight: 20 }}
+              placeholder="请输入项目名称"
+              onSearch={handleSearch}
+              onChange={search => setSearch(search)}
+              value={search}
+              size="middle"
+            />
+            {/* <NewProjectListFilter defaultValue={filters} onSearch={handleFilt} onReset={handleReset} /> */}
           </div>
-          {(hasPerm('proj.admin_manageproj') || hasPerm('usersys.as_trader')) &&
-            <Button
-              type="primary"
-              // disabled={!hasPerm('proj.admin_manageproj') && !currentUserHasIndGroup()}
-              icon={<PlusOutlined />}
-              onClick={() => props.history.push('/app/government-projects/add')}
-            >
-              添加新项目
-            </Button>
-          }
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => props.history.push('/app/government-projects/add')}
+          >
+            添加新项目
+          </Button>
         </div>
 
         <Table
