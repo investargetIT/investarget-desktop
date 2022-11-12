@@ -143,6 +143,9 @@ function GovernmentProjectDetail(props) {
 
   function handleTabChange(key) {
     setActiveTabKey(key);
+    if (key !== 'historycases') {
+      window.location.href = `#${key}`;
+    }
   }
 
   return (
@@ -181,7 +184,7 @@ function GovernmentProjectDetail(props) {
       </Card>
 
       {activeTabKey != 'historycases' && projInfo.map(m => (
-        <Card key={m.type} title={m.name} style={{ marginTop: 20 }} bodyStyle={{ padding: 0 }}>
+        <Card id={m.type} key={m.type} title={m.name} style={{ marginTop: 20 }} bodyStyle={{ padding: 0 }}>
           <div style={{ padding: 24 }} dangerouslySetInnerHTML={{ __html: m.info ? m.info.replace(/\n/g, '<br>') : '暂无内容' }} />
           
           {m.attachments && m.attachments.length > 0 ? <div style={headerStyle}>{i18n('project.material_download')}</div> :
