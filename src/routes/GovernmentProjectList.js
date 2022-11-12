@@ -18,6 +18,8 @@ import {
   DeleteOutlined,
   PlusOutlined,
   EditOutlined,
+  FolderOutlined,
+  LineChartOutlined,
 } from '@ant-design/icons';
 import _ from 'lodash';
 
@@ -79,7 +81,7 @@ function GovernmentProjectList(props) {
       })
       .then(allProjstatus => {
         newList = newList.map(m => {
-          const projstatus = allProjstatus.find(f => f.id === m.projstatus);
+          const projstatus = allProjstatus.find(f => f.id === m.status);
           return { ...m, projstatus };
         });
         setList(newList);
@@ -150,22 +152,42 @@ function GovernmentProjectList(props) {
     setDesc(sorter.order ? sorter.order === 'descend' ? 1 : 0 : undefined);
   }
 
-  function currentUserHasIndGroup() {
-    const userInfo = getUserInfo();
-    if (!userInfo) return false;
-    if (!userInfo.indGroup) return false;
-    if (!userInfo.indGroup.id) return false;
-    return true;
-  }
-
   function getTagNameByID(tagID) {
     const tag = props.tag.find(f => f.id === tagID);
     if (!tag) return null;
     return tag.name;
   }
 
+  function checkExpiredProject(record) {
+    return record.projstatus && ['已过期', 'Expired'].includes(record.projstatus.name) ? 'expired-project' : undefined;
+  }
+
   const { location } = props;
   const columns = [
+    {
+      key: 'image',
+      render: (_, record) => {
+        const dataroom = props.projectIDToDataroom[record.id];
+        return (
+          <div>
+            {dataroom ? (
+              <Tooltip title="DataRoom">
+                <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
+                  <Button className={this.checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
+                </Link>
+              </Tooltip>
+            ) : (
+              <Button type="link" icon={<FolderOutlined />} disabled />
+            )}
+            <Tooltip title="机构看板">
+              <Link to={`/app/org/bd?projId=${record.id}`}>
+                <Button className={checkExpiredProject(record)} type="link" icon={<LineChartOutlined />} />
+              </Link>
+            </Tooltip>
+          </div>
+        );
+      }
+    },
     {
       title: i18n('project.name'),
       key: 'title',
