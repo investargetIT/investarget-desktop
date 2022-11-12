@@ -73,14 +73,7 @@ function GovernmentProjectDetail(props) {
         if (historycases && historycases.length > 0) {
           getHistoryCases(historycases.map(m => m.proj));
         }
-        return props.dispatch({ type: 'app/getSource', payload: 'industry' })
-      })
-      .then(allIndustries => {
-        let industries = [];
-        if (project.industrys) {
-          industries = project.industrys.map(m => allIndustries.find(f => f.id == m));
-        }
-        project = { ...project, industries };
+        project = { ...project, industries: project.industrys };
         return props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
       })
       .then(allStatus => {

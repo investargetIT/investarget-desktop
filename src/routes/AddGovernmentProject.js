@@ -17,7 +17,7 @@ function toData(formData) {
       data[prop] = formData[prop]
     }
   }
-  data['industrys'] = formData['industriesKeys'].map(key => {
+  data['industries'] = formData['industriesKeys'].map(key => {
     return {
       industry: formData['industries-' + key],
       bucket: 'image',

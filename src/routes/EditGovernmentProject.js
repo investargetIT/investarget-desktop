@@ -35,13 +35,13 @@ function toFormDataNew(data) {
   var formData = {}
 
   for (let prop in data) {
-    if (prop == 'industries') {
+    if (prop == 'industries' && data[prop]) {
       // 转换形式 industries: [{}, {}] 为 industriesKeys: [1,2] industries-1: {}  industries-image-1: {} ...
       const value = data['industries'];
       const keys = _.range(1, 1 + value.length);
       formData['industriesKeys'] = keys;
       keys.forEach((key, index) => {
-        formData['industries-' + key] = value[index].id;
+        formData['industries-' + key] = value[index].industry;
         formData['industries-image-' + key] = value[index].key;
       })
     } else if (prop == 'historycases') {
@@ -87,7 +87,7 @@ function toData(formData) {
       data.takeUser = value.map(m => parseInt(m, 10));
     }
     if (prop === 'industriesKeys' && formData[prop]) {
-      data['industrys'] = formData['industriesKeys'].map(key => {
+      data['industries'] = formData['industriesKeys'].map(key => {
         return {
           industry: formData['industries-' + key],
           bucket: 'image',
@@ -154,14 +154,7 @@ function EditGovernmentProject(props) {
     api.getGovernmentProjectDetails(id)
       .then(result => {
         project = result.data;
-        return props.dispatch({ type: 'app/getSource', payload: 'industry' })
-      })
-      .then(allIndustries => {
-        let industries = [];
-        if (project.industrys) {
-          industries = project.industrys.map(m => allIndustries.find(f => f.id == m));
-        }
-        project = { ...project, industries };
+        project = { ...project, industries: project.industrys };
         return props.dispatch({ type: 'app/getSource', payload: 'projstatus' });
       })
       .then(allStatus => {
