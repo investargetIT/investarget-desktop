@@ -55,7 +55,7 @@ export default {
     allProjBDComments: [],
     projectBDListParameters: { scrollPosition: 0, currentBD: null }, // 记住滑动位置及当前BD
     orgListParameters: { scrollPosition: 0, currentOrg: null },
-    projectIDToDataroom: [],
+    projectIDToDataroom: [], // 缓存的 Dataroom 列表，用来快速查找当前项目是否有对应的 Dataroom 
     orgRemarks: [],
     orgInvestorsAndRemarks: [],
     goverInfoType: [],
@@ -283,7 +283,7 @@ export default {
       yield put({ type: 'saveProjectBDComments', payload: { projBDID, projBDCom: commentsWithUrl } });
       return req.data.data;
     },
-    *getDataroomByProjectID({ payload: projectIDArr }, { call, put, select }) {
+    *getDataroomByProjectID({ payload: { projectIDArr, isGoverProj } }, { call, put, select }) {
       const allProjectIDToDataroom = yield select(state => state.app.projectIDToDataroom);
       const needsRefreshArr = [];
       projectIDArr.forEach(element => {
@@ -292,16 +292,17 @@ export default {
         }
       });
       if (needsRefreshArr.length === 0) return;
-      const req = yield call(api.queryDataRoom, {
-        proj: needsRefreshArr.join(','),
-        page_size: needsRefreshArr.length,
-      });
+      let params = {};
+      if (isGoverProj) {
+        params.govproj = needsRefreshArr.join(',');
+      } else {
+        params.proj = needsRefreshArr.join(',');
+      }
+      params.page_size = needsRefreshArr.length;
+      const req = yield call(api.queryDataRoom, params);
       const { data: dataroom } = req.data;
-      const newResult = allProjectIDToDataroom.slice();
-      needsRefreshArr.forEach(element => {
-        const projDataroomIndex = dataroom.map(m => m.proj.id).indexOf(element);
-        newResult[element] = projDataroomIndex > -1 ? dataroom[projDataroomIndex] : null;
-      });
+      let newResult = allProjectIDToDataroom.slice();
+      newResult = newResult.concat(dataroom);
       yield put({ type: 'saveSource', payload: { sourceType: 'projectIDToDataroom', data: newResult } });
     },
     *getOrgRemarks({ payload: { orgIDArr, forceUpdate }}, { call, put, select }) {

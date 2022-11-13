@@ -73,6 +73,13 @@ function GovernmentProjectList(props) {
     api.getGovernmentProject(params)
       .then(result => {
         const { count: total, data: list } = result.data;
+        props.dispatch({
+          type: 'app/getDataroomByProjectID',
+          payload: {
+            projectIDArr: list.map(m => m.id),
+            isGoverProj: true,
+          },
+        });
         newList = list.slice();
         setTotal(total);
         setList(newList);
@@ -167,13 +174,13 @@ function GovernmentProjectList(props) {
     {
       key: 'image',
       render: (_, record) => {
-        const dataroom = props.projectIDToDataroom[record.id];
+        const dataroom = props.projectIDToDataroom.find(f => f.govproj && f.govproj.id === record.id);
         return (
           <div>
             {dataroom ? (
               <Tooltip title="DataRoom">
                 <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
-                  <Button className={this.checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
+                  <Button className={checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
                 </Link>
               </Tooltip>
             ) : (

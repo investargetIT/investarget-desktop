@@ -143,7 +143,13 @@ class ProjectList extends React.Component {
     api.getProj(params)
       .then(result => {
         const { count: total, data: list } = result.data
-        this.props.dispatch({ type: 'app/getDataroomByProjectID', payload: list.map(m => m.id) });
+        this.props.dispatch({
+          type: 'app/getDataroomByProjectID',
+          payload: {
+            projectIDArr: list.map(m => m.id),
+            isGoverProj: false,
+          },
+        });
         newList = list.map(m => {
           const projTraders = m.projTraders ? m.projTraders.map(m => m.user) : [];
           let userWithPermission = [];
@@ -404,7 +410,7 @@ class ProjectList extends React.Component {
         render: (text, record) => {
           const industry = record.industries && record.industries[0]
           const imgUrl = industry ? industry.url : 'defaultUrl'
-          const dataroom = this.props.projectIDToDataroom[record.id];
+          const dataroom = this.props.projectIDToDataroom.find(f => f.proj && f.proj.id === record.id);
           return hasPerm('usersys.as_trader') ? (
             <div>
               {dataroom ? (
