@@ -416,24 +416,14 @@ class OrgBDListComponent extends React.Component {
   //   return { data: { count: uniqueOrg.length, data: uniqueOrg } };
   // }
 
-  getOrgBdList = async () => {
-    this.setState({ loading: true, expanded: [] });
-    const { page, pageSize, search, filters, sort, desc } = this.state;
-
-    // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
-    const proj = filters.proj;
-    let projMakeTakeTraderIds = [];
-    if (proj) {
-      if (this.props.onProjExistChange) {
-        this.props.onProjExistChange(true);
-      }
+  getProjectSetTrader = async (proj) => {
+    if (!this.isGovProj) {
       try {
         const projResult = await api.getProjDetail(proj);
         this.setState({ projectDetails: projResult.data });
         const { projTraders, PM } = projResult.data;
         if (projTraders) {
           projTraders.push({ user: PM });
-          projMakeTakeTraderIds = projTraders.filter(f => f.user).map(m => m.user.id);
           this.setState({
             projTradersIds: projTraders.filter(f => f.user).map(m => m.user.id),
             makeUserIds: projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id),
@@ -448,6 +438,41 @@ class OrgBDListComponent extends React.Component {
       } catch (error) {
         handleError(error);
       }
+    } else {
+      try {
+        const projResult = await api.getGovernmentProjectDetails(proj);
+        this.setState({ projectDetails: projResult.data });
+        const reqProjTrader = await requestAllData(api.getGovernmentProjectTraders, { govproj: proj }, 10);
+        const projTraders = reqProjTrader.data.data;
+        this.setState({
+          projTradersIds: projTraders.filter(f => f.trader).map(m => m.trader.id),
+          makeUserIds: projTraders.filter(f => f.trader && f.type === 5).map(m => m.trader.id),
+        });
+        const pm = projTraders.find(f => f.trader && f.type == 6);
+        if (pm) {
+          this.setState({ pm });
+        }
+        if (this.props.editable) {
+          this.writeSetting();
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  }
+
+  getOrgBdList = async () => {
+    this.setState({ loading: true, expanded: [] });
+    const { page, pageSize, search, filters, sort, desc } = this.state;
+
+    // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
+    const proj = filters.proj;
+    window.echo('proj', proj);
+    if (proj) {
+      if (this.props.onProjExistChange) {
+        this.props.onProjExistChange(true);
+      }
+      this.getProjectSetTrader(proj);
     } else {
       if (this.props.onProjExistChange) {
         this.props.onProjExistChange(false);
