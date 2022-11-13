@@ -179,7 +179,7 @@ function GovernmentProjectList(props) {
           <div>
             {dataroom ? (
               <Tooltip title="DataRoom">
-                <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}`}>
+                <Link to={`/app/dataroom/detail?id=${dataroom.id}&isClose=${dataroom.isClose}&projectID=${record.id}&projectTitle=${encodeURIComponent(record.realname)}&isGoverProj=true`}>
                   <Button className={checkExpiredProject(record)} type="link" icon={<FolderOutlined />} />
                 </Link>
               </Tooltip>

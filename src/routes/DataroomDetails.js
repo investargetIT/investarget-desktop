@@ -41,6 +41,7 @@ function DataroomDetails(props) {
   const projectTitle = getURLParamValue(props, 'projectTitle');
   const parentID = getURLParamValue(props, 'parentID');
   const isAbleToAddUser = hasPerm('usersys.as_trader');
+  const isGoverProj = getURLParamValue(props, 'isGoverProj');
 
   const [allDataroomFiles, setAllDataroomFiles] = useState([]);
   const [projTitle, setProjTitle] = useState(projectTitle);
@@ -235,25 +236,40 @@ function DataroomDetails(props) {
     props.dispatch({ type: 'app/getSource', payload: 'orgbdres' });
 
     function getProjectDetails() {
-      api.getProjLangDetail(projID).then(res => {
-        let allProjTraders = [];
-        const { PM } = res.data;
-        if (PM) {
-          allProjTraders.push({ user: PM });
-        }
-        const { projTraders } = res.data;
-        if (projTraders) {
-          allProjTraders = allProjTraders.concat(projTraders);
-        }
-        const isProjTrader = allProjTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id);
-        const isSuperUser = isLogin() && isLogin().is_superuser;
-        setProjTitle(res.data.realname);
-        if (isProjTrader || isSuperUser) {
-          setIsProjTrader(isProjTrader);
-          setHasPermissionForDataroomTemp(true);
-          setMakeUserIds(projTraders ? projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id) : []);
-        }
-      }).catch(handleError);
+      if (!isGoverProj) {
+        api.getProjLangDetail(projID).then(res => {
+          let allProjTraders = [];
+          const { PM } = res.data;
+          if (PM) {
+            allProjTraders.push({ user: PM });
+          }
+          const { projTraders } = res.data;
+          if (projTraders) {
+            allProjTraders = allProjTraders.concat(projTraders);
+          }
+          const isProjTrader = allProjTraders.filter(f => f.user).map(m => m.user.id).includes(isLogin().id);
+          const isSuperUser = isLogin() && isLogin().is_superuser;
+          setProjTitle(res.data.realname);
+          if (isProjTrader || isSuperUser) {
+            setIsProjTrader(isProjTrader);
+            setHasPermissionForDataroomTemp(true);
+            setMakeUserIds(projTraders ? projTraders.filter(f => f.user).filter(f => f.type === 1).map(m => m.user.id) : []);
+          }
+        }).catch(handleError);
+      } else {
+        api.getGovernmentProjectDetails(projID).then(res => {
+          setProjTitle(res.data.realname);
+          return requestAllData(api.getGovernmentProjectTraders, { govproj: projID }, 10);
+        }).then(res => {
+          const isProjTrader = res.data.data.filter(f => f.trader).map(m => m.trader.id).includes(isLogin().id);
+          const isSuperUser = isLogin() && isLogin().is_superuser;
+          if (isProjTrader || isSuperUser) {
+            setIsProjTrader(isProjTrader);
+            setHasPermissionForDataroomTemp(true);
+            setMakeUserIds(res.data.data ? res.data.data.filter(f => f.trader && f.type === 5).map(m => m.trader.id) : []);
+          }
+        }).catch(handleError);
+      }
     }
 
     // function investorGetDataRoomFile() {
