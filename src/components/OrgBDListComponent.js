@@ -114,11 +114,11 @@ class OrgBDListComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.showUnreadOnly = getURLParamValue(props, 'showUnreadOnly') ? true : false,
+    this.showUnreadOnly = getURLParamValue(props, 'showUnreadOnly') ? true : false;
     this.ids = (getURLParamValue(props, 'ids') || "").split(",").map(item => parseInt(item, 10)).filter(item => !isNaN(item))
     this.projId = parseInt(getURLParamValue(props, 'projId'), 10)
     this.projId = !isNaN(this.projId) ? this.projId : null;
-
+    this.isGovProj = getURLParamValue(props, 'isGovProj') ? true : false;
     this.manager = parseInt(getURLParamValue(props, 'manager'), 10);
     this.manager = !isNaN(this.manager) ? [this.manager] : [];
     
@@ -2543,6 +2543,7 @@ class OrgBDListComponent extends React.Component {
         }
         {!this.state.showUnreadOnly &&
           <OrgBDFilter
+            isGovProj={this.isGovProj}
             defaultValue={filters}
             value={this.state.filters}
             onSearch={this.handleFilt}
@@ -2742,24 +2743,6 @@ class OrgBDListComponent extends React.Component {
           orgbdres={this.props.orgbdres}
         />
         : null }
-
-        {/* <Modal
-          title={this.state.isPMComment ? '应对策略' : '机构反馈'}
-          visible={this.state.commentVisible}
-          footer={null}
-          onCancel={() => this.setState({ commentVisible: false, newComment: '', currentBD: null, comments: [] })}
-          maskClosable={false}
-        >
-          <BDComments
-            bd={this.state.currentBD}
-            comments={this.state.comments}
-            newComment={this.state.newComment}
-            onChange={e => this.setState({ newComment: e.target.value })}
-            onAdd={this.handleAddComment}
-            onDelete={this.handleDeleteComment}
-            isPMComment={this.state.isPMComment}
-          />
-        </Modal> */}
 
         {this.state.org ?
         <ModalAddUserNew

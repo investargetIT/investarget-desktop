@@ -187,7 +187,7 @@ function GovernmentProjectList(props) {
               <Button type="link" icon={<FolderOutlined />} disabled />
             )}
             <Tooltip title="机构看板">
-              <Link to={`/app/org/bd?projId=${record.id}`}>
+              <Link to={`/app/org/bd?projId=${record.id}&isGovProj=true`}>
                 <Button className={checkExpiredProject(record)} type="link" icon={<LineChartOutlined />} />
               </Link>
             </Tooltip>

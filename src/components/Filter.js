@@ -1130,11 +1130,13 @@ class OrgBDFilter extends React.Component {
     return (
       <div>
         <Row gutter={32}>
-          <Col span={12}>
-            <BasicContainer2 label="项目">
-              <SelectProjectForOrgBd style={{ width: '100%' }} value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构看板项目" />
-            </BasicContainer2>
-          </Col>
+          {!this.props.isGovProj && (
+            <Col span={12}>
+              <BasicContainer2 label="项目">
+                <SelectProjectForOrgBd style={{ width: '100%' }} value={proj} onChange={this.handleChange.bind(this, 'proj')} bdm={this.state.manager} projstatus={[4, 6, 7]} noResult="暂无相关机构看板项目" />
+              </BasicContainer2>
+            </Col>
+          )}
           {this.state.proj !== null ?
             <Col span={12}>
               <BasicContainer2 label="机构">
