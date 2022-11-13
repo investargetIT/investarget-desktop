@@ -253,7 +253,7 @@ class OrgBDListComponent extends React.Component {
 
   getRelatedDataroom = async (proj) => {
     if (!proj) return;
-    const reqDataroom = await api.queryDataRoom({ proj });
+    const reqDataroom = await api.queryDataRoom(this.isGovProj ? { govproj: proj } : { proj });
     if (reqDataroom.data.count > 0) {
       this.dataroomID = reqDataroom.data.data[0].id;
     } else {
@@ -311,12 +311,12 @@ class OrgBDListComponent extends React.Component {
 
   getStatisticData = async () => {
     const { proj, manager, createuser, org } = this.state.filters;
-    const params = { proj, manager, createuser, org: org.map(m => m.key) };
-    // if (!hasPerm('BD.manageOrgBD')) {
-    //   params.manager = getCurrentUser();
-    //   params.createuser = getCurrentUser();
-    //   params.unionFields = 'manager,createuser';
-    // }
+    const params = { manager, createuser, org: org.map(m => m.key) };
+    if (this.isGovProj) {
+      params.govproj = proj;
+    } else {
+      params.proj = proj;
+    }
     const count = await api.getOrgBDCountNew(params);
     return count.data.response_count.map(m => ({ status: m.response, count: m.count }));
   }
@@ -467,7 +467,6 @@ class OrgBDListComponent extends React.Component {
 
     // 获取当前筛选项目的承揽和承做，是否显示创建BD按钮需要根据当前用户是否是承揽或承做来决定
     const proj = filters.proj;
-    window.echo('proj', proj);
     if (proj) {
       if (this.props.onProjExistChange) {
         this.props.onProjExistChange(true);
@@ -490,8 +489,13 @@ class OrgBDListComponent extends React.Component {
         sort,
         desc,
         org: filters.org.map(m => m.key),
-        proj: filters.proj || 'none',
     };
+    if (this.isGovProj) {
+      params.govproj = filters.proj || 'none';
+      params.proj = undefined;
+    } else {
+      params.proj = filters.proj || 'none';
+    }
     // const { manager, createuser } = filters;
     // // 管理员承揽承做才可以筛选负责人
     // if (hasPerm('BD.manageOrgBD') || projMakeTakeTraderIds.includes(getCurrentUser())) {
@@ -581,13 +585,17 @@ class OrgBDListComponent extends React.Component {
     const { manager, response, createuser, proj } = this.state.filters;
     const param1 = {
       org,
-      proj: proj || "none",
       response,
       manager,
       createuser,
       search: this.state.search,
       isRead: this.state.showUnreadOnly ? false : undefined,
     };
+    if (this.isGovProj) {
+      param1.govproj = proj || 'none';
+    } else {
+      param1.proj = proj || 'none';
+    }
     let orgBDDetails = [];
     const req1 = await api.getOrgBdList(param1);
     const { data: data1, count: count1 } = req1.data;
@@ -611,7 +619,6 @@ class OrgBDListComponent extends React.Component {
       const newItems = m.items.map(n => ({ ...n, items: m.items, org: m.org }));
       return { ...m, items: newItems };
     });
-    // window.echo('new list', newList);
     this.setState(
       { list: newList },
       () => api.readOrgBD({ bds: orgBDDetails.map(m => m.id) }),
@@ -1579,11 +1586,11 @@ class OrgBDListComponent extends React.Component {
   }
 
   getAllOrgBDBLacklist = async () => {
-    let res = await api.getOrgBDBlacklist({ proj: this.projId, page_size: 100 });
-    const { count } = res.data;
-    if (count > 100) {
-      res = await api.getOrgBDBlacklist({ proj: this.projId, page_size: count });
+    let params = { proj: this.projId };
+    if (this.isGovProj) {
+      params = { govproj: this.projId };
     }
+    const res = await requestAllData(api.getOrgBDBlacklist, params, 100);
     res.data.data.sort((a, b) => {
       return new Date(b.createdtime) - new Date(a.createdtime)
     });
