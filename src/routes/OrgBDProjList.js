@@ -69,21 +69,21 @@ class OrgBDProjList extends React.Component {
     // }
   }
 
-  getProjTraderData = async () => {
-    const page_size = 100;
-    const params = {
-      search: this.state.search,
-      max_size: page_size,
-      skip_count: 0,
-      user: getCurrentUser(),
-    };
-    let reqProj = await api.getProj(params);
-    const { count: totalNum } = reqProj.data;
-    if (totalNum > page_size) {
-      reqProj = await api.getProj({ ...params, max_size: totalNum });
-    }
-    return reqProj.data.data;
-  }
+  // getProjTraderData = async () => {
+  //   const page_size = 100;
+  //   const params = {
+  //     search: this.state.search,
+  //     max_size: page_size,
+  //     skip_count: 0,
+  //     user: getCurrentUser(),
+  //   };
+  //   let reqProj = await api.getProj(params);
+  //   const { count: totalNum } = reqProj.data;
+  //   if (totalNum > page_size) {
+  //     reqProj = await api.getProj({ ...params, max_size: totalNum });
+  //   }
+  //   return reqProj.data.data;
+  // }
 
   // getData = async () => {
   //   const { search, page, pageSize } = this.state;
@@ -142,6 +142,7 @@ class OrgBDProjList extends React.Component {
       realname: search,
       page_size: pageSize,
       page_index: page,
+      govproj: 'none',
     };
 
     this.setState({ loading: true })
