@@ -2566,7 +2566,7 @@ class OrgBDListComponent extends React.Component {
     };
 
     const tab0 = (
-      <Card className="remove-on-mobile" title="机构看板" style={{ marginBottom: 19 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
+      <Card className="remove-on-mobile" title={<div style={{ color: 'red' }}>{this.state.projectDetails && this.state.projectDetails.realname}</div>} style={{ marginBottom: 19 }} extra={<Button type="link" onClick={this.handleResetBtnClick}>重置所有</Button>}>
         {this.state.projectDetails && this.state.projectDetails.lastProject &&
           <div style={{ marginBottom: 19, textAlign: 'center' }}>
             上一轮项目：
