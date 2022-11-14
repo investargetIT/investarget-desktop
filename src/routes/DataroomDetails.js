@@ -83,7 +83,8 @@ function DataroomDetails(props) {
     setLoadingOrgBD(true);
     const result = await requestAllData(api.getOrgBdList, {
       bduser: users.map(m => m.id),
-      proj: projectID, 
+      proj: isGoverProj ? undefined : projectID,
+      govproj: isGoverProj ? projectID : undefined, 
     }, 100);
 
     if (currentBD) {
