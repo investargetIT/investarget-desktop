@@ -1560,7 +1560,120 @@ function mapStateToPropsCountry (state) {
 CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
 
 
+/**
+ * CascaderCountry
+ */
 
+ function CascaderChina(props) {
+  const [cascaderValue, setCascaderValue] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [parentArea, setParentArea] = useState([]);
+
+  useEffect(() => {
+    props.dispatch({ type: 'app/getSourceList', payload: ['country'] });
+  }, []);
+
+  useEffect(() => {
+    setCascaderValue(props.value);
+  }, [props.value])
+
+  function handleChange(value, detail) {
+    if (value[value.length - 1] == 'add_area') {
+      setParentArea(detail.slice(0, detail.length - 1));
+    } else {
+      setCascaderValue(value);
+      if (props.onChange) {
+        props.onChange(value);
+      }
+    }
+  }
+
+  async function handleOk() {
+    if (!inputValue) return;
+    const { id: parent, level } = parentArea[parentArea.length - 1];
+    let countryE = '';
+    if (pinyin.isSupported) {
+      countryE = pinyin.convertToPinyin(inputValue, '', true);
+    }
+    const request = await api.addCountry({ parent, countryC: inputValue, countryE, level: level + 3 });
+    const { id } = request.data;
+    const newValue = parentArea.map(m => m.id);
+    setCascaderValue(newValue.concat(id));
+    if (props.onChange) {
+      props.onChange(newValue);
+    }
+    props.dispatch({ type: 'app/getSourceForceUpdate', payload: 'country' });
+    handleCancel();
+  }
+
+  function handleCancel() {
+    setParentArea([]);
+    setInputValue('');
+  }
+
+  function generateOptions() {
+    const china = props.country.find(f => ['中国', 'China'].includes(f.country));
+    if (!china) {
+      return [];
+    }
+    function findAllChildren(node, level) {
+      const allChildren = props.country.filter(f => f.parent === node.id);
+      if (allChildren.length === 0) {
+        let children = [];
+
+        if ([1, 2].includes(level)) {
+          children.unshift({ label: '添加地区', value: 'add_area' });
+        }
+
+        return { ...node, children };
+      }
+      node.children = allChildren.map(m => findAllChildren({ ...m, label: m.country, value: m.id, level: level + 1 }, level + 1));
+
+      if ([1, 2].includes(level)) {
+        node.children.unshift({ label: '添加地区', value: 'add_area' });
+      }
+
+      return { ...node, level };
+    }
+    const chinaWithChilden = findAllChildren(china, 0);
+    return chinaWithChilden.children;
+  }
+
+  const memoizedOptions = useMemo(() => generateOptions(), [props.country]);
+
+  return (
+    <div>
+      <Cascader
+        options={memoizedOptions}
+        value={cascaderValue}
+        onChange={handleChange}
+        placeholder="请选择地区"
+        style={props.style}
+      />
+      {parentArea.length > 0 && (
+        <Modal
+          title={<span>添加新的地区到<span style={{ color: 'red' }}>{parentArea[parentArea.length - 1].country}</span></span>}
+          visible
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input
+            onChange={e => setInputValue(e.target.value)}
+            value={inputValue}
+            placeholder="地区名称"
+          />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+function mapStateToPropsChina (state) {
+  const { country } = state.app;
+  return { country };
+}
+
+CascaderChina = connect(mapStateToPropsChina)(CascaderChina);
 
 /**
  * CascaderIndustry
@@ -2542,6 +2655,7 @@ export {
   SelectOrAddDate,
   SelectSeason,
   CascaderCountry,
+  CascaderChina,
   CascaderIndustry,
   InputCurrency,
   InputPhoneNumber,
