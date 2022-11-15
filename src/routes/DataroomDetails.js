@@ -291,15 +291,19 @@ function DataroomDetails(props) {
     // }
 
     async function getDataroomFiles() {
-      setLoading(true);
-      const reqDir = await api.queryDataRoomDir(dataroomID);
-      setData(formatData(reqDir.data));
-      const reqFile = await api.queryDataRoomFile({ dataroom: dataroomID, isFile: true });
-      setLoading(false);
-      const allFiles = [...reqDir.data, ...reqFile.data.data];
-      const formattedFiles = formatData(allFiles);
-      setAllDataroomFiles(formattedFiles);
-      setData(formattedFiles);
+      try {
+        setLoading(true);
+        const reqDir = await api.queryDataRoomDir(dataroomID);
+        setData(formatData(reqDir.data));
+        const reqFile = await api.queryDataRoomFile({ dataroom: dataroomID, isFile: true });
+        setLoading(false);
+        const allFiles = [...reqDir.data, ...reqFile.data.data];
+        const formattedFiles = formatData(allFiles);
+        setAllDataroomFiles(formattedFiles);
+        setData(formattedFiles);
+      } catch (error) {
+        handleError(error);
+      }
     }
 
     // function getDataRoomFile() {
