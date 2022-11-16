@@ -1640,8 +1640,9 @@ function CascaderChina(props) {
     }
     const request = await api.addCountry({ parent, countryC: inputValue, countryE, level: level + 3 });
     const { id } = request.data;
-    const newValue = parentArea.map(m => m.id);
-    setCascaderValue(newValue.concat(id));
+    let newValue = parentArea.map(m => m.id);
+    newValue = newValue.concat(id);
+    setCascaderValue(newValue);
     if (props.onChange) {
       props.onChange(newValue);
     }
