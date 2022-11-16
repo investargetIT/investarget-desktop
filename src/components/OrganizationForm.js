@@ -17,6 +17,7 @@ import {
   RadioCurrencyType,
   RadioAudit,
   TreeSelectTag,
+  CascaderChina,
 } from '../components/ExtraInput'
 
 import {
@@ -86,6 +87,10 @@ class OrganizationForm extends React.Component {
 
         <BasicFormItem label={i18n('organization.industry')} name="industry" valueType="number">
           <CascaderIndustry disabled={[]} />
+        </BasicFormItem>
+
+        <BasicFormItem label={i18n('project.country')} name="country" valueType="array">
+          <CascaderChina />
         </BasicFormItem>
 
         <BasicFormItem label="标签" name="tags" valueType="array">

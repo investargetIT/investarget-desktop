@@ -48,6 +48,9 @@ class AddOrganization extends React.Component {
     this.addOrgFormRef.current.validateFields()
       .then(values => {
         this.setState({ loadingAddOrg: true });
+        if (values.country) {
+          values.country = values.country[values.country.length - 1];
+        }
         api.addOrg(values).then((result) => {
           this.setState({ loadingAddOrg: false });
           this.props.history.goBack()

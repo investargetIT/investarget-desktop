@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   InputNumber,
   Select,
@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   Tag,
+  Modal,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -36,6 +37,7 @@ import { BasicContainer, BasicContainer2 } from './Filter';
 import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter';
 import debounce from 'lodash/debounce';
 import moment from 'moment';
+import pinyin from 'tiny-pinyin';
 
 const { CheckableTag } = Tag;
 
@@ -1597,8 +1599,9 @@ CascaderCountry = connect(mapStateToPropsCountry)(CascaderCountry)
     }
     const request = await api.addCountry({ parent, countryC: inputValue, countryE, level: level + 3 });
     const { id } = request.data;
-    const newValue = parentArea.map(m => m.id);
-    setCascaderValue(newValue.concat(id));
+    let newValue = parentArea.map(m => m.id);
+    newValue = newValue.concat(id);
+    setCascaderValue(newValue);
     if (props.onChange) {
       props.onChange(newValue);
     }
