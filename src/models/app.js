@@ -148,6 +148,11 @@ export default {
       yield put({ type: 'saveSource', payload: { sourceType, data } });
       return data;
     },
+    *getSourceForceUpdate({ payload: sourceType }, { call, put, select }) {
+      const { data } = yield call(api.getSource, sourceType)
+      yield put({ type: 'saveSource', payload: { sourceType, data } });
+      return data;
+    },
     *getSourceList({ payload: sourceTypeList }, { put }) {
       for (var i=0,len=sourceTypeList.length; i<len; i++) {
         let sourceType = sourceTypeList[i]

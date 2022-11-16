@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'dva'
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   InputNumber,
   Select,
@@ -2700,8 +2700,8 @@ export {
   SelectOrAddDate,
   SelectSeason,
   CascaderCountry,
-  CascaderIndustry,
   CascaderChina,
+  CascaderIndustry,
   InputCurrency,
   InputPhoneNumber,
   CheckboxTag,

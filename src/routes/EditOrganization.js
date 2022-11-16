@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'dva';
 import { withRouter } from 'dva/router'
 import * as api from '../api'
 import { handleError, i18n } from '../utils/util'
@@ -60,6 +61,9 @@ class EditOrganization extends React.Component {
       .then(values => {
         this.setState({ loadingEditOrg: true });
         const id = Number(this.props.match.params.id)
+        if (values.country) {
+          values.country = values.country[values.country.length - 1];
+        }
         api.editOrg(id, values).then((result) => {
           this.setState({ loadingEditOrg: false });
           this.props.history.goBack()
@@ -72,9 +76,19 @@ class EditOrganization extends React.Component {
 
   componentDidMount() {
     const id = Number(this.props.match.params.id)
+    let data = null;
     api.getOrgDetail(id).then(result => {
       // 数据转换
-      let data = { ...result.data }
+      data = { ...result.data };
+      return this.props.dispatch({ type: 'app/getSource', payload: 'country' });
+    }).then(allCountries => {
+      let country = [];
+      if (data.country) {
+        country = allCountries.find(f => f.id == data.country);
+        country = findAllParentArea(country, allCountries);
+      }
+      data = { ...data, country };
+      data.country = data.country ? data.country.map(m => m.id) : [];
       data.currency = data.currency && data.currency.id
       data.industry = data.industry && data.industry.id
       data.orgtransactionphase = data.orgtransactionphase ? data.orgtransactionphase.map(item => item.id) : []
@@ -85,12 +99,6 @@ class EditOrganization extends React.Component {
       textFields.forEach(item => {
         if (data[item] == null) { data[item] = '' }
       })
-
-      // for (let i in data) {
-      //   data[i] = { 'value': data[i] }
-      // }
-
-      console.log(data)
       this.setState({ data })
       this.editOrgFormRef.current.setFieldsValue(data);
     }, error => {
@@ -127,4 +135,4 @@ class EditOrganization extends React.Component {
   }
 }
 
-export default withRouter(EditOrganization)
+export default connect()(withRouter(EditOrganization));
