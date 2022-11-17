@@ -218,7 +218,9 @@ class DataRoomList extends React.Component {
     }
 
     const DataroomCard = ({ record }) => {
-
+      if (!record.proj) {
+        return <Card style={cardStyle} bodyStyle={cardBodyStyle} loading />;
+      }
       const dataroomId = record.id
       const projId = record.proj.id
       const projTitle = record.proj.realname
