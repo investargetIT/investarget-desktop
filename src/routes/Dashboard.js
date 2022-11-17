@@ -378,11 +378,12 @@ function Dashboard(props) {
     const titleArr = [
       { name: '新增\n项目\nBD', link: '/app/projects/bd/add' },
       { name: '新增\n平台\n项目', link: '/app/projects/add' },
+      { name: '新增\n投资人', link: `/app/user/add?redirect=${encodeURIComponent('/app')}` },
       { name: '机构列表', link: '/app/organization/list' },
       { name: '日程管理', link: '/app/schedule' },
     ];
     const elements = titleArr.map((m, i) => (
-      <div key={i} style={{ lineHeight: 1.2, border: '1px solid #339bd2', borderRadius: 4, fontSize: 11, width: 50, height: 50, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div key={i} style={{ lineHeight: 1.2, border: '1px solid #339bd2', borderRadius: 4, fontSize: 11, width: 50, height: 50, whiteSpace: 'pre-wrap', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
         <Link to={m.link}>{m.name}</Link>
       </div>
     ));

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva';
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-import { handleError, i18n } from '../utils/util'
+import { handleError, i18n, findAllParentArea } from '../utils/util'
 
 import { Form, Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout';
@@ -84,8 +84,7 @@ class EditOrganization extends React.Component {
     }).then(allCountries => {
       let country = [];
       if (data.country) {
-        country = allCountries.find(f => f.id == data.country);
-        country = findAllParentArea(country, allCountries);
+        country = findAllParentArea(data.country, allCountries);
       }
       data = { ...data, country };
       data.country = data.country ? data.country.map(m => m.id) : [];
