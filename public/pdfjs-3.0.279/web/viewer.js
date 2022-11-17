@@ -741,7 +741,7 @@ const defaultOptions = {
 };
 {
   defaultOptions.defaultUrl = {
-    value: "compressed.tracemonkey-pldi-09.pdf",
+    value: "sample.pdf",
     kind: OptionKind.VIEWER
   };
   defaultOptions.disablePreferences = {
@@ -2728,10 +2728,11 @@ exports.PDFViewerApplication = PDFViewerApplication;
       if (HOSTED_VIEWER_ORIGINS.includes(viewerOrigin)) {
         return;
       }
-      const fileOrigin = new URL(file, window.location.href).origin;
-      if (fileOrigin !== viewerOrigin) {
-        throw new Error("file origin does not match viewer's");
-      }
+      // 允许加载不同域名的文件
+      // const fileOrigin = new URL(file, window.location.href).origin;
+      // if (fileOrigin !== viewerOrigin) {
+      //   throw new Error("file origin does not match viewer's");
+      // }
     } catch (ex) {
       PDFViewerApplication.l10n.get("loading_error").then(msg => {
         PDFViewerApplication._documentError(msg, {
