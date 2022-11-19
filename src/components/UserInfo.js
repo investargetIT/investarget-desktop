@@ -20,6 +20,7 @@ import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import { DeleteOutlined } from '@ant-design/icons';
 import FileLink from './FileLink';
+import { SelectExistOrCreateNewOrganization } from './ExtraInput';
 
 const TabPane = Tabs.TabPane;
 
@@ -276,6 +277,7 @@ class UserInfo extends React.Component {
       orgid:'',
       attachment: [],
       historyOrg: null,
+      orgFormItemValue: { value: undefined, label: undefined },
     }
   }
 
@@ -318,7 +320,8 @@ class UserInfo extends React.Component {
     const cardKey = data.cardKey
     const orgid = data.org ? data.org.id : ''
     this.setState({
-      username, title, tags, country, area, org, mobile, wechat, email, userstatus, orgid
+      username, title, tags, country, area, org, mobile, wechat, email, userstatus, orgid,
+      orgFormItemValue: { value: orgid, label: org },
     })
     if (this.props.onGetUsername) {
       this.props.onGetUsername(username);
@@ -361,15 +364,30 @@ class UserInfo extends React.Component {
     }
   }
 
+  handleOrgChange = org => {
+    if (!org) return;
+    const { value, label } = org;
+    this.setState({ orgFormItemValue: { value, label } });
+    api.editUser([this.props.userId], { org: value });
+  }
 
   render() {
-    const { username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
+    const { username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid, orgFormItemValue } = this.state
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
           <div>
             <Field title={i18n('user.cn_name')} value={username} />
             <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />
+            <Field title={i18n('user.institution')} value={
+              <SelectExistOrCreateNewOrganization
+                allowCreate
+                size="middle"
+                style={{ width: 200 }}
+                onChange={this.handleOrgChange}
+                value={orgFormItemValue}
+              />
+            } />
             <Field title={i18n('user.department')} value={''} />
             <Field title={i18n('user.position')} value={title} />
             <Field title={i18n('user.tags')} value={tags} />
