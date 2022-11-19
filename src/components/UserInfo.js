@@ -378,16 +378,18 @@ class UserInfo extends React.Component {
         <TabPane tab="基本信息" key="1">
           <div>
             <Field title={i18n('user.cn_name')} value={username} />
-            <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />
-            <Field title={i18n('user.institution')} value={
-              <SelectExistOrCreateNewOrganization
-                allowCreate
-                size="middle"
-                style={{ width: 200 }}
-                onChange={this.handleOrgChange}
-                value={orgFormItemValue}
-              />
-            } />
+            {!this.props.userWithSameName && <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />}
+            {this.props.userWithSameName &&
+              <Field title={i18n('user.institution')} value={
+                <SelectExistOrCreateNewOrganization
+                  allowCreate
+                  size="middle"
+                  style={{ width: 200 }}
+                  onChange={this.handleOrgChange}
+                  value={orgFormItemValue}
+                />
+              } />
+            }
             <Field title={i18n('user.department')} value={''} />
             <Field title={i18n('user.position')} value={title} />
             <Field title={i18n('user.tags')} value={tags} />

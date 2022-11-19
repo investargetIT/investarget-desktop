@@ -676,7 +676,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} onGetUserRelations={this.handleGetUserRelation} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
-            { this.state.userIdWithSameName && <UserInfo userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} /> }
+            { this.state.userIdWithSameName && <UserInfo userWithSameName userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} /> }
             { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }
           </Col>
         </Row>
