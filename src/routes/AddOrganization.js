@@ -51,6 +51,9 @@ class AddOrganization extends React.Component {
         if (values.country) {
           values.country = values.country[values.country.length - 1];
         }
+        if (!values.orgfullname) {
+          values.orgfullname = values.orgnameC;
+        }
         api.addOrg(values).then((result) => {
           this.setState({ loadingAddOrg: false });
           this.props.history.goBack()
