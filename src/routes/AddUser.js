@@ -55,6 +55,7 @@ class AddUser extends React.Component {
   createOrg = async org => {
     const body = {
       orgnameC: org.label,
+      orgfullname: org.label,
       orgstatus: 2,
     };
     return api.addOrg(body);

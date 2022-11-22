@@ -35,21 +35,22 @@ class EditUser extends React.Component {
     this.checkingExist = false;
   }
 
-  getOrAddOrg = async values => {
-    if (isNaN(values.org) && values.org != undefined) {
-      const res = await api.getOrg({ search: values.org });
-      if (res.data.count > 0) return { data: res.data.data[0] };
-      const body = { orgnameC: values.org };
-      if (values.cardKey) {
-        body.orgstatus = 2;
-      }
-      return api.addOrg(body);
-    }
-  }
+  // getOrAddOrg = async values => {
+  //   if (isNaN(values.org) && values.org != undefined) {
+  //     const res = await api.getOrg({ search: values.org });
+  //     if (res.data.count > 0) return { data: res.data.data[0] };
+  //     const body = { orgnameC: values.org };
+  //     if (values.cardKey) {
+  //       body.orgstatus = 2;
+  //     }
+  //     return api.addOrg(body);
+  //   }
+  // }
 
   createOrg = async org => {
     const body = {
       orgnameC: org.label,
+      orgfullname: org.label,
       orgstatus: 2,
     };
     return api.addOrg(body);
