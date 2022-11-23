@@ -421,10 +421,10 @@ class OrganizationList extends React.Component {
 
         <div>
 
-          <div style={{ overflow: 'auto' }}>
-            <div style={{ float: 'left', marginBottom: '24px', width: '700px' }}>
+          <div style={{ display: 'flex', marginBottom: 24, justifyContent: 'space-between' }}>
+            <div>
               <Input.Search
-                style={{ width: 450, marginLeft: 10 }}
+                style={{ width: 450 }}
                 placeholder="搜索内容"
                 size="large"
                 addonBefore={selectBefore}
@@ -435,7 +435,7 @@ class OrganizationList extends React.Component {
             </div>
             
             {this.state.searchOption === 0 &&
-              <div style={{ float: 'right' }}>
+              <div>
                 {i18n('common.sort_by_created_time')}
                 <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
                   <Option value="asc">{i18n('common.asc_order')}</Option>
