@@ -179,6 +179,7 @@ class UserDetail extends React.Component {
       isUploading: false,
       username: '',
       userIdWithSameName: null,
+      allUserWithSameName: [],
       mergingModal: false,
       confirmMergeModal: false,
       mergeUserMessage: '',
@@ -288,7 +289,7 @@ class UserDetail extends React.Component {
     const { count, data } = resUser.data;
     if (count > 1) {
       const userWithSameName = data.filter(f => f.id !== this.state.userId);
-      this.setState({ userIdWithSameName: userWithSameName[0].id });
+      this.setState({ userIdWithSameName: userWithSameName[0].id, allUserWithSameName: userWithSameName });
     } else {
       Modal.warning({ title: '未查到同名用户' });
     }
@@ -620,6 +621,10 @@ class UserDetail extends React.Component {
     return traderList.includes(getCurrentUser());
   }
 
+  handleReloadSameNameUser = userID => {
+    this.setState({ userIdWithSameName: null }, () => this.setState({ userIdWithSameName: userID }));
+  }
+
   render() {
     const { userId, isUploading } = this.state;
     return userId && (
@@ -676,7 +681,7 @@ class UserDetail extends React.Component {
           <Col span={11}>
             { !this.state.userIdWithSameName && <TransactionInfo userId={userId} onGetUserRelations={this.handleGetUserRelation} /> }
             {/* { !this.state.userIdWithSameName && <Button type="primary" size="large" onClick={this.handleSearchUserWithSameNameClick}>查询同名用户</Button>} */}
-            { this.state.userIdWithSameName && <UserInfo userWithSameName userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} /> }
+            { this.state.userIdWithSameName && <UserInfo userWithSameName={this.state.allUserWithSameName} userId={this.state.userIdWithSameName} onGetMobile={this.handleMinorUserGetMobile} onGetWeChat={this.handleMinorUserGetWeChat} reloadSameNameUser={this.handleReloadSameNameUser} /> }
             { this.state.userIdWithSameName && <div style={{ marginLeft: 82 }}><TransactionInfo userId={this.state.userIdWithSameName} style={{ float: 'none' }} /></div> }
           </Col>
         </Row>

@@ -15,6 +15,7 @@ import {
   Pagination,
   Icon,
   Button,
+  Select,
 } from 'antd';
 import ImageViewer from './ImageViewer'
 import { PAGE_SIZE_OPTIONS } from '../constants';
@@ -277,7 +278,6 @@ class UserInfo extends React.Component {
       orgid:'',
       attachment: [],
       historyOrg: null,
-      orgFormItemValue: { value: undefined, label: undefined },
     }
   }
 
@@ -321,7 +321,6 @@ class UserInfo extends React.Component {
     const orgid = data.org ? data.org.id : ''
     this.setState({
       username, title, tags, country, area, org, mobile, wechat, email, userstatus, orgid,
-      orgFormItemValue: { value: orgid, label: org },
     })
     if (this.props.onGetUsername) {
       this.props.onGetUsername(username);
@@ -364,29 +363,35 @@ class UserInfo extends React.Component {
     }
   }
 
-  handleOrgChange = org => {
-    if (!org) return;
-    const { value, label } = org;
-    this.setState({ orgFormItemValue: { value, label } });
-    api.editUser([this.props.userId], { org: value });
+  handleOrgChange = value => {
+    if (this.props.reloadSameNameUser) {
+      this.props.reloadSameNameUser(value);
+    }
+  }
+
+  userWithSameNameToOptions = () => {
+    return this.props.userWithSameName.map(m => {
+      const label = m.org && m.org.orgfullname;
+      const value = m.id;
+      return { value, label };
+    });
   }
 
   render() {
-    const { username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid, orgFormItemValue } = this.state
+    const { username, title, tags, country, area, org, mobile, wechat, email, userstatus, cardUrl, orgid } = this.state
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
           <div>
             <Field title={i18n('user.cn_name')} value={username} />
-            {!this.props.userWithSameName && <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />}
-            {this.props.userWithSameName &&
+            {(!this.props.userWithSameName || this.props.userWithSameName.length <= 1) && <Field title={i18n('user.institution')} value={org} orgid={orgid} historyOrg={this.state.historyOrg} />}
+            {this.props.userWithSameName && this.props.userWithSameName.length > 1 &&
               <Field title={i18n('user.institution')} value={
-                <SelectExistOrCreateNewOrganization
-                  allowCreate
-                  size="middle"
+                <Select
                   style={{ width: 200 }}
+                  defaultValue={this.props.userId}
+                  options={this.userWithSameNameToOptions()}
                   onChange={this.handleOrgChange}
-                  value={orgFormItemValue}
                 />
               } />
             }
