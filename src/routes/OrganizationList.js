@@ -19,7 +19,7 @@ import {
   EditOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { OrganizationListFilter } from '../components/Filter'
+import { OrganizationListFilterNew, ç } from '../components/Filter'
 import { PAGE_SIZE_OPTIONS } from '../constants';
 import styles from './ProjectBDList.css';
 
@@ -34,7 +34,7 @@ class OrganizationList extends React.Component {
     super(props)
 
     const setting = this.readSetting()
-    const filters = setting ? setting.filters : OrganizationListFilter.defaultValue
+    const filters = setting ? setting.filters : OrganizationListFilterNew.defaultValue
     const search = setting ? setting.search : null
     const page = setting ? setting.page : 1
     const pageSize = setting ? setting.pageSize: null;
@@ -422,9 +422,9 @@ class OrganizationList extends React.Component {
         <div>
 
           <div style={{ display: 'flex', marginBottom: 24, justifyContent: 'space-between' }}>
-            <div>
+            <div style={{ flex: 1 }}>
               <Input.Search
-                style={{ width: 450 }}
+                style={{ width: 450, marginRight: 8 }}
                 placeholder="搜索内容"
                 size="large"
                 addonBefore={selectBefore}
@@ -432,10 +432,11 @@ class OrganizationList extends React.Component {
                 onChange={e => this.setState({ search: e.target.value })}
                 onSearch={this.handleOrgSearch}
               />
+              <OrganizationListFilterNew onSearch={this.handleFilt} />
             </div>
             
             {this.state.searchOption === 0 &&
-              <div>
+              <div style={{ width: 200, textAlign: 'right', alignSelf: 'flex-end' }}>
                 {i18n('common.sort_by_created_time')}
                 <Select size="large" style={{ marginLeft: 8 }} defaultValue="desc" onChange={this.handleSortChange}>
                   <Option value="asc">{i18n('common.asc_order')}</Option>

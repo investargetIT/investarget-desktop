@@ -53,6 +53,7 @@ import {
   SelectProjectStatus,
   SelectIndustryGroupWithAll,
   CheckboxTag,
+  SelectOrganizationType,
 } from './ExtraInput'
 import ITCheckboxGroup from './ITCheckboxGroup'
 
@@ -568,6 +569,56 @@ class MyInvestorListFilter extends React.Component {
     )
   }
 }
+
+class OrganizationListFilterNew extends React.Component {
+
+  static defaultValue = {
+    investoverseasproject: null,
+    currencys: [],
+    orgtransactionphases: [],
+    industrys: [],
+    tags: [],
+    orgtypes: [],
+    area: [],
+    // orgstatus: hasPerm('org.admin_manageorg') ? [] : [2],
+    orgstatus: [],
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = props.defaultValue || OrganizationListFilter.defaultValue
+  }
+
+  handleChange = (key, value) => {
+    this.setState({ [key]: value }, this.handleSearch);
+  }
+
+  handleSearch = () => {
+    this.props.onSearch({ ...this.state })
+  }
+
+  handleReset = () => {
+    this.setState({ ...OrganizationListFilter.defaultValue })
+    this.props.onReset({ ...OrganizationListFilter.defaultValue })
+  }
+
+  render() {
+    const { investoverseasproject, currencys, orgtransactionphases, industrys, tags, orgtypes, area, orgstatus } = this.state
+    return (
+      <SelectOrganizationType
+        mode="multiple"
+        style={{ width: 200 }}
+        size="large"
+        placeholder="请选择机构类型"
+        value={orgtypes}
+        onChange={this.handleChange.bind(this, 'orgtypes')}
+      />
+    )
+  }
+
+}
+
+OrganizationListFilterNew = connect()(OrganizationListFilterNew);
 
 class OrganizationListFilter extends React.Component {
 
@@ -1360,6 +1411,7 @@ export {
   MyInvestorListFilter,
   UserListFilter,
   OrgUserListFilter,
+  OrganizationListFilterNew,
   OrganizationListFilter,
   OrgFilterForOrgBd,
   ProjectListFilter,
