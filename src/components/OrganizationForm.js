@@ -6,9 +6,9 @@ import {
   getCurrencyFromId, 
   checkMobile,
 } from '../utils/util';
-import { Form, Input, InputNumber, Row, Col } from 'antd'
+import { Form, Input, InputNumber, Row, Col, Button } from 'antd'
 const FormItem = Form.Item
-
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   SelectOrganizationType,
   CascaderIndustry,
@@ -35,6 +35,18 @@ const formItemLayout = {
     sm: { span: 14 },
   },
 }
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 14,
+      offset: 6,
+    },
+  },
+};
 
 /**
  *  OrganizationForm 的字段 :
@@ -80,6 +92,48 @@ class OrganizationForm extends React.Component {
         <BasicFormItem label={i18n('organization.full_name')} name="orgfullname" whitespace>
           <Input />
         </BasicFormItem>
+
+        <Form.List name="names">
+          {(fields, { add, remove }, { errors }) => (
+            <div style={{ marginBottom: 29 }}>
+              {fields.map((field, index) => (
+                <Form.Item
+                  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                  label={index === 0 ? '别名' : ''}
+                  required={false}
+                  key={field.key}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Form.Item
+                      {...field}
+                      noStyle
+                    >
+                      <Input />
+                    </Form.Item>
+                    <MinusCircleOutlined
+                      style={{ marginLeft: 8 }}
+                      className="dynamic-delete-button"
+                      onClick={() => remove(field.name)}
+                    />
+                  </div>
+                </Form.Item>
+              ))}
+              <Form.Item {...formItemLayoutWithOutLabel}>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  style={{
+                    width: '100%',
+                  }}
+                  icon={<PlusOutlined />}
+                >
+                  添加别名
+                </Button>
+                <Form.ErrorList errors={errors} />
+              </Form.Item>
+            </div>
+          )}
+        </Form.List>
 
         <BasicFormItem label={i18n('organization.org_type')} name="orgtype" valueType="number">
           <SelectOrganizationType />
