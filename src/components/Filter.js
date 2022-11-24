@@ -609,7 +609,7 @@ class OrganizationListFilterNew extends React.Component {
         mode="multiple"
         style={{ width: 200 }}
         size="large"
-        // maxTagCount="responsive"
+        maxTagCount="responsive"
         placeholder="请选择机构类型"
         value={orgtypes}
         onChange={this.handleChange.bind(this, 'orgtypes')}
