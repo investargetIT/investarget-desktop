@@ -14,7 +14,7 @@ function toData(formData) {
     formData['bduser'] = null
     formData['useremail'] = formData.email;
     formData['userwechat'] = formData.wechat;
-    formData['usermobile'] = (formData.mobileAreaCode && formData.mobile) ? `+${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
+    formData['usermobile'] = (formData.mobileAreaCode && formData.mobile) ? `${formData.mobileAreaCode}-${formData.mobile}` : formData.mobile;
   }
   // 如果国家不是中国，则设置地区为null
   if (formData.country.value !== 42) {

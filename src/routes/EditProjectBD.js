@@ -42,7 +42,7 @@ function toFormData(data) {
     if (formData['usermobile']) {
       const mobileArr = formData['usermobile'].split('-');
       if (mobileArr.length > 1) {
-        formData.mobileAreaCode = mobileArr[0];
+        formData.mobileAreaCode = mobileArr[0].replace('+', '');
         formData.mobile = mobileArr.slice(1).join('-');
       } else {
         formData.mobileAreaCode = '86';
@@ -67,7 +67,8 @@ function toFormData(data) {
 function toData(formData) {
   if (!('bduser' in formData)) {
     formData['bduser'] = null
-    formData['useremail'] = formData.email
+    formData['useremail'] = formData.email;
+    formData['userwechat'] = formData.wechat;
     formData['usermobile'] = (formData.mobileAreaCode && formData.mobile) ? formData.mobileAreaCode + '-' + formData.mobile : formData.mobile;
   }
   // 如果国家不是中国，则设置地区为null
