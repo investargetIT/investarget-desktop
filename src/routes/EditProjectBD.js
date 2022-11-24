@@ -31,23 +31,29 @@ function toFormData(data) {
     }
   }
 
-  // 如果 bduser 有值，则删除 username, usertitle, usermobile
+  // 如果 bduser 有值，则删除 username, usertitle, usermobile, userwechat
   if (formData['bduser']) {
     delete formData['username']
     delete formData['usertitle']
     delete formData['usermobile']
     delete formData['useremail']
-  } else if (formData['usermobile']) {
-    const mobileArr = formData['usermobile'].split('-');
-    if (mobileArr.length > 1) {
-      formData.mobileAreaCode = mobileArr[0];
-      formData.mobile = mobileArr.slice(1).join('-'); 
-    } else {
-      formData.mobileAreaCode = '86';
-      formData.mobile = formData['usermobile'];  
+    delete formData['usewechat']
+  } else {
+    if (formData['usermobile']) {
+      const mobileArr = formData['usermobile'].split('-');
+      if (mobileArr.length > 1) {
+        formData.mobileAreaCode = mobileArr[0];
+        formData.mobile = mobileArr.slice(1).join('-');
+      } else {
+        formData.mobileAreaCode = '86';
+        formData.mobile = formData['usermobile'];
+      }
     }
     if (formData['useremail']) {
       formData.email = formData['useremail'];
+    }
+    if (formData['userwechat']) {
+      formData.wechat = formData['userwechat'];
     }
   } 
   
