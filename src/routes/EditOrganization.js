@@ -49,13 +49,6 @@ class EditOrganization extends React.Component {
     this.props.router.goBack()
   }
 
-  // handleRef = (inst) => {
-  //   if (inst) {
-  //     this.form = inst.props.form
-  //     window.form = this.form // debug
-  //   }
-  // }
-
   handleSubmit = () => {
     this.editOrgFormRef.current.validateFields()
       .then(values => {
@@ -64,14 +57,27 @@ class EditOrganization extends React.Component {
         if (values.country) {
           values.country = values.country[values.country.length - 1];
         }
-        api.editOrg(id, values).then((result) => {
-          this.setState({ loadingEditOrg: false });
-          this.props.history.goBack()
-        }, error => {
-          this.setState({ loadingEditOrg: false });
-          handleError(error)
-        })
+        api.editOrg(id, values)
+          .then((result) => {
+            const { id } = result.data;
+            const alias = values.alias ? values.alias.filter(f => !!f) : [];
+            return this.updateOrgAlias(id, alias);
+          })
+          .then(() => {
+            this.setState({ loadingEditOrg: false });
+            this.props.history.goBack();
+          })
+          .catch(error => {
+            this.setState({ loadingEditOrg: false });
+            handleError(error)
+          });
       });
+  }
+
+  updateOrgAlias = async (orgID, alias) => {
+    const reqOrgAlias = await api.getOrgAlias();
+    window.echo('reqOrgAlias', reqOrgAlias);
+    // TODO
   }
 
   componentDidMount() {

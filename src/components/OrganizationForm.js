@@ -93,7 +93,7 @@ class OrganizationForm extends React.Component {
           <Input />
         </BasicFormItem>
 
-        <Form.List name="names">
+        <Form.List name="alias">
           {(fields, { add, remove }, { errors }) => (
             <div style={{ marginBottom: 29 }}>
               {fields.map((field, index) => (
