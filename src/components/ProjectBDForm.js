@@ -293,6 +293,7 @@ class ProjectBDForm extends React.Component {
                         }
                         return (
                           <FormItem
+                            style={{ marginBottom: 0 }}
                             name="mobileAreaCode"
                             rules={[]}
                             initialValue={country && country.areaCode || '86'}
@@ -305,6 +306,7 @@ class ProjectBDForm extends React.Component {
                   </Col>
                   <Col span={18}>
                     <FormItem
+                      style={{ marginBottom: 0 }}
                       name="mobile"
                       rules={[{ validator: this.checkMobileInfo }]}
                     >
