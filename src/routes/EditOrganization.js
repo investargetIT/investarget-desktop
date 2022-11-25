@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva';
 import { withRouter } from 'dva/router'
 import * as api from '../api'
-import { handleError, i18n, findAllParentArea } from '../utils/util'
+import { handleError, i18n, findAllParentArea, requestAllData } from '../utils/util'
 
 import { Form, Button } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout';
@@ -21,17 +21,6 @@ const formStyle = {
 const actionStyle = {textAlign: 'center'}
 const actionBtnStyle = {margin: '0 16px'}
 
-
-// function onFieldsChange(props, changedFiedls) {
-//   console.log(changedFiedls)
-// }
-// function mapPropsToFields(props) {
-//   return props.data
-// }
-
-// var EditOrganizationForm = Form.create({
-//   onFieldsChange, mapPropsToFields
-// })(OrganizationForm)
 
 
 class EditOrganization extends React.Component {
@@ -74,10 +63,41 @@ class EditOrganization extends React.Component {
       });
   }
 
-  updateOrgAlias = async (orgID, alias) => {
-    const reqOrgAlias = await api.getOrgAlias();
-    window.echo('reqOrgAlias', reqOrgAlias);
-    // TODO
+  updateOrgAlias = async (orgID, newAlias) => {
+    const aliasArr = [...new Set(newAlias)];
+    const reqOrgAlias = await requestAllData(api.getOrgAlias, { org: orgID }, 10);
+    const { data: originalAlias } = reqOrgAlias.data;
+    if (aliasArr.length >= originalAlias.length) {
+      // 修改后的别名多了需要新增
+      for (let index = 0; index < aliasArr.length; index++) {
+        if (index < originalAlias.length) {
+          if (aliasArr[index] !== originalAlias[index].alias) {
+            await api.deleteOrgAlias(originalAlias[index].id);
+            await api.addOrgAlias({ org: orgID, alias: aliasArr[index] });
+          }
+        } else {
+          await api.addOrgAlias({ org: orgID, alias: aliasArr[index] });
+        }
+      }
+    } else {
+      // 修改后别名少了需要删除
+      for (let index = 0; index < originalAlias.length; index++) {
+        if (index < aliasArr.length) {
+          if (aliasArr[index] !== originalAlias[index].alias) {
+            await api.deleteOrgAlias(originalAlias[index].id);
+            await api.addOrgAlias({ org: orgID, alias: aliasArr[index] });
+          }
+        } else {
+          await api.deleteOrgAlias(originalAlias[index].id);
+        }
+      }
+    }
+  }
+
+  getOrgAlias = async orgID => {
+    const req = await requestAllData(api.getOrgAlias, { org: orgID }, 10);
+    const orgAlias = req.data.data.map(m => m.alias);
+    this.editOrgFormRef.current.setFieldsValue({ alias: orgAlias });
   }
 
   componentDidMount() {
@@ -86,6 +106,7 @@ class EditOrganization extends React.Component {
     api.getOrgDetail(id).then(result => {
       // 数据转换
       data = { ...result.data };
+      this.getOrgAlias(data.id);
       return this.props.dispatch({ type: 'app/getSource', payload: 'country' });
     }).then(allCountries => {
       let country = [];

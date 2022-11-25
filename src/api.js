@@ -1148,3 +1148,6 @@ export const addCountry = body => r('/source/country', 'POST', body);
 
 // 机构别名
 export const getOrgAlias = params => r(`/org/alias/?${qs.stringify(params)}`);
+export const addOrgAlias = body => r('/org/alias/', 'POST', body);
+export const deleteOrgAlias = id => r(`/org/alias/${id}/`, 'DELETE');
+// export const updateOrgAlias = (id, body) => r(`/org/alias/${id}/`, 'PUT', body);
