@@ -689,6 +689,7 @@ class OrgDetail extends React.Component {
       isShowOrgDetailForm: false,
       isUploading: false,
       hideUserInfo: false,
+      orgAlias: [],
     }
 
     this.id = props.match.params.id;
@@ -710,6 +711,11 @@ class OrgDetail extends React.Component {
     }
   }
 
+  getOrgAlias = async orgID => {
+    const req = await requestAllData(api.getOrgAlias, { org: orgID }, 10);
+    this.setState({ orgAlias: req.data.data.map(m => m.alias) });
+  }
+
   componentDidMount() {
 
     let orgTitleTable
@@ -719,6 +725,7 @@ class OrgDetail extends React.Component {
       return api.getOrgDetail(id, { lang: window.LANG })
     }).then(result => {
       let data = { ...result.data }
+      this.getOrgAlias(data.id);
       data.currency = data.currency && data.currency.currency
       data.tags  = (data.tags && data.tags.length) ? data.tags.map(item => item.name).join(', ') : '';
       data.industry = data.industry && data.industry.industry
@@ -777,19 +784,6 @@ class OrgDetail extends React.Component {
           newData[index].user.push({ ...m, name, avatar, trader, isUnreachUser, key })
         }
       })
-      // data[1].data.data.map(m => {
-      //   const index = newData.map(m => m.id).indexOf(m.title)
-      //   if (index > -1) {
-      //     const trader = {
-      //       id: m.trader_relation && m.trader_relation.traderuser.id,
-      //       name: m.trader_relation && m.trader_relation.traderuser.username
-      //     }
-      //     const isUnreachUser = true
-      //     const isMyInvestor = false
-      //     const key = 'unreach-' + m.id
-      //     newData[index].user.push({ ...m, trader, isUnreachUser, key, isMyInvestor })
-      //   }
-      // })
       this.setState({ data: newData })
     })
     .catch(err => {
@@ -889,30 +883,6 @@ class OrgDetail extends React.Component {
     })
   }
 
-  /**
-   * 鼠标停留在投资人上时判断是否有权限修改该投资人
-   */
-  // handleHoverInvestor = (positionID, userKey) => {
-  //   const newData = this.state.data.slice()
-  //   .map(m => {
-  //     const user = m.user.slice()
-  //     return {...m, user}
-  //   })
-  //   const positionIndex = newData.map(m => m.id).indexOf(positionID)
-  //   const index = newData[positionIndex].user.map(m => m.key).indexOf(userKey)
-  //   if (hasPerm('usersys.admin_manageuser')) {
-  //     newData[positionIndex].user[index].couldEdit = true;
-  //     this.setState({ data: newData });
-  //     return
-  //   }
-  //   api.checkUserRelation(userKey.split('-')[1], isLogin().id)
-  //   .then(result => {
-  //     if (!result.data) return
-  //     newData[positionIndex].user[index].couldEdit = true;
-  //     this.setState({ data: newData });
-  //   });
-  // }
-
   onMobileUploadComplete(status, records) {
     if(!status) return;
     this.addOrgAttachments(records);
@@ -967,6 +937,7 @@ class OrgDetail extends React.Component {
     const basic = <div>
       <Field title="全称" value={this.state.orgfullname} />
       <Field title="简称" value={this.state.orgname} />
+      <Field title="别名" value={this.state.orgAlias.join('、')} />
       <Field title={i18n('organization.org_type')} value={this.state.orgtype} />
       {/* 隐藏机构货币单位 */}
       {/* <Field title={i18n('organization.currency')} value={this.state.currency} /> */}
