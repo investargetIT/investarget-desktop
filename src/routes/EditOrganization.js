@@ -80,8 +80,8 @@ class EditOrganization extends React.Component {
         }
       }
     } else {
-      // 修改后别名少了需要删除
-      for (let index = 0; index < originalAlias.length; index++) {
+      // 修改后别名少了需要删除，必须先删除多的，因为无法同名
+      for (let index = originalAlias.length - 1; index >= 0; index--) {
         if (index < aliasArr.length) {
           if (aliasArr[index] !== originalAlias[index].alias) {
             await api.deleteOrgAlias(originalAlias[index].id);
