@@ -4,7 +4,7 @@ import { withRouter } from 'dva/router'
 import * as api from '../api'
 import { handleError, i18n, findAllParentArea, requestAllData } from '../utils/util'
 
-import { Form, Button } from 'antd'
+import { Button, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout';
 
 import OrganizationForm from '../components/OrganizationForm'
@@ -132,6 +132,13 @@ class EditOrganization extends React.Component {
     })
   }
 
+  handleAliasOnBlur = () => {
+    const alias = this.editOrgFormRef.current.getFieldValue('alias');
+    if (alias && (new Set(alias)).size !== alias.length) {
+      Modal.error({ title: '机构别名不能重复' });
+    }
+  }
+
   render() {
     const id = Number(this.props.match.params.id)
     return (
@@ -146,6 +153,7 @@ class EditOrganization extends React.Component {
               ref={this.editOrgFormRef}
               wrappedComponentRef={this.handleRef}
               data={this.state.data}
+              aliasOnBlur={this.handleAliasOnBlur}
             />
             <div style={actionStyle}>
               <Button size="large" onClick={this.cancel} style={actionBtnStyle}>{i18n('common.cancel')}</Button>

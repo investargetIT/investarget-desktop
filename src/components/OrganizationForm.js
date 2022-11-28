@@ -93,7 +93,18 @@ class OrganizationForm extends React.Component {
           <Input />
         </BasicFormItem>
 
-        <Form.List name="alias">
+        <Form.List
+          name="alias"
+          rules={[
+            {
+              validator: async (_, names) => {
+                if (names && (new Set(names)).size !== names.length) {
+                  return Promise.reject(new Error('机构别名不能重复'));
+                }
+              },
+            },
+          ]}
+        >
           {(fields, { add, remove }, { errors }) => (
             <div style={{ marginBottom: 29 }}>
               {fields.map((field, index) => (
@@ -108,7 +119,7 @@ class OrganizationForm extends React.Component {
                       {...field}
                       noStyle
                     >
-                      <Input />
+                      <Input onBlur={this.props.aliasOnBlur} />
                     </Form.Item>
                     <MinusCircleOutlined
                       style={{ marginLeft: 8 }}

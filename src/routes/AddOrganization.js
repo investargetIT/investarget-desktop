@@ -3,7 +3,7 @@ import { connect } from 'dva'
 import * as api from '../api'
 import { i18n } from '../utils/util'
 
-import { Form, Button } from 'antd'
+import { Form, Button, Modal } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout';
 
 import OrganizationForm from '../components/OrganizationForm'
@@ -67,6 +67,12 @@ class AddOrganization extends React.Component {
       })
   }
 
+  handleAliasOnBlur = () => {
+    const alias = this.addOrgFormRef.current.getFieldValue('alias');
+    if (alias && (new Set(alias)).size !== alias.length) {
+      Modal.error({ title: '机构别名不能重复' });
+    }
+  }
 
   render() {
     return (
@@ -74,7 +80,10 @@ class AddOrganization extends React.Component {
         <div>
 
           <div style={formStyle}>
-            <OrganizationForm wrappedComponentRef={this.handleRef} ref={this.addOrgFormRef} />
+            <OrganizationForm
+              wrappedComponentRef={this.handleRef}
+              ref={this.addOrgFormRef}
+              aliasOnBlur={this.handleAliasOnBlur} />
           </div>
 
           <div style={actionStyle}>
