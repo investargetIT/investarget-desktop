@@ -813,7 +813,7 @@ function DataroomDetails(props) {
     <LeftRightLayoutPure location={props.location}>
       <Breadcrumb style={{ marginLeft: 20, marginBottom: 20 }}>
         <Breadcrumb.Item>
-          <Link to="/app">首页</Link>
+          {hasPerm('usersys.as_trader') ? <Link to="/app">首页</Link> : '首页'}
         </Breadcrumb.Item>
         <Breadcrumb.Item>Data Room</Breadcrumb.Item>
         <Breadcrumb.Item>
