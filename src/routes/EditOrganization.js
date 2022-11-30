@@ -132,9 +132,12 @@ class EditOrganization extends React.Component {
     })
   }
 
-  handleAliasOnBlur = () => {
-    const alias = this.editOrgFormRef.current.getFieldValue('alias');
-    if (alias && (new Set(alias)).size !== alias.length) {
+  handleAliasOnBlur = e => {
+    const { value: alias } = e.target;
+    if (!alias) return;
+    let allAlias = this.editOrgFormRef.current.getFieldValue('alias');
+    allAlias = allAlias.filter(f => !!f);
+    if (allAlias && (new Set(allAlias)).size !== allAlias.length) {
       Modal.error({ title: '机构别名不能重复' });
     }
   }

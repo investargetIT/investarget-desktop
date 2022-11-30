@@ -98,7 +98,8 @@ class OrganizationForm extends React.Component {
           rules={[
             {
               validator: async (_, names) => {
-                if (names && (new Set(names)).size !== names.length) {
+                names = names.filter(f => !!f);
+                if ((new Set(names)).size !== names.length) {
                   return Promise.reject(new Error('机构别名不能重复'));
                 }
               },
