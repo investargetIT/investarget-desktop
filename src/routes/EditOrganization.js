@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva';
 import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
-import { handleError, i18n, findAllParentArea, requestAllData, time } from '../utils/util';
+import { handleError, i18n, findAllParentArea, requestAllData, time, sleep } from '../utils/util';
 import { Button, Modal, Row, Col, Table, List, Comment, Avatar, Tag } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout';
 import styles from './ProjectBDList.css';
@@ -34,6 +34,7 @@ class EditOrganization extends React.Component {
       orgWithSameName: [],
       loadingMergeOrg: false,
       currentOrg: null,
+      modalTitle: '发现同名机构，是否合并？',
     }
     this.editOrgFormRef = React.createRef();
   }
@@ -171,8 +172,22 @@ class EditOrganization extends React.Component {
     }
   }
 
-  handleConfirmMergeOrg = () => {
-    this.setState({ loadingMergeOrg: true });
+  handleConfirmMergeOrg = async () => {
+    this.setState({ loadingMergeOrg: true, modalTitle: '开始合并机构...' });
+    await sleep(1000);
+
+    this.setState({ modalTitle: '正在合并机构备注' });
+    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    await sleep(1000);
+
+    this.setState({ modalTitle: '正在删除被合并机构' });
+    // await api.deleteOrg(this.state.currentOrg);
+    await sleep(1000);
+
+    this.setState({ modalTitle: '合并成功！' });
+    await sleep(1000);
+
+    this.setState({ loadingMergeOrg: false, displaySameNameOrgModal: false, modalTitle: '发现同名机构，是否合并？' });
   }
 
   getCurrentOrgName = () => {
@@ -241,7 +256,7 @@ class EditOrganization extends React.Component {
         <OrganizationRemarkList typeId={id} />
 
         <Modal
-          title="发现同名机构，是否合并？"
+          title={this.state.modalTitle}
           visible={this.state.displaySameNameOrgModal}
           okText="合并"
           onOk={this.handleConfirmMergeOrg}
