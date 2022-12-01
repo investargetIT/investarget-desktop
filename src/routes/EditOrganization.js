@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'dva';
-import { withRouter } from 'dva/router'
+import { withRouter, Link } from 'dva/router'
 import * as api from '../api'
 import { handleError, i18n, findAllParentArea, requestAllData } from '../utils/util'
 
-import { Button, Modal } from 'antd'
+import { Button, Modal, Row, Col, Table } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout';
 
 import OrganizationForm from '../components/OrganizationForm'
@@ -150,6 +150,20 @@ class EditOrganization extends React.Component {
     orgWithSameName = orgWithSameName.filter(f => f.id !== Number(this.props.match.params.id));
     if (orgWithSameName.length > 0) {
       this.setState({ displaySameNameOrgModal: true, orgWithSameName });
+      this.props.dispatch({
+        type: 'app/getOrgRemarks',
+        payload: {
+          orgIDArr: orgWithSameName.map(m => m.id),
+          forceUpdate: false
+        }
+      });
+      this.props.dispatch({
+        type: 'app/getOrgInvestorsAndRemarks',
+        payload: {
+          orgIDArr: orgWithSameName.map(m => m.id),
+          forceUpdate: false
+        }
+      });
     }
   }
 
@@ -159,6 +173,22 @@ class EditOrganization extends React.Component {
 
   render() {
     const id = Number(this.props.match.params.id)
+    const columns = [
+      {
+        title: '全称', key: 'orgname',
+        render: (_, record) => <Link target="_blank" to={'/app/organization/' + record.id}>
+          <div style={{ color: "#428BCA" }}>
+            {record.orgfullname}
+          </div>
+        </Link>,
+      },
+      {
+        title: i18n('organization.transaction_phase'), key: 'orgtransactionphase', dataIndex: 'orgtransactionphase', render: (_, record) => {
+          let phases = record.orgtransactionphase || [];
+          return <span className="span-phase">{phases.map(p => p.name).join(' / ')}</span>
+        }
+      },
+    ];
     return (
       <LeftRightLayout
         location={this.props.location}
@@ -188,7 +218,100 @@ class EditOrganization extends React.Component {
           onCancel={() => this.setState({ displaySameNameOrgModal: false })}
           confirmLoading={this.state.loadingMergeOrg}
         >
+          <Row>
+            <Col span={10}>
+              <Table
+                columns={columns}
+                dataSource={this.state.orgWithSameName}
+                rowKey={record => record.id}
+                pagination={false}
+              />
+            </Col>
 
+            <Col span={6} style={{ minHeight: 500 }}>
+              {/* <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0', justifyContent: 'space-between' }}>
+                <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
+                  <div>
+                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ height: '100%' }}>
+                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>备注</div>
+                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
+                      </div>
+                      <Link to={`/app/organization/${this.getCurrentOrgId()}?action=addRemark`} target="_blank">
+                        <Tooltip title="添加备注"><PlusOutlined /></Tooltip>
+                      </Link>
+                    </div>
+                    <div style={{ padding: 16, overflowY: 'auto', height: this.calculateContentHeight() }}>
+                      <List
+                        className="comment-list"
+                        itemLayout="horizontal"
+                        dataSource={this.getCurrentOrgRemarks()}
+                        renderItem={item => (
+                          <li>
+                            <Comment
+                              // actions={item.actions}
+                              author={item.createuserobj && item.createuserobj.username}
+                              avatar={item.createuserobj && <Link to={`/app/user/${item.createuser}`}><Avatar src={item.createuserobj.photourl} /></Link>}
+                              content={<p dangerouslySetInnerHTML={{ __html: item.remark }} />}
+                              datetime={time(item.createdtime)}
+                            />
+                          </li>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </Affix>
+              </div> */}
+            </Col>
+
+            <Col span={8}>
+              {/* <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
+                <Affix offsetTop={50}>
+                  <div>
+                    <div style={{ height: 60, padding: 16, color: 'rgba(0, 0, 0, 0.85)', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ height: '100%' }}>
+                        <div style={{ lineHeight: '27px', fontWeight: 500 }}>投资人</div>
+                        <div style={{ fontSize: 10, color: 'gray' }}>{this.getCurrentOrgName()}</div>
+                      </div>
+                      <Link to={`/app/user/add?org=${this.getCurrentOrgId()}&orgName=${this.getCurrentOrgName()}&redirect=/app/organization/list`} target="_blank">
+                        <Tooltip title="添加投资人"><PlusOutlined /></Tooltip>
+                      </Link>
+                    </div>
+                    <div style={{ padding: 16, overflowY: 'auto', borderLeft: '1px solid #f0f0f0', height: this.calculateContentHeight() }}>
+                      <List
+                        itemLayout="horizontal"
+                        dataSource={this.getCurrentOrgInvestors()}
+                        renderItem={item => (
+                          <List.Item>
+                            <List.Item.Meta
+                              avatar={<Avatar src={item.photourl} />}
+                              title={
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0 8px', color: 'rgba(0, 0, 0, .45)', lineHeight: 2, fontWeight: 'normal' }}>
+                                  <div><Link to={`/app/user/${item.id}`}>{item.username}</Link></div>
+                                  <div>{item.mobile}</div>
+                                  <Link target="_blank" to={`/app/user/edit/${item.id}`}><EditOutlined /></Link>
+                                  <div>{item.tags && item.tags.map(m => <Tag key={m} style={{ color: 'rgba(0, 0, 0, .45)' }}>{this.getTagNameByID(m)}</Tag>)}</div>
+                                </div>
+                              }
+                              description={item.remarks && item.remarks.map(remark => (
+                                <Comment
+                                  key={remark.id}
+                                  author={remark.createuser && remark.createuser.username}
+                                  avatar={remark.createuser && <Link to={`/app/user/${remark.createuser.id}`}><Avatar size="small" src={remark.createuser.photourl} /></Link>}
+                                  content={remark.remark}
+                                  datetime={time(remark.createdtime)}
+                                />
+                              ))}
+                            />
+                          </List.Item>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </Affix>
+              </div> */}
+            </Col>
+          </Row>
         </Modal>
 
       </LeftRightLayout>
