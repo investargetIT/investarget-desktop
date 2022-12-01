@@ -145,32 +145,6 @@ class OrganizationList extends React.Component {
     })
   }
 
-  // getOrgInvestors = async orgArr => {
-  //   const req = await requestAllData(api.getUser, { org: orgArr }, 100);
-  //   let allInvestors = [];
-  //   const newOrgListWithInvestors = this.state.list.map(m => {
-  //     allInvestors = req.data.data;
-  //     const investors = allInvestors.filter(f => f.org.id === m.id);
-  //     return { ...m, investors };
-  //   });
-  //   this.setState(
-  //     { list: newOrgListWithInvestors },
-  //     () => this.getOrgInvestorRemarks(allInvestors.map(m => m.id)),
-  //   );
-  // }
-
-  // getOrgInvestorRemarks = async investorArr => {
-  //   const req = await requestAllData(api.getUserRemark, { user: investorArr }, 100);
-  //   const newOrgListWithInvestorRemarks = this.state.list.map(m => {
-  //     const newInvestorsWithRemarks = m.investors.map(investor => {
-  //       const remarks = req.data.data.filter(f => f.user === investor.id);
-  //       return { ...investor, remarks };
-  //     });
-  //     return { ...m, investors: newInvestorsWithRemarks };
-  //   });
-  //   this.setState({ list: newOrgListWithInvestorRemarks });
-  // }
-
   searchOrg = () => {
     if (!this.state.search) {
       Modal.error({
@@ -459,9 +433,6 @@ class OrganizationList extends React.Component {
                 loading={loading}
                 pagination={false}
                 rowSelection={{ onChange: this.handleRowSelectionChange, selectedRowKeys: this.state.selectedIds }}
-                // footer={() => (
-                //   <Affix offsetBottom={0} onChange={affixed => this.setState({ footerAffixed: affixed })} />
-                // )}
               />
             </Col>
 

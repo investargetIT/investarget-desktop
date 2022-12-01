@@ -48,27 +48,11 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-/**
- *  OrganizationForm 的字段 :
- *  'orgnameC', 'orgnameE', 'orgtype', 'industry', 'orgtransactionphase', 'stockcode', 'investoverseasproject', 'currency',
- *  'companyEmail', 'webSite', 'mobileAreaCode', 'mobile', 'weChat',
- *  'address', 'description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionCycle', 'decisionMakingProcess',
- *  'orgstatus'
- */
-
-
 class OrganizationForm extends React.Component {
 
   constructor(props) {
     super(props)
   }
-
-  // componentDidMount() {
-  //   if (!hasPerm('org.admin_manageorg')) {
-  //     this.props.dispatch(routerRedux.replace('/403'))
-  //     return
-  //   }
-  // }
 
   checkMobileInfo = (_, value) => {
     if (value && !checkMobile(value)) {

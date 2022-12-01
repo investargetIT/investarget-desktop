@@ -30,6 +30,10 @@ class EditOrganization extends React.Component {
     this.state = {
       data: {},
       loadingEditOrg: false,
+
+      displaySameNameOrgModal: false,
+      orgWithSameName: [],
+      loadingMergeOrg: false,
     }
     this.editOrgFormRef = React.createRef();
   }
@@ -132,41 +136,61 @@ class EditOrganization extends React.Component {
     })
   }
 
-  handleAliasOnBlur = e => {
+  handleAliasOnBlur = async e => {
     const { value: alias } = e.target;
     if (!alias) return;
     let allAlias = this.editOrgFormRef.current.getFieldValue('alias');
     allAlias = allAlias.filter(f => !!f);
     if (allAlias && (new Set(allAlias)).size !== allAlias.length) {
       Modal.error({ title: '机构别名不能重复' });
+      return;
     }
+    const req = await api.getOrg({ search: alias });
+    let { data: orgWithSameName } = req.data;
+    orgWithSameName = orgWithSameName.filter(f => f.id !== Number(this.props.match.params.id));
+    if (orgWithSameName.length > 0) {
+      this.setState({ displaySameNameOrgModal: true, orgWithSameName });
+    }
+  }
+
+  handleConfirmMergeOrg = () => {
+    this.setState({ loadingMergeOrg: true });
   }
 
   render() {
     const id = Number(this.props.match.params.id)
     return (
-      <LeftRightLayout 
+      <LeftRightLayout
         location={this.props.location}
-        title={i18n('organization.edit_org')} 
+        title={i18n('organization.edit_org')}
         action={{ name: i18n('organization.investor_list'), link: '/app/orguser/list?org=' + id }}>
-        <div>
-
-          <div style={formStyle}>
-            <OrganizationForm
-              ref={this.editOrgFormRef}
-              wrappedComponentRef={this.handleRef}
-              data={this.state.data}
-              aliasOnBlur={this.handleAliasOnBlur}
-            />
-            <div style={actionStyle}>
-              <Button size="large" onClick={this.cancel} style={actionBtnStyle}>{i18n('common.cancel')}</Button>
-              <Button type="primary" size="large" loading={this.state.loadingEditOrg} style={actionBtnStyle} onClick={this.handleSubmit}>{i18n('common.save')}</Button>
-            </div>
+        
+        <div style={formStyle}>
+          <OrganizationForm
+            ref={this.editOrgFormRef}
+            wrappedComponentRef={this.handleRef}
+            data={this.state.data}
+            aliasOnBlur={this.handleAliasOnBlur}
+          />
+          <div style={actionStyle}>
+            <Button size="large" onClick={this.cancel} style={actionBtnStyle}>{i18n('common.cancel')}</Button>
+            <Button type="primary" size="large" loading={this.state.loadingEditOrg} style={actionBtnStyle} onClick={this.handleSubmit}>{i18n('common.save')}</Button>
           </div>
-
-          <OrganizationRemarkList typeId={id} />
-
         </div>
+
+        <OrganizationRemarkList typeId={id} />
+
+        <Modal
+          title="发现同名机构，是否合并？"
+          visible={this.state.displaySameNameOrgModal}
+          okText="合并"
+          onOk={this.handleConfirmMergeOrg}
+          onCancel={() => this.setState({ displaySameNameOrgModal: false })}
+          confirmLoading={this.state.loadingMergeOrg}
+        >
+
+        </Modal>
+
       </LeftRightLayout>
     )
   }
