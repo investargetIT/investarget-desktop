@@ -172,19 +172,29 @@ class EditOrganization extends React.Component {
     }
   }
 
+  confirmMergeOrg = () => {
+    this.handleConfirmMergeOrg().catch(handleError);
+  }
+
   handleConfirmMergeOrg = async () => {
-    this.setState({ loadingMergeOrg: true, modalTitle: '开始合并机构...' });
+    this.setState({ loadingMergeOrg: true, modalTitle: '开始合并机构' });
     await sleep(1000);
 
     this.setState({ modalTitle: '正在合并机构备注' });
     // await this.mergeInvestEvent(deleteUserId, mergeUserId);
     await sleep(1000);
 
+    this.setState({ modalTitle: '正在合并机构看板' });
+    await sleep(1000);
+
+    this.setState({ modalTitle: '正在合并机构投资人' });
+    await sleep(1000);
+
     this.setState({ modalTitle: '正在删除被合并机构' });
     // await api.deleteOrg(this.state.currentOrg);
     await sleep(1000);
 
-    this.setState({ modalTitle: '合并成功！' });
+    this.setState({ modalTitle: '合并机构已完成' });
     await sleep(1000);
 
     this.setState({ loadingMergeOrg: false, displaySameNameOrgModal: false, modalTitle: '发现同名机构，是否合并？' });
@@ -259,7 +269,7 @@ class EditOrganization extends React.Component {
           title={this.state.modalTitle}
           visible={this.state.displaySameNameOrgModal}
           okText="合并"
-          onOk={this.handleConfirmMergeOrg}
+          onOk={this.confirmMergeOrg}
           onCancel={() => this.setState({ displaySameNameOrgModal: false })}
           confirmLoading={this.state.loadingMergeOrg}
           width="100%"
