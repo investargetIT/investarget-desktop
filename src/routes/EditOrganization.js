@@ -37,6 +37,7 @@ class EditOrganization extends React.Component {
       modalTitle: '发现同名机构，是否合并？',
     }
     this.editOrgFormRef = React.createRef();
+    this.orgID = Number(this.props.match.params.id);
   }
 
   cancel = (e) => {
@@ -177,27 +178,54 @@ class EditOrganization extends React.Component {
   }
 
   handleConfirmMergeOrg = async () => {
+    const toDelete = this.state.currentOrg;
+    const toMerge = this.orgID;
+
     this.setState({ loadingMergeOrg: true, modalTitle: '开始合并机构' });
     await sleep(1000);
 
     this.setState({ modalTitle: '正在合并机构备注' });
-    // await this.mergeInvestEvent(deleteUserId, mergeUserId);
+    await this.mergeOrgRemarks(toDelete, toMerge);
     await sleep(1000);
 
     this.setState({ modalTitle: '正在合并机构看板' });
+    await this.mergeOrgBD(toDelete, toMerge);
     await sleep(1000);
 
     this.setState({ modalTitle: '正在合并机构投资人' });
+    await this.mergeOrgUsers(toDelete, toMerge);
     await sleep(1000);
 
     this.setState({ modalTitle: '正在删除被合并机构' });
-    // await api.deleteOrg(this.state.currentOrg);
+    await api.deleteOrg(toDelete);
     await sleep(1000);
 
     this.setState({ modalTitle: '合并机构已完成' });
     await sleep(1000);
 
     this.setState({ loadingMergeOrg: false, displaySameNameOrgModal: false, modalTitle: '发现同名机构，是否合并？' });
+  }
+
+  mergeOrgRemarks = async (toDelete, toMerge) => {
+    const resData = await requestAllData(api.getOrgRemark, { org: toDelete }, 10);
+    const { data } = resData.data;
+    await Promise.all(data.map(m => api.editOrgRemark(m.id, { org: toMerge })));
+    // await Promise.all(data.map(m => api.editOrgRemark(m.id, { org: toDelete })));
+  }
+
+  mergeOrgBD = async (toDelete, toMerge) => {
+    const resData = await requestAllData(api.getOrgBdList, { org: toDelete }, 10);
+    const { data } = resData.data;
+    await Promise.all(data.map(m => api.modifyOrgBD(m.id, { org: toMerge })));
+    // await Promise.all(data.map(m => api.modifyOrgBD(m.id, { org: toDelete })));
+  }
+
+  mergeOrgUsers = async (toDelete, toMerge) => {
+    const resData = await requestAllData(api.getUser, { org: toDelete }, 10);
+    const { data, count } = resData.data;
+    if (count === 0) return;
+    await api.editUser(data.map(m => m.id), { org: toMerge });
+    // await api.editUser(data.map(m => m.id), { org: toDelete });
   }
 
   getCurrentOrgName = () => {
