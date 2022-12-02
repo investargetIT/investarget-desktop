@@ -48,27 +48,11 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-/**
- *  OrganizationForm 的字段 :
- *  'orgnameC', 'orgnameE', 'orgtype', 'industry', 'orgtransactionphase', 'stockcode', 'investoverseasproject', 'currency',
- *  'companyEmail', 'webSite', 'mobileAreaCode', 'mobile', 'weChat',
- *  'address', 'description', 'typicalCase', 'partnerOrInvestmentCommiterMember', 'decisionCycle', 'decisionMakingProcess',
- *  'orgstatus'
- */
-
-
 class OrganizationForm extends React.Component {
 
   constructor(props) {
     super(props)
   }
-
-  // componentDidMount() {
-  //   if (!hasPerm('org.admin_manageorg')) {
-  //     this.props.dispatch(routerRedux.replace('/403'))
-  //     return
-  //   }
-  // }
 
   checkMobileInfo = (_, value) => {
     if (value && !checkMobile(value)) {
@@ -93,7 +77,19 @@ class OrganizationForm extends React.Component {
           <Input />
         </BasicFormItem>
 
-        <Form.List name="alias">
+        <Form.List
+          name="alias"
+          rules={[
+            {
+              validator: async (_, names) => {
+                names = names.filter(f => !!f);
+                if ((new Set(names)).size !== names.length) {
+                  return Promise.reject(new Error('机构别名不能重复'));
+                }
+              },
+            },
+          ]}
+        >
           {(fields, { add, remove }, { errors }) => (
             <div style={{ marginBottom: 29 }}>
               {fields.map((field, index) => (
@@ -108,7 +104,7 @@ class OrganizationForm extends React.Component {
                       {...field}
                       noStyle
                     >
-                      <Input />
+                      <Input onBlur={this.props.aliasOnBlur} />
                     </Form.Item>
                     <MinusCircleOutlined
                       style={{ marginLeft: 8 }}
