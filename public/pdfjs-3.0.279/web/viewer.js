@@ -2900,6 +2900,18 @@ function webViewerInitialized() {
     });
   }
 
+  PDFViewerApplication.eventBus.on('documentload', function(e) {
+    $('.loading-container').fadeOut();
+  });
+  PDFViewerApplication.eventBus.on('pagesloaded', function(e) {
+    $('.loading-container').fadeOut();
+  });
+  PDFViewerApplication.eventBus.on('loaderror', function(e) {
+    $('.loading').hide();
+    $('.loading-error-text').text(e.message);
+    $('.loading-error').show();
+  });
+
   PDFViewerApplication.eventBus.on('pagerendered', function(e) {
     var ctx = e.source.canvas.getContext('2d');
     drawWatermark(ctx, WATER_MARK, ORG);

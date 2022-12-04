@@ -32,7 +32,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="locale/locale.properties">
 <script src="../build/pdf.js"></script>
-
+<script src="/lib/jquery.min.js"></script>
   <script src="viewer.js"></script>
 
   </head>
@@ -427,6 +427,19 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
+
+    <div class="loading-container">
+      <div class="loading-wrap">
+        <div class="loading">
+          <img class="loading-icon" src="images/pdf-loading.svg" onerror="this.src='images/pdf-loading.gif'" alt="loading">
+          <span class="loading-text">多维海拓·InvesTarget</span>
+        </div>
+        <div class="loading-error" style="display: none;">
+          <img class="loading-error-icon" src="images/pdf-error.svg" onerror="this.src='images/pdf-error.png'" alt="error">
+          <span class="loading-error-text">Default Error</span>
+        </div>
+      </div>
+    </div>
 
     <input type="file" id="fileInput" class="hidden">
   </body>
