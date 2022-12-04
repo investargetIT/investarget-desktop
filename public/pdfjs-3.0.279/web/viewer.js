@@ -1,3 +1,56 @@
+var WATER_MARK = 'investarget[at]investarget.com';
+var ORG = '多维海拓';
+function getTime() {
+  var t = new Date();
+  var y = t.getFullYear();
+  var m = t.getMonth() + 1;
+  var d = t.getDate();
+  var H = t.getHours();
+  var M = t.getMinutes();
+  var s = t.getSeconds();
+  return y + '-' + fillZero(m) + '-' + fillZero(d) + ' ' + fillZero(H) + ':' + fillZero(M) + ':' + fillZero(s);
+}
+function fillZero(num) {
+  return (num < 10) ? '0' + num : '' + num;
+}
+function drawWatermark(ctx, text, org) {
+  var canvas = ctx.canvas;
+  var canvasWidth = canvas.width;
+  var canvasHeight = canvas.height;
+  var x = canvasWidth / 2;
+  var y = canvasHeight / 2;
+  var fontSize = 20;
+  var verticalGap = 30;
+  var horizontalGap = 60;
+
+  ctx.save();
+
+  ctx.font = 'bold ' + fontSize + 'px Helvetica,Arial,STSong,SimSun';
+  ctx.fillStyle = 'rgba(66, 66, 66, 0.15)';
+
+  var emailTextWidth = ctx.measureText(text).width;
+  var orgTextWidth = ctx.measureText(org).width;
+  var timeStr = getTime();
+  var timeTextWidth = ctx.measureText(timeStr).width;
+  var allHorizontalWidth = emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap;
+
+  var horizontalDrawTimes = canvasWidth * 2 / (emailTextWidth + orgTextWidth + timeTextWidth + 3 * horizontalGap);
+  var verticalDrawTimes = canvasHeight * 2 / (fontSize + verticalGap);
+
+  ctx.translate(x, y);
+  ctx.rotate(-Math.PI / 4);
+
+  for (var i = 0; i <= verticalDrawTimes; i++) {
+    var yPosition = -canvasHeight + (fontSize + horizontalGap) * i;
+    for (var j = 0; j <= horizontalDrawTimes; j++) {
+      ctx.fillText(text, -canvasWidth + allHorizontalWidth * j, yPosition);
+      ctx.fillText(org, -canvasWidth + emailTextWidth + horizontalGap + allHorizontalWidth * j, yPosition);
+      ctx.fillText(timeStr, -canvasWidth + emailTextWidth + horizontalGap + orgTextWidth + horizontalGap + allHorizontalWidth * j, yPosition);
+    }
+  }
+
+  ctx.restore();
+}
 /**
  * @licstart The following is the entire license notice for the
  * JavaScript code in this page
@@ -2789,6 +2842,12 @@ function webViewerInitialized() {
       fileInput: evt.target
     });
   });
+  if (params.get('watermark')) {
+    WATER_MARK = params.get('watermark');
+  }
+  if (params.get('org')) {
+    ORG = params.get('org');
+  }
   appConfig.mainContainer.addEventListener("dragover", function (evt) {
     evt.preventDefault();
     evt.dataTransfer.dropEffect = evt.dataTransfer.effectAllowed === "copy" ? "copy" : "move";
@@ -2840,6 +2899,11 @@ function webViewerInitialized() {
       PDFViewerApplication._documentError(msg, reason);
     });
   }
+
+  PDFViewerApplication.eventBus.on('pagerendered', function(e) {
+    var ctx = e.source.canvas.getContext('2d');
+    drawWatermark(ctx, WATER_MARK, ORG);
+  });
 }
 function webViewerPageRendered({
   pageNumber,
