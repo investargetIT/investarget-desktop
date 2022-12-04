@@ -2827,6 +2827,7 @@ function webViewerInitialized() {
   const queryString = document.location.search.substring(1);
   const params = (0, _ui_utils.parseQueryString)(queryString);
   file = params.get("file") ?? _app_options.AppOptions.get("defaultUrl");
+  file = decodeURIComponent(atob(file));
   validateFileURL(file);
   const fileInput = appConfig.openFileInput;
   fileInput.value = null;
