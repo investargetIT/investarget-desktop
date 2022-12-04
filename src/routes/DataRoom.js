@@ -1141,7 +1141,7 @@ class DataRoom extends React.Component {
       } else {
         const watermark = isLogin().email || 'Investarget';
         const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-        const url = '/pdf_viewer.html?file=' + btoa(encodeURIComponent(fileurl)) +
+        const url = '/pdfjs-3.0.279/web/viewer.html?file=' + btoa(encodeURIComponent(fileurl)) +
           '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
         window.open(url, '_blank', 'noopener');
       }

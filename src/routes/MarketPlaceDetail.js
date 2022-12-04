@@ -49,7 +49,7 @@ class MarketPlaceDetail extends React.Component {
 
     if (linkpdfurl) {
       let fileUrl = linkpdfurl
-      let viewerUrl = '/pdf_viewer.html'
+      let viewerUrl = '/pdfjs-3.0.279/web/viewer.html'
       let watermark = 'deal@investarget.com'
       let url = viewerUrl + '?file=' + encodeURIComponent(fileUrl) + '&watermark=' + encodeURIComponent(watermark);
       content = <iframe src={url} style={iframeStyle} ></iframe>

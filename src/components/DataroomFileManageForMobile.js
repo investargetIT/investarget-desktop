@@ -395,7 +395,7 @@ function DataroomFileManage({
     const originalEmail = isLogin().email || 'Investarget';
     const watermark = originalEmail.replace('@', '[at]');
     const org = isLogin().org ? isLogin().org.orgfullname : 'Investarget';
-    const url = window.location.origin + '/pdf_viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
+    const url = window.location.origin + '/pdfjs-3.0.279/web/viewer.html?file=' + btoa(encodeURIComponent(file.fileurl)) +
       '&dataroomId=' + encodeURIComponent(dataroomId) + '&fileId=' + encodeURIComponent(fileId) +
       '&watermark=' + encodeURIComponent(watermark) + '&org=' + encodeURIComponent(org) + '&locale=' + encodeURIComponent(window.LANG);
     return url;

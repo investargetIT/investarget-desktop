@@ -57,7 +57,7 @@ export default {
       } else {
         localStorage.removeItem('login_info')
       }
-      if (url.includes('pdf_viewer.html')) {
+      if (url.includes('pdfjs-3.0.279/web/viewer.html')) {
         window.location.replace(url);
       } else {
         yield put(routerRedux.replace(url));
@@ -97,7 +97,7 @@ export default {
       } else {
         localStorage.removeItem('login_info')
       }
-      if (url.includes('pdf_viewer.html')) {
+      if (url.includes('pdfjs-3.0.279/web/viewer.html')) {
         window.location.replace(url);
       } else {
         yield put(routerRedux.replace(url));
