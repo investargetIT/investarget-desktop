@@ -43,7 +43,8 @@ class ProjectBDForm extends React.Component {
       _bduser: null,
       contactTitle: null,
       contactMobile: null,
-      email:null
+      email:null,
+      wechat: null,
     }
   }
 
@@ -69,11 +70,12 @@ class ProjectBDForm extends React.Component {
 
   getUserDetail = (id) => {
     api.getUserInfo(id).then(result => {
-      const { title, mobile, email } = result.data
+      const { title, mobile, email, wechat } = result.data
       this.setState({
         contactTitle: title ? title.name : '',
         contactMobile: mobile,
-        email: email
+        email: email,
+        wechat,
       })
     })
   }
@@ -253,6 +255,18 @@ class ProjectBDForm extends React.Component {
               }}
             </Form.Item>
 
+            <Form.Item noStyle shouldUpdate>
+              {({ getFieldValue }) => {
+                if (getFieldValue('bduser')) {
+                  return (
+                    <LayoutItem label="微信">
+                      {this.state.wechat}
+                    </LayoutItem>
+                  );
+                }
+              }}
+            </Form.Item>
+
           </div>
         ) : (
           <div>
@@ -279,6 +293,7 @@ class ProjectBDForm extends React.Component {
                         }
                         return (
                           <FormItem
+                            style={{ marginBottom: 0 }}
                             name="mobileAreaCode"
                             rules={[]}
                             initialValue={country && country.areaCode || '86'}
@@ -291,6 +306,7 @@ class ProjectBDForm extends React.Component {
                   </Col>
                   <Col span={18}>
                     <FormItem
+                      style={{ marginBottom: 0 }}
                       name="mobile"
                       rules={[{ validator: this.checkMobileInfo }]}
                     >
@@ -302,7 +318,9 @@ class ProjectBDForm extends React.Component {
             <BasicFormItem label={i18n('project_bd.email')} name="email" valueType="email">
               <Input />
             </BasicFormItem>
-
+            <BasicFormItem label="微信" name="wechat">
+              <Input />
+            </BasicFormItem>
           </div>
         )}
 
