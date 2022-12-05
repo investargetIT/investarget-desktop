@@ -436,7 +436,7 @@ class OrganizationList extends React.Component {
               />
             </Col>
 
-            <Col span={6} style={{ minHeight: 500 }}>
+            <Col span={14} style={{ minHeight: 500 }}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0', justifyContent: 'space-between' }}>
                 <Affix offsetTop={50} onChange={affixed => this.setState({ affixed })}>
                   <div>
@@ -472,7 +472,7 @@ class OrganizationList extends React.Component {
               </div>
             </Col>
 
-            <Col span={8}>
+            {/* <Col span={8}>
               <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', flexDirection: 'column', position: 'absolute', borderBottom: '1px solid #f0f0f0' }}>
                 <Affix offsetTop={50}>
                   <div>
@@ -518,7 +518,7 @@ class OrganizationList extends React.Component {
                   </div>
                 </Affix>
               </div>
-            </Col>
+            </Col> */}
 
           </Row>
          

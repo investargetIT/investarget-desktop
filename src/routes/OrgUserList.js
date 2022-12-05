@@ -114,13 +114,20 @@ class OrgUserList extends React.Component {
       const newList = orgUser.map(m => {
         const { trader_relations } = m;
         let hasOperationPermission = false;
+        let traders = [];
         if (trader_relations) {
           const allTraderIDs = trader_relations.map(m => m.traderuser && m.traderuser.id);
           if (allTraderIDs.includes(getCurrentUser())) {
             hasOperationPermission = true;
           }
+          traders = trader_relations.map(n => ({
+            label: n.traderuser.username,
+            value: n.traderuser.id,
+            onjob: n.traderuser.onjob,
+            familiar: n.familiar
+          }));
         }
-        return { ...m, hasOperationPermission };
+        return { ...m, hasOperationPermission, traders };
       });
 
       // if (total > 0) {
@@ -262,10 +269,10 @@ class OrgUserList extends React.Component {
       },
       {
         title: i18n("user.trader"),
-        dataIndex: ['trader_relation', 'traderuser', 'username'],
+        // dataIndex: ['trader_relation', 'traderuser', 'username'],
         key: 'trader',
         // width: 200,
-        // render: (text, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
+        render: (_, record) => record.id ? <Trader traders={record.traders} /> : '暂无',
       },
       {
         title: i18n("common.operation"),
