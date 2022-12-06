@@ -255,12 +255,12 @@ class OrgUserList extends React.Component {
         key: 'tags',
         render: tags => tags ? <span className="span-tag">{this.loadLabelByValue('tag', tags)}</span> : null
       },
-      {
-        title: i18n("account.role"),
-        dataIndex: 'groups',
-        key: 'role',
-        render: groups => groups ? this.loadLabelByValue('group', groups) : null,
-      },
+      // {
+      //   title: i18n("account.role"),
+      //   dataIndex: 'groups',
+      //   key: 'role',
+      //   render: groups => groups ? this.loadLabelByValue('group', groups) : null,
+      // },
       {
         title: i18n("user.status"),
         dataIndex: 'userstatus',
