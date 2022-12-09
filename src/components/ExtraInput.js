@@ -2185,6 +2185,28 @@ class TreeSelectTag extends React.Component {
     };
   }
 
+  handlePrev = () => {
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current > 0 ? current - 1 : total - 1;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
+  handleNext = () => {
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current < total - 1 ? current + 1 : 0;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
   render() {
     const { value = [] } = this.props;
     const { allowCreateTag, inputVisible, inputValue, tagOptions } = this.state;
