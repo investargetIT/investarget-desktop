@@ -2061,9 +2061,13 @@ class TreeSelectTag extends React.Component {
       inputVisible: false,
       inputValue: '',
       tagOptions: [],
+      keyword: '',
+      current: -1,
+      total: 0,
     };
 
     this.inputElem = React.createRef();
+    this.searchKeyword = debounce(this.searchKeyword, 500);
   }
 
   showInput = () => {
@@ -2121,6 +2125,62 @@ class TreeSelectTag extends React.Component {
     }
   }
 
+  handleKeywordChange = keyword => {
+    this.setState({
+      keyword,
+    });
+    this.searchKeyword(keyword, () => {
+      // this.scrollToCurrent(this.state.current);
+    });
+  }
+
+  searchKeyword = (keyword, callback) => {
+    const { tagOptions, total } = this.searchInParagraphs(this.state.tagOptions, keyword);
+    const current = total > 0 ? 0 : -1;
+    this.setState({
+      keyword,
+      tagOptions,
+      total,
+      current,
+    }, () => {
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
+  searchInParagraphs = (paragraphs, keyword) => {
+    if (keyword == null || keyword === '') {
+      return {
+        tagOptions: paragraphs,
+        total: 0,
+      };
+    }
+    const keywordRegExp = new RegExp('(' + keyword + ')');
+    const newParagraphs = [];
+    let matchIndex = -1;
+
+    paragraphs.forEach((paragraph) => {
+      const label = [];
+      const spans = paragraph.label[0].text.split(keywordRegExp).filter((item) => item !== '');
+      spans.forEach((span) => {
+        label.push({
+          text: span,
+          matchIndex: span === keyword ? ++matchIndex : -1,
+        });
+      });
+
+      newParagraphs.push({
+        ...paragraph,
+        label,
+      });
+    });
+    return {
+      tagOptions: newParagraphs,
+      total: matchIndex + 1,
+    };
+  }
+
   render() {
     const { value = [] } = this.props;
     const { allowCreateTag, inputVisible, inputValue, tagOptions } = this.state;
@@ -2155,7 +2215,7 @@ class TreeSelectTag extends React.Component {
                     data-match-index={matchIndex}
                     style={{
                       padding: 0,
-                      background: matchIndex === current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
+                      background: matchIndex === this.state.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
                     }}
                   >
                     {text}
