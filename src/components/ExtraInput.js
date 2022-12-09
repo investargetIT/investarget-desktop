@@ -2152,7 +2152,11 @@ class TreeSelectTag extends React.Component {
   searchInParagraphs = (paragraphs, keyword) => {
     if (keyword == null || keyword === '') {
       return {
-        tagOptions: paragraphs,
+        tagOptions: this.props.options.map(m => {
+          let { label } = m;
+          label = [{ text: label, matchIndex: -1 }];
+          return { ...m, label };
+        }),
         total: 0,
       };
     }
