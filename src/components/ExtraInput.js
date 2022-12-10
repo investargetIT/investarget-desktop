@@ -2060,7 +2060,11 @@ class TreeSelectTag extends React.Component {
       allowCreateTag: false,
       inputVisible: false,
       inputValue: '',
-      tagOptions: [],
+      tagOptions: props.options.map(m => {
+        let { label } = m;
+        label = [{ text: label, matchIndex: -1 }];
+        return { ...m, label };
+      }),
       keyword: '',
       current: -1,
       total: 0,
