@@ -17,6 +17,8 @@ import {
   Col,
   Tag,
   Modal,
+  Button,
+  Divider,
 } from 'antd'
 import { 
   SimpleLine, 
@@ -38,6 +40,13 @@ import { mapStateToPropsIndustry as mapStateToPropsLibIndustry } from './Filter'
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 import pinyin from 'tiny-pinyin';
+import {
+  UpOutlined,
+  DownOutlined,
+  SearchOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
+
 
 const { CheckableTag } = Tag;
 
@@ -2051,7 +2060,14 @@ class TreeSelectTag extends React.Component {
       allowCreateTag: false,
       inputVisible: false,
       inputValue: '',
+      tagOptions: [],
+      keyword: '',
+      current: -1,
+      total: 0,
     };
+
+    this.inputElem = React.createRef();
+    this.searchKeyword = debounce(this.searchKeyword, 500);
   }
 
   showInput = () => {
@@ -2099,25 +2115,146 @@ class TreeSelectTag extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.options.length !== this.props.options.length) {
+      this.setState({ tagOptions: this.props.options.map(m => {
+        let { label } = m;
+        label = [{ text: label, matchIndex: -1 }];
+        return { ...m, label };
+      })});
+    }
+  }
+
+  handleKeywordChange = keyword => {
+    this.setState({
+      keyword,
+    });
+    this.searchKeyword(keyword, () => {
+      // this.scrollToCurrent(this.state.current);
+    });
+  }
+
+  searchKeyword = (keyword, callback) => {
+    const { tagOptions, total } = this.searchInParagraphs(this.state.tagOptions, keyword);
+    const current = total > 0 ? 0 : -1;
+    this.setState({
+      keyword,
+      tagOptions,
+      total,
+      current,
+    }, () => {
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
+  searchInParagraphs = (paragraphs, keyword) => {
+    if (keyword == null || keyword === '') {
+      return {
+        tagOptions: this.props.options.map(m => {
+          let { label } = m;
+          label = [{ text: label, matchIndex: -1 }];
+          return { ...m, label };
+        }),
+        total: 0,
+      };
+    }
+    const keywordRegExp = new RegExp('(' + keyword + ')');
+    const newParagraphs = [];
+    let matchIndex = -1;
+
+    paragraphs.forEach((paragraph) => {
+      const label = [];
+      const spans = paragraph.label[0].text.split(keywordRegExp).filter((item) => item !== '');
+      spans.forEach((span) => {
+        label.push({
+          text: span,
+          matchIndex: span === keyword ? ++matchIndex : -1,
+        });
+      });
+
+      newParagraphs.push({
+        ...paragraph,
+        label,
+      });
+    });
+    return {
+      tagOptions: newParagraphs,
+      total: matchIndex + 1,
+    };
+  }
+
+  handlePrev = () => {
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current > 0 ? current - 1 : total - 1;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
+  handleNext = () => {
+    const { total, current } = this.state;
+    if (total === 1) return;
+
+    const newCurrent = current < total - 1 ? current + 1 : 0;
+    this.setState({
+      current: newCurrent,
+    });
+    // this.scrollToCurrent(newCurrent);
+  }
+
   render() {
-    const { options, value = [] } = this.props;
-    const { allowCreateTag, inputVisible, inputValue } = this.state;
+    const { value = [] } = this.props;
+    const { allowCreateTag, inputVisible, inputValue, tagOptions } = this.state;
     const containerStyle = { border: '1px solid #d9d9d9', borderRadius: 4, padding: 4, paddingRight: 24, minHeight: 32 };
     
     return (
       <div style={containerStyle}>
-        {options.map((option) => (
+        <div style={{ marginBottom: 18 }}>
+          <Finder
+            input={this.inputElem}
+            keyword={this.state.keyword}
+            current={this.state.current}
+            total={this.state.total}
+            onChange={this.handleKeywordChange}
+            onPrev={this.handlePrev}
+            onNext={this.handleNext}
+          />
+        </div>
+
+        {tagOptions.map((option) => (
           <CheckableTag
             key={option.value}
             checked={value.indexOf(option.value) > -1}
             onChange={(checked) => this.handleChange(option.value, checked)}
             style={{ marginBottom: 4, fontSize: 14 }}
           >
-            {option.label}
+            {option.label.map(({ text, matchIndex }, index) => {
+              if (matchIndex > -1) {
+                return (
+                  <mark
+                    key={index}
+                    data-match-index={matchIndex}
+                    style={{
+                      padding: 0,
+                      background: matchIndex === this.state.current ? 'rgba(245, 74, 69, 0.6)' : 'rgba(255, 198, 10, 0.6)',
+                    }}
+                  >
+                    {text}
+                  </mark>
+                );
+              } else {
+                return <span key={index}>{text}</span>;
+              }
+            })}
           </CheckableTag>
         ))}
         {allowCreateTag && (
-          <div style={{ marginTop: options.length > 0 ? 18 : 0 }}>
+          <div style={{ marginTop: tagOptions.length > 0 ? 18 : 0 }}>
             {inputVisible && (
               <Input
                 ref={this.saveInputRef}
@@ -2156,6 +2293,68 @@ function mapStateToPropsTreeSelectTag(state) {
 }
 
 TreeSelectTag = connect(mapStateToPropsTreeSelectTag)(TreeSelectTag);
+
+function Finder({
+  input,
+  keyword,
+  current = -1,
+  total = 0,
+  onChange,
+  onPrev,
+  onNext,
+}) {
+  const suffix = (
+    <div>
+      {total > 0 && (
+        <span>{current + 1}/{total}</span>
+      )}
+      <Divider type="vertical" />
+      <Button
+        type="text"
+        icon={<UpOutlined />}
+        size="small"
+        disabled={total === 0}
+        onClick={onPrev}
+      />
+      <Button
+        type="text"
+        icon={<DownOutlined />}
+        size="small"
+        disabled={total === 0}
+        onClick={onNext}
+      />
+      <Button
+        type="text"
+        icon={<CloseCircleOutlined />}
+        size="small"
+        onClick={() => {
+          onChange('');
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <Input
+      ref={input}
+      style={{ width: 300 }}
+      prefix={<SearchOutlined />}
+      suffix={suffix}
+      value={keyword}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+      onPressEnter={(e) => {
+        if (e.shiftKey) {
+          onPrev();
+        } else {
+          onNext();
+        }
+      }}
+    />
+  );
+}
+
 
 class TabCheckboxOrgBDRes extends React.Component {
   componentDidMount() {
