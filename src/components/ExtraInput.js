@@ -2121,11 +2121,7 @@ class TreeSelectTag extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.options.length !== this.props.options.length) {
-      this.setState({ tagOptions: this.props.options.map(m => {
-        let { label } = m;
-        label = [{ text: label, matchIndex: -1 }];
-        return { ...m, label };
-      })});
+      this.searchKeyword(this.state.keyword);
     }
   }
 
@@ -2139,7 +2135,7 @@ class TreeSelectTag extends React.Component {
   }
 
   searchKeyword = (keyword, callback) => {
-    const { tagOptions, total } = this.searchInParagraphs(this.state.tagOptions, keyword);
+    const { tagOptions, total } = this.searchInParagraphs(this.props.options, keyword);
     const current = total > 0 ? 0 : -1;
     this.setState({
       keyword,
@@ -2156,7 +2152,7 @@ class TreeSelectTag extends React.Component {
   searchInParagraphs = (paragraphs, keyword) => {
     if (keyword == null || keyword === '') {
       return {
-        tagOptions: this.props.options.map(m => {
+        tagOptions: paragraphs.map(m => {
           let { label } = m;
           label = [{ text: label, matchIndex: -1 }];
           return { ...m, label };
@@ -2170,7 +2166,7 @@ class TreeSelectTag extends React.Component {
 
     paragraphs.forEach((paragraph) => {
       const label = [];
-      const spans = paragraph.label[0].text.split(keywordRegExp).filter((item) => item !== '');
+      const spans = paragraph.label.split(keywordRegExp).filter((item) => item !== '');
       spans.forEach((span) => {
         label.push({
           text: span,
