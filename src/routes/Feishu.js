@@ -11,6 +11,9 @@ import {
   PieChart,
   Pie,
 } from "recharts";
+import { Table, Typography } from 'antd';
+
+const { Text, Title } = Typography;
 
 const data = [
   {
@@ -43,7 +46,7 @@ const pieChartData = [
 ];
 const totalValue = pieChartData.reduce((prev, curr) => prev + curr.value, 0);
 
-const verticalBarChartData = [
+let verticalBarChartData = [
   {
     label: '高级总监',
     value: 1,
@@ -77,6 +80,12 @@ const verticalBarChartData = [
     value: 3,
   },
 ];
+const totalVerticalValue = verticalBarChartData.reduce((prev, curr) => prev + curr.value, 0);
+verticalBarChartData = verticalBarChartData.map(m => {
+  const value = (m.value / totalVerticalValue) * 100;
+  const number = m.value;
+  return { ...m, value: parseInt(value.toFixed()), number };
+})
 
 const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)'];
 const pieColors = ['rgb(175, 171, 171)', 'rgb(221, 238, 241)', 'rgb(34, 138, 157)', 'rgb(34, 93,131)'];
@@ -98,6 +107,23 @@ const pieChartLabelTextStyle = {
   marginRight: 8,
   color: '#595959',
 };
+
+const columns = [
+  {
+    title: '职位',
+    dataIndex: 'label',
+  },
+  {
+    title: '覆盖投资人人数',
+    dataIndex: 'number',
+    align: 'center',
+  },
+  {
+    title: '覆盖投资人占比',
+    dataIndex: 'value',
+    align: 'center',
+  },
+];
 
 function Demo(props) {
 
@@ -123,12 +149,12 @@ function Demo(props) {
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>所有员工覆盖机构数量（共{data.reduce((prev, curr) => prev + curr.value, 0)}家）</div>
+        <Title level={5}>所有员工覆盖机构数量（共{data.reduce((prev, curr) => prev + curr.value, 0)}家）</Title>
         <BarChart
           width={360}
           height={330}
           data={data}
-          margin={{ top: 50 }}
+          margin={{ top: 30 }}
         >
           <XAxis dataKey="label" />
           <YAxis domain={[0, calculateMax]} />
@@ -144,9 +170,9 @@ function Demo(props) {
       </div>
 
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>不同投资者覆盖率机构数量占比</div>
+        <Title level={5}>不同投资者覆盖率机构数量占比</Title>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <PieChart width={400} height={400}>
+          <PieChart width={400} height={360}>
             <Pie
               data={pieChartData}
               cx="50%"
@@ -176,19 +202,50 @@ function Demo(props) {
         </div>
       </div>
 
-      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>覆盖投资人各岗位人数占比</div>
-        <BarChart
-          layout="vertical"
-          width={540}
-          height={48 * verticalBarChartData.length}
-          data={verticalBarChartData.sort((a, b) => a.value - b.value)}
-          margin={{ left: 20, top: 20, right: 50 }}
-        >
-          <XAxis type="number" domain={[0, calculateMax]}  />
-          <YAxis type="category" dataKey="label" />
-          <Bar dataKey="value" fill="rgb(34, 93,131)" barSize={24} />
-        </BarChart>
+      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Title level={5} style={{ marginBottom: 20 }}>覆盖投资人各岗位人数占比</Title>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <BarChart
+            layout="vertical"
+            width={540}
+            height={50 * verticalBarChartData.length}
+            data={verticalBarChartData.sort((a, b) => a.value - b.value)}
+            margin={{ left: 20, top: 20, right: 50 }}
+          >
+            <XAxis type="number" domain={[0, calculateMax]} tickFormatter={(tick) => {
+              return `${tick}%`;
+            }} />
+            <YAxis type="category" dataKey="label" />
+            <Bar isAnimationActive={false} dataKey="value" fill="rgb(34, 93,131)" barSize={28} />
+          </BarChart>
+
+          <Table
+            columns={columns}
+            rowKey={record => record.label}
+            dataSource={verticalBarChartData}
+            pagination={false}
+            size="small"
+            summary={(pageData) => {
+              let totalNumber = 0;
+              let totalPercentage = 0;
+              pageData.forEach(({ value, number }) => {
+                totalNumber += number;
+                totalPercentage += value;
+              });
+              return (
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>总计</Table.Summary.Cell>
+                  <Table.Summary.Cell index={1} align="center">
+                    <Text>{totalNumber}</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} align="center">
+                    <Text>{totalPercentage}</Text>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              );
+            }}
+          />
+        </div>
       </div>
 
     </LeftRightLayout>
