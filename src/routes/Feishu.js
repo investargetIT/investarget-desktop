@@ -43,6 +43,41 @@ const pieChartData = [
 ];
 const totalValue = pieChartData.reduce((prev, curr) => prev + curr.value, 0);
 
+const verticalBarChartData = [
+  {
+    label: '高级总监',
+    value: 1,
+  },
+  {
+    label: '高级副总裁',
+    value: 2,
+  },
+  {
+    label: '助理',
+    value: 3,
+  },
+  {
+    label: '总裁助理',
+    value: 4,
+  },
+  {
+    label: '董事长助理',
+    value: 5,
+  },
+  {
+    label: '其它',
+    value: 10,
+  },
+  {
+    label: '董事长',
+    value: 2,
+  },
+  {
+    label: '助理经理',
+    value: 3,
+  },
+];
+
 const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)'];
 const pieColors = ['rgb(175, 171, 171)', 'rgb(221, 238, 241)', 'rgb(34, 138, 157)', 'rgb(34, 93,131)'];
 
@@ -139,6 +174,21 @@ function Demo(props) {
             ))}
           </div>
         </div>
+      </div>
+
+      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div>覆盖投资人各岗位人数占比</div>
+        <BarChart
+          layout="vertical"
+          width={540}
+          height={48 * verticalBarChartData.length}
+          data={verticalBarChartData.sort((a, b) => a.value - b.value)}
+          margin={{ left: 20, top: 20, right: 50 }}
+        >
+          <XAxis type="number" domain={[0, calculateMax]}  />
+          <YAxis type="category" dataKey="label" />
+          <Bar dataKey="value" fill="rgb(34, 93,131)" barSize={24} />
+        </BarChart>
       </div>
 
     </LeftRightLayout>
