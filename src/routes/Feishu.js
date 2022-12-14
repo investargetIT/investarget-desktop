@@ -8,7 +8,8 @@ import {
   YAxis,
   LabelList,
   Cell,
-  ResponsiveContainer,
+  PieChart,
+  Pie,
 } from "recharts";
 
 const data = [
@@ -22,7 +23,46 @@ const data = [
   },
 ];
 
+const pieChartData = [
+  {
+    label: "未覆盖（0%）",
+    value: 120,
+  },
+  {
+    label: "低覆盖（50%以下）",
+    value: 180,
+  },
+  {
+    label: '高覆盖（50%以上）',
+    value: 200,
+  },
+  {
+    label: '全覆盖（100%）',
+    value: 200,
+  }
+];
+const totalValue = pieChartData.reduce((prev, curr) => prev + curr.value, 0);
+
 const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)'];
+const pieColors = ['rgb(175, 171, 171)', 'rgb(221, 238, 241)', 'rgb(34, 138, 157)', 'rgb(34, 93,131)'];
+
+const pieChartLabelContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const pieChartLabelColorStyle = {
+  marginRight: 10,
+  width: 10,
+  height: 10,
+  opacity: 0.7,
+  background: '#339bd2',
+  borderRadius: '50%',
+};
+const pieChartLabelTextStyle = {
+  marginRight: 8,
+  color: '#595959',
+};
 
 function Demo(props) {
 
@@ -35,32 +75,72 @@ function Demo(props) {
     return Math.ceil(dataMax / divider) * divider;
   }
 
+  function calculatePercentage(entry) {
+    let num = entry.value / totalValue * 100;
+    num = num.toFixed(2);
+    return `${num}%`;
+  }
+
   return (
     <LeftRightLayout
       location={props.location}
       title="Demo"
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
-      <div style={{ width: 360 }}>
-        <div style={{ textAlign: 'center' }}>所有员工覆盖机构数量（共{data.reduce((prev, curr) => prev + curr.value, 0)}家）</div>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={data}
-            margin={{ top: 20 }}
-          >
-            <XAxis dataKey="label" />
-            <YAxis domain={[0, calculateMax]} />
-            <Bar dataKey="value" fill="#8884d8" barSize={40}>
-              {
-                data.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
-                ))
-              }
-              <LabelList dataKey="value" position="top" fill="black" />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div>所有员工覆盖机构数量（共{data.reduce((prev, curr) => prev + curr.value, 0)}家）</div>
+        <BarChart
+          width={360}
+          height={330}
+          data={data}
+          margin={{ top: 50 }}
+        >
+          <XAxis dataKey="label" />
+          <YAxis domain={[0, calculateMax]} />
+          <Bar dataKey="value" fill="#8884d8" barSize={40}>
+            {
+              data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
+              ))
+            }
+            <LabelList dataKey="value" position="top" fill="black" />
+          </Bar>
+        </BarChart>
       </div>
+
+      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div>不同投资者覆盖率机构数量占比</div>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <PieChart width={400} height={400}>
+            <Pie
+              data={pieChartData}
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              dataKey="value"
+              isAnimationActive={false}
+              label={calculatePercentage}
+            >
+              {pieChartData.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
+              ))}
+            </Pie>
+          </PieChart>
+          <div style={{ width: 250 }}>
+            <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
+            {pieChartData.map((m, i) => (
+              <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={pieChartLabelContainerStyle}>
+                  <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
+                  <div style={pieChartLabelTextStyle}>{m.label}</div>
+                </div>
+                <div style={pieChartLabelTextStyle}>{calculatePercentage(m)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </LeftRightLayout>
   );
 }
