@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix, notification } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -12,6 +12,7 @@ import {
   formatMoney,
   getURLParamValue,
   requestAllData,
+  sleep,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -281,12 +282,21 @@ class ProjectBDList extends React.Component {
     this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
+      notification.open({
+        message: '语音转文字任务正在发布中...',
+        description: '请勿关闭或刷新当前页面，发布完成后，当前窗口会自动消失',
+        duration: 0,
+        placement: 'bottomRight',
+      });
+      await sleep(1000);
       try {
         const formData = new FormData();
         formData.append('file', speechFile);
         const { data } = await api.addAudioTranslate(formData);
+        notification.destroy();
         transid = data.id;
       } catch (error) {
+        notification.destroy();
         handleError(error)
         return
       }
