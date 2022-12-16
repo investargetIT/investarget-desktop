@@ -304,13 +304,14 @@ class ProjectBDList extends React.Component {
 
     const params = { ...data, transid };
     try {
-      await api.editProjBDCom(id, params);
+      const reqProjBDCom = await api.editProjBDCom(id, params);
+      const { projectBD } = reqProjBDCom.data;
+      this.updateCurrentBD(projectBD);
     } catch (error) {
       handleError(error);
       return;
     }
 
-    this.updateCurrentBD()
     // const { currentBD } = this.state;
     // api.editProjBD(currentBD.id, {});
   }
@@ -350,11 +351,11 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  updateCurrentBD = (projBDID) => {
+  updateCurrentBD = (projBDID = this.state.currentBD.id) => {
     this.setState({ displayAddBDCommentModal: false });
     this.props.dispatch({
       type: 'app/getProjBDCommentsByID',
-      payload: { projBDID: this.state.currentBD.id, forceUpdate: true },
+      payload: { projBDID, forceUpdate: true },
     });
   }
 
