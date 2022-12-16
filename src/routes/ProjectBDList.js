@@ -282,6 +282,8 @@ class ProjectBDList extends React.Component {
     this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
+      // 先保存文件信息到行动计划中，以免丢失
+      api.editProjBDCom(id, data);
       notification.open({
         message: '语音转文字任务正在发布中...',
         description: '请勿关闭或刷新当前页面，发布完成后，当前窗口会自动消失',
@@ -311,9 +313,6 @@ class ProjectBDList extends React.Component {
       handleError(error);
       return;
     }
-
-    // const { currentBD } = this.state;
-    // api.editProjBD(currentBD.id, {});
   }
 
   handleAutoSaveComment = async (comment, data, speechFile) => {
