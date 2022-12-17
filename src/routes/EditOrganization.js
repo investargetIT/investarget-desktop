@@ -69,6 +69,23 @@ class EditOrganization extends React.Component {
       });
   }
 
+  autoSave = () => {
+    let formValues = null;
+    this.editOrgFormRef.current.validateFields()
+      .then(values => {
+        const id = Number(this.props.match.params.id)
+        if (values.country) {
+          values.country = values.country[values.country.length - 1];
+        }
+        formValues = values;
+        return api.editOrg(id, values);
+      }).then(result => {
+        const { id } = result.data;
+        const alias = formValues.alias ? formValues.alias.filter(f => !!f) : [];
+        return this.updateOrgAlias(id, alias);
+      });
+  }
+
   updateOrgAlias = async (orgID, newAlias) => {
     const aliasArr = [...new Set(newAlias)];
     const reqOrgAlias = await requestAllData(api.getOrgAlias, { org: orgID }, 10);
@@ -174,7 +191,9 @@ class EditOrganization extends React.Component {
   }
 
   confirmMergeOrg = () => {
-    this.handleConfirmMergeOrg().catch(handleError);
+    this.handleConfirmMergeOrg()
+      .then(this.autoSave)
+      .catch(handleError);
   }
 
   handleConfirmMergeOrg = async () => {
