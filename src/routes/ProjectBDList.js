@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix, notification } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -12,6 +12,7 @@ import {
   formatMoney,
   getURLParamValue,
   requestAllData,
+  sleep,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -281,12 +282,23 @@ class ProjectBDList extends React.Component {
     this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
+      // 先保存文件信息到行动计划中，以免丢失
+      api.editProjBDCom(id, data);
+      notification.open({
+        message: '语音转文字任务正在发布中...',
+        description: '请勿关闭或刷新当前页面，发布完成后，当前窗口会自动消失',
+        duration: 0,
+        placement: 'bottomRight',
+      });
+      await sleep(1000);
       try {
         const formData = new FormData();
         formData.append('file', speechFile);
         const { data } = await api.addAudioTranslate(formData);
+        notification.destroy();
         transid = data.id;
       } catch (error) {
+        notification.destroy();
         handleError(error)
         return
       }
@@ -294,15 +306,13 @@ class ProjectBDList extends React.Component {
 
     const params = { ...data, transid };
     try {
-      await api.editProjBDCom(id, params);
+      const reqProjBDCom = await api.editProjBDCom(id, params);
+      const { projectBD } = reqProjBDCom.data;
+      this.updateCurrentBD(projectBD);
     } catch (error) {
       handleError(error);
       return;
     }
-
-    this.updateCurrentBD()
-    // const { currentBD } = this.state;
-    // api.editProjBD(currentBD.id, {});
   }
 
   handleAutoSaveComment = async (comment, data, speechFile) => {
@@ -340,11 +350,11 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  updateCurrentBD = (projBDID) => {
+  updateCurrentBD = (projBDID = this.state.currentBD.id) => {
     this.setState({ displayAddBDCommentModal: false });
     this.props.dispatch({
       type: 'app/getProjBDCommentsByID',
-      payload: { projBDID: this.state.currentBD.id, forceUpdate: true },
+      payload: { projBDID, forceUpdate: true },
     });
   }
 
