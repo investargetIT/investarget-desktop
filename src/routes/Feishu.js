@@ -10,6 +10,7 @@ import {
   Cell,
   PieChart,
   Pie,
+  Legend,
 } from "recharts";
 import { Table, Typography } from 'antd';
 
@@ -23,6 +24,19 @@ const data = [
   {
     label: "有覆盖",
     value: 180,
+  },
+];
+
+const barData2 = [
+  {
+    label: "未覆盖",
+    ibd: 120,
+    ecm: 150,
+  },
+  {
+    label: "有覆盖",
+    ibd: 180,
+    ecm: 130,
   },
 ];
 
@@ -165,6 +179,26 @@ function Demo(props) {
               ))
             }
             <LabelList dataKey="value" position="top" fill="black" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Title level={5}>IBD与ECM部门对投资人不同覆盖率的机构数量</Title>
+        <BarChart
+          width={360}
+          height={330}
+          data={barData2}
+          margin={{ top: 30 }}
+        >
+          <XAxis dataKey="label" />
+          <YAxis domain={[0, calculateMax]} />
+          <Legend verticalAlign="top" height={50} />
+          <Bar dataKey="ibd" fill={barColors[1]} barSize={40} name="IBD部门">
+            <LabelList dataKey="ibd" position="top" fill="black" />
+          </Bar>
+          <Bar dataKey="ecm" fill={barColors[0]} barSize={40} name="ECM部门">
+            <LabelList dataKey="ecm" position="top" fill="black" />
           </Bar>
         </BarChart>
       </div>
