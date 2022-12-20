@@ -282,23 +282,14 @@ class ProjectBDList extends React.Component {
     this.setState({ displayAddBDCommentModal: false });
     let transid = null;
     if (speechFile && speechFile instanceof File) {
-      // 先保存文件信息到行动计划中，以免丢失
-      api.editProjBDCom(id, data);
-      notification.open({
-        message: '语音转文字任务正在发布中...',
-        description: '请勿关闭或刷新当前页面，发布完成后，当前窗口会自动消失',
-        duration: 0,
-        placement: 'bottomRight',
-      });
-      await sleep(1000);
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
-        notification.destroy();
-        transid = data.id;
+        const body = {
+          key: data.key,
+          file_name: data.filename,
+        }
+        const { data: reqData } = await api.requestAudioTranslate(body);
+        transid = reqData.id;
       } catch (error) {
-        notification.destroy();
         handleError(error)
         return
       }
