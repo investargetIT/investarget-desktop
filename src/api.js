@@ -290,6 +290,8 @@ export function addAudioTranslate(formData) {
   return request('/service/audioTranslate/', options);
 }
 
+export const requestAudioTranslate = body => r('/service/audioTranslate/', 'POST', body);
+
 export function getAudioTranslate(id) {
   return r(`/service/audioTranslate/${id}/`, 'GET');
 }
