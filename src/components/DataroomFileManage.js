@@ -1299,22 +1299,22 @@ function DataroomFileManage({
                         title: '语音转文字',
                         content: '目前语音转写支持的音频格式为：已录制音频（5小时内），wav,flac,opus,m4a,mp3，单声道&多声道，支持语种：中文普通话、英语',
                         onOk: async () => {
-                          const { fileurl, filename } = selectedFile;
-                          const res = await fetch(fileurl);
-                          const blob = await res.blob();
-                          const formData = new FormData();
-                          formData.append('file', blob, filename);
-                          const { data: translateData } = await api.addAudioTranslate(formData);
-                          setTranslate(translateData);
-                          const body = {
-                            id: selectedFile.id,
-                            transid: translateData.id,
-                          };
-                          await api.editDataRoomFile(body);
-                          const newData = data.slice();
-                          const index = newData.map(m => m.id).indexOf(selectedFile.id);
-                          newData[index].transid = translateData.id;
-                          setData(newData);
+                          try {
+                            const { key, filename } = selectedFile;
+                            const { data: translateData } = await api.requestAudioTranslate({ key, file_name: filename });
+                            setTranslate(translateData);
+                            const body = {
+                              id: selectedFile.id,
+                              transid: translateData.id,
+                            };
+                            await api.editDataRoomFile(body);
+                            const newData = data.slice();
+                            const index = newData.map(m => m.id).indexOf(selectedFile.id);
+                            newData[index].transid = translateData.id;
+                            setData(newData);
+                          } catch (error) {
+                            handleError(error);
+                          }
                         },
                       });
                     }}
