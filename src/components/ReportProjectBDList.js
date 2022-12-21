@@ -156,9 +156,7 @@ class ReportProjectBDList extends React.Component {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
+        const { data } = await api.requestAudioTranslate({ key, file_name: filename });
         transid = data.id;
       } catch (error) {
         handleError(error)
@@ -192,10 +190,12 @@ class ReportProjectBDList extends React.Component {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
-        transid = data.id;
+        const body = {
+          key: data.key,
+          file_name: data.filename,
+        }
+        const { data: reqData } = await api.requestAudioTranslate(body);
+        transid = reqData.id;
       } catch (error) {
         handleError(error)
         return

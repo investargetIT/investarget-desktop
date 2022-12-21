@@ -244,9 +244,7 @@ class ProjectBDList extends React.Component {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
+        const { data } = await api.requestAudioTranslate({ key, file_name: filename });
         transid = data.id;
       } catch (error) {
         handleError(error)
@@ -271,7 +269,6 @@ class ProjectBDList extends React.Component {
       return
     }
     this.updateCurrentBD()
-    // api.editProjBD(currentBD.id, {});
   }
 
   handleEditCommentIconClick = (comment) => {
@@ -306,21 +303,8 @@ class ProjectBDList extends React.Component {
     }
   }
 
-  handleAutoSaveComment = async (comment, data, speechFile) => {
-    let transid = null;
-    if (speechFile && speechFile instanceof File) {
-      try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
-        transid = data.id;
-      } catch (error) {
-        handleError(error);
-        return;
-      }
-    }
-
-    const body = { ...data, transid, projectBD: this.state.currentBD.id };
+  handleAutoSaveComment = async (comment, data) => {
+    const body = { ...data, projectBD: this.state.currentBD.id };
     if (comment) {
       api.editProjBDCom(comment.id, body);
     } else {
