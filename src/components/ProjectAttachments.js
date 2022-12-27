@@ -234,9 +234,7 @@ class ProjectAttachments extends React.Component {
       const { originFileObj: speechFile } = file;
       if (speechFile && speechFile instanceof File) {
         try {
-          const formData = new FormData();
-          formData.append('file', speechFile);
-          const { data } = await api.addAudioTranslate(formData);
+          const { data } = await api.requestAudioTranslate({ key: file.key, file_name: file.filename });
           transid = data.id;
         } catch (error) {
           handleError(error)

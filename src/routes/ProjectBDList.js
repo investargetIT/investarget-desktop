@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix } from 'antd';
+import { Button, Table, Pagination, Popconfirm, Modal, Popover, Row, Col, Tooltip, Affix, notification } from 'antd';
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectBDFilter } from '../components/Filter'
 import { Search } from '../components/Search';
@@ -12,6 +12,7 @@ import {
   formatMoney,
   getURLParamValue,
   requestAllData,
+  sleep,
 } from '../utils/util';
 import * as api from '../api'
 import { Link } from 'dva/router'
@@ -243,9 +244,7 @@ class ProjectBDList extends React.Component {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
+        const { data } = await api.requestAudioTranslate({ key, file_name: filename });
         transid = data.id;
       } catch (error) {
         handleError(error)
@@ -270,7 +269,6 @@ class ProjectBDList extends React.Component {
       return
     }
     this.updateCurrentBD()
-    // api.editProjBD(currentBD.id, {});
   }
 
   handleEditCommentIconClick = (comment) => {
@@ -282,10 +280,12 @@ class ProjectBDList extends React.Component {
     let transid = null;
     if (speechFile && speechFile instanceof File) {
       try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
-        transid = data.id;
+        const body = {
+          key: data.key,
+          file_name: data.filename,
+        }
+        const { data: reqData } = await api.requestAudioTranslate(body);
+        transid = reqData.id;
       } catch (error) {
         handleError(error)
         return
@@ -294,32 +294,17 @@ class ProjectBDList extends React.Component {
 
     const params = { ...data, transid };
     try {
-      await api.editProjBDCom(id, params);
+      const reqProjBDCom = await api.editProjBDCom(id, params);
+      const { projectBD } = reqProjBDCom.data;
+      this.updateCurrentBD(projectBD);
     } catch (error) {
       handleError(error);
       return;
     }
-
-    this.updateCurrentBD()
-    // const { currentBD } = this.state;
-    // api.editProjBD(currentBD.id, {});
   }
 
-  handleAutoSaveComment = async (comment, data, speechFile) => {
-    let transid = null;
-    if (speechFile && speechFile instanceof File) {
-      try {
-        const formData = new FormData();
-        formData.append('file', speechFile);
-        const { data } = await api.addAudioTranslate(formData);
-        transid = data.id;
-      } catch (error) {
-        handleError(error);
-        return;
-      }
-    }
-
-    const body = { ...data, transid, projectBD: this.state.currentBD.id };
+  handleAutoSaveComment = async (comment, data) => {
+    const body = { ...data, projectBD: this.state.currentBD.id };
     if (comment) {
       api.editProjBDCom(comment.id, body);
     } else {
@@ -340,11 +325,11 @@ class ProjectBDList extends React.Component {
     })
   }
 
-  updateCurrentBD = (projBDID) => {
+  updateCurrentBD = (projBDID = this.state.currentBD.id) => {
     this.setState({ displayAddBDCommentModal: false });
     this.props.dispatch({
       type: 'app/getProjBDCommentsByID',
-      payload: { projBDID: this.state.currentBD.id, forceUpdate: true },
+      payload: { projBDID, forceUpdate: true },
     });
   }
 
