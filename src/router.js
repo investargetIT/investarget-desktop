@@ -37,7 +37,7 @@ import DataRoom from './routes/DataRoom';
 import DataroomDetails from './routes/DataroomDetails';
 import DataroomDetailsForMobile from './routes/DataroomDetailsForMobile';
 // import ReactDataSheetDemo from './routes/ReactDataSheetDemo';
-import Feishu from './routes/Feishu';
+import OrgCoverage from './routes/OrgCoverage';
 // import ProjectListRecommend from './routes/ProjectListRecommend'
 // import ProjectListFavor from './routes/ProjectListFavor'
 // import ProjectListInterest from './routes/ProjectListInterest'
@@ -157,7 +157,7 @@ function RouterConfig({ history }) {
         <Route path="/app/orgbd/add" component={NewOrgBD} />
         {/* <Route path="/app/demo" component={ReactDataSheetDemo} /> */}
         <Route path="/app/feishu/approval" component={FeishuApprovalList} />
-        <Route path="/app/feishu" component={Feishu} />
+        <Route path="/app/org-coverage" component={OrgCoverage} />
         <Route path="/app/hr" component={HumanResources} />
         <Route path="/app/speech-to-text/:id" component={SpeechToText} />
         <Route path={URI_8} component={InboxList} />

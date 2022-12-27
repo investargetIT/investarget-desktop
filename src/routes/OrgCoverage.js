@@ -139,7 +139,7 @@ const columns = [
   },
 ];
 
-function Demo(props) {
+function OrgCoverage(props) {
 
   function calculateMax(dataMax) {
     const intDigits = dataMax.toString().length;
@@ -159,7 +159,7 @@ function Demo(props) {
   return (
     <LeftRightLayout
       location={props.location}
-      title="Demo"
+      title="机构覆盖率"
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -286,4 +286,4 @@ function Demo(props) {
   );
 }
 
-export default withRouter(Demo);
+export default withRouter(OrgCoverage);
