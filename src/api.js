@@ -1153,3 +1153,7 @@ export const getOrgAlias = params => r(`/org/alias/?${qs.stringify(params)}`);
 export const addOrgAlias = body => r('/org/alias/', 'POST', body);
 export const deleteOrgAlias = id => r(`/org/alias/${id}/`, 'DELETE');
 // export const updateOrgAlias = (id, body) => r(`/org/alias/${id}/`, 'PUT', body);
+
+// 机构覆盖率
+export const getOrgCoverage = params => r(`/user/getcoverage/?${qs.stringify(params)}`);
+export const addOrgCoverage = body => r('/user/makecoverage/', 'POST', body);

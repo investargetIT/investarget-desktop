@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import { withRouter } from 'dva/router';
 import {
@@ -13,6 +13,7 @@ import {
   Legend,
 } from "recharts";
 import { Table, Typography } from 'antd';
+import * as api from '../api';
 
 const { Text, Title } = Typography;
 
@@ -141,6 +142,21 @@ const columns = [
 
 function OrgCoverage(props) {
 
+  const [coverageData, setCoverageData] = useState([]);
+
+  useEffect(() => {
+    async function getOrgCoverage() {
+      const params = {
+        key: 'aaaaaaaa.xlsx',
+        type: 'json',
+      };
+      const req = await api.getOrgCoverage(params);
+      window.echo('req', req);
+      setCoverageData(req.data);
+    }
+    getOrgCoverage();
+  }, []);
+
   function calculateMax(dataMax) {
     const intDigits = dataMax.toString().length;
     let divider = 1;
@@ -156,6 +172,13 @@ function OrgCoverage(props) {
     return `${num}%`;
   }
 
+  function calculateDataForBarChart1() {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    const result = [{ label: '未覆盖', value: coverageData.length - hasCoverage.length }];
+    result.push({ label: '有覆盖', value: hasCoverage.length });
+    return result;
+  }
+
   return (
     <LeftRightLayout
       location={props.location}
@@ -163,16 +186,16 @@ function OrgCoverage(props) {
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Title level={5}>所有员工覆盖机构数量（共{data.reduce((prev, curr) => prev + curr.value, 0)}家）</Title>
+        <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
         <BarChart
           width={360}
           height={330}
-          data={data}
+          data={calculateDataForBarChart1()}
           margin={{ top: 30 }}
         >
           <XAxis dataKey="label" />
           <YAxis domain={[0, calculateMax]} />
-          <Bar dataKey="value" fill="#8884d8" barSize={40}>
+          <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
             {
               data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
