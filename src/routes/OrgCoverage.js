@@ -102,7 +102,7 @@ verticalBarChartData = verticalBarChartData.map(m => {
   return { ...m, value: parseInt(value.toFixed()), number };
 })
 
-const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)'];
+const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)', 'rgb(216, 235, 238)'];
 const pieColors = ['rgb(175, 171, 171)', 'rgb(221, 238, 241)', 'rgb(34, 138, 157)', 'rgb(34, 93,131)'];
 
 const pieChartLabelContainerStyle = {
@@ -179,31 +179,66 @@ function OrgCoverage(props) {
     return result;
   }
 
+  function calculateDataForBarChart2() {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    const fullCoverage = hasCoverage.filter(f => f['投资人总数'] === f['覆盖投资人 数量']);
+    const moreCoverage = hasCoverage.filter(f => parseInt(f['覆盖投资人 数量']) / parseInt(f['投资人总数']) >= 0.5);
+    const result = [{ label: '全覆盖', value: fullCoverage.length }];
+    result.push({ label: '50%以上', value: moreCoverage.length });
+    result.push({ label: '50%以下', value: hasCoverage.length - fullCoverage.length - moreCoverage.length });
+    return result;
+  }
+
   return (
     <LeftRightLayout
       location={props.location}
       title="机构覆盖率"
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
-      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
-        <BarChart
-          width={360}
-          height={330}
-          data={calculateDataForBarChart1()}
-          margin={{ top: 30 }}
-        >
-          <XAxis dataKey="label" />
-          <YAxis domain={[0, calculateMax]} />
-          <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
-            {
-              data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
-              ))
-            }
-            <LabelList dataKey="value" position="top" fill="black" />
-          </Bar>
-        </BarChart>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
+          <BarChart
+            width={360}
+            height={330}
+            data={calculateDataForBarChart1()}
+            margin={{ top: 30 }}
+          >
+            <XAxis dataKey="label" />
+            <YAxis domain={[0, calculateMax]} />
+            <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
+              {
+                calculateDataForBarChart1().map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
+                ))
+              }
+              <LabelList dataKey="value" position="top" fill="black" />
+            </Bar>
+          </BarChart>
+        </div>
+
+        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Title level={5}>有覆盖中不同投资者覆盖率机构数量</Title>
+          <BarChart
+            width={360}
+            height={330}
+            data={calculateDataForBarChart2()}
+            margin={{ top: 30 }}
+          >
+            <XAxis dataKey="label" />
+            <YAxis domain={[0, calculateMax]} />
+            <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
+              {
+                calculateDataForBarChart2().map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={barColors[index % 3]} />
+                ))
+              }
+              <LabelList dataKey="value" position="top" fill="black" />
+            </Bar>
+          </BarChart>
+        </div>
+
       </div>
 
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
