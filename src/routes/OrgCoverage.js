@@ -167,7 +167,8 @@ function OrgCoverage(props) {
   }
 
   function calculatePercentage(entry) {
-    let num = entry.value / totalValue * 100;
+    if (coverageData.length === 0) return '0%';
+    let num = entry.value / coverageData.length * 100;
     num = num.toFixed(2);
     return `${num}%`;
   }
@@ -189,13 +190,23 @@ function OrgCoverage(props) {
     return result;
   }
 
+  function calculateDataForPieChart1() {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    const fullCoverage = hasCoverage.filter(f => f['投资人总数'] === f['覆盖投资人 数量']);
+    const moreCoverage = hasCoverage.filter(f => parseInt(f['覆盖投资人 数量']) / parseInt(f['投资人总数']) >= 0.5);
+    const result = [{ label: '未覆盖（0%）', value: coverageData.length - hasCoverage.length }];
+    result.push({ label: '低覆盖（50%以上）', value: hasCoverage.length - fullCoverage.length - moreCoverage.length });
+    result.push({ label: '高覆盖（50%以下）', value: moreCoverage.length });
+    result.push({ label: '全覆盖（100%）', value: fullCoverage.length });
+    return result;
+  }
   return (
     <LeftRightLayout
       location={props.location}
       title="机构覆盖率"
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
 
         <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
@@ -237,6 +248,39 @@ function OrgCoverage(props) {
               <LabelList dataKey="value" position="top" fill="black" />
             </Bar>
           </BarChart>
+        </div>
+
+        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Title level={5}>不同投资者覆盖率机构数量占比</Title>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <PieChart width={400} height={360}>
+              <Pie
+                data={calculateDataForPieChart1()}
+                cx="50%"
+                cy="50%"
+                outerRadius={120}
+                dataKey="value"
+                isAnimationActive={false}
+                label={calculatePercentage}
+              >
+                {calculateDataForPieChart1().map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
+                ))}
+              </Pie>
+            </PieChart>
+            <div style={{ width: 250 }}>
+              <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
+              {calculateDataForPieChart1().map((m, i) => (
+                <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={pieChartLabelContainerStyle}>
+                    <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
+                    <div style={pieChartLabelTextStyle}>{m.label}</div>
+                  </div>
+                  <div style={pieChartLabelTextStyle}>{calculatePercentage(m)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
       </div>
