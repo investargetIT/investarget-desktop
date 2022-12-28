@@ -183,6 +183,14 @@ function OrgCoverage(props) {
     return `${num}%`;
   }
 
+  function calculatePercentage2(entry) {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    if (hasCoverage.length === 0) return '0%';
+    let num = entry.value / hasCoverage.length * 100;
+    num = num.toFixed(2);
+    return `${num}%`;
+  }
+
   function calculateDataForBarChart1() {
     const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
     const result = [{ label: '未覆盖', value: coverageData.length - hasCoverage.length }];
@@ -234,6 +242,24 @@ function OrgCoverage(props) {
     result.push({ label: '低覆盖', ibd: ibdLessCoverage, ecm: ecmLessCoverage });
     result.push({ label: '高覆盖', ibd: ibdMoreCoverage.length, ecm: ecmMoreCoverage.length });
     result.push({ label: '全覆盖', ibd: ibdFullCoverage.length, ecm: ecmFullCoverage.length });
+    return result;
+  }
+
+  function calculateDataForPieChart2() {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    const noDuplicate = hasCoverage.filter(f => parseInt(f['覆盖投资人（ECM）']) + parseInt(f['覆盖投资人（IBD）']) == parseInt(f['覆盖投资人 数量']));
+    const moreDuplicate = hasCoverage.filter(f => {
+      const rate = (parseInt(f['覆盖投资人（ECM）']) + parseInt(f['覆盖投资人（IBD）']) - parseInt(f['覆盖投资人 数量'])) / parseInt(f['覆盖投资人 数量']);
+      return rate >= 0.5 && rate < 1;
+    });
+    const lessDuplicate = hasCoverage.filter(f => {
+      const rate = (parseInt(f['覆盖投资人（ECM）']) + parseInt(f['覆盖投资人（IBD）']) - parseInt(f['覆盖投资人 数量'])) / parseInt(f['覆盖投资人 数量']);
+      return rate > 0 && rate < 0.5;
+    });
+    const result = [{ label: '无重复', value: noDuplicate.length }];
+    result.push({ label: '低重复率（50%以下）', value: lessDuplicate.length });
+    result.push({ label: '高重复率（50%以上）', value: moreDuplicate.length });
+    result.push({ label: '完全重复', value: hasCoverage.length - noDuplicate.length - moreDuplicate.length - lessDuplicate.length });
     return result;
   }
 
@@ -343,32 +369,32 @@ function OrgCoverage(props) {
       </div>
 
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Title level={5}>不同投资者覆盖率机构数量占比</Title>
+        <Title level={5}>不同重复覆盖率的机构数量比例</Title>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           <PieChart width={400} height={360}>
             <Pie
-              data={pieChartData}
+              data={calculateDataForPieChart2()}
               cx="50%"
               cy="50%"
               outerRadius={120}
               dataKey="value"
               isAnimationActive={false}
-              label={calculatePercentage}
+              label={calculatePercentage2}
             >
-              {pieChartData.map((_, index) => (
+              {calculateDataForPieChart2().map((_, index) => (
                 <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
               ))}
             </Pie>
           </PieChart>
           <div style={{ width: 250 }}>
             <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
-            {pieChartData.map((m, i) => (
+            {calculateDataForPieChart2().map((m, i) => (
               <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
                 <div style={pieChartLabelContainerStyle}>
                   <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
                   <div style={pieChartLabelTextStyle}>{m.label}</div>
                 </div>
-                <div style={pieChartLabelTextStyle}>{calculatePercentage(m)}</div>
+                <div style={pieChartLabelTextStyle}>{calculatePercentage2(m)}</div>
               </div>
             ))}
           </div>
