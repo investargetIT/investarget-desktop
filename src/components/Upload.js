@@ -94,6 +94,7 @@ class UploadFile extends React.Component {
     file.bucket = 'file'
     file.key = file.response.result.key
     // file.url = file.response.result.url
+    file.realfilekey = file.response.result.realfilekey
     this.setState({ fileList: [file] }, this.onChange)
   }
 
@@ -109,7 +110,8 @@ class UploadFile extends React.Component {
     if (this.props.onChange) {
       let file = this.state.fileList[0] || null
       let key = file ? file.key : null
-      this.props.onChange(key)
+      let realfilekey = file ? file.realfilekey : null
+      this.props.onChange(key, realfilekey)
     }
   }
 
@@ -137,7 +139,7 @@ class UploadFile extends React.Component {
         name="file"
         customRequest={customRequest}
         data={{ bucket: 'file' }}
-        accept={fileExtensions.join(',')}
+        accept={this.props.accept || fileExtensions.join(',')}
         beforeUpload={this.beforeUpload}
         fileList={this.state.fileList}
         onChange={this.handleFileChange}

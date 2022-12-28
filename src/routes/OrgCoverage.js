@@ -12,8 +12,10 @@ import {
   Pie,
   Legend,
 } from "recharts";
-import { Table, Typography } from 'antd';
+import { Table, Typography, message } from 'antd';
 import * as api from '../api';
+import { UploadFile } from '../components/Upload';
+import { connect } from 'dva';
 
 const { Text, Title } = Typography;
 
@@ -155,16 +157,32 @@ function OrgCoverage(props) {
   const [coverageData, setCoverageData] = useState([]);
 
   useEffect(() => {
-    async function getOrgCoverage() {
+    async function getOrgCoverage(key) {
       const params = {
-        key: 'aaaaaaaa.xlsx',
+        key,
         type: 'json',
       };
-      const req = await api.getOrgCoverage(params);
-      window.echo('req', req);
-      setCoverageData(req.data);
+      try {
+        const req = await api.getOrgCoverage(params);
+        if (req.data && req.data.length > 0) {
+          setCoverageData(req.data);
+        }
+      } catch (error) {
+        if (error.code == 8002) {
+          message.info('数据统计中，请稍后再试');
+        } else {
+          props.dispatch({
+            type: 'app/findError',
+            payload: error,
+          });
+        }
+      }
     }
-    getOrgCoverage();
+    const orgCoveragKey = localStorage.getItem('data_coverage_key');
+    if (orgCoveragKey) {
+      getOrgCoverage(orgCoveragKey);
+    }
+ 
   }, []);
 
   function calculateMax(dataMax) {
@@ -263,12 +281,32 @@ function OrgCoverage(props) {
     return result;
   }
 
+  function handleFinishUploadExcel(key, realfilekey) {
+    message.success('文件上传成功，数据正在统计中，请稍后再试');
+    api.addOrgCoverage({ key: realfilekey })
+      .then(() => localStorage.setItem('data_coverage_key', realfilekey))
+      .catch(error => {
+        props.dispatch({
+          type: 'app/findError',
+          payload: error,
+        });
+      });
+  }
+
   return (
     <LeftRightLayout
       location={props.location}
       title="机构覆盖率"
       style={{ paddingLeft: 30, paddingTop: 30, backgroundColor: '#fff' }}
     >
+      <div style={{ marginBottom: 50, textAlign: 'center' }}>
+        <UploadFile
+          accept=".xlsx,.xls"
+          name="上传Excel文件"
+          onChange={handleFinishUploadExcel}
+        />
+      </div>
+
       <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
 
         <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -451,4 +489,4 @@ function OrgCoverage(props) {
   );
 }
 
-export default withRouter(OrgCoverage);
+export default connect()(withRouter(OrgCoverage));
