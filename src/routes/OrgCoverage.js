@@ -30,12 +30,22 @@ const data = [
 
 const barData2 = [
   {
-    label: "未覆盖",
+    label: "未覆盖(0%)",
     ibd: 120,
     ecm: 150,
   },
   {
-    label: "有覆盖",
+    label: "低覆盖(50%以下)",
+    ibd: 180,
+    ecm: 130,
+  },
+  {
+    label: "高覆盖(50%以上)",
+    ibd: 120,
+    ecm: 150,
+  },
+  {
+    label: "全覆盖",
     ibd: 180,
     ecm: 130,
   },
@@ -193,13 +203,40 @@ function OrgCoverage(props) {
   function calculateDataForPieChart1() {
     const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
     const fullCoverage = hasCoverage.filter(f => f['投资人总数'] === f['覆盖投资人 数量']);
-    const moreCoverage = hasCoverage.filter(f => parseInt(f['覆盖投资人 数量']) / parseInt(f['投资人总数']) >= 0.5);
+    const moreCoverage = hasCoverage.filter(f => {
+      const rate = parseInt(f['覆盖投资人 数量']) / parseInt(f['投资人总数']);
+      return rate >= 0.5 && rate < 1;
+    });
     const result = [{ label: '未覆盖（0%）', value: coverageData.length - hasCoverage.length }];
-    result.push({ label: '低覆盖（50%以上）', value: hasCoverage.length - fullCoverage.length - moreCoverage.length });
-    result.push({ label: '高覆盖（50%以下）', value: moreCoverage.length });
+    result.push({ label: '低覆盖（50%以下）', value: hasCoverage.length - fullCoverage.length - moreCoverage.length });
+    result.push({ label: '高覆盖（50%以上）', value: moreCoverage.length });
     result.push({ label: '全覆盖（100%）', value: fullCoverage.length });
     return result;
   }
+
+  function calculateDataForBarChart3() {
+    const hasCoverage = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0);
+    const ibdFullCoverage = hasCoverage.filter(f => f['覆盖投资人（IBD）'] === f['覆盖投资人 数量']);
+    const ecmFullCoverage = hasCoverage.filter(f => f['覆盖投资人（ECM）'] === f['覆盖投资人 数量']);
+    const ibdMoreCoverage = hasCoverage.filter(f => {
+      const rate = parseInt(f['覆盖投资人（IBD）']) / parseInt(f['覆盖投资人 数量']);
+      return rate >= 0.5 && rate < 1;
+    });
+    const ecmMoreCoverage = hasCoverage.filter(f => {
+      const rate = parseInt(f['覆盖投资人（ECM）']) / parseInt(f['覆盖投资人 数量']);
+      return rate >= 0.5 && rate < 1;
+    });
+    const ibdNoCoverage = hasCoverage.filter(f => parseInt(f['覆盖投资人（IBD）']) == 0);
+    const ecmNoCoverage = hasCoverage.filter(f => parseInt(f['覆盖投资人（ECM）']) == 0);
+    const ibdLessCoverage = hasCoverage.length - ibdFullCoverage.length - ibdNoCoverage.length - ibdMoreCoverage.length;
+    const ecmLessCoverage = hasCoverage.length - ecmFullCoverage.length - ecmNoCoverage.length - ecmMoreCoverage.length;
+    const result = [{ label: '未覆盖', ibd: ibdNoCoverage.length, ecm: ecmNoCoverage.length }];
+    result.push({ label: '低覆盖', ibd: ibdLessCoverage, ecm: ecmLessCoverage });
+    result.push({ label: '高覆盖', ibd: ibdMoreCoverage.length, ecm: ecmMoreCoverage.length });
+    result.push({ label: '全覆盖', ibd: ibdFullCoverage.length, ecm: ecmFullCoverage.length });
+    return result;
+  }
+
   return (
     <LeftRightLayout
       location={props.location}
@@ -288,9 +325,9 @@ function OrgCoverage(props) {
       <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Title level={5}>IBD与ECM部门对投资人不同覆盖率的机构数量</Title>
         <BarChart
-          width={360}
+          width={540}
           height={330}
-          data={barData2}
+          data={calculateDataForBarChart3()}
           margin={{ top: 30 }}
         >
           <XAxis dataKey="label" />
