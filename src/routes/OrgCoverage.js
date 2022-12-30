@@ -78,46 +78,46 @@ const pieChartData = [
 ];
 const totalValue = pieChartData.reduce((prev, curr) => prev + curr.value, 0);
 
-let verticalBarChartData = [
-  {
-    label: '高级总监',
-    value: 1,
-  },
-  {
-    label: '高级副总裁',
-    value: 2,
-  },
-  {
-    label: '助理',
-    value: 3,
-  },
-  {
-    label: '总裁助理',
-    value: 4,
-  },
-  {
-    label: '董事长助理',
-    value: 5,
-  },
-  {
-    label: '其它',
-    value: 10,
-  },
-  {
-    label: '董事长',
-    value: 2,
-  },
-  {
-    label: '助理经理',
-    value: 3,
-  },
-];
-const totalVerticalValue = verticalBarChartData.reduce((prev, curr) => prev + curr.value, 0);
-verticalBarChartData = verticalBarChartData.map(m => {
-  const value = (m.value / totalVerticalValue) * 100;
-  const number = m.value;
-  return { ...m, value: parseInt(value.toFixed()), number };
-})
+// let verticalBarChartData = [
+//   {
+//     label: '高级总监',
+//     value: 1,
+//   },
+//   {
+//     label: '高级副总裁',
+//     value: 2,
+//   },
+//   {
+//     label: '助理',
+//     value: 3,
+//   },
+//   {
+//     label: '总裁助理',
+//     value: 4,
+//   },
+//   {
+//     label: '董事长助理',
+//     value: 5,
+//   },
+//   {
+//     label: '其它',
+//     value: 10,
+//   },
+//   {
+//     label: '董事长',
+//     value: 2,
+//   },
+//   {
+//     label: '助理经理',
+//     value: 3,
+//   },
+// ];
+// const totalVerticalValue = verticalBarChartData.reduce((prev, curr) => prev + curr.value, 0);
+// verticalBarChartData = verticalBarChartData.map(m => {
+//   const value = (m.value / totalVerticalValue) * 100;
+//   const number = m.value;
+//   return { ...m, value: parseInt(value.toFixed()), number };
+// })
 
 const barColors = ['rgb(34, 93,131)', 'rgb(135, 172, 193)', 'rgb(216, 235, 238)'];
 const pieColors = ['rgb(175, 171, 171)', 'rgb(221, 238, 241)', 'rgb(34, 138, 157)', 'rgb(34, 93,131)'];
@@ -152,8 +152,9 @@ const columns = [
   },
   {
     title: '覆盖投资人占比',
-    dataIndex: 'value',
+    dataIndex: 'digits',
     align: 'center',
+    render: text => `${text}%`,
   },
 ];
 
@@ -354,6 +355,40 @@ function OrgCoverage(props) {
     },
   ];
 
+  function calaulateDataForPositions() {
+    const allTitleData = coverageData.filter(f => parseInt(f['覆盖投资人 数量']) > 0).map(m => JSON.parse(m['覆盖投资人 职位'].replace(/'/g, '"')));
+    const overallData = {};
+    for (let index = 0; index < allTitleData.length; index++) {
+      const element = allTitleData[index];
+      for (const key in element) {
+        if (Object.hasOwnProperty.call(element, key)) {
+          const value = element[key];
+          if (key in overallData) {
+            overallData[key] += value;
+          } else {
+            overallData[key] = value;
+          }
+        }
+      }
+    }
+    const result = [];
+    for (const key in overallData) {
+      if (Object.hasOwnProperty.call(overallData, key)) {
+        const element = overallData[key];
+        result.push({ label: key, value: element });
+      }
+    }
+    return result;
+  }
+
+  let verticalBarChartData = calaulateDataForPositions();
+  const totalVerticalValue = verticalBarChartData.reduce((prev, curr) => prev + curr.value, 0);
+  verticalBarChartData = verticalBarChartData.map(m => {
+    const value = (m.value / totalVerticalValue) * 100;
+    const number = m.value;
+    return { ...m, value: Number(value.toFixed()), number, digits: Number(value.toFixed(2)) };
+  })
+  window.echo('verta vale', verticalBarChartData);
   return (
     <LeftRightLayout
       location={props.location}
@@ -534,10 +569,8 @@ function OrgCoverage(props) {
             size="small"
             summary={(pageData) => {
               let totalNumber = 0;
-              let totalPercentage = 0;
-              pageData.forEach(({ value, number }) => {
+              pageData.forEach(({ number }) => {
                 totalNumber += number;
-                totalPercentage += value;
               });
               return (
                 <Table.Summary.Row>
@@ -546,7 +579,7 @@ function OrgCoverage(props) {
                     <Text>{totalNumber}</Text>
                   </Table.Summary.Cell>
                   <Table.Summary.Cell index={2} align="center">
-                    <Text>{totalPercentage}</Text>
+                    <Text>100%</Text>
                   </Table.Summary.Cell>
                 </Table.Summary.Row>
               );
