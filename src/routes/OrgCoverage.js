@@ -21,6 +21,7 @@ import {
   EyeOutlined,
 } from '@ant-design/icons';
 import { handleError, i18n, requestAllData } from '../utils/util';
+import styles from './OrgCoverage.css';
 
 const { Text, Title } = Typography;
 
@@ -163,6 +164,7 @@ function OrgCoverage(props) {
   const [loading, setLoading] = useState(false);
   const [coverageList, setCoverageList] = useState([]);
   const [coverageData, setCoverageData] = useState([]);
+  const [currentCoverageID, setCurrentCoverageID] = useState(null);
 
   async function getUserCoverage() {
     try {
@@ -280,11 +282,9 @@ function OrgCoverage(props) {
   }
 
   function handleFinishUploadExcel(_, realfilekey, filename) {
-    window.echo('realfilekey', realfilekey);
-    window.echo('filename', filename);
     message.success('文件上传成功，数据正在统计中，请稍后再试');
     api.addUserCoverageStatistics({ key: realfilekey, file_name: filename })
-      .then(res => window.echo('res', res))
+      .then(() => getUserCoverage())
       .catch(error => {
         props.dispatch({
           type: 'app/findError',
@@ -297,7 +297,6 @@ function OrgCoverage(props) {
     try {
       setLoading(true);
       const req = await api.deleteUserCoverage(item.id);
-      window.echo('req', req);
       getUserCoverage();
     } catch (error) {
       handleError(error);
@@ -310,8 +309,8 @@ function OrgCoverage(props) {
     try {
       setLoading(true);
       const req = await api.getUserCoverageDetails(item.id, { type: 'json' });
-      window.echo('req', req);
       setCoverageData(req.data);
+      setCurrentCoverageID(item.id);
     } catch (error) {
       handleError(error);
     } finally {
@@ -388,7 +387,6 @@ function OrgCoverage(props) {
     const number = m.value;
     return { ...m, value: Number(value.toFixed()), number, digits: Number(value.toFixed(2)) };
   })
-  window.echo('verta vale', verticalBarChartData);
   return (
     <LeftRightLayout
       location={props.location}
@@ -396,6 +394,7 @@ function OrgCoverage(props) {
     >
       <div style={{ marginBottom: 20, textAlign: 'center' }}>
         <UploadFile
+          keepUploadBtn
           accept=".xlsx,.xls"
           name="上传Excel文件"
           onChange={handleFinishUploadExcel}
@@ -404,6 +403,7 @@ function OrgCoverage(props) {
       <div style={{ marginBottom: 50 }}>
         <Table
           size="small"
+          rowClassName={record => record.id === currentCoverageID ? styles['current-row'] : ''}
           columns={coverageListColumns}
           dataSource={coverageList}
           rowKey={record => record.id}
@@ -412,181 +412,188 @@ function OrgCoverage(props) {
         />
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+      {coverageData && coverageData.length > 0 && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
 
-        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
-          <BarChart
-            width={360}
-            height={330}
-            data={calculateDataForBarChart1()}
-            margin={{ top: 30 }}
-          >
-            <XAxis dataKey="label" />
-            <YAxis domain={[0, calculateMax]} />
-            <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
-              {
-                calculateDataForBarChart1().map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
-                ))
-              }
-              <LabelList dataKey="value" position="top" fill="black" />
-            </Bar>
-          </BarChart>
-        </div>
-
-        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Title level={5}>有覆盖中不同投资者覆盖率机构数量</Title>
-          <BarChart
-            width={360}
-            height={330}
-            data={calculateDataForBarChart2()}
-            margin={{ top: 30 }}
-          >
-            <XAxis dataKey="label" />
-            <YAxis domain={[0, calculateMax]} />
-            <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
-              {
-                calculateDataForBarChart2().map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={barColors[index % 3]} />
-                ))
-              }
-              <LabelList dataKey="value" position="top" fill="black" />
-            </Bar>
-          </BarChart>
-        </div>
-
-        <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Title level={5}>不同投资者覆盖率机构数量占比</Title>
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <PieChart width={400} height={360}>
-              <Pie
-                data={calculateDataForPieChart1()}
-                cx="50%"
-                cy="50%"
-                outerRadius={120}
-                dataKey="value"
-                isAnimationActive={false}
-                label={calculatePercentage}
+            <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Title level={5}>所有员工覆盖机构数量（共{coverageData.length}家）</Title>
+              <BarChart
+                width={360}
+                height={330}
+                data={calculateDataForBarChart1()}
+                margin={{ top: 30 }}
               >
-                {calculateDataForPieChart1().map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
-                ))}
-              </Pie>
-            </PieChart>
-            <div style={{ width: 250 }}>
-              <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
-              {calculateDataForPieChart1().map((m, i) => (
-                <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
-                  <div style={pieChartLabelContainerStyle}>
-                    <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
-                    <div style={pieChartLabelTextStyle}>{m.label}</div>
-                  </div>
-                  <div style={pieChartLabelTextStyle}>{calculatePercentage(m)}</div>
+                <XAxis dataKey="label" />
+                <YAxis domain={[0, calculateMax]} />
+                <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
+                  {
+                    calculateDataForBarChart1().map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={barColors[index % 2]} />
+                    ))
+                  }
+                  <LabelList dataKey="value" position="top" fill="black" />
+                </Bar>
+              </BarChart>
+            </div>
+
+            <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Title level={5}>有覆盖中不同投资者覆盖率机构数量</Title>
+              <BarChart
+                width={360}
+                height={330}
+                data={calculateDataForBarChart2()}
+                margin={{ top: 30 }}
+              >
+                <XAxis dataKey="label" />
+                <YAxis domain={[0, calculateMax]} />
+                <Bar dataKey="value" fill="#8884d8" barSize={40} isAnimationActive={false}>
+                  {
+                    calculateDataForBarChart2().map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={barColors[index % 3]} />
+                    ))
+                  }
+                  <LabelList dataKey="value" position="top" fill="black" />
+                </Bar>
+              </BarChart>
+            </div>
+
+            <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Title level={5}>不同投资者覆盖率机构数量占比</Title>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <PieChart width={400} height={360}>
+                  <Pie
+                    data={calculateDataForPieChart1()}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    dataKey="value"
+                    isAnimationActive={false}
+                    label={calculatePercentage}
+                  >
+                    {calculateDataForPieChart1().map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+                <div style={{ width: 250 }}>
+                  <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
+                  {calculateDataForPieChart1().map((m, i) => (
+                    <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                      <div style={pieChartLabelContainerStyle}>
+                        <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
+                        <div style={pieChartLabelTextStyle}>{m.label}</div>
+                      </div>
+                      <div style={pieChartLabelTextStyle}>{calculatePercentage(m)}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            </div>
+
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Title level={5}>IBD与ECM部门对投资人不同覆盖率的机构数量</Title>
+              <BarChart
+                width={540}
+                height={330}
+                data={calculateDataForBarChart3()}
+                margin={{ top: 30 }}
+              >
+                <XAxis dataKey="label" />
+                <YAxis domain={[0, calculateMax]} />
+                <Legend verticalAlign="top" height={50} />
+                <Bar dataKey="ibd" fill={barColors[1]} barSize={40} name="IBD部门" isAnimationActive={false}>
+                  <LabelList dataKey="ibd" position="top" fill="black" />
+                </Bar>
+                <Bar dataKey="ecm" fill={barColors[0]} barSize={40} name="ECM部门" isAnimationActive={false}>
+                  <LabelList dataKey="ecm" position="top" fill="black" />
+                </Bar>
+              </BarChart>
+            </div>
+
+            <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Title level={5}>不同重复覆盖率的机构数量比例</Title>
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <PieChart width={400} height={360}>
+                  <Pie
+                    data={calculateDataForPieChart2()}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    dataKey="value"
+                    isAnimationActive={false}
+                    label={calculatePercentage2}
+                  >
+                    {calculateDataForPieChart2().map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+                <div style={{ width: 250 }}>
+                  <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
+                  {calculateDataForPieChart2().map((m, i) => (
+                    <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
+                      <div style={pieChartLabelContainerStyle}>
+                        <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
+                        <div style={pieChartLabelTextStyle}>{m.label}</div>
+                      </div>
+                      <div style={pieChartLabelTextStyle}>{calculatePercentage2(m)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <Title level={5} style={{ marginBottom: 20 }}>覆盖投资人各岗位人数占比</Title>
+            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <BarChart
+                layout="vertical"
+                width={540}
+                height={50 * verticalBarChartData.length}
+                data={verticalBarChartData.sort((a, b) => a.value - b.value)}
+                margin={{ left: 20, top: 20, right: 50 }}
+              >
+                <XAxis type="number" domain={[0, calculateMax]} tickFormatter={(tick) => {
+                  return `${tick}%`;
+                }} />
+                <YAxis type="category" dataKey="label" />
+                <Bar isAnimationActive={false} dataKey="value" fill="rgb(34, 93,131)" barSize={28} />
+              </BarChart>
+
+              <Table
+                columns={columns}
+                rowKey={record => record.label}
+                dataSource={verticalBarChartData}
+                pagination={false}
+                size="small"
+                summary={(pageData) => {
+                  let totalNumber = 0;
+                  pageData.forEach(({ number }) => {
+                    totalNumber += number;
+                  });
+                  return (
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0}>总计</Table.Summary.Cell>
+                      <Table.Summary.Cell index={1} align="center">
+                        <Text>{totalNumber}</Text>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={2} align="center">
+                        <Text>100%</Text>
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  );
+                }}
+              />
             </div>
           </div>
         </div>
-
-      </div>
-
-      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Title level={5}>IBD与ECM部门对投资人不同覆盖率的机构数量</Title>
-        <BarChart
-          width={540}
-          height={330}
-          data={calculateDataForBarChart3()}
-          margin={{ top: 30 }}
-        >
-          <XAxis dataKey="label" />
-          <YAxis domain={[0, calculateMax]} />
-          <Legend verticalAlign="top" height={50} />
-          <Bar dataKey="ibd" fill={barColors[1]} barSize={40} name="IBD部门" isAnimationActive={false}>
-            <LabelList dataKey="ibd" position="top" fill="black" />
-          </Bar>
-          <Bar dataKey="ecm" fill={barColors[0]} barSize={40} name="ECM部门" isAnimationActive={false}>
-            <LabelList dataKey="ecm" position="top" fill="black" />
-          </Bar>
-        </BarChart>
-      </div>
-
-      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Title level={5}>不同重复覆盖率的机构数量比例</Title>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <PieChart width={400} height={360}>
-            <Pie
-              data={calculateDataForPieChart2()}
-              cx="50%"
-              cy="50%"
-              outerRadius={120}
-              dataKey="value"
-              isAnimationActive={false}
-              label={calculatePercentage2}
-            >
-              {calculateDataForPieChart2().map((_, index) => (
-                <Cell key={`cell-${index}`} fill={pieColors[index % 4]} />
-              ))}
-            </Pie>
-          </PieChart>
-          <div style={{ width: 250 }}>
-            <div style={{ ...pieChartLabelTextStyle, textAlign: 'center', marginBottom: 20 }}></div>
-            {calculateDataForPieChart2().map((m, i) => (
-              <div key={i} style={{ ...pieChartLabelContainerStyle, justifyContent: 'space-between', marginBottom: 10 }}>
-                <div style={pieChartLabelContainerStyle}>
-                  <div style={{ ...pieChartLabelColorStyle, background: pieColors[i] }} />
-                  <div style={pieChartLabelTextStyle}>{m.label}</div>
-                </div>
-                <div style={pieChartLabelTextStyle}>{calculatePercentage2(m)}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div style={{ marginBottom: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <Title level={5} style={{ marginBottom: 20 }}>覆盖投资人各岗位人数占比</Title>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <BarChart
-            layout="vertical"
-            width={540}
-            height={50 * verticalBarChartData.length}
-            data={verticalBarChartData.sort((a, b) => a.value - b.value)}
-            margin={{ left: 20, top: 20, right: 50 }}
-          >
-            <XAxis type="number" domain={[0, calculateMax]} tickFormatter={(tick) => {
-              return `${tick}%`;
-            }} />
-            <YAxis type="category" dataKey="label" />
-            <Bar isAnimationActive={false} dataKey="value" fill="rgb(34, 93,131)" barSize={28} />
-          </BarChart>
-
-          <Table
-            columns={columns}
-            rowKey={record => record.label}
-            dataSource={verticalBarChartData}
-            pagination={false}
-            size="small"
-            summary={(pageData) => {
-              let totalNumber = 0;
-              pageData.forEach(({ number }) => {
-                totalNumber += number;
-              });
-              return (
-                <Table.Summary.Row>
-                  <Table.Summary.Cell index={0}>总计</Table.Summary.Cell>
-                  <Table.Summary.Cell index={1} align="center">
-                    <Text>{totalNumber}</Text>
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell index={2} align="center">
-                    <Text>100%</Text>
-                  </Table.Summary.Cell>
-                </Table.Summary.Row>
-              );
-            }}
-          />
-        </div>
-      </div>
+      )}
 
     </LeftRightLayout>
   );

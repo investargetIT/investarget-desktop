@@ -147,7 +147,7 @@ class UploadFile extends React.Component {
         onRemove={this.handleFileRemoveConfirm}
       >
       {
-        this.state.fileList.length == 0 ? (
+        this.state.fileList.length == 0 || this.props.keepUploadBtn ? (
           <Button>
             <UploadOutlined /> {this.props.name || i18n('common.upload')}
           </Button>
