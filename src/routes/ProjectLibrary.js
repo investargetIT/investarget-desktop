@@ -222,11 +222,11 @@ class ProjectLibrary extends React.Component {
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
-      {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date',width:100},
-      {title: '最近融资金额', dataIndex: 'invse_detail_money',width:100},
-      {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
-      {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
-      {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
+      // {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date',width:100},
+      // {title: '最近融资金额', dataIndex: 'invse_detail_money',width:100},
+      // {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
+      // {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
+      // {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
     const columns = [...baseColumns];
     if (hasPerm('usersys.as_trader')) {
