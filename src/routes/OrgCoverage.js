@@ -20,7 +20,7 @@ import {
   DeleteOutlined,
   EyeOutlined,
 } from '@ant-design/icons';
-import { i18n, requestAllData } from '../utils/util';
+import { handleError, i18n, requestAllData } from '../utils/util';
 
 const { Text, Title } = Typography;
 
@@ -163,22 +163,22 @@ function OrgCoverage(props) {
   const [coverageList, setCoverageList] = useState([]);
   const [coverageData, setCoverageData] = useState([]);
 
-  useEffect(() => {
-    async function getUserCoverage() {
-      try {
-        setLoading(true);
-        const req = await requestAllData(api.getUserCoverage, {}, 10);
-        setCoverageList(req.data.data);
-      } catch (error) {
-        props.dispatch({
-          type: 'app/findError',
-          payload: error,
-        });
-
-      } finally {
-        setLoading(false);
-      }
+  async function getUserCoverage() {
+    try {
+      setLoading(true);
+      const req = await requestAllData(api.getUserCoverage, {}, 10);
+      setCoverageList(req.data.data);
+    } catch (error) {
+      props.dispatch({
+        type: 'app/findError',
+        payload: error,
+      });
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     getUserCoverage();
   }, []);
 
@@ -292,12 +292,30 @@ function OrgCoverage(props) {
       });
   }
 
-  function handleDelete(item) {
-    window.echo('delete item', item);
+  async function handleDelete(item) {
+    try {
+      setLoading(true);
+      const req = await api.deleteUserCoverage(item.id);
+      window.echo('req', req);
+      getUserCoverage();
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleViewBtnClicked(item) {
-    window.echo('view item', item);
+  async function handleViewBtnClicked(item) {
+    try {
+      setLoading(true);
+      const req = await api.getUserCoverageDetails(item.id, { type: 'json' });
+      window.echo('req', req);
+      setCoverageData(req.data);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const coverageListColumns = [
@@ -324,7 +342,7 @@ function OrgCoverage(props) {
       align: 'center',
       render: (_, record) => {
         return <span>
-          <Button type="link" onClick={() => handleViewBtnClicked(record)}><EyeOutlined /></Button>
+          <Button type="link" disabled={record.status != 1} onClick={() => handleViewBtnClicked(record)}><EyeOutlined /></Button>
           <Popconfirm
             title={i18n('message.confirm_delete')}
             onConfirm={() => handleDelete(record)}
@@ -449,10 +467,10 @@ function OrgCoverage(props) {
           <XAxis dataKey="label" />
           <YAxis domain={[0, calculateMax]} />
           <Legend verticalAlign="top" height={50} />
-          <Bar dataKey="ibd" fill={barColors[1]} barSize={40} name="IBD部门">
+          <Bar dataKey="ibd" fill={barColors[1]} barSize={40} name="IBD部门" isAnimationActive={false}>
             <LabelList dataKey="ibd" position="top" fill="black" />
           </Bar>
-          <Bar dataKey="ecm" fill={barColors[0]} barSize={40} name="ECM部门">
+          <Bar dataKey="ecm" fill={barColors[0]} barSize={40} name="ECM部门" isAnimationActive={false}>
             <LabelList dataKey="ecm" position="top" fill="black" />
           </Bar>
         </BarChart>
