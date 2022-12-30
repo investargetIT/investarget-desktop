@@ -121,37 +121,45 @@ class ProjectLibrary extends React.Component {
     this.setState({ loading: true })
     const user=getUserInfo()
     var allList=[]
-    api.getLibProj(param).then(result => {
-      const { count: total, data: list } = result.data
-      var promises=list.map( (item,index) => {
-        const {com_id}=item
-        var hasComment=false;
-        return api.getLibProjRemark({com_id}).then(remarks => {
-          if(remarks.data.data.some(remark=>{return remark.createuser_id==user.id})){
-            hasComment=true;
-          }
-          allList[index]={...item,hasComment:hasComment}
-        })
-        })
-      Promise.all(promises).then((val)=>{
-        this.setState({ total, list:allList, loading: false })
+    let total = 0;
+    let list = [];
+    api.getLibProj(param)
+      .then(result => {
+        const { count, data } = result.data
+        total = count;
+        list = data;
       })
-      
-    }).catch(error => {
-      this.setState({ loading: false })
-      handleError(error)
-    })
+      .then(() => {
+        window.echo('list', list);
+        var promises = list.map((item, index) => {
+          const { com_id } = item
+          var hasComment = false;
+          return api.getLibProjRemark({ com_id }).then(remarks => {
+            if (remarks.data.data.some(remark => { return remark.createuser_id == user.id })) {
+              hasComment = true;
+            }
+            allList[index] = { ...item, hasComment: hasComment }
+          })
+        })
+        Promise.all(promises).then((val) => {
+          this.setState({ total, list: allList, loading: false })
+        })
+      })
+      .catch(error => {
+        this.setState({ loading: false })
+        handleError(error)
+      });
     this.writeSetting();
   }
 
-  getAllProject = () => {
-    const { filters, search } = this.state
-    const param = { page_size: 500, com_name: search, ...filters }
-    requestAllData(api.getLibProjSimple, param, 500).then(result => {
-      const { data: list } = result.data;
-      this.setState({ listForExport: list });
-    });
-  }
+  // getAllProject = () => {
+  //   const { filters, search } = this.state
+  //   const param = { page_size: 500, com_name: search, ...filters }
+  //   requestAllData(api.getLibProjSimple, param, 500).then(result => {
+  //     const { data: list } = result.data;
+  //     this.setState({ listForExport: list });
+  //   });
+  // }
 
   getLibProj = (_param) => {
     var param = { ..._param }
