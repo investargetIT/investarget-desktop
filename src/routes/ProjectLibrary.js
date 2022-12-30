@@ -4,6 +4,7 @@ import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
 import { Link, withRouter } from 'dva/router';
+import { connect } from 'dva';
 import { 
   i18n, 
   handleError, 
@@ -14,7 +15,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import qs from 'qs';
+// import qs from 'qs';
 
 
 const iconStyle = {
@@ -128,9 +129,22 @@ class ProjectLibrary extends React.Component {
         const { count, data } = result.data
         total = count;
         list = data;
+        return Promise.all(list.map(m => api.getProjBDList({ com_name: m.com_name.replaceAll('.', '') })));
       })
-      .then(() => {
-        window.echo('list', list);
+      .then(res => {
+        for (let index = 0; index < res.length; index++) {
+          const element = res[index];
+          if (element.data.count > 0) {   
+            list[index].bd_status = element.data.data[0].bd_status;
+          }
+        }
+        return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+      })
+      .then(allBdStatus => {
+        list = list.map(m => {
+          const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+          return { ...m, bd_status: bdStatus };
+        });
         var promises = list.map((item, index) => {
           const { com_id } = item
           var hasComment = false;
@@ -318,4 +332,4 @@ class ProjectLibrary extends React.Component {
   }
 }
 
-export default withRouter(ProjectLibrary);
+export default connect()(withRouter(ProjectLibrary));
