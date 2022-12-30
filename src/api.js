@@ -1155,5 +1155,7 @@ export const deleteOrgAlias = id => r(`/org/alias/${id}/`, 'DELETE');
 // export const updateOrgAlias = (id, body) => r(`/org/alias/${id}/`, 'PUT', body);
 
 // 机构覆盖率
-export const getOrgCoverage = params => r(`/user/getcoverage/?${qs.stringify(params)}`);
-export const addOrgCoverage = body => r('/user/makecoverage/', 'POST', body);
+export const getUserCoverage = params => r(`/user/coverage/?${qs.stringify(params)}`);
+export const getUserCoverageDetails = (id, params) => r(`/user/coverage/${id}/?${qs.stringify(params)}`);
+export const deleteUserCoverage = id => r(`/user/coverage/${id}/`, 'DELETE');
+export const addUserCoverageStatistics = body => r('/user/coverage/', 'POST', body);
