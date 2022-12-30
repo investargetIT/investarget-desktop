@@ -111,7 +111,8 @@ class UploadFile extends React.Component {
       let file = this.state.fileList[0] || null
       let key = file ? file.key : null
       let realfilekey = file ? file.realfilekey : null
-      this.props.onChange(key, realfilekey)
+      let filename = file ? file.name : null
+      this.props.onChange(key, realfilekey, filename)
     }
   }
 
