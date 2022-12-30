@@ -55,6 +55,7 @@ class HandleError extends React.Component {
           Modal.error({
             // title: i18n('message.session_expire'),
             title: msg,
+            content: detail,
             onOk() {
               HandleError.handleSessionExpiration = false
               react.props.dispatch({
@@ -69,7 +70,7 @@ class HandleError extends React.Component {
         Modal.error({
           // title: i18n('message.operation_fail'),
           title: msg,
-          // content: msg,
+          content: detail,
         })
         break
       case 2009:
@@ -77,11 +78,11 @@ class HandleError extends React.Component {
         break
       case 20041:
         // Modal.error({ title: i18n('message.mobile_exist') })
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break
       case 20042:
         // Modal.error({ title: i18n('message.email_exist') })
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break
       case 2001: // 用户可感知的错误已在相关页面处理了，登录密码错误
         break;
@@ -108,11 +109,12 @@ class HandleError extends React.Component {
         break;
       case 2026:
         // Modal.error({ title: '该投资人名下已存在相同投资事件' });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 6101:
         Modal.error({
           title: msg,
+          content: detail,
           onCancel: () => {
             // 重新请求标签列表
             react.props.dispatch({ type: 'app/requestSource', payload: 'tag' });
@@ -124,29 +126,29 @@ class HandleError extends React.Component {
         break;
       case 8006:
         // Modal.error({ title: '视频会议时间冲突', content: msg });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 2004:
         // Modal.error({ title: '保存模版失败', content: msg });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 5006:
         // Modal.error({ title: '机构看板创建失败', content: msg });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 3008:
         // Modal.error({ title: '系统繁忙，请稍后再试', content: msg });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 2007:
         // Modal.error({ title: '机构看板创建失败', content: msg });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 2051: // 修改密码时，原密码错误，修改失败
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
       case 50061:
         // Modal.error({ title: '已存在项目名称相同的BD任务，无法创建' });
-        Modal.error({ title: msg });
+        Modal.error({ title: msg, content: detail });
         break;
       case 20071:
         Modal.error({ title: msg, content: detail });
