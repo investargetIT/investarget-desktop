@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Table, Pagination, Input } from 'antd'
+import { Button, Table, Pagination, Input, Tooltip } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
@@ -241,6 +241,15 @@ class ProjectLibrary extends React.Component {
                   <div style={record.hasComment?comNameStyle:null}>{record.com_name}</div>
                 </Link></div>)
       }, width: 120},
+      {
+        title: '项目BD状态',
+        dataIndex: 'bd_status',
+        render: (text, record) => text ? (
+          <Tooltip title="查看项目BD记录">
+            <Link to={`/app/projects/bd?search=${record.com_name.replaceAll('.', '')}`} style={{ color: 'red' }}>{text.name}</Link>
+          </Tooltip>
+        ) : <span style={{ color: 'green' }}>无记录</span>,
+      },
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
