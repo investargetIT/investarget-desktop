@@ -12,7 +12,7 @@ import {
   Pie,
   Legend,
 } from "recharts";
-import { Table, Typography, message, Popconfirm, Button } from 'antd';
+import { Table, Typography, message, Popconfirm, Button, Tooltip } from 'antd';
 import * as api from '../api';
 import { UploadFile } from '../components/Upload';
 import { connect } from 'dva';
@@ -318,11 +318,29 @@ function OrgCoverage(props) {
     }
   }
 
+  async function handleFileNameClicked(record) {    
+    try {
+      setLoading(true);
+      const { key } = record;
+      const req = await api.downloadUrl('file', key);
+      const { data: url } = req;
+      window.open(url);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const coverageListColumns = [
     {
       title: '文件名称',
       dataIndex: 'filename',
       key: 'filename',
+      align: 'center',
+      render: (text, record) => <Tooltip title="点击下载原文件">
+        <Button type="link" onClick={() => handleFileNameClicked(record)}>{text}</Button>
+      </Tooltip>,
     },
     {
       title: '创建时间',
