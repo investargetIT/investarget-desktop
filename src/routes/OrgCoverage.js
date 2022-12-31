@@ -19,9 +19,11 @@ import { connect } from 'dva';
 import {
   DeleteOutlined,
   EyeOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import { handleError, i18n, requestAllData } from '../utils/util';
 import styles from './OrgCoverage.css';
+import moment from 'moment';
 
 const { Text, Title } = Typography;
 
@@ -308,9 +310,26 @@ function OrgCoverage(props) {
   async function handleViewBtnClicked(item) {
     try {
       setLoading(true);
-      const req = await api.getUserCoverageDetails(item.id, { type: 'json' });
+      const req = await api.getUserCoverageDetails(item.id);
       setCoverageData(req.data);
       setCurrentCoverageID(item.id);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDownloadBtnClicked(item) {
+    try {
+      setLoading(true);
+      const data = await api.getUserCoverageDetailsForExcel(item.id);
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.download = `机构投资人覆盖率统计报表_${moment().format('YYYYMMDD_HHmm')}`;
+      var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      link.href = window.URL.createObjectURL(blob);
+      link.click();
     } catch (error) {
       handleError(error);
     } finally {
@@ -361,6 +380,7 @@ function OrgCoverage(props) {
       render: (_, record) => {
         return <span>
           <Button type="link" disabled={record.status != 3} onClick={() => handleViewBtnClicked(record)}><EyeOutlined /></Button>
+          <Button type="link" disabled={record.status != 3} onClick={() => handleDownloadBtnClicked(record)}><DownloadOutlined /></Button>
           <Popconfirm
             title={i18n('message.confirm_delete')}
             onConfirm={() => handleDelete(record)}
