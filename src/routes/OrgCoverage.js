@@ -334,7 +334,7 @@ function OrgCoverage(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: text => text == 1 ? '已完成' : '未完成',
+      render: text => text == 3 ? '已完成' : '未完成',
     },
     {
       title: '操作',
@@ -342,7 +342,7 @@ function OrgCoverage(props) {
       align: 'center',
       render: (_, record) => {
         return <span>
-          <Button type="link" disabled={record.status != 1} onClick={() => handleViewBtnClicked(record)}><EyeOutlined /></Button>
+          <Button type="link" disabled={record.status != 3} onClick={() => handleViewBtnClicked(record)}><EyeOutlined /></Button>
           <Popconfirm
             title={i18n('message.confirm_delete')}
             onConfirm={() => handleDelete(record)}
