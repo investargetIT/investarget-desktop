@@ -1,9 +1,10 @@
 import React from 'react'
-import { Button, Table, Pagination, Input } from 'antd'
+import { Button, Table, Pagination, Input, Tooltip } from 'antd'
 import LeftRightLayout from '../components/LeftRightLayout'
 import { ProjectLibraryFilter } from '../components/Filter'
 import { Search3 } from '../components/Search'
 import { Link, withRouter } from 'dva/router';
+import { connect } from 'dva';
 import { 
   i18n, 
   handleError, 
@@ -14,7 +15,7 @@ import {
 } from '../utils/util';
 import * as api from '../api'
 import { PAGE_SIZE_OPTIONS } from '../constants';
-import qs from 'qs';
+// import qs from 'qs';
 
 
 const iconStyle = {
@@ -121,37 +122,58 @@ class ProjectLibrary extends React.Component {
     this.setState({ loading: true })
     const user=getUserInfo()
     var allList=[]
-    api.getLibProj(param).then(result => {
-      const { count: total, data: list } = result.data
-      var promises=list.map( (item,index) => {
-        const {com_id}=item
-        var hasComment=false;
-        return api.getLibProjRemark({com_id}).then(remarks => {
-          if(remarks.data.data.some(remark=>{return remark.createuser_id==user.id})){
-            hasComment=true;
-          }
-          allList[index]={...item,hasComment:hasComment}
-        })
-        })
-      Promise.all(promises).then((val)=>{
-        this.setState({ total, list:allList, loading: false })
+    let total = 0;
+    let list = [];
+    api.getLibProj(param)
+      .then(result => {
+        const { count, data } = result.data
+        total = count;
+        list = data;
+        return Promise.all(list.map(m => api.getProjBDList({ com_name: m.com_name.replaceAll('.', '') })));
       })
-      
-    }).catch(error => {
-      this.setState({ loading: false })
-      handleError(error)
-    })
+      .then(res => {
+        for (let index = 0; index < res.length; index++) {
+          const element = res[index];
+          if (element.data.count > 0) {   
+            list[index].bd_status = element.data.data[0].bd_status;
+          }
+        }
+        return this.props.dispatch({ type: 'app/getSource', payload: 'bdStatus' });
+      })
+      .then(allBdStatus => {
+        list = list.map(m => {
+          const bdStatus = allBdStatus.find(f => f.id === m.bd_status);
+          return { ...m, bd_status: bdStatus };
+        });
+        var promises = list.map((item, index) => {
+          const { com_id } = item
+          var hasComment = false;
+          return api.getLibProjRemark({ com_id }).then(remarks => {
+            if (remarks.data.data.some(remark => { return remark.createuser_id == user.id })) {
+              hasComment = true;
+            }
+            allList[index] = { ...item, hasComment: hasComment }
+          })
+        })
+        Promise.all(promises).then((val) => {
+          this.setState({ total, list: allList, loading: false })
+        })
+      })
+      .catch(error => {
+        this.setState({ loading: false })
+        handleError(error)
+      });
     this.writeSetting();
   }
 
-  getAllProject = () => {
-    const { filters, search } = this.state
-    const param = { page_size: 500, com_name: search, ...filters }
-    requestAllData(api.getLibProjSimple, param, 500).then(result => {
-      const { data: list } = result.data;
-      this.setState({ listForExport: list });
-    });
-  }
+  // getAllProject = () => {
+  //   const { filters, search } = this.state
+  //   const param = { page_size: 500, com_name: search, ...filters }
+  //   requestAllData(api.getLibProjSimple, param, 500).then(result => {
+  //     const { data: list } = result.data;
+  //     this.setState({ listForExport: list });
+  //   });
+  // }
 
   getLibProj = (_param) => {
     var param = { ..._param }
@@ -219,14 +241,23 @@ class ProjectLibrary extends React.Component {
                   <div style={record.hasComment?comNameStyle:null}>{record.com_name}</div>
                 </Link></div>)
       }, width: 120},
+      {
+        title: '项目BD状态',
+        dataIndex: 'bd_status',
+        render: (text, record) => text ? (
+          <Tooltip title="查看项目BD记录">
+            <Link to={`/app/projects/bd?search=${record.com_name.replaceAll('.', '')}`} style={{ color: 'red' }}>{text.name}</Link>
+          </Tooltip>
+        ) : <span style={{ color: 'green' }}>无记录</span>,
+      },
       {title: i18n('project_library.established_time'), dataIndex: 'com_born_date'},
       {title: i18n('project_library.area'), dataIndex: 'com_addr'},
       {title: i18n('project_library.industry'), dataIndex: 'com_cat_name'},
-      {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date',width:100},
-      {title: '最近融资金额', dataIndex: 'invse_detail_money',width:100},
-      {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
-      {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
-      {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
+      // {title: i18n('project_library.latest_financial_time'), dataIndex: 'invse_date',width:100},
+      // {title: '最近融资金额', dataIndex: 'invse_detail_money',width:100},
+      // {title: i18n('project_library.investment_round'), dataIndex: 'invse_round_id'},
+      // {title: i18n('project_library.fund_needs'), dataIndex: 'com_fund_needs_name'},
+      // {title: i18n('project_library.operating_status'), dataIndex: 'com_status'},
     ]
     const columns = [...baseColumns];
     if (hasPerm('usersys.as_trader')) {
@@ -310,4 +341,4 @@ class ProjectLibrary extends React.Component {
   }
 }
 
-export default withRouter(ProjectLibrary);
+export default connect()(withRouter(ProjectLibrary));
