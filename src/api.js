@@ -1,4 +1,4 @@
-import request from './utils/request'
+import request, { requestStream } from './utils/request';
 import qs from 'qs'
 import { PAGE_SIZE } from './constants'
 import { getUserInfo as getCurrentUserInfo, getBeijingTime, uploadFileByChunks } from './utils/util'
@@ -79,6 +79,42 @@ function r2(url, method, body) {
   }
 
   return request(url, options)
+}
+
+function rStream(url, method, body) {
+
+  const source = parseInt(localStorage.getItem('source'), 10)
+
+  if (!source) {
+    throw new ApiError(1299, 'data source missing');
+  }
+
+  const options = {
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "blob",
+      "clienttype": "3",
+      "source": source
+    },
+    credentials: 'include'
+  }
+
+  const user = getCurrentUserInfo()
+  if (user) {
+    options.headers["token"] = user.token
+  }
+
+  if (method) {
+    options["method"] = method
+  }
+
+  if (body) {
+    options["body"] = JSON.stringify(body)
+  }
+
+  const lang = url.split('?').length > 1 ? `&lang=${window.LANG}` : `?lang=${window.LANG}`
+
+  return requestStream(url + lang, options);
 }
 
 /**
@@ -1156,6 +1192,7 @@ export const deleteOrgAlias = id => r(`/org/alias/${id}/`, 'DELETE');
 
 // 机构覆盖率
 export const getUserCoverage = params => r(`/user/coverage/?${qs.stringify(params)}`);
-export const getUserCoverageDetails = (id, params) => r(`/user/coverage/${id}/?${qs.stringify(params)}`);
+export const getUserCoverageDetails = id => r(`/user/coverage/${id}/?type=json`);
 export const deleteUserCoverage = id => r(`/user/coverage/${id}/`, 'DELETE');
 export const addUserCoverageStatistics = body => r('/user/coverage/', 'POST', body);
+export const getUserCoverageDetailsForExcel = id => rStream(`/user/coverage/${id}/?type=excel`);

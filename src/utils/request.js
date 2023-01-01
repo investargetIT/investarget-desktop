@@ -68,3 +68,12 @@ export default async function request(url, options) {
   return { data: data.result };
 
 }
+
+export async function requestStream(url, options) {
+  const isThirdPartyServer = /^http/.test(url);
+  const fullUrl = isThirdPartyServer ? url : baseUrl + url;
+  const response = await fetch(fullUrl, options);
+  checkStatus(response);
+  const data = await response.blob();
+  return data;
+}
