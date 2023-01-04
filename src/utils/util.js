@@ -8,6 +8,9 @@ import i18next from 'i18next'
 import { SIZE_4M } from '../constants';
 import { message } from 'antd';
 import { useEffect, useRef } from 'react';
+import {
+  FileTextOutlined,
+} from '@ant-design/icons';
 
 // Since IE doesn't support this we need the polyfill
 if (!Array.prototype.includes) {
@@ -583,10 +586,32 @@ function getFileTypeByName(filename) {
   return 'FILE';
 }
 
+function getFileIconByType(fileType) {
+  switch (fileType) {
+    case 'PDF':
+      return <img src="/images/icons8-pdf-96.png" style={{ width: 17, height: 17 }} />;
+    // case 'IMAGE':
+    //   return <FileImageFilled style={{ fontSize: 36, color: '#989898' }} />;
+    case 'WORD':
+      return <img src="/images/icons8-word-96.png" style={{ width: 17, height: 17 }} />;
+    // case 'PPT':
+    //   return <FilePptFilled style={{ fontSize: 36, color: '#989898' }} />;
+    case 'EXCEL':
+      return <img src="/images/icons8-xls-96.png" style={{ width: 17, height: 17 }} />;
+    // case 'VIDEO':
+    //   return <VideoCameraFilled style={{ fontSize: 36, color: '#989898' }} />; 
+    // case 'AUDIO':
+    //   return <AudioFilled style={{ fontSize: 36, color: '#989898' }} />;
+    default:
+      return <FileTextOutlined />;
+  }
+}
+
 export {
   trimTextIfExceedMaximumCount,
   getFilenameWithoutExt,
   getFileTypeByName,
+  getFileIconByType,
 };
 
 export function getURLParamValue(props, name) {
