@@ -314,7 +314,7 @@ var exchangeCache = {}
 function exchange(source) {
   // 如果是虚拟货币的话，和美元同价
   if (source == 'USDT') {
-    sourse = 'USD';
+    source = 'USD';
   }
   if (exchangeCache[source] != null) {
     let rate = exchangeCache[source]
