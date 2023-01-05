@@ -594,8 +594,8 @@ function getFileIconByType(fileType) {
     //   return <FileImageFilled style={{ fontSize: 36, color: '#989898' }} />;
     case 'WORD':
       return <img src="/images/icons8-word-96.png" style={{ width: 17, height: 17 }} />;
-    // case 'PPT':
-    //   return <FilePptFilled style={{ fontSize: 36, color: '#989898' }} />;
+    case 'PPT':
+      return <img src="/images/icons8-powerpoint-96.png" style={{ width: 17, height: 17 }} />;
     case 'EXCEL':
       return <img src="/images/icons8-xls-96.png" style={{ width: 17, height: 17 }} />;
     // case 'VIDEO':
