@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Tree, Select, Tag, Popover, Upload, message, Modal, Input, Tooltip, Checkbox, Button, Progress, notification, Empty, Spin } from 'antd';
 import { Search } from './Search';
 import * as api from '../api';
-import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus, getURLParamValue } from '../utils/util';
+import { formatBytes, time, isLogin, hasPerm, handleError, getCurrentUser, getUserInfo, subtracting, intersection, customRequest, checkUploadStatus, getURLParamValue, getFileTypeByName, getFileIconByType } from '../utils/util';
 import { CheckCircleFilled } from '@ant-design/icons';
 import {
   PlusOutlined,
@@ -771,7 +771,7 @@ function DataroomFileManage({
 
     function renderFileIcon() {
       if (item.isFile) {
-        return <FileTextOutlined />;
+        return getFileIconByType(getFileTypeByName(item.filename));
       }
       // const allChildren = findAllChildren(item.id);
       // if (allChildren.filter(f => f.isFile).length > 0) {
