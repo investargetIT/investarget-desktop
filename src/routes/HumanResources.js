@@ -154,7 +154,7 @@ function HumanResources(props) {
 
   async function loadEmployees() {
     const allGroups = await props.dispatch({ type: 'app/getIndustryGroup' });
-    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.map(m => m.id), onjob: true, userstatus: 2 }, 10);
+    const allEmployees = await requestAllData(api.getUser, { indGroup: allGroups.map(m => m.id), onjob: true, userstatus: 2, type: 'personnel' }, 10);
     const emplyeesWithGroups = allGroups.map(m => {
       const employees = allEmployees.data.data.filter(f => f.indGroups && f.indGroups.includes(m.id));
       return { ...m, employees };
