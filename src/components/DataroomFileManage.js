@@ -359,9 +359,9 @@ function DataroomFileManage({
     const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
     const currentFile = item[0];
-    checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+      checkTrainingFile(currentFile);
       console.log("currentFile", currentFile);
       const result = await checkUploadStatus(currentFile.key);
       if (!result) {
