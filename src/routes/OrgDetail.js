@@ -570,10 +570,10 @@ class AttachmentList extends React.Component {
       desc: this.state.desc,
     }).then(result => {
       let total = result.data.count
-      let data = result.data.data
+      let data = result.data.data.filter(f => !!f.key);
       let loading = false
       
-      Promise.all(result.data.data.map(m => {
+      Promise.all(data.map(m => {
         let key = m.realkey;
         if (key === null) {
           const originalKeyWithoutSuffix = m.key.split('.')[0];
