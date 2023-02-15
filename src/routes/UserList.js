@@ -213,7 +213,7 @@ class UserList extends React.Component {
     .then(data => this.setState({ traders: data.data.data }))
     .catch(error => this.props.dispatch({ type: 'app/findError', payload: error }));
 
-    this.props.dispatch({ type: 'app/getSource', payload: 'title' }); 
+    this.props.dispatch({ type: 'app/getSourceList', payload: ['title', 'famlv'] }); 
     this.props.dispatch({ type: 'app/getGroup' }); 
   }
 
@@ -227,6 +227,17 @@ class UserList extends React.Component {
     } else if (typeof value === 'number') {
       return this.props[type].filter(f => f.id === value)[0].name;
     }
+  }
+
+  loadTradersByFamily = traders => {
+    if (!traders) return '暂无';
+    if (this.props.famlv.length === 0) return;
+    return traders.map(m => <span key={m.id}>
+      <span>{m.traderuser && m.traderuser.username}</span>
+      <span style={{ color: 'red' }}>
+        ({this.props.famlv.filter(f => f.id === m.familiar)[0].score})
+      </span>
+    </span>);
   }
 
   render() {
@@ -288,9 +299,11 @@ class UserList extends React.Component {
       },
       {
         title: i18n("user.trader"),
-        dataIndex: ['trader_relation', 'traderuser', 'username'],
+        dataIndex: 'trader_relations',
         key: 'trader',
         //sorter:true,
+        render: value => this.loadTradersByFamily(value),
+
       },
       {
         title: '是否活跃',
@@ -407,8 +420,8 @@ class UserList extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { title, tag, audit, group } = state.app;
-  return { title, tag, audit, group };
+  const { title, tag, audit, group, famlv } = state.app;
+  return { title, tag, audit, group, famlv };
 }
 
 export default connect(mapStateToProps)(UserList);
