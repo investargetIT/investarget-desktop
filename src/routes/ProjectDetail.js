@@ -802,7 +802,7 @@ class DownloadFiles extends React.Component {
       this.setState({ attachments })
 
       const q = attachments.map(item => {
-        let { bucket, key } = item;
+        let { bucket, realfilekey: key } = item;
         key = key + '?attname=' + encodeURIComponent(key);
         return api.downloadUrl(bucket, key).then(result => {
           return result.data
