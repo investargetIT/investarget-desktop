@@ -992,7 +992,7 @@ class SelectProjectForOrgBd extends React.Component {
 
   getProject = (params) => {
     // 首先请求所有以项目分组的机构看板
-    params = { ...params };
+    params = { ...params, realname: params.search };
     // if (!hasPerm('BD.manageOrgBD')) {
     //   params.manager = getCurrentUser();
     //   params.createuser = getCurrentUser();
