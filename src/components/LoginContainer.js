@@ -1,5 +1,6 @@
 import { changeLang } from '../utils/util'
 import headerStyles from './LoginContainerHeader.css';
+import moment from 'moment';
 
 const containerStyle = {background:'#f3f5f7', display: 'inline-block', minWidth: '100%'}
 const headerStyle = {width: 1200, height: 80, margin: '0 auto', backgroundColor: '#fff'}
@@ -126,7 +127,7 @@ class LoginContainer extends React.Component {
           </div>
           <div style={footerStyle}>
             <p style={copyrightStyle}>
-              &copy; 2021.All Rights Reserved. Investarget
+              &copy; {moment().year()}.All Rights Reserved. Investarget
           </p>
           </div>
         </div>
