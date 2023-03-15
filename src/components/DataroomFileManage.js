@@ -803,8 +803,8 @@ function DataroomFileManage({
           <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
         <div>
-          {(isLogin().is_superuser || !hasPerm('usersys.as_investor')) && addOperationIcon}
-          {(isLogin().is_superuser || !hasPerm('usersys.as_trader') || !hasPerm('dataroom.onlydataroom')) && moreOperationIcon}
+          {hasPerm('dataroom.downloadfile') && addOperationIcon}
+          {hasPerm('dataroom.downloadfile') && moreOperationIcon}
         </div>
       </div>
     );
@@ -1256,7 +1256,7 @@ function DataroomFileManage({
             />
             {dirData.length > 0 && !loading &&
               <DirectoryTree
-                checkable
+                checkable={hasPerm('dataroom.downloadfile')}
                 height={700}
                 defaultExpandedKeys={defaultExpandedKeys}
                 onSelect={onSelect}
