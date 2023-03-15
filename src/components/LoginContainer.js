@@ -42,7 +42,10 @@ class LoginContainer extends React.Component {
     } else if (source === 5) {
       logo = '/images/logo_hongyun.jpg';
       bg = 'url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603289733006&di=42169669158b25878ceb3e7db2b95bd0&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Fback_pic%2F05%2F83%2F56%2F065c5ec613d4435.jpg)';
-    } 
+    } else if (source === 6) {
+      logo = '/images/investarget_new_new_logo.png';
+      bg = 'url(/images/investarget_bg.png)';
+    }
     const bodyWrapStyle = {
       margin: '0 auto', 
       minWidth: 1200, 

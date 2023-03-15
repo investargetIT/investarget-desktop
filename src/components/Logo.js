@@ -25,6 +25,9 @@ function Logo(props) {
   return (
     <div style={{...logoStyle, ...props.style}}>
       {/* <Link to={ currentUser ? "/app" : "/" }> */}
+        {source === 6 ?
+          <img style={logoImgStyle} src="/images/investarget_new_new_logo.png" />
+          : null }
         {source === 5 ?
           <img style={logoImgStyle} src="/images/logo_hongyun.jpg" />
           : null }
