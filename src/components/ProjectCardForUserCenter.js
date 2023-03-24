@@ -122,7 +122,7 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
 
       {displayHoverContent &&
         <div onMouseLeave={handleMouseLeave} style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Link to={`/app/org/bd?projId=${projId}`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
+          <Link to={`/app/projects/${projId}?activeTabKey=downloads`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
             <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
             <div>文件下载</div>
           </Link>
