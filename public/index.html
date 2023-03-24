@@ -43,6 +43,9 @@
         case 'redcloudbio.investarget.com':
           localStorage.setItem('source', 5);
           break;
+        case 'rejutec.investarget.com':
+          localStorage.setItem('source', 6);
+          break;
       }
     }
     setSource();
@@ -77,6 +80,8 @@
       document.getElementsByTagName('head')[0].appendChild(link);
 
       document.title = '红云生物';
+    } else if (source === 6) {
+      document.title = 'Rejutec';
     } else {
       document.title = 'Unknown Datasource';
       // window.location.href = '/';

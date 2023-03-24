@@ -329,7 +329,7 @@ function DataroomFileManage({
       }
 
       const newObject = getObject(recursiveData, 'id', parentID);
-      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.treeKey || m.id, isLeaf: m.isFile, ifContainFiles: m.isFile ? false : ifContainFiles(m, flatData1) }));
+      const newChildren = children.map(m => ({ ...m, title: m.filename, key: m.treeKey || m.id, isLeaf: m.isFile, ifContainFiles: m.isFile ? false : ifContainFiles(m, flatData1), parentFileName: newObject ? newObject.filename : '' }));
       if (newObject) {
         newObject.children = newChildren;
       } else {
@@ -359,9 +359,9 @@ function DataroomFileManage({
     const item = data.filter(f => f.treeKey === keys[0] || f.id === keys[0]);
     if (item.length === 0) return;
     const currentFile = item[0];
-    checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+      checkTrainingFile(currentFile);
       console.log("currentFile", currentFile);
       const result = await checkUploadStatus(currentFile.key);
       if (!result) {
@@ -742,7 +742,7 @@ function DataroomFileManage({
 
       return (
         <div style={{ color: '#262626', lineHeight: '22px' }}>
-          {(item.dataroom !== 214 || (item.id != 59875 && item.parent != 59875)) &&
+          {(item.dataroom !== 214 || (!item.filename.includes('培训') && !item.parentFileName.includes('培训'))) &&
           <div onClick={() => handleDownloadFileClick(item)} style={{ cursor: 'pointer', padding: '5px 0', borderBottom: '1px solid #e6e6e6' }}>
             <CloudDownloadOutlined style={{ marginRight: 8, color: '#bfbfbf' }} />下载文件
           </div>
@@ -802,7 +802,10 @@ function DataroomFileManage({
           <span style={{ marginRight: 4 }}>{renderFileIcon()}</span>
           <span style={{ wordBreak: 'break-all' }}>{item.title}</span>
         </div>
-        <div>{(isLogin().is_superuser || !hasPerm('usersys.as_investor')) && addOperationIcon}{moreOperationIcon}</div>
+        <div>
+          {hasPerm('dataroom.downloadfile') && addOperationIcon}
+          {hasPerm('dataroom.downloadfile') && moreOperationIcon}
+        </div>
       </div>
     );
   }
@@ -1145,7 +1148,7 @@ function DataroomFileManage({
         increase = increase.concat(allChildren.map(m => m.id));
       }
       
-      // Half checked 中增加所有父目录
+      // Half checked 中增加所有父目录
       const allParents = findAllParents(changedFile);
       increaseHalf = increaseHalf.concat(allParents.map(m => m.id));
       increaseHalf = increaseHalf.concat(-999);
@@ -1253,7 +1256,7 @@ function DataroomFileManage({
             />
             {dirData.length > 0 && !loading &&
               <DirectoryTree
-                checkable
+                checkable={hasPerm('dataroom.downloadfile')}
                 height={700}
                 defaultExpandedKeys={defaultExpandedKeys}
                 onSelect={onSelect}

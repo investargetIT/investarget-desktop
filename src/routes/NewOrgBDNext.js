@@ -244,6 +244,7 @@ class NewOrgBDList extends React.Component {
           total: orgResult.data.count,
           loading: false,
           expanded: list.map(item => item.id),
+          allLoaded: list.length == 0 ? true : false,
         }, 
         () => this.loadOrgBDListDetail(this.state.list.map(m => m.org))
       );

@@ -153,12 +153,26 @@ function PersonalCenter(props) {
       iscomproj: 0,
     }
     const reqProj = await requestAllData2(api.getProj, params, 10);
-    const { data: projList } = reqProj.data;
+    let { data: projList } = reqProj.data;
     setProjList(projList);
 
     // 请求项目详情获取所有承揽承做
     const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjLangDetail(m.id)));
-    setProjList(reqAllProjDetails.map(m => m.data));
+    projList = reqAllProjDetails.map(m => m.data);
+    setProjList(projList);
+
+    // 请求项目的Dataroom
+    if (projList.length > 0) {
+      const reqDataroom = await api.queryDataRoom({
+        proj: projList.map(m => m.id).join(','),
+        page_size: projList.length,
+      });
+      projList = projList.map(m => {
+        const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
+        return { ...m, dataroom };
+      });
+      setProjList(projList);
+    }
   }
 
   // async function loadEmployees() {
@@ -968,7 +982,7 @@ function PersonalCenter(props) {
               <TabPane tab="参与过的项目" key="2">
                 <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-18px 0 20px -18px' }}>
                   {projList.map(m => <div key={m.id} style={{ margin: '18px 0 0 18px' }}>
-                    <ProjectCardForUserCenter record={m} country={props.country} currentUser={userID} />
+                    <ProjectCardForUserCenter key={m.id} record={m} country={props.country} currentUser={userID} />
                   </div>)}
                   {projList.length === 0 && <Empty style={{ margin: '20px auto' }} />}
                 </div>

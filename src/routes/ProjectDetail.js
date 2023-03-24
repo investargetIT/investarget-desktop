@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'dva'
 import * as api from '../api'
-import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile } from '../utils/util'
+import { formatMoney, isLogin, hasPerm, i18n, getPdfUrl, handleError, isShowCNY, requestAllData, getPdfUrlWithoutBase, checkUploadStatus, downloadFile, getURLParamValue } from '../utils/util'
 import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
@@ -164,6 +164,8 @@ class ProjectDetail extends React.Component {
   constructor(props) {
     super(props)
 
+    const activeTabKey = getURLParamValue(props, 'activeTabKey');
+
     this.state = {
       id: Number(props.match.params.id),
       project: {},
@@ -181,7 +183,7 @@ class ProjectDetail extends React.Component {
       loading: false,
       imageHeight: 0,
       activeKey: 1,
-      activeTabKey: 'details',
+      activeTabKey: activeTabKey || 'details',
       loadingPdf: false,  // PDF 下载 loading 状态
     }
   }
@@ -802,7 +804,7 @@ class DownloadFiles extends React.Component {
       this.setState({ attachments })
 
       const q = attachments.map(item => {
-        let { bucket, key } = item;
+        let { bucket, realfilekey: key } = item;
         key = key + '?attname=' + encodeURIComponent(key);
         return api.downloadUrl(bucket, key).then(result => {
           return result.data
