@@ -153,12 +153,26 @@ function PersonalCenter(props) {
       iscomproj: 0,
     }
     const reqProj = await requestAllData2(api.getProj, params, 10);
-    const { data: projList } = reqProj.data;
+    let { data: projList } = reqProj.data;
     setProjList(projList);
 
     // 请求项目详情获取所有承揽承做
     const reqAllProjDetails = await Promise.all(projList.map(m => api.getProjLangDetail(m.id)));
-    setProjList(reqAllProjDetails.map(m => m.data));
+    projList = reqAllProjDetails.map(m => m.data);
+    setProjList(projList);
+
+    // 请求项目的Dataroom
+    if (projList.length > 0) {
+      const reqDataroom = await api.queryDataRoom({
+        proj: projList.map(m => m.id).join(','),
+        page_size: projList.length,
+      });
+      projList = projList.map(m => {
+        const dataroom = reqDataroom.data.data.filter(f => f.proj && f.proj.id === m.id)[0];
+        return { ...m, dataroom };
+      });
+      setProjList(projList);
+    }
   }
 
   // async function loadEmployees() {

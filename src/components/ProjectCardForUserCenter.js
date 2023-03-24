@@ -48,7 +48,7 @@ const cardIconBgStyle = {
 }
 
 export default function ProjectCardForUserCenter({ record, country: allCountries, currentUser }) {
-  const dataroomId = record.id
+  const dataroomId = record.dataroom && record.dataroom.id
   const projId = record.id
   const projTitle = record.realname
   const projPM = record.PM;
@@ -58,7 +58,7 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
     projTradersUsers.push(projPM);
   }
   const uniqProjTraders = _.uniqBy(projTradersUsers, 'id');
-  const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
+  const dataroomUrl = `/app/dataroom/detail?id=${dataroomId}&isClose=${record.dataroom && record.dataroom.isClose}&projectID=${projId}&projectTitle=${encodeURIComponent(projTitle)}`
   const imgUrl = (record.industries && record.industries.length) ? encodeURI(record.industries[0].url) : ''
 
   const [displayHoverContent, setDisplayHoverContent] = useState(false);
@@ -67,9 +67,9 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
     setDisplayHoverContent(true);
   }
 
-  // function handleMouseLeave() {
-  //   setDisplayHoverContent(false);
-  // }
+  function handleMouseLeave() {
+    setDisplayHoverContent(false);
+  }
 
   function getUserFunction() {
     let roles = projTraders.filter(f => f.user && f.user.id === currentUser);
@@ -120,18 +120,18 @@ export default function ProjectCardForUserCenter({ record, country: allCountries
         
       </div>
 
-      {/* {displayHoverContent &&
+      {displayHoverContent &&
         <div onMouseLeave={handleMouseLeave} style={{ backgroundColor: 'rgba(0, 0, 0, .6)', position: 'absolute', left: 0, right: 0, top: 0, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Link to={`/app/org/bd?projId=${projId}`} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
             <div style={cardIconBgStyle}><FolderFilled style={{ fontSize: 32 }} /></div>
-            <div>机构看板</div>
+            <div>文件下载</div>
           </Link>
           <Link to={dataroomUrl} style={{ width: '50%', textAlign: 'center', color: 'white' }}>
             <div style={cardIconBgStyle}><LockFilled style={{ fontSize: 32 }} /></div>
             <div>Data Room</div>
           </Link>
         </div>
-      } */}
+      }
 
     </Card>
   )
