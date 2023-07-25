@@ -519,8 +519,18 @@ export const requestAllData = async (request, params, page_size) => {
   if (count <= page_size) {
     return firstRes;
   }
-  const secondRes = await request({ ...params, page_size: count });
-  return secondRes;
+  const max = 1000;
+  if (count <= max) {
+    const secondRes = await request({ ...params, page_size: count });
+    return secondRes;
+  }
+  const result = [];
+  const num = Math.ceil(count / max);
+  for (let index = 1; index <= num; index++) {
+    const thirdRes = await request({ ...params, page_index: index, page_size: max });
+    result.push(thirdRes.data.data);
+  }
+  return { data: { count, data: result } };
 }
 
 export const requestAllData2 = async (request, params, max_size) => {
