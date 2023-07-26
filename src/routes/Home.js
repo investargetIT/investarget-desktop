@@ -60,6 +60,9 @@ class Home extends React.Component {
       case 'saas.investarget.com':
         localStorage.setItem('source', 1);
         break;
+      case 'vdr.investarget.com':
+        localStorage.setItem('source', 1);
+        break;
       case 'saastest.investarget.com':
         localStorage.setItem('source', 1);
         break;

@@ -358,8 +358,9 @@ class LibProjRemarkList extends React.Component {
     if (!hasPerm('usersys.as_investor') || getUserInfo().is_superuser) {
       api.getProjBDList({ search: com_name })
         .then(result => {
-          if (result.data.data.length > 0) {
-            return requestAllData(api.getProjBDCom, { projectBD: result.data.data.map(m => m.id) }, 100);
+          const projectBD = result.data.data.filter(f => f.com_name == com_name);
+          if (projectBD.length > 0) {
+            return requestAllData(api.getProjBDCom, { projectBD: projectBD.map(m => m.id) }, 100);
           }
           return Promise.resolve({
             data: { data: [] },

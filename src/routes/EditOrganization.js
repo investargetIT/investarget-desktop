@@ -164,7 +164,7 @@ class EditOrganization extends React.Component {
       Modal.error({ title: '机构别名不能重复' });
       return;
     }
-    const req = await api.getOrg({ search: alias });
+    const req = await api.getOrg({ search: alias, issub: false });
     let { data: orgWithSameName } = req.data;
     orgWithSameName = orgWithSameName.filter(f => f.id !== Number(this.props.match.params.id));
     if (orgWithSameName.length > 0) {

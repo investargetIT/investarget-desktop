@@ -24,7 +24,7 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-if (['saas.investarget.net', 'saas.investarget.com'].includes(document.domain)) {
+if (['saas.investarget.net', 'saas.investarget.com', 'vdr.investarget.com'].includes(document.domain)) {
   localStorage.setItem('source', 1);
 }
 
