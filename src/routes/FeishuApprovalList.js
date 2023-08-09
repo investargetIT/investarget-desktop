@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
 import { getUserInfo, requestAllData } from '../utils/util';
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Spin } from 'antd';
 
 const UNIT_TO_CN = {
   hour: '小时',
@@ -12,10 +12,33 @@ const UNIT_TO_CN = {
 function FeishuApprovalList(props) {
 
   const [loading, setLoading] = useState(false);
-  const [list, setList] = useState([]);
-  
+  const [taskList, setTaskList] = useState([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadingContainerRef = useRef(null);
+
+  let allTaskList = [];
+  let currentTaskNum = 0;
+  let isLoadingDetails = false;
+
+  const observer = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) return;
+    if (isLoadingDetails) return;
+    if (currentTaskNum >= allTaskList.length) return;
+    setLoadingMore(true);
+    getApprovalDetails().finally(() => setLoadingMore(false));
+  });  
+
   useEffect(() => {
-    getApprovalList();
+    async function loadData() {
+      await getApprovalList();
+      if (allTaskList.length > 0) {
+        observer.observe(loadingContainerRef.current);
+      }
+    }
+    loadData();
+    return () => {
+      observer.disconnect();
+    }
   }, []);
 
   async function getApprovalList() {
@@ -26,7 +49,14 @@ function FeishuApprovalList(props) {
     const req = await api.getFeishuApprovalTaskList({ user_id, user_id_type: 'union_id', page_size: 200 });
     let { task_list } = req.data.data;
     // task_list = task_list.filter(f => f.task.status === 'pending');
+    allTaskList = task_list;
+    await getApprovalDetails();
+    setLoading(false);
+  }
 
+  async function getApprovalDetails() {
+    isLoadingDetails = true;
+    const task_list = allTaskList.slice(currentTaskNum, currentTaskNum + 10);
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
       const { approval_code, form } = curr.data.data;
@@ -34,8 +64,7 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data, summary };
       return prev.concat(current);
     }, []);
-    setList(allTasks);
-    setLoading(false);
+    currentTaskNum = currentTaskNum + allTasks.length
 
     const allTaskUser = allTasks.map(m => m.details.open_id);
     const reqUserDetails = await Promise.all(allTaskUser.map(m => api.getFeishuUser({
@@ -48,7 +77,8 @@ function FeishuApprovalList(props) {
       const current = { ...allTasks[currIdx], initiator };
       return prev.concat(current);
     }, []);
-    setList(allTasksWithInitiator);
+    setTaskList(taskList => [...taskList, ...allTasksWithInitiator]);
+    isLoadingDetails = false;
   }
 
   function getSummaryFromJSON(approvalCode, formStr) {
@@ -259,11 +289,14 @@ function FeishuApprovalList(props) {
     <LeftRightLayout location={props.location} title="行政审批">
       <Table
         columns={columns}
-        dataSource={list}
+        dataSource={taskList}
         rowKey={record => record.task.task_id}
         loading={loading}
         pagination={false}
       />
+      <div ref={loadingContainerRef} style={{ paddingTop: 20, textAlign: 'center' }}>
+        {loadingMore && <Spin />}
+      </div>
     </LeftRightLayout>
   );
 }
