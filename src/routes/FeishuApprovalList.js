@@ -18,14 +18,25 @@ function FeishuApprovalList(props) {
 
   let allTaskList = [];
   let currentTaskNum = 0;
-  let isLoadingDetails = false;
+  // let isLoadingDetails = false;
+
+  const loadingSize = 5;
 
   const observer = new IntersectionObserver(entries => {
     if (!entries[0].isIntersecting) return;
-    if (isLoadingDetails) return;
-    if (currentTaskNum >= allTaskList.length) return;
+    // if (isLoadingDetails) return;
+    if (currentTaskNum >= allTaskList.length) {
+      observer.disconnect();
+      return;
+    }
     setLoadingMore(true);
-    getApprovalDetails().finally(() => setLoadingMore(false));
+    const task_list = allTaskList.slice(currentTaskNum, currentTaskNum + loadingSize);
+    getApprovalDetails(task_list)
+      .then(result => {
+        currentTaskNum = currentTaskNum + result.length
+        setTaskList(taskList => [...taskList, ...result]);
+      })
+      .finally(() => setLoadingMore(false));
   });  
 
   useEffect(() => {
@@ -49,14 +60,18 @@ function FeishuApprovalList(props) {
     const req = await api.getFeishuApprovalTaskList({ user_id, user_id_type: 'union_id', page_size: 200 });
     let { task_list } = req.data.data;
     // task_list = task_list.filter(f => f.task.status === 'pending');
-    allTaskList = task_list;
-    await getApprovalDetails();
+    allTaskList = task_list || [];
+    const result = await getApprovalDetails(allTaskList.slice(0, loadingSize));
+    currentTaskNum = result.length
+    setTaskList(result);
     setLoading(false);
   }
 
-  async function getApprovalDetails() {
-    isLoadingDetails = true;
-    const task_list = allTaskList.slice(currentTaskNum, currentTaskNum + 10);
+  async function getApprovalDetails(task_list) {
+    // isLoadingDetails = true;
+    // TODO
+    // const task_list = allTaskList.slice(currentTaskNum, currentTaskNum + 10);
+
     const reqTaskDetails = await Promise.all(task_list.map(m => api.getFeishuApprovalDetails({ instance_id: m.instance.code })));
     const allTasks = reqTaskDetails.reduce((prev, curr, currIdx) => {
       const { approval_code, form } = curr.data.data;
@@ -64,7 +79,9 @@ function FeishuApprovalList(props) {
       const current = { ...task_list[currIdx], details: curr.data.data, summary };
       return prev.concat(current);
     }, []);
-    currentTaskNum = currentTaskNum + allTasks.length
+
+    // TODO
+    // currentTaskNum = currentTaskNum + allTasks.length
 
     const allTaskUser = allTasks.map(m => m.details.open_id);
     const reqUserDetails = await Promise.all(allTaskUser.map(m => api.getFeishuUser({
@@ -77,8 +94,12 @@ function FeishuApprovalList(props) {
       const current = { ...allTasks[currIdx], initiator };
       return prev.concat(current);
     }, []);
-    setTaskList(taskList => [...taskList, ...allTasksWithInitiator]);
-    isLoadingDetails = false;
+
+    // TODO
+    // setTaskList(taskList => [...taskList, ...allTasksWithInitiator]);
+
+    // isLoadingDetails = false;
+    return allTasksWithInitiator;
   }
 
   function getSummaryFromJSON(approvalCode, formStr) {
@@ -224,6 +245,13 @@ function FeishuApprovalList(props) {
   }
 
   async function handleOperationBtnClicked(type, record) {
+    window.echo('type record', type, record, taskList);
+    observer.disconnect();
+    await getApprovalList();
+    if (allTaskList.length > 0) {
+      observer.observe(loadingContainerRef.current);
+    }
+    return;
     const { code: approval_code } = record.approval;
     const { code: instance_code } = record.instance;
     const { task_id } = record.task;
