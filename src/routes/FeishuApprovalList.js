@@ -20,7 +20,7 @@ function FeishuApprovalList(props) {
   let currentTaskNum = 0;
   // let isLoadingDetails = false;
 
-  const loadingSize = 5;
+  const loadingSize = 10;
 
   const observer = new IntersectionObserver(entries => {
     if (!entries[0].isIntersecting) return;
@@ -62,7 +62,6 @@ function FeishuApprovalList(props) {
     // task_list = task_list.filter(f => f.task.status === 'pending');
     allTaskList = task_list || [];
     const result = await getApprovalDetails(allTaskList.slice(0, loadingSize));
-    window.echo('result', result);
     currentTaskNum = result.length
     setTaskList(result);
     setLoading(false);
@@ -246,7 +245,6 @@ function FeishuApprovalList(props) {
   }
 
   async function handleOperationBtnClicked(type, record) {
-    window.echo('type record', type, record, taskList);
     // observer.disconnect();
     // await getApprovalList();
     // if (allTaskList.length > 0) {
