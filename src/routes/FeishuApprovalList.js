@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import LeftRightLayout from '../components/LeftRightLayout';
 import * as api from '../api';
-import { getUserInfo, requestAllData } from '../utils/util';
+import { getUserInfo, handleError, requestAllData } from '../utils/util';
 import { Table, Button, Popconfirm, Spin } from 'antd';
 
 const UNIT_TO_CN = {
@@ -62,6 +62,7 @@ function FeishuApprovalList(props) {
     // task_list = task_list.filter(f => f.task.status === 'pending');
     allTaskList = task_list || [];
     const result = await getApprovalDetails(allTaskList.slice(0, loadingSize));
+    window.echo('result', result);
     currentTaskNum = result.length
     setTaskList(result);
     setLoading(false);
@@ -246,12 +247,21 @@ function FeishuApprovalList(props) {
 
   async function handleOperationBtnClicked(type, record) {
     window.echo('type record', type, record, taskList);
-    observer.disconnect();
-    await getApprovalList();
-    if (allTaskList.length > 0) {
-      observer.observe(loadingContainerRef.current);
+    // observer.disconnect();
+    // await getApprovalList();
+    // if (allTaskList.length > 0) {
+    //   observer.observe(loadingContainerRef.current);
+    // }
+
+    try {
+      await updateRecord(type, record);
+      await loadRecord(record);
+    } catch (err) {
+      handleError(err);
     }
-    return;
+  }
+
+  async function updateRecord(type, record) {
     const { code: approval_code } = record.approval;
     const { code: instance_code } = record.instance;
     const { task_id } = record.task;
@@ -265,7 +275,16 @@ function FeishuApprovalList(props) {
       body.instance_code = instance_code;
     }
     await api.editFeishuApproval(type, body);
-    getApprovalList();
+  }
+
+  async function loadRecord(record) {
+    setLoading(true);
+    const result = await getApprovalDetails([record]);
+    const newList = taskList.slice();
+    const taskIndex = newList.map(m => m.task.task_id).indexOf(record.task.task_id);
+    newList[taskIndex] = result[0];
+    setTaskList(newList);
+    setLoading(false);
   }
 
   const columns = [
