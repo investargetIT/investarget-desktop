@@ -176,7 +176,7 @@ class EditUser extends React.Component {
       userDetailInfo = result.data
       if (intersection(result.data.groups.map(m => m.id), investorGroup).length > 0) {
         const param = { investoruser: userId }
-        return api.getUserRelation(param)
+        return requestAllData(api.getUserRelation, param, 20)
       } else {
         return Promise.resolve()
       }
