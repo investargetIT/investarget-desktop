@@ -1068,10 +1068,15 @@ function DataroomFileManage({
   //   }
   // }
 
-  function handleItemClick(currentFile) {
+  async function handleItemClick(currentFile) {
     checkTrainingFile(currentFile);
     setSelectedFile(currentFile);
     if (currentFile.isFile) {
+
+      const downloadUrlReq = await api.downloadUrl(currentFile.bucket, currentFile.key);
+      const fileDownloadUrl = downloadUrlReq.data;
+      currentFile.fileurl = fileDownloadUrl;
+
       if ((/\.avi$/i).test(currentFile.filename)) {
         Modal.warning({
           title: '该文件不支持在线预览',
