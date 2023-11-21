@@ -6,7 +6,7 @@ import { Link, routerRedux } from 'dva/router'
 import { Timeline, Icon, Tag, Button, message, Steps, Modal, Row, Col, Tabs, Progress, Breadcrumb, Card } from 'antd';
 import LeftRightLayoutPure from '../components/LeftRightLayoutPure';
 import { SelectNumber } from '../components/ExtraInput'
-import TimelineViewNew from '../components/TimelineViewNew';
+import FaTimelineView from '../components/FaTimelineView';
 import {
   HeartOutlined,
   HeartFilled,
@@ -447,7 +447,7 @@ class ProjectDetail extends React.Component {
 
         {this.state.activeTabKey === 'progress' &&
           <Card title={i18n('project.project_process_timeline')}>
-            <div style={{ width: '50%' }}><TimelineViewNew projID={id} /></div>
+            <div style={{ width: '50%' }}><FaTimelineView projID={id} /></div>
           </Card>
         }
 
