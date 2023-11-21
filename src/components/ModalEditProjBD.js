@@ -147,7 +147,7 @@ function ModalEditProjBD({ country, bd, visible, onOk, onCancel }) {
   return (
     <Modal
       visible={visible}
-      title="修改项目BD"
+      title="修改线索项目"
       okText="提交"
       cancelText="取消"
       onCancel={handleCancel}

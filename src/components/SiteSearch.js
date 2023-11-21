@@ -133,7 +133,7 @@ class SiteSearch extends React.Component {
       ]);
       if (count < this.searchCount) return;
       const res0 = res[0].data.data.map(m => ({ ...m, com_name: m.username, type: 'user', label: '用户' }));
-      const res1 = res[1].data.data.map(m => ({ ...m, type: 'projBD', label: '项目BD' }));
+      const res1 = res[1].data.data.map(m => ({ ...m, type: 'projBD', label: '线索项目' }));
       const res2 = res[2].data.data.map(m => ({ ...m, com_name: m.projtitle, type: 'project', label: '项目' }));
       const allResult = [...res0, ...res1, ...res2];
       const total = res[0].data.count + res[1].data.count + res[2].data.coount;

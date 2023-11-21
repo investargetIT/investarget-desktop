@@ -528,7 +528,7 @@ class IndexPage extends React.Component {
           <Link to="/app/projects/bd?status=3">
               <Col span={8}>
                 <div style={{ height: 70, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', textAlign: 'center' }}>
-                  <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>项目BD成功</p>
+                  <p style={{ color: 'white', fontSize: 16, textAlign: 'left' }}>线索项目成功</p>
                   <p style={{ color: 'white', fontSize: 18, fontWeight: 'bold', textAlign: 'left' }}>{projBDsuccess}</p>
                 </div>
               </Col>

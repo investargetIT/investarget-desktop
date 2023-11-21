@@ -234,7 +234,7 @@ class OrgBDProjList extends React.Component {
     return (
       <LeftRightLayout 
         location={location} 
-        title="机构看板列表"
+        title="已投项目列表"
         right={<Search2 
           style={{width: 200}} 
           placeholder="项目名称"

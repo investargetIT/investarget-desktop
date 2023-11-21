@@ -602,7 +602,7 @@ class ReportProjectBDList extends React.Component {
         <div style={{ marginTop: 24 }}>
           <Select
             style={{ width: 250 }}
-            placeholder="选择项目BD"
+            placeholder="选择线索项目"
             disabled={addBdLoading}
             value={userBdId}
             onChange={this.handleUserBdChange}

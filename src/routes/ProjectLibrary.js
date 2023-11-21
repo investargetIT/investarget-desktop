@@ -242,10 +242,10 @@ class ProjectLibrary extends React.Component {
                 </Link></div>)
       }, width: 120},
       {
-        title: '项目BD状态',
+        title: '线索项目状态',
         dataIndex: 'bd_status',
         render: (text, record) => text ? (
-          <Tooltip title="查看项目BD记录">
+          <Tooltip title="查看线索项目记录">
             <Link to={`/app/projects/bd?search=${record.com_name.replaceAll('.', '')}`} style={{ color: 'red' }}>{text.name}</Link>
           </Tooltip>
         ) : <span style={{ color: 'green' }}>无记录</span>,

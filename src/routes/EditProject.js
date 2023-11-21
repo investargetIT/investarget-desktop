@@ -342,7 +342,7 @@ class EditProject extends React.Component {
   setFormValue = async () => {
     const newFormData = toFormDataNew(this.state.project);
     const { projectBD, sponsor, takeUser } = newFormData;
-    // 如果存在对应项目BD，并且项目发起人和开发团队有一个为空
+    // 如果存在对应线索项目，并且项目发起人和开发团队有一个为空
     if (projectBD) {
       if (!sponsor || !takeUser || (takeUser && takeUser.length === 0)) {
         const reqProjBD = await api.getProjBD(projectBD);

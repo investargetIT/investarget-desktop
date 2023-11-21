@@ -413,7 +413,7 @@ class ProjectDetail extends React.Component {
             onChange={this.handleTabChange}
           >
             <TabPane tab="详情" key="details" />
-            <TabPane tab="项目进程" key="progress" />
+            <TabPane tab="投前流程" key="progress" />
             <TabPane tab="文件下载" key="downloads" />
           </Tabs>
 

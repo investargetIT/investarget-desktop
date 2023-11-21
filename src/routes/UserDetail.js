@@ -356,7 +356,7 @@ class UserDetail extends React.Component {
     await this.mergeDataroomTemp(deleteUserId, mergeUserId);
     await sleep(1000);
 
-    this.setState({ mergeUserMessage: '正在合并项目BD' });
+    this.setState({ mergeUserMessage: '正在合并线索项目' });
     await this.mergeProjectBd(deleteUserId, mergeUserId);
     await sleep(1000);
 

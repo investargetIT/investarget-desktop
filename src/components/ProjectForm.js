@@ -100,7 +100,7 @@ class ProjectBaseForm1 extends React.Component {
           <RadioTrueOrFalse />
         </BasicFormItem>
 
-        <BasicFormItem label="对应项目BD" name="projectBD" valueType="number">
+        <BasicFormItem label="对应线索项目" name="projectBD" valueType="number">
           <SelectProjectBD />
         </BasicFormItem>
 

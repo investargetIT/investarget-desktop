@@ -3,8 +3,8 @@
     "project_library": "项目全库",
     "organization_management": "机构管理",
     "bd_management": "BD管理",
-    "project_bd": "项目BD",
-    "organization_bd": "机构看板",
+    "project_bd": "线索项目",
+    "organization_bd": "已投项目",
     "meeting_bd": "会议BD",
     "meeting_management": "会议管理",
     "project_management": "项目管理",
@@ -142,10 +142,10 @@
   },
 
   "project_bd": {
-    "project_bd": "项目BD",
+    "project_bd": "线索项目",
     "industry_group": "行业组",
-    "add_project_bd": "新增项目BD",
-    "edit_project_bd": "修改项目BD",
+    "add_project_bd": "新增线索项目",
+    "edit_project_bd": "修改线索项目",
     "bd_status": "BD状态",
     "import_methods": "导入方式",
     "area": "地区",
@@ -168,9 +168,9 @@
   },
 
   "org_bd": {
-    "project_bd": "项目BD",
-    "add_project_bd": "新增项目BD",
-    "edit_project_bd": "修改项目BD",
+    "project_bd": "线索项目",
+    "add_project_bd": "新增线索项目",
+    "edit_project_bd": "修改线索项目",
     "bd_status": "BD状态",
     "import_methods": "导入方式",
     "area": "地区",

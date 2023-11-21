@@ -129,7 +129,7 @@ class ModalModifyProjectBDStatus extends React.Component {
     return !this.props.bd.bduser && this.props.bd.bd_status.id !== 3 && this.state.status === 3;
   }
 
-  // 项目BD状态改为已见面或已联系(对应id为6,7)时需要填写联系人信息, 详细需求见bugClose#340
+  // 线索项目状态改为已见面或已联系(对应id为6,7)时需要填写联系人信息, 详细需求见bugClose#340
   isShowContactForm = () => {
     return ![6, 7].includes(this.props.bd.bd_status.id) && [6, 7].includes(this.state.status);
   }

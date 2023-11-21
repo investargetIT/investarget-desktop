@@ -62,7 +62,7 @@ const pieChartPercentageStyle = {
   color: '#989889'
 };
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-const PieChartDataName = ['项目BD次数', '机构信息分享次数', '所属行业组行研报告'];
+const PieChartDataName = ['线索项目次数', '机构信息分享次数', '所属行业组行研报告'];
 
 function Dashboard(props) {
   const userInfo = getUserInfo();
@@ -376,7 +376,7 @@ function Dashboard(props) {
 
   function generateShortcutOperation() {
     const titleArr = [
-      { name: '新增\n项目\nBD', link: '/app/projects/bd/add' },
+      { name: '新增\n线索\n项目', link: '/app/projects/bd/add' },
       { name: '新增\n平台\n项目', link: '/app/projects/add' },
       { name: '新增\n投资人', link: `/app/user/add?redirect=${encodeURIComponent('/app')}` },
       { name: '机构列表', link: '/app/organization/list' },
@@ -429,7 +429,7 @@ function Dashboard(props) {
           <Col span={16}>
             <div className="card-container min-height">
               <Tabs type="card" size="large" activeKey={activeTabKey} onChange={key => setActiveTabKey(key)}>
-                <TabPane tab="项目BD" key="0">
+                <TabPane tab="线索项目" key="0">
                   <ProjectBdTable />
                 </TabPane>
                 <TabPane tab="业务数据" key="-1">
