@@ -445,11 +445,7 @@ class ProjectDetail extends React.Component {
           </div>
         }
 
-        {this.state.activeTabKey === 'progress' &&
-          <Card title={i18n('project.project_process_timeline')}>
-            <div style={{ width: '50%' }}><FaTimelineView projID={id} /></div>
-          </Card>
-        }
+        {this.state.activeTabKey === 'progress' && <FaTimelineView projID={id} />}
 
         {this.state.activeTabKey === 'downloads' && (
           <Card title={i18n('project.file_download')}>
