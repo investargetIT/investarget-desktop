@@ -197,9 +197,9 @@ const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseFo
 
 function KickoffMeetingForm(props) {
   return (
-    <Form ref={props.forwardedRef}>
+    <Form ref={props.forwardedRef} className="fa-form">
       <FaBasicFormItem label="会议日期" name="date" valueType="object" required>
-        <DatePicker />
+        <DatePicker style={{ width: '100%' }} placeholder="" />
       </FaBasicFormItem>
 
       <FaBasicFormItem label="会议主题" name="topic">

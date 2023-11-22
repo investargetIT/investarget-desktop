@@ -27,6 +27,16 @@ const formItemLayout = {
     sm: { span: 14 },
   },
 }
+const faFormItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+}
 const formItemLayoutWithOutLabel = {
   wrapperCol: {
     xs: { span: 24 },
@@ -136,7 +146,7 @@ const FaBasicFormItem = props => {
       name={props.name}
       label={props.label}
       style={props.style}
-      {...(props.layout || formItemLayout)}
+      {...(props.layout || faFormItemLayout)}
       {...options}
     >
       {props.children}

@@ -819,13 +819,26 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .form-item-select-without-white-space .ant-select-multiple .ant-select-selection-item-content {
   white-space: unset;
 }
-
+.fa-form.ant-form {
+  border-left: 1px solid #d9d9d9;
+  border-top: 1px solid #d9d9d9;
+}
 .fa-form-item.ant-form-item {
+  margin-bottom: 0;
   align-items: center;
+  border-right: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
 }
 .fa-form-item.ant-form-item > .ant-form-item-label {
   background-color: #eee;
   padding-left: 12px;
+  border-right: 1px solid #d9d9d9;
+}
+.fa-form-item.ant-form-item > .ant-form-item-label > label {
+  color: #616161;
+}
+.fa-form-item .ant-input, .fa-form-item .ant-picker {
+  border: none;
 }
 
 @media (max-width: 767px) {
