@@ -819,6 +819,15 @@ a.expired-project, button.expired-project, button.expired-project:hover {
 .form-item-select-without-white-space .ant-select-multiple .ant-select-selection-item-content {
   white-space: unset;
 }
+
+.fa-form-item.ant-form-item {
+  align-items: center;
+}
+.fa-form-item.ant-form-item > .ant-form-item-label {
+  background-color: #eee;
+  padding-left: 12px;
+}
+
 @media (max-width: 767px) {
   .remove-on-mobile {
     display: none;

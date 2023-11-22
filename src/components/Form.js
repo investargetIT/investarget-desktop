@@ -98,7 +98,51 @@ const BasicFormItem = props => {
 //   children: PropTypes.element.isRequired,
 // }
 
+const FaBasicFormItem = props => {
+  const rules = [
+    { type: props.valueType, message: i18n('validation.not_valid')},
+    { required: props.required, message: i18n('validation.not_empty')},
+  ]
 
+  if (props.whitespace) {
+    rules.push({ whitespace: props.whitespace })
+  }
+  if (props.validator) {
+    rules.push({ validator: props.validator })
+  }
+
+  let options = { rules: rules }
+  if ('initialValue' in props) {
+    options.initialValue = props.initialValue
+  }
+  if ('valuePropName' in props) {
+    options.valuePropName = props.valuePropName
+  }
+  if ('onChange' in props) {
+    options.onChange = props.onChange
+  }
+  if ('getValueFromEvent' in props) {
+    options.getValueFromEvent = props.getValueFromEvent;
+  }
+  if ('hidden' in props) {
+    options.hidden = props.hidden;
+  }
+
+  return (
+    <FormItem
+      className="fa-form-item"
+      labelAlign="left"
+      colon={false}
+      name={props.name}
+      label={props.label}
+      style={props.style}
+      {...(props.layout || formItemLayout)}
+      {...options}
+    >
+      {props.children}
+    </FormItem>
+  )
+}
 
 const Email = props => <BasicFormItem label={i18n("account.email")} name="email" valueType="email" required><Input size="large" onBlur={props.onBlur}/></BasicFormItem>
 
@@ -524,6 +568,7 @@ module.exports = {
   Submit,
   UploadAvatar,
   BasicFormItem,
+  FaBasicFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
   Group

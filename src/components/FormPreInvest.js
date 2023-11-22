@@ -13,6 +13,7 @@ const InputGroup = Input.Group
 
 import {
   BasicFormItem,
+  FaBasicFormItem,
   CurrencyFormItem,
   IndustryDynamicFormItem,
 } from '../components/Form'
@@ -197,25 +198,25 @@ const ProjectBaseForm = React.forwardRef((props, ref) => <ConnectedProjectBaseFo
 function KickoffMeetingForm(props) {
   return (
     <Form ref={props.forwardedRef}>
-      <BasicFormItem label="会议日期" name="date" valueType="object" required>
+      <FaBasicFormItem label="会议日期" name="date" valueType="object" required>
         <DatePicker />
-      </BasicFormItem>
+      </FaBasicFormItem>
 
-      <BasicFormItem label="会议主题" name="topic">
+      <FaBasicFormItem label="会议主题" name="topic">
         <Input />
-      </BasicFormItem>
+      </FaBasicFormItem>
       
-      <BasicFormItem label="会议地点" name="address">
+      <FaBasicFormItem label="会议地点" name="address">
         <Input />
-      </BasicFormItem>
+      </FaBasicFormItem>
 
-      <BasicFormItem label="会议内容" name="content">
+      <FaBasicFormItem label="会议内容" name="content">
         <Input />
-      </BasicFormItem>
+      </FaBasicFormItem>
 
-      <BasicFormItem label="内部参会人员" name="people">
+      <FaBasicFormItem label="内部参会人员" name="people">
         <Input />
-      </BasicFormItem>
+      </FaBasicFormItem>
     </Form>
   );
 }
